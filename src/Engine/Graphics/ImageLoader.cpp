@@ -63,7 +63,7 @@ bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImag
         return false;
 
     // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->paletted_pixels.width(), tex->paletted_pixels.height(), tex->paletted_pixels.pixels().data());
+    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data());
     *palette = tex->palette;
     *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
@@ -76,9 +76,9 @@ bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImag
         return false;
 
     // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->paletted_pixels.width(), tex->paletted_pixels.height(), tex->paletted_pixels.pixels().data());
+    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data());
 
-    if (tex->header.flags & 512) {
+    if (tex->zeroIsTransparent) {
         *palette = MakePaletteAlpha(tex->palette);
     } else {
         *palette = MakePaletteColorKey(tex->palette, colorkey);
@@ -95,9 +95,9 @@ bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedIm
         return false;
 
     // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->paletted_pixels.width(), tex->paletted_pixels.height(), tex->paletted_pixels.pixels().data());
+    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data());
 
-    if (tex->header.flags & 512) {
+    if (tex->zeroIsTransparent) {
         *palette = MakePaletteAlpha(tex->palette);
     } else {
         *palette = tex->palette;
@@ -114,14 +114,8 @@ bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, 
         return false;
 
     // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->paletted_pixels.width(), tex->paletted_pixels.height(), tex->paletted_pixels.pixels().data());
-
-    if ((tex->header.flags == 0) || (tex->header.flags & 512)) {
-        *palette = MakePaletteAlpha(tex->palette);
-    } else {
-        *palette = MakePaletteColorKey(tex->palette, colorTable.TealMask);
-    }
-
+    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data());
+    *palette = MakePaletteAlpha(tex->palette);
     *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
     return true;
@@ -204,18 +198,14 @@ static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette 
 
 bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->loadTexture(this->resource_name);
-    int num_pixels = tex->header.width * tex->header.height;
 
-    std::string name;
-    reconstruct(tex->header.name, &name);
-
-    size_t w = tex->header.width;
-    size_t h = tex->header.height;
+    size_t w = tex->indexed.width();
+    size_t h = tex->indexed.height();
 
     // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->paletted_pixels.width(), tex->paletted_pixels.height(), tex->paletted_pixels.pixels().data());
+    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data());
 
-    if (!transparentTextures.contains(name)) {
+    if (!transparentTextures.contains(tex->name)) {
         *palette = tex->palette;
         *rgbaImage = makeRgbaImage(*indexedImage, *palette);
     } else {

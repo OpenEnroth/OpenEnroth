@@ -39,7 +39,7 @@ void LodTextureCache::releaseUnreserved() {
 
 Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool useDummyOnError) {
     for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pContainer.data(), pTexture.header.name.data())) {
+        if (iequals(pContainer, pTexture.name)) {
             return &pTexture;
         }
     }
@@ -52,7 +52,7 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
         return nullptr;
 
     for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pTexture.header.name.data(), "pending")) {
+        if (iequals(pTexture.name, "pending")) {
             return &pTexture;
         }
     }
@@ -75,12 +75,10 @@ int LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string 
 
     LodImage image = lod::decodeImage(_reader.read(pContainer));
 
-    strncpy(pOutTex->header.name.data(), pContainer.c_str(), 16);
-    pOutTex->paletted_pixels = std::move(image.image);
+    pOutTex->name = pContainer;
+    pOutTex->indexed = std::move(image.image);
     pOutTex->palette = image.palette;
-    pOutTex->header.width = pOutTex->paletted_pixels.width();
-    pOutTex->header.height = pOutTex->paletted_pixels.height();
-    pOutTex->header.flags = image.zeroIsTransparent ? 512 : 0;
+    pOutTex->zeroIsTransparent = image.zeroIsTransparent;
 
     return 1;
 }
