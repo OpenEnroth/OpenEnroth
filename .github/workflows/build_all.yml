@@ -1,4 +1,4 @@
-name: Build Release
+name: Build All
 
 on:
   workflow_dispatch: #allows to manually run a workflow
