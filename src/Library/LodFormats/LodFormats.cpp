@@ -150,6 +150,18 @@ Blob lod::decodeCompressed(const Blob &blob, LodDecodeFlags decodeFlags) {
     throw Exception("Cannot uncompress LOD entry of type '{}', operation is not supported", toString(format));
 }
 
+Blob lod::encodeCompressed(const Blob &blob) {
+    Blob compressed = zlib::Compress(blob);
+
+    LodCompressionHeader_MM6 header;
+    header.version = 91969;
+    header.signature = {{'m', 'v', 'i', 'i'}};
+    header.dataSize = compressed.size();
+    header.decompressedSize = blob.size();
+
+    return Blob::concat(Blob::view(&header, sizeof(header)), compressed);
+}
+
 Palette lod::decodePalette(const Blob &blob) {
     LodFileFormat format = magic(blob, {});
     if (format != LOD_FILE_PALETTE && format != LOD_FILE_IMAGE)

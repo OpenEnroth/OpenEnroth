@@ -26,7 +26,7 @@ namespace lod {
 LodFileFormat magic(const Blob &blob, const std::string &fileName);
 
 /**
- * This functions processes `LOD_FILE_COMPRESSED`, `LOD_FILE_PSEUDO_IMAGE` and `LOD_FILE_RAW` file types, returning
+ * This functions processes `LOD_FILE_COMPRESSED`, `LOD_FILE_PSEUDO_IMAGE` and `LOD_FILE_RAW` formats, returning
  * uncompressed data.
  *
  * In case of `LOD_FILE_RAW`, it just does nothing and returns the blob as is.
@@ -39,7 +39,15 @@ LodFileFormat magic(const Blob &blob, const std::string &fileName);
 Blob decodeCompressed(const Blob &blob, LodDecodeFlags decodeFlags = 0);
 
 /**
- * This function processes `LOD_FILE_PALETTE` and `LOD_FILE_IMAGE` file types. In case of the latter, the pixel data
+ * This function compresses the provided `Blob` into the `LOD_FILE_COMPRESSED` format.
+ *
+ * @param blob                          `Blob` to compress.
+ * @return                              Compressed `Blob` in `LOD_FILE_COMPRESSED` format.
+ */
+Blob encodeCompressed(const Blob &blob);
+
+/**
+ * This function processes `LOD_FILE_PALETTE` and `LOD_FILE_IMAGE` formats. In case of the latter, the pixel data
  * is ignored.
  *
  * @param blob                          `Blob` from a LOD file.
@@ -49,7 +57,7 @@ Blob decodeCompressed(const Blob &blob, LodDecodeFlags decodeFlags = 0);
 Palette decodePalette(const Blob &blob);
 
 /**
- * This function processes `LOD_FILE_IMAGE` and `LOD_FILE_PALETTE` file types. In case of the latter, the pixel data
+ * This function processes `LOD_FILE_IMAGE` and `LOD_FILE_PALETTE` formats. In case of the latter, the pixel data
  * will be empty.
  *
  * @param blob                          Image `Blob`, as read from a LOD file.
@@ -58,7 +66,7 @@ Palette decodePalette(const Blob &blob);
 LodImage decodeImage(const Blob &blob);
 
 /**
- * This function processes `LOD_FILE_SPRITE` file type.
+ * This function processes `LOD_FILE_SPRITE` format.
  *
  * @param blob                          Sprite `blob`, as read from a LOD file.
  * @return                              Decoded `LodSprite`.
