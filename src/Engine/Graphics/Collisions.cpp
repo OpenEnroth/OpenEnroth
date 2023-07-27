@@ -204,7 +204,7 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
     // This in turn is the distance from cylinder center to the line of actor's movement.
     Vec3f dir = collision_state.direction;
     float closest_dist = dist_x * dir.y - dist_y * dir.x;
-    if (abs(closest_dist) > sum_radius)
+    if (std::abs(closest_dist) > sum_radius)
         return false; // No chance to collide.
 
     // Length of dist vector projected onto collision_state.direction.
@@ -291,7 +291,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         if (!collision_state.bbox.intersects(pFace->pBounding))
             continue;
 
-        float distance = abs(pFace->facePlane.signedDistanceTo(collision_state.position_lo));
+        float distance = std::abs(pFace->facePlane.signedDistanceTo(collision_state.position_lo));
         if(distance > collision_state.move_distance + 16)
             continue;
 
@@ -440,7 +440,7 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
 
         Vec3f dir = collision_state.direction;
         float closest_dist = dist_x * dir.y - dist_y * dir.x;
-        if (abs(closest_dist) > sum_radius)
+        if (std::abs(closest_dist) > sum_radius)
             continue;
 
         float dist_dot_dir = dist_x * dir.x + dist_y * dir.y;
