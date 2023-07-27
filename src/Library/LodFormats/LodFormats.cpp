@@ -113,7 +113,7 @@ LodFileFormat lod::magic(const Blob &blob, const std::string &fileName) {
     return LOD_FILE_RAW;
 }
 
-Blob lod::decodeCompressed(const Blob &blob) {
+Blob lod::decodeCompressed(const Blob &blob, LodDecodeFlags decodeFlags) {
     LodFileFormat format = magic(blob, {});
     if (format == LOD_FILE_RAW)
         return Blob::share(blob); // Not compressed.
@@ -123,7 +123,14 @@ Blob lod::decodeCompressed(const Blob &blob) {
         LodCompressionHeader_MM6 header;
         deserialize(stream, &header);
 
-        Blob result = stream.readBlobOrFail(header.dataSize);
+        Blob result;
+        if ((decodeFlags & LOD_ALLOW_BORKED_COMPRESSED_SIZE) && header.dataSize == blob.size()) {
+            // Workaround for a bug in the original LOD writer, where header.dataSize was equal to LOD record size,
+            // instead of the size of the data that followed.
+            result = stream.tail();
+        } else {
+            result = stream.readBlobOrFail(header.dataSize);
+        }
         if (header.decompressedSize)
             result = zlib::Uncompress(result, header.decompressedSize);
         return result;

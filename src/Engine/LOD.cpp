@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Texture_MM7.h"
 
 #include "Library/Compression/Compression.h"
+#include "Library/LodFormats/LodFormats.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -522,43 +523,11 @@ Blob LOD::File::LoadRaw(const std::string &pContainer) const {
 }
 
 Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
-    FILE *File = FindContainer(pContainer, 0);
-    if (!File) {
-        Error("Unable to load %s", pContainer.c_str());
-        return Blob();
-    }
-
-    TextureHeader DstBuf;
-    if (fread(&DstBuf, sizeof(TextureHeader), 1, File) != 1)
-        return Blob();
-
-    if (DstBuf.decompressedSize) {
-        return zlib::Uncompress(Blob::read(File, DstBuf.dataSize), DstBuf.decompressedSize);
-    } else {
-        return Blob::read(File, DstBuf.dataSize);
-    }
+    return lod::decodeCompressed(LoadRaw(pContainer));
 }
 
 Blob LOD::File::LoadCompressed(const std::string &pContainer) {
-    FILE *File = FindContainer(pContainer, 0);
-    if (!File) {
-        Error("Unable to load %s", pContainer.c_str());
-        return Blob();
-    }
-
-    CompressedHeader header;
-    if (fread(&header, sizeof(CompressedHeader), 1, File) != 1)
-        return Blob();
-
-    if (header.uVersion != 91969 || (memcmp(&header.pMagic, "mvii", 4) != 0)) {
-        Error("Unable to load %s", pContainer.c_str());
-        return Blob();
-    }
-
-    Blob result = Blob::read(File, header.uCompressedSize);
-    if (header.uDecompressedSize)
-        result = zlib::Uncompress(result, header.uDecompressedSize);
-    return result;
+    return lod::decodeCompressed(LoadRaw(pContainer), LOD_ALLOW_BORKED_COMPRESSED_SIZE);
 }
 
 int LOD::File::GetSubNodeIndex(const std::string &name) const {

@@ -32,10 +32,11 @@ LodFileFormat magic(const Blob &blob, const std::string &fileName);
  * In case of `LOD_FILE_RAW`, it just does nothing and returns the blob as is.
  *
  * @param blob                          `Blob` from a LOD file.
+ * @param decodeFlags                   Decoding flags.
  * @return                              Uncompressed `Blob`.
  * @throw Exception                     If the provided `Blob` is of unsupported type.
  */
-Blob decodeCompressed(const Blob &blob);
+Blob decodeCompressed(const Blob &blob, LodDecodeFlags decodeFlags = 0);
 
 /**
  * This function processes `LOD_FILE_PALETTE` and `LOD_FILE_IMAGE` file types. In case of the latter, the pixel data
