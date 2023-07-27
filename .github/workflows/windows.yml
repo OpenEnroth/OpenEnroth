@@ -34,25 +34,10 @@ jobs:
           OpenEnroth_GameData
         key: data-cache
 
-    - name: Checkout private data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
-      uses: actions/checkout@v3
-      with:
-        repository: OpenEnroth/OpenEnroth_GameData
-        path: OpenEnroth_GameData
-        token: ${{ secrets.DATA_ACCESS_TOKEN }}
-
-    - name: Cache data if needed
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
-
     - name: Copy shaders
+      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
       run: |
-        xcopy D:\a\OpenEnroth\OpenEnroth\resources D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Setup environment
       uses: ilammy/msvc-dev-cmd@v1
@@ -75,6 +60,7 @@ jobs:
         ninja UnitTest
 
     - name: GameTest
+      if: steps.check-for-data-cache.outputs.cache-hit == 'true'        
       working-directory: build
       run: |
         ninja GameTest_NullRenderer
