@@ -111,6 +111,7 @@ jobs:
         wget --no-check-certificate 'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip' -O android-ndk-r26-beta1-linux.zip 
 
     - name: Setup NDK
+      if: steps.cache-ndk.outputs.cache-hit != 'true'    
       run: |
         cd /usr/local/lib/android/sdk/ndk/
         unzip android-ndk-r26-beta1-linux.zip
