@@ -173,7 +173,6 @@ jobs:
           android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
           android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
           
-          
   build_linux:
     name: Build Linux Client
     needs: advanceNightlyTag
