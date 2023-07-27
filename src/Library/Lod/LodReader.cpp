@@ -91,7 +91,7 @@ void LodReader::open(std::string_view path) {
 
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
     if (lod.size() < expectedSize)
-        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", _path, expectedSize, _lod.size());
+        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", path, expectedSize, _lod.size());
 
     BlobInputStream lodStream(lod);
     LodVersion version = LOD_VERSION_MM6;
@@ -103,7 +103,7 @@ void LodReader::open(std::string_view path) {
     for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
         std::string name = toLower(entry.name);
         if (files.contains(name))
-            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", _path, name);
+            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", path, name);
 
         LodRegion region;
         region.offset = rootEntry.dataOffset + entry.dataOffset;
