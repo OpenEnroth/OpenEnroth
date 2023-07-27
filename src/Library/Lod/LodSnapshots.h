@@ -86,13 +86,4 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFileEntry_MM8)
 void snapshot(const LodEntry &src, LodFileEntry_MM8 *dst);
 void reconstruct(const LodFileEntry_MM8 &src, LodEntry *dst);
 
-struct LodCompressionHeader_MM6 {
-    std::uint32_t version;
-    std::array<char, 4> signature;
-    std::uint32_t dataSize;
-    std::uint32_t decompressedSize;
-};
-static_assert(sizeof(LodCompressionHeader_MM6) == 16);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
-
 #pragma pack(pop)

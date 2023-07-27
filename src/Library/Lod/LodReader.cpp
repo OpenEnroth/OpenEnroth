@@ -5,6 +5,7 @@
 
 #include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
+#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Exception.h"
@@ -129,18 +130,9 @@ Blob LodReader::read(const std::string &filename) const {
     assert(isOpen());
 
     Blob result = readRaw(filename);
-    if (result.size() < sizeof(LodCompressionHeader_MM6))
-        return result;
-
-    BlobInputStream stream(result);
-    LodCompressionHeader_MM6 header;
-    deserialize(stream, &header);
-    if (header.version != 91969 || memcmp(header.signature.data(), "mvii", 4))
-        return result; // Not compressed after all.
-
-    result = stream.readBlobOrFail(header.dataSize);
-    if (header.decompressedSize)
-        result = zlib::Uncompress(result, header.decompressedSize);
+    LodFileFormat format = lod::magic(result, filename);
+    if (format == LOD_FILE_COMPRESSED)
+        result = lod::decodeCompressed(result); // TODO(captainurist): doesn't belong here.
     return result;
 }
 
