@@ -4,7 +4,7 @@ on:
   schedule:
     # schedule build once per day
     - cron: "16 11 * * *"
-  workflow_dispatch:
+  workflow_dispatch: #allows to manually run a workflow
   push:
     tags:
       - '*'
