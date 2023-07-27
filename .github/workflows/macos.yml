@@ -3,6 +3,12 @@ name: MacOS
 on:
   pull_request:
   workflow_dispatch: #allows to manually run a workflow
+    inputs:
+      myCommit:
+        description: 'Commit SHA1'
+        required: false
+        default: 'undefined'
+        type: string 
   push:
   release:
     types: [published]
