@@ -2229,69 +2229,66 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
     int quarry_p = 0;
 
     switch (pCard->compare_param) {
-        case 2:
-            if (player->quarry_level <
-                enemy->quarry_level)  //если рудники < рудника врага
-                goto LABEL_26;
-            goto LABEL_231;
-        case 3:
-            if (player->magic_level < enemy->magic_level) goto LABEL_26;
-            goto LABEL_231;
-        case 4:
-            if (player->zoo_level <
-                enemy->zoo_level)  //если зверинец < зверинца врага
-                goto LABEL_26;
-            goto LABEL_231;
-        case 5:
-            if (player->quarry_level == enemy->quarry_level) goto LABEL_26;
-            goto LABEL_231;
-        case 6:
-            if (player->magic_level == enemy->magic_level) goto LABEL_26;
-            goto LABEL_231;
-        case 7:
-            if (player->zoo_level == enemy->zoo_level) goto LABEL_26;
-            goto LABEL_231;
-        case 8:
-            if (player->quarry_level < enemy->quarry_level) goto LABEL_26;
-            goto LABEL_231;
-        case 9:
-            if (player->magic_level < enemy->magic_level) goto LABEL_26;
-            goto LABEL_231;
-        case 10:
-            if (player->zoo_level < enemy->zoo_level) goto LABEL_26;
-            goto LABEL_231;
-        case 11:
-            if (!player->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 12:
-            if (player->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 13:
-            if (!enemy->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 14:
-            if (enemy->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 15:
-            if (player->wall_height < enemy->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 16:
-            if (player->tower_height < enemy->tower_height) goto LABEL_26;
-            goto LABEL_231;
-        case 17:
-            if (player->wall_height == enemy->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 18:
-            if (player->tower_height == enemy->tower_height) goto LABEL_26;
-            goto LABEL_231;
-        case 19:
-            if (player->wall_height < enemy->wall_height) goto LABEL_26;
-            goto LABEL_231;
-        case 20:
-            if (player->tower_height < enemy->tower_height) goto LABEL_26;
-            goto LABEL_231;
+        case CHECK_LESSER_QUARRY : // Mother Lode & Copping the Tech
+            if (player->quarry_level < enemy->quarry_level)
+                goto desired_effects;
+            goto secondary_effects;
+        case CHECK_LESSER_MAGIC: // Parity
+            if (player->magic_level < enemy->magic_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_LESSER_ZOO:
+            if (player->zoo_level < enemy->zoo_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_EQUAL_QUARRY:
+            if (player->quarry_level == enemy->quarry_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_EQUAL_MAGIC:
+            if (player->magic_level == enemy->magic_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_EQUAL_ZOO:
+            if (player->zoo_level == enemy->zoo_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_GREATER_QUARRY:
+            if (player->quarry_level > enemy->quarry_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_GREATER_MAGIC: // Unicorn
+            if (player->magic_level > enemy->magic_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_GREATER_ZOO:
+            if (player->zoo_level > enemy->zoo_level) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_NO_WALL: // Foundations
+            if (!player->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_HAVE_WALL:
+            if (player->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_ENEMY_HAS_NO_WALL: // Spizzer
+            if (!enemy->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_ENEMY_HAS_WALL: // Corrosion Cloud
+            if (enemy->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_LESSER_WALL:
+            if (player->wall_height < enemy->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_LESSER_TOWER:
+            if (player->tower_height < enemy->tower_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_EQUAL_WALL:
+            if (player->wall_height == enemy->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_EQUAL_TOWER:
+            if (player->tower_height == enemy->tower_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_GREATER_WALL: // Elven Archers
+            if (player->wall_height > enemy->wall_height) goto desired_effects;
+            goto secondary_effects;
+        case CHECK_GREATER_TOWER:
+            if (player->tower_height > enemy->tower_height) goto desired_effects;
+            goto secondary_effects;
         default:
-        LABEL_26:
+        desired_effects:
             num_actions_left =
                 pCard->draw_extra_card_count + (pCard->field_30 == 1);
             num_cards_to_discard = pCard->draw_extra_card_count;
@@ -2370,8 +2367,8 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
             APPLY_TO_BOTH(player, enemy, tower_height, pCard->to_pl_enm_tower,
                           tower_p, tower_e);
             break;
-        case 0:
-        LABEL_231:
+        case CHECK_ALWAYS_SECONDARY:
+        secondary_effects:
             num_actions_left = pCard->can_draw_extra_card2 + (pCard->field_4D == 1);
             num_cards_to_discard = pCard->can_draw_extra_card2;
             for (char i = 0; i < pCard->can_draw_extra_card2; i++)

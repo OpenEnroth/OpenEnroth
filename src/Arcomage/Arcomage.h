@@ -11,78 +11,103 @@
 
 class GraphicsImage;
 
+enum class ArcomageCheck {
+    CHECK_ALWAYS_SECONDARY = 0,
+    CHECK_ALWAYS_PRIMARY = 1,
+    CHECK_LESSER_QUARRY = 2,
+    CHECK_LESSER_MAGIC = 3,
+    CHECK_LESSER_ZOO = 4,
+    CHECK_EQUAL_QUARRY = 5,
+    CHECK_EQUAL_MAGIC = 6,
+    CHECK_EQUAL_ZOO = 7,
+    CHECK_GREATER_QUARRY = 8,
+    CHECK_GREATER_MAGIC = 9,
+    CHECK_GREATER_ZOO = 10,
+    CHECK_NO_WALL = 11,
+    CHECK_HAVE_WALL = 12,
+    CHECK_ENEMY_HAS_NO_WALL = 13,
+    CHECK_ENEMY_HAS_WALL = 14,
+    CHECK_LESSER_WALL = 15,
+    CHECK_LESSER_TOWER = 16,
+    CHECK_EQUAL_WALL = 17,
+    CHECK_EQUAL_TOWER = 18,
+    CHECK_GREATER_WALL = 19,
+    CHECK_GREATER_TOWER = 20
+};
+using enum ArcomageCheck;
+
 struct ArcomageCard {
     char pCardName[32];
-    int slot;
-    char card_resource_type;  // 1- brick, 2-gems, 3-beasts
-    int8_t needed_quarry_level;
-    int8_t needed_magic_level;
-    int8_t needed_zoo_level;
-    int8_t needed_bricks;
-    int8_t needed_gems;
-    int8_t needed_beasts;
-    bool can_be_discarded;
-    int compare_param;
-    char field_30;  // play again
-    char draw_extra_card_count;
-    int8_t to_player_quarry_lvl;
-    int8_t to_player_magic_lvl;
-    int8_t to_player_zoo_lvl;
-    int8_t to_player_bricks;
-    int8_t to_player_gems;
-    int8_t to_player_beasts;
-    int8_t to_player_buildings;
-    int8_t to_player_wall;
-    int8_t to_player_tower;
-    int8_t to_enemy_quarry_lvl;
-    int8_t to_enemy_magic_lvl;
-    int8_t to_enemy_zoo_lvl;
-    int8_t to_enemy_bricks;
-    int8_t to_enemy_gems;
-    int8_t to_enemy_beasts;
-    int8_t to_enemy_buildings;
-    int8_t to_enemy_wall;
-    int8_t to_enemy_tower;
-    int8_t to_pl_enm_quarry_lvl;
-    int8_t to_pl_enm_magic_lvl;
-    int8_t to_pl_enm_zoo_lvl;
-    int8_t to_pl_enm_bricks;
-    int8_t to_pl_enm_gems;
-    int8_t to_pl_enm_beasts;
-    int8_t to_pl_enm_buildings;
-    int8_t to_pl_enm_wall;
-    int8_t to_pl_enm_tower;
-    char field_4D;  // play again 2
-    int8_t can_draw_extra_card2;
-    int8_t to_player_quarry_lvl2;
-    int8_t to_player_magic_lvl2;
-    int8_t to_player_zoo_lvl2;
-    int8_t to_player_bricks2;
-    int8_t to_player_gems2;
-    int8_t to_player_beasts2;
-    int8_t to_player_buildings2;
-    int8_t to_player_wall2;
-    int8_t to_player_tower2;
-    int8_t to_enemy_quarry_lvl2;
-    int8_t to_enemy_magic_lvl2;
-    int8_t to_enemy_zoo_lvl2;
-    int8_t to_enemy_bricks2;
-    int8_t to_enemy_gems2;
-    int8_t to_enemy_beasts2;
-    int8_t to_enemy_buildings2;
-    int8_t to_enemy_wall2;
-    int8_t to_enemy_tower2;
-    int8_t to_pl_enm_quarry_lvl2;
-    int8_t to_pl_enm_magic_lvl2;
-    int8_t to_pl_enm_zoo_lvl2;
-    int8_t to_pl_enm_bricks2;
-    int8_t to_pl_enm_gems2;
-    int8_t to_pl_enm_beasts2;
-    int8_t to_pl_enm_buildings2;
-    int8_t to_pl_enm_wall2;
-    int8_t to_pl_enm_tower2;
-    char field_6A;  // unused??
-    char field_6B;  // unused??
+    int32_t slot = 0;
+    int8_t card_resource_type = 0;  // 1- brick, 2-gems, 3-beasts
+    int8_t needed_quarry_level = 0;
+    int8_t needed_magic_level = 0;
+    int8_t needed_zoo_level = 0;
+    int8_t needed_bricks = 0;
+    int8_t needed_gems = 0;
+    int8_t needed_beasts = 0;
+    bool can_be_discarded = true;
+    ArcomageCheck compare_param = CHECK_ALWAYS_PRIMARY;
+    int8_t field_30;  // play again
+    int8_t draw_extra_card_count = 0;
+    int8_t to_player_quarry_lvl = 0;
+    int8_t to_player_magic_lvl = 0;
+    int8_t to_player_zoo_lvl = 0;
+    int8_t to_player_bricks = 0;
+    int8_t to_player_gems = 0;
+    int8_t to_player_beasts = 0;
+    int8_t to_player_buildings = 0;
+    int8_t to_player_wall = 0;
+    int8_t to_player_tower = 0;
+    int8_t to_enemy_quarry_lvl = 0;
+    int8_t to_enemy_magic_lvl = 0;
+    int8_t to_enemy_zoo_lvl = 0;
+    int8_t to_enemy_bricks = 0;
+    int8_t to_enemy_gems = 0;
+    int8_t to_enemy_beasts = 0;
+    int8_t to_enemy_buildings = 0;
+    int8_t to_enemy_wall = 0;
+    int8_t to_enemy_tower = 0;
+    int8_t to_pl_enm_quarry_lvl = 0;
+    int8_t to_pl_enm_magic_lvl = 0;
+    int8_t to_pl_enm_zoo_lvl = 0;
+    int8_t to_pl_enm_bricks = 0;
+    int8_t to_pl_enm_gems = 0;
+    int8_t to_pl_enm_beasts = 0;
+    int8_t to_pl_enm_buildings = 0;
+    int8_t to_pl_enm_wall = 0;
+    int8_t to_pl_enm_tower = 0;
+    int8_t field_4D = 0;  // play again 2
+    int8_t can_draw_extra_card2 = 0;
+    int8_t to_player_quarry_lvl2 = 0;
+    int8_t to_player_magic_lvl2 = 0;
+    int8_t to_player_zoo_lvl2 = 0;
+    int8_t to_player_bricks2 = 0;
+    int8_t to_player_gems2 = 0;
+    int8_t to_player_beasts2 = 0;
+    int8_t to_player_buildings2 = 0;
+    int8_t to_player_wall2 = 0;
+    int8_t to_player_tower2 = 0;
+    int8_t to_enemy_quarry_lvl2 = 0;
+    int8_t to_enemy_magic_lvl2 = 0;
+    int8_t to_enemy_zoo_lvl2 = 0;
+    int8_t to_enemy_bricks2 = 0;
+    int8_t to_enemy_gems2 = 0;
+    int8_t to_enemy_beasts2 = 0;
+    int8_t to_enemy_buildings2 = 0;
+    int8_t to_enemy_wall2 = 0;
+    int8_t to_enemy_tower2 = 0;
+    int8_t to_pl_enm_quarry_lvl2 = 0;
+    int8_t to_pl_enm_magic_lvl2 = 0;
+    int8_t to_pl_enm_zoo_lvl2 = 0;
+    int8_t to_pl_enm_bricks2 = 0;
+    int8_t to_pl_enm_gems2 = 0;
+    int8_t to_pl_enm_beasts2 = 0;
+    int8_t to_pl_enm_buildings2 = 0;
+    int8_t to_pl_enm_wall2 = 0;
+    int8_t to_pl_enm_tower2 = 0;
+    int8_t field_6A = 0;  // unused??
+    int8_t field_6B = 0;  // unused??
 };
 
 struct AcromageCardOnTable {
