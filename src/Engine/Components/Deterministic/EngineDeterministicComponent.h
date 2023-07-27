@@ -4,6 +4,7 @@
 
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyOpenGLContext.h"
+#include "Library/Application/PlatformApplicationAware.h"
 
 class RandomEngine;
 
@@ -15,7 +16,7 @@ class RandomEngine;
  * away, so where you're calling them from becomes very important. E.g. calling `restart` from an event
  * handler would probably make little sense.
  */
-class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLContext {
+class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLContext, private PlatformApplicationAware {
  public:
     EngineDeterministicComponent();
     virtual ~EngineDeterministicComponent();
@@ -48,6 +49,7 @@ class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLC
 
     virtual int64_t tickCount() const override;
     virtual void swapBuffers() override;
+    virtual void removeNotify() override;
 
  private:
     int64_t _tickCount = 0;

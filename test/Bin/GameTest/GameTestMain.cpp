@@ -55,6 +55,7 @@ int platformMain(int argc, char **argv) {
 
         return exitCode;
     } catch (const std::exception &e) {
+        // TODO(captainurist): we need a separate test that testing framework terminates correctly if the engine throws.
         fmt::print(stderr, "{}\n", e.what());
         return 1;
     }

@@ -42,14 +42,13 @@ class EngineControlState {
     /** Posted events, these are added from the control thread and are then consumed in the main thread. */
     std::queue<std::unique_ptr<PlatformEvent>> postedEvents;
 
-    /** A hacky way to run some code in the main thread w/o really leaving the control routine.
+    /** A way to run some code in the main thread w/o really leaving the control routine.
      * If this function is valid, yielding execution from the control thread will run it w/o proceeding to the next
      * frame, and then switch right back into the control thread. It is set in control thread and cleared in the
-     * main thread. */
+     * main thread.
+     *
+     * Exception propagation from the control thread to the main thread is done with a game routine. */
     GameRoutine gameRoutine;
-
-    /** If control thread ends with an exception, this is where it's stored. */
-    std::exception_ptr controlException;
 
     // Synchronization primitives.
 

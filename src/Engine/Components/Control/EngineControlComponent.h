@@ -1,12 +1,12 @@
 #pragma once
 
 #include <thread>
-#include <queue>
 #include <functional>
 #include <memory>
 
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
+#include "Library/Application/PlatformApplicationAware.h"
 
 #include "EngineControlStateHandle.h"
 
@@ -28,7 +28,7 @@ class PlatformEvent;
  *
  * @see EngineController
  */
-class EngineControlComponent : private ProxyOpenGLContext, private ProxyEventLoop {
+class EngineControlComponent : private ProxyOpenGLContext, private ProxyEventLoop, private PlatformApplicationAware {
  public:
     using ControlRoutine = std::function<void(EngineController *)>;
 
@@ -63,6 +63,7 @@ class EngineControlComponent : private ProxyOpenGLContext, private ProxyEventLoo
     virtual void processMessages(PlatformEventHandler *eventHandler, int count) override;
     virtual void waitForMessages() override;
     virtual void swapBuffers() override;
+    virtual void removeNotify() override;
 
  private:
     std::thread _controlThread;

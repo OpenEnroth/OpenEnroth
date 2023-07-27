@@ -9,12 +9,8 @@
 #include "EngineTraceEnums.h"
 
 class EngineController;
-class EngineDeterministicComponent;
-class EngineTraceSimplePlayer;
-class GameKeyboardController;
 class EventTrace;
 class EventTraceGameState;
-class PaintEvent;
 
 /**
  * Component that exposes a trace playback interface.
@@ -54,15 +50,9 @@ class EngineTracePlayer : private PlatformApplicationAware {
     void checkAfterLoadRng(int expectedRandomState);
     void checkState(const EventTraceGameState &expectedState, bool isStart);
 
-    virtual void installNotify() override;
-    virtual void removeNotify() override;
-
  private:
     std::string _tracePath;
     std::string _savePath;
     EngineTracePlaybackFlags _flags;
     std::unique_ptr<EventTrace> _trace;
-    EngineDeterministicComponent *_deterministicComponent = nullptr;
-    EngineTraceSimplePlayer *_simplePlayer = nullptr;
-    GameKeyboardController *_keyboardController = nullptr;
 };
