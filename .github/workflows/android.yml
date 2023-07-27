@@ -116,3 +116,14 @@ jobs:
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         CMAKE_BUILD_PARALLEL_LEVEL: 3
         GITHUBARCH: ${{ matrix.architecture }}
+
+    - name: Run unit tests
+      working-directory: android
+      run: |
+        ./gradlew UnitTest
+      env:
+        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        CMAKE_BUILD_PARALLEL_LEVEL: 3
+        GITHUBARCH: ${{ matrix.architecture }}
