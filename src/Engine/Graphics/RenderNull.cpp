@@ -34,7 +34,7 @@ bool RenderNull::Initialize() {
 }
 
 bool RenderNull::NuklearInitialize(struct nk_tex_font *tfont) {
-    return true;
+    return false;
 }
 
 bool RenderNull::NuklearCreateDevice() {
