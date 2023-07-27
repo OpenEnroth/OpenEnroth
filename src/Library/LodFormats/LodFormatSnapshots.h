@@ -43,12 +43,15 @@ struct LodImageHeader_MM6 {
 static_assert(sizeof(LodImageHeader_MM6) == 48);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM6)
 
+/**
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Src/RSPak/Extra/RSLod.pas#L553
+ */
 struct LodSpriteHeader_MM6 {
     std::array<char, 12> name;
     uint32_t dataSize; // Size of the pixel data, in bytes.
     uint16_t width; // SW width.
     uint16_t height; // SW height, also the number of `LODSpriteLine`s that follow.
-    uint16_t paletteId; // Palette id, references "palXXX".
+    uint16_t paletteId; // Default palette id, references "palXXX".
     uint16_t unk_0; // Always 0.
     uint16_t emptyBottomLines; // Number of clear lines at the bottom (tail of sprite lines array).
                                // They are still set in sprite lines array, so this info is redundant.
