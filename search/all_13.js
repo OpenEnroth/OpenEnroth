@@ -491,7 +491,7 @@ var searchData=
   ['slabel_488',['sLabel',['../classGUIButton.html#ab77a3e22bc207c09eebb0a61fe15b1d7',1,'GUIButton']]],
   ['slasttracklengthms_489',['sLastTrackLengthMS',['../AudioPlayer_8h.html#aae14636771c7eaca9a52b212649494ec',1,'sLastTrackLengthMS():&#160;AudioPlayer.cpp'],['../AudioPlayer_8cpp.html#aae14636771c7eaca9a52b212649494ec',1,'sLastTrackLengthMS():&#160;AudioPlayer.cpp']]],
   ['slevelmodifier_490',['sLevelModifier',['../classCharacter.html#a354707fe10354833f6d3448f9e2c2ee8',1,'Character']]],
-  ['slot_491',['slot',['../structConditionEquipment.html#abebd209905b2f1ab67eb8fe4b2247bdf',1,'ConditionEquipment::slot()'],['../structArcomageCard.html#a44dd11a55763d7edb5ed8a0a1ab1faef',1,'ArcomageCard::slot()']]],
+  ['slot_491',['slot',['../structConditionEquipment.html#abebd209905b2f1ab67eb8fe4b2247bdf',1,'ConditionEquipment::slot()'],['../structArcomageCard.html#a8d3dccc44ec792aacbd860471a212327',1,'ArcomageCard::slot()']]],
   ['slot_5findex_492',['slot_index',['../structam__ai__cardpowerstruct.html#a7e942b9589c9ca9ddb77d8ebcb942201',1,'am_ai_cardpowerstruct']]],
   ['small_5ffog_5fchance_493',['small_fog_chance',['../structFogProbabilityTableEntry.html#ad24c8f4363698a56d5c4b3514e3708a1',1,'FogProbabilityTableEntry']]],
   ['smanager_494',['sManager',['../classorg_1_1libsdl_1_1app_1_1HIDDeviceManager.html#a313e61e522b98abe18c971bc082f1091',1,'org::libsdl::app::HIDDeviceManager']]],

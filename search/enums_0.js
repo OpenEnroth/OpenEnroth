@@ -7,7 +7,8 @@ var searchData=
   ['actorattribute_4',['ActorAttribute',['../ActorEnums_8h.html#a0449589ea79a89a7e564d1cf1b0a9b5f',1,'ActorEnums.h']]],
   ['actorsounds_5',['ActorSounds',['../ActorEnums_8h.html#a6100d27c10272c7b7391452a4b1c6ebc',1,'ActorEnums.h']]],
   ['aistate_6',['AIState',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fed',1,'ActorEnums.h']]],
-  ['arcomagemessagetype_7',['ArcomageMessageType',['../Arcomage_8h.html#a56d38dcb51bcfc543b0d26aea6641232',1,'Arcomage.h']]],
-  ['autonote_5ftype_8',['AUTONOTE_TYPE',['../AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99',1,'AutonoteTable.h']]],
-  ['awardtype_9',['AwardType',['../AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7',1,'AwardTable.h']]]
+  ['arcomagecheck_7',['ArcomageCheck',['../Arcomage_8h.html#a80383b49d1a65a42661e66c20163bc8f',1,'Arcomage.h']]],
+  ['arcomagemessagetype_8',['ArcomageMessageType',['../Arcomage_8h.html#a56d38dcb51bcfc543b0d26aea6641232',1,'Arcomage.h']]],
+  ['autonote_5ftype_9',['AUTONOTE_TYPE',['../AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99',1,'AutonoteTable.h']]],
+  ['awardtype_10',['AwardType',['../AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7',1,'AwardTable.h']]]
 ];

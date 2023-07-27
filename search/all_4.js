@@ -348,7 +348,7 @@ var searchData=
   ['draw_345',['Draw',['../classGUIProgressBar.html#abcb73c1a445bfaf60909f7145fbb0c2c',1,'GUIProgressBar::Draw()'],['../classWeather.html#a2ec0c7d6df38bad09d809ac747412414',1,'Weather::Draw()'],['../classParticleEngine.html#a73c8076ecf6d3dcc50c56a7a755c4c58',1,'ParticleEngine::Draw()'],['../structOutdoorLocation.html#ab5c25fbf6207db3b6153f67347b172dd',1,'OutdoorLocation::Draw()'],['../classNuklear.html#a0e4159a9f438c748a4ee0b51c1f9e2ad',1,'Nuklear::Draw()'],['../structIndoorLocation.html#a9ae5b2800115059413e4baf166a91859',1,'IndoorLocation::Draw()'],['../classEngine.html#ac098ab29cbcd7352879d0101aaf4b827',1,'Engine::Draw()']]],
   ['draw_5fd3d_5foutlines_346',['draw_d3d_outlines',['../structViewingParams.html#a31b77223a5fd74ea9ac1c1d090594a48',1,'ViewingParams']]],
   ['draw_5fdebug_5foutlines_347',['draw_debug_outlines',['../classEngine.html#ace24d17cf16e22312b6ed05f17f82774',1,'Engine']]],
-  ['draw_5fextra_5fcard_5fcount_348',['draw_extra_card_count',['../structArcomageCard.html#a3203473eae91fc10decafbd5684454d1',1,'ArcomageCard']]],
+  ['draw_5fextra_5fcard_5fcount_348',['draw_extra_card_count',['../structArcomageCard.html#a8e4f5143b964a4a605c5188d7185b96d',1,'ArcomageCard']]],
   ['draw_5fleather_349',['draw_leather',['../UICharacter_8cpp.html#af6151e5c72717e701f7f8a645e231cb7',1,'draw_leather():&#160;UICharacter.cpp'],['../GUIWindow_8h.html#af6151e5c72717e701f7f8a645e231cb7',1,'draw_leather():&#160;UICharacter.cpp']]],
   ['draw_5fsw_5foutlines_350',['draw_sw_outlines',['../structViewingParams.html#aca23701abc1c0d18265975dbd7597d45',1,'ViewingParams']]],
   ['drawbeastscount_351',['DrawBeastsCount',['../Arcomage_8cpp.html#ad885c47332015ddc1dbdb355a3da0f0d',1,'Arcomage.cpp']]],

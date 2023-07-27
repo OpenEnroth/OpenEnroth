@@ -114,7 +114,7 @@ var searchData=
   ['doorsdata_111',['doorsData',['../structIndoorDelta__MM7.html#ab141b6cf6ec67dbd0826cc7e1d83e898',1,'IndoorDelta_MM7']]],
   ['doublebuffered_112',['doubleBuffered',['../structPlatformOpenGLOptions.html#a6c007b5a283a02ce8cd6ef4ecde50f6b',1,'PlatformOpenGLOptions']]],
   ['draw_5fd3d_5foutlines_113',['draw_d3d_outlines',['../structViewingParams.html#a31b77223a5fd74ea9ac1c1d090594a48',1,'ViewingParams']]],
-  ['draw_5fextra_5fcard_5fcount_114',['draw_extra_card_count',['../structArcomageCard.html#a3203473eae91fc10decafbd5684454d1',1,'ArcomageCard']]],
+  ['draw_5fextra_5fcard_5fcount_114',['draw_extra_card_count',['../structArcomageCard.html#a8e4f5143b964a4a605c5188d7185b96d',1,'ArcomageCard']]],
   ['draw_5fsw_5foutlines_115',['draw_sw_outlines',['../structViewingParams.html#aca23701abc1c0d18265975dbd7597d45',1,'ViewingParams']]],
   ['drawcalls_116',['drawcalls',['../classIRender.html#a9f702c562400975ac2418bfb12b74b75',1,'IRender']]],
   ['drawn_5fcard_5fanim_5fcnt_117',['drawn_card_anim_cnt',['../Arcomage_8cpp.html#a283d3e6e9b279818367755fe5ead782f',1,'Arcomage.cpp']]],
