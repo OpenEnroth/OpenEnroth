@@ -100,9 +100,9 @@ void OpenALSoundProvider::SetListenerPosition(float x, float y, float z) {
 }
 
 void OpenALSoundProvider::SetOrientation(float yaw, float pitch) {
-    float x = cos(pitch) * cos(yaw);
-    float y = cos(pitch) * sin(yaw);
-    float z = -sin(pitch);
+    float x = std::cos(pitch) * std::cos(yaw);
+    float y = std::cos(pitch) * std::sin(yaw);
+    float z = -std::sin(pitch);
 
     ALfloat listenerOri[] = {x, y, z, 0.f, 0.f, 1.f};
     alListenerfv(AL_ORIENTATION, listenerOri);

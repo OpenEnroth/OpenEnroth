@@ -167,7 +167,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->uTimeElapsed * GetGravityStrength());
 
-            int dotFix = abs(dot(norm, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
+            int dotFix = std::abs(dot(norm, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
             // v60 = ((uint64_t)(v56 * (int64_t)v51.x) >> 16);
             // v60 = ((uint64_t)(v56 * (int64_t)v51.y) >> 16);
             // v60 = ((uint64_t)(v56 * (int64_t)v51.z) >> 16);
@@ -206,8 +206,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
     }
     if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
-        if (abs(pSpriteObjects[uLayingItemID].vPosition.x) > 32768 ||
-                abs(pSpriteObjects[uLayingItemID].vPosition.y) > 32768 ||
+        if (std::abs(pSpriteObjects[uLayingItemID].vPosition.x) > 32768 ||
+            std::abs(pSpriteObjects[uLayingItemID].vPosition.y) > 32768 ||
                 pSpriteObjects[uLayingItemID].vPosition.z <= level ||
                 pSpriteObjects[uLayingItemID].vPosition.z > 13000) {
             if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
@@ -310,7 +310,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
                 }
             } else {
-                float dotFix = abs(dot(face->facePlane.normal, pSpriteObjects[uLayingItemID].vVelocity.toFloat()));
+                float dotFix = std::abs(dot(face->facePlane.normal, pSpriteObjects[uLayingItemID].vVelocity.toFloat()));
                 dotFix = std::max(dotFix, collision_state.speed / 8);
                 float newZVel = dotFix * face->facePlane.normal.z;
                 pSpriteObjects[uLayingItemID].vVelocity.x += 2 * dotFix * face->facePlane.normal.x;
@@ -347,9 +347,9 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
 
     // Break early if we're out of bounds.
-    if (abs(pSpriteObject->vPosition.x) > 32767 ||
-            abs(pSpriteObject->vPosition.y) > 32767 ||
-            abs(pSpriteObject->vPosition.z) > 20000) {
+    if (std::abs(pSpriteObject->vPosition.x) > 32767 ||
+        std::abs(pSpriteObject->vPosition.y) > 32767 ||
+        std::abs(pSpriteObject->vPosition.z) > 20000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
@@ -452,7 +452,7 @@ LABEL_25:
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
-                    float dotFix = abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity.toFloat()));
+                    float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity.toFloat()));
                     dotFix = std::max(dotFix, collision_state.speed / 8);
                     pSpriteObject->vVelocity.x += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.x;
                     pSpriteObject->vVelocity.y += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.y;
@@ -532,9 +532,9 @@ LABEL_25:
 
 void SpriteObject::explosionTraps() {
     MapInfo *pMapInfo = &pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)];
-    int dir_x = abs(pParty->pos.x - this->vPosition.x);
-    int dir_y = abs(pParty->pos.y - this->vPosition.y);
-    int dir_z = abs(pParty->pos.z + pParty->eyeLevel - this->vPosition.z);
+    int dir_x = std::abs(pParty->pos.x - this->vPosition.x);
+    int dir_y = std::abs(pParty->pos.y - this->vPosition.y);
+    int dir_z = std::abs(pParty->pos.z + pParty->eyeLevel - this->vPosition.z);
     if (dir_x < dir_y) {
         std::swap(dir_x, dir_y);
     }

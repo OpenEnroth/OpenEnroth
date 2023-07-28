@@ -52,7 +52,7 @@ NPCData *GetNPCData(signed int npcid) {
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(abs(sDialogue_SpeakingActorNPC_ID) - 1);
+        result = buf.Get(std::abs(sDialogue_SpeakingActorNPC_ID) - 1);
     }
     return result;
 }
@@ -83,7 +83,7 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(abs(sDialogue_SpeakingActorNPC_ID) - 1);
+        result = buf.Get(std::abs(sDialogue_SpeakingActorNPC_ID) - 1);
     }
     return result;
 }
@@ -117,7 +117,7 @@ NpcType getNPCType(int npcId) {
     FlatHirelings buf;
     buf.Prepare();
 
-    return buf.IsFollower(abs(npcId) - 1) ? NPC_TYPE_QUEST : NPC_TYPE_HIREABLE;
+    return buf.IsFollower(std::abs(npcId) - 1) ? NPC_TYPE_QUEST : NPC_TYPE_HIREABLE;
 }
 
 //----- (00445308) --------------------------------------------------------

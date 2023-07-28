@@ -188,7 +188,7 @@ void RenderBase::DrawSpriteObjects() {
             bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
             if (visible) {
-                if (2 * abs(view_x) >= abs(view_y)) {
+                if (2 * std::abs(view_x) >= std::abs(view_y)) {
                     int projected_x = 0;
                     int projected_y = 0;
                     pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
@@ -260,7 +260,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
             if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
                 if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
                     v6 = pMiscTimer->uTotalTimeElapsed;
-                    v7 = abs(pLevelDecorations[i].vPosition.x +
+                    v7 = std::abs(pLevelDecorations[i].vPosition.x +
                         pLevelDecorations[i].vPosition.y);
 
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
@@ -326,7 +326,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                         &view_z);
 
                     if (visible) {
-                        if (2 * abs(view_x) >= abs(view_y)) {
+                        if (2 * std::abs(view_x) >= std::abs(view_y)) {
                             int projected_x = 0;
                             int projected_y = 0;
                             pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
@@ -539,8 +539,8 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     float rhw = 1.f / a2->screen_space_z;
     float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pCamera3D->GetFarClip());
 
-    float acos = (float)cos(angle); // TODO(captainurist): taking cos of an INT angle? WTF?
-    float asin = (float)sin(angle);
+    float acos = std::cos(angle); // TODO(captainurist): taking cos of an INT angle? WTF?
+    float asin = std::sin(angle);
 
     {
         float v16 = -12.f;
