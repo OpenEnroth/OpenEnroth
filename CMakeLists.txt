@@ -25,8 +25,24 @@ include(Dependencies)
 # Settings defaults.
 if(BUILD_PLATFORM STREQUAL "windows")
     set(PREBUILT_DEPENDENCIES_DEFAULT ON)
+   find_program(SCCACHE_PATH sccache)
+   if(SCCACHE_PATH)
+     message(STATUS "Using sccache at ${SCCACHE_PATH}")
+     set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE_PATH})
+     set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE_PATH})
+   else()
+     message(STATUS "Could not find sccache")
+   endif()
 else()
     set(PREBUILT_DEPENDENCIES_DEFAULT OFF)
+    find_program(CCACHE "ccache")
+    if(CCACHE)
+        message(STATUS "Using ccache at ${CCACHE}")
+        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE})
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+    else()
+      message(STATUS "Could not find ccache")
+    endif()
 endif()
 
 # Configurable settings.
@@ -51,6 +67,10 @@ elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
     enable_libcxx_assertions(FALSE)
 elseif(BUILD_COMPILER STREQUAL "msvc")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     add_compile_definitions(NOMINMAX) # please don't pull in these macros from <Windows.h>
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
     add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise

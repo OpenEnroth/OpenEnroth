@@ -5,6 +5,7 @@
 
 #include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
+#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Exception.h"
@@ -91,7 +92,7 @@ void LodReader::open(std::string_view path) {
 
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
     if (lod.size() < expectedSize)
-        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", _path, expectedSize, _lod.size());
+        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", path, expectedSize, _lod.size());
 
     BlobInputStream lodStream(lod);
     LodVersion version = LOD_VERSION_MM6;
@@ -103,7 +104,7 @@ void LodReader::open(std::string_view path) {
     for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
         std::string name = toLower(entry.name);
         if (files.contains(name))
-            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", _path, name);
+            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", path, name);
 
         LodRegion region;
         region.offset = rootEntry.dataOffset + entry.dataOffset;
@@ -129,18 +130,9 @@ Blob LodReader::read(const std::string &filename) const {
     assert(isOpen());
 
     Blob result = readRaw(filename);
-    if (result.size() < sizeof(LodCompressionHeader_MM6))
-        return result;
-
-    BlobInputStream stream(result);
-    LodCompressionHeader_MM6 header;
-    deserialize(stream, &header);
-    if (header.version != 91969 || memcmp(header.signature.data(), "mvii", 4))
-        return result; // Not compressed after all.
-
-    result = stream.readBlobOrFail(header.dataSize);
-    if (header.decompressedSize)
-        result = zlib::Uncompress(result, header.decompressedSize);
+    LodFileFormat format = lod::magic(result, filename);
+    if (format == LOD_FILE_COMPRESSED)
+        result = lod::decodeCompressed(result); // TODO(captainurist): doesn't belong here.
     return result;
 }
 

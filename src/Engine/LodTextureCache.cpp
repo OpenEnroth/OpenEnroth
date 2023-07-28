@@ -1,7 +1,8 @@
 #include "LodTextureCache.h"
 
-#include "Library/Lod/LodReader.h"
-#include "Library/Compression/Compression.h"
+#include <utility>
+
+#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
@@ -40,7 +41,7 @@ void LodTextureCache::releaseUnreserved() {
 
 Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool useDummyOnError) {
     for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pContainer.data(), pTexture.header.name.data())) {
+        if (iequals(pContainer, pTexture.name)) {
             return &pTexture;
         }
     }
@@ -53,7 +54,7 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
         return nullptr;
 
     for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pTexture.header.name.data(), "pending")) {
+        if (iequals(pTexture.name, "pending")) {
             return &pTexture;
         }
     }
@@ -67,67 +68,19 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
 
 
 Blob LodTextureCache::LoadCompressedTexture(const std::string &pContainer) {
-    BlobInputStream input(_reader.read(pContainer));
-
-    TextureHeader DstBuf;
-    input.readOrFail(&DstBuf, sizeof(TextureHeader));
-
-    if (DstBuf.decompressedSize) {
-        return zlib::Uncompress(input.readBlobOrFail(DstBuf.dataSize), DstBuf.decompressedSize);
-    } else {
-        return input.readBlobOrFail(DstBuf.dataSize);
-    }
+    return lod::decodeCompressed(_reader.read(pContainer));
 }
 
 int LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer) {
     if (!_reader.exists(pContainer))
         return -1;
 
-    BlobInputStream input(_reader.read(pContainer));
+    LodImage image = lod::decodeImage(_reader.read(pContainer));
 
-    TextureHeader *header = &pOutTex->header;
-    input.readOrFail(header, sizeof(TextureHeader));
-
-    strncpy(header->name.data(), pContainer.c_str(), 16);
-
-    // ICONS
-    if (!header->decompressedSize) {
-        pOutTex->paletted_pixels = (uint8_t *)malloc(header->dataSize);
-        if (header->dataSize)
-            input.readOrFail(pOutTex->paletted_pixels, header->dataSize);
-    } else {
-        // TODO(captainurist): just store Blob in pOutTex
-        Blob pixels = zlib::Uncompress(input.readBlobOrFail(header->dataSize), header->decompressedSize);
-        pOutTex->paletted_pixels = (uint8_t *)malloc(pixels.size());
-        memcpy(pOutTex->paletted_pixels, pixels.data(), pixels.size());
-        header->dataSize = pixels.size();
-    }
-
-    pOutTex->pPalette24 = (uint8_t *)malloc(0x300);
-    input.readOrFail(pOutTex->pPalette24, 0x300);
-
-    if (header->flags & 2) {
-        pOutTex->pLevelOfDetail1 =
-            &pOutTex->paletted_pixels[header->size];
-        // v8->pLevelOfDetail2 =
-        // &v8->pLevelOfDetail1[v8->uSizeOfMaxLevelOfDetail >> 2];
-        // v8->pLevelOfDetail3 =
-        // &v8->pLevelOfDetail2[v8->uSizeOfMaxLevelOfDetail >> 4];
-    } else {
-        pOutTex->pLevelOfDetail1 = 0;
-        // v8->pLevelOfDetail2 = 0;
-        // v8->pLevelOfDetail3 = 0;
-    }
-
-    for (int v41 = 1; v41 < 15; ++v41) {
-        if (1 << v41 == header->width) header->widthLn2 = v41;
-    }
-    for (int v42 = 1; v42 < 15; ++v42) {
-        if (1 << v42 == header->height) header->heightLn2 = v42;
-    }
-
-    header->widthMinus1 = (1 << header->widthLn2) - 1;
-    header->heightMinus1 = (1 << header->heightLn2) - 1;
+    pOutTex->name = pContainer;
+    pOutTex->indexed = std::move(image.image);
+    pOutTex->palette = image.palette;
+    pOutTex->zeroIsTransparent = image.zeroIsTransparent;
 
     return 1;
 }

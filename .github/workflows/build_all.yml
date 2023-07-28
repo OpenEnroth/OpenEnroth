@@ -1,9 +1,6 @@
-name: Build Release
+name: Build All
 
 on:
-  schedule:
-    # schedule build once per day
-    - cron: "16 11 * * *"
   workflow_dispatch: #allows to manually run a workflow
     inputs:
       myCommit:
@@ -11,61 +8,13 @@ on:
         required: false
         default: ''
         type: string 
-  push:
-    tags:
-      - '*'
       
 env:
   TAG_NAME: "nightly"
 
 jobs:
-  advanceNightlyTag:
-    name: Advance Nightly Sourcode
-    runs-on: ubuntu-latest
-    steps:    
-        
-    - name: Advance nightly tag
-      uses: actions/github-script@v3
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}          
-        script: |
-          try {
-              await github.git.deleteRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: "tags/nightly"
-              })
-          } catch (e) {
-            console.log("The nightly tag doesn't exist yet: " + e)
-          }
-          await github.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: "refs/tags/nightly",
-            sha: context.sha
-          })
-          
-    - name: Sleep for 10 seconds #github api takes a second to catch up sometimes...
-      run: sleep 10s
-      shell: bash
-
-    - name: Get latest release
-      id: latest_release
-      uses: kaliber5/action-get-release@v1
-      with:
-        token: ${{ github.token }}
-        tag_name: 'nightly'
-        draft: true
-
-    - uses: eregon/publish-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        release_id: ${{ steps.latest_release.outputs.id }}
-        
   build_android:
     name: Build Android Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -142,7 +91,7 @@ jobs:
         distribution: temurin
         java-version: 17.0.6
         cache: gradle
-        
+
     - name: Check for ffmpeg cache
       id: ffmpeg-cache
       uses: actions/cache/restore@v3
@@ -185,28 +134,8 @@ jobs:
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         CMAKE_BUILD_PARALLEL_LEVEL: 3
           
-    - name: Publish debug apk package
-      if: ${{ matrix.configuration }} = "Debug"
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: |
-          android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
-        
-    - name: Publish release apk package
-      if: ${{ matrix.configuration }} = "Release"
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: |
-          android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
-          android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
-          
   build_linux:
     name: Build Linux Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -298,18 +227,10 @@ jobs:
         cp -r resources/* dist/
 
     - name: Zip Folder For Release
-      run: zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
-
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip          
+      run: zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist     
         
   build_macos:
     name: Build OSX Client
-    needs: advanceNightlyTag  
     runs-on: macos-12
     strategy:
       fail-fast: false
@@ -379,17 +300,9 @@ jobs:
         
     - name: Zip Folder For Release
       run: zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
-
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
-                
+      
   build_windows:
     name: Build Windows Client
-    needs: advanceNightlyTag   
     runs-on: windows-2022
     strategy:
       fail-fast: false
@@ -473,9 +386,4 @@ jobs:
     - name: Zip Folder For Release
       run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
 
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip                
+              

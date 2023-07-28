@@ -15,8 +15,7 @@ class GameResourceManager {
     void openGameResources();
 
     Blob getEventsFile(const std::string &filename);
- private:
-    Blob uncompressPseudoTexture(const Blob &input);
 
+ private:
     LodReader _eventsLodReader;
 };

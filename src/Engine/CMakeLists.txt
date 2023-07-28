@@ -68,6 +68,7 @@ target_link_libraries(engine
         library_logger
         library_serialization
         library_color
+        library_lodformats
         utility)
 
 target_compile_definitions(engine PRIVATE
