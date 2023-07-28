@@ -179,13 +179,18 @@ jobs:
         fi
         sudo apt-get install -y mesa-utils xvfb x11-utils
 
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.1
+        with:
+          key: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.architecture }}
+
     - name: Configure
       run: |
         if [ "${{ matrix.architecture }}" = "x86" ]; then
           export CFLAGS="-m32" CXXFLAGS="-m32" 
         fi
         export CC=gcc-12 && export CXX=g++-12
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache'
 
     - name: Build
       working-directory: build
