@@ -28,7 +28,7 @@ void PaletteManager::load(LodTextureCache *lod) {
             continue;
 
         _paletteIds.push_back(paletteId);
-        _palettes.push_back(createLoadedPalette(texture->pPalette24));
+        _palettes.push_back(createLoadedPalette(texture->palette));
 
         texture->Release();
     }
@@ -56,16 +56,16 @@ Palette PaletteManager::createGrayscalePalette() {
     return result;
 }
 
-Palette PaletteManager::createLoadedPalette(uint8_t *data) {
+Palette PaletteManager::createLoadedPalette(const Palette &palette) {
     Palette result;
 
-    for (int index = 0; index < 768; index += 3) {
-        HsvColorf hsv = Color(data[index], data[index + 1], data[index + 2]).toColorf().toHsv();
+    for (size_t i = 0; i < 256; i++) {
+        HsvColorf hsv = palette.colors[i].toColorf().toHsv();
 
         hsv.v = std::clamp(hsv.v * 1.1f, 0.0f, 1.0f);
         hsv.s = std::clamp(hsv.s * 0.64999998f, 0.0f, 1.0f);
 
-        result.colors[index / 3] = hsv.toRgb().toColor();
+        result.colors[i] = hsv.toRgb().toColor();
     }
 
     return result;

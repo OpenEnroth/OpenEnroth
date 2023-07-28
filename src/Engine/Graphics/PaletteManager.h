@@ -26,7 +26,7 @@ class PaletteManager {
 
  private:
     static Palette createGrayscalePalette();
-    static Palette createLoadedPalette(uint8_t *data);
+    static Palette createLoadedPalette(const Palette &palette);
 
  private:
     std::vector<int> _paletteIds;
