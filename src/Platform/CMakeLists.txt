@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 set(PLATFORM_SOURCES
         Filters/FilteringEventHandler.cpp
         Filters/PlatformEventFilter.cpp
+        Null/NullEventLoop.cpp
+        Null/NullOpenGLContext.cpp
+        Null/NullPlatform.cpp
+        Null/NullWindow.cpp
         PlatformEventHandler.cpp
         Proxy/ProxyEventLoop.cpp
         Proxy/ProxyGamepad.cpp
@@ -22,6 +26,12 @@ set(PLATFORM_SOURCES
 set(PLATFORM_HEADERS
         Filters/FilteringEventHandler.h
         Filters/PlatformEventFilter.h
+        Null/NullEventLoop.h
+        Null/NullOpenGLContext.h
+        Null/NullPlatform.h
+        Null/NullPlatformOptions.h
+        Null/NullPlatformSharedState.h
+        Null/NullWindow.h
         Platform.h
         PlatformEnums.h
         PlatformEventHandler.h

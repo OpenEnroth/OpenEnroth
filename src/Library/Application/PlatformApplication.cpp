@@ -8,6 +8,7 @@
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/FilteringEventHandler.h"
 #include "Platform/PlatformLogger.h"
+#include "Platform/Null/NullPlatform.h"
 
 #include "Utility/MapAccess.h"
 #include "Utility/Reversed.h"
@@ -65,16 +66,15 @@ static void initProxyLeaf(ProxyBase<T> *root, T *leaf) {
     root->setBase(leaf);
 }
 
-PlatformApplication::PlatformApplication(PlatformLogger *logger) : _logger(logger) {
-    assert(logger);
+PlatformApplication::PlatformApplication(Platform *platform) : _platform(platform) {
+    assert(platform);
 
-    _platform = Platform::createStandardPlatform(logger);
     _eventLoop = _platform->createEventLoop();
     _window = _platform->createWindow();
     _eventHandler = std::make_unique<FilteringEventHandler>();
 
     _rootProxy = std::make_unique<ApplicationProxy>();
-    initProxyLeaf<Platform>(_rootProxy.get(), _platform.get());
+    initProxyLeaf<Platform>(_rootProxy.get(), _platform);
     initProxyLeaf<PlatformEventLoop>(_rootProxy.get(), _eventLoop.get());
     initProxyLeaf<PlatformWindow>(_rootProxy.get(), _window.get());
 }
@@ -102,10 +102,6 @@ void PlatformApplication::initializeOpenGLContext(std::unique_ptr<PlatformOpenGL
 
     _openGLContext = std::move(context);
     initProxyLeaf<PlatformOpenGLContext>(_rootProxy.get(), _openGLContext.get());
-}
-
-PlatformLogger *PlatformApplication::logger() {
-    return _logger;
 }
 
 Platform *PlatformApplication::platform() {
@@ -141,7 +137,7 @@ void PlatformApplication::installInternal(ProxyPlatform *platform) {
 }
 
 void PlatformApplication::removeInternal(ProxyPlatform *platform) {
-    removeTypedProxy<Platform>(_rootProxy.get(), platform, _platform.get());
+    removeTypedProxy<Platform>(_rootProxy.get(), platform, _platform);
 }
 
 void PlatformApplication::installInternal(ProxyEventLoop *eventLoop) {

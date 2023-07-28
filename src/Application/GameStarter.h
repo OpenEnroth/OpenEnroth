@@ -31,6 +31,7 @@ class GameStarter {
  private:
     GameStarterOptions _options;
     std::unique_ptr<PlatformLogger> _logger;
+    std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
     std::shared_ptr<GameConfig> _config;
     std::shared_ptr<Game> _game;

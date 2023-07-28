@@ -35,13 +35,12 @@ class ApplicationProxy;
  */
 class PlatformApplication {
  public:
-    explicit PlatformApplication(PlatformLogger *logger);
+    explicit PlatformApplication(Platform *platform);
     ~PlatformApplication();
 
     void initializeOpenGLContext(const PlatformOpenGLOptions &options);
     void initializeOpenGLContext(std::unique_ptr<PlatformOpenGLContext> context);
 
-    PlatformLogger *logger();
     Platform *platform();
     PlatformEventLoop *eventLoop();
     PlatformWindow *window();
@@ -107,8 +106,7 @@ class PlatformApplication {
     void *getInternal(std::type_index componentType) const;
 
  private:
-    PlatformLogger *_logger;
-    std::unique_ptr<Platform> _platform;
+    Platform *_platform;
     std::unique_ptr<PlatformEventLoop> _eventLoop;
     std::unique_ptr<PlatformWindow> _window;
     std::unique_ptr<PlatformOpenGLContext> _openGLContext;
