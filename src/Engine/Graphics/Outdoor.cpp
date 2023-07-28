@@ -1390,7 +1390,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
         if (visible) {
-            if (2 * abs(view_x) >= abs(view_y)) {
+            if (2 * std::abs(view_x) >= std::abs(view_y)) {
                 int projected_x = 0;
                 int projected_y = 0;
                 pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
@@ -1555,8 +1555,8 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
 
     //float side1_dx, side1_dz, side1_dy, side2_dx, side2_dz, side2_dy;
 
-    int dx = abs(pos_x - grid_pos_x1);
-    int dy = abs(grid_pos_y1 - pos_y);
+    int dx = std::abs(pos_x - grid_pos_x1);
+    int dy = std::abs(grid_pos_y1 - pos_y);
     if (dy >= dx) {
         side2 = Vec3f(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
         side1 = Vec3f(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
@@ -2023,7 +2023,7 @@ void ODM_ProcessPartyActions() {
                 Vec3i v98;
                 ODM_GetTerrainNormalAt(partyNewX, partyNewY, &v98);
                 int v35 = partyInputZSpeed + (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
-                int dot = abs(partyInputXSpeed * v98.x + partyInputYSpeed * v98.y + v35 * v98.z) >> 16;
+                int dot = std::abs(partyInputXSpeed * v98.x + partyInputYSpeed * v98.y + v35 * v98.z) >> 16;
                 partyInputXSpeed += fixpoint_mul(dot, v98.x);
                 partyInputYSpeed += fixpoint_mul(dot, v98.y);
                 partyInputZSpeed = v35 + fixpoint_mul(dot, v98.z);
@@ -2195,7 +2195,7 @@ void ODM_ProcessPartyActions() {
                 partySlopeMod = true;
 
                 // push party away from the surface
-                int dot = abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
+                int dot = std::abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
                            partyInputZSpeed * pODMFace->facePlane.normal.z +
                            partyInputXSpeed * pODMFace->facePlane.normal.x);
                 if ((collision_state.speed / 8) > dot)
@@ -2220,7 +2220,7 @@ void ODM_ProcessPartyActions() {
                 pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
 
                 // this pushes party slightly up away from the surface so you can climb it
-                float dot = abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
+                float dot = std::abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
                            partyInputZSpeed * pODMFace->facePlane.normal.z +
                            partyInputXSpeed * pODMFace->facePlane.normal.x);
                 if ((collision_state.speed / 8) > dot)
@@ -2597,7 +2597,7 @@ void UpdateActors_ODM() {
                 uint16_t Gravity = GetGravityStrength();
 
                 pActors[Actor_ITR].speed.z += -16 * pEventTimer->uTimeElapsed * Gravity;
-                int v73 = abs(Terrain_Norm.x * pActors[Actor_ITR].speed.x +
+                int v73 = std::abs(Terrain_Norm.x * pActors[Actor_ITR].speed.x +
                               Terrain_Norm.z * pActors[Actor_ITR].speed.z +
                               Terrain_Norm.y * pActors[Actor_ITR].speed.y) >> 15;
 
@@ -2891,7 +2891,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
         party_x2z2_y == party_x1z2_y)
         return false;
 
-    int dx = abs(pos_x - party_grid_x1), dz = abs(party_grid_z1 - pos_y);
+    int dx = std::abs(pos_x - party_grid_x1), dz = std::abs(party_grid_z1 - pos_y);
 
     int y1, y2, y3;
     if (dz >= dx) {
@@ -2973,7 +2973,7 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     v14 = 0;
     if (!bFloatAboveWater && *pIsOnWater) v14 = -60;
     if (y_x1z1 != y_x2z1 || y_x2z1 != y_x2z2 || y_x2z2 != y_x1z2) {
-        if (abs(grid_y1 - y) >= abs(x - grid_x1)) {
+        if (std::abs(grid_y1 - y) >= std::abs(x - grid_x1)) {
             v8 = y_x1z2;
             v9 = y_x2z2;
             v10 = y_x1z1;

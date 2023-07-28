@@ -452,9 +452,9 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
         for (int s = 0; s < NumFoundFaceStore; ++s) {
             // calc distance between this face and party
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
-                CalcZDist = abs(sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z);
+                CalcZDist = std::abs(sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z);
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = abs(sZ - this->pFaces[FoundFaceStore[s]].zCalc.calculate(sX, sY));
+                CalcZDist = std::abs(sZ - this->pFaces[FoundFaceStore[s]].zCalc.calculate(sX, sY));
             }
 
             // use this face if its smaller than the current min
@@ -499,7 +499,7 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
         outV->z = 0;
 
     } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall || this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
-        if (abs(this->facePlane.normal.z) < 0.70863342285f) { // Was 46441 fixpoint
+        if (std::abs(this->facePlane.normal.z) < 0.70863342285f) { // Was 46441 fixpoint
             outU->x = -this->facePlane.normal.y;
             outU->y = this->facePlane.normal.x;
             outU->z = 0;
@@ -1131,7 +1131,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     for (uint i = 1; i < FacesFound; ++i) {
         int v38 = blv_floor_z[i];
 
-        if (abs(pos.z - v38) <= abs(pos.z - result)) {
+        if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
             result = blv_floor_z[i];
             if (blv_floor_z[i] <= -29000) __debugbreak();
             faceId = blv_floor_id[i];
@@ -1186,7 +1186,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
     int v37 = pEventTimer->uTotalTimeElapsed;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
-    v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
+    v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + v10);
 
@@ -1209,7 +1209,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                                    &view_x, &view_y, &view_z);
 
     if (visible) {
-        if (2 * abs(view_x) >= abs(view_y)) {
+        if (2 * std::abs(view_x) >= std::abs(view_y)) {
             int projected_x = 0;
             int projected_y = 0;
             pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
@@ -1339,7 +1339,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             }
 
             // TODO(captainurist): what's going on in this check?
-            if (abs(NegFacePlaceDist) / 16384.0f <= abs(dirDotNormal)) {
+            if (std::abs(NegFacePlaceDist) / 16384.0f <= std::abs(dirDotNormal)) {
                 float IntersectionDist = NegFacePlaceDist / dirDotNormal;
                 // less than zero means intersection is behind target point
                 if (IntersectionDist >= 0) {
@@ -1387,7 +1387,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                         continue;  // can never hit
                 }
 
-                if (abs(NegFacePlaceDist) / 16384.0f <= abs(dirDotNormal)) {
+                if (std::abs(NegFacePlaceDist) / 16384.0f <= std::abs(dirDotNormal)) {
                     // calc how far along line interesction is
                     float IntersectionDist = NegFacePlaceDist /  dirDotNormal;
                     // less than zero means intersection is behind target point
@@ -1796,7 +1796,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                     faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             } else { // Not floor
-                int speed_dot_normal = abs(
+                int speed_dot_normal = std::abs(
                     pParty->speed.x * pFace->facePlane.normal.x +
                     pParty->speed.y * pFace->facePlane.normal.y +
                     pParty->speed.z * pFace->facePlane.normal.z);
@@ -2009,11 +2009,11 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
 
     signed int result;
     // calc line length
-    result = integer_sqrt(abs(x2 - x1) * abs(x2 - x1) + abs(y2 - y1) * abs(y2 - y1));
+    result = integer_sqrt(std::abs(x2 - x1) * std::abs(x2 - x1) + std::abs(y2 - y1) * std::abs(y2 - y1));
 
     // orthogonal projection from line to point
     if (result)
-        result = abs(((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / result);
+        result = std::abs(((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / result);
 
     return result;
 }
@@ -2053,8 +2053,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
-                dist_y = abs(enc_spawn_point.vPosition.y - model.vBoundingCenter.y);
-                dist_x = abs(enc_spawn_point.vPosition.x - model.vBoundingCenter.x);
+                dist_y = std::abs(enc_spawn_point.vPosition.y - model.vBoundingCenter.y);
+                dist_x = std::abs(enc_spawn_point.vPosition.x - model.vBoundingCenter.x);
                 if (int_get_vector_length(dist_x, dist_y, 0) <
                     model.sBoundingRadius + 256) {
                     not_in_model = 1;
@@ -2092,7 +2092,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
                 enc_spawn_point.vPosition.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay
-                    if (abs(indoor_floor_level - pParty->pos.z) <= 1024) break;
+                    if (std::abs(indoor_floor_level - pParty->pos.z) <= 1024) break;
                 }
             }
         }
