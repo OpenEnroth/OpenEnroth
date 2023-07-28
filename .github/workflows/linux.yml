@@ -72,6 +72,11 @@ jobs:
         fi
         sudo apt-get install -y mesa-utils xvfb x11-utils
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
+
     - name: Configure
       run: |
         if [ "${{ matrix.architecture }}" = "x86" ]; then
