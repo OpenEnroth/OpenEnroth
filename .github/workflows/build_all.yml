@@ -324,6 +324,11 @@ jobs:
       with:
         arch: ${{ matrix.architecture }}
 
+    - name: sccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
+
     - name: Configure
       run: |
         cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
