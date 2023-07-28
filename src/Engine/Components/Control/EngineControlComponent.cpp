@@ -30,8 +30,10 @@ static void controlThread(EngineControlState *unsafeState) {
         } catch (EngineControlState::TerminationException) {
             return;
         } catch (...) {
-            state->controlException = std::current_exception();
-            return;
+            state->gameRoutine = [exception = std::current_exception()] {
+                std::rethrow_exception(exception);
+            };
+            state.yieldExecution();
         }
 
         state->controlRoutineQueue.pop();
@@ -44,11 +46,8 @@ EngineControlComponent::EngineControlComponent(): _unsafeState(std::make_unique<
 }
 
 EngineControlComponent::~EngineControlComponent() {
-    if (!_state->controlException) {
-        _state->terminating = true;
-        _state.yieldExecution();
-    }
-    _controlThread.join();
+    assert(!application()); // Should be uninstalled.
+    assert(!_controlThread.joinable()); // Thread should be joined at this point.
 }
 
 void EngineControlComponent::runControlRoutine(ControlRoutine routine) {
@@ -107,14 +106,19 @@ void EngineControlComponent::swapBuffers() {
         while (true) {
             _state.yieldExecution();
 
-            if (_state->controlException)
-                std::rethrow_exception(_state->controlException);
-
-            if (!_state->gameRoutine)
+            if (_state->gameRoutine) {
+                auto gameRoutine = std::move(_state->gameRoutine);
+                _state->gameRoutine = {};
+                gameRoutine(); // This can throw.
+            } else {
                 break;
-
-            _state->gameRoutine();
-            _state->gameRoutine = EngineControlState::GameRoutine();
+            }
         }
     }
+}
+
+void EngineControlComponent::removeNotify() {
+    _state->terminating = true;
+    _state.yieldExecution();
+    _controlThread.join();
 }

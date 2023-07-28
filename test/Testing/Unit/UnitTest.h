@@ -1,4 +1,4 @@
 #include <gtest/gtest.h>
 
-#define UNIT_TEST(TestBase, TestName) \
-    TEST(TestBase, TestName)
+#define UNIT_TEST(SuiteName, TestName) \
+    TEST(SuiteName, TestName)

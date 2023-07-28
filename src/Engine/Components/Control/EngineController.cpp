@@ -220,7 +220,8 @@ void EngineController::runGameRoutine(GameRoutine routine) {
     _state->gameRoutine = std::move(routine);
     _state.yieldExecution();
     assert(!_state->gameRoutine); // Must have finished.
-    assert(!_state->terminating); // Please don't do anything crazy in the game routine.
+    if (_state->terminating)
+        throw EngineControlState::TerminationException();
 }
 
 void EngineController::resizeWindow(int w, int h) {

@@ -32,6 +32,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
                                   EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback,
                                   std::function<void()> tickCallback) {
     assert(!isPlaying());
+    EngineDeterministicComponent *deterministicComponent = application()->get<EngineDeterministicComponent>();
 
     _tracePath = tracePath;
     _savePath = savePath;
@@ -43,7 +44,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
         _savePath.clear();
         _flags = 0;
         _trace.reset();
-        _deterministicComponent->finish();
+        deterministicComponent->finish();
     });
 
     checkSaveFileSize(_trace->header.saveFileSize);
@@ -55,17 +56,17 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
 
     game->goToMainMenu(); // This might call into a random engine.
-    _deterministicComponent->restart(frameTimeMs);
+    deterministicComponent->restart(frameTimeMs);
     game->loadGame(_savePath);
     checkAfterLoadRng(_trace->header.afterLoadRandomState);
-    _deterministicComponent->restart(frameTimeMs);
-    _keyboardController->reset(); // Reset all pressed buttons.
+    deterministicComponent->restart(frameTimeMs);
+    application()->get<GameKeyboardController>()->reset(); // Reset all pressed buttons.
 
     if (postLoadCallback)
         postLoadCallback();
 
     checkState(_trace->header.startState, true);
-    _simplePlayer->playTrace(game, std::move(_trace->events), _tracePath, _flags, std::move(tickCallback));
+    application()->get<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), _tracePath, _flags, std::move(tickCallback));
     checkState(_trace->header.endState, false);
 }
 
@@ -105,16 +106,4 @@ void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, boo
                         expectedState.partyPosition.x, expectedState.partyPosition.y, expectedState.partyPosition.z,
                         state.partyPosition.x, state.partyPosition.y, state.partyPosition.z);
     }
-}
-
-void EngineTracePlayer::installNotify() {
-    _deterministicComponent = application()->get<EngineDeterministicComponent>();
-    _simplePlayer = application()->get<EngineTraceSimplePlayer>();
-    _keyboardController = application()->get<GameKeyboardController>();
-}
-
-void EngineTracePlayer::removeNotify() {
-    _deterministicComponent = nullptr;
-    _simplePlayer = nullptr;
-    _keyboardController = nullptr;
 }

@@ -33,6 +33,7 @@
 #include "Library/Image/PCX.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
+#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/DataPath.h"
 
@@ -222,19 +223,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
         }
 
-        LOD::CompressedHeader odm_data;
-        odm_data.uVersion = 91969;
-        odm_data.pMagic[0] = 'm';
-        odm_data.pMagic[1] = 'v';
-        odm_data.pMagic[2] = 'i';
-        odm_data.pMagic[3] = 'i';
-
-        Blob compressed = zlib::Compress(uncompressed);
-
-        odm_data.uCompressedSize = compressed.size();
-        odm_data.uDecompressedSize = uncompressed.size();
-
-        Blob mapBlob = Blob::concat(Blob::view(&odm_data, sizeof(odm_data)), compressed);
+        Blob mapBlob = lod::encodeCompressed(uncompressed);
 
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
