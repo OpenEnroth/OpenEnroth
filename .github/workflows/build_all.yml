@@ -6,7 +6,7 @@ on:
       myCommit:
         description: 'Commit SHA1'
         required: false
-        default: 'undefined'
+        default: ''
         type: string 
       
 env:
