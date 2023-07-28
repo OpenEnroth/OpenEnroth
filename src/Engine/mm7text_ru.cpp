@@ -718,7 +718,7 @@ int sprintfex_internal(char *str) {
                 char *actual_ending = nullptr;
                 int actual_ending_len = 0;
 
-                int modulo = abs(integer_tokens[integer_token_idx]) % 10;
+                int modulo = std::abs(integer_tokens[integer_token_idx]) % 10;
                 if (modulo == 1) {
                     actual_ending = ending1;
                     actual_ending_len = ending2 - ending1 - 1;

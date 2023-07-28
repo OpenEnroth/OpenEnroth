@@ -117,11 +117,11 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
         MobileLight *p = &pMobileLightsStack->pLights[i];
         light_radius = p->uRadius;
 
-        distX = abs(p->vPosition.x - x);
+        distX = std::abs(p->vPosition.x - x);
         if (distX <= light_radius) {
-            distY = abs(p->vPosition.y - y);
+            distY = std::abs(p->vPosition.y - y);
             if (distY <= light_radius) {
-                distZ = abs(p->vPosition.z - z);
+                distZ = std::abs(p->vPosition.z - z);
                 if (distZ <= light_radius) {
                     approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
                     if (approx_distance < light_radius)
@@ -141,11 +141,11 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
             light_radius = this_light->uRadius;
 
             if (~this_light->uAtributes & 8) {
-                distX = abs(this_light->vPosition.x - x);
+                distX = std::abs(this_light->vPosition.x - x);
                 if (distX <= light_radius) {
-                    distY = abs(this_light->vPosition.y - y);
+                    distY = std::abs(this_light->vPosition.y - y);
                     if (distY <= light_radius) {
-                        distZ = abs(this_light->vPosition.z - z);
+                        distZ = std::abs(this_light->vPosition.z - z);
                         if (distZ <= light_radius) {
                             approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
                             if (approx_distance < light_radius)
@@ -162,11 +162,11 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
         StationaryLight *p = &pStationaryLightsStack->pLights[i];
         light_radius = p->uRadius;
 
-        distX = abs(p->vPosition.x - x);
+        distX = std::abs(p->vPosition.x - x);
         if (distX <= light_radius) {
-            distY = abs(p->vPosition.y - y);
+            distY = std::abs(p->vPosition.y - y);
             if (distY <= light_radius) {
-                distZ = abs(p->vPosition.z - z);
+                distZ = std::abs(p->vPosition.z - z);
                 if (distZ <= light_radius) {
                     approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
                     if (approx_distance < light_radius)

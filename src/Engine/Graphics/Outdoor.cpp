@@ -436,9 +436,9 @@ void OutdoorLocation::UpdateSunlightVectors() {
     if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 21) {
         minutes = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
 
-        this->vSunlight.x = cos((minutes * pi) / 960.0);
+        this->vSunlight.x = std::cos((minutes * pi) / 960.0);
         this->vSunlight.y = 0;
-        this->vSunlight.z = sin((minutes * pi) / 960.0);
+        this->vSunlight.z = std::sin((minutes * pi) / 960.0);
 
         if (minutes >= 480)
             v8 = 960 - minutes;
@@ -590,7 +590,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
     v46 = -64.0;
     v47 = -64.0;
     v45 = 64.0;
-    v6 = sqrt(12288.0);
+    v6 = std::sqrt(12288.0);
     if (v6 != 0.0) {
         v7 = 1.0 / v6;
         v45 = 64.0 * v7;
@@ -645,7 +645,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         v53 = v27;
                         v28 = (double)(v25 * v24);
                         v56 = v28;
-                        v29 = sqrt(v28 * v28 + v27 * v27 + v26 * v26);
+                        v29 = std::sqrt(v28 * v28 + v27 * v27 + v26 * v26);
                         if (v29 != 0.0) {
                             v30 = 1.0 / v29;
                             v51 = v51 * v30;
@@ -666,7 +666,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         v54 = v34;
                         v35 = (double)(v32 * (v19 - v41));
                         v57 = v35;
-                        v36 = sqrt(v35 * v35 + v34 * v34 + v33 * v33);
+                        v36 = std::sqrt(v35 * v35 + v34 * v34 + v33 * v33);
                         if (v36 != 0.0) {
                             v37 = 1.0 / v36;
                             v52 = v52 * v37;
@@ -763,9 +763,9 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
       while ( 1 )
       {
         v13 = v17[v12];
-        a3b = abs((int64_t)(int64_t)(v11 * v6) - ((signed int)(r_mask &
-    v17[v12]) >> a2b)); BYTE3(a3b) = abs((signed)v25 - ((signed int)(g_mask &
-    v13) >> num_b_bits)) + a3b; v16[v12++] = abs((signed)i - (signed)(b_mask &
+        a3b = std::abs((int64_t)(int64_t)(v11 * v6) - ((signed int)(r_mask &
+    v17[v12]) >> a2b)); BYTE3(a3b) = std::abs((signed)v25 - ((signed int)(g_mask &
+    v13) >> num_b_bits)) + a3b; v16[v12++] = std::abs((signed)i - (signed)(b_mask &
     v13)) + BYTE3(a3b); if ( v12 >= 256 ) break;
       }
       result = 0;

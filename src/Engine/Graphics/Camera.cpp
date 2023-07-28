@@ -261,15 +261,15 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
     // TODO(pskelton): fov calcs only need recalculating on level change or if we add config option
     // fov projection calcs
-    unit_fov = 0.5 / tan(odm_fov_rad / 2.0);
+    unit_fov = 0.5 / std::tan(odm_fov_rad / 2.0);
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        unit_fov = 0.5 / tan(blv_fov_rad / 2.0);
+        unit_fov = 0.5 / std::tan(blv_fov_rad / 2.0);
 
     ViewPlaneDist_X = (double)pViewport->uScreenWidth * unit_fov;
     ViewPlaneDist_Y = (double)pViewport->uScreenHeight * unit_fov;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X);
+    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X);
 
     screenCenterX = (double)pViewport->uScreenCenterX;
     screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;
@@ -280,7 +280,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X));
+    float HalfAngleY = (pi / 2.0) - (std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
@@ -289,24 +289,24 @@ void Camera3D::BuildViewFrustum() {
     glm::vec3 PlaneVec(0);
 
     // rotate (1,0,0) around z
-    PlaneVec.y = -sin(HalfAngleX);
-    PlaneVec.x = cos(HalfAngleX);
+    PlaneVec.y = -std::sin(HalfAngleX);
+    PlaneVec.x = std::cos(HalfAngleX);
     PlaneVec.z = 0.0;
     FrustumPlanes[0] = glm::vec4(ViewMatrix * PlaneVec, 1.0);
     FrustumPlanes[0].w = glm::dot(glm::vec3(FrustumPlanes[0]), vCameraPos);
 
-    PlaneVec.y = sin(HalfAngleX);
+    PlaneVec.y = std::sin(HalfAngleX);
     FrustumPlanes[1] = glm::vec4(ViewMatrix * PlaneVec, 1.0);
     FrustumPlanes[1].w = glm::dot(glm::vec3(FrustumPlanes[1]), vCameraPos);
 
     // rotate (1,0,0) around y
-    PlaneVec.z = -sin(HalfAngleY);
+    PlaneVec.z = -std::sin(HalfAngleY);
     PlaneVec.y = 0.0;
-    PlaneVec.x = cos(HalfAngleY);
+    PlaneVec.x = std::cos(HalfAngleY);
     FrustumPlanes[2] = glm::vec4(ViewMatrix * PlaneVec, 1.0);
     FrustumPlanes[2].w = glm::dot(glm::vec3(FrustumPlanes[2]), vCameraPos);
 
-    PlaneVec.z = sin(HalfAngleY);
+    PlaneVec.z = std::sin(HalfAngleY);
     FrustumPlanes[3] = glm::vec4(ViewMatrix * PlaneVec, 1.0);
     FrustumPlanes[3].w = glm::dot(glm::vec3(FrustumPlanes[3]), vCameraPos);
 }
@@ -528,11 +528,11 @@ void Camera3D::CalculateRotations(int cameraYaw, int cameraPitch) {
     _viewPitch = -cameraPitch;  // pitch
     _viewYaw = cameraYaw;  // yaw
 
-    _yawRotationSine = sin((pi_double + pi_double) * (double)_viewYaw / 2048.0);
-    _yawRotationCosine = cos((pi_double + pi_double) * (double)_viewYaw / 2048.0);
+    _yawRotationSine = std::sin((pi_double + pi_double) * _viewYaw / 2048.0);
+    _yawRotationCosine = std::cos((pi_double + pi_double) * _viewYaw / 2048.0);
 
-    _pitchRotationSine = sin((pi_double + pi_double) * (double)_viewPitch / 2048.0);
-    _pitchRotationCosine = cos((pi_double + pi_double) * (double)_viewPitch / 2048.0);
+    _pitchRotationSine = std::sin((pi_double + pi_double) * _viewPitch / 2048.0);
+    _pitchRotationCosine = std::cos((pi_double + pi_double) * _viewPitch / 2048.0);
 }
 
 //----- (00436A6D) --------------------------------------------------------

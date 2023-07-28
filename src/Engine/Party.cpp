@@ -1150,9 +1150,9 @@ size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, si
     int affectedCount = 0;
 
     for (size_t i = 0; i < pActors.size(); ++i) {
-        x = abs(pActors[i].pos.x - this->pos.x);
-        y = abs(pActors[i].pos.y - this->pos.y);
-        z = abs(pActors[i].pos.z - this->pos.z);
+        x = std::abs(pActors[i].pos.x - this->pos.x);
+        y = std::abs(pActors[i].pos.y - this->pos.y);
+        z = std::abs(pActors[i].pos.z - this->pos.z);
         if (int_get_vector_length(x, y, z) <= effectRange) {
             if (pActors[i].aiState != Dead && pActors[i].aiState != Dying &&
                 pActors[i].aiState != Removed &&

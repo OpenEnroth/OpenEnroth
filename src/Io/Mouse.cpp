@@ -294,7 +294,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         continue;
                     }
                     if (control->uButtonType == 2) {  // adventurers portraits click
-                        if (sqrt(
+                        if (std::sqrt(
                                 (double)((x - control->uX) * (x - control->uX) +
                                          (y - control->uY) * (y - control->uY))) < (double)control->uWidth) {
                             control->field_2C_is_pushed = true;

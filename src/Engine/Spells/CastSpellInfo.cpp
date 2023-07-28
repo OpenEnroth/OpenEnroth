@@ -993,7 +993,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pitch = 0;
                             yaw = 0;
                         } else {
-                            pitch = TrigLUT.atan2(sqrt(j * j + k * k), originHeight - 2500);
+                            pitch = TrigLUT.atan2(std::sqrt(j * j + k * k), originHeight - 2500);
                             yaw = TrigLUT.atan2(j, k);
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -1196,7 +1196,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pitch = 0;
                             yaw = 0;
                         } else {
-                            pitch = TrigLUT.atan2(sqrt(j * j + k * k), originHeight - 2500);
+                            pitch = TrigLUT.atan2(std::sqrt(j * j + k * k), originHeight - 2500);
                             yaw = TrigLUT.atan2(j, k);
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
