@@ -82,12 +82,6 @@ void LOD::WriteableFile::ResetSubIndices() {
     uLODDataSize = 0;
 }
 
-bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
-                                    // сохранении)
-    CloseWriteFile();
-    return LoadFile(pLODPath, 0);
-}
-
 bool LOD::WriteableFile::FixDirectoryOffsets() {
     unsigned int total_size = 0;
     for (int i = 0; i < uNumSubDirs; i++) {

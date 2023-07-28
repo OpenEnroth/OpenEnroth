@@ -278,10 +278,10 @@ void DoSavegame(unsigned int uSlot) {
         }
     }
 
-    if (pCurrentMapName != "d05.blv")
-        pSave_LOD->_4621A7();
-    else
+    if (pCurrentMapName == "d05.blv")
         GameUI_SetStatusBar(LSTR_NO_SAVING_IN_ARENA);
+
+    // TODO(captainurist): This ^v doesn't seem right, need an else block?
 
     pEventTimer->Resume();
     GameUI_SetStatusBar(LSTR_GAME_SAVED);
