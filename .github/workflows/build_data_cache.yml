@@ -27,7 +27,7 @@ jobs:
       if: steps.check-for-data-cache.outputs.cache-hit != 'true'
       uses: actions/checkout@v3
       with:
-        repository: OpenEnroth/OpenEnroth_GameData
+        repository: botanicvelious/OpenEnroth_GameData
         path: OpenEnroth_GameData
         token: ${{ secrets.DATA_ACCESS_TOKEN }}
 
