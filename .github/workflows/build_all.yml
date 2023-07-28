@@ -340,9 +340,9 @@ jobs:
       with:
         arch: ${{ matrix.architecture }}
 
-    - name: update ccache and ninja
+    - name: update ccache
       run: |
-        choco upgrade ccache ninja
+        choco upgrade ccache
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
