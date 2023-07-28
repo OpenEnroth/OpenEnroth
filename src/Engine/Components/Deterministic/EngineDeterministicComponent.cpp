@@ -44,3 +44,7 @@ void EngineDeterministicComponent::swapBuffers() {
     // Tail calling is good practice - this way users can reason about the order of proxy execution.
     ProxyOpenGLContext::swapBuffers();
 }
+
+void EngineDeterministicComponent::removeNotify() {
+    finish(); // Does nothing if already finished.
+}

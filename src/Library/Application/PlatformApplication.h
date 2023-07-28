@@ -71,7 +71,7 @@ class PlatformApplication {
         PlatformIntrospection::visit(component, [this] (auto *specificComponent) {
             removeInternal(specificComponent);
         });
-        removeInternal(typeid(component), component);
+        removeInternal(typeid(T), component);
     }
 
     template<class T>

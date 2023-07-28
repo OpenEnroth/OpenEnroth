@@ -2,14 +2,15 @@
 
 #include <cassert>
 
-#include "Utility/MapAccess.h"
-
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
 #include "Platform/Proxy/ProxyWindow.h"
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/FilteringEventHandler.h"
 #include "Platform/PlatformLogger.h"
+
+#include "Utility/MapAccess.h"
+#include "Utility/Reversed.h"
 
 class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public ProxyWindow, public ProxyOpenGLContext {
  public:
@@ -79,10 +80,16 @@ PlatformApplication::PlatformApplication(PlatformLogger *logger) : _logger(logge
 }
 
 PlatformApplication::~PlatformApplication() {
-    while (!_cleanupRoutines.empty()) {
-        _cleanupRoutines.back()();
-        _cleanupRoutines.pop_back(); // This also destroys the stored component.
-    }
+    // First call the routines in reverse order - this should uninstall everything.
+    for (const auto &routine : reversed(_cleanupRoutines))
+        routine();
+
+    // User should uninstall all components that platform application doesn't own before destroying it.
+    assert(_componentByType.empty());
+
+    // Then destroy every component that we own.
+    while (!_cleanupRoutines.empty())
+        _cleanupRoutines.pop_back();
 }
 
 void PlatformApplication::initializeOpenGLContext(const PlatformOpenGLOptions &options) {
