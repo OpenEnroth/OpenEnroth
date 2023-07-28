@@ -27,6 +27,11 @@ if(BUILD_PLATFORM STREQUAL "windows")
     set(PREBUILT_DEPENDENCIES_DEFAULT ON)
 else()
     set(PREBUILT_DEPENDENCIES_DEFAULT OFF)
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache) # Less useful to do it for linking, see edit2
+    endif(CCACHE_FOUND)
 endif()
 
 # Configurable settings.
