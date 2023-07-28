@@ -184,8 +184,12 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     //    render->Present();
     //}
 
+    LOD::WriteableFile lodWriter;
+    lodWriter.AllocSubIndicesAndIO(300, 100000);
+    lodWriter.LoadFile(makeDataPath("data", "new.lod"), 0); // We append to an existing file here.
+
     Blob packedScreenshot{ render->PackScreenshot(150, 112) };  // создание скриншота
-    if (pSave_LOD->Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
+    if (lodWriter.Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
 
@@ -194,7 +198,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     save_header.locationName = pCurrentMapName;
     save_header.playingTime = pParty->GetPlayingTime();
 
-    serialize(save_header, pSave_LOD, tags::via<SaveGame_MM7>);
+    serialize(save_header, &lodWriter, tags::via<SaveGame_MM7>);
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
@@ -209,7 +213,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
                 assert(image->rgba());
                 Blob packedPCX = PCX::Encode(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                if (pSave_LOD->Write(str, packedPCX.data(), packedPCX.size(), 0)) {
+                if (lodWriter.Write(str, packedPCX.data(), packedPCX.size(), 0)) {
                     logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
             }
@@ -233,7 +237,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
-        if (pSave_LOD->Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
+        if (lodWriter.Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 208));
         }
     }
@@ -251,6 +255,9 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     pParty->uFallStartZ = pPositionZ;
     pParty->_viewYaw = partyViewYaw;
     pParty->_viewPitch = partyViewPitch;
+
+    lodWriter.CloseWriteFile();
+    pSave_LOD->LoadFile(makeDataPath("data", "new.lod"), 0);
 
     return save_header;
 }
@@ -357,7 +364,6 @@ void SaveNewGame() {
 
         lodWriter.FixDirectoryOffsets();
         lodWriter.CloseWriteFile();
-        pSave_LOD->LoadFile(file_path, 0);
 
         pParty->lastPos.x = 12552;
         pParty->lastPos.y = 1816;
