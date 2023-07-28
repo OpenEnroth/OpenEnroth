@@ -12,7 +12,7 @@ class GUIWindow_Inventory : public GUIWindow {
         GUIWindow(WINDOW_CharacterWindow_Inventory, position, dimensions, data, hint) {}
     virtual ~GUIWindow_Inventory() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class GUIWindow_Inventory_CastSpell : public GUIWindow {
@@ -20,5 +20,5 @@ class GUIWindow_Inventory_CastSpell : public GUIWindow {
     GUIWindow_Inventory_CastSpell(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, const std::string &hint = std::string());
     virtual ~GUIWindow_Inventory_CastSpell() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };

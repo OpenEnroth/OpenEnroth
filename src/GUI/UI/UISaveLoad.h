@@ -7,7 +7,7 @@ class GUIWindow_Save : public GUIWindow {
     GUIWindow_Save();
     virtual ~GUIWindow_Save() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
  protected:
     // Image * main_menu_background;
@@ -23,7 +23,7 @@ class GUIWindow_Load : public GUIWindow {
     explicit GUIWindow_Load(bool ingame);
     virtual ~GUIWindow_Load() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
  protected:
     GraphicsImage *main_menu_background;

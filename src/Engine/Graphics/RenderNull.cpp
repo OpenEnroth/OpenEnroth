@@ -20,9 +20,9 @@ class NullOpenGLContext : public PlatformOpenGLContext {
         return true;
     }
 
-    virtual void swapBuffers() {}
+    virtual void swapBuffers() override {}
 
-    virtual void *getProcAddress(const char *name) {
+    virtual void *getProcAddress(const char *name) override {
         return nullptr;
     }
 };

@@ -77,8 +77,8 @@ class GUIWindow_House : public GUIWindow {
     explicit GUIWindow_House(HOUSE_ID houseId);
     virtual ~GUIWindow_House() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 
     BuildingType buildingType() const {
         return buildingTable[houseId()].uType;

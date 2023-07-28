@@ -426,15 +426,15 @@ class AudioTrackS16 : public IAudioTrack {
     AudioTrackS16();
     virtual ~AudioTrackS16();
 
-    virtual bool Open(PAudioDataSource data_source);
-    virtual bool IsValid();
+    virtual bool Open(PAudioDataSource data_source) override;
+    virtual bool IsValid() override;
 
-    virtual bool Play();
-    virtual bool Stop();
-    virtual bool Pause();
-    virtual bool Resume();
-    virtual bool SetVolume(float volume);
-    virtual float GetVolume();
+    virtual bool Play() override;
+    virtual bool Stop() override;
+    virtual bool Pause() override;
+    virtual bool Resume() override;
+    virtual bool SetVolume(float volume) override;
+    virtual float GetVolume() override;
 
  protected:
     void Close();

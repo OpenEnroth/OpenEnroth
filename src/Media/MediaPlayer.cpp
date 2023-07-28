@@ -126,7 +126,7 @@ class AVAudioStream : public AVStreamWrapper {
  public:
     AVAudioStream() : AVStreamWrapper() { converter = nullptr; }
 
-    virtual bool open(AVFormatContext *format_ctx) {
+    virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO)) {
             return false;
         }
@@ -201,7 +201,7 @@ class AVVideoStream : public AVStreamWrapper {
         width = 0;
     }
 
-    virtual bool open(AVFormatContext *format_ctx) {
+    virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
             return false;
         }
@@ -408,7 +408,7 @@ class Movie : public IMovie {
         return Load("dummyFilename");
     }
 
-    virtual std::shared_ptr<Blob> GetFrame() {
+    virtual std::shared_ptr<Blob> GetFrame() override {
         if (!playing) {
             return nullptr;
         }
@@ -480,7 +480,7 @@ class Movie : public IMovie {
         return video.last_frame;
     }
 
-    virtual void PlayBink() {
+    virtual void PlayBink() override {
         // fix for #39 - choppy sound with bink
 
         AVPacket packet;
@@ -579,27 +579,27 @@ class Movie : public IMovie {
         return;
     }
 
-    virtual std::string GetFormat() {
+    virtual std::string GetFormat() override {
         return format_ctx->iformat->name;
     }
 
-    virtual unsigned int GetWidth() const { return width; }
+    virtual unsigned int GetWidth() const override { return width; }
 
-    virtual unsigned int GetHeight() const { return height; }
+    virtual unsigned int GetHeight() const override { return height; }
 
-    virtual bool Play(bool loop = false) {
+    virtual bool Play(bool loop = false) override {
         start_time = std::chrono::system_clock::now();
         looping = loop;
         playing = true;
         return false;
     }
 
-    virtual bool Stop() {
+    virtual bool Stop() override {
         playing = false;
         return false;
     }
 
-    virtual bool IsPlaying() const { return playing; }
+    virtual bool IsPlaying() const override { return playing; }
 
  protected:
     static int s_read(void *opaque, uint8_t *buf, int buf_size) {
@@ -1021,12 +1021,12 @@ class AudioBaseDataSource : public IAudioDataSource {
     AudioBaseDataSource();
     virtual ~AudioBaseDataSource() { Close(); }
 
-    virtual bool Open();
-    virtual void Close();
+    virtual bool Open() override;
+    virtual void Close() override;
 
-    virtual size_t GetSampleRate();
-    virtual size_t GetChannelCount();
-    virtual std::shared_ptr<Blob> GetNextBuffer();
+    virtual size_t GetSampleRate() override;
+    virtual size_t GetChannelCount() override;
+    virtual std::shared_ptr<Blob> GetNextBuffer() override;
 
  protected:
     AVFormatContext *pFormatContext;
@@ -1206,7 +1206,7 @@ class AudioFileDataSource : public AudioBaseDataSource {
     explicit AudioFileDataSource(const std::string &file_name);
     virtual ~AudioFileDataSource() {}
 
-    virtual bool Open();
+    virtual bool Open() override;
 
  protected:
     std::string sFileName;
@@ -1241,7 +1241,7 @@ class AudioBufferDataSource : public AudioBaseDataSource {
     explicit AudioBufferDataSource(Blob buffer);
     virtual ~AudioBufferDataSource() {}
 
-    bool Open();
+    virtual bool Open() override;
 
  protected:
     Blob buffer;

@@ -5,5 +5,5 @@ class GUIWindow_QuickReference : public GUIWindow {
     GUIWindow_QuickReference();
     virtual ~GUIWindow_QuickReference() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };

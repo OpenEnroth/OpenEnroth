@@ -105,7 +105,7 @@ class WriteableFile : public File {
     void ClearSubNodes() { uNumSubDirs = 0; }
 
  protected:
-    virtual void ResetSubIndices();
+    virtual void ResetSubIndices() override;
 
  protected:
     uint8_t * pIOBuffer;

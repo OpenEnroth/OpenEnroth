@@ -9,7 +9,7 @@ class GUICredits : public GUIWindow {
     GUICredits();
     virtual ~GUICredits();
 
-    virtual void Update();
+    virtual void Update() override;
 
     static void ExecuteCredits();
     void EventLoop();

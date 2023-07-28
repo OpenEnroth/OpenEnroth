@@ -32,7 +32,7 @@ class GUIWindow_Book : public GUIWindow {
     /**
      * @offset 0x411597
      */
-    virtual void Release();
+    virtual void Release() override;
 
     void bookButtonClicked(BookButtonAction action);
 
@@ -77,5 +77,5 @@ class GUIWindow_BooksButtonOverlay : public GUIWindow {
     {}
     virtual ~GUIWindow_BooksButtonOverlay() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };

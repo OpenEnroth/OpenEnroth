@@ -9,7 +9,7 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     GUIWindow_CharacterRecord(unsigned int uActiveCharacter, ScreenType screen);
     virtual ~GUIWindow_CharacterRecord() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
     void ShowStatsTab();
     void ShowSkillsTab();

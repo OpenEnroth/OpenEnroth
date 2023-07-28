@@ -10,8 +10,8 @@ class GUIWindow_Travel : public GUIWindow {
     GUIWindow_Travel();
     virtual ~GUIWindow_Travel() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 };
 
 class GUIWindow_Transition : public GUIWindow {
@@ -19,8 +19,8 @@ class GUIWindow_Transition : public GUIWindow {
     GUIWindow_Transition(HOUSE_ID transitionHouse, uint32_t exit_pic_id, int x, int y, int z, int directiony, int directionx, int a8, const std::string &locationName);
     virtual ~GUIWindow_Transition() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 
     MAP_TYPE mapid = MAP_INVALID;
     std::string _mapName{};

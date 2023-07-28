@@ -6,10 +6,11 @@ class GUIWindow_TownPortalBook : public GUIWindow_Book {
     explicit GUIWindow_TownPortalBook(int casterPid);
     virtual ~GUIWindow_TownPortalBook() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
     void clickTown(int townId);
     void hintTown(int townId);
+
  private:
     int _casterPid;
 };
