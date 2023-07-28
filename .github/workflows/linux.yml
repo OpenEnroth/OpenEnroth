@@ -96,7 +96,6 @@ jobs:
         make UnitTest
 
     - name: GameTest
-      continue-on-error: true #gametest currently broken...
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'
       working-directory: build
       run: |
