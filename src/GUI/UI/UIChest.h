@@ -12,5 +12,5 @@ class GUIWindow_Chest : public GUIWindow {
     explicit GUIWindow_Chest(unsigned int chest_id);
     virtual ~GUIWindow_Chest() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };

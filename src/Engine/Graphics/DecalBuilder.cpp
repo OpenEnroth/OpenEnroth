@@ -107,7 +107,7 @@ bool DecalBuilder::Build_Decal_Geometry(
     if (locationFlags & LocationBuildings) decal->decal_flags = DecalFlagsNone;
 
     this->field_30C028 = DecalRadius - DecalDotDist;
-    this->field_30C02C = sqrt((DecalRadius + DecalRadius - this->field_30C028) * this->field_30C028);
+    this->field_30C02C = std::sqrt((DecalRadius + DecalRadius - this->field_30C028) * this->field_30C028);
 
     this->flt_30C030 = 1.0 - (DecalRadius - this->field_30C02C) / DecalRadius;
     decal->DecalXPos = (int64_t)(blood->pos.x - DecalDotDist * FacetNormals->Normal.x);

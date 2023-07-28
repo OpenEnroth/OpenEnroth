@@ -1090,7 +1090,7 @@ void Game::processQueuedMessages() {
                 // int)ptr_507BC0->ptr_1C];
                 v53 = buildingTable[window_SpeakInHouse->houseId()]._quest_bit;
                 if (v53 < 0) {
-                    v54 = abs(v53) - 1;
+                    v54 = std::abs(v53) - 1;
                     Party_Teleport_Cam_Pitch = 0;
                     Party_Teleport_Z_Speed = 0;
                     v55 = dword_4E4560[v54];

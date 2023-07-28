@@ -264,7 +264,7 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x, floa
     if (y < drY && y < billboard->pQuads[1].pos.y) return false;
 
     // for small items dont bother with the per pixel checks
-    if (abs(drH) < 5 || abs(drW) < 5) {
+    if (std::abs(drH) < 5 || std::abs(drW) < 5) {
         return true;
     }
 
@@ -335,7 +335,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // approx distance - for reachable checks
     float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
     float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
-    int dist = int_get_vector_length(abs(static_cast<int>(rayx)), abs(static_cast<int>(rayy)), 0);
+    int dist = int_get_vector_length(std::abs(static_cast<int>(rayx)), std::abs(static_cast<int>(rayy)), 0);
     *reachable = false;
     if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 

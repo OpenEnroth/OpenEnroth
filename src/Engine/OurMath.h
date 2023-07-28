@@ -10,7 +10,7 @@
 const float pi = static_cast<float>(M_PI);
 
 int integer_sqrt(int val);
-inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
+inline int round_to_int(float x) { return (int)std::floor(x + 0.5f); }
 
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 

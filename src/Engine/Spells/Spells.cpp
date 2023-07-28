@@ -791,7 +791,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
     } else {
         int64_t ySquared = coord_delta.y * coord_delta.y;
         int64_t xSquared = coord_delta.x * coord_delta.x;
-        int xy_distance = (int)sqrt((double)(xSquared + ySquared));
+        int xy_distance = (int)std::sqrt((double)(xSquared + ySquared));
         yaw = TrigLUT.atan2(coord_delta.x, coord_delta.y);
         pitch = TrigLUT.atan2(xy_distance, coord_delta.z);
     }

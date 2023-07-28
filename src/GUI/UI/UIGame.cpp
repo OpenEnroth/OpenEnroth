@@ -711,8 +711,8 @@ std::string GameUI_GetMinimapHintText() {
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = int_get_vector_length(
-                abs((int)model.vBoundingCenter.x - global_coord_X),
-                abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
+                std::abs((int)model.vBoundingCenter.x - global_coord_X),
+                std::abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
             if (v7 < 2 * model.sBoundingRadius) {
                 for (ODMFace &face : model.pFaces) {
                     if (face.sCogTriggeredID) {
@@ -1536,7 +1536,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         }
                     }
 
-                    LineGreyDim = abs(pOutline->sZ - pParty->pos.z) / 8;
+                    LineGreyDim = std::abs(pOutline->sZ - pParty->pos.z) / 8;
                     if (LineGreyDim > 100) LineGreyDim = 100;
                     render->RasterLine2D(linex, liney, linez, linew, viewparams->pPalette[-LineGreyDim + 200]);
                 }

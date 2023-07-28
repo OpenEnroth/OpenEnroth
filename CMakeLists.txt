@@ -67,6 +67,11 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
     add_compile_options(-Werror=unused-value) # Expression result unused
+    add_compile_options(-Werror=suggest-override) # 'func' overrides a member function but is not marked 'override'
+
+    if("-m32" IN_LIST CMAKE_CXX_FLAGS)
+        add_compile_options(-msse2 -mfpmath=sse -march=pentium4)
+    endif()
 endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")

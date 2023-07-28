@@ -200,7 +200,7 @@ int PriceCalculator::tavernRoomCostForPlayer(const Character *player, const Buil
 int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const BuildingDesc &house) {
     float houseMult = house.fPriceMultiplier;
 
-    int foodPrice = applyMerchantDiscount(player, static_cast<float>(pow(houseMult, 3) / 100)), minFoodPrice = pow(houseMult, 3) / 300;
+    int foodPrice = applyMerchantDiscount(player, static_cast<float>(std::pow(houseMult, 3) / 100)), minFoodPrice = std::pow(houseMult, 3) / 300;
     if (foodPrice < minFoodPrice) {
         foodPrice = minFoodPrice;
     }

@@ -11,8 +11,8 @@ class GUIWindow_Dialogue : public GUIWindow {
     GUIWindow_Dialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
     virtual ~GUIWindow_Dialogue() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 };
 
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello);
@@ -22,8 +22,8 @@ class GUIWindow_GenericDialogue : public GUIWindow {
     GUIWindow_GenericDialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
     virtual ~GUIWindow_GenericDialogue() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 };
 
 void StartBranchlessDialogue(int eventid, int entryline, int button);

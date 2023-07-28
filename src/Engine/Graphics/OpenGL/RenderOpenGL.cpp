@@ -416,8 +416,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
 
     int xDifference = bankersRounding(dstX - srcX);
     int yDifference = bankersRounding(dstY - srcY);
-    int absYDifference = abs(yDifference);
-    int absXDifference = abs(xDifference);
+    int absYDifference = std::abs(yDifference);
+    int absXDifference = std::abs(xDifference);
     unsigned int smallerabsdiff = std::min(absXDifference, absYDifference);
     unsigned int largerabsdiff = std::max(absXDifference, absYDifference);
 
@@ -880,8 +880,8 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
 
     double cam_y_rot_rad = (double)pCamera3D->_viewPitch * rot_to_rads;
 
-    float depth_to_far_clip = static_cast<float>(cos(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip());
-    float height_to_far_clip = static_cast<float>(sin(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip());
+    float depth_to_far_clip = std::cos(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
+    float height_to_far_clip = std::sin(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
     float blv_bottom_y_proj = ((pBLVRenderParams->uViewportCenterY) -
         pCamera3D->ViewPlaneDist_X /
@@ -889,9 +889,9 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
         (height_to_far_clip - pCamera3D->vCameraPos.z));
 
     // rotation vec for sky plane - pitch
-    float v_18x = static_cast<float>(-sin((-pCamera3D->_viewPitch + 16) * rot_to_rads));
+    float v_18x = -std::sin((-pCamera3D->_viewPitch + 16) * rot_to_rads);
     float v_18y = 0.0f;
-    float v_18z = static_cast<float>(-cos((pCamera3D->_viewPitch + 16) * rot_to_rads));
+    float v_18z = -std::cos((pCamera3D->_viewPitch + 16) * rot_to_rads);
 
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
 
@@ -2006,8 +2006,8 @@ void RenderOpenGL::DrawOutdoorSky() {
         / ((double)pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
         + (double)(pViewport->uScreenCenterY));
 
-    float depth_to_far_clip = cos((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
-    float height_to_far_clip = sin((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
+    float depth_to_far_clip = std::cos((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
+    float height_to_far_clip = std::sin((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
         (double)pCamera3D->ViewPlaneDist_X /
@@ -2036,9 +2036,9 @@ void RenderOpenGL::DrawOutdoorSky() {
 
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector - pitch rotation around y
-        float v18x = -sin((-pCamera3D->_viewPitch + 16) * rot_to_rads);
+        float v18x = -std::sin((-pCamera3D->_viewPitch + 16) * rot_to_rads);
         float v18y = 0;
-        float v18z = -cos((pCamera3D->_viewPitch + 16) * rot_to_rads);
+        float v18z = -std::cos((pCamera3D->_viewPitch + 16) * rot_to_rads);
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------

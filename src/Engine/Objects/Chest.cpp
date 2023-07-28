@@ -87,7 +87,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
 
             dir_x = (double)pParty->pos.x - (double)objectPos.x;
             dir_y = (double)pParty->pos.y - (double)objectPos.y;
-            length_vector = sqrt(dir_x * dir_x + dir_y * dir_y);
+            length_vector = std::sqrt(dir_x * dir_x + dir_y * dir_y);
             if (length_vector <= 1.0) {
                 yawAngle = 0;
                 pitchAngle = 0;

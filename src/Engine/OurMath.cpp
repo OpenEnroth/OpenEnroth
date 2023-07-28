@@ -22,7 +22,7 @@ int integer_sqrt(int val) {
     //Получение квадратного корня//
     ///////////////////////////////
 
-    return int(sqrt(val));
+    return int(std::sqrt(val));
 
     // binary square root algo
     // (int) sqrt(i) probably faster?

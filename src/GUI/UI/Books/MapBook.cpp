@@ -327,15 +327,15 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
 
     // In the mapbook only lady Margaret dispays for defoult zoom(В
     // книге карты только Леди Маргарита всплывает при дефолтном зуме)
-    int map_tile_X = abs(global_coord_X + 22528) / 512;
-    int map_tile_Y = abs(global_coord_Y - 22528) / 512;
+    int map_tile_X = std::abs(global_coord_X + 22528) / 512;
+    int map_tile_Y = std::abs(global_coord_Y - 22528) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&
         uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
         !pOutdoor->pBModels.empty()) {
         for (BSPModel &model : pOutdoor->pBModels) {
             if (int_get_vector_length(
-                    abs((int)model.vBoundingCenter.x - global_coord_X),
-                    abs((int)model.vBoundingCenter.y - global_coord_Y),
+                    std::abs((int)model.vBoundingCenter.x - global_coord_X),
+                    std::abs((int)model.vBoundingCenter.y - global_coord_Y),
                     0) < model.sBoundingRadius) {
                 for (ODMFace &face : model.pFaces) {
                     if (face.sCogTriggeredID) {
