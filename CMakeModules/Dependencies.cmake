@@ -16,9 +16,15 @@ endfunction()
 function(target_resolve_prebuilt_dependencies targetName)
     if(PREBUILT_DEPENDENCIES)
         foreach(dep ${PREBUILT_DEPENDENCIES_LIST})
-            message(STATUS "Copying binary dependency ${dep} to $<TARGET_FILE_DIR:${targetName}>")
-            add_custom_command(TARGET ${targetName} POST_BUILD
+            add_custom_command(
+                    TARGET ${targetName}
+                    POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy "${dep}" $<TARGET_FILE_DIR:${targetName}>)
+            # Note that we cannot use message() here because it cannot expand a generator expressions.
+            add_custom_command(
+                    TARGET ${targetName}
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E echo "Copying binary dependency ${dep} to $<TARGET_FILE_DIR:${targetName}>")
         endforeach()
     endif()
 endfunction()
