@@ -147,7 +147,7 @@ KeyToggleType Io::KeyboardActionMapping::GetToggleType(InputAction action) const
     return keyToggleMap.find(action)->second;
 }
 
-// TODO: maybe we need to split InputActions to sets by WindowType so guarantee of only one InputAction per key is restored.
+// TODO(captainurist): maybe we need to split InputActions to sets by WindowType so guarantee of only one InputAction per key is restored.
 bool Io::KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key) const {
     if (action == Io::InputAction::Invalid)
         return false;
@@ -218,7 +218,7 @@ void Io::KeyboardActionMapping::StoreMappings() {
 }
 
 KeyToggleType GetToggleType(InputAction action) {
-    // TODO: TOGGLE_* values in the table above are not respected, instead toggle values from this function are used.
+    // TODO(captainurist): TOGGLE_* values in the table above are not respected, instead toggle values from this function are used.
 
     if (action == Io::InputAction::StrafeLeft || action == Io::InputAction::StrafeRight
         || action == Io::InputAction::FlyUp || action == Io::InputAction::FlyDown) {
