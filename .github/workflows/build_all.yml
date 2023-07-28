@@ -6,28 +6,15 @@ on:
       myCommit:
         description: 'Commit SHA1'
         required: false
-        default: 'undefined'
+        default: ''
         type: string 
       
 env:
   TAG_NAME: "nightly"
 
 jobs:
-  advanceNightlyTag:
-    name: Advance Nightly Sourcode
-    runs-on: ubuntu-latest
-    steps:    
-        
-    - name: Advance nightly tag
-      uses: actions/github-script@v3
-      with:        
-    - name: Sleep for 1 seconds #github api takes a second to catch up sometimes...
-      run: sleep 1
-      shell: bash
-
   build_android:
     name: Build Android Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -104,11 +91,35 @@ jobs:
         distribution: temurin
         java-version: 17.0.6
         cache: gradle
-        
+
+    - name: Check for ffmpeg cache
+      id: ffmpeg-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          android/openenroth/jni/FFmpeg/android/
+        key: ffmpeg-cache
+
     - name: Build ffmpeg
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true' 
       working-directory: android/openenroth/jni/FFmpeg
       run: |
         ./build.sh
+
+    - name: Save ffmpeg cache
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true'    
+      id: check-for-ffmpeg-save
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          android/openenroth/jni/FFmpeg/android/
+        key: ffmpeg-cache
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
+        
 
     - name: Build the app
       working-directory: android
@@ -126,7 +137,6 @@ jobs:
           
   build_linux:
     name: Build Linux Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -148,6 +158,7 @@ jobs:
         path: |
           OpenEnroth_GameData
         key: data-cache
+        enableCrossOsArchive: true
         
     - name: Copy shaders
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
@@ -178,6 +189,12 @@ jobs:
           sudo apt-get install -y libsdl2-dev
         fi
         sudo apt-get install -y mesa-utils xvfb x11-utils
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
+        
 
     - name: Configure
       run: |
@@ -217,7 +234,6 @@ jobs:
         
   build_macos:
     name: Build OSX Client
-    needs: advanceNightlyTag  
     runs-on: macos-12
     strategy:
       fail-fast: false
@@ -249,6 +265,12 @@ jobs:
       run: |
         brew install ffmpeg@4
         brew install sdl2
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
+        
 
     - name: Configure
       run: |
@@ -285,7 +307,6 @@ jobs:
       
   build_windows:
     name: Build Windows Client
-    needs: advanceNightlyTag   
     runs-on: windows-2022
     strategy:
       fail-fast: false
@@ -307,6 +328,7 @@ jobs:
         path: |
           OpenEnroth_GameData
         key: data-cache
+        enableCrossOsArchive: true
 
     - name: Copy shaders
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
@@ -317,6 +339,15 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: ${{ matrix.architecture }}
+
+    - name: update ccache
+      run: |
+        choco upgrade ccache
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: Configure
       run: |
@@ -363,4 +394,3 @@ jobs:
     - name: Zip Folder For Release
       run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
 
-              
