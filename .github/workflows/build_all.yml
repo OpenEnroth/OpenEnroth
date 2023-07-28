@@ -394,4 +394,3 @@ jobs:
     - name: Zip Folder For Release
       run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
 
-              
