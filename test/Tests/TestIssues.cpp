@@ -1597,3 +1597,9 @@ GAME_TEST(Issues, Issue1093) {
     EXPECT_TRUE(statusTape.contains("Cast Town Portal"));
     EXPECT_TRUE(statusTape.contains("Spell failed"));
 }
+
+GAME_TEST(Issues, Issue1115) {
+    // Entering Arena on level 21 should not crash the game
+    test->playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
+}
+
