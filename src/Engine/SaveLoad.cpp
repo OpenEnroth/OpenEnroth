@@ -321,10 +321,6 @@ void SavegameList::Reset() {
 }
 
 void SaveNewGame() {
-    if (pSave_LOD != nullptr) {
-        pSave_LOD->CloseWriteFile();
-    }
-
     std::string file_path = makeDataPath("data", "new.lod");
     std::filesystem::remove(file_path);  // удалить new.lod
 
@@ -334,10 +330,13 @@ void SaveNewGame() {
     header.LODSize = 100;
     header.dword_0000A8 = 0;
 
-    pSave_LOD->CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
-    if (pSave_LOD->LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
-        pSave_LOD->CreateTempFile();  // создаётся временный файл OutputFileHandle
-        pSave_LOD->ClearSubNodes();
+    LOD::WriteableFile lodWriter;
+    lodWriter.AllocSubIndicesAndIO(300, 100000);
+
+    lodWriter.CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
+    if (lodWriter.LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
+        lodWriter.CreateTempFile();  // создаётся временный файл OutputFileHandle
+        lodWriter.ClearSubNodes();
 
         // Copy ddm & dlv files, can actually just filter by extension instead.
         for (const std::string &name : pGames_LOD->ls()) {
@@ -345,7 +344,7 @@ void SaveNewGame() {
                 continue;
 
             Blob data = pGames_LOD->readRaw(name);
-            pSave_LOD->AppendDirectory(name, data.data(), data.size());
+            lodWriter.AppendDirectory(name, data.data(), data.size());
         }
 
         pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
@@ -354,9 +353,11 @@ void SaveNewGame() {
         SaveGameHeader_MM7 headerMm7;
         snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
 
-        pSave_LOD->AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
+        lodWriter.AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
 
-        pSave_LOD->FixDirectoryOffsets();
+        lodWriter.FixDirectoryOffsets();
+        lodWriter.CloseWriteFile();
+        pSave_LOD->LoadFile(file_path, 0);
 
         pParty->lastPos.x = 12552;
         pParty->lastPos.y = 1816;
