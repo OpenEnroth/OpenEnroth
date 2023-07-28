@@ -143,10 +143,33 @@ jobs:
         java-version: 17.0.6
         cache: gradle
         
+    - name: Check for ffmpeg cache
+      id: check-for-ffmpeg-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          android/openenroth/jni/FFmpeg/android/
+        key: ffmpeg-cache
+
     - name: Build ffmpeg
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true' 
       working-directory: android/openenroth/jni/FFmpeg
       run: |
         ./build.sh
+
+    - name: Save ffmpeg cache
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true'    
+      id: check-for-ffmpeg-save
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          android/openenroth/jni/FFmpeg/android/
+        key: ffmpeg-cache
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: Build the app
       working-directory: android
@@ -236,6 +259,11 @@ jobs:
         fi
         sudo apt-get install -y mesa-utils xvfb x11-utils
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
+
     - name: Configure
       run: |
         if [ "${{ matrix.architecture }}" = "x86" ]; then
@@ -279,7 +307,6 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip          
         
-        
   build_macos:
     name: Build OSX Client
     needs: advanceNightlyTag  
@@ -314,6 +341,11 @@ jobs:
       run: |
         brew install ffmpeg@4
         brew install sdl2
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: Configure
       run: |
@@ -355,7 +387,6 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
                 
-                
   build_windows:
     name: Build Windows Client
     needs: advanceNightlyTag   
@@ -390,6 +421,11 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: ${{ matrix.architecture }}
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: Configure
       run: |
