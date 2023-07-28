@@ -132,7 +132,7 @@ bool PCX_File_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, P
 }
 
 bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Blob data = lod->LoadRaw(resource_name);
+    Blob data = lod->read(resource_name);
     if (!data) {
         log->warning("Unable to load {}", this->resource_name);
         return false;

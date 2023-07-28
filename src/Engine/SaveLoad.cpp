@@ -65,6 +65,8 @@ void LoadGame(unsigned int uSlot) {
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
 
+    LodReader tmpReader(to_file_path, LOD_ALLOW_DUPLICATES); // TODO(captainurist): temporary compatibility layer.
+
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
     for (size_t i = 0; i < 4; i++) {
@@ -76,7 +78,7 @@ void LoadGame(unsigned int uSlot) {
             LloydBeacon &beacon = player->vBeacons[j];
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD, str));
+            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&tmpReader, str));
             beacon.image->rgba(); // Force load!
         }
     }
