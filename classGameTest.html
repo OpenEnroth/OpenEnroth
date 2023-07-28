@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1d55c9a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7682c14</span>
    </div>
   </td>
  </tr>
@@ -71,8 +71,9 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classGameTest-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GameTest Class Reference</div></div>
 </div><!--header-->
@@ -91,20 +92,50 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:abdd3ea2e6c4c3ff20165302e5903aee1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#abdd3ea2e6c4c3ff20165302e5903aee1">init</a> (<a class="el" href="classEngineController.html">EngineController</a> *engineController, <a class="el" href="classTestController.html">TestController</a> *testController)</td></tr>
 <tr class="separator:abdd3ea2e6c4c3ff20165302e5903aee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a54ef61da119388bef1984d53d614f8e2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#a54ef61da119388bef1984d53d614f8e2">TestBodyFunction</a> = void(*)(<a class="el" href="classGameTest.html">GameTest</a> *)</td></tr>
+<tr class="separator:a54ef61da119388bef1984d53d614f8e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:afa1888507fe2f63b370f4b122ca880bb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#afa1888507fe2f63b370f4b122ca880bb">SetUp</a> () override</td></tr>
+<tr class="separator:afa1888507fe2f63b370f4b122ca880bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2cf4a1b59262b35cfa3d77e42e43352"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#ad2cf4a1b59262b35cfa3d77e42e43352">TearDown</a> () override</td></tr>
+<tr class="separator:ad2cf4a1b59262b35cfa3d77e42e43352"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa86fe2dc210b309021fb51fb21d70ee5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#aa86fe2dc210b309021fb51fb21d70ee5">runTestBody</a> (<a class="el" href="classGameTest.html#a54ef61da119388bef1984d53d614f8e2">TestBodyFunction</a> testBody)</td></tr>
+<tr class="separator:aa86fe2dc210b309021fb51fb21d70ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:aa0244276a149f58d175c4d42da1dba03"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineController.html">EngineController</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#aa0244276a149f58d175c4d42da1dba03">game</a> = nullptr</td></tr>
 <tr class="separator:aa0244276a149f58d175c4d42da1dba03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04d693c5fc0e17608bf9855f980f2ef0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestController.html">TestController</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#a04d693c5fc0e17608bf9855f980f2ef0">test</a> = nullptr</td></tr>
 <tr class="separator:a04d693c5fc0e17608bf9855f980f2ef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:afa1888507fe2f63b370f4b122ca880bb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#afa1888507fe2f63b370f4b122ca880bb">SetUp</a> () override</td></tr>
-<tr class="separator:afa1888507fe2f63b370f4b122ca880bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2cf4a1b59262b35cfa3d77e42e43352"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTest.html#ad2cf4a1b59262b35cfa3d77e42e43352">TearDown</a> () override</td></tr>
-<tr class="separator:ad2cf4a1b59262b35cfa3d77e42e43352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a54ef61da119388bef1984d53d614f8e2" name="a54ef61da119388bef1984d53d614f8e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54ef61da119388bef1984d53d614f8e2">&#9670;&#160;</a></span>TestBodyFunction</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classGameTest.html#a54ef61da119388bef1984d53d614f8e2">GameTest::TestBodyFunction</a> =  void (*)(<a class="el" href="classGameTest.html">GameTest</a> *)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="abdd3ea2e6c4c3ff20165302e5903aee1" name="abdd3ea2e6c4c3ff20165302e5903aee1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abdd3ea2e6c4c3ff20165302e5903aee1">&#9670;&#160;</a></span>init()</h2>
@@ -142,6 +173,32 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="aa86fe2dc210b309021fb51fb21d70ee5" name="aa86fe2dc210b309021fb51fb21d70ee5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa86fe2dc210b309021fb51fb21d70ee5">&#9670;&#160;</a></span>runTestBody()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameTest::runTestBody </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classGameTest.html#a54ef61da119388bef1984d53d614f8e2">TestBodyFunction</a>&#160;</td>
+          <td class="paramname"><em>testBody</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afa1888507fe2f63b370f4b122ca880bb" name="afa1888507fe2f63b370f4b122ca880bb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afa1888507fe2f63b370f4b122ca880bb">&#9670;&#160;</a></span>SetUp()</h2>
 
@@ -160,7 +217,7 @@ Private Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -185,7 +242,7 @@ Private Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
