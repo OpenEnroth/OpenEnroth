@@ -116,7 +116,7 @@ jobs:
         ./build.sh
 
     - name: Save ffmpeg cache
-      if: steps.cache-ndk.outputs.cache-hit != 'true'    
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true'    
       id: check-for-ffmpeg-save
       uses: actions/cache/save@v3
       with:
