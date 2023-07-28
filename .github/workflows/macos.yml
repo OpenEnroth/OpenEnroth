@@ -49,6 +49,11 @@ jobs:
       run: |
         brew install ffmpeg@4
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
+
     - name: Configure
       run: |
         cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"
