@@ -352,6 +352,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
+        variant: sccache
 
     - name: Configure
       run: |
