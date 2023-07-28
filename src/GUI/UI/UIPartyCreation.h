@@ -11,7 +11,7 @@ class GUIWindow_PartyCreation : public GUIWindow {
     GUIWindow_PartyCreation();
     virtual ~GUIWindow_PartyCreation();
 
-    virtual void Update();
+    virtual void Update() override;
 
  protected:
     GraphicsImage *main_menu_background;

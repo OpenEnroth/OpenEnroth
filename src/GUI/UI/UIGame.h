@@ -12,7 +12,7 @@ class GUIWindow_GameMenu : public GUIWindow {
     GUIWindow_GameMenu();
     virtual ~GUIWindow_GameMenu() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class GUIWindow_GameOptions : public GUIWindow {
@@ -20,7 +20,7 @@ class GUIWindow_GameOptions : public GUIWindow {
     GUIWindow_GameOptions();
     virtual ~GUIWindow_GameOptions() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class GUIWindow_GameKeyBindings : public GUIWindow {
@@ -38,7 +38,7 @@ class GUIWindow_GameVideoOptions : public GUIWindow {
     GUIWindow_GameVideoOptions();
     virtual ~GUIWindow_GameVideoOptions() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class GUIWindow_DebugMenu : public GUIWindow {
@@ -46,7 +46,7 @@ class GUIWindow_DebugMenu : public GUIWindow {
      GUIWindow_DebugMenu();
      virtual ~GUIWindow_DebugMenu() {}
 
-     virtual void Update();
+     virtual void Update() override;
 };
 
 class GraphicsImage;

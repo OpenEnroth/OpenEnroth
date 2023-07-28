@@ -10,5 +10,5 @@ struct GUIWindow_MapBook : public GUIWindow_Book {
     GUIWindow_MapBook();
     virtual ~GUIWindow_MapBook() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };

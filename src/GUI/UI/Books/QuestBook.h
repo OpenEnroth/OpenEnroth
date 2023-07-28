@@ -8,7 +8,8 @@ struct GUIWindow_QuestBook : public GUIWindow_Book {
     GUIWindow_QuestBook();
     virtual ~GUIWindow_QuestBook() {}
 
-    virtual void Update();
+    virtual void Update() override;
+
  private:
     int _startingQuestIdx;
     int _currentPage;

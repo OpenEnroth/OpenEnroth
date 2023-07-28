@@ -9,7 +9,7 @@ class GUIWindow_MainMenu : public GUIWindow {
     GUIWindow_MainMenu();
     virtual ~GUIWindow_MainMenu();
 
-    virtual void Update();
+    virtual void Update() override;
 
     void EventLoop();
 

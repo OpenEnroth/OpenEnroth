@@ -7,7 +7,8 @@ struct GUIWindow_JournalBook : public GUIWindow_Book {
     GUIWindow_JournalBook();
     virtual ~GUIWindow_JournalBook() {}
 
-    virtual void Update();
+    virtual void Update() override;
+
  private:
     int _currentIdx;
     std::vector<int> _journalIdx;

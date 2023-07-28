@@ -11,8 +11,8 @@ class GUIWindow_Spellbook : public GUIWindow {
     GUIWindow_Spellbook();
     virtual ~GUIWindow_Spellbook() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 
     // TODO(captainurist): turn parameter into an enum
     void openSpellbookPage(int page);

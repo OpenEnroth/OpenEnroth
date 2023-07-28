@@ -7,8 +7,8 @@ class GUIWindow_GameOver : public GUIWindow {
     explicit GUIWindow_GameOver(UIMessageType on_release_event = UIMSG_OnGameOverWindowClose);
     virtual ~GUIWindow_GameOver() {}
 
-    virtual void Update();
-    virtual void Release();
+    virtual void Update() override;
+    virtual void Release() override;
 
  protected:
     ScreenType prev_screen_type;

@@ -14,7 +14,7 @@ class GUIWindow_Rest : public GUIWindow {
     /**
      * @offset 0x41FA01
      */
-    virtual void Update();
+    virtual void Update() override;
 
  private:
     int hourglassLoopTimer;
