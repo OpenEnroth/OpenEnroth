@@ -170,7 +170,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
-        append-timestamp: false
+        
 
     - name: Build the app
       working-directory: android
@@ -264,7 +264,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
-        append-timestamp: false
+        
 
     - name: Configure
       run: |
@@ -348,7 +348,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
-        append-timestamp: false
+        
 
     - name: Configure
       run: |
@@ -430,7 +430,7 @@ jobs:
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
         variant: sccache
-        append-timestamp: false
+        
 
     - name: Configure
       run: |

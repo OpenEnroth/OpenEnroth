@@ -125,8 +125,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
-        append-timestamp: false
-        save: false #dont save cache so we dont override the 4 arch builds cache for nightly
 
     - name: Build the app
       working-directory: android

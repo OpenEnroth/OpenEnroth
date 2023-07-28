@@ -56,7 +56,7 @@ jobs:
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
         variant: sccache
-        append-timestamp: false
+        
 
     - name: Configure
       run: |
