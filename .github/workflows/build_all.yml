@@ -1,4 +1,4 @@
-name: Build Release
+name: Build All
 
 on:
   workflow_dispatch: #allows to manually run a workflow
@@ -63,24 +63,25 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: |
-          /usr/local/lib/android/sdk/ndk/android-ndk-10421692-linux-x86_64.zip
-        key: android-ndk-10421692-linux-x86_64
+          /usr/local/lib/android/sdk/ndk/26.0.10404224
+        key: android-ndk-r26-beta1-linux
 
     - name: Download NDK
       if: steps.cache-ndk.outputs.cache-hit != 'true'
       run: |
         cd /usr/local/lib/android/sdk/ndk/
-        wget --no-check-certificate 'https://onedrive.live.com/download?resid=3A7E32D08E399E75%212858&authkey=!AC_6V_xqURU9hlI' -O android-ndk-10421692-linux-x86_64.zip 
+        wget --no-check-certificate 'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip' -O android-ndk-r26-beta1-linux.zip 
 
     - name: Setup NDK
+      if: steps.cache-ndk.outputs.cache-hit != 'true'    
       run: |
         cd /usr/local/lib/android/sdk/ndk/
-        unzip android-ndk-10421692-linux-x86_64.zip
-        mv android-ndk-r27-canary 27.0.10421692
-        echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
-        echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
-        echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV        
-        echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
+        unzip android-ndk-r26-beta1-linux.zip
+        mv android-ndk-r26-beta1 /usr/local/lib/android/sdk/ndk/26.0.10404224
+        echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
+        echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
+        echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV        
+        echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
 
     - name: Save NDK cache
       if: steps.cache-ndk.outputs.cache-hit != 'true'    
@@ -88,8 +89,8 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: |
-          /usr/local/lib/android/sdk/ndk/android-ndk-10421692-linux-x86_64.zip
-        key: android-ndk-10421692-linux-x86_64
+          /usr/local/lib/android/sdk/ndk/26.0.10404224
+        key: android-ndk-r26-beta1-linux
 
     - name: Install dependencies
       run: |
