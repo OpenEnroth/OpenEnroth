@@ -4,12 +4,21 @@
 #include <cstdio>
 #include <cstring>
 #include <sstream>
+#include <utility>
 
-#include "Platform/Platform.h"
-#include "Engine/EngineGlobals.h"
+#include "Utility/Format.h"
 
-void Error_impl_(const char *filename, const char *functionname,
-                 int line, const char *format, ...) {
+[[noreturn]] static void defaultErrorHandler(const std::string &title, const std::string &message) {
+    fmt::println(stderr, "{}", title);
+    fmt::println(stderr, "{}", message);
+    fmt::println(stderr, "Exiting...");
+    assert(false);
+    exit(1); // TODO(captainurist): Redo. We should throw instead.
+}
+
+ErrorHandlerFunction globalErrorHandler;
+
+void Error_impl_(const char *filename, const char *functionname, int line, const char *format, ...) {
     char msg_body[8192] = { 0 };
     if (format != nullptr) {
         va_list va;
@@ -25,15 +34,13 @@ void Error_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    if (platform)
-        platform->showMessageBox("Error", out.str());
+    if (globalErrorHandler)
+        globalErrorHandler("Error", out.str());
+    defaultErrorHandler("Error", out.str()); // Global handler shouldn't return.
 }
 
-void Assert_impl_(const char *filename, const char *functionname,
-                  int line, bool condition, const char *condition_string,
-                  const char *format, ...) {
-    if (condition) return;
-
+void Assert_impl_(const char *filename, const char *functionname, int line,
+                  const char *condition_string, const char *format, ...) {
     char msg_body[8192] = { 0 };
     if (format != nullptr) {
         va_list va;
@@ -49,8 +56,11 @@ void Assert_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    if (platform)
-        platform->showMessageBox("Assertion", out.str());
+    if (globalErrorHandler)
+        globalErrorHandler("Assertion", out.str());
+    defaultErrorHandler("Assertion", out.str()); // Global handler shouldn't return.
+}
 
-    assert(false);
+void setErrorHandler(ErrorHandlerFunction handler) {
+    globalErrorHandler = std::move(handler);
 }
