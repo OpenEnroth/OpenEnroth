@@ -81,6 +81,7 @@ if(BUILD_COMPILER STREQUAL "gcc")
 elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
     add_compile_options(-Werror=inconsistent-missing-override) # Clang-specific, goes with -Werror=suggest-override.
+    add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     enable_libcxx_assertions(FALSE)
 elseif(BUILD_COMPILER STREQUAL "msvc")
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
