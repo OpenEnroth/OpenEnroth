@@ -99,18 +99,27 @@ std::string WinPlatform::winQueryRegistry(const std::wstring &path) const {
     return {};
 }
 
+static void ensureOutputStreams() {
+    bool hasStdOut = GetStdHandle(STD_OUTPUT_HANDLE) != INVALID_HANDLE_VALUE;
+    bool hasStdErr = GetStdHandle(STD_ERROR_HANDLE) != INVALID_HANDLE_VALUE;
+    if (hasStdOut && hasStdErr)
+        return;
+
+    if (!AllocConsole())
+        return; // Can't do anything about it.
+
+    freopen("conin$", "r", stdin);
+    freopen("conout$", "w", stdout);
+    freopen("conout$", "w", stderr);
+}
+
 std::unique_ptr<Platform> Platform::createStandardPlatform(PlatformLogger *logger) {
     return std::make_unique<WinPlatform>(logger);
 }
 
 std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger(PlatformLoggerOptions options) {
-    if (options & WIN_ENSURE_CONSOLE_OPTION) {
-        if (AllocConsole()) {
-            freopen("conin$", "r", stdin);
-            freopen("conout$", "w", stdout);
-            freopen("conout$", "w", stderr);
-        }
-    }
+    if (options & WIN_ENSURE_OUTPUT_STREAMS_OPTION)
+        ensureOutputStreams();
 
     return std::make_unique<SdlLogger>();
 }
