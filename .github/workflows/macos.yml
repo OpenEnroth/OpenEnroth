@@ -80,7 +80,6 @@ jobs:
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
       working-directory: build
       run: |
-        pwd
         make GameTest_NullRenderer
       env:
         OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7        
