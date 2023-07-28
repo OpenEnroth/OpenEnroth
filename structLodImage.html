@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: LOD::CompressedHeader Struct Reference</title>
+<title>OpenEnroth: LodImage Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7682c14</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;187af54</span>
    </div>
   </td>
  </tr>
@@ -67,83 +67,63 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespaceLOD.html">LOD</a></li><li class="navelem"><a class="el" href="structLOD_1_1CompressedHeader.html">CompressedHeader</a></li>  </ul>
-</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structLOD_1_1CompressedHeader-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">LOD::CompressedHeader Struct Reference</div></div>
+<a href="structLodImage-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">LodImage Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;LOD.h&gt;</code></p>
+<p><code>#include &lt;LodFormats.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a7244655484f929299c24000d63a72827"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLOD_1_1CompressedHeader.html#a7244655484f929299c24000d63a72827">uVersion</a></td></tr>
-<tr class="separator:a7244655484f929299c24000d63a72827"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a553293bffbf20e91d798aa47d46b54e8"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLOD_1_1CompressedHeader.html#a553293bffbf20e91d798aa47d46b54e8">pMagic</a> [4]</td></tr>
-<tr class="separator:a553293bffbf20e91d798aa47d46b54e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9ab6da6388f1be357b8d410c227e981"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLOD_1_1CompressedHeader.html#ad9ab6da6388f1be357b8d410c227e981">uCompressedSize</a></td></tr>
-<tr class="separator:ad9ab6da6388f1be357b8d410c227e981"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14964370d859a6f939beb42dd2c2b0ba"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLOD_1_1CompressedHeader.html#a14964370d859a6f939beb42dd2c2b0ba">uDecompressedSize</a></td></tr>
-<tr class="separator:a14964370d859a6f939beb42dd2c2b0ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1e75e99244bac6efc54af6ac94088c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Library_2Image_2Image_8h.html#aef93fbe80799a61f25c2bc5d35600c16">GrayscaleImage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodImage.html#ac1e75e99244bac6efc54af6ac94088c4">image</a></td></tr>
+<tr class="separator:ac1e75e99244bac6efc54af6ac94088c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f6c943f8acb2e305dfea2f715d33ce4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodImage.html#a4f6c943f8acb2e305dfea2f715d33ce4">palette</a></td></tr>
+<tr class="separator:a4f6c943f8acb2e305dfea2f715d33ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dfe62fc15678444b1de2c98c006f8dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodImage.html#a3dfe62fc15678444b1de2c98c006f8dc">zeroIsTransparent</a> = false</td></tr>
+<tr class="separator:a3dfe62fc15678444b1de2c98c006f8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a553293bffbf20e91d798aa47d46b54e8" name="a553293bffbf20e91d798aa47d46b54e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a553293bffbf20e91d798aa47d46b54e8">&#9670;&#160;</a></span>pMagic</h2>
+<a id="ac1e75e99244bac6efc54af6ac94088c4" name="ac1e75e99244bac6efc54af6ac94088c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1e75e99244bac6efc54af6ac94088c4">&#9670;&#160;</a></span>image</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char LOD::CompressedHeader::pMagic[4]</td>
+          <td class="memname"><a class="el" href="Library_2Image_2Image_8h.html#aef93fbe80799a61f25c2bc5d35600c16">GrayscaleImage</a> LodImage::image</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ad9ab6da6388f1be357b8d410c227e981" name="ad9ab6da6388f1be357b8d410c227e981"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9ab6da6388f1be357b8d410c227e981">&#9670;&#160;</a></span>uCompressedSize</h2>
+<a id="a4f6c943f8acb2e305dfea2f715d33ce4" name="a4f6c943f8acb2e305dfea2f715d33ce4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f6c943f8acb2e305dfea2f715d33ce4">&#9670;&#160;</a></span>palette</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t LOD::CompressedHeader::uCompressedSize</td>
+          <td class="memname"><a class="el" href="structPalette.html">Palette</a> LodImage::palette</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a14964370d859a6f939beb42dd2c2b0ba" name="a14964370d859a6f939beb42dd2c2b0ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a14964370d859a6f939beb42dd2c2b0ba">&#9670;&#160;</a></span>uDecompressedSize</h2>
+<a id="a3dfe62fc15678444b1de2c98c006f8dc" name="a3dfe62fc15678444b1de2c98c006f8dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dfe62fc15678444b1de2c98c006f8dc">&#9670;&#160;</a></span>zeroIsTransparent</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t LOD::CompressedHeader::uDecompressedSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7244655484f929299c24000d63a72827" name="a7244655484f929299c24000d63a72827"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7244655484f929299c24000d63a72827">&#9670;&#160;</a></span>uVersion</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t LOD::CompressedHeader::uVersion</td>
+          <td class="memname">bool LodImage::zeroIsTransparent = false</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -151,7 +131,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/Engine/<a class="el" href="LOD_8h.html">LOD.h</a></li>
+<li>src/Library/LodFormats/<a class="el" href="LodFormats_8h.html">LodFormats.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

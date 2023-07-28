@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7682c14</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;187af54</span>
    </div>
   </td>
  </tr>
@@ -99,12 +99,10 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af8da90009ce8868d2f3a1f4b5bf78450"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ImageLoader_8cpp.html#af8da90009ce8868d2f3a1f4b5bf78450">MakePaletteSolid</a> (uint8_t *palette24)</td></tr>
-<tr class="separator:af8da90009ce8868d2f3a1f4b5bf78450"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b5edbef4bd92648a91d58f0dd795130"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ImageLoader_8cpp.html#a7b5edbef4bd92648a91d58f0dd795130">MakePaletteAlpha</a> (uint8_t *palette24)</td></tr>
-<tr class="separator:a7b5edbef4bd92648a91d58f0dd795130"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98514c6d9486ea780d29e4d67ad0f476"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ImageLoader_8cpp.html#a98514c6d9486ea780d29e4d67ad0f476">MakePaletteColorKey</a> (uint8_t *palette24, <a class="el" href="structColor.html">Color</a> key)</td></tr>
-<tr class="separator:a98514c6d9486ea780d29e4d67ad0f476"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fb68ea18099b95668487bce26b1e6d7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ImageLoader_8cpp.html#a2fb68ea18099b95668487bce26b1e6d7">MakePaletteAlpha</a> (const <a class="el" href="structPalette.html">Palette</a> &amp;palette)</td></tr>
+<tr class="separator:a2fb68ea18099b95668487bce26b1e6d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a4cec4da669a8b8d0c01554638ae0c8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ImageLoader_8cpp.html#a3a4cec4da669a8b8d0c01554638ae0c8">MakePaletteColorKey</a> (const <a class="el" href="structPalette.html">Palette</a> &amp;palette, <a class="el" href="structColor.html">Color</a> key)</td></tr>
+<tr class="separator:a3a4cec4da669a8b8d0c01554638ae0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af45b8670c5c0ea11b5b1e961906d7739"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ImageLoader_8cpp.html#af45b8670c5c0ea11b5b1e961906d7739">ProcessTransparentPixel</a> (const <a class="el" href="Library_2Image_2Image_8h.html#aef93fbe80799a61f25c2bc5d35600c16">GrayscaleImage</a> &amp;image, const <a class="el" href="structPalette.html">Palette</a> &amp;palette, size_t x, size_t y)</td></tr>
 <tr class="separator:af45b8670c5c0ea11b5b1e961906d7739"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -114,8 +112,8 @@ Variables</h2></td></tr>
 <tr class="separator:afabe5f6bf238e82820d4879f1a219ce9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a7b5edbef4bd92648a91d58f0dd795130" name="a7b5edbef4bd92648a91d58f0dd795130"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b5edbef4bd92648a91d58f0dd795130">&#9670;&#160;</a></span>MakePaletteAlpha()</h2>
+<a id="a2fb68ea18099b95668487bce26b1e6d7" name="a2fb68ea18099b95668487bce26b1e6d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fb68ea18099b95668487bce26b1e6d7">&#9670;&#160;</a></span>MakePaletteAlpha()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,8 +124,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">static <a class="el" href="structPalette.html">Palette</a> MakePaletteAlpha </td>
           <td>(</td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>palette24</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structPalette.html">Palette</a> &amp;&#160;</td>
+          <td class="paramname"><em>palette</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -140,8 +138,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a98514c6d9486ea780d29e4d67ad0f476" name="a98514c6d9486ea780d29e4d67ad0f476"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98514c6d9486ea780d29e4d67ad0f476">&#9670;&#160;</a></span>MakePaletteColorKey()</h2>
+<a id="a3a4cec4da669a8b8d0c01554638ae0c8" name="a3a4cec4da669a8b8d0c01554638ae0c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a4cec4da669a8b8d0c01554638ae0c8">&#9670;&#160;</a></span>MakePaletteColorKey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -152,8 +150,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">static <a class="el" href="structPalette.html">Palette</a> MakePaletteColorKey </td>
           <td>(</td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>palette24</em>, </td>
+          <td class="paramtype">const <a class="el" href="structPalette.html">Palette</a> &amp;&#160;</td>
+          <td class="paramname"><em>palette</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -165,32 +163,6 @@ Variables</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af8da90009ce8868d2f3a1f4b5bf78450" name="af8da90009ce8868d2f3a1f4b5bf78450"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8da90009ce8868d2f3a1f4b5bf78450">&#9670;&#160;</a></span>MakePaletteSolid()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structPalette.html">Palette</a> MakePaletteSolid </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>palette24</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
   </td>
