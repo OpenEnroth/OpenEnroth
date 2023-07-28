@@ -1,6 +1,6 @@
 #include "SaveLoad.h"
 
-#include <cstdlib>
+#include <cassert>
 #include <filesystem>
 #include <algorithm>
 #include <string>
@@ -148,10 +148,12 @@ void LoadGame(unsigned int uSlot) {
     bFlashHistoryBook = false;
 }
 
-void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
+SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &title) {
+    assert(IsAutoSAve || !title.empty());
+
     s_SavedMapName = pCurrentMapName;
     if (pCurrentMapName == "d05.blv") {  // arena
-        return;
+        return {};
     }
 
     int pPositionX = pParty->pos.x;
@@ -188,6 +190,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     SaveGameHeader save_header;
+    save_header.name = title;
     save_header.locationName = pCurrentMapName;
     save_header.playingTime = pParty->GetPlayingTime();
 
@@ -248,21 +251,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->uFallStartZ = pPositionZ;
     pParty->_viewYaw = partyViewYaw;
     pParty->_viewPitch = partyViewPitch;
+
+    return save_header;
 }
 
 void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
-        SaveGame(0, 0);
+        pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
 
-        // TODO(captainurist): this code doesn't belong here.
-        pSavegameList->pSavegameHeader[uSlot].locationName = pCurrentMapName;
-        pSavegameList->pSavegameHeader[uSlot].playingTime = pParty->GetPlayingTime();
-
-        SaveGameHeader_MM7 headerMm7;
-        snapshot(pSavegameList->pSavegameHeader[uSlot], &headerMm7);
-
-        pSave_LOD->Write("header.bin", &headerMm7, sizeof(headerMm7), 0);
-        pSave_LOD->CloseWriteFile();  //закрыть
         std::string src = makeDataPath("data", "new.lod");
         std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
