@@ -726,9 +726,9 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
         if (!actor->CanAct() || i == uActorID) continue;
 
         if (Actor::ArePeasantsOfSameFaction(victim, actor)) {
-            v4 = abs(actor->pos.x - victim->pos.x);
-            v5 = abs(actor->pos.y - victim->pos.y);
-            v6 = abs(actor->pos.z - victim->pos.z);
+            v4 = std::abs(actor->pos.x - victim->pos.x);
+            v5 = std::abs(actor->pos.y - victim->pos.y);
+            v6 = std::abs(actor->pos.z - victim->pos.z);
             if (int_get_vector_length(v4, v5, v6) < 4096) {
                 actor->monsterInfo.uHostilityType =
                     MonsterInfo::Hostility_Long;
@@ -1611,8 +1611,8 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
 
     x = pActors[uActor_id].initialPosition.x - pActors[uActor_id].pos.x;
     y = pActors[uActor_id].initialPosition.y - pActors[uActor_id].pos.y;
-    absx = abs(x);
-    absy = abs(y);
+    absx = std::abs(x);
+    absy = std::abs(y);
     if (absx <= absy)
         absx = absy + (absx / 2);
     else
@@ -1638,7 +1638,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
         return;
     }
     v10 = v9 + grng->random(256) - 128;
-    if (abs(v10 - pActors[uActor_id].yawAngle) > 256 &&
+    if (std::abs(v10 - pActors[uActor_id].yawAngle) > 256 &&
         !(pActors[uActor_id].attributes & ACTOR_ANIMATION)) {
         Actor::AI_Stand(uActor_id, uTarget_id, 256,
                         &doNotInitializeBecauseShouldBeRandom);
@@ -2184,9 +2184,9 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
             v10 = pMonsterStats->pInfos[thisActor->monsterInfo.uID]
                       .uHostilityType;
         v11 = _4DF380_hostilityRanges[v10];
-        v23 = abs(thisActor->pos.x - actor->pos.x);
-        v27 = abs(thisActor->pos.y - actor->pos.y);
-        v12 = abs(thisActor->pos.z - actor->pos.z);
+        v23 = std::abs(thisActor->pos.x - actor->pos.x);
+        v27 = std::abs(thisActor->pos.y - actor->pos.y);
+        v12 = std::abs(thisActor->pos.z - actor->pos.z);
         if (v23 <= v11 && v27 <= v11 && v12 <= v11 &&
             Detect_Between_Objects(PID(OBJECT_Actor, i),
                                             PID(OBJECT_Actor, uActorID)) &&
@@ -2213,9 +2213,9 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                 v15 = _4DF380_hostilityRanges[v14];
             else
                 v15 = _4DF380_hostilityRanges[4];
-            uint v16 = abs(thisActor->pos.x - pParty->pos.x);
-            uint v28 = abs(thisActor->pos.y - pParty->pos.y);
-            uint v17 = abs(thisActor->pos.z - pParty->pos.z);
+            uint v16 = std::abs(thisActor->pos.x - pParty->pos.x);
+            uint v28 = std::abs(thisActor->pos.y - pParty->pos.y);
+            uint v17 = std::abs(thisActor->pos.z - pParty->pos.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
                 *OutTargetPID = PID(OBJECT_Character, 0);
@@ -2514,7 +2514,7 @@ void Actor::SummonMinion(int summonerId) {
         if (sectorId != actorSector) return;
         int z = BLV_GetFloorLevel(Vec3i(v15, v17, v27), sectorId);
         if (z != -30000) return;
-        if (abs(z - v27) > 1024) return;
+        if (std::abs(z - v27) > 1024) return;
     }
 
     extraSummonLevel = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
@@ -3141,9 +3141,9 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     } else {
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         if (projectileSprite->uSpellID != SPELL_DARK_SOULDRINKER) {
-            int d1 = abs(pParty->pos.x - projectileSprite->vPosition.x);
-            int d2 = abs(pParty->pos.y - projectileSprite->vPosition.y);
-            int d3 = abs(pParty->pos.z - projectileSprite->vPosition.z);
+            int d1 = std::abs(pParty->pos.x - projectileSprite->vPosition.x);
+            int d2 = std::abs(pParty->pos.y - projectileSprite->vPosition.y);
+            int d3 = std::abs(pParty->pos.z - projectileSprite->vPosition.z);
             v61 = int_get_vector_length(d1, d2, d3);
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
@@ -3671,9 +3671,9 @@ bool CheckActors_proximity() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
     for (uint i = 0; i < pActors.size(); ++i) {
-        for_x = abs(pActors[i].pos.x - pParty->pos.x);
-        for_y = abs(pActors[i].pos.y - pParty->pos.y);
-        for_z = abs(pActors[i].pos.z - pParty->pos.z);
+        for_x = std::abs(pActors[i].pos.x - pParty->pos.x);
+        for_y = std::abs(pActors[i].pos.y - pParty->pos.y);
+        for_z = std::abs(pActors[i].pos.z - pParty->pos.z);
         if (int_get_vector_length(for_x, for_y, for_z) < distance) {
             if (pActors[i].aiState != Dead) {
                 if (pActors[i].aiState != Dying &&
@@ -4073,9 +4073,9 @@ void Actor::MakeActorAIList_ODM() {
             continue;
         }
 
-        int delta_x = abs(pParty->pos.x - actor.pos.x);
-        int delta_y = abs(pParty->pos.y - actor.pos.y);
-        int delta_z = abs(pParty->pos.z - actor.pos.z);
+        int delta_x = std::abs(pParty->pos.x - actor.pos.x);
+        int delta_y = std::abs(pParty->pos.y - actor.pos.y);
+        int delta_z = std::abs(pParty->pos.z - actor.pos.z);
 
         int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.radius;
         if (distance < 0)
@@ -4126,9 +4126,9 @@ int Actor::MakeActorAIList_BLV() {
             continue;
         }
 
-        int delta_x = abs(pParty->pos.x - actor.pos.x);
-        int delta_y = abs(pParty->pos.y - actor.pos.y);
-        int delta_z = abs(pParty->pos.z - actor.pos.z);
+        int delta_x = std::abs(pParty->pos.x - actor.pos.x);
+        int delta_y = std::abs(pParty->pos.y - actor.pos.y);
+        int delta_z = std::abs(pParty->pos.z - actor.pos.z);
 
         int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.radius;
         if (distance < 0)
@@ -4310,7 +4310,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1.toFloat());
 
             // epsilon check?
-            if (abs(pointplanedist) / 16384.0 > abs(facenotparallel)) continue;
+            if (std::abs(pointplanedist) / 16384.0 > std::abs(facenotparallel)) continue;
 
             // how far along line intersection is
             float intersect = pointplanedist / facenotparallel;
@@ -4414,7 +4414,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
             sectorId == partySectorId &&
             (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
-            (zdiff = abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
+            (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
         actor->summonerId = PID(OBJECT_Character, spell_power);
 
         GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
@@ -4661,7 +4661,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37);
             v39 = v38;
             if (v38 != -30000) {
-                if (abs(v38 - a3) <= 1024) {
+                if (std::abs(v38 - a3) <= 1024) {
                     a3 = v39;
                     if (a5)
                         pMonster->attributes |= ACTOR_AGGRESSOR;
