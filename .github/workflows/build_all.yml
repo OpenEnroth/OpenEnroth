@@ -17,10 +17,6 @@ jobs:
     name: Advance Nightly Sourcode
     runs-on: ubuntu-latest
     steps:    
-        
-    - name: Advance nightly tag
-      uses: actions/github-script@v3
-      with:        
     - name: Sleep for 1 seconds #github api takes a second to catch up sometimes...
       run: sleep 1
       shell: bash
