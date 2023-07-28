@@ -549,13 +549,13 @@ void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst) {
     dst->Write("npcgroup.bin", toBlob(src.npcGroup));
 }
 
-void deserialize(const LOD::File &src, SaveGame_MM7 *dst) {
-    deserialize(src.LoadRaw("header.bin"), &dst->header);
-    deserialize(src.LoadRaw("party.bin"), &dst->party);
-    deserialize(src.LoadRaw("clock.bin"), &dst->eventTimer);
-    deserialize(src.LoadRaw("overlay.bin"), &dst->overlays);
-    deserialize(src.LoadRaw("npcdata.bin"), &dst->npcData);
-    deserialize(src.LoadRaw("npcgroup.bin"), &dst->npcGroup);
+void deserialize(const LodReader &src, SaveGame_MM7 *dst) {
+    deserialize(src.read("header.bin"), &dst->header);
+    deserialize(src.read("party.bin"), &dst->party);
+    deserialize(src.read("clock.bin"), &dst->eventTimer);
+    deserialize(src.read("overlay.bin"), &dst->overlays);
+    deserialize(src.read("npcdata.bin"), &dst->npcData);
+    deserialize(src.read("npcgroup.bin"), &dst->npcGroup);
 }
 
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {

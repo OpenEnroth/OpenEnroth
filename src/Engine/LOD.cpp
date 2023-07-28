@@ -6,8 +6,6 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
 
-#include "Engine/Graphics/Texture_MM7.h"
-
 #include "Library/Compression/Compression.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Logger/Logger.h"
@@ -16,8 +14,8 @@
 #include "Utility/String.h"
 #include "Utility/DataPath.h"
 
-LOD::WriteableFile *pSave_LOD = nullptr; // LOD pointing to the savegame file currently being processed
-std::unique_ptr<LodReader> pGames_LOD = nullptr; // LOD pointing to data/games.lod
+std::unique_ptr<LodReader> pSave_LOD; // LOD pointing to the savegame file currently being processed
+std::unique_ptr<LodReader> pGames_LOD; // LOD pointing to data/games.lod
 
 struct FileCloser {
     void operator()(FILE *file) {
@@ -536,7 +534,6 @@ int LOD::File::GetSubNodeIndex(const std::string &name) const {
 
 bool Initialize_GamesLOD_NewLOD() {
     pGames_LOD = std::make_unique<LodReader>(makeDataPath("data", "games.lod"));
-    pSave_LOD = new LOD::WriteableFile;
-    pSave_LOD->AllocSubIndicesAndIO(300, 100000);
+    pSave_LOD = std::make_unique<LodReader>();
     return true;
 }

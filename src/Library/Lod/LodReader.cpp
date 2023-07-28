@@ -125,6 +125,14 @@ void LodReader::open(std::string_view path, LodOpenFlags openFlags) {
     _files = std::move(files);
 }
 
+void LodReader::close() {
+    _lod = Blob();
+    _path = {};
+    _description = {};
+    _rootName = {};
+    _files = {};
+}
+
 bool LodReader::exists(const std::string &filename) const {
     assert(isOpen());
 

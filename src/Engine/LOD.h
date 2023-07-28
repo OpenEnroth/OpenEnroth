@@ -114,5 +114,5 @@ class WriteableFile : public File {
 };
 };  // namespace LOD
 
-extern LOD::WriteableFile *pSave_LOD;
+extern std::unique_ptr<LodReader> pSave_LOD;
 extern std::unique_ptr<LodReader> pGames_LOD;

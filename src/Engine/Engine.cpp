@@ -418,9 +418,6 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    if (pSave_LOD)
-        pSave_LOD->FreeSubIndexAndIO();
-
     delete pEventTimer;
 }
 

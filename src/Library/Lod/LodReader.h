@@ -31,6 +31,7 @@ class LodReader final {
      *                                  or if it's not a LOD.
      */
     void open(std::string_view path, LodOpenFlags openFlags = 0);
+    void close();
 
     [[nodiscard]] bool isOpen() const {
         return !!_lod;

@@ -50,22 +50,21 @@ void LoadGame(unsigned int uSlot) {
 
     pParty->Reset();
 
-    pSave_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_NULL;
 
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
     std::string to_file_path = makeDataPath("data", "new.lod");
 
+    pSave_LOD->close();
+
     std::error_code ec;
     if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
         Error("Failed to copy: %s", filename.c_str());
 
-    pSave_LOD->LoadFile(to_file_path, 0);
+    pSave_LOD->open(to_file_path, LOD_ALLOW_DUPLICATES);
 
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
-
-    LodReader tmpReader(to_file_path, LOD_ALLOW_DUPLICATES); // TODO(captainurist): temporary compatibility layer.
 
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
@@ -78,7 +77,7 @@ void LoadGame(unsigned int uSlot) {
             LloydBeacon &beacon = player->vBeacons[j];
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&tmpReader, str));
+            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD.get(), str));
             beacon.image->rgba(); // Force load!
         }
     }
@@ -184,6 +183,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     //    render->Present();
     //}
 
+    pSave_LOD->close();
     LOD::WriteableFile lodWriter;
     lodWriter.AllocSubIndicesAndIO(300, 100000);
     lodWriter.LoadFile(makeDataPath("data", "new.lod"), 0); // We append to an existing file here.
@@ -257,7 +257,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     pParty->_viewPitch = partyViewPitch;
 
     lodWriter.CloseWriteFile();
-    pSave_LOD->LoadFile(makeDataPath("data", "new.lod"), 0);
+    pSave_LOD->open(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
 
     return save_header;
 }
@@ -329,6 +329,7 @@ void SavegameList::Reset() {
 
 void SaveNewGame() {
     std::string file_path = makeDataPath("data", "new.lod");
+    pSave_LOD->close();
     std::filesystem::remove(file_path);  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок

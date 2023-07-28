@@ -19,9 +19,9 @@ class BSPModel;
 struct IndoorLocation;
 struct OutdoorLocation;
 struct SpriteFrameTable;
+class LodReader;
 namespace LOD {
 class WriteableFile;
-class File;
 } // namespace LOD
 
 
@@ -138,7 +138,7 @@ struct SaveGame_MM7 {
 void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst);
 void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst);
 void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst);
-void deserialize(const LOD::File &src, SaveGame_MM7 *dst);
+void deserialize(const LodReader &src, SaveGame_MM7 *dst);
 
 
 struct SpriteFrameTable_MM7 {
