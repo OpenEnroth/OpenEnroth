@@ -13,17 +13,8 @@ env:
   TAG_NAME: "nightly"
 
 jobs:
-  advanceNightlyTag:
-    name: Advance Nightly Sourcode
-    runs-on: ubuntu-latest
-    steps:    
-    - name: Sleep for 1 seconds #github api takes a second to catch up sometimes...
-      run: sleep 1
-      shell: bash
-
   build_android:
     name: Build Android Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -145,7 +136,6 @@ jobs:
           
   build_linux:
     name: Build Linux Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -242,7 +232,6 @@ jobs:
         
   build_macos:
     name: Build OSX Client
-    needs: advanceNightlyTag  
     runs-on: macos-12
     strategy:
       fail-fast: false
@@ -315,7 +304,6 @@ jobs:
       
   build_windows:
     name: Build Windows Client
-    needs: advanceNightlyTag   
     runs-on: windows-2022
     strategy:
       fail-fast: false
