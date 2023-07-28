@@ -99,18 +99,36 @@ std::string WinPlatform::winQueryRegistry(const std::wstring &path) const {
     return {};
 }
 
+static void ensureOutputStreams() {
+    HANDLE outHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE errHandle = GetStdHandle(STD_ERROR_HANDLE);
+
+    // MSDN on GetStdHandle:
+    //      If the function fails, the return value is INVALID_HANDLE_VALUE.
+    //      If an application does not have associated standard handles, such as a service running on an interactive
+    //      desktop, and has not redirected them, the return value is NULL.
+    //
+    // So in this case we'll open a new console. GetStdHandle should never fail, but we still check just in case.
+    bool hasStdOut = outHandle != NULL && outHandle != INVALID_HANDLE_VALUE;
+    bool hasStdErr = errHandle != NULL && errHandle != INVALID_HANDLE_VALUE;
+    if (hasStdOut && hasStdErr)
+        return;
+
+    if (!AllocConsole())
+        return; // Can't do anything about it.
+
+    freopen("conin$", "r", stdin);
+    freopen("conout$", "w", stdout);
+    freopen("conout$", "w", stderr);
+}
+
 std::unique_ptr<Platform> Platform::createStandardPlatform(PlatformLogger *logger) {
     return std::make_unique<WinPlatform>(logger);
 }
 
 std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger(PlatformLoggerOptions options) {
-    if (options & WIN_ENSURE_CONSOLE_OPTION) {
-        if (AllocConsole()) {
-            freopen("conin$", "r", stdin);
-            freopen("conout$", "w", stdout);
-            freopen("conout$", "w", stderr);
-        }
-    }
+    if (options & WIN_ENSURE_OUTPUT_STREAMS_OPTION)
+        ensureOutputStreams();
 
     return std::make_unique<SdlLogger>();
 }

@@ -101,7 +101,7 @@ enum class PlatformLogCategory {
 using enum PlatformLogCategory;
 
 enum PlatformLoggerOption {
-    WIN_ENSURE_CONSOLE_OPTION = 0x1
+    WIN_ENSURE_OUTPUT_STREAMS_OPTION = 0x1
 };
 using enum PlatformLoggerOption;
 MM_DECLARE_FLAGS(PlatformLoggerOptions, PlatformLoggerOption)
