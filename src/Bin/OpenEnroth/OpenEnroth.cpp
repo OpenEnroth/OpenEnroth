@@ -9,6 +9,7 @@
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
@@ -49,6 +50,11 @@ int runRetrace(OpenEnrothOptions options) {
 }
 
 int runOpenEnroth(OpenEnrothOptions options) {
+    setErrorHandler([](const std::string &title, const std::string &message) {
+        if (platform)
+            platform->showMessageBox(title, message);
+    });
+
     GameStarter(options).run();
     return 0;
 }
