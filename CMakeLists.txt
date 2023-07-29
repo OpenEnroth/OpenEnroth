@@ -109,6 +109,7 @@ elseif(BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Fallback to ld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
     endif()
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og")
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
