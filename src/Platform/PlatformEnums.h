@@ -100,13 +100,6 @@ enum class PlatformLogCategory {
 };
 using enum PlatformLogCategory;
 
-enum PlatformLoggerOption {
-    WIN_ENSURE_OUTPUT_STREAMS_OPTION = 0x1
-};
-using enum PlatformLoggerOption;
-MM_DECLARE_FLAGS(PlatformLoggerOptions, PlatformLoggerOption)
-MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformLoggerOptions)
-
 enum class PlatformKey : int {
     // usual text input
     KEY_CHAR, // TODO(captainurist): this doesn't belong here

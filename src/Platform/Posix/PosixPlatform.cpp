@@ -7,6 +7,6 @@ std::unique_ptr<Platform> Platform::createStandardPlatform(PlatformLogger *logge
     return std::make_unique<SdlPlatform>(logger);
 }
 
-std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger(PlatformLoggerOptions) {
+std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger() {
     return std::make_unique<SdlLogger>();
 }

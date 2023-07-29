@@ -19,7 +19,7 @@ class PlatformLogger {
  public:
     virtual ~PlatformLogger() = default;
 
-    static std::unique_ptr<PlatformLogger> createStandardLogger(PlatformLoggerOptions options);
+    static std::unique_ptr<PlatformLogger> createStandardLogger();
 
     virtual void setLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) = 0;
     virtual PlatformLogLevel logLevel(PlatformLogCategory category) const = 0;
