@@ -81,13 +81,13 @@ static std::vector<LodEntry> parseFileEntries(InputStream &stream, const LodEntr
 
 LodReader::LodReader() = default;
 
-LodReader::LodReader(std::string_view path) {
-    open(path);
+LodReader::LodReader(std::string_view path, LodOpenFlags openFlags) {
+    open(path, openFlags);
 }
 
 LodReader::~LodReader() = default;
 
-void LodReader::open(std::string_view path) {
+void LodReader::open(std::string_view path, LodOpenFlags openFlags) {
     Blob lod = Blob::fromFile(path); // This call throws if the file doesn't exist.
 
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
@@ -103,8 +103,13 @@ void LodReader::open(std::string_view path) {
     std::unordered_map<std::string, LodRegion> files;
     for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
         std::string name = toLower(entry.name);
-        if (files.contains(name))
-            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", path, name);
+        if (files.contains(name)) {
+            if (openFlags & LOD_ALLOW_DUPLICATES) {
+                continue; // Only the first entry is kept in this case.
+            } else {
+                throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", path, name);
+            }
+        }
 
         LodRegion region;
         region.offset = rootEntry.dataOffset + entry.dataOffset;
@@ -118,6 +123,14 @@ void LodReader::open(std::string_view path) {
     _description = std::move(header.description);
     _rootName = std::move(rootEntry.name);
     _files = std::move(files);
+}
+
+void LodReader::close() {
+    _lod = Blob();
+    _path = {};
+    _description = {};
+    _rootName = {};
+    _files = {};
 }
 
 bool LodReader::exists(const std::string &filename) const {

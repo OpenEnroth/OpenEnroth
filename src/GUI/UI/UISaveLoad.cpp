@@ -63,7 +63,7 @@ GUIWindow_Save::GUIWindow_Save() :
     pSavegameList->selectedSlot = 0;
     pSavegameList->saveListPosition = 0;
 
-    LOD::File pLODFile;
+    LodReader pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // std::string file_name = pSavegameList->pFileList[i];
         std::string file_name = fmt::format("save{:03}.mm7", i);
@@ -76,8 +76,8 @@ GUIWindow_Save::GUIWindow_Save() :
             pSavegameList->pSavegameUsedSlots[i] = false;
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
         } else {
-            pLODFile.Open(str);
-            deserialize(pLODFile.LoadRaw("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
+            pLODFile.open(str, LOD_ALLOW_DUPLICATES);
+            deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
             if (pSavegameList->pSavegameHeader[i].name.empty()) {
                 // blank so add something - suspect quicksaves
@@ -169,7 +169,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     pSavegameList->selectedSlot = 0;
     pSavegameList->saveListPosition = 0;
 
-    LOD::File pLODFile;
+    LodReader pLODFile;
     for (uint i = 0; i < pSavegameList->numSavegameFiles; ++i) {
         std::string str = makeDataPath("saves", pSavegameList->pFileList[i]);
         if (!std::filesystem::exists(str)) {
@@ -186,8 +186,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             }
         }
 
-        if (!pLODFile.Open(str)) __debugbreak();
-        deserialize(pLODFile.LoadRaw("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
+        pLODFile.open(str, LOD_ALLOW_DUPLICATES);
+        deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
         if (iequals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_AUTOSAVE);

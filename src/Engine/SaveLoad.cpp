@@ -1,6 +1,6 @@
 #include "SaveLoad.h"
 
-#include <cstdlib>
+#include <cassert>
 #include <filesystem>
 #include <algorithm>
 #include <string>
@@ -50,17 +50,18 @@ void LoadGame(unsigned int uSlot) {
 
     pParty->Reset();
 
-    pSave_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_NULL;
 
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
     std::string to_file_path = makeDataPath("data", "new.lod");
 
+    pSave_LOD->close();
+
     std::error_code ec;
     if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
         Error("Failed to copy: %s", filename.c_str());
 
-    pSave_LOD->LoadFile(to_file_path, 0);
+    pSave_LOD->open(to_file_path, LOD_ALLOW_DUPLICATES);
 
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
@@ -76,7 +77,7 @@ void LoadGame(unsigned int uSlot) {
             LloydBeacon &beacon = player->vBeacons[j];
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD, str));
+            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD.get(), str));
             beacon.image->rgba(); // Force load!
         }
     }
@@ -146,10 +147,12 @@ void LoadGame(unsigned int uSlot) {
     bFlashHistoryBook = false;
 }
 
-void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
+SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &title) {
+    assert(IsAutoSAve || !title.empty());
+
     s_SavedMapName = pCurrentMapName;
     if (pCurrentMapName == "d05.blv") {  // arena
-        return;
+        return {};
     }
 
     int pPositionX = pParty->pos.x;
@@ -180,16 +183,22 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //    render->Present();
     //}
 
+    pSave_LOD->close();
+    LOD::WriteableFile lodWriter;
+    lodWriter.AllocSubIndicesAndIO(300, 100000);
+    lodWriter.LoadFile(makeDataPath("data", "new.lod"), 0); // We append to an existing file here.
+
     Blob packedScreenshot{ render->PackScreenshot(150, 112) };  // создание скриншота
-    if (pSave_LOD->Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
+    if (lodWriter.Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
 
     SaveGameHeader save_header;
+    save_header.name = title;
     save_header.locationName = pCurrentMapName;
     save_header.playingTime = pParty->GetPlayingTime();
 
-    serialize(save_header, pSave_LOD, tags::via<SaveGame_MM7>);
+    serialize(save_header, &lodWriter, tags::via<SaveGame_MM7>);
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
@@ -204,7 +213,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 assert(image->rgba());
                 Blob packedPCX = PCX::Encode(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                if (pSave_LOD->Write(str, packedPCX.data(), packedPCX.size(), 0)) {
+                if (lodWriter.Write(str, packedPCX.data(), packedPCX.size(), 0)) {
                     logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
             }
@@ -228,7 +237,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
-        if (pSave_LOD->Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
+        if (lodWriter.Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 208));
         }
     }
@@ -246,21 +255,17 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->uFallStartZ = pPositionZ;
     pParty->_viewYaw = partyViewYaw;
     pParty->_viewPitch = partyViewPitch;
+
+    lodWriter.CloseWriteFile();
+    pSave_LOD->open(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
+
+    return save_header;
 }
 
 void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
-        SaveGame(0, 0);
+        pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
 
-        // TODO(captainurist): this code doesn't belong here.
-        pSavegameList->pSavegameHeader[uSlot].locationName = pCurrentMapName;
-        pSavegameList->pSavegameHeader[uSlot].playingTime = pParty->GetPlayingTime();
-
-        SaveGameHeader_MM7 headerMm7;
-        snapshot(pSavegameList->pSavegameHeader[uSlot], &headerMm7);
-
-        pSave_LOD->Write("header.bin", &headerMm7, sizeof(headerMm7), 0);
-        pSave_LOD->CloseWriteFile();  //закрыть
         std::string src = makeDataPath("data", "new.lod");
         std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
@@ -280,10 +285,10 @@ void DoSavegame(unsigned int uSlot) {
         }
     }
 
-    if (pCurrentMapName != "d05.blv")
-        pSave_LOD->_4621A7();
-    else
+    if (pCurrentMapName == "d05.blv")
         GameUI_SetStatusBar(LSTR_NO_SAVING_IN_ARENA);
+
+    // TODO(captainurist): This ^v doesn't seem right, need an else block?
 
     pEventTimer->Resume();
     GameUI_SetStatusBar(LSTR_GAME_SAVED);
@@ -323,11 +328,8 @@ void SavegameList::Reset() {
 }
 
 void SaveNewGame() {
-    if (pSave_LOD != nullptr) {
-        pSave_LOD->CloseWriteFile();
-    }
-
     std::string file_path = makeDataPath("data", "new.lod");
+    pSave_LOD->close();
     std::filesystem::remove(file_path);  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок
@@ -336,10 +338,13 @@ void SaveNewGame() {
     header.LODSize = 100;
     header.dword_0000A8 = 0;
 
-    pSave_LOD->CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
-    if (pSave_LOD->LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
-        pSave_LOD->CreateTempFile();  // создаётся временный файл OutputFileHandle
-        pSave_LOD->ClearSubNodes();
+    LOD::WriteableFile lodWriter;
+    lodWriter.AllocSubIndicesAndIO(300, 100000);
+
+    lodWriter.CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
+    if (lodWriter.LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
+        lodWriter.CreateTempFile();  // создаётся временный файл OutputFileHandle
+        lodWriter.ClearSubNodes();
 
         // Copy ddm & dlv files, can actually just filter by extension instead.
         for (const std::string &name : pGames_LOD->ls()) {
@@ -347,7 +352,7 @@ void SaveNewGame() {
                 continue;
 
             Blob data = pGames_LOD->readRaw(name);
-            pSave_LOD->AppendDirectory(name, data.data(), data.size());
+            lodWriter.AppendDirectory(name, data.data(), data.size());
         }
 
         pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
@@ -356,9 +361,10 @@ void SaveNewGame() {
         SaveGameHeader_MM7 headerMm7;
         snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
 
-        pSave_LOD->AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
+        lodWriter.AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
 
-        pSave_LOD->FixDirectoryOffsets();
+        lodWriter.FixDirectoryOffsets();
+        lodWriter.CloseWriteFile();
 
         pParty->lastPos.x = 12552;
         pParty->lastPos.y = 1816;

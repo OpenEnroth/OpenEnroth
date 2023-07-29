@@ -329,7 +329,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     IndoorDelta_MM7 delta;
-    if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
+    if (Blob blob = pSave_LOD->read(dlv_filename)) {
         try {
             deserialize(blob, &delta, tags::context(location));
 

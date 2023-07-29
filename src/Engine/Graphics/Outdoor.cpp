@@ -878,7 +878,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     OutdoorDelta_MM7 delta;
-    if (Blob blob = pSave_LOD->LoadCompressed(ddm_filename)) {
+    if (Blob blob = pSave_LOD->read(ddm_filename)) {
         try {
             deserialize(blob, &delta, tags::context(location));
 

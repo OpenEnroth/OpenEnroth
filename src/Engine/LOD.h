@@ -95,7 +95,6 @@ class WriteableFile : public File {
     void CloseWriteFile();
     int CreateTempFile();
     bool FixDirectoryOffsets();
-    bool _4621A7();
     int CreateNewLod(LOD::FileHeader *pHeader, const std::string &root_name, const std::string &Source);
 
     void AllocSubIndicesAndIO(unsigned int uNumSubIndices, unsigned int uBufferSize);
@@ -115,5 +114,5 @@ class WriteableFile : public File {
 };
 };  // namespace LOD
 
-extern LOD::WriteableFile *pSave_LOD;
+extern std::unique_ptr<LodReader> pSave_LOD;
 extern std::unique_ptr<LodReader> pGames_LOD;

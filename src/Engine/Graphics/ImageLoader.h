@@ -7,12 +7,9 @@
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 
-namespace LOD {
-class File;
-} // namespace LOD
-
 class LodSpriteCache;
 class LodTextureCache;
+class LodReader;
 class Logger;
 
 class ImageLoader {
@@ -103,7 +100,7 @@ class PCX_File_Loader : public PCX_Loader {
 
 class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Raw_Loader(LOD::File *lod, const std::string &filename) {
+    inline PCX_LOD_Raw_Loader(LodReader *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -111,7 +108,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LOD::File *lod;
+    LodReader *lod;
 };
 
 class PCX_LOD_Compressed_Loader : public PCX_Loader {

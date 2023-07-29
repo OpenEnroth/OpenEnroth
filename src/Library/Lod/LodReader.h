@@ -6,6 +6,8 @@
 
 #include "Utility/Memory/Blob.h"
 
+#include "LodEnums.h"
+
 class InputStream;
 struct LodEntry;
 
@@ -19,15 +21,17 @@ struct LodEntry;
 class LodReader final {
  public:
     LodReader();
-    LodReader(std::string_view path);
+    LodReader(std::string_view path, LodOpenFlags openFlags = 0);
     ~LodReader();
 
     /**
      * @param path                      Path to the LOD file to open for reading.
+     * @param openFlags                 Open flags.
      * @throw Exception                 If the LOD couldn't be opened - e.g., if the file doesn't exist,
      *                                  or if it's not a LOD.
      */
-    void open(std::string_view path);
+    void open(std::string_view path, LodOpenFlags openFlags = 0);
+    void close();
 
     [[nodiscard]] bool isOpen() const {
         return !!_lod;
