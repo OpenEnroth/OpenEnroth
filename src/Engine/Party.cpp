@@ -808,13 +808,11 @@ void Party::updateCharactersAndHirelingsEmotions() {
                     player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_2;
             }
 
-            for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j) {
-                PlayerFrame *frame = &pPlayerFrameTable->pFrames[j];
-                if (frame->expression == player.expression) {
-                    player.uExpressionTimeLength = 8 * frame->uAnimLength;
-                    break;
-                }
-            }
+            // TODO(captainurist): We overwrite the random timing from the CHARACTER_EXPRESSION_NORMAL branch here.
+            //                     Doesn't seem intentional!
+            int timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
+            if (timeLength != 0)
+                player.uExpressionTimeLength = timeLength;
         } else if (player.expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||

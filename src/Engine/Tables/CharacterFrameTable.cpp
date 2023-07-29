@@ -11,6 +11,13 @@ unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterExpressionID expr
     return 0;
 }
 
+int PlayerFrameTable::GetDurationByExpression(CharacterExpressionID expression) {
+    int index = GetFrameIdByExpression(expression);
+    if (index == 0)
+        return 0;
+    return this->pFrames[index].uAnimLength * 8;
+}
+
 //----- (00494B10) --------------------------------------------------------
 PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, int gameTime) {
     if (this->pFrames[uFramesetID].uFlags & 1 && this->pFrames[uFramesetID].uAnimLength != 0) {
