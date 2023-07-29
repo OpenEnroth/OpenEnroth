@@ -268,8 +268,8 @@ void ArenaFight() {
     int v3;                  // eax@10
     signed int v4;           // esi@10
     signed int v6;           // ebx@34
-    signed int v13;          // eax@49
-    int v14;                 // esi@49
+    signed int v13 = 0;          // eax@49
+    int v14 = 0;                 // esi@49
     int v15;                 // edx@50
     signed int v17;          // ecx@51
     int v18;                 // edx@53
@@ -278,7 +278,7 @@ void ArenaFight() {
     int16_t v23[LAST_ARENA_FIGHTER_TYPE] {};        // [sp+Ch] [bp-134h]@39
     int16_t monster_ids[6] {};  // [sp+128h] [bp-18h]@56
     int v26;                 // [sp+134h] [bp-Ch]@1
-    int num_monsters;        // [sp+13Ch] [bp-4h]@17
+    int num_monsters = 0;        // [sp+13Ch] [bp-4h]@17
 
     v26 = 0;
     pParty->field_7B5_in_arena_quest = uDialogueType;

@@ -63,6 +63,8 @@ void GUIWindow_Tavern::arcomageRulesDialogue() {
     if (352 - pTextHeight < 8) {
         font = pFontCreate;
         pTextHeight = pFontCreate->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
+    } else {
+        return; // TODO(captainurist): what's going on here?
     }
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);

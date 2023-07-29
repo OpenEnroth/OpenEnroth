@@ -81,6 +81,7 @@ elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
     add_compile_options(-Werror=inconsistent-missing-override) # Clang-specific, goes with -Werror=suggest-override.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
+    add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     enable_libcxx_assertions(FALSE)
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary

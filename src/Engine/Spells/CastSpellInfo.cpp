@@ -326,6 +326,8 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int spell_power;
                     switch (spell_mastery) {
+                        default:
+                            assert(false);
                         case CHARACTER_SKILL_MASTERY_NOVICE:
                             spell_power = 2;
                             break;
@@ -336,8 +338,6 @@ void CastSpellInfoHelpers::castSpell() {
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                             spell_power = 4;
                             break;
-                        default:
-                            assert(false);
                     }
                     pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT]
                         .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, spell_power, 0, 0);
@@ -740,6 +740,8 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int spell_power;
                     switch (spell_mastery) {
+                        default:
+                            assert(false);
                         case CHARACTER_SKILL_MASTERY_NOVICE:
                             spell_power = 1;
                             break;
@@ -752,8 +754,6 @@ void CastSpellInfoHelpers::castSpell() {
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                             spell_power = 10;
                             break;
-                        default:
-                            assert(false);
                     }
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pCharacters[pCastSpell->uPlayerID_2].pCharacterBuffs[CHARACTER_BUFF_REGENERATION]
@@ -1258,6 +1258,8 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int shots_num;
                     switch (spell_mastery) {
+                        default:
+                            assert(false);
                         case CHARACTER_SKILL_MASTERY_NOVICE:
                             shots_num = 1;
                             break;
@@ -1270,8 +1272,6 @@ void CastSpellInfoHelpers::castSpell() {
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                             shots_num = 7;
                             break;
-                        default:
-                            assert(false);
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
@@ -2456,6 +2456,9 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power;
 
                     switch (spell_mastery) {
+                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 have different durations
+                        default:
+                            assert(false);
                         case CHARACTER_SKILL_MASTERY_EXPERT:
                             spell_duration = GameTime::FromHours(3 * spell_level);
                             spell_power = 3 * spell_level + 10;
@@ -2468,9 +2471,6 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromHours(5 * spell_level);
                             spell_power = 5 * spell_level + 10;
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 have different durations
-                        default:
-                            assert(false);
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS]
@@ -2504,6 +2504,10 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power;
 
                     switch (spell_mastery) {
+                        case CHARACTER_SKILL_MASTERY_NOVICE: // In MM6 this spell is different and is of dark magic
+                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        default:
+                            assert(false);
                         case CHARACTER_SKILL_MASTERY_MASTER:
                             spell_duration = GameTime::FromHours(4 * spell_level);
                             spell_power = 4 * spell_level;
@@ -2512,10 +2516,6 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromHours(5 * spell_level);
                             spell_power = 5 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // In MM6 this spell is different and is of dark magic
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
-                        default:
-                            assert(false);
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
@@ -2618,6 +2618,8 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int target_monster_level;
                     switch (spell_mastery) {
+                        default:
+                            assert(false);
                         case CHARACTER_SKILL_MASTERY_NOVICE:
                             target_monster_level = 2 * spell_level;
                             break;
@@ -2630,8 +2632,6 @@ void CastSpellInfoHelpers::castSpell() {
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                             target_monster_level = 5 * spell_level;
                             break;
-                        default:
-                            assert(false);
                     }
                     int zombie_hp_limit = target_monster_level * 10;
                     if (pCastSpell->spell_target_pid == PID_INVALID) {

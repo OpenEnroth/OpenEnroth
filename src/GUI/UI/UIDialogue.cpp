@@ -671,28 +671,19 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
         }
     } else if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
         int npc_event_id;
-
-        switch (option) {
-          case DIALOGUE_SCRIPTED_LINE_1:
+        if (option == DIALOGUE_SCRIPTED_LINE_1) {
             npc_event_id = speakingNPC->dialogue_1_evt_id;
-            break;
-          case DIALOGUE_SCRIPTED_LINE_2:
+        } else if (option == DIALOGUE_SCRIPTED_LINE_2) {
             npc_event_id = speakingNPC->dialogue_2_evt_id;
-            break;
-          case DIALOGUE_SCRIPTED_LINE_3:
+        } else if (option == DIALOGUE_SCRIPTED_LINE_3) {
             npc_event_id = speakingNPC->dialogue_3_evt_id;
-            break;
-          case DIALOGUE_SCRIPTED_LINE_4:
+        } else if (option == DIALOGUE_SCRIPTED_LINE_4) {
             npc_event_id = speakingNPC->dialogue_4_evt_id;
-            break;
-          case DIALOGUE_SCRIPTED_LINE_5:
+        } else if (option == DIALOGUE_SCRIPTED_LINE_5) {
             npc_event_id = speakingNPC->dialogue_5_evt_id;
-            break;
-          case DIALOGUE_SCRIPTED_LINE_6:
+        } else {
+            assert(option == DIALOGUE_SCRIPTED_LINE_6);
             npc_event_id = speakingNPC->dialogue_6_evt_id;
-            break;
-          default:
-            break;
         }
 
         handleScriptedNPCTopicSelection(option, npc_event_id);

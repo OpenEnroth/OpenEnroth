@@ -126,12 +126,12 @@ void ViewingParams::CenterOnPartyZoomOut() {
 void ViewingParams::CenterOnPartyZoomIn() {
     int MaxZoom;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         MaxZoom = 1536;
-    else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    } else {
+        assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
         MaxZoom = 3072;
-    else
-        assert(false);
+    }
 
     this->uMapBookMapZoom *= 2;
     if (this->uMapBookMapZoom > MaxZoom) this->uMapBookMapZoom = MaxZoom;

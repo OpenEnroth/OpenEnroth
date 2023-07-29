@@ -219,7 +219,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     int realPoints = uSkillMastery.level();
     CharacterSkillMastery masteryLevel = uSkillMastery.mastery();
     int distancemod = 3;
-    int spriteId;
+    int spriteId = -1;
 
     static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
 
@@ -300,6 +300,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             int meteors;
             switch (masteryLevel) {
+                default:
+                    assert(false);
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                     meteors = 8;
                     break;
@@ -311,9 +313,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     meteors = 14;
-                    break;
-                default:
-                    assert(false);
                     break;
             }
 
@@ -480,6 +479,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         {
             int spellPower;
             switch (masteryLevel) {
+                default:
+                    assert(false);
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellPower = 2 * realPoints + 40;
@@ -489,9 +490,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellPower = 6 * realPoints + 120;
-                    break;
-                default:
-                    assert(false);
                     break;
             }
 
@@ -563,6 +561,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             // TODO(Nik-RE-dev): calculation of duration is strange
             int spellPower;
             switch (masteryLevel) {
+                default:
+                    assert(false);
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromMinutes(64 + 5 * realPoints);
@@ -575,9 +575,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromMinutes(64 + 20 * realPoints);
                     spellPower = 4 * realPoints;
-                    break;
-                default:
-                    assert(false);
                     break;
             }
 
