@@ -74,8 +74,10 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     endif()
 endif()
 
-check_linker_flag(C "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
-check_linker_flag(C "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
+include(CheckLinkerFlag)
+check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
+check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
+
 add_compile_options(USE_LD_GOLD "Use GNU gold linker" ON)
 add_compile_options(USE_LD_LLD "Use LLD linker" ON)
 
