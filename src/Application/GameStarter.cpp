@@ -10,12 +10,15 @@
 #include "Library/Logger/Logger.h"
 
 #include "Platform/PlatformLogger.h"
+#include "Platform/Platform.h"
+#include "Platform/Null/NullPlatform.h"
 
 #include "GamePathResolver.h"
 #include "GameConfig.h"
 #include "Game.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
+    // Init logger.
     _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_OUTPUT_STREAMS_OPTION);
     auto setLogLevel = [logger = _logger.get()](PlatformLogLevel level) {
         logger->setLogLevel(APPLICATION_LOG, level);
@@ -24,26 +27,44 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (_options.logLevel)
         setLogLevel(*_options.logLevel);
     EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
-    Engine::LogEngineBuildInfo();
 
-    _application = std::make_unique<PlatformApplication>(_logger.get());
-    resolveDefaults(_application->platform(), &_options);
-    initDataPath(_options.dataPath);
-
+    // Init config.
     _config = std::make_shared<GameConfig>();
+    std::function<void()> logConfigMessage;
     if (_options.useConfig) {
         if (std::filesystem::exists(_options.configPath)) {
             _config->load(_options.configPath);
-            logger->info("Configuration file '{}' loaded!", _options.configPath);
+            logConfigMessage = [&] {
+                logger->info("Configuration file '{}' loaded!", _options.configPath);
+            };
         } else {
             _config->reset();
-            logger->warning("Could not read configuration file '{}'! Loaded default configuration instead!", _options.configPath);
+            logConfigMessage = [&] {
+                logger->warning("Could not read configuration file '{}'! Loaded default configuration instead!", _options.configPath);
+            };
         }
     }
 
+    // Set proper log level & write out first log messages.
     if (!_options.logLevel)
         setLogLevel(_config->debug.LogLevel.value());
+    Engine::LogEngineBuildInfo();
+    if (logConfigMessage)
+        logConfigMessage();
 
+    // Create platform & do platform-related init.
+    if (_options.renderer)
+        _config->graphics.Renderer.setValue(*_options.renderer);
+    if (_config->graphics.Renderer.value() == RENDERER_NULL) { // TODO(captainurist): 'null' is not about renderer, redo properly.
+        _platform = std::make_unique<NullPlatform>(NullPlatformOptions());
+    } else {
+        _platform = Platform::createStandardPlatform(_logger.get());
+    }
+    _application = std::make_unique<PlatformApplication>(_platform.get());
+    resolveDefaults(_application->platform(), &_options);
+    initDataPath(_options.dataPath);
+
+    // Create game.
     _game = std::make_unique<Game>(_application.get(), _config);
 }
 

@@ -8,28 +8,8 @@
 
 #include "Library/Application/PlatformApplication.h"
 
-#include "Platform/PlatformOpenGLContext.h"
-
-class NullOpenGLContext : public PlatformOpenGLContext {
- public:
-    virtual bool bind() override {
-        return true;
-    }
-
-    virtual bool unbind() override {
-        return true;
-    }
-
-    virtual void swapBuffers() override {}
-
-    virtual void *getProcAddress(const char *name) override {
-        return nullptr;
-    }
-};
-
-
 bool RenderNull::Initialize() {
-    application->initializeOpenGLContext(std::make_unique<NullOpenGLContext>());
+    application->initializeOpenGLContext(PlatformOpenGLOptions());
     return RenderBase::Initialize();
 }
 

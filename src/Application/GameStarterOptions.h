@@ -3,6 +3,8 @@
 #include <string>
 #include <optional>
 
+#include "Engine/Graphics/RenderEnums.h"
+
 #include "Platform/PlatformEnums.h"
 
 struct GameStarterOptions {
@@ -10,4 +12,5 @@ struct GameStarterOptions {
     std::string configPath; // Path to config, empty means use default.
     std::string dataPath; // Path to game data, empty means use default.
     std::optional<PlatformLogLevel> logLevel; // Override log level.
+    std::optional<RendererType> renderer; // Override renderer type.
 };

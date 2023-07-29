@@ -188,7 +188,6 @@ jobs:
           sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
           sudo apt-get install -y libsdl2-dev
         fi
-        sudo apt-get install -y mesa-utils xvfb x11-utils
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -217,9 +216,8 @@ jobs:
     - name: GameTest
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'
       working-directory: build
-      run: |
-        Xvfb&
-        xvfb-run make GameTest_NullRenderer
+      run:
+        make GameTest_NullRenderer
       env:
         OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
