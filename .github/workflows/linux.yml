@@ -95,7 +95,7 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        make -j3
+        make VERBOSE=1 -j3
 
     - name: Tests
       working-directory: build
