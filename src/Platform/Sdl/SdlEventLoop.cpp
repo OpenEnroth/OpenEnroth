@@ -190,7 +190,7 @@ void SdlEventLoop::dispatchMouseButtonEvent(PlatformEventHandler *eventHandler, 
         assert(event->clicks > 0);
         e.isDoubleClick = (event->clicks % 2 == 0);
 #else
-        // TODO: on Android it seems to start with 0.
+        // On Android it seems to start with 0.
         e.isDoubleClick = (event->clicks % 2 == 1);
 #endif
     }

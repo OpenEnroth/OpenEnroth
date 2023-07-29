@@ -37,7 +37,8 @@ std::unique_ptr<PlatformWindow> SdlPlatform::createWindow() {
         return nullptr;
 
 #if __ANDROID__
-    // TODO: SDL orientation code turned out to be buggy and works only before window creation, hardcode only landscape modes there for now.
+    // TODO(captainurist): SDL orientation code turned out to be buggy and works only before window creation,
+    //                     hardcode only landscape modes there for now.
     SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight", SDL_HINT_OVERRIDE);
 #endif
 

@@ -6,7 +6,7 @@ struct BloodsplatContainer;
 struct DecalBuilder;
 class Logger;
 namespace Io {
-    class Mouse;
+class Mouse;
 }
 class Nuklear;
 class ParticleEngine;
