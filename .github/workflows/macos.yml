@@ -49,11 +49,18 @@ jobs:
       run: |
         brew install ffmpeg@4
 
-    - name: ccache
+    - name: ccache save cache on merge
+      if: github.event.pull_request.merged == true
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
-        
+        key: macosx-${{ matrix.configuration }}-${{ matrix.architecture }}
+
+    - name: ccache dont save cache
+      if: github.event.pull_request.merged != true
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: macosx-${{ matrix.configuration }}-${{ matrix.architecture }}
+        save: false
 
     - name: Configure
       run: |

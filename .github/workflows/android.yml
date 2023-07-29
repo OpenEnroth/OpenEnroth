@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, Release]
-        architecture: ['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86']
+        architecture: ['arm64-v8a', 'armeabi-v7a'] # ['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86']
         
     steps:
     # Here we need to decode keystore.jks from base64 string and place it
@@ -121,10 +121,18 @@ jobs:
           android/openenroth/jni/FFmpeg/android/
         key: ffmpeg-cache
 
-    - name: ccache
+    - name: ccache save cache on merge
+      if: github.event.pull_request.merged == true
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
+
+    - name: ccache dont save cache
+      if: github.event.pull_request.merged != true
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
+        save: false
 
     - name: Build the app
       working-directory: android
