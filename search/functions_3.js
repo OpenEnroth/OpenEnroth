@@ -205,7 +205,7 @@ var searchData=
   ['createsdlsurface_202',['createSDLSurface',['../classorg_1_1libsdl_1_1app_1_1SDLActivity.html#a35c8be590014d26c26b31d2e46ffb024',1,'org::libsdl::app::SDLActivity']]],
   ['createsplashobject_203',['createSplashObject',['../structSpriteObject.html#aafd2a2669280ed19bab653e04304364f',1,'SpriteObject']]],
   ['createspritetrailparticle_204',['createSpriteTrailParticle',['../SpriteObject_8cpp.html#affd46c66294ede2653e09c2ec60a96ed',1,'SpriteObject.cpp']]],
-  ['createstandardlogger_205',['createStandardLogger',['../classPlatformLogger.html#a24c99ef70a0ae9bc1543689759632585',1,'PlatformLogger']]],
+  ['createstandardlogger_205',['createStandardLogger',['../classPlatformLogger.html#a17c99f0c287ae2c0fcf64e871c1c36b1',1,'PlatformLogger']]],
   ['createstandardplatform_206',['createStandardPlatform',['../classPlatform.html#a0d717a2134ddee8cd84d37d40afd4711',1,'Platform']]],
   ['createstreamingtrack16_207',['CreateStreamingTrack16',['../classOpenALSoundProvider.html#aa7d5291e06841fdd103e29a3f296cb8f',1,'OpenALSoundProvider']]],
   ['createtempfile_208',['CreateTempFile',['../classLOD_1_1WriteableFile.html#aa23b1e6780c9e8a1a2db3e617aa252ca',1,'LOD::WriteableFile']]],
