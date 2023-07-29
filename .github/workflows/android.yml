@@ -122,13 +122,13 @@ jobs:
         key: ffmpeg-cache
 
     - name: ccache save cache on merge
-      if: github.event.pull_request.merged == true
+      if: github.ref == 'refs/heads/master'
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: ccache dont save cache
-      if: github.event.pull_request.merged != true
+      if: github.ref != 'refs/heads/master'
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
