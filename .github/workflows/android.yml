@@ -148,4 +148,3 @@ jobs:
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         CMAKE_BUILD_PARALLEL_LEVEL: 3
         GITHUBARCH: ${{ matrix.architecture }}
-
