@@ -75,15 +75,17 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
 endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
-    add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
-    add_link_options(-fuse-ld=gold)
-    add_link_options(-pthread)
+    add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
+    add_link_options(-fuse-ld=gold) # Use gold linker, faster than ld.
 elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
     add_compile_options(-Werror=inconsistent-missing-override) # Clang-specific, goes with -Werror=suggest-override.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
+    add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     enable_libcxx_assertions(FALSE)
 elseif(BUILD_COMPILER STREQUAL "msvc")
+    # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
+    #             itself is still generated.
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")

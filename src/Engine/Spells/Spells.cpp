@@ -829,7 +829,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
     }
 
     GameTime spell_length;
-    int spell_power;
+    int spell_power = 0;
     int launch_angle;
     int launch_speed;
     int spell_num_objects;
@@ -942,22 +942,16 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
                     assert(false);
                     break;
             }
-            switch (uSpellID) {
-                case SPELL_AIR_SHIELD:
-                    spell_power = 0;
-                    buff_id = PARTY_BUFF_SHIELD;
-                    break;
-                case SPELL_EARTH_STONESKIN:
-                    spell_power = skillLevel + 5;
-                    buff_id = PARTY_BUFF_STONE_SKIN;
-                    break;
-                case SPELL_SPIRIT_HEROISM:
-                    spell_power = skillLevel + 5;
-                    buff_id = PARTY_BUFF_HEROISM;
-                    break;
-                default:
-                    assert(false);
-                    break;
+            if (uSpellID == SPELL_AIR_SHIELD) {
+                spell_power = 0;
+                buff_id = PARTY_BUFF_SHIELD;
+            } else if (uSpellID == SPELL_EARTH_STONESKIN) {
+                spell_power = skillLevel + 5;
+                buff_id = PARTY_BUFF_STONE_SKIN;
+            } else {
+                assert(uSpellID == SPELL_SPIRIT_HEROISM);
+                spell_power = skillLevel + 5;
+                buff_id = PARTY_BUFF_HEROISM;
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
@@ -988,29 +982,21 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             spell_length = GameTime::FromHours(skillLevel);
             spell_power = skillLevel * std::to_underlying(skillMastery);
 
-            switch (uSpellID) {
-                case SPELL_FIRE_PROTECTION_FROM_FIRE:
-                    buff_id = PARTY_BUFF_RESIST_FIRE;
-                    break;
-                case SPELL_AIR_PROTECTION_FROM_AIR:
-                    buff_id = PARTY_BUFF_RESIST_AIR;
-                    break;
-                case SPELL_WATER_PROTECTION_FROM_WATER:
-                    buff_id = PARTY_BUFF_RESIST_WATER;
-                    break;
-                case SPELL_EARTH_PROTECTION_FROM_EARTH:
-                    buff_id = PARTY_BUFF_RESIST_EARTH;
-                    break;
-                case SPELL_MIND_PROTECTION_FROM_MIND:
-                    buff_id = PARTY_BUFF_RESIST_MIND;
-                    break;
-                case SPELL_BODY_PROTECTION_FROM_BODY:
-                    buff_id = PARTY_BUFF_RESIST_BODY;
-                    break;
-                default:
-                    assert(false);
-                    break;
+            if (uSpellID == SPELL_FIRE_PROTECTION_FROM_FIRE) {
+                buff_id = PARTY_BUFF_RESIST_FIRE;
+            } else if (uSpellID == SPELL_AIR_PROTECTION_FROM_AIR) {
+                buff_id = PARTY_BUFF_RESIST_AIR;
+            } else if (uSpellID == SPELL_WATER_PROTECTION_FROM_WATER) {
+                buff_id = PARTY_BUFF_RESIST_WATER;
+            } else if (uSpellID == SPELL_EARTH_PROTECTION_FROM_EARTH) {
+                buff_id = PARTY_BUFF_RESIST_EARTH;
+            } else if (uSpellID == SPELL_MIND_PROTECTION_FROM_MIND) {
+                buff_id = PARTY_BUFF_RESIST_MIND;
+            } else {
+                assert(uSpellID == SPELL_BODY_PROTECTION_FROM_BODY);
+                buff_id = PARTY_BUFF_RESIST_BODY;
             }
+
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],

@@ -13,6 +13,7 @@
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
+#include "Utility/Exception.h"
 
 struct MonsterStats *pMonsterStats;
 struct MonsterList *pMonsterList;
@@ -141,7 +142,7 @@ CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_vie
     } else if (masteryString == "G") {
         mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
     } else {
-        assert(false); // TODO(captainurist): throw.
+        throw Exception("Invalid character skill mastery string '{}'", masteryString);
     }
 
     return CombinedSkillValue(skill, mastery);

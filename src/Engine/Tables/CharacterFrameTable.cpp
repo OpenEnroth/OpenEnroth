@@ -12,31 +12,21 @@ unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterExpressionID expr
 }
 
 //----- (00494B10) --------------------------------------------------------
-PlayerFrame *PlayerFrameTable::GetFrameBy_x(unsigned int uFramesetID,
-                                            unsigned int uFrameID) {
-    unsigned int v3;      // esi@1
-    int16_t v6;           // dx@2
-    int v7;               // edx@3
-    char *i;              // eax@3
-    int v9;               // ecx@5
-    PlayerFrame *result;  // eax@6
+PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, int gameTime) {
+    if (this->pFrames[uFramesetID].uFlags & 1 && this->pFrames[uFramesetID].uAnimLength != 0) {
+        // Processing animated character expressions - e.g., CHARACTER_EXPRESSION_YES & CHARACTER_EXPRESSION_NO.
+        int time = (gameTime >> 3) % this->pFrames[uFramesetID].uAnimLength;
 
-    v3 = uFramesetID;
-    if (this->pFrames[uFramesetID].uFlags & 1 &&
-        (v6 = this->pFrames[uFramesetID].uAnimLength) != 0) {
-        v7 = ((signed int)uFrameID >> 3) % (uint16_t)v6;
-        for (i = (char *)&this->pFrames[uFramesetID].uAnimTime;; i += 10) {
-            v9 = *(short *)i;
-            if (v7 <= v9) break;
-            v7 -= v9;
-            ++v3;
+        while (true) {
+            int frameTime = this->pFrames[uFramesetID].uAnimTime;
+            if (time < frameTime)
+                break;
+            time -= frameTime;
+            ++uFramesetID;
+            assert(this->pFrames[uFramesetID].expression == CHARACTER_EXPRESSION_INVALID); // Shouldn't jump into another expression.
         }
-        result = &this->pFrames[v3];
-    } else {
-        result = &this->pFrames[uFramesetID];
     }
-
-    return result;
+    return &this->pFrames[uFramesetID];
 }
 
 //----- (00494B5E) --------------------------------------------------------
