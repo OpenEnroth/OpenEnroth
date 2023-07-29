@@ -5,7 +5,7 @@ var searchData=
   ['waittilldawn_2',['WaitTillDawn',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cadb814e65b5ad520dd38f8b627421c1d7',1,'Io']]],
   ['watermaster_3',['WaterMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1b45fb86865a9c4357bb7be4d8db09fe',1,'NPCEnums.h']]],
   ['weaponsmaster_4',['Weaponsmaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a8ff0d0773ce17fde7fce5dfdaed1e180',1,'NPCEnums.h']]],
-  ['win_5fensure_5fconsole_5foption_5',['WIN_ENSURE_CONSOLE_OPTION',['../PlatformEnums_8h.html#a77dda924f850bad4cf65fb929bc858caa2b615d823ec5ae4f7977be2c3daca091',1,'PlatformEnums.h']]],
+  ['win_5fensure_5foutput_5fstreams_5foption_5',['WIN_ENSURE_OUTPUT_STREAMS_OPTION',['../PlatformEnums_8h.html#a77dda924f850bad4cf65fb929bc858caa97f96becaa80d9608fb8ea612796bd70',1,'PlatformEnums.h']]],
   ['windmaster_6',['WindMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a2adf1a1bd2adabe9daea18857297a176',1,'NPCEnums.h']]],
   ['window_5f22_7',['WINDOW_22',['../GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509acbe6ed9ab66e9aa9a846ea929d7ab43e',1,'GUIEnums.h']]],
   ['window_5f50_8',['WINDOW_50',['../GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a12f5b5e821253f1646f6c0fb2ff86277',1,'GUIEnums.h']]],

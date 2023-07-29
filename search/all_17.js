@@ -41,7 +41,7 @@ var searchData=
   ['widthln2_38',['widthLn2',['../structLodImageHeader__MM6.html#a9f8cd4b547272837a01537d47d108b0f',1,'LodImageHeader_MM6']]],
   ['widthminus1_39',['widthMinus1',['../structLodImageHeader__MM6.html#a34355ec06f85d80b360fa5e16e4a4daf',1,'LodImageHeader_MM6']]],
   ['win32_5flean_5fand_5fmean_40',['WIN32_LEAN_AND_MEAN',['../WinPlatform_8cpp.html#ac7bef5d85e3dcd73eef56ad39ffc84a9',1,'WinPlatform.cpp']]],
-  ['win_5fensure_5fconsole_5foption_41',['WIN_ENSURE_CONSOLE_OPTION',['../PlatformEnums_8h.html#a77dda924f850bad4cf65fb929bc858caa2b615d823ec5ae4f7977be2c3daca091',1,'PlatformEnums.h']]],
+  ['win_5fensure_5foutput_5fstreams_5foption_41',['WIN_ENSURE_OUTPUT_STREAMS_OPTION',['../PlatformEnums_8h.html#a77dda924f850bad4cf65fb929bc858caa97f96becaa80d9608fb8ea612796bd70',1,'PlatformEnums.h']]],
   ['win_5fstate_42',['WIN_STATE',['../Nuklear_8cpp.html#ae9b98f0272bceef0dfadc095cc61d903',1,'Nuklear.cpp']]],
   ['windmaster_43',['WindMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a2adf1a1bd2adabe9daea18857297a176',1,'NPCEnums.h']]],
   ['window_44',['Window',['../classGameConfig_1_1Window.html',1,'GameConfig']]],
