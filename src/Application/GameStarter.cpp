@@ -19,7 +19,7 @@
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init logger.
-    _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_OUTPUT_STREAMS_OPTION);
+    _logger = PlatformLogger::createStandardLogger();
     auto setLogLevel = [logger = _logger.get()](PlatformLogLevel level) {
         logger->setLogLevel(APPLICATION_LOG, level);
         logger->setLogLevel(PLATFORM_LOG, level);
