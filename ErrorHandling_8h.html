@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;dbb325d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;df17da0</span>
    </div>
   </td>
  </tr>
@@ -75,29 +75,37 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">ErrorHandling.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a0e8095ce1ed00bd4150a20c72d4e4330"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a0e8095ce1ed00bd4150a20c72d4e4330">Warn</a>(...)</td></tr>
-<tr class="separator:a0e8095ce1ed00bd4150a20c72d4e4330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3820662fa23f7fb1a776c4398eb83c50"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a3820662fa23f7fb1a776c4398eb83c50">Error</a>(...)</td></tr>
 <tr class="separator:a3820662fa23f7fb1a776c4398eb83c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95eb55fc233c36dca688edf7ff1389d6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a95eb55fc233c36dca688edf7ff1389d6">Assert</a>(condition, ...)&#160;&#160;&#160;    <a class="el" href="ErrorHandling_8cpp.html#afa2d55ca498f2d4d663979093d46aa45">Assert_impl_</a>(__FILE__, __FUNCTION__, __LINE__, condition, #condition __VA_OPT__(,) __VA_ARGS__)</td></tr>
+<tr class="memitem:a95eb55fc233c36dca688edf7ff1389d6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a95eb55fc233c36dca688edf7ff1389d6">Assert</a>(condition, ...)</td></tr>
 <tr class="separator:a95eb55fc233c36dca688edf7ff1389d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7568b9b6b3294517484d8bac01486310"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a7568b9b6b3294517484d8bac01486310">__debugbreak</a>(...)&#160;&#160;&#160;assert(false);</td></tr>
 <tr class="separator:a7568b9b6b3294517484d8bac01486310"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a10c8cb7454f6f59efb4f3c564ed5e4ee"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a10c8cb7454f6f59efb4f3c564ed5e4ee">ErrorHandlerFunction</a> = std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt;</td></tr>
+<tr class="separator:a10c8cb7454f6f59efb4f3c564ed5e4ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac584b677825b57aafc7073cda5bbe339"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#ac584b677825b57aafc7073cda5bbe339">Error_impl_</a> (const char *filename, const char *functionname, int line, const char *format,...)</td></tr>
 <tr class="separator:ac584b677825b57aafc7073cda5bbe339"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71df82ae89701721cc5b05f31d9dfb03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a71df82ae89701721cc5b05f31d9dfb03">Assert_impl_</a> (const char *filename, const char *functionname, int line, bool condition, const char *condition_string=nullptr, const char *format=nullptr,...)</td></tr>
-<tr class="separator:a71df82ae89701721cc5b05f31d9dfb03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab11b8e4202a40b621b09d6b9510892fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#ab11b8e4202a40b621b09d6b9510892fa">Assert_impl_</a> (const char *filename, const char *functionname, int line, const char *condition_string, const char *format=nullptr,...)</td></tr>
+<tr class="separator:ab11b8e4202a40b621b09d6b9510892fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36bdf05e110f037c91d959bbc9de6107"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a36bdf05e110f037c91d959bbc9de6107">setErrorHandler</a> (<a class="el" href="ErrorHandling_8h.html#a10c8cb7454f6f59efb4f3c564ed5e4ee">ErrorHandlerFunction</a> handler)</td></tr>
+<tr class="separator:a36bdf05e110f037c91d959bbc9de6107"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a7568b9b6b3294517484d8bac01486310" name="a7568b9b6b3294517484d8bac01486310"></a>
@@ -139,11 +147,15 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;    <a class="el" href="ErrorHandling_8cpp.html#afa2d55ca498f2d4d663979093d46aa45">Assert_impl_</a>(__FILE__, __FUNCTION__, __LINE__, condition, #condition __VA_OPT__(,) __VA_ARGS__)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                                                                \</div>
+<div class="line">        if (!(condition))                                                                                               \</div>
+<div class="line">            Assert_impl_(__FILE__, __FUNCTION__, __LINE__, #condition __VA_OPT__(,) __VA_ARGS__); <span class="comment">/* NOLINT */</span>          \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a3820662fa23f7fb1a776c4398eb83c50" name="a3820662fa23f7fb1a776c4398eb83c50"></a>
@@ -161,38 +173,30 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                            \</div>
-<div class="line">        Error_impl_(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__); \</div>
-<div class="line">        assert(<span class="keyword">false</span>);                                              \</div>
-<div class="line">        exit(0);                                                    \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                                                                \</div>
+<div class="line">        Error_impl_(__FILE__, __FUNCTION__, __LINE__ __VA_OPT__(,) __VA_ARGS__); <span class="comment">/* NOLINT */</span>                           \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a0e8095ce1ed00bd4150a20c72d4e4330" name="a0e8095ce1ed00bd4150a20c72d4e4330"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e8095ce1ed00bd4150a20c72d4e4330">&#9670;&#160;</a></span>Warn</h2>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="a10c8cb7454f6f59efb4f3c564ed5e4ee" name="a10c8cb7454f6f59efb4f3c564ed5e4ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10c8cb7454f6f59efb4f3c564ed5e4ee">&#9670;&#160;</a></span>ErrorHandlerFunction</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define Warn</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em></td><td>)</td>
-          <td></td>
+          <td class="memname">using <a class="el" href="ErrorHandling_8h.html#a10c8cb7454f6f59efb4f3c564ed5e4ee">ErrorHandlerFunction</a> =  std::function&lt;void(const std::string &amp;, const std::string &amp;)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                            \</div>
-<div class="line">        Error_impl_(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__); \</div>
-<div class="line">    } <span class="keywordflow">while</span> (0)</div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a71df82ae89701721cc5b05f31d9dfb03" name="a71df82ae89701721cc5b05f31d9dfb03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71df82ae89701721cc5b05f31d9dfb03">&#9670;&#160;</a></span>Assert_impl_()</h2>
+<a id="ab11b8e4202a40b621b09d6b9510892fa" name="ab11b8e4202a40b621b09d6b9510892fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab11b8e4202a40b621b09d6b9510892fa">&#9670;&#160;</a></span>Assert_impl_()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,14 +222,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>condition</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>condition_string</em> = <code>nullptr</code>, </td>
+          <td class="paramname"><em>condition_string</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -289,6 +287,24 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a36bdf05e110f037c91d959bbc9de6107" name="a36bdf05e110f037c91d959bbc9de6107"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36bdf05e110f037c91d959bbc9de6107">&#9670;&#160;</a></span>setErrorHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setErrorHandler </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ErrorHandling_8h.html#a10c8cb7454f6f59efb4f3c564ed5e4ee">ErrorHandlerFunction</a>&#160;</td>
+          <td class="paramname"><em>handler</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
