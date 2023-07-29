@@ -10,7 +10,8 @@ if(ENABLE_TESTS)
 
     add_custom_target(UnitTest OpenEnroth_UnitTest
             DEPENDS OpenEnroth_UnitTest
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            USES_TERMINAL)
 
     target_check_style(OpenEnroth_UnitTest)
 endif()
