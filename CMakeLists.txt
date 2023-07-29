@@ -78,8 +78,8 @@ include(CheckLinkerFlag)
 check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
 
-add_compile_options(USE_LD_GOLD "Use GNU gold linker" ON)
-add_compile_options(USE_LD_LLD "Use LLD linker" ON)
+set(USE_LD_GOLD On CACHE BOOL "Use GNU gold linker")
+set(USE_LD_LLD ON CACHE BOOL "Use LLD linker")
 
 if(BUILD_COMPILER STREQUAL "gcc")
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
