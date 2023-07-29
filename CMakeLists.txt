@@ -93,6 +93,9 @@ if(BUILD_COMPILER STREQUAL "gcc")
         message(STATUS "Fallback to ld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
     endif()
+    add_compile_options(
+        "$<$<CONFIG:DEBUG>:-Og>"
+    )    
 elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
     add_compile_options(-Werror=inconsistent-missing-override) # Clang-specific, goes with -Werror=suggest-override.
@@ -109,9 +112,6 @@ elseif(BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Fallback to ld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
     endif()
-    add_compile_options(
-        "$<$<CONFIG:DEBUG>:-Og>"
-    )
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
