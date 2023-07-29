@@ -346,7 +346,7 @@ var searchData=
   ['getfood_343',['GetFood',['../structParty.html#a26c584785345a133e9e695e48ff31f4e',1,'Party']]],
   ['getformat_344',['GetFormat',['../classIMovie.html#a92845ca58af77beee613857055486cc5',1,'IMovie::GetFormat()'],['../classMovie.html#af30780e6c23f163ea4d8cabf47f79d39',1,'Movie::GetFormat()']]],
   ['getframe_345',['GetFrame',['../structSpriteFrameTable.html#a4bca0b7ce7055f69630c6bd3217047d7',1,'SpriteFrameTable::GetFrame()'],['../structIconFrameTable.html#ab9a3de4cf322157a8d38e352489bd7b8',1,'IconFrameTable::GetFrame()'],['../classIMovie.html#afe7e2ea53e074e35d25bd024a7353383',1,'IMovie::GetFrame()'],['../classMovie.html#afffb761bac87d2608f860d5a406e6239',1,'Movie::GetFrame()']]],
-  ['getframeby_5fx_346',['GetFrameBy_x',['../structSpriteFrameTable.html#a6565c54c652271c4d4c8672e7aa9585b',1,'SpriteFrameTable::GetFrameBy_x()'],['../structPlayerFrameTable.html#a63fa5a6d7efc4efed7a53492d170751e',1,'PlayerFrameTable::GetFrameBy_x(unsigned int uFramesetID, unsigned int uFrameID)']]],
+  ['getframeby_5fx_346',['GetFrameBy_x',['../structSpriteFrameTable.html#a6565c54c652271c4d4c8672e7aa9585b',1,'SpriteFrameTable::GetFrameBy_x()'],['../structPlayerFrameTable.html#a1d7a1da3511ac5cd54184f4fe514d162',1,'PlayerFrameTable::GetFrameBy_x(int uFramesetID, int gameTime)']]],
   ['getframeby_5fy_347',['GetFrameBy_y',['../structPlayerFrameTable.html#a11a95a8201e9471f894ab3220f59221c',1,'PlayerFrameTable']]],
   ['getframeidbyexpression_348',['GetFrameIdByExpression',['../structPlayerFrameTable.html#a085461abdf127d04e55d158f6dceb850',1,'PlayerFrameTable']]],
   ['getframerate_349',['GetFrameRate',['../classIVideoDataSource.html#a539457ad1fb5c3d3f7c81ff364a8d2fe',1,'IVideoDataSource']]],
