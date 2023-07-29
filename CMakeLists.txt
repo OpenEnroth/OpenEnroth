@@ -74,6 +74,7 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     endif()
 endif()
 
+#specify linker options
 include(CheckLinkerFlag)
 check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
@@ -93,6 +94,7 @@ if(BUILD_COMPILER STREQUAL "gcc")
         message(STATUS "Fallback to ld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
     endif()
+    # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0. 
     add_compile_options(
         "$<$<CONFIG:DEBUG>:-Og>"
     )    
@@ -112,6 +114,10 @@ elseif(BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Fallback to ld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
     endif()
+    # -Og Like -O1. In future versions, this option might disable different optimizations in order to improve debuggability.
+    add_compile_options(
+        "$<$<CONFIG:DEBUG>:-Og>"
+    )    
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
