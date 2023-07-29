@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, Release]
-        architecture: ['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86']
+        architecture: ['arm64-v8a', 'armeabi-v7a'] # ['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86']
         
     steps:
     # Here we need to decode keystore.jks from base64 string and place it
@@ -96,7 +96,7 @@ jobs:
       with:
         distribution: temurin
         java-version: 17.0.6
-        cache: gradle
+        # cache: gradle
         
     - name: Check for ffmpeg cache
       id: ffmpeg-cache
