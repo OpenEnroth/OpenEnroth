@@ -16,6 +16,7 @@ struct PlayerFrame {
 
 struct PlayerFrameTable {
     unsigned int GetFrameIdByExpression(CharacterExpressionID expression);
+    int GetDurationByExpression(CharacterExpressionID expression);
     PlayerFrame *GetFrameBy_x(int uFramesetID, int gameTime);
     PlayerFrame *GetFrameBy_y(int *a2, int *a3, int a4);
     int FromFileTxt(const char *Args);

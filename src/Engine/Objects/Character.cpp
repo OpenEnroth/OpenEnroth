@@ -7342,9 +7342,10 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
     this->uExpressionTimePassed = 0;
 
     if (!duration) {
-        this->uExpressionTimeLength =
-            8 * pPlayerFrameTable->pFrames[duration].uAnimLength;
+        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
+        assert(this->uExpressionTimeLength != 0); // GetDurationByExpression should have found the expression.
     } else {
+        // TODO(captainurist): why zero? makes no sense!
         this->uExpressionTimeLength = 0;
     }
 
