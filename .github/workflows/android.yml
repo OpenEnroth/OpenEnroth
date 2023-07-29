@@ -128,6 +128,7 @@ jobs:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: ccache dont save cache
+      if: github.event.pull_request.merged != true
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
