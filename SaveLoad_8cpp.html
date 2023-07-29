@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e029f51</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f821d05</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="SaveLoad_8h.html">SaveLoad.h</a>&quot;</code><br />
-<code>#include &lt;cstdlib&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -113,8 +113,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:aec4ea4d9c15c927eed9a2a9227c4b16c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#aec4ea4d9c15c927eed9a2a9227c4b16c">LoadGame</a> (unsigned int uSlot)</td></tr>
 <tr class="separator:aec4ea4d9c15c927eed9a2a9227c4b16c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8877c76af6a19304100073ae590e1b8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a8877c76af6a19304100073ae590e1b8d">SaveGame</a> (bool IsAutoSAve, bool NotSaveWorld)</td></tr>
-<tr class="separator:a8877c76af6a19304100073ae590e1b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cdc40f14abc00c32965c2c1825b29a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a1cdc40f14abc00c32965c2c1825b29a6">SaveGame</a> (bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title)</td></tr>
+<tr class="separator:a1cdc40f14abc00c32965c2c1825b29a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5560a432d5ca59965633a942bb26666f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a5560a432d5ca59965633a942bb26666f">DoSavegame</a> (unsigned int uSlot)</td></tr>
 <tr class="separator:a5560a432d5ca59965633a942bb26666f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab496492a832e3fe2f04f9a23bdf3dd2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#ab496492a832e3fe2f04f9a23bdf3dd2a">SaveNewGame</a> ()</td></tr>
@@ -162,14 +162,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a8877c76af6a19304100073ae590e1b8d" name="a8877c76af6a19304100073ae590e1b8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8877c76af6a19304100073ae590e1b8d">&#9670;&#160;</a></span>SaveGame()</h2>
+<a id="a1cdc40f14abc00c32965c2c1825b29a6" name="a1cdc40f14abc00c32965c2c1825b29a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cdc40f14abc00c32965c2c1825b29a6">&#9670;&#160;</a></span>SaveGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void SaveGame </td>
+          <td class="memname"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> SaveGame </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>IsAutoSAve</em>, </td>
@@ -178,7 +178,13 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>NotSaveWorld</em>&#160;</td>
+          <td class="paramname"><em>NotSaveWorld</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

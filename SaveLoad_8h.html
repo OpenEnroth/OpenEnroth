@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e029f51</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f821d05</span>
    </div>
   </td>
  </tr>
@@ -95,8 +95,8 @@ Classes</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:aec4ea4d9c15c927eed9a2a9227c4b16c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#aec4ea4d9c15c927eed9a2a9227c4b16c">LoadGame</a> (unsigned int uSlot)</td></tr>
 <tr class="separator:aec4ea4d9c15c927eed9a2a9227c4b16c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8877c76af6a19304100073ae590e1b8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a8877c76af6a19304100073ae590e1b8d">SaveGame</a> (bool IsAutoSAve, bool NotSaveWorld)</td></tr>
-<tr class="separator:a8877c76af6a19304100073ae590e1b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5567a232747f355a59dcf1ccb5703142"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a5567a232747f355a59dcf1ccb5703142">SaveGame</a> (bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title={})</td></tr>
+<tr class="separator:a5567a232747f355a59dcf1ccb5703142"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5560a432d5ca59965633a942bb26666f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a5560a432d5ca59965633a942bb26666f">DoSavegame</a> (unsigned int uSlot)</td></tr>
 <tr class="separator:a5560a432d5ca59965633a942bb26666f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5f6c27c016c3c4c5cc60702a578c538"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ac5f6c27c016c3c4c5cc60702a578c538">Initialize_GamesLOD_NewLOD</a> ()</td></tr>
@@ -165,14 +165,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a8877c76af6a19304100073ae590e1b8d" name="a8877c76af6a19304100073ae590e1b8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8877c76af6a19304100073ae590e1b8d">&#9670;&#160;</a></span>SaveGame()</h2>
+<a id="a5567a232747f355a59dcf1ccb5703142" name="a5567a232747f355a59dcf1ccb5703142"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5567a232747f355a59dcf1ccb5703142">&#9670;&#160;</a></span>SaveGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void SaveGame </td>
+          <td class="memname"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> SaveGame </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>IsAutoSAve</em>, </td>
@@ -181,7 +181,13 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>NotSaveWorld</em>&#160;</td>
+          <td class="paramname"><em>NotSaveWorld</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
