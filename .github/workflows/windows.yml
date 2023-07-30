@@ -70,7 +70,7 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_LINKER="C:\Program Files\LLVM\bin\lld-link.exe"
 
     - name: Build
       working-directory: build
