@@ -1,4 +1,4 @@
-ultcmake_minimum_required(VERSION 3.24 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 # Setting CMAKE_OSX_DEPLOYMENT_TARGET should go before the project() call.
 if(APPLE)
