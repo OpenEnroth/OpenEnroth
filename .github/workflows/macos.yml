@@ -53,7 +53,7 @@ jobs:
         key: ffmpeg-osx-ccache
 
     - name: Install dependencies
-      # if: steps.ccache-cache.outputs.cache-hit != 'true'        
+      if: steps.ccache-cache.outputs.cache-hit != 'true'        
       run: |
         brew install --debug ffmpeg@4
 
