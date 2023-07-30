@@ -56,7 +56,6 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: |
-          'C:\ProgramData\chocolatey\bin\ccache.exe'
           'C:\ProgramData\chocolatey\lib\ccache\'
         key: windows-ccache
 
@@ -71,7 +70,6 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: |
-          'C:\ProgramData\chocolatey\bin\ccache.exe'
           'C:\ProgramData\chocolatey\lib\ccache\'
         key: windows-ccache
 
