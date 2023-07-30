@@ -80,15 +80,11 @@ jobs:
         
     - name: Configure
       run: |
-        echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
-        export PATH="/usr/local/opt/llvm/bin:$PATH"
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/Cellar/ffmpeg@4/4.4.4/" -DCMAKE_C_COMPILER="/usr/local/opt/llvm@15/bin/clang" -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm@15/bin/clang++" -DCMAKE_CXX_FLAGS="-I/usr/local/llvm@15/llvm/include -I/usr/local/opt/llvm@15/include/c++/v1/"
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/Cellar/ffmpeg@4/4.4.4/"   
 
     - name: Build
       working-directory: build
       run: |
-        echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
-        export PATH="/usr/local/opt/llvm/bin:$PATH"
         make -j4
 
     - name: Tests
