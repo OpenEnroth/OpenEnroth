@@ -20,8 +20,8 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
                     "Path to test data dir")->check(CLI::ExistingDirectory)->option_text("PATH")->required()->group(requiredOptions);
     app->add_option("--data-path", result.dataPath,
                     "Path to game data dir")->check(CLI::ExistingDirectory)->option_text("PATH")->group(otherOptions);
-    app->add_option("--renderer", result.renderer,
-                    "Renderer to use, one of 'opengl', 'opengles', 'null'.")->option_text("RENDERER")->group(otherOptions);
+    app->add_flag("--headless", result.headless,
+                  "Run in headless mode.")->group(otherOptions);
     app->set_help_flag("-h,--help", "Print help and exit.")->group(otherOptions);
     app->allow_extras();
 

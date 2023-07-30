@@ -217,7 +217,7 @@ jobs:
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'
       working-directory: build
       run:
-        make GameTest_NullRenderer
+        make GameTest_Headless
       env:
         OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
@@ -289,7 +289,7 @@ jobs:
       working-directory: build
       run: |
         pwd
-        make GameTest_NullRenderer
+        make GameTest_Headless
       env:
         OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7   
 
@@ -366,7 +366,7 @@ jobs:
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'        
       working-directory: build
       run: |
-        ninja GameTest_NullRenderer
+        ninja GameTest_Headless
       env:
         OPENENROTH_MM7_PATH: D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7
 
