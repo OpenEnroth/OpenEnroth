@@ -46,24 +46,37 @@ jobs:
         cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Restore cached ffmpeg
-      id: ccache-cache
+      id: ffmpeg-cache
       uses: actions/cache/restore@v3
       with:
         path: '/usr/local/Cellar/ffmpeg@4/4.4.4/'
         key: ffmpeg-osx-ccache
+        
+    - name: Restore cached opt ffmpeg
+      id: ffmpeg-opt-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: '/usr/local/opt/ffmpeg@4'
+        key: ffmpeg-osx-opt-ccache
 
     - name: Install dependencies
-      if: steps.ccache-cache.outputs.cache-hit != 'true'        
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true' || steps.ffmpeg-opt-cache.outputs.cache-hit != 'true'
       run: |
         brew install --debug ffmpeg@4
 
     - name: Save ccache to cache
       if: steps.ccache-cache.outputs.cache-hit != 'true'    
-      id: check-for-ccache-save
       uses: actions/cache/save@v3
       with:
         path: '/usr/local/Cellar/ffmpeg@4/4.4.4/'
         key: ffmpeg-osx-ccache
+
+    - name: Save ffmpeg to opt cache
+      if: steps.ffmpeg-opt-cache.outputs.cache-hit != 'true'    
+      uses: actions/cache/save@v3
+      with:
+        path: '/usr/local/opt/ffmpeg@4'
+        key: ffmpeg-osx-opt-ccache
 
     - name: ccache save cache on merge
       if: github.ref == 'refs/heads/master'
