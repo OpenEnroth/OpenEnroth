@@ -441,9 +441,25 @@ jobs:
       with:
         arch: ${{ matrix.architecture }}
 
+    - name: Restore cached ccache
+      id: ccache-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: 'C:\ProgramData\chocolatey\lib\ccache\'
+        key: windows-ccache
+
     - name: update ccache
+      if: steps.ccache-cache.outputs.cache-hit != 'true'
       run: |
         choco upgrade ccache
+
+    - name: Save ccache to cache
+      if: steps.ccache-cache.outputs.cache-hit != 'true'    
+      id: check-for-ccache-save
+      uses: actions/cache/save@v3
+      with:
+        path: 'C:\ProgramData\chocolatey\lib\ccache\'
+        key: windows-ccache
 
     - name: ccache
       if: matrix.configuration == 'Debug'
