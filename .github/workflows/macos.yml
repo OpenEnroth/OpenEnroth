@@ -69,7 +69,7 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        make -j4
+        make -j4 VERBOSE=1
 
     - name: Tests
       working-directory: build
