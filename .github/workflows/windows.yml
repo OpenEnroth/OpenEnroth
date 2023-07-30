@@ -68,8 +68,7 @@ jobs:
       id: check-for-ccache-save
       uses: actions/cache/save@v3
       with:
-        path: |
-          "C:\ProgramData\chocolatey\lib\ccache"
+        path: 'C:\ProgramData\chocolatey\lib\ccache\'
         key: windows-ccache
 
     - name: ccache save cache on merge
