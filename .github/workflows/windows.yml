@@ -70,7 +70,7 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DVERBOSE=1
+        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -- /verbosity:detailed
 
     - name: Build
       working-directory: build
