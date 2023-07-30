@@ -367,7 +367,7 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4" -DCMAKE_C_COMPILER="/usr/local/opt/llvm@15/bin/clang" -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm@15/bin/clang++" -DCMAKE_LINKER="/usr/local/opt/llvm@15/bin/lld" -DCMAKE_CXX_LINK_EXECUTABLE="/usr/local/opt/llvm@15/bin/lld"
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4" 
 
     - name: Build
       working-directory: build
