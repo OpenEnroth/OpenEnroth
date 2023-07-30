@@ -33,13 +33,6 @@ void AnyConfigEntry::setValue(std::any value) {
         return;
 
     _value = std::move(value);
-
-    for (const Listener &listener : _listeners)
-        listener(_value);
-}
-
-void AnyConfigEntry::subscribe(Listener listener) {
-    _listeners.push_back(std::move(listener));
 }
 
 std::string AnyConfigEntry::defaultString() const {
