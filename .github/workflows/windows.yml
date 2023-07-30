@@ -51,12 +51,11 @@ jobs:
       with:
         arch: ${{ matrix.architecture }}
 
-    - name: Check for ccache cache
+    - name: Restore cached ccache
       id: ccache-cache
       uses: actions/cache/restore@v3
       with:
-        path: |
-          "C:\ProgramData\chocolatey\lib\ccache\tools"
+        path: 'C:\ProgramData\chocolatey\lib\ccache\'
         key: windows-ccache
 
     - name: update ccache
