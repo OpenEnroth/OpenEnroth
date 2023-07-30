@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
-if(MINGW )
-    message( FATAL_ERROR "OpenEnroth does not support MinGW use clang or MSVC." )
-endif()
-
 # Setting CMAKE_OSX_DEPLOYMENT_TARGET should go before the project() call.
 if(APPLE)
     if(CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
