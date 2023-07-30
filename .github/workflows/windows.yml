@@ -73,7 +73,7 @@ jobs:
         path: |
           'C:\ProgramData\chocolatey\bin\ccache.exe'
           'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
+        key: windows-ccache
 
     - name: ccache save cache on merge
       if: github.ref == 'refs/heads/master'
