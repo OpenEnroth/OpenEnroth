@@ -264,7 +264,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
-        restore: false
         max-size: "110M"
 
     - name: ccache
@@ -272,7 +271,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
-        restore: false
         max-size: "25M"
         
     - name: Configure
@@ -358,7 +356,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
-        restore: false
         max-size: "75M"
 
     - name: ccache
@@ -366,7 +363,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
-        restore: false
         max-size: "25M"
 
     - name: Configure
@@ -454,7 +450,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
-        restore: false
         max-size: "110M"
 
     - name: ccache
@@ -462,7 +457,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
-        restore: false
         max-size: "50M"
 
     - name: Configure
