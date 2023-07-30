@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
+ultcmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 # Setting CMAKE_OSX_DEPLOYMENT_TARGET should go before the project() call.
 if(APPLE)
@@ -91,8 +91,7 @@ if(BUILD_COMPILER STREQUAL "gcc")
         message(STATUS "Using gold linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
     else()
-        message(STATUS "Fallback to ld linker.")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
+        message(STATUS "Fallback to default linker.")
     endif()
     # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0. 
     add_compile_options(
@@ -111,8 +110,7 @@ elseif(BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Using gold linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
     else()
-        message(STATUS "Fallback to ld linker.")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=ld")
+        message(STATUS "Fallback to default linker.")
     endif()
     # -Og Like -O1. In future versions, this option might disable different optimizations in order to improve debuggability.
     add_compile_options(
