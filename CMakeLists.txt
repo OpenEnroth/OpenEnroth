@@ -98,6 +98,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
+    add_compile_options(/verbosity:detailed)
     add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
     add_link_options(/SAFESEH:NO) # This is for x86 build
 endif()
