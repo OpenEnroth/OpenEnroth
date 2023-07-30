@@ -130,6 +130,10 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
+    add_compile_options(/Oi) # intrinsic functions are faster because they do not have the overhead of function calls
+    add_compile_options(/GL) # since we use /Z7 we can use whole program optimisations
+    add_compile_options(/fp:fast) # match fp model of clang etc
+    add_compile_options(/debug:none) # since we use /Z7 dont make a pdb
     if (CHECK_CPU_ARCHITECTURE_X86)
         add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
         add_link_options(/SAFESEH:NO) # This is for x86 build
@@ -140,9 +144,9 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     # Allows the compiler to package individual functions in the form of packaged functions (COMDATs).
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Gy")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Gy")
-    # /Ob1 retains almost all relevant debug information for debugging, but makes a very big difference in performance
-    string(REPLACE "/Ob0" "/Ob1" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "/Ob0" "/Ob1" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    # retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
+    string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
 resolve_dependencies()
