@@ -133,7 +133,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/Oi) # intrinsic functions are faster because they do not have the overhead of function calls
     add_compile_options(/GL) # since we use /Z7 we can use whole program optimisations
     add_compile_options(/fp:fast) # match fp model of clang etc
-    add_compile_options(/debug:none) # since we use /Z7 dont make a pdb
+    add_compile_options(/DEBUG:FASTLINK) # since we use /Z7 dont make a pdb
     if (CHECK_CPU_ARCHITECTURE_X86)
         add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
         add_link_options(/SAFESEH:NO) # This is for x86 build
