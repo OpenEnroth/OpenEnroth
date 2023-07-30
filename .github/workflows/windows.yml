@@ -76,7 +76,7 @@ jobs:
       working-directory: build
       shell: cmd
       run: |
-        ninja
+        ninja VERBOSE=1
 
     - name: Tests
       working-directory: build
