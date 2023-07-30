@@ -98,14 +98,8 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
-    message(STATUS "Using CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM}")
-    if (CMAKE_GENERATOR_PLATFORM STREQUAL "x86")
-        add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
-        add_link_options(/SAFESEH:NO) # This is for x86 build
-        add_link_options(/OPT:REF) # in 32-bit environments, /OPT:REF is recommended
-    else()
-        add_link_options(/OPT:REF,ICF) 
-    endif()
+    add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
+    add_link_options(/SAFESEH:NO) # This is for x86 build
 endif()
 
 resolve_dependencies()
