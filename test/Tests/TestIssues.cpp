@@ -565,8 +565,10 @@ GAME_TEST(Issues, Issue405) {
     // FPS affects effective recovery time.
     auto runTrace = [&] {
         test->loadGameFromTestData("issue_405.mm7");
-        game->pressGuiButton("Game_Character1");
-        game->tick(1);
+        if (pParty->activeCharacterIndex() != 1) {
+            game->pressGuiButton("Game_Character1");
+            game->tick(1);
+        }
         game->pressGuiButton("Game_CastSpell");
         game->tick(1);
         game->pressGuiButton("SpellBook_Spell7"); // 7 is immolation.
