@@ -62,7 +62,7 @@ jobs:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
 
     - name: ccache dont save cache
-      if: github.ref != 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
