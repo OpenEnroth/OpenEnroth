@@ -70,7 +70,6 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -LAH
         cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
 
     - name: Build
