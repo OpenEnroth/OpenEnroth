@@ -64,8 +64,7 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"
-
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4" -DCMAKE_C_COMPILER=/bin/clang -DCMAKE_CXX_COMPILER=/bin/clang
     - name: Build
       working-directory: build
       run: |
