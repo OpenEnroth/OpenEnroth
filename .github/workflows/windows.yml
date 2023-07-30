@@ -76,7 +76,7 @@ jobs:
       working-directory: build
       shell: cmd
       run: |
-        nmake VERBOSE=1
+        nmake /S
 
     - name: Tests
       working-directory: build
