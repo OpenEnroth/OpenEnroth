@@ -70,13 +70,13 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DVERBOSE=1
 
     - name: Build
       working-directory: build
       shell: cmd
       run: |
-        ninja /S
+        ninja 
 
     - name: Tests
       working-directory: build
