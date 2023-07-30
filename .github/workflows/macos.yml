@@ -64,7 +64,7 @@ jobs:
       run: |
         brew install --debug ffmpeg@4
 
-    - name: Save ccache to cache
+    - name: Save ffmpeg to cache
       if: steps.ccache-cache.outputs.cache-hit != 'true'    
       uses: actions/cache/save@v3
       with:
@@ -93,13 +93,20 @@ jobs:
         
     - name: Configure
       run: |
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/Cellar/ffmpeg@4/4.4.4/"   
-
+        echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.zshrc
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/Cellar/ffmpeg@4/4.4.4/" -DCMAKE_C_COMPILER="/usr/local/opt/llvm@15/bin/clang" -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm@15/bin/clang++"
+      env:
+        LDFLAGS: "-L/usr/local/opt/llvm@15/lib"  
+        CPPFLAGS: "-I/usr/local/opt/llvm@15/include" 
+        
     - name: Build
       working-directory: build
       run: |
         make -j4
-
+      env:
+        LDFLAGS: "-L/usr/local/opt/llvm@15/lib"  
+        CPPFLAGS: "-I/usr/local/opt/llvm@15/include"
+        
     - name: Tests
       working-directory: build
       run: |
