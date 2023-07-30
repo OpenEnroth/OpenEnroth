@@ -1606,6 +1606,8 @@ GAME_TEST(Issues, Issue1093) {
     EXPECT_TRUE(statusTape.contains("Spell failed"));
 }
 
+// 1100
+
 GAME_TEST(Issues, Issue1115) {
     // Entering Arena on level 21 should not crash the game
     auto mapTape = makeMapTape(test);
@@ -1617,3 +1619,16 @@ GAME_TEST(Issues, Issue1115) {
     EXPECT_EQ(levelTape, tape({21, 21, 21, 21}));
 }
 
+GAME_TEST(Issues, Issue1155) {
+    // Crash when pressing [Game Options] while talking to NPCs
+    auto dialogueTape = makeDialogueTypeTape(test);
+    auto screenTape = makeScreenTape(test);
+    test->playTraceFromTestData("issue_1155.mm7", "issue_1155.json");
+    EXPECT_FALSE(screenTape.contains(SCREEN_SPELL_BOOK));
+    EXPECT_FALSE(screenTape.contains(SCREEN_REST));
+    EXPECT_FALSE(screenTape.contains(SCREEN_QUICK_REFERENCE));
+    EXPECT_FALSE(screenTape.contains(SCREEN_OPTIONS));
+    EXPECT_FALSE(screenTape.contains(SCREEN_BOOKS));
+    EXPECT_TRUE(screenTape.contains(SCREEN_CHARACTERS));
+    EXPECT_TRUE(screenTape.contains(SCREEN_BRANCHLESS_NPC_DIALOG));
+}

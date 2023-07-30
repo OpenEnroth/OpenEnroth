@@ -314,6 +314,9 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         continue;
                     }
                 }
+                // absorb event if its within this windows boundary
+                // prevent hidden buttons being pressed
+                break;
             }
         }
         return;
