@@ -264,6 +264,7 @@ jobs:
       with:
         key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
         restore: false
+        save: false
         
     - name: Configure
       run: |
