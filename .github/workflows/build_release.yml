@@ -167,10 +167,15 @@ jobs:
         key: ffmpeg-cache
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: botanicvelious/ccache-action@v1.2.10
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
+        restore: false
         
+    - name: Remove stale cache
+      working-directory: android
+      run: |
+        /home/runner/work/OpenEnroth/OpenEnroth/.ccache
 
     - name: Build the app
       working-directory: android
@@ -260,11 +265,11 @@ jobs:
         fi
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: botanicvelious/ccache-action@v1.2.10
       with:
         key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
+        restore: false
         
-
     - name: Configure
       run: |
         if [ "${{ matrix.architecture }}" = "x86" ]; then
@@ -343,10 +348,10 @@ jobs:
         brew install sdl2
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: botanicvelious/ccache-action@v1.2.10
       with:
         key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
-        
+        restore: false
 
     - name: Configure
       run: |
@@ -428,9 +433,10 @@ jobs:
         choco upgrade ccache
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: botanicvelious/ccache-action@v1.2.10
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
+        restore: false
 
     - name: Configure
       run: |
