@@ -113,9 +113,8 @@ elseif(BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Fallback to default linker.")
     endif()
     # -Og Like -O1. In future versions, this option might disable different optimizations in order to improve debuggability.
-    add_compile_options(
-        "$<$<CONFIG:DEBUG>:-Og>"
-    )    
+    set(CMAKE_C_FLAGS_DEBUG "-g -Og")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -Og")
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
