@@ -65,10 +65,6 @@ jobs:
         path: '/usr/local/Cellar/ffmpeg@4/4.4.4/'
         key: ffmpeg-osx-ccache
 
-    - name: Setup Path
-      run: |
-        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-
     - name: ccache save cache on merge
       if: github.ref == 'refs/heads/master'
       uses: hendrikmuhs/ccache-action@v1.2
@@ -82,9 +78,13 @@ jobs:
         key: macosx-${{ matrix.configuration }}-${{ matrix.architecture }}
         save: false
 
+    - name: Set path
+      run: |
+        echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.zshrc
+        
     - name: Configure
       run: |
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/Cellar/ffmpeg@4/4.4.4/" 
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/Cellar/ffmpeg@4/4.4.4/" -DCMAKE_C_COMPILER="/usr/local/opt/llvm@15/bin/clang" -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm@15/bin/clang++" 
 
     - name: Build
       working-directory: build
