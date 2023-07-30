@@ -40,6 +40,9 @@ std::array<float, 10> pSoundVolumeLevels = {
 
 std::map<uint32_t, SoundInfo> mapSounds;
 
+constexpr Pid FAKE_HOUSE_DOOR_PID = Pid::fromPacked(-7);
+constexpr Pid FAKE_HOUSE_SPEECH_PID = Pid::fromPacked(-6);
+
 void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     std::vector<SoundInfo> sounds;
 
@@ -199,7 +202,7 @@ void AudioPlayer::resumeSounds() {
     }
 }
 
-void AudioPlayer::playSound(SoundID eSoundID, int pid) {
+void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
     if (!bPlayerReady)
         return;
 
@@ -246,36 +249,35 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid) {
     bool result = true;
     sample->SetVolume(uMasterVolume);
 
-    if (pid == 0) {  // generic sound like from UI
+    if (mode == SOUND_MODE_UI) {
         result = _regularSoundPool.playNew(sample, si.dataSource);
-    } else if (pid == PID_INVALID) { // exclusive sounds - can override
+    } else if (mode == SOUND_MODE_EXCLUSIVE) {
         _regularSoundPool.stopSoundId(eSoundID);
         result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
-    } else if (pid == -1) { // all instances must be changed to PID_INVALID
-        assert(false && "AudioPlayer::playSound - pid == -1 is encountered.");
-        _regularSoundPool.stopSoundId(eSoundID);
+    } else if (mode == SOUND_MODE_NON_RESETTABLE) {
         result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
-    } else if (pid == SOUND_PID_NON_RESETABLE) {  // exclusive sounds - no override (close chest)
-        result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
-    } else if (pid == SOUND_PID_WALKING) {
+    } else if (mode == SOUND_MODE_WALKING) {
         if (_currentWalkingSample) {
             _currentWalkingSample->Stop();
         }
         _currentWalkingSample = sample;
         _currentWalkingSample->Open(si.dataSource);
         _currentWalkingSample->Play();
-    } else if (pid == SOUND_PID_MUSIC_VOLUME) {
+    } else if (mode == SOUND_MODE_MUSIC) {
         sample->SetVolume(uMusicVolume);
         _regularSoundPool.stopSoundId(eSoundID);
         result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
-    } else if (pid == SOUND_PID_VOICE_VOLUME) {
+    } else if (mode == SOUND_MODE_SPEECH) {
         sample->SetVolume(uVoiceVolume);
         _regularSoundPool.stopSoundId(eSoundID);
         result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
-    } else if (pid == SOUND_PID_HOUSE_SPEECH || pid == SOUND_PID_HOUSE_DOOR) {
+    } else if (mode == SOUND_MODE_HOUSE_DOOR || mode == SOUND_MODE_HOUSE_SPEECH) {
+        pid = mode == SOUND_MODE_HOUSE_DOOR ? FAKE_HOUSE_DOOR_PID : FAKE_HOUSE_SPEECH_PID;
         _regularSoundPool.stopPid(pid);
         _regularSoundPool.playUniquePid(sample, si.dataSource, pid);
     } else {
+        assert(pid);
+
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
         switch (object_type) {
@@ -419,7 +421,7 @@ bool AudioSamplePool::playNew(PAudioSample sample, PAudioDataSource source, bool
         return false;
     }
     sample->Play(_looping, positional);
-    _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, PID_INVALID));
+    _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, Pid()));
     return true;
 }
 
@@ -434,11 +436,11 @@ bool AudioSamplePool::playUniqueSoundId(PAudioSample sample, PAudioDataSource so
         return false;
     }
     sample->Play(_looping, positional);
-    _samplePool.push_back(AudioSamplePoolEntry(sample, id, PID_INVALID));
+    _samplePool.push_back(AudioSamplePoolEntry(sample, id, Pid()));
     return true;
 }
 
-bool AudioSamplePool::playUniquePid(PAudioSample sample, PAudioDataSource source, int pid, bool positional) {
+bool AudioSamplePool::playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional) {
     update();
     for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.pid == pid) {
@@ -488,8 +490,8 @@ void AudioSamplePool::stopSoundId(SoundID soundId) {
     }
 }
 
-void AudioSamplePool::stopPid(int pid) {
-    assert(pid != PID_INVALID);
+void AudioSamplePool::stopPid(Pid pid) {
+    assert(pid != Pid());
 
     auto it = _samplePool.begin();
     while (it != _samplePool.end()) {
@@ -638,8 +640,8 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
     }
 }
 
-void AudioPlayer::playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact) {
+void AudioPlayer::playSpellSound(SPELL_TYPE spell, bool is_impact, SoundPlaybackMode mode, Pid pid) {
     if (spell != SPELL_NONE)
-        playSound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid);
+        playSound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), mode, pid);
 }
 

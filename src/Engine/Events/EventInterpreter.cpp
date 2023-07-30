@@ -183,7 +183,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_PlaySound:
             // TODO(captainurist): ir.data.sound_descr.x, ir.data.sound_descr.y used to be passed in.
-            pAudioPlayer->playSound(ir.data.sound_descr.sound_id, 0);
+            pAudioPlayer->playSound(ir.data.sound_descr.sound_id, SOUND_MODE_UI);
             break;
         case EVENT_MouseOver:
             assert(false); // Must be filtered by step in decoder

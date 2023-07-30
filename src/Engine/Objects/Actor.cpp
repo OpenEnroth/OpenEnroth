@@ -265,7 +265,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteId));
             }
             break;
 
@@ -289,7 +289,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.OrangeyRed);
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_FIRE_METEOR_SHOWER:
@@ -349,7 +349,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 k = grng->random(1024) - 512;
             }
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteId));
             }
             break;
         }
@@ -401,7 +401,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteId));
             }
             break;
         }
@@ -426,7 +426,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             // Spell sound was missing from before
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_EARTH_STONESKIN:
@@ -449,7 +449,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.Cioccolato);
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_SPIRIT_BLESS:
@@ -472,7 +472,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_BLESS].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_SPIRIT_FATE:
@@ -495,7 +495,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
         }
 
@@ -519,7 +519,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_BODY_HAMMERHANDS:
@@ -527,7 +527,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->buffs[ACTOR_BUFF_HAMMERHANDS]
                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(realPoints), masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
-            pAudioPlayer->playSound(SOUND_51heroism03, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSound(SOUND_51heroism03, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_BODY_POWER_CURE:
@@ -536,7 +536,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 actorPtr->currentHP = actorPtr->monsterInfo.uHP;
             }
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
-            pAudioPlayer->playSound(SOUND_Fate, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_LIGHT_DISPEL_MAGIC:
@@ -553,7 +553,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     }
                 }
             }
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_LIGHT_DAY_OF_PROTECTION:
@@ -580,7 +580,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White);
-            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
         }
 
@@ -604,7 +604,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->buffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White);
-            pAudioPlayer->playSound(SOUND_9armageddon01, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSound(SOUND_9armageddon01, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_DARK_SHARPMETAL:
@@ -654,7 +654,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteId));
             }
             break;
         }
@@ -676,7 +676,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             }
             actorPtr->buffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey);
-            pAudioPlayer->playSound(SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSound(SOUND_Sacrifice2, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
             break;
 
         default:
@@ -1891,22 +1891,22 @@ void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
     SoundID sound_sample_id = (SoundID)pActors[uActorID].soundSampleIds[std::to_underlying(uSoundID)];
     if (sound_sample_id) {
         if (!pActors[uActorID].buffs[ACTOR_BUFF_SHRINK].Active()) {
-            pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
         } else {
             // TODO(pskelton): looks incomplete - sounds meant to change depending on actor size
             switch (pActors[uActorID].buffs[ACTOR_BUFF_SHRINK].power) {
                 case 1:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
+                    pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
                     break;
                 case 2:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
+                    pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
                     break;
                 case 3:
                 case 4:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
+                    pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
                     break;
                 default:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
+                    pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, PID(OBJECT_Actor, uActorID));
                     break;
             }
         }

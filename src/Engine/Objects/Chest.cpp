@@ -130,7 +130,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);
             // TODO(Nik-RE-dev): chest is originator in this case
-            pAudioPlayer->playSound(SOUND_fireBall, 0);
+            pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_UI);
             pSpellObject.explosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
             if (pParty->hasActiveCharacter() && !OpenedTelekinesis) {
