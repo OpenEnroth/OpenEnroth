@@ -167,7 +167,7 @@ jobs:
         key: ffmpeg-cache
 
     - name: ccache
-      uses: botanicvelious/ccache-action@v1.2.10
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
         max-size: "250M"
@@ -260,10 +260,20 @@ jobs:
         fi
 
     - name: ccache
-      uses: botanicvelious/ccache-action@v1.2.10
+      if: matrix.configuration == 'Debug'
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
         restore: false
+        max-size: "110M"
+
+    - name: ccache
+      if: matrix.configuration == 'Release'
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
+        restore: false
+        max-size: "25M"
         
     - name: Configure
       run: |
@@ -342,11 +352,22 @@ jobs:
         brew install ffmpeg@4
         brew install sdl2
 
+
     - name: ccache
-      uses: botanicvelious/ccache-action@v1.2.10
+      if: matrix.configuration == 'Debug'
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
         restore: false
+        max-size: "75M"
+
+    - name: ccache
+      if: matrix.configuration == 'Release'
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
+        restore: false
+        max-size: "25M"
 
     - name: Configure
       run: |
@@ -429,10 +450,20 @@ jobs:
         choco upgrade ccache
 
     - name: ccache
-      uses: botanicvelious/ccache-action@v1.2.10
+      if: matrix.configuration == 'Debug'
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
         restore: false
+        max-size: "110M"
+
+    - name: ccache
+      if: matrix.configuration == 'Release'
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
+        restore: false
+        max-size: "50M"
 
     - name: Configure
       run: |
