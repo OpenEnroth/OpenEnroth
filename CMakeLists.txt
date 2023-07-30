@@ -130,7 +130,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
-    # add_compile_options(/Oi) # intrinsic functions are faster because they do not have the overhead of function calls
+    add_compile_options(/Oi) # intrinsic functions are faster because they do not have the overhead of function calls
     # add_compile_options(/GL) # since we use /Z7 we can use whole program optimisations
     # add_compile_options(/fp:fast) # match fp model of clang etc
     if (CHECK_CPU_ARCHITECTURE_X86)
