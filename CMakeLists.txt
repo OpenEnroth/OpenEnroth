@@ -137,6 +137,12 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     else()
         add_link_options(/OPT:REF,ICF) 
     endif()
+    # Allows the compiler to package individual functions in the form of packaged functions (COMDATs).
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Gy")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Gy")
+    # /Ob1 retains almost all relevant debug information for debugging, but makes a very big difference in performance
+    string(REPLACE "/Ob0" "/Ob1" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "/Ob0" "/Ob1" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
 resolve_dependencies()
