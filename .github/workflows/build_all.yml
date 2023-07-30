@@ -172,7 +172,7 @@ jobs:
         fi
         sudo apt-get update
         if [ "${{ matrix.architecture }}" = "x86" ]; then
-          sudo apt-get install -y gcc-12-multilib g++-12-multilib
+          sudo apt-get install -y gcc-12-multilib g++-12-multilib lld
           # missing dependency workaround
           sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
           sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
@@ -183,7 +183,7 @@ jobs:
           sudo apt-get install -y libsdl2-dev:i386
         fi
         if [ "${{ matrix.architecture }}" = "x64" ]; then
-          sudo apt-get install -y gcc-12 g++-12
+          sudo apt-get install -y gcc-12 g++-12 lld
           sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
           sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
           sudo apt-get install -y libsdl2-dev
