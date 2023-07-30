@@ -1896,14 +1896,14 @@ void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
             // TODO(pskelton): looks incomplete - sounds meant to change depending on actor size
             switch (pActors[uActorID].buffs[ACTOR_BUFF_SHRINK].power) {
                 case 1:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
                     break;
                 case 2:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
                     break;
                 case 3:
                 case 4:
-                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
                     break;
                 default:
                     pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));

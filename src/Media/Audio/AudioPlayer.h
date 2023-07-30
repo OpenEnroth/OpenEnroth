@@ -106,12 +106,8 @@ class AudioPlayer {
      *                                  * SOUND_PID_WALKING for walking sounds, previous one will be stopped and new one started
      *                                  * SOUND_PID_MUSIC_VOLUME same as for PID_INVALID, but sound played with music volume level
      *                                  * SOUND_PID_VOICE_VOLUME same as for PID_INVALID, but sound played with voice volume level
-     * @param uNumRepeats               unused but presumably must be number of repeats before stopping
-     * @param x                         unused but presumably must be x coord of sound, additionally -1 seems to indicate that these coords must be ignored
-     * @param y                         unused but presumably must be y coord of sound
-     * @param sound_data_id             ???, unused
      */
-    void playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats = 0, int x = -1, int y = 0, int sound_data_id = 0);
+    void playSound(SoundID eSoundID, int pid);
 
     /**
      * Play sound of spell casting or spell sprite impact.

@@ -199,7 +199,7 @@ void AudioPlayer::resumeSounds() {
     }
 }
 
-void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
+void AudioPlayer::playSound(SoundID eSoundID, int pid) {
     if (!bPlayerReady)
         return;
 
@@ -640,6 +640,6 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
 
 void AudioPlayer::playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact) {
     if (spell != SPELL_NONE)
-        playSound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
+        playSound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid);
 }
 

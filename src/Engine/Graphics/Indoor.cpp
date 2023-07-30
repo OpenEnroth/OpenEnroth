@@ -683,7 +683,7 @@ void BLV_UpdateDoors() {
                 if (shouldPlaySound)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
             } else if (shouldPlaySound) {
-                pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
+                pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i));
             }
         } else {
             assert(door->uState == BLVDoor::Closing);
@@ -697,7 +697,7 @@ void BLV_UpdateDoors() {
             } else {
                 openDistance = door->uMoveLength - closeDistance;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
+                    pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i));
             }
         }
 
