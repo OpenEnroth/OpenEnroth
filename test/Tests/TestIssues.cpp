@@ -565,6 +565,8 @@ GAME_TEST(Issues, Issue405) {
     // FPS affects effective recovery time.
     auto runTrace = [&] {
         test->loadGameFromTestData("issue_405.mm7");
+        // TODO(captainurist): Drop this if once we fix #1174. Right now the 1st char is selected on load, and pressing
+        //                     the portrait again opens up character screen.
         if (pParty->activeCharacterIndex() != 1) {
             game->pressGuiButton("Game_Character1");
             game->tick(1);
