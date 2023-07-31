@@ -21,6 +21,7 @@ include(AppleLibcxxAssertions)
 include(ExternalProject)
 include(CppLint)
 include(Dependencies)
+include(CheckLinkerFlag)
 
 set(CCACHE_SUPPORT On CACHE BOOL "Enable ccache support")
 set(SCCACHE_SUPPORT ON CACHE BOOL "Enable sccache support")
@@ -75,7 +76,6 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
 endif()
 
 #specify linker options
-include(CheckLinkerFlag)
 check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
 
