@@ -517,6 +517,7 @@ void GUIWindow_GenericDialogue::Update() {
         return;
     }
 
+    // Close branchless dialog on any keypress
     if (!keyboardInputHandler->GetTextInput().empty()) {
         keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
         GameUI_StatusBar_ClearInputString();
