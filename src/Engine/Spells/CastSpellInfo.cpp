@@ -139,10 +139,10 @@ void CastSpellInfoHelpers::castSpell() {
         Character *pPlayer = &pParty->pCharacters[pCastSpell->casterCharacterIndex];
 
         // Pid of target or 0 if spell was quick casted
-        Pid spell_targeted_at = Pid::fromPacked(pCastSpell->targetPid); // TODO(captainurist): #pid
+        Pid spell_targeted_at = pCastSpell->targetPid;
 
         // First try to pick live actor mouse is pointing at
-        if (spell_targeted_at == 0 &&
+        if (!spell_targeted_at &&
                 mouse->uPointingObjectID &&
                 PID_TYPE(mouse->uPointingObjectID) == OBJECT_Actor &&
                 pActors[PID_ID(mouse->uPointingObjectID)].CanAct()) {
@@ -150,7 +150,7 @@ void CastSpellInfoHelpers::castSpell() {
         }
 
         // Otherwise pick closest live actor
-        if (spell_targeted_at == 0) {
+        if (!spell_targeted_at) {
             bool target_undead;
             if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
                     pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
@@ -1643,7 +1643,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     // LODWORD(spellduration) = 300;
-                    if (pCastSpell->targetPid == 0) {
+                    if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_FATE]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), spell_mastery, spell_power, 0, 0);
@@ -2253,7 +2253,7 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    if (pCastSpell->targetPid == PID_INVALID) {
+                    if (!pCastSpell->targetPid) {
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].Heal(heal_amount);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                     }
@@ -2627,7 +2627,7 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                     }
                     int zombie_hp_limit = target_monster_level * 10;
-                    if (pCastSpell->targetPid == PID_INVALID) {
+                    if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_DEAD)) {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].SetCondition(CONDITION_ZOMBIE, 1);
@@ -2934,7 +2934,7 @@ static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
             if (uFlags & ON_CAST_TargetIsParty) {
                 pCastSpellInfo[i].targetCharacterIndex = casterIndex;
             }
-            pCastSpellInfo[i].targetPid = 0;
+            pCastSpellInfo[i].targetPid = Pid();
             pCastSpellInfo[i].flags = uFlags;
             pCastSpellInfo[i].overrideSkillValue = skill_level;
             pCastSpellInfo[i].overrideSoundId = overrideSoundId;
@@ -3176,8 +3176,8 @@ void pushScrollSpell(SPELL_TYPE spell, int casterIndex) {
     pushSpellOrRangedAttack(spell, casterIndex, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
 }
 
-void spellTargetPicked(int targetPid, int targetCharacterIndex) {
-    assert((targetPid != PID_INVALID) ^ (targetCharacterIndex != -1)); // Only one should be valid.
+void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {
+    assert((targetPid != Pid()) ^ (targetCharacterIndex != -1)); // Only one should be valid.
     assert(targetCharacterIndex == -1 || (targetCharacterIndex >= 0 && targetCharacterIndex <= 4));
 
     CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);

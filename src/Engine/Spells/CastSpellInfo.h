@@ -66,7 +66,7 @@ struct CastSpellInfo {
                                    // TODO(captainurist): also hireling index for dark sacrifice.
     SpellCastFlags flags = 0;
     CombinedSkillValue overrideSkillValue; // If set - skill value to use for casting.
-    int targetPid = 0; // Target pid, if any.
+    Pid targetPid; // Target pid, if any.
     int targetInventoryIndex = -1; // Target inventory item index (in Character::pInventoryItemList) in target
                                    // character's inventory, if any.
 
@@ -129,4 +129,4 @@ void pushScrollSpell(SPELL_TYPE spell, int casterIndex);
  * @param targetPid                     `Pid` of the target.
  * @param targetCharacterIndex          0-based index of the character being targeted by the spell.
  */
-void spellTargetPicked(int targetPid, int targetCharacterIndex);
+void spellTargetPicked(Pid targetPid, int targetCharacterIndex);
