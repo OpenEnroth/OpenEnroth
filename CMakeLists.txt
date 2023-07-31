@@ -64,17 +64,6 @@ set(PREBUILT_DEPENDENCIES ${PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebu
 add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
 
-if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
-    add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
-    add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
-    add_compile_options(-Werror=unused-value) # Expression result unused
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'
-
-    if("-m32" IN_LIST CMAKE_CXX_FLAGS)
-        add_compile_options(-msse2 -mfpmath=sse -march=pentium4)
-    endif()
-endif()
-
 #specify linker options
 check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
@@ -82,8 +71,12 @@ check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
 set(USE_LD_GOLD On CACHE BOOL "Use GNU gold linker")
 set(USE_LD_LLD ON CACHE BOOL "Use LLD linker")
 
-if(BUILD_COMPILER STREQUAL "gcc")
-    add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
+if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
+    add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+    add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
+    add_compile_options(-Werror=unused-value) # Expression result unused
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'
+
     if(USE_LD_LLD AND COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
         message(STATUS "Using lld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
@@ -93,6 +86,14 @@ if(BUILD_COMPILER STREQUAL "gcc")
     else()
         message(STATUS "Fallback to default linker.")
     endif()
+
+    if("-m32" IN_LIST CMAKE_CXX_FLAGS)
+        add_compile_options(-msse2 -mfpmath=sse -march=pentium4)
+    endif()
+endif()
+
+if(BUILD_COMPILER STREQUAL "gcc")
+    add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
     # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0. 
     add_compile_options(
         "$<$<CONFIG:DEBUG>:-Og>"
@@ -103,18 +104,9 @@ elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     enable_libcxx_assertions(FALSE)
-    if(USE_LD_LLD AND COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
-        message(STATUS "Using lld linker.")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
-    elseif(USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
-        message(STATUS "Using gold linker.")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
-    else()
-        message(STATUS "Fallback to default linker.")
-    endif()
     # -Og Like -O1. In future versions, this option might disable different optimizations in order to improve debuggability.
-    set(CMAKE_C_FLAGS_DEBUG "-g -Og")
-    set(CMAKE_CXX_FLAGS_DEBUG "-g -Og")
+    string(REPLACE "/-g" "-g -Og" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "/-g" "-g -Og" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
@@ -130,7 +122,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
-    if (CHECK_CPU_ARCHITECTURE_X86)
+    if (BUILD_TYPE STREQUAL "x86")
         add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
         add_link_options(/SAFESEH:NO) # This is for x86 build
         add_link_options(/OPT:REF) # in 32-bit environments, /OPT:REF is recommended
@@ -141,6 +133,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Gy")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Gy")
     # retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
+    # /Ob controls inline expansions and /Ob2 expands any function not explicitly marked for no inlining.
     string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
