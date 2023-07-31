@@ -498,6 +498,8 @@ class Character {
     int pure_might_used;
     union {  // 214h
         struct {
+            // TODO(captainurist): gcc doesn't let us turn these into std::array. And we probably need to drop the 2nd
+            //                     one anyway. Investigate.
             ItemGen pInventoryItemList[INVENTORY_SLOT_COUNT];
             ItemGen pEquippedItems[ADDITIONAL_SLOT_COUNT];
         };

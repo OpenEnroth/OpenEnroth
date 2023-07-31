@@ -1075,7 +1075,7 @@ void Game::processQueuedMessages() {
                     // TODO(Nik-RE-dev): need separate message type
                     pParty->setActiveCharacterIndex(uMessageParam);
                 } else {
-                    spellTargetPicked(PID_INVALID, uMessageParam);
+                    spellTargetPicked(Pid(), uMessageParam);
                     closeTargetedSpellWindow();
                 }
                 continue;
@@ -1244,7 +1244,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpell_TargetActorBuff:
             case UIMSG_CastSpell_TargetActor: {
-                int pid = _vis->get_picked_object_zbuf_val().object_pid;
+                Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
                 int depth = _vis->get_picked_object_zbuf_val().depth;
                 if (PID_TYPE(pid) == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
                     spellTargetPicked(pid, -1);

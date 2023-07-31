@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Pid.h"
 
 #include "Utility/Flags.h"
 
@@ -57,18 +58,20 @@ static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
 
 /*  271 */
 struct CastSpellInfo {
-    CastSpellInfo();
-
     GUIWindow *GetCastSpellInInventoryWindow();
 
-    SPELL_TYPE uSpellID;
-    uint16_t uPlayerID;
-    uint16_t uPlayerID_2;
-    int16_t field_6; // ITEM_EQUIP_TYPE when enchanting.
-    SpellCastFlags uFlags;
-    CombinedSkillValue forced_spell_skill_level;
-    int spell_target_pid;
-    int sound_id;
+    SPELL_TYPE uSpellID = SPELL_NONE; // Spell being cast.
+    int casterCharacterIndex = -1; // 0-based index of the character who cast the spell.
+    int targetCharacterIndex = -1; // 0-based index of the target character, if any.
+                                   // TODO(captainurist): also hireling index for dark sacrifice.
+    SpellCastFlags flags = 0;
+    CombinedSkillValue overrideSkillValue; // If set - skill value to use for casting.
+    Pid targetPid; // Target pid, if any.
+    int targetInventoryIndex = -1; // Target inventory item index (in Character::pInventoryItemList) in target
+                                   // character's inventory, if any.
+
+    int overrideSoundId = 0; // TODO(captainurist): doesn't look like sound id. Maybe flags?
+                             //                     Bits 0-2 for caster (1-based), bit 3 for blaster.
 };
 
 /**
@@ -85,45 +88,45 @@ struct CastSpellInfo {
  *
  * @offset 0x0042777D
  *
- * @param spell                         ID of spell.
- * @param uPlayerID                     ID of player casting spell.
+ * @param spell                         Spell id.
+ * @param casterIndex                   Zero-based index of a character casting the spell.
  * @param skill_value                   Skill value that the spell is cast with.
  * @param flags                         Spell flags. Can be empty or have several flags.
- * @param a6                            ???
+ * @param overrideSoundId                            ???
  */
 void pushSpellOrRangedAttack(SPELL_TYPE spell,
-                             unsigned int uPlayerID,
+                             int casterIndex,
                              CombinedSkillValue skill_value,
                              SpellCastFlags flags,
-                             int a6);
+                             int overrideSoundId);
 
 /**
  * Register spell cast on party with temple donation.
  * Temple spells are cast with MASTER mastery of skill level equal to the day of week.
  *
- * @param spell                         ID of spell.
+ * @param spell                         Spell id.
  */
 void pushTempleSpell(SPELL_TYPE spell);
 
 /**
  * Register spell cast by NPC companions.
  *
- * @param spell        ID of spell.
+ * @param spell                         Spell id.
  */
 void pushNPCSpell(SPELL_TYPE spell);
 
 /**
  * Register spell cast through scroll.
  *
- * @param spell        ID of spell.
- * @param uPlayerID    ID of player casting spell.
+ * @param spell                         Spell id.
+ * @param casterIndex                   0-based index of the character casting the spell.
  */
-void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID);
+void pushScrollSpell(SPELL_TYPE spell, int casterIndex);
 
 /**
- * Process successfull picking target for spell.
+ * Process successful picking target for spell.
  *
- * @param pid            PID of target
- * @param playerTarget   Target player index
+ * @param targetPid                     `Pid` of the target.
+ * @param targetCharacterIndex          0-based index of the character being targeted by the spell.
  */
-void spellTargetPicked(int pid, int playerTarget);
+void spellTargetPicked(Pid targetPid, int targetCharacterIndex);

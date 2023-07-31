@@ -631,6 +631,7 @@ void CompactLayingItemsList() {
 void SpriteObject::InitializeSpriteObjects() {
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
+        // TODO(captainurist): item->uSoundID & 8 checks for laser projectiles, wtf...
         if (item->uObjectDescID && (item->uSoundID & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
             SpriteObject::OnInteraction(i);
         }
