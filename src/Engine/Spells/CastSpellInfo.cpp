@@ -311,7 +311,7 @@ void CastSpellInfoHelpers::castSpell() {
             }
             if (castSuccessful) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pCastSpell->uPlayerID), 0);
-                pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
+                pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
             }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
@@ -2915,7 +2915,7 @@ void CastSpellInfoHelpers::castSpell() {
 
             pPlayer->SpendMana(uRequiredMana);
             setSpellRecovery(pCastSpell, recoveryTime);
-            pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
+            pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
         }
 
         pCastSpell->uSpellID = SPELL_NONE;

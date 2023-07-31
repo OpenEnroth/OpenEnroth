@@ -18,11 +18,11 @@
 #include "SoundEnums.h"
 
 struct AudioSamplePoolEntry {
-    AudioSamplePoolEntry(PAudioSample samplePtr_, SoundID id_, int pid_):samplePtr(samplePtr_), id(id_), pid(pid_) {}
+    AudioSamplePoolEntry(PAudioSample samplePtr, SoundID id, Pid pid) : samplePtr(samplePtr), id(id), pid(pid) {}
 
     PAudioSample samplePtr;
     SoundID id;
-    int pid;
+    Pid pid;
 };
 
 class AudioSamplePool {
@@ -31,12 +31,12 @@ class AudioSamplePool {
 
     bool playNew(PAudioSample sample, PAudioDataSource source, bool positional = false);
     bool playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundID id, bool positional = false);
-    bool playUniquePid(PAudioSample sample, PAudioDataSource source, int pid, bool positional = false);
+    bool playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional = false);
     void pause();
     void resume();
     void stop();
     void stopSoundId(SoundID soundId);
-    void stopPid(int pid);
+    void stopPid(Pid pid);
     void update();
     void setVolume(float value);
     bool hasPlaying();
@@ -58,15 +58,6 @@ class AudioPlayer {
     AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uMusicVolume(0), uVoiceVolume(0),
                     _voiceSoundPool(false), _regularSoundPool(false), _loopingSoundPool(true) {}
     virtual ~AudioPlayer() {}
-
-    // Special PID values for additional sound playing semantics
-    static const int SOUND_PID_EXCLUSIVE = PID_INVALID;
-    static const int SOUND_PID_NON_RESETABLE = -2;
-    static const int SOUND_PID_WALKING = -3;
-    static const int SOUND_PID_MUSIC_VOLUME = -4;
-    static const int SOUND_PID_VOICE_VOLUME = -5;
-    static const int SOUND_PID_HOUSE_SPEECH = -6;
-    static const int SOUND_PID_HOUSE_DOOR = -7;
 
     void Initialize();
 
@@ -99,29 +90,21 @@ class AudioPlayer {
      * Play sound.
      *
      * @param eSoundID                  ID of sound.
-     * @param pid                       PID of sound originator or:
-     *                                  * 0 for generic ui sound, plays independently of others
-     *                                  * PID_INVALID for exclusive sound - sound with the same ID will be stopped and played from start
-     *                                  * SOUND_PID_NON_RESETABLE for non resetable sound - if sound still played, this call to playSound shall be ignored
-     *                                  * SOUND_PID_WALKING for walking sounds, previous one will be stopped and new one started
-     *                                  * SOUND_PID_MUSIC_VOLUME same as for PID_INVALID, but sound played with music volume level
-     *                                  * SOUND_PID_VOICE_VOLUME same as for PID_INVALID, but sound played with voice volume level
-     * @param uNumRepeats               unused but presumably must be number of repeats before stopping
-     * @param x                         unused but presumably must be x coord of sound, additionally -1 seems to indicate that these coords must be ignored
-     * @param y                         unused but presumably must be y coord of sound
-     * @param sound_data_id             ???, unused
+     * @param mode                      Playback mode.
+     * @param pid                       `Pid` of sound source.
      */
-    void playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats = 0, int x = -1, int y = 0, int sound_data_id = 0);
+    void playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid = Pid());
 
     /**
      * Play sound of spell casting or spell sprite impact.
      *
      * @param spell                     Spell ID of spell. Indexes into `SpellSoundIds`.
-     * @param pid                       PID of sound originator. See playSound description.
      * @param is_impact                 Indicates sound of spell impact, if true sound ID
      *                                  will be SpellSoundIds[spell] + 1.
+     * @param mode                      Playback mode.
+     * @param pid                       PID of sound originator. See playSound description.
      */
-    void playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact = false);
+    void playSpellSound(SPELL_TYPE spell, bool is_impact, SoundPlaybackMode mode, Pid pid = Pid());
 
     /**
      * Play generic UI sound.
@@ -131,7 +114,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playUISound(SoundID id) {
-        playSound(id, 0);
+        playSound(id, SOUND_MODE_UI);
     }
 
     /**
@@ -142,7 +125,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playExclusiveSound(SoundID id) {
-        playSound(id, SOUND_PID_EXCLUSIVE);
+        playSound(id, SOUND_MODE_EXCLUSIVE);
     }
 
     /**
@@ -153,7 +136,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playNonResetableSound(SoundID id) {
-        playSound(id, SOUND_PID_NON_RESETABLE);
+        playSound(id, SOUND_MODE_NON_RESETTABLE);
     }
 
     /**
@@ -165,7 +148,7 @@ class AudioPlayer {
      */
     void playWalkSound(SoundID id) {
         // All walk sounds originally used PID 804 which is PID(OBJECT_Character, 100)
-        playSound(id, SOUND_PID_WALKING);
+        playSound(id, SOUND_MODE_WALKING);
     }
 
     /**
@@ -179,7 +162,7 @@ class AudioPlayer {
     void playHouseSound(SoundID id, bool isSpeech) {
         // Speech sounds originally used PID 806 which is PID(OBJECT_Face, 100)
         // Opening/closing sounds originally used PID 814 which is PID(OBJECT_Face, 101)
-        playSound(id, isSpeech ? SOUND_PID_HOUSE_SPEECH : SOUND_PID_HOUSE_DOOR);
+        playSound(id, isSpeech ? SOUND_MODE_HOUSE_SPEECH : SOUND_MODE_HOUSE_DOOR);
     }
 
  protected:

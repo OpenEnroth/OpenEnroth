@@ -6442,7 +6442,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             }
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->playSound(soundToPlay, PID(OBJECT_Character, targetchar));
+        pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, PID(OBJECT_Character, targetchar));
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -7294,7 +7294,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundID)pickedSoundID, PID(OBJECT_Character, getCharacterIndex()));
+                pAudioPlayer->playSound((SoundID)pickedSoundID, SOUND_MODE_PID, PID(OBJECT_Character, getCharacterIndex()));
             }
         }
     }

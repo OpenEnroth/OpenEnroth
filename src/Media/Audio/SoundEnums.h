@@ -138,3 +138,33 @@ enum SOUND_FLAG {
     SOUND_FLAG_LOCKED = 0x1,
     SOUND_FLAG_3D = 0x2,
 };
+
+enum class SoundPlaybackMode {
+    /** Normal sound, requires a pid. */
+    SOUND_MODE_PID,
+
+    /** For generic UI sounds, plays independently of other sounds. */
+    SOUND_MODE_UI,
+
+    /** Playing the same sound id in this mode stops the already running one. */
+    SOUND_MODE_EXCLUSIVE,
+
+    /** Playing the same sound id in this mode just ignores the playback request. */
+    SOUND_MODE_NON_RESETTABLE,
+
+    /** Only one walk sound can be playing at a time. Playing a new one stops the previous one. */
+    SOUND_MODE_WALKING,
+
+    /** Same as `SOUND_MODE_EXCLUSIVE`, but played back at music volume. */
+    SOUND_MODE_MUSIC,
+
+    /** Same as `SOUND_MODE_EXCLUSIVE`, but played back at speech volume. */
+    SOUND_MODE_SPEECH,
+
+    /** House door sounds, only one sound can be active at a time. */
+    SOUND_MODE_HOUSE_DOOR,
+
+    /** House speech, only one sound can be active at a time. */ // TODO(captainurist): played back at speech volume?
+    SOUND_MODE_HOUSE_SPEECH,
+};
+using enum SoundPlaybackMode;
