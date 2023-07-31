@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;42cb4f2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;246b847</span>
    </div>
   </td>
  </tr>
@@ -72,7 +72,6 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classAudioPlayer-members.html">List of all members</a>  </div>
@@ -137,10 +136,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a88c5e9b7cc541425ae56bbbd14f8e006"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad855b8de97688de568cda99aed75497b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad855b8de97688de568cda99aed75497b">isWalkingSoundPlays</a> ()</td></tr>
 <tr class="separator:ad855b8de97688de568cda99aed75497b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56efb0cc9e24aca326c07d0beb8f0f80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a56efb0cc9e24aca326c07d0beb8f0f80">playSound</a> (<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> eSoundID, int pid, unsigned int uNumRepeats=0, int x=-1, int y=0, int sound_data_id=0)</td></tr>
-<tr class="separator:a56efb0cc9e24aca326c07d0beb8f0f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c565d69f76d1db70ddedb3ce8f9c549"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a9c565d69f76d1db70ddedb3ce8f9c549">playSpellSound</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int pid, bool is_impact=false)</td></tr>
-<tr class="separator:a9c565d69f76d1db70ddedb3ce8f9c549"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a961016adcb41db72457eac33d9591ca0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a961016adcb41db72457eac33d9591ca0">playSound</a> (<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> eSoundID, <a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a> mode, <a class="el" href="classPid.html">Pid</a> pid=<a class="el" href="classPid.html">Pid</a>())</td></tr>
+<tr class="separator:a961016adcb41db72457eac33d9591ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b7e9353e1788ae4ac1c9e62abf0ddb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a2b7e9353e1788ae4ac1c9e62abf0ddb1">playSpellSound</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, bool is_impact, <a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a> mode, <a class="el" href="classPid.html">Pid</a> pid=<a class="el" href="classPid.html">Pid</a>())</td></tr>
+<tr class="separator:a2b7e9353e1788ae4ac1c9e62abf0ddb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3d54489da8e26ec85979ff1c348c66d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad3d54489da8e26ec85979ff1c348c66d">playUISound</a> (<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
 <tr class="separator:ad3d54489da8e26ec85979ff1c348c66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70be9431da1db6b9221ebccf9cd44b3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a70be9431da1db6b9221ebccf9cd44b3a">playExclusiveSound</a> (<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
@@ -151,23 +150,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab650b193358f8c563364985ea22cc40e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ab650b193358f8c563364985ea22cc40e">playHouseSound</a> (<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id, bool isSpeech)</td></tr>
 <tr class="separator:ab650b193358f8c563364985ea22cc40e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:aa70c282cb016aac08a1554547e91570b"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aa70c282cb016aac08a1554547e91570b">SOUND_PID_EXCLUSIVE</a> = <a class="el" href="Pid_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td></tr>
-<tr class="separator:aa70c282cb016aac08a1554547e91570b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acab3774466e4def6ca2b47a202628e25"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#acab3774466e4def6ca2b47a202628e25">SOUND_PID_NON_RESETABLE</a> = -2</td></tr>
-<tr class="separator:acab3774466e4def6ca2b47a202628e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcd09bd27047a69ee72599159674fff0"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#abcd09bd27047a69ee72599159674fff0">SOUND_PID_WALKING</a> = -3</td></tr>
-<tr class="separator:abcd09bd27047a69ee72599159674fff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ff44bccf659cb3755d8ab7f95fd2682"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a2ff44bccf659cb3755d8ab7f95fd2682">SOUND_PID_MUSIC_VOLUME</a> = -4</td></tr>
-<tr class="separator:a2ff44bccf659cb3755d8ab7f95fd2682"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7423398a06c4bef307f56665f00b8b48"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a7423398a06c4bef307f56665f00b8b48">SOUND_PID_VOICE_VOLUME</a> = -5</td></tr>
-<tr class="separator:a7423398a06c4bef307f56665f00b8b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a877486e1dc5aa3a46d1305b154b52db1"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a877486e1dc5aa3a46d1305b154b52db1">SOUND_PID_HOUSE_SPEECH</a> = -6</td></tr>
-<tr class="separator:a877486e1dc5aa3a46d1305b154b52db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ae0f87cf9af8c9d99e7c7340c95acb2"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a3ae0f87cf9af8c9d99e7c7340c95acb2">SOUND_PID_HOUSE_DOOR</a> = -7</td></tr>
-<tr class="separator:a3ae0f87cf9af8c9d99e7c7340c95acb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -621,8 +603,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a56efb0cc9e24aca326c07d0beb8f0f80" name="a56efb0cc9e24aca326c07d0beb8f0f80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56efb0cc9e24aca326c07d0beb8f0f80">&#9670;&#160;</a></span>playSound()</h2>
+<a id="a961016adcb41db72457eac33d9591ca0" name="a961016adcb41db72457eac33d9591ca0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a961016adcb41db72457eac33d9591ca0">&#9670;&#160;</a></span>playSound()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -636,32 +618,14 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>pid</em>, </td>
+          <td class="paramtype"><a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uNumRepeats</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em> = <code>-1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>sound_data_id</em> = <code>0</code>&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
+          <td class="paramname"><em>pid</em> = <code><a class="el" href="classPid.html">Pid</a>()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -674,27 +638,16 @@ Protected Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">eSoundID</td><td>ID of sound. </td></tr>
-    <tr><td class="paramname">pid</td><td>PID of sound originator or:<ul>
-<li>0 for generic ui sound, plays independently of others</li>
-<li>PID_INVALID for exclusive sound - sound with the same ID will be stopped and played from start</li>
-<li>SOUND_PID_NON_RESETABLE for non resetable sound - if sound still played, this call to playSound shall be ignored</li>
-<li>SOUND_PID_WALKING for walking sounds, previous one will be stopped and new one started</li>
-<li>SOUND_PID_MUSIC_VOLUME same as for PID_INVALID, but sound played with music volume level</li>
-<li>SOUND_PID_VOICE_VOLUME same as for PID_INVALID, but sound played with voice volume level </li>
-</ul>
-</td></tr>
-    <tr><td class="paramname">uNumRepeats</td><td>unused but presumably must be number of repeats before stopping </td></tr>
-    <tr><td class="paramname">x</td><td>unused but presumably must be x coord of sound, additionally -1 seems to indicate that these coords must be ignored </td></tr>
-    <tr><td class="paramname">y</td><td>unused but presumably must be y coord of sound </td></tr>
-    <tr><td class="paramname">sound_data_id</td><td>???, unused </td></tr>
+    <tr><td class="paramname">mode</td><td>Playback mode. </td></tr>
+    <tr><td class="paramname">pid</td><td><code><a class="el" href="classPid.html">Pid</a></code> of sound source. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a9c565d69f76d1db70ddedb3ce8f9c549" name="a9c565d69f76d1db70ddedb3ce8f9c549"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c565d69f76d1db70ddedb3ce8f9c549">&#9670;&#160;</a></span>playSpellSound()</h2>
+<a id="a2b7e9353e1788ae4ac1c9e62abf0ddb1" name="a2b7e9353e1788ae4ac1c9e62abf0ddb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b7e9353e1788ae4ac1c9e62abf0ddb1">&#9670;&#160;</a></span>playSpellSound()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -708,14 +661,20 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>pid</em>, </td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_impact</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>is_impact</em> = <code>false</code>&#160;</td>
+          <td class="paramtype"><a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
+          <td class="paramname"><em>pid</em> = <code><a class="el" href="classPid.html">Pid</a>()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -728,8 +687,9 @@ Protected Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into <code>SpellSoundIds</code>. </td></tr>
-    <tr><td class="paramname">pid</td><td>PID of sound originator. See playSound description. </td></tr>
     <tr><td class="paramname">is_impact</td><td>Indicates sound of spell impact, if true sound ID will be SpellSoundIds[spell] + 1. </td></tr>
+    <tr><td class="paramname">mode</td><td>Playback mode. </td></tr>
+    <tr><td class="paramname">pid</td><td>PID of sound originator. See playSound description. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1151,160 +1111,6 @@ Protected Attributes</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa70c282cb016aac08a1554547e91570b" name="aa70c282cb016aac08a1554547e91570b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa70c282cb016aac08a1554547e91570b">&#9670;&#160;</a></span>SOUND_PID_EXCLUSIVE</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_EXCLUSIVE = <a class="el" href="Pid_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3ae0f87cf9af8c9d99e7c7340c95acb2" name="a3ae0f87cf9af8c9d99e7c7340c95acb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ae0f87cf9af8c9d99e7c7340c95acb2">&#9670;&#160;</a></span>SOUND_PID_HOUSE_DOOR</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_HOUSE_DOOR = -7</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a877486e1dc5aa3a46d1305b154b52db1" name="a877486e1dc5aa3a46d1305b154b52db1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a877486e1dc5aa3a46d1305b154b52db1">&#9670;&#160;</a></span>SOUND_PID_HOUSE_SPEECH</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_HOUSE_SPEECH = -6</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2ff44bccf659cb3755d8ab7f95fd2682" name="a2ff44bccf659cb3755d8ab7f95fd2682"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ff44bccf659cb3755d8ab7f95fd2682">&#9670;&#160;</a></span>SOUND_PID_MUSIC_VOLUME</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_MUSIC_VOLUME = -4</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acab3774466e4def6ca2b47a202628e25" name="acab3774466e4def6ca2b47a202628e25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acab3774466e4def6ca2b47a202628e25">&#9670;&#160;</a></span>SOUND_PID_NON_RESETABLE</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_NON_RESETABLE = -2</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7423398a06c4bef307f56665f00b8b48" name="a7423398a06c4bef307f56665f00b8b48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7423398a06c4bef307f56665f00b8b48">&#9670;&#160;</a></span>SOUND_PID_VOICE_VOLUME</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_VOICE_VOLUME = -5</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abcd09bd27047a69ee72599159674fff0" name="abcd09bd27047a69ee72599159674fff0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abcd09bd27047a69ee72599159674fff0">&#9670;&#160;</a></span>SOUND_PID_WALKING</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int AudioPlayer::SOUND_PID_WALKING = -3</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
