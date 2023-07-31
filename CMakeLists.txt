@@ -77,6 +77,10 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-value) # Expression result unused
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'
 
+    # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0. 
+    string(REPLACE "-O0" "-Og" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "-O0" "-Og" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    
     if(USE_LD_LLD AND COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
         message(STATUS "Using lld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
@@ -94,19 +98,12 @@ endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
-    # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0. 
-    add_compile_options(
-        "$<$<CONFIG:DEBUG>:-Og>"
-    )    
 elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
     add_compile_options(-Werror=inconsistent-missing-override) # Clang-specific, goes with -Werror=suggest-override.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     enable_libcxx_assertions(FALSE)
-    # -Og Like -O1. In future versions, this option might disable different optimizations in order to improve debuggability.
-    string(REPLACE "/-g" "-g -Og" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "/-g" "-g -Og" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
@@ -129,9 +126,8 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     else()
         add_link_options(/OPT:REF,ICF) 
     endif()
-    # Allows the compiler to package individual functions in the form of packaged functions (COMDATs).
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Gy")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Gy")
+    # Allows the compiler to package individual functions in the form of packaged functions (COMDATs)
+    add_compile_options("$<$<CONFIG:RELEASE>:/Gy>")    
     # retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
     # /Ob controls inline expansions and /Ob2 expands any function not explicitly marked for no inlining.
     string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
