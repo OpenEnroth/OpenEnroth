@@ -1625,7 +1625,6 @@ GAME_TEST(Issues, Issue1115) {
 
 GAME_TEST(Issues, Issue1155) {
     // Crash when pressing [Game Options] while talking to NPCs
-    auto dialogueTape = makeDialogueTypeTape(test);
     auto screenTape = makeScreenTape(test);
     test->playTraceFromTestData("issue_1155.mm7", "issue_1155.json");
     EXPECT_FALSE(screenTape.contains(SCREEN_SPELL_BOOK));

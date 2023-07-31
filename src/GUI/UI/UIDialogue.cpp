@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "UIDialogue.h"
 
 #include "Engine/Events/Processor.h"
@@ -687,7 +689,10 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             npc_event_id = speakingNPC->dialogue_6_evt_id;
         }
 
-        handleScriptedNPCTopicSelection(option, npc_event_id);
+        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(option, npc_event_id);
+
+        // TODO(Nik-RE-dev): must create buttons when overworld NPC topics will be supported
+        assert(topics.size() == 0);
     }
     engine->Draw();
 }

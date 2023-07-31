@@ -2,6 +2,7 @@
 
 #include <array>
 #include <string>
+#include <vector>
 
 #include "Utility/Geometry/Vec.h"
 #include "Engine/Tables/AwardTable.h"
@@ -26,7 +27,7 @@ void OracleDialogue();
 /**
  * @offset 0x4B254D
  */
-std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
+std::string masteryTeacherOptionString();
 
 /**
  * @offset 0x4B3EF0
@@ -39,18 +40,15 @@ void DrawJoinGuildWindow(GUILD_ID guild_id);
 const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id);
 
 /**
- * @offset 0x4B3FE5
- */
-void _4B3FE5_training_dialogue(int a4);
-
-/**
  * @offset 0x4B40E6
  */
 void NPCHireableDialogPrepare();
 
 // TODO(Nik-RE-dev): currently this function handles dialogue buttons creation etc,
 //                   need to move such functionality into UIHouses/UIDialogue
-void handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId);
+std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId);
+void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic);
 
 extern AwardType dword_F8B1AC_award_bit_number;
-extern CharacterSkillType dword_F8B1AC_skill_being_taught;
+extern int guild_membership_approved;
+extern int gold_transaction_amount;
