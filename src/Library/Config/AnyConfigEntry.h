@@ -30,8 +30,6 @@ class AnyConfigEntry {
 
     void setValue(std::any value);
 
-    void subscribe(Listener listener);
-
     void reset() {
         _value = _defaultValue;
     }
@@ -67,5 +65,4 @@ class AnyConfigEntry {
     std::any _defaultValue;
     std::any _value;
     Validator _validator = nullptr;
-    std::vector<Listener> _listeners;
 };

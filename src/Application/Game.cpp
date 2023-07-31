@@ -93,6 +93,7 @@
 
 #include "Utility/Format.h"
 #include "Utility/DataPath.h"
+#include "Utility/Exception.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -117,8 +118,9 @@ void initDataPath(const std::string &dataPath) {
             "resources directory from our repository there as well!",
             !dataPath.empty() ? dataPath : "current directory"
         );
-        EngineIocContainer::ResolveLogger()->warning("{}", message);
+        EngineIocContainer::ResolveLogger()->critical("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
+        throw Exception("Data folder '{}' validation failed", dataPath);
     }
 }
 
