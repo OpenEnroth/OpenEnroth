@@ -1457,7 +1457,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 
         case OBJECT_Face:
             if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                int bmodel_id = pid >> 9;
+                int bmodel_id = id >> 6;
                 int face_id = id & 0x3F;
 
                 if (bmodel_id >= pOutdoor->pBModels.size()) {

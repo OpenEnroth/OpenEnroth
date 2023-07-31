@@ -82,7 +82,7 @@ class Pid {
         return _value >> 3;
     }
 
-    uint16_t packed() const {
+    [[nodiscard]] uint16_t packed() const {
         return _value;
     }
 

@@ -873,7 +873,7 @@ void GameUI_WritePointedObjectStatusString() {
 
     // int testing;
 
-    mouse->uPointingObjectID = 0;
+    mouse->uPointingObjectID = Pid();
     mouse->GetClickPos(&pX, &pY);
     Sizei renDims = render->GetRenderDimensions();
     if (pX < 0 || pX > renDims.w - 1 || pY < 0 || pY > renDims.h - 1)
@@ -899,7 +899,7 @@ void GameUI_WritePointedObjectStatusString() {
             pickedObjectID = (signed)PID_ID(pickedObject.object_pid);
             if (PID_TYPE(pickedObject.object_pid) == OBJECT_Item) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
-                    mouse->uPointingObjectID = 0;
+                    mouse->uPointingObjectID = Pid();
                     game_ui_status_bar_string.clear();
                     bForceDrawFooter = 1;
                     uLastPointedObjectID = 0;
@@ -951,7 +951,7 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                     if (!newString.empty()) {
                         GameUI_StatusBar_Set(newString);
-                        if (mouse->uPointingObjectID == 0 &&
+                        if (!mouse->uPointingObjectID &&
                             uLastPointedObjectID != 0) {
                             game_ui_status_bar_string.clear();
                             bForceDrawFooter = 1;
@@ -960,14 +960,14 @@ void GameUI_WritePointedObjectStatusString() {
                         return;
                     }
                 }
-                mouse->uPointingObjectID = 0;
+                mouse->uPointingObjectID = Pid();
                 game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
                 uLastPointedObjectID = 0;
                 return;
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
                 if (pickedObject.depth >= 0x2000u) {
-                    mouse->uPointingObjectID = 0;
+                    mouse->uPointingObjectID = Pid();
                     if (uLastPointedObjectID != 0) {
                         game_ui_status_bar_string.clear();
                         bForceDrawFooter = 1;
@@ -977,7 +977,7 @@ void GameUI_WritePointedObjectStatusString() {
                 }
                 GameUI_StatusBar_Set(GetDisplayName(&pActors[pickedObjectID]));
             } else if (mouse->uPointingObjectID == 0xFFFF) {
-                mouse->uPointingObjectID = 0;
+                mouse->uPointingObjectID = Pid();
             }
             if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
                 game_ui_status_bar_string.clear();

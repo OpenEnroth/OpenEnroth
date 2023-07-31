@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Pid.h"
 
 #include "Utility/Flags.h"
 
@@ -121,9 +122,9 @@ void pushNPCSpell(SPELL_TYPE spell);
 void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID);
 
 /**
- * Process successfull picking target for spell.
+ * Process successful picking target for spell.
  *
- * @param pid            PID of target
- * @param playerTarget   Target player index
+ * @param pid            `Pid` of the target.
+ * @param playerTarget   Target player index.
  */
 void spellTargetPicked(int pid, int playerTarget);

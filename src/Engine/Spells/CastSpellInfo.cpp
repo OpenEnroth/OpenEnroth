@@ -3184,7 +3184,7 @@ void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
 }
 
 void spellTargetPicked(int pid, int playerTarget) {
-    assert((pid != PID_INVALID) ^ (playerTarget != -1));
+    assert((pid != PID_INVALID) ^ (playerTarget != -1)); // Only one should be valid.
 
     CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
     pCastSpell->uFlags &= ~ON_CAST_CastingInProgress;
