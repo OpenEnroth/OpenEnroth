@@ -1,117 +1,110 @@
 name: Linux
-
-on:
-  pull_request:
-  workflow_dispatch: #allows to manually run a workflow
+'on':
+  pull_request: null
+  workflow_dispatch:
     inputs:
       myCommit:
-        description: 'Commit SHA1'
+        description: Commit SHA1
         required: false
         default: ''
-        type: string 
-  push:
+        type: string
+  push: null
   release:
-    types: [published]
-
-#concurrency:
-#  group: ${{ github.workflow }}-${{ github.ref }}
-#  cancel-in-progress: true
-
+    types:
+      - published
 jobs:
   build_linux:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x86, x64]
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x86
+          - x64
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
-          
-    - name: Check for Data cache
-      id: check-for-data-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
-        
-    - name: Copy shaders
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
-      run: |
-        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Check for Data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+      - name: Copy shaders
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        run: >
+          cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders
+          /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Install dependencies
+        run: |
+          if [ "${{ matrix.architecture }}" = "x86" ]; then
+            sudo dpkg --add-architecture i386
+          fi
+          sudo apt-get update
+          if [ "${{ matrix.architecture }}" = "x86" ]; then
+            sudo apt-get install -y gcc-12-multilib g++-12-multilib lld
+            # missing dependency workaround
+            sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
+            sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
+            sudo apt-get install -f libswresample3:i386
+            # -
+            sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
+            sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
+            sudo apt-get install -y libsdl2-dev:i386
+            sudo apt-get install -y libopenal-dev:i386
+          fi
+          if [ "${{ matrix.architecture }}" = "x64" ]; then
+            sudo apt-get install -y gcc-12 g++-12 lld
+            sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
+            sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+            sudo apt-get install -y libsdl2-dev
+            sudo apt-get install -y libopenal-dev
+          fi
+      - name: ccache save cache on merge
+        if: github.ref == 'refs/heads/master'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
+      - name: ccache dont save cache
+        if: github.ref != 'refs/heads/master'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          save: false
+      - name: Configure
+        run: >
+          if [ "${{ matrix.architecture }}" = "x86" ]; then
+            export CFLAGS="-m32" CXXFLAGS="-m32" 
+          fi
 
-    - name: Install dependencies
-      run: |
-        if [ "${{ matrix.architecture }}" = "x86" ]; then
-          sudo dpkg --add-architecture i386
-        fi
-        sudo apt-get update
-        if [ "${{ matrix.architecture }}" = "x86" ]; then
-          sudo apt-get install -y gcc-12-multilib g++-12-multilib
-          # missing dependency workaround
-          sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
-          sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
-          sudo apt-get install -f libswresample3:i386
-          # -
-          sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
-          sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
-          sudo apt-get install -y libsdl2-dev:i386
-          sudo apt-get install -y libopenal-dev:i386
-        fi
-        if [ "${{ matrix.architecture }}" = "x64" ]; then
-          sudo apt-get install -y gcc-12 g++-12
-          sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
-          sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
-          sudo apt-get install -y libsdl2-dev
-          sudo apt-get install -y libopenal-dev
-        fi
+          export CC=gcc-12 && export CXX=g++-12
 
-    - name: ccache save cache on merge
-      if: github.ref == 'refs/heads/master'
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
-
-    - name: ccache dont save cache
-      if: github.ref != 'refs/heads/master'
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
-        save: false
-
-    - name: Configure
-      run: |
-        if [ "${{ matrix.architecture }}" = "x86" ]; then
-          export CFLAGS="-m32" CXXFLAGS="-m32" 
-        fi
-        export CC=gcc-12 && export CXX=g++-12
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
-
-    - name: Build
-      working-directory: build
-      run: |
-        make -j3
-
-    - name: Tests
-      working-directory: build
-      run: |
-        make UnitTest
-
-    - name: GameTest
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'
-      working-directory: build
-      run: |
-        make GameTest_Headless
-      env:
-        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
-
-    - name: Prepare artifact
-      run: |
-        mkdir dist
-        cp build/src/Bin/OpenEnroth/OpenEnroth dist/
-        cp -r resources/* dist/
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
+          matrix.configuration }} -DENABLE_TESTS=On
+      - name: Build
+        working-directory: build
+        run: |
+          make -j3
+      - name: Tests
+        working-directory: build
+        run: |
+          make UnitTest
+      - name: GameTest
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        working-directory: build
+        run: |
+          make GameTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Prepare artifact
+        run: |
+          mkdir dist
+          cp build/src/Bin/OpenEnroth/OpenEnroth dist/
+          cp -r resources/* dist/

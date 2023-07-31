@@ -1,43 +1,45 @@
 name: Shaders
-
-on:
-  pull_request:
-  workflow_dispatch: #allows to manually run a workflow
+'on':
+  pull_request: null
+  workflow_dispatch:
     inputs:
       myCommit:
-        description: 'Commit SHA1'
+        description: Commit SHA1
         required: false
         default: ''
-        type: string 
-  push:
+        type: string
+  push: null
   release:
-    types: [published]
-
+    types:
+      - published
 jobs:
   check_shaders:
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y glslang-tools 
+      - name: Check OpenGL 4.1 (Core) shaders
+        working-directory: resources/shaders
+        run: >
+          mkdir ../shaders_opengl41core
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y glslang-tools 
+          find . -type f -exec bash -c 'echo "#version 410 core" >
+          ../shaders_opengl41core/{} && cat {} >> ../shaders_opengl41core/{}' \;
 
-    - name: Check OpenGL 4.1 (Core) shaders
-      working-directory: resources/shaders
-      run: |
-        mkdir ../shaders_opengl41core
-        find . -type f -exec bash -c 'echo "#version 410 core" > ../shaders_opengl41core/{} && cat {} >> ../shaders_opengl41core/{}' \;
-        find ../shaders_opengl41core -type f | xargs -n1 glslangValidator
+          find ../shaders_opengl41core -type f | xargs -n1 glslangValidator
+      - name: Check OpenGL ES 3.2 shaders
+        working-directory: resources/shaders
+        run: >
+          mkdir ../shaders_opengles32
 
-    - name: Check OpenGL ES 3.2 shaders
-      working-directory: resources/shaders
-      run: |
-        mkdir ../shaders_opengles32
-        find . -type f -exec bash -c 'echo "#version 320 es" > ../shaders_opengles32/{} && cat {} >> ../shaders_opengles32/{}' \;
-        find ../shaders_opengles32 -type f | xargs -n1 glslangValidator
+          find . -type f -exec bash -c 'echo "#version 320 es" >
+          ../shaders_opengles32/{} && cat {} >> ../shaders_opengles32/{}' \;
+
+          find ../shaders_opengles32 -type f | xargs -n1 glslangValidator

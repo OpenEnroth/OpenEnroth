@@ -1,63 +1,60 @@
 name: Doxygen
-
-on:
-  pull_request:
-  workflow_dispatch: #allows to manually run a workflow
+'on':
+  pull_request: null
+  workflow_dispatch:
     inputs:
       myCommit:
-        description: 'Commit SHA1'
+        description: Commit SHA1
         required: false
         default: ''
-        type: string 
-  push:
+        type: string
+  push: null
   release:
-    types: [published]
-
+    types:
+      - published
 jobs:
   generate_documentation:
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Install Doxygen
+        run: >
+          # sudo apt-get install doxygen -y
 
-    - name: Install Doxygen
-      run: |
-        # sudo apt-get install doxygen -y
-        curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
-
-    - name: Generate Documentation
-      run: |
-        export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
-        ./doxygen Doxyfile
-        touch docs/html/.nojekyll
-
+          curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar
+          xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
+      - name: Generate Documentation
+        run: |
+          export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
+          ./doxygen Doxyfile
+          touch docs/html/.nojekyll
   deploy_documentation:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: "recursive"
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Doxygen
+        run: >
+          # sudo apt-get install doxygen -y
 
-    - name: Install Doxygen
-      run: |
-        # sudo apt-get install doxygen -y
-        curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
-
-    - name: Generate Documentation
-      run: |
-        export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
-        ./doxygen Doxyfile
-        touch docs/html/.nojekyll
-
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.4.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
-        folder: docs/html
-        target-folder: .
+          curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar
+          xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
+      - name: Generate Documentation
+        run: |
+          export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
+          ./doxygen Doxyfile
+          touch docs/html/.nojekyll
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          branch: gh-pages
+          folder: docs/html
+          target-folder: .

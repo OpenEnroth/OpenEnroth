@@ -1,68 +1,59 @@
 name: Build Release
-
-on:
+'on':
   schedule:
-    # schedule build once per day
-    - cron: "16 11 * * *"
-  workflow_dispatch: #allows to manually run a workflow
+    - cron: 16 11 * * *
+  workflow_dispatch:
     inputs:
       myCommit:
-        description: 'Commit SHA1'
+        description: Commit SHA1
         required: false
         default: ''
-        type: string 
+        type: string
   push:
     tags:
       - '*'
-      
 env:
-  TAG_NAME: "nightly"
-
+  TAG_NAME: nightly
 jobs:
   advanceNightlyTag:
     name: Advance Nightly Sourcode
     runs-on: ubuntu-latest
-    steps:    
-        
-    - name: Advance nightly tag
-      uses: actions/github-script@v3
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}          
-        script: |
-          try {
-              await github.git.deleteRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: "tags/nightly"
-              })
-          } catch (e) {
-            console.log("The nightly tag doesn't exist yet: " + e)
-          }
-          await github.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: "refs/tags/nightly",
-            sha: context.sha
-          })
-          
-    - name: Sleep for 10 seconds #github api takes a second to catch up sometimes...
-      run: sleep 10s
-      shell: bash
-
-    - name: Get latest release
-      id: latest_release
-      uses: kaliber5/action-get-release@v1
-      with:
-        token: ${{ github.token }}
-        tag_name: 'nightly'
-        draft: true
-
-    - uses: eregon/publish-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        release_id: ${{ steps.latest_release.outputs.id }}
-        
+    steps:
+      - name: Advance nightly tag
+        uses: actions/github-script@v3
+        with:
+          github-token: '${{secrets.GITHUB_TOKEN}}'
+          script: |
+            try {
+                await github.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: "tags/nightly"
+                })
+            } catch (e) {
+              console.log("The nightly tag doesn't exist yet: " + e)
+            }
+            await github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/nightly",
+              sha: context.sha
+            })
+      - name: Sleep for 10 seconds
+        run: sleep 10s
+        shell: bash
+      - name: Get latest release
+        id: latest_release
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: '${{ github.token }}'
+          tag_name: nightly
+          draft: true
+      - uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          release_id: '${{ steps.latest_release.outputs.id }}'
   build_android:
     name: Build Android Client
     needs: advanceNightlyTag
@@ -70,141 +61,140 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x64]
-        target: [android]
-            
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x64
+        target:
+          - android
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Decode Keystore
+        if: '${{ env.super_secret != '''' }}'
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: android_keystore.jks
+          fileDir: /home/runner/work/OpenEnroth/OpenEnroth/app/keystore/
+          encodedString: '${{ secrets.KEYSTORE }}'
+        env:
+          super_secret: '${{ secrets.KEYSTORE }}'
+      - name: Restore cached NDK
+        id: cache-ndk
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            /usr/local/lib/android/sdk/ndk/26.0.10404224
+          key: android-ndk-r26-beta1-linux
+      - name: Download NDK
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        run: >
+          cd /usr/local/lib/android/sdk/ndk/
 
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
+          wget --no-check-certificate
+          'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip'
+          -O android-ndk-r26-beta1-linux.zip 
+      - name: Setup NDK
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        run: >
+          cd /usr/local/lib/android/sdk/ndk/
 
-    # Here we need to decode keystore.jks from base64 string and place it
-    # in the folder specified in the release signing configuration
-    # https://medium.com/geekculture/how-to-build-sign-and-publish-android-application-using-github-actions-aa6346679254
-    - name: Decode Keystore
-      if: ${{ env.super_secret != '' }}    
-      id: decode_keystore
-      uses: timheuer/base64-to-file@v1.2
-      with:
-        fileName: 'android_keystore.jks'
-        fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
-        encodedString: ${{ secrets.KEYSTORE }}
-      env: 
-        super_secret: ${{ secrets.KEYSTORE }}
-          
-    - name: Restore cached NDK
-      id: cache-ndk
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          /usr/local/lib/android/sdk/ndk/26.0.10404224
-        key: android-ndk-r26-beta1-linux
+          unzip android-ndk-r26-beta1-linux.zip
 
-    - name: Download NDK
-      if: steps.cache-ndk.outputs.cache-hit != 'true'
-      run: |
-        cd /usr/local/lib/android/sdk/ndk/
-        wget --no-check-certificate 'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip' -O android-ndk-r26-beta1-linux.zip 
+          mv android-ndk-r26-beta1 /usr/local/lib/android/sdk/ndk/26.0.10404224
 
-    - name: Setup NDK
-      if: steps.cache-ndk.outputs.cache-hit != 'true'    
-      run: |
-        cd /usr/local/lib/android/sdk/ndk/
-        unzip android-ndk-r26-beta1-linux.zip
-        mv android-ndk-r26-beta1 /usr/local/lib/android/sdk/ndk/26.0.10404224
-        echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
-        echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
-        echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV        
-        echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
+          echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/26.0.10404224" >>
+          $GITHUB_ENV
 
-    - name: Save NDK cache
-      if: steps.cache-ndk.outputs.cache-hit != 'true'    
-      id: cache-ndk-save
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          /usr/local/lib/android/sdk/ndk/26.0.10404224
-        key: android-ndk-r26-beta1-linux
+          echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224"
+          >> $GITHUB_ENV
 
-    - name: Install dependencies
-      run: |
+          echo
+          "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224"
+          >> $GITHUB_ENV        
+
+          echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/26.0.10404224"
+          >> $GITHUB_ENV
+      - name: Save NDK cache
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        id: cache-ndk-save
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            /usr/local/lib/android/sdk/ndk/26.0.10404224
+          key: android-ndk-r26-beta1-linux
+      - name: Install dependencies
+        run: |
           sudo apt-get install -y yasm
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install -y gcc-12-multilib g++-12-multilib
+      - uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 17.0.6
+          cache: gradle
+      - name: Check for ffmpeg cache
+        id: ffmpeg-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            android/openenroth/jni/FFmpeg/android/
+          key: ffmpeg-cache
+      - name: Build ffmpeg
+        if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
+        working-directory: android/openenroth/jni/FFmpeg
+        run: |
+          ./build.sh
+      - name: Save ffmpeg cache
+        if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
+        id: check-for-ffmpeg-save
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            android/openenroth/jni/FFmpeg/android/
+          key: ffmpeg-cache
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 250M
+      - name: Build the app
+        working-directory: android
+        run: |
+          if [ "${{ matrix.configuration }}" = "Debug" ]; then
+            ./gradlew assembleDebug
+          else 
+            ./gradlew assembleRelease
+          fi
+        env:
+          SIGNING_KEY_ALIAS: '${{ secrets.SIGNING_KEY_ALIAS }}'
+          SIGNING_KEY_PASSWORD: '${{ secrets.SIGNING_KEY_PASSWORD }}'
+          SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
+          CMAKE_BUILD_PARALLEL_LEVEL: 3
+      - name: Publish debug apk package
+        if: '${{ matrix.configuration }} = "Debug"'
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{ env.TAG_NAME }}'
+          files: |
+            android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
+      - name: Publish release apk package
+        if: '${{ matrix.configuration }} = "Release"'
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{ env.TAG_NAME }}'
+          files: >
+            android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
 
-    - uses: actions/setup-java@v2
-      with:
-        distribution: temurin
-        java-version: 17.0.6
-        cache: gradle
-        
-    - name: Check for ffmpeg cache
-      id: ffmpeg-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          android/openenroth/jni/FFmpeg/android/
-        key: ffmpeg-cache
-
-    - name: Build ffmpeg
-      if: steps.ffmpeg-cache.outputs.cache-hit != 'true' 
-      working-directory: android/openenroth/jni/FFmpeg
-      run: |
-        ./build.sh
-
-    - name: Save ffmpeg cache
-      if: steps.ffmpeg-cache.outputs.cache-hit != 'true'    
-      id: check-for-ffmpeg-save
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          android/openenroth/jni/FFmpeg/android/
-        key: ffmpeg-cache
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: android-${{ matrix.configuration }}-${{ matrix.architecture }}
-        
-
-    - name: Build the app
-      working-directory: android
-      run: |
-        if [ "${{ matrix.configuration }}" = "Debug" ]; then
-          ./gradlew assembleDebug
-        else 
-          ./gradlew assembleRelease
-        fi
-      env:
-        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-        CMAKE_BUILD_PARALLEL_LEVEL: 3
-          
-    - name: Publish debug apk package
-      if: ${{ matrix.configuration }} = "Debug"
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: |
-          android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
-        
-    - name: Publish release apk package
-      if: ${{ matrix.configuration }} = "Release"
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: |
-          android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
-          android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
-          
+            android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
   build_linux:
     name: Build Linux Client
     needs: advanceNightlyTag
@@ -212,274 +202,316 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x86, x64]
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x86
+          - x64
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Check for Data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+      - name: Copy shaders
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        run: >
+          cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders
+          /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Install dependencies
+        run: |
+          if [ "${{ matrix.architecture }}" = "x86" ]; then
+            sudo dpkg --add-architecture i386
+          fi
+          sudo apt-get update
+          if [ "${{ matrix.architecture }}" = "x86" ]; then
+            sudo apt-get install -y gcc-12-multilib g++-12-multilib lld
+            # missing dependency workaround
+            sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
+            sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
+            sudo apt-get install -f libswresample3:i386
+            # -
+            sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
+            sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
+            sudo apt-get install -y libsdl2-dev:i386
+          fi
+          if [ "${{ matrix.architecture }}" = "x64" ]; then
+            sudo apt-get install -y gcc-12 g++-12 lld
+            sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
+            sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+            sudo apt-get install -y libsdl2-dev
+          fi
+      - name: ccache
+        if: matrix.configuration == 'Debug'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 110M
+      - name: ccache
+        if: matrix.configuration == 'Release'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 25M
+      - name: Configure
+        run: >
+          if [ "${{ matrix.architecture }}" = "x86" ]; then
+            export CFLAGS="-m32" CXXFLAGS="-m32" 
+          fi
 
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
+          export CC=gcc-12 && export CXX=g++-12
 
-    - name: Check for Data cache
-      id: check-for-data-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
-        
-    - name: Copy shaders
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
-      run: |
-        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
-
-    - name: Install dependencies
-      run: |
-        if [ "${{ matrix.architecture }}" = "x86" ]; then
-          sudo dpkg --add-architecture i386
-        fi
-        sudo apt-get update
-        if [ "${{ matrix.architecture }}" = "x86" ]; then
-          sudo apt-get install -y gcc-12-multilib g++-12-multilib
-          # missing dependency workaround
-          sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
-          sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
-          sudo apt-get install -f libswresample3:i386
-          # -
-          sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
-          sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
-          sudo apt-get install -y libsdl2-dev:i386
-        fi
-        if [ "${{ matrix.architecture }}" = "x64" ]; then
-          sudo apt-get install -y gcc-12 g++-12
-          sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
-          sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
-          sudo apt-get install -y libsdl2-dev
-        fi
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: linux-${{ matrix.configuration }}-${{ matrix.architecture }}
-        
-
-    - name: Configure
-      run: |
-        if [ "${{ matrix.architecture }}" = "x86" ]; then
-          export CFLAGS="-m32" CXXFLAGS="-m32" 
-        fi
-        export CC=gcc-12 && export CXX=g++-12
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
-
-    - name: Build
-      working-directory: build
-      run: |
-        make -j3
-
-    - name: Tests
-      working-directory: build
-      run: |
-        make UnitTest
-
-    - name: GameTest
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'
-      working-directory: build
-      run: |
-        make GameTest_Headless
-      env:
-        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
-
-    - name: Prepare artifact
-      run: |
-        mkdir dist
-        cp build/src/Bin/OpenEnroth/OpenEnroth dist/
-        cp -r resources/* dist/
-
-    - name: Zip Folder For Release
-      run: zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
-
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip          
-        
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
+          matrix.configuration }} -DENABLE_TESTS=On
+      - name: Build
+        working-directory: build
+        run: |
+          make -j3
+      - name: Tests
+        working-directory: build
+        run: |
+          make UnitTest
+      - name: GameTest
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        working-directory: build
+        run: |
+          make GameTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Prepare artifact
+        run: |
+          mkdir dist
+          cp build/src/Bin/OpenEnroth/OpenEnroth dist/
+          cp -r resources/* dist/
+      - name: Zip Folder For Release
+        run: >-
+          zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
+          matrix.architecture }}.zip dist
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{ env.TAG_NAME }}'
+          files: >-
+            ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
+            matrix.architecture }}.zip
   build_macos:
     name: Build OSX Client
-    needs: advanceNightlyTag  
+    needs: advanceNightlyTag
     runs-on: macos-12
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x64] #Todo: Change to [x64, arm64] when github adds m1 builds later this year
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x64
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Check for Data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+      - name: Copy shaders
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        run: >
+          cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders
+          /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Install dependencies
+        run: |
+          brew install ffmpeg@4
+          brew install sdl2
+      - name: ccache
+        if: matrix.configuration == 'Debug'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 75M
+      - name: ccache
+        if: matrix.configuration == 'Release'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 25M
+      - name: Configure
+        run: >
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
+          matrix.configuration }} -DENABLE_TESTS=On
+          -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4" 
+      - name: Build
+        working-directory: build
+        run: |
+          make -j4
+      - name: Tests
+        working-directory: build
+        run: |
+          make UnitTest
+      - name: GameTest
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        working-directory: build
+        run: |
+          pwd
+          make GameTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+      - name: Prepare artifact
+        run: >
+          mkdir dist
 
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
+          cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
 
-    - name: Check for Data cache
-      id: check-for-data-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
+          cp -r resources/* dist/
 
-    - name: Copy shaders
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
-      run: |
-        cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
-
-    - name: Install dependencies
-      run: |
-        brew install ffmpeg@4
-        brew install sdl2
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: macos-${{ matrix.configuration }}-${{ matrix.architecture }}
-        
-
-    - name: Configure
-      run: |
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"
-
-    - name: Build
-      working-directory: build
-      run: |
-        make -j4
-
-    - name: Tests
-      working-directory: build
-      run: |
-        make UnitTest
-
-    - name: GameTest
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
-      working-directory: build
-      run: |
-        pwd
-        make GameTest_Headless
-      env:
-        OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7   
-
-    - name: Prepare artifact
-      run: |
-        mkdir dist
-        cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-        cp -r resources/* dist/
-        hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
-        
-    - name: Zip Folder For Release
-      run: zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
-
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
-                
+          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+
+          -srcfolder dist
+      - name: Zip Folder For Release
+        run: >-
+          zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
+          matrix.architecture }}.zip dist
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{ env.TAG_NAME }}'
+          files: >-
+            ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
+            matrix.architecture }}.zip
   build_windows:
     name: Build Windows Client
-    needs: advanceNightlyTag   
+    needs: advanceNightlyTag
     runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x86, x64]
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x86
+          - x64
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Check for Data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+          enableCrossOsArchive: true
+      - name: Copy shaders
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        run: >
+          xcopy D:\a\OpenEnroth\OpenEnroth\resources
+          D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+      - name: Setup environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: '${{ matrix.architecture }}'
+      - name: Restore cached ccache
+        id: ccache-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: 'C:\ProgramData\chocolatey\lib\ccache\'
+          key: windows-ccache
+      - name: update ccache
+        if: steps.ccache-cache.outputs.cache-hit != 'true'
+        run: |
+          choco upgrade ccache
+      - name: Save ccache to cache
+        if: steps.ccache-cache.outputs.cache-hit != 'true'
+        id: check-for-ccache-save
+        uses: actions/cache/save@v3
+        with:
+          path: 'C:\ProgramData\chocolatey\lib\ccache\'
+          key: windows-ccache
+      - name: ccache
+        if: matrix.configuration == 'Debug'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 110M
+      - name: ccache
+        if: matrix.configuration == 'Release'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 50M
+      - name: Configure
+        run: >
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
+          }} -DENABLE_TESTS=On
+      - name: Build
+        working-directory: build
+        shell: cmd
+        run: |
+          ninja
+      - name: Tests
+        working-directory: build
+        run: |
+          ninja UnitTest
+      - name: GameTest
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        working-directory: build
+        run: |
+          ninja GameTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+      - name: Prepare artifact
+        shell: pwsh
+        run: >
+          mkdir dist
 
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
-        
-    - name: Check for Data cache
-      id: check-for-data-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
+          copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
 
-    - name: Copy shaders
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
-      run: |
-        xcopy D:\a\OpenEnroth\OpenEnroth\resources D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+          copy build\src\Bin\OpenEnroth\*.dll dist\ 
 
-    - name: Setup environment
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: ${{ matrix.architecture }}
+          if ("${{ matrix.configuration }}" -eq "Debug" -And "${{
+          matrix.architecture }}" -eq "x86" ) {
+            copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
+            copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
+            copy c:\Windows\SysWOW64\ucrtbased.dll dist\
+            copy build\src\Bin\OpenEnroth\*.pdb dist\ 
+          } ElseIf ("${{ matrix.configuration }}" -eq "Debug" -And "${{
+          matrix.architecture }}" -eq "x64") {
+            copy c:\Windows\System32\msvcp140d.dll dist\ 
+            copy c:\Windows\System32\vcruntime140_1d.dll dist\ 
+            copy c:\Windows\System32\vcruntime140d.dll dist\ 
+            copy c:\Windows\System32\ucrtbased.dll dist\ 
+          }
 
-    - name: update ccache
-      run: |
-        choco upgrade ccache
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
-
-    - name: Configure
-      run: |
-        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
-
-    - name: Build
-      working-directory: build
-      shell: cmd
-      run: |
-        ninja
-
-    - name: Tests
-      working-directory: build
-      run: |
-        ninja UnitTest
-
-    - name: GameTest
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'        
-      working-directory: build
-      run: |
-        ninja GameTest_Headless
-      env:
-        OPENENROTH_MM7_PATH: D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7
-
-    - name: Prepare artifact
-      shell: pwsh
-      run: |
-        mkdir dist
-        copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-        copy build\src\Bin\OpenEnroth\*.dll dist\ 
-        if ("${{ matrix.configuration }}" -eq "Debug" -And "${{ matrix.architecture }}" -eq "x86" ) {
-          copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
-          copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
-          copy c:\Windows\SysWOW64\ucrtbased.dll dist\
-          copy build\src\Bin\OpenEnroth\*.pdb dist\ 
-        } ElseIf ("${{ matrix.configuration }}" -eq "Debug" -And "${{ matrix.architecture }}" -eq "x64") {
-          copy c:\Windows\System32\msvcp140d.dll dist\ 
-          copy c:\Windows\System32\vcruntime140_1d.dll dist\ 
-          copy c:\Windows\System32\vcruntime140d.dll dist\ 
-          copy c:\Windows\System32\ucrtbased.dll dist\ 
-        }
-        xcopy resources dist\ /E/H/C/I
-          
-    - name: Zip Folder For Release
-      run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
-
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip                
+          xcopy resources dist\ /E/H/C/I
+            
+      - name: Zip Folder For Release
+        run: >-
+          Compress-Archive -Path dist -DestinationPath ./Windows_${{
+          env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture
+          }}.zip
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{ env.TAG_NAME }}'
+          files: >-
+            ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
+            matrix.architecture }}.zip
