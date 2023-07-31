@@ -6754,10 +6754,9 @@ void Character::OnInventoryLeftClick() {
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    pSpellInfo->uFlags &= ~ON_CAST_TargetedEnchantment;
-                    pSpellInfo->uPlayerID_2 = pParty->activeCharacterIndex() - 1;
-                    pSpellInfo->spell_target_pid = enchantedItemPos - 1;
-                    pSpellInfo->field_6 = this->GetItemMainInventoryIndex(invMatrixIndex);
+                    pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
+                    pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
+                    pSpellInfo->targetInventoryIndex = enchantedItemPos - 1;
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
                     IsEnchantingInProgress = false;
 

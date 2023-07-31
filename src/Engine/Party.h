@@ -348,10 +348,18 @@ struct Party {
     CharacterSpeech _delayedReactionSpeech;
     int _delayedReactionCharacterId;
 
+    /**
+     * @return                          1-based index of currently active character. Zero means that there is no
+     *                                  active character.
+     */
     inline unsigned int activeCharacterIndex() const {
         assert(hasActiveCharacter());
         return _activeCharacter;
     }
+
+    /**
+     * @param id                        1-based index of currently active character. Pass zero to make no one active.
+     */
     inline void setActiveCharacterIndex(unsigned int id) {
         assert(id >= 0 && id <= pCharacters.size());
         _activeCharacter = id;
