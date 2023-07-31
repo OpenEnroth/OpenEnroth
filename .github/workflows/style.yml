@@ -1,40 +1,36 @@
 name: Style
-
-on:
-  pull_request:
-  workflow_dispatch: #allows to manually run a workflow
+'on':
+  pull_request: null
+  workflow_dispatch:
     inputs:
       myCommit:
-        description: 'Commit SHA1'
+        description: Commit SHA1
         required: false
         default: ''
-        type: string 
-  push:
+        type: string
+  push: null
   release:
-    types: [published]
-
+    types:
+      - published
 jobs:
   check_style:
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
-
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
-        sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
-        sudo apt-get install -y libsdl2-dev
-
-    - name: Configure
-      run: |
-        cmake -B build -DENABLE_TESTS=On
-
-    - name: Check style
-      working-directory: build
-      run: |
-        make check_style
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
+          sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+          sudo apt-get install -y libsdl2-dev
+      - name: Configure
+        run: |
+          cmake -B build -DENABLE_TESTS=On
+      - name: Check style
+        working-directory: build
+        run: |
+          make check_style
