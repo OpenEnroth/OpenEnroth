@@ -25,6 +25,21 @@ jobs:
           - arm64-v8a
           - armeabi-v7a
     steps:
+  build_android:
+    name: Build Android Client
+    needs: advanceNightlyTag
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x64
+        target:
+          - android
+    steps:
       - name: Configure Fast APT Mirror
         uses: vegardit/fast-apt-mirror.sh@v1
         with: # the following parameters are listed with their action default values and are optional
@@ -33,6 +48,11 @@ jobs:
           parallel:       2 # Number of parallel speed tests
           sample-size: 1024 # Number of kilobytes to download during the speed from each mirror
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish        
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
       - name: Decode Keystore
         if: '${{ env.super_secret != '''' }}'
         id: decode_keystore
@@ -87,19 +107,9 @@ jobs:
           path: |
             /usr/local/lib/android/sdk/ndk/26.0.10404224
           key: android-ndk-r26-beta1-linux
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          ref: '${{ inputs.myCommit }}'
       - name: Install dependencies
         run: |
           sudo apt-get install -y yasm
-      - name: Install 32 bit dependencies
-        if: >-
-          ${{ matrix.architecture == 'armeabi-v7a' || matrix.architecture ==
-          'x86' }}
-        run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install -y gcc-12-multilib g++-12-multilib
@@ -128,28 +138,21 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
-      - name: ccache save cache on merge
-        if: github.ref == 'refs/heads/master'
+      - name: ccache
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
-      - name: ccache dont save cache
-        if: github.ref != 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
-        with:
-          key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
-          save: false
+          max-size: 250M
       - name: Build the app
         working-directory: android
         run: |
           if [ "${{ matrix.configuration }}" = "Debug" ]; then
-            ./gradlew assembleDebug --stacktrace
+            ./gradlew assembleDebug
           else 
-            ./gradlew assembleRelease --stacktrace
+            ./gradlew assembleRelease
           fi
         env:
           SIGNING_KEY_ALIAS: '${{ secrets.SIGNING_KEY_ALIAS }}'
           SIGNING_KEY_PASSWORD: '${{ secrets.SIGNING_KEY_PASSWORD }}'
           SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
           CMAKE_BUILD_PARALLEL_LEVEL: 3
-          GITHUBARCH: '${{ matrix.architecture }}'
