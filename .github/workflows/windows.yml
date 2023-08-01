@@ -25,27 +25,31 @@ jobs:
           - x86
           - x64
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
-    - name: update ccache
-      run: |
-        choco upgrade ccache        
-    - name: ccache
-      uses: botanicvelious/ccache-action@v1.2.10
-      with:
-        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
-    - name: Setup environment
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: ${{ matrix.architecture }}        
-    - name: Configure
-      run: |
-        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
-    - name: Build
-      working-directory: build
-      shell: cmd
-      run: |
-        ninja
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Setup environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: '${{ matrix.architecture }}'
+      - name: update ccache
+        if: steps.ccache-cache.outputs.cache-hit != 'true'
+        run: |
+          choco upgrade ccache
+      - name: ccache dont save cache
+        if: github.ref != 'refs/heads/master'
+        uses: botanicvelious/ccache-action@v1.2.10
+        with:
+          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          save: false
+      - name: Configure
+        run: >
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
+          }} -DENABLE_TESTS=On 
+      - name: Build
+        working-directory: build
+        shell: cmd
+        run: |
+          ninja 
