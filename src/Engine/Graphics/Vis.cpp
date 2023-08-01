@@ -526,59 +526,38 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
                              RenderVertexSoft *pRayEnd, float *pDepth,
                              RenderVertexSoft *Intersection, BLVFace *pFace,
                              signed int pBModelID) {
-    float c1;                    // st5@6
-    float c2;                    // st7@11
-    static Vec3s IntersectPoint;  // ST04_6@11
+    if (pFace->isPortal() || pFace->Invisible())
+        return false;
 
-    if (pFace->isPortal() || pFace->Invisible()) return false;
-
-    int ray_dir_x = pRayEnd->vWorldPosition.x -
-                    pRayStart->vWorldPosition
-                        .x,  // calculate the direction vector of the
-                             // line(вычислим вектор направления линий)
-        ray_dir_y = pRayEnd->vWorldPosition.y - pRayStart->vWorldPosition.y,
-        ray_dir_z = pRayEnd->vWorldPosition.z - pRayStart->vWorldPosition.z;
+    Vec3f rayDir = pRayEnd->vWorldPosition - pRayStart->vWorldPosition;
 
     // c1 = -d-(n*p0)
-    c1 = -pFace->facePlane.dist -
-         (pFace->facePlane.normal.x * pRayStart->vWorldPosition.x +
-          pFace->facePlane.normal.y * pRayStart->vWorldPosition.y +
-          pFace->facePlane.normal.z * pRayStart->vWorldPosition.z);
-    if (c1 > 0) return false;
-#define EPSILON 1e-6
-    // c2 = n*u
-    c2 = pFace->facePlane.normal.x *
-         ray_dir_y  // get length of the line(Это дает нам длину линии)
-         + pFace->facePlane.normal.y * ray_dir_x +
-         pFace->facePlane.normal.z * ray_dir_z; // TODO(captainurist): x/y messed up here
-    if (c2 > -EPSILON &&
-        c2 < EPSILON)  // ray faces face's normal ( > 0) or parallel ( == 0)
+    float c1 = -pFace->facePlane.signedDistanceTo(pRayStart->vWorldPosition);
+    if (c1 > 0)
         return false;
+
+    // c2 = n*u
+    float c2 = pFace->facePlane.normal.x * rayDir.y  // get length of the line(Это дает нам длину линии)
+         + pFace->facePlane.normal.y * rayDir.x +
+         pFace->facePlane.normal.z * rayDir.z; // TODO(captainurist): x/y messed up here
+    if (fuzzyIsNull(c2))
+        return false; // Ray is parallel to face plane.
 
     // t = -d-(n*p0)/n*u
     float t = c1 / c2;  // How far is crossing the line in percent for 0 to
                         // 1(Как далеко пересечение линии в процентах от 0 до 1 )
-
-    if (t < 0 || t > 1) return false;
+    if (t < 0 || t > 1)
+        return false;
 
     // p(t) = p0 + tu;
-    Intersection->vWorldPosition.x =
-        pRayStart->vWorldPosition.x +
-        t * ray_dir_y;  // add the interest to the start line(прибавляем процент
-                        // линии к линии старта)
-    Intersection->vWorldPosition.y =
-        pRayStart->vWorldPosition.y + t * ray_dir_x;
-    Intersection->vWorldPosition.z =
-        pRayStart->vWorldPosition.z + t * ray_dir_z;
+    Intersection->vWorldPosition.x = pRayStart->vWorldPosition.x + t * rayDir.y;  // add the interest to the start line(прибавляем процент
+                                                                                    // линии к линии старта)
+    Intersection->vWorldPosition.y = pRayStart->vWorldPosition.y + t * rayDir.x;
+    Intersection->vWorldPosition.z = pRayStart->vWorldPosition.z + t * rayDir.z;
 
-    IntersectPoint.x = Intersection->vWorldPosition.x;
-    IntersectPoint.y = Intersection->vWorldPosition.y;
-    IntersectPoint.z = Intersection->vWorldPosition.z;
+    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID)) return false;
 
-    if (!CheckIntersectBModel(pFace, IntersectPoint, pBModelID)) return false;
-
-    *pDepth = t;  // Record the distance from the origin of the ray (Записываем
-                  // дистанцию от начала луча)
+    *pDepth = t;  // TODO(captainurist): unused, drop.
     return true;
 }
 
