@@ -8,7 +8,6 @@
 #define PID(type, id) (Pid(type, id))  // packed id
 #define PID_TYPE(pid) (detail::pidType(pid))          // extract type
 #define PID_ID(pid) (detail::pidId(pid))  // extract value
-#define PID_INVALID (uint16_t(-1))
 
 enum class ObjectType {
     OBJECT_None = 0x0,
@@ -101,11 +100,6 @@ class Pid {
 
     bool operator!() const {
         return _value == 0;
-    }
-
-    // TODO(captainurist): compatibility layer, drop!
-    operator uint16_t() const {
-        return _value;
     }
 
  private:

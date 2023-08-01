@@ -67,13 +67,7 @@ struct Particle {
     int uScreenSpaceY = 0;
     int uScreenSpaceZ = 0;  // line end x
     int uScreenSpaceW = 0;  // line end y
-    union {
-        // int sZValue;
-        struct {
-            unsigned short object_pid;
-            short zbuffer_depth;
-        };
-    };
+    short zbuffer_depth;
     int sZValue2 = 0;             // line end z
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
     float fov_x = 0;
