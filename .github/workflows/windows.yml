@@ -30,6 +30,19 @@ jobs:
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+      - name: Check for Data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+          enableCrossOsArchive: true
+      - name: Copy shaders
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        run: >
+          xcopy D:\a\OpenEnroth\OpenEnroth\resources
+          D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
@@ -38,7 +51,13 @@ jobs:
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
           choco upgrade ccache
+      - name: ccache save cache on merge
+        if: github.ref == 'refs/heads/master'
+        uses: botanicvelious/ccache-action@v1.2.10
+        with:
+          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: ccache dont save cache
+        if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
