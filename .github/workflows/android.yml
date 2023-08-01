@@ -25,7 +25,7 @@ jobs:
         architecture:
           - arm64-v8a
           - armeabi-v7a
-          - x64
+          - x86_64
         target:
           - android
     steps:
@@ -129,18 +129,19 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
-      - name: ccache save cache on merge
-        if: github.ref == 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
-        with:
-          key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
-          key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          key: 'android-${{ matrix.configuration }}'
           save: false
-      - name: Build the app
+      - name: ccache save cache on merge
+        if: github.ref == 'refs/heads/master'
+        uses: botanicvelious/ccache-action@v1.2.10
+        with:
+          key: 'android-${{ matrix.configuration }}'
+      - name: Build the app per arch
+        if: github.ref != 'refs/heads/master'
         working-directory: android
         run: |
           if [ "${{ matrix.configuration }}" = "Debug" ]; then
@@ -154,3 +155,17 @@ jobs:
           SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
           CMAKE_BUILD_PARALLEL_LEVEL: 3
           GITHUBARCH: '${{ matrix.architecture }}'
+      - name: Build the app
+        if: github.ref == 'refs/heads/master'
+        working-directory: android
+        run: |
+          if [ "${{ matrix.configuration }}" = "Debug" ]; then
+            ./gradlew assembleDebug
+          else 
+            ./gradlew assembleRelease
+          fi
+        env:
+          SIGNING_KEY_ALIAS: '${{ secrets.SIGNING_KEY_ALIAS }}'
+          SIGNING_KEY_PASSWORD: '${{ secrets.SIGNING_KEY_PASSWORD }}'
+          SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
+          CMAKE_BUILD_PARALLEL_LEVEL: 3          
