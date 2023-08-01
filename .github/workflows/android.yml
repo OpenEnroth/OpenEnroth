@@ -13,8 +13,9 @@ name: Android
     types:
       - published
 jobs:
-  build_android:
-    name: Build Android Client
+  build_android_per:
+    if: github.ref != 'refs/heads/master'
+    name: Build Android Client per arch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,6 +29,20 @@ jobs:
           - x86_64
         target:
           - android
+  build_android_single:
+    if: github.ref != 'refs/heads/master'
+    name: Build Android Client single binary
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x64
+        target:
+          - android          
     steps:
       - name: Configure Fast APT Mirror
         uses: vegardit/fast-apt-mirror.sh@v1
