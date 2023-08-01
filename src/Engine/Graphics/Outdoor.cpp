@@ -2148,7 +2148,6 @@ void ODM_ProcessPartyActions() {
         partyNewX = new_pos_low_x;
         partyNewY = new_pos_low_y;
         partyNewZ = new_pos_low_z;
-        int collisionPID = collision_state.pid;
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
             if (pParty->Invisible())
@@ -2178,8 +2177,8 @@ void ODM_ProcessPartyActions() {
                 partyInputYSpeed = 0;
             }
 
-            if (pParty->floor_face_id != PID_ID(collisionPID) && pODMFace->Pressure_Plate()) {
-                pParty->floor_face_id = PID_ID(collisionPID);
+            if (pParty->floor_face_id != PID_ID(collision_state.pid) && pODMFace->Pressure_Plate()) {
+                pParty->floor_face_id = PID_ID(collision_state.pid);
                 triggerID = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
             }
 

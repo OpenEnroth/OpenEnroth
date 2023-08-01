@@ -146,7 +146,7 @@ void CastSpellInfoHelpers::castSpell() {
                 mouse->uPointingObjectID &&
                 PID_TYPE(mouse->uPointingObjectID) == OBJECT_Actor &&
                 pActors[PID_ID(mouse->uPointingObjectID)].CanAct()) {
-            spell_targeted_at = Pid::fromPacked(mouse->uPointingObjectID); // TODO(captainurist): #pid
+            spell_targeted_at = mouse->uPointingObjectID;
         }
 
         // Otherwise pick closest live actor

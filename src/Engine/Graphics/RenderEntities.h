@@ -146,7 +146,7 @@ struct SoftwareBillboard {
     int field_44;
     int sParentBillboardID;
     Color sTintColor;
-    unsigned short object_pid;
+    Pid object_pid;
     int paletteID;
 };
 
