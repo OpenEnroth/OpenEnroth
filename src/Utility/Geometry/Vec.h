@@ -95,6 +95,14 @@ struct Vec3 {
         return Vec3(sinYaw * cosPitch * length, cosYaw * cosPitch * length, sinPitch * length);
     }
 
+    static Vec3 fromPolar(T length, int yaw, int pitch) {
+        float cosPitch = TrigLUT.cos(pitch);
+        float sinPitch = TrigLUT.sin(pitch);
+        float cosYaw = TrigLUT.cos(yaw);
+        float sinYaw = TrigLUT.sin(yaw);
+        return Vec3(cosYaw * cosPitch * length, sinYaw * cosPitch * length, sinPitch * length);
+    }
+
     Vec2<T> xy() {
         return Vec2<T>(x, y);
     }
