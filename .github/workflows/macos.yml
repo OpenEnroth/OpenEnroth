@@ -46,12 +46,12 @@ jobs:
           brew install ffmpeg@4
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false

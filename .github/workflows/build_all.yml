@@ -115,7 +115,7 @@ jobs:
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: Build the app
@@ -186,7 +186,7 @@ jobs:
             sudo apt-get install -y libsdl2-dev
           fi
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: Configure
@@ -256,7 +256,7 @@ jobs:
           brew install ffmpeg@4
           brew install sdl2
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: Configure
@@ -351,7 +351,7 @@ jobs:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: Configure
