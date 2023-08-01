@@ -37,6 +37,10 @@ jobs:
       uses: botanicvelious/ccache-action@v1.2.10
       with:
         key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
+    - name: Setup environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.architecture }}        
     - name: Configure
       run: |
         cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
