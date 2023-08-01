@@ -86,7 +86,8 @@ struct Vec3 {
 
     constexpr Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
-    static Vec3 fromPolar(T length, int yaw, int pitch) {
+    // TODO(captainurist): this one messes up x and y in return value, drop!
+    static Vec3 fromPolarRetarded(T length, int yaw, int pitch) {
         float cosPitch = TrigLUT.cos(pitch);
         float sinPitch = TrigLUT.sin(pitch);
         float cosYaw = TrigLUT.cos(yaw);

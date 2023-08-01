@@ -902,13 +902,13 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3i::fromPolarRetarded(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 3) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3i::fromPolarRetarded(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 2) {
-                out1 += Vec3i::fromPolar(8, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
+                out1 += Vec3i::fromPolarRetarded(8, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
             } else if (id1 == 1) {
-                out1 += Vec3i::fromPolar(24, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
+                out1 += Vec3i::fromPolarRetarded(24, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
             }
             break;
         }
