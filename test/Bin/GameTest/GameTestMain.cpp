@@ -24,15 +24,16 @@ void printGoogleTestHelp(char *app) {
 
 int platformMain(int argc, char **argv) {
     try {
-        // TODO(captainurist): just listing tests doesn't work now because --test-path is required.
         GameTestOptions opts = GameTestOptions::parse(argc, argv);
-        if (opts.helpRequested) {
+        if (opts.helpPrinted) {
             fmt::print(stdout, "\n");
             printGoogleTestHelp(argv[0]);
             return 1;
         }
 
         testing::InitGoogleTest(&argc, argv);
+        if (opts.listRequested)
+            return RUN_ALL_TESTS();
 
         GameStarter starter(opts);
         starter.config()->resetForTest();
