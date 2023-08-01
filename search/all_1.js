@@ -209,7 +209,7 @@ var searchData=
   ['allocateactor_206',['AllocateActor',['../Actor_8h.html#a11f0e5830746921e41b31a47ea54fe69',1,'AllocateActor(bool appendOnly):&#160;Actor.cpp'],['../Actor_8cpp.html#a11f0e5830746921e41b31a47ea54fe69',1,'AllocateActor(bool appendOnly):&#160;Actor.cpp']]],
   ['alloccursorsystemmem_207',['AllocCursorSystemMem',['../classIo_1_1Mouse.html#a0ba914aa030302ad616012df0031091f',1,'Io::Mouse']]],
   ['allocsubindicesandio_208',['AllocSubIndicesAndIO',['../classLOD_1_1WriteableFile.html#a27c1375db8ac51cc709ea1bb913f6a6a',1,'LOD::WriteableFile']]],
-  ['allpotionbuffs_209',['allPotionBuffs',['../TestIssues_8cpp.html#ae1043ec980a0dfc162d78f5ec0d5ea45',1,'TestIssues.cpp']]],
+  ['allpotionbuffs_209',['allPotionBuffs',['../GameTests_8cpp.html#ae1043ec980a0dfc162d78f5ec0d5ea45',1,'GameTests.cpp']]],
   ['allrecipescrolls_210',['allRecipeScrolls',['../ItemEnums_8h.html#ae0883c74c019b32dbc8f8f2ae6f7f6c1',1,'ItemEnums.h']]],
   ['allregularspells_211',['allRegularSpells',['../SpellEnums_8h.html#aa80377511e30947565daad75f9527836',1,'SpellEnums.h']]],
   ['allringslots_212',['allRingSlots',['../ItemEnums_8h.html#a64ac19c6295764c508f4440e19e67dde',1,'ItemEnums.h']]],
