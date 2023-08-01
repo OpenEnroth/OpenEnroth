@@ -18,6 +18,8 @@ var searchData=
   ['bspmodel_2eh_15',['BSPModel.h',['../BSPModel_8h.html',1,'']]],
   ['bsprenderer_2ecpp_16',['BspRenderer.cpp',['../BspRenderer_8cpp.html',1,'']]],
   ['bsprenderer_2eh_17',['BspRenderer.h',['../BspRenderer_8h.html',1,'']]],
-  ['buildingtable_2ecpp_18',['BuildingTable.cpp',['../BuildingTable_8cpp.html',1,'']]],
-  ['buildingtable_2eh_19',['BuildingTable.h',['../BuildingTable_8h.html',1,'']]]
+  ['buildinfo_2ecpp_18',['BuildInfo.cpp',['../BuildInfo_8cpp.html',1,'']]],
+  ['buildinfo_2eh_19',['BuildInfo.h',['../BuildInfo_8h.html',1,'']]],
+  ['buildingtable_2ecpp_20',['BuildingTable.cpp',['../BuildingTable_8cpp.html',1,'']]],
+  ['buildingtable_2eh_21',['BuildingTable.h',['../BuildingTable_8h.html',1,'']]]
 ];
