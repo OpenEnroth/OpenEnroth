@@ -24,21 +24,6 @@ jobs:
         target:
           - android
     steps:
-  build_android:
-    name: Build Android Client
-    needs: advanceNightlyTag
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        configuration:
-          - Debug
-          - Release
-        architecture:
-          - x64
-        target:
-          - android
-    steps:
       - name: Configure Fast APT Mirror
         uses: vegardit/fast-apt-mirror.sh@v1
         with: # the following parameters are listed with their action default values and are optional
