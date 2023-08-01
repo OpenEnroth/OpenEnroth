@@ -1214,7 +1214,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
             int projected_y = 0;
             pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-            float billb_scale = v11->scale * pCamera3D->ViewPlaneDist_X / view_x;
+            float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / view_x;
 
             int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uWidth / 2.0f);
             int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uHeight);
@@ -1237,9 +1237,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                         uSectorID;
 
                     pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x =
-                        pCamera3D->ViewPlaneDist_X;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
-                        pCamera3D->ViewPlaneDist_Y;
+                        pCamera3D->ViewPlaneDistPixels;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;

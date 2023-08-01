@@ -874,8 +874,8 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  blv_horizon_height_offset = ((pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
-        / (pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
+    float  blv_horizon_height_offset = ((pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
+        / (pCamera3D->ViewPlaneDistPixels + pCamera3D->GetFarClip())
         + (pBLVRenderParams->uViewportCenterY));
 
     double cam_y_rot_rad = (double)pCamera3D->_viewPitch * rot_to_rads;
@@ -884,7 +884,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     float height_to_far_clip = std::sin(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
     float blv_bottom_y_proj = ((pBLVRenderParams->uViewportCenterY) -
-        pCamera3D->ViewPlaneDist_X /
+        pCamera3D->ViewPlaneDistPixels /
         (depth_to_far_clip + 0.0000001f) *
         (height_to_far_clip - pCamera3D->vCameraPos.z));
 
@@ -893,7 +893,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     float v_18y = 0.0f;
     float v_18z = -std::cos((pCamera3D->_viewPitch + 16) * rot_to_rads);
 
-    float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
+    float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDistPixels;
 
     // copy to buff in
     for (uint i = 0; i < pFace->uNumVertices; ++i) {
@@ -2002,15 +2002,15 @@ void RenderOpenGL::DrawOutdoorSky() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
-        / ((double)pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
+    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
+        / ((double)pCamera3D->ViewPlaneDistPixels + pCamera3D->GetFarClip())
         + (double)(pViewport->uScreenCenterY));
 
     float depth_to_far_clip = std::cos((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
     float height_to_far_clip = std::sin((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
-        (double)pCamera3D->ViewPlaneDist_X /
+        (double)pCamera3D->ViewPlaneDistPixels /
         (depth_to_far_clip + 0.0000001) *
         (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
 
@@ -2064,7 +2064,7 @@ void RenderOpenGL::DrawOutdoorSky() {
         VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;  // 468
         VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
 
-        float widthperpixel = 1 / pCamera3D->ViewPlaneDist_X;
+        float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
         for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
             // outbound screen X dist

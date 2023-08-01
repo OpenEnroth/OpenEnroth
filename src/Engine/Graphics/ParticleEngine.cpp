@@ -214,8 +214,7 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
     if (!pCamera3D->ViewClip(x_int, y_int_, z_int_, &xt, &yt, &zt, 0)) return false;
     pCamera3D->Project(xt, yt, zt, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
 
-    pParticle->fov_x = pCamera3D->ViewPlaneDist_X;
-    pParticle->fov_y = pCamera3D->ViewPlaneDist_Y;
+    pParticle->fov_x = pCamera3D->ViewPlaneDistPixels;
 
     /*pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) *
                                    fixed::FromFloat(pParticle->fov_x) / x;*/

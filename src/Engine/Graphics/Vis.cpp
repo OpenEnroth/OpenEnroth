@@ -655,7 +655,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    int v3 = pCamera3D->ViewPlaneDist_X;
+    int v3 = pCamera3D->ViewPlaneDistPixels;
 
     return TrigLUT.atan2(x - pViewport->uScreenCenterX, v3) -
            TrigLUT.uIntegerHalfPi;
@@ -663,7 +663,7 @@ int UnprojectX(int x) {
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    int v3 = pCamera3D->ViewPlaneDist_X;
+    int v3 = pCamera3D->ViewPlaneDistPixels;
 
     return TrigLUT.atan2(y - pViewport->uScreenCenterY, v3) -
            TrigLUT.uIntegerHalfPi;
