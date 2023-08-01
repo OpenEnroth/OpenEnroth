@@ -69,6 +69,7 @@ target_link_libraries(engine
         library_serialization
         library_color
         library_lodformats
+        library_buildinfo
         utility)
 
 target_compile_definitions(engine PRIVATE
