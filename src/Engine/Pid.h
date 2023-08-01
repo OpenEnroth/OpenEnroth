@@ -84,17 +84,17 @@ class Pid {
         return _value >> 3;
     }
 
-    [[nodiscard]] uint16_t packed() const {
+    [[nodiscard]] constexpr uint16_t packed() const {
         return _value;
     }
 
-    friend bool operator==(const Pid &l, const Pid &r) = default;
+    friend constexpr bool operator==(const Pid &l, const Pid &r) = default;
 
-    explicit operator bool() const {
+    explicit constexpr operator bool() const {
         return _value != 0;
     }
 
-    bool operator!() const {
+    constexpr bool operator!() const {
         return _value == 0;
     }
 
