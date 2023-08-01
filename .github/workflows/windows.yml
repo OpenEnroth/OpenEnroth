@@ -24,7 +24,7 @@ jobs:
         architecture:
           - x86
           - x64
-    steps:   
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -46,7 +46,7 @@ jobs:
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          arch: '${{ matrix.architecture }}'          
+          arch: '${{ matrix.architecture }}'
       - name: Restore cached ccache
         id: ccache-cache
         uses: actions/cache/restore@v3
