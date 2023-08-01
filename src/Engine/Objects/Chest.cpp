@@ -36,7 +36,7 @@ ChestList *pChestList;
 std::vector<Chest> vChests;
 
 bool Chest::open(int uChestID, Pid objectPid) {
-    ODMFace *pODMFace;
+    const ODMFace *pODMFace;
     BLVFace *pBLVFace;
     Vec3i objectPos;
     double dir_x;
@@ -77,7 +77,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             if (PID_TYPE(objectPid) == OBJECT_Face) {
                 // TODO(pskelton): trap explosion moves depending on what face is clicked
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    pODMFace = &pOutdoor->pBModels[objectPid >> 9].pFaces[(objectPid >> 3) & 0x3F];
+                    pODMFace = &pOutdoor->face(objectPid);
                     objectPos = pODMFace->pBoundingBox.center();
                 } else {  // Indoor
                     pBLVFace = &pIndoor->pFaces[objId];

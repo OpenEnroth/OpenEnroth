@@ -26,7 +26,7 @@ void ActiveOverlayList::Reset() {
 }
 
 //----- (004418B6) --------------------------------------------------------
-int ActiveOverlayList::_4418B6(int uOverlayID, int16_t pid, int animLength, int fpDamageMod, int16_t projSize) {
+int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, int animLength, int fpDamageMod, int16_t projSize) {
     int16_t v11;    // dx@11
 
     for (unsigned int i = 0; i < 50; ++i) {
@@ -155,7 +155,7 @@ void ActiveOverlay::Reset() {
     this->animLength = 0;
     this->screenSpaceX = 0;
     this->screenSpaceY = 0;
-    this->pid = 0;
+    this->pid = Pid();
     this->projSize = 0;
     this->fpDamageMod = 65536;
 }

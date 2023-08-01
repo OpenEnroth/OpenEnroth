@@ -752,7 +752,7 @@ std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
             continue; // E.g. spell particle.
         }
 
-        int pid = pBillboardRenderList[renderId].object_pid;
+        Pid pid = pBillboardRenderList[renderId].object_pid;
         if (PID_TYPE(pid) == OBJECT_Actor) {
             if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
                 int id = PID_ID(pid);

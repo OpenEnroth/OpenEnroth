@@ -1164,7 +1164,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
 
 //----- (0043AE80) --------------------------------------------------------
 void Actor::AddOnDamageOverlay(unsigned int uActorID, int overlayType, signed int damage) {
-    unsigned int actorPID = PID(OBJECT_Actor, uActorID);
+    Pid actorPID = PID(OBJECT_Actor, uActorID);
     switch (overlayType) {
         case 1:
             if (damage)

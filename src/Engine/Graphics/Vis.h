@@ -67,7 +67,7 @@ struct Vis_SelectionList {
     enum class PointerCreationType { All = 0, Unique = 1 };
     using enum PointerCreationType;
 
-    Vis_ObjectInfo *SelectionPointers(VisObjectType pVisObjectType, int pid);
+    Vis_ObjectInfo *SelectionPointers(VisObjectType pVisObjectType, Pid pid);
     void create_object_pointers(PointerCreationType type = All);
     void sort_object_pointers();
 
@@ -118,9 +118,7 @@ class Vis {
     bool is_part_of_selection(const Vis_Object &what,
                               Vis_SelectionFilter *filter);
     bool DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx);
-    Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face,
-                                               unsigned int a3,
-                                               float pick_depth);
+    Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face, Pid pid, float pick_depth);
     bool IsPolygonOccludedByBillboard(struct RenderVertexSoft *vertices,
                                       int num_vertices, float x, float y);
     void GetPolygonCenter(RenderVertexD3D3 *pVertices,

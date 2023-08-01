@@ -4,6 +4,8 @@
 #include <array>
 #include <vector>
 
+#include "Engine/Pid.h"
+
 #include "Utility/Memory/Blob.h"
 
 // TODO(pskelton): Overlays in MM7/ MM8 are blank so most of this isnt used. MM6 does have overlays - investigate if needed
@@ -17,14 +19,14 @@ struct ActiveOverlay {
     int16_t animLength;
     int16_t screenSpaceX;
     int16_t screenSpaceY;
-    int16_t pid;
+    Pid pid;
     int16_t projSize;
     int fpDamageMod;
 };
 
 struct ActiveOverlayList {
     void Reset();
-    int _4418B6(int uOverlayID, int16_t pid, int animLength, int fpDamageMod, int16_t projSize);
+    int _4418B6(int uOverlayID, Pid pid, int animLength, int fpDamageMod, int16_t projSize);
     void DrawTurnBasedIcon();
 
     std::array<ActiveOverlay, 50> pOverlays;

@@ -309,7 +309,7 @@ void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
     dst->screenSpaceY = src.screenSpaceY;
-    dst->pid = src.pid;
+    dst->pid = src.pid.packed();
     dst->projSize = src.projSize;
     dst->fpDamageMod = src.fpDamageMod;
 }
@@ -322,7 +322,7 @@ void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
     dst->screenSpaceY = src.screenSpaceY;
-    dst->pid = src.pid;
+    dst->pid = Pid::fromPacked(src.pid);
     dst->projSize = src.projSize;
     dst->fpDamageMod = src.fpDamageMod;
 }
@@ -1461,8 +1461,8 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->spell_level = src.spell_level;
     dst->spell_skill = std::to_underlying(src.spell_skill);
     dst->field_54 = src.field_54;
-    dst->spell_caster_pid = src.spell_caster_pid;
-    dst->spell_target_pid = src.spell_target_pid;
+    dst->spell_caster_pid = src.spell_caster_pid.packed();
+    dst->spell_target_pid = src.spell_target_pid.packed();
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = std::to_underlying(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;

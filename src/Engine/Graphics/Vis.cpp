@@ -40,8 +40,7 @@ Vis_SelectionFilter vis_sprite_filter_4 = {
     VisObjectType_Any, OBJECT_Item, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
-Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
-                                                float pick_depth) {
+Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth) {
     //  char *v4; // eax@4
     //  signed int v5; // ecx@4
     Vec3f rayOrigin, rayStep;  // [sp+20h] [bp-70h]@17
@@ -73,8 +72,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        uint bmodel_id = pid >> 9;
-        const std::vector<Vec3i> &v = pOutdoor->pBModels[bmodel_id].pVertices;
+        const std::vector<Vec3i> &v = pOutdoor->model(pid).pVertices;
         for (uint i = 0; i < face->uNumVertices; ++i)
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].toFloat();
     } else {
@@ -679,7 +677,7 @@ void Vis::CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *ori
 
 //----- (004C2551) --------------------------------------------------------
 Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectType,
-                                                     int pid) {
+                                                     Pid pid) {
     // unsigned int v3; // esi@1
     // signed int v4; // edx@1
     // char *v5; // eax@2
@@ -1094,11 +1092,9 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                         BLVFace blv_face;
                         blv_face.FromODM(&face);
 
-                        int pid =
-                            PID(OBJECT_Face, face.index | (model.index << 6));
+                        Pid pid = PID(OBJECT_Face, face.index | (model.index << 6));
                         if (Vis_ObjectInfo *object_info =
-                                DetermineFacetIntersection(&blv_face, pid,
-                                                           pick_depth)) {
+                                DetermineFacetIntersection(&blv_face, pid, pick_depth)) {
                             list->AddObject(
                                 object_info->object, object_info->object_type,
                                 object_info->depth, object_info->object_pid);

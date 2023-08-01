@@ -6360,7 +6360,7 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
+void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
     // target character? if any
 
     SPELL_TYPE spellId;
@@ -7115,7 +7115,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     // v28 = 0;
     // v7 = pMouse->uPointingObjectID;
 
-    int target_pid = mouse->uPointingObjectID;
+    Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = PID_TYPE(target_pid);
     int target_id = PID_ID(target_pid);
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {

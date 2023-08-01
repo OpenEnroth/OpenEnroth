@@ -15,6 +15,7 @@
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventEnums.h"
 #include "Engine/ErrorHandling.h"
+#include "Engine/Pid.h"
 
 #include "Library/Color/Color.h"
 
@@ -601,7 +602,7 @@ inline CharacterExpressionID expressionForCondition(Condition condition) {
     return CHARACTER_EXPRESSION_NORMAL;
 }
 
-void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4);
+void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int CharacterCreation_GetUnspentAttributePointCount();
