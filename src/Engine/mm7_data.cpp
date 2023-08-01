@@ -2398,7 +2398,7 @@ char byte_4FAA24;  // turn over break??
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
 
-int uLastPointedObjectID;
+Pid uLastPointedObjectID;
 int KeyboardPageNum;
 //int dword_506F1C;
 Color uGameUIFontShadow;

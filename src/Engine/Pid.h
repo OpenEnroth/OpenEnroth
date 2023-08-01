@@ -68,6 +68,13 @@ class Pid {
         return Pid(OBJECT_Face, id);
     }
 
+    /**
+     * @return                          A dummy `Pid` that's valid, but doesn't represent any object.
+     */
+    static constexpr Pid dummy() {
+        return Pid(OBJECT_Light, ID_MAX);
+    }
+
     static constexpr Pid fromPacked(uint16_t value) {
         Pid result;
         result._value = value;

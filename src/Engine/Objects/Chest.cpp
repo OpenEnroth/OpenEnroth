@@ -183,7 +183,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
             // normal picking
 
             GameUI_StatusBar_Set(item->GetDisplayName());
-            uLastPointedObjectID = 1;
+            uLastPointedObjectID = Pid::dummy();
             return 1;
 
             ////////////////////////////////////////////////////
