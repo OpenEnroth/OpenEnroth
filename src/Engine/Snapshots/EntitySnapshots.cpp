@@ -1181,8 +1181,8 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
 
     snapshot(src.scheduledJobs, &dst->pScheduledJobs);
 
-    dst->uSummonerID = src.summonerId;
-    dst->uLastCharacterIDToHit = src.lastCharacterIdToHit;
+    dst->uSummonerID = src.summonerId.packed();
+    dst->uLastCharacterIDToHit = src.lastCharacterIdToHit.packed();
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
 }
 
@@ -1275,8 +1275,8 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
 
     reconstruct(src.pScheduledJobs, &dst->scheduledJobs);
 
-    dst->summonerId = src.uSummonerID;
-    dst->lastCharacterIdToHit = src.uLastCharacterIDToHit;
+    dst->summonerId = Pid::fromPacked(src.uSummonerID);
+    dst->lastCharacterIdToHit = Pid::fromPacked(src.uLastCharacterIDToHit);
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
 }
 

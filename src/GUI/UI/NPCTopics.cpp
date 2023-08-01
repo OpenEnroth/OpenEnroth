@@ -226,8 +226,7 @@ void Arena_SelectionFightLevel() {
                 if (pActors[i].aiState == Dead ||
                     pActors[i].aiState == Removed ||
                     pActors[i].aiState == Disabled ||
-                    pActors[i].summonerId != 0 &&
-                    PID_TYPE(pActors[i].summonerId) == OBJECT_Character)
+                    pActors[i].summonerId && PID_TYPE(pActors[i].summonerId) == OBJECT_Character)
                     ++v0;
             }
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {

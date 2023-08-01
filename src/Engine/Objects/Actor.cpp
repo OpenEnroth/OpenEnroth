@@ -2163,12 +2163,11 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
             actor->aiState == Disabled || uActorID == i)
             continue;
 
-        if (thisActor->lastCharacterIdToHit == 0 ||
-            PID(OBJECT_Actor, v5) != thisActor->lastCharacterIdToHit) {
+        if (!thisActor->lastCharacterIdToHit || PID(OBJECT_Actor, v5) != thisActor->lastCharacterIdToHit) {
             v10 = thisActor->GetActorsRelation(actor);
             if (v10 == 0) continue;
         } else if (thisActor->IsNotAlive()) {
-            thisActor->lastCharacterIdToHit = 0;
+            thisActor->lastCharacterIdToHit = Pid();
             v10 = thisActor->GetActorsRelation(actor);
             if (v10 == 0) continue;
         } else {

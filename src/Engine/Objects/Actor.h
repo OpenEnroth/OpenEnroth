@@ -235,8 +235,8 @@ class Actor {
     unsigned int group = 0;
     unsigned int ally = 0;
     std::array<ActorJob, 8> scheduledJobs;
-    unsigned int summonerId = 0;
-    unsigned int lastCharacterIdToHit = 0;
+    Pid summonerId;
+    Pid lastCharacterIdToHit;
     int dword_000334_unique_name = 0; // Index into pMonsterStats->pPlaceStrings for a unique monster name.
     bool donebloodsplat{ false };
 };

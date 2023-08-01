@@ -879,7 +879,7 @@ void CastSpellInfoHelpers::castSpell() {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos - Vec3i(0, 0, pActors[monster_id].height * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, spell_targeted_at);
+                        pSpellSprite.spell_target_pid = spell_targeted_at;
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                     } else {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
@@ -2195,7 +2195,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                             event = pIndoor->pFaceExtras[pIndoor->pFaces[obj_id].uFaceExtraID].uEventID;
                         } else {
-                            event = pOutdoor->pBModels[spell_targeted_at >> 9].pFaces[obj_id & 0x3F].sCogTriggeredID;
+                            event = pOutdoor->face(spell_targeted_at).sCogTriggeredID;
                         }
                         eventProcessor(event, spell_targeted_at, 1);
                     }
