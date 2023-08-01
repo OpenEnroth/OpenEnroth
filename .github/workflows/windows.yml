@@ -48,7 +48,7 @@ jobs:
         with:
           arch: '${{ matrix.architecture }}'
       - name: ccache save cache on merge
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: Configure
