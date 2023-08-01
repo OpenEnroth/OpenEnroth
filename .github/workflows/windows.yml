@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          #- Debug
+          - Debug
           - Release
         architecture:
-          #- x86
+          - x86
           - x64
     steps:   
       - name: Checkout
@@ -70,12 +70,12 @@ jobs:
           key: windows-ccache
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
@@ -88,3 +88,21 @@ jobs:
         shell: cmd
         run: |
           ninja 
+      - name: Tests
+        working-directory: build
+        run: |
+          ninja UnitTest
+      - name: GameTest
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        working-directory: build
+        run: |
+          ninja GameTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+      - name: Prepare artifact
+        shell: pwsh
+        run: |
+          mkdir dist
+          copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
+          copy build\src\Bin\OpenEnroth\*.dll dist\ 
+          xcopy resources dist\ /E/H/C/I
