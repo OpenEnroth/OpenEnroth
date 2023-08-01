@@ -134,7 +134,6 @@ jobs:
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
-          max-size: 250M
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
