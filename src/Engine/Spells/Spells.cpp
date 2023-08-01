@@ -848,7 +848,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
         case SPELL_EARTH_BLADES:
         case SPELL_EARTH_ROCK_BLAST:
             // v20 = yaw;
-            spell_sprites.spell_target_pid = 0;
+            spell_sprites.spell_target_pid = Pid();
             spell_sprites.uFacing = yaw;
             spell_sprites.uSoundID = 0;
             launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
@@ -859,7 +859,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             break;
         case SPELL_WATER_POISON_SPRAY:
             spell_num_objects = (std::to_underlying(skillMastery) * 2) - 1;
-            spell_sprites.spell_target_pid = 0;
+            spell_sprites.spell_target_pid = Pid();
             spell_sprites.uFacing = yaw;
             if (spell_num_objects == 1) {
                 launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
@@ -880,7 +880,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             spell_num_objects = (std::to_underlying(skillMastery) * 2) + 1;
             spell_spray_arc = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
             spell_spray_angles = spell_spray_arc / (spell_num_objects - 1);
-            spell_sprites.spell_target_pid = 4;
+            spell_sprites.spell_target_pid = Pid::character(0);
             for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2; i += spell_spray_angles) {
                 spell_sprites.uFacing = i + yaw;
                 spriteid = spell_sprites.Create(i + yaw, pitch, pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
@@ -893,7 +893,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 return;
             }
-            spell_sprites.spell_target_pid = 4;
+            spell_sprites.spell_target_pid = Pid::character(0);
             launch_speed = pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed;
             launch_angle = TrigLUT.uIntegerHalfPi / 2;
             spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);

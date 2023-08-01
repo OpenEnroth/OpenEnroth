@@ -883,7 +883,7 @@ void GameUI_WritePointedObjectStatusString() {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {
             if (!pViewport->Contains(pX, pY)) {
-                if (uLastPointedObjectID != 0) {
+                if (uLastPointedObjectID) {
                     game_ui_status_bar_string.clear();
                 }
                 uLastPointedObjectID = Pid();
@@ -949,8 +949,7 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                     if (!newString.empty()) {
                         GameUI_StatusBar_Set(newString);
-                        if (!mouse->uPointingObjectID &&
-                            uLastPointedObjectID != 0) {
+                        if (!mouse->uPointingObjectID && uLastPointedObjectID) {
                             game_ui_status_bar_string.clear();
                         }
                         uLastPointedObjectID = mouse->uPointingObjectID;
@@ -964,17 +963,15 @@ void GameUI_WritePointedObjectStatusString() {
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
                 if (pickedObject.depth >= 0x2000u) {
                     mouse->uPointingObjectID = Pid();
-                    if (uLastPointedObjectID != 0) {
+                    if (uLastPointedObjectID) {
                         game_ui_status_bar_string.clear();
                     }
                     uLastPointedObjectID = Pid();
                     return;
                 }
                 GameUI_StatusBar_Set(GetDisplayName(&pActors[pickedObjectID]));
-            } else if (mouse->uPointingObjectID == 0xFFFF) {
-                mouse->uPointingObjectID = Pid();
             }
-            if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
+            if (!mouse->uPointingObjectID && uLastPointedObjectID) {
                 game_ui_status_bar_string.clear();
             }
             uLastPointedObjectID = mouse->uPointingObjectID;
@@ -985,7 +982,7 @@ void GameUI_WritePointedObjectStatusString() {
             pY <= (renDims.h - 1) * 0.73125) {  // if in chest area
             if (Chest::ChestUI_WritePointedObjectStatusString()) {
                 return;
-            } else if (uLastPointedObjectID != 0) {  // not found so reset
+            } else if (uLastPointedObjectID) {  // not found so reset
                 game_ui_status_bar_string.clear();
             }
             uLastPointedObjectID = Pid();
@@ -1027,7 +1024,7 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pickedObjectID == 0 || pickedObjectID == -65536 ||
                         pickedObjectID >= 5000) {
                         // if (pMouse->uPointingObjectID == 0) {
-                        if (uLastPointedObjectID != 0) {
+                        if (uLastPointedObjectID) {
                             game_ui_status_bar_string.clear();
                         }
                         //}
@@ -1108,7 +1105,7 @@ void GameUI_WritePointedObjectStatusString() {
             }
 
             // ?? if we get here nothing is curos over??
-            if (uLastPointedObjectID != 0) {  // not found so reset
+            if (uLastPointedObjectID) {  // not found so reset
                 game_ui_status_bar_string.clear();
             }
             uLastPointedObjectID = Pid();
@@ -1229,7 +1226,7 @@ void GameUI_WritePointedObjectStatusString() {
     }
 
     // pMouse->uPointingObjectID = sub_46A99B(); //for software
-    if (uLastPointedObjectID != 0) {
+    if (uLastPointedObjectID) {
         game_ui_status_bar_string.clear();
     }
     uLastPointedObjectID = Pid();

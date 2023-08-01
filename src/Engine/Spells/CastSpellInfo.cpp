@@ -991,7 +991,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
-                        pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : 0;
+                        pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : Pid();
                         pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
                         pSpellSprite.uFacing = yaw;
                         if (pParty->bTurnBasedModeOn) {
@@ -1194,7 +1194,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
-                        pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : 0;
+                        pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : Pid();
                         pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
                         pSpellSprite.uFacing = yaw;
                         if (pParty->bTurnBasedModeOn) {

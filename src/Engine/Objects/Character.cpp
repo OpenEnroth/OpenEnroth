@@ -7252,7 +7252,7 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(xpos, ypos, zpos);
     a1a.uSpriteFrameID = 0;
-    a1a.spell_target_pid = 0;
+    a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
     a1a.uFacing = 0;
     a1a.uSoundID = 0;

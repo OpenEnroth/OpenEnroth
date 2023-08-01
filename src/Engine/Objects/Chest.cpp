@@ -126,7 +126,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
             pSpellObject.uSpriteFrameID = 0;
             pSpellObject.spell_caster_pid = Pid();
-            pSpellObject.spell_target_pid = 0;
+            pSpellObject.spell_target_pid = Pid();
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);
             // TODO(Nik-RE-dev): chest is originator in this case

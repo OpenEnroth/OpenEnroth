@@ -2185,7 +2185,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
-    a1a.spell_target_pid = 0;
+    a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
     a1a.uSpriteFrameID = 0;
     a1a.uSectorID = pIndoor->GetSector(a2->vPosition.x, a2->vPosition.y, a2->vPosition.z);
