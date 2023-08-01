@@ -170,7 +170,7 @@ jobs:
       - name: ccache
         uses: botanicvelious/ccache-action@v1.2.10
         with:
-          key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          key: 'android-${{ matrix.configuration }}'
           max-size: 250M
       - name: Build the app
         working-directory: android
