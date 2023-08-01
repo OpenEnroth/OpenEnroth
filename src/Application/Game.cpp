@@ -393,7 +393,7 @@ void Game::closeTargetedSpellWindow() {
             pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
             pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
             _mouse->SetCursorImage("MICON1");
-            game_ui_status_bar_event_string_time_left = 0;
+            game_ui_status_bar_event_string_expiration_time = 0;
             IsEnchantingInProgress = false;
             back_to_game();
         }
@@ -674,7 +674,7 @@ void Game::processQueuedMessages() {
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
                         _mouse->SetCursorImage("MICON1");
-                        game_ui_status_bar_event_string_time_left = 0;
+                        game_ui_status_bar_event_string_expiration_time = 0;
                         IsEnchantingInProgress = false;
                         back_to_game();
                     }
@@ -2154,7 +2154,7 @@ void Game::gameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
-            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
+            if (game_ui_status_bar_event_string_expiration_time != 0 && game_ui_status_bar_event_string_expiration_time < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }
             if (uGameState == GAME_STATE_PLAYING) {

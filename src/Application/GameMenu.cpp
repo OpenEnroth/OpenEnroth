@@ -82,7 +82,7 @@ void Game_OpenLoadGameDialog() {
     engine->_messageQueue->clear();
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
-    game_ui_status_bar_event_string_time_left = 0;
+    game_ui_status_bar_event_string_expiration_time = 0;
     // LoadUI_Load(1);
     current_screen_type = SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
@@ -172,7 +172,7 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 pGUIWindow_CurrentMenu->Release();
-                game_ui_status_bar_event_string_time_left = 0;
+                game_ui_status_bar_event_string_expiration_time = 0;
                 current_screen_type = SCREEN_SAVEGAME;
                 pGUIWindow_CurrentMenu = new GUIWindow_Save();
                 // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);

@@ -117,7 +117,7 @@ extern int dword_5B65C4_cancelEventProcessing;
 extern int npcIdToDismissAfterDialogue;
 extern std::string game_ui_status_bar_event_string;
 extern std::string game_ui_status_bar_string;
-extern unsigned int game_ui_status_bar_event_string_time_left;
+extern unsigned int game_ui_status_bar_event_string_expiration_time; // In terms of Platform::tickCount.
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 

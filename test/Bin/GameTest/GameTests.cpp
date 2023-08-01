@@ -1393,7 +1393,7 @@ GAME_TEST(Issues, Issue830) {
     // Mouseover hints for UI elements not showing
     game->startNewGame();
     game->tick(1);
-    game_ui_status_bar_event_string_time_left = 0;
+    game_ui_status_bar_event_string_expiration_time = 0;
     // Portrait: Name and conditions of the character
     game->moveMouse(65, 424);
     game->tick(1);

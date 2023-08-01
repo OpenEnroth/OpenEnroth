@@ -194,7 +194,7 @@ void CreateParty_EventLoop() {
             new OnButtonClick2({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
             if (CharacterCreation_GetUnspentAttributePointCount() ||
                 !PlayerCreation_Choose4Skills())
-                game_ui_status_bar_event_string_time_left =
+                game_ui_status_bar_event_string_expiration_time =
                     platform->tickCount() + 4000;
             else
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
@@ -578,7 +578,7 @@ void GUIWindow_PartyCreation::Update() {
     pTextCenter =
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label);
-    if (game_ui_status_bar_event_string_time_left > platform->tickCount()) {
+    if (game_ui_status_bar_event_string_expiration_time > platform->tickCount()) {
         GUIWindow message_window;
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)
