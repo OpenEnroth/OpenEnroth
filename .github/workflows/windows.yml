@@ -47,27 +47,6 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: '${{ matrix.architecture }}'
-      - name: Restore cached ccache
-        id: ccache-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
-      - name: add ccache shim
-        if: steps.ccache-cache.outputs.cache-hit == 'true'
-        run: >
-          C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
-      - name: update ccache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        run: |
-          choco upgrade ccache
-      - name: Save ccache to cache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        id: check-for-ccache-save
-        uses: actions/cache/save@v3
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
       - name: sccache save cache on merge
         if: github.ref == 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
