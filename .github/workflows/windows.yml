@@ -28,6 +28,12 @@ jobs:
       - name: Copy shaders
         run: >
           tree 'C:\ProgramData\chocolatey\'    
+      - name: update ccache
+        run: |
+          choco upgrade ccache
+      - name: Copy shaders
+        run: >
+          tree 'C:\ProgramData\chocolatey\'   
       - name: Checkout
         uses: actions/checkout@v3
         with:
