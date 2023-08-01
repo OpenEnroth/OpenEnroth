@@ -171,7 +171,7 @@ jobs:
           SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
           CMAKE_BUILD_PARALLEL_LEVEL: 3                    
   build_android_single:
-    if: github.ref != 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     name: Build Android Client single binary
     runs-on: ubuntu-latest
     strategy:
