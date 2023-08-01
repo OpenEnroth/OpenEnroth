@@ -145,7 +145,6 @@ jobs:
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
       - name: Build the app per arch
-        if: github.ref != 'refs/heads/master'
         working-directory: android
         run: |
           if [ "${{ matrix.configuration }}" = "Debug" ]; then
