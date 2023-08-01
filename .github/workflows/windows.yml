@@ -14,91 +14,67 @@ name: Windows
       - published
 jobs:
   build_windows:
-    name: Build Windows Client
     runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x86, x64]
+        configuration:
+          - Debug
+          - Release
+        architecture:
+          - x86
+          - x64
     steps:
-
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-        ref: ${{ inputs.myCommit }}
-        
-    - name: Check for Data cache
-      id: check-for-data-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
-
-    - name: Copy shaders
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
-      run: |
-        xcopy D:\a\OpenEnroth\OpenEnroth\resources D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
-    - name: Setup environment
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: ${{ matrix.architecture }}
-
-    - name: update ccache
-      run: |
-        choco upgrade ccache
-    - name: ccache
-      uses: botanicvelious/ccache-action@v1.2.10
-      with:
-        key: windows-${{ matrix.configuration }}-${{ matrix.architecture }}
-
-    - name: Configure
-      run: |
-        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
-    - name: Build
-      working-directory: build
-      shell: cmd
-      run: |
-        ninja
-    - name: Tests
-      working-directory: build
-      run: |
-        ninja UnitTest
-    - name: GameTest
-      if: steps.check-for-data-cache.outputs.cache-hit == 'true'        
-      working-directory: build
-      run: |
-        ninja GameTest_NullRenderer
-      env:
-        OPENENROTH_MM7_PATH: D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7
-
-    - name: Prepare artifact
-      shell: pwsh
-      run: |
-        mkdir dist
-        copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-        copy build\src\Bin\OpenEnroth\*.dll dist\ 
-        if ("${{ matrix.configuration }}" -eq "Debug" -And "${{ matrix.architecture }}" -eq "x86" ) {
-          copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
-          copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
-          copy c:\Windows\SysWOW64\ucrtbased.dll dist\
-          copy build\src\Bin\OpenEnroth\*.pdb dist\ 
-        } ElseIf ("${{ matrix.configuration }}" -eq "Debug" -And "${{ matrix.architecture }}" -eq "x64") {
-          copy c:\Windows\System32\msvcp140d.dll dist\ 
-          copy c:\Windows\System32\vcruntime140_1d.dll dist\ 
-          copy c:\Windows\System32\vcruntime140d.dll dist\ 
-          copy c:\Windows\System32\ucrtbased.dll dist\ 
-        }
-        xcopy resources dist\ /E/H/C/I
-          
-    - name: Zip Folder For Release
-      run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
-
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      with:
-        prerelease: true
-        tag_name: ${{ env.TAG_NAME }}
-        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip  
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{ inputs.myCommit }}'
+      - name: Check for Data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+          enableCrossOsArchive: true
+      - name: Copy shaders
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        run: >
+          xcopy D:\a\OpenEnroth\OpenEnroth\resources
+          D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+      - name: Setup environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: '${{ matrix.architecture }}'
+      - name: ccache save cache on merge
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
+      - name: Configure
+        run: >
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
+          }} -DENABLE_TESTS=On 
+      - name: Build
+        working-directory: build
+        shell: cmd
+        run: |
+          ninja 
+      - name: Tests
+        working-directory: build
+        run: |
+          ninja UnitTest
+      - name: GameTest
+        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        working-directory: build
+        run: |
+          ninja GameTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+      - name: Prepare artifact
+        shell: pwsh
+        run: |
+          mkdir dist
+          copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
+          copy build\src\Bin\OpenEnroth\*.dll dist\ 
+          xcopy resources dist\ /E/H/C/I
