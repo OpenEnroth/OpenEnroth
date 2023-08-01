@@ -13,9 +13,9 @@ name: Android
     types:
       - published
 # cancels currently running workflow from the same PR, branch or tag
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
 jobs:
   build_android:
     name: Build Android Client
