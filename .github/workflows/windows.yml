@@ -39,7 +39,6 @@ jobs:
         run: |
           choco upgrade ccache
       - name: ccache dont save cache
-        if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
