@@ -672,8 +672,8 @@ void Vis::CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *ori
     origin->x = pCamera3D->vCameraPos.x;
     origin->y = pCamera3D->vCameraPos.y;
 
-    int yawAngle = pCamera3D->_viewYaw + UnprojectX(fMouseX);
-    int pitchAngle = -pCamera3D->_viewPitch + UnprojectY(fMouseY);
+    int yawAngle = (pCamera3D->_viewYaw + UnprojectX(fMouseX)) & TrigLUT.uDoublePiMask;
+    int pitchAngle = (-pCamera3D->_viewPitch + UnprojectY(fMouseY)) & TrigLUT.uDoublePiMask;
     *step = Vec3f::fromPolarRetarded(fPickDepth, yawAngle, pitchAngle);
 }
 
