@@ -79,10 +79,13 @@ jobs:
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
+      - name: set ccache config values
+        run: >
+          ccache --set-config=hash_dir=false
       - name: Configure
         run: >
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
-          }} -DENABLE_TESTS=On 
+          }} -DENABLE_TESTS=On
       - name: Build
         working-directory: build
         shell: cmd
