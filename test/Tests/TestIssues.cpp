@@ -1636,3 +1636,23 @@ GAME_TEST(Issues, Issue1155) {
     EXPECT_TRUE(screenTape.contains(SCREEN_CHARACTERS));
     EXPECT_TRUE(screenTape.contains(SCREEN_BRANCHLESS_NPC_DIALOG));
 }
+
+GAME_TEST(Issues, Issue1164) {
+    // CHARACTER_EXPRESSION_NO animation ending abruptly - should show the character moving his/her head to the left,
+    // then to the right.
+    auto expressionTape = test->tape([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->Time()); });
+    auto frameTimeTape = makeConfigTape(test, engine->config->debug.TraceFrameTimeMs);
+    test->playTraceFromTestData("issue_1164.mm7", "issue_1164.json");
+    EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo at other frame rates.
+
+    auto isNo = [] (const auto &pair) { return pair.first == CHARACTER_EXPRESSION_NO; };
+    auto begin = std::find_if(expressionTape.values().begin(), expressionTape.values().end(), isNo);
+    auto end = std::find_if_not(begin, expressionTape.values().end(), isNo);
+    ASSERT_NE(end, expressionTape.values().end());
+
+    // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
+    // shouldn't really be there, but for now we test it the way it actually works.
+    auto ticks = end->second - begin->second;
+    int frameTicks = (128 * 15 + 999) / 1000;
+    EXPECT_GE(ticks, 144 - frameTicks);
+}
