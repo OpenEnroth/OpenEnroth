@@ -25,6 +25,9 @@ jobs:
           #- x86
           - x64
     steps:
+      - name: Copy shaders
+        run: >
+          tree 'C:\ProgramData\chocolatey\'    
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -46,11 +49,7 @@ jobs:
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          arch: '${{ matrix.architecture }}'
-      - uses: actions/upload-artifact@v3
-        with:
-          name: my-artifact
-          path: C:\ProgramData\chocolatey          
+          arch: '${{ matrix.architecture }}'          
       - name: Restore cached ccache
         id: ccache-cache
         uses: actions/cache/restore@v3
