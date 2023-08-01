@@ -1028,7 +1028,7 @@ GAME_TEST(Issues, Issue651) {
     // check for valid pids
     for (auto &obj : pSpriteObjects) {
         ObjectType castertype = PID_TYPE(obj.spell_caster_pid);
-        int casterid = PID_ID(obj.spell_caster_pid);
+        int casterid = obj.spell_caster_pid.id();
         if (castertype == OBJECT_Actor) {
             EXPECT_TRUE(casterid < pActors.size());
         }

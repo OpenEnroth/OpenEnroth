@@ -69,7 +69,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpriteID[2] = SPRITE_TRAP_COLD;
             pSpriteID[3] = SPRITE_TRAP_BODY;
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
-            int objId = PID_ID(objectPid);
+            int objId = objectPid.id();
             if (PID_TYPE(objectPid) == OBJECT_Decoration) {
                 objectPos = pLevelDecorations[objId].vPosition +
                     Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);

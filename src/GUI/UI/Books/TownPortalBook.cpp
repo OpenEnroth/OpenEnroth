@@ -55,7 +55,7 @@ static std::array<GraphicsImage *, TOWN_PORTAL_DESTINATION_COUNT> ui_book_townpo
 
 GraphicsImage *ui_book_townportal_background = nullptr;
 
-GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Book() {
+GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid) : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_TownPortal;
     this->wData.val = WINDOW_TownPortal;
 
@@ -141,7 +141,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
 
     assert(PID_TYPE(_casterPid) == OBJECT_Character);
 
-    int casterId = PID_ID(_casterPid);
+    int casterId = _casterPid.id();
     if (casterId < pParty->pCharacters.size()) {
         // Town portal casted by character
         assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);

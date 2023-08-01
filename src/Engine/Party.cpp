@@ -246,7 +246,7 @@ void Party::switchToNextActiveCharacter() {
         if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Character) {
             _activeCharacter = 0;
         } else {
-            _activeCharacter = PID_ID(pTurnEngine->pQueue[0].uPackedID) + 1;
+            _activeCharacter = pTurnEngine->pQueue[0].uPackedID.id() + 1;
         }
         return;
     }

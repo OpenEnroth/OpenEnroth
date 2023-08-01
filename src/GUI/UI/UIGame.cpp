@@ -895,7 +895,7 @@ void GameUI_WritePointedObjectStatusString() {
             // get_picked_object_zbuf_val contains both the pid and the depth
             pickedObject = vis->get_picked_object_zbuf_val();
             mouse->uPointingObjectID = pickedObject.object_pid;
-            pickedObjectID = (signed)PID_ID(pickedObject.object_pid);
+            pickedObjectID = (signed)pickedObject.object_pid.id();
             if (PID_TYPE(pickedObject.object_pid) == OBJECT_Item) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
@@ -930,7 +930,7 @@ void GameUI_WritePointedObjectStatusString() {
                 if (pickedObject.depth < 0x200u) {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
-                        v18b = PID_ID(pickedObject.object_pid) >> 6;
+                        v18b = pickedObject.object_pid.id() >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
                             newString = getEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
@@ -1356,7 +1356,7 @@ void GameUI_DrawPortraits() {
                         alert_texture = game_ui_player_alert_yellow;
 
                     render->DrawTextureNew(
-                        (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
+                        (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[pTurnEngine->pQueue[i].uPackedID.id()] - 4) / 640.0f,
                         384 / 480.0f, alert_texture); // was 385
                 }
             }

@@ -6,7 +6,6 @@
 #include "Utility/Workaround/ToUnderlying.h"
 
 #define PID_TYPE(pid) (detail::pidType(pid))          // extract type
-#define PID_ID(pid) (detail::pidId(pid))  // extract value
 
 enum class ObjectType {
     OBJECT_None = 0x0,

@@ -6383,7 +6383,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
         if (targetchar == -1) __debugbreak();
 
-        unsigned int uActorID = PID_ID(uObjID);
+        unsigned int uActorID = uObjID.id();
 
         Character *playerPtr = &pParty->pCharacters[targetchar];
         Actor *actorPtr = &pActors[uActorID];
@@ -6533,10 +6533,10 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         }
         return;
     } else {  // is an item
-        int spriteId = PID_ID(uObjID);
+        int spriteId = uObjID.id();
         SpriteObject *spritefrom = &pSpriteObjects[spriteId];
         ObjectType uActorType = PID_TYPE(spritefrom->spell_caster_pid);
-        int uActorID = PID_ID(spritefrom->spell_caster_pid);
+        int uActorID = spritefrom->spell_caster_pid.id();
 
         if (uActorType == OBJECT_Item) {
             Character *playerPtr;  // eax@81
@@ -7117,11 +7117,11 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = PID_TYPE(target_pid);
-    int target_id = PID_ID(target_pid);
+    int target_id = target_pid.id();
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = PID_TYPE(target_pid);
-        target_id = PID_ID(target_pid);
+        target_id = target_pid.id();
     }
 
     Actor *actor = nullptr;

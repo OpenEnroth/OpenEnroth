@@ -1407,7 +1407,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
 // TODO(Nik-RE-dev): does not belong here, it's common function for interaction for both indoor/outdoor
 // TODO(Nik-RE-dev): get rid of external function declaration inside
 char DoInteractionWithTopmostZObject(Pid pid) {
-    auto id = PID_ID(pid);
+    auto id = pid.id();
     auto type = PID_TYPE(pid);
 
     // was SCREEN_BRANCHLESS_NPC_DIALOG
@@ -1772,15 +1772,15 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             // Bounce back from a decoration & do another round of collision checks.
             // This way the party can "slide" along & past a decoration.
-            int angle = TrigLUT.atan2(pParty->pos.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
-                                      pParty->pos.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
+            int angle = TrigLUT.atan2(pParty->pos.x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
+                                      pParty->pos.y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
             int len = integer_sqrt(pParty->speed.xy().lengthSqr());
             pParty->speed.x = TrigLUT.cos(angle) * len;
             pParty->speed.y = TrigLUT.sin(angle) * len;
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
-            BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
+            BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
             if (pFace->uPolygonType == POLYGON_Floor) {
                 if (pParty->speed.z < 0)
                     pParty->speed.z = 0;
@@ -1791,7 +1791,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pParty->speed.y = 0;
                     pParty->speed.x = 0;
                 }
-                if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                     faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             } else { // Not floor
                 int speed_dot_normal = std::abs(
@@ -1815,11 +1815,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         pParty->pos.y += -distance_to_face * pFace->facePlane.normal.y;
                         new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
                     }
-                    if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                    if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                         faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 } else { // between floor & wall
                     if (pParty->speed.xy().lengthSqr() >= min_party_move_delta_sqr) {
-                        if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                        if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                             faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     } else {
                         pParty->speed = Vec3i();

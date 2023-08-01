@@ -1346,7 +1346,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         float v4 = 0.0f;
         if (pActors[i].aiState == Summoned) {
             if (PID_TYPE(pActors[i].summonerId) != OBJECT_Actor ||
-                pActors[PID_ID(pActors[i].summonerId)]
+                pActors[pActors[i].summonerId.id()]
                 .monsterInfo.uSpecialAbilityDamageDiceSides != 1) {
                 z += floorf(pActors[i].height * 0.5f + 0.5f);
             } else {
@@ -2177,8 +2177,8 @@ void ODM_ProcessPartyActions() {
                 partyInputYSpeed = 0;
             }
 
-            if (pParty->floor_face_id != PID_ID(collision_state.pid) && pODMFace->Pressure_Plate()) {
-                pParty->floor_face_id = PID_ID(collision_state.pid);
+            if (pParty->floor_face_id != collision_state.pid.id() && pODMFace->Pressure_Plate()) {
+                pParty->floor_face_id = collision_state.pid.id();
                 triggerID = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
             }
 

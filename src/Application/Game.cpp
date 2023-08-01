@@ -1039,7 +1039,7 @@ void Game::processQueuedMessages() {
             case UIMSG_CastSpell_Telekinesis: {
                 Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
                 ObjectType type = PID_TYPE(pid);
-                int id = PID_ID(pid);
+                int id = pid.id();
                 bool interactionPossible = false;
                 if (type == OBJECT_Actor) {
                     interactionPossible = pActors[id].aiState == Dead;
@@ -1110,7 +1110,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(uMessageParam);
+                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(Pid::fromPacked(uMessageParam));
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:

@@ -330,7 +330,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         pParty->activeCharacter().CanSteal()) {
         engine->_messageQueue->addMessageCurrentFrame(
             UIMSG_STEALFROMACTOR,
-            PID_ID(picked_object.object_pid),
+            picked_object.object_pid.id(),
             0
         );
 

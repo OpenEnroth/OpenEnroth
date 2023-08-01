@@ -241,7 +241,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             CollideWithParty(false);
         }
         if (casterType == OBJECT_Actor) {
-            int actorId = PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid);
+            int actorId = pSpriteObjects[uLayingItemID].spell_caster_pid.id();
             // TODO: why pActors.size() - 1? Should just check for .size()
             if ((actorId >= 0) && (actorId < (pActors.size() - 1))) {
                 for (int j = 0; j < pActors.size(); ++j) {
@@ -332,7 +332,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
         pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
     }
-    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.xy();
+    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
     int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr());
     int velRotXY = TrigLUT.atan2(deltaXY.x, deltaXY.y);
 
@@ -396,7 +396,7 @@ LABEL_25:
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self monster type
                     if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
-                        if (pActors[PID_ID(pSpriteObject->spell_caster_pid)].monsterInfo.uID == pActors[actloop].monsterInfo.uID) {
+                        if (pActors[pSpriteObject->spell_caster_pid.id()].monsterInfo.uID == pActors[actloop].monsterInfo.uID) {
                             continue;
                         }
                     }
@@ -440,7 +440,7 @@ LABEL_25:
                 return;
             }
 
-            int pidId = PID_ID(collision_state.pid);
+            int pidId = collision_state.pid.id();
             if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
                 Vec2i deltaXY = pSpriteObject->vPosition.xy() - pLevelDecorations[pidId].vPosition.xy();
                 int velXYLen = integer_sqrt(pSpriteObject->vVelocity.xy().lengthSqr());
@@ -449,7 +449,7 @@ LABEL_25:
                 pSpriteObject->vVelocity.y = TrigLUT.sin(velXYRot) * velXYLen;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
-                collision_state.ignored_face_id = PID_ID(collision_state.pid);
+                collision_state.ignored_face_id = collision_state.pid.id();
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
                     float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity.toFloat()));
@@ -726,7 +726,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
     if (PID_TYPE(pid) == OBJECT_Actor) {
-        if (PID_TYPE(object->spell_caster_pid) == OBJECT_Actor && !pActors[PID_ID(object->spell_caster_pid)].GetActorsRelation(&pActors[PID_ID(pid)])) {
+        if (PID_TYPE(object->spell_caster_pid) == OBJECT_Actor && !pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()])) {
             return 1;
         }
     } else {
@@ -742,8 +742,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
     }
     if (PID_TYPE(pid) == OBJECT_Face && PID_TYPE(object->spell_caster_pid) != OBJECT_Character) {
-        if (PID_ID(object->spell_caster_pid) < 500) {  // bugfix  PID_ID(v2->spell_caster_pid)==1000
-            pActors[PID_ID(object->spell_caster_pid)].attributes |= ACTOR_UNKNOW5;
+        if (object->spell_caster_pid.id() < 500) {  // bugfix  v2->spell_caster_pid.id()==1000
+            pActors[object->spell_caster_pid.id()].attributes |= ACTOR_UNKNOW5;
         }
     }
 
@@ -1038,7 +1038,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD: {
             if (PID_TYPE(pid) == OBJECT_Actor &&
-                MonsterStats::BelongsToSupertype(pActors[PID_ID(pid)].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                MonsterStats::BelongsToSupertype(pActors[pid.id()].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                 applySpellSpriteDamage(uLayingItemID, pid);
             }
             updateSpriteOnImpact(object);
@@ -1146,12 +1146,12 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                         assert(false);
                         break;
                 }
-                pActors[PID_ID(pid)].attributes |= ACTOR_AGGRESSOR;
+                pActors[pid.id()].attributes |= ACTOR_AGGRESSOR;
             }
 
             if (!isShrinkingRayAoe) {
-                int actorId = PID_ID(pid);
-                if (pActors[PID_ID(pid)].DoesDmgTypeDoDamage(dmgType)) {
+                int actorId = pid.id();
+                if (pActors[pid.id()].DoesDmgTypeDoDamage(dmgType)) {
                     isDamaged = true;
                     if (object->uType == SPRITE_SPELL_LIGHT_PARALYZE) {
                         pActors[actorId].aiState = Standing;
@@ -1280,13 +1280,13 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:
-                Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity, pSpriteObjects[uLayingItemID].spellCasterAbility);
+                Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity, pSpriteObjects[uLayingItemID].spellCasterAbility);
                 break;
             case OBJECT_Character:
-                Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);
+                Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity);
                 break;
             case OBJECT_Item:
-                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);
+                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity);
                 break;
             default:
                 break;
@@ -1301,7 +1301,7 @@ void UpdateObjects() {
         } else {
             ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (pSpriteObjects[i].attachedToActor()) {
-                int actorId = PID_ID(pSpriteObjects[i].spell_target_pid);
+                int actorId = pSpriteObjects[i].spell_target_pid.id();
                 if (actorId > pActors.size()) {
                     continue;
                 }

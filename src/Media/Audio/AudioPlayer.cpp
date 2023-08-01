@@ -279,7 +279,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
         assert(pid);
 
         ObjectType object_type = PID_TYPE(pid);
-        unsigned int object_id = PID_ID(pid);
+        unsigned int object_id = pid.id();
         switch (object_type) {
             case OBJECT_Door: {
                 assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
