@@ -23,6 +23,8 @@ jobs:
           - Debug
           - Release
         architecture:
+          - arm64-v8a
+          - armeabi-v7a
           - x64
         target:
           - android
@@ -34,7 +36,7 @@ jobs:
           speedtests:    6 # Maximum number of healthy mirrors to test for speed
           parallel:       2 # Number of parallel speed tests
           sample-size: 1024 # Number of kilobytes to download during the speed from each mirror
-          sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish        
+          sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -97,9 +99,11 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install -y yasm
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y gcc-12-multilib g++-12-multilib
+          if [ "${{ matrix.architecture }}" = "armeabi-v7a" ] || [ "${{ matrix.architecture }}" = "x86" ]; then
+            sudo dpkg --add-architecture i386
+            sudo apt-get update
+            sudo apt-get install -y gcc-12-multilib g++-12-multilib
+          fi
       - uses: actions/setup-java@v2
         with:
           distribution: temurin
@@ -125,11 +129,18 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
-      - name: ccache
+      - name: ccache save cache on merge
+        if: github.ref == 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 250M
+      - name: ccache dont save cache
+        if: github.ref != 'refs/heads/master'
+        uses: botanicvelious/ccache-action@v1.2.10
+        with:
+          key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          save: false
       - name: Build the app
         working-directory: android
         run: |
@@ -143,3 +154,4 @@ jobs:
           SIGNING_KEY_PASSWORD: '${{ secrets.SIGNING_KEY_PASSWORD }}'
           SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
           CMAKE_BUILD_PARALLEL_LEVEL: 3
+          GITHUBARCH: '${{ matrix.architecture }}'
