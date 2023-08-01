@@ -212,10 +212,8 @@ void Engine::DrawGUI() {
 
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
-    GameUI_StatusBar_DrawForced();
     GameUI_DrawRightPanelFrames();
     GameUI_StatusBar_Draw();
-
 
     if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);

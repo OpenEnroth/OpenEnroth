@@ -1,6 +1,4 @@
-#include <stdarg.h>
-
-#include "GUI/UI/UIStatusBar.h"
+#include "UIStatusBar.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -75,14 +73,6 @@ void GameUI_StatusBar_ClearInputString() {
 void GameUI_StatusBar_NothingHere() {
     if (game_ui_status_bar_event_string_time_left == 0) {
         GameUI_SetStatusBar(LSTR_NOTHING_HERE);
-    }
-}
-
-void GameUI_StatusBar_DrawForced() {
-    if (game_ui_status_bar_string.length() > 0 ||
-        game_ui_status_bar_event_string_time_left || bForceDrawFooter) {
-        bForceDrawFooter = false;
-        GameUI_StatusBar_Draw();
     }
 }
 
