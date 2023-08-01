@@ -76,6 +76,7 @@
 
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
+#include "Library/BuildInfo/BuildInfo.h"
 
 #include "Utility/DataPath.h"
 
@@ -582,7 +583,7 @@ Engine::~Engine() {
 }
 
 void Engine::LogEngineBuildInfo() {
-    logger->info("OpenEnroth, compiled: {} {}", __DATE__, __TIME__);
+    logger->info("OpenEnroth, revision {}", gitRevision());
     logger->info("Extra build information: {}/{}/{} {}", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
 }
 
