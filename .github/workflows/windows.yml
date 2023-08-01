@@ -68,17 +68,19 @@ jobs:
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
-      - name: ccache save cache on merge
+      - name: sccache save cache on merge
         if: github.ref == 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
-      - name: ccache dont save cache
+          variant: sccache
+      - name: sccache dont save cache
         if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
+          variant: sccache
       - name: Configure
         run: >
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
