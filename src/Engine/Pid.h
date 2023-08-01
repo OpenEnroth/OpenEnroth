@@ -5,7 +5,6 @@
 
 #include "Utility/Workaround/ToUnderlying.h"
 
-#define PID(type, id) (Pid(type, id))  // packed id
 #define PID_TYPE(pid) (detail::pidType(pid))          // extract type
 #define PID_ID(pid) (detail::pidId(pid))  // extract value
 

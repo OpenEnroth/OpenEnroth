@@ -344,7 +344,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
 
             default: {
                 result = _regularSoundPool.playNew(sample, si.dataSource);
-                logger->warning("Unexpected object type from PID in playSound");
+                logger->warning("Unexpected object type from Pid in playSound");
                 break;
             }
         }

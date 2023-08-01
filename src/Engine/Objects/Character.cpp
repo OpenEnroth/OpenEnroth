@@ -4032,7 +4032,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
-            //v5 = PID(OBJECT_Character, player_num + 49);
+            //v5 = Pid(OBJECT_Character, player_num + 49);
             //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->uSkillPoints += 2;
@@ -5053,7 +5053,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound() {
     //int playerIndex = getCharacterIndex();
-    //int v25 = PID(OBJECT_Character, playerIndex + 48);
+    //int v25 = Pid(OBJECT_Character, playerIndex + 48);
     //pAudioPlayer->playSound(SOUND_quest, v25);
     pAudioPlayer->playUISound(SOUND_quest);
 }
@@ -6442,7 +6442,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             }
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, PID(OBJECT_Character, targetchar));
+        pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, Pid(OBJECT_Character, targetchar));
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -6487,7 +6487,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 actorPtr->currentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->currentHP >= 1) {
-                        Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
+                        Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -6659,7 +6659,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
                     if (recvdMagicDmg >= 0) {
                         if (actorPtr->currentHP >= 1) {
-                            Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);
+                            Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
@@ -7163,7 +7163,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         Vec3i a3 = actor->pos - pParty->pos;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Character, pParty->activeCharacterIndex() - 1),
+        Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);
         if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
@@ -7258,14 +7258,14 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     a1a.uSoundID = 0;
 
     if (actchar >= 1 || actchar <= 4) {
-        a1a.spell_caster_pid = PID(OBJECT_Character, actchar - 1);
+        a1a.spell_caster_pid = Pid(OBJECT_Character, actchar - 1);
     } else {
         a1a.spell_caster_pid = Pid();
     }
 
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1) {
-        pushAoeAttack(PID(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
+        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
     }
 }
 
@@ -7293,7 +7293,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundID)pickedSoundID, SOUND_MODE_PID, PID(OBJECT_Character, getCharacterIndex()));
+                pAudioPlayer->playSound((SoundID)pickedSoundID, SOUND_MODE_PID, Pid(OBJECT_Character, getCharacterIndex()));
             }
         }
     }

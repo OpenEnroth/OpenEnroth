@@ -681,9 +681,9 @@ void BLV_UpdateDoors() {
                 openDistance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, PID(OBJECT_Door, i));
+                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
-                pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, PID(OBJECT_Door, i));
+                pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
         } else {
             assert(door->uState == BLVDoor::Closing);
@@ -693,11 +693,11 @@ void BLV_UpdateDoors() {
                 openDistance = 0;
                 door->uState = BLVDoor::Closed;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, PID(OBJECT_Door, i));
+                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
                 openDistance = door->uMoveLength - closeDistance;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, PID(OBJECT_Door, i));
+                    pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
         }
 
@@ -1254,7 +1254,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                     pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z =
                         view_x;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid =
-                        PID(OBJECT_Decoration, uDecorationID);
+                        Pid(OBJECT_Decoration, uDecorationID);
 
                     pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
                     pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;

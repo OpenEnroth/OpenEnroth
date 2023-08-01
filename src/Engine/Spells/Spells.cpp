@@ -821,7 +821,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             spell_sprites.uSectorID = pIndoor->GetSector(from);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.uSpriteFrameID = 0;
-            spell_sprites.spell_caster_pid = PID(OBJECT_Item, 1000); // 8000 | OBJECT_Item;
+            spell_sprites.spell_caster_pid = Pid(OBJECT_Item, 1000); // 8000 | OBJECT_Item;
             spell_sprites.uSoundID = 0;
             break;
         default:
@@ -855,7 +855,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteid));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
         case SPELL_WATER_POISON_SPRAY:
             spell_num_objects = (std::to_underlying(skillMastery) * 2) - 1;
@@ -874,7 +874,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteid));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
         case SPELL_AIR_SPARKS:
             spell_num_objects = (std::to_underlying(skillMastery) * 2) + 1;
@@ -887,7 +887,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteid));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
         case SPELL_EARTH_DEATH_BLOSSOM:
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -899,7 +899,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, PID(OBJECT_Item, spriteid));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
 
         case SPELL_FIRE_HASTE:
@@ -921,7 +921,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
-            //    PID was 0
+            //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
             break;
         case SPELL_AIR_SHIELD:
@@ -957,7 +957,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            //    PID was 0
+            //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
             break;
         case SPELL_FIRE_IMMOLATION:
@@ -970,7 +970,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, skillLevel, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            //    PID was 0
+            //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
             break;
         case SPELL_FIRE_PROTECTION_FROM_FIRE:
@@ -1001,7 +1001,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            //    PID was 0
+            //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
             break;
         case SPELL_LIGHT_DAY_OF_THE_GODS:
@@ -1027,7 +1027,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
             pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            //    PID was 0
+            //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
             break;
         default:

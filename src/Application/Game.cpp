@@ -1786,7 +1786,7 @@ void Game::processQueuedMessages() {
                 GameUI_StatusBar_Set(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
                                                  localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
 
-                _mouse->uPointingObjectID = PID(OBJECT_Character, (unsigned char)(8 * uMessageParam - 8) | 4);
+                _mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * uMessageParam - 8) | 4);
                 continue;
             }
 

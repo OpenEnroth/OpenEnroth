@@ -102,7 +102,7 @@ class AudioPlayer {
      * @param is_impact                 Indicates sound of spell impact, if true sound ID
      *                                  will be SpellSoundIds[spell] + 1.
      * @param mode                      Playback mode.
-     * @param pid                       PID of sound originator. See playSound description.
+     * @param pid                       `Pid` of sound originator. See `playSound` description.
      */
     void playSpellSound(SPELL_TYPE spell, bool is_impact, SoundPlaybackMode mode, Pid pid = Pid());
 
@@ -147,7 +147,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playWalkSound(SoundID id) {
-        // All walk sounds originally used PID 804 which is PID(OBJECT_Character, 100)
+        // All walk sounds originally used Pid 804 which is Pid(OBJECT_Character, 100)
         playSound(id, SOUND_MODE_WALKING);
     }
 
@@ -160,8 +160,8 @@ class AudioPlayer {
      *                                  false if this is entering/cloosing UI sound.
      */
     void playHouseSound(SoundID id, bool isSpeech) {
-        // Speech sounds originally used PID 806 which is PID(OBJECT_Face, 100)
-        // Opening/closing sounds originally used PID 814 which is PID(OBJECT_Face, 101)
+        // Speech sounds originally used Pid 806 which is Pid(OBJECT_Face, 100)
+        // Opening/closing sounds originally used Pid 814 which is Pid(OBJECT_Face, 101)
         playSound(id, isSpeech ? SOUND_MODE_HOUSE_SPEECH : SOUND_MODE_HOUSE_DOOR);
     }
 

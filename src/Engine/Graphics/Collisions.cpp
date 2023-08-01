@@ -239,7 +239,7 @@ static void CollideWithDecoration(int id) {
     if (desc->CanMoveThrough())
         return;
 
-    CollideWithCylinder(decor->vPosition.toFloat(), desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
+    CollideWithCylinder(decor->vPosition.toFloat(), desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
 }
 
 
@@ -313,7 +313,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (face_id == collision_state.ignored_face_id)
                 continue;
 
-            CollideBodyWithFace(face, PID(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);
+            CollideBodyWithFace(face, Pid(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);
         }
     }
 }
@@ -415,7 +415,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
     if (override_radius != 0)
         radius = override_radius;
 
-    return CollideWithCylinder(actor->pos.toFloat(), radius, actor->height, PID(OBJECT_Actor, actor_idx), true);
+    return CollideWithCylinder(actor->pos.toFloat(), radius, actor->height, Pid(OBJECT_Actor, actor_idx), true);
 }
 
 void _46ED8A_collide_against_sprite_objects(Pid pid) {
@@ -481,7 +481,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
             CollideWithParty(false);
-            _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
+            _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
             for (int j = 0; j < ai_arrays_size; j++)
                 if (ai_near_actors_ids[j] != actor.id && CollideWithActor(ai_near_actors_ids[j], 40))
                     actorCollisions++;
@@ -504,7 +504,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             if (!isAboveGround && !isFlying) {
                 if (actor.monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd)
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Character, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
 
                 break; // Trying to walk into indoor sky, bad idea!
             }
@@ -534,7 +534,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 bool isFriendly = actor.monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 bool otherFriendly = pActors[id].monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Character, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
                 } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
@@ -617,7 +617,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(WorldPosToGridCellX(actor.pos.x), WorldPosToGridCellY(actor.pos.y));
         CollideWithParty(false);
-        _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
+        _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
 
         int actorCollisions = 0;
         for (int i = 0; i < ai_arrays_size; i++)
@@ -656,7 +656,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 bool isFriendly = actor.monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 bool otherFriendly = pActors[id].monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Character, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
                 } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {

@@ -128,7 +128,7 @@ void stru262_TurnBased::Start() {
     for (uint pl_id = 0; pl_id < 4; ++pl_id) {
         if (pParty->pCharacters[pl_id].CanAct()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
-            element.uPackedID = PID(OBJECT_Character, pl_id);
+            element.uPackedID = Pid(OBJECT_Character, pl_id);
             element.AI_action_type = TE_AI_PURSUE;
             element.uActionLength = 0;
             pParty->pTurnBasedCharacterRecoveryTimes[this->pQueue.size() - 1] = 0;
@@ -142,13 +142,13 @@ void stru262_TurnBased::Start() {
                 pActors[ai_near_actors_ids[i]].attributes |=
                     ACTOR_STAND_IN_QUEUE;  // 0x80
                 Actor::GetDirectionInfo(
-                    PID(OBJECT_Actor, ai_near_actors_ids[i]),
+                    Pid(OBJECT_Actor, ai_near_actors_ids[i]),
                     ai_near_actors_targets_pid[ai_near_actors_ids[i]], &v31, 0);
                 v30 = v31;
                 Actor::AI_StandOrBored(ai_near_actors_ids[i], Pid::character(0), 32, &v30);
 
                 TurnBased_QueueElem &element = this->pQueue.emplace_back();
-                element.uPackedID = PID(OBJECT_Actor, ai_near_actors_ids[i]);
+                element.uPackedID = Pid(OBJECT_Actor, ai_near_actors_ids[i]);
                 element.AI_action_type = TE_AI_PURSUE;
                 element.uActionLength = 0;
             }
@@ -266,7 +266,7 @@ void stru262_TurnBased::AITurnBasedAction() {
             if (curr_actor->currentActionTime >=
                 curr_actor->currentActionLength) {
                 target_pid = ai_near_actors_targets_pid[i];
-                Actor::GetDirectionInfo(PID(OBJECT_Actor, i), target_pid, &v6,
+                Actor::GetDirectionInfo(Pid(OBJECT_Actor, i), target_pid, &v6,
                                         0);
                 memcpy(&v15, &v6, sizeof(AIDirection));
                 memcpy(&v14, &v15, sizeof(AIDirection));
@@ -332,7 +332,7 @@ void stru262_TurnBased::StartTurn() {
         }
         if (j == this->pQueue.size()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
-            element.uPackedID = PID(OBJECT_Character, player_num);
+            element.uPackedID = Pid(OBJECT_Character, player_num);
             element.actor_initiative = 100;
             element.uActionLength = 0;
             element.AI_action_type = TE_AI_STAND;
@@ -347,7 +347,7 @@ void stru262_TurnBased::StartTurn() {
         }
         if (j == this->pQueue.size()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
-            element.uPackedID = PID(OBJECT_Actor, ai_near_actors_ids[actor_num]);
+            element.uPackedID = Pid(OBJECT_Actor, ai_near_actors_ids[actor_num]);
             element.actor_initiative = 1;
             element.uActionLength = 0;
             element.AI_action_type = TE_AI_STAND;
@@ -663,7 +663,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
             if (pActors[actor_id].monsterInfo.uHostilityType && !v22)
                 pActors[actor_id].monsterInfo.uHostilityType =
                     MonsterInfo::Hostility_Friendly;
-            Actor::GetDirectionInfo(PID(OBJECT_Actor, actor_id), v22, &v7, 0);
+            Actor::GetDirectionInfo(Pid(OBJECT_Actor, actor_id), v22, &v7, 0);
             memcpy(&a3, &v7, sizeof(AIDirection));
             memcpy(&v18, &a3, sizeof(AIDirection));
             v9 = a3.uDistance - pActors[actor_id].radius;

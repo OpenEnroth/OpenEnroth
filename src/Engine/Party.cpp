@@ -1063,7 +1063,7 @@ void Party::dropHeldItem() {
     SpriteObject sprite;
     sprite.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
-    sprite.spell_caster_pid = PID(OBJECT_Character, 0);
+    sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3i(0, 0, eyeLevel);
     sprite.uSoundID = 0;
     sprite.uFacing = 0;

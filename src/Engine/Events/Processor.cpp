@@ -62,7 +62,7 @@ void checkDecorationEvents() {
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
             if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange) {
-                eventProcessor(decoration.uEventID, PID(OBJECT_Decoration, decorationId), 1);
+                eventProcessor(decoration.uEventID, Pid(OBJECT_Decoration, decorationId), 1);
             }
         }
 

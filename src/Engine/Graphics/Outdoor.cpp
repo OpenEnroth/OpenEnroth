@@ -1432,7 +1432,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
