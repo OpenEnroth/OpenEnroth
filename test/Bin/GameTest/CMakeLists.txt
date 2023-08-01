@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 if(ENABLE_TESTS)
     set(GAME_TEST_MAIN_SOURCES
             GameTestMain.cpp
-            GameTestOptions.cpp)
+            GameTestOptions.cpp
+            GameTests.cpp)
     set(GAME_TEST_MAIN_HEADERS
             GameTestOptions.h)
 
