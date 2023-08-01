@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Debug
+          #- Debug
           - Release
         architecture:
-          - x86
+          #- x86
           - x64
     steps:
       - name: Checkout
@@ -47,6 +47,10 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: '${{ matrix.architecture }}'
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: C:\ProgramData\chocolatey          
       - name: Restore cached ccache
         id: ccache-cache
         uses: actions/cache/restore@v3
