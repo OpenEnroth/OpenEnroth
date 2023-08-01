@@ -278,7 +278,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
     } else {
         assert(pid);
 
-        ObjectType object_type = PID_TYPE(pid);
+        ObjectType object_type = pid.type();
         unsigned int object_id = pid.id();
         switch (object_type) {
             case OBJECT_Door: {

@@ -1345,7 +1345,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         int v49 = 0;
         float v4 = 0.0f;
         if (pActors[i].aiState == Summoned) {
-            if (PID_TYPE(pActors[i].summonerId) != OBJECT_Actor ||
+            if (pActors[i].summonerId.type() != OBJECT_Actor ||
                 pActors[pActors[i].summonerId.id()]
                 .monsterInfo.uSpecialAbilityDamageDiceSides != 1) {
                 z += floorf(pActors[i].height * 0.5f + 0.5f);
@@ -2149,12 +2149,12 @@ void ODM_ProcessPartyActions() {
         partyNewY = new_pos_low_y;
         partyNewZ = new_pos_low_z;
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
+        if (collision_state.pid.type() == OBJECT_Actor) {
             if (pParty->Invisible())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+        if (collision_state.pid.type() == OBJECT_Decoration) {
             int atanDecoration = TrigLUT.atan2(
                 new_pos_low_x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
                 new_pos_low_y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
@@ -2162,7 +2162,7 @@ void ODM_ProcessPartyActions() {
             partyInputYSpeed = TrigLUT.sin(atanDecoration) * integer_sqrt(partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed);
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
+        if (collision_state.pid.type() == OBJECT_Face) {
             partyHasHitModel = true;
             const BSPModel *pModel = &pOutdoor->model(collision_state.pid);
             const ODMFace *pODMFace = &pOutdoor->face(collision_state.pid);

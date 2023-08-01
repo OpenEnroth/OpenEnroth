@@ -888,7 +888,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
 
     int id1 = uObj1ID.id();
     int id2 = uObj2ID.id();
-    switch (PID_TYPE(uObj1ID)) {
+    switch (uObj1ID.type()) {
         case OBJECT_Item: {
             out1 = pSpriteObjects[id1].vPosition;
             break;
@@ -928,7 +928,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
     }
 
-    switch (PID_TYPE(uObj2ID)) {
+    switch (uObj2ID.type()) {
         case OBJECT_Item: {
             out2 = pSpriteObjects[id2].vPosition;
             break;
@@ -1081,12 +1081,12 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         return;
     }
 
-    if (PID_TYPE(sTargetPid) == OBJECT_Actor) {
+    if (sTargetPid.type() == OBJECT_Actor) {
         v8 = sTargetPid.id();
         v6 = pActors[v8].pos.x;
         v7 = pActors[v8].pos.y;
         v23 = (int)(pActors[v8].height * 0.75 + pActors[v8].pos.z);
-    } else if (PID_TYPE(sTargetPid) == OBJECT_Character) {
+    } else if (sTargetPid.type() == OBJECT_Character) {
         v6 = pParty->pos.x;
         v7 = pParty->pos.y;
         v23 = pParty->pos.z + pParty->eyeLevel;
@@ -1327,12 +1327,12 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
 
     v3 = &pActors[uActorID];
     a2 = edx0;
-    if (PID_TYPE(edx0) == OBJECT_Actor) {
+    if (edx0.type() == OBJECT_Actor) {
         v6 = edx0.id();
         v4 = pActors[v6].pos.x;
         v5 = pActors[v6].pos.y;
         v21 = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
-    } else if (PID_TYPE(edx0) == OBJECT_Character) {
+    } else if (edx0.type() == OBJECT_Character) {
         v4 = pParty->pos.x;
         v5 = pParty->pos.y;
         v21 = pParty->pos.z + pParty->eyeLevel;
@@ -1400,12 +1400,12 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
-    if (PID_TYPE(sTargetPid) == OBJECT_Actor) {
+    if (sTargetPid.type() == OBJECT_Actor) {
         v6 = sTargetPid.id();
         v4 = pActors[v6].pos.x;
         v5 = pActors[v6].pos.y;
         v21 = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
-    } else if (PID_TYPE(sTargetPid) == OBJECT_Character) {
+    } else if (sTargetPid.type() == OBJECT_Character) {
         v4 = pParty->pos.x;
         v5 = pParty->pos.y;
         v21 = pParty->pos.z + pParty->eyeLevel;
@@ -1475,12 +1475,12 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
-    if (PID_TYPE(sTargetPid) == OBJECT_Actor) {
+    if (sTargetPid.type() == OBJECT_Actor) {
         v6 = sTargetPid.id();
         v4 = pActors[v6].pos.x;
         v5 = pActors[v6].pos.y;
         v20 = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
-    } else if (PID_TYPE(sTargetPid) == OBJECT_Character) {
+    } else if (sTargetPid.type() == OBJECT_Character) {
         v4 = pParty->pos.x;
         v5 = pParty->pos.y;
         v20 = pParty->pos.z + pParty->eyeLevel;
@@ -1542,13 +1542,13 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
 
     v3 = &pActors[uActorID];
     // a2 = edx0;
-    if (PID_TYPE(sTargetPid) == OBJECT_Actor) {
+    if (sTargetPid.type() == OBJECT_Actor) {
         v6 = sTargetPid.id();
         xpos = pActors[v6].pos.x;
         ypos = pActors[v6].pos.y;
         zpos = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
     } else {
-        if (PID_TYPE(sTargetPid) == OBJECT_Character) {
+        if (sTargetPid.type() == OBJECT_Character) {
             xpos = pParty->pos.x;
             ypos = pParty->pos.y;
             zpos = pParty->pos.z + pParty->eyeLevel;
@@ -1990,7 +1990,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         v13 = &v10;
         if (MonsterStats::BelongsToSupertype(v5->monsterInfo.uID,
                                              MONSTER_SUPERTYPE_TREANT) ||
-            PID_TYPE(sTargetPid) == OBJECT_Actor && v13->uDistance < 307.2) {
+            sTargetPid.type() == OBJECT_Actor && v13->uDistance < 307.2) {
             if (!uActionLength) uActionLength = 256;
             Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
@@ -2387,12 +2387,12 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 
     v4 = 0;
-    if (PID_TYPE(attacker_id) == OBJECT_Item) {
+    if (attacker_id.type() == OBJECT_Item) {
         v4 = pSpriteObjects[attacker_id.id()]
                  .field_60_distance_related_prolly_lod;
         attacker_id = pSpriteObjects[attacker_id.id()].spell_caster_pid;
     }
-    if (PID_TYPE(attacker_id) == OBJECT_Actor) {
+    if (attacker_id.type() == OBJECT_Actor) {
         if (!pActors[actor_id].IsNotAlive()) {
             pActors[actor_id].lastCharacterIdToHit = attacker_id;
             if (pActors[actor_id].aiState == Fleeing)
@@ -2681,7 +2681,7 @@ void Actor::UpdateActorAI() {
             pActor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
 
         target_pid = ai_near_actors_targets_pid[actor_id];
-        target_pid_type = PID_TYPE(target_pid);
+        target_pid_type = target_pid.type();
 
         float radiusMultiplier = target_pid_type == OBJECT_Actor ? 0.5 : 1.0;
 
@@ -3084,12 +3084,12 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     v61 = 0;
     IsAdditionalDamagePossible = false;
     isLifeStealing = 0;
-    if (PID_TYPE(a1) == OBJECT_Item) {
+    if (a1.type() == OBJECT_Item) {
         projectileSprite = &pSpriteObjects[a1.id()];
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         a1 = projectileSprite->spell_caster_pid;
     }
-    if (PID_TYPE(a1) != OBJECT_Character) return;
+    if (a1.type() != OBJECT_Character) return;
 
     assert(a1.id() < 4);
     Character *character = &pParty->pCharacters[a1.id()];
@@ -3567,7 +3567,7 @@ Pid stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
     {
     v22 = *v28;
     v11 = *v28 & 0xFFFF;
-    if (PID_TYPE(v11) == OBJECT_Actor)
+    if (v11.type() == OBJECT_Actor)
     {
     if ( pActors[v11.id()].uAIState != Dead )
     {
@@ -4202,7 +4202,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     int obj1_sector;
     Vec3i pos1;
 
-    switch (PID_TYPE(uObjID)) {
+    switch (uObjID.type()) {
         case OBJECT_Decoration:
             pos1 = pLevelDecorations[obj1_pid].vPosition;
             obj1_sector = pIndoor->GetSector(pos1);
@@ -4224,7 +4224,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     int obj2_sector;
     Vec3i pos2;
 
-    switch (PID_TYPE(uObj2ID)) {
+    switch (uObj2ID.type()) {
         case OBJECT_Decoration:
             pos2 = pLevelDecorations[obj2_pid].vPosition;
             obj2_sector = pIndoor->GetSector(pos2);
@@ -4679,20 +4679,20 @@ void evaluateAoeDamage() {
     SpriteObject *pSpriteObj = nullptr;
 
     for (AttackDescription &attack : attackList) {
-        ObjectType attackerType = PID_TYPE(attack.pid);
+        ObjectType attackerType = attack.pid.type();
         int attackerId = attack.pid.id();
         Vec3i attackVector = Vec3i(0, 0, 0);
 
         // attacker is an item (sprite)
         if (attackerType == OBJECT_Item) {
             pSpriteObj = &pSpriteObjects[attackerId];
-            attackerType = PID_TYPE(pSpriteObjects[attackerId].spell_caster_pid);
+            attackerType = pSpriteObjects[attackerId].spell_caster_pid.type();
             attackerId = pSpriteObjects[attackerId].spell_caster_pid.id();
         }
 
         if (attack.isMelee) {
             unsigned int targetId = ai_near_actors_targets_pid[attackerId].id();
-            ObjectType targetType = PID_TYPE(ai_near_actors_targets_pid[attackerId]);
+            ObjectType targetType = ai_near_actors_targets_pid[attackerId].type();
             Actor *actor = &pActors[targetId];
 
             if (targetType != OBJECT_Actor) {
@@ -4814,7 +4814,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
     int a2a;     // [sp+Ch] [bp-4h]@8
 
     if (!pActors[uActorID].IsNotAlive()) {
-        if (PID_TYPE(uObjID) == OBJECT_Item) {
+        if (uObjID.type() == OBJECT_Item) {
             if (pSpriteObjects[uObjID.id()].uSpellID) {
                 v6 = CalcSpellDamage(
                     pSpriteObjects[uObjID.id()].uSpellID,

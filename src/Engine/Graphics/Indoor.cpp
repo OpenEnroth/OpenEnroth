@@ -1408,7 +1408,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
 // TODO(Nik-RE-dev): get rid of external function declaration inside
 char DoInteractionWithTopmostZObject(Pid pid) {
     auto id = pid.id();
-    auto type = PID_TYPE(pid);
+    auto type = pid.type();
 
     // was SCREEN_BRANCHLESS_NPC_DIALOG
     if (current_screen_type != SCREEN_GAME) {
@@ -1764,12 +1764,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         int new_party_z_tmp = pParty->pos.z +
             collision_state.adjusted_move_distance * collision_state.direction.z;
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
+        if (collision_state.pid.type() == OBJECT_Actor) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+        if (collision_state.pid.type() == OBJECT_Decoration) {
             // Bounce back from a decoration & do another round of collision checks.
             // This way the party can "slide" along & past a decoration.
             int angle = TrigLUT.atan2(pParty->pos.x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
@@ -1779,7 +1779,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->speed.y = TrigLUT.sin(angle) * len;
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
+        if (collision_state.pid.type() == OBJECT_Face) {
             BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
             if (pFace->uPolygonType == POLYGON_Floor) {
                 if (pParty->speed.z < 0)

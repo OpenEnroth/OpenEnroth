@@ -243,7 +243,7 @@ void Party::switchToNextActiveCharacter() {
         return;
 
     if (pParty->bTurnBasedModeOn) {
-        if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Character) {
+        if (pTurnEngine->turn_stage != TE_ATTACK || pTurnEngine->pQueue[0].uPackedID.type() != OBJECT_Character) {
             _activeCharacter = 0;
         } else {
             _activeCharacter = pTurnEngine->pQueue[0].uPackedID.id() + 1;

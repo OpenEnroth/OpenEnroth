@@ -365,7 +365,7 @@ void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
         if (!pid)
             break;
 
-        if (PID_TYPE(pid) != OBJECT_Decoration)
+        if (pid.type() != OBJECT_Decoration)
             continue;
 
         CollideWithDecoration(pid.id());
@@ -527,7 +527,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         int id = collision_state.pid.id();
-        ObjectType type = PID_TYPE(collision_state.pid);
+        ObjectType type = collision_state.pid.type();
 
         if (type == OBJECT_Actor) {
             if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
@@ -649,7 +649,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         int id = collision_state.pid.id();
-        ObjectType type = PID_TYPE(collision_state.pid);
+        ObjectType type = collision_state.pid.type();
 
         if (type == OBJECT_Actor) {
             if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {

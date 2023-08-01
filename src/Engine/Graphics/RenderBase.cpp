@@ -753,7 +753,7 @@ std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
         }
 
         Pid pid = pBillboardRenderList[renderId].object_pid;
-        if (PID_TYPE(pid) == OBJECT_Actor) {
+        if (pid.type() == OBJECT_Actor) {
             if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
                 int id = pid.id();
                 if (pActors[id].aiState != Dead &&

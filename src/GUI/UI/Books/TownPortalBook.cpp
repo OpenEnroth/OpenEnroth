@@ -139,7 +139,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         Actor::InitializeActors();
     }
 
-    assert(PID_TYPE(_casterPid) == OBJECT_Character);
+    assert(_casterPid.type() == OBJECT_Character);
 
     int casterId = _casterPid.id();
     if (casterId < pParty->pCharacters.size()) {

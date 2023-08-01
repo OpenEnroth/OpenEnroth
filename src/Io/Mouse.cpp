@@ -324,7 +324,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 
     Vis_PIDAndDepth picked_object = EngineIocContainer::ResolveVis()->get_picked_object_zbuf_val();
 
-    ObjectType type = PID_TYPE(picked_object.object_pid);
+    ObjectType type = picked_object.object_pid.type();
     if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
         pParty->activeCharacter().CanAct() &&
         pParty->activeCharacter().CanSteal()) {

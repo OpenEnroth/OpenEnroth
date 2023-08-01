@@ -38,7 +38,7 @@ void stru262_TurnBased::SortTurnQueue() {
     // set non active actors in queue initiative that not allow them to
     // paticipate
     for (i = 0; i < this->pQueue.size(); ++i) {
-        p_type = PID_TYPE(pQueue[i].uPackedID);
+        p_type = pQueue[i].uPackedID.type();
         p_id = pQueue[i].uPackedID.id();
 
         if (p_type == OBJECT_Actor) {
@@ -65,18 +65,18 @@ void stru262_TurnBased::SortTurnQueue() {
                         ->actor_initiative ||  // if less initiative -> top
                 ((test_element->actor_initiative ==
                   current_top->actor_initiative) &&
-                 (((PID_TYPE(test_element->uPackedID) == OBJECT_Character) &&
-                   (PID_TYPE(current_top->uPackedID) ==
+                 (((test_element->uPackedID.type() == OBJECT_Character) &&
+                   (current_top->uPackedID.type() ==
                     OBJECT_Actor)) ||  // player preferable
-                  ((PID_TYPE(test_element->uPackedID) ==
-                    PID_TYPE(current_top->uPackedID)) &&
+                  ((test_element->uPackedID.type() ==
+                    current_top->uPackedID.type()) &&
                    (test_element->uPackedID.id() < current_top->uPackedID.id()))))) {  // less id preferable
                 std::swap(*current_top, *test_element);
             }
         }
     }
     this->pQueue.resize(active_actors);
-    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character) {  // we have player at queue top
+    if (pQueue[0].uPackedID.type() == OBJECT_Character) {  // we have player at queue top
         pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
         flags |= TE_PLAYER_TURN;
     } else {
@@ -84,7 +84,7 @@ void stru262_TurnBased::SortTurnQueue() {
         flags &= ~TE_PLAYER_TURN;
     }
     for (i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) ==
+        if (pQueue[i].uPackedID.type() ==
             OBJECT_Character)  // set recovery times
             pParty->pCharacters[pQueue[i].uPackedID.id()].timeToRecovery =
                 (uint16_t)((double)pQueue[i].actor_initiative * 0.46875);
@@ -156,14 +156,14 @@ void stru262_TurnBased::Start() {
     a_players_count = 0;
     for (int k = 0; k < this->pQueue.size(); ++k) {
         // set initial initiative for turn actors
-        if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Character) {
+        if (this->pQueue[k].uPackedID.type() == OBJECT_Character) {
             if (pParty->pCharacters[this->pQueue[k].uPackedID.id()].timeToRecovery != 0) {
                 this->pQueue[k].actor_initiative = (int)((double)pParty->pCharacters[this->pQueue[k].uPackedID.id()].timeToRecovery * 0.46875);
             } else {
                 activ_players[a_players_count] = k;
                 ++a_players_count;
             }
-        } else if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Actor) {
+        } else if (this->pQueue[k].uPackedID.type() == OBJECT_Actor) {
             v17 = grng->random(99);
             if (v17 < 33)
                 this->pQueue[k].actor_initiative = 1;
@@ -207,7 +207,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
 
     this->turn_stage = TE_NONE;
     for (i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor)
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor)
             pActors[pQueue[i].uPackedID.id()].ResetQueue();
     }
 
@@ -217,7 +217,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
     }
 
     for (i = 0; i < this->pQueue.size(); ++i) {
-        objType = (ObjectType)PID_TYPE(pQueue[i].uPackedID);
+        objType = (ObjectType)pQueue[i].uPackedID.type();
         objID = pQueue[i].uPackedID.id();
         if (objType == OBJECT_Character)
             pParty->pCharacters[objID].timeToRecovery = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
@@ -323,7 +323,7 @@ void stru262_TurnBased::StartTurn() {
     // add player to queue if he can act
     for (player_num = 0; player_num < 4; ++player_num) {
         for (j = 0; j < this->pQueue.size(); ++j) {
-            if (PID_TYPE(pQueue[j].uPackedID) == OBJECT_Character) {
+            if (pQueue[j].uPackedID.type() == OBJECT_Character) {
                 if (pParty->pCharacters[pQueue[j].uPackedID.id()].CanAct() && (player_num != pQueue[j].uPackedID.id()))
                     break;
             }
@@ -339,7 +339,7 @@ void stru262_TurnBased::StartTurn() {
     // add new arrived actors
     for (actor_num = 0; actor_num < ai_arrays_size; ++actor_num) {
         for (j = 0; j < this->pQueue.size(); ++j) {
-            if ((PID_TYPE(pQueue[j].uPackedID) == OBJECT_Actor) &&
+            if ((pQueue[j].uPackedID.type() == OBJECT_Actor) &&
                 ai_near_actors_ids[actor_num] == pQueue[j].uPackedID.id())
                 break;
         }
@@ -358,7 +358,7 @@ void stru262_TurnBased::StartTurn() {
     }
     StepTurnQueue();
     for (i = 0; i < this->pQueue.size(); ++i) {
-        if ((PID_TYPE(pQueue[i].uPackedID) == OBJECT_Character) ||
+        if ((pQueue[i].uPackedID.type() == OBJECT_Character) ||
             (pQueue[i].actor_initiative > 0))
             break;
         AI_Action_(i);
@@ -372,7 +372,7 @@ void stru262_TurnBased::NextTurn() {
     int monster_id;  // eax@5
 
     SortTurnQueue();
-    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character)
+    if (pQueue[0].uPackedID.type() == OBJECT_Character)
         pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
     else
         pParty->setActiveCharacterIndex(0);
@@ -386,7 +386,7 @@ void stru262_TurnBased::NextTurn() {
 
     v13 = 0;
     for (int i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             monster_id = pQueue[i].uPackedID.id();
             if ((pActors[monster_id].aiState == Dying) ||
                 (pActors[monster_id].aiState == Stunned) ||
@@ -423,7 +423,7 @@ void stru262_TurnBased::NextTurn() {
     flags &= ~TE_FLAG_1;
     // set all actors to stay
     for (int i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             monster_id = pQueue[i].uPackedID.id();
             if ((pActors[monster_id].aiState != Dead) &&
                 (pActors[monster_id].aiState != Dying) &&
@@ -452,7 +452,7 @@ bool stru262_TurnBased::StepTurnQueue() {
 
     SortTurnQueue();
     if (pQueue[0].actor_initiative != 0) {
-        if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character) {
+        if (pQueue[0].uPackedID.type() == OBJECT_Character) {
             do {
                 for (j = 0; j < this->pQueue.size(); ++j)
                     --pQueue[j].actor_initiative;
@@ -486,7 +486,7 @@ void stru262_TurnBased::_406457(int a2) {
     signed int v6;  // eax@2
     int i;
     v6 = 0;
-    if (PID_TYPE(pQueue[a2].uPackedID) == OBJECT_Character) {
+    if (pQueue[a2].uPackedID.type() == OBJECT_Character) {
         v4 = pQueue[a2].uPackedID.id();
         if (pParty->pTurnBasedCharacterRecoveryTimes[v4]) {
             v6 = pParty->pTurnBasedCharacterRecoveryTimes[v4];
@@ -504,7 +504,7 @@ void stru262_TurnBased::_406457(int a2) {
 
     pQueue[a2].actor_initiative = v6;
     SortTurnQueue();
-    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character)
+    if (pQueue[0].uPackedID.type() == OBJECT_Character)
         pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
     else
         pParty->setActiveCharacterIndex(0);
@@ -525,7 +525,7 @@ void stru262_TurnBased::SetAIRecoveryTimes() {
 
     for (i = 0; i < this->pQueue.size(); ++i) {
         if (pQueue[i].actor_initiative == 0) {
-            if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Character) break;
+            if (pQueue[i].uPackedID.type() == OBJECT_Character) break;
             monster = &pActors[pQueue[i].uPackedID.id()];
             monster_ai_state = monster->aiState;
             if (monster_ai_state == Standing || monster_ai_state == Fleeing ||
@@ -547,16 +547,16 @@ void stru262_TurnBased::_4065B0() {
     SortTurnQueue();
     if (pQueue[0].actor_initiative <= 0) {
         for (i = 0; i < this->pQueue.size(); ++i) {
-            if ((PID_TYPE(pQueue[i].uPackedID) == OBJECT_Character) ||
+            if ((pQueue[i].uPackedID.type() == OBJECT_Character) ||
                 (pQueue[i].actor_initiative > 0))
                 break;
             if ((pQueue[i].uActionLength <= 0) &&
-                (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor))
+                (pQueue[i].uPackedID.type() == OBJECT_Actor))
                 AI_Action_(i);
         }
     } else {
         StepTurnQueue();
-        if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character)
+        if (pQueue[0].uPackedID.type() == OBJECT_Character)
             pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
         else
             pParty->setActiveCharacterIndex(0);
@@ -579,7 +579,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
     // v1 = &pQueue[queue_index];
     // v28 = v1;
     // v3 = pQueue[queue_index].uPackedID;
-    if (PID_TYPE(pQueue[queue_index].uPackedID) == OBJECT_Actor) {
+    if (pQueue[queue_index].uPackedID.type() == OBJECT_Actor) {
         actor_id = pQueue[queue_index].uPackedID.id();
         // a2a = ai_near_actors_targets_pid[v4];
         Actor::GetDirectionInfo(pQueue[queue_index].uPackedID,
@@ -648,7 +648,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     Pid v22;         // [sp+58h] [bp+8h]@10
 
     pQueue[queue_index].uActionLength = 0;
-    if (PID_TYPE(pQueue[queue_index].uPackedID) == OBJECT_Actor) {
+    if (pQueue[queue_index].uPackedID.type() == OBJECT_Actor) {
         actor_id = pQueue[queue_index].uPackedID.id();
         if (!(pActors[actor_id].aiState == Dying ||
               pActors[actor_id].aiState == Dead ||
@@ -666,7 +666,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
             memcpy(&v18, &a3, sizeof(AIDirection));
             v9 = a3.uDistance - pActors[actor_id].radius;
             if (v9 < 0) v9 = 0;
-            if (PID_TYPE(v22) == OBJECT_Actor)
+            if (v22.type() == OBJECT_Actor)
                 // v10 = (uint8_t)*(&byte_5C8D1A[89 *
                 // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
                 // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
@@ -769,7 +769,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
     dword_50C994 = 0;
     pParty->setActiveCharacterIndex(0);
     for (i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             Pid target_pid =
                 ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
@@ -788,7 +788,7 @@ void stru262_TurnBased::ActorAIStopMovement() {
     int i;
 
     for (i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             Pid target_pid =
                 ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
@@ -808,7 +808,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
     unsigned int monster_id;
 
     for (int i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             monster_id = pQueue[i].uPackedID.id();
             if (!(pActors[monster_id].buffs[ACTOR_BUFF_STONED].Active() ||
                   pActors[monster_id]
@@ -854,7 +854,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
     AIDirection pDir;              // [sp+28h] [bp-2Ch]@10
     unsigned int uActorID;         // [sp+50h] [bp-4h]@2
 
-    if (PID_TYPE(pQueue[queue_position].uPackedID) == OBJECT_Character) return 0;
+    if (pQueue[queue_position].uPackedID.type() == OBJECT_Character) return 0;
     uActorID = pQueue[queue_position].uPackedID.id();
     if (pActors[uActorID].aiState == Dead ||
         pActors[uActorID].aiState == Dying ||
@@ -992,7 +992,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
     int i;
 
     for (i = 0; i < this->pQueue.size(); ++i) {
-        if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
+        if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             uActorID = pQueue[i].uPackedID.id();
             curr_acror = &pActors[uActorID];
             if (!(curr_acror->aiState == Summoned ||

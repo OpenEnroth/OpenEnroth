@@ -193,7 +193,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             if (current_screen_type == SCREEN_GAME) {
                 if (pParty->bTurnBasedModeOn) {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
-                        PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
+                        pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
                         pParty->bTurnBasedModeOn = false;
                         pTurnEngine->End(true);
                     }

@@ -1027,7 +1027,7 @@ GAME_TEST(Issues, Issue651) {
     test->playTraceFromTestData("issue_651.mm7", "issue_651.json");
     // check for valid pids
     for (auto &obj : pSpriteObjects) {
-        ObjectType castertype = PID_TYPE(obj.spell_caster_pid);
+        ObjectType castertype = obj.spell_caster_pid.type();
         int casterid = obj.spell_caster_pid.id();
         if (castertype == OBJECT_Actor) {
             EXPECT_TRUE(casterid < pActors.size());

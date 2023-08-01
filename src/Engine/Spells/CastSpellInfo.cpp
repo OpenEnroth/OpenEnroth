@@ -144,7 +144,7 @@ void CastSpellInfoHelpers::castSpell() {
         // First try to pick live actor mouse is pointing at
         if (!spell_targeted_at &&
                 mouse->uPointingObjectID &&
-                PID_TYPE(mouse->uPointingObjectID) == OBJECT_Actor &&
+                mouse->uPointingObjectID.type() == OBJECT_Actor &&
                 pActors[mouse->uPointingObjectID.id()].CanAct()) {
             spell_targeted_at = mouse->uPointingObjectID;
         }
@@ -166,7 +166,7 @@ void CastSpellInfoHelpers::castSpell() {
         pSpellSprite.uType = SpellSpriteMapping[pCastSpell->uSpellID];
 
         if (pSpellSprite.uType != SPRITE_NULL) {
-            if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
+            if (spell_targeted_at.type() == OBJECT_Actor) {
                 Pid player_pid = Pid(OBJECT_Character, pCastSpell->casterCharacterIndex + 1);
                 Actor::GetDirectionInfo(player_pid, spell_targeted_at, &target_direction, 0);  // target direciton
             } else {
@@ -389,7 +389,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -407,7 +407,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -429,7 +429,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -543,7 +543,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -565,7 +565,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -608,7 +608,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -868,7 +868,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -969,7 +969,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
 
-                    ObjectType obj_type = PID_TYPE(spell_targeted_at);
+                    ObjectType obj_type = spell_targeted_at.type();
                     Vec3i dist;
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[spell_targeted_at.id()].pos;
@@ -1173,7 +1173,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
 
-                    ObjectType obj_type = PID_TYPE(spell_targeted_at);
+                    ObjectType obj_type = spell_targeted_at.type();
                     Vec3i dist;
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[spell_targeted_at.id()].pos;
@@ -1647,7 +1647,7 @@ void CastSpellInfoHelpers::castSpell() {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_FATE]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), spell_mastery, spell_power, 0, 0);
-                    } else if (PID_TYPE(pCastSpell->targetPid) == OBJECT_Actor) {
+                    } else if (pCastSpell->targetPid.type() == OBJECT_Actor) {
                         int monster_id = pCastSpell->targetPid.id();
                         pActors[monster_id].buffs[ACTOR_BUFF_FATE]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), spell_mastery, spell_power, 0, 0);
@@ -1943,7 +1943,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -2000,7 +2000,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -2048,7 +2048,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -2163,7 +2163,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     int obj_id = spell_targeted_at.id();
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Item) {
+                    if (spell_targeted_at.type() == OBJECT_Item) {
                         if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
                         } else {
@@ -2174,10 +2174,10 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                         SpriteObject::OnInteraction(obj_id);
                     }
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
+                    if (spell_targeted_at.type() == OBJECT_Actor) {
                         pActors[obj_id].LootActor();
                     }
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Decoration) {
+                    if (spell_targeted_at.type() == OBJECT_Decoration) {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
@@ -2189,7 +2189,7 @@ void CastSpellInfoHelpers::castSpell() {
                             activeLevelDecoration = nullptr;
                         }
                     }
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Face) {
+                    if (spell_targeted_at.type() == OBJECT_Face) {
                         int event;
                         OpenedTelekinesis = true;
                         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -2257,7 +2257,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].Heal(heal_amount);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                     }
-                    if (PID_TYPE(pCastSpell->targetPid) == OBJECT_Actor) {
+                    if (pCastSpell->targetPid.type() == OBJECT_Actor) {
                         int monster_id = pCastSpell->targetPid.id();
                         if (pActors[monster_id].aiState != Dead &&
                             pActors[monster_id].aiState != Dying &&
@@ -2716,7 +2716,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;

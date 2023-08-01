@@ -827,8 +827,8 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddMobileLight(a2, colorTable.OrangeyRed, 256);
             // if (render->pRenderD3D)
             {
-                if (/*PID_TYPE(a2->spell_caster_pid) != OBJECT_Actor &&*/
-                    PID_TYPE(a2->spell_caster_pid) != OBJECT_Item) {
+                if (/*a2->spell_caster_pid.type() != OBJECT_Actor &&*/
+                    a2->spell_caster_pid.type() != OBJECT_Item) {
                     if (field_204 != 4) {
                         field_204++;
                         _4A7688_fireball_collision_particle(a2);

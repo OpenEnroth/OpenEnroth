@@ -294,7 +294,7 @@ void Engine::onGameViewportClick() {
     // else
     //  v0 = render->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
 
-    if (PID_TYPE(pid) == OBJECT_Item) {
+    if (pid.type() == OBJECT_Item) {
         int item_id = pid.id();
         // v21 = (signed int)(uint16_t)v0 >> 3;
         if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
@@ -302,7 +302,7 @@ void Engine::onGameViewportClick() {
         } else {
             ItemInteraction(item_id);
         }
-    } else if (PID_TYPE(pid) == OBJECT_Actor) {
+    } else if (pid.type() == OBJECT_Actor) {
         int mon_id = pid.id();
 
         if (pActors[mon_id].aiState == Dead) {
@@ -341,7 +341,7 @@ void Engine::onGameViewportClick() {
         } else {
             pAudioPlayer->playUISound(SOUND_error);
         }
-    } else if (PID_TYPE(pid) == OBJECT_Decoration) {
+    } else if (pid.type() == OBJECT_Decoration) {
         int id = pid.id();
         if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
             if (pParty->hasActiveCharacter()) {
@@ -353,7 +353,7 @@ void Engine::onGameViewportClick() {
         } else {
             pParty->dropHeldItem();
         }
-    } else if (PID_TYPE(pid) == OBJECT_Face && in_range) {
+    } else if (pid.type() == OBJECT_Face && in_range) {
         int eventId = 0;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {

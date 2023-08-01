@@ -236,7 +236,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         int gridX = WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x);
         int gridY = WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y);
         CollideOutdoorWithDecorations(gridX, gridY);
-        ObjectType casterType = PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid);
+        ObjectType casterType = pSpriteObjects[uLayingItemID].spell_caster_pid.type();
         if (casterType != OBJECT_Character) {
             CollideWithParty(false);
         }
@@ -294,10 +294,10 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 return;
             }
         }
-        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+        if (collision_state.pid.type() == OBJECT_Decoration) {
             break;
         }
-        if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
+        if (collision_state.pid.type() == OBJECT_Face) {
             const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const ODMFace *face = &pOutdoor->face(collision_state.pid);
             if (face->uPolygonType == POLYGON_Floor) {
@@ -389,13 +389,13 @@ LABEL_25:
                 CollideIndoorWithGeometry(false);
                 CollideIndoorWithDecorations();
 
-                if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Character) {
+                if (pSpriteObject->spell_caster_pid.type() != OBJECT_Character) {
                     CollideWithParty(true);
                 }
 
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self monster type
-                    if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
+                    if (pSpriteObject->spell_caster_pid.type() == OBJECT_Actor) {
                         if (pActors[pSpriteObject->spell_caster_pid.id()].monsterInfo.uID == pActors[actloop].monsterInfo.uID) {
                             continue;
                         }
@@ -441,14 +441,14 @@ LABEL_25:
             }
 
             int pidId = collision_state.pid.id();
-            if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+            if (collision_state.pid.type() == OBJECT_Decoration) {
                 Vec2i deltaXY = pSpriteObject->vPosition.xy() - pLevelDecorations[pidId].vPosition.xy();
                 int velXYLen = integer_sqrt(pSpriteObject->vVelocity.xy().lengthSqr());
                 int velXYRot = TrigLUT.atan2(deltaXY.x, deltaXY.y);
                 pSpriteObject->vVelocity.x = TrigLUT.cos(velXYRot) * velXYLen;
                 pSpriteObject->vVelocity.y = TrigLUT.sin(velXYRot) * velXYLen;
             }
-            if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
+            if (collision_state.pid.type() == OBJECT_Face) {
                 collision_state.ignored_face_id = collision_state.pid.id();
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
@@ -725,12 +725,12 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     SpriteObject *object = &pSpriteObjects[uLayingItemID];
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
-    if (PID_TYPE(pid) == OBJECT_Actor) {
-        if (PID_TYPE(object->spell_caster_pid) == OBJECT_Actor && !pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()])) {
+    if (pid.type() == OBJECT_Actor) {
+        if (object->spell_caster_pid.type() == OBJECT_Actor && !pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()])) {
             return 1;
         }
     } else {
-        if (PID_TYPE(pid) == OBJECT_Character && PID_TYPE(object->spell_caster_pid) == OBJECT_Character) {
+        if (pid.type() == OBJECT_Character && object->spell_caster_pid.type() == OBJECT_Character) {
             return 1;
         }
     }
@@ -741,7 +741,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             object->uAttributes &= ~SPRITE_HALT_TURN_BASED;
         }
     }
-    if (PID_TYPE(pid) == OBJECT_Face && PID_TYPE(object->spell_caster_pid) != OBJECT_Character) {
+    if (pid.type() == OBJECT_Face && object->spell_caster_pid.type() != OBJECT_Character) {
         if (object->spell_caster_pid.id() < 500) {  // bugfix  v2->spell_caster_pid.id()==1000
             pActors[object->spell_caster_pid.id()].attributes |= ACTOR_UNKNOW5;
         }
@@ -751,12 +751,12 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_SPELL_FIRE_FIRE_SPIKE:
         case SPRITE_SPELL_AIR_SPARKS:
         case SPRITE_SPELL_DARK_TOXIC_CLOUD: {
-            if (PID_TYPE(pid) == OBJECT_Face
-                || PID_TYPE(pid) == OBJECT_Decoration
-                || PID_TYPE(pid) == OBJECT_None) {
+            if (pid.type() == OBJECT_Face
+                || pid.type() == OBJECT_Decoration
+                || pid.type() == OBJECT_None) {
                 return 1;
             }
-            if (PID_TYPE(pid) != OBJECT_Item) {
+            if (pid.type() != OBJECT_Item) {
                 applySpellSpriteDamage(uLayingItemID, pid);
                 updateSpriteOnImpact(object);
                 if (object->uObjectDescID == 0) {
@@ -961,7 +961,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_EARTH_ROCK_BLAST: {
-            if (PID_TYPE(pid) == OBJECT_Face || PID_TYPE(pid) == OBJECT_Decoration || PID_TYPE(pid) == OBJECT_None) {
+            if (pid.type() == OBJECT_Face || pid.type() == OBJECT_Decoration || pid.type() == OBJECT_None) {
                 return 1;
             }
             updateSpriteOnImpact(object);
@@ -1037,7 +1037,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD: {
-            if (PID_TYPE(pid) == OBJECT_Actor &&
+            if (pid.type() == OBJECT_Actor &&
                 MonsterStats::BelongsToSupertype(pActors[pid.id()].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                 applySpellSpriteDamage(uLayingItemID, pid);
             }
@@ -1080,7 +1080,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             // }
             bool isDamaged = false;
             bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER);
-            if (PID_TYPE(pid) != OBJECT_Actor) {
+            if (pid.type() != OBJECT_Actor) {
                 if (!isShrinkingRayAoe) {
                     SpriteObject::OnInteraction(uLayingItemID);
                     return 0;
@@ -1191,7 +1191,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             case 1080:
             case 2100:
             {
-            if (PID_TYPE(a2) != 3)
+            if (a2.type() != 3)
             {
             //v32 = 0;
             pSpriteObjects[uLayingItemID].uType =
@@ -1231,7 +1231,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
         case SPRITE_SPELL_AIR_STARBURST: {
-            if (PID_TYPE(pid) == OBJECT_Actor) {
+            if (pid.type() == OBJECT_Actor) {
                 return 1;
             }
             // else go to next case
@@ -1271,14 +1271,14 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     Vec3i velocity;
 
-    if (PID_TYPE(pid) == OBJECT_Character) {
+    if (pid.type() == OBJECT_Character) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
-    } else if (PID_TYPE(pid) == OBJECT_Actor) {
+    } else if (pid.type() == OBJECT_Actor) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
-        switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
+        switch (pSpriteObjects[uLayingItemID].spell_caster_pid.type()) {
             case OBJECT_Actor:
                 Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity, pSpriteObjects[uLayingItemID].spellCasterAbility);
                 break;

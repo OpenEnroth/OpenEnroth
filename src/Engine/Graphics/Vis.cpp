@@ -886,7 +886,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
 
             // v5 = filter->select_flags;
             int object_idx = pBillboardRenderList[parentBillboardId].object_pid.id();
-            ObjectType object_type = PID_TYPE(pBillboardRenderList[parentBillboardId].object_pid);
+            ObjectType object_type = pBillboardRenderList[parentBillboardId].object_pid.type();
             if (filter->select_flags & ExcludeType) {
                 return object_type != filter->object_type;
             }

@@ -896,7 +896,7 @@ void GameUI_WritePointedObjectStatusString() {
             pickedObject = vis->get_picked_object_zbuf_val();
             mouse->uPointingObjectID = pickedObject.object_pid;
             pickedObjectID = (signed)pickedObject.object_pid.id();
-            if (PID_TYPE(pickedObject.object_pid) == OBJECT_Item) {
+            if (pickedObject.object_pid.type() == OBJECT_Item) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     game_ui_status_bar_string.clear();
@@ -912,7 +912,7 @@ void GameUI_WritePointedObjectStatusString() {
                         LSTR_FMT_GET_S,
                         pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()));
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
+            } else if (pickedObject.object_pid.type() == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     std::string pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
@@ -926,7 +926,7 @@ void GameUI_WritePointedObjectStatusString() {
                         GameUI_StatusBar_Set(hintString);
                     }
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Face) {
+            } else if (pickedObject.object_pid.type() == OBJECT_Face) {
                 if (pickedObject.depth < 0x200u) {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
@@ -960,7 +960,7 @@ void GameUI_WritePointedObjectStatusString() {
                 game_ui_status_bar_string.clear();
                 uLastPointedObjectID = Pid();
                 return;
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
+            } else if (pickedObject.object_pid.type() == OBJECT_Actor) {
                 if (pickedObject.depth >= 0x2000u) {
                     mouse->uPointingObjectID = Pid();
                     if (uLastPointedObjectID) {
@@ -1344,9 +1344,9 @@ void GameUI_DrawPortraits() {
     }
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
-            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
+            if (pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
                 for (uint i = 0; i < pTurnEngine->pQueue.size(); ++i) {
-                    if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Character)
+                    if (pTurnEngine->pQueue[i].uPackedID.type() != OBJECT_Character)
                         break;
 
                     auto alert_texture = game_ui_player_alert_green;

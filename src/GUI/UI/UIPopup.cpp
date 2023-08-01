@@ -1874,12 +1874,12 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 v5 = vis->get_picked_object_zbuf_val().object_pid;
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
-                if (PID_TYPE(v5) == OBJECT_Actor) {
+                if (v5.type() == OBJECT_Actor) {
                     render->BeginScene2D();
                     popup_window.DrawMessageBox(1);
                     MonsterPopup_Draw(v5.id(), &popup_window);
                 }
-                if (PID_TYPE(v5) == OBJECT_Item) {
+                if (v5.type() == OBJECT_Item) {
                     if (!(pObjectList->pObjects[pSpriteObjects[v5.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
                         GameUI_DrawItemInfo(&pSpriteObjects[v5.id()].containing_item);
                     }

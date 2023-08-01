@@ -70,11 +70,11 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpriteID[3] = SPRITE_TRAP_BODY;
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int objId = objectPid.id();
-            if (PID_TYPE(objectPid) == OBJECT_Decoration) {
+            if (objectPid.type() == OBJECT_Decoration) {
                 objectPos = pLevelDecorations[objId].vPosition +
                     Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             }
-            if (PID_TYPE(objectPid) == OBJECT_Face) {
+            if (objectPid.type() == OBJECT_Face) {
                 // TODO(pskelton): trap explosion moves depending on what face is clicked
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     pODMFace = &pOutdoor->face(objectPid);

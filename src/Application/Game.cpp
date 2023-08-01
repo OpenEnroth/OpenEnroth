@@ -1038,7 +1038,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
                 Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
-                ObjectType type = PID_TYPE(pid);
+                ObjectType type = pid.type();
                 int id = pid.id();
                 bool interactionPossible = false;
                 if (type == OBJECT_Actor) {
@@ -1246,7 +1246,7 @@ void Game::processQueuedMessages() {
             case UIMSG_CastSpell_TargetActor: {
                 Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
                 int depth = _vis->get_picked_object_zbuf_val().depth;
-                if (PID_TYPE(pid) == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
+                if (pid.type() == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
                     spellTargetPicked(pid, -1);
                     closeTargetedSpellWindow();
                 }
