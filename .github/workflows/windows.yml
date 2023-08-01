@@ -24,16 +24,7 @@ jobs:
         architecture:
           #- x86
           - x64
-    steps:
-      - name: Copy shaders
-        run: >
-          tree 'C:\ProgramData\chocolatey\'    
-      - name: update ccache
-        run: |
-          choco upgrade ccache
-      - name: Copy shaders
-        run: >
-          tree 'C:\ProgramData\chocolatey\'   
+    steps:   
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -65,7 +56,7 @@ jobs:
       - name: add ccache shim
         if: steps.ccache-cache.outputs.cache-hit == 'true'
         run: >
-          C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\bin\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
+          C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
       - name: update ccache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
