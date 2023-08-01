@@ -15,7 +15,6 @@ name: Windows
 jobs:
   build_windows:
     name: Build Windows Client
-    needs: advanceNightlyTag   
     runs-on: windows-2022
     strategy:
       fail-fast: false
