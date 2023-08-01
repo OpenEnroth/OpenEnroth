@@ -143,7 +143,7 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
 // Note: IndexedBitset snapshots are very MM-specific, so they stay here instead of going to Library/Snapshots.
 
 template<class T, size_t N, auto L, auto H>
-void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
+static void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
     assert(dst->size() * sizeof(T) * 8 == src.size());
     size_t i = 1, j = 0;
     while (i < src.size()) {
@@ -158,7 +158,7 @@ void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
 }
 
 template<class T, size_t N, auto L, auto H>
-void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
+static void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
     assert(dst->size() == src.size() * sizeof(T) * 8);
     size_t i = 1, j = 0;
     while (i < dst->size()) {
@@ -169,6 +169,14 @@ void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
         }
         j++;
     }
+}
+
+void snapshot(const Pid &src, uint16_t *dst) {
+    *dst = src.packed();
+}
+
+void reconstruct(uint16_t src, Pid *dst) {
+    *dst = Pid::fromPacked(src);
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
