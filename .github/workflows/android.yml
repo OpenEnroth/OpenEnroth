@@ -144,6 +144,7 @@ jobs:
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          max-size: 80M
       - name: Build the app per arch
         working-directory: android
         run: |
