@@ -15,7 +15,6 @@ name: Android
 jobs:
   build_android:
     name: Build Android Client
-    needs: advanceNightlyTag
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
