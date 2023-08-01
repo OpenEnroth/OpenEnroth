@@ -7,7 +7,8 @@
 
 struct GameTestOptions : GameStarterOptions {
     std::string testPath;
-    bool helpRequested = false;
+    bool helpPrinted = false;
+    bool listRequested = false;
 
     static GameTestOptions parse(int argc, char **argv);
 };
