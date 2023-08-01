@@ -118,7 +118,6 @@ extern int npcIdToDismissAfterDialogue;
 extern std::string game_ui_status_bar_event_string;
 extern std::string game_ui_status_bar_string;
 extern unsigned int game_ui_status_bar_event_string_time_left;
-extern int bForceDrawFooter;
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 

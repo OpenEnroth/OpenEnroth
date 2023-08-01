@@ -885,7 +885,6 @@ void GameUI_WritePointedObjectStatusString() {
             if (!pViewport->Contains(pX, pY)) {
                 if (uLastPointedObjectID != 0) {
                     game_ui_status_bar_string.clear();
-                    bForceDrawFooter = 1;
                 }
                 uLastPointedObjectID = 0;
                 return;
@@ -901,7 +900,6 @@ void GameUI_WritePointedObjectStatusString() {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     game_ui_status_bar_string.clear();
-                    bForceDrawFooter = 1;
                     uLastPointedObjectID = 0;
                     return;
                 }
@@ -954,7 +952,6 @@ void GameUI_WritePointedObjectStatusString() {
                         if (!mouse->uPointingObjectID &&
                             uLastPointedObjectID != 0) {
                             game_ui_status_bar_string.clear();
-                            bForceDrawFooter = 1;
                         }
                         uLastPointedObjectID = mouse->uPointingObjectID;
                         return;
@@ -962,7 +959,6 @@ void GameUI_WritePointedObjectStatusString() {
                 }
                 mouse->uPointingObjectID = Pid();
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
                 uLastPointedObjectID = 0;
                 return;
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
@@ -970,7 +966,6 @@ void GameUI_WritePointedObjectStatusString() {
                     mouse->uPointingObjectID = Pid();
                     if (uLastPointedObjectID != 0) {
                         game_ui_status_bar_string.clear();
-                        bForceDrawFooter = 1;
                     }
                     uLastPointedObjectID = 0;
                     return;
@@ -981,7 +976,6 @@ void GameUI_WritePointedObjectStatusString() {
             }
             if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
             }
             uLastPointedObjectID = mouse->uPointingObjectID;
             return;
@@ -993,7 +987,6 @@ void GameUI_WritePointedObjectStatusString() {
                 return;
             } else if (uLastPointedObjectID != 0) {  // not found so reset
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
             }
             uLastPointedObjectID = 0;
             return;
@@ -1036,7 +1029,6 @@ void GameUI_WritePointedObjectStatusString() {
                         // if (pMouse->uPointingObjectID == 0) {
                         if (uLastPointedObjectID != 0) {
                             game_ui_status_bar_string.clear();
-                            bForceDrawFooter = 1;
                         }
                         //}
                         uLastPointedObjectID = 0;
@@ -1118,7 +1110,6 @@ void GameUI_WritePointedObjectStatusString() {
             // ?? if we get here nothing is curos over??
             if (uLastPointedObjectID != 0) {  // not found so reset
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
             }
             uLastPointedObjectID = 0;
 
@@ -1147,7 +1138,6 @@ void GameUI_WritePointedObjectStatusString() {
         if (uLastPointedObjectID != 0)
         {
         game_ui_status_bar_string.clear();
-        bForceDrawFooter = 1;
         }
         uLastPointedObjectID = 0;
         return;
@@ -1156,7 +1146,6 @@ void GameUI_WritePointedObjectStatusString() {
         (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
         GameUI_StatusBar_Set(pItemGen->GetDisplayName());
         game_ui_status_bar_string.clear();
-        bForceDrawFooter = 1;
         uLastPointedObjectID = 0;
         return;
         }
@@ -1242,10 +1231,8 @@ void GameUI_WritePointedObjectStatusString() {
     // pMouse->uPointingObjectID = sub_46A99B(); //for software
     if (uLastPointedObjectID != 0) {
         game_ui_status_bar_string.clear();
-        bForceDrawFooter = 1;
     }
     uLastPointedObjectID = 0;
-    return;
 }
 
 //----- (0044158F) --------------------------------------------------------

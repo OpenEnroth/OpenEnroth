@@ -2452,7 +2452,6 @@ std::string game_ui_status_bar_event_string;
 std::string game_ui_status_bar_string;
 unsigned int game_ui_status_bar_event_string_time_left; // this is platform->tickcount till elapsed
 
-int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
 
