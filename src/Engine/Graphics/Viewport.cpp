@@ -368,7 +368,7 @@ void Engine::onGameViewportClick() {
                 eventId = pIndoor->pFaceExtras[pIndoor->pFaces[PID_ID(pid)].uFaceExtraID].uEventID;
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-            ODMFace &model = pOutdoor->pBModels[(pid) >> 9].pFaces[PID_ID(pid) & 0x3F];
+            const ODMFace &model = pOutdoor->face(pid);
             if (!model.Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {
                     GameUI_StatusBar_NothingHere();

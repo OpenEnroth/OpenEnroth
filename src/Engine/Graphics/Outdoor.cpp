@@ -2156,16 +2156,16 @@ void ODM_ProcessPartyActions() {
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             int atanDecoration = TrigLUT.atan2(
-                new_pos_low_x - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.x,
-                new_pos_low_y - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.y);
+                new_pos_low_x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
+                new_pos_low_y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
             partyInputXSpeed = TrigLUT.cos(atanDecoration) * integer_sqrt(partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed);
             partyInputYSpeed = TrigLUT.sin(atanDecoration) * integer_sqrt(partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed);
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
             partyHasHitModel = true;
-            BSPModel *pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
-            ODMFace *pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
+            const BSPModel *pModel = &pOutdoor->model(collision_state.pid);
+            const ODMFace *pODMFace = &pOutdoor->face(collision_state.pid);
             int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
             bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 

@@ -96,7 +96,6 @@ struct RenderBillboardD3D {
           z_order(0.f),
           opacity(Transparent),
           field_90(-1),
-          object_pid(0),
           screen_space_z(0),
           sParentBillboardID(-1),
           PaletteIndex(0) {}
@@ -117,7 +116,7 @@ struct RenderBillboardD3D {
     OpacityType opacity;
     int field_90;
 
-    unsigned short object_pid;
+    Pid object_pid;
     short screen_space_z;
     int sParentBillboardID;
 
