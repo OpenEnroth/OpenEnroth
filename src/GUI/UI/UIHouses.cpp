@@ -521,51 +521,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
             }
             dialogue_show_profession_details = ~dialogue_show_profession_details;
         } else {
-            if (topic == DIALOGUE_MASTERY_TEACHER_LEARN) {
-                selectSpecialNPCTopicSelection(topic);
-            } else {
-                if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
-                    // join guild
-                    pParty->TakeGold(gold_transaction_amount, true);
-                    for (Character &player : pParty->pCharacters)
-                        player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
-
-                    switch (_dword_F8B1D8_last_npc_topic_menu) {
-                      case DIALOGUE_SCRIPTED_LINE_1:
-                        if (pCurrentNPCInfo->dialogue_1_evt_id >= 400 && pCurrentNPCInfo->dialogue_1_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_1_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_2:
-                        if (pCurrentNPCInfo->dialogue_2_evt_id >= 400 && pCurrentNPCInfo->dialogue_2_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_2_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_3:
-                        if (pCurrentNPCInfo->dialogue_3_evt_id >= 400 && pCurrentNPCInfo->dialogue_3_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_3_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_4:
-                        if (pCurrentNPCInfo->dialogue_4_evt_id >= 400 && pCurrentNPCInfo->dialogue_4_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_4_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_5:
-                        if (pCurrentNPCInfo->dialogue_5_evt_id >= 400 && pCurrentNPCInfo->dialogue_5_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_5_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_6:
-                        if (pCurrentNPCInfo->dialogue_6_evt_id >= 400 && pCurrentNPCInfo->dialogue_6_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_6_evt_id = 0;
-                        break;
-                      default:
-                        break;
-                    }
-                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-                    if (pParty->hasActiveCharacter()) {
-                        pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
-                        BackToHouseMenu();
-                        return;
-                    }
-                }
-            }
+            selectSpecialNPCTopicSelection(topic, pCurrentNPCInfo);
         }
         BackToHouseMenu();
         return;
@@ -933,8 +889,8 @@ void GUIWindow_House::houseNPCDialogue() {
           case DIALOGUE_MASTERY_TEACHER_LEARN:
             optionsText.push_back(masteryTeacherOptionString());
             break;
-          case DIALOGUE_82_join_guild:
-            optionsText.push_back(GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val)));
+          case DIALOGUE_MAGIC_GUILD_JOIN:
+            optionsText.push_back(joinGuildOptionString());
             break;
           case DIALOGUE_83_bounty_hunting:
             current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();

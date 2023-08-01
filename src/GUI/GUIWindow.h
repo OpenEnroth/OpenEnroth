@@ -368,5 +368,3 @@ MenuType GetCurrentMenuID();
 
 extern ScreenType current_screen_type;
 extern ScreenType prev_screen_type;
-
-extern DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
