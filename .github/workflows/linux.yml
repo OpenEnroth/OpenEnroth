@@ -13,9 +13,9 @@ name: Linux
     types:
       - published
 # cancels currently running workflow from the same PR, branch or tag
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
 jobs:
   build_linux:
     runs-on: ubuntu-22.04
