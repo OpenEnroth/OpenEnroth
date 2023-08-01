@@ -444,13 +444,6 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: '${{ matrix.architecture }}'
-      - name: Save ccache to cache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        id: check-for-ccache-save
-        uses: actions/cache/save@v3
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
       - name: sccache debug
         if: matrix.configuration == 'Debug'
         uses: botanicvelious/ccache-action@v1.2.10
@@ -468,7 +461,7 @@ jobs:
       - name: Configure
         run: >
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
-          }} -DENABLE_TESTS=On
+          }} -DENABLE_TESTS=On -DCCACHE_SUPPORT=OFF
       - name: Build
         working-directory: build
         shell: cmd
