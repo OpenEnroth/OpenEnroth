@@ -40,14 +40,12 @@ var searchData=
   ['_5f4a7f74_37',['_4A7F74',['../structSpellFxRenderer.html#a003d0ba7d2245a178a30356d2e56e3f6',1,'SpellFxRenderer']]],
   ['_5f4a806f_5fget_5fmass_5fdistortion_5fvalue_38',['_4A806F_get_mass_distortion_value',['../structSpellFxRenderer.html#ab1ecbb8f41ed659f88025c23ae01e616',1,'SpellFxRenderer']]],
   ['_5f4a8bfc_5fprismatic_5flight_39',['_4A8BFC_prismatic_light',['../structSpellFxRenderer.html#aae709462f85e9dc5875ff66d529a175a',1,'SpellFxRenderer']]],
-  ['_5f4b254d_5fskillmasteryteacher_40',['_4B254D_SkillMasteryTeacher',['../NPCTopics_8cpp.html#a1d47d1cad06df6704c93798e109cbd8b',1,'_4B254D_SkillMasteryTeacher(int trainerInfo):&#160;NPCTopics.cpp'],['../NPCTopics_8h.html#a1d47d1cad06df6704c93798e109cbd8b',1,'_4B254D_SkillMasteryTeacher(int trainerInfo):&#160;NPCTopics.cpp']]],
-  ['_5f4b3fe5_5ftraining_5fdialogue_41',['_4B3FE5_training_dialogue',['../NPCTopics_8cpp.html#adc59f2d8e738930ab8071ad3c16e6570',1,'_4B3FE5_training_dialogue(int eventId):&#160;NPCTopics.cpp'],['../NPCTopics_8h.html#ae5cd6e9d5abc01da6627f5600fd99faf',1,'_4B3FE5_training_dialogue(int a4):&#160;NPCTopics.cpp']]],
-  ['_5f4c1a02_42',['_4C1A02',['../classVis.html#ac74818a45056f1abd89639ed9ebc7295',1,'Vis']]],
-  ['_5fget_5fnormals_43',['_get_normals',['../structBLVFace.html#aef30e1e4346c3357d0b6b9e3fde1819e',1,'BLVFace']]],
-  ['_5fresolvepath_44',['_resolvePath',['../GamePathResolver_8cpp.html#aae957143098a58ac04cc4ff2ae7bf159',1,'GamePathResolver.cpp']]],
-  ['_5fselecttarget_45',['_SelectTarget',['../classActor.html#ae68fd9faf29b645a7664aabc93dd3076',1,'Actor']]],
-  ['_5fset_5f3d_5fmodelview_5fmatrix_46',['_set_3d_modelview_matrix',['../classRenderOpenGL.html#ab03449d5141fb82ddc324204883bab0c',1,'RenderOpenGL']]],
-  ['_5fset_5f3d_5fprojection_5fmatrix_47',['_set_3d_projection_matrix',['../classRenderOpenGL.html#a7d5ffdf04f796810a19224b04d0ff3ea',1,'RenderOpenGL']]],
-  ['_5fset_5fortho_5fmodelview_48',['_set_ortho_modelview',['../classRenderOpenGL.html#aba07e6fc89c29aa14955190507c90546',1,'RenderOpenGL']]],
-  ['_5fset_5fortho_5fprojection_49',['_set_ortho_projection',['../classRenderOpenGL.html#a5a8f73f1f24c87c1e20c0822c48757ea',1,'RenderOpenGL']]]
+  ['_5f4c1a02_40',['_4C1A02',['../classVis.html#ac74818a45056f1abd89639ed9ebc7295',1,'Vis']]],
+  ['_5fget_5fnormals_41',['_get_normals',['../structBLVFace.html#aef30e1e4346c3357d0b6b9e3fde1819e',1,'BLVFace']]],
+  ['_5fresolvepath_42',['_resolvePath',['../GamePathResolver_8cpp.html#aae957143098a58ac04cc4ff2ae7bf159',1,'GamePathResolver.cpp']]],
+  ['_5fselecttarget_43',['_SelectTarget',['../classActor.html#ae68fd9faf29b645a7664aabc93dd3076',1,'Actor']]],
+  ['_5fset_5f3d_5fmodelview_5fmatrix_44',['_set_3d_modelview_matrix',['../classRenderOpenGL.html#ab03449d5141fb82ddc324204883bab0c',1,'RenderOpenGL']]],
+  ['_5fset_5f3d_5fprojection_5fmatrix_45',['_set_3d_projection_matrix',['../classRenderOpenGL.html#a7d5ffdf04f796810a19224b04d0ff3ea',1,'RenderOpenGL']]],
+  ['_5fset_5fortho_5fmodelview_46',['_set_ortho_modelview',['../classRenderOpenGL.html#aba07e6fc89c29aa14955190507c90546',1,'RenderOpenGL']]],
+  ['_5fset_5fortho_5fprojection_47',['_set_ortho_projection',['../classRenderOpenGL.html#a5a8f73f1f24c87c1e20c0822c48757ea',1,'RenderOpenGL']]]
 ];

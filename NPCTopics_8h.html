@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0b81d2e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f71c21</span>
    </div>
   </td>
  </tr>
@@ -81,8 +81,10 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Utility/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NPCTable_8h.html">Engine/Tables/NPCTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIDialogues_8h.html">GUI/GUIDialogues.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouseEnums_8h.html">GUI/UI/UIHouseEnums.h</a>&quot;</code><br />
@@ -93,68 +95,23 @@ Functions</h2></td></tr>
 <tr class="separator:ac109357600e9ae8133449a874a466e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad46b571b6ee5f3df6c7a39113d768cc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#ad46b571b6ee5f3df6c7a39113d768cc4">ArenaFight</a> ()</td></tr>
 <tr class="separator:ad46b571b6ee5f3df6c7a39113d768cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9811e84ae49203948b4fe17c3322f86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#ac9811e84ae49203948b4fe17c3322f86">OracleDialogue</a> ()</td></tr>
-<tr class="memdesc:ac9811e84ae49203948b4fe17c3322f86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Oracle's 'I lost it!' dialog option.  <a href="NPCTopics_8h.html#ac9811e84ae49203948b4fe17c3322f86">More...</a><br /></td></tr>
-<tr class="separator:ac9811e84ae49203948b4fe17c3322f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d47d1cad06df6704c93798e109cbd8b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a1d47d1cad06df6704c93798e109cbd8b">_4B254D_SkillMasteryTeacher</a> (int trainerInfo)</td></tr>
-<tr class="separator:a1d47d1cad06df6704c93798e109cbd8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5336f922a30d07a89cd895ceeb7f8eb4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a5336f922a30d07a89cd895ceeb7f8eb4">DrawJoinGuildWindow</a> (<a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a> guild_id)</td></tr>
-<tr class="separator:a5336f922a30d07a89cd895ceeb7f8eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb3f8737af1e3e69531fe894767259e5"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#adb3f8737af1e3e69531fe894767259e5">GetJoinGuildDialogueOption</a> (<a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a> guild_id)</td></tr>
-<tr class="separator:adb3f8737af1e3e69531fe894767259e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5cd6e9d5abc01da6627f5600fd99faf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#ae5cd6e9d5abc01da6627f5600fd99faf">_4B3FE5_training_dialogue</a> (int a4)</td></tr>
-<tr class="separator:ae5cd6e9d5abc01da6627f5600fd99faf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe8fb882f68ebe0a68906ce32fc8f149"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#abe8fb882f68ebe0a68906ce32fc8f149">masteryTeacherOptionString</a> ()</td></tr>
+<tr class="separator:abe8fb882f68ebe0a68906ce32fc8f149"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77d3f6210b78215deab2595d625c2971"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a77d3f6210b78215deab2595d625c2971">joinGuildOptionString</a> ()</td></tr>
+<tr class="separator:a77d3f6210b78215deab2595d625c2971"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d9b50c44576de7da3caff7d301ddab1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a0d9b50c44576de7da3caff7d301ddab1">NPCHireableDialogPrepare</a> ()</td></tr>
 <tr class="separator:a0d9b50c44576de7da3caff7d301ddab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad858839d9f701fb4722e9a1f9982459f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#ad858839d9f701fb4722e9a1f9982459f">handleScriptedNPCTopicSelection</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> topic, int eventId)</td></tr>
-<tr class="separator:ad858839d9f701fb4722e9a1f9982459f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116cd844c0315e57e39db4ac266d205a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a116cd844c0315e57e39db4ac266d205a">handleScriptedNPCTopicSelection</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> topic, int eventId)</td></tr>
+<tr class="separator:a116cd844c0315e57e39db4ac266d205a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad7932073884f7010f68f806fb888f9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#aad7932073884f7010f68f806fb888f9b">selectSpecialNPCTopicSelection</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> topic, <a class="el" href="structNPCData.html">NPCData</a> *npcData)</td></tr>
+<tr class="separator:aad7932073884f7010f68f806fb888f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ae88f1f886e60deb99ca183c11c0da4ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7">AwardType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#ae88f1f886e60deb99ca183c11c0da4ea">dword_F8B1AC_award_bit_number</a></td></tr>
-<tr class="separator:ae88f1f886e60deb99ca183c11c0da4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0755b064714354c78416e60f3e8b05b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a0755b064714354c78416e60f3e8b05b5">dword_F8B1AC_skill_being_taught</a></td></tr>
-<tr class="separator:a0755b064714354c78416e60f3e8b05b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bb6508ee8f5604384798ce3ac89243b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8h.html#a4bb6508ee8f5604384798ce3ac89243b">gold_transaction_amount</a></td></tr>
+<tr class="separator:a4bb6508ee8f5604384798ce3ac89243b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a1d47d1cad06df6704c93798e109cbd8b" name="a1d47d1cad06df6704c93798e109cbd8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d47d1cad06df6704c93798e109cbd8b">&#9670;&#160;</a></span>_4B254D_SkillMasteryTeacher()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string _4B254D_SkillMasteryTeacher </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>trainerInfo</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B254D </dd></dl>
-
-</div>
-</div>
-<a id="ae5cd6e9d5abc01da6627f5600fd99faf" name="ae5cd6e9d5abc01da6627f5600fd99faf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5cd6e9d5abc01da6627f5600fd99faf">&#9670;&#160;</a></span>_4B3FE5_training_dialogue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void _4B3FE5_training_dialogue </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a4</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B3FE5 </dd></dl>
-
-</div>
-</div>
 <a id="ac109357600e9ae8133449a874a466e1f" name="ac109357600e9ae8133449a874a466e1f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac109357600e9ae8133449a874a466e1f">&#9670;&#160;</a></span>Arena_SelectionFightLevel()</h2>
 
@@ -191,52 +148,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5336f922a30d07a89cd895ceeb7f8eb4" name="a5336f922a30d07a89cd895ceeb7f8eb4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5336f922a30d07a89cd895ceeb7f8eb4">&#9670;&#160;</a></span>DrawJoinGuildWindow()</h2>
+<a id="a116cd844c0315e57e39db4ac266d205a" name="a116cd844c0315e57e39db4ac266d205a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a116cd844c0315e57e39db4ac266d205a">&#9670;&#160;</a></span>handleScriptedNPCTopicSelection()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void DrawJoinGuildWindow </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a>&#160;</td>
-          <td class="paramname"><em>guild_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B3EF0 </dd></dl>
-
-</div>
-</div>
-<a id="adb3f8737af1e3e69531fe894767259e5" name="adb3f8737af1e3e69531fe894767259e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb3f8737af1e3e69531fe894767259e5">&#9670;&#160;</a></span>GetJoinGuildDialogueOption()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::string &amp; GetJoinGuildDialogueOption </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a>&#160;</td>
-          <td class="paramname"><em>guild_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B29F2 </dd></dl>
-
-</div>
-</div>
-<a id="ad858839d9f701fb4722e9a1f9982459f" name="ad858839d9f701fb4722e9a1f9982459f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad858839d9f701fb4722e9a1f9982459f">&#9670;&#160;</a></span>handleScriptedNPCTopicSelection()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void handleScriptedNPCTopicSelection </td>
+          <td class="memname">std::vector&lt; <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> &gt; handleScriptedNPCTopicSelection </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a>&#160;</td>
           <td class="paramname"><em>topic</em>, </td>
@@ -254,6 +173,42 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77d3f6210b78215deab2595d625c2971" name="a77d3f6210b78215deab2595d625c2971"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77d3f6210b78215deab2595d625c2971">&#9670;&#160;</a></span>joinGuildOptionString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; joinGuildOptionString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B29F2 </dd></dl>
+
+</div>
+</div>
+<a id="abe8fb882f68ebe0a68906ce32fc8f149" name="abe8fb882f68ebe0a68906ce32fc8f149"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe8fb882f68ebe0a68906ce32fc8f149">&#9670;&#160;</a></span>masteryTeacherOptionString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string masteryTeacherOptionString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B254D </dd></dl>
 
 </div>
 </div>
@@ -275,29 +230,37 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ac9811e84ae49203948b4fe17c3322f86" name="ac9811e84ae49203948b4fe17c3322f86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9811e84ae49203948b4fe17c3322f86">&#9670;&#160;</a></span>OracleDialogue()</h2>
+<a id="aad7932073884f7010f68f806fb888f9b" name="aad7932073884f7010f68f806fb888f9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad7932073884f7010f68f806fb888f9b">&#9670;&#160;</a></span>selectSpecialNPCTopicSelection()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void OracleDialogue </td>
+          <td class="memname">void selectSpecialNPCTopicSelection </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a>&#160;</td>
+          <td class="paramname"><em>topic</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="structNPCData.html">NPCData</a> *&#160;</td>
+          <td class="paramname"><em>npcData</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Oracle's 'I lost it!' dialog option. </p>
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x004B1ECE. </dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="ae88f1f886e60deb99ca183c11c0da4ea" name="ae88f1f886e60deb99ca183c11c0da4ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae88f1f886e60deb99ca183c11c0da4ea">&#9670;&#160;</a></span>dword_F8B1AC_award_bit_number</h2>
+<a id="a4bb6508ee8f5604384798ce3ac89243b" name="a4bb6508ee8f5604384798ce3ac89243b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bb6508ee8f5604384798ce3ac89243b">&#9670;&#160;</a></span>gold_transaction_amount</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,29 +269,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7">AwardType</a> dword_F8B1AC_award_bit_number</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0755b064714354c78416e60f3e8b05b5" name="a0755b064714354c78416e60f3e8b05b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0755b064714354c78416e60f3e8b05b5">&#9670;&#160;</a></span>dword_F8B1AC_skill_being_taught</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> dword_F8B1AC_skill_being_taught</td>
+          <td class="memname">int gold_transaction_amount</td>
         </tr>
       </table>
   </td>
