@@ -78,7 +78,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         elseif(Linux)
             set(DEP_PLATFORM "linux")
         else()
-            MESSAGE(STATUS "Unknown platform for preguild dependencies.")
+            MESSAGE(STATUS "Unknown platform for prebuilt dependencies.")
         endif()
 
         set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
