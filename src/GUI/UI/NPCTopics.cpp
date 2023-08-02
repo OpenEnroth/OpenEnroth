@@ -26,9 +26,11 @@
 
 #include "Library/Random/Random.h"
 
-// TODO(Nik-RE-dev): refactor and remove
-AwardType dword_F8B1AC_award_bit_number;
-CharacterSkillType dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
+int membershipOrTrainingApproved;
+int topicEventId; // event id of currently viewed scripted NPC event
+DIALOGUE_TYPE guildMembershipNPCTopicId;
+
+int gold_transaction_amount;
 
 static constexpr std::array<Vec2i, 20> pMonsterArenaPlacements = {{
     Vec2i(1524, 8332),    Vec2i(2186, 8844),
@@ -415,39 +417,34 @@ void ArenaFight() {
     pAudioPlayer->playUISound(SOUND_51heroism03);
 }
 
-void DrawJoinGuildWindow(GUILD_ID guild_id) {
-    uDialogueType = DIALOGUE_81_join_guild;
-    current_npc_text = pNPCTopics[guild_id + 99].pText;
-    GetJoinGuildDialogueOption(guild_id);
+void NPCHireableDialogPrepare() {
+    int v0 = 0;
+    NPCData *v1 = houseNpcs[currentHouseNpc].npc;
+
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, guild_id);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
+        UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_82_join_guild, Io::InputAction::Invalid,
-        localization->GetString(LSTR_JOIN));
-    pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
+    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
+    if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
+        pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
+            UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
+        );
+        v0 = 1;
+    }
+    pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
+        UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
+    pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 }
 
-void _4B3FE5_training_dialogue(int eventId) {
-    uDialogueType = DIALOGUE_SKILL_TRAINER;
-    current_npc_text = std::string(pNPCTopics[eventId + 168].pText);
-    _4B254D_SkillMasteryTeacher(eventId);  // checks whether the facility can be used
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, eventId);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
-    );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_79_mastery_teacher, Io::InputAction::Invalid,
-        guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
-    pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
-}
-
-void OracleDialogue() {
+/**
+ * @offset 0x004B1ECE.
+ *
+ * @brief Oracle's 'I lost it!' dialog option
+ */
+void oracleDialogue() {
     ItemGen *item = nullptr;
     ITEM_TYPE item_id = ITEM_NULL;
 
@@ -504,14 +501,43 @@ void OracleDialogue() {
     }
 }
 
-std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
-    uint8_t teacherLevel = (trainerInfo - 200) % 3;
-    CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
+const std::string &joinGuildOptionString() {
+    GUILD_ID guild_id = static_cast<GUILD_ID>(topicEventId - 400);
+    static const int dialogue_base = 110;
+    AwardType guildMembershipAwardBit = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
+
+    membershipOrTrainingApproved = false;
+    gold_transaction_amount = priceForMembership[guild_id];
+
+    // TODO(pskelton): check this behaviour
+    if (!pParty->hasActiveCharacter())
+        pParty->setActiveToFirstCanAct();  // avoid nzi
+
+    if (pParty->activeCharacter().CanAct()) {
+        if (pParty->activeCharacter()._achievedAwardsBits[guildMembershipAwardBit]) {
+            return pNPCTopics[dialogue_base + 13].pText;
+        } else {
+            if (gold_transaction_amount <= pParty->GetGold()) {
+                membershipOrTrainingApproved = true;
+                return pNPCTopics[dialogue_base + guild_id].pText;
+            } else {
+                return pNPCTopics[dialogue_base + 14].pText;
+            }
+        }
+    } else {
+        return pNPCTopics[dialogue_base + 12].pText;
+    }
+}
+
+std::string masteryTeacherOptionString() {
+    int teacherLevel = (topicEventId - 200) % 3;
+    CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((topicEventId - 200) / 3);
     Character *activePlayer = &pParty->activeCharacter();
     CharacterClassType pClassType = activePlayer->classType;
     CharacterSkillMastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
-    CharacterSkillMastery masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<CharacterSkillMastery>(teacherLevel + 2);
-    guild_membership_approved = false;
+    CharacterSkillMastery masteryLevelBeingTaught = static_cast<CharacterSkillMastery>(teacherLevel + 2);
+
+    membershipOrTrainingApproved = false;
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
         if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
@@ -546,8 +572,6 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     if (std::to_underlying(skillMastery) > teacherLevel + 1) {
         return std::string(pNPCTopics[teacherLevel + 128].pText);
     }
-
-    dword_F8B1AC_skill_being_taught = skillBeingTaught;
 
     bool canLearn = true;
 
@@ -611,85 +635,102 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[124].pText);
     }
 
-    guild_membership_approved = true;
+    membershipOrTrainingApproved = true;
 
-    return localization->FormatString(
-        LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-        localization->MasteryNameLong(masteryLevelBeingTaught),
-        localization->GetSkillName(skillBeingTaught),
-        gold_transaction_amount
-    );
+    return localization->FormatString(LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD, localization->MasteryNameLong(masteryLevelBeingTaught),
+                                      localization->GetSkillName(skillBeingTaught), gold_transaction_amount);
 }
 
-const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id) {
-    static const int dialogue_base = 110;
-    guild_membership_approved = false;
-    dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
-    gold_transaction_amount = priceForMembership[guild_id];
-
-    // TODO(pskelton): check this behaviour
-    if (!pParty->hasActiveCharacter())
-        pParty->setActiveToFirstCanAct();  // avoid nzi
-
-    if (pParty->activeCharacter().CanAct()) {
-        if (pParty->activeCharacter()._achievedAwardsBits[dword_F8B1AC_award_bit_number]) {
-            return pNPCTopics[dialogue_base + 13].pText;
-        } else {
-            if (gold_transaction_amount <= pParty->GetGold()) {
-                guild_membership_approved = true;
-                return pNPCTopics[dialogue_base + guild_id].pText;
-            } else {
-                return pNPCTopics[dialogue_base + 14].pText;
-            }
-        }
-    } else {
-        return pNPCTopics[dialogue_base + 12].pText;
-    }
-}
-
-void NPCHireableDialogPrepare() {
-    int v0 = 0;
-    NPCData *v1 = houseNpcs[currentHouseNpc].npc;
-
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
-        UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
-    );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
-    if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
-        pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
-            UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
-        );
-        v0 = 1;
-    }
-    pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
-    pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
-}
-
-void handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId) {
+std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId) {
     if (eventId == 311) {
         // Original code also listed this event which presumably opened bounty dialogue but MM7
         // use event 311 for some teleport in Bracada
         __debugbreak();
-        return;
+        return {};
     }
 
     if (eventId == 139) {
-        OracleDialogue();
+        oracleDialogue();
     } else if (eventId == 399) {
         Arena_SelectionFightLevel();
     } else if (eventId >= 400 && eventId <= 410) {
-        _dword_F8B1D8_last_npc_topic_menu = topic;
-        DrawJoinGuildWindow((GUILD_ID)(eventId - 400));
+        guildMembershipNPCTopicId = topic;
+        uDialogueType = DIALOGUE_MAGIC_GUILD_OFFER;
+        dialog_menu_id = DIALOGUE_OTHER;
+        current_npc_text = pNPCTopics[eventId - 301].pText;
+        topicEventId = eventId;
+        return {DIALOGUE_MAGIC_GUILD_JOIN};
     } else if (eventId >= 200 && eventId <= 310) {
-        _4B3FE5_training_dialogue(eventId);
+        uDialogueType = DIALOGUE_MASTERY_TEACHER_OFFER;
+        dialog_menu_id = DIALOGUE_OTHER;
+        current_npc_text = pNPCTopics[eventId + 168].pText;
+        topicEventId = eventId;
+        return {DIALOGUE_MASTERY_TEACHER_LEARN};
     } else {
         activeLevelDecoration = (LevelDecoration *)1;
         current_npc_text.clear();
         eventProcessor(eventId, Pid(), 1);
         activeLevelDecoration = nullptr;
+    }
+
+    return {};
+}
+
+void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
+    if (topic == DIALOGUE_MASTERY_TEACHER_LEARN) {
+        if (membershipOrTrainingApproved) {
+            if (pParty->hasActiveCharacter()) {
+                uint8_t teacherLevel = (topicEventId - 200) % 3;
+                CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((topicEventId - 200) / 3);
+                CharacterSkillMastery newMastery = static_cast<CharacterSkillMastery>(teacherLevel + 2);
+                CombinedSkillValue skillValue = CombinedSkillValue::increaseMastery(pParty->activeCharacter().getSkillValue(skillBeingTaught), newMastery);
+                pParty->activeCharacter().setSkillValue(skillBeingTaught, skillValue);
+                pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
+                pParty->TakeGold(gold_transaction_amount);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+            }
+        }
+    } else if (topic == DIALOGUE_MAGIC_GUILD_JOIN) {
+        if (membershipOrTrainingApproved) {
+            AwardType guildMembershipAwardBit = static_cast<AwardType>(Award_Membership_ElementalGuilds + topicEventId - 400);
+            pParty->TakeGold(gold_transaction_amount, true);
+            for (Character &player : pParty->pCharacters) {
+                player.SetVariable(VAR_Award, guildMembershipAwardBit);
+            }
+
+            switch (guildMembershipNPCTopicId) {
+              case DIALOGUE_SCRIPTED_LINE_1:
+                if (npcData->dialogue_1_evt_id >= 400 && npcData->dialogue_1_evt_id <= 416)
+                    npcData->dialogue_1_evt_id = 0;
+                break;
+              case DIALOGUE_SCRIPTED_LINE_2:
+                if (npcData->dialogue_2_evt_id >= 400 && npcData->dialogue_2_evt_id <= 416)
+                    npcData->dialogue_2_evt_id = 0;
+                break;
+              case DIALOGUE_SCRIPTED_LINE_3:
+                if (npcData->dialogue_3_evt_id >= 400 && npcData->dialogue_3_evt_id <= 416)
+                    npcData->dialogue_3_evt_id = 0;
+                break;
+              case DIALOGUE_SCRIPTED_LINE_4:
+                if (npcData->dialogue_4_evt_id >= 400 && npcData->dialogue_4_evt_id <= 416)
+                    npcData->dialogue_4_evt_id = 0;
+                break;
+              case DIALOGUE_SCRIPTED_LINE_5:
+                if (npcData->dialogue_5_evt_id >= 400 && npcData->dialogue_5_evt_id <= 416)
+                    npcData->dialogue_5_evt_id = 0;
+                break;
+              case DIALOGUE_SCRIPTED_LINE_6:
+                if (npcData->dialogue_6_evt_id >= 400 && npcData->dialogue_6_evt_id <= 416)
+                    npcData->dialogue_6_evt_id = 0;
+                break;
+              default:
+                break;
+            }
+
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+            if (pParty->hasActiveCharacter()) {
+                pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
+            }
+        }
     }
 }

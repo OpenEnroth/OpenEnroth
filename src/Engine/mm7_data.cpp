@@ -2488,9 +2488,6 @@ std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int currentAddressingAwardBit;
 // int dword_F8B144; // nexindex [-1] to the following
-int guild_membership_approved;
-CharacterSkillMastery dword_F8B1B0_MasteryBeingTaught;
-int gold_transaction_amount;  // F8B1B4
 std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC
 

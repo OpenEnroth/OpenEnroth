@@ -483,7 +483,12 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
             return;
         }
 
-        handleScriptedNPCTopicSelection(topic, pEventNumber);
+        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(topic, pEventNumber);
+
+        if (topics.size() != 0) {
+            window_SpeakInHouse->reinitDialogueWindow();
+            window_SpeakInHouse->initializeNPCDialogueButtons(topics);
+        }
         BackToHouseMenu();
         return;
     }
@@ -516,60 +521,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
             }
             dialogue_show_profession_details = ~dialogue_show_profession_details;
         } else {
-            if (topic == DIALOGUE_79_mastery_teacher) {
-                if (guild_membership_approved) {
-                    pParty->TakeGold(gold_transaction_amount);
-                    if (pParty->hasActiveCharacter()) {
-                        CombinedSkillValue skillValue = pParty->activeCharacter().getSkillValue(dword_F8B1AC_skill_being_taught);
-                        pParty->activeCharacter().setSkillValue(dword_F8B1AC_skill_being_taught,
-                                                                CombinedSkillValue::increaseMastery(skillValue, dword_F8B1B0_MasteryBeingTaught));
-                        pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
-                    }
-                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-                }
-            } else {
-                if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
-                    // join guild
-                    pParty->TakeGold(gold_transaction_amount, true);
-                    for (Character &player : pParty->pCharacters)
-                        player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
-
-                    switch (_dword_F8B1D8_last_npc_topic_menu) {
-                      case DIALOGUE_SCRIPTED_LINE_1:
-                        if (pCurrentNPCInfo->dialogue_1_evt_id >= 400 && pCurrentNPCInfo->dialogue_1_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_1_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_2:
-                        if (pCurrentNPCInfo->dialogue_2_evt_id >= 400 && pCurrentNPCInfo->dialogue_2_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_2_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_3:
-                        if (pCurrentNPCInfo->dialogue_3_evt_id >= 400 && pCurrentNPCInfo->dialogue_3_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_3_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_4:
-                        if (pCurrentNPCInfo->dialogue_4_evt_id >= 400 && pCurrentNPCInfo->dialogue_4_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_4_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_5:
-                        if (pCurrentNPCInfo->dialogue_5_evt_id >= 400 && pCurrentNPCInfo->dialogue_5_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_5_evt_id = 0;
-                        break;
-                      case DIALOGUE_SCRIPTED_LINE_6:
-                        if (pCurrentNPCInfo->dialogue_6_evt_id >= 400 && pCurrentNPCInfo->dialogue_6_evt_id <= 416)
-                            pCurrentNPCInfo->dialogue_6_evt_id = 0;
-                        break;
-                      default:
-                        break;
-                    }
-                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-                    if (pParty->hasActiveCharacter()) {
-                        pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
-                        BackToHouseMenu();
-                        return;
-                    }
-                }
-            }
+            selectSpecialNPCTopicSelection(topic, pCurrentNPCInfo);
         }
         BackToHouseMenu();
         return;
@@ -934,11 +886,11 @@ void GUIWindow_House::houseNPCDialogue() {
           case DIALOGUE_PROFESSION_DETAILS:
             optionsText.push_back(localization->GetString(LSTR_MORE_INFORMATION));
             break;
-          case DIALOGUE_79_mastery_teacher:
-            optionsText.push_back(_4B254D_SkillMasteryTeacher(right_panel_window.wData.val));
+          case DIALOGUE_MASTERY_TEACHER_LEARN:
+            optionsText.push_back(masteryTeacherOptionString());
             break;
-          case DIALOGUE_82_join_guild:
-            optionsText.push_back(GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val)));
+          case DIALOGUE_MAGIC_GUILD_JOIN:
+            optionsText.push_back(joinGuildOptionString());
             break;
           case DIALOGUE_83_bounty_hunting:
             current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();
@@ -1211,6 +1163,10 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
 
 #undef ADD_NPC_SCRIPTED_DIALOGUE
 
+    initializeNPCDialogueButtons(optionList);
+}
+
+void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> optionList) {
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
             pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");

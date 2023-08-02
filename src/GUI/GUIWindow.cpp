@@ -86,8 +86,6 @@ GraphicsImage *ui_ar_up_up = nullptr;
 GraphicsImage *ui_leather_mm6 = nullptr;
 GraphicsImage *ui_leather_mm7 = nullptr;
 
-DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
-
 std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                                     50, 51, 52, 53, 54, 55, 56, 60}};
