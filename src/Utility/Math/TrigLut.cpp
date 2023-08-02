@@ -27,5 +27,6 @@ float TrigTableLookup::sin(int angle) const {
 int TrigTableLookup::atan2(int x, int y) const {
     double angle = std::atan2(static_cast<double>(y), static_cast<double>(x));
 
-    return static_cast<int>(angle / M_PI * 1024) & uDoublePiMask;
+    // Note that std::round call is important here, otherwise atan2(x, y) + atan2(y, x) != uIntegerHalfPi.
+    return static_cast<int>(std::round(angle / M_PI * 1024)) & uDoublePiMask;
 }
