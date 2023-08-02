@@ -124,14 +124,14 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             set(FFMPEG_INCLUDE_DIRS "${FFMPEG_DIR}/include")
             set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
             set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
-            set(AVCODEC_LIBRARIES "${FFMPEG_LIB_DIR}/libavcodec.a")
-            set(AVDEVICE_LIBRARIES "${FFMPEG_LIB_DIR}/libavdevice.a")
-            set(AVFILTER_LIBRARIES "${FFMPEG_LIB_DIR}/libavfilter.a")
-            set(AVFORMAT_LIBRARIES "${FFMPEG_LIB_DIR}/libavformat.a")
-            set(AVUTIL_LIBRARIES "${FFMPEG_LIB_DIR}/libavutil.lib")
-            set(POSTPROC_LIBRARIES "${FFMPEG_LIB_DIR}/libpostproc.a")
-            set(SWRESAMPLE_LIBRARIES "${FFMPEG_LIB_DIR}/libswresample.a")
-            set(SWSCALE_LIBRARIES "${FFMPEG_LIB_DIR}/libswscale.a")
+            set(AVCODEC_LIBRARIES "${FFMPEG_BIN_DIR}/avcodec.lib")
+            set(AVDEVICE_LIBRARIES "${FFMPEG_BIN_DIR}/avdevice.lib")
+            set(AVFILTER_LIBRARIES "${FFMPEG_BIN_DIR}/avfilter.lib")
+            set(AVFORMAT_LIBRARIES "${FFMPEG_BIN_DIR}/avformat.lib")
+            set(AVUTIL_LIBRARIES "${FFMPEG_BIN_DIR}/avutil.lib")
+            set(POSTPROC_LIBRARIES "${FFMPEG_BIN_DIR}/postproc.lib")
+            set(SWRESAMPLE_LIBRARIES "${FFMPEG_BIN_DIR}/swresample.lib")
+            set(SWSCALE_LIBRARIES "${FFMPEG_BIN_DIR}/swscale.a")
             prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec-58.dll"
                     "${FFMPEG_BIN_DIR}/avdevice-58.dll"
                     "${FFMPEG_BIN_DIR}/avfilter-7.dll"
