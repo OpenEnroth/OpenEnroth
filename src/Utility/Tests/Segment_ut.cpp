@@ -43,3 +43,13 @@ UNIT_TEST(Segment, Constexpr) {
 
     EXPECT_TRUE(b);
 }
+
+UNIT_TEST(Segment, Empty) {
+    constexpr Segment emptySegment = Segment<int>();
+
+    EXPECT_FALSE(emptySegment.contains(0));
+    EXPECT_FALSE(emptySegment.contains(1));
+    for (int i : emptySegment) {
+        EXPECT_FALSE(true);
+    }
+}

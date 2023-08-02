@@ -116,6 +116,6 @@ class Segment {
     }
 
  private:
-    T _first = T();
-    T _last = T();
+    T _first = T(1);
+    T _last = T(0);
 };
