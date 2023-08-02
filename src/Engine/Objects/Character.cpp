@@ -2825,18 +2825,24 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+                bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_SPIRIT);
             break;
         case CHARACTER_SKILL_MIND:
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+                bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MIND);
             break;
         case CHARACTER_SKILL_BODY:
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+                bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_BODY);
             break;
         case CHARACTER_SKILL_LIGHT:
