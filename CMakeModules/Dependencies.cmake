@@ -118,18 +118,18 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
-            set(FFMPEG_DIR "${LIBRARY_DIR}/ffmpeg-4.2.2")
+            set(FFMPEG_DIR "${LIBRARY_DIR}/ffmpeg")
             set(FFMPEG_INCLUDE_DIRS "${FFMPEG_DIR}/include")
             set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
             set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
-            set(AVCODEC_LIBRARIES "${FFMPEG_LIB_DIR}/avcodec.lib")
-            set(AVDEVICE_LIBRARIES "${FFMPEG_LIB_DIR}/avdevice.lib")
-            set(AVFILTER_LIBRARIES "${FFMPEG_LIB_DIR}/avfilter.lib")
-            set(AVFORMAT_LIBRARIES "${FFMPEG_LIB_DIR}/avformat.lib")
-            set(AVUTIL_LIBRARIES "${FFMPEG_LIB_DIR}/avutil.lib")
-            set(POSTPROC_LIBRARIES "${FFMPEG_LIB_DIR}/postproc.lib")
-            set(SWRESAMPLE_LIBRARIES "${FFMPEG_LIB_DIR}/swresample.lib")
-            set(SWSCALE_LIBRARIES "${FFMPEG_LIB_DIR}/swscale.lib")
+            set(AVCODEC_LIBRARIES "${FFMPEG_BIN_DIR}/avcodec.lib")
+            set(AVDEVICE_LIBRARIES "${FFMPEG_BIN_DIR}/avdevice.lib")
+            set(AVFILTER_LIBRARIES "${FFMPEG_BIN_DIR}/avfilter.lib")
+            set(AVFORMAT_LIBRARIES "${FFMPEG_BIN_DIR}/avformat.lib")
+            set(AVUTIL_LIBRARIES "${FFMPEG_BIN_DIR}/avutil.lib")
+            set(POSTPROC_LIBRARIES "${FFMPEG_BIN_DIR}/postproc.lib")
+            set(SWRESAMPLE_LIBRARIES "${FFMPEG_BIN_DIR}/swresample.lib")
+            set(SWSCALE_LIBRARIES "${FFMPEG_BIN_DIR}/swscale.lib")
             prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec-58.dll"
                     "${FFMPEG_BIN_DIR}/avdevice-58.dll"
                     "${FFMPEG_BIN_DIR}/avfilter-7.dll"
@@ -139,7 +139,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                     "${FFMPEG_BIN_DIR}/swresample-3.dll"
                     "${FFMPEG_BIN_DIR}/swscale-5.dll")
 
-            set(ZLIB_DIR "${LIBRARY_DIR}/zlib-1.2.11")
+            set(ZLIB_DIR "${LIBRARY_DIR}/zlib")
             set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
             set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
             set(ZLIB_LIB_DIR "${ZLIB_DIR}/lib")
