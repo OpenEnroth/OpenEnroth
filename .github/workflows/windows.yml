@@ -119,4 +119,4 @@ jobs:
         if: success() || failure()
         with:
           name: libtest
-          path: ./
+          path: OpenEnroth/lib
