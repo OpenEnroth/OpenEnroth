@@ -77,7 +77,6 @@ struct Particle {
     int sZValue2 = 0;             // line end z
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
     float fov_x = 0;
-    float fov_y = 0;
     Color uLightColor_bgr;
 };
 

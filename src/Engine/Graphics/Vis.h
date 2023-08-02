@@ -107,10 +107,10 @@ class Vis {
     void PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                               Vis_SelectionList *list,
                               Vis_SelectionFilter *filter);
-    void PickIndoorFaces_Mouse(float fDepth, struct RenderVertexSoft *pRay,
+    void PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3f &rayStep,
                                Vis_SelectionList *list,
                                Vis_SelectionFilter *filter);
-    void PickOutdoorFaces_Mouse(float fDepth, struct RenderVertexSoft *pRay,
+    void PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3f &rayStep,
                                 Vis_SelectionList *list,
                                 Vis_SelectionFilter *filter,
                                 bool only_reachable);
@@ -137,14 +137,12 @@ class Vis {
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
     Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
     Vis_PIDAndDepth get_picked_object_zbuf_val();
-    bool Intersect_Ray_Face(struct RenderVertexSoft *pRayStart,
-                            struct RenderVertexSoft *pRayEnd, float *pDepth,
+    bool Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDepth,
                             RenderVertexSoft *Intersection, BLVFace *pFace,
                             signed int pBModelID);
     bool CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint,
                               signed int sModelID);
-    void CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
-                     float fPickDepth);
+    void CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *origin, Vec3f *step);
     void SortVerticesByX(struct RenderVertexD3D3 *pArray, unsigned int uStart,
                          unsigned int uEnd);
     void SortVerticesByY(struct RenderVertexD3D3 *pArray, unsigned int uStart,

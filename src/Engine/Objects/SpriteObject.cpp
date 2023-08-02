@@ -77,16 +77,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            vPosition += Vec3i::fromPolar(24, TrigLUT.uIntegerDoublePi - uFacing, 0);
+            vPosition += Vec3i::fromPolarRetarded(24, TrigLUT.uIntegerDoublePi - uFacing, 0);
             break;
         case 2:
-            vPosition += Vec3i::fromPolar(8, TrigLUT.uIntegerDoublePi - uFacing, 0);
+            vPosition += Vec3i::fromPolarRetarded(8, TrigLUT.uIntegerDoublePi - uFacing, 0);
             break;
         case 3:
-            vPosition += Vec3i::fromPolar(8, TrigLUT.uIntegerPi - uFacing, 0);
+            vPosition += Vec3i::fromPolarRetarded(8, TrigLUT.uIntegerPi - uFacing, 0);
             break;
         case 4:
-            vPosition += Vec3i::fromPolar(24, TrigLUT.uIntegerPi - uFacing, 0);
+            vPosition += Vec3i::fromPolarRetarded(24, TrigLUT.uIntegerPi - uFacing, 0);
             break;
         default:
             assert(false);

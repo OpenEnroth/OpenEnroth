@@ -261,15 +261,14 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
     // TODO(pskelton): fov calcs only need recalculating on level change or if we add config option
     // fov projection calcs
-    unit_fov = 0.5 / std::tan(odm_fov_rad / 2.0);
+    float halfFovTan = std::tan(odm_fov_rad / 2.0);
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        unit_fov = 0.5 / std::tan(blv_fov_rad / 2.0);
+        halfFovTan = std::tan(blv_fov_rad / 2.0);
 
-    ViewPlaneDist_X = (double)pViewport->uScreenWidth * unit_fov;
-    ViewPlaneDist_Y = (double)pViewport->uScreenHeight * unit_fov;
+    ViewPlaneDistPixels = (double)pViewport->uScreenWidth * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X);
+    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
     screenCenterX = (double)pViewport->uScreenCenterX;
     screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;
@@ -280,7 +279,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X));
+    float HalfAngleY = (pi / 2.0) - (std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
@@ -467,7 +466,7 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
 
         RHW = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
         v->_rhw = RHW;
-        viewscalefactor = RHW * ViewPlaneDist_X;
+        viewscalefactor = RHW * ViewPlaneDistPixels;
 
         v->vWorldViewProjX = (double)pViewport->uScreenCenterX -
                              viewscalefactor * (double)v->vWorldViewPosition.y;

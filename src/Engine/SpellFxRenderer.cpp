@@ -66,15 +66,15 @@ bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
     float v17;            // ST04_4@8
     float v18;            // ST00_4@8
 
-    if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDist_X ||
-        (v2 = pCamera3D->ViewPlaneDist_X < p[1].vWorldViewPosition.x, v3 = 0,
-         v4 = pCamera3D->ViewPlaneDist_X == p[1].vWorldViewPosition.x,
+    if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels ||
+        (v2 = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x, v3 = 0,
+         v4 = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x,
 
          !(v2 | v4))) {
-        if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDist_X) {
-            v6 = pCamera3D->ViewPlaneDist_X < p[1].vWorldViewPosition.x;
+        if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels) {
+            v6 = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x;
             v7 = 0;
-            v8 = pCamera3D->ViewPlaneDist_X == p[1].vWorldViewPosition.x;
+            v8 = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x;
 
             if (!(v6 | v8)) {
                 //logger->Info("sr_42620A reject");
@@ -82,16 +82,16 @@ bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
             }
         }
         //logger->Info("sr_42620A pass");
-        v9 = pCamera3D->ViewPlaneDist_X < p->vWorldViewPosition.x;
+        v9 = pCamera3D->ViewPlaneDistPixels < p->vWorldViewPosition.x;
         v10 = 0;
-        v11 = pCamera3D->ViewPlaneDist_X == p->vWorldViewPosition.x;
+        v11 = pCamera3D->ViewPlaneDistPixels == p->vWorldViewPosition.x;
 
         if (v9 | v11) {
             float v16 =
                 1.0f / (p->vWorldViewPosition.x - p[1].vWorldViewPosition.x);
             v17 = (p->vWorldViewPosition.y - p[1].vWorldViewPosition.y) * v16;
             v18 = (p->vWorldViewPosition.z - p[1].vWorldViewPosition.z) * v16;
-            float v19 = pCamera3D->ViewPlaneDist_X - p[1].vWorldViewPosition.x;
+            float v19 = pCamera3D->ViewPlaneDistPixels - p[1].vWorldViewPosition.x;
             p[1].vWorldViewPosition.x = v19 + p[1].vWorldViewPosition.x;
             p[1].vWorldViewPosition.y = v17 * v19 + p[1].vWorldViewPosition.y;
             p[1].vWorldViewPosition.z = v19 * v18 + p[1].vWorldViewPosition.z;
@@ -100,7 +100,7 @@ bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
                 1.0f / (p[1].vWorldViewPosition.x - p->vWorldViewPosition.x);
             v13 = (p[1].vWorldViewPosition.y - p->vWorldViewPosition.y) * v12;
             v14 = (p[1].vWorldViewPosition.z - p->vWorldViewPosition.z) * v12;
-            float v15 = pCamera3D->ViewPlaneDist_X - p->vWorldViewPosition.x;
+            float v15 = pCamera3D->ViewPlaneDistPixels - p->vWorldViewPosition.x;
             p->vWorldViewPosition.x = v15 + p->vWorldViewPosition.x;
             p->vWorldViewPosition.y = v13 * v15 + p->vWorldViewPosition.y;
             p->vWorldViewPosition.z = v15 * v14 + p->vWorldViewPosition.z;
@@ -244,8 +244,8 @@ void SpellFxRenderer::DrawProjectiles() {
         pCamera3D->Project(v, 2, 0);
 
         // 20.0f is width scaling factor
-        v10 = pCamera3D->ViewPlaneDist_X / v[1].vWorldViewPosition.x * 20.0f;
-        v11 = pCamera3D->ViewPlaneDist_X / v[0].vWorldViewPosition.x * 20.0f;
+        v10 = pCamera3D->ViewPlaneDistPixels / v[1].vWorldViewPosition.x * 20.0f;
+        v11 = pCamera3D->ViewPlaneDistPixels / v[0].vWorldViewPosition.x * 20.0f;
         render->DrawProjectile(v[0].vWorldViewProjX, v[0].vWorldViewProjY,
                                v[0].vWorldViewPosition.x, v11,
                                v[1].vWorldViewProjX, v[1].vWorldViewProjY,

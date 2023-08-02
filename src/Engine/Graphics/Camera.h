@@ -81,16 +81,13 @@ struct Camera3D {
     // using w comp of vec4 for dotdist
     std::array<glm::vec4, 6> FrustumPlanes = {{}};
 
-    // unit fov is normalised focal ratio
-    float unit_fov = 0;
     // field of view in vertical direction in degrees for GL
     float fov_y_deg = 0;
     // centre of the game viewport
     float screenCenterX = 0;
     float screenCenterY = 0;
-    // these are the effective focal distances of the camera in x and y
-    float ViewPlaneDist_X = 0;
-    float ViewPlaneDist_Y = 0;
+    // these are the effective focal distances of the camera in screen space pixels.
+    float ViewPlaneDistPixels = 0;
 
     // Camera field of view angles in degrees and radians
     int odm_fov_deg = 75;
@@ -104,7 +101,7 @@ struct Camera3D {
     // camera cos + sin values in both forms to avoid repeated calculation
     void CalculateRotations(int cameraYaw, int cameraPitch);
     int _viewYaw = 0;
-    int _viewPitch = 0;
+    int _viewPitch = 0; // TODO(captainurist): up is negative? wtf???
     float _yawRotationSine = 0;
     float _yawRotationCosine = 0;
     float _pitchRotationSine = 0;

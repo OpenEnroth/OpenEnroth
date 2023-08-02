@@ -44,7 +44,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
                                                 float pick_depth) {
     //  char *v4; // eax@4
     //  signed int v5; // ecx@4
-    RenderVertexSoft pRay[2];  // [sp+20h] [bp-70h]@17
+    Vec3f rayOrigin, rayStep;  // [sp+20h] [bp-70h]@17
                                //  int v20; // [sp+84h] [bp-Ch]@10
 
     static Vis_SelectionList SelectedPointersList;  // stru_F8FE00
@@ -101,13 +101,13 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
             screenspace_center_x, screenspace_center_y))
         return nullptr;
 
-    CastPickRay(pRay, screenspace_center_x, screenspace_center_y, pick_depth);
+    CastPickRay(screenspace_center_x, screenspace_center_y, pick_depth, &rayOrigin, &rayStep);
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
-        PickOutdoorFaces_Mouse(pick_depth, pRay, &SelectedPointersList,
+        PickOutdoorFaces_Mouse(pick_depth, rayOrigin, rayStep, &SelectedPointersList,
                                &vis_face_filter, true);
     else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        PickIndoorFaces_Mouse(pick_depth, pRay, &SelectedPointersList,
+        PickIndoorFaces_Mouse(pick_depth, rayOrigin, rayStep, &SelectedPointersList,
                               &vis_face_filter);
     else
         assert(false);
@@ -280,7 +280,7 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x, floa
 }
 
 //----- (004C16B4) --------------------------------------------------------
-void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
+void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3f &rayStep,
                                 Vis_SelectionList *list,
                                 Vis_SelectionFilter *filter) {
     int v5;              // eax@1
@@ -299,7 +299,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1,
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &fDepth, &a1,
                                         face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
                     // v9 = fixpoint_from_float(/*v8,
@@ -381,7 +381,7 @@ bool IsCylinderInFrustum(Vec3f center, float radius) {
     return true;
 }
 
-void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
+void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3f &rayStep,
                                  Vis_SelectionList *list,
                                  Vis_SelectionFilter *filter,
                                  bool only_reachable) {
@@ -402,7 +402,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                 blv_face.FromODM(&face);
 
                 RenderVertexSoft intersection;
-                if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &intersection,
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &fDepth, &intersection,
                                        &blv_face, model.index)) {
                     pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
@@ -522,63 +522,39 @@ Vis_PIDAndDepth Vis::get_picked_object_zbuf_val() {
 }
 
 //----- (004C1C0C) --------------------------------------------------------
-bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
-                             RenderVertexSoft *pRayEnd, float *pDepth,
+bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDepth,
                              RenderVertexSoft *Intersection, BLVFace *pFace,
                              signed int pBModelID) {
-    float c1;                    // st5@6
-    float c2;                    // st7@11
-    static Vec3s IntersectPoint;  // ST04_6@11
-
-    if (pFace->isPortal() || pFace->Invisible()) return false;
-
-    int ray_dir_x = pRayEnd->vWorldPosition.x -
-                    pRayStart->vWorldPosition
-                        .x,  // calculate the direction vector of the
-                             // line(вычислим вектор направления линий)
-        ray_dir_y = pRayEnd->vWorldPosition.y - pRayStart->vWorldPosition.y,
-        ray_dir_z = pRayEnd->vWorldPosition.z - pRayStart->vWorldPosition.z;
+    if (pFace->isPortal() || pFace->Invisible())
+        return false;
 
     // c1 = -d-(n*p0)
-    c1 = -pFace->facePlane.dist -
-         (pFace->facePlane.normal.x * pRayStart->vWorldPosition.x +
-          pFace->facePlane.normal.y * pRayStart->vWorldPosition.y +
-          pFace->facePlane.normal.z * pRayStart->vWorldPosition.z);
-    if (c1 > 0) return false;
-#define EPSILON 1e-6
-    // c2 = n*u
-    c2 = pFace->facePlane.normal.x *
-         ray_dir_y  // get length of the line(Это дает нам длину линии)
-         + pFace->facePlane.normal.y * ray_dir_x +
-         pFace->facePlane.normal.z * ray_dir_z; // TODO(captainurist): x/y messed up here
-    if (c2 > -EPSILON &&
-        c2 < EPSILON)  // ray faces face's normal ( > 0) or parallel ( == 0)
+    float c1 = -pFace->facePlane.signedDistanceTo(origin);
+    if (c1 > 0)
         return false;
+
+    // c2 = n*u
+    float c2 = pFace->facePlane.normal.x * step.y  // get length of the line(Это дает нам длину линии)
+             + pFace->facePlane.normal.y * step.x +
+               pFace->facePlane.normal.z * step.z; // TODO(captainurist): x/y messed up here
+    if (fuzzyIsNull(c2))
+        return false; // Ray is parallel to face plane.
 
     // t = -d-(n*p0)/n*u
     float t = c1 / c2;  // How far is crossing the line in percent for 0 to
                         // 1(Как далеко пересечение линии в процентах от 0 до 1 )
-
-    if (t < 0 || t > 1) return false;
+    if (t < 0 || t > 1)
+        return false;
 
     // p(t) = p0 + tu;
-    Intersection->vWorldPosition.x =
-        pRayStart->vWorldPosition.x +
-        t * ray_dir_y;  // add the interest to the start line(прибавляем процент
-                        // линии к линии старта)
-    Intersection->vWorldPosition.y =
-        pRayStart->vWorldPosition.y + t * ray_dir_x;
-    Intersection->vWorldPosition.z =
-        pRayStart->vWorldPosition.z + t * ray_dir_z;
+    Intersection->vWorldPosition.x = origin.x + t * step.y;  // add the interest to the start line(прибавляем процент
+                                                                // линии к линии старта)
+    Intersection->vWorldPosition.y = origin.y + t * step.x;
+    Intersection->vWorldPosition.z = origin.z + t * step.z;
 
-    IntersectPoint.x = Intersection->vWorldPosition.x;
-    IntersectPoint.y = Intersection->vWorldPosition.y;
-    IntersectPoint.z = Intersection->vWorldPosition.z;
+    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID)) return false;
 
-    if (!CheckIntersectBModel(pFace, IntersectPoint, pBModelID)) return false;
-
-    *pDepth = t;  // Record the distance from the origin of the ray (Записываем
-                  // дистанцию от начала луча)
+    *pDepth = t;  // TODO(captainurist): unused, drop.
     return true;
 }
 
@@ -676,7 +652,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    int v3 = pCamera3D->ViewPlaneDist_X;
+    int v3 = pCamera3D->ViewPlaneDistPixels;
 
     return TrigLUT.atan2(x - pViewport->uScreenCenterX, v3) -
            TrigLUT.uIntegerHalfPi;
@@ -684,32 +660,21 @@ int UnprojectX(int x) {
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    int v3 = pCamera3D->ViewPlaneDist_X;
+    int v3 = pCamera3D->ViewPlaneDistPixels;
 
     return TrigLUT.atan2(y - pViewport->uScreenCenterY, v3) -
            TrigLUT.uIntegerHalfPi;
 }
 
 //----- (004C248E) --------------------------------------------------------
-void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, float fPickDepth) {
-    Vec3i pStartR;        // ST08_12@1
-    RenderVertexSoft v11[2];  // [sp+2Ch] [bp-74h]@1
+void Vis::CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *origin, Vec3f *step) {
+    origin->z = pCamera3D->vCameraPos.z;
+    origin->x = pCamera3D->vCameraPos.x;
+    origin->y = pCamera3D->vCameraPos.y;
 
-    int yawAngle = pCamera3D->_viewYaw + UnprojectX(fMouseX);
-    int pitchAngle = -pCamera3D->_viewPitch + UnprojectY(fMouseY);
-
-    pStartR.z = pCamera3D->vCameraPos.z;
-    pStartR.x = pCamera3D->vCameraPos.x;
-    pStartR.y = pCamera3D->vCameraPos.y;
-
-    v11[1].vWorldPosition.x = pCamera3D->vCameraPos.x;
-    v11[1].vWorldPosition.y = pCamera3D->vCameraPos.y;
-    v11[1].vWorldPosition.z = pCamera3D->vCameraPos.z;
-
-    v11[0].vWorldPosition = pStartR.toFloat() + Vec3f::fromPolar(fPickDepth, yawAngle, pitchAngle);
-
-    pRay[0] = v11[1];
-    pRay[1] = v11[0];
+    int yawAngle = (pCamera3D->_viewYaw + UnprojectX(fMouseX)) & TrigLUT.uDoublePiMask;
+    int pitchAngle = (-pCamera3D->_viewPitch + UnprojectY(fMouseY)) & TrigLUT.uDoublePiMask;
+    *step = Vec3f::fromPolarRetarded(fPickDepth, yawAngle, pitchAngle);
 }
 
 //----- (004C2551) --------------------------------------------------------
@@ -859,10 +824,10 @@ bool Vis::PickKeyboard(float pick_depth, Vis_SelectionList *list,
 bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
                     Vis_SelectionFilter *sprite_filter,
                     Vis_SelectionFilter *face_filter) {
-    RenderVertexSoft pMouseRay[2];  // [sp+1Ch] [bp-60h]@1
+    Vec3f rayOrigin, rayStep;  // [sp+1Ch] [bp-60h]@1
 
     default_list.uSize = 0;
-    CastPickRay(pMouseRay, fMouseX, fMouseY, fDepth);
+    CastPickRay(fMouseX, fMouseY, fDepth, &rayOrigin, &rayStep);
 
     // log->Info("Sx: {}, Sy: {}, Sz: {} \n Fx: {}, Fy: {}, Fz: {}",
     //     pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
@@ -871,9 +836,9 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
     PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list, sprite_filter);
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        PickIndoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter);
+        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &default_list, face_filter);
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter, false);
+        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &default_list, face_filter, false);
     } else {
         log->warning("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
@@ -1000,8 +965,8 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
 //----- (004C091D) --------------------------------------------------------
 bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx) {
     int billboardId;
-    struct RenderVertexSoft pPickingRay[2];
-    struct RenderVertexSoft local_80[2];
+    Vec3f rayOrigin, rayStep;
+    Vec3f rayOrigin2, rayStep2;
 
     float test_x;
     float test_y;
@@ -1024,11 +989,11 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     GetPolygonCenter(render->pBillboardRenderListD3D[/*billboardId*/uD3DBillboardIdx].pQuads.data(), 4, &test_x, &test_y);
     // why check parent id billboardId? parent ID are wrong becasue of switching between pBillboardRenderListD3D and pBillboardRenderList
 
-    CastPickRay(pPickingRay, test_x, test_y, fDepth);
+    CastPickRay(test_x, test_y, fDepth, &rayOrigin, &rayStep);
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        PickIndoorFaces_Mouse(fDepth, pPickingRay, &Vis_static_stru_F91E10, &vis_face_filter);
+        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &Vis_static_stru_F91E10, &vis_face_filter);
     else
-        PickOutdoorFaces_Mouse(fDepth, pPickingRay, &Vis_static_stru_F91E10, &vis_face_filter, false);
+        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &Vis_static_stru_F91E10, &vis_face_filter, false);
     Vis_static_stru_F91E10.create_object_pointers();
     Vis_static_stru_F91E10.sort_object_pointers();
     if (Vis_static_stru_F91E10.uSize) {
@@ -1047,11 +1012,11 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
         test_y = vertex.pos.y;
         if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
             (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
-            CastPickRay(local_80, test_x, test_y, fDepth);
+            CastPickRay(test_x, test_y, fDepth, &rayOrigin2, &rayStep2);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                PickIndoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter);
+                PickIndoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter);
             } else {
-                PickOutdoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter, false);
+                PickOutdoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter, false);
             }
             Vis_static_stru_F91E10.create_object_pointers();
             Vis_static_stru_F91E10.sort_object_pointers();
@@ -1084,11 +1049,11 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     test_x = (t2_x + t1_x) * 0.5;
     if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
         (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
-        CastPickRay(local_80, test_x, test_y, fDepth);
+        CastPickRay(test_x, test_y, fDepth, &rayOrigin2, &rayStep2);
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            PickIndoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter);
+            PickIndoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter);
         } else {
-            PickOutdoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter, false);
+            PickOutdoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter, false);
         }
         Vis_static_stru_F91E10.create_object_pointers();
         Vis_static_stru_F91E10.sort_object_pointers();
