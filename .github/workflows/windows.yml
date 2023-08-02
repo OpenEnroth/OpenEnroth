@@ -115,3 +115,8 @@ jobs:
         with:
           name: ccache-debug
           path: C:\debug
+      - uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: libtest
+          path: ./
