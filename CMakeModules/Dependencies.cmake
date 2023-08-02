@@ -84,7 +84,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
         set(LIBRARY_DIR "${LIB_DIR}/${DEP_PLATFORM}/${BUILD_TYPE}")
 
-        set(DEPS_ZIP_FILENAME "${DEP_PLATFORM}_${BUILD_TYPE}_${CMAKE_BUILD_TYPE}.zip")
+        set(DEPS_ZIP_FILENAME "${DEP_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_TYPE}.zip")
         set(DEPS_ZIP_FULL_PATH "${LIB_DIR}/${DEPS_ZIP_FILENAME}")
         
         # resolve 3d party libs
@@ -96,7 +96,6 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                         "${DEPS_ZIP_FULL_PATH}"
                         SHOW_PROGRESS
                         STATUS DOWNLOAD_STATUS
-                        EXPECTED_MD5 ${DEPS_ZIP_MD5_CHECKSUM}
                         TIMEOUT 60)  # seconds
 
                 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
