@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4b8af56</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f77a30d</span>
    </div>
   </td>
  </tr>
@@ -94,6 +94,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventEnums_8h.html">Engine/Events/EventEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Pid_8h.html">Engine/Pid.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Utility/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
@@ -127,8 +128,8 @@ Macros</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a6c2e2aee83d115cf030db706dc41e04e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#a5c8a22b675e8c120160f676143ed75b5">CharacterExpressionID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a6c2e2aee83d115cf030db706dc41e04e">expressionForCondition</a> (<a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a> condition)</td></tr>
 <tr class="separator:a6c2e2aee83d115cf030db706dc41e04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3442d6436f8e52569bdf519995f7074"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#af3442d6436f8e52569bdf519995f7074">DamageCharacterFromMonster</a> (unsigned int uObjID, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int a4)</td></tr>
-<tr class="separator:af3442d6436f8e52569bdf519995f7074"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31106f07178c4f0c2d6dd9431704b6b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a31106f07178c4f0c2d6dd9431704b6b3">DamageCharacterFromMonster</a> (<a class="el" href="classPid.html">Pid</a> uObjID, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int a4)</td></tr>
+<tr class="separator:a31106f07178c4f0c2d6dd9431704b6b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a2ba8f3184b97a7bae5235a13a21c60f3">IsDwarfPresentInParty</a> (bool b)</td></tr>
 <tr class="separator:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
@@ -218,8 +219,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af3442d6436f8e52569bdf519995f7074" name="af3442d6436f8e52569bdf519995f7074"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3442d6436f8e52569bdf519995f7074">&#9670;&#160;</a></span>DamageCharacterFromMonster()</h2>
+<a id="a31106f07178c4f0c2d6dd9431704b6b3" name="a31106f07178c4f0c2d6dd9431704b6b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31106f07178c4f0c2d6dd9431704b6b3">&#9670;&#160;</a></span>DamageCharacterFromMonster()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -227,7 +228,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void DamageCharacterFromMonster </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>uObjID</em>, </td>
         </tr>
         <tr>
