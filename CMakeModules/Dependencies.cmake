@@ -92,7 +92,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             if(NOT EXISTS "${DEPS_ZIP_FULL_PATH}")
                 MESSAGE(STATUS "Downloading dependencies: ${DEPS_ZIP_FILENAME}")
                 file(DOWNLOAD
-                        "https://github.com/botanicvelious/OpenEnroth/releases/download/nightly/${DEPS_ZIP_FILENAME}"
+                        "https://github.com/botanicvelious/OpenEnroth_Dependencies/releases/download/nightly/${DEPS_ZIP_FILENAME}"
                         "${DEPS_ZIP_FULL_PATH}"
                         SHOW_PROGRESS
                         STATUS DOWNLOAD_STATUS
