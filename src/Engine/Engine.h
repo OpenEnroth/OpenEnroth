@@ -34,6 +34,7 @@ struct stru10;
 class Logger;
 class GUIMessageQueue;
 class GameResourceManager;
+class StatusBar;
 
 /*  320 */
 enum class GameState {
@@ -152,6 +153,7 @@ class Engine {
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
     std::unique_ptr<GameResourceManager> _gameResourceManager;
+    std::unique_ptr<StatusBar> _statusBar;
 };
 
 extern Engine *engine;

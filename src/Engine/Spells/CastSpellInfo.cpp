@@ -71,7 +71,7 @@ static void initSpellSprite(SpriteObject *spritePtr,
  */
 static void spellFailed(CastSpellInfo *pCastSpell,
                         int error_str_id) {
-    GameUI_SetStatusBar(error_str_id);
+    engine->_statusBar->setEvent(error_str_id);
     pAudioPlayer->playUISound(SOUND_spellfail0201);
     pCastSpell->uSpellID = SPELL_NONE;
 }
@@ -1973,14 +1973,14 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                         if (gold_num > 0) {
                             if (item.uItemID != ITEM_NULL)
-                                GameUI_SetStatusBar(fmt::format("({}), and {} gold", item.GetDisplayName(), gold_num));
+                                engine->_statusBar->setEvent(fmt::format("({}), and {} gold", item.GetDisplayName(), gold_num));
                             else
-                                GameUI_SetStatusBar(fmt::format("{} gold", gold_num));
+                                engine->_statusBar->setEvent(fmt::format("{} gold", gold_num));
                         } else {
                             if (item.uItemID != ITEM_NULL) {
-                                GameUI_SetStatusBar(fmt::format("({})", item.GetDisplayName()));
+                                engine->_statusBar->setEvent(fmt::format("({})", item.GetDisplayName()));
                             } else {
-                                GameUI_SetStatusBar("nothing");
+                                engine->_statusBar->nothingHere();
                             }
                         }
 
@@ -2167,7 +2167,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
                         } else {
-                            GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
+                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
                                 pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
                             }
@@ -2961,7 +2961,7 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
                 pGUIWindow_CastTargetedSpell = nullptr;
             }
             mouse->SetCursorImage("MICON1");
-            GameUI_StatusBar_Update(true);
+            engine->_statusBar->clearEvent();
             IsEnchantingInProgress = false;
             back_to_game();
 

@@ -113,7 +113,7 @@ static auto makeConfigTape(TestController *test, const ConfigEntry<T> &entry) {
 }
 
 static auto makeStatusBarTape(TestController *test) {
-    return test->tape([] { return GameUI_StatusBar_Get(); });
+    return test->tape([] { return engine->_statusBar->get(); });
 }
 
 static auto makeDialogueTypeTape(TestController *test) {
@@ -383,7 +383,7 @@ GAME_TEST(Issues, Issue272b) {
     // Check you cant leave menu with conflicting keys.
     test->playTraceFromTestData("issue_272b.mm7", "issue_272b.json");
     EXPECT_EQ(current_screen_type, SCREEN_KEYBOARD_OPTIONS);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Please resolve all key conflicts!");
+    EXPECT_EQ(engine->_statusBar->get(), "Please resolve all key conflicts!");
 }
 
 GAME_TEST(Issues, Issue290) {
@@ -1393,63 +1393,63 @@ GAME_TEST(Issues, Issue830) {
     // Mouseover hints for UI elements not showing
     game->startNewGame();
     game->tick(1);
-    game_ui_status_bar_event_string_expiration_time = 0;
+    engine->_statusBar->clearEvent();
     // Portrait: Name and conditions of the character
     game->moveMouse(65, 424);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Zoltan the Knight: Good");
+    EXPECT_EQ(engine->_statusBar->get(), "Zoltan the Knight: Good");
     //HP / SP Bar(either one) : Display current and max HP and SP both
     game->moveMouse(102, 426);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "45 / 45 Hit Points    0 / 0 Spell Points");
+    EXPECT_EQ(engine->_statusBar->get(), "45 / 45 Hit Points    0 / 0 Spell Points");
     // Minimap : Display time, day of the week and full date
     game->moveMouse(517, 111);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "9:00am Monday 1 January 1168");
+    EXPECT_EQ(engine->_statusBar->get(), "9:00am Monday 1 January 1168");
     //Zoom in / out minimap buttons : Display description of the button
     game->moveMouse(523, 140);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Zoom In");
+    EXPECT_EQ(engine->_statusBar->get(), "Zoom In");
     game->moveMouse(577, 140);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Zoom Out");
+    EXPECT_EQ(engine->_statusBar->get(), "Zoom Out");
     // Food : Display total amount of food(bit redundant, but it is there)
     game->moveMouse(520, 329);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "You have 7 food");
+    EXPECT_EQ(engine->_statusBar->get(), "You have 7 food");
     // Gold : Display amount of gold on party and in bank
     game->moveMouse(575, 327);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "You have 200 total gold, 0 in the Bank");
+    EXPECT_EQ(engine->_statusBar->get(), "You have 200 total gold, 0 in the Bank");
     // Books : Description of each book(journal, autonotes etc)
     game->moveMouse(513, 387);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Current Quests");
+    EXPECT_EQ(engine->_statusBar->get(), "Current Quests");
     game->moveMouse(540, 382);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Auto Notes");
+    EXPECT_EQ(engine->_statusBar->get(), "Auto Notes");
     game->moveMouse(556, 381);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Maps");
+    EXPECT_EQ(engine->_statusBar->get(), "Maps");
     game->moveMouse(586, 396);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Calendar");
+    EXPECT_EQ(engine->_statusBar->get(), "Calendar");
     game->moveMouse(611, 400);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "History");
+    EXPECT_EQ(engine->_statusBar->get(), "History");
     // Buttons : Description of the 4 buttons in the corner(cast spell, rest, quick ref, game options)
     game->moveMouse(494, 461);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Cast Spell");
+    EXPECT_EQ(engine->_statusBar->get(), "Cast Spell");
     game->moveMouse(541, 460);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Rest");
+    EXPECT_EQ(engine->_statusBar->get(), "Rest");
     game->moveMouse(585, 461);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Quick Reference");
+    EXPECT_EQ(engine->_statusBar->get(), "Quick Reference");
     game->moveMouse(621, 460);
     game->tick(1);
-    EXPECT_EQ(GameUI_StatusBar_Get(), "Game Options");
+    EXPECT_EQ(engine->_statusBar->get(), "Game Options");
 }
 
 GAME_TEST(Issues, Issue832) {

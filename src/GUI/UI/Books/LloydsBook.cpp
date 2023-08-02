@@ -154,7 +154,7 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     if (_recallingBeacon) {
         if (beacon.uBeaconTime) {
             std::string mapName = pMapStats->pInfos[beacon.mapId].pName;
-            GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_RECALL_TO_S, mapName));
+            engine->_statusBar->setPermanent(LSTR_FMT_RECALL_TO_S, mapName);
         }
     } else {
         MAP_TYPE mapId = pMapStats->GetMapInfo(pCurrentMapName);
@@ -165,9 +165,9 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
 
         if (beacon.uBeaconTime) {
             std::string mapName2 = pMapStats->pInfos[beacon.mapId].pName;
-            GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_OVER_S, mapName, mapName2));
+            engine->_statusBar->setPermanent(LSTR_FMT_SET_S_OVER_S, mapName, mapName2);
         } else {
-            GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_TO_S, mapName));
+            engine->_statusBar->setPermanent(LSTR_FMT_SET_S_TO_S, mapName);
         }
     }
 }

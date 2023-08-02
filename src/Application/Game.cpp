@@ -393,7 +393,7 @@ void Game::closeTargetedSpellWindow() {
             pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
             pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
             _mouse->SetCursorImage("MICON1");
-            game_ui_status_bar_event_string_expiration_time = 0;
+            _engine->_statusBar->clearEvent();
             IsEnchantingInProgress = false;
             back_to_game();
         }
@@ -533,7 +533,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_QuestBook();
@@ -552,7 +552,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_AutonotesBook();
@@ -571,7 +571,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                 }
                 // open window;
                 pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
@@ -590,7 +590,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_CalendarBook();
@@ -609,7 +609,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
@@ -619,7 +619,7 @@ void Game::processQueuedMessages() {
                 if (current_screen_type == SCREEN_DEBUG) {
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                     break;
                 }
                 if (current_screen_type != SCREEN_GAME) continue;
@@ -674,7 +674,7 @@ void Game::processQueuedMessages() {
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
                         _mouse->SetCursorImage("MICON1");
-                        game_ui_status_bar_event_string_expiration_time = 0;
+                        _engine->_statusBar->clearEvent();
                         IsEnchantingInProgress = false;
                         back_to_game();
                     }
@@ -808,9 +808,8 @@ void Game::processQueuedMessages() {
                                     DialogueEnding();
                                     current_screen_type = SCREEN_GAME;
                                     continue;
-                                case SCREEN_BRANCHLESS_NPC_DIALOG:  // click
-                                                                    // escape
-                                    GameUI_StatusBar_ClearEventString();
+                                case SCREEN_BRANCHLESS_NPC_DIALOG:  // click escape
+                                    _engine->_statusBar->clearEvent();
 
                                     ReleaseBranchlessDialogue();
                                     DialogueEnding();
@@ -1225,12 +1224,12 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     status_string = "Can't jump to that location!";
                 }
-                GameUI_SetStatusBar(status_string);
+                _engine->_statusBar->setEvent(status_string);
                 continue;
             }
             case UIMSG_CastQuickSpell: {
                 if (_engine->IsUnderwater()) {
-                    GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
+                    _engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1299,7 +1298,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_Wait5Minutes:
                 if (currentRestType == REST_HEAL) {
-                    GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
+                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1310,7 +1309,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_Wait1Hour:
                 if (currentRestType == REST_HEAL) {
-                    GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
+                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1345,21 +1344,21 @@ void Game::processQueuedMessages() {
 
                 if (CheckActors_proximity()) {
                     if (pParty->bTurnBasedModeOn) {
-                        GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
+                        _engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
                         continue;
                     }
 
                     if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER)) // airbourne or on water
-                        GameUI_SetStatusBar(LSTR_CANT_REST_HERE);
+                        _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                     else
-                        GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
+                        _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                     if (!pParty->hasActiveCharacter()) continue;
                     pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
                     continue;
                 }
                 if (pParty->bTurnBasedModeOn) {
-                    GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
+                    _engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
                     continue;
                 }
 
@@ -1374,14 +1373,14 @@ void Game::processQueuedMessages() {
                 }
 
                 if (pParty->bTurnBasedModeOn) {
-                    GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
+                    _engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
                     continue;
                 }
 
                 if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))
-                    GameUI_SetStatusBar(LSTR_CANT_REST_HERE);
+                    _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                 else
-                    GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
+                    _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                 if (!pParty->hasActiveCharacter()) continue;
                 pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
@@ -1389,12 +1388,12 @@ void Game::processQueuedMessages() {
             case UIMSG_Rest8Hour:
                 engine->_messageQueue->clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
                 if (currentRestType != REST_NONE) {
-                    GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
+                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
                 if (pParty->GetFood() < foodRequiredToRest) {
-                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
+                    _engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_FOOD);
                     if (pParty->hasActiveCharacter() && pParty->activeCharacter().CanAct()) {
                         pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_FOOD);
                     }
@@ -1429,7 +1428,7 @@ void Game::processQueuedMessages() {
                             currentRestType = REST_NONE;
 
                             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
-                            GameUI_SetStatusBar(LSTR_ENCOUNTER);
+                            _engine->_statusBar->setEvent(LSTR_ENCOUNTER);
                             pAudioPlayer->playUISound(SOUND_encounter);
                             continue;
                         }
@@ -1446,7 +1445,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_WaitTillDawn:
                 if (currentRestType == REST_HEAL) {
-                    GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
+                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1458,12 +1457,12 @@ void Game::processQueuedMessages() {
 
             case UIMSG_HintSelectRemoveQuickSpellBtn: {
                 if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name));
+                    _engine->_statusBar->setPermanent(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name);
                 } else {
                     if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
-                        GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
+                        _engine->_statusBar->setPermanent(LSTR_CLICK_TO_REMOVE_QUICKSPELL);
                     else
-                        GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_SET_QUICKSPELL));
+                        _engine->_statusBar->setPermanent(LSTR_CLICK_TO_SET_QUICKSPELL);
                 }
                 continue;
             }
@@ -1478,9 +1477,9 @@ void Game::processQueuedMessages() {
                 }
                 SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + uMessageParam + 1);
                 if (spellbookSelectedSpell == selectedSpell) {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name));
+                    _engine->_statusBar->setPermanent(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name);
                 } else {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name));
+                    _engine->_statusBar->setPermanent(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name);
                 }
                 continue;
             }
@@ -1585,7 +1584,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 if (_engine->IsUnderwater()) {
-                    GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
+                    _engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     engine->_messageQueue->clear();
@@ -1603,7 +1602,7 @@ void Game::processQueuedMessages() {
                                 // close out current window
                                 back_to_game();
                                 onEscape();
-                                GameUI_StatusBar_Clear();
+                                _engine->_statusBar->clearAll();
                             }
                             // open window
                             new OnButtonClick2({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
@@ -1627,7 +1626,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    GameUI_StatusBar_Clear();
+                    _engine->_statusBar->clearAll();
                 }
                 // open window
                 new OnButtonClick2({560, 450}, {0, 0}, pBtn_QuickReference);
@@ -1676,7 +1675,7 @@ void Game::processQueuedMessages() {
                 int cost = skillValue.level() + 1;
 
                 if (character->uSkillPoints < cost) {
-                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_SKILL_POINTS);
+                    _engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_SKILL_POINTS);
                 } else {
                     if (skillValue.level() < skills_max_level[skill]) {
                         character->setSkillValue(skill, CombinedSkillValue::increaseLevel(skillValue));
@@ -1684,7 +1683,7 @@ void Game::processQueuedMessages() {
                         character->playReaction(SPEECH_SKILL_INCREASE);
                         pAudioPlayer->playUISound(SOUND_quest);
                     } else {
-                        GameUI_SetStatusBar(LSTR_SKILL_ALREADY_MASTERED);
+                        _engine->_statusBar->setEvent(LSTR_SKILL_ALREADY_MASTERED);
                     }
                 }
                 continue;
@@ -1747,10 +1746,7 @@ void Game::processQueuedMessages() {
                 GameUI_OnPlayerPortraitLeftClick(uMessageParam);
                 continue;
             case UIMSG_ShowStatus_Funds: {
-                GameUI_StatusBar_Set(localization->FormatString(
-                    LSTR_FMT_D_TOTAL_GOLD_D_IN_BANK,
-                    pParty->GetGold() + pParty->uNumGoldInBank,
-                    pParty->uNumGoldInBank));
+                engine->_statusBar->setPermanent(LSTR_FMT_D_TOTAL_GOLD_D_IN_BANK, pParty->GetGold() + pParty->uNumGoldInBank, pParty->uNumGoldInBank);
                 continue;
             }
             case UIMSG_ShowStatus_DateTime:
@@ -1764,27 +1760,22 @@ void Game::processQueuedMessages() {
                         uNumSeconds = 0;
                     if (pParty->uCurrentHour == 0) currHour = 12;
                 }
-                GameUI_StatusBar_Set(fmt::format(
-                    "{}:{:02}{} {} {} {} {}", currHour,
-                    pParty->uCurrentMinute,
-                    localization->GetAmPm(uNumSeconds),
-                    localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
-                    7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
-                    localization->GetMonthName(pParty->uCurrentMonth),
-                    pParty->uCurrentYear));
+                engine->_statusBar->setPermanent(fmt::format("{}:{:02}{} {} {} {} {}", currHour, pParty->uCurrentMinute, localization->GetAmPm(uNumSeconds),
+                                                            localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
+                                                            7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
+                                                            localization->GetMonthName(pParty->uCurrentMonth), pParty->uCurrentYear));
                 continue;
 
             case UIMSG_ShowStatus_Food: {
-                GameUI_StatusBar_Set(localization->FormatString(
-                    LSTR_FMT_YOU_HAVE_D_FOOD, pParty->GetFood()));
+                engine->_statusBar->setPermanent(LSTR_FMT_YOU_HAVE_D_FOOD, pParty->GetFood());
                 continue;
             }
 
             case UIMSG_ShowStatus_Player: {
                 Character *character = &pParty->pCharacters[uMessageParam - 1];
 
-                GameUI_StatusBar_Set(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
-                                                 localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
+                engine->_statusBar->setPermanent(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
+                                                            localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
 
                 _mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * uMessageParam - 8) | 4);
                 continue;
@@ -1793,9 +1784,9 @@ void Game::processQueuedMessages() {
             case UIMSG_ShowStatus_ManaHP: {
                 Character *character = &pParty->pCharacters[uMessageParam - 1];
 
-                GameUI_StatusBar_Set(fmt::format("{} / {} {}    {} / {} {}",
-                                                 character->GetHealth(), character->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
-                                                 character->GetMana(), character->GetMaxMana(), localization->GetString(LSTR_SPELL_POINTS)));
+                engine->_statusBar->setPermanent(fmt::format("{} / {} {}    {} / {} {}",
+                                                            character->GetHealth(), character->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
+                                                            character->GetMana(), character->GetMaxMana(), localization->GetString(LSTR_SPELL_POINTS)));
                 continue;
             }
 
@@ -2134,7 +2125,8 @@ void Game::gameLoop() {
             pEventTimer->Update();
             pMiscTimer->Update();
 
-            GameUI_StatusBar_Update();
+            _engine->_statusBar->update();
+
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
             if (pEventTimer->bTackGameTime && !pParty->bTurnBasedModeOn)
@@ -2153,10 +2145,7 @@ void Game::gameLoop() {
                 }
             }
             pAudioPlayer->UpdateSounds();
-            // expire timed status messages
-            if (game_ui_status_bar_event_string_expiration_time != 0 && game_ui_status_bar_event_string_expiration_time < platform->tickCount()) {
-                 GameUI_StatusBar_Clear();
-            }
+            _engine->_statusBar->update();
             if (uGameState == GAME_STATE_PLAYING) {
                 _engine->Draw();
                 continue;
@@ -2264,7 +2253,7 @@ void Game::gameLoop() {
                     pParty->pCharacters[playerId].playReaction(SPEECH_CHEATED_DEATH);
                 }
 
-                GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);
+                _engine->_statusBar->setEvent(LSTR_CHEATED_THE_DEATH);
                 uGameState = GAME_STATE_PLAYING;
 
                 // need to clear messages here??

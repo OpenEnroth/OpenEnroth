@@ -152,9 +152,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
     if (!eventId) {
-        if (!game_ui_status_bar_event_string_expiration_time) {
-            GameUI_SetStatusBar(LSTR_NOTHING_HERE);
-        }
+        engine->_statusBar->nothingHere();
         return;
     }
 

@@ -1051,7 +1051,7 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
     }
     AddGold(goldToGain - hirelingSalaries);
     if (status.length() > 0) {
-        GameUI_SetStatusBar(status);
+        engine->_statusBar->setEvent(status);
     }
 }
 

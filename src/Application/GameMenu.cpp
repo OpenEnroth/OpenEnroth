@@ -57,7 +57,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
         current_screen_type = SCREEN_GAME;
     } else {
-        GameUI_SetStatusBar(LSTR_START_NEW_GAME_PROMPT);
+        engine->_statusBar->setEvent(LSTR_START_NEW_GAME_PROMPT);
         pAudioPlayer->playUISound(SOUND_quest);
         confirmationState = CONFIRM_NEW_GAME;
     }
@@ -72,7 +72,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         pAudioPlayer->playUISound(SOUND_WoodDoorClosing);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
     } else {
-        GameUI_SetStatusBar(LSTR_EXIT_GAME_PROMPT);
+        engine->_statusBar->setEvent(LSTR_EXIT_GAME_PROMPT);
         pAudioPlayer->playUISound(SOUND_quest);
         confirmationState = CONFIRM_QUIT;
     }
@@ -82,7 +82,7 @@ void Game_OpenLoadGameDialog() {
     engine->_messageQueue->clear();
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
-    game_ui_status_bar_event_string_expiration_time = 0;
+    engine->_statusBar->clearEvent();
     // LoadUI_Load(1);
     current_screen_type = SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
@@ -172,7 +172,7 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 pGUIWindow_CurrentMenu->Release();
-                game_ui_status_bar_event_string_expiration_time = 0;
+                engine->_statusBar->clearEvent();
                 current_screen_type = SCREEN_SAVEGAME;
                 pGUIWindow_CurrentMenu = new GUIWindow_Save();
                 // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
@@ -482,7 +482,7 @@ void Menu::MenuLoop() {
         render->BeginScene2D();
         engine->DrawGUI();
         GUI_UpdateWindows();
-        GameUI_StatusBar_Draw();
+        engine->_statusBar->draw();
         render->Present();
 
         EventLoop();

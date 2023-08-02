@@ -286,12 +286,12 @@ void DoSavegame(unsigned int uSlot) {
     }
 
     if (pCurrentMapName == "d05.blv")
-        GameUI_SetStatusBar(LSTR_NO_SAVING_IN_ARENA);
+        engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
 
     // TODO(captainurist): This ^v doesn't seem right, need an else block?
 
     pEventTimer->Resume();
-    GameUI_SetStatusBar(LSTR_GAME_SAVED);
+    engine->_statusBar->setEvent(LSTR_GAME_SAVED);
 }
 
 void SavegameList::Initialize() {

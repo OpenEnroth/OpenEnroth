@@ -3279,9 +3279,9 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (engine->config->settings.ShowHits.value()) {
             if (projectileSprite)
-                GameUI_SetStatusBar(LSTR_FMT_S_SHOOTS_S_FOR_U, character->name, pMonster->name, uDamageAmount);
+                engine->_statusBar->setEvent(LSTR_FMT_S_SHOOTS_S_FOR_U, character->name, pMonster->name, uDamageAmount);
             else
-                GameUI_SetStatusBar(LSTR_FMT_S_HITS_S_FOR_U, character->name, pMonster->name, uDamageAmount);
+                engine->_statusBar->setEvent(LSTR_FMT_S_HITS_S_FOR_U, character->name, pMonster->name, uDamageAmount);
         }
     } else {
         Actor::Die(uActorID_Monster);
@@ -3296,7 +3296,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         }
         character->playReaction(speech);
         if (engine->config->settings.ShowHits.value()) {
-            GameUI_SetStatusBar(LSTR_FMT_S_INFLICTS_U_KILLING_S, character->name, uDamageAmount, pMonster->name);
+            engine->_statusBar->setEvent(LSTR_FMT_S_INFLICTS_U_KILLING_S, character->name, uDamageAmount, pMonster->name);
         }
     }
     if (pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
@@ -3310,11 +3310,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
             extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
         pMonster->monsterInfo.uRecoveryTime += extraRecoveryTime;
         if (engine->config->settings.ShowHits.value()) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_S_STUNS_S,
-                character->name,
-                pMonster->name
-            );
+            engine->_statusBar->setEvent(LSTR_FMT_S_STUNS_S, character->name, pMonster->name);
         }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
@@ -3323,11 +3319,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         GameTime v46 = GameTime(0, maceSkill.level());  // ??
         pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_S_PARALYZES_S,
-                character->name,
-                pMonster->name
-            );
+            engine->_statusBar->setEvent(LSTR_FMT_S_PARALYZES_S, character->name, pMonster->name);
         }
     }
     if (knockbackValue > 10) knockbackValue = 10;
@@ -3688,9 +3680,9 @@ bool CheckActors_proximity() {
 
 void StatusBarItemFound(int num_gold_found, const std::string &item_unidentified_name) {
     if (num_gold_found != 0) {
-        GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM, num_gold_found, item_unidentified_name);
+        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM, num_gold_found, item_unidentified_name);
     } else {
-        GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, item_unidentified_name);
+        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, item_unidentified_name);
     }
 }
 

@@ -11,81 +11,68 @@
 
 #include "GUI/UI/UIGame.h"
 
-void GameUI_StatusBar_Set(const std::string &str) {
-    if (str.length() > 0) {
-        if (!game_ui_status_bar_event_string_expiration_time) {
-            game_ui_status_bar_string = str;
-        }
-    }
-}
-
-const std::string &GameUI_StatusBar_Get() {
-    if (game_ui_status_bar_event_string_expiration_time) {
-        return game_ui_status_bar_event_string;
+const std::string &StatusBar::get() {
+    if (_eventStatusExpireTime) {
+        return _eventStatusString;
     } else {
-        return game_ui_status_bar_string;
+        return _statusString;
     }
 }
 
-void GameUI_StatusBar_Clear() {
-    game_ui_status_bar_string.clear();
-    GameUI_StatusBar_ClearEventString();
-}
-
-//----- (00448B45) --------------------------------------------------------
-void GameUI_StatusBar_Update(bool force_hide) {
-    if (force_hide ||
-        game_ui_status_bar_event_string_expiration_time &&
-        platform->tickCount() >= game_ui_status_bar_event_string_expiration_time && !pEventTimer->bPaused) {
-        game_ui_status_bar_event_string_expiration_time = 0;
-    }
-}
-
-void GameUI_StatusBar_OnEvent_Internal(const std::string &str, unsigned int ms) {
-    game_ui_status_bar_event_string = str;
-    game_ui_status_bar_event_string_expiration_time = platform->tickCount() + ms;
-}
-
-void GameUI_SetStatusBar(const std::string &str) {
-    GameUI_StatusBar_OnEvent_Internal(str, 2 * 1000);
-}
-
-void GameUI_SetStatusBarShortNotification(const std::string &str) {
-    GameUI_StatusBar_OnEvent_Internal(str, 128);
-}
-
-void GameUI_StatusBar_ClearEventString() {
-    game_ui_status_bar_event_string.clear();
-    game_ui_status_bar_event_string_expiration_time = 0;
-}
-
-void GameUI_StatusBar_OnInput(const std::string &str) {
-    game_ui_status_bar_event_string = std::string(str);
-}
-
-std::string GameUI_StatusBar_GetInput() { return game_ui_status_bar_event_string; }
-
-void GameUI_StatusBar_ClearInputString() {
-    game_ui_status_bar_event_string.clear();
-    game_ui_status_bar_event_string_expiration_time = 0;
-}
-
-void GameUI_StatusBar_NothingHere() {
-    if (game_ui_status_bar_event_string_expiration_time == 0) {
-        GameUI_SetStatusBar(LSTR_NOTHING_HERE);
-    }
-}
-
-void GameUI_StatusBar_Draw() {
+void StatusBar::draw() {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
 
-    const std::string &status = GameUI_StatusBar_Get();
+    const std::string &status = get();
     if (status.length() > 0) {
         pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, uGameUIFontShadow);
     }
 }
 
-void GameUI_StatusBar_DrawImmediate(const std::string &str, Color color) {
+void StatusBar::drawForced(const std::string &str, Color color) {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str);
+}
+
+void StatusBar::update() {
+    // Was also checking that event timer is not stopped
+    if (_eventStatusExpireTime && platform->tickCount() >= _eventStatusExpireTime) {
+        _eventStatusExpireTime = 0;
+    }
+}
+
+void StatusBar::setPermanent(const std::string &str) {
+    if (str.length() > 0) {
+        if (_eventStatusExpireTime == 0) {
+            _statusString = str;
+        }
+    }
+}
+
+void StatusBar::clearPermanent() {
+    _statusString.clear();
+}
+
+void StatusBar::clearAll() {
+    _statusString.clear();
+    clearEvent();
+}
+
+void StatusBar::setEvent(const std::string &str) {
+    _eventStatusString = str;
+    _eventStatusExpireTime = platform->tickCount() + EVENT_DURATION;
+}
+
+void StatusBar::setEventShort(const std::string &str) {
+    _eventStatusString = str;
+    _eventStatusExpireTime = platform->tickCount() + EVENT_DURATION_SHORT;
+}
+
+void StatusBar::clearEvent() {
+    _eventStatusExpireTime = 0;
+}
+
+void StatusBar::nothingHere() {
+    if (_eventStatusExpireTime == 0) {
+        setEvent(LSTR_NOTHING_HERE);
+    }
 }

@@ -1,5 +1,6 @@
 #include "GUI/UI/UIInventory.h"
 
+#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 
 #include "Engine/Graphics/IRender.h"
@@ -39,7 +40,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Si
     GUIWindow(WINDOW_CastSpell_InInventory, position, dimensions, spellInfo, hint) {
     mouse->SetCursorImage("MICON2");
     pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-    GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
+    engine->_statusBar->setEvent(LSTR_CHOOSE_TARGET);
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = SCREEN_CASTING;
 }

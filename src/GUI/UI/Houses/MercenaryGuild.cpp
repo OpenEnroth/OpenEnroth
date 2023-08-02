@@ -62,7 +62,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
         } else {
             int  v27;
             if (pParty->GetGold() < pPrice) {
-                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
                 v27 = 4;
             } else {
                 pParty->TakeGold(pPrice);

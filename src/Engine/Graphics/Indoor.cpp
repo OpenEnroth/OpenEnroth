@@ -1438,7 +1438,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     if (pParty->hasActiveCharacter()) {
                         InteractWithActor(id);
                     } else {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                     }
                 }
             }
@@ -1449,7 +1449,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             if (pParty->hasActiveCharacter()) {
                 DecorationInteraction(id, pid);
             } else {
-                GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
             break;
 
@@ -1471,11 +1471,11 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                 if (pParty->hasActiveCharacter()) {
                     eventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID, pid, 1);
                 } else {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
             } else {
                 if (!(pIndoor->pFaces[id].uAttributes & FACE_CLICKABLE)) {
-                    GameUI_StatusBar_NothingHere();
+                    engine->_statusBar->nothingHere();
                     return 1;
                 }
                 if (pIndoor->pFaces[id].uAttributes & FACE_HAS_EVENT || !pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID) {
@@ -1485,7 +1485,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                 if (pParty->hasActiveCharacter()) {
                     eventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, pid, 1);
                 } else {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
             }
             return 0;

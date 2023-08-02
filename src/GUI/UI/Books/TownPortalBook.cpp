@@ -174,5 +174,5 @@ void GUIWindow_TownPortalBook::hintTown(int townId) {
         return;
     }
 
-    GameUI_StatusBar_Set(localization->FormatString(LSTR_TOWN_PORTAL_TO_S, pMapStats->pInfos[townPortalList[townId].mapInfoID].pName));
+    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, pMapStats->pInfos[townPortalList[townId].mapInfoID].pName);
 }

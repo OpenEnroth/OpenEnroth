@@ -47,6 +47,8 @@ std::array<GraphicsImage *, 22> ui_partycreation_portraits;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
 
+int64_t errorMessageExpireTime; // expiration time (platform time) of error message
+
 static const int ARROW_SPIN_PERIOD_MS = 475;
 
 bool PartyCreationUI_LoopInternal();
@@ -192,12 +194,11 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
-            if (CharacterCreation_GetUnspentAttributePointCount() ||
-                !PlayerCreation_Choose4Skills())
-                game_ui_status_bar_event_string_expiration_time =
-                    platform->tickCount() + 4000;
-            else
+            if (CharacterCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills()) {
+                errorMessageExpireTime = platform->tickCount() + 4000; // show message for 4 seconds
+            } else {
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
+            }
             break;
         case UIMSG_PlayerCreationClickReset:
             new OnButtonClick2({527, 431}, {0, 0}, pPlayerCreationUI_BtnReset);
@@ -575,10 +576,10 @@ void GUIWindow_PartyCreation::Update() {
     pBonusNum = CharacterCreation_GetUnspentAttributePointCount();
 
     auto unspent_attribute_bonus_label = fmt::format("{}", pBonusNum);
-    pTextCenter =
-        pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
+    pTextCenter = pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label);
-    if (game_ui_status_bar_event_string_expiration_time > platform->tickCount()) {
+
+    if (errorMessageExpireTime > platform->tickCount()) {
         GUIWindow message_window;
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)

@@ -86,14 +86,14 @@ void GUIWindow_Training::trainDialogue() {
                 }
                 pParty->activeCharacter().playReaction(SPEECH_LEVEL_UP);
 
-                GameUI_SetStatusBar(LSTR_FMT_S_NOW_LEVEL_D, pParty->activeCharacter().name,
+                engine->_statusBar->setEvent(LSTR_FMT_S_NOW_LEVEL_D, pParty->activeCharacter().name,
                                     pParty->activeCharacter().uLevel, pParty->activeCharacter().uLevel / 10 + 5);
 
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 return;
             }
 
-            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+            engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
             playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;

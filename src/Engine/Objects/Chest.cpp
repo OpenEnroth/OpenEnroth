@@ -182,7 +182,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
             ///////////////////////////////////////////////
             // normal picking
 
-            GameUI_StatusBar_Set(item->GetDisplayName());
+            engine->_statusBar->setPermanent(item->GetDisplayName());
             uLastPointedObjectID = Pid::dummy();
             return 1;
 
@@ -231,7 +231,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
                     pixels += pix_chk_x + pix_chk_y*imgwidth;
 
                     if (*pixels & 0xFF000000) {
-                            GameUI_StatusBar_Set(item->GetDisplayName());
+                            engine->_statusBar->setPermanent(item->GetDisplayName());
                             uLastPointedObjectID = 1;
                             return 1;
                     }
@@ -516,7 +516,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
                 memcpy(&pParty->activeCharacter().pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
                 grabcount++;
-                GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.uItemID].pUnidentifiedName);
+                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.uItemID].pUnidentifiedName);
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
@@ -530,10 +530,10 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
     }
 
     if (grabcount > 1 || goldcount > 1) {  // found items
-        GameUI_SetStatusBar(fmt::format("You found {} item(s) and {} Gold!", grabcount, goldamount));
+        engine->_statusBar->setEvent(fmt::format("You found {} item(s) and {} Gold!", grabcount, goldamount));
     }
     if (grabcount == 0 && goldcount == 0) {
-        GameUI_SetStatusBar(LSTR_NOTHING_HERE);
+        engine->_statusBar->setEvent(LSTR_NOTHING_HERE);
     }
 }
 

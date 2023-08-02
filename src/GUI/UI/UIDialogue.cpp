@@ -497,6 +497,10 @@ void GUIWindow_GenericDialogue::Update() {
     pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, colorTable.White,
         pFont->FitTextInAWindow(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12));
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+
+    // TODO(Nik-RE-dev): this code related to text input in MM6/MM8, revisit
+    // this functionality when it's time to support it.
+#if 0
     if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
         if (pGUIWindow_BranchlessDialogue->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
             pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
@@ -518,11 +522,11 @@ void GUIWindow_GenericDialogue::Update() {
         pGUIWindow_BranchlessDialogue->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;
     }
+#endif
 
     // Close branchless dialog on any keypress
     if (!keyboardInputHandler->GetTextInput().empty()) {
         keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-        GameUI_StatusBar_ClearInputString();
         ReleaseBranchlessDialogue();
         return;
     }
@@ -602,12 +606,12 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             return;
         }
         if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
-            GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
+            engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
         } else {
             if (speakingNPC->profession != Burglar) {
                 // burglars have no hiring price
                 if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->profession].uHirePrice) {
-                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
                     uDialogueType = DIALOGUE_13_hiring_related;
                     if (pParty->hasActiveCharacter()) {
@@ -652,7 +656,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             }
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         } else {
-            GameUI_SetStatusBar(LSTR_RATIONS_FULL);
+            engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
         }
     } else if (option == DIALOGUE_13_hiring_related) {
         if (!speakingNPC->Hired()) {
