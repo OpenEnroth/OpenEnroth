@@ -71,29 +71,28 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
 
         #TODO: remove that workaround once dependencies archives are updated
         set(DEP_PLATFORM ${BUILD_PLATFORM})
-        if (BUILD_PLATFORM STREQUAL "windows")
+        if (WIN32)
             set(DEP_PLATFORM "win32")
+        elseif(APPLE)
+            set(DEP_PLATFORM "macos")
+        elseif(Linux)
+            set(DEP_PLATFORM "linux")
+        else()
+            MESSAGE(STATUS "Unknown platform for preguild dependencies.")
         endif()
 
         set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
         set(LIBRARY_DIR "${LIB_DIR}/${DEP_PLATFORM}/${BUILD_TYPE}")
 
-        set(DEPS_ZIP_FILENAME "all_deps_${DEP_PLATFORM}_${BUILD_TYPE}.zip")
+        set(DEPS_ZIP_FILENAME "${DEP_PLATFORM}_${BUILD_TYPE}_${CMAKE_BUILD_TYPE}.zip")
         set(DEPS_ZIP_FULL_PATH "${LIB_DIR}/${DEPS_ZIP_FILENAME}")
-        if(BUILD_PLATFORM STREQUAL "windows" AND BUILD_TYPE STREQUAL "x64")
-            set(DEPS_ZIP_MD5_CHECKSUM "02cbd9b53a221f6014528305c1d1f728")
-        elseif(BUILD_PLATFORM STREQUAL "windows" AND BUILD_TYPE STREQUAL "x86")
-            set(DEPS_ZIP_MD5_CHECKSUM "1f6c8a2eb0394cb2eb72670db1af7432")
-        else()
-            message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE} are not available!")
-        endif()
-
+        
         # resolve 3d party libs
         if(NOT EXISTS "${LIBRARY_DIR}")
             if(NOT EXISTS "${DEPS_ZIP_FULL_PATH}")
                 MESSAGE(STATUS "Downloading dependencies: ${DEPS_ZIP_FILENAME}")
                 file(DOWNLOAD
-                        "https://github.com/gp-alex/world-of-might-and-magic-deps/raw/e1f68f71952c7736e119c8f226d177aade6dd202/${DEPS_ZIP_FILENAME}"
+                        "https://github.com/botanicvelious/OpenEnroth/releases/download/nightly/${DEPS_ZIP_FILENAME}"
                         "${DEPS_ZIP_FULL_PATH}"
                         SHOW_PROGRESS
                         STATUS DOWNLOAD_STATUS
