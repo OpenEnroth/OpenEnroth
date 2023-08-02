@@ -2398,7 +2398,7 @@ char byte_4FAA24;  // turn over break??
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
 
-int uLastPointedObjectID;
+Pid uLastPointedObjectID;
 int KeyboardPageNum;
 //int dword_506F1C;
 Color uGameUIFontShadow;
@@ -2450,9 +2450,8 @@ int npcIdToDismissAfterDialogue;
 // TODO(pskelton): GameStatusBar class
 std::string game_ui_status_bar_event_string;
 std::string game_ui_status_bar_string;
-unsigned int game_ui_status_bar_event_string_time_left; // this is platform->tickcount till elapsed
+unsigned int game_ui_status_bar_event_string_expiration_time;
 
-int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
 

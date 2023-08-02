@@ -253,7 +253,6 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
-                v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
                 v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
@@ -293,7 +292,6 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
-                v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
                 v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
@@ -303,7 +301,6 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
-                v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
                 v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(

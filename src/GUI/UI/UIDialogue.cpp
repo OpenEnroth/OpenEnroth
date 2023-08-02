@@ -400,7 +400,7 @@ void GUIWindow_Dialogue::Update() {
                     pActors[i].aiState == Disabled) {
                     ++num_dead_actors;
                 } else {
-                    ObjectType sumonner_type = PID_TYPE(pActors[i].summonerId);
+                    ObjectType sumonner_type = pActors[i].summonerId.type();
                     if (sumonner_type == OBJECT_Character) ++num_dead_actors;
                 }
             }

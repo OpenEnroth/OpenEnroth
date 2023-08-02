@@ -1345,8 +1345,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         int v49 = 0;
         float v4 = 0.0f;
         if (pActors[i].aiState == Summoned) {
-            if (PID_TYPE(pActors[i].summonerId) != OBJECT_Actor ||
-                pActors[PID_ID(pActors[i].summonerId)]
+            if (pActors[i].summonerId.type() != OBJECT_Actor ||
+                pActors[pActors[i].summonerId.id()]
                 .monsterInfo.uSpecialAbilityDamageDiceSides != 1) {
                 z += floorf(pActors[i].height * 0.5f + 0.5f);
             } else {
@@ -1432,7 +1432,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
@@ -2148,25 +2148,24 @@ void ODM_ProcessPartyActions() {
         partyNewX = new_pos_low_x;
         partyNewY = new_pos_low_y;
         partyNewZ = new_pos_low_z;
-        int collisionPID = collision_state.pid;
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
+        if (collision_state.pid.type() == OBJECT_Actor) {
             if (pParty->Invisible())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+        if (collision_state.pid.type() == OBJECT_Decoration) {
             int atanDecoration = TrigLUT.atan2(
-                new_pos_low_x - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.x,
-                new_pos_low_y - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.y);
+                new_pos_low_x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
+                new_pos_low_y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
             partyInputXSpeed = TrigLUT.cos(atanDecoration) * integer_sqrt(partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed);
             partyInputYSpeed = TrigLUT.sin(atanDecoration) * integer_sqrt(partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed);
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
+        if (collision_state.pid.type() == OBJECT_Face) {
             partyHasHitModel = true;
-            BSPModel *pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
-            ODMFace *pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
+            const BSPModel *pModel = &pOutdoor->model(collision_state.pid);
+            const ODMFace *pODMFace = &pOutdoor->face(collision_state.pid);
             int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
             bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
@@ -2178,8 +2177,8 @@ void ODM_ProcessPartyActions() {
                 partyInputYSpeed = 0;
             }
 
-            if (pParty->floor_face_id != PID_ID(collisionPID) && pODMFace->Pressure_Plate()) {
-                pParty->floor_face_id = PID_ID(collisionPID);
+            if (pParty->floor_face_id != collision_state.pid.id() && pODMFace->Pressure_Plate()) {
+                pParty->floor_face_id = collision_state.pid.id();
                 triggerID = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
             }
 

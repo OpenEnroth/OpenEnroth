@@ -62,7 +62,7 @@ void checkDecorationEvents() {
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
             if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange) {
-                eventProcessor(decoration.uEventID, PID(OBJECT_Decoration, decorationId), 1);
+                eventProcessor(decoration.uEventID, Pid(OBJECT_Decoration, decorationId), 1);
             }
         }
 
@@ -152,7 +152,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
     if (!eventId) {
-        if (!game_ui_status_bar_event_string_time_left) {
+        if (!game_ui_status_bar_event_string_expiration_time) {
             GameUI_SetStatusBar(LSTR_NOTHING_HERE);
         }
         return;

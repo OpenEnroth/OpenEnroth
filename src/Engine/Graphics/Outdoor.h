@@ -145,7 +145,7 @@ struct OutdoorLocation {
     OutdoorLocationTerrain pTerrain;
     std::array<uint16_t, 128 * 128> pCmap; // Unused
     std::vector<BSPModel> pBModels;
-    std::vector<uint16_t> pFaceIDLIST;
+    std::vector<Pid> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;
     GraphicsImage *sky_texture = nullptr;        // signed int sSky_TextureID;
     int16_t field_F0;

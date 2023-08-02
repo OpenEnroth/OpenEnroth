@@ -17,6 +17,7 @@
  * the engine has 100% freedom to change data layout without breaking backward compatibility.
  */
 
+class Pid;
 class Actor;
 class Character;
 class Icon;
@@ -69,6 +70,11 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3i)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3f)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Planef)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs)
+
+
+void snapshot(const Pid &src, uint16_t *dst);
+void reconstruct(uint16_t src, Pid *dst);
+
 
 #pragma pack(push, 1)
 

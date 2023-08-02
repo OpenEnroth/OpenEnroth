@@ -1027,8 +1027,8 @@ GAME_TEST(Issues, Issue651) {
     test->playTraceFromTestData("issue_651.mm7", "issue_651.json");
     // check for valid pids
     for (auto &obj : pSpriteObjects) {
-        ObjectType castertype = PID_TYPE(obj.spell_caster_pid);
-        int casterid = PID_ID(obj.spell_caster_pid);
+        ObjectType castertype = obj.spell_caster_pid.type();
+        int casterid = obj.spell_caster_pid.id();
         if (castertype == OBJECT_Actor) {
             EXPECT_TRUE(casterid < pActors.size());
         }
@@ -1393,7 +1393,7 @@ GAME_TEST(Issues, Issue830) {
     // Mouseover hints for UI elements not showing
     game->startNewGame();
     game->tick(1);
-    game_ui_status_bar_event_string_time_left = 0;
+    game_ui_status_bar_event_string_expiration_time = 0;
     // Portrait: Name and conditions of the character
     game->moveMouse(65, 424);
     game->tick(1);

@@ -3,7 +3,7 @@
 
 class GUIWindow_TownPortalBook : public GUIWindow_Book {
  public:
-    explicit GUIWindow_TownPortalBook(int casterPid);
+    explicit GUIWindow_TownPortalBook(Pid casterPid);
     virtual ~GUIWindow_TownPortalBook() {}
 
     virtual void Update() override;
@@ -12,5 +12,5 @@ class GUIWindow_TownPortalBook : public GUIWindow_Book {
     void hintTown(int townId);
 
  private:
-    int _casterPid;
+    Pid _casterPid;
 };

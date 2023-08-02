@@ -294,16 +294,16 @@ void Engine::onGameViewportClick() {
     // else
     //  v0 = render->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
 
-    if (PID_TYPE(pid) == OBJECT_Item) {
-        int item_id = PID_ID(pid);
+    if (pid.type() == OBJECT_Item) {
+        int item_id = pid.id();
         // v21 = (signed int)(uint16_t)v0 >> 3;
         if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
             pParty->dropHeldItem();
         } else {
             ItemInteraction(item_id);
         }
-    } else if (PID_TYPE(pid) == OBJECT_Actor) {
-        int mon_id = PID_ID(pid);
+    } else if (pid.type() == OBJECT_Actor) {
+        int mon_id = pid.id();
 
         if (pActors[mon_id].aiState == Dead) {
             if (in_range) {
@@ -341,8 +341,8 @@ void Engine::onGameViewportClick() {
         } else {
             pAudioPlayer->playUISound(SOUND_error);
         }
-    } else if (PID_TYPE(pid) == OBJECT_Decoration) {
-        int id = PID_ID(pid);
+    } else if (pid.type() == OBJECT_Decoration) {
+        int id = pid.id();
         if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
             if (pParty->hasActiveCharacter()) {
                 // Do not interact with decoration with no active character
@@ -353,11 +353,11 @@ void Engine::onGameViewportClick() {
         } else {
             pParty->dropHeldItem();
         }
-    } else if (PID_TYPE(pid) == OBJECT_Face && in_range) {
+    } else if (pid.type() == OBJECT_Face && in_range) {
         int eventId = 0;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            if (!pIndoor->pFaces[PID_ID(pid)].Clickable()) {
+            if (!pIndoor->pFaces[pid.id()].Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {
                     GameUI_StatusBar_NothingHere();
                 } else {
@@ -365,10 +365,10 @@ void Engine::onGameViewportClick() {
                 }
                 return;
             } else {
-                eventId = pIndoor->pFaceExtras[pIndoor->pFaces[PID_ID(pid)].uFaceExtraID].uEventID;
+                eventId = pIndoor->pFaceExtras[pIndoor->pFaces[pid.id()].uFaceExtraID].uEventID;
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-            ODMFace &model = pOutdoor->pBModels[(pid) >> 9].pFaces[PID_ID(pid) & 0x3F];
+            const ODMFace &model = pOutdoor->face(pid);
             if (!model.Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {
                     GameUI_StatusBar_NothingHere();

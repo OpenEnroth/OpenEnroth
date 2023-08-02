@@ -22,10 +22,10 @@ extern std::vector<AttackDescription> attackList;  // for area of effect damage
 /**
  * Register damaging AOE spell impact.
  *
- * @param   pid            PID of an AOE spell
- * @param   aoeDistance    Damaging distance of spell relative to point of impact
- * @param   pos            Point of impact
- * @param   ability        ???
+ * @param pid                           `Pid` of an AOE spell.
+ * @param aoeDistance                   Damaging distance of spell relative to point of impact.
+ * @param pos                           Point of impact.
+ * @param ability                       ???
  * @offset 0x40261D
  */
 extern void pushAoeAttack(Pid pid, int aoeDistance, Vec3i pos, ABILITY_INDEX ability);
@@ -33,8 +33,8 @@ extern void pushAoeAttack(Pid pid, int aoeDistance, Vec3i pos, ABILITY_INDEX abi
 /**
  * Register melee attack performed by an actor.
  *
- * @param   pid            PID of attacker
- * @param   pos            Position of an attacker
- * @param   ability        ???
+ * @param pid                           `Pid` of attacker.
+ * @param pos                           Position of an attacker.
+ * @param ability                       ???
  */
 extern void pushMeleeAttack(Pid pid, Vec3i pos, ABILITY_INDEX ability);

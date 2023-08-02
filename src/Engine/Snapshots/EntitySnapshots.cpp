@@ -143,7 +143,7 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
 // Note: IndexedBitset snapshots are very MM-specific, so they stay here instead of going to Library/Snapshots.
 
 template<class T, size_t N, auto L, auto H>
-void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
+static void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
     assert(dst->size() * sizeof(T) * 8 == src.size());
     size_t i = 1, j = 0;
     while (i < src.size()) {
@@ -158,7 +158,7 @@ void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
 }
 
 template<class T, size_t N, auto L, auto H>
-void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
+static void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
     assert(dst->size() == src.size() * sizeof(T) * 8);
     size_t i = 1, j = 0;
     while (i < dst->size()) {
@@ -169,6 +169,14 @@ void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
         }
         j++;
     }
+}
+
+void snapshot(const Pid &src, uint16_t *dst) {
+    *dst = src.packed();
+}
+
+void reconstruct(uint16_t src, Pid *dst) {
+    *dst = Pid::fromPacked(src);
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
@@ -309,7 +317,7 @@ void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
     dst->screenSpaceY = src.screenSpaceY;
-    dst->pid = src.pid;
+    dst->pid = src.pid.packed();
     dst->projSize = src.projSize;
     dst->fpDamageMod = src.fpDamageMod;
 }
@@ -322,7 +330,7 @@ void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
     dst->screenSpaceY = src.screenSpaceY;
-    dst->pid = src.pid;
+    dst->pid = Pid::fromPacked(src.pid);
     dst->projSize = src.projSize;
     dst->fpDamageMod = src.fpDamageMod;
 }
@@ -1181,8 +1189,8 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
 
     snapshot(src.scheduledJobs, &dst->pScheduledJobs);
 
-    dst->uSummonerID = src.summonerId;
-    dst->uLastCharacterIDToHit = src.lastCharacterIdToHit;
+    dst->uSummonerID = src.summonerId.packed();
+    dst->uLastCharacterIDToHit = src.lastCharacterIdToHit.packed();
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
 }
 
@@ -1275,8 +1283,8 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
 
     reconstruct(src.pScheduledJobs, &dst->scheduledJobs);
 
-    dst->summonerId = src.uSummonerID;
-    dst->lastCharacterIdToHit = src.uLastCharacterIDToHit;
+    dst->summonerId = Pid::fromPacked(src.uSummonerID);
+    dst->lastCharacterIdToHit = Pid::fromPacked(src.uLastCharacterIDToHit);
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
 }
 
@@ -1461,8 +1469,8 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->spell_level = src.spell_level;
     dst->spell_skill = std::to_underlying(src.spell_skill);
     dst->field_54 = src.field_54;
-    dst->spell_caster_pid = src.spell_caster_pid;
-    dst->spell_target_pid = src.spell_target_pid;
+    dst->spell_caster_pid = src.spell_caster_pid.packed();
+    dst->spell_target_pid = src.spell_target_pid.packed();
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = std::to_underlying(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
@@ -1486,7 +1494,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
     dst->field_54 = src.field_54;
     dst->spell_caster_pid = Pid::fromPacked(src.spell_caster_pid);
-    dst->spell_target_pid = src.spell_target_pid;
+    dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = static_cast<ABILITY_INDEX>(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;

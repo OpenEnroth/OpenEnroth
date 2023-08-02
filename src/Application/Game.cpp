@@ -393,7 +393,7 @@ void Game::closeTargetedSpellWindow() {
             pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
             pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
             _mouse->SetCursorImage("MICON1");
-            game_ui_status_bar_event_string_time_left = 0;
+            game_ui_status_bar_event_string_expiration_time = 0;
             IsEnchantingInProgress = false;
             back_to_game();
         }
@@ -674,7 +674,7 @@ void Game::processQueuedMessages() {
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
                         _mouse->SetCursorImage("MICON1");
-                        game_ui_status_bar_event_string_time_left = 0;
+                        game_ui_status_bar_event_string_expiration_time = 0;
                         IsEnchantingInProgress = false;
                         back_to_game();
                     }
@@ -1038,8 +1038,8 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
                 Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
-                ObjectType type = PID_TYPE(pid);
-                int id = PID_ID(pid);
+                ObjectType type = pid.type();
+                int id = pid.id();
                 bool interactionPossible = false;
                 if (type == OBJECT_Actor) {
                     interactionPossible = pActors[id].aiState == Dead;
@@ -1110,7 +1110,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(uMessageParam);
+                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(Pid::fromPacked(uMessageParam));
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:
@@ -1246,7 +1246,7 @@ void Game::processQueuedMessages() {
             case UIMSG_CastSpell_TargetActor: {
                 Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
                 int depth = _vis->get_picked_object_zbuf_val().depth;
-                if (PID_TYPE(pid) == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
+                if (pid.type() == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
                     spellTargetPicked(pid, -1);
                     closeTargetedSpellWindow();
                 }
@@ -1786,7 +1786,7 @@ void Game::processQueuedMessages() {
                 GameUI_StatusBar_Set(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
                                                  localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
 
-                _mouse->uPointingObjectID = PID(OBJECT_Character, (unsigned char)(8 * uMessageParam - 8) | 4);
+                _mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * uMessageParam - 8) | 4);
                 continue;
             }
 
@@ -2154,7 +2154,7 @@ void Game::gameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
-            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
+            if (game_ui_status_bar_event_string_expiration_time != 0 && game_ui_status_bar_event_string_expiration_time < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }
             if (uGameState == GAME_STATE_PLAYING) {

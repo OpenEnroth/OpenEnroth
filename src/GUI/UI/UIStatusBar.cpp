@@ -1,6 +1,4 @@
-#include <stdarg.h>
-
-#include "GUI/UI/UIStatusBar.h"
+#include "UIStatusBar.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -15,14 +13,14 @@
 
 void GameUI_StatusBar_Set(const std::string &str) {
     if (str.length() > 0) {
-        if (!game_ui_status_bar_event_string_time_left) {
+        if (!game_ui_status_bar_event_string_expiration_time) {
             game_ui_status_bar_string = str;
         }
     }
 }
 
 const std::string &GameUI_StatusBar_Get() {
-    if (game_ui_status_bar_event_string_time_left) {
+    if (game_ui_status_bar_event_string_expiration_time) {
         return game_ui_status_bar_event_string;
     } else {
         return game_ui_status_bar_string;
@@ -37,15 +35,15 @@ void GameUI_StatusBar_Clear() {
 //----- (00448B45) --------------------------------------------------------
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
-        game_ui_status_bar_event_string_time_left &&
-        platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
-        game_ui_status_bar_event_string_time_left = 0;
+        game_ui_status_bar_event_string_expiration_time &&
+        platform->tickCount() >= game_ui_status_bar_event_string_expiration_time && !pEventTimer->bPaused) {
+        game_ui_status_bar_event_string_expiration_time = 0;
     }
 }
 
 void GameUI_StatusBar_OnEvent_Internal(const std::string &str, unsigned int ms) {
     game_ui_status_bar_event_string = str;
-    game_ui_status_bar_event_string_time_left = platform->tickCount() + ms;
+    game_ui_status_bar_event_string_expiration_time = platform->tickCount() + ms;
 }
 
 void GameUI_SetStatusBar(const std::string &str) {
@@ -58,7 +56,7 @@ void GameUI_SetStatusBarShortNotification(const std::string &str) {
 
 void GameUI_StatusBar_ClearEventString() {
     game_ui_status_bar_event_string.clear();
-    game_ui_status_bar_event_string_time_left = 0;
+    game_ui_status_bar_event_string_expiration_time = 0;
 }
 
 void GameUI_StatusBar_OnInput(const std::string &str) {
@@ -69,20 +67,12 @@ std::string GameUI_StatusBar_GetInput() { return game_ui_status_bar_event_string
 
 void GameUI_StatusBar_ClearInputString() {
     game_ui_status_bar_event_string.clear();
-    game_ui_status_bar_event_string_time_left = 0;
+    game_ui_status_bar_event_string_expiration_time = 0;
 }
 
 void GameUI_StatusBar_NothingHere() {
-    if (game_ui_status_bar_event_string_time_left == 0) {
+    if (game_ui_status_bar_event_string_expiration_time == 0) {
         GameUI_SetStatusBar(LSTR_NOTHING_HERE);
-    }
-}
-
-void GameUI_StatusBar_DrawForced() {
-    if (game_ui_status_bar_string.length() > 0 ||
-        game_ui_status_bar_event_string_time_left || bForceDrawFooter) {
-        bForceDrawFooter = false;
-        GameUI_StatusBar_Draw();
     }
 }
 

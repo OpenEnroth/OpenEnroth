@@ -5,19 +5,14 @@
 
 #include "Utility/Workaround/ToUnderlying.h"
 
-#define PID(type, id) (Pid(type, id))  // packed id
-#define PID_TYPE(pid) (detail::pidType(pid))          // extract type
-#define PID_ID(pid) (detail::pidId(pid))  // extract value
-#define PID_INVALID (uint16_t(-1))
-
 enum class ObjectType {
     OBJECT_None = 0x0,
-    OBJECT_Door = 0x1,          // PID_ID is index in pIndoor->pDoors.
-    OBJECT_Item = 0x2,          // PID_ID is index in pSpriteObjects array. Note that not all sprite objects are items.
-    OBJECT_Actor = 0x3,         // PID_ID is index in pActors array.
-    OBJECT_Character = 0x4,     // PID_ID is character index in [0..3].
-    OBJECT_Decoration = 0x5,    // PID_ID is index in pLevelDecorations array.
-    OBJECT_Face = 0x6,          // PID_ID is ((model_id << 6) + face_id) outdoors, face_id indoors.
+    OBJECT_Door = 0x1,          // Pid id is index in pIndoor->pDoors.
+    OBJECT_Item = 0x2,          // Pid id is index in pSpriteObjects array. Note that not all sprite objects are items.
+    OBJECT_Actor = 0x3,         // Pid id is index in pActors array.
+    OBJECT_Character = 0x4,     // Pid id is character index in [0..3].
+    OBJECT_Decoration = 0x5,    // Pid id is index in pLevelDecorations array.
+    OBJECT_Face = 0x6,          // Pid id is ((model_id << 6) + face_id) outdoors, face_id indoors.
     OBJECT_Light = 0x7,
 };
 using enum ObjectType;
@@ -68,6 +63,13 @@ class Pid {
         return Pid(OBJECT_Face, id);
     }
 
+    /**
+     * @return                          A dummy `Pid` that's valid, but doesn't represent any object.
+     */
+    static constexpr Pid dummy() {
+        return Pid(OBJECT_Light, ID_MAX);
+    }
+
     static constexpr Pid fromPacked(uint16_t value) {
         Pid result;
         result._value = value;
@@ -82,41 +84,20 @@ class Pid {
         return _value >> 3;
     }
 
-    [[nodiscard]] uint16_t packed() const {
+    [[nodiscard]] constexpr uint16_t packed() const {
         return _value;
     }
 
-    friend bool operator==(const Pid &l, const Pid &r) = default;
+    friend constexpr bool operator==(const Pid &l, const Pid &r) = default;
 
-    explicit operator bool() const {
+    explicit constexpr operator bool() const {
         return _value != 0;
     }
 
-    bool operator!() const {
+    constexpr bool operator!() const {
         return _value == 0;
-    }
-
-    // TODO(captainurist): compatibility layer, drop!
-    operator uint16_t() const {
-        return _value;
     }
 
  private:
     uint16_t _value = 0;
 };
-
-// TODO(captainurist): compatibility layer, drop once migration is finished.
-namespace detail {
-inline ObjectType pidType(const Pid &pid) {
-    return pid.type();
-}
-inline ObjectType pidType(uint16_t pid) {
-    return Pid::fromPacked(pid).type();
-}
-inline int pidId(const Pid &pid) {
-    return pid.id();
-}
-inline int pidId(uint16_t pid) {
-    return Pid::fromPacked(pid).id();
-}
-} // namespace detail

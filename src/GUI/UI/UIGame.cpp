@@ -883,11 +883,10 @@ void GameUI_WritePointedObjectStatusString() {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {
             if (!pViewport->Contains(pX, pY)) {
-                if (uLastPointedObjectID != 0) {
+                if (uLastPointedObjectID) {
                     game_ui_status_bar_string.clear();
-                    bForceDrawFooter = 1;
                 }
-                uLastPointedObjectID = 0;
+                uLastPointedObjectID = Pid();
                 return;
             }
 
@@ -896,13 +895,12 @@ void GameUI_WritePointedObjectStatusString() {
             // get_picked_object_zbuf_val contains both the pid and the depth
             pickedObject = vis->get_picked_object_zbuf_val();
             mouse->uPointingObjectID = pickedObject.object_pid;
-            pickedObjectID = (signed)PID_ID(pickedObject.object_pid);
-            if (PID_TYPE(pickedObject.object_pid) == OBJECT_Item) {
+            pickedObjectID = (signed)pickedObject.object_pid.id();
+            if (pickedObject.object_pid.type() == OBJECT_Item) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     game_ui_status_bar_string.clear();
-                    bForceDrawFooter = 1;
-                    uLastPointedObjectID = 0;
+                    uLastPointedObjectID = Pid();
                     return;
                 }
                 if (pickedObject.depth >= 0x200u ||
@@ -914,7 +912,7 @@ void GameUI_WritePointedObjectStatusString() {
                         LSTR_FMT_GET_S,
                         pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()));
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
+            } else if (pickedObject.object_pid.type() == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     std::string pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
@@ -928,11 +926,11 @@ void GameUI_WritePointedObjectStatusString() {
                         GameUI_StatusBar_Set(hintString);
                     }
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Face) {
+            } else if (pickedObject.object_pid.type() == OBJECT_Face) {
                 if (pickedObject.depth < 0x200u) {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
-                        v18b = PID_ID(pickedObject.object_pid) >> 6;
+                        v18b = pickedObject.object_pid.id() >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
                             newString = getEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
@@ -951,10 +949,8 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                     if (!newString.empty()) {
                         GameUI_StatusBar_Set(newString);
-                        if (!mouse->uPointingObjectID &&
-                            uLastPointedObjectID != 0) {
+                        if (!mouse->uPointingObjectID && uLastPointedObjectID) {
                             game_ui_status_bar_string.clear();
-                            bForceDrawFooter = 1;
                         }
                         uLastPointedObjectID = mouse->uPointingObjectID;
                         return;
@@ -962,26 +958,21 @@ void GameUI_WritePointedObjectStatusString() {
                 }
                 mouse->uPointingObjectID = Pid();
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
-                uLastPointedObjectID = 0;
+                uLastPointedObjectID = Pid();
                 return;
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
+            } else if (pickedObject.object_pid.type() == OBJECT_Actor) {
                 if (pickedObject.depth >= 0x2000u) {
                     mouse->uPointingObjectID = Pid();
-                    if (uLastPointedObjectID != 0) {
+                    if (uLastPointedObjectID) {
                         game_ui_status_bar_string.clear();
-                        bForceDrawFooter = 1;
                     }
-                    uLastPointedObjectID = 0;
+                    uLastPointedObjectID = Pid();
                     return;
                 }
                 GameUI_StatusBar_Set(GetDisplayName(&pActors[pickedObjectID]));
-            } else if (mouse->uPointingObjectID == 0xFFFF) {
-                mouse->uPointingObjectID = Pid();
             }
-            if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
+            if (!mouse->uPointingObjectID && uLastPointedObjectID) {
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
             }
             uLastPointedObjectID = mouse->uPointingObjectID;
             return;
@@ -991,11 +982,10 @@ void GameUI_WritePointedObjectStatusString() {
             pY <= (renDims.h - 1) * 0.73125) {  // if in chest area
             if (Chest::ChestUI_WritePointedObjectStatusString()) {
                 return;
-            } else if (uLastPointedObjectID != 0) {  // not found so reset
+            } else if (uLastPointedObjectID) {  // not found so reset
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
             }
-            uLastPointedObjectID = 0;
+            uLastPointedObjectID = Pid();
             return;
         }
     } else {
@@ -1034,16 +1024,15 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pickedObjectID == 0 || pickedObjectID == -65536 ||
                         pickedObjectID >= 5000) {
                         // if (pMouse->uPointingObjectID == 0) {
-                        if (uLastPointedObjectID != 0) {
+                        if (uLastPointedObjectID) {
                             game_ui_status_bar_string.clear();
-                            bForceDrawFooter = 1;
                         }
                         //}
-                        uLastPointedObjectID = 0;
+                        uLastPointedObjectID = Pid();
                         // return;
                     } else {
                         GameUI_StatusBar_Set(pItemGen->GetDisplayName());
-                        uLastPointedObjectID = 1;
+                        uLastPointedObjectID = Pid::dummy();
                         return;
                     }
                 }
@@ -1064,7 +1053,7 @@ void GameUI_WritePointedObjectStatusString() {
                                     engine->_messageQueue->addMessageCurrentFrame(
                                         pMessageType1, pButton->msg_param, 0);
                                 GameUI_StatusBar_Set(pButton->sLabel);
-                                uLastPointedObjectID = 1;
+                                uLastPointedObjectID = Pid::dummy();
                                 return;
                             }
                             break;
@@ -1089,7 +1078,7 @@ void GameUI_WritePointedObjectStatusString() {
                                             0);
                                     GameUI_StatusBar_Set(
                                         pButton->sLabel);  // for character name
-                                    uLastPointedObjectID = 1;
+                                    uLastPointedObjectID = Pid::dummy();
                                     return;
                                 }
                             }
@@ -1107,7 +1096,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 else
                                     GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints));
 
-                                uLastPointedObjectID = 1;
+                                uLastPointedObjectID = Pid::dummy();
                                 return;
                             }
                             break;
@@ -1116,11 +1105,10 @@ void GameUI_WritePointedObjectStatusString() {
             }
 
             // ?? if we get here nothing is curos over??
-            if (uLastPointedObjectID != 0) {  // not found so reset
+            if (uLastPointedObjectID) {  // not found so reset
                 game_ui_status_bar_string.clear();
-                bForceDrawFooter = 1;
             }
-            uLastPointedObjectID = 0;
+            uLastPointedObjectID = Pid();
 
             if (pWindow->uFrameHeight == 480) {
                 // DebugBreak(); //Why is this condition here (in the original
@@ -1147,7 +1135,6 @@ void GameUI_WritePointedObjectStatusString() {
         if (uLastPointedObjectID != 0)
         {
         game_ui_status_bar_string.clear();
-        bForceDrawFooter = 1;
         }
         uLastPointedObjectID = 0;
         return;
@@ -1156,7 +1143,6 @@ void GameUI_WritePointedObjectStatusString() {
         (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
         GameUI_StatusBar_Set(pItemGen->GetDisplayName());
         game_ui_status_bar_string.clear();
-        bForceDrawFooter = 1;
         uLastPointedObjectID = 0;
         return;
         }
@@ -1181,7 +1167,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 engine->_messageQueue->addMessageCurrentFrame(
                                     pMessageType3, pButton->msg_param, 0);
                             }
-                            uLastPointedObjectID = 1;
+                            uLastPointedObjectID = Pid::dummy();
                             return;
                         }
                         break;
@@ -1204,7 +1190,7 @@ void GameUI_WritePointedObjectStatusString() {
                                         pMessageType2, pButton->msg_param, 0);
                                 GameUI_StatusBar_Set(
                                     pButton->sLabel);  // for character name
-                                uLastPointedObjectID = 1;
+                                uLastPointedObjectID = Pid::dummy();
                                 return;
                             }
                         }
@@ -1240,12 +1226,10 @@ void GameUI_WritePointedObjectStatusString() {
     }
 
     // pMouse->uPointingObjectID = sub_46A99B(); //for software
-    if (uLastPointedObjectID != 0) {
+    if (uLastPointedObjectID) {
         game_ui_status_bar_string.clear();
-        bForceDrawFooter = 1;
     }
-    uLastPointedObjectID = 0;
-    return;
+    uLastPointedObjectID = Pid();
 }
 
 //----- (0044158F) --------------------------------------------------------
@@ -1360,9 +1344,9 @@ void GameUI_DrawPortraits() {
     }
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
-            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
+            if (pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
                 for (uint i = 0; i < pTurnEngine->pQueue.size(); ++i) {
-                    if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Character)
+                    if (pTurnEngine->pQueue[i].uPackedID.type() != OBJECT_Character)
                         break;
 
                     auto alert_texture = game_ui_player_alert_green;
@@ -1372,7 +1356,7 @@ void GameUI_DrawPortraits() {
                         alert_texture = game_ui_player_alert_yellow;
 
                     render->DrawTextureNew(
-                        (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
+                        (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[pTurnEngine->pQueue[i].uPackedID.id()] - 4) / 640.0f,
                         384 / 480.0f, alert_texture); // was 385
                 }
             }

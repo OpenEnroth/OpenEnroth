@@ -84,7 +84,7 @@ struct SpriteObject {
     CharacterSkillMastery spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     int field_54 = 0;
     Pid spell_caster_pid;
-    int spell_target_pid = 0;
+    Pid spell_target_pid;
     char field_60_distance_related_prolly_lod = 0;
     ABILITY_INDEX spellCasterAbility = ABILITY_ATTACK1;
     Vec3i initialPosition;

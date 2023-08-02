@@ -68,7 +68,7 @@ extern std::array<Pid, 500> ai_near_actors_targets_pid;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
 extern int ai_arrays_size;
 
-extern int uLastPointedObjectID;
+extern Pid uLastPointedObjectID;
 extern int KeyboardPageNum;
 extern Color uGameUIFontShadow;
 extern Color uGameUIFontMain;
@@ -117,8 +117,7 @@ extern int dword_5B65C4_cancelEventProcessing;
 extern int npcIdToDismissAfterDialogue;
 extern std::string game_ui_status_bar_event_string;
 extern std::string game_ui_status_bar_string;
-extern unsigned int game_ui_status_bar_event_string_time_left;
-extern int bForceDrawFooter;
+extern unsigned int game_ui_status_bar_event_string_expiration_time; // In terms of Platform::tickCount.
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 

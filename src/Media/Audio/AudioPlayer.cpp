@@ -278,8 +278,8 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
     } else {
         assert(pid);
 
-        ObjectType object_type = PID_TYPE(pid);
-        unsigned int object_id = PID_ID(pid);
+        ObjectType object_type = pid.type();
+        unsigned int object_id = pid.id();
         switch (object_type) {
             case OBJECT_Door: {
                 assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
@@ -344,7 +344,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
 
             default: {
                 result = _regularSoundPool.playNew(sample, si.dataSource);
-                logger->warning("Unexpected object type from PID in playSound");
+                logger->warning("Unexpected object type from Pid in playSound");
                 break;
             }
         }

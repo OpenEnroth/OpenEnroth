@@ -8,8 +8,6 @@
 #include "Library/Color/Color.h"
 
 void GameUI_StatusBar_Draw();
-void GameUI_StatusBar_DrawForced();
-
 void GameUI_StatusBar_Set(const std::string &str);
 const std::string &GameUI_StatusBar_Get();
 void GameUI_StatusBar_Clear();

@@ -40,8 +40,7 @@ Vis_SelectionFilter vis_sprite_filter_4 = {
     VisObjectType_Any, OBJECT_Item, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
-Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
-                                                float pick_depth) {
+Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth) {
     //  char *v4; // eax@4
     //  signed int v5; // ecx@4
     Vec3f rayOrigin, rayStep;  // [sp+20h] [bp-70h]@17
@@ -73,8 +72,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        uint bmodel_id = pid >> 9;
-        const std::vector<Vec3i> &v = pOutdoor->pBModels[bmodel_id].pVertices;
+        const std::vector<Vec3i> &v = pOutdoor->model(pid).pVertices;
         for (uint i = 0; i < face->uNumVertices; ++i)
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].toFloat();
     } else {
@@ -304,13 +302,13 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
                     pCamera3D->ViewTransform(&a1, 1);
                     // v9 = fixpoint_from_float(/*v8,
                     // */a1.vWorldViewPosition.x); HEXRAYS_LOWORD(v9) =
-                    // 0; v15 = (void *)((PID(OBJECT_Face,pFaceID)) +
+                    // 0; v15 = (void *)((Pid(OBJECT_Face,pFaceID)) +
                     // v9);
                     pNumPointers = &list->uSize;
                     v12 = &list->object_pool[list->uSize];
                     v12->object = &pIndoor->pFaces[/*pFaceID*/v17];
                     v12->depth = a1.vWorldViewPosition.x;
-                    v12->object_pid = PID(OBJECT_Face, /*pFaceID*/v17);
+                    v12->object_pid = Pid(OBJECT_Face, /*pFaceID*/v17);
                     v12->object_type = VisObjectType_Face;
                     ++*pNumPointers;
                     // logger->Info("raypass");
@@ -407,9 +405,9 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
-                    // v13 += PID(OBJECT_Face, j | (i << 6));
+                    // v13 += Pid(OBJECT_Face, j | (i << 6));
                     Pid pid =
-                        PID(OBJECT_Face, face.index | (model.index << 6));
+                        Pid(OBJECT_Face, face.index | (model.index << 6));
                     list->AddObject(&face, VisObjectType_Face,
                                     intersection.vWorldViewPosition.x, pid);
                 }
@@ -679,7 +677,7 @@ void Vis::CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *ori
 
 //----- (004C2551) --------------------------------------------------------
 Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectType,
-                                                     int pid) {
+                                                     Pid pid) {
     // unsigned int v3; // esi@1
     // signed int v4; // edx@1
     // char *v5; // eax@2
@@ -887,8 +885,8 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
                 return false;
 
             // v5 = filter->select_flags;
-            int object_idx = PID_ID(pBillboardRenderList[parentBillboardId].object_pid);
-            ObjectType object_type = PID_TYPE(pBillboardRenderList[parentBillboardId].object_pid);
+            int object_idx = pBillboardRenderList[parentBillboardId].object_pid.id();
+            ObjectType object_type = pBillboardRenderList[parentBillboardId].object_pid.type();
             if (filter->select_flags & ExcludeType) {
                 return object_type != filter->object_type;
             }
@@ -1075,7 +1073,7 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
         BLVFace *pFace = &pIndoor->pFaces[pFaceID];
         if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
             if (is_part_of_selection(pFace, filter)) {
-                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, PID(OBJECT_Face, pFaceID), pick_depth);
+                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
                 if (v8)
                     list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
             }
@@ -1094,11 +1092,9 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                         BLVFace blv_face;
                         blv_face.FromODM(&face);
 
-                        int pid =
-                            PID(OBJECT_Face, face.index | (model.index << 6));
+                        Pid pid = Pid(OBJECT_Face, face.index | (model.index << 6));
                         if (Vis_ObjectInfo *object_info =
-                                DetermineFacetIntersection(&blv_face, pid,
-                                                           pick_depth)) {
+                                DetermineFacetIntersection(&blv_face, pid, pick_depth)) {
                             list->AddObject(
                                 object_info->object, object_info->object_type,
                                 object_info->depth, object_info->object_pid);

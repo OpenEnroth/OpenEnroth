@@ -4032,7 +4032,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
-            //v5 = PID(OBJECT_Character, player_num + 49);
+            //v5 = Pid(OBJECT_Character, player_num + 49);
             //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->uSkillPoints += 2;
@@ -5053,7 +5053,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound() {
     //int playerIndex = getCharacterIndex();
-    //int v25 = PID(OBJECT_Character, playerIndex + 48);
+    //int v25 = Pid(OBJECT_Character, playerIndex + 48);
     //pAudioPlayer->playSound(SOUND_quest, v25);
     pAudioPlayer->playUISound(SOUND_quest);
 }
@@ -6360,14 +6360,14 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
+void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
     // target character? if any
 
     SPELL_TYPE spellId;
     signed int recvdMagicDmg;     // eax@139
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
-    ObjectType pidtype = PID_TYPE(uObjID);
+    ObjectType pidtype = uObjID.type();
 
     /*    OBJECT_None = 0x0,
     OBJECT_Door = 0x1,
@@ -6383,12 +6383,12 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
         if (targetchar == -1) __debugbreak();
 
-        unsigned int uActorID = PID_ID(uObjID);
+        unsigned int uActorID = uObjID.id();
 
         Character *playerPtr = &pParty->pCharacters[targetchar];
         Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->health;
-        if (PID_TYPE(uObjID) != OBJECT_Actor || !actorPtr->ActorHitOrMiss(playerPtr))
+        if (uObjID.type() != OBJECT_Actor || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
@@ -6442,7 +6442,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             }
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, PID(OBJECT_Character, targetchar));
+        pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, Pid(OBJECT_Character, targetchar));
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -6487,7 +6487,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                 actorPtr->currentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->currentHP >= 1) {
-                        Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
+                        Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -6533,10 +6533,10 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
         }
         return;
     } else {  // is an item
-        int spriteId = PID_ID(uObjID);
+        int spriteId = uObjID.id();
         SpriteObject *spritefrom = &pSpriteObjects[spriteId];
-        ObjectType uActorType = PID_TYPE(spritefrom->spell_caster_pid);
-        int uActorID = PID_ID(spritefrom->spell_caster_pid);
+        ObjectType uActorType = spritefrom->spell_caster_pid.type();
+        int uActorID = spritefrom->spell_caster_pid.id();
 
         if (uActorType == OBJECT_Item) {
             Character *playerPtr;  // eax@81
@@ -6659,7 +6659,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
                     if (recvdMagicDmg >= 0) {
                         if (actorPtr->currentHP >= 1) {
-                            Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);
+                            Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
@@ -7115,13 +7115,13 @@ void Character::_42ECB5_CharacterAttacksActor() {
     // v28 = 0;
     // v7 = pMouse->uPointingObjectID;
 
-    int target_pid = mouse->uPointingObjectID;
-    ObjectType target_type = PID_TYPE(target_pid);
-    int target_id = PID_ID(target_pid);
+    Pid target_pid = mouse->uPointingObjectID;
+    ObjectType target_type = target_pid.type();
+    int target_id = target_pid.id();
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
-        target_type = PID_TYPE(target_pid);
-        target_id = PID_ID(target_pid);
+        target_type = target_pid.type();
+        target_id = target_pid.id();
     }
 
     Actor *actor = nullptr;
@@ -7163,7 +7163,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         Vec3i a3 = actor->pos - pParty->pos;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Character, pParty->activeCharacterIndex() - 1),
+        Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);
         if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
@@ -7252,20 +7252,20 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(xpos, ypos, zpos);
     a1a.uSpriteFrameID = 0;
-    a1a.spell_target_pid = 0;
+    a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
     a1a.uFacing = 0;
     a1a.uSoundID = 0;
 
     if (actchar >= 1 || actchar <= 4) {
-        a1a.spell_caster_pid = PID(OBJECT_Character, actchar - 1);
+        a1a.spell_caster_pid = Pid(OBJECT_Character, actchar - 1);
     } else {
         a1a.spell_caster_pid = Pid();
     }
 
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1) {
-        pushAoeAttack(PID(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
+        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
     }
 }
 
@@ -7293,7 +7293,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundID)pickedSoundID, SOUND_MODE_PID, PID(OBJECT_Character, getCharacterIndex()));
+                pAudioPlayer->playSound((SoundID)pickedSoundID, SOUND_MODE_PID, Pid(OBJECT_Character, getCharacterIndex()));
             }
         }
     }

@@ -36,7 +36,7 @@ ChestList *pChestList;
 std::vector<Chest> vChests;
 
 bool Chest::open(int uChestID, Pid objectPid) {
-    ODMFace *pODMFace;
+    const ODMFace *pODMFace;
     BLVFace *pBLVFace;
     Vec3i objectPos;
     double dir_x;
@@ -69,15 +69,15 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpriteID[2] = SPRITE_TRAP_COLD;
             pSpriteID[3] = SPRITE_TRAP_BODY;
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
-            int objId = PID_ID(objectPid);
-            if (PID_TYPE(objectPid) == OBJECT_Decoration) {
+            int objId = objectPid.id();
+            if (objectPid.type() == OBJECT_Decoration) {
                 objectPos = pLevelDecorations[objId].vPosition +
                     Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             }
-            if (PID_TYPE(objectPid) == OBJECT_Face) {
+            if (objectPid.type() == OBJECT_Face) {
                 // TODO(pskelton): trap explosion moves depending on what face is clicked
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    pODMFace = &pOutdoor->pBModels[objectPid >> 9].pFaces[(objectPid >> 3) & 0x3F];
+                    pODMFace = &pOutdoor->face(objectPid);
                     objectPos = pODMFace->pBoundingBox.center();
                 } else {  // Indoor
                     pBLVFace = &pIndoor->pFaces[objId];
@@ -126,7 +126,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
             pSpellObject.uSpriteFrameID = 0;
             pSpellObject.spell_caster_pid = Pid();
-            pSpellObject.spell_target_pid = 0;
+            pSpellObject.spell_target_pid = Pid();
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);
             // TODO(Nik-RE-dev): chest is originator in this case
@@ -183,7 +183,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
             // normal picking
 
             GameUI_StatusBar_Set(item->GetDisplayName());
-            uLastPointedObjectID = 1;
+            uLastPointedObjectID = Pid::dummy();
             return 1;
 
             ////////////////////////////////////////////////////

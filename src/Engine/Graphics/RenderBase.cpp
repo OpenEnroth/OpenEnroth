@@ -218,7 +218,7 @@ void RenderBase::DrawSpriteObjects() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
 
-                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
+                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Item, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                             pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
 
@@ -354,7 +354,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = Color();
@@ -752,10 +752,10 @@ std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
             continue; // E.g. spell particle.
         }
 
-        int pid = pBillboardRenderList[renderId].object_pid;
-        if (PID_TYPE(pid) == OBJECT_Actor) {
+        Pid pid = pBillboardRenderList[renderId].object_pid;
+        if (pid.type() == OBJECT_Actor) {
             if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
-                int id = PID_ID(pid);
+                int id = pid.id();
                 if (pActors[id].aiState != Dead &&
                     pActors[id].aiState != Dying &&
                     pActors[id].aiState != Removed &&
