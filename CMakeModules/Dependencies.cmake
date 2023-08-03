@@ -69,7 +69,6 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
     elseif(PREBUILT_DEPENDENCIES)
         message(STATUS "Prebuilt dependencies have been enabled")
 
-        #TODO: remove that workaround once dependencies archives are updated
         set(DEP_PLATFORM ${BUILD_PLATFORM})
         if (WIN32)
             set(DEP_PLATFORM "win32")
@@ -78,7 +77,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         elseif(Linux)
             set(DEP_PLATFORM "linux")
         else()
-            MESSAGE(STATUS "Unknown platform for prebuilt dependencies.")
+            MESSAGE(FATAL_ERROR "Unknown platform for prebuilt dependencies.")
         endif()
 
         set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
@@ -115,44 +114,13 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             if (UNPACK_STATUS)
                 message(FATAL_ERROR "Error occurred during unpack of dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE}: ${UNPACK_STATUS}")
             endif()
+
+            list(APPEND CMAKE_FIND_ROOT_PATH ${LIBRARY_DIR})
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
-            set(FFMPEG_DIR "${LIBRARY_DIR}/ffmpeg")
-            set(FFMPEG_INCLUDE_DIRS "${FFMPEG_DIR}/include")
-            set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
-            set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
-            set(AVCODEC_LIBRARIES "${FFMPEG_BIN_DIR}/avcodec.lib")
-            set(AVDEVICE_LIBRARIES "${FFMPEG_BIN_DIR}/avdevice.lib")
-            set(AVFILTER_LIBRARIES "${FFMPEG_BIN_DIR}/avfilter.lib")
-            set(AVFORMAT_LIBRARIES "${FFMPEG_BIN_DIR}/avformat.lib")
-            set(AVUTIL_LIBRARIES "${FFMPEG_BIN_DIR}/avutil.lib")
-            set(POSTPROC_LIBRARIES "${FFMPEG_BIN_DIR}/postproc.lib")
-            set(SWRESAMPLE_LIBRARIES "${FFMPEG_BIN_DIR}/swresample.lib")
-            set(SWSCALE_LIBRARIES "${FFMPEG_BIN_DIR}/swscale.lib")
-            prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec-60.dll"
-                    "${FFMPEG_BIN_DIR}/avdevice-60.dll"
-                    "${FFMPEG_BIN_DIR}/avfilter-9.dll"
-                    "${FFMPEG_BIN_DIR}/avformat-60.dll"
-                    "${FFMPEG_BIN_DIR}/avutil-58.dll"
-                    "${FFMPEG_BIN_DIR}/postproc-57.dll"
-                    "${FFMPEG_BIN_DIR}/swresample-4.dll"
-                    "${FFMPEG_BIN_DIR}/swscale-7.dll")
-
-            set(ZLIB_DIR "${LIBRARY_DIR}/zlib")
-            set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
-            set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
-            set(ZLIB_LIB_DIR "${ZLIB_DIR}/lib")
-            if( CMAKE_BUILD_TYPE STREQUAL "Release")
-                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstatic.lib")
-            else()
-                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstaticd.lib")
-            endif()
-
-            add_library(ZLIB INTERFACE)
-            add_library(ZLIB::ZLIB ALIAS ZLIB)
-            target_link_libraries(ZLIB INTERFACE ${ZLIB_LIBRARIES})
-            target_include_directories(ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})
+            find_package(FFmpeg REQUIRED)
+            find_package(ZLIB REQUIRED)
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
         endif()
