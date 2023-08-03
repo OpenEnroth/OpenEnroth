@@ -457,33 +457,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
 
     if (topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
-        int pEventNumber;
-
-        switch (topic) {
-        case DIALOGUE_SCRIPTED_LINE_1:
-            pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
-            break;
-        case DIALOGUE_SCRIPTED_LINE_2:
-            pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
-            break;
-        case DIALOGUE_SCRIPTED_LINE_3:
-            pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
-            break;
-        case DIALOGUE_SCRIPTED_LINE_4:
-            pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
-            break;
-        case DIALOGUE_SCRIPTED_LINE_5:
-            pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
-            break;
-        case DIALOGUE_SCRIPTED_LINE_6:
-            pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
-            break;
-        default:
-            BackToHouseMenu();
-            return;
-        }
-
-        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(topic, pEventNumber);
+        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
 
         if (topics.size() != 0) {
             window_SpeakInHouse->reinitDialogueWindow();
@@ -732,11 +706,7 @@ void createHouseUI(HOUSE_ID houseId) {
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
     }
-    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
-    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
-    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
-    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
-    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
+
     if (houseNpcs.size() == 1) {
         updateHouseNPCTopics(0);
     }
@@ -831,81 +801,12 @@ void GUIWindow_House::houseNPCDialogue() {
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
         GUIButton *pButton = right_panel_window.GetControl(i);
-        switch (pButton->msg_param) {
-          case DIALOGUE_SCRIPTED_LINE_1:
-            if (pNPCTopics[pNPC->dialogue_1_evt_id].pTopic.empty()) {
-                optionsText.push_back("");
-                pButton->msg_param = 0;
-            } else {
-                optionsText.push_back(pNPCTopics[pNPC->dialogue_1_evt_id].pTopic);
-            }
-            break;
-          case DIALOGUE_SCRIPTED_LINE_2:
-            if (pNPCTopics[pNPC->dialogue_2_evt_id].pTopic.empty()) {
-                optionsText.push_back("");
-                pButton->msg_param = 0;
-            } else {
-                optionsText.push_back(pNPCTopics[pNPC->dialogue_2_evt_id].pTopic);
-            }
-            break;
-          case DIALOGUE_SCRIPTED_LINE_3:
-            if (pNPCTopics[pNPC->dialogue_3_evt_id].pTopic.empty()) {
-                optionsText.push_back("");
-                pButton->msg_param = 0;
-            } else {
-                optionsText.push_back(pNPCTopics[pNPC->dialogue_3_evt_id].pTopic);
-            }
-            break;
-          case DIALOGUE_SCRIPTED_LINE_4:
-            if (pNPCTopics[pNPC->dialogue_4_evt_id].pTopic.empty()) {
-                optionsText.push_back("");
-                pButton->msg_param = 0;
-            } else {
-                optionsText.push_back(pNPCTopics[pNPC->dialogue_4_evt_id].pTopic);
-            }
-            break;
-          case DIALOGUE_SCRIPTED_LINE_5:
-            if (pNPCTopics[pNPC->dialogue_5_evt_id].pTopic.empty()) {
-                optionsText.push_back("");
-                pButton->msg_param = 0;
-            } else {
-                optionsText.push_back(pNPCTopics[pNPC->dialogue_5_evt_id].pTopic);
-            }
-            break;
-          case DIALOGUE_SCRIPTED_LINE_6:
-            if (pNPCTopics[pNPC->dialogue_6_evt_id].pTopic.empty()) {
-                optionsText.push_back("");
-                pButton->msg_param = 0;
-            } else {
-                optionsText.push_back(pNPCTopics[pNPC->dialogue_6_evt_id].pTopic);
-            }
-            break;
-          case DIALOGUE_HIRE_FIRE:
-            optionsText.push_back(localization->GetString(LSTR_HIRE));
-            break;
-          case DIALOGUE_PROFESSION_DETAILS:
-            optionsText.push_back(localization->GetString(LSTR_MORE_INFORMATION));
-            break;
-          case DIALOGUE_MASTERY_TEACHER_LEARN:
-            optionsText.push_back(masteryTeacherOptionString());
-            break;
-          case DIALOGUE_MAGIC_GUILD_JOIN:
-            optionsText.push_back(joinGuildOptionString());
-            break;
-          case DIALOGUE_83_bounty_hunting:
-            current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();
-            optionsText.push_back("");
-            break;
-          default:
-            if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hiring_related) {
-                // TODO(Nik-RE-dev): wtf?
-                optionsText.push_back(localization->GetString(LSTR_JOIN));
-            } else {
-                // TODO(Nik-RE-dev): must never happen?
-                optionsText.push_back("");
-            }
-            break;
+        DIALOGUE_TYPE topic = (DIALOGUE_TYPE)pButton->msg_param;
+        std::string str = npcDialogueOptionString(topic, pNPC);
+        if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+            pButton->msg_param = 0;
         }
+        optionsText.push_back(str);
     }
 
     if (optionsText.size()) {
@@ -1136,34 +1037,7 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
         return;
     }
 
-    NPCData *npcData = houseNpcs[npc].npc;
-    std::vector<DIALOGUE_TYPE> optionList;
-
-    if (npcData->is_joinable) {
-        optionList.push_back(DIALOGUE_13_hiring_related);
-    }
-
-    // TODO(Nik-RE-dev): place NPC events in array
-#define ADD_NPC_SCRIPTED_DIALOGUE(EVENT_ID, MSG_PARAM) \
-    if (EVENT_ID) { \
-        if (optionList.size() < 4) { \
-            int res = npcDialogueEventProcessor(EVENT_ID); \
-            if (res == 1 || res == 2) { \
-                optionList.push_back(MSG_PARAM); \
-            } \
-        } \
-    }
-
-    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
-    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
-    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
-    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
-    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
-    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
-
-#undef ADD_NPC_SCRIPTED_DIALOGUE
-
-    initializeNPCDialogueButtons(optionList);
+    initializeNPCDialogueButtons(prepareScriptedNPCDialogueTopics(houseNpcs[npc].npc));
 }
 
 void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> optionList) {
@@ -1256,6 +1130,12 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
         houseNpcs[i].button = CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
                                                       Io::InputAction::Invalid, houseNpcs[i].label);
     }
+
+    CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
+    CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
+    CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
+    CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
 }
 
 void GUIWindow_House::Update() {

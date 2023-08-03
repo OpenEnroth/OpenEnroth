@@ -33,9 +33,13 @@ const std::string &joinGuildOptionString();
  */
 void NPCHireableDialogPrepare();
 
+std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData);
+
+std::vector<DIALOGUE_TYPE> prepareScriptedNPCDialogueTopics(NPCData *npcData);
+
 // TODO(Nik-RE-dev): currently this function handles dialogue buttons creation etc,
 //                   need to move such functionality into UIHouses/UIDialogue
-std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId);
+std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData);
 void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData);
 
 extern int gold_transaction_amount;

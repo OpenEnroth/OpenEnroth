@@ -8,7 +8,7 @@
 
 class GUIWindow_Dialogue : public GUIWindow {
  public:
-    GUIWindow_Dialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
+    explicit GUIWindow_Dialogue(WindowData data);
     virtual ~GUIWindow_Dialogue() {}
 
     virtual void Update() override;
