@@ -119,8 +119,8 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
-            find_package(FFmpeg REQUIRED)
             find_package(ZLIB REQUIRED)
+            find_package(FFmpeg REQUIRED)
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
         endif()
