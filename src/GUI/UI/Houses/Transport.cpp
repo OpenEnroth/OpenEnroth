@@ -147,7 +147,7 @@ void GUIWindow_Transport::transportDialogue() {
     int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
 
     if (pParty->GetGold() < pPrice) {
-        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_NOT_ENOUGH_GOLD);
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;

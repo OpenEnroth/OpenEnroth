@@ -371,8 +371,14 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_InputString:
             // Originally starting step was checked to ensure skipping this command when returning from dialogue.
             // Changed to using "step + 1" to go to next event
+            //
+            // TODO(Nik-RE-dev): this event is not used in MM7. In GrayFace's data it's called "Question" and must have additional arguments
+            // that control where events executions must be continued on correct/incorrect input.
+            __debugbreak();
+#if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             StartBranchlessDialogue(_eventId, step + 1, (int)EVENT_InputString);
+#endif
             return -1;
         case EVENT_StatusText:
             if (activeLevelDecoration) {
@@ -380,11 +386,11 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                     current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
                 }
                 if (_canShowMessages) {
-                    GameUI_SetStatusBar(pNPCTopics[ir.data.text_id - 1].pText);
+                    engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
                 }
             } else {
                 if (_canShowMessages) {
-                    GameUI_SetStatusBar((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
+                    engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
                 }
             }
             break;

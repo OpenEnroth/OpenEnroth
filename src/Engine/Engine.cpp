@@ -213,7 +213,7 @@ void Engine::DrawGUI() {
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
     GameUI_DrawRightPanelFrames();
-    GameUI_StatusBar_Draw();
+    _statusBar->draw();
 
     if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
@@ -828,7 +828,7 @@ void Engine::MM7_Initialize() {
 
     MM6_Initialize();
 
-    GameUI_StatusBar_Update(true);
+    _statusBar = std::make_unique<StatusBar>();
 
     MM7_LoadLods();
 
@@ -1382,7 +1382,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
-                        GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_YOURE_DROWNING));
+                        engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
                 } else {
                     character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
@@ -1399,7 +1399,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
-                GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
+                engine->_statusBar->setEventShort(LSTR_ON_FIRE);
             }
         }
     }

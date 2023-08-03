@@ -7,29 +7,40 @@
 
 #include "Library/Color/Color.h"
 
-void GameUI_StatusBar_Draw();
-void GameUI_StatusBar_Set(const std::string &str);
-const std::string &GameUI_StatusBar_Get();
-void GameUI_StatusBar_Clear();
+class StatusBar {
+ public:
+    static const int EVENT_DURATION = 2000; // 2s
+    static const int EVENT_DURATION_SHORT = 500; // 0.5s
 
-void GameUI_StatusBar_Update(bool force_hide = false);
+    const std::string &get();
+    void draw();
+    void drawForced(const std::string &str, Color color);
+    void update();
+    void clearAll();
 
-void GameUI_SetStatusBar(const std::string &str);
+    void setPermanent(const std::string &str);
+    void clearPermanent();
 
-template<class... Args>
-void GameUI_SetStatusBar(int localization_string_id, Args &&... args) {
-    // TODO(captainurist): what if fmt throws?
-    GameUI_SetStatusBar(fmt::sprintf(localization->GetString(localization_string_id), std::forward<Args>(args)...));
-    // TODO(captainurist): there was also a call to sprintfex_internal here.
-}
+    void setEvent(const std::string &str);
+    void setEventShort(const std::string &str);
+    void clearEvent();
 
-void GameUI_SetStatusBarShortNotification(const std::string &str);
-void GameUI_StatusBar_ClearEventString();
+    template<class... Args> void setPermanent(int locId, Args &&... args) {
+        setPermanent(localization->FormatString(locId, std::forward<Args>(args)...));
+    }
 
-std::string GameUI_StatusBar_GetInput();
-void GameUI_StatusBar_OnInput(const std::string &str);
-void GameUI_StatusBar_ClearInputString();
+    template<class... Args> void setEvent(int locId, Args &&... args) {
+        setEvent(localization->FormatString(locId, std::forward<Args>(args)...));
+    }
 
-void GameUI_StatusBar_NothingHere();
+    template<class... Args> void setEventShort(int locId, Args &&... args) {
+        setEventShort(localization->FormatString(locId, std::forward<Args>(args)...));
+    }
 
-void GameUI_StatusBar_DrawImmediate(const std::string &str, Color color);
+    void nothingHere();
+
+ private:
+    std::string _statusString = "";
+    std::string _eventStatusString = "";
+    int _eventStatusExpireTime = 0;
+};

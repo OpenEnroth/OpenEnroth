@@ -209,7 +209,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 ++itemcount;
         }
 
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
+        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
             GameTime nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
@@ -325,7 +325,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
 
                     if (pParty->GetGold() < uPriceItemService) {
                         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-                        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
                         return;
                     }
 
@@ -342,7 +342,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                     }
 
                     pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
-                    GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
+                    engine->_statusBar->setEvent(LSTR_INVENTORY_IS_FULL);
                 }
             }
         }

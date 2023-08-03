@@ -228,7 +228,7 @@ void ItemInteraction(unsigned int item_id) {
             return;
         }
 
-        GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName);
+        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName);
 
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER) {
@@ -318,7 +318,7 @@ void Engine::onGameViewportClick() {
                         InteractWithActor(mon_id);
                     } else {
                         // Do not interact with actors with no active character
-                        GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                     }
                 } else {
                     pParty->dropHeldItem();
@@ -348,7 +348,7 @@ void Engine::onGameViewportClick() {
                 // Do not interact with decoration with no active character
                 DecorationInteraction(id, pid);
             } else {
-                GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
         } else {
             pParty->dropHeldItem();
@@ -359,7 +359,7 @@ void Engine::onGameViewportClick() {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             if (!pIndoor->pFaces[pid.id()].Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {
-                    GameUI_StatusBar_NothingHere();
+                    engine->_statusBar->nothingHere();
                 } else {
                     pParty->dropHeldItem();
                 }
@@ -371,7 +371,7 @@ void Engine::onGameViewportClick() {
             const ODMFace &model = pOutdoor->face(pid);
             if (!model.Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {
-                    GameUI_StatusBar_NothingHere();
+                    engine->_statusBar->nothingHere();
                 } else {
                     pParty->dropHeldItem();
                 }
@@ -385,7 +385,7 @@ void Engine::onGameViewportClick() {
             eventProcessor(eventId, pid, 1);
         } else {
             // Do not interact with faces with no active character
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
         }
     } else {
         pParty->dropHeldItem();

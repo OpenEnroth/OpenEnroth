@@ -298,8 +298,7 @@ static constexpr IndexedArray<const char *, BUILDING_WEAPON_SHOP, BUILDING_MIRRO
 }};
 
 bool enterHouse(HOUSE_ID uHouseID) {
-    GameUI_StatusBar_Clear();
-    GameUI_SetStatusBar("");
+    engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
     uDialogueType = DIALOGUE_NULL;
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
@@ -342,7 +341,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             amPmClose = 1;
         }
 
-        GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, openHours, localization->GetAmPm(amPmOpen), closeHours, localization->GetAmPm(amPmClose));
+        engine->_statusBar->setEvent(LSTR_FMT_OPEN_TIME, openHours, localization->GetAmPm(amPmOpen), closeHours, localization->GetAmPm(amPmClose));
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
         }
@@ -354,7 +353,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
         if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
             pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime(0);
         } else {
-            GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
+            engine->_statusBar->setEvent(LSTR_BANNED_FROM_SHOP);
             return false;
         }
     }
@@ -528,7 +527,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
     }
 
     if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
-        GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
+        engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
         BackToHouseMenu();
         return;
     }
@@ -540,7 +539,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
         __debugbreak();
         int pPrice = pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
         if (pParty->GetGold() < (unsigned int)pPrice) {
-            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+            engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
             dialogue_show_profession_details = false;
             uDialogueType = DIALOGUE_13_hiring_related;
             current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
@@ -548,7 +547,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
             if (pParty->hasActiveCharacter()) {
                 pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
             }
-            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+            engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
             BackToHouseMenu();
             return;
         } else {
@@ -1222,7 +1221,7 @@ void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
-                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
                 if (buildingType() == BUILDING_TRAINING_GROUND) {
                     playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
                 } else if (buildingType() == BUILDING_TAVERN) {

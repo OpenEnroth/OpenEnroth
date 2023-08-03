@@ -129,7 +129,7 @@ void GUIWindow_Tavern::restDialogue() {
         window_SpeakInHouse = 0;
         return;
     }
-    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
@@ -138,7 +138,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
 
     if ((double)pParty->GetFood() >= buildingTable[houseId()].fPriceMultiplier) {
-        GameUI_SetStatusBar(LSTR_RATIONS_FULL);
+        engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_PACKS_FULL);
         }
@@ -152,7 +152,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
-    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }

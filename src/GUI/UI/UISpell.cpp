@@ -5,6 +5,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Engine/Engine.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
@@ -16,7 +17,7 @@ TargetedSpellUI::TargetedSpellUI(Pointi position, Sizei dimensions, WindowData d
     : GUIWindow(WINDOW_CastSpell, position, dimensions, data, hint) {
     pEventTimer->Pause();
     mouse->SetCursorImage("MICON2");
-    GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
+    engine->_statusBar->setEvent(LSTR_CHOOSE_TARGET);
 }
 
 TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)

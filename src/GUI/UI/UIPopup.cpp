@@ -258,7 +258,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 inspect_item->SetIdentified();
             CharacterSpeech speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
-                GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
+                engine->_statusBar->setEvent(LSTR_IDENTIFY_FAILED);
             } else {
                 speech = SPEECH_ID_ITEM_STRONG;
                 if (inspect_item->GetValue() < 100 * (pParty->activeCharacter().uLevel + 5)) {
@@ -278,7 +278,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (!inspect_item->IsBroken())
                 speech = SPEECH_REPAIR_SUCCESS;
             else
-                GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
+                engine->_statusBar->setEvent(LSTR_REPAIR_FAILED);
             if (!identifyOrRepairReactionPlayed) {
                 pParty->activeCharacter().playReaction(speech);
                 identifyOrRepairReactionPlayed = true;
@@ -2234,7 +2234,7 @@ void Inventory_ItemPopupAndAlchemy() {
             if (pParty->activeCharacter().CanAct()) {
                 pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);
             }
-            GameUI_SetStatusBar(LSTR_OOPS);
+            engine->_statusBar->setEvent(LSTR_OOPS);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;
