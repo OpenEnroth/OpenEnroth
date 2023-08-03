@@ -1,7 +1,7 @@
 #include "Media/Audio/OpenALSoundProvider.h"
 
-#include <al.h>
-#include <alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 
 #include <atomic>
 #include <memory>
