@@ -120,7 +120,11 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
 
         if (BUILD_PLATFORM STREQUAL "windows")
             message(STATUS "Libs dir: ${LIBRARY_DIR}")
-        
+
+            set(myDesiredRootForHeaderFileSearch ${LIBRARY_DIR})
+            file(GLOB all_include_directories ${LIBRARY_DIR})
+            include_directories(${all_include_directories})
+            
             find_package(ZLIB REQUIRED)
             message(STATUS "ZLIB Library: ${ZLIB_LIBRARY}")
             message(STATUS "ZLIB Include Directory: ${ZLIB_INCLUDE_DIR}")
