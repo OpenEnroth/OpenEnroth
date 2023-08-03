@@ -95,30 +95,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     if (sDialogue_SpeakingActorNPC_ID < 0) v9 = 4;
 #endif
 
-    pDialogueWindow = new GUIWindow_Dialogue({0, 0}, render->GetRenderDimensions(), 3);
-    if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility) {
-        if (pNPCInfo->profession == Healer ||
-            pNPCInfo->profession == ExpertHealer ||
-            pNPCInfo->profession == MasterHealer ||
-            pNPCInfo->profession == Cook ||
-            pNPCInfo->profession == Chef ||
-            pNPCInfo->profession == WindMaster ||
-            pNPCInfo->profession == WaterMaster ||
-            pNPCInfo->profession == GateMaster ||
-            pNPCInfo->profession == Acolyte ||  // or Chaplain? mb discrepancy between game versions?
-            pNPCInfo->profession == Piper ||
-            pNPCInfo->profession == FallenWizard
-        ) {
-            pDialogueWindow->CreateButton({480, 250}, {140, pFontArrus->GetHeight() - 3}, 1, 0,
-                UIMSG_SelectNPCDialogueOption, DIALOGUE_USE_HIRED_NPC_ABILITY);
-            pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
-        }
-    }
-
-    pDialogueWindow->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1);
-    pDialogueWindow->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2);
-    pDialogueWindow->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3);
-    pDialogueWindow->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4);
+    pDialogueWindow = new GUIWindow_Dialogue(3);
 
     if (bPlayerSaysHello && pParty->hasActiveCharacter() && !pNPCInfo->Hired()) {
         if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21) {
@@ -129,63 +106,49 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     }
 }
 
-
-GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
-    : GUIWindow(WINDOW_Dialogue, position, dimensions, data, hint) {
+GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions(), data) {
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-        localization->GetString(LSTR_DIALOGUE_EXIT),
-        {ui_exit_cancel_button_background}
-    );
+                                   localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
+
+    int text_line_height = pFontArrus->GetHeight() - 3;
+    NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+    std::vector<DIALOGUE_TYPE> optionList;
+
     if (wData.val != 1) {
-        int num_dialugue_options = 0;
-        int text_line_height = pFontArrus->GetHeight() - 3;
-        NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
         if (getNPCType(sDialogue_SpeakingActorNPC_ID) == NPC_TYPE_QUEST) {
-            if (speakingNPC->is_joinable) {
-                CreateButton({480, 130}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_13_hiring_related);
-                num_dialugue_options = 1;
-            }
-
-            #define AddScriptedDialogueLine(DIALOGUE_EVENT_ID, MSG_PARAM) \
-                if (DIALOGUE_EVENT_ID) { \
-                    if (num_dialugue_options < 4) { \
-                        int res = npcDialogueEventProcessor(DIALOGUE_EVENT_ID); \
-                        if (res == 1 || res == 2) \
-                            CreateButton({480, 130 + num_dialugue_options++ * text_line_height}, {140, text_line_height}, 1, 0, \
-                                UIMSG_SelectNPCDialogueOption, MSG_PARAM \
-                            ); \
-                    } \
-                }
-
-            AddScriptedDialogueLine(speakingNPC->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
-            AddScriptedDialogueLine(speakingNPC->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
-            AddScriptedDialogueLine(speakingNPC->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
-            AddScriptedDialogueLine(speakingNPC->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
-            AddScriptedDialogueLine(speakingNPC->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
-            AddScriptedDialogueLine(speakingNPC->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
-        } else {
-            if (speakingNPC->is_joinable) {
-                CreateButton({480, 0x82u}, {140, text_line_height}, 1, 0,
-                    UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid,
-                    localization->GetString(LSTR_MORE_INFORMATION));
-                if (speakingNPC->Hired()) {
-                    CreateButton({480, 130 + text_line_height}, {140, text_line_height}, 1, 0,
-                        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
-                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName)
-                    );
-                } else {
-                    CreateButton({480, 130 + text_line_height}, {140, text_line_height}, 1, 0,
-                                 UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
-                                 localization->GetString(LSTR_HIRE)
-                    );
-                }
-                num_dialugue_options = 2;
+            optionList = prepareScriptedNPCDialogueTopics(speakingNPC);
+        } else if (speakingNPC->is_joinable) {
+            optionList = {DIALOGUE_PROFESSION_DETAILS, DIALOGUE_HIRE_FIRE};
+        }
+        if (speakingNPC->Hired() && !speakingNPC->bHasUsedTheAbility) {
+            if (speakingNPC->profession == Healer || speakingNPC->profession == ExpertHealer ||
+                speakingNPC->profession == MasterHealer || speakingNPC->profession == Cook ||
+                speakingNPC->profession == Chef || speakingNPC->profession == WindMaster ||
+                speakingNPC->profession == WaterMaster || speakingNPC->profession == GateMaster ||
+                speakingNPC->profession == Acolyte ||  // or Chaplain? mb discrepancy between game versions?
+                speakingNPC->profession == Piper || speakingNPC->profession == FallenWizard) {
+                optionList.push_back(DIALOGUE_USE_HIRED_NPC_ABILITY);
             }
         }
-        _41D08F_set_keyboard_control_group(num_dialugue_options, 1, 0, 1);
+    } else {
+        assert(wData.val == 3);
+        if (!pNPCStats->pProfessions[speakingNPC->profession].pBenefits.empty()) {
+            optionList.push_back(DIALOGUE_PROFESSION_DETAILS);
+        }
+        optionList.push_back(DIALOGUE_HIRE_FIRE);
     }
+    for (int i = 0; i < optionList.size(); i++) {
+        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
+    }
+    _41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 1);
+
+    CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
+    CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
+    CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
+    CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
 }
 
 void GUIWindow_Dialogue::Release() {
@@ -315,88 +278,22 @@ void GUIWindow_Dialogue::Update() {
     window.uFrameX = SIDE_TEXT_BOX_POS_X;
     window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-    for (int i = window.pStartingPosActiveItem;
-         i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
+    for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
         GUIButton *pButton = window.GetControl(i);
-        if (!pButton) break;
+        if (!pButton) {
+            break;
+        }
 
-        if (pButton->msg_param > DIALOGUE_ARENA_SELECT_CHAMPION) {
-            pButton->sLabel.clear();
-        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_CHAMPION) {
-            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_LORD);
-        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_KNIGHT) {
-            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_KNIGHT);
-        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_SQUIRE) {
-            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_SQUIRE);
-        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_PAGE) {
-            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_PAGE);
-        } else if (pButton->msg_param == DIALOGUE_PROFESSION_DETAILS) {
-            pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
-        } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
-            if (pNPC->Hired()) {
-                // TODO(captainurist): what if fmt throws?
-                pButton->sLabel = fmt::sprintf(localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName);
-            } else {
-                pButton->sLabel = localization->GetString(LSTR_HIRE);
-            }
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_6) {
-            if (!pNPC->dialogue_6_evt_id) {
-                pButton->sLabel.clear();
-                pButton->msg_param = 0;
-            } else {
-                pButton->sLabel = pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
-            }
-        } else if (pButton->msg_param == DIALOGUE_USE_HIRED_NPC_ABILITY) {
-            pButton->sLabel = GetProfessionActionText(pNPC->profession);
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_1) {
-            if (!pNPC->dialogue_1_evt_id) {
-                pButton->sLabel.clear();
-                pButton->msg_param = 0;
-            } else {
-                pButton->sLabel = pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
-            }
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_2) {
-            if (!pNPC->dialogue_2_evt_id) {
-                pButton->sLabel.clear();
-                pButton->msg_param = 0;
-            } else {
-                pButton->sLabel = pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
-            }
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_3) {
-            if (!pNPC->dialogue_3_evt_id) {
-                pButton->sLabel.clear();
-                pButton->msg_param = 0;
-            } else {
-                pButton->sLabel = pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
-            }
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_4) {
-            if (!pNPC->dialogue_4_evt_id) {
-                pButton->sLabel.clear();
-                pButton->msg_param = 0;
-            } else {
-                pButton->sLabel = pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
-            }
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_5) {
-            if (!pNPC->dialogue_5_evt_id) {
-                pButton->sLabel.clear();
-                pButton->msg_param = 0;
-            } else {
-                pButton->sLabel = pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
-            }
-        } else if (pButton->msg_param == DIALOGUE_13_hiring_related) {
-            if (pNPC->Hired()) {
-                pButton->sLabel = localization->FormatString(LSTR_HIRE_RELEASE, pNPC->pName);
-            } else {
-                pButton->sLabel = localization->GetString(LSTR_JOIN);
-            }
-        } else {
-            pButton->sLabel.clear();
+        DIALOGUE_TYPE topic = (DIALOGUE_TYPE)pButton->msg_param;
+        pButton->sLabel = npcDialogueOptionString(topic, pNPC);
+        if (pButton->sLabel.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+            pButton->msg_param = 0;
         }
 
         if (pParty->field_7B5_in_arena_quest &&
             pParty->field_7B5_in_arena_quest != -1) {
             int num_dead_actors = 0;
-            for (uint i = 0; i < pActors.size(); ++i) {
+            for (int i = 0; i < pActors.size(); ++i) {
                 if (pActors[i].aiState == Dead ||
                     pActors[i].aiState == Removed ||
                     pActors[i].aiState == Disabled) {
@@ -547,6 +444,7 @@ void StartBranchlessDialogue(int eventid, int entryline, int event) {
         pGUIWindow_BranchlessDialogue->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2);
         pGUIWindow_BranchlessDialogue->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3);
         pGUIWindow_BranchlessDialogue->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4);
+        pGUIWindow_BranchlessDialogue->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
     }
 }
 
@@ -564,21 +462,9 @@ void ReleaseBranchlessDialogue() {
 }
 
 void BuildHireableNpcDialogue() {
-    NPCData *v0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    int v1 = 0;
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow_Dialogue({0, 0}, render->GetRenderDimensions(), 1);
-    if (!pNPCStats->pProfessions[v0->profession].pBenefits.empty()) {
-        pDialogueWindow->CreateButton({480, 160}, {140, 28}, 1, 0,
-            UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid,
-            localization->GetString(LSTR_MORE_INFORMATION));
-        v1 = 1;
-    }
-    pDialogueWindow->CreateButton({480, 30 * v1 + 160}, {140, 30}, 1, 0,
-        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
-        localization->GetString(LSTR_HIRE));
-    pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
+    pDialogueWindow = new GUIWindow_Dialogue(1);
 }
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
@@ -677,23 +563,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             return;
         }
     } else if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
-        int npc_event_id;
-        if (option == DIALOGUE_SCRIPTED_LINE_1) {
-            npc_event_id = speakingNPC->dialogue_1_evt_id;
-        } else if (option == DIALOGUE_SCRIPTED_LINE_2) {
-            npc_event_id = speakingNPC->dialogue_2_evt_id;
-        } else if (option == DIALOGUE_SCRIPTED_LINE_3) {
-            npc_event_id = speakingNPC->dialogue_3_evt_id;
-        } else if (option == DIALOGUE_SCRIPTED_LINE_4) {
-            npc_event_id = speakingNPC->dialogue_4_evt_id;
-        } else if (option == DIALOGUE_SCRIPTED_LINE_5) {
-            npc_event_id = speakingNPC->dialogue_5_evt_id;
-        } else {
-            assert(option == DIALOGUE_SCRIPTED_LINE_6);
-            npc_event_id = speakingNPC->dialogue_6_evt_id;
-        }
-
-        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(option, npc_event_id);
+        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(option, speakingNPC);
 
         // TODO(Nik-RE-dev): must create buttons when overworld NPC topics will be supported
         assert(topics.size() == 0);

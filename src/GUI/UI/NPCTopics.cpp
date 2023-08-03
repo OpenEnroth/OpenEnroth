@@ -12,6 +12,7 @@
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Events/Processor.h"
@@ -641,7 +642,108 @@ std::string masteryTeacherOptionString() {
                                       localization->GetSkillName(skillBeingTaught), gold_transaction_amount);
 }
 
-std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId) {
+std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData) {
+    switch (topic) {
+      case DIALOGUE_SCRIPTED_LINE_1:
+        return pNPCTopics[npcData->dialogue_1_evt_id].pTopic;
+      case DIALOGUE_SCRIPTED_LINE_2:
+        return pNPCTopics[npcData->dialogue_2_evt_id].pTopic;
+      case DIALOGUE_SCRIPTED_LINE_3:
+        return pNPCTopics[npcData->dialogue_3_evt_id].pTopic;
+      case DIALOGUE_SCRIPTED_LINE_4:
+        return pNPCTopics[npcData->dialogue_4_evt_id].pTopic;
+      case DIALOGUE_SCRIPTED_LINE_5:
+        return pNPCTopics[npcData->dialogue_5_evt_id].pTopic;
+      case DIALOGUE_SCRIPTED_LINE_6:
+        return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
+      case DIALOGUE_HIRE_FIRE:
+        if (npcData->Hired()) {
+            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->pName);
+        } else {
+            return localization->GetString(LSTR_HIRE);
+        }
+      case DIALOGUE_13_hiring_related:
+        if (npcData->Hired()) {
+            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->pName);
+        } else {
+            return localization->GetString(LSTR_JOIN);
+        }
+      case DIALOGUE_PROFESSION_DETAILS:
+        return localization->GetString(LSTR_MORE_INFORMATION);
+      case DIALOGUE_MASTERY_TEACHER_LEARN:
+        return masteryTeacherOptionString();
+      case DIALOGUE_MAGIC_GUILD_JOIN:
+        return joinGuildOptionString();
+      case DIALOGUE_ARENA_SELECT_CHAMPION:
+        return localization->GetString(LSTR_ARENA_DIFFICULTY_LORD);
+      case DIALOGUE_ARENA_SELECT_KNIGHT:
+        return localization->GetString(LSTR_ARENA_DIFFICULTY_KNIGHT);
+      case DIALOGUE_ARENA_SELECT_SQUIRE:
+        return localization->GetString(LSTR_ARENA_DIFFICULTY_SQUIRE);
+      case DIALOGUE_ARENA_SELECT_PAGE:
+        return localization->GetString(LSTR_ARENA_DIFFICULTY_PAGE);
+      case DIALOGUE_USE_HIRED_NPC_ABILITY:
+        return GetProfessionActionText(npcData->profession);
+      default:
+        if (topic > DIALOGUE_NULL && topic < DIALOGUE_13_hiring_related) {
+            // TODO(Nik-RE-dev): wtf?
+            return localization->GetString(LSTR_JOIN);
+        } else {
+            // TODO(Nik-RE-dev): must never happen?
+            return "";
+        }
+    }
+}
+
+std::vector<DIALOGUE_TYPE> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
+    std::vector<DIALOGUE_TYPE> optionList;
+
+    if (npcData->is_joinable) {
+        optionList.push_back(DIALOGUE_13_hiring_related);
+    }
+
+    // TODO(Nik-RE-dev): place NPC events in array
+#define ADD_NPC_SCRIPTED_DIALOGUE(EVENT_ID, MSG_PARAM) \
+    if (EVENT_ID) { \
+        if (optionList.size() < 4) { \
+            int res = npcDialogueEventProcessor(EVENT_ID); \
+            if (res == 1 || res == 2) { \
+                optionList.push_back(MSG_PARAM); \
+            } \
+        } \
+    }
+
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
+
+#undef ADD_NPC_SCRIPTED_DIALOGUE
+
+    return optionList;
+}
+
+std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData) {
+    int eventId;
+
+    if (topic == DIALOGUE_SCRIPTED_LINE_1) {
+        eventId = npcData->dialogue_1_evt_id;
+    } else if (topic == DIALOGUE_SCRIPTED_LINE_2) {
+        eventId = npcData->dialogue_2_evt_id;
+    } else if (topic == DIALOGUE_SCRIPTED_LINE_3) {
+        eventId = npcData->dialogue_3_evt_id;
+    } else if (topic == DIALOGUE_SCRIPTED_LINE_4) {
+        eventId = npcData->dialogue_4_evt_id;
+    } else if (topic == DIALOGUE_SCRIPTED_LINE_5) {
+        eventId = npcData->dialogue_5_evt_id;
+    } else {
+        assert(topic == DIALOGUE_SCRIPTED_LINE_6);
+        eventId = npcData->dialogue_6_evt_id;
+    }
+
+
     if (eventId == 311) {
         // Original code also listed this event which presumably opened bounty dialogue but MM7
         // use event 311 for some teleport in Bracada
