@@ -138,9 +138,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
-          tag_name: '${{ env.TAG_NAME }}'
+          tag_name: 'nightly'
           files: >-
-            ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
+            ${{ runner.os }}_test_${{ matrix.configuration }}_${{
             matrix.architecture }}.zip
       - name: cleanup ccache
         run: >
