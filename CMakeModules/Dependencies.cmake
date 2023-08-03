@@ -143,7 +143,11 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
             set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
             set(ZLIB_LIB_DIR "${ZLIB_DIR}/lib")
-            set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstatic.lib")
+            if( CMAKE_BUILD_TYPE STREQUAL "Release")
+                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstatic.lib")
+            else()
+                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstaticd.lib")
+            endif()
 
             add_library(ZLIB INTERFACE)
             add_library(ZLIB::ZLIB ALIAS ZLIB)
