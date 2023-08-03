@@ -135,6 +135,7 @@ jobs:
           env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture
           }}.zip
       - name: Publish Release
+        if: always()
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
