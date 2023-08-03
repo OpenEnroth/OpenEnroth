@@ -130,6 +130,9 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialo
                 speakingNPC->profession == Acolyte ||  // or Chaplain? mb discrepancy between game versions?
                 speakingNPC->profession == Piper || speakingNPC->profession == FallenWizard) {
                 optionList.push_back(DIALOGUE_USE_HIRED_NPC_ABILITY);
+                // TODO(Nik-RE-dev): this is for compatability. Previously when NPC can use ability, dialogue allocated 4 buttons unconditionally.
+                //                   Without it many test will fail because of changed buttons positions.
+                optionList.push_back(DIALOGUE_NULL);
             }
         }
     } else {

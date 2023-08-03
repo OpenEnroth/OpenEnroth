@@ -685,13 +685,7 @@ std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData) {
       case DIALOGUE_USE_HIRED_NPC_ABILITY:
         return GetProfessionActionText(npcData->profession);
       default:
-        if (topic > DIALOGUE_NULL && topic < DIALOGUE_13_hiring_related) {
-            // TODO(Nik-RE-dev): wtf?
-            return localization->GetString(LSTR_JOIN);
-        } else {
-            // TODO(Nik-RE-dev): must never happen?
-            return "";
-        }
+        return "";
     }
 }
 
