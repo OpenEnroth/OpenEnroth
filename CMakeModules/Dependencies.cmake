@@ -131,13 +131,13 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             set(SWRESAMPLE_LIBRARIES "${FFMPEG_BIN_DIR}/swresample.lib")
             set(SWSCALE_LIBRARIES "${FFMPEG_BIN_DIR}/swscale.lib")
             prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec-58.dll"
-                    "${FFMPEG_BIN_DIR}/avdevice-58.dll"
-                    "${FFMPEG_BIN_DIR}/avfilter-7.dll"
-                    "${FFMPEG_BIN_DIR}/avformat-58.dll"
-                    "${FFMPEG_BIN_DIR}/avutil-56.dll"
-                    "${FFMPEG_BIN_DIR}/postproc-55.dll"
-                    "${FFMPEG_BIN_DIR}/swresample-3.dll"
-                    "${FFMPEG_BIN_DIR}/swscale-5.dll")
+                    "${FFMPEG_BIN_DIR}/avdevice-60.dll"
+                    "${FFMPEG_BIN_DIR}/avfilter-9.dll"
+                    "${FFMPEG_BIN_DIR}/avformat-60.dll"
+                    "${FFMPEG_BIN_DIR}/avutil-58.dll"
+                    "${FFMPEG_BIN_DIR}/postproc-57.dll"
+                    "${FFMPEG_BIN_DIR}/swresample-4.dll"
+                    "${FFMPEG_BIN_DIR}/swscale-7.dll")
 
             set(ZLIB_DIR "${LIBRARY_DIR}/zlib")
             set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
