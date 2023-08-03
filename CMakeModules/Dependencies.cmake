@@ -127,8 +127,9 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             message(STATUS "ZLIB Include Directory: ${ZLIB_INCLUDE_DIR}")
 
             find_package(FFmpeg REQUIRED)
-            find_package(openal-soft REQUIRED)
-            find_package(sdl REQUIRED)
+            find_package(sdl2 REQUIRED)
+            find_package(openal REQUIRED)
+            
 
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
