@@ -116,6 +116,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             endif()
 
             list(APPEND CMAKE_FIND_ROOT_PATH ${LIBRARY_DIR})
+            list(APPEND CMAKE_PREFIX_PATH ${LIBRARY_DIR})
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
