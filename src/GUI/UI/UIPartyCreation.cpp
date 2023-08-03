@@ -47,7 +47,7 @@ std::array<GraphicsImage *, 22> ui_partycreation_portraits;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
 
-int64_t errorMessageExpireTime; // expiration time (platform time) of error message
+static int64_t errorMessageExpireTime; // expiration time (platform time) of error message
 
 static const int ARROW_SPIN_PERIOD_MS = 475;
 
