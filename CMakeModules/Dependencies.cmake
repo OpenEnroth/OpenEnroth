@@ -126,6 +126,8 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             find_package(FFmpeg REQUIRED)
             find_package(OpenAL REQUIRED)
             find_package(SDL2 REQUIRED)
+
+            include_directories(${LIBRARY_DIR}/include)
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
         endif()
