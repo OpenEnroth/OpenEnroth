@@ -130,7 +130,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             set(POSTPROC_LIBRARIES "${FFMPEG_BIN_DIR}/postproc.lib")
             set(SWRESAMPLE_LIBRARIES "${FFMPEG_BIN_DIR}/swresample.lib")
             set(SWSCALE_LIBRARIES "${FFMPEG_BIN_DIR}/swscale.lib")
-            prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec-58.dll"
+            prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec-60.dll"
                     "${FFMPEG_BIN_DIR}/avdevice-60.dll"
                     "${FFMPEG_BIN_DIR}/avfilter-9.dll"
                     "${FFMPEG_BIN_DIR}/avformat-60.dll"
