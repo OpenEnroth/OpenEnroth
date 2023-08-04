@@ -71,6 +71,7 @@
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIMainMenu.h"
@@ -811,7 +812,7 @@ void Game::processQueuedMessages() {
                                 case SCREEN_BRANCHLESS_NPC_DIALOG:  // click escape
                                     _engine->_statusBar->clearEvent();
 
-                                    ReleaseBranchlessDialogue();
+                                    releaseBranchlessDialogue();
                                     DialogueEnding();
                                     current_screen_type = SCREEN_GAME;
                                     continue;

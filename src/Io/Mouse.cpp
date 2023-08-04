@@ -20,7 +20,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
-#include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIBranchlessDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -265,7 +265,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         return;
 
     if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_PressAnyKey) {
-        ReleaseBranchlessDialogue();
+        releaseBranchlessDialogue();
         return;
     }
 

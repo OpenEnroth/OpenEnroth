@@ -30,6 +30,7 @@
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
 
@@ -377,7 +378,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             __debugbreak();
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            StartBranchlessDialogue(_eventId, step + 1, (int)EVENT_InputString);
+            startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
 #endif
             return -1;
         case EVENT_StatusText:
@@ -409,7 +410,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            StartBranchlessDialogue(_eventId, step + 1, (int)EVENT_PressAnyKey);
+            startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
             return -1;
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3i(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
