@@ -120,7 +120,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
-            set(FFMPEG_DIR "${LIBRARY_DIR}/ffmpeg")
+            set(FFMPEG_DIR "${LIBRARY_DIR}/")
             set(FFMPEG_INCLUDE_DIRS "${FFMPEG_DIR}/include")
             set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
             set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
@@ -141,7 +141,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                     "${FFMPEG_BIN_DIR}/swresample-4.dll"
                     "${FFMPEG_BIN_DIR}/swscale-7.dll")
 
-            set(ZLIB_DIR "${LIBRARY_DIR}/zlib")
+            set(ZLIB_DIR "${LIBRARY_DIR}/")
             set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
             set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
             set(ZLIB_LIB_DIR "${ZLIB_DIR}/lib")
