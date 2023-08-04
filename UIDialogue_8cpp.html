@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6cf4ea2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726ffe1</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">UIDialogue.cpp File Reference</div></div>
@@ -105,11 +104,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ab7ce8052db83f5649deb17f55ded6535"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8cpp.html#ab7ce8052db83f5649deb17f55ded6535">AddScriptedDialogueLine</a>(DIALOGUE_EVENT_ID,  MSG_PARAM)</td></tr>
-<tr class="separator:ab7ce8052db83f5649deb17f55ded6535"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac1daf840c1a490535b2622c98e2a540b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8cpp.html#ac1daf840c1a490535b2622c98e2a540b">GameUI_InitializeDialogue</a> (<a class="el" href="classActor.html">Actor</a> *actor, int bPlayerSaysHello)</td></tr>
@@ -128,46 +122,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ae97887ee351409b4df1326cbd1ecc3f1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::string, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a138a01d401a68aab61b07b596bb532a7">PartyAlignment_Good</a>, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a5a3e1b0ba1793049451900a1e065630d">PartyAlignment_Evil</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8cpp.html#ae97887ee351409b4df1326cbd1ecc3f1">dialogueBackgroundResourceByAlignment</a></td></tr>
 <tr class="separator:ae97887ee351409b4df1326cbd1ecc3f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ab7ce8052db83f5649deb17f55ded6535" name="ab7ce8052db83f5649deb17f55ded6535"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7ce8052db83f5649deb17f55ded6535">&#9670;&#160;</a></span>AddScriptedDialogueLine</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define AddScriptedDialogueLine</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">DIALOGUE_EVENT_ID, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">MSG_PARAM&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                <span class="keywordflow">if</span> (DIALOGUE_EVENT_ID) { \</div>
-<div class="line">                    if (num_dialugue_options &lt; 4) { \</div>
-<div class="line">                        <span class="keywordtype">int</span> res = <a class="code hl_function" href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a>(DIALOGUE_EVENT_ID); \</div>
-<div class="line">                        if (res == 1 || res == 2) \</div>
-<div class="line">                            CreateButton({480, 130 + num_dialugue_options++ * text_line_height}, {140, text_line_height}, 1, 0, \</div>
-<div class="line">                                <a class="code hl_enumvalue" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a>, MSG_PARAM \</div>
-<div class="line">                            ); \</div>
-<div class="line">                    } \</div>
-<div class="line">                }</div>
-<div class="ttc" id="aGUIEnums_8h_html_a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44"><div class="ttname"><a href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a></div><div class="ttdeci">@ UIMSG_SelectNPCDialogueOption</div><div class="ttdef"><b>Definition:</b> GUIEnums.h:114</div></div>
-<div class="ttc" id="aProcessor_8cpp_html_ac06c4d3aa516284a85bd00ae363b5a2d"><div class="ttname"><a href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a></div><div class="ttdeci">bool npcDialogueEventProcessor(int eventId, int startStep)</div><div class="ttdef"><b>Definition:</b> Processor.cpp:175</div></div>
-</div><!-- fragment -->
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aebeda10c8f32f8d077763c3183820cd1" name="aebeda10c8f32f8d077763c3183820cd1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebeda10c8f32f8d077763c3183820cd1">&#9670;&#160;</a></span>BuildHireableNpcDialogue()</h2>

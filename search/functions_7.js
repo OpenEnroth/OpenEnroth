@@ -434,7 +434,7 @@ var searchData=
   ['guiwindow_5fcharacterrecord_431',['GUIWindow_CharacterRecord',['../classGUIWindow__CharacterRecord.html#adb3716d08c77032dd0b15d4c399f3471',1,'GUIWindow_CharacterRecord']]],
   ['guiwindow_5fchest_432',['GUIWindow_Chest',['../classGUIWindow__Chest.html#a1088ffafe4cc38cdb66b6ae3c6aa2574',1,'GUIWindow_Chest']]],
   ['guiwindow_5fdebugmenu_433',['GUIWindow_DebugMenu',['../classGUIWindow__DebugMenu.html#a3046e5d472fb1cacd892143f36ab1a71',1,'GUIWindow_DebugMenu']]],
-  ['guiwindow_5fdialogue_434',['GUIWindow_Dialogue',['../classGUIWindow__Dialogue.html#a59270bac10be4adce2a2cdabb89347c8',1,'GUIWindow_Dialogue']]],
+  ['guiwindow_5fdialogue_434',['GUIWindow_Dialogue',['../classGUIWindow__Dialogue.html#a56a6d0f16d9a901c19a62934df13f88f',1,'GUIWindow_Dialogue']]],
   ['guiwindow_5fgamekeybindings_435',['GUIWindow_GameKeyBindings',['../classGUIWindow__GameKeyBindings.html#a097aa9c8f5103edc56f744c4453b5238',1,'GUIWindow_GameKeyBindings']]],
   ['guiwindow_5fgamemenu_436',['GUIWindow_GameMenu',['../classGUIWindow__GameMenu.html#a82cb5d33b525a202d01aa7cd2185cdd5',1,'GUIWindow_GameMenu']]],
   ['guiwindow_5fgameoptions_437',['GUIWindow_GameOptions',['../classGUIWindow__GameOptions.html#aaa805afd04c4c8b776061b068e6d086b',1,'GUIWindow_GameOptions']]],

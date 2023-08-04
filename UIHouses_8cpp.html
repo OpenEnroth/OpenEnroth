@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6cf4ea2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726ffe1</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">UIHouses.cpp File Reference</div></div>
@@ -129,11 +128,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a2517cd77451937536e693a426e63e943"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a2517cd77451937536e693a426e63e943">ADD_NPC_SCRIPTED_DIALOGUE</a>(EVENT_ID,  MSG_PARAM)</td></tr>
-<tr class="separator:a2517cd77451937536e693a426e63e943"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ad6c0486935e2c520b805471c35d21f46"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#ad6c0486935e2c520b805471c35d21f46">enterHouse</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> uHouseID)</td></tr>
@@ -174,44 +168,6 @@ Variables</h2></td></tr>
 <tr class="memitem:a46746b17601a2848339c9085c1da42ab"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac3f678024135fe7a571ff8de0abdeb05">BUILDING_MIRRORED_PATH_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a46746b17601a2848339c9085c1da42ab">shopBackgroundNames</a></td></tr>
 <tr class="separator:a46746b17601a2848339c9085c1da42ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a2517cd77451937536e693a426e63e943" name="a2517cd77451937536e693a426e63e943"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2517cd77451937536e693a426e63e943">&#9670;&#160;</a></span>ADD_NPC_SCRIPTED_DIALOGUE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ADD_NPC_SCRIPTED_DIALOGUE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">EVENT_ID, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">MSG_PARAM&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (EVENT_ID) { \</div>
-<div class="line">        if (optionList.size() &lt; 4) { \</div>
-<div class="line">            <span class="keywordtype">int</span> res = <a class="code hl_function" href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a>(EVENT_ID); \</div>
-<div class="line">            if (res == 1 || res == 2) { \</div>
-<div class="line">                optionList.push_back(MSG_PARAM); \</div>
-<div class="line">            } \</div>
-<div class="line">        } \</div>
-<div class="line">    }</div>
-<div class="ttc" id="aProcessor_8cpp_html_ac06c4d3aa516284a85bd00ae363b5a2d"><div class="ttname"><a href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a></div><div class="ttdeci">bool npcDialogueEventProcessor(int eventId, int startStep)</div><div class="ttdef"><b>Definition:</b> Processor.cpp:175</div></div>
-</div><!-- fragment -->
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a367ca93a4c306e3d85e764d52a71a2d2" name="a367ca93a4c306e3d85e764d52a71a2d2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a367ca93a4c306e3d85e764d52a71a2d2">&#9670;&#160;</a></span>BackToHouseMenu()</h2>
