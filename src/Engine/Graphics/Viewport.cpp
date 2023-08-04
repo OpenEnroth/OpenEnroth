@@ -19,6 +19,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -259,7 +260,7 @@ void InteractWithActor(unsigned int id) {
             if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]].empty()) {
                 pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]];
-                StartBranchlessDialogue(0, 0, 0);
+                startBranchlessDialogue(0, 0, EVENT_Invalid);
             }
         }
     }

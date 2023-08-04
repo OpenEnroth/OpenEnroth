@@ -9,6 +9,7 @@ set(GUI_UI_SOURCES
         UIChest.cpp
         UICredits.cpp
         UIDialogue.cpp
+        UIBranchlessDialogue.cpp
         UIGame.cpp
         UIGameOver.cpp
         UIHouses.cpp
@@ -33,6 +34,7 @@ set(GUI_UI_HEADERS
         UIChest.h
         UICredits.h
         UIDialogue.h
+        UIBranchlessDialogue.h
         UIGame.h
         UIGameOver.h
         UIHouseEnums.h
