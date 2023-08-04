@@ -1354,7 +1354,7 @@ var searchData=
   ['start_5fy_5fmax_1351',['start_y_max',['../structexplosion__effect__struct.html#a5f83768873d199bf3d1356c5f2c7c72c',1,'explosion_effect_struct']]],
   ['start_5fy_5fmin_1352',['start_y_min',['../structexplosion__effect__struct.html#ac51a19f7028547f87fa9940723f04ac2',1,'explosion_effect_struct']]],
   ['start_5fzoo_5flevel_1353',['start_zoo_level',['../Arcomage_8cpp.html#a87ddaa2a3f60f2c82e4391042323e6e6',1,'Arcomage.cpp']]],
-  ['startbranchlessdialogue_1354',['StartBranchlessDialogue',['../UIDialogue_8cpp.html#aef73fd7ecf1a120114bd3149e0e242ee',1,'StartBranchlessDialogue(int eventid, int entryline, int event):&#160;UIDialogue.cpp'],['../UIDialogue_8h.html#a7de73eb45c452cd4b7a65c389a108f1f',1,'StartBranchlessDialogue(int eventid, int entryline, int button):&#160;UIDialogue.cpp']]],
+  ['startbranchlessdialogue_1354',['startBranchlessDialogue',['../UIBranchlessDialogue_8cpp.html#a2bbd8c804ae675dc3a28911200a670a7',1,'startBranchlessDialogue(int eventid, int entryline, EventType type):&#160;UIBranchlessDialogue.cpp'],['../UIBranchlessDialogue_8h.html#a2bbd8c804ae675dc3a28911200a670a7',1,'startBranchlessDialogue(int eventid, int entryline, EventType type):&#160;UIBranchlessDialogue.cpp']]],
   ['startfill_1355',['StartFill',['../structexplosion__effect__struct.html#a5dab6aba2dbb6f6aa7c13cf1b5cda542',1,'explosion_effect_struct']]],
   ['startingmap_1356',['StartingMap',['../classGameConfig_1_1Gameplay.html#a63d8ae0baa2ee26b6897e0eed2df9dfa',1,'GameConfig::Gameplay']]],
   ['startnewgame_1357',['startNewGame',['../classEngineController.html#a87d3e22742a629101dc27d0463899bfe',1,'EngineController']]],
