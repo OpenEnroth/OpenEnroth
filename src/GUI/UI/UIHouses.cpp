@@ -451,6 +451,33 @@ void prepareHouse(HOUSE_ID house) {
     }
 }
 
+/**
+ * TODO(Nik-RE-dev): untested until houses NPC can join the party
+ *
+ * @offset 0x4B40E6
+ */
+void NPCHireableDialogPrepare() {
+    int v0 = 0;
+    NPCData *v1 = houseNpcs[currentHouseNpc].npc;
+
+    pDialogueWindow->Release();
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
+        UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
+    );
+    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
+    if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
+        pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
+            UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
+        );
+        v0 = 1;
+    }
+    pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
+        UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
+    pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
+    dialog_menu_id = DIALOGUE_OTHER;
+}
+
 void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
     uDialogueType = (DIALOGUE_TYPE)(topic + 1); // TODO(Nik-RE-dev): +1?
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
@@ -475,80 +502,31 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
         return;
     }
 
-    if (topic != DIALOGUE_HIRE_FIRE) {
-        if (topic == DIALOGUE_PROFESSION_DETAILS) {
-            // uBoxHeight = pCurrentNPCInfo->uProfession;
-            __debugbreak();  // probably hirelings found in buildings, not
-                             // present in MM7, changed
-                             // "pCurrentNPCInfo->uProfession - 1" to
-                             // "pCurrentNPCInfo->uProfession", have to check in
-                             // other versions whether it's ok
-            if (dialogue_show_profession_details) {
-                current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-            } else {
-                current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
-                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-            }
-            dialogue_show_profession_details = ~dialogue_show_profession_details;
+    selectSpecialNPCTopicSelection(topic, pCurrentNPCInfo);
+
+    if (topic == DIALOGUE_PROFESSION_DETAILS) {
+        if (dialogue_show_profession_details) {
+            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
+                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
         } else {
-            selectSpecialNPCTopicSelection(topic, pCurrentNPCInfo);
-        }
-        BackToHouseMenu();
-        return;
-    }
-
-    if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
-        engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
-        BackToHouseMenu();
-        return;
-    }
-
-    if (pCurrentNPCInfo->profession != Burglar) {
-        // burglars have no hiring price probably hirelings found in buildings, not present in MM7,
-        // changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in
-        // other versions whether it's ok
-        __debugbreak();
-        int pPrice = pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
-        if (pParty->GetGold() < (unsigned int)pPrice) {
-            engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
-            dialogue_show_profession_details = false;
-            uDialogueType = DIALOGUE_13_hiring_related;
             current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                                                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-            if (pParty->hasActiveCharacter()) {
-                pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
-            }
-            engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+        }
+        BackToHouseMenu();
+        return;
+    }
+
+    if (topic == DIALOGUE_HIRE_FIRE) {
+        if (!pCurrentNPCInfo->Hired()) {
+            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
             BackToHouseMenu();
             return;
-        } else {
-            pParty->TakeGold(pPrice);
         }
     }
 
-    pCurrentNPCInfo->uFlags |= NPC_HIRED;
-    pParty->hirelingScrollPosition = 0;
-    pParty->CountHirelings();
-    if (!pParty->pHirelings[0].pName.empty()) {
-        pParty->pHirelings[1] = *pCurrentNPCInfo;
-        pParty->pHireling2Name = pCurrentNPCInfo->pName;
-    } else {
-        pParty->pHirelings[0] = *pCurrentNPCInfo;
-        pParty->pHireling1Name = pCurrentNPCInfo->pName;
-    }
-    pParty->hirelingScrollPosition = 0;
-    pParty->CountHirelings();
     prepareHouse(window_SpeakInHouse->houseId());
     dialog_menu_id = DIALOGUE_MAIN;
-
-    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-    if (pParty->hasActiveCharacter()) {
-        pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
-    }
-
     BackToHouseMenu();
 }
 

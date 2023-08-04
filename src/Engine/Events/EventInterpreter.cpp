@@ -356,7 +356,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             if (_canShowMessages) {
                 Actor actor = Actor();
                 actor.npcId = ir.data.npc_descr.npc_id;
-                GameUI_InitializeDialogue(&actor, false);
+                initializeNPCDialogue(&actor, false);
             } else {
                 bDialogueUI_InitializeActor_NPC_ID = ir.data.npc_descr.npc_id;
             }
