@@ -34,7 +34,7 @@ set(LIBTYPE STATIC)
 set(ALSOFT_UTILS OFF)
 set(ALSOFT_EXAMPLES OFF)
 set(ALSOFT_TESTS OFF)
-# add_subdirectory(openal_soft)
+add_subdirectory(openal_soft)
 
 # SDL
 if(BUILD_PLATFORM STREQUAL "linux")
