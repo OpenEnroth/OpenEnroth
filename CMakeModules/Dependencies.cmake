@@ -140,28 +140,13 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                     "${FFMPEG_BIN_DIR}/postproc-57.dll"
                     "${FFMPEG_BIN_DIR}/swresample-4.dll"
                     "${FFMPEG_BIN_DIR}/swscale-7.dll")
-
-            set(ZLIB_DIR "${LIBRARY_DIR}/")
-            set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
-            set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
-            set(ZLIB_LIB_DIR "${ZLIB_DIR}/lib")
-            if( CMAKE_BUILD_TYPE STREQUAL "Release")
-                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstatic.lib")
-            else()
-                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstaticd.lib")
-            endif()
         
             message(STATUS "Libs dir: ${LIBRARY_DIR}")
             
-            # find_package(ZLIB REQUIRED)
+            find_package(ZLIB REQUIRED)
             # find_package(FFmpeg REQUIRED)
             # find_package(OpenAL REQUIRED)
             # find_package(SDL2 REQUIRED)
-            
-            add_library(ZLIB INTERFACE)
-            add_library(ZLIB::ZLIB ALIAS ZLIB)
-            target_link_libraries(ZLIB INTERFACE ${ZLIB_LIBRARIES})
-            target_include_directories(ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})
             
             # include_directories(${LIBRARY_DIR}/include)
         else()
