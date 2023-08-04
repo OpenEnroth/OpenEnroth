@@ -115,11 +115,13 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                 message(FATAL_ERROR "Error occurred during unpack of dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE}: ${UNPACK_STATUS}")
             endif()
 
-            list(APPEND CMAKE_FIND_ROOT_PATH ${LIBRARY_DIR})
-            list(APPEND CMAKE_PREFIX_PATH ${LIBRARY_DIR})
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
+            list(APPEND CMAKE_FIND_ROOT_PATH ${LIBRARY_DIR})
+            list(APPEND CMAKE_PREFIX_PATH ${LIBRARY_DIR})
+            list(APPEND CMAKE_PREFIX_PATH "${LIBRARY_DIR}/cmake")
+			
             set(FFMPEG_DIR "${LIBRARY_DIR}/")
             set(FFMPEG_INCLUDE_DIRS "${FFMPEG_DIR}/include")
             set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
@@ -143,14 +145,19 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         
             message(STATUS "Libs dir: ${LIBRARY_DIR}")
             
+			
 			# zlib finder is dumb and has to be told to use static
 			set(ZLIB_USE_STATIC_LIBS "ON")
-            find_package(ZLIB REQUIRED)
-            # find_package(FFmpeg REQUIRED)
-            # find_package(OpenAL REQUIRED)
-            # find_package(SDL2 REQUIRED)
-            
-            # include_directories(${LIBRARY_DIR}/include)
+			find_package(ZLIB REQUIRED)
+
+			set(SDL_TEST OFF)
+			set(SDL_SHARED OFF)
+			set(SDL_STATIC ON)
+			find_package(SDL2 REQUIRED)
+			add_library(SDL2OE INTERFACE)
+			target_link_libraries(SDL2OE INTERFACE SDL2::SDL2-static SDL2::SDL2main)
+			add_library(SDL2::SDL2OE ALIAS SDL2OE)			
+
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
         endif()
