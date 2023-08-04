@@ -80,7 +80,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             MESSAGE(FATAL_ERROR "Unknown platform for prebuilt dependencies.")
         endif()
 
-        set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
+        set(LIB_DIR "${CMAKE_SOURCE_DIR}/build/lib")
         set(LIBRARY_DIR "${LIB_DIR}/${DEP_PLATFORM}/${BUILD_TYPE}")
 
         set(DEPS_ZIP_FILENAME "${DEP_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_TYPE}.zip")
@@ -143,6 +143,8 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         
             message(STATUS "Libs dir: ${LIBRARY_DIR}")
             
+			# zlib finder is dumb and has to be told to use static
+			set(ZLIB_USE_STATIC_LIBS "ON")
             find_package(ZLIB REQUIRED)
             # find_package(FFmpeg REQUIRED)
             # find_package(OpenAL REQUIRED)
