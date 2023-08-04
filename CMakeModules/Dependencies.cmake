@@ -120,13 +120,49 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         if (BUILD_PLATFORM STREQUAL "windows")
+            set(FFMPEG_DIR "${LIBRARY_DIR}/ffmpeg")
+            set(FFMPEG_INCLUDE_DIRS "${FFMPEG_DIR}/include")
+            set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
+            set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
+            set(AVCODEC_LIBRARIES "${FFMPEG_BIN_DIR}/avcodec.lib")
+            set(AVDEVICE_LIBRARIES "${FFMPEG_BIN_DIR}/avdevice.lib")
+            set(AVFILTER_LIBRARIES "${FFMPEG_BIN_DIR}/avfilter.lib")
+            set(AVFORMAT_LIBRARIES "${FFMPEG_BIN_DIR}/avformat.lib")
+            set(AVUTIL_LIBRARIES "${FFMPEG_BIN_DIR}/avutil.lib")
+            set(POSTPROC_LIBRARIES "${FFMPEG_BIN_DIR}/postproc.lib")
+            set(SWRESAMPLE_LIBRARIES "${FFMPEG_BIN_DIR}/swresample.lib")
+            set(SWSCALE_LIBRARIES "${FFMPEG_BIN_DIR}/swscale.lib")
+            prebuilt_dependencies_add("${FFMPEG_DIR}/bin/avcodec60.dll"
+                    "${FFMPEG_BIN_DIR}/avdevice60.dll"
+                    "${FFMPEG_BIN_DIR}/avfilter9.dll"
+                    "${FFMPEG_BIN_DIR}/avformat60.dll"
+                    "${FFMPEG_BIN_DIR}/avutil58.dll"
+                    "${FFMPEG_BIN_DIR}/postproc57.dll"
+                    "${FFMPEG_BIN_DIR}/swresample4.dll"
+                    "${FFMPEG_BIN_DIR}/swscale7.dll")
+
+            set(ZLIB_DIR "${LIBRARY_DIR}/zlib")
+            set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
+            set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
+            set(ZLIB_LIB_DIR "${ZLIB_DIR}/lib")
+            if( CMAKE_BUILD_TYPE STREQUAL "Release")
+                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstatic.lib")
+            else()
+                set(ZLIB_LIBRARIES "${ZLIB_LIB_DIR}/zlibstaticd.lib")
+            endif()
+        
             message(STATUS "Libs dir: ${LIBRARY_DIR}")
             
-            find_package(ZLIB REQUIRED)
-            find_package(FFmpeg REQUIRED)
+            # find_package(ZLIB REQUIRED)
+            # find_package(FFmpeg REQUIRED)
             # find_package(OpenAL REQUIRED)
             # find_package(SDL2 REQUIRED)
-
+            
+            add_library(ZLIB INTERFACE)
+            add_library(ZLIB::ZLIB ALIAS ZLIB)
+            target_link_libraries(ZLIB INTERFACE ${ZLIB_LIBRARIES})
+            target_include_directories(ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})
+            
             # include_directories(${LIBRARY_DIR}/include)
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
