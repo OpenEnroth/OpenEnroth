@@ -131,15 +131,13 @@ jobs:
             
       - name: Zip Folder For Release
         run: >-
-          Compress-Archive -Path dist -DestinationPath ./Windows_${{
-          env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture
+          Compress-Archive -Path dist -DestinationPath ./Windows_test_${{ matrix.configuration }}_${{ matrix.architecture
           }}.zip
       - name: Publish Release
-        if: always()
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
-          tag_name: 'nightly'
+          tag_name: '${{ env.TAG_NAME }}'
           files: >-
             ${{ runner.os }}_test_${{ matrix.configuration }}_${{
             matrix.architecture }}.zip
