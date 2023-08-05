@@ -2102,8 +2102,6 @@ void Game::gameLoop() {
         // = 0;
         current_screen_type = SCREEN_GAME;
 
-        // if ( render->pRenderD3D )
-        _engine->Draw();
         SaveGame(1, 0);
 
         bool game_finished = false;

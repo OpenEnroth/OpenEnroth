@@ -1000,14 +1000,24 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
 }
 
 RgbaImage RenderOpenGL::MakeScreenshot32(const int width, const int height) {
-    BeginScene3D();
+    // TODO(pskelton): should this call drawworld instead??
 
+    pCamera3D->_viewPitch = pParty->_viewPitch;
+    pCamera3D->_viewYaw = pParty->_viewYaw;
+    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
+    pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
+    pCamera3D->CreateViewMatrixAndProjectionScale();
+    pCamera3D->BuildViewFrustum();
+
+    BeginScene3D();
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pIndoor->Draw();
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        render->uFogColor = GetLevelFogColor();
         pOutdoor->Draw();
     }
-
     DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
     // TODO(captainurist): subImage().scale()
@@ -2560,7 +2570,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 
     DrawBillboards();
 
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 }
 
@@ -4566,7 +4576,6 @@ void RenderOpenGL::DrawIndoorFaces() {
 }
 
 bool RenderOpenGL::SwitchToWindow() {
-    // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     // pViewport->ResetScreen();
     // CreateZBuffer();
 
