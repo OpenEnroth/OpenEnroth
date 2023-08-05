@@ -1497,11 +1497,9 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 }
 //----- (0046BDF1) --------------------------------------------------------
 void BLV_UpdateUserInputAndOther() {
-    UpdateObjects();
     BLV_ProcessPartyActions();
     UpdateActors_BLV();
     BLV_UpdateDoors();
-    checkDecorationEvents();
 }
 
 //----- (00472866) --------------------------------------------------------

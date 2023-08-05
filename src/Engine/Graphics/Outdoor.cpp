@@ -127,10 +127,10 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     pOutdoor->UpdateFog();
     // pCamera3D->sr_Reset_list_0037C();
 
-        SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
-        render->DrawOutdoorSky();
-        render->DrawOutdoorTerrain();
-        render->DrawOutdoorBuildings();
+    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
+    render->DrawOutdoorSky();
+    render->DrawOutdoorTerrain();
+    render->DrawOutdoorBuildings();
 
     // TODO(pskelton): consider order of drawing / lighting
     pMobileLightsStack->uNumLightsActive = 0;
@@ -138,9 +138,9 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     engine->StackPartyTorchLight();
 
     // engine->PrepareBloodsplats(); // not used?
-        UpdateDiscoveredArea(WorldPosToGridCellX(pParty->pos.x),
-                             WorldPosToGridCellY(pParty->pos.y),
-                             1);
+    UpdateDiscoveredArea(WorldPosToGridCellX(pParty->pos.x),
+                            WorldPosToGridCellY(pParty->pos.y),
+                            1);
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -1573,7 +1573,6 @@ void ODM_UpdateUserInputAndOther() {
     bool v0;        // eax@5
     std::string pOut;  // [sp+8h] [bp-20h]@5
 
-    UpdateObjects();
     ODM_ProcessPartyActions();
     if (pParty->pos.x < -22528 || pParty->pos.x > 22528 ||
         pParty->pos.y < -22528 || pParty->pos.y > 22528) {
@@ -1591,7 +1590,6 @@ void ODM_UpdateUserInputAndOther() {
         }
     }
     UpdateActors_ODM();
-    checkDecorationEvents();
 }
 //----- (0041F54A) --------------------------------------------------------
 void OutdoorLocation::LoadActualSkyFrame() {

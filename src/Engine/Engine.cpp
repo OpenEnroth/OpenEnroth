@@ -146,7 +146,7 @@ void Engine::drawWorld() {
             pParty->_viewYaw != pParty->_viewPrevYaw ||
             pParty->_viewPitch != pParty->_viewPrevPitch ||
             pParty->eyeLevel != pParty->lastEyeLevel)
-        pParty->lastPos = pParty->pos;
+            pParty->lastPos = pParty->pos;
         // v0 = &render;
         pParty->_viewPrevYaw = pParty->_viewYaw;
         pParty->_viewPrevPitch = pParty->_viewPitch;
@@ -175,7 +175,7 @@ void Engine::drawWorld() {
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
             }
 
-             decal_builder->DrawBloodsplats();
+            decal_builder->DrawBloodsplats();
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
@@ -660,11 +660,14 @@ void UpdateUserInput_and_MapSpecificStuff() {
         return;
     }
 
+    UpdateObjects();
+
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         BLV_UpdateUserInputAndOther();
     else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         ODM_UpdateUserInputAndOther();
 
+    checkDecorationEvents();
     evaluateAoeDamage();
 }
 
