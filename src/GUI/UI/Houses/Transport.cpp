@@ -161,7 +161,7 @@ void GUIWindow_Transport::transportDialogue() {
             SaveGame(1, 0);
             pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
 
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+            dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             Party_Teleport_Cam_Pitch = 0;
             Party_Teleport_Z_Speed = 0;
             Party_Teleport_Cam_Yaw = pTravel->arrival_view_yaw;

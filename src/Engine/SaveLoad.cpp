@@ -122,7 +122,7 @@ void LoadGame(unsigned int uSlot) {
 
     pCurrentMapName = header.locationName;
 
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
+    dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
 
     for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
         if (pSavegameList->pSavegameThumbnails[i] != nullptr) {

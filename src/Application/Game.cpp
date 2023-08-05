@@ -1086,7 +1086,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 SaveGame(1, 0);
                 pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].pFilename;
-                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
@@ -1200,7 +1200,7 @@ void Game::processQueuedMessages() {
                     if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
                     std::string map_name = pMapStats->pInfos[map_index].pFilename;
                     pCurrentMapName = map_name;
-                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
                     continue;
@@ -2137,8 +2137,8 @@ void Game::gameLoop() {
                 if (!pEventTimer->bTackGameTime)
                     _494035_timed_effects__water_walking_damage__etc();
 
-                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0001) {
-                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0001;
+                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {
+                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 } else {
                     Actor::UpdateActorAI();
                     UpdateUserInput_and_MapSpecificStuff();
