@@ -1414,7 +1414,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         static uint16_t pOdmMinimap[117][137];
         assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
 
-        bool partymoved = pParty->uFlags & PARTY_FLAGS_1_ForceRedraw;
+        bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
             int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);

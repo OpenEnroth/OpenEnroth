@@ -146,8 +146,6 @@ void Engine::drawWorld() {
             pParty->_viewYaw != pParty->_viewPrevYaw ||
             pParty->_viewPitch != pParty->_viewPrevPitch ||
             pParty->eyeLevel != pParty->lastEyeLevel)
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-
         pParty->lastPos = pParty->pos;
         // v0 = &render;
         pParty->_viewPrevYaw = pParty->_viewYaw;
@@ -210,7 +208,6 @@ void Engine::Draw() {
     drawHUD();
 
     render->Present();
-    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
 }
 
 
@@ -367,7 +364,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     Vis_SelectionFilter *sprite_filter;  // [sp+10h] [bp-18h]@2
     Vis_SelectionFilter *face_filter;  // [sp+14h] [bp-14h]@2
 
-    ++qword_5C6DF0;
     particle_engine->UpdateParticles();
     Pointi pt = mouse->GetCursorPos();
 
@@ -398,22 +394,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // decal_builder->curent_decal_id = 0;
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
-    if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
-        render->uFogColor = GetLevelFogColor();
-    // if (uFlags & GAME_FLAGS_1_400)
-    //    engine->config->SetForceRedraw(true);
-    /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
-    pMobileLightsStack->uNumLightsActive )
-    {
-    uFlags2 |= 0x01;
-    field_E10 = qword_5C6DF0;
-    }*/
-    // v6 = qword_5C6DF0 - field_E10;
-    if (qword_5C6DF0/* - field_E10 == 1*/)
-        engine->SetForceRedraw(true);
-
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        engine->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
@@ -699,7 +680,6 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
@@ -1007,7 +987,7 @@ void MM7Initialization() {
     } else {
         viewparams->field_20 &= 0xFFFFFF00;
     }
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
+
     viewparams->uSomeY = viewparams->uScreen_topL_Y;
     viewparams->uSomeX = viewparams->uScreen_topL_X;
     viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
@@ -1082,7 +1062,6 @@ void Engine::_461103_load_level_sub() {
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->field_7B5_in_arena_quest = 0;
     pNPCStats->uNewlNPCBufPos = 0;
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
@@ -1233,8 +1212,6 @@ void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
             } else {
                 sub_44861E_set_texture_outdoor(uFaceCog, pFilename);
             }
-
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         }
     }
 }
@@ -1252,7 +1229,6 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
                             .uAttributes &= ~bit;
                 }
             }
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
                 for (ODMFace &face : model.pFaces) {
@@ -1266,7 +1242,6 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
                 }
             }
         }
-        pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     }
 }
 
@@ -1282,8 +1257,6 @@ void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName
                 pLevelDecorations[i].uFlags &= ~LEVEL_DECORATION_INVISIBLE;
             else
                 pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
-
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         }
     }
 }

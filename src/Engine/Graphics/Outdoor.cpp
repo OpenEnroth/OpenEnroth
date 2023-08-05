@@ -121,25 +121,16 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellY <= 127);
 
-    // if (bRedraw) {
-        // sub_487DA9(); // wipes poly array feild 108 doesnt do anything
-    //}
-
     if (pParty->uCurrentMinute != pOutdoor->uLastSunlightUpdateMinute)
         pOutdoor->UpdateSunlightVectors();
 
     pOutdoor->UpdateFog();
     // pCamera3D->sr_Reset_list_0037C();
 
-    // if (render->pRenderD3D) // d3d - redraw always
-    {
         SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
         render->DrawOutdoorSky();
         render->DrawOutdoorTerrain();
         render->DrawOutdoorBuildings();
-
-        // render->DrawBezierTerrain();
-    }
 
     // TODO(pskelton): consider order of drawing / lighting
     pMobileLightsStack->uNumLightsActive = 0;
@@ -147,11 +138,9 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     engine->StackPartyTorchLight();
 
     // engine->PrepareBloodsplats(); // not used?
-    if (bRedraw)
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->pos.x),
                              WorldPosToGridCellY(pParty->pos.y),
                              1);
-    engine->SetForceRedraw(false);
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -180,10 +169,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
 //----- (00441CFF) --------------------------------------------------------
 void OutdoorLocation::Draw() {
-    bool redrawWorld = true;
-    if (!(pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) && !engine->IsForceRedraw())
-        redrawWorld = false;
-    pOutdoor->ExecDraw(redrawWorld);
+    pOutdoor->ExecDraw(true);
 
     engine->DrawParticles();
     // pWeather->Draw();// если раскомментировать скорость снега быстрее

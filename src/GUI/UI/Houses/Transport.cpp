@@ -173,8 +173,6 @@ void GUIWindow_Transport::transportDialogue() {
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;
-
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
             pParty->pos.x = pTravel->arrival_x;
             pParty->pos.y = pTravel->arrival_y;
             pParty->pos.z = pTravel->arrival_z;
