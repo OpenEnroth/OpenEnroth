@@ -359,16 +359,12 @@ void Engine::StackPartyTorchLight() {
 
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
-    float depth;               // ST00_4@9
-    // int64_t v6;                // kr00_8@21
-    Vis_SelectionFilter *sprite_filter;  // [sp+10h] [bp-18h]@2
-    Vis_SelectionFilter *face_filter;  // [sp+14h] [bp-14h]@2
-
     particle_engine->UpdateParticles();
-    Pointi pt = mouse->GetCursorPos();
 
-    // x = cursor.y;
-    // y = cursor.x;
+    float depth = 0.0f;
+    Vis_SelectionFilter *sprite_filter = nullptr;
+    Vis_SelectionFilter *face_filter = nullptr;
+
     if (isHoldingMouseRightButton()) {
         face_filter = &vis_face_filter;
         sprite_filter = &vis_sprite_filter_2;
@@ -383,11 +379,9 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
         }
         depth = config->gameplay.RangedAttackDepth.value();
     }
-    // depth = v2;
-
+    Pointi pt = mouse->GetCursorPos();
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-    //lightmap_builder->StationaryLightsCount = 0;
-    //lightmap_builder->MobileLightsCount = 0;
+
 
     // decal reset but actually want bloodsplat reset
     // decal_builder->DecalsCount = 0;

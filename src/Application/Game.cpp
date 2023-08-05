@@ -2150,10 +2150,6 @@ void Game::gameLoop() {
                 _engine->Draw();
                 continue;
             }
-            if (uGameState == GAME_FINISHED) {
-                game_finished = true;
-                continue;
-            }
 
 
             if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
@@ -2169,7 +2165,8 @@ void Game::gameLoop() {
             if (uGameState == GAME_STATE_LOADING_GAME ||
                 uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU ||
                 uGameState == GAME_STATE_5 ||
-                uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {
+                uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU ||
+                uGameState == GAME_FINISHED) {
                 game_finished = true;
                 continue;
             }
@@ -2180,7 +2177,7 @@ void Game::gameLoop() {
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED) {
-                _engine->Draw();
+                _engine->Draw();  // when could this occur - can it be dropped?
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
