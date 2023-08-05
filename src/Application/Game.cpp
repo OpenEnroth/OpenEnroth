@@ -367,7 +367,7 @@ void Game_StartDialogue(unsigned int actor_id) {
     if (pParty->hasActiveCharacter()) {
         engine->_messageQueue->clear();
 
-        GameUI_InitializeDialogue(&pActors[actor_id], true);
+        initializeNPCDialogue(&pActors[actor_id], true);
     }
 }
 
@@ -382,7 +382,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < buf.Size()) {
         Actor actor;
         actor.npcId += -1 - pParty->hirelingScrollPosition - hireling_id;
-        GameUI_InitializeDialogue(&actor, true);
+        initializeNPCDialogue(&actor, true);
     }
 }
 
@@ -463,7 +463,7 @@ void Game::processQueuedMessages() {
         // Actor::Actor(&actor);
         Actor actor = Actor();
         actor.npcId = bDialogueUI_InitializeActor_NPC_ID;
-        GameUI_InitializeDialogue(&actor, false);
+        initializeNPCDialogue(&actor, false);
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
 
@@ -498,7 +498,7 @@ void Game::processQueuedMessages() {
                 selectProprietorDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_SelectNPCDialogueOption:
-                OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);

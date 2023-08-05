@@ -22,6 +22,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -216,23 +217,21 @@ static constexpr std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_P
     {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
 
-void Arena_SelectionFightLevel() {
-    // GUIButton *v5;  // eax@18
-    // GUIButton *v6;  // esi@19
-
+std::vector<DIALOGUE_TYPE> arenaMainDialogue() {
     if (pParty->field_7B5_in_arena_quest) {
         if (pParty->field_7B5_in_arena_quest == -1) {
             uDialogueType = DIALOGUE_ARENA_ALREADY_WON;
         } else {
-            int v0 = 0;
-            for (size_t i = 0; i < pActors.size(); i++) {
-                if (pActors[i].aiState == Dead ||
-                    pActors[i].aiState == Removed ||
-                    pActors[i].aiState == Disabled ||
-                    pActors[i].summonerId && pActors[i].summonerId.type() == OBJECT_Character)
-                    ++v0;
+            int killedMonsters = 0;
+            for (Actor &actor : pActors) {
+                if (actor.aiState == Dead ||
+                    actor.aiState == Removed ||
+                    actor.aiState == Disabled ||
+                    (actor.summonerId && actor.summonerId.type() == OBJECT_Character)) {
+                    killedMonsters++;
+                }
             }
-            if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
+            if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
                 for (Character &player : pParty->pCharacters) {
@@ -251,64 +250,43 @@ void Arena_SelectionFightLevel() {
                 pAudioPlayer->playUISound(SOUND_51heroism03);
             }
         }
+        return {};
     } else {
         uDialogueType = DIALOGUE_ARENA_WELCOME;
-        pDialogueWindow->DeleteButtons();
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0,
-            UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
-        pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_PAGE);
-        pDialogueWindow->CreateButton({480, 190}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_SQUIRE);
-        pDialogueWindow->CreateButton({480, 220}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_KNIGHT);
-        pDialogueWindow->CreateButton({480, 250}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_CHAMPION);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
+        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_CHAMPION};
     }
 }
 
-void ArenaFight() {
+/**
+ * @offset 0x4BC109
+ */
+void prepareArenaFight() {
     const int LAST_ARENA_FIGHTER_TYPE = 258;
-    int v0;                  // edi@1
-    int v3;                  // eax@10
-    signed int v4;           // esi@10
-    signed int v6;           // ebx@34
-    signed int v13 = 0;          // eax@49
-    int v14 = 0;                 // esi@49
-    int v15;                 // edx@50
-    signed int v17;          // ecx@51
-    int v18;                 // edx@53
-    int i;                   // edi@55
-    signed int v22;          // [sp-4h] [bp-144h]@51
-    int16_t v23[LAST_ARENA_FIGHTER_TYPE] {};        // [sp+Ch] [bp-134h]@39
-    int16_t monster_ids[6] {};  // [sp+128h] [bp-18h]@56
-    int v26;                 // [sp+134h] [bp-Ch]@1
-    int num_monsters = 0;        // [sp+13Ch] [bp-4h]@17
+    std::vector<int> monsterIds;
+    std::vector<int> monsterTypes;
 
-    v26 = 0;
     pParty->field_7B5_in_arena_quest = uDialogueType;
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
-    v0 = pFontArrus->CalcTextHeight(
-        localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON),
-        window.uFrameWidth, 13) + 7;
+    int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13) + 7;
     render->BeginScene3D();
 
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pIndoor->Draw();
-    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         pOutdoor->Draw();
+    }
 
     render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     render->BeginScene2D();
 
-    render->DrawTextureCustomHeight(8 / 640.0f, (352 - v0) / 480.0f,
-                                    ui_leather_mm7, v0);
+    render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
 
-    render->DrawTextureNew(8 / 640.0f, (347 - v0) / 480.0f,
-                                _591428_endcap);
-    std::string v1 = pFontArrus->FitTextInAWindow(
-        localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth,
-        13);
-    pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, colorTable.White, v1);
+    render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
+    std::string text = pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13);
+
+    pDialogueWindow->DrawText(pFontArrus, {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
     pParty->pos = Vec3i(3849, 5770, 1);
     pParty->speed = Vec3i();
@@ -316,128 +294,82 @@ void ArenaFight() {
     pParty->_viewYaw = 512;
     pParty->_viewPitch = 0;
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-    // v2 = pParty->pCharacters.data();
-    for (uint i = 0; i < 4; i++) {
-        v3 = pParty->pCharacters[i].GetActualLevel();
-        v4 = v26;
-        if (v3 > v26) {
-            v26 = pParty->pCharacters[i].GetActualLevel();
-            v4 = pParty->pCharacters[i].GetActualLevel();
+
+    int characterMaxLevel = 0;
+    for (Character &character : pParty->pCharacters) {
+        if (characterMaxLevel < character.GetActualLevel()) {
+            characterMaxLevel = character.GetActualLevel();
         }
-        // ++v2;
     }
-    // while ( (signed int)v2 < (signed int)pParty->pHirelings.data() );
+
+    int monsterMaxLevel = characterMaxLevel;
+
     if (uDialogueType == DIALOGUE_ARENA_SELECT_PAGE) {
-        num_monsters = v4;
-        v4 /= 2;
+        monsterMaxLevel = characterMaxLevel;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_SQUIRE) {
-        // v5 = (int64_t)((double)v26 * 1.5);
-        num_monsters = (int)((double)v26 * 1.5);
-        v4 /= 2;
+        monsterMaxLevel = characterMaxLevel * 1.5;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_KNIGHT) {
-        // LODWORD(v5) = 2 * v4;
-        num_monsters = 2 * v4;
-        v4 /= 2;
+        monsterMaxLevel = 2 * characterMaxLevel;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_CHAMPION) {
-        num_monsters = 2 * v4;
-        v4 /= 2;
+        monsterMaxLevel = 2 * characterMaxLevel;
     }
-    if (v4 < 1) v4 = 1;
-    if (v4 > 100) v4 = 100;
-    if (num_monsters > 100) num_monsters = 100;
-    if (v4 < 2) v4 = 2;
-    if (num_monsters < 2) num_monsters = 2;
-    v6 = 0;
-    // v27 = 1;
-    // v7 = (char *)&pMonsterStats->pInfos[1].uLevel;
-    for (unsigned int i = 1; i <= LAST_ARENA_FIGHTER_TYPE; i++) {
-        if (pMonsterStats->pInfos[i].uAIType != 1) {  // if ( v7[8] != 1 )
-            if (!MonsterStats::BelongsToSupertype(
-                    pMonsterStats->pInfos[i].uID,
-                    MONSTER_SUPERTYPE_8)) {  //! MonsterStats::BelongsToSupertype(*((short
-                                             //! *)v7 + 22), MONSTER_SUPERTYPE_8)
-                // v8 = (uint8_t)pMonsterStats->pInfos[i].uLevel;
-                if (pMonsterStats->pInfos[i].uLevel >= v4) {
-                    if (pMonsterStats->pInfos[i].uLevel <= num_monsters)
-                        v23[v6++] = i;
+
+    int monsterMinLevel = characterMaxLevel / 2;
+
+    if (monsterMinLevel < 2)
+        monsterMinLevel = 2;
+    if (monsterMinLevel > 100)
+        monsterMinLevel = 100;
+
+    if (monsterMaxLevel > 100)
+        monsterMaxLevel = 100;
+    if (monsterMaxLevel < 2)
+        monsterMaxLevel = 2;
+
+    for (int i = 1; i <= LAST_ARENA_FIGHTER_TYPE; i++) {
+        if (pMonsterStats->pInfos[i].uAIType != 1) {
+            if (!MonsterStats::BelongsToSupertype(pMonsterStats->pInfos[i].uID, MONSTER_SUPERTYPE_8)) {
+                if (pMonsterStats->pInfos[i].uLevel >= monsterMinLevel &&
+                    pMonsterStats->pInfos[i].uLevel <= monsterMaxLevel) {
+                    monsterTypes.push_back(i);
                 }
             }
         }
-        // ++v27;
-        // v7 += 88;
     }
-    // while ( (signed int)v7 <= (signed int)&pMonsterStats->pInfos[258].uLevel
-    // );
-    num_monsters = 6;
-    if (v6 < 6) num_monsters = v6;
-    // v9 = 0;
-    if (num_monsters > 0) {
-        for (uint i = 0; i < num_monsters; i++) {
-            // v10 = rand();
-            // ++v9;
-            // v12 = __OFSUB__(v9, num_monsters);
-            // v11 = v9 - num_monsters < 0;
-            // *((short *)&window.pControlsTail + v9 + 1) = v23[rand() % v6];
-            monster_ids[i] = v23[grng->random(v6)];
-        }
-        // while ( v11 ^ v12 );
+
+    assert(monsterTypes.size() > 0);
+
+    int maxIdsNum = 6;
+    if (monsterTypes.size() < 6) {
+        maxIdsNum = monsterTypes.size();
     }
+
+    for (int i = 0; i < maxIdsNum; i++) {
+        monsterIds.push_back(monsterTypes[grng->random(monsterTypes.size())]);
+    }
+
+    int baseReward = 0, monstersNum = 0;
 
     if (uDialogueType == DIALOGUE_ARENA_SELECT_PAGE) {
-        v17 = 3;
-        v22 = 50;
-        v18 = grng->random(v17);
-        v13 = v22;
-        v14 = v18 + 6;
+        baseReward = 50;
+        monstersNum = grng->random(3) + 6; // [6:8] monsters
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_SQUIRE) {
-        v17 = 7;
-        v22 = 100;
-        v18 = grng->random(v17);
-        v13 = v22;
-        v14 = v18 + 6;
+        baseReward = 100;
+        monstersNum = grng->random(7) + 6; // [6:12] monsters
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_KNIGHT) {
-        v15 = grng->random(11);
-        v13 = 200;
-        v14 = v15 + 10;
-    } else {
-        if (uDialogueType == DIALOGUE_ARENA_SELECT_CHAMPION) {
-            v13 = 500;
-            v14 = 20;
-        }
-        // else
-        //{
-        // v14 = v27;
-        // v13 = gold_transaction_amount;
-        //}
+        baseReward = 200;
+        monstersNum = grng->random(11) + 10; // [10:19] monsters
+    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_CHAMPION) {
+        baseReward = 500;
+        monstersNum = 20;
     }
-    gold_transaction_amount = v26 * v13;
-    for (i = 0; i < v14; ++i)
-        Actor::Arena_summon_actor(monster_ids[grng->random(num_monsters)],
-                                  pMonsterArenaPlacements[i].x,
-                                  pMonsterArenaPlacements[i].y, 1);
+
+    gold_transaction_amount = characterMaxLevel * baseReward;
+
+    for (int i = 0; i < monstersNum; ++i) {
+        Actor::Arena_summon_actor(monsterIds[grng->random(monsterIds.size())], pMonsterArenaPlacements[i].x, pMonsterArenaPlacements[i].y, 1);
+    }
     pAudioPlayer->playUISound(SOUND_51heroism03);
-}
-
-void NPCHireableDialogPrepare() {
-    int v0 = 0;
-    NPCData *v1 = houseNpcs[currentHouseNpc].npc;
-
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
-        UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
-    );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
-    if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
-        pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
-            UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
-        );
-        v0 = 1;
-    }
-    pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
-    pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
 }
 
 /**
@@ -502,6 +434,9 @@ void oracleDialogue() {
     }
 }
 
+/**
+ * @offset 0x4B29F2
+ */
 const std::string &joinGuildOptionString() {
     GUILD_ID guild_id = static_cast<GUILD_ID>(topicEventId - 400);
     static const int dialogue_base = 110;
@@ -530,6 +465,9 @@ const std::string &joinGuildOptionString() {
     }
 }
 
+/**
+ * @offset 0x4B254D
+ */
 std::string masteryTeacherOptionString() {
     int teacherLevel = (topicEventId - 200) % 3;
     CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((topicEventId - 200) / 3);
@@ -748,7 +686,7 @@ std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, 
     if (eventId == 139) {
         oracleDialogue();
     } else if (eventId == 399) {
-        Arena_SelectionFightLevel();
+        return arenaMainDialogue();
     } else if (eventId >= 400 && eventId <= 410) {
         guildMembershipNPCTopicId = topic;
         uDialogueType = DIALOGUE_MAGIC_GUILD_OFFER;
@@ -826,6 +764,77 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             if (pParty->hasActiveCharacter()) {
                 pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
+            }
+        }
+    } else if (topic == DIALOGUE_PROFESSION_DETAILS) {
+        dialogue_show_profession_details = ~dialogue_show_profession_details;
+    } else if (topic >= DIALOGUE_ARENA_SELECT_PAGE && topic <= DIALOGUE_ARENA_SELECT_CHAMPION) {
+        prepareArenaFight();
+    } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
+        int hirelingId;
+        for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
+            if (iequals(pParty->pHirelings[hirelingId].pName, npcData->pName)) {
+                break;
+            }
+        }
+        assert(hirelingId < pParty->pHirelings.size());
+        if (UseNPCSkill(npcData->profession, hirelingId) == 0) {
+            if (npcData->profession != GateMaster) {
+                npcData->bHasUsedTheAbility = 1;
+            }
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+        } else {
+            engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
+        }
+        engine->Draw();
+    } else if (topic == DIALOGUE_HIRE_FIRE) {
+        if (npcData->Hired()) {
+            if (pNPCStats->uNumNewNPCs > 0) {
+                for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
+                    if (pNPCStats->pNewNPCData[i].Hired() && npcData->pName == pNPCStats->pNewNPCData[i].pName) {
+                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
+                    }
+                }
+            }
+            if (iequals(pParty->pHirelings[0].pName, npcData->pName)) {
+                pParty->pHirelings[0] = NPCData();
+            } else if (iequals(pParty->pHirelings[1].pName, npcData->pName)) {
+                pParty->pHirelings[1] = NPCData();
+            }
+            pParty->hirelingScrollPosition = 0;
+            pParty->CountHirelings();
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+            return;
+        }
+        if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
+            engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
+        } else {
+            if (npcData->profession != Burglar) {
+                // burglars have no hiring price
+                if (pParty->GetGold() < pNPCStats->pProfessions[npcData->profession].uHirePrice) {
+                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                    dialogue_show_profession_details = false;
+                    uDialogueType = DIALOGUE_13_hiring_related;
+                    if (pParty->hasActiveCharacter()) {
+                        pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
+                    }
+                    return;
+                }
+                pParty->TakeGold(pNPCStats->pProfessions[npcData->profession].uHirePrice);
+            }
+            npcData->uFlags |= NPC_HIRED;
+            if (!pParty->pHirelings[0].pName.empty()) {
+                pParty->pHirelings[1] = *npcData;
+                pParty->pHireling2Name = npcData->pName;
+            } else {
+                pParty->pHirelings[0] = *npcData;
+                pParty->pHireling1Name = npcData->pName;
+            }
+            pParty->hirelingScrollPosition = 0;
+            pParty->CountHirelings();
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+            if (pParty->hasActiveCharacter()) {
+                pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
             }
         }
     }

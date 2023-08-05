@@ -36,7 +36,7 @@ const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialog
     {PartyAlignment_Evil, "evt02-c"}
 };
 
-void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
+void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
     currentAddressingAwardBit = -1;
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->Pause();
@@ -183,16 +183,10 @@ void GUIWindow_Dialogue::Update() {
     window.uFrameZ -= 10;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
-                                (pNPCPortraits_y[0][0] - 4) / 480.0f,
-                                game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
-                                pNPCPortraits_y[0][0] / 480.0f,
-                                houseNpcs[0].icon);
+    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseNpcs[0].icon);
 
-    window.DrawTitleText(
-        pFontArrus, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
-    );
+    window.DrawTitleText(pFontArrus, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3);
 
     pParty->getPartyFame();
 
@@ -243,10 +237,11 @@ void GUIWindow_Dialogue::Update() {
             } else if (npcType == NPC_TYPE_HIREABLE) {
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
 
-                if (pNPC->Hired())
+                if (pNPC->Hired()) {
                     dialogue_string = BuildDialogueString(prof->pDismissText, 0, 0, HOUSE_INVALID, 0);
-                else
+                } else {
                     dialogue_string = BuildDialogueString(prof->pJoinText, 0, 0, HOUSE_INVALID, 0);
+                }
             }
             break;
     }
@@ -258,21 +253,16 @@ void GUIWindow_Dialogue::Update() {
         window.uFrameWidth = game_viewport_width;
         window.uFrameZ = 452;
         GUIFont *font = pFontArrus;
-        pTextHeight = pFontArrus->CalcTextHeight(dialogue_string,
-                                                 window.uFrameWidth, 13) + 7;
+        pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
             font = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(dialogue_string,
-                                                      window.uFrameWidth, 13) + 7;
+            pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
         }
 
         if (ui_leather_mm7)
-            render->DrawTextureCustomHeight(8 / 640.0f,
-                                            (352 - pTextHeight) / 480.0f,
-                                            ui_leather_mm7, pTextHeight);
+            render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
 
-        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
-                                    _591428_endcap);
+        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, colorTable.White, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13));
     }
 
@@ -293,8 +283,7 @@ void GUIWindow_Dialogue::Update() {
             pButton->msg_param = 0;
         }
 
-        if (pParty->field_7B5_in_arena_quest &&
-            pParty->field_7B5_in_arena_quest != -1) {
+        if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1) {
             int num_dead_actors = 0;
             for (int i = 0; i < pActors.size(); ++i) {
                 if (pActors[i].aiState == Dead ||
@@ -303,7 +292,8 @@ void GUIWindow_Dialogue::Update() {
                     ++num_dead_actors;
                 } else {
                     ObjectType sumonner_type = pActors[i].summonerId.type();
-                    if (sumonner_type == OBJECT_Character) ++num_dead_actors;
+                    if (sumonner_type == OBJECT_Character)
+                        ++num_dead_actors;
                 }
             }
             if (num_dead_actors == pActors.size()) {
@@ -315,42 +305,36 @@ void GUIWindow_Dialogue::Update() {
     // Install Buttons(Установка кнопок)--------
     int index = 0;
     int all_text_height = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem;
-         i < pDialogueWindow->pStartingPosActiveItem +
-                 pDialogueWindow->pNumPresenceButton;
-         ++i) {
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
-        if (!pButton) break;
-        all_text_height +=
-            pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+        if (!pButton)
+            break;
+        all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
         index++;
     }
 
     if (index) {
         int v45 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / index;
-        if (v45 > SIDE_TEXT_BOX_MAX_SPACING) v45 = SIDE_TEXT_BOX_MAX_SPACING;
+        if (v45 > SIDE_TEXT_BOX_MAX_SPACING)
+            v45 = SIDE_TEXT_BOX_MAX_SPACING;
         int v42 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - v45 * index - all_text_height) / 2 - v45 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-             i < pDialogueWindow->pNumPresenceButton +
-                     pDialogueWindow->pStartingPosActiveItem;
-             ++i) {
+        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
             GUIButton *pButton = pDialogueWindow->GetControl(i);
-            if (!pButton) break;
+            if (!pButton)
+                break;
             pButton->uY = (unsigned int)(v45 + v42);
-            pTextHeight = pFontArrus->CalcTextHeight(pButton->sLabel,
-                                                     window.uFrameWidth, 0);
+            pTextHeight = pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
             pButton->uHeight = pTextHeight;
             v42 = pButton->uY + pTextHeight - 1;
             pButton->uW = v42;
             Color pTextColor = ui_game_dialogue_option_normal_color;
-            if (pDialogueWindow->pCurrentPosActiveItem == i)
+            if (pDialogueWindow->pCurrentPosActiveItem == i) {
                 pTextColor = ui_game_dialogue_option_highlight_color;
-            window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor,
-                                 pButton->sLabel, 3);
+            }
+            window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);
         }
     }
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
-                                ui_exit_cancel_button_background);
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 }
 
 void BuildHireableNpcDialogue() {
@@ -359,84 +343,35 @@ void BuildHireableNpcDialogue() {
     pDialogueWindow = new GUIWindow_Dialogue(1);
 }
 
-void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
+void selectNPCDialogueOption(DIALOGUE_TYPE option) {
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     uDialogueType = option;
-    if (!speakingNPC->uFlags)
+
+    if (!speakingNPC->uFlags) {
         speakingNPC->uFlags = NPC_GREETED_FIRST;
-    if (option == DIALOGUE_PROFESSION_DETAILS) {
-        dialogue_show_profession_details = ~dialogue_show_profession_details;
-    } else if (option == DIALOGUE_HIRE_FIRE) {
-        if (speakingNPC->Hired()) {
-            if ((signed int)pNPCStats->uNumNewNPCs > 0) {
-                for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs; ++i) {
-                    if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
-                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
-                }
-            }
-            if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
-                pParty->pHirelings[0] = NPCData();
-            else if (iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
-                pParty->pHirelings[1] = NPCData();
-            pParty->hirelingScrollPosition = 0;
-            pParty->CountHirelings();
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-            return;
+    }
+
+    if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
+        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(option, speakingNPC);
+
+        pDialogueWindow->DeleteButtons();
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
+                                                        localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
+
+        for (int i = 0; i < topics.size(); i++) {
+            pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, topics[i], Io::InputAction::Invalid, "");
         }
-        if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
-            engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
-        } else {
-            if (speakingNPC->profession != Burglar) {
-                // burglars have no hiring price
-                if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->profession].uHirePrice) {
-                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
-                    dialogue_show_profession_details = false;
-                    uDialogueType = DIALOGUE_13_hiring_related;
-                    if (pParty->hasActiveCharacter()) {
-                        pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
-                    }
-                    engine->Draw();
-                    return;
-                }
-                pParty->TakeGold(pNPCStats->pProfessions[speakingNPC->profession].uHirePrice);
-            }
-            speakingNPC->uFlags |= NPC_HIRED;
-            if (!pParty->pHirelings[0].pName.empty()) {
-                pParty->pHirelings[1] = *speakingNPC;
-                pParty->pHireling2Name = speakingNPC->pName;
-            } else {
-                pParty->pHirelings[0] = *speakingNPC;
-                pParty->pHireling1Name = speakingNPC->pName;
-            }
-            pParty->hirelingScrollPosition = 0;
-            pParty->CountHirelings();
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-            if (sDialogue_SpeakingActorNPC_ID >= 0)
-                pDialogue_SpeakingActor->aiState = Removed;
-            if (pParty->hasActiveCharacter()) {
-                pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
-            }
-        }
-    } else if (option >= DIALOGUE_ARENA_SELECT_PAGE && option <= DIALOGUE_ARENA_SELECT_CHAMPION) {
-        ArenaFight();
+        pDialogueWindow->_41D08F_set_keyboard_control_group(topics.size(), 1, 0, 1);
+
+        pDialogueWindow->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
+        pDialogueWindow->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
+        pDialogueWindow->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
+        pDialogueWindow->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
+        pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
         return;
-    } else if (option == DIALOGUE_USE_HIRED_NPC_ABILITY) {
-        int hirelingId;
-        for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
-            if (iequals(pParty->pHirelings[hirelingId].pName, speakingNPC->pName)) {
-                break;
-            }
-        }
-        assert(hirelingId < pParty->pHirelings.size());
-        if (UseNPCSkill(speakingNPC->profession, hirelingId) == 0) {
-            if (speakingNPC->profession != GateMaster) {
-                speakingNPC->bHasUsedTheAbility = 1;
-            }
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-        } else {
-            engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
-        }
-    } else if (option == DIALOGUE_13_hiring_related) {
+    }
+
+    if (option == DIALOGUE_13_hiring_related) {
         if (!speakingNPC->Hired()) {
             BuildHireableNpcDialogue();
             dialogue_show_profession_details = false;
@@ -452,13 +387,17 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-            return;
         }
-    } else if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
-        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(option, speakingNPC);
-
-        // TODO(Nik-RE-dev): must create buttons when overworld NPC topics will be supported
-        assert(topics.size() == 0);
+        return;
     }
-    engine->Draw();
+
+    selectSpecialNPCTopicSelection(option, speakingNPC);
+
+    if (option == DIALOGUE_HIRE_FIRE) {
+        if (speakingNPC->Hired()) {
+            if (sDialogue_SpeakingActorNPC_ID >= 0) {
+                pDialogue_SpeakingActor->aiState = Removed;
+            }
+        }
+    }
 }

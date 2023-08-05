@@ -15,8 +15,8 @@ class GUIWindow_Dialogue : public GUIWindow {
     virtual void Release() override;
 };
 
-void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello);
+void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello);
 
-void OnSelectNPCDialogueOption(DIALOGUE_TYPE option);
+void selectNPCDialogueOption(DIALOGUE_TYPE option);
 
 extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;
