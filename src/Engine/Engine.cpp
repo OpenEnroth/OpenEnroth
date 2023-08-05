@@ -194,7 +194,6 @@ void Engine::Draw() {
 
         // if (v4)
     }
-    mouse->bRedraw = true;
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
@@ -586,20 +585,10 @@ void Engine::LogEngineBuildInfo() {
 }
 
 //----- (0044EA5E) --------------------------------------------------------
-bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
+void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
                        unsigned int uMouseY, bool bOutline,
                        Vis_SelectionFilter *sprite_filter,
                        Vis_SelectionFilter *face_filter) {
-    /*if (current_screen_type != SCREEN_GAME|| !render->pRenderD3D)
-    return false;*/
-
-    // if (!vis) {
-    //     log->Warning(
-    //         L"The 'Vis' object pointer has not been instatiated, but "
-    //         L"CGame::Pick() is trying to call through it.");
-    //     return false;
-    // }
-
     if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
         uMouseX <= (signed int)pViewport->uScreen_BR_X &&
         uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
@@ -609,10 +598,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
         if (bOutline)
             OutlineSelection();
     }
-
-    return true;
 }
-// 4E28F8: using guessed type int current_screen_type;
 
 //----- (0044EB12) --------------------------------------------------------
 bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,

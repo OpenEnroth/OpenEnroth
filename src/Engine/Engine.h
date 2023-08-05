@@ -90,7 +90,7 @@ class Engine {
     static void LogEngineBuildInfo();
 
     void Initialize();
-    bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+    void PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                    struct Vis_SelectionFilter *face_filter);
     bool PickKeyboard(float pick_depth, bool bOutline, struct Vis_SelectionFilter *sprite_filter,
