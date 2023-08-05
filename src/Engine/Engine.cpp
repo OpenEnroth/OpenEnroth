@@ -702,7 +702,6 @@ void UpdateUserInput_and_MapSpecificStuff() {
 //----- (004646F0) --------------------------------------------------------
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
-    vis->_4C1A02();
 
     pEventTimer->Pause();
     pMiscTimer->Pause();

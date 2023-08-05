@@ -2103,7 +2103,6 @@ void Game::gameLoop() {
         current_screen_type = SCREEN_GAME;
 
         // if ( render->pRenderD3D )
-        _vis->_4C1A02();
         _engine->Draw();
         SaveGame(1, 0);
 
