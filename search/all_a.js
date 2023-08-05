@@ -4,7 +4,7 @@ var searchData=
   ['jail_2eh_1',['Jail.h',['../Jail_8h.html',1,'']]],
   ['jazzberryjam_2',['JazzberryJam',['../classColorTable.html#a064068157c526aa27ca8c5d98a6d880f',1,'ColorTable']]],
   ['joined_3',['joined',['../classCombinedSkillValue.html#a2df8715a7459c3bde0d6c7ef6af5b36b',1,'CombinedSkillValue']]],
-  ['joinguildoptionstring_4',['joinGuildOptionString',['../NPCTopics_8h.html#a77d3f6210b78215deab2595d625c2971',1,'joinGuildOptionString():&#160;NPCTopics.cpp'],['../NPCTopics_8cpp.html#a77d3f6210b78215deab2595d625c2971',1,'joinGuildOptionString():&#160;NPCTopics.cpp']]],
+  ['joinguildoptionstring_4',['joinGuildOptionString',['../NPCTopics_8cpp.html#a77d3f6210b78215deab2595d625c2971',1,'NPCTopics.cpp']]],
   ['joins_5',['joins',['../structNPCData__MM7.html#a1a5eba161a2e10eaa05163f4c29b1439',1,'NPCData_MM7']]],
   ['jonquil_6',['Jonquil',['../classColorTable.html#abdedc7ac662efceef4ed2863bd6d9c16',1,'ColorTable']]],
   ['journalbook_2ecpp_7',['JournalBook.cpp',['../JournalBook_8cpp.html',1,'']]],

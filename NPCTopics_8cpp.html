@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3e2012d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3851b28</span>
    </div>
   </td>
  </tr>
@@ -101,6 +101,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -111,12 +112,10 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac109357600e9ae8133449a874a466e1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8cpp.html#ac109357600e9ae8133449a874a466e1f">Arena_SelectionFightLevel</a> ()</td></tr>
-<tr class="separator:ac109357600e9ae8133449a874a466e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad46b571b6ee5f3df6c7a39113d768cc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8cpp.html#ad46b571b6ee5f3df6c7a39113d768cc4">ArenaFight</a> ()</td></tr>
-<tr class="separator:ad46b571b6ee5f3df6c7a39113d768cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d9b50c44576de7da3caff7d301ddab1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8cpp.html#a0d9b50c44576de7da3caff7d301ddab1">NPCHireableDialogPrepare</a> ()</td></tr>
-<tr class="separator:a0d9b50c44576de7da3caff7d301ddab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38cc4f69541ec9dc88a0061160a05894"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8cpp.html#a38cc4f69541ec9dc88a0061160a05894">arenaMainDialogue</a> ()</td></tr>
+<tr class="separator:a38cc4f69541ec9dc88a0061160a05894"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b60389a651fddaf6212b51527778bdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8cpp.html#a7b60389a651fddaf6212b51527778bdf">prepareArenaFight</a> ()</td></tr>
+<tr class="separator:a7b60389a651fddaf6212b51527778bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83c008bbabaa6745bf3276cd1f603fbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTopics_8cpp.html#a83c008bbabaa6745bf3276cd1f603fbc">oracleDialogue</a> ()</td></tr>
 <tr class="memdesc:a83c008bbabaa6745bf3276cd1f603fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Oracle's 'I lost it!' dialog option.  <a href="NPCTopics_8cpp.html#a83c008bbabaa6745bf3276cd1f603fbc">More...</a><br /></td></tr>
 <tr class="separator:a83c008bbabaa6745bf3276cd1f603fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,39 +194,20 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ac109357600e9ae8133449a874a466e1f" name="ac109357600e9ae8133449a874a466e1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac109357600e9ae8133449a874a466e1f">&#9670;&#160;</a></span>Arena_SelectionFightLevel()</h2>
+<a id="a38cc4f69541ec9dc88a0061160a05894" name="a38cc4f69541ec9dc88a0061160a05894"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38cc4f69541ec9dc88a0061160a05894">&#9670;&#160;</a></span>arenaMainDialogue()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Arena_SelectionFightLevel </td>
+          <td class="memname">std::vector&lt; <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> &gt; arenaMainDialogue </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad46b571b6ee5f3df6c7a39113d768cc4" name="ad46b571b6ee5f3df6c7a39113d768cc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad46b571b6ee5f3df6c7a39113d768cc4">&#9670;&#160;</a></span>ArenaFight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ArenaFight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4BC109 </dd></dl>
-<p ><a class="el" href="structMonsterStats.html#af740f33299fb75dc1dafe63bf58ef858">MonsterStats::BelongsToSupertype</a>(*((short *)v7 + 22), MONSTER_SUPERTYPE_8)</p>
 
 </div>
 </div>
@@ -323,24 +303,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a0d9b50c44576de7da3caff7d301ddab1" name="a0d9b50c44576de7da3caff7d301ddab1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d9b50c44576de7da3caff7d301ddab1">&#9670;&#160;</a></span>NPCHireableDialogPrepare()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void NPCHireableDialogPrepare </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B40E6 </dd></dl>
-
-</div>
-</div>
 <a id="a83c008bbabaa6745bf3276cd1f603fbc" name="a83c008bbabaa6745bf3276cd1f603fbc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a83c008bbabaa6745bf3276cd1f603fbc">&#9670;&#160;</a></span>oracleDialogue()</h2>
 
@@ -358,6 +320,24 @@ Variables</h2></td></tr>
 
 <p>Oracle's 'I lost it!' dialog option. </p>
 <dl class="section user"><dt>Original binary offset:</dt><dd>0x004B1ECE. </dd></dl>
+
+</div>
+</div>
+<a id="a7b60389a651fddaf6212b51527778bdf" name="a7b60389a651fddaf6212b51527778bdf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b60389a651fddaf6212b51527778bdf">&#9670;&#160;</a></span>prepareArenaFight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void prepareArenaFight </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4BC109 </dd></dl>
 
 </div>
 </div>
