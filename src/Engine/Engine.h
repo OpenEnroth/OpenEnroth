@@ -109,6 +109,8 @@ class Engine {
     void Deinitialize();
     void DrawParticles();
     void Draw();
+    void drawWorld();
+    void drawHUD();
     void DrawGUI();
     void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     void SecondaryInitialization();

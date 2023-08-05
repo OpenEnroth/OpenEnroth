@@ -121,8 +121,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 Engine *engine;
 GameState uGameState;
 
-//----- (0044103C) --------------------------------------------------------
-void Engine::Draw() {
+void Engine::drawWorld() {
     engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -131,7 +130,6 @@ void Engine::Draw() {
     pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
 
-    // pIndoorCamera->Initialize2();
     pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
     pCamera3D->CreateViewMatrixAndProjectionScale();
     pCamera3D->BuildViewFrustum();
@@ -170,18 +168,22 @@ void Engine::Draw() {
                 render->hd_water_current_frame = floorf(v2 + 0.5f);
             }
 
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
-            else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+            } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                render->uFogColor = GetLevelFogColor();
                 pOutdoor->Draw();
-            else
+            } else {
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
+            }
 
              decal_builder->DrawBloodsplats();
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
+}
 
+void Engine::drawHUD() {
     // 2d from now on
     render->BeginScene2D();
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
@@ -200,6 +202,12 @@ void Engine::Draw() {
     mouse->Activate();
 
     engine->nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+}
+
+//----- (0044103C) --------------------------------------------------------
+void Engine::Draw() {
+    drawWorld();
+    drawHUD();
 
     render->Present();
     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
