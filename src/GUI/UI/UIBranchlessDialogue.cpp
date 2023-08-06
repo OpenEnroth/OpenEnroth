@@ -94,9 +94,6 @@ void GUIWindow_BranchlessDialogue::Update() {
 
 void startBranchlessDialogue(int eventid, int entryline, EventType type) {
     if (!pGUIWindow_BranchlessDialogue) {
-        if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
-            engine->Draw();
-        }
         pMiscTimer->Pause();
         pEventTimer->Pause();
         savedEventID = eventid;

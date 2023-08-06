@@ -1086,7 +1086,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 SaveGame(1, 0);
                 pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].pFilename;
-                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
@@ -1200,7 +1200,7 @@ void Game::processQueuedMessages() {
                     if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
                     std::string map_name = pMapStats->pInfos[map_index].pFilename;
                     pCurrentMapName = map_name;
-                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
                     continue;
@@ -2102,9 +2102,6 @@ void Game::gameLoop() {
         // = 0;
         current_screen_type = SCREEN_GAME;
 
-        // if ( render->pRenderD3D )
-        _vis->_4C1A02();
-        _engine->Draw();
         SaveGame(1, 0);
 
         bool game_finished = false;
@@ -2138,8 +2135,8 @@ void Game::gameLoop() {
                 if (!pEventTimer->bTackGameTime)
                     _494035_timed_effects__water_walking_damage__etc();
 
-                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0001) {
-                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0001;
+                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {
+                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 } else {
                     Actor::UpdateActorAI();
                     UpdateUserInput_and_MapSpecificStuff();
@@ -2149,10 +2146,6 @@ void Game::gameLoop() {
             _engine->_statusBar->update();
             if (uGameState == GAME_STATE_PLAYING) {
                 _engine->Draw();
-                continue;
-            }
-            if (uGameState == GAME_FINISHED) {
-                game_finished = true;
                 continue;
             }
 
@@ -2170,7 +2163,8 @@ void Game::gameLoop() {
             if (uGameState == GAME_STATE_LOADING_GAME ||
                 uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU ||
                 uGameState == GAME_STATE_5 ||
-                uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {
+                uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU ||
+                uGameState == GAME_FINISHED) {
                 game_finished = true;
                 continue;
             }
@@ -2181,7 +2175,7 @@ void Game::gameLoop() {
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED) {
-                _engine->Draw();
+                _engine->Draw();  // when could this occur - can it be dropped?
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {

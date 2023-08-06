@@ -440,7 +440,6 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (ir.data.npc_topic_descr.event_id == 78) {
                     houseDialogPressEscape();
                     window_SpeakInHouse->Release();
-                    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                     if (enterHouse(HOUSE_DARK_GUILD_PARAMOUNT_PIT)) {
                         createHouseUI(HOUSE_DARK_GUILD_PARAMOUNT_PIT);
                         current_npc_text = pNPCTopics[90].pText;
@@ -458,7 +457,6 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                     houseDialogPressEscape();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
-                    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                     activeLevelDecoration = (LevelDecoration *)1;
                     if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
                         pAudioPlayer->playUISound(SOUND_Invalid);

@@ -146,30 +146,34 @@ int UseNPCSkill(NPCProf profession, int id) {
         case Healer: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
+                player.playReaction(SPEECH_TEMPLE_HEAL);
             }
+            pAudioPlayer->playExclusiveSound(SOUND_heal);
         } break;
 
         case ExpertHealer: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
-
                 for (Condition condition : standardConditionsExcludeDead) {
                     player.conditions.Reset(condition);
                 }
+                player.playReaction(SPEECH_TEMPLE_HEAL);
             }
+            pAudioPlayer->playExclusiveSound(SOUND_heal);
         } break;
 
         case MasterHealer: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
-
                 for (Condition condition : standardConditionsIncludeDead) {
                     // Master healer heals all except Eradicated and zombie
                     if (condition != CONDITION_ERADICATED) {
                         player.conditions.Reset(condition);
                     }
                 }
+                player.playReaction(SPEECH_TEMPLE_HEAL);
             }
+            pAudioPlayer->playExclusiveSound(SOUND_heal);
         } break;
 
         case Cook: {

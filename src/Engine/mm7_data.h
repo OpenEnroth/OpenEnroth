@@ -119,7 +119,6 @@ extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern std::array<char, 10000> pTmpBuf3;
-extern int64_t qword_5C6DF0;
 
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;
@@ -133,7 +132,7 @@ extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE
 extern MAP_TYPE dword_6BE13C_uCurrentlyLoadedLocationID;
 extern MAP_TYPE uLevelMapStatsID;
 
-#define GAME_SETTINGS_0001 0x0001  // Skip AI next frame due to changing levels etc.
+#define GAME_SETTINGS_SKIP_WORLD_UPDATE 0x0001  // Skip updating world next frame due to changing levels etc.
 #define GAME_SETTINGS_INVALID_RESOLUTION 0x0002
 #define GAME_SETTINGS_NO_INTRO 0x0004
 #define GAME_SETTINGS_NO_LOGO 0x0008

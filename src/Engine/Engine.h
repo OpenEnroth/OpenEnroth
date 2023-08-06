@@ -90,7 +90,7 @@ class Engine {
     static void LogEngineBuildInfo();
 
     void Initialize();
-    bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+    void PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                    struct Vis_SelectionFilter *face_filter);
     bool PickKeyboard(float pick_depth, bool bOutline, struct Vis_SelectionFilter *sprite_filter,
@@ -109,6 +109,8 @@ class Engine {
     void Deinitialize();
     void DrawParticles();
     void Draw();
+    void drawWorld();
+    void drawHUD();
     void DrawGUI();
     void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     void SecondaryInitialization();
@@ -118,7 +120,6 @@ class Engine {
     bool is_underwater = false;
     bool is_targeting = false;
     bool is_saturate_faces = false;
-    bool is_forceredraw = false;
     bool is_fog = false; // keeps track of whether fog enabled in d3d
 
     inline bool IsTargetingMode() const { return is_targeting; }
@@ -127,8 +128,6 @@ class Engine {
     inline void SetUnderwater(bool is_underwater) { this->is_underwater = is_underwater; }
     inline bool IsSaturateFaces() const { return is_saturate_faces; }
     inline void SetSaturateFaces(bool is_saturate_faces) { this->is_saturate_faces = is_saturate_faces; }
-    inline bool IsForceRedraw() const { return is_forceredraw; }
-    inline void SetForceRedraw(bool is_forceredraw) { this->is_forceredraw = is_forceredraw; }
     inline bool IsFog() const { return is_fog; }
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 

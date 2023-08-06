@@ -270,24 +270,22 @@ void prepareArenaFight() {
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
     int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13) + 7;
-    render->BeginScene3D();
 
+    // TODO(pskelton): This doesnt work properly and we dont want draw calls here
+    render->BeginScene3D();
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pIndoor->Draw();
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         pOutdoor->Draw();
     }
-
     render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-    render->BeginScene2D();
-
+     render->BeginScene2D();
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
-
     render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
     std::string text = pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13);
-
     pDialogueWindow->DrawText(pFontArrus, {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
+
     pParty->pos = Vec3i(3849, 5770, 1);
     pParty->speed = Vec3i();
     pParty->uFallStartZ = 1;
@@ -786,7 +784,6 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
         } else {
             engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
         }
-        engine->Draw();
     } else if (topic == DIALOGUE_HIRE_FIRE) {
         if (npcData->Hired()) {
             if (pNPCStats->uNumNewNPCs > 0) {

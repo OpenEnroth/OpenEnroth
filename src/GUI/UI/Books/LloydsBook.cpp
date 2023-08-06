@@ -202,7 +202,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             SaveGame(1, 0);
             onMapLeave();
             pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].pFilename;
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+            dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
             Party_Teleport_X_Pos = character.vBeacons[beaconId].PartyPos_X;
             Party_Teleport_Y_Pos = character.vBeacons[beaconId].PartyPos_Y;

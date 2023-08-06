@@ -258,7 +258,6 @@ void InteractWithActor(unsigned int id) {
     } else {
         if (pNPCStats->pGroups_copy[pActors[id].group]) {
             if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]].empty()) {
-                pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]];
                 startBranchlessDialogue(0, 0, EVENT_Invalid);
             }

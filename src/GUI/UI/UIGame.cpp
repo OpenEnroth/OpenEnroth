@@ -1045,6 +1045,7 @@ void GameUI_WritePointedObjectStatusString() {
                         case 1:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
                                 pMessageType1 = (UIMessageType)pButton->uData;
+                                // TODO(pskelton): consider handling this output in same turn now - message doesnt action till next frame
                                 if (pMessageType1)
                                     engine->_messageQueue->addMessageCurrentFrame(pMessageType1, pButton->msg_param, 0);
                                 engine->_statusBar->setPermanent(pButton->sLabel);
@@ -1066,6 +1067,7 @@ void GameUI_WritePointedObjectStatusString() {
 
                                 if (ratioX + ratioY < 1.0) {
                                     pMessageType2 = (UIMessageType)pButton->uData;
+                                    // TODO(pskelton): consider handling this output in same turn now - message doesnt action till next frame
                                     if (pMessageType2 != 0)
                                         engine->_messageQueue->addMessageCurrentFrame(pMessageType2, pButton->msg_param, 0);
                                     engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
@@ -1155,6 +1157,7 @@ void GameUI_WritePointedObjectStatusString() {
                             if (pMessageType3 == 0) {  // For books
                                 engine->_statusBar->setPermanent(pButton->sLabel);
                             } else {
+                                // TODO(pskelton): consider handling this output in same turn now - message doesnt action till next frame
                                 engine->_messageQueue->addMessageCurrentFrame(pMessageType3, pButton->msg_param, 0);
                             }
                             uLastPointedObjectID = Pid::dummy();
@@ -1174,6 +1177,7 @@ void GameUI_WritePointedObjectStatusString() {
 
                             if (ratioX + ratioY < 1.0) {
                                 pMessageType2 = (UIMessageType)pButton->uData;
+                                // TODO(pskelton): consider handling this output in same turn - message doesnt action till next frame
                                 if (pMessageType2 != 0)
                                     engine->_messageQueue->addMessageCurrentFrame(pMessageType2, pButton->msg_param, 0);
                                 engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
@@ -1414,7 +1418,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         static uint16_t pOdmMinimap[117][137];
         assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
 
-        bool partymoved = pParty->uFlags & PARTY_FLAGS_1_ForceRedraw;
+        bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
             int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
@@ -1446,7 +1450,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             xpix = xpixoffset16 >> 16;
             // v28 = &render->pTargetSurface[uX + uY * lPitch];
 
-            // TODO: could stretch texture rather than rescale
+            // TODO(pskelton): could stretch texture rather than rescale
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
                 assert(uWidth == 137 && uHeight == 117);
 

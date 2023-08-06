@@ -7324,7 +7324,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
 void Character::playEmotion(CharacterExpressionID new_expression, int duration) {
     // 38 - sparkles 1 character?
 
-    unsigned int currexpr = expression;
+    CharacterExpressionID currexpr = expression;
 
     if (expression == CHARACTER_EXPRESSION_DEAD ||
         expression == CHARACTER_EXPRESSION_ERADICATED) {
@@ -7335,7 +7335,7 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
     } else {
         if (expression != CHARACTER_EXPRESSION_SLEEP ||
             new_expression != CHARACTER_EXPRESSION_FALLING) {
-            if (currexpr >= 2 && currexpr <= 11 && currexpr != 8 &&
+            if (currexpr >= CHARACTER_EXPRESSION_CURSED && currexpr <= CHARACTER_EXPRESSION_UNCONCIOUS && currexpr != CHARACTER_EXPRESSION_POISONED &&
                 !(new_expression == CHARACTER_EXPRESSION_DMGRECVD_MINOR ||
                   new_expression == CHARACTER_EXPRESSION_DMGRECVD_MODERATE ||
                   new_expression == CHARACTER_EXPRESSION_DMGRECVD_MAJOR)) {

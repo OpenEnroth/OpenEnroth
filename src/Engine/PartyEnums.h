@@ -55,7 +55,7 @@ enum PARTY_QUEST_BITS : uint16_t {
 
 /*  355 */
 enum PARTY_FLAGS_1 : int32_t {
-    PARTY_FLAGS_1_ForceRedraw = 0x0002,
+    PARTY_FLAGS_1_UNUSED = 0x0002, // was force drawing
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
     PARTY_FLAGS_1_AIRBORNE = 0x0008,
     PARTY_FLAGS_1_ALERT_RED = 0x0010,

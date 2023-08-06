@@ -444,41 +444,6 @@ Pid Vis::PickClosestActor(ObjectType object_type, unsigned int pick_depth,
     return Vis_static_sub_4C1944_stru_F8BDE8.object_pointers[0]->object_pid;
 }
 
-//----- (004C1A02) --------------------------------------------------------
-void Vis::_4C1A02() {
-    RenderVertexSoft v1;  // [sp+8h] [bp-C0h]@1
-    RenderVertexSoft v2;  // [sp+38h] [bp-90h]@1
-    RenderVertexSoft v3;  // [sp+68h] [bp-60h]@1
-    RenderVertexSoft v4;  // [sp+98h] [bp-30h]@1
-
-    v2.flt_2C = 0.0;
-    v2.vWorldPosition.x = 0.0;
-    v2.vWorldPosition.y = 65536.0;
-    v2.vWorldPosition.z = 0.0;
-
-    v1.flt_2C = 0.0;
-    v1.vWorldPosition.x = 65536.0;
-    v1.vWorldPosition.y = 0.0;
-    v1.vWorldPosition.z = 0.0;
-
-    v3.flt_2C = 0.0;
-    v3.vWorldPosition.x = 0.0;
-    v3.vWorldPosition.y = 65536.0;
-    v3.vWorldPosition.z = 0.0;
-
-    v4.flt_2C = 0.0;
-    v4.vWorldPosition.x = 65536.0;
-    v4.vWorldPosition.y = 0.0;
-    v4.vWorldPosition.z = 0.0;
-
-    this->stru_200C = v1;
-    this->stru_203C = v2;
-    this->stru_206C = v3;
-    this->stru_209C = v4;
-    //memcpy(&this->stru_200C, &v1, 0x60u);
-    //memcpy(&this->stru_206C, &v4, 0x60u); // the code above doesn't match this memcpy, but there is no other way it seems
-}
-
 // depth sort
 //----- (004C1ABA) --------------------------------------------------------
 void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
@@ -768,33 +733,6 @@ void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
 //----- (004C04AF) --------------------------------------------------------
 Vis::Vis() {
     this->log = EngineIocContainer::ResolveLogger();
-
-
-    RenderVertexSoft v3;  // [sp+Ch] [bp-60h]@1
-    RenderVertexSoft v4;  // [sp+3Ch] [bp-30h]@1
-
-    v3.flt_2C = 0.0;
-    v3.vWorldPosition.x = 0.0;
-    v3.vWorldPosition.y = 65536.0;
-    v3.vWorldPosition.z = 0.0;
-    v4.flt_2C = 0.0;
-    v4.vWorldPosition.x = 65536.0;
-    v4.vWorldPosition.y = 0.0;
-    v4.vWorldPosition.z = 0.0;
-    memcpy(&stru_200C, &v4, sizeof(stru_200C));
-
-    v4.flt_2C = 0.0;
-    v4.vWorldPosition.x = 0.0;
-    v4.vWorldPosition.y = 65536.0;
-    v4.vWorldPosition.z = 0.0;
-    memcpy(&stru_203C, &v3, sizeof(stru_203C));
-
-    v3.flt_2C = 0.0;
-    v3.vWorldPosition.x = 65536.0;
-    v3.vWorldPosition.y = 0.0;
-    v3.vWorldPosition.z = 0.0;
-    memcpy(&stru_206C, &v3, sizeof(stru_206C));
-    memcpy(&stru_209C, &v4, sizeof(stru_209C));
 }
 
 //----- (004C05CC) --------------------------------------------------------

@@ -1148,7 +1148,6 @@ void GUIWindow_House::Release() {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
         pCamera3D->_viewYaw = pParty->_viewYaw;
     }
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 
     GUIWindow::Release();
 }

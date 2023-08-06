@@ -121,8 +121,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 Engine *engine;
 GameState uGameState;
 
-//----- (0044103C) --------------------------------------------------------
-void Engine::Draw() {
+void Engine::drawWorld() {
     engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -131,7 +130,6 @@ void Engine::Draw() {
     pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
 
-    // pIndoorCamera->Initialize2();
     pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
     pCamera3D->CreateViewMatrixAndProjectionScale();
     pCamera3D->BuildViewFrustum();
@@ -148,9 +146,7 @@ void Engine::Draw() {
             pParty->_viewYaw != pParty->_viewPrevYaw ||
             pParty->_viewPitch != pParty->_viewPrevPitch ||
             pParty->eyeLevel != pParty->lastEyeLevel)
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-
-        pParty->lastPos = pParty->pos;
+            pParty->lastPos = pParty->pos;
         // v0 = &render;
         pParty->_viewPrevYaw = pParty->_viewYaw;
         pParty->_viewPrevPitch = pParty->_viewPitch;
@@ -170,18 +166,22 @@ void Engine::Draw() {
                 render->hd_water_current_frame = floorf(v2 + 0.5f);
             }
 
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
-            else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+            } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                render->uFogColor = GetLevelFogColor();
                 pOutdoor->Draw();
-            else
+            } else {
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
+            }
 
-             decal_builder->DrawBloodsplats();
+            decal_builder->DrawBloodsplats();
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
+}
 
+void Engine::drawHUD() {
     // 2d from now on
     render->BeginScene2D();
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
@@ -194,16 +194,20 @@ void Engine::Draw() {
 
         // if (v4)
     }
-    mouse->bRedraw = true;
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
 
     engine->nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+}
+
+//----- (0044103C) --------------------------------------------------------
+void Engine::Draw() {
+    drawWorld();
+    drawHUD();
 
     render->Present();
-    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
 }
 
 
@@ -355,17 +359,12 @@ void Engine::StackPartyTorchLight() {
 
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
-    float depth;               // ST00_4@9
-    // int64_t v6;                // kr00_8@21
-    Vis_SelectionFilter *sprite_filter;  // [sp+10h] [bp-18h]@2
-    Vis_SelectionFilter *face_filter;  // [sp+14h] [bp-14h]@2
-
-    ++qword_5C6DF0;
     particle_engine->UpdateParticles();
-    Pointi pt = mouse->GetCursorPos();
 
-    // x = cursor.y;
-    // y = cursor.x;
+    float depth = 0.0f;
+    Vis_SelectionFilter *sprite_filter = nullptr;
+    Vis_SelectionFilter *face_filter = nullptr;
+
     if (isHoldingMouseRightButton()) {
         face_filter = &vis_face_filter;
         sprite_filter = &vis_sprite_filter_2;
@@ -380,33 +379,16 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
         }
         depth = config->gameplay.RangedAttackDepth.value();
     }
-    // depth = v2;
-
+    Pointi pt = mouse->GetCursorPos();
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-    //lightmap_builder->StationaryLightsCount = 0;
-    //lightmap_builder->MobileLightsCount = 0;
+
 
     // decal reset but actually want bloodsplat reset
     // decal_builder->DecalsCount = 0;
     // decal_builder->curent_decal_id = 0;
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
-    if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
-        render->uFogColor = GetLevelFogColor();
-    // if (uFlags & GAME_FLAGS_1_400)
-    //    engine->config->SetForceRedraw(true);
-    /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
-    pMobileLightsStack->uNumLightsActive )
-    {
-    uFlags2 |= 0x01;
-    field_E10 = qword_5C6DF0;
-    }*/
-    // v6 = qword_5C6DF0 - field_E10;
-    if (qword_5C6DF0/* - field_E10 == 1*/)
-        engine->SetForceRedraw(true);
-
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        engine->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
@@ -586,20 +568,10 @@ void Engine::LogEngineBuildInfo() {
 }
 
 //----- (0044EA5E) --------------------------------------------------------
-bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
+void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
                        unsigned int uMouseY, bool bOutline,
                        Vis_SelectionFilter *sprite_filter,
                        Vis_SelectionFilter *face_filter) {
-    /*if (current_screen_type != SCREEN_GAME|| !render->pRenderD3D)
-    return false;*/
-
-    // if (!vis) {
-    //     log->Warning(
-    //         L"The 'Vis' object pointer has not been instatiated, but "
-    //         L"CGame::Pick() is trying to call through it.");
-    //     return false;
-    // }
-
     if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
         uMouseX <= (signed int)pViewport->uScreen_BR_X &&
         uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
@@ -609,10 +581,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
         if (bOutline)
             OutlineSelection();
     }
-
-    return true;
 }
-// 4E28F8: using guessed type int current_screen_type;
 
 //----- (0044EB12) --------------------------------------------------------
 bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
@@ -691,22 +660,23 @@ void UpdateUserInput_and_MapSpecificStuff() {
         return;
     }
 
+    UpdateObjects();
+
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         BLV_UpdateUserInputAndOther();
     else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         ODM_UpdateUserInputAndOther();
 
+    checkDecorationEvents();
     evaluateAoeDamage();
 }
 
 //----- (004646F0) --------------------------------------------------------
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
-    vis->_4C1A02();
 
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
@@ -1014,7 +984,7 @@ void MM7Initialization() {
     } else {
         viewparams->field_20 &= 0xFFFFFF00;
     }
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
+
     viewparams->uSomeY = viewparams->uScreen_topL_Y;
     viewparams->uSomeX = viewparams->uScreen_topL_X;
     viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
@@ -1089,7 +1059,6 @@ void Engine::_461103_load_level_sub() {
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
-    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->field_7B5_in_arena_quest = 0;
     pNPCStats->uNewlNPCBufPos = 0;
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
@@ -1240,8 +1209,6 @@ void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
             } else {
                 sub_44861E_set_texture_outdoor(uFaceCog, pFilename);
             }
-
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         }
     }
 }
@@ -1259,7 +1226,6 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
                             .uAttributes &= ~bit;
                 }
             }
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
                 for (ODMFace &face : model.pFaces) {
@@ -1273,7 +1239,6 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
                 }
             }
         }
-        pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     }
 }
 
@@ -1289,8 +1254,6 @@ void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName
                 pLevelDecorations[i].uFlags &= ~LEVEL_DECORATION_INVISIBLE;
             else
                 pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
-
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         }
     }
 }

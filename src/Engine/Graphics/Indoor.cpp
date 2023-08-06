@@ -217,8 +217,6 @@ void IndoorLocation::Draw() {
     if (pBLVRenderParams->uPartySectorID)
         DrawIndoorFaces(true);
     render->TransformBillboardsAndSetPalettesODM();
-
-    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
     engine->DrawParticles();
     trail_particle_generator.UpdateParticles();
 }
@@ -297,7 +295,6 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
             pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
         else
             pIndoor->pLights[sLightID].uAtributes |= 8;
-        pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     }
 }
 
@@ -1500,11 +1497,9 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 }
 //----- (0046BDF1) --------------------------------------------------------
 void BLV_UpdateUserInputAndOther() {
-    UpdateObjects();
     BLV_ProcessPartyActions();
     UpdateActors_BLV();
     BLV_UpdateDoors();
-    checkDecorationEvents();
 }
 
 //----- (00472866) --------------------------------------------------------

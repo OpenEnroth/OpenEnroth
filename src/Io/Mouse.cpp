@@ -64,7 +64,6 @@ void Io::Mouse::SetCursorImage(const std::string &name) {
         this->cursor_img = assets->getImage_ColorKey(name, colorTable.Black /*colorTable.TealMask*/);
         this->AllocCursorSystemMem();
         this->field_C = 0;
-        this->bRedraw = true;
         this->bActive = true;
     }
 }

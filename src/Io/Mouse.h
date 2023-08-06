@@ -51,7 +51,6 @@ class Mouse {
     int field_8 = 0;
     int field_C = 0;
     unsigned int bInitialized = 0;
-    unsigned int bRedraw = 0;
     int field_18 = 0;
     int field_1C = 0;
     int field_20 = 0;

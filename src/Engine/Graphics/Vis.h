@@ -131,7 +131,6 @@ class Vis {
                                    float y);
     Pid PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                     VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
-    void _4C1A02();
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
     Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
     Vis_PIDAndDepth get_picked_object_zbuf_val();
@@ -151,11 +150,6 @@ class Vis {
                             int end);
 
     Vis_SelectionList default_list;
-    RenderVertexSoft stru_200C;
-    RenderVertexSoft stru_203C;
-    RenderVertexSoft stru_206C;
-    RenderVertexSoft stru_209C;
-
     RenderVertexSoft debugpick;
 
     Logger *log = nullptr;
