@@ -85,21 +85,30 @@ LodReader::LodReader(std::string_view path, LodOpenFlags openFlags) {
     open(path, openFlags);
 }
 
+LodReader::LodReader(Blob blob, std::string_view path, LodOpenFlags openFlags) {
+    open(std::move(blob), path, openFlags);
+}
+
 LodReader::~LodReader() = default;
 
 void LodReader::open(std::string_view path, LodOpenFlags openFlags) {
-    Blob lod = Blob::fromFile(path); // This call throws if the file doesn't exist.
+    open(Blob::fromFile(path), path, openFlags); // Blob::fromFile throws if the file doesn't exist.
+}
 
+void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
-    if (lod.size() < expectedSize)
+    if (blob.size() < expectedSize)
         throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", path, expectedSize, _lod.size());
 
-    BlobInputStream lodStream(lod);
+    BlobInputStream lodStream(blob);
     LodVersion version = LOD_VERSION_MM6;
     LodHeader header = parseHeader(lodStream, path, &version);
-    LodEntry rootEntry = parseDirectoryEntry(lodStream, version, path, lod.size());
+    LodEntry rootEntry = parseDirectoryEntry(lodStream, version, path, blob.size());
 
-    BlobInputStream dirStream(lod.subBlob(rootEntry.dataOffset, rootEntry.dataSize));
+    // LODs that come with the Russian version of MM7 are broken.
+    rootEntry.dataSize = blob.size() - rootEntry.dataOffset;
+
+    BlobInputStream dirStream(blob.subBlob(rootEntry.dataOffset, rootEntry.dataSize));
     std::unordered_map<std::string, LodRegion> files;
     for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
         std::string name = toLower(entry.name);
@@ -118,7 +127,7 @@ void LodReader::open(std::string_view path, LodOpenFlags openFlags) {
     }
 
     // All good, this is a valid LOD, can update `this`.
-    _lod = std::move(lod);
+    _lod = std::move(blob);
     _path = path;
     _description = std::move(header.description);
     _rootName = std::move(rootEntry.name);

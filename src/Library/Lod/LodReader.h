@@ -22,6 +22,7 @@ class LodReader final {
  public:
     LodReader();
     LodReader(std::string_view path, LodOpenFlags openFlags = 0);
+    LodReader(Blob blob, std::string_view path, LodOpenFlags openFlags = 0);
     ~LodReader();
 
     /**
@@ -31,6 +32,18 @@ class LodReader final {
      *                                  or if it's not a LOD.
      */
     void open(std::string_view path, LodOpenFlags openFlags = 0);
+
+    /**
+     * @param blob                      LOD data.
+     * @param path                      LOD path, for error reporting. Actual data is read from `blob`.
+     * @param openFlags                 Open flags.
+     * @throw Exception                 If there are errors in the provided LOD file.
+     */
+    void open(Blob blob, std::string_view path, LodOpenFlags openFlags = 0);
+
+    /**
+     * Closes this blob reader & frees all associated resources.
+     */
     void close();
 
     [[nodiscard]] bool isOpen() const {
