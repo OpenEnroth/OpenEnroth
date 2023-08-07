@@ -108,7 +108,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     // dot_product(dir, normal) is a cosine of an angle between them.
     float cos_dir_normal = dot(dir, face->facePlane.normal);
 
-    if (fuzzyIsNull(cos_dir_normal))
+    if (fuzzyIsNull(cos_dir_normal, COLLISIONS_EPS))
         return false; // dir is perpendicular to face normal.
 
     if (face->uAttributes & FACE_ETHEREAL)
