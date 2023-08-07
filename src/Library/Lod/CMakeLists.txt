@@ -13,3 +13,15 @@ set(LIBRARY_LOD_HEADERS
 add_library(library_lod STATIC ${LIBRARY_LOD_SOURCES} ${LIBRARY_LOD_HEADERS})
 target_link_libraries(library_lod PUBLIC library_lodformats library_serialization library_binary utility)
 target_check_style(library_lod)
+
+if(ENABLE_TESTS)
+    set(TEST_LIBRARY_LOD_SOURCES
+            Tests/LodReader_ut.cpp)
+
+    add_library(test_library_lod OBJECT ${TEST_LIBRARY_LOD_SOURCES})
+    target_link_libraries(test_library_lod PUBLIC testing_unit library_lod)
+
+    target_check_style(test_library_lod)
+
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_lod)
+endif()

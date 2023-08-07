@@ -18,7 +18,6 @@
 
 #include "OpenEnrothOptions.h"
 
-
 int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
     starter.config()->resetForTest();
