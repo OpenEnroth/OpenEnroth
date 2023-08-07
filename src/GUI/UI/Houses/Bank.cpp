@@ -108,14 +108,14 @@ void GUIWindow_Bank::getGoldDialogue() {
 }
 
 void GUIWindow_Bank::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    currentDialogue = option;
+    _currentDialogue = option;
     if (option == DIALOGUE_BANK_PUT_GOLD || option == DIALOGUE_BANK_GET_GOLD) {
         keyboardInputHandler->StartTextInput(TextInputType::Number, 10, this);
     }
 }
 
 void GUIWindow_Bank::houseSpecificDialogue() {
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -131,7 +131,7 @@ void GUIWindow_Bank::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Bank::listDialogueOptions() {
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_BANK_PUT_GOLD, DIALOGUE_BANK_GET_GOLD};
       default:

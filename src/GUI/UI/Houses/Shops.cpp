@@ -743,7 +743,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listShopLearnableSkills() {
 }
 
 void GUIWindow_Shop::houseSpecificDialogue() {
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -775,7 +775,7 @@ void GUIWindow_Shop::houseSpecificDialogue() {
 }
 
 void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    currentDialogue = option;
+    _currentDialogue = option;
     if (option == DIALOGUE_SHOP_BUY_STANDARD || option == DIALOGUE_SHOP_BUY_SPECIAL) {
         if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
             generateShopItems(false);
@@ -807,7 +807,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Shop::listDialogueOptions() {
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
@@ -820,26 +820,26 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Shop::listDialogueOptions() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listDialogueOptions() {
-    if (currentDialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+    if (_currentDialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
         return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
     }
     return GUIWindow_Shop::listDialogueOptions();
 }
 
 void GUIWindow_Shop::updateDialogueOnEscape() {
-    if (IsSkillLearningDialogue(currentDialogue)) {
-        currentDialogue = DIALOGUE_LEARN_SKILLS;
+    if (IsSkillLearningDialogue(_currentDialogue)) {
+        _currentDialogue = DIALOGUE_LEARN_SKILLS;
         return;
     }
-    if (currentDialogue == DIALOGUE_SHOP_SELL || currentDialogue == DIALOGUE_SHOP_IDENTIFY || currentDialogue == DIALOGUE_SHOP_REPAIR) {
-        currentDialogue = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
+    if (_currentDialogue == DIALOGUE_SHOP_SELL || _currentDialogue == DIALOGUE_SHOP_IDENTIFY || _currentDialogue == DIALOGUE_SHOP_REPAIR) {
+        _currentDialogue = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
         return;
     }
-    if (currentDialogue == DIALOGUE_MAIN) {
-        currentDialogue = DIALOGUE_NULL;
+    if (_currentDialogue == DIALOGUE_MAIN) {
+        _currentDialogue = DIALOGUE_NULL;
         return;
     }
-    currentDialogue = DIALOGUE_MAIN;
+    _currentDialogue = DIALOGUE_MAIN;
 }
 
 void GUIWindow_Shop::playHouseGoodbyeSpeech() {
@@ -892,7 +892,7 @@ void GUIWindow_Shop::houseScreenClick() {
 
     Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
 
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
         case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             pParty->activeCharacter().OnInventoryLeftClick();
@@ -1013,7 +1013,7 @@ void GUIWindow_Shop::houseScreenClick() {
               case BUILDING_WEAPON_SHOP:
                 testx = (pt.x - 30) / 70;
                 if (testx >= 0 && testx < 6) {
-                    if (currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
@@ -1036,7 +1036,7 @@ void GUIWindow_Shop::houseScreenClick() {
                         testx += 4;
                     }
 
-                    if (currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
@@ -1066,7 +1066,7 @@ void GUIWindow_Shop::houseScreenClick() {
                         testx += 6;
                     }
 
-                    if (currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];

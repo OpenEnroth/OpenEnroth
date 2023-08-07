@@ -89,11 +89,11 @@ class GUIWindow_House : public GUIWindow {
     }
 
     DIALOGUE_TYPE getCurrentDialogue() const {
-        return currentDialogue;
+        return _currentDialogue;
     }
 
     void setDialogueType(DIALOGUE_TYPE dialogue) {
-        currentDialogue = dialogue;
+        _currentDialogue = dialogue;
     }
 
     void houseDialogManager();
@@ -118,7 +118,7 @@ class GUIWindow_House : public GUIWindow {
  protected:
     void learnSkillsDialogue();
 
-    DIALOGUE_TYPE currentDialogue = DIALOGUE_NULL;
+    DIALOGUE_TYPE _currentDialogue = DIALOGUE_NULL;
     int _savedButtonsNum{};
     bool _transactionPerformed = false;
 };

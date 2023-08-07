@@ -119,7 +119,7 @@ void GUIWindow_Tavern::restDialogue() {
     if (pParty->GetGold() >= pPriceRoom) {
         pParty->TakeGold(pPriceRoom);
         playHouseSound(houseId(), HOUSE_SOUND_TAVERN_RENT_ROOM);
-        currentDialogue = DIALOGUE_NULL;
+        _currentDialogue = DIALOGUE_NULL;
         houseDialogPressEscape();
         playHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
@@ -158,7 +158,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
 }
 
 void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    currentDialogue = option;
+    _currentDialogue = option;
     if (option == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_PlayArcomage, 0, 0);
     } else if (IsSkillLearningDialogue(option)) {
@@ -172,7 +172,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
         pParty->setActiveToFirstCanAct();
     }
 
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -204,7 +204,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions() {
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         if (houseId() == HOUSE_TAVERN_EMERALD_ISLE) {
             return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS};
@@ -225,19 +225,19 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions() {
 }
 
 void GUIWindow_Tavern::updateDialogueOnEscape() {
-    if (IsSkillLearningDialogue(currentDialogue)) {
-        currentDialogue = DIALOGUE_LEARN_SKILLS;
+    if (IsSkillLearningDialogue(_currentDialogue)) {
+        _currentDialogue = DIALOGUE_LEARN_SKILLS;
         return;
     }
-    if (currentDialogue == DIALOGUE_TAVERN_ARCOMAGE_RULES ||
-        currentDialogue == DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS ||
-        currentDialogue == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
-        currentDialogue = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
+    if (_currentDialogue == DIALOGUE_TAVERN_ARCOMAGE_RULES ||
+        _currentDialogue == DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS ||
+        _currentDialogue == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
+        _currentDialogue = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
         return;
     }
-    if (currentDialogue == DIALOGUE_MAIN) {
-        currentDialogue = DIALOGUE_NULL;
+    if (_currentDialogue == DIALOGUE_MAIN) {
+        _currentDialogue = DIALOGUE_NULL;
         return;
     }
-    currentDialogue = DIALOGUE_MAIN;
+    _currentDialogue = DIALOGUE_MAIN;
 }

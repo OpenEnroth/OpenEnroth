@@ -249,7 +249,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 }
 
 void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    currentDialogue = option;
+    _currentDialogue = option;
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
             for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
@@ -267,7 +267,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
 }
 
 void GUIWindow_MagicGuild::houseSpecificDialogue() {
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -283,7 +283,7 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
 std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions() {
     BuildingType guildType = buildingType();
 
-    switch (currentDialogue) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         if (learnableAdditionalSkillDialogue[guildType] != DIALOGUE_NULL) {
             return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType], learnableAdditionalSkillDialogue[guildType]};

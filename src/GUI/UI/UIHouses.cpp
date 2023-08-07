@@ -741,7 +741,7 @@ void GUIWindow_House::houseNPCDialogue() {
     house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
 
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
-        if (current_npc_text.length() == 0 && currentDialogue == DIALOGUE_MAIN) {
+        if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
             if (pNPC->greet) {
                 std::string greetString;
 
@@ -1146,7 +1146,7 @@ void GUIWindow_House::Release() {
 }
 
 void GUIWindow_House::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    currentDialogue = option;
+    _currentDialogue = option;
 }
 
 void GUIWindow_House::houseSpecificDialogue() {
@@ -1158,11 +1158,11 @@ std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions() {
 }
 
 void GUIWindow_House::updateDialogueOnEscape() {
-    if (currentDialogue == DIALOGUE_MAIN) {
-        currentDialogue = DIALOGUE_NULL;
+    if (_currentDialogue == DIALOGUE_MAIN) {
+        _currentDialogue = DIALOGUE_NULL;
         return;
     }
-    currentDialogue = DIALOGUE_MAIN;
+    _currentDialogue = DIALOGUE_MAIN;
 }
 
 void GUIWindow_House::houseScreenClick() {
