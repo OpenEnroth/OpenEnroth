@@ -297,7 +297,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &fDepth, &a1,
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &a1,
                                         face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
                     // v9 = fixpoint_from_float(/*v8,
@@ -400,7 +400,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                 blv_face.FromODM(&face);
 
                 RenderVertexSoft intersection;
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &fDepth, &intersection,
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &intersection,
                                        &blv_face, model.index)) {
                     pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
@@ -485,7 +485,7 @@ Vis_PIDAndDepth Vis::get_picked_object_zbuf_val() {
 }
 
 //----- (004C1C0C) --------------------------------------------------------
-bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDepth,
+bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
                              RenderVertexSoft *Intersection, BLVFace *pFace,
                              signed int pBModelID) {
     if (pFace->isPortal() || pFace->Invisible())
@@ -512,7 +512,6 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDep
     if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID))
         return false;
 
-    *pDepth = t;  // TODO(captainurist): unused, drop.
     return true;
 }
 

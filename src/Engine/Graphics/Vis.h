@@ -134,7 +134,7 @@ class Vis {
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
     Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
     Vis_PIDAndDepth get_picked_object_zbuf_val();
-    bool Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDepth,
+    bool Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
                             RenderVertexSoft *Intersection, BLVFace *pFace,
                             signed int pBModelID);
     bool CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint,
