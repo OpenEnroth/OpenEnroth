@@ -99,7 +99,6 @@ extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 
 extern Actor *pDialogue_SpeakingActor;
-extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern int uCurrentHouse_Animation;
 

@@ -41,7 +41,6 @@ void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    uDialogueType = DIALOGUE_NULL;
     sDialogue_SpeakingActorNPC_ID = actor->npcId;
     pDialogue_SpeakingActor = actor;
     NPCData *pNPCInfo = GetNPCData(actor->npcId);
@@ -191,7 +190,7 @@ void GUIWindow_Dialogue::Update() {
     pParty->getPartyFame();
 
     std::string dialogue_string;
-    switch (uDialogueType) {
+    switch (_displayedDialogue) {
         case DIALOGUE_13_hiring_related:
             dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, HOUSE_INVALID, 0);
             break;
@@ -224,7 +223,7 @@ void GUIWindow_Dialogue::Update() {
             break;
 
         default:
-            if (uDialogueType >= DIALOGUE_SCRIPTED_LINE_1 && uDialogueType < DIALOGUE_SCRIPTED_LINE_6 &&
+            if (_displayedDialogue >= DIALOGUE_SCRIPTED_LINE_1 && _displayedDialogue < DIALOGUE_SCRIPTED_LINE_6 &&
                 branchless_dialogue_str.empty()) {
                 dialogue_string = current_npc_text;
             } else if (npcType == NPC_TYPE_QUEST) {
@@ -345,29 +344,34 @@ void BuildHireableNpcDialogue() {
 
 void selectNPCDialogueOption(DIALOGUE_TYPE option) {
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    uDialogueType = option;
+
+    ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(option);
 
     if (!speakingNPC->uFlags) {
         speakingNPC->uFlags = NPC_GREETED_FIRST;
     }
 
     if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
-        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(option, speakingNPC);
+        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(option, speakingNPC);
 
-        pDialogueWindow->DeleteButtons();
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                                        localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
+        if (newTopic != DIALOGUE_MAIN) {
+            std::vector<DIALOGUE_TYPE> topics = listNPCDialogueOptions(newTopic);
+            ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(newTopic);
+            pDialogueWindow->DeleteButtons();
+            pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
+                                                            localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
 
-        for (int i = 0; i < topics.size(); i++) {
-            pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, topics[i], Io::InputAction::Invalid, "");
+            for (int i = 0; i < topics.size(); i++) {
+                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, topics[i], Io::InputAction::Invalid, "");
+            }
+            pDialogueWindow->_41D08F_set_keyboard_control_group(topics.size(), 1, 0, 1);
+
+            pDialogueWindow->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
+            pDialogueWindow->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
+            pDialogueWindow->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
+            pDialogueWindow->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
+            pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
         }
-        pDialogueWindow->_41D08F_set_keyboard_control_group(topics.size(), 1, 0, 1);
-
-        pDialogueWindow->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
-        pDialogueWindow->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
-        pDialogueWindow->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
-        pDialogueWindow->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
-        pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
         return;
     }
 

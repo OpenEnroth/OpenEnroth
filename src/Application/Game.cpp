@@ -767,7 +767,6 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_HOUSE;
                                     continue;
                                 case SCREEN_HOUSE:
-                                    uDialogueType = DIALOGUE_NULL;
                                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                                         while (houseDialogPressEscape()) {}
                                     } else {

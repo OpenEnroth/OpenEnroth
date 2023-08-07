@@ -116,9 +116,9 @@ static auto makeStatusBarTape(TestController &test) {
     return test.tape([] { return engine->_statusBar->get(); });
 }
 
-static auto makeDialogueTypeTape(TestController &test) {
-    return test.tape([] { return uDialogueType; });
-}
+//static auto makeDialogueTypeTape(TestController &test) {
+//    return test.tape([] { return uDialogueType; });
+//}
 
 static auto makeCharacterExperienceTape(TestController &test, int character) {
     return test.tape([character] { return pParty->pCharacters[character].experience; });
@@ -1651,11 +1651,9 @@ GAME_TEST(Issues, Issue1093) {
 GAME_TEST(Issues, Issue1115) {
     // Entering Arena on level 21 should not crash the game
     auto mapTape = makeMapTape(test);
-    auto dialogueTape = makeDialogueTypeTape(test);
     auto levelTape = makeCharacterLevelTape(test);
     test.playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
     EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
-    EXPECT_TRUE(dialogueTape.contains(DIALOGUE_ARENA_SELECT_CHAMPION));
     EXPECT_EQ(levelTape, tape({21, 21, 21, 21}));
 }
 

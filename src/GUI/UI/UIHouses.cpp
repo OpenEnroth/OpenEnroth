@@ -297,7 +297,6 @@ static constexpr IndexedArray<const char *, BUILDING_WEAPON_SHOP, BUILDING_MIRRO
 bool enterHouse(HOUSE_ID uHouseID) {
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
-    uDialogueType = DIALOGUE_NULL;
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
 
@@ -396,6 +395,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
 }
 
 void prepareHouse(HOUSE_ID house) {
+    houseNpcs.clear();
+
     // Default proprietor of non-simple houses
     int proprietorId = pAnimatedRooms[buildingTable[house].uAnimationID].house_npc_id;
     if (proprietorId) {
@@ -474,16 +475,15 @@ void NPCHireableDialogPrepare() {
 }
 
 void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
-    uDialogueType = (DIALOGUE_TYPE)(topic + 1); // TODO(Nik-RE-dev): +1?
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
 
     if (topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
-        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
+        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
 
-        if (topics.size() != 0) {
+        if (newTopic != DIALOGUE_MAIN) {
             window_SpeakInHouse->setDialogueType(DIALOGUE_OTHER);
             window_SpeakInHouse->reinitDialogueWindow();
-            window_SpeakInHouse->initializeNPCDialogueButtons(topics);
+            window_SpeakInHouse->initializeNPCDialogueButtons(listNPCDialogueOptions(newTopic));
         }
         BackToHouseMenu();
         return;
@@ -500,29 +500,29 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
 
     selectSpecialNPCTopicSelection(topic, pCurrentNPCInfo);
 
-    if (topic == DIALOGUE_PROFESSION_DETAILS) {
-        if (dialogue_show_profession_details) {
-            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
-                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-        } else {
-            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+    if (topic != DIALOGUE_HIRE_FIRE) {
+        if (topic == DIALOGUE_PROFESSION_DETAILS) {
+            if (dialogue_show_profession_details) {
+                current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
+                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            } else {
+                current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            }
         }
         BackToHouseMenu();
         return;
     }
 
-    if (topic == DIALOGUE_HIRE_FIRE) {
-        if (!pCurrentNPCInfo->Hired()) {
-            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-            BackToHouseMenu();
-            return;
-        }
+    if (!pCurrentNPCInfo->Hired()) {
+        current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+        BackToHouseMenu();
+        return;
     }
 
     prepareHouse(window_SpeakInHouse->houseId());
-    window_SpeakInHouse->setDialogueType(DIALOGUE_MAIN);
+    //window_SpeakInHouse->setDialogueType(DIALOGUE_MAIN);
     BackToHouseMenu();
 }
 
@@ -741,7 +741,7 @@ void GUIWindow_House::houseNPCDialogue() {
     house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
 
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
-        if (uDialogueType == DIALOGUE_NULL) {
+        if (current_npc_text.length() == 0 && currentDialogue == DIALOGUE_MAIN) {
             if (pNPC->greet) {
                 std::string greetString;
 
