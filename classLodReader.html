@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f724747</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;93faadf</span>
    </div>
   </td>
  </tr>
@@ -91,10 +91,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a46ee75c86528c4542f245d6b4af4357f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabe2751dfdf603d01c19a70ed8ccb7a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#aabe2751dfdf603d01c19a70ed8ccb7a8">LodReader</a> (std::string_view path, LodOpenFlags openFlags=0)</td></tr>
 <tr class="separator:aabe2751dfdf603d01c19a70ed8ccb7a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47b3c10c262c0bde0509bf69a28bbc62"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a47b3c10c262c0bde0509bf69a28bbc62">LodReader</a> (<a class="el" href="classBlob.html">Blob</a> blob, std::string_view path, LodOpenFlags openFlags=0)</td></tr>
+<tr class="separator:a47b3c10c262c0bde0509bf69a28bbc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d025801538a991fd820792f42a79667"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a0d025801538a991fd820792f42a79667">~LodReader</a> ()</td></tr>
 <tr class="separator:a0d025801538a991fd820792f42a79667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abea49d12de8146ed631f0ac7c3dcf20d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#abea49d12de8146ed631f0ac7c3dcf20d">open</a> (std::string_view path, LodOpenFlags openFlags=0)</td></tr>
 <tr class="separator:abea49d12de8146ed631f0ac7c3dcf20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a434bde1eeedb7a4e20b715c31753e97b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a434bde1eeedb7a4e20b715c31753e97b">open</a> (<a class="el" href="classBlob.html">Blob</a> blob, std::string_view path, LodOpenFlags openFlags=0)</td></tr>
+<tr class="separator:a434bde1eeedb7a4e20b715c31753e97b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ad02f77278292f4874bc13f8d9b7431"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a6ad02f77278292f4874bc13f8d9b7431">close</a> ()</td></tr>
 <tr class="separator:a6ad02f77278292f4874bc13f8d9b7431"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a487be40762c489edea03c12866e68a43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a487be40762c489edea03c12866e68a43">isOpen</a> () const</td></tr>
@@ -130,7 +134,7 @@ Private Attributes</h2></td></tr>
 <p >Given that we don't plan to expand the <a class="el" href="namespaceLOD.html">LOD</a> format support, when resolving the files this class always looks into the first available directory, which is consistent with the vanilla behaviour. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a46ee75c86528c4542f245d6b4af4357f" name="a46ee75c86528c4542f245d6b4af4357f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46ee75c86528c4542f245d6b4af4357f">&#9670;&#160;</a></span>LodReader() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a46ee75c86528c4542f245d6b4af4357f">&#9670;&#160;</a></span>LodReader() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,7 +159,7 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <a id="aabe2751dfdf603d01c19a70ed8ccb7a8" name="aabe2751dfdf603d01c19a70ed8ccb7a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aabe2751dfdf603d01c19a70ed8ccb7a8">&#9670;&#160;</a></span>LodReader() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aabe2751dfdf603d01c19a70ed8ccb7a8">&#9670;&#160;</a></span>LodReader() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,6 +167,40 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">LodReader::LodReader </td>
           <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LodOpenFlags&#160;</td>
+          <td class="paramname"><em>openFlags</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a47b3c10c262c0bde0509bf69a28bbc62" name="a47b3c10c262c0bde0509bf69a28bbc62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47b3c10c262c0bde0509bf69a28bbc62">&#9670;&#160;</a></span>LodReader() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LodReader::LodReader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>blob</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
@@ -222,6 +260,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Closes this blob reader &amp; frees all associated resources. </p>
 
 </div>
 </div>
@@ -311,8 +350,56 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a434bde1eeedb7a4e20b715c31753e97b" name="a434bde1eeedb7a4e20b715c31753e97b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a434bde1eeedb7a4e20b715c31753e97b">&#9670;&#160;</a></span>open() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LodReader::open </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>blob</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LodOpenFlags&#160;</td>
+          <td class="paramname"><em>openFlags</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">blob</td><td><a class="el" href="namespaceLOD.html">LOD</a> data. </td></tr>
+    <tr><td class="paramname">path</td><td><a class="el" href="namespaceLOD.html">LOD</a> path, for error reporting. Actual data is read from <code>blob</code>. </td></tr>
+    <tr><td class="paramname">openFlags</td><td>Open flags. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there are errors in the provided <a class="el" href="namespaceLOD.html">LOD</a> file. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="abea49d12de8146ed631f0ac7c3dcf20d" name="abea49d12de8146ed631f0ac7c3dcf20d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abea49d12de8146ed631f0ac7c3dcf20d">&#9670;&#160;</a></span>open()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abea49d12de8146ed631f0ac7c3dcf20d">&#9670;&#160;</a></span>open() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
