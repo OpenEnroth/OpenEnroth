@@ -58,8 +58,8 @@ struct SpriteFrameTable {
      *                                  Conveniently, sprite 0 is a dummy sprite that actually exists.
      */
     int FastFindSprite(std::string_view pSpriteName);
-    SpriteFrame *GetFrame(unsigned int uSpriteID, unsigned int uTime);
-    SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int time);
+    SpriteFrame *GetFrame(int uSpriteID, int uTime);
+    SpriteFrame *GetFrameBy_x(int uSpriteID, int time);
 
     /**
      * Resets the uPaletteIndex of all loaded pSpriteSFrames. Called by PaletteManager on reset.

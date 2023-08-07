@@ -177,13 +177,13 @@ int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
 }
 
 //----- (0044D8D0) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTime) {
+SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, int uTime) {
     SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
     if (~v4->uFlags & 1 || !v4->uAnimLength)
         return v4;
 
     // uAnimLength / uAnimTime = actual number of frames in sprite
-    for (uint t = (uTime / 8) % v4->uAnimLength; t > v4->uAnimTime; ++v4)
+    for (int t = (uTime / 8) % v4->uAnimLength; t > v4->uAnimTime; ++v4)
         t -= v4->uAnimTime;
 
     // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
@@ -211,36 +211,15 @@ SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTi
 }
 
 //----- (0044D91F) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID, signed int time) {
-    SpriteFrame *v3;      // edi@1
-    SpriteFrame *v4;      // esi@1
-    int16_t v5;           // ax@2
-    int v6;               // ecx@3
-    int v7;               // edx@3
-    unsigned int v8;      // eax@3
-    int v9;               // ecx@3
-    char *i;              // edx@3
-    int v11;              // esi@5
-    SpriteFrame *result;  // eax@6
+SpriteFrame *SpriteFrameTable::GetFrameBy_x(int uSpriteID, int time) {
+    SpriteFrame *sprite = &pSpriteSFrames[uSpriteID];
+    if (!(sprite->uFlags & 1) || sprite->uAnimLength == 0)
+        return sprite;
 
-    v3 = this->pSpriteSFrames.data();
-    v4 = &v3[uSpriteID];
-    if (v4->uFlags & 1 && (v5 = v4->uAnimLength) != 0) {
-        v6 = v5;
-        v7 = time % v5;
-        v8 = uSpriteID;
-        v9 = v6 - v7;
-        for (i = (char *)&v4->uAnimTime;; i += 60) {
-            v11 = *(short *)i;
-            if (v9 <= v11) break;
-            v9 -= v11;
-            ++v8;
-        }
-        result = &v3[v8];
-    } else {
-        result = &v3[uSpriteID];
-    }
-    return result;
+    for (int t = sprite->uAnimLength - (time / 8) % sprite->uAnimLength; t > sprite->uAnimTime; ++sprite)
+        t -= sprite->uAnimTime;
+
+    return sprite;
 }
 
 // new

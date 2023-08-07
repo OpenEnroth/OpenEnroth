@@ -1265,6 +1265,17 @@ GAME_TEST(Issues, Issue742) {
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_HAT_ACTIVE));
 }
 
+GAME_TEST(Issues, Issue755) {
+    // Resurrection doesn't crash. Crashes were actually quite random because the code was reading pointer parts as ints.
+    auto actor2Tape = test->tape([] { return pActors[2].aiState; });
+    auto actor37Tape = test->tape([] { return pActors[37].aiState; });
+    test->playTraceFromTestData("issue_755.mm7", "issue_755.json");
+    EXPECT_TRUE(actor2Tape.contains(Dead));
+    EXPECT_TRUE(actor2Tape.contains(Resurrected));
+    EXPECT_TRUE(actor37Tape.contains(Dead));
+    EXPECT_TRUE(actor37Tape.contains(Resurrected));
+}
+
 GAME_TEST(Issues, Issue760) {
     // Check that mixing potions when character inventory is full does not discards empty bottle
     auto itemsTape = makeTotalItemsTape(test);
