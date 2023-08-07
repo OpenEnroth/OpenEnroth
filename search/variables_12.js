@@ -13,7 +13,7 @@ var searchData=
   ['ranged_5fattack_5fdescription_10',['ranged_attack_description',['../classLocalization.html#aaf4c39783c62b392de7a9f56731faa96',1,'Localization']]],
   ['ranged_5fdamage_5fdescription_11',['ranged_damage_description',['../classLocalization.html#a43648dc4eec3872da2cbce44b9de9b0d',1,'Localization']]],
   ['rangedattackbonus_12',['rangedAttackBonus',['../structPlayer__MM7.html#a20bd3022e4a77e776c87658336b796d9',1,'Player_MM7']]],
-  ['rangedattackdepth_13',['RangedAttackDepth',['../classGameConfig_1_1Gameplay.html#ac926cf728f08b0c1b707f7545761399c',1,'GameConfig::Gameplay']]],
+  ['rangedattackdepth_13',['RangedAttackDepth',['../classGameConfig_1_1Gameplay.html#aa33971fde060742e7121a0d41f57b0b3',1,'GameConfig::Gameplay']]],
   ['rangeddmgbonus_14',['rangedDmgBonus',['../structPlayer__MM7.html#a692c9b4c1905ebe7e945b159008facc5',1,'Player_MM7']]],
   ['ready_15',['ready',['../structTimer__MM7.html#ad70ff751d5d505e28e07ae821c8d2c81',1,'Timer_MM7']]],
   ['receives_5fkeyboard_5finput_16',['receives_keyboard_input',['../classGUIWindow.html#aaedaee57b8df9772e3d7a1a19d2b02e8',1,'GUIWindow']]],

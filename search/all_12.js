@@ -28,7 +28,7 @@ var searchData=
   ['ranged_5fattack_5fdescription_25',['ranged_attack_description',['../classLocalization.html#aaf4c39783c62b392de7a9f56731faa96',1,'Localization']]],
   ['ranged_5fdamage_5fdescription_26',['ranged_damage_description',['../classLocalization.html#a43648dc4eec3872da2cbce44b9de9b0d',1,'Localization']]],
   ['rangedattackbonus_27',['rangedAttackBonus',['../structPlayer__MM7.html#a20bd3022e4a77e776c87658336b796d9',1,'Player_MM7']]],
-  ['rangedattackdepth_28',['RangedAttackDepth',['../classGameConfig_1_1Gameplay.html#ac926cf728f08b0c1b707f7545761399c',1,'GameConfig::Gameplay']]],
+  ['rangedattackdepth_28',['RangedAttackDepth',['../classGameConfig_1_1Gameplay.html#aa33971fde060742e7121a0d41f57b0b3',1,'GameConfig::Gameplay']]],
   ['rangeddmgbonus_29',['rangedDmgBonus',['../structPlayer__MM7.html#a692c9b4c1905ebe7e945b159008facc5',1,'Player_MM7']]],
   ['rangeiterator_30',['RangeIterator',['../classdetail_1_1RangeIterator.html',1,'detail::RangeIterator&lt; T &gt;'],['../classdetail_1_1RangeIterator.html#a7997fd0e0c21fe54a9e305ede180cd09',1,'detail::RangeIterator::RangeIterator()=default'],['../classdetail_1_1RangeIterator.html#a8f20956d0849008aa93c30e851dd9f43',1,'detail::RangeIterator::RangeIterator(value_type pos)']]],
   ['rasterline2d_31',['RasterLine2D',['../classIRender.html#a9c30caaeb83d4fe99bb61108a07ef6a8',1,'IRender::RasterLine2D()'],['../classRenderOpenGL.html#adb9f74949a50d6dcca9d4b9ef0030ec3',1,'RenderOpenGL::RasterLine2D()'],['../classRenderNull.html#a012bdca08f2fdf21dc2716b97678ad03',1,'RenderNull::RasterLine2D()']]],

@@ -125,7 +125,7 @@ var searchData=
   ['shown_5fcards_122',['shown_cards',['../Arcomage_8cpp.html#a4073a3605430aacbfbc80b286efbcfa5',1,'Arcomage.cpp']]],
   ['showpickedface_123',['ShowPickedFace',['../classGameConfig_1_1Debug.html#ae88090e9d82c82afb1b271adc3f7f899',1,'GameConfig::Debug']]],
   ['showundentifieditem_124',['ShowUndentifiedItem',['../classGameConfig_1_1Gameplay.html#af83a86b0d5111981e76a2bfe5aad4110',1,'GameConfig::Gameplay']]],
-  ['shrinkrayaoedistance_125',['ShrinkRayAoeDistance',['../classGameConfig_1_1Gameplay.html#a664a56ea11f1e1213da671b54a21daeb',1,'GameConfig::Gameplay']]],
+  ['shrinkrayaoedistance_125',['ShrinkRayAoeDistance',['../classGameConfig_1_1Gameplay.html#afdee6b401a2cd02d7f7a8edb5f6ca446',1,'GameConfig::Gameplay']]],
   ['side_126',['side',['../structEngineControlStateHandle_1_1SharedData.html#a1571bc6248f73ba468f92812374b4a67',1,'EngineControlStateHandle::SharedData']]],
   ['side_5ftext_5fbox_5fbody_5ftext_5fheight_127',['SIDE_TEXT_BOX_BODY_TEXT_HEIGHT',['../UIHouses_8h.html#a0688751906262ec5c76c0499c2f4e156',1,'UIHouses.h']]],
   ['side_5ftext_5fbox_5fbody_5ftext_5foffset_128',['SIDE_TEXT_BOX_BODY_TEXT_OFFSET',['../UIHouses_8h.html#abe3b2ac50cf54ef16e90f17a357359dd',1,'UIHouses.h']]],
