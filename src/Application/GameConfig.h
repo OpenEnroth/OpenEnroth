@@ -116,12 +116,12 @@ class GameConfig : public Config {
 
         Int Gravity = {this, "gravity", 5, "Gravity strength, the higher the more gravity, 0 disables gravity completely."};
 
-        Float KeyboardInteractionDepth = {this, "keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth,
-                                          "Maximum range for item pickup / opening chests / activating levers / etc "
-                                          "with a keyboard (by pressing the interaction key, see keybindings.event_trigger)."};
+        Int KeyboardInteractionDepth = {this, "keyboard_interaction_depth", 512, &ValidateInteractionDepth,
+                                        "Maximum range for item pickup / opening chests / activating levers / etc "
+                                        "with a keyboard (by pressing the interaction key, see keybindings.event_trigger)."};
 
-        Float MouseInteractionDepth = {this, "mouse_interaction_depth", 512.0f, &ValidateInteractionDepth,
-                                       "Maximum range for item pickup / opening chests / activating levers / etc with a mouse."};
+        Int MouseInteractionDepth = {this, "mouse_interaction_depth", 512, &ValidateInteractionDepth,
+                                     "Maximum range for item pickup / opening chests / activating levers / etc with a mouse."};
 
         Int MinRecoveryMelee = {this, "minimum_recovery_melee", 30, &ValidateRecovery,
                                 "Minimum recovery time for melee weapons. Was 30 in vanilla."};
@@ -135,13 +135,13 @@ class GameConfig : public Config {
         Int MaxFlightHeight = {this, "max_flight_height", 4000, &ValidateMaxFlightHeight,
                                "Maximum height for the fly spell."};
 
-        Float MouseInfoDepthIndoor = {this, "mouse_info_depth_indoor", 16192.0f, &ValidateInteractionDepth,
-                                      "Maximum range at which right clicking on a monster produces a popup indoors. "
-                                      "Also this is the max range for the souldrinker spell indoors."};
-        Float MouseInfoDepthOutdoor = {this, "mouse_info_depth_outdoor", 12800.0f, &ValidateInteractionDepth,
-                                       "Maximum range at which right clicking on a monster produces a popup outdoors. "
-                                       "Default value is 12800 = 25 * 512, 25 map cells. "
-                                       "Also this is the max range for the souldrinker spell outdoors."};
+        Int MouseInfoDepthIndoor = {this, "mouse_info_depth_indoor", 16192, &ValidateInteractionDepth,
+                                    "Maximum range at which right clicking on a monster produces a popup indoors. "
+                                    "Also this is the max range for the souldrinker spell indoors."};
+        Int MouseInfoDepthOutdoor = {this, "mouse_info_depth_outdoor", 12800, &ValidateInteractionDepth,
+                                     "Maximum range at which right clicking on a monster produces a popup outdoors. "
+                                     "Default value is 12800 = 25 * 512, 25 map cells. "
+                                     "Also this is the max range for the souldrinker spell outdoors."};
 
         Int NewGameFood = {this, "new_game_food", 7, "Starting food."};
         Int NewGameGold = {this, "new_game_gold", 200, "Starting gold."};
@@ -151,18 +151,18 @@ class GameConfig : public Config {
         Int PartyHeight = {this, "party_height", 192, "Party height."};
         Int PartyWalkSpeed = {this, "party_walk_speed", 384, "Party walk speed."};
 
-        Float RangedAttackDepth = {this, "ranged_attack_depth", 5120.0f, &ValidateRangedAttackDepth,
-                                   "Max depth for ranged attacks and ranged spells. "
-                                   "It's impossible to target monsters that are further away than this value. "
-                                   "This is also the depth at which status bar tips are displayed on mouse over."};
+        Int RangedAttackDepth = {this, "ranged_attack_depth", 5120, &ValidateRangedAttackDepth,
+                                 "Max depth for ranged attacks and ranged spells. "
+                                 "It's impossible to target monsters that are further away than this value. "
+                                 "This is also the depth at which status bar tips are displayed on mouse over."};
 
-        Float AoeDamageDistance = {this, "aoe_damage_distance", 512.0f, &ValidateAoeDistance,
-                                   "Distance from point of impact of harmful AOE spell. "
-                                   "Characters and monsters will suffer damage if they are close to point of impact by this value."};
+        Int AoeDamageDistance = {this, "aoe_damage_distance", 512, &ValidateAoeDistance,
+                                 "Distance from point of impact of harmful AOE spell. "
+                                 "Characters and monsters will suffer damage if they are close to point of impact by this value."};
 
-        Float ShrinkRayAoeDistance = {this, "shrink_ray_aoe_distance", 256.0f, &ValidateAoeDistance,
-                                      "Distance from point of impact of Shrinking Ray cast at GM mastery. "
-                                      "Monsters will be affected by this spell if they are close to point of impact by this value."};
+        Int ShrinkRayAoeDistance = {this, "shrink_ray_aoe_distance", 256, &ValidateAoeDistance,
+                                    "Distance from point of impact of Shrinking Ray cast at GM mastery. "
+                                    "Monsters will be affected by this spell if they are close to point of impact by this value."};
 
         Bool ShowUndentifiedItem = {this, "show_unidentified_item", true,
                                     "Show unidentified items with a green tint in inventory. "
