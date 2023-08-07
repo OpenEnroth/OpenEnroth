@@ -297,7 +297,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &fDepth, &a1,
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &a1,
                                         face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
                     // v9 = fixpoint_from_float(/*v8,
@@ -400,7 +400,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                 blv_face.FromODM(&face);
 
                 RenderVertexSoft intersection;
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &fDepth, &intersection,
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &intersection,
                                        &blv_face, model.index)) {
                     pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
@@ -485,7 +485,7 @@ Vis_PIDAndDepth Vis::get_picked_object_zbuf_val() {
 }
 
 //----- (004C1C0C) --------------------------------------------------------
-bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDepth,
+bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
                              RenderVertexSoft *Intersection, BLVFace *pFace,
                              signed int pBModelID) {
     if (pFace->isPortal() || pFace->Invisible())
@@ -497,27 +497,21 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDep
         return false;
 
     // c2 = n*u
-    float c2 = pFace->facePlane.normal.x * step.y  // get length of the line(Это дает нам длину линии)
-             + pFace->facePlane.normal.y * step.x +
-               pFace->facePlane.normal.z * step.z; // TODO(captainurist): x/y messed up here
+    float c2 = dot(pFace->facePlane.normal, step);
     if (fuzzyIsNull(c2))
         return false; // Ray is parallel to face plane.
 
     // t = -d-(n*p0)/n*u
-    float t = c1 / c2;  // How far is crossing the line in percent for 0 to
-                        // 1(Как далеко пересечение линии в процентах от 0 до 1 )
+    float t = c1 / c2;  // How far is crossing the line in percent for 0 to 1
     if (t < 0 || t > 1)
         return false;
 
     // p(t) = p0 + tu;
-    Intersection->vWorldPosition.x = origin.x + t * step.y;  // add the interest to the start line(прибавляем процент
-                                                                // линии к линии старта)
-    Intersection->vWorldPosition.y = origin.y + t * step.x;
-    Intersection->vWorldPosition.z = origin.z + t * step.z;
+    Intersection->vWorldPosition = origin + t * step;
 
-    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID)) return false;
+    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID))
+        return false;
 
-    *pDepth = t;  // TODO(captainurist): unused, drop.
     return true;
 }
 
@@ -615,18 +609,12 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    int v3 = pCamera3D->ViewPlaneDistPixels;
-
-    return TrigLUT.atan2(x - pViewport->uScreenCenterX, v3) -
-           TrigLUT.uIntegerHalfPi;
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterX - x);
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    int v3 = pCamera3D->ViewPlaneDistPixels;
-
-    return TrigLUT.atan2(y - pViewport->uScreenCenterY, v3) -
-           TrigLUT.uIntegerHalfPi;
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterY - y);
 }
 
 //----- (004C248E) --------------------------------------------------------
@@ -637,7 +625,7 @@ void Vis::CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *ori
 
     int yawAngle = (pCamera3D->_viewYaw + UnprojectX(fMouseX)) & TrigLUT.uDoublePiMask;
     int pitchAngle = (-pCamera3D->_viewPitch + UnprojectY(fMouseY)) & TrigLUT.uDoublePiMask;
-    *step = Vec3f::fromPolarRetarded(fPickDepth, yawAngle, pitchAngle);
+    *step = Vec3f::fromPolar(fPickDepth, yawAngle, pitchAngle);
 }
 
 //----- (004C2551) --------------------------------------------------------
