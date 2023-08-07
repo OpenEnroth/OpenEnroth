@@ -255,12 +255,10 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     float dt = fixpoint_to_float(dt_fp);
 
     this->speed = this->velocity.length();
+    if (fuzzyIsNull(this->speed, COLLISIONS_EPS))
+        return true;
 
-    if (!fuzzyIsNull(this->speed)) {
-        this->direction = this->velocity / this->speed;
-    } else {
-        this->direction = Vec3f(0, 0, 1.0f);
-    }
+    this->direction = this->velocity / this->speed;
 
     this->move_distance = dt * this->speed - this->total_move_distance;
     if (this->move_distance <= this->min_move_distance)
