@@ -22,6 +22,9 @@
 
 CollisionState collision_state;
 
+constexpr float COLLISIONS_EPS = 0.01f;
+constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distance, anything below this value gets rounded down to zero.
+
 //
 // Helper functions.
 //
@@ -51,7 +54,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
 
     // This is checked by the caller, we should be moving into the face or sideways, so projection of dir onto the
     // face normal should either be negative or close to zero.
-    assert(dir_normal_projection < 0.01f);
+    assert(dir_normal_projection < COLLISIONS_EPS);
 
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     assert(center_face_distance > 0); // Checked by the caller, we should be in front of the face, not behind it.
@@ -65,7 +68,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
         projected_pos += center_face_distance * -face->facePlane.normal;
     } else {
         // Moving sideways & not already colliding? No collision.
-        if (std::abs(dir_normal_projection) < 0.01f)
+        if (fuzzyIsNull(dir_normal_projection, COLLISIONS_EPS))
             return false;
 
         // Otherwise can move along the dir vector until the sphere touches the face.
@@ -75,7 +78,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
-    assert(std::abs(face->facePlane.signedDistanceTo(projected_pos)) < 0.01f); // TODO(captainurist): move into face->Contains.
+    assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
     if (!face->Contains(projected_pos.toInt(), model_idx))
         return false; // We've just managed to slide past the face, no collision happened.
@@ -106,7 +109,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     // dot_product(dir, normal) is a cosine of an angle between them.
     float cos_dir_normal = dot(dir, face->facePlane.normal);
 
-    if (fuzzyIsNull(cos_dir_normal))
+    if (fuzzyIsNull(cos_dir_normal, COLLISIONS_EPS))
         return false; // dir is perpendicular to face normal.
 
     if (face->uAttributes & FACE_ETHEREAL)
@@ -253,15 +256,13 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     float dt = fixpoint_to_float(dt_fp);
 
     this->speed = this->velocity.length();
+    if (fuzzyIsNull(this->speed, COLLISIONS_EPS))
+        return true;
 
-    if (!fuzzyIsNull(this->speed)) {
-        this->direction = this->velocity / this->speed;
-    } else {
-        this->direction = Vec3f(0, 0, 1.0f);
-    }
+    this->direction = this->velocity / this->speed;
 
     this->move_distance = dt * this->speed - this->total_move_distance;
-    if (this->move_distance <= this->min_move_distance)
+    if (this->move_distance <= COLLISIONS_MIN_MOVE_DISTANCE)
         return true;
 
     this->new_position_hi = this->position_hi + this->move_distance * this->direction;
