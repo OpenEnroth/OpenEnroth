@@ -39,7 +39,6 @@ struct CollisionState {
     Pid pid;  // Pid of the object that we're collided with.
     int ignored_face_id;  // Don't check collisions with this face.
     BBoxf bbox;
-    float min_move_distance = 0.01; // Minimal movement distance, anything below this value gets rounded down to zero.
 };
 
 extern CollisionState collision_state;

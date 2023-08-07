@@ -23,6 +23,7 @@
 CollisionState collision_state;
 
 constexpr float COLLISIONS_EPS = 0.01f;
+constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distance, anything below this value gets rounded down to zero.
 
 //
 // Helper functions.
@@ -261,7 +262,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     this->direction = this->velocity / this->speed;
 
     this->move_distance = dt * this->speed - this->total_move_distance;
-    if (this->move_distance <= this->min_move_distance)
+    if (this->move_distance <= COLLISIONS_MIN_MOVE_DISTANCE)
         return true;
 
     this->new_position_hi = this->position_hi + this->move_distance * this->direction;
