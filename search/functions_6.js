@@ -57,8 +57,8 @@ var searchData=
   ['fromc16_54',['fromC16',['../structColor.html#ae10f29129352c18d3836387c7e8b996f',1,'Color']]],
   ['fromc32_55',['fromC32',['../structColor.html#a9b41c1a7a7e2e4894958d73282d1a02e',1,'Color']]],
   ['fromdays_56',['FromDays',['../structGameTime.html#ae04d60fcc7991002de7fe83d9fd5f7fc',1,'GameTime']]],
-  ['fromfile_57',['FromFile',['../classSoundList.html#a5c135cda2d5333663cbb447a79f25859',1,'SoundList']]],
-  ['fromfile_58',['fromFile',['../classBlob.html#a6596e8e6cefe9db2a5066f15af2f48cf',1,'Blob']]],
+  ['fromfile_57',['fromFile',['../classBlob.html#a6596e8e6cefe9db2a5066f15af2f48cf',1,'Blob']]],
+  ['fromfile_58',['FromFile',['../classSoundList.html#a5c135cda2d5333663cbb447a79f25859',1,'SoundList']]],
   ['fromfiletxt_59',['FromFileTxt',['../structOverlayList.html#a721ba36c7767efaf8d5a21a920136190',1,'OverlayList::FromFileTxt()'],['../structMonsterList.html#a6026659e6a432c28622b32affab06ba9',1,'MonsterList::FromFileTxt()'],['../structTileTable.html#a53eb0bec7e37a55ba2697902911d89d2',1,'TileTable::FromFileTxt()'],['../structIconFrameTable.html#a8ef1d29209b47ede815868a771db3a47',1,'IconFrameTable::FromFileTxt()'],['../structPlayerFrameTable.html#a97105a0d9ef59cf0baf4b255a0944e8c',1,'PlayerFrameTable::FromFileTxt()']]],
   ['fromhours_60',['FromHours',['../structGameTime.html#a5038a8342841cf37dbf3857427fe4cf0',1,'GameTime']]],
   ['fromjoined_61',['fromJoined',['../classCombinedSkillValue.html#af0189f81f6da00d031c2d03a837d2b4f',1,'CombinedSkillValue']]],
@@ -75,6 +75,6 @@ var searchData=
   ['fromyears_72',['FromYears',['../structGameTime.html#a4614fa6237061060135892717d0fc1de',1,'GameTime']]],
   ['front_73',['front',['../classSegment.html#a021b34e8503009ec1c3a255d43ffe736',1,'Segment']]],
   ['fullpathintestdata_74',['fullPathInTestData',['../classTestController.html#aada779c3669d9ad22dbeb0c7e56b33a9',1,'TestController']]],
-  ['fuzzyequals_75',['fuzzyEquals',['../Float_8h.html#a7fb10b4beac708017cd6faf68477058a',1,'fuzzyEquals(float l, float r):&#160;Float.h'],['../Float_8h.html#a71733ceb7483f429c150273f545cc0c8',1,'fuzzyEquals(double l, double r):&#160;Float.h']]],
-  ['fuzzyisnull_76',['fuzzyIsNull',['../Float_8h.html#a6b40b8ee0c2b4d32c96e3a277bac218c',1,'fuzzyIsNull(float value):&#160;Float.h'],['../Float_8h.html#a930c8fbdbd5afd2a1caed4f05b9b137f',1,'fuzzyIsNull(double value):&#160;Float.h']]]
+  ['fuzzyequals_75',['fuzzyEquals',['../Float_8h.html#a28939f8977864f2879fd7e629e0a2c74',1,'fuzzyEquals(float l, float r, float eps=0.00001f):&#160;Float.h'],['../Float_8h.html#a9ea7d3cd4f132bfd839d368af07637be',1,'fuzzyEquals(double l, double r, double eps=0.000000000001):&#160;Float.h']]],
+  ['fuzzyisnull_76',['fuzzyIsNull',['../Float_8h.html#ae95ff37aa70c17f27bdc7b755ce955ef',1,'fuzzyIsNull(float value, float eps=0.00001f):&#160;Float.h'],['../Float_8h.html#a75e2a388e1fa4731d23b6b6cbaafddd9',1,'fuzzyIsNull(double value, double eps=0.000000000001):&#160;Float.h']]]
 ];

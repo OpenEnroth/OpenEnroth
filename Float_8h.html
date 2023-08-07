@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1a9a1e7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f724747</span>
    </div>
   </td>
  </tr>
@@ -83,18 +83,18 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6b40b8ee0c2b4d32c96e3a277bac218c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a6b40b8ee0c2b4d32c96e3a277bac218c">fuzzyIsNull</a> (float value)</td></tr>
-<tr class="separator:a6b40b8ee0c2b4d32c96e3a277bac218c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a930c8fbdbd5afd2a1caed4f05b9b137f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a930c8fbdbd5afd2a1caed4f05b9b137f">fuzzyIsNull</a> (double value)</td></tr>
-<tr class="separator:a930c8fbdbd5afd2a1caed4f05b9b137f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fb10b4beac708017cd6faf68477058a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a7fb10b4beac708017cd6faf68477058a">fuzzyEquals</a> (float l, float r)</td></tr>
-<tr class="separator:a7fb10b4beac708017cd6faf68477058a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71733ceb7483f429c150273f545cc0c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a71733ceb7483f429c150273f545cc0c8">fuzzyEquals</a> (double l, double r)</td></tr>
-<tr class="separator:a71733ceb7483f429c150273f545cc0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae95ff37aa70c17f27bdc7b755ce955ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#ae95ff37aa70c17f27bdc7b755ce955ef">fuzzyIsNull</a> (float value, float eps=0.00001f)</td></tr>
+<tr class="separator:ae95ff37aa70c17f27bdc7b755ce955ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75e2a388e1fa4731d23b6b6cbaafddd9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a75e2a388e1fa4731d23b6b6cbaafddd9">fuzzyIsNull</a> (double value, double eps=0.000000000001)</td></tr>
+<tr class="separator:a75e2a388e1fa4731d23b6b6cbaafddd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28939f8977864f2879fd7e629e0a2c74"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a28939f8977864f2879fd7e629e0a2c74">fuzzyEquals</a> (float l, float r, float eps=0.00001f)</td></tr>
+<tr class="separator:a28939f8977864f2879fd7e629e0a2c74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ea7d3cd4f132bfd839d368af07637be"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Float_8h.html#a9ea7d3cd4f132bfd839d368af07637be">fuzzyEquals</a> (double l, double r, double eps=0.000000000001)</td></tr>
+<tr class="separator:a9ea7d3cd4f132bfd839d368af07637be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a71733ceb7483f429c150273f545cc0c8" name="a71733ceb7483f429c150273f545cc0c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71733ceb7483f429c150273f545cc0c8">&#9670;&#160;</a></span>fuzzyEquals() <span class="overload">[1/2]</span></h2>
+<a id="a9ea7d3cd4f132bfd839d368af07637be" name="a9ea7d3cd4f132bfd839d368af07637be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ea7d3cd4f132bfd839d368af07637be">&#9670;&#160;</a></span>fuzzyEquals() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -112,7 +112,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>r</em>&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>eps</em> = <code>0.000000000001</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -129,8 +135,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7fb10b4beac708017cd6faf68477058a" name="a7fb10b4beac708017cd6faf68477058a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fb10b4beac708017cd6faf68477058a">&#9670;&#160;</a></span>fuzzyEquals() <span class="overload">[2/2]</span></h2>
+<a id="a28939f8977864f2879fd7e629e0a2c74" name="a28939f8977864f2879fd7e629e0a2c74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28939f8977864f2879fd7e629e0a2c74">&#9670;&#160;</a></span>fuzzyEquals() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,7 +154,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>r</em>&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>eps</em> = <code>0.00001f</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -165,8 +177,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a930c8fbdbd5afd2a1caed4f05b9b137f" name="a930c8fbdbd5afd2a1caed4f05b9b137f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a930c8fbdbd5afd2a1caed4f05b9b137f">&#9670;&#160;</a></span>fuzzyIsNull() <span class="overload">[1/2]</span></h2>
+<a id="a75e2a388e1fa4731d23b6b6cbaafddd9" name="a75e2a388e1fa4731d23b6b6cbaafddd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75e2a388e1fa4731d23b6b6cbaafddd9">&#9670;&#160;</a></span>fuzzyIsNull() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -178,8 +190,18 @@ Functions</h2></td></tr>
           <td class="memname">bool fuzzyIsNull </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>value</em></td><td>)</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>eps</em> = <code>0.000000000001</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -191,8 +213,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a6b40b8ee0c2b4d32c96e3a277bac218c" name="a6b40b8ee0c2b4d32c96e3a277bac218c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b40b8ee0c2b4d32c96e3a277bac218c">&#9670;&#160;</a></span>fuzzyIsNull() <span class="overload">[2/2]</span></h2>
+<a id="ae95ff37aa70c17f27bdc7b755ce955ef" name="ae95ff37aa70c17f27bdc7b755ce955ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae95ff37aa70c17f27bdc7b755ce955ef">&#9670;&#160;</a></span>fuzzyIsNull() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -204,8 +226,18 @@ Functions</h2></td></tr>
           <td class="memname">bool fuzzyIsNull </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>value</em></td><td>)</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>eps</em> = <code>0.00001f</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
