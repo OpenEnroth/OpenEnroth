@@ -153,7 +153,7 @@ void GUIWindow_Transport::transportDialogue() {
         return;
     }
 
-    int choice_id = dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1;
+    int choice_id = currentDialogue - DIALOGUE_TRANSPORT_SCHEDULE_1;
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
@@ -204,7 +204,7 @@ void GUIWindow_Transport::transportDialogue() {
 void GUIWindow_Transport::houseSpecificDialogue() {
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
-    switch (dialog_menu_id) {
+    switch (currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -220,11 +220,11 @@ void GUIWindow_Transport::houseSpecificDialogue() {
 }
 
 void GUIWindow_Transport::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+    currentDialogue = option;
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Transport::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (option) {
+std::vector<DIALOGUE_TYPE> GUIWindow_Transport::listDialogueOptions() {
+    switch (currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRANSPORT_SCHEDULE_1, DIALOGUE_TRANSPORT_SCHEDULE_2, DIALOGUE_TRANSPORT_SCHEDULE_3, DIALOGUE_TRANSPORT_SCHEDULE_4};
       default:

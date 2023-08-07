@@ -237,7 +237,6 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                        dialog_menu_id = DIALOGUE_NULL;
                         while (houseDialogPressEscape()) {}
                         pMediaPlayer->Unload();
                         window_SpeakInHouse->Release();
@@ -248,7 +247,6 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                             pDialogueWindow->Release();
                             pDialogueWindow = 0;
                         }
-                        dialog_menu_id = DIALOGUE_NULL;
                     }
                     return -1;
                 }

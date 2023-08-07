@@ -111,6 +111,7 @@ GUIWindow_Training::GUIWindow_Training(HOUSE_ID houseId) : GUIWindow_House(house
 }
 
 void GUIWindow_Training::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+    currentDialogue = option;
     if (IsSkillLearningDialogue(option)) {
         learnSelectedSkill(GetLearningDialogueSkill(option));
     }
@@ -122,7 +123,7 @@ void GUIWindow_Training::houseSpecificDialogue() {
         pParty->setActiveToFirstCanAct();
     }
 
-    switch (dialog_menu_id) {
+    switch (currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -138,8 +139,8 @@ void GUIWindow_Training::houseSpecificDialogue() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (option) {
+std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions() {
+    switch (currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRAINING_HALL_TRAIN, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_LEARN_SKILLS:
@@ -149,12 +150,14 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions(DIALOGUE_TYPE
     }
 }
 
-DIALOGUE_TYPE GUIWindow_Training::getOptionOnEscape() {
-    if (IsSkillLearningDialogue(dialog_menu_id)) {
-        return DIALOGUE_LEARN_SKILLS;
+void GUIWindow_Training::updateDialogueOnEscape() {
+    if (IsSkillLearningDialogue(currentDialogue)) {
+        currentDialogue = DIALOGUE_LEARN_SKILLS;
+        return;
     }
-    if (dialog_menu_id == DIALOGUE_MAIN) {
-        return DIALOGUE_NULL;
+    if (currentDialogue == DIALOGUE_MAIN) {
+        currentDialogue = DIALOGUE_NULL;
+        return;
     }
-    return DIALOGUE_MAIN;
+    currentDialogue = DIALOGUE_MAIN;
 }

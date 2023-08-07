@@ -1405,36 +1405,33 @@ void ShowPopupShopItem() {
     ItemGen *item;  // ecx@13
     int invindex;
     int testpos;
+    BuildingType buildingType = window_SpeakInHouse->buildingType();
+    DIALOGUE_TYPE dialogue = window_SpeakInHouse->getCurrentDialogue();
 
-    if (in_current_building_type == BUILDING_INVALID) return;
-    if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
+    if (buildingType == BUILDING_INVALID)
+        return;
+
+    if (dialogue < DIALOGUE_SHOP_BUY_STANDARD)
+        return;
 
     Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int testx;
 
-    if (in_current_building_type <= BUILDING_ALCHEMY_SHOP) {
-        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
-            dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
-            switch (in_current_building_type) {
+    if (buildingType <= BUILDING_ALCHEMY_SHOP) {
+        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD || dialogue == DIALOGUE_SHOP_BUY_SPECIAL) {
+            switch (buildingType) {
                 case BUILDING_WEAPON_SHOP: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
-                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
                         else
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
                         if (item->uItemID != ITEM_NULL) {
-                            testpos =
-                                ((60 -
-                                  (shop_ui_items_in_store[testx]->width() /
-                                   2)) +
-                                 testx * 70);
-                            if (pt.x >= testpos &&
-                                pt.x <
-                                    (testpos + shop_ui_items_in_store[testx]->width())) {
-                                if (pt.y >= weaponYPos[testx] + 30 &&
-                                    pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->height())) {
+                            testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
+                            if (pt.x >= testpos && pt.x < (testpos + shop_ui_items_in_store[testx]->width())) {
+                                if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->height())) {
                                     GameUI_DrawItemInfo(item);
                                 }
                             } else {
@@ -1455,31 +1452,21 @@ void ShowPopupShopItem() {
                             testx += 4;
                         }
 
-                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
                         else
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
                         if (item->uItemID != ITEM_NULL) {
                             if (testx >= 4) {
-                                testpos = ((90 - (shop_ui_items_in_store[testx]->width() /
-                                                  2)) +
-                                           (testx * 105) - 420);  // low row
+                                testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);  // low row
                             } else {
-                                testpos = ((86 - (shop_ui_items_in_store[testx]->width() /
-                                                  2)) +
-                                           testx * 105);
+                                testpos = ((86 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 105);
                             }
 
-                            if (pt.x >= testpos &&
-                                pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]->width()) {
-                                if ((pt.y >= 126 &&
-                                    pt.y <
-                                         (126 + shop_ui_items_in_store[testx]->height())) ||
-                                    (pt.y <= 98 &&
-                                        pt.y >=
-                                         (98 - shop_ui_items_in_store[testx]->height()))) {
+                            if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                                if ((pt.y >= 126 && pt.y < (126 + shop_ui_items_in_store[testx]->height())) ||
+                                    (pt.y <= 98 && pt.y >= (98 - shop_ui_items_in_store[testx]->height()))) {
                                     GameUI_DrawItemInfo(item);
                                 } else {
                                     return;
@@ -1500,33 +1487,21 @@ void ShowPopupShopItem() {
                             testx += 6;
                         }
 
-                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
                         else
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
                         if (item->uItemID != ITEM_NULL) {
                             if (pt.y > 152) {
-                                testpos =
-                                    75 * testx - shop_ui_items_in_store[testx]->width() /
-                                        2 +
-                                    40 - 450;
+                                testpos = 75 * testx - shop_ui_items_in_store[testx]->width() / 2 + 40 - 450;
                             } else {
-                                testpos =
-                                    75 * testx - shop_ui_items_in_store[testx]->width() /
-                                        2 +
-                                    40;
+                                testpos = 75 * testx - shop_ui_items_in_store[testx]->width() / 2 + 40;
                             }
 
-                            if (pt.x >= testpos &&
-                                pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]->width()) {
-                                if ((pt.y <= 308 &&
-                                    pt.y >=
-                                         (308 - shop_ui_items_in_store[testx]->height())) ||
-                                    (pt.y <= 152 &&
-                                        pt.y >=
-                                         (152 - shop_ui_items_in_store[testx]->height()))) {
+                            if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                                if ((pt.y <= 308 && pt.y >= (308 - shop_ui_items_in_store[testx]->height())) ||
+                                    (pt.y <= 152 && pt.y >= (152 - shop_ui_items_in_store[testx]->height()))) {
                                     GameUI_DrawItemInfo(item);
                                 } else {
                                     return;
@@ -1544,7 +1519,7 @@ void ShowPopupShopItem() {
                     // return;
                     // v7 = &pParty->StandartItemsInShops[(unsigned
                     // int)window_SpeakInHouse->ptr_1C][v3 - 1]; if
-                    // (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) v7 =
+                    // (dialogue == DIALOGUE_SHOP_BUY_SPECIAL) v7 =
                     // &pParty->SpecialItemsInShops[(unsigned
                     // int)window_SpeakInHouse->ptr_1C][v3 - 1];
                     // GameUI_DrawItemInfo(v7);
@@ -1553,22 +1528,17 @@ void ShowPopupShopItem() {
             }
         }
 
-        if (dialog_menu_id >= DIALOGUE_SHOP_SELL &&
-                dialog_menu_id <= DIALOGUE_SHOP_REPAIR ||
-            dialog_menu_id == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+        if (dialogue >= DIALOGUE_SHOP_SELL && dialogue <= DIALOGUE_SHOP_REPAIR || dialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
-            if (pt.x <= 13 || pt.x >= 462 ||
-                !pParty->activeCharacter().GetItemListAtInventoryIndex(
-                    invindex))
+            if (pt.x <= 13 || pt.x >= 462 || !pParty->activeCharacter().GetItemListAtInventoryIndex(invindex))
                 return;
 
-            GameUI_DrawItemInfo(
-                pParty->activeCharacter().GetItemAtInventoryIndex(invindex));
+            GameUI_DrawItemInfo(pParty->activeCharacter().GetItemAtInventoryIndex(invindex));
             return;
         }
     }
 
-    if (in_current_building_type <= BUILDING_MIRRORED_PATH_GUILD && dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
+    if (buildingType <= BUILDING_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
@@ -1609,13 +1579,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
         if (player->pCharacterBuffs[i].Active()) ++numActivePlayerBuffs;
     }
 
-    window->uFrameHeight =
-        ((pFontArrus->GetHeight() + 162) +
-         ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight()));
+    window->uFrameHeight = ((pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight()));
     window->uFrameZ = window->uFrameWidth + window->uFrameX - 1;
-    window->uFrameW = ((pFontArrus->GetHeight() + 162) +
-                       ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight())) +
-                      window->uFrameY - 1;
+    window->uFrameW = ((pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight())) + window->uFrameY - 1;
     window->DrawMessageBox(0);
 
     if (player->IsEradicated()) {
@@ -1623,22 +1589,18 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID =
-            pPlayerFrameTable->GetFrameIdByExpression(player->expression);
-        if (!uFramesetID) uFramesetID = 1;
+        uFramesetID = pPlayerFrameTable->GetFrameIdByExpression(player->expression);
+        if (!uFramesetID)
+            uFramesetID = 1;
         if (player->expression == CHARACTER_EXPRESSION_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(
-                &player->_expression21_frameset,
-                &player->_expression21_animtime, pMiscTimer->uTimeElapsed);
+            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->uTimeElapsed);
         else
-            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID,
-                                                  pMiscTimer->Time());
+            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->Time());
         player->uExpressionImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[window->wData.val][v15->uTextureID - 1];
     }
 
-    render->DrawTextureNew((window->uFrameX + 24) / 640.0f,
-                                (window->uFrameY + 24) / 480.0f, v13);
+    render->DrawTextureNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
 
     // TODO(captainurist): do a 2nd rewrite here
     auto str =

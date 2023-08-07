@@ -88,6 +88,14 @@ class GUIWindow_House : public GUIWindow {
         return static_cast<HOUSE_ID>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
     }
 
+    DIALOGUE_TYPE getCurrentDialogue() const {
+        return currentDialogue;
+    }
+
+    void setDialogueType(DIALOGUE_TYPE dialogue) {
+        currentDialogue = dialogue;
+    }
+
     void houseDialogManager();
     void houseNPCDialogue();
     void initializeProprietorDialogue();
@@ -101,16 +109,16 @@ class GUIWindow_House : public GUIWindow {
                      int topOptionShift = 0, bool denseSpacing = false);
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
-    // TODO(Nik-RE-dev): add DIALOGUE_TYPE argument?
     virtual void houseSpecificDialogue();
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
-    virtual DIALOGUE_TYPE getOptionOnEscape();
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions();
+    virtual void updateDialogueOnEscape();
     virtual void houseScreenClick();
     virtual void playHouseGoodbyeSpeech();
 
  protected:
     void learnSkillsDialogue();
 
+    DIALOGUE_TYPE currentDialogue = DIALOGUE_NULL;
     int _savedButtonsNum{};
     bool _transactionPerformed = false;
 };
@@ -124,9 +132,6 @@ struct HouseAnimDescr {
     uint8_t uRoomSoundId;
     uint16_t padding_e;
 };
-
-extern BuildingType in_current_building_type;  // 00F8B198
-extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
 extern class GraphicsImage *_591428_endcap;
 

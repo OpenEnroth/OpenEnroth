@@ -688,13 +688,11 @@ std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, 
     } else if (eventId >= 400 && eventId <= 410) {
         guildMembershipNPCTopicId = topic;
         uDialogueType = DIALOGUE_MAGIC_GUILD_OFFER;
-        dialog_menu_id = DIALOGUE_OTHER;
         current_npc_text = pNPCTopics[eventId - 301].pText;
         topicEventId = eventId;
         return {DIALOGUE_MAGIC_GUILD_JOIN};
     } else if (eventId >= 200 && eventId <= 310) {
         uDialogueType = DIALOGUE_MASTERY_TEACHER_OFFER;
-        dialog_menu_id = DIALOGUE_OTHER;
         current_npc_text = pNPCTopics[eventId + 168].pText;
         topicEventId = eventId;
         return {DIALOGUE_MASTERY_TEACHER_LEARN};
