@@ -22,6 +22,8 @@
 
 CollisionState collision_state;
 
+constexpr float COLLISIONS_EPS = 0.01f;
+
 //
 // Helper functions.
 //
@@ -51,7 +53,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
 
     // This is checked by the caller, we should be moving into the face or sideways, so projection of dir onto the
     // face normal should either be negative or close to zero.
-    assert(dir_normal_projection < 0.01f);
+    assert(dir_normal_projection < COLLISIONS_EPS);
 
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     assert(center_face_distance > 0); // Checked by the caller, we should be in front of the face, not behind it.
@@ -65,7 +67,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
         projected_pos += center_face_distance * -face->facePlane.normal;
     } else {
         // Moving sideways & not already colliding? No collision.
-        if (std::abs(dir_normal_projection) < 0.01f)
+        if (fuzzyIsNull(dir_normal_projection, COLLISIONS_EPS))
             return false;
 
         // Otherwise can move along the dir vector until the sphere touches the face.
@@ -75,7 +77,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
-    assert(std::abs(face->facePlane.signedDistanceTo(projected_pos)) < 0.01f); // TODO(captainurist): move into face->Contains.
+    assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
     if (!face->Contains(projected_pos.toInt(), model_idx))
         return false; // We've just managed to slide past the face, no collision happened.
