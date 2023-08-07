@@ -115,7 +115,7 @@ var searchData=
   ['integer_5fsqrt_112',['integer_sqrt',['../OurMath_8cpp.html#aac6e421d654d85d401b67bcb0da79680',1,'integer_sqrt(int val):&#160;OurMath.cpp'],['../OurMath_8h.html#aac6e421d654d85d401b67bcb0da79680',1,'integer_sqrt(int val):&#160;OurMath.cpp']]],
   ['interactwithactor_113',['InteractWithActor',['../Viewport_8cpp.html#ad8c9383af884c44f2f354f58f3555929',1,'Viewport.cpp']]],
   ['internalload_114',['InternalLoad',['../classPCX__Loader.html#ab929e00968ef138e2fe0b8a963d48b77',1,'PCX_Loader']]],
-  ['intersect_5fray_5fface_115',['Intersect_Ray_Face',['../classVis.html#a9212cd714900aed025ab5cb160353896',1,'Vis']]],
+  ['intersect_5fray_5fface_115',['Intersect_Ray_Face',['../classVis.html#a478f31c9f59bf1c10d3fd0d4d25531eb',1,'Vis']]],
   ['intersects_116',['intersects',['../structBBox.html#af68d3a984897712087f732183c1f5c80',1,'BBox']]],
   ['intersectscube_117',['intersectsCube',['../structBBox.html#a3dbbbfc1b1ca102d3c7d7e3d279004ea',1,'BBox']]],
   ['intersectscuboid_118',['intersectsCuboid',['../structBBox.html#a7668d173d66fea989f6879566bfe61b3',1,'BBox']]],
