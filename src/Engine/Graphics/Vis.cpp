@@ -497,9 +497,9 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDep
         return false;
 
     // c2 = n*u
-    float c2 = pFace->facePlane.normal.x * step.y  // get length of the line(Это дает нам длину линии)
-             + pFace->facePlane.normal.y * step.x +
-               pFace->facePlane.normal.z * step.z; // TODO(captainurist): x/y messed up here
+    float c2 = pFace->facePlane.normal.x * step.x  // get length of the line(Это дает нам длину линии)
+             + pFace->facePlane.normal.y * step.y +
+               pFace->facePlane.normal.z * step.z;
     if (fuzzyIsNull(c2))
         return false; // Ray is parallel to face plane.
 
@@ -510,9 +510,9 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDep
         return false;
 
     // p(t) = p0 + tu;
-    Intersection->vWorldPosition.x = origin.x + t * step.y;  // add the interest to the start line(прибавляем процент
+    Intersection->vWorldPosition.x = origin.x + t * step.x;  // add the interest to the start line(прибавляем процент
                                                                 // линии к линии старта)
-    Intersection->vWorldPosition.y = origin.y + t * step.x;
+    Intersection->vWorldPosition.y = origin.y + t * step.y;
     Intersection->vWorldPosition.z = origin.z + t * step.z;
 
     if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID)) return false;
@@ -615,18 +615,12 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    int v3 = pCamera3D->ViewPlaneDistPixels;
-
-    return TrigLUT.atan2(x - pViewport->uScreenCenterX, v3) -
-           TrigLUT.uIntegerHalfPi;
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterX - x);
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    int v3 = pCamera3D->ViewPlaneDistPixels;
-
-    return TrigLUT.atan2(y - pViewport->uScreenCenterY, v3) -
-           TrigLUT.uIntegerHalfPi;
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterY - y);
 }
 
 //----- (004C248E) --------------------------------------------------------
@@ -637,7 +631,7 @@ void Vis::CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *ori
 
     int yawAngle = (pCamera3D->_viewYaw + UnprojectX(fMouseX)) & TrigLUT.uDoublePiMask;
     int pitchAngle = (-pCamera3D->_viewPitch + UnprojectY(fMouseY)) & TrigLUT.uDoublePiMask;
-    *step = Vec3f::fromPolarRetarded(fPickDepth, yawAngle, pitchAngle);
+    *step = Vec3f::fromPolar(fPickDepth, yawAngle, pitchAngle);
 }
 
 //----- (004C2551) --------------------------------------------------------
