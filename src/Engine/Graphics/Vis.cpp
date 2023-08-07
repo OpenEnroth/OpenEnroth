@@ -497,25 +497,20 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step, float *pDep
         return false;
 
     // c2 = n*u
-    float c2 = pFace->facePlane.normal.x * step.x  // get length of the line(Это дает нам длину линии)
-             + pFace->facePlane.normal.y * step.y +
-               pFace->facePlane.normal.z * step.z;
+    float c2 = dot(pFace->facePlane.normal, step);
     if (fuzzyIsNull(c2))
         return false; // Ray is parallel to face plane.
 
     // t = -d-(n*p0)/n*u
-    float t = c1 / c2;  // How far is crossing the line in percent for 0 to
-                        // 1(Как далеко пересечение линии в процентах от 0 до 1 )
+    float t = c1 / c2;  // How far is crossing the line in percent for 0 to 1
     if (t < 0 || t > 1)
         return false;
 
     // p(t) = p0 + tu;
-    Intersection->vWorldPosition.x = origin.x + t * step.x;  // add the interest to the start line(прибавляем процент
-                                                                // линии к линии старта)
-    Intersection->vWorldPosition.y = origin.y + t * step.y;
-    Intersection->vWorldPosition.z = origin.z + t * step.z;
+    Intersection->vWorldPosition = origin + t * step;
 
-    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID)) return false;
+    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toShort(), pBModelID))
+        return false;
 
     *pDepth = t;  // TODO(captainurist): unused, drop.
     return true;
