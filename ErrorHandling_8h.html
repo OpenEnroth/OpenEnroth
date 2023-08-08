@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a64dcf8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5fc2d5f</span>
    </div>
   </td>
  </tr>
@@ -88,8 +88,6 @@ $(function() {
 Macros</h2></td></tr>
 <tr class="memitem:a3820662fa23f7fb1a776c4398eb83c50"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a3820662fa23f7fb1a776c4398eb83c50">Error</a>(...)</td></tr>
 <tr class="separator:a3820662fa23f7fb1a776c4398eb83c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95eb55fc233c36dca688edf7ff1389d6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a95eb55fc233c36dca688edf7ff1389d6">Assert</a>(condition, ...)</td></tr>
-<tr class="separator:a95eb55fc233c36dca688edf7ff1389d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7568b9b6b3294517484d8bac01486310"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a7568b9b6b3294517484d8bac01486310">__debugbreak</a>(...)&#160;&#160;&#160;assert(false);</td></tr>
 <tr class="separator:a7568b9b6b3294517484d8bac01486310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -102,8 +100,6 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ac584b677825b57aafc7073cda5bbe339"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#ac584b677825b57aafc7073cda5bbe339">Error_impl_</a> (const char *filename, const char *functionname, int line, const char *format,...)</td></tr>
 <tr class="separator:ac584b677825b57aafc7073cda5bbe339"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab11b8e4202a40b621b09d6b9510892fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#ab11b8e4202a40b621b09d6b9510892fa">Assert_impl_</a> (const char *filename, const char *functionname, int line, const char *condition_string, const char *format=nullptr,...)</td></tr>
-<tr class="separator:ab11b8e4202a40b621b09d6b9510892fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36bdf05e110f037c91d959bbc9de6107"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ErrorHandling_8h.html#a36bdf05e110f037c91d959bbc9de6107">setErrorHandler</a> (<a class="el" href="ErrorHandling_8h.html#a10c8cb7454f6f59efb4f3c564ed5e4ee">ErrorHandlerFunction</a> handler)</td></tr>
 <tr class="separator:a36bdf05e110f037c91d959bbc9de6107"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -124,38 +120,6 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a95eb55fc233c36dca688edf7ff1389d6" name="a95eb55fc233c36dca688edf7ff1389d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95eb55fc233c36dca688edf7ff1389d6">&#9670;&#160;</a></span>Assert</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define Assert</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">condition, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                                                                \</div>
-<div class="line">        if (!(condition))                                                                                               \</div>
-<div class="line">            Assert_impl_(__FILE__, __FUNCTION__, __LINE__, #condition __VA_OPT__(,) __VA_ARGS__); <span class="comment">/* NOLINT */</span>          \</div>
-<div class="line">    } <span class="keywordflow">while</span> (0)</div>
-</div><!-- fragment -->
 </div>
 </div>
 <a id="a3820662fa23f7fb1a776c4398eb83c50" name="a3820662fa23f7fb1a776c4398eb83c50"></a>
@@ -195,58 +159,6 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab11b8e4202a40b621b09d6b9510892fa" name="ab11b8e4202a40b621b09d6b9510892fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab11b8e4202a40b621b09d6b9510892fa">&#9670;&#160;</a></span>Assert_impl_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Assert_impl_ </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>functionname</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>line</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>condition_string</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>format</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ac584b677825b57aafc7073cda5bbe339" name="ac584b677825b57aafc7073cda5bbe339"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac584b677825b57aafc7073cda5bbe339">&#9670;&#160;</a></span>Error_impl_()</h2>
 
