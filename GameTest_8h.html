@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e855cb</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;beaf304</span>
    </div>
   </td>
  </tr>
@@ -94,10 +94,10 @@ Classes</h2></td></tr>
 Macros</h2></td></tr>
 <tr class="memitem:a25b775f4858a78bb7b135d38e47fb6db"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameTest_8h.html#a25b775f4858a78bb7b135d38e47fb6db">GAME_TEST</a>(SuiteName,  TestName)&#160;&#160;&#160;    <a class="el" href="GameTest_8h.html#a531e57633382ad92982de61eaa5d380a">GAME_TEST_I</a>(SuiteName, TestName, GTEST_TEST_CLASS_NAME_(SuiteName, TestName))</td></tr>
 <tr class="separator:a25b775f4858a78bb7b135d38e47fb6db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a531e57633382ad92982de61eaa5d380a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameTest_8h.html#a531e57633382ad92982de61eaa5d380a">GAME_TEST_I</a>(SuiteName,  TestName,  TestClassName)&#160;&#160;&#160;    <a class="el" href="GameTest_8h.html#ae7b608d7df1768297d2aef63de0000a4">GAME_TEST_II</a>(SuiteName, TestName, TestClassName, <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(TestClassName, _Wrapper), <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(Invoke_, TestClassName))</td></tr>
+<tr class="memitem:a531e57633382ad92982de61eaa5d380a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameTest_8h.html#a531e57633382ad92982de61eaa5d380a">GAME_TEST_I</a>(SuiteName,  TestName,  TestClassName)&#160;&#160;&#160;    <a class="el" href="GameTest_8h.html#a5bbbbfc49ae0f95f0707fdd808f910a0">GAME_TEST_II</a>(SuiteName, TestName, TestClassName, <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(Run_, TestClassName))</td></tr>
 <tr class="separator:a531e57633382ad92982de61eaa5d380a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7b608d7df1768297d2aef63de0000a4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameTest_8h.html#ae7b608d7df1768297d2aef63de0000a4">GAME_TEST_II</a>(SuiteName,  TestName,  TestClassName,  TestWrapperName,  TestInvokerName)</td></tr>
-<tr class="separator:ae7b608d7df1768297d2aef63de0000a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bbbbfc49ae0f95f0707fdd808f910a0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameTest_8h.html#a5bbbbfc49ae0f95f0707fdd808f910a0">GAME_TEST_II</a>(SuiteName,  TestName,  TestClassName,  TestFunctionName)</td></tr>
+<tr class="separator:a5bbbbfc49ae0f95f0707fdd808f910a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a25b775f4858a78bb7b135d38e47fb6db" name="a25b775f4858a78bb7b135d38e47fb6db"></a>
@@ -155,15 +155,15 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;    <a class="el" href="GameTest_8h.html#ae7b608d7df1768297d2aef63de0000a4">GAME_TEST_II</a>(SuiteName, TestName, TestClassName, <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(TestClassName, _Wrapper), <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(Invoke_, TestClassName))</td>
+          <td></td><td>&#160;&#160;&#160;    <a class="el" href="GameTest_8h.html#a5bbbbfc49ae0f95f0707fdd808f910a0">GAME_TEST_II</a>(SuiteName, TestName, TestClassName, <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(Run_, TestClassName))</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ae7b608d7df1768297d2aef63de0000a4" name="ae7b608d7df1768297d2aef63de0000a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7b608d7df1768297d2aef63de0000a4">&#9670;&#160;</a></span>GAME_TEST_II</h2>
+<a id="a5bbbbfc49ae0f95f0707fdd808f910a0" name="a5bbbbfc49ae0f95f0707fdd808f910a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bbbbfc49ae0f95f0707fdd808f910a0">&#9670;&#160;</a></span>GAME_TEST_II</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,13 +190,7 @@ Macros</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">TestWrapperName, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">TestInvokerName&#160;</td>
+          <td class="paramname">TestFunctionName&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -205,23 +199,16 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> TestInvokerName(<a class="code hl_class" href="classGameTest.html">GameTest</a> *);                                                                                   \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> TestFunctionName(<a class="code hl_class" href="classEngineController.html">EngineController</a> &amp;game, <a class="code hl_class" href="classTestController.html">TestController</a> &amp;test);                                                \</div>
 <div class="line">                                                                                                                        \</div>
 <div class="line">    GTEST_TEST_(SuiteName, TestName, <a class="code hl_class" href="classGameTest.html">GameTest</a>, testing::internal::GetTypeId&lt;GameTest&gt;()) {                              \</div>
-<div class="line">        runTestBody(&amp;TestInvokerName);                                                                                  \</div>
+<div class="line">        runTestBody(&amp;TestFunctionName);                                                                                 \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keyword">class </span>TestWrapperName : <span class="keyword">public</span> TestClassName {                                                                      \</div>
-<div class="line">     <span class="keyword">public</span>:                                                                                                            \</div>
-<div class="line">        <span class="keywordtype">void</span> ActualTestBody();                                                                                          \</div>
-<div class="line">    };                                                                                                                  \</div>
-<div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">void</span> TestInvokerName(<a class="code hl_class" href="classGameTest.html">GameTest</a> *test) {                                                                              \</div>
-<div class="line">        static_cast&lt;TestWrapperName *&gt;(test)-&gt;ActualTestBody();                                                         \</div>
-<div class="line">    }                                                                                                                   \</div>
-<div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">void</span> TestWrapperName::ActualTestBody() <span class="comment">/* Body follows. */</span></div>
+<div class="line">    <span class="keywordtype">void</span> TestFunctionName(<a class="code hl_class" href="classEngineController.html">EngineController</a> &amp;game, <a class="code hl_class" href="classTestController.html">TestController</a> &amp;test) <span class="comment">/* Body follows. */</span></div>
+<div class="ttc" id="aclassEngineController_html"><div class="ttname"><a href="classEngineController.html">EngineController</a></div><div class="ttdef"><b>Definition:</b> EngineController.h:22</div></div>
 <div class="ttc" id="aclassGameTest_html"><div class="ttname"><a href="classGameTest.html">GameTest</a></div><div class="ttdef"><b>Definition:</b> GameTest.h:11</div></div>
+<div class="ttc" id="aclassTestController_html"><div class="ttname"><a href="classTestController.html">TestController</a></div><div class="ttdef"><b>Definition:</b> TestController.h:18</div></div>
 </div><!-- fragment -->
 </div>
 </div>
