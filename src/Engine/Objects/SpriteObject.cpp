@@ -97,11 +97,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // set blank velocity
     vVelocity = Vec3s(0, 0, 0);
 
-    // calcualte angle velocity - could use rotate func here as above
+    // calcualte angle velocity
     if (speed) {
-        vVelocity.x = TrigLUT.cos(yaw) * TrigLUT.cos(pitch) * speed;
-        vVelocity.y = TrigLUT.sin(yaw) * TrigLUT.cos(pitch) * speed;
-        vVelocity.z = TrigLUT.sin(pitch) * speed;
+        vVelocity = Vec3s::fromPolar(speed, yaw, pitch);
     }
 
     // copy sprite object into slot
