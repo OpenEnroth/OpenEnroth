@@ -270,15 +270,20 @@ void Engine::DrawGUI() {
         render->drawcalls = 0;
 
 
-        int debug_info_offset = 0;
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White,
+        int debug_info_offset = 16;
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party position:         {} {} {}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
+        debug_info_offset += 16;
+
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+                                 fmt::format("Party yaw/pitch:     {} {}", pParty->_viewYaw, pParty->_viewPitch));
+        debug_info_offset += 16;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            debug_info_offset += 16;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White,
-                                     fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()));
+            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset }, colorTable.White,
+                                     fmt::format("Party Sector ID:       {}/{}\n", sector_id, pIndoor->pSectors.size()));
+            debug_info_offset += 16;
         }
 
         std::string floor_level_str;
@@ -303,7 +308,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White, floor_level_str);
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White, floor_level_str);
     }
 }
 
