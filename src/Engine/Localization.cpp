@@ -289,7 +289,7 @@ void Localization::InitializeSkillNames() {
 
         if (test_string != NULL && strlen(test_string) > 0) {
             auto tokens = tokenize(test_string, '\t');
-            Assert(tokens.size() >= 6, "Invalid number of tokens");
+            assert(tokens.size() >= 6 && "Invalid number of tokens");
 
             this->skill_descriptions[i] = removeQuotes(tokens[1]);
             this->skill_descriptions_normal[i] = removeQuotes(tokens[2]);
@@ -351,7 +351,7 @@ void Localization::InitializeClassNames() {
     for (int i = 0; i < 36; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(test_string, '\t');
-        Assert(tokens.size() == 3, "Invalid number of tokens");
+        assert(tokens.size() == 3 && "Invalid number of tokens");
         class_desciptions[i] = removeQuotes(tokens[1]);
     }
 }
@@ -429,7 +429,7 @@ void Localization::InitializeAttributeNames() {
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(test_string, '\t');
-        Assert(tokens.size() == 2, "Invalid number of tokens");
+        assert(tokens.size() == 2 && "Invalid number of tokens");
         switch (i) {
             case 0:
             case 1:

@@ -4418,7 +4418,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
 void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5) {
     // a3 for abc modify
     // a4 count
-    Assert(spawn->uKind == OBJECT_Actor);
+    assert(spawn->uKind == OBJECT_Actor);
 
     char v8;               // zf@5
     int v12;               // edx@9

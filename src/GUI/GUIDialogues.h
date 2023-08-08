@@ -121,6 +121,6 @@ inline bool IsSkillLearningDialogue(DIALOGUE_TYPE type) {
 }
 
 inline CharacterSkillType GetLearningDialogueSkill(DIALOGUE_TYPE type) {
-    Assert(IsSkillLearningDialogue(type));
+    assert(IsSkillLearningDialogue(type));
     return static_cast<CharacterSkillType>(type - DIALOGUE_LEARN_STAFF);
 }

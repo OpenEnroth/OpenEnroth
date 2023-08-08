@@ -102,7 +102,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     for (ITEM_TREASURE_LEVEL i : bonusRanges.indices()) {  // counted from 1
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
-        Assert(tokens.size() == 4, "Invalid number of tokens");
+        assert(tokens.size() == 4 && "Invalid number of tokens");
         bonusRanges[i].minR = atoi(tokens[2]);
         bonusRanges[i].maxR = atoi(tokens[3]);
     }
@@ -113,7 +113,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
-        Assert(tokens.size() >= 17, "Invalid number of tokens");
+        assert(tokens.size() >= 17 && "Invalid number of tokens");
         pSpecialEnchantments[i].pBonusStatement = removeQuotes(tokens[0]);
         pSpecialEnchantments[i].pNameAdd = removeQuotes(tokens[1]);
 
@@ -205,7 +205,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     for(size_t line = 0; line < 618; line++) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
-        Assert(tokens.size() > 7, "Invalid number of tokens");
+        assert(tokens.size() > 7 && "Invalid number of tokens");
 
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
@@ -226,7 +226,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     for (int i = 0; i < 3; ++i) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
-        Assert(tokens.size() > 7, "Invalid number of tokens");
+        assert(tokens.size() > 7 && "Invalid number of tokens");
         switch (i) {
             case 0:
                 uBonusChanceStandart[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
@@ -366,7 +366,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
 }
 
 void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
-    Assert(isRandomTreasureLevel(treasure_level));
+    assert(isRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47

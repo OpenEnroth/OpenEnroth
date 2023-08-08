@@ -664,7 +664,7 @@ int sprintfex_internal(char *str) {
     if (!p) return strlen(str);
 
     char buf[8192];
-    Assert(strlen(str) < sizeof(buf));
+    assert(strlen(str) < sizeof(buf));
 
     int next_integer_token = 0;
     bool integer_tokens_defined[10] = {false, false, false, false, false,
@@ -682,7 +682,7 @@ int sprintfex_internal(char *str) {
                 if (src[2] != '[') goto _invalid_token;
                 src += 3;  // ^I[
 
-                Assert(next_integer_token < 10);
+                assert(next_integer_token < 10);
                 if (sscanf(src, "%d", &integer_tokens[next_integer_token]))
                     integer_tokens_defined[next_integer_token++] = true;
 
@@ -705,7 +705,7 @@ int sprintfex_internal(char *str) {
                     goto _invalid_token;
                 }
 
-                Assert(integer_tokens_defined[integer_token_idx]);
+                assert(integer_tokens_defined[integer_token_idx]);
                 src += 3;  // ^L[
 
                 auto ending1 = src;
@@ -736,7 +736,7 @@ int sprintfex_internal(char *str) {
 
             case 'R': {
                 if (src[2] != '[') goto _invalid_token;
-                Assert(gender_token_defined);
+                assert(gender_token_defined);
 
                 src += 3;  // ^R[
 

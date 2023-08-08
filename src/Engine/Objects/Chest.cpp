@@ -198,7 +198,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
             int imgheight = img->GetHeight();
             auto pixels = (int32_t*)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-            Assert(pixels != nullptr, "Cannot get pixels");
+            assert(pixels != nullptr, "Cannot get pixels");
 
             if (imgwidth < 14)
                     imgwidth = 14;
@@ -251,7 +251,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChest
     unsigned int slot_width = GetSizeInInventorySlots(img->width());
     unsigned int slot_height = GetSizeInInventorySlots(img->height());
 
-    Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
+    assert(slot_height > 0 && slot_width > 0 && "Items should have nonzero dimensions");
     if ((slot_width + test_cell_position % chest_cell_width <= chest_cell_width) &&
         (slot_height + test_cell_position / chest_cell_width <= chest_cell_heght)) {
         for (unsigned int x = 0; x < slot_width; x++) {
@@ -324,7 +324,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
     unsigned int slot_width = GetSizeInInventorySlots(texture->width());
     unsigned int slot_height = GetSizeInInventorySlots(texture->height());
 
-    Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
+    assert(slot_height > 0 && slot_width > 0 && "Items should have nonzero dimensions");
 
     // set inventory indices - memset was eratic??
     for (unsigned int x = 0; x < slot_width; x++) {

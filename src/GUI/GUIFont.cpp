@@ -556,7 +556,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, con
     assert(color.a > 0);
 
     char buf[4096];
-    Assert(text.length() < sizeof(buf));
+    assert(text.length() < sizeof(buf));
     strcpy(buf, text.c_str());
 
     size_t pNumLen = strlen(buf);
@@ -722,7 +722,7 @@ std::string GUIFont::FitTwoFontStringINWindow(const std::string &pString, GUIFon
     }
     GUIFont *currentFont = this;
     size_t uInStrLen = pString.length();
-    Assert(uInStrLen < sizeof(pTmpBuf3));
+    assert(uInStrLen < sizeof(pTmpBuf3));
     strcpy(pTmpBuf3.data(), pString.c_str());
     if (uInStrLen == 0) {
         return pTmpBuf3.data();

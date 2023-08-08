@@ -565,8 +565,7 @@ bool Character::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
     unsigned int slotWidth = GetSizeInInventorySlots(img->width());
     unsigned int slotHeight = GetSizeInInventorySlots(img->height());
 
-    Assert(slotHeight > 0 && slotWidth > 0,
-           "Items should have nonzero dimensions");
+    assert(slotHeight > 0 && slotWidth > 0 && "Items should have nonzero dimensions");
     if ((slotWidth + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
         (slotHeight + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
         for (unsigned int x = 0; x < slotWidth; x++) {
@@ -2015,7 +2014,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     }
 
     bool shooting_laser = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
-    Assert(shooting_laser ? !bRangedAttack : true); // For blasters we expect bRangedAttack == false.
+    assert(!shooting_laser || !bRangedAttack); // For blasters we expect bRangedAttack == false.
 
     uint armsmaster_recovery_reduction = 0;
     if (!bRangedAttack && !shooting_laser) {
@@ -4070,7 +4069,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
     // in some cases this calls only calls v4 >= pValue, which i've
     // changed to return false, since these values are supposed to
     // be positive and v4 was -1 by default
-    Assert(pValue >= 0, "Compare variable shouldn't have negative arguments");
+    assert(pValue >= 0 && "Compare variable shouldn't have negative arguments");
 
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25

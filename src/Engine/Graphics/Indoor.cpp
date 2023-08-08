@@ -530,7 +530,7 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
 }
 
 void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_plane) const {
-    Assert(!override_plane ||
+    assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
     FaceAttributes plane = override_plane;
@@ -2118,7 +2118,7 @@ int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, in
 }
 
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
-    Assert(a2->uKind == OBJECT_Item);
+    assert(a2->uKind == OBJECT_Item);
 
     SpriteObject a1a;
     a1a.containing_item.Reset();

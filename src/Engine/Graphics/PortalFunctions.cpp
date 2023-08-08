@@ -70,7 +70,7 @@ int _49CE9E_sub0_z(RenderVertexSoft *pVertices, unsigned int uNumVertices,
 //----- (0049CE9E) --------------------------------------------------------
 void stru10::_49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
                      unsigned int uNumVertices, RenderVertexSoft *pOutLimits) {
-    Assert(sizeof(RenderVertexSoft) == 0x30);
+    assert(sizeof(RenderVertexSoft) == 0x30);
 
     RenderVertexSoft pLimits[64];
     stru10::CalcPolygonLimits(pFace, pLimits);

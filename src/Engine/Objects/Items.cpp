@@ -267,7 +267,7 @@ static void AddToMap(std::map<Key, std::map<CharacterAttributeType, CEnchantment
                      ActualKey key, CharacterAttributeType subkey, int bonusValue = 0, CharacterSkillType skill = CHARACTER_SKILL_INVALID) {
     auto &submap = map[key];
 
-    Assert(!submap.contains(subkey));
+    assert(!submap.contains(subkey));
 
     submap[subkey] = CEnchantment(bonusValue, skill);
 }
