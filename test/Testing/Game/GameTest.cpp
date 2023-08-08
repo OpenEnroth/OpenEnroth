@@ -51,7 +51,7 @@ void GameTest::runTestBody(TestBodyFunction testBody) {
     };
 
     try {
-        testBody(this);
+        testBody(*game, *test);
     } catch (EngineControlState::TerminationException) {
         failCurrentTest("Game test routine was terminated, all tests cancelled");
         globalTerminating = true;

@@ -16,7 +16,7 @@ class GameTest : public testing::Test {
     virtual void SetUp() override;
     virtual void TearDown() override;
 
-    using TestBodyFunction = void (*)(GameTest *);
+    using TestBodyFunction = void (*)(EngineController &, TestController &);
     void runTestBody(TestBodyFunction testBody);
 
  protected:
@@ -28,22 +28,13 @@ class GameTest : public testing::Test {
     GAME_TEST_I(SuiteName, TestName, GTEST_TEST_CLASS_NAME_(SuiteName, TestName))
 
 #define GAME_TEST_I(SuiteName, TestName, TestClassName)                                                                 \
-    GAME_TEST_II(SuiteName, TestName, TestClassName, MM_PP_CAT(TestClassName, _Wrapper), MM_PP_CAT(Invoke_, TestClassName))
+    GAME_TEST_II(SuiteName, TestName, TestClassName, MM_PP_CAT(Run_, TestClassName))
 
-#define GAME_TEST_II(SuiteName, TestName, TestClassName, TestWrapperName, TestInvokerName)                              \
-    void TestInvokerName(GameTest *);                                                                                   \
+#define GAME_TEST_II(SuiteName, TestName, TestClassName, TestFunctionName)                                              \
+    void TestFunctionName(EngineController &game, TestController &test);                                                \
                                                                                                                         \
     GTEST_TEST_(SuiteName, TestName, GameTest, testing::internal::GetTypeId<GameTest>()) {                              \
-        runTestBody(&TestInvokerName);                                                                                  \
+        runTestBody(&TestFunctionName);                                                                                 \
     }                                                                                                                   \
                                                                                                                         \
-    class TestWrapperName : public TestClassName {                                                                      \
-     public:                                                                                                            \
-        void ActualTestBody();                                                                                          \
-    };                                                                                                                  \
-                                                                                                                        \
-    void TestInvokerName(GameTest *test) {                                                                              \
-        static_cast<TestWrapperName *>(test)->ActualTestBody();                                                         \
-    }                                                                                                                   \
-                                                                                                                        \
-    void TestWrapperName::ActualTestBody() /* Body follows. */
+    void TestFunctionName(EngineController &game, TestController &test) /* Body follows. */
