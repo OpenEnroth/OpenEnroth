@@ -1977,10 +1977,10 @@ void ODM_ProcessPartyActions() {
             engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] &= 0xFE;
         pParty->uFallStartZ = partyNewZ;
     } else if (partyNewZ < currentGroundLevel) {
-        if (partyIsOnWater && partyInputZSpeed)
-            SpriteObject::createSplashObject({partyNewX, partyNewY, currentGroundLevel});
-        partyInputZSpeed = 0;
         partyNewZ = currentGroundLevel;
+        if (partyIsOnWater && partyInputZSpeed)
+            SpriteObject::createSplashObject({partyNewX, partyNewY, partyNewZ});
+        partyInputZSpeed = 0;
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewZ;
         if (pParty->FlyActive())
