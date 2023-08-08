@@ -401,9 +401,9 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 
     dst->field_0 = 25; // Vanilla set this to 25, so we're doing the same just in case.
     dst->partyHeight = src.height;
-    dst->defaultPartyHeight = src.defaultHeight;
+    dst->defaultPartyHeight = src.height;
     dst->eyeLevel = src.eyeLevel;
-    dst->defaultEyeLevel = src.defaultEyeLevel;
+    dst->defaultEyeLevel = src.eyeLevel;
     dst->radius = src.radius;
     dst->yawGranularity = src._yawGranularity;
     dst->walkSpeed = src.walkSpeed;
@@ -508,9 +508,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 
 void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->height = src.partyHeight;
-    dst->defaultHeight = src.defaultPartyHeight;
     dst->eyeLevel = src.eyeLevel;
-    dst->defaultEyeLevel = src.defaultEyeLevel;
     dst->radius = src.radius;
     dst->_yawGranularity = src.yawGranularity;
     dst->walkSpeed = src.walkSpeed;

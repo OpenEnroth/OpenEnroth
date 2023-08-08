@@ -424,9 +424,9 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(PartyTimeStruct_MM7)
 struct Party_MM7 {
     /* 00000 */ int32_t field_0; // Was set to 25 in Party::Reset & Party::Zero, not used for anything.
     /* 00004 */ uint32_t partyHeight;
-    /* 00008 */ uint32_t defaultPartyHeight;
+    /* 00008 */ uint32_t defaultPartyHeight; // Unused in OE.
     /* 0000C */ int32_t eyeLevel;
-    /* 00010 */ uint32_t defaultEyeLevel;
+    /* 00010 */ uint32_t defaultEyeLevel; // Unused in OE.
     /* 00014 */ int32_t radius;
     /* 00018 */ int32_t yawGranularity;
     /* 0001C */ uint32_t walkSpeed;

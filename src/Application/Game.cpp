@@ -455,9 +455,10 @@ void Game::processQueuedMessages() {
     int currHour;
     bool playButtonSoundOnEscape = true;
 
+    // TODO(captainurist): can drop this if?
     if (!pEventTimer->bPaused) {
-        pParty->eyeLevel = pParty->defaultEyeLevel;
-        pParty->height = pParty->defaultHeight;
+        pParty->eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
+        pParty->height = engine->config->gameplay.PartyHeight.value();
     }
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);

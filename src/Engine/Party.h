@@ -267,9 +267,7 @@ struct Party {
     }
 
     int height; // Party height, 192 by default.
-    int defaultHeight; // TODO(captainurist): drop, party height is never changed.
     int eyeLevel; // Party eye level, 160 by default.
-    int defaultEyeLevel; // TODO(captainurist): drop, party eye level is never changed.
     int radius; // Party radius, 37 by default.
     int _yawGranularity;
     int walkSpeed; // Party walk speed, units per real time second.
