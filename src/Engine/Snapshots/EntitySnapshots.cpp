@@ -585,7 +585,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
             dst->alignment = PartyAlignment::PartyAlignment_Evil;
             break;
         default:
-            Assert(false);
+            assert(false);
     }
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
@@ -759,7 +759,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
         dst->uSex = SEX_FEMALE;
         break;
     default:
-        Assert(false);
+        assert(false);
     }
 
     switch (src.classType) {
@@ -872,7 +872,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
         dst->classType = CHARACTER_CLASS_LICH;
         break;
     default:
-        Assert(false);
+        assert(false);
     }
 
     dst->uCurrentFace = src.currentFace;
@@ -1442,7 +1442,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
         dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
         dst->uMonsterIndex = src.uIndex;
     } else {
-        Assert(dst->uKind == OBJECT_Item);
+        assert(dst->uKind == OBJECT_Item);
         dst->uItemIndex = static_cast<ITEM_TREASURE_LEVEL>(src.uIndex);
         dst->uMonsterIndex = 0;
     }

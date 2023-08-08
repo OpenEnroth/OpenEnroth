@@ -193,9 +193,7 @@ float OpenALSoundProvider::alBufferLength(unsigned int buffer) {
 OpenALSoundProvider::StreamingTrackBuffer *
 OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
                                             int bytes_per_sample) {
-    Assert(bytes_per_sample == 2,
-           "OpenALSoundProvider: unsupported sample size: %u",
-           bytes_per_sample);
+    assert(bytes_per_sample == 2 && "OpenALSoundProvider: unsupported sample size");
 
     ALenum sound_format;
     switch (num_channels) {

@@ -733,7 +733,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                         }
                         break;
                     default:
-                        Assert(false && "Unreachable");
+                        assert(false && "Unreachable");
                 }
                 // if (!pQueue[queue_index].AI_action_type)
                 if ((double)v9 < 307.2) {

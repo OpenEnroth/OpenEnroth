@@ -118,7 +118,7 @@ void GUIWindow_Transport::mainDialogue() {
         bool routeActive = false;
 
         if (schedule_id != 255 && (lastsched != schedule_id)) {
-            Assert(schedule_id < transportSchedule.size());
+            assert(schedule_id < transportSchedule.size());
             routeActive = transportSchedule[schedule_id].pSchedule[pParty->uCurrentDayOfMonth % 7];
         }
 

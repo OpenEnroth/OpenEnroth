@@ -291,10 +291,10 @@ void FlatHirelings::Prepare() {
     for (size_t i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
         if (npc->Hired()) {
-            Assert(!npc->pName.empty()); // Important for the checks below.
+            assert(!npc->pName.empty()); // Important for the checks below.
 
             if (npc->pName != pParty->pHirelings[0].pName && npc->pName != pParty->pHirelings[1].pName) {
-                Assert(i + 2 < 256); // Won't fit into uint8_t otherwise.
+                assert(i + 2 < 256); // Won't fit into uint8_t otherwise.
                 ids[count++] = i + 2;
             }
         }
@@ -302,13 +302,13 @@ void FlatHirelings::Prepare() {
 }
 
 bool FlatHirelings::IsFollower(size_t index) const {
-    Assert(index < count);
+    assert(index < count);
 
     return ids[index] >= 2;
 }
 
 NPCData *FlatHirelings::Get(size_t index) const {
-    Assert(index < count);
+    assert(index < count);
 
     uint8_t id = ids[index];
 

@@ -137,7 +137,7 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
 }
 
 bool LOD::WriteableFile::AppendDirectory(const std::string &file_name, const void *pData, size_t data_size) {
-    Assert(uNumSubDirs < 299);
+    assert(uNumSubDirs < 299);
 
     LOD::Directory dir;
     strcpy(dir.pFilename, file_name.c_str());
@@ -340,7 +340,7 @@ bool LOD::WriteableFile::LoadFile(const std::string &filePath, bool bWriting) {
     pContainerName = "chapter";
     uLODDataSize = lod_indx.uDataSize;
     uNumSubDirs = lod_indx.uNumSubIndices;
-    Assert(uNumSubDirs <= 300);
+    assert(uNumSubDirs <= 300);
 
     uOffsetToSubIndex = lod_indx.uOfsetFromSubindicesStart;
     fseek(pFile, uOffsetToSubIndex, SEEK_SET);
