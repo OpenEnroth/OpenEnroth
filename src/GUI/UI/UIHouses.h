@@ -92,7 +92,7 @@ class GUIWindow_House : public GUIWindow {
         return _currentDialogue;
     }
 
-    void setDialogueType(DIALOGUE_TYPE dialogue) {
+    void setCurrentDialogue(DIALOGUE_TYPE dialogue) {
         _currentDialogue = dialogue;
     }
 

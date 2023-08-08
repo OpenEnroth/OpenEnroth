@@ -15,6 +15,10 @@ class GUIWindow_Dialogue : public GUIWindow {
         _displayedDialogue = type;
     }
 
+    DIALOGUE_TYPE getDisplayedDialogueType() {
+        return _displayedDialogue;
+    }
+
     virtual void Update() override;
     virtual void Release() override;
 

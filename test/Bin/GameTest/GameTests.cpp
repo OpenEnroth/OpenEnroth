@@ -4,6 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIProgressBar.h"
 
@@ -43,6 +44,16 @@ static int totalPartyItems() {
             result += item.uItemID != ITEM_NULL;
     result += pParty->pPickedItem.uItemID != ITEM_NULL;
     return result;
+}
+
+static DIALOGUE_TYPE currentDialogueType() {
+    if (GUIWindow_Dialogue *dlg = dynamic_cast<GUIWindow_Dialogue*>(pDialogueWindow)) {
+        return dlg->getDisplayedDialogueType();
+    } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(pDialogueWindow)) {
+        return dlg->getCurrentDialogue();
+    } else {
+        return DIALOGUE_NULL;
+    }
 }
 
 static std::initializer_list<CharacterBuffs> allPotionBuffs() {
@@ -116,9 +127,9 @@ static auto makeStatusBarTape(TestController &test) {
     return test.tape([] { return engine->_statusBar->get(); });
 }
 
-//static auto makeDialogueTypeTape(TestController &test) {
-//    return test.tape([] { return uDialogueType; });
-//}
+static auto makeDialogueTypeTape(TestController &test) {
+    return test.tape(&currentDialogueType);
+}
 
 static auto makeCharacterExperienceTape(TestController &test, int character) {
     return test.tape([character] { return pParty->pCharacters[character].experience; });
@@ -1651,9 +1662,11 @@ GAME_TEST(Issues, Issue1093) {
 GAME_TEST(Issues, Issue1115) {
     // Entering Arena on level 21 should not crash the game
     auto mapTape = makeMapTape(test);
+    auto dialogueTape = makeDialogueTypeTape(test);
     auto levelTape = makeCharacterLevelTape(test);
     test.playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
     EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
+    EXPECT_TRUE(dialogueTape.contains(DIALOGUE_ARENA_SELECT_CHAMPION));
     EXPECT_EQ(levelTape, tape({21, 21, 21, 21}));
 }
 

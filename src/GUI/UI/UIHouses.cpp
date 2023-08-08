@@ -471,7 +471,7 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
         UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
-    window_SpeakInHouse->setDialogueType(DIALOGUE_OTHER);
+    window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
 
 void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
@@ -481,7 +481,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
         DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
 
         if (newTopic != DIALOGUE_MAIN) {
-            window_SpeakInHouse->setDialogueType(DIALOGUE_OTHER);
+            window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
             window_SpeakInHouse->reinitDialogueWindow();
             window_SpeakInHouse->initializeNPCDialogueButtons(listNPCDialogueOptions(newTopic));
         }
@@ -522,7 +522,6 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
     }
 
     prepareHouse(window_SpeakInHouse->houseId());
-    //window_SpeakInHouse->setDialogueType(DIALOGUE_MAIN);
     BackToHouseMenu();
 }
 
@@ -546,7 +545,7 @@ void updateHouseNPCTopics(int npc) {
                 houseNpcs[i].button = nullptr;
             }
         }
-        window_SpeakInHouse->setDialogueType(DIALOGUE_MAIN);
+        window_SpeakInHouse->setCurrentDialogue(DIALOGUE_MAIN);
         window_SpeakInHouse->reinitDialogueWindow();
         if (houseNpcs[npc].type == HOUSE_PROPRIETOR) {
             window_SpeakInHouse->initializeProprietorDialogue();
