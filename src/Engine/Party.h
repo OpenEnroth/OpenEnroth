@@ -281,8 +281,8 @@ struct Party {
     Vec3i pos;
     Vec3i speed; // Party speed, negative z => falling, positive z => jumping.
                  // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
-    int _viewYaw;
-    int _viewPitch;
+    int _viewYaw; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
+    int _viewPitch; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.
     Vec3i lastPos; // TODO(captainurist): drop
     int _viewPrevYaw;
     int _viewPrevPitch;

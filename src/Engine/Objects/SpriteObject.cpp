@@ -77,16 +77,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            vPosition += Vec3i::fromPolarRetarded(24, TrigLUT.uIntegerDoublePi - uFacing, 0);
+            vPosition += Vec3i::fromPolar(24, uFacing + TrigLUT.uIntegerHalfPi, 0);
             break;
         case 2:
-            vPosition += Vec3i::fromPolarRetarded(8, TrigLUT.uIntegerDoublePi - uFacing, 0);
+            vPosition += Vec3i::fromPolar(8, uFacing + TrigLUT.uIntegerHalfPi, 0);
             break;
         case 3:
-            vPosition += Vec3i::fromPolarRetarded(8, TrigLUT.uIntegerPi - uFacing, 0);
+            vPosition += Vec3i::fromPolar(8, uFacing - TrigLUT.uIntegerHalfPi, 0);
             break;
         case 4:
-            vPosition += Vec3i::fromPolarRetarded(24, TrigLUT.uIntegerPi - uFacing, 0);
+            vPosition += Vec3i::fromPolar(24, uFacing - TrigLUT.uIntegerHalfPi, 0);
             break;
         default:
             assert(false);
@@ -97,11 +97,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // set blank velocity
     vVelocity = Vec3s(0, 0, 0);
 
-    // calcualte angle velocity - could use rotate func here as above
+    // calcualte angle velocity
     if (speed) {
-        vVelocity.x = TrigLUT.cos(yaw) * TrigLUT.cos(pitch) * speed;
-        vVelocity.y = TrigLUT.sin(yaw) * TrigLUT.cos(pitch) * speed;
-        vVelocity.z = TrigLUT.sin(pitch) * speed;
+        vVelocity = Vec3s::fromPolar(speed, yaw, pitch);
     }
 
     // copy sprite object into slot
