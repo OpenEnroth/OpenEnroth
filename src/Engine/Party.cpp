@@ -79,8 +79,8 @@ int Party::CountHirelings() {  // non hired followers
 // inlined
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
-    height = defaultHeight = engine->config->gameplay.PartyHeight.value();
-    eyeLevel = defaultEyeLevel = engine->config->gameplay.PartyEyeLevel.value();
+    height = engine->config->gameplay.PartyHeight.value();
+    eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
     radius = 37;
     _yawGranularity = 25;
     walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
@@ -727,7 +727,6 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->uFallStartZ = 0;
     this->_viewYaw = 0;
     this->_viewPitch = 0;
-    this->defaultHeight = engine->config->gameplay.PartyHeight.value(); // was 120?
     this->radius = 37;
     this->_yawGranularity = 25;
     this->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();

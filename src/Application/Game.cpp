@@ -455,10 +455,6 @@ void Game::processQueuedMessages() {
     int currHour;
     bool playButtonSoundOnEscape = true;
 
-    if (!pEventTimer->bPaused) {
-        pParty->eyeLevel = pParty->defaultEyeLevel;
-        pParty->height = pParty->defaultHeight;
-    }
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);
         Actor actor = Actor();

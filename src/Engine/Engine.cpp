@@ -795,8 +795,8 @@ void Engine::MM7_Initialize() {
     pParty = new Party();
 
     pParty->pHirelings.fill(NPCData());
-    pParty->defaultEyeLevel = pParty->eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
-    pParty->defaultHeight = pParty->height = engine->config->gameplay.PartyHeight.value();
+    pParty->eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
+    pParty->height = engine->config->gameplay.PartyHeight.value();
     pParty->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
 
     _messageQueue = std::make_unique<GUIMessageQueue>();

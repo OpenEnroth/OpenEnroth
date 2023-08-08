@@ -116,3 +116,5 @@ void CollideWithParty(bool jagged_top);
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying);
 
 void ProcessActorCollisionsODM(Actor &actor, bool isFlying);
+
+void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent);

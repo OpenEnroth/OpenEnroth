@@ -443,7 +443,7 @@ void OutdoorLocation::UpdateFog() {
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos, pParty->defaultHeight, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos, pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
     if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
     }
@@ -1613,15 +1613,7 @@ OutdoorLocation::OutdoorLocation() {
 
     this->sky_texture = nullptr;
 
-    subconstuctor();
     uLastSunlightUpdateMinute = 0;
-}
-
-void OutdoorLocation::subconstuctor() {
-    // OutdoorLocationTerrain::OutdoorLocationTerrain(&this->pTerrain);
-    field_F0 = 0;
-    field_F4 = 0x40000000u;
-    // DLVHeader::DLVHeader(&v1->ddm);
 }
 
 // TODO(pskelton): Magic numbers
@@ -1977,10 +1969,10 @@ void ODM_ProcessPartyActions() {
             engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] &= 0xFE;
         pParty->uFallStartZ = partyNewZ;
     } else if (partyNewZ < currentGroundLevel) {
-        if (partyIsOnWater && partyInputZSpeed)
-            SpriteObject::createSplashObject({partyNewX, partyNewY, currentGroundLevel});
-        partyInputZSpeed = 0;
         partyNewZ = currentGroundLevel;
+        if (partyIsOnWater && partyInputZSpeed)
+            SpriteObject::createSplashObject({partyNewX, partyNewY, partyNewZ});
+        partyInputZSpeed = 0;
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewZ;
         if (pParty->FlyActive())
