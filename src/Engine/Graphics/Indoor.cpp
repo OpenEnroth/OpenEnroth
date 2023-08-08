@@ -1504,7 +1504,7 @@ void BLV_UpdateUserInputAndOther() {
 
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
-    unsigned int faceEvent = 0;
+    int faceEvent = 0;
 
     bool party_running_flag = false;
     bool party_walking_flag = false;
@@ -1715,118 +1715,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     Vec3i oldPos = pParty->pos;
 
-    collision_state.ignored_face_id = -1;
-    collision_state.total_move_distance = 0;
-    collision_state.radius_lo = pParty->radius;
-    collision_state.radius_hi = pParty->radius / 2;
-    collision_state.check_hi = true;
-    for (uint i = 0; i < 100; i++) {
-        collision_state.position_hi = pParty->pos.toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
-        collision_state.position_lo = pParty->pos.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
-        collision_state.velocity = pParty->speed.toFloat();
-
-        collision_state.uSectorID = sectorId;
-        int dt = 0; // zero means use actual dt
-        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
-            dt = 13312; // fixpoint(13312) = 0.203125
-
-        if (collision_state.PrepareAndCheckIfStationary(dt))
-            break;
-
-        for (uint j = 0; j < 100; ++j) {
-            CollideIndoorWithGeometry(true);
-            CollideIndoorWithDecorations();
-            for (int k = 0; k < pActors.size(); ++k)
-                CollideWithActor(k, 0);
-            if (CollideIndoorWithPortals())
-                break; // No portal collisions => can break.
-        }
-
-        Vec3i adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance * collision_state.direction).toInt();
-        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, &faceId);
-        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128)
-            return; // TODO: whaaa?
-
-        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            pParty->pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toIntTrunc();
-            break; // And we're done with collisions.
-        }
-
-        collision_state.total_move_distance += collision_state.adjusted_move_distance;
-
-        pParty->pos.x += collision_state.adjusted_move_distance * collision_state.direction.x;
-        pParty->pos.y += collision_state.adjusted_move_distance * collision_state.direction.y;
-        int new_party_z_tmp = pParty->pos.z +
-            collision_state.adjusted_move_distance * collision_state.direction.z;
-
-        if (collision_state.pid.type() == OBJECT_Actor) {
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
-        }
-
-        if (collision_state.pid.type() == OBJECT_Decoration) {
-            // Bounce back from a decoration & do another round of collision checks.
-            // This way the party can "slide" along & past a decoration.
-            int angle = TrigLUT.atan2(pParty->pos.x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
-                                      pParty->pos.y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
-            int len = integer_sqrt(pParty->speed.xy().lengthSqr());
-            pParty->speed.x = TrigLUT.cos(angle) * len;
-            pParty->speed.y = TrigLUT.sin(angle) * len;
-        }
-
-        if (collision_state.pid.type() == OBJECT_Face) {
-            BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
-            if (pFace->uPolygonType == POLYGON_Floor) {
-                if (pParty->speed.z < 0)
-                    pParty->speed.z = 0;
-                new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
-                if (pParty->uFallStartZ - new_party_z_tmp < 512)
-                    pParty->uFallStartZ = new_party_z_tmp;
-                if (pParty->speed.xy().lengthSqr() < min_party_move_delta_sqr) {
-                    pParty->speed.y = 0;
-                    pParty->speed.x = 0;
-                }
-                if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                    faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-            } else { // Not floor
-                int speed_dot_normal = std::abs(
-                    pParty->speed.x * pFace->facePlane.normal.x +
-                    pParty->speed.y * pFace->facePlane.normal.y +
-                    pParty->speed.z * pFace->facePlane.normal.z);
-
-                if ((collision_state.speed / 8) > speed_dot_normal)
-                    speed_dot_normal = collision_state.speed / 8;
-
-                pParty->speed.x += speed_dot_normal * pFace->facePlane.normal.x;
-                pParty->speed.y += speed_dot_normal * pFace->facePlane.normal.y;
-                pParty->speed.z += speed_dot_normal * pFace->facePlane.normal.z;
-
-                if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall) { // wall / ceiling
-                    int distance_to_face = pFace->facePlane.signedDistanceTo(Vec3f(pParty->pos.x, pParty->pos.y, new_party_z_tmp)) -
-                                           collision_state.radius_lo;
-                    if (distance_to_face < 0) {
-                        // We're too close to the face, push back.
-                        pParty->pos.x += -distance_to_face * pFace->facePlane.normal.x;
-                        pParty->pos.y += -distance_to_face * pFace->facePlane.normal.y;
-                        new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
-                    }
-                    if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                        faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-                } else { // between floor & wall
-                    if (pParty->speed.xy().lengthSqr() >= min_party_move_delta_sqr) {
-                        if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                            faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-                    } else {
-                        pParty->speed = Vec3i();
-                    }
-                }
-            }
-        }
-
-        pParty->speed.x = fixpoint_mul(58500, pParty->speed.x);  // 58500 is roughly 0.89
-        pParty->speed.y = fixpoint_mul(58500, pParty->speed.y);
-        pParty->speed.z = fixpoint_mul(58500, pParty->speed.z);
-    }
+    ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
 
     // walking / running sounds ------------------------
     if (engine->config->settings.WalkSound.value()) {
