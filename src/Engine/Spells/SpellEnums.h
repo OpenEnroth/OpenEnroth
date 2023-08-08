@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Segment.h"
