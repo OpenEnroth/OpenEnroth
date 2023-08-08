@@ -1613,15 +1613,7 @@ OutdoorLocation::OutdoorLocation() {
 
     this->sky_texture = nullptr;
 
-    subconstuctor();
     uLastSunlightUpdateMinute = 0;
-}
-
-void OutdoorLocation::subconstuctor() {
-    // OutdoorLocationTerrain::OutdoorLocationTerrain(&this->pTerrain);
-    field_F0 = 0;
-    field_F4 = 0x40000000u;
-    // DLVHeader::DLVHeader(&v1->ddm);
 }
 
 // TODO(pskelton): Magic numbers

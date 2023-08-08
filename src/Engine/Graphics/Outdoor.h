@@ -61,7 +61,6 @@ struct OutdoorLocationTerrain {
 
 struct OutdoorLocation {
     OutdoorLocation();
-    void subconstuctor();
     // int New_SKY_NIGHT_ID;
     void ExecDraw(unsigned int bRedraw);
     void PrepareActorsDrawList();
