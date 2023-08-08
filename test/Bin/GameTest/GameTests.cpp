@@ -508,6 +508,31 @@ GAME_TEST(Prs, Pr347) {
     EXPECT_LT(goldTape.delta(), 0); // Spent on items.
 }
 
+GAME_TEST(Issues, Issue355) {
+    // EVENT_CastSpell damage to characters (fire bolts in temple of the moon for example) doesnt match GOG.
+    // GOG: 6-2. OpenEnroth: 9-5.
+    auto healthTape = makeCharactersHealthTape(test);
+    test->playTraceFromTestData("issue_355.mm7", "issue_355.json");
+
+    std::vector<int> damageRolls;
+    const auto &values = healthTape.values();
+    for (size_t i = 0; i < values.size() - 1; i++) {
+        const auto &prev = values[i];
+        const auto &next = values[i + 1];
+
+        for (size_t j = 0; j < prev.size(); j++) {
+            int damage = prev[j] - next[j];
+            if (damage != 0)
+                damageRolls.push_back(damage);
+        }
+    }
+    std::sort(damageRolls.begin(), damageRolls.end());
+
+    // 2d3+0 with a non-random engine can't roll 2 or 6, so all values should be in [3, 5].
+    EXPECT_EQ(damageRolls.front(), 3);
+    EXPECT_EQ(damageRolls.back(), 5);
+}
+
 GAME_TEST(Issues, Issue388) {
     // Testing that Arcomage works.
     // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern.
