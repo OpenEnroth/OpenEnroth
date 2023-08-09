@@ -31,7 +31,7 @@ var searchData=
   ['finishrecording_28',['finishRecording',['../classEngineTraceSimpleRecorder.html#a3887c865538a61b3b6f647b325314495',1,'EngineTraceSimpleRecorder::finishRecording()'],['../classEngineTraceRecorder.html#a6a657c968efc8229f90716e8fac346d4',1,'EngineTraceRecorder::finishRecording()']]],
   ['firstlast_29',['firstLast',['../classTestTape.html#a89dcf5bad4072983e00146cff1701897',1,'TestTape']]],
   ['fittextinawindow_30',['FitTextInAWindow',['../classGUIFont.html#ac14d94f0de9621b2f8b054e38a4eaaf5',1,'GUIFont']]],
-  ['fittwofontstringinwindow_31',['FitTwoFontStringINWindow',['../classGUIFont.html#a36dc3aa452a09fb72bef43d629b9216e',1,'GUIFont']]],
+  ['fittwofontstringinwindow_31',['FitTwoFontStringINWindow',['../classGUIFont.html#a9e8ae0fbfe347a154592a3ebcb13b7ae',1,'GUIFont']]],
   ['fixdirectoryoffsets_32',['FixDirectoryOffsets',['../classLOD_1_1WriteableFile.html#ae8c6a4d67f808e3dc5d377c656f7314c',1,'LOD::WriteableFile']]],
   ['fixpoint_5fdiv_33',['fixpoint_div',['../FixPoint_8h.html#a359bddab4a0bd11652267063ebf7ae3a',1,'fixpoint_div(int32_t l, int32_t r):&#160;FixPoint.h'],['../FixPoint_8h.html#a68f9184f0165b5a9e85e4c50130f5213',1,'fixpoint_div(float, float)=delete:&#160;FixPoint.h'],['../FixPoint_8h.html#a71094b4b8f5dbe9996d538c72e0b40da',1,'fixpoint_div(double, double)=delete:&#160;FixPoint.h']]],
   ['fixpoint_5fmul_34',['fixpoint_mul',['../FixPoint_8h.html#adff37f642464370743f80334ff94bbb8',1,'fixpoint_mul(int32_t l, int32_t r):&#160;FixPoint.h'],['../FixPoint_8h.html#aa3561498cd02fbb51723918c9721941c',1,'fixpoint_mul(float, float)=delete:&#160;FixPoint.h'],['../FixPoint_8h.html#a04fe6003e28489d67d0c875eaebfbb76',1,'fixpoint_mul(double, double)=delete:&#160;FixPoint.h']]],
