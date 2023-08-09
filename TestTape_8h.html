@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;034e62a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ff68c58</span>
    </div>
   </td>
  </tr>
@@ -76,6 +76,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">TestTape.h File Reference</div></div>
 </div><!--header-->
@@ -102,6 +103,12 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacedetail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html">detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a2761573f2591d0fa4392fec6cf37d98e"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a2761573f2591d0fa4392fec6cf37d98e"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#a2761573f2591d0fa4392fec6cf37d98e">TestMultiTape</a> = <a class="el" href="classTestTape.html">TestTape</a>&lt; <a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt; &gt;</td></tr>
+<tr class="separator:a2761573f2591d0fa4392fec6cf37d98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aa3655616a1469a2e5909b60244064fd5"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tail&gt; </td></tr>
@@ -111,6 +118,23 @@ Functions</h2></td></tr>
 <tr class="memitem:a5311c962115d3b70e20c30cedaa5c56e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classTestVector.html">TestVector</a>&lt; <a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#a5311c962115d3b70e20c30cedaa5c56e">tape</a> (std::initializer_list&lt; T &gt; first, std::initializer_list&lt; Tail &gt;... tail)</td></tr>
 <tr class="separator:a5311c962115d3b70e20c30cedaa5c56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="a2761573f2591d0fa4392fec6cf37d98e" name="a2761573f2591d0fa4392fec6cf37d98e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2761573f2591d0fa4392fec6cf37d98e">&#9670;&#160;</a></span>TestMultiTape</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="TestTape_8h.html#a2761573f2591d0fa4392fec6cf37d98e">TestMultiTape</a> =  <a class="el" href="classTestTape.html">TestTape</a>&lt;<a class="el" href="classTestVector.html">TestVector</a>&lt;T&gt; &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a5311c962115d3b70e20c30cedaa5c56e" name="a5311c962115d3b70e20c30cedaa5c56e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5311c962115d3b70e20c30cedaa5c56e">&#9670;&#160;</a></span>tape() <span class="overload">[1/2]</span></h2>
@@ -142,7 +166,7 @@ template&lt;class T , class... Tail&gt; </div>
 <p >Same as the other <code>tape</code> overload, but for per-character tapes.</p>
 <p >Example code: </p><div class="fragment"><div class="line"><a class="code hl_function" href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a>(expTape.firstLast(), <a class="code hl_function" href="TestTape_8h.html#aa3655616a1469a2e5909b60244064fd5">tape</a>({100, 100, 100, 100}, {254, 250, 254, 254}));</div>
 <div class="ttc" id="aSerialization__ut_8cpp_html_a7fc7ee24f5551f6f6bdd447161977786"><div class="ttname"><a href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a></div><div class="ttdeci">EXPECT_EQ(toString(TestFlags()), &quot;0&quot;)</div></div>
-<div class="ttc" id="aTestTape_8h_html_aa3655616a1469a2e5909b60244064fd5"><div class="ttname"><a href="TestTape_8h.html#aa3655616a1469a2e5909b60244064fd5">tape</a></div><div class="ttdeci">TestVector&lt; T &gt; tape(T first, Tail... tail)</div><div class="ttdef"><b>Definition:</b> TestTape.h:103</div></div>
+<div class="ttc" id="aTestTape_8h_html_aa3655616a1469a2e5909b60244064fd5"><div class="ttname"><a href="TestTape_8h.html#aa3655616a1469a2e5909b60244064fd5">tape</a></div><div class="ttdeci">TestVector&lt; T &gt; tape(T first, Tail... tail)</div><div class="ttdef"><b>Definition:</b> TestTape.h:106</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
