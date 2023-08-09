@@ -82,6 +82,28 @@ struct PersistentVariables {
     std::array<unsigned char, 125> decorVars;
 };
 
+class TeleportPoint {
+ public:
+    bool isValid() { return _teleportValid; }
+    void setValid(bool valid = true) { _teleportValid = valid; }
+    void setValidIfTarget();
+
+    void setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed);
+
+    void setTeleportMap(const std::string &mapName) { _targetMap = mapName; }
+    std::string &getTeleportMap() { return _targetMap; }
+
+    void doTeleport();
+
+ private:
+    bool _teleportValid = false;
+    std::string _targetMap;
+    Vec3i _pos;
+    int _yaw;
+    int _pitch;
+    int _zSpeed;
+};
+
 class Engine {
  public:
     explicit Engine(std::shared_ptr<GameConfig> config);
@@ -117,11 +139,6 @@ class Engine {
     void _461103_load_level_sub();
     void MM7_Initialize();
 
-    bool is_underwater = false;
-    bool is_targeting = false;
-    bool is_saturate_faces = false;
-    bool is_fog = false; // keeps track of whether fog enabled in d3d
-
     inline bool IsTargetingMode() const { return is_targeting; }
     inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
     inline bool IsUnderwater() const { return is_underwater; }
@@ -130,6 +147,11 @@ class Engine {
     inline void SetSaturateFaces(bool is_saturate_faces) { this->is_saturate_faces = is_saturate_faces; }
     inline bool IsFog() const { return is_fog; }
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
+
+    bool is_underwater = false;
+    bool is_targeting = false;
+    bool is_saturate_faces = false;
+    bool is_fog = false; // keeps track of whether fog enabled in d3d
 
     std::shared_ptr<GameConfig> config;
     int uNumStationaryLights_in_pStationaryLightsStack;
@@ -149,6 +171,7 @@ class Engine {
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
+    TeleportPoint _teleportPoint;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
     std::unique_ptr<GameResourceManager> _gameResourceManager;

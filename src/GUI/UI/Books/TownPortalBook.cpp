@@ -129,12 +129,8 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         pCurrentMapName = pMapStats->pInfos[townPortalList[townId].mapInfoID].pFilename;
-        Start_Party_Teleport_Flag = 1;
-        Party_Teleport_X_Pos = townPortalList[townId].pos.x;
-        Party_Teleport_Y_Pos = townPortalList[townId].pos.y;
-        Party_Teleport_Z_Pos = townPortalList[townId].pos.z;
-        Party_Teleport_Cam_Yaw = townPortalList[townId].viewYaw;
-        Party_Teleport_Cam_Pitch = townPortalList[townId].viewPitch;
+        engine->_teleportPoint.setTeleportTarget(townPortalList[townId].pos, townPortalList[townId].viewYaw, townPortalList[townId].viewPitch, 0);
+        engine->_teleportPoint.setValid();
         Actor::InitializeActors();
     }
 

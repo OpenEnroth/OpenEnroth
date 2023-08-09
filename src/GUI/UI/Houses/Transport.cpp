@@ -162,14 +162,9 @@ void GUIWindow_Transport::transportDialogue() {
             pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
-            Party_Teleport_Cam_Pitch = 0;
-            Party_Teleport_Z_Speed = 0;
-            Party_Teleport_Cam_Yaw = pTravel->arrival_view_yaw;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            Party_Teleport_X_Pos = pTravel->arrival_x;
-            Party_Teleport_Y_Pos = pTravel->arrival_y;
-            Party_Teleport_Z_Pos = pTravel->arrival_z;
-            Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_view_yaw;
+            engine->_teleportPoint.setTeleportTarget(Vec3i(pTravel->arrival_x, pTravel->arrival_y, pTravel->arrival_z), pTravel->arrival_view_yaw, 0, 0);
+            engine->_teleportPoint.setValidIfTarget();
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;

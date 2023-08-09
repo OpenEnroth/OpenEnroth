@@ -200,33 +200,14 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 savedEventStep = step + 1;
                 return -1;
             }
-            Party_Teleport_X_Pos = ir.data.move_map_descr.x;
-            Party_Teleport_Y_Pos = ir.data.move_map_descr.y;
-            Party_Teleport_Z_Pos = ir.data.move_map_descr.z;
-            if (ir.data.move_map_descr.yaw != -1) {
-                Party_Teleport_Cam_Yaw = ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask;
-            }
-            Party_Teleport_Cam_Pitch = ir.data.move_map_descr.pitch;
-            Party_Teleport_Z_Speed = ir.data.move_map_descr.zspeed;
-            Start_Party_Teleport_Flag = Party_Teleport_X_Pos | Party_Teleport_Y_Pos | Party_Teleport_Z_Pos |
-                Party_Teleport_Cam_Yaw | Party_Teleport_Cam_Pitch | Party_Teleport_Z_Speed;
+            engine->_teleportPoint.setTeleportTarget(Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+                                                     (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : 0,
+                                                     ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
+            engine->_teleportPoint.setValidIfTarget();
             if (ir.str[0] == '0') { // teleport within map
-                if (Start_Party_Teleport_Flag) {
-                    pParty->pos = Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z);
-                    pParty->speed = Vec3i(0, 0, ir.data.move_map_descr.zspeed);
-                    pParty->uFallStartZ = ir.data.move_map_descr.z;
-                    if (Party_Teleport_Cam_Yaw != -1) {
-                        pParty->_viewYaw = Party_Teleport_Cam_Yaw;
-                    }
-                    pParty->_viewPitch = ir.data.move_map_descr.pitch;
-
-                    Start_Party_Teleport_Flag = 0;
-                    Party_Teleport_Cam_Yaw = -1;
-                    Party_Teleport_Cam_Pitch = 0;
-                    Party_Teleport_Z_Speed = 0;
-                    Party_Teleport_Z_Pos = 0;
-                    Party_Teleport_Y_Pos = 0;
-                    Party_Teleport_X_Pos = 0;
+                if (engine->_teleportPoint.isValid()) {
+                    engine->_teleportPoint.doTeleport();
+                    engine->_teleportPoint.setValid(false);
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
             } else {

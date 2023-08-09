@@ -71,13 +71,8 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
                                            int directionx, int a8,
                                            const std::string &locationName)
     : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions(), 0) {
-    Party_Teleport_X_Pos = x;
-    Party_Teleport_Y_Pos = y;
-    Party_Teleport_Z_Pos = z;
-    Party_Teleport_Cam_Yaw = directiony;
-    Party_Teleport_Cam_Pitch = directionx;
-    Party_Teleport_Z_Speed = a8;
-    Party_Teleport_Map_Name = locationName;
+    engine->_teleportPoint.setTeleportTarget(Vec3i(x, y, z), directiony, directionx, a8);
+    engine->_teleportPoint.setTeleportMap(locationName);
     uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
     pEventTimer->Pause();
     current_screen_type = SCREEN_CHANGE_LOCATION;
@@ -208,7 +203,7 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
 
     MAP_TYPE map_id = mapid;
-    if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && Party_Teleport_Map_Name[0] != ' ') {
+    if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && engine->_teleportPoint.getTeleportMap()[0] != ' ') {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
 
