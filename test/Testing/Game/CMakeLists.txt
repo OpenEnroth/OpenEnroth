@@ -2,9 +2,13 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 if(ENABLE_TESTS)
     set(TESTING_GAME_SOURCES
+            CharacterTapeRecorder.cpp
+            CommonTapeRecorder.cpp
             GameTest.cpp
             TestController.cpp)
     set(TESTING_GAME_HEADERS
+            CharacterTapeRecorder.h
+            CommonTapeRecorder.h
             GameTest.h
             TestTape.h
             TestController.h

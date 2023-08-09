@@ -90,6 +90,9 @@ class TestTape {
     std::shared_ptr<detail::TestTapeState<T>> _state;
 };
 
+template<class T>
+using TestMultiTape = TestTape<TestVector<T>>;
+
 /**
  * Shortcut function to create vectors that can then be compared with `TestTape` objects inside
  * the `EXPECT_EQ` and `ASSERT_EQ` gtest macros.
