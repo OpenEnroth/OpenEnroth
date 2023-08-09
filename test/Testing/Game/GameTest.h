@@ -7,6 +7,8 @@
 #include "Utility/Preprocessor.h"
 
 #include "TestController.h"
+#include "CharacterTapeRecorder.h"
+#include "CommonTapeRecorder.h"
 
 class GameTest : public testing::Test {
  public:
@@ -16,7 +18,7 @@ class GameTest : public testing::Test {
     virtual void SetUp() override;
     virtual void TearDown() override;
 
-    using TestBodyFunction = void (*)(EngineController &, TestController &);
+    using TestBodyFunction = void (*)(EngineController &, TestController &, CommonTapeRecorder &, CharacterTapeRecorder &);
     void runTestBody(TestBodyFunction testBody);
 
  protected:
@@ -31,10 +33,12 @@ class GameTest : public testing::Test {
     GAME_TEST_II(SuiteName, TestName, TestClassName, MM_PP_CAT(Run_, TestClassName))
 
 #define GAME_TEST_II(SuiteName, TestName, TestClassName, TestFunctionName)                                              \
-    void TestFunctionName(EngineController &game, TestController &test);                                                \
+    void TestFunctionName(EngineController &game, TestController &test,                                                 \
+                          CommonTapeRecorder &tapes, CharacterTapeRecorder &ctapes);                                    \
                                                                                                                         \
     GTEST_TEST_(SuiteName, TestName, GameTest, testing::internal::GetTypeId<GameTest>()) {                              \
         runTestBody(&TestFunctionName);                                                                                 \
     }                                                                                                                   \
                                                                                                                         \
-    void TestFunctionName(EngineController &game, TestController &test) /* Body follows. */
+    void TestFunctionName(EngineController &game, TestController &test,                                                 \
+                          CommonTapeRecorder &tapes, CharacterTapeRecorder &ctapes) /* Body follows. */
