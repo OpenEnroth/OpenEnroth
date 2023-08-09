@@ -94,8 +94,11 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     endif()
 
     if("-m32" IN_LIST CMAKE_CXX_FLAGS)
-        add_compile_options(-msse2 -mfpmath=sse -march=pentium4)
+        add_compile_options(-msse2 -mfpmath=sse -march=pentium4) # Don't use x87 fpu in 32-bit builds.
     endif()
+
+    # Clang & gcc implementations of fp-contract differ, and we are getting diffs in tests. Better to disable it.
+    add_compile_options(-ffp-contract=off)
 endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
