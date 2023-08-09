@@ -11,8 +11,19 @@ class GUIWindow_Dialogue : public GUIWindow {
     explicit GUIWindow_Dialogue(WindowData data);
     virtual ~GUIWindow_Dialogue() {}
 
+    void setDisplayedDialogueType(DIALOGUE_TYPE type) {
+        _displayedDialogue = type;
+    }
+
+    DIALOGUE_TYPE getDisplayedDialogueType() {
+        return _displayedDialogue;
+    }
+
     virtual void Update() override;
     virtual void Release() override;
+
+ protected:
+    DIALOGUE_TYPE _displayedDialogue = DIALOGUE_MAIN;
 };
 
 void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello);

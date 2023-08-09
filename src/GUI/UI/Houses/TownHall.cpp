@@ -105,7 +105,7 @@ void GUIWindow_TownHall::payFineDialogue() {
 }
 
 void GUIWindow_TownHall::houseSpecificDialogue() {
-    switch (dialog_menu_id) {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
@@ -121,6 +121,7 @@ void GUIWindow_TownHall::houseSpecificDialogue() {
 }
 
 void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+    _currentDialogue = option;
     if (option == DIALOGUE_TOWNHALL_BOUNTY_HUNT) {
         bountyHuntingDialogueOptionClicked();
     } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
@@ -128,8 +129,8 @@ void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (option) {
+std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions() {
+    switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         if (pParty->uFine) {
             return {DIALOGUE_TOWNHALL_BOUNTY_HUNT, DIALOGUE_TOWNHALL_PAY_FINE};

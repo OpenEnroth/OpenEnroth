@@ -14,8 +14,8 @@ class GUIWindow_Shop : public GUIWindow_House {
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
-    virtual DIALOGUE_TYPE getOptionOnEscape() override;
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual void updateDialogueOnEscape() override;
     virtual void houseScreenClick() override;
     virtual void playHouseGoodbyeSpeech() override;
 
@@ -82,7 +82,7 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     explicit GUIWindow_AlchemyShop(HOUSE_ID houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_AlchemyShop() {}
 
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
     virtual void playHouseGoodbyeSpeech() override;
 
  private:

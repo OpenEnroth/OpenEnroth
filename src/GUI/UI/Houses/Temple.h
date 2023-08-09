@@ -13,8 +13,8 @@ class GUIWindow_Temple : public GUIWindow_House {
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
-    virtual DIALOGUE_TYPE getOptionOnEscape() override;
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual void updateDialogueOnEscape() override;
     virtual void playHouseGoodbyeSpeech() override;
 
  protected:

@@ -55,9 +55,6 @@
 
 using Io::TextInputType;
 
-BuildingType in_current_building_type;  // 00F8B198
-DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
-
 GraphicsImage *_591428_endcap = nullptr;
 
 std::vector<HouseNpcDesc> houseNpcs;
@@ -300,7 +297,6 @@ static constexpr IndexedArray<const char *, BUILDING_WEAPON_SHOP, BUILDING_MIRRO
 bool enterHouse(HOUSE_ID uHouseID) {
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
-    uDialogueType = DIALOGUE_NULL;
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
 
@@ -359,11 +355,9 @@ bool enterHouse(HOUSE_ID uHouseID) {
     }
 
     uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
-    in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
-    if (in_current_building_type == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
+    if (pAnimatedRooms[uCurrentHouse_Animation].uBuildingType == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
         uHouseID = HOUSE_JAIL;
         uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
-        in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         restAndHeal(GameTime::FromYears(1));
         ++pParty->uNumPrisonTerms;
         pParty->uFine = 0;
@@ -401,6 +395,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
 }
 
 void prepareHouse(HOUSE_ID house) {
+    houseNpcs.clear();
+
     // Default proprietor of non-simple houses
     int proprietorId = pAnimatedRooms[buildingTable[house].uAnimationID].house_npc_id;
     if (proprietorId) {
@@ -475,19 +471,19 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
         UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
+    window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
 
 void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
-    uDialogueType = (DIALOGUE_TYPE)(topic + 1); // TODO(Nik-RE-dev): +1?
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
 
     if (topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
-        std::vector<DIALOGUE_TYPE> topics = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
+        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
 
-        if (topics.size() != 0) {
+        if (newTopic != DIALOGUE_MAIN) {
+            window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
             window_SpeakInHouse->reinitDialogueWindow();
-            window_SpeakInHouse->initializeNPCDialogueButtons(topics);
+            window_SpeakInHouse->initializeNPCDialogueButtons(listNPCDialogueOptions(newTopic));
         }
         BackToHouseMenu();
         return;
@@ -504,29 +500,28 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
 
     selectSpecialNPCTopicSelection(topic, pCurrentNPCInfo);
 
-    if (topic == DIALOGUE_PROFESSION_DETAILS) {
-        if (dialogue_show_profession_details) {
-            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
-                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-        } else {
-            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+    if (topic != DIALOGUE_HIRE_FIRE) {
+        if (topic == DIALOGUE_PROFESSION_DETAILS) {
+            if (dialogue_show_profession_details) {
+                current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
+                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            } else {
+                current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            }
         }
         BackToHouseMenu();
         return;
     }
 
-    if (topic == DIALOGUE_HIRE_FIRE) {
-        if (!pCurrentNPCInfo->Hired()) {
-            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-            BackToHouseMenu();
-            return;
-        }
+    if (!pCurrentNPCInfo->Hired()) {
+        current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+        BackToHouseMenu();
+        return;
     }
 
     prepareHouse(window_SpeakInHouse->houseId());
-    dialog_menu_id = DIALOGUE_MAIN;
     BackToHouseMenu();
 }
 
@@ -544,15 +539,13 @@ void updateHouseNPCTopics(int npc) {
                                       Io::InputAction::EventTrigger, transition_button_label);
         pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label);
     } else {
-        if (dialog_menu_id == DIALOGUE_OTHER) {
-            pDialogueWindow->Release();
-        } else {
+        if (window_SpeakInHouse->getCurrentDialogue() != DIALOGUE_OTHER) {
             for (int i = 0; i < houseNpcs.size(); ++i) {
                 houseNpcs[i].button->Release();
                 houseNpcs[i].button = nullptr;
             }
         }
-        dialog_menu_id = DIALOGUE_MAIN;
+        window_SpeakInHouse->setCurrentDialogue(DIALOGUE_MAIN);
         window_SpeakInHouse->reinitDialogueWindow();
         if (houseNpcs[npc].type == HOUSE_PROPRIETOR) {
             window_SpeakInHouse->initializeProprietorDialogue();
@@ -569,7 +562,6 @@ void selectProprietorDialogueOption(DIALOGUE_TYPE option) {
 
     render->ClearZBuffer();
 
-    dialog_menu_id = option;
     window_SpeakInHouse->houseDialogueOptionSelected(option);
     window_SpeakInHouse->reinitDialogueWindow();
     window_SpeakInHouse->initializeProprietorDialogue();
@@ -586,13 +578,14 @@ bool houseDialogPressEscape() {
         return false;
     }
 
-    if (dialog_menu_id == DIALOGUE_OTHER) {
+    if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_OTHER) {
         updateHouseNPCTopics(currentHouseNpc);
         BackToHouseMenu();
         return true;
     }
 
-    if (dialog_menu_id == DIALOGUE_NULL || dialog_menu_id == DIALOGUE_MAIN) {
+    if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_NULL ||
+        window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
         if (pDialogueWindow) {
             pDialogueWindow->Release();
@@ -601,7 +594,7 @@ bool houseDialogPressEscape() {
             shop_ui_background->Release();
             shop_ui_background = nullptr;
         }
-        dialog_menu_id = DIALOGUE_NULL;
+        window_SpeakInHouse->updateDialogueOnEscape();
         pDialogueWindow = nullptr;
 
         if (houseNpcs.size() == 1) {
@@ -619,7 +612,7 @@ bool houseDialogPressEscape() {
         return true;
     }
 
-    dialog_menu_id = window_SpeakInHouse->getOptionOnEscape();
+    window_SpeakInHouse->updateDialogueOnEscape();
     window_SpeakInHouse->reinitDialogueWindow();
     window_SpeakInHouse->initializeProprietorDialogue();
 
@@ -627,7 +620,7 @@ bool houseDialogPressEscape() {
 }
 
 void createHouseUI(HOUSE_ID houseId) {
-    switch (in_current_building_type) {
+    switch (buildingTable[houseId].uType) {
       case BUILDING_FIRE_GUILD:
       case BUILDING_AIR_GUILD:
       case BUILDING_WATER_GUILD:
@@ -747,7 +740,7 @@ void GUIWindow_House::houseNPCDialogue() {
     house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
 
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
-        if (uDialogueType == DIALOGUE_NULL) {
+        if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
             if (pNPC->greet) {
                 std::string greetString;
 
@@ -926,7 +919,7 @@ void GUIWindow_House::houseDialogManager() {
         // Either house have no residents or current screen is for selecting resident to begin dialogue
         render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-        if (in_current_building_type == BUILDING_JAIL) {
+        if (buildingType() == BUILDING_JAIL) {
             houseSpecificDialogue();
             return;
         }
@@ -998,7 +991,7 @@ void GUIWindow_House::initializeProprietorDialogue() {
         return;
     }
 
-    std::vector<DIALOGUE_TYPE> optionList = listDialogueOptions(dialog_menu_id);
+    std::vector<DIALOGUE_TYPE> optionList = listDialogueOptions();
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
@@ -1098,8 +1091,8 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                    localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
-    if (in_current_building_type <= BUILDING_MIRRORED_PATH_GUILD) {
-        shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[in_current_building_type]);
+    if (buildingType() <= BUILDING_MIRRORED_PATH_GUILD) {
+        shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[buildingType()]);
     }
 
     for (int i = 0; i < houseNpcs.size(); ++i) {
@@ -1127,7 +1120,6 @@ void GUIWindow_House::Update() {
         pParty->PartyTimes.shopBanTimes[houseId()] = GameTime(0);
         return;
     }
-    // dialog_menu_id = DIALOGUE_MAIN;
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving
 }
 
@@ -1153,22 +1145,23 @@ void GUIWindow_House::Release() {
 }
 
 void GUIWindow_House::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+    _currentDialogue = option;
 }
 
 void GUIWindow_House::houseSpecificDialogue() {
     // Nothing
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions(DIALOGUE_TYPE option) {
+std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions() {
     return {};
 }
 
-DIALOGUE_TYPE GUIWindow_House::getOptionOnEscape() {
-    if (dialog_menu_id == DIALOGUE_MAIN) {
-        return DIALOGUE_NULL;
+void GUIWindow_House::updateDialogueOnEscape() {
+    if (_currentDialogue == DIALOGUE_MAIN) {
+        _currentDialogue = DIALOGUE_NULL;
+        return;
     }
-    return DIALOGUE_MAIN;
+    _currentDialogue = DIALOGUE_MAIN;
 }
 
 void GUIWindow_House::houseScreenClick() {

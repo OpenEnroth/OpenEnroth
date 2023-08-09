@@ -2431,7 +2431,6 @@ unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 
 struct Actor *pDialogue_SpeakingActor;
-DIALOGUE_TYPE uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string Party_Teleport_Map_Name;

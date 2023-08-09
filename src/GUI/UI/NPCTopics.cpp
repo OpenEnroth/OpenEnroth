@@ -217,10 +217,10 @@ static constexpr std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_P
     {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
 
-std::vector<DIALOGUE_TYPE> arenaMainDialogue() {
+DIALOGUE_TYPE arenaMainDialogue() {
     if (pParty->field_7B5_in_arena_quest) {
         if (pParty->field_7B5_in_arena_quest == -1) {
-            uDialogueType = DIALOGUE_ARENA_ALREADY_WON;
+            return DIALOGUE_ARENA_ALREADY_WON;
         } else {
             int killedMonsters = 0;
             for (Actor &actor : pActors) {
@@ -232,7 +232,6 @@ std::vector<DIALOGUE_TYPE> arenaMainDialogue() {
                 }
             }
             if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
-                uDialogueType = DIALOGUE_ARENA_REWARD;
                 pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
                 for (Character &player : pParty->pCharacters) {
                     player.SetVariable(VAR_Award, (uint8_t)pParty->field_7B5_in_arena_quest + 3);
@@ -240,32 +239,32 @@ std::vector<DIALOGUE_TYPE> arenaMainDialogue() {
                 pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
                 pAudioPlayer->playUISound(SOUND_51heroism03);
                 pParty->field_7B5_in_arena_quest = -1;
+                return DIALOGUE_ARENA_REWARD;
             } else {
-                uDialogueType = DIALOGUE_ARENA_WELCOME;
                 pParty->pos = Vec3i(3849, 5770, 1);
                 pParty->speed = Vec3i();
                 pParty->uFallStartZ = 1;
                 pParty->_viewYaw = 512;
                 pParty->_viewPitch = 0;
                 pAudioPlayer->playUISound(SOUND_51heroism03);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+                return DIALOGUE_NULL;
             }
         }
-        return {};
     } else {
-        uDialogueType = DIALOGUE_ARENA_WELCOME;
-        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_CHAMPION};
+        return DIALOGUE_ARENA_WELCOME;
     }
 }
 
 /**
  * @offset 0x4BC109
  */
-void prepareArenaFight() {
+void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     const int LAST_ARENA_FIGHTER_TYPE = 258;
     std::vector<int> monsterIds;
     std::vector<int> monsterTypes;
 
-    pParty->field_7B5_in_arena_quest = uDialogueType;
+    pParty->field_7B5_in_arena_quest = dialogue;
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
@@ -301,18 +300,22 @@ void prepareArenaFight() {
     }
 
     int monsterMaxLevel = characterMaxLevel;
-
-    if (uDialogueType == DIALOGUE_ARENA_SELECT_PAGE) {
-        monsterMaxLevel = characterMaxLevel;
-    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_SQUIRE) {
-        monsterMaxLevel = characterMaxLevel * 1.5;
-    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_KNIGHT) {
-        monsterMaxLevel = 2 * characterMaxLevel;
-    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_CHAMPION) {
-        monsterMaxLevel = 2 * characterMaxLevel;
-    }
-
     int monsterMinLevel = characterMaxLevel / 2;
+
+    switch(dialogue) {
+      case DIALOGUE_ARENA_SELECT_PAGE:
+        monsterMaxLevel = characterMaxLevel;
+        break;
+      case DIALOGUE_ARENA_SELECT_SQUIRE:
+        monsterMaxLevel = characterMaxLevel * 1.5;
+        break;
+      case DIALOGUE_ARENA_SELECT_KNIGHT:
+      case DIALOGUE_ARENA_SELECT_CHAMPION:
+        monsterMaxLevel = characterMaxLevel * 2;
+        break;
+      default:
+        assert(false);
+    }
 
     if (monsterMinLevel < 2)
         monsterMinLevel = 2;
@@ -348,16 +351,16 @@ void prepareArenaFight() {
 
     int baseReward = 0, monstersNum = 0;
 
-    if (uDialogueType == DIALOGUE_ARENA_SELECT_PAGE) {
+    if (dialogue == DIALOGUE_ARENA_SELECT_PAGE) {
         baseReward = 50;
         monstersNum = grng->random(3) + 6; // [6:8] monsters
-    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_SQUIRE) {
+    } else if (dialogue == DIALOGUE_ARENA_SELECT_SQUIRE) {
         baseReward = 100;
         monstersNum = grng->random(7) + 6; // [6:12] monsters
-    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_KNIGHT) {
+    } else if (dialogue == DIALOGUE_ARENA_SELECT_KNIGHT) {
         baseReward = 200;
         monstersNum = grng->random(11) + 10; // [10:19] monsters
-    } else if (uDialogueType == DIALOGUE_ARENA_SELECT_CHAMPION) {
+    } else if (dialogue == DIALOGUE_ARENA_SELECT_CHAMPION) {
         baseReward = 500;
         monstersNum = 20;
     }
@@ -655,7 +658,7 @@ std::vector<DIALOGUE_TYPE> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
     return optionList;
 }
 
-std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData) {
+DIALOGUE_TYPE handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData) {
     int eventId;
 
     if (topic == DIALOGUE_SCRIPTED_LINE_1) {
@@ -678,7 +681,7 @@ std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, 
         // Original code also listed this event which presumably opened bounty dialogue but MM7
         // use event 311 for some teleport in Bracada
         __debugbreak();
-        return {};
+        return DIALOGUE_MAIN;
     }
 
     if (eventId == 139) {
@@ -687,17 +690,13 @@ std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, 
         return arenaMainDialogue();
     } else if (eventId >= 400 && eventId <= 410) {
         guildMembershipNPCTopicId = topic;
-        uDialogueType = DIALOGUE_MAGIC_GUILD_OFFER;
-        dialog_menu_id = DIALOGUE_OTHER;
         current_npc_text = pNPCTopics[eventId - 301].pText;
         topicEventId = eventId;
-        return {DIALOGUE_MAGIC_GUILD_JOIN};
+        return DIALOGUE_MAGIC_GUILD_OFFER;
     } else if (eventId >= 200 && eventId <= 310) {
-        uDialogueType = DIALOGUE_MASTERY_TEACHER_OFFER;
-        dialog_menu_id = DIALOGUE_OTHER;
         current_npc_text = pNPCTopics[eventId + 168].pText;
         topicEventId = eventId;
-        return {DIALOGUE_MASTERY_TEACHER_LEARN};
+        return DIALOGUE_MASTERY_TEACHER_OFFER;
     } else {
         activeLevelDecoration = (LevelDecoration *)1;
         current_npc_text.clear();
@@ -705,8 +704,22 @@ std::vector<DIALOGUE_TYPE> handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, 
         activeLevelDecoration = nullptr;
     }
 
-    return {};
+    return DIALOGUE_MAIN;
 }
+
+std::vector<DIALOGUE_TYPE> listNPCDialogueOptions(DIALOGUE_TYPE topic) {
+    switch (topic) {
+      case DIALOGUE_MAGIC_GUILD_OFFER:
+        return {DIALOGUE_MAGIC_GUILD_JOIN};
+      case DIALOGUE_MASTERY_TEACHER_OFFER:
+        return {DIALOGUE_MASTERY_TEACHER_LEARN};
+      case DIALOGUE_ARENA_WELCOME:
+        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_CHAMPION};
+      default:
+        return {};
+    }
+}
+
 
 void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
     if (topic == DIALOGUE_MASTERY_TEACHER_LEARN) {
@@ -767,7 +780,7 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
     } else if (topic == DIALOGUE_PROFESSION_DETAILS) {
         dialogue_show_profession_details = ~dialogue_show_profession_details;
     } else if (topic >= DIALOGUE_ARENA_SELECT_PAGE && topic <= DIALOGUE_ARENA_SELECT_CHAMPION) {
-        prepareArenaFight();
+        prepareArenaFight(topic);
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
         for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
@@ -811,7 +824,7 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
                 if (pParty->GetGold() < pNPCStats->pProfessions[npcData->profession].uHirePrice) {
                     engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
-                    uDialogueType = DIALOGUE_13_hiring_related;
+                    //uDialogueType = DIALOGUE_13_hiring_related;
                     if (pParty->hasActiveCharacter()) {
                         pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
                     }

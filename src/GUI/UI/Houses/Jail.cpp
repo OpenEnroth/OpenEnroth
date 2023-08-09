@@ -15,5 +15,5 @@ void GUIWindow_Jail::houseSpecificDialogue() {
 }
 
 void GUIWindow_Jail::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+    _currentDialogue = option;
 }

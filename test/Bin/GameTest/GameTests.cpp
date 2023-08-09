@@ -4,6 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIProgressBar.h"
 
@@ -43,6 +44,16 @@ static int totalPartyItems() {
             result += item.uItemID != ITEM_NULL;
     result += pParty->pPickedItem.uItemID != ITEM_NULL;
     return result;
+}
+
+static DIALOGUE_TYPE currentDialogueType() {
+    if (GUIWindow_Dialogue *dlg = dynamic_cast<GUIWindow_Dialogue*>(pDialogueWindow)) {
+        return dlg->getDisplayedDialogueType();
+    } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(pDialogueWindow)) {
+        return dlg->getCurrentDialogue();
+    } else {
+        return DIALOGUE_NULL;
+    }
 }
 
 static std::initializer_list<CharacterBuffs> allPotionBuffs() {
@@ -117,7 +128,7 @@ static auto makeStatusBarTape(TestController &test) {
 }
 
 static auto makeDialogueTypeTape(TestController &test) {
-    return test.tape([] { return uDialogueType; });
+    return test.tape(&currentDialogueType);
 }
 
 static auto makeCharacterExperienceTape(TestController &test, int character) {
