@@ -33,14 +33,9 @@ extern int game_viewport_y;
 extern int game_viewport_z;
 extern int game_viewport_w;
 
-extern float flt_4D86CC;
-extern int dword_4D86D8;
-
 extern float flt_4D84E8;
 
 extern unsigned int uGammaPos;
-extern std::array<int, 8> BtnTurnCoord;
-extern std::array<int8_t, 88> monster_popup_y_offsets;
 
 extern std::array<int, 6> dword_4E4560;
 extern std::array<int, 6> dword_4E4578;
@@ -118,13 +113,10 @@ extern int npcIdToDismissAfterDialogue;
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 
-extern std::array<char, 10000> pTmpBuf3;
-
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;
 extern int day_fogrange_1;
 extern int day_fogrange_2;
-extern struct TileTable *pTileTable;              // idb
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
@@ -165,7 +157,6 @@ extern float flt_debugrecmod3;
 
 extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
-extern Vec3i blv_prev_party_pos;
 
 extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;

@@ -12,6 +12,7 @@
 
 #include "FrameTableInc.h"
 
+struct TileTable *pTileTable;
 
 GraphicsImage *TileDesc::GetTexture() {
     if (!this->texture) {

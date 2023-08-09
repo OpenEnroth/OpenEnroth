@@ -61,10 +61,6 @@ static Color parseColorTag(const char *tag, const Color &defaultColor) {
     }
 }
 
-char temp_string[2048];
-
-std::array<char, 10000> pTmpBuf3;
-
 GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
@@ -364,78 +360,76 @@ int GUIFont::AlignText_Center(int width, const std::string &pString) {
 }
 
 std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int width, int uX, bool return_on_carriage) {
-    size_t uInStrLen = inString.length();
-    strcpy(temp_string, inString.c_str());
-    if (uInStrLen == 0) {
-        return &temp_string[0];
+    if (inString.empty()) {
+        return "";
     }
 
-    int start_pixel_offset = uX;
-    int string_pixel_Width = uX;
-    int possible_transition_point = 0;
-    for (int i = 0; i < uInStrLen; ++i) {
-        unsigned char c = temp_string[i];
+    int lineWidth = uX;
+    int newlinePos = -1;
+    int lastCopyPos = 0;
+    std::string out;
+
+    for (int i = 0; i < inString.length(); i++) {
+        unsigned char c = inString[i];
+
         if (IsCharValid(c)) {
             switch (c) {
-            case '\t':
-            {  // Horizontal tab 09
-                char digits[4];
-                strncpy(digits, &temp_string[i + 1], 3);
-                digits[3] = 0;
-                string_pixel_Width = atoi(digits) + uX;
-                i += 3;
+              case '\t': // Horizontal tab
+                {
+                    char digits[4];
+                    strncpy(digits, &inString[i + 1], 3);
+                    digits[3] = 0;
+                    lineWidth = atoi(digits) + uX;
+                    i += 3;
+                    break;
+                }
+              case '\n': // Line Feed
+                lineWidth = uX;
+                newlinePos = -1;
+                out += inString.substr(lastCopyPos, i - lastCopyPos) + "\n";
+                lastCopyPos = i + 1;
                 break;
-            }
-            case  '\n':
-            {  // Line Feed 0A 10 (конец строки)
-                string_pixel_Width = start_pixel_offset;
-                possible_transition_point = i;
-                break;
-            }
-            case  '\f':
-            {  // Form Feed, page eject  0C 12
+              case '\f': // Form Feed, page eject
                 i += 5;
                 break;
-            }
-            case  '\r':
-            {  // Carriage Return 0D 13
+              case '\r': // Carriage Return
                 if (!return_on_carriage) {
                     return inString;
                 }
                 break;
-            }
-            case ' ':
-            {  // Space
-                string_pixel_Width += pData->pMetrics[c].uWidth;
-                possible_transition_point = i;
+              case ' ': // Space
+                lineWidth += pData->pMetrics[c].uWidth;
+                newlinePos = i;
                 break;
-            }
-            default:
-                if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing + pData->pMetrics[c].uRightSpacing) < width) {  // наращивание длины строки или перенос
-                    if (i > possible_transition_point)
-                        string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
-                    string_pixel_Width += pData->pMetrics[c].uWidth;
-                    if (i < uInStrLen - 1)
-                        string_pixel_Width += pData->pMetrics[c].uRightSpacing;
-                } else {  // перенос строки и слова
-                    temp_string[possible_transition_point] = '\n';
-                    string_pixel_Width = start_pixel_offset;
-                    if (i > possible_transition_point) {
-                        for (int j = possible_transition_point; j <= i; ++j) {
-                            c = temp_string[j];
-                            if (IsCharValid(c)) {
-                                if (j > possible_transition_point)
-                                    string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
-                                string_pixel_Width += pData->pMetrics[c].uWidth;
-                                string_pixel_Width += pData->pMetrics[c].uRightSpacing;
-                            }
-                        }
+              default:
+                if ((lineWidth + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing + pData->pMetrics[c].uRightSpacing) < width) {
+                    if (i > newlinePos)
+                        lineWidth += pData->pMetrics[c].uLeftSpacing;
+                    lineWidth += pData->pMetrics[c].uWidth;
+                    if (i < inString.length() - 1)
+                        lineWidth += pData->pMetrics[c].uRightSpacing;
+                } else {
+                    lineWidth = uX;
+                    if (newlinePos >= 0) {
+                        out += inString.substr(lastCopyPos, newlinePos - lastCopyPos) + "\n";
+                        i = newlinePos;
+                        lastCopyPos = i + 1;
+                    } else {
+                        out += inString.substr(lastCopyPos, i - lastCopyPos) + "\n";
+                        lastCopyPos = i;
+                        i--;
                     }
+                    newlinePos = -1;
                 }
             }
         }
     }
-    return temp_string;
+
+    if (lastCopyPos < inString.length()) {
+        out += inString.substr(lastCopyPos, inString.length() - lastCopyPos);
+    }
+
+    return out;
 }
 
 void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
@@ -716,94 +710,85 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     }
 }
 
-std::string GUIFont::FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond, GUIWindow *pWindow, int startPixlOff, int a6) {
-    if (pString.empty()) {
-        return std::string();
-    }
-    GUIFont *currentFont = this;
-    size_t uInStrLen = pString.length();
-    assert(uInStrLen < sizeof(pTmpBuf3));
-    strcpy(pTmpBuf3.data(), pString.c_str());
-    if (uInStrLen == 0) {
-        return pTmpBuf3.data();
+std::string GUIFont::FitTwoFontStringINWindow(const std::string &inString, GUIFont *pFontSecond, GUIWindow *pWindow, int startPixlOff, bool return_on_carriage) {
+    if (inString.empty()) {
+        return "";
     }
 
-    int string_pixel_Width = startPixlOff;
-    int start_pixel_offset = startPixlOff;
-    int possible_transition_point = 0;
-    for (int i = 0; i < uInStrLen; ++i) {
-        unsigned char c = pTmpBuf3[i];
+    GUIFont *currentFont = this;
+    GUIFont *newlineFont = this;
+    int lineWidth = startPixlOff;
+    int newlinePos = -1;
+    int lastCopyPos = 0;
+    std::string out;
+
+    for (int i = 0; i < inString.length(); i++) {
+        unsigned char c = inString[i];
+
         if (IsCharValid(c)) {
             switch (c) {
-            case '\t': {  // Horizontal tab 09
-                char digits[4];
-                strncpy(digits, &pTmpBuf3[i + 1], 3);
-                digits[3] = 0;
-                string_pixel_Width = atoi(digits) + startPixlOff;
-                i += 3;
-                break;
-            }
-            case  '\n': {  // Line Feed 0A 10
-                string_pixel_Width = start_pixel_offset;
-                possible_transition_point = i;
+              case '\t': // Horizontal tab
+                {
+                    char digits[4];
+                    strncpy(digits, &inString[i + 1], 3);
+                    digits[3] = 0;
+                    lineWidth = atoi(digits) + startPixlOff;
+                    i += 3;
+                    break;
+                }
+              case '\n': // Line Feed
+                lineWidth = startPixlOff;
+                newlinePos = -1;
+                out += inString.substr(lastCopyPos, i - lastCopyPos) + "\n";
+                lastCopyPos = i + 1;
                 currentFont = this;
                 break;
-            }
-            case  '\f': {  // Form Feed, page eject  0C 12
+              case '\f': // Form Feed, page eject
                 i += 5;
                 break;
-            }
-            case  '\r': {  // Carriage Return 0D 13
-                if (!a6)
-                    return pString;
+              case '\r': // Carriage Return
+                if (!return_on_carriage) {
+                    return inString;
+                }
                 break;
-            }
-            case ' ': {
-                string_pixel_Width += currentFont->pData->pMetrics[c].uWidth;
-                possible_transition_point = i;
+              case ' ': // Space
+                lineWidth += currentFont->pData->pMetrics[c].uWidth;
+                newlinePos = i;
+                newlineFont = currentFont;
                 break;
-            }
-            case '_':
+              case '_':
                 currentFont = pFontSecond;
                 break;
-            default:
-
-                if ((string_pixel_Width + currentFont->pData->pMetrics[c].uWidth + currentFont->pData->pMetrics[c].uLeftSpacing + currentFont->pData->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth) {
-                    if (i > possible_transition_point)
-                        string_pixel_Width += currentFont->pData->pMetrics[c].uLeftSpacing;
-                    string_pixel_Width += currentFont->pData->pMetrics[c].uWidth;
-                    if (i < uInStrLen)
-                        string_pixel_Width += currentFont->pData->pMetrics[c].uRightSpacing;
+              default:
+                if ((lineWidth + currentFont->pData->pMetrics[c].uWidth + currentFont->pData->pMetrics[c].uLeftSpacing + currentFont->pData->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth) {
+                    if (i > newlinePos)
+                        lineWidth += currentFont->pData->pMetrics[c].uLeftSpacing;
+                    lineWidth += currentFont->pData->pMetrics[c].uWidth;
+                    if (i < inString.length() - 1)
+                        lineWidth += currentFont->pData->pMetrics[c].uRightSpacing;
                 } else {
-                    pTmpBuf3[possible_transition_point] = '\n';
-                    if (currentFont == pFontSecond) {
-                        for (int k = uInStrLen - 1; k >= possible_transition_point + 1; --k) {
-                            pTmpBuf3[k] = pTmpBuf3[k - 1];
-                        }
-                        ++uInStrLen;
-                        ++possible_transition_point;
-                        pTmpBuf3[possible_transition_point] = '_';
+                    lineWidth = startPixlOff;
+                    currentFont = newlineFont;
+                    if (newlinePos >= 0) {
+                        out += inString.substr(lastCopyPos, newlinePos - lastCopyPos) + "\n";
+                        i = newlinePos;
+                        lastCopyPos = i + 1;
+                    } else {
+                        out += inString.substr(lastCopyPos, i - lastCopyPos) + "\n";
+                        lastCopyPos = i;
+                        i--;
                     }
-                    string_pixel_Width = start_pixel_offset;
-
-                    for (int j = possible_transition_point; j < i; ++j) {
-                        c = pTmpBuf3[j];
-                        if (IsCharValid(c)) {
-                            if (j > possible_transition_point) {
-                                string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
-                            }
-                            string_pixel_Width += pData->pMetrics[c].uWidth;
-                            if (j < i) {
-                                string_pixel_Width += pData->pMetrics[c].uRightSpacing;
-                            }
-                        }
-                    }
+                    newlinePos = -1;
                 }
             }
         }
     }
 
-    return std::string(pTmpBuf3.data());
+    if (lastCopyPos < inString.length()) {
+        out += inString.substr(lastCopyPos, inString.length() - lastCopyPos);
+    }
+
+    return out;
 }
 
 int GUIFont::GetStringHeight2(GUIFont *secondFont, const std::string &text_str, GUIWindow *pWindow, int startX, int a6) {

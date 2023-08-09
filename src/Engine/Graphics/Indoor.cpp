@@ -1523,13 +1523,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             __debugbreak();  // level built with errors
-            pParty->pos = blv_prev_party_pos;
-            pParty->uFallStartZ = blv_prev_party_pos.z;
             return;
         }
     }
-
-    blv_prev_party_pos = pParty->pos;
 
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)

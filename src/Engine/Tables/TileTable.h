@@ -42,3 +42,5 @@ struct TileTable {
 
     std::vector<TileDesc> tiles;
 };
+
+extern struct TileTable *pTileTable;
