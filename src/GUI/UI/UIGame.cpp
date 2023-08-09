@@ -86,6 +86,9 @@ std::array<PARTY_BUFF_INDEX, 14> spellBuffsAtRightPanel = {
      PARTY_BUFF_SHIELD, PARTY_BUFF_STONE_SKIN, PARTY_BUFF_PROTECTION_FROM_MAGIC,
      PARTY_BUFF_IMMOLATION, PARTY_BUFF_DAY_OF_GODS}};
 
+std::array<int, 8> BtnTurnCoord = {
+    {0xA4, 0x5D, 0x16, 0xB, 0x5, 0xD, 0x7, 0x3B}};
+
 GraphicsImage *game_ui_statusbar = nullptr;
 GraphicsImage *game_ui_rightframe = nullptr;
 GraphicsImage *game_ui_topframe = nullptr;

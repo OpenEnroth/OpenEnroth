@@ -158,22 +158,10 @@ int game_viewport_z;
 int game_viewport_w;
 
 char _4D864C_force_sw_render_rules;
-float flt_4D86CC = 1.0f;  // spot light scale??
-int dword_4D86D8 = 0x40000000;
 
 float flt_4D84E8 = 0.0f;
 
 unsigned int uGammaPos = 0;
-std::array<int, 8> BtnTurnCoord = {{
-    0xA4,
-    0x5D,
-    0x16,
-    0xB,
-    0x5,
-    0xD,
-    0x7,
-    0x3B,
-}};
 
 std::array<int, 6> dword_4E4560;
 std::array<int, 6> dword_4E4578;
@@ -2458,7 +2446,6 @@ int uDefaultTravelTime_ByFoot;
 int day_attrib;
 int day_fogrange_1; // fog start dist
 int day_fogrange_2; // fog end dist
-struct TileTable *pTileTable;                                        // idb
 MAP_TYPE dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
@@ -2474,7 +2461,6 @@ float flt_debugrecmod3;
 
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
-Vec3i blv_prev_party_pos;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

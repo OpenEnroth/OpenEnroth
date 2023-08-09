@@ -88,9 +88,9 @@ class GUIFont {
  protected:
     FontData *pData;
 
-    std::string FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond,
+    std::string FitTwoFontStringINWindow(const std::string &inString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
-                                    int a6);
+                                    bool return_on_carriage = false);
     void DrawTextLineToBuff(Color color, Color *uX_buff_pos,
                             const std::string &text, int line_width);
 };
