@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;07391ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3eb212c</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Chest_8h.html">Engine/Objects/Chest.h</a>&quot;</code><br />
+<code>#include &lt;numeric&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
@@ -112,11 +114,13 @@ Functions</h2></td></tr>
 <tr class="separator:a5d5df27af9a0319f240d34f83a27abda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a605ec4a4eb2b8920c9e67e57f44a9f85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#a605ec4a4eb2b8920c9e67e57f44a9f85">GenerateItemsInChest</a> ()</td></tr>
 <tr class="separator:a605ec4a4eb2b8920c9e67e57f44a9f85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c43c69a45ae757200fb37a3b999d48f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#a4c43c69a45ae757200fb37a3b999d48f">UpdateChestPositions</a> ()</td></tr>
+<tr class="separator:a4c43c69a45ae757200fb37a3b999d48f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ae5306a119320916adff382149bf0fb87"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classChestList.html">ChestList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#ae5306a119320916adff382149bf0fb87">pChestList</a></td></tr>
-<tr class="separator:ae5306a119320916adff382149bf0fb87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8f514bb62b1f9e1b903dcfbc2a7fc02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classChestDescList.html">ChestDescList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#ac8f514bb62b1f9e1b903dcfbc2a7fc02">pChestList</a></td></tr>
+<tr class="separator:ac8f514bb62b1f9e1b903dcfbc2a7fc02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69b8af73220304518033692198679e17"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structChest.html">Chest</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#a69b8af73220304518033692198679e17">vChests</a></td></tr>
 <tr class="separator:a69b8af73220304518033692198679e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -156,15 +160,32 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="ae5306a119320916adff382149bf0fb87" name="ae5306a119320916adff382149bf0fb87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5306a119320916adff382149bf0fb87">&#9670;&#160;</a></span>pChestList</h2>
+<a id="a4c43c69a45ae757200fb37a3b999d48f" name="a4c43c69a45ae757200fb37a3b999d48f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c43c69a45ae757200fb37a3b999d48f">&#9670;&#160;</a></span>UpdateChestPositions()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classChestList.html">ChestList</a>* pChestList</td>
+          <td class="memname">void UpdateChestPositions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ac8f514bb62b1f9e1b903dcfbc2a7fc02" name="ac8f514bb62b1f9e1b903dcfbc2a7fc02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8f514bb62b1f9e1b903dcfbc2a7fc02">&#9670;&#160;</a></span>pChestList</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classChestDescList.html">ChestDescList</a>* pChestList</td>
         </tr>
       </table>
 </div><div class="memdoc">
