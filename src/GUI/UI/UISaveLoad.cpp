@@ -14,7 +14,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
 #include "Engine/SaveLoad.h"
 
@@ -27,6 +26,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 
+#include "Library/Lod/LodReader.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/DataPath.h"

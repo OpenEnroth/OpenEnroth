@@ -1,6 +1,7 @@
 #include "Engine/Graphics/PortalFunctions.h"
 
 #include "Engine/Engine.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/Camera.h"
 #include "Indoor.h"
 

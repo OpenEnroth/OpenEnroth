@@ -14,7 +14,6 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
 
 struct SpriteFrameTable *pSpriteFrameTable;

@@ -5,6 +5,7 @@
 
 #include "Arcomage/Arcomage.h"
 
+#include "Engine/ErrorHandling.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Components/Control/EngineControlComponent.h"

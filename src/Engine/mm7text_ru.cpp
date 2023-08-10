@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cstdarg>
 
-#include "Engine/Engine.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/EngineIocContainer.h"
 
 #include "Library/Logger/Logger.h"

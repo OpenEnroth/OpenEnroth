@@ -2,14 +2,9 @@
 
 #include <vector>
 
-#include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIFont.h"
-#include "GUI/GUIWindow.h"
 
 
 GUIButton *pBtn_CloseBook;

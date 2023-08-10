@@ -17,7 +17,6 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/LodTextureCache.h"
-#include "Engine/LOD.h"
 #include "Engine/Party.h"
 
 #include "GUI/GUIWindow.h"
@@ -3157,11 +3156,8 @@ static int lua_nk_load_image(lua_State *L) {
     int slot = -1;
     bool ret = false;
     if (lod) {
-        LOD::File pLODFile;
-        if (pLODFile.Open(makeDataPath("data", lod))) {
-            // TODO: load from custom lod when this functionality becomes available
-            pLODFile.Close();
-        }
+        // TODO: load from custom lod when this functionality becomes available
+        // LodReader lodReader(lod);
     } else {
         if (!strcmp(type, "pcx"))
             im->asset = assets->getImage_PCXFromIconsLOD(name);

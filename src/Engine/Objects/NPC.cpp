@@ -1,12 +1,9 @@
 #include "Engine/Objects/NPC.h"
 
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
-#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
@@ -14,9 +11,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
-#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UITransition.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

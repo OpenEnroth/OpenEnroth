@@ -1,10 +1,9 @@
 #include "GUI/GUIFont.h"
 
-#include <cstdarg>
-
 #include <sstream>
 
 #include "Engine/Engine.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/LodTextureCache.h"
 
 #include "Engine/Graphics/IRender.h"

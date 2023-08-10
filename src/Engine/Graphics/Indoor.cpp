@@ -22,7 +22,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -35,6 +34,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
+#include "Engine/LOD.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
