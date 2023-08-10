@@ -72,11 +72,7 @@ static void calculateRequiredFood() {
     }
 
     if (PartyHasDragon()) {
-        for (Character &player : pParty->pCharacters) {
-            if (player.classType == CHARACTER_CLASS_WARLOCK) {
-                ++foodRequiredToRest;
-            }
-        }
+        ++foodRequiredToRest;
     }
 
     if (CheckHiredNPCSpeciality(Porter)) {
