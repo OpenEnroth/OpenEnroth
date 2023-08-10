@@ -1,5 +1,7 @@
 #include "Engine/Objects/Chest.h"
 
+#include <unordered_map>
+
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -35,9 +37,6 @@ ChestDescList *pChestList;
 std::vector<Chest> vChests;
 
 bool Chest::open(int uChestID, Pid objectPid) {
-    const ODMFace *pODMFace;
-    BLVFace *pBLVFace;
-    Vec3i objectPos;
     double dir_x;
     double dir_y;
     double length_vector;
@@ -69,18 +68,18 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpriteID[3] = SPRITE_TRAP_BODY;
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int objId = objectPid.id();
-            if (objectPid.type() == OBJECT_Decoration) {
+
+            Vec3i objectPos;
+            if (chest->position) {
+                objectPos = *chest->position;
+            } else if (objectPid.type() == OBJECT_Decoration) {
                 objectPos = pLevelDecorations[objId].vPosition +
                     Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
-            }
-            if (objectPid.type() == OBJECT_Face) {
-                // TODO(pskelton): trap explosion moves depending on what face is clicked
+            } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    pODMFace = &pOutdoor->face(objectPid);
-                    objectPos = pODMFace->pBoundingBox.center();
-                } else {  // Indoor
-                    pBLVFace = &pIndoor->pFaces[objId];
-                    objectPos = pBLVFace->pBounding.center();
+                    objectPos = pOutdoor->face(objectPid).pBoundingBox.center();
+                } else {
+                    objectPos = pIndoor->pFaces[objId].pBounding.center();
                 }
             }
 
@@ -605,4 +604,56 @@ void GenerateItemsInChest() {
             }
         }
     }
+}
+
+void UpdateChestPositions() {
+    struct State {
+        int count = 0;
+        Vec3i position;
+        bool nonLocal = false;
+    };
+
+    std::unordered_map<int, State> stateByChestId;
+
+    auto processEvent = [&](int eventId, Vec3i position) {
+        if (!engine->_localEventMap.isHaveEvents(eventId))
+            return;
+
+        for (const EventIR &event : engine->_localEventMap.getEvents(eventId)) {
+            if (event.type != EVENT_OpenChest)
+                continue;
+            // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
+            // break out of the loop early. If yes... Well. We support it anyway.
+
+            State &state = stateByChestId[event.data.chest_id];
+            if (state.nonLocal)
+                continue;
+
+            // TODO(captainurist): just use lengthSqr once we move to floats here.
+            if (state.count > 0 && (state.position / state.count - position).chebyshevLength() > 512) {
+                // Wormhole chest detected, 512 is one map tile.
+                state.nonLocal = true;
+                continue;
+            }
+
+            state.count++;
+            state.position += position;
+        }
+    };
+
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        for (const BSPModel &model : pOutdoor->pBModels)
+            for (const ODMFace &face : model.pFaces)
+                if (face.sCogTriggeredID)
+                    processEvent(face.sCogTriggeredID, face.pBoundingBox.center());
+    } else {
+        for (const BLVFace &face : pIndoor->pFaces)
+            if (face.uFaceExtraID)
+                if (int eventId = pIndoor->pFaceExtras[face.uFaceExtraID].uEventID)
+                    processEvent(eventId, face.pBounding.center());
+    }
+
+    for (const auto &[chestId, state] : stateByChestId)
+        if (!state.nonLocal)
+            vChests[chestId].position = state.position / state.count;
 }

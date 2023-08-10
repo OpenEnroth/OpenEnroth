@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <algorithm>
 #include <type_traits>
 
 #include "Utility/Math/TrigLut.h"
@@ -149,6 +150,10 @@ struct Vec3 {
         return std::sqrt(lengthSqr());
     }
 
+    [[nodiscard]] T chebyshevLength() const { // L-inf norm.
+        return std::max({std::abs(x), std::abs(y), std::abs(z)});
+    }
+
     friend bool operator==(const Vec3 &l, const Vec3 &r) {
         return (l.x == r.x) && (l.y == r.y) && (l.z == r.z);
     }
@@ -184,6 +189,16 @@ struct Vec3 {
 
     Vec3 &operator-=(const Vec3 &v) {
         *this = *this - v;
+        return *this;
+    }
+
+    Vec3 &operator*=(T v) {
+        *this = *this * v;
+        return *this;
+    }
+
+    Vec3 &operator/=(T v) {
+        *this = *this / v;
         return *this;
     }
 

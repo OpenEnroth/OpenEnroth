@@ -2,10 +2,12 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Pid.h"
 
+#include "Utility/Geometry/Vec.h"
 #include "Utility/Memory/Blob.h"
 
 #include "ChestEnums.h"
@@ -49,10 +51,15 @@ struct Chest {
     ChestFlags uFlags;
     std::array<ItemGen, 140> igChestItems;
     std::array<int16_t, 140> pInventoryIndices = {{}};  // 0x13b4 why is this a short?
+
+    // Chest position, OE addition. Recalculated on level load in UpdateChestPositions. It's used to display
+    // trap explosions in the same place regardless of which chest face was clicked.
+    std::optional<Vec3i> position;
 };
 
 void RemoveItemAtChestIndex(int index);
 void GenerateItemsInChest();
+void UpdateChestPositions();
 
 extern ChestDescList *pChestList;
 extern std::vector<Chest> vChests;
