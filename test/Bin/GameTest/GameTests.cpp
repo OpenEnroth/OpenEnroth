@@ -1381,7 +1381,7 @@ GAME_TEST(Issues, Issue832) {
         return std::count_if(pActors.begin(), pActors.end(), [] (auto &&actor) { return actor.aiState == AIState::Dead; });
     });
     test.playTraceFromTestData("issue_832.mm7", "issue_832.json");
-    EXPECT_EQ(deathsTape.firstLast(), tape(0, 4));
+    EXPECT_EQ(deathsTape.firstLast(), tape(0, 3));
 }
 
 GAME_TEST(Issues, Issue833) {
