@@ -1,5 +1,6 @@
 #include "Engine/Objects/Chest.h"
 
+#include <numeric>
 #include <unordered_map>
 
 #include "Engine/Engine.h"
@@ -607,38 +608,15 @@ void GenerateItemsInChest() {
 }
 
 void UpdateChestPositions() {
-    struct State {
-        int count = 0;
-        Vec3i position;
-        bool nonLocal = false;
-    };
+    std::unordered_map<int, std::vector<Vec3i>> pointsByChestId;
 
-    std::unordered_map<int, State> stateByChestId;
-
-    auto processEvent = [&](int eventId, Vec3i position) {
-        if (!engine->_localEventMap.isHaveEvents(eventId))
-            return;
-
-        for (const EventIR &event : engine->_localEventMap.getEvents(eventId)) {
-            if (event.type != EVENT_OpenChest)
-                continue;
-            // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
-            // break out of the loop early. If yes... Well. We support it anyway.
-
-            State &state = stateByChestId[event.data.chest_id];
-            if (state.nonLocal)
-                continue;
-
-            // TODO(captainurist): just use lengthSqr once we move to floats here.
-            if (state.count > 0 && (state.position / state.count - position).chebyshevLength() > 512) {
-                // Wormhole chest detected, 512 is one map tile.
-                state.nonLocal = true;
-                continue;
-            }
-
-            state.count++;
-            state.position += position;
-        }
+    auto processEvent = [&](int eventId, const Vec3i &position) {
+        // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
+        // break out of the loop below early. If yes... Well. This should work.
+        if (engine->_localEventMap.isHaveEvents(eventId))
+            for (const EventIR &event : engine->_localEventMap.getEvents(eventId))
+                if (event.type == EVENT_OpenChest)
+                    pointsByChestId[event.data.chest_id].push_back(position);
     };
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -653,7 +631,20 @@ void UpdateChestPositions() {
                     processEvent(eventId, face.pBounding.center());
     }
 
-    for (const auto &[chestId, state] : stateByChestId)
-        if (!state.nonLocal)
-            vChests[chestId].position = state.position / state.count;
+    for (const auto &[chestId, points] : pointsByChestId) {
+        Vec3i center = std::accumulate(points.begin(), points.end(), Vec3i()) / points.size();
+
+        bool isChestLike = true;
+        for (const Vec3i &point : points) {
+            // TODO(captainurist): just use lengthSqr when we transition to floats here.
+            if ((point - center).chebyshevLength() > 256) {
+                // Wormhole chest detected. 256 is half the size of the ODM tile.
+                isChestLike = false;
+                break;
+            }
+        }
+
+        if (isChestLike)
+            vChests[chestId].position = center;
+    }
 }
