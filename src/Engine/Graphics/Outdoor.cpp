@@ -3007,8 +3007,8 @@ void TeleportToStartingPoint(MapStartPoint point) {
             }
         }
         if (engine->_teleportPoint.isValid()) {
-            engine->_teleportPoint.doTeleport();
+            engine->_teleportPoint.doTeleport(true);
         }
-        engine->_teleportPoint.setValid(false);
+        engine->_teleportPoint.invalidate();
     }
 }

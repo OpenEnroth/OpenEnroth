@@ -9,6 +9,7 @@
 
 #include "Engine/Events/EventMap.h"
 #include "Engine/MapEnums.h"
+#include "Engine/TeleportPoint.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Time.h"
 
@@ -80,28 +81,6 @@ struct Game_Bloodsplat {
 struct PersistentVariables {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;
-};
-
-class TeleportPoint {
- public:
-    bool isValid() { return _teleportValid; }
-    void setValid(bool valid = true) { _teleportValid = valid; }
-    void setValidIfTarget();
-
-    void setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed);
-
-    void setTeleportMap(const std::string &mapName) { _targetMap = mapName; }
-    std::string &getTeleportMap() { return _targetMap; }
-
-    void doTeleport();
-
- private:
-    bool _teleportValid = false;
-    std::string _targetMap;
-    Vec3i _pos;
-    int _yaw;
-    int _pitch;
-    int _zSpeed;
 };
 
 class Engine {

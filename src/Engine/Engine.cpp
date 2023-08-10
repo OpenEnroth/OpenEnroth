@@ -1868,32 +1868,11 @@ void TeleportToNWCDungeon() {
     }
 
     // reset party teleport
-    engine->_teleportPoint.setValid(false);
+    engine->_teleportPoint.invalidate();
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
     current_screen_type = SCREEN_GAME;
     return;
-}
-
-void TeleportPoint::setValidIfTarget() {
-    _teleportValid = !!(_pos.x | _pos.y | _pos.z | (_yaw != -1) | _pitch | _zSpeed);
-}
-
-void TeleportPoint::setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed) {
-    _pos = pos;
-    _yaw = yaw;
-    _pitch = pitch;
-    _zSpeed = zSpeed;
-}
-
-void TeleportPoint::doTeleport() {
-    pParty->pos = _pos;
-    pParty->uFallStartZ = _pos.z;
-    if (_yaw != -1) {
-        pParty->_viewYaw = _yaw;
-    }
-    pParty->_viewPitch = _pitch;
-    pParty->speed = Vec3i(0, 0, _zSpeed);
 }

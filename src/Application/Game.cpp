@@ -884,15 +884,14 @@ void Game::processQueuedMessages() {
                 if (pMovie_Track) pMediaPlayer->Unload();
                 DialogueEnding();
 
-                engine->_teleportPoint.setValidIfTarget();
                 if (engine->_teleportPoint.isValid()) {
                     if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MapStartPoint_Party);
                     } else {
-                        engine->_teleportPoint.doTeleport();
-                        engine->_teleportPoint.setValid(false);
+                        engine->_teleportPoint.doTeleport(true);
+                        engine->_teleportPoint.invalidate();
                     }
                 } else {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
@@ -1058,7 +1057,6 @@ void Game::processQueuedMessages() {
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
                     engine->_teleportPoint.setTeleportTarget(Vec3i(dword_4E4560[v54], dword_4E4578[v54], dword_4E4590[v54]), dword_4E45A8[v54], 0, 0);
-                    engine->_teleportPoint.setValidIfTarget();
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -1125,7 +1123,6 @@ void Game::processQueuedMessages() {
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
                 engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
-                engine->_teleportPoint.setValid();
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -2183,7 +2180,6 @@ void Game::gameLoop() {
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
                     engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
-                    engine->_teleportPoint.setValid();
                     PrepareWorld(1);
                 }
                 Actor::InitializeActors();

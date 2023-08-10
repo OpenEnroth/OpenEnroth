@@ -164,7 +164,6 @@ void GUIWindow_Transport::transportDialogue() {
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
             engine->_teleportPoint.setTeleportTarget(Vec3i(pTravel->arrival_x, pTravel->arrival_y, pTravel->arrival_z), pTravel->arrival_view_yaw, 0, 0);
-            engine->_teleportPoint.setValidIfTarget();
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;

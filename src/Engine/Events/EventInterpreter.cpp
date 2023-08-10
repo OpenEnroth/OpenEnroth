@@ -201,13 +201,12 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 return -1;
             }
             engine->_teleportPoint.setTeleportTarget(Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                     (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : 0,
+                                                     (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
-            engine->_teleportPoint.setValidIfTarget();
             if (ir.str[0] == '0') { // teleport within map
                 if (engine->_teleportPoint.isValid()) {
-                    engine->_teleportPoint.doTeleport();
-                    engine->_teleportPoint.setValid(false);
+                    engine->_teleportPoint.doTeleport(false);
+                    engine->_teleportPoint.invalidate();
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
             } else {
