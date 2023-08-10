@@ -151,7 +151,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
 
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
-    if (!eventId) {
+    if (!eventId) { // TODO(captainurist): never executed because it's checked above.
         engine->_statusBar->nothingHere();
         return;
     }
