@@ -10,7 +10,6 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"

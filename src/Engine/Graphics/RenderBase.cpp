@@ -7,7 +7,6 @@
 #include "Engine/MM7.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Party.h"
-#include "Engine/LOD.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
 

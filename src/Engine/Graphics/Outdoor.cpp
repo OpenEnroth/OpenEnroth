@@ -22,7 +22,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Polygon.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
@@ -36,6 +35,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/MapInfo.h"
+#include "Engine/LOD.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"

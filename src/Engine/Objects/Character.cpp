@@ -12,7 +12,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"

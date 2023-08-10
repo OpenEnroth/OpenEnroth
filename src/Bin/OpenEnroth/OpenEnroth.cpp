@@ -9,6 +9,7 @@
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Engine.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/EngineGlobals.h"
 
 #include "Library/Application/PlatformApplication.h"

@@ -1,7 +1,6 @@
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"
 

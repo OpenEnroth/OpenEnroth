@@ -27,7 +27,6 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Graphics/Polygon.h"
-#include "Engine/LOD.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
 #include "Engine/Localization.h"

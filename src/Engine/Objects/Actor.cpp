@@ -15,7 +15,6 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"

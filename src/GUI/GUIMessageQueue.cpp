@@ -1,7 +1,5 @@
 #include <GUI/GUIMessageQueue.h>
 
-#include <utility>
-
 void GUIFrameMessageQueue::clear() {
     std::queue<GUIMessage> empty;
 
