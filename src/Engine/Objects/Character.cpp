@@ -7328,7 +7328,7 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
     if (expression == CHARACTER_EXPRESSION_DEAD ||
         expression == CHARACTER_EXPRESSION_ERADICATED) {
         return;  // no react
-    } else if (expression == CHARACTER_EXPRESSION_PERTIFIED &&
+    } else if (expression == CHARACTER_EXPRESSION_PETRIFIED &&
                new_expression != CHARACTER_EXPRESSION_FALLING) {
         return;  // no react
     } else {

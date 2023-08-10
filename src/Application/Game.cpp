@@ -2183,7 +2183,6 @@ void Game::gameLoop() {
                 }
                 pMediaPlayer->PlayFullscreenMovie("losegame");
                 if (pMovie_Track) pMediaPlayer->Unload();
-                SaveGame(0, 0);
                 ++pParty->uNumDeaths;
                 for (Character &character : pParty->pCharacters) {
                     character.SetVariable(VAR_Award, Award_Deaths);

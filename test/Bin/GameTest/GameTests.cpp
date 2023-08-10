@@ -1578,3 +1578,12 @@ GAME_TEST(Issues, Issue1164) {
     int frameTicks = (128 * 15 + 999) / 1000;
     EXPECT_GE(ticks, 144 - frameTicks);
 }
+
+GAME_TEST(Issues, Issue1197) {
+    //Assert on party death
+    auto loc = tapes.map();
+    auto deaths = tapes.custom([] { return pParty->uNumDeaths; });
+    test.playTraceFromTestData("issue_1197.mm7", "issue_1197.json");
+    EXPECT_TRUE(loc.contains("out01.odm")); // make it back to emerald
+    EXPECT_EQ(deaths.delta(), 1);
+}

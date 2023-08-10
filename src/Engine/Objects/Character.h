@@ -569,7 +569,7 @@ inline CharacterExpressionID expressionForCondition(Condition condition) {
       case CONDITION_DEAD:
         return CHARACTER_EXPRESSION_DEAD;
       case CONDITION_PETRIFIED:
-        return CHARACTER_EXPRESSION_PERTIFIED;
+        return CHARACTER_EXPRESSION_PETRIFIED;
       case CONDITION_ERADICATED:
         return CHARACTER_EXPRESSION_ERADICATED;
       case CONDITION_CURSED:
