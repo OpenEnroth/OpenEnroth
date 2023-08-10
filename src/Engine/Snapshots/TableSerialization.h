@@ -2,7 +2,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-class ChestList;
+class ChestDescList;
 class DecorationList;
 class ObjectList;
 struct IconFrameTable;
@@ -24,7 +24,7 @@ struct TriBlob {
  */
 void deserialize(const TriBlob &src, PlayerFrameTable *dst);
 
-void deserialize(const TriBlob &src, ChestList *dst);
+void deserialize(const TriBlob &src, ChestDescList *dst);
 
 /**
  * @offset 0x0045864C

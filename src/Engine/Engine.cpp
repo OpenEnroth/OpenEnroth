@@ -840,7 +840,7 @@ void Engine::MM7_Initialize() {
     pMonsterList = new MonsterList;
     deserialize(triLoad("dmonlist.bin"), pMonsterList);
 
-    pChestList = new ChestList;
+    pChestList = new ChestDescList;
     deserialize(triLoad("dchest.bin"), pChestList);
 
     pOverlayList = new OverlayList;

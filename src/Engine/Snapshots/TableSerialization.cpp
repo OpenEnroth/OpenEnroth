@@ -29,7 +29,7 @@ void deserialize(const TriBlob &src, PlayerFrameTable *dst) {
     assert(!dst->pFrames.empty());
 }
 
-void deserialize(const TriBlob &src, ChestList *dst) {
+void deserialize(const TriBlob &src, ChestDescList *dst) {
     dst->vChests.clear();
 
     if (src.mm6)

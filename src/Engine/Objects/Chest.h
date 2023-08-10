@@ -17,10 +17,7 @@ struct ChestDesc {
     int uTextureID = 0;
 };
 
-class ChestList {
- public:
-    ChestList() {}
-
+class ChestDescList {
  public:
     std::vector<ChestDesc> vChests;
 };
@@ -57,5 +54,5 @@ struct Chest {
 void RemoveItemAtChestIndex(int index);
 void GenerateItemsInChest();
 
-extern ChestList *pChestList;
+extern ChestDescList *pChestList;
 extern std::vector<Chest> vChests;

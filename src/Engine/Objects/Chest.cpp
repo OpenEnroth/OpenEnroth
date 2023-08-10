@@ -31,7 +31,7 @@
 
 #include "Utility/Math/TrigLut.h"
 
-ChestList *pChestList;
+ChestDescList *pChestList;
 std::vector<Chest> vChests;
 
 bool Chest::open(int uChestID, Pid objectPid) {
