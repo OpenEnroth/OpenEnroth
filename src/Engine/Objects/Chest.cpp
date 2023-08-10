@@ -92,7 +92,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
                 pitchAngle = 0;
             } else {
                 // sprite should be rotated towards the party and moved slightly forward
-                yawAngle = TrigLUT.atan2((int64_t) dir_y, (int64_t) dir_x);
+                yawAngle = TrigLUT.atan2(dir_x, dir_y);
                 pitchAngle = 256;
             }
 
@@ -100,7 +100,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             if (length_vector < pDepth) {
                 pDepth = length_vector;
             }
-            pOut = objectPos + Vec3i::fromPolarRetarded(pDepth, yawAngle, pitchAngle);
+            pOut = objectPos + Vec3i::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
