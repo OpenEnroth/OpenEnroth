@@ -530,21 +530,8 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
 
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
-    // pThreadWardInstance = nullptr;
-    // pParticleEngine = new ParticleEngine;
-    // pMouse = pMouseInstance = new Mouse;
-    // pVisInstance = new Vis;
-    // spellfx = new SpellFxRenderer;
     pCamera3D = new Camera3D;
     pStru10Instance = new stru10;
-    // pStru11Instance = new stru11;
-    // pStru11Instance = nullptr;
-    // pStru12Instance = new stru12(pStru11Instance);
-    // pStru12Instance = nullptr;
-    // pCShow = new CShow;
-    // pCShow = nullptr;
-    // pKeyboardInstance = new Keyboard;
-    // pGammaController = new GammaController;
 
     keyboardInputHandler = ::keyboardInputHandler;
     keyboardActionMapping = ::keyboardActionMapping;
@@ -552,18 +539,8 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
-    // delete pGammaController;
-    // delete pKeyboardInstance;
-    /*delete pCShow;
-    delete pStru12Instance;
-    delete pStru11Instance;*/
     delete pStru10Instance;
     delete pCamera3D;
-    // delete spellfx;
-    // delete pVisInstance;
-    // delete pMouseInstance;
-    // delete pParticleEngine;
-    // delete pThreadWardInstance;
 }
 
 void Engine::LogEngineBuildInfo() {
@@ -1874,5 +1851,4 @@ void TeleportToNWCDungeon() {
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
     current_screen_type = SCREEN_GAME;
-    return;
 }
