@@ -567,7 +567,7 @@ Engine::~Engine() {
 }
 
 void Engine::LogEngineBuildInfo() {
-    logger->info("OpenEnroth, revision {}", gitRevision());
+    logger->info("OpenEnroth, revision {} built on {}", gitRevision(), buildTime());
     logger->info("Extra build information: {}/{}/{} {}", BUILD_PLATFORM, BUILD_ARCHITECTURE, BUILD_COMPILER, PROJECT_VERSION);
 }
 
