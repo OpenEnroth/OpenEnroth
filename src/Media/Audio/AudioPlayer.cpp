@@ -614,7 +614,7 @@ Blob AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by I
             return Blob();
         }
     } else {
-        return zlib::Uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
+        return zlib::uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
     }
 }
 
@@ -636,7 +636,7 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
             return Blob();
         }
     } else {
-        return zlib::Uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
+        return zlib::uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
     }
 }
 
