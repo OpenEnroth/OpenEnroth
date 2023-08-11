@@ -3335,14 +3335,14 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
+void Actor::Arena_summon_actor(int monster_id, Vec3i pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
 
     int v16 = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        v16 = pIndoor->GetSector(x, y, z);
+        v16 = pIndoor->GetSector(pos);
 
     actor->name = pMonsterStats->pInfos[monster_id].pName;
     actor->currentHP = (short)pMonsterStats->pInfos[monster_id].uHP;
@@ -3351,18 +3351,14 @@ void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
     actor->radius = pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
     actor->height = pMonsterList->pMonsters[monster_id - 1].uMonsterHeight;
     actor->moveSpeed = pMonsterList->pMonsters[monster_id - 1].uMovementSpeed;
-    actor->initialPosition.x = x;
-    actor->pos.x = x;
+    actor->initialPosition = Vec3s(pos.x, pos.y, pos.z);
+    actor->pos = Vec3s(pos.x, pos.y, pos.z);
     actor->attributes |= ACTOR_AGGRESSOR;
     actor->monsterInfo.uTreasureType = 0;
     actor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     actor->monsterInfo.uTreasureDiceSides = 0;
     actor->monsterInfo.uTreasureDiceRolls = 0;
     actor->monsterInfo.uTreasureDropChance = 0;
-    actor->initialPosition.y = y;
-    actor->pos.y = y;
-    actor->initialPosition.z = z;
-    actor->pos.z = z;
     actor->tetherDistance = 256;
     actor->sectorId = v16;
     actor->group = 1;

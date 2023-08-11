@@ -430,9 +430,7 @@ class Character {
     int getCharacterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
-    static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos,
-                                            int a4, int16_t a5,
-                                            signed int actchar);
+    static void _42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signed int actchar);
     void cleanupBeacons();
     bool setBeacon(int index, GameTime duration);
 

@@ -367,7 +367,8 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     gold_transaction_amount = characterMaxLevel * baseReward;
 
     for (int i = 0; i < monstersNum; ++i) {
-        Actor::Arena_summon_actor(monsterIds[grng->random(monsterIds.size())], pMonsterArenaPlacements[i].x, pMonsterArenaPlacements[i].y, 1);
+        Vec2i pos = pMonsterArenaPlacements[i];
+        Actor::Arena_summon_actor(monsterIds[grng->random(monsterIds.size())], Vec3i(pos.x, pos.y, 1));
     }
     pAudioPlayer->playUISound(SOUND_51heroism03);
 }
