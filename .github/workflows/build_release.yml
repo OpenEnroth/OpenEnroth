@@ -175,11 +175,7 @@ jobs:
       - name: Build the app
         working-directory: android
         run: |
-          if [ "${{ matrix.configuration }}" = "Debug" ]; then
-            ./gradlew assembleDebug
-          else 
-            ./gradlew assembleRelease
-          fi
+          ./gradlew "assemble${{ matrix.configuration }}" -Pandroid.native.buildOutput=verbose
         env:
           SIGNING_KEY_ALIAS: '${{ secrets.SIGNING_KEY_ALIAS }}'
           SIGNING_KEY_PASSWORD: '${{ secrets.SIGNING_KEY_PASSWORD }}'
