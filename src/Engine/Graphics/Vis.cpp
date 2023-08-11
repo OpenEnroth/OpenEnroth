@@ -449,7 +449,7 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
     auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
         return l.vWorldViewPosition.x < r.vWorldViewPosition.x;
     };
-    std::sort(pArray + start, pArray + end + 1, cmp);
+    std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }
 
 Vis_PIDAndDepth InvalidPIDAndDepth() {
@@ -682,7 +682,7 @@ void Vis_SelectionList::sort_object_pointers() {
     auto cmp = [](Vis_ObjectInfo *l, Vis_ObjectInfo *r) {
         return l->depth < r->depth;
     };
-    std::sort(object_pointers.data(), object_pointers.data() + uSize, cmp);
+    std::stable_sort(object_pointers.data(), object_pointers.data() + uSize, cmp);
 }
 
 //----- (004C26D0) --------------------------------------------------------
@@ -690,7 +690,7 @@ void Vis::SortVerticesByX(RenderVertexD3D3 *pArray, unsigned int uStart, unsigne
     auto cmp = [](const RenderVertexD3D3 &l, const RenderVertexD3D3 &r) {
         return l.pos.x < r.pos.x;
     };
-    std::sort(pArray + uStart, pArray + uEnd + 1, cmp);
+    std::stable_sort(pArray + uStart, pArray + uEnd + 1, cmp);
 }
 
 //----- (004C27AD) --------------------------------------------------------
@@ -698,7 +698,7 @@ void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart, unsigne
     auto cmp = [](const RenderVertexD3D3 &l, const RenderVertexD3D3 &r) {
         return l.pos.y < r.pos.y;
     };
-    std::sort(pArray + uStart, pArray + uEnd + 1, cmp);
+    std::stable_sort(pArray + uStart, pArray + uEnd + 1, cmp);
 }
 
 //----- (004C288E) --------------------------------------------------------
@@ -706,7 +706,7 @@ void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {  //
     auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
         return l.vWorldViewProjX < r.vWorldViewProjX;
     };
-    std::sort(pArray + start, pArray + end + 1, cmp);
+    std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }
 
 //----- (004C297E) --------------------------------------------------------
@@ -714,7 +714,7 @@ void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
     auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
         return l.vWorldViewProjY < r.vWorldViewProjY;
     };
-    std::sort(pArray + start, pArray + end + 1, cmp);
+    std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }
 
 //----- (004C04AF) --------------------------------------------------------
