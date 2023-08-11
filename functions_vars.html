@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3eb212c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ab900b1</span>
    </div>
   </td>
  </tr>
@@ -233,12 +233,13 @@ $(function() {
 <li>_path&#160;:&#160;<a class="el" href="classFileInputStream.html#a7caeb4fb112d658dbf8431384e5efed1">FileInputStream</a>, <a class="el" href="classFileOutputStream.html#a8dc9e0883fe82ccfe3976168782de126">FileOutputStream</a>, <a class="el" href="classLodReader.html#a184836a0bb34916825fb984e38e4d2ea">LodReader</a></li>
 <li>_per&#160;:&#160;<a class="el" href="structBuildingDesc.html#a9a5517cf7cc91f81b052227c25ce6611">BuildingDesc</a>, <a class="el" href="structMapInfo.html#a6092214ab55c38a774c31223c2795b41">MapInfo</a></li>
 <li>_persistentVariables&#160;:&#160;<a class="el" href="classEngine.html#aa34e7ed0bde6a46d00676562747a1ded">Engine</a></li>
+<li>_pitch&#160;:&#160;<a class="el" href="classTeleportPoint.html#ae200afefd70c49801ceab914b25ca06e">TeleportPoint</a></li>
 <li>_pitchRotationCosine&#160;:&#160;<a class="el" href="structCamera3D.html#a1c0235ee5ac2078a88a61fb6d518dac4">Camera3D</a></li>
 <li>_pitchRotationSine&#160;:&#160;<a class="el" href="structCamera3D.html#a0e4b6f9091af2ab22b47a1879593e282">Camera3D</a></li>
 <li>_pixels&#160;:&#160;<a class="el" href="classdetail_1_1ImageBase.html#a9ae2999dd0735b2a64fe03647aac8b9a">detail::ImageBase&lt; T, Storage &gt;</a></li>
 <li>_platform&#160;:&#160;<a class="el" href="classGameStarter.html#ac68a518d94fa40a198407c8c63edefa0">GameStarter</a>, <a class="el" href="classPlatformApplication.html#a7186f50afeba40a72321d6787f4a67f0">PlatformApplication</a></li>
 <li>_playing&#160;:&#160;<a class="el" href="classEngineTraceSimplePlayer.html#a9ec59b9c7de3aa35281df039e2033fda">EngineTraceSimplePlayer</a></li>
-<li>_pos&#160;:&#160;<a class="el" href="classBlobInputStream.html#a09ee55a8e54a4a0d181a549f37b98c3f">BlobInputStream</a>, <a class="el" href="classdetail_1_1RangeIterator.html#aa3c542a4349fc8e87b1eb122f66c597a">detail::RangeIterator&lt; T &gt;</a>, <a class="el" href="classMemoryInputStream.html#a471e080dd5169ac7a32c70ad70a8282f">MemoryInputStream</a></li>
+<li>_pos&#160;:&#160;<a class="el" href="classBlobInputStream.html#a09ee55a8e54a4a0d181a549f37b98c3f">BlobInputStream</a>, <a class="el" href="classdetail_1_1RangeIterator.html#aa3c542a4349fc8e87b1eb122f66c597a">detail::RangeIterator&lt; T &gt;</a>, <a class="el" href="classMemoryInputStream.html#a471e080dd5169ac7a32c70ad70a8282f">MemoryInputStream</a>, <a class="el" href="classTeleportPoint.html#a6c5bfaf4098053310fcf9ee4c43696ea">TeleportPoint</a></li>
 <li>_position&#160;:&#160;<a class="el" href="classAudioSample16.html#ade0142731d7a08afd50a95210633d4ec">AudioSample16</a>, <a class="el" href="classNullWindow.html#a10cf27419e5775c9e09774a1cdd5f423">NullWindow</a></li>
 <li>_ptr&#160;:&#160;<a class="el" href="classdetail_1_1ViewPointer.html#a17ea0e84e78f1bc7ad86cb2b049577fe">detail::ViewPointer&lt; T &gt;</a></li>
 <li>_quest_bit&#160;:&#160;<a class="el" href="structBuildingDesc.html#a2950398cb35a3ee54d2ee1497cf7f1e1">BuildingDesc</a></li>
@@ -290,6 +291,9 @@ $(function() {
 <li>_tapeCallbacks&#160;:&#160;<a class="el" href="classTestController.html#a229d6ae9a9c165ea7de02b7c3b417455">TestController</a></li>
 <li>_target&#160;:&#160;<a class="el" href="classStringOutputStream.html#ad7e30f81a3f40443e949c74e7209eb8a">StringOutputStream</a></li>
 <li>_targetFPS&#160;:&#160;<a class="el" href="structArcomageGame.html#a978a433bdfcf8ae3c0ae69422e68bf05">ArcomageGame</a></li>
+<li>_targetMap&#160;:&#160;<a class="el" href="classTeleportPoint.html#ae0b4301f3ebbc1817729a59faf4a795b">TeleportPoint</a></li>
+<li>_teleportPoint&#160;:&#160;<a class="el" href="classEngine.html#acbb318237c8a2ee8d4f89cf501fd1b68">Engine</a></li>
+<li>_teleportValid&#160;:&#160;<a class="el" href="classTeleportPoint.html#acb948cd4c20cb96da2681ef7c31c9736">TeleportPoint</a></li>
 <li>_templeSpellCounter&#160;:&#160;<a class="el" href="classGUIWindow__Temple.html#ab95dcbd827e2b471ce85abaf934277f6">GUIWindow_Temple</a></li>
 <li>_testDataPath&#160;:&#160;<a class="el" href="classTestController.html#a764482ace97412ce36a3fd248ca0078d">TestController</a></li>
 <li>_textures&#160;:&#160;<a class="el" href="classLodTextureCache.html#a0a56d3f18faefcc86d81d8a838a36535">LodTextureCache</a></li>
@@ -326,12 +330,14 @@ $(function() {
 <li>_windowById&#160;:&#160;<a class="el" href="classSdlPlatformSharedState.html#a1b4897ab03bfb25e0d09e7dd48ce7072">SdlPlatformSharedState</a></li>
 <li>_x&#160;:&#160;<a class="el" href="structParticle.html#a8a1ee0bb21d24dec02b5b89ab0782c7d">Particle</a></li>
 <li>_y&#160;:&#160;<a class="el" href="structParticle.html#a1c8322bae84281ee01027751550742ec">Particle</a></li>
+<li>_yaw&#160;:&#160;<a class="el" href="classTeleportPoint.html#a1941fa9efd3587a155efb016a5917f62">TeleportPoint</a></li>
 <li>_yawAngle&#160;:&#160;<a class="el" href="structLevelDecoration.html#a9a81df15306e9c9fe65409db4710337f">LevelDecoration</a>, <a class="el" href="structLevelDecoration__MM7.html#a012dbf149262dd22968fd8600c6c95c3">LevelDecoration_MM7</a></li>
 <li>_yawGranularity&#160;:&#160;<a class="el" href="structParty.html#a78dd78225c56c050d36074e705dcddb2">Party</a></li>
 <li>_yawRotationCosine&#160;:&#160;<a class="el" href="structCamera3D.html#a04d422d0282f0173c5ebca357199922a">Camera3D</a></li>
 <li>_yawRotationSine&#160;:&#160;<a class="el" href="structCamera3D.html#a7d6da6a039fcd5868b4f7e459ca57c98">Camera3D</a></li>
 <li>_yawRotationSpeed&#160;:&#160;<a class="el" href="structParty.html#ac2575a6f31903c0006a7ed59d7ae6085">Party</a></li>
 <li>_z&#160;:&#160;<a class="el" href="structParticle.html#a12a5cb9bc2784118f2549f0fcca184c1">Particle</a></li>
+<li>_zSpeed&#160;:&#160;<a class="el" href="classTeleportPoint.html#a69c805a404826575b2bda47911432a63">TeleportPoint</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
