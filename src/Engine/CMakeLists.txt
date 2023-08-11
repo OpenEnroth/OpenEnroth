@@ -76,7 +76,7 @@ target_compile_definitions(engine PRIVATE
         PROJECT_VERSION="${PROJECT_VERSION}"
         BUILD_COMPILER="${BUILD_COMPILER}"
         BUILD_PLATFORM="${BUILD_PLATFORM}"
-        BUILD_TYPE="${BUILD_TYPE}")
+        BUILD_ARCHITECTURE="${BUILD_ARCHITECTURE}")
 
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
