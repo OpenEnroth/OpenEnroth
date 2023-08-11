@@ -11,7 +11,7 @@ var searchData=
   ['decal_8',['Decal',['../structDecal.html#a5ec6d675386ca93066c3823a4e5fa566',1,'Decal']]],
   ['decal_5fbase_5fctor_9',['Decal_base_ctor',['../structDecal.html#a4bf77dbbf0200a4aab1c8ad683908687',1,'Decal']]],
   ['decalbuilder_10',['DecalBuilder',['../structDecalBuilder.html#a44edf12e0fc088d01f11bbe0a117ec5c',1,'DecalBuilder']]],
-  ['decode_11',['Decode',['../namespacePCX.html#a960fb035405eb59a469f9bf52119ae30',1,'PCX']]],
+  ['decode_11',['decode',['../namespacepcx.html#a0ce1eff9c3288cde284e3e40cfb9c818',1,'pcx']]],
   ['decode_5fframe_12',['decode_frame',['../classAVAudioStream.html#ae5ba0df28f905b51eb097cc42efe9955',1,'AVAudioStream::decode_frame()'],['../classAVVideoStream.html#a660f4e5ff566f7d9c1655dfc2a8f06f7',1,'AVVideoStream::decode_frame()']]],
   ['decodecompressed_13',['decodeCompressed',['../namespacelod.html#a64c6b251941664cf467e47739298fad6',1,'lod']]],
   ['decodeimage_14',['decodeImage',['../namespacelod.html#ac8b61ce518c78df6307e60f7c5a79e6a',1,'lod']]],

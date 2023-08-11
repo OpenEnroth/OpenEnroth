@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;68a7105</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1f2f0bd</span>
    </div>
   </td>
  </tr>
@@ -126,10 +126,10 @@ Functions</h2></td></tr>
 <tr class="separator:a84332e8cfe678afb584536b1ba120146"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ca8596e96ab8252cc822005e79d2793"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a4ca8596e96ab8252cc822005e79d2793">pcx_rle_decode</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, uint8_t *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>, unsigned int bytes_per_scanline, int compressed)</td></tr>
 <tr class="separator:a4ca8596e96ab8252cc822005e79d2793"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84be80eac0b4f1f7677a04ccf0f7fa80"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a84be80eac0b4f1f7677a04ccf0f7fa80">WritePCXHeader</a> (void *pcx_data, int width, int height)</td></tr>
-<tr class="separator:a84be80eac0b4f1f7677a04ccf0f7fa80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af682432ae244888229408506e20dacc7"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#af682432ae244888229408506e20dacc7">EncodeOneLine</a> (void *pcx_data, void *line, size_t line_size)</td></tr>
-<tr class="separator:af682432ae244888229408506e20dacc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac16cb95f8c852f73fff1406f058d6e32"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#ac16cb95f8c852f73fff1406f058d6e32">writePcxHeader</a> (void *pcx_data, int width, int height)</td></tr>
+<tr class="separator:ac16cb95f8c852f73fff1406f058d6e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99876d4a9eadd7ebf71d92840255df07"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a99876d4a9eadd7ebf71d92840255df07">encodeOneLine</a> (void *pcx_data, void *line, size_t line_size)</td></tr>
+<tr class="separator:a99876d4a9eadd7ebf71d92840255df07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ac7f304b78511b342bef37de230ef6823" name="ac7f304b78511b342bef37de230ef6823"></a>
@@ -306,14 +306,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af682432ae244888229408506e20dacc7" name="af682432ae244888229408506e20dacc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af682432ae244888229408506e20dacc7">&#9670;&#160;</a></span>EncodeOneLine()</h2>
+<a id="a99876d4a9eadd7ebf71d92840255df07" name="a99876d4a9eadd7ebf71d92840255df07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99876d4a9eadd7ebf71d92840255df07">&#9670;&#160;</a></span>encodeOneLine()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void * EncodeOneLine </td>
+          <td class="memname">void * encodeOneLine </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>pcx_data</em>, </td>
@@ -388,14 +388,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a84be80eac0b4f1f7677a04ccf0f7fa80" name="a84be80eac0b4f1f7677a04ccf0f7fa80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84be80eac0b4f1f7677a04ccf0f7fa80">&#9670;&#160;</a></span>WritePCXHeader()</h2>
+<a id="ac16cb95f8c852f73fff1406f058d6e32" name="ac16cb95f8c852f73fff1406f058d6e32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac16cb95f8c852f73fff1406f058d6e32">&#9670;&#160;</a></span>writePcxHeader()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void * WritePCXHeader </td>
+          <td class="memname">void * writePcxHeader </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>pcx_data</em>, </td>

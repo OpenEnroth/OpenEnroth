@@ -154,7 +154,7 @@ var searchData=
   ['compactlayingitemslist_151',['CompactLayingItemsList',['../SpriteObject_8h.html#aaba2939e1540dd4a568dbcdb4591117b',1,'CompactLayingItemsList():&#160;SpriteObject.cpp'],['../SpriteObject_8cpp.html#aaba2939e1540dd4a568dbcdb4591117b',1,'CompactLayingItemsList():&#160;SpriteObject.cpp']]],
   ['compare_152',['compare',['../classorg_1_1libsdl_1_1app_1_1SDLJoystickHandler__API16_1_1RangeComparator.html#a53e6ceacae78a2da36da1bec2a254da3',1,'org::libsdl::app::SDLJoystickHandler_API16::RangeComparator']]],
   ['comparevariable_153',['CompareVariable',['../classCharacter.html#a06b6243ed925265a4083d136a18fa98b',1,'Character']]],
-  ['compress_154',['Compress',['../namespacezlib.html#ac4ab58de5e14d3c66b09b2cc61db0ce2',1,'zlib']]],
+  ['compress_154',['compress',['../namespacezlib.html#a641c9dc4e29b4f2007eb0712eff6ca2e',1,'zlib']]],
   ['concat_155',['concat',['../classBlob.html#aa30234d5645520d53ac02d1472249222',1,'Blob']]],
   ['conditionimportancytable_156',['conditionImportancyTable',['../Conditions_8h.html#adf1015e7a3727a95e56fb2282351f0fc',1,'conditionImportancyTable():&#160;Conditions.cpp'],['../Conditions_8cpp.html#adf1015e7a3727a95e56fb2282351f0fc',1,'conditionImportancyTable():&#160;Conditions.cpp']]],
   ['conditions_157',['conditions',['../classCharacterTapeRecorder.html#a8495622aa059cfe6172e13e728f7fdb6',1,'CharacterTapeRecorder']]],

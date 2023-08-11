@@ -557,7 +557,7 @@ var searchData=
   ['component_554',['component',['../structlua__nk__style.html#a81d32edbbadb605fc173680ff06e2136',1,'lua_nk_style']]],
   ['compositesnapshots_2ecpp_555',['CompositeSnapshots.cpp',['../CompositeSnapshots_8cpp.html',1,'']]],
   ['compositesnapshots_2eh_556',['CompositeSnapshots.h',['../CompositeSnapshots_8h.html',1,'']]],
-  ['compress_557',['Compress',['../namespacezlib.html#ac4ab58de5e14d3c66b09b2cc61db0ce2',1,'zlib']]],
+  ['compress_557',['compress',['../namespacezlib.html#a641c9dc4e29b4f2007eb0712eff6ca2e',1,'zlib']]],
   ['compression_558',['compression',['../structPCXHeader.html#ade9f9107fd58e088e5b611bbec077dbf',1,'PCXHeader']]],
   ['compression_2ecpp_559',['Compression.cpp',['../Compression_8cpp.html',1,'']]],
   ['compression_2eh_560',['Compression.h',['../Compression_8h.html',1,'']]],

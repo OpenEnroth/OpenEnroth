@@ -149,5 +149,5 @@ var searchData=
   ['write_146',['Write',['../classLOD_1_1WriteableFile.html#a5b619673ecfaf570706da5d3ee43843e',1,'LOD::WriteableFile::Write(const std::string &amp;file_name, const Blob &amp;data)'],['../classLOD_1_1WriteableFile.html#a8cb1f6a77339bb3c9939163ec3ecfeaa',1,'LOD::WriteableFile::Write(const std::string &amp;file_name, const void *pDirData, size_t size, int a4)']]],
   ['writeablefile_147',['WriteableFile',['../classLOD_1_1WriteableFile.html',1,'LOD::WriteableFile'],['../classLOD_1_1WriteableFile.html#aa8fab714f138831a6a824e5e4a42e5a3',1,'LOD::WriteableFile::WriteableFile()']]],
   ['writecharacteristic_148',['writeCharacteristic',['../classorg_1_1libsdl_1_1app_1_1HIDDeviceBLESteamController_1_1GattOperation.html#a43e49eb5f9db7f6c103b2467fa67a408',1,'org.libsdl.app.HIDDeviceBLESteamController.GattOperation.writeCharacteristic()'],['../classorg_1_1libsdl_1_1app_1_1HIDDeviceBLESteamController.html#adc58f5bbde7df2217e9e52a1b0d5d448',1,'org.libsdl.app.HIDDeviceBLESteamController.writeCharacteristic()']]],
-  ['writepcxheader_149',['WritePCXHeader',['../PCX_8cpp.html#a84be80eac0b4f1f7677a04ccf0f7fa80',1,'PCX.cpp']]]
+  ['writepcxheader_149',['writePcxHeader',['../PCX_8cpp.html#ac16cb95f8c852f73fff1406f058d6e32',1,'PCX.cpp']]]
 ];

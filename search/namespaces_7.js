@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pcx_0',['PCX',['../namespacePCX.html',1,'']]]
+  ['pcx_0',['pcx',['../namespacepcx.html',1,'']]]
 ];

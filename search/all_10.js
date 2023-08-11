@@ -343,7 +343,7 @@ var searchData=
   ['pcursorbitmaprect_5fx_340',['pCursorBitmapRect_x',['../classIo_1_1Mouse.html#a1899d0fde83316e2e6d0f173908457aa',1,'Io::Mouse']]],
   ['pcursorbitmaprect_5fy_341',['pCursorBitmapRect_y',['../classIo_1_1Mouse.html#a1e60c9e5617e1681566598f240096732',1,'Io::Mouse']]],
   ['pcursorbitmaprect_5fz_342',['pCursorBitmapRect_z',['../classIo_1_1Mouse.html#ab1cc6e6d9fab076db0302f72fb95f724',1,'Io::Mouse']]],
-  ['pcx_343',['PCX',['../namespacePCX.html',1,'']]],
+  ['pcx_343',['pcx',['../namespacepcx.html',1,'']]],
   ['pcx_2ecpp_344',['PCX.cpp',['../PCX_8cpp.html',1,'']]],
   ['pcx_2eh_345',['PCX.h',['../PCX_8h.html',1,'']]],
   ['pcx_5ffile_5floader_346',['PCX_File_Loader',['../classPCX__File__Loader.html#a5a50cc97923a532b75ebb91d9b7ed4b6',1,'PCX_File_Loader::PCX_File_Loader()'],['../classPCX__File__Loader.html',1,'PCX_File_Loader']]],
