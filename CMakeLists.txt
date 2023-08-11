@@ -97,6 +97,12 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
         add_compile_options(-msse2 -mfpmath=sse -march=pentium4) # Don't use x87 fpu in 32-bit builds.
     endif()
 
+    # Don't set errno for math functions. This is the default on Darwin, so makes sense to pass this flag everywhere.
+    add_compile_options(-fno-math-errno)
+
+    # We don't use fp traps, so compiler can assume that they are disabled.
+    add_compile_options(-fno-trapping-math)
+
     # Clang & gcc implementations of fp-contract differ, and we are getting diffs in tests. Better to disable it.
     add_compile_options(-ffp-contract=off)
 endif()
