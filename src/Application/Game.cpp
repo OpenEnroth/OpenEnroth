@@ -431,14 +431,10 @@ bool IsWindowSwitchable() {
 void Game::processQueuedMessages() {
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
-    int v38;                    // eax@358
     ODMFace *pODMFace;          // ecx@412
     CastSpellInfo *pSpellInfo;  // ecx@415
     int16_t v53;                // ax@431
     int v54;                    // eax@432
-    int v55;                    // ecx@432
-    int v56;                    // edx@432
-    int v57;                    // eax@432
     GUIButton *pButton;         // eax@578
     int v91;                    // edx@605
     int v92;                    // eax@605
@@ -888,41 +884,14 @@ void Game::processQueuedMessages() {
                 if (pMovie_Track) pMediaPlayer->Unload();
                 DialogueEnding();
 
-                if (Party_Teleport_X_Pos | Party_Teleport_Y_Pos |
-                    Party_Teleport_Z_Pos |
-                    Party_Teleport_Cam_Yaw |
-                    Party_Teleport_Cam_Pitch |
-                    Party_Teleport_Z_Speed) {
-                    if (Party_Teleport_X_Pos) {
-                        pParty->pos.x = Party_Teleport_X_Pos;
-                    }
-                    if (Party_Teleport_Y_Pos) {
-                        pParty->pos.y = Party_Teleport_Y_Pos;
-                    }
-                    if (Party_Teleport_Z_Pos) {
-                        pParty->pos.z = Party_Teleport_Z_Pos;
-                        pParty->uFallStartZ = Party_Teleport_Z_Pos;
-                    }
-                    if (Party_Teleport_Cam_Yaw) {
-                        pParty->_viewYaw = Party_Teleport_Cam_Yaw;
-                    }
-                    if (Party_Teleport_Cam_Pitch) {
-                        pParty->_viewPitch = Party_Teleport_Cam_Pitch;
-                        v38 = Party_Teleport_Z_Speed;
-                        pParty->speed = Vec3i(0, 0, Party_Teleport_Z_Speed);
-                    } else {
-                        v38 = Party_Teleport_Z_Speed;
-                    }
-                    if (Party_Teleport_Map_Name[0] != '0') {
+                if (engine->_teleportPoint.isValid()) {
+                    if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        Start_Party_Teleport_Flag =
-                            Party_Teleport_X_Pos |
-                            Party_Teleport_Y_Pos |
-                            Party_Teleport_Z_Pos |
-                            Party_Teleport_Cam_Yaw |
-                            Party_Teleport_Cam_Pitch | v38;
                         onMapLeave();
-                        Transition_StopSound_Autosave(Party_Teleport_Map_Name, MapStartPoint_Party);
+                        Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MapStartPoint_Party);
+                    } else {
+                        engine->_teleportPoint.doTeleport(true);
+                        engine->_teleportPoint.invalidate();
                     }
                 } else {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
@@ -1087,17 +1056,7 @@ void Game::processQueuedMessages() {
                 v53 = buildingTable[window_SpeakInHouse->houseId()]._quest_bit;
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    Party_Teleport_Cam_Pitch = 0;
-                    Party_Teleport_Z_Speed = 0;
-                    v55 = dword_4E4560[v54];
-                    Party_Teleport_Y_Pos = dword_4E4578[v54];
-                    v56 = dword_4E4590[v54];
-                    v57 = dword_4E45A8[v54];
-                    Party_Teleport_X_Pos = v55;
-                    Party_Teleport_Cam_Yaw = v57;
-                    Party_Teleport_Z_Pos = v56;
-                    Start_Party_Teleport_Flag =
-                        v55 | Party_Teleport_Y_Pos | v56 | v57;
+                    engine->_teleportPoint.setTeleportTarget(Vec3i(dword_4E4560[v54], dword_4E4578[v54], dword_4E4590[v54]), dword_4E45A8[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -1163,12 +1122,7 @@ void Game::processQueuedMessages() {
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
-                Party_Teleport_X_Pos = pParty->pos.x;
-                Party_Teleport_Y_Pos = pParty->pos.y;
-                Party_Teleport_Z_Pos = pParty->pos.z;
-                Party_Teleport_Cam_Yaw = pParty->_viewYaw;
-                Party_Teleport_Cam_Pitch = pParty->_viewPitch;
-                Start_Party_Teleport_Flag = 1;
+                engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -2225,12 +2179,7 @@ void Game::gameLoop() {
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
-                    Party_Teleport_X_Pos = pParty->pos.x;
-                    Party_Teleport_Y_Pos = pParty->pos.y;
-                    Party_Teleport_Z_Pos = pParty->pos.z;
-                    Party_Teleport_Cam_Yaw = pParty->_viewYaw;
-                    Party_Teleport_Cam_Pitch = pParty->_viewPitch;
-                    Start_Party_Teleport_Flag = 1;
+                    engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
                 Actor::InitializeActors();

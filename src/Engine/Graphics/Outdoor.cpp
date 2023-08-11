@@ -3006,28 +3006,9 @@ void TeleportToStartingPoint(MapStartPoint point) {
                 }
             }
         }
-        if (Start_Party_Teleport_Flag) {
-            if (Party_Teleport_X_Pos)
-                pParty->pos.x = Party_Teleport_X_Pos;
-            if (Party_Teleport_Y_Pos)
-                pParty->pos.y = Party_Teleport_Y_Pos;
-            if (Party_Teleport_Z_Pos) {
-                pParty->pos.z = Party_Teleport_Z_Pos;
-                pParty->uFallStartZ = Party_Teleport_Z_Pos;
-            }
-            if (Party_Teleport_Cam_Yaw != -1)
-                pParty->_viewYaw = Party_Teleport_Cam_Yaw;
-            if (Party_Teleport_Cam_Pitch)
-                pParty->_viewPitch = Party_Teleport_Cam_Pitch;
-            if (Party_Teleport_Z_Speed)
-                pParty->speed = Vec3i(0, 0, Party_Teleport_Z_Speed);
+        if (engine->_teleportPoint.isValid()) {
+            engine->_teleportPoint.doTeleport(true);
         }
-        Party_Teleport_Cam_Yaw = -1;
-        Start_Party_Teleport_Flag = 0;
-        Party_Teleport_Z_Speed = 0;
-        Party_Teleport_Cam_Pitch = 0;
-        Party_Teleport_Z_Pos = 0;
-        Party_Teleport_Y_Pos = 0;
-        Party_Teleport_X_Pos = 0;
+        engine->_teleportPoint.invalidate();
     }
 }

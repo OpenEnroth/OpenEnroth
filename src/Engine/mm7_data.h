@@ -99,15 +99,6 @@ extern int uCurrentHouse_Animation;
 
 extern std::string branchless_dialogue_str;
 
-extern std::string Party_Teleport_Map_Name;
-extern int Party_Teleport_X_Pos;
-extern int Party_Teleport_Y_Pos;
-extern int Party_Teleport_Z_Pos;
-extern int Party_Teleport_Cam_Yaw;
-extern int Party_Teleport_Cam_Pitch;
-extern int Party_Teleport_Z_Speed;
-extern int Start_Party_Teleport_Flag;
-
 extern int dword_5B65C4_cancelEventProcessing;
 extern int npcIdToDismissAfterDialogue;
 extern int _5C35C0_force_party_death;

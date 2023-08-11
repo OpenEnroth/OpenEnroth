@@ -9,6 +9,7 @@
 
 #include "Engine/Events/EventMap.h"
 #include "Engine/MapEnums.h"
+#include "Engine/TeleportPoint.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Time.h"
 
@@ -117,11 +118,6 @@ class Engine {
     void _461103_load_level_sub();
     void MM7_Initialize();
 
-    bool is_underwater = false;
-    bool is_targeting = false;
-    bool is_saturate_faces = false;
-    bool is_fog = false; // keeps track of whether fog enabled in d3d
-
     inline bool IsTargetingMode() const { return is_targeting; }
     inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
     inline bool IsUnderwater() const { return is_underwater; }
@@ -130,6 +126,11 @@ class Engine {
     inline void SetSaturateFaces(bool is_saturate_faces) { this->is_saturate_faces = is_saturate_faces; }
     inline bool IsFog() const { return is_fog; }
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
+
+    bool is_underwater = false;
+    bool is_targeting = false;
+    bool is_saturate_faces = false;
+    bool is_fog = false; // keeps track of whether fog enabled in d3d
 
     std::shared_ptr<GameConfig> config;
     int uNumStationaryLights_in_pStationaryLightsStack;
@@ -149,6 +150,7 @@ class Engine {
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
+    TeleportPoint _teleportPoint;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
     std::unique_ptr<GameResourceManager> _gameResourceManager;

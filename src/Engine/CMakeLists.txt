@@ -19,6 +19,7 @@ set(ENGINE_SOURCES
         PriceCalculator.cpp
         SaveLoad.cpp
         SpellFxRenderer.cpp
+        TeleportPoint.cpp
         Time.cpp
         GameResourceManager.cpp
         mm7_data.cpp
@@ -46,6 +47,7 @@ set(ENGINE_HEADERS
         PriceCalculator.h
         SaveLoad.h
         SpellFxRenderer.h
+        TeleportPoint.h
         Time.h
         GameResourceManager.h
         mm7_data.h

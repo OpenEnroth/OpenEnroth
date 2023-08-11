@@ -1868,13 +1868,7 @@ void TeleportToNWCDungeon() {
     }
 
     // reset party teleport
-    Party_Teleport_X_Pos = 0;
-    Party_Teleport_Y_Pos = 0;
-    Party_Teleport_Z_Pos = 0;
-    Party_Teleport_Cam_Yaw = 0;
-    Party_Teleport_Cam_Pitch = 0;
-    Party_Teleport_Z_Speed = 0;
-    Start_Party_Teleport_Flag = 0;
+    engine->_teleportPoint.invalidate();
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
