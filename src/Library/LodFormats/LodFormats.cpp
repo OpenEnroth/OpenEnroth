@@ -133,7 +133,7 @@ Blob lod::decodeCompressed(const Blob &blob) {
             result = stream.readBlobOrFail(header.dataSize);
         }
         if (header.decompressedSize)
-            result = zlib::Uncompress(result, header.decompressedSize);
+            result = zlib::uncompress(result, header.decompressedSize);
         return result;
     }
 
@@ -144,7 +144,7 @@ Blob lod::decodeCompressed(const Blob &blob) {
 
         Blob result = stream.readBlobOrFail(header.dataSize);
         if (header.decompressedSize)
-            result = zlib::Uncompress(result, header.decompressedSize);
+            result = zlib::uncompress(result, header.decompressedSize);
         return result;
     }
 
@@ -152,7 +152,7 @@ Blob lod::decodeCompressed(const Blob &blob) {
 }
 
 Blob lod::encodeCompressed(const Blob &blob) {
-    Blob compressed = zlib::Compress(blob);
+    Blob compressed = zlib::compress(blob);
 
     LodCompressionHeader_MM6 header;
     header.version = 91969;
@@ -194,7 +194,7 @@ LodImage lod::decodeImage(const Blob &blob) {
     if (format == LOD_FILE_IMAGE) {
         pixels = stream.readBlobOrFail(header.dataSize);
         if (header.decompressedSize)
-            pixels = zlib::Uncompress(pixels, header.decompressedSize);
+            pixels = zlib::uncompress(pixels, header.decompressedSize);
 
         // Note that this check isn't redundant. The checks in magic() only check sizes as written in the header.
         // Actual stream size might be different.
@@ -227,7 +227,7 @@ LodSprite lod::decodeSprite(const Blob &blob) {
 
     Blob pixels = stream.readBlobOrFail(header.dataSize);
     if (header.decompressedSize)
-        pixels = zlib::Uncompress(pixels, header.decompressedSize);
+        pixels = zlib::uncompress(pixels, header.decompressedSize);
 
     LodSprite result;
     result.paletteId = header.paletteId;

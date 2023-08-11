@@ -3,6 +3,6 @@
 #include "Utility/Memory/Blob.h"
 
 namespace zlib {
-Blob Compress(const Blob &source);
-Blob Uncompress(const Blob &source, size_t sizeHint = 0);
+Blob compress(const Blob &source);
+Blob uncompress(const Blob &source, size_t sizeHint = 0);
 };  // namespace zlib

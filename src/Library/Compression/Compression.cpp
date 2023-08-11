@@ -10,7 +10,7 @@
 
 namespace zlib {
 
-Blob Compress(const Blob &source) {
+Blob compress(const Blob &source) {
     uLongf destLen = source.size();
     std::unique_ptr<void, FreeDeleter> dest;
     int res = Z_BUF_ERROR;
@@ -20,13 +20,13 @@ Blob Compress(const Blob &source) {
             destLen *= 2;
         }
         dest.reset(malloc(destLen));
-        res = compress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
+        res = ::compress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
     return res == Z_OK ? Blob::copy(dest.get(), destLen) : Blob();
 }
 
-Blob Uncompress(const Blob &source, size_t sizeHint) {
+Blob uncompress(const Blob &source, size_t sizeHint) {
     uLongf destLen = sizeHint > source.size() ? sizeHint : source.size() * 4;
     std::unique_ptr<void, FreeDeleter> dest;
     int res = Z_BUF_ERROR;
@@ -36,7 +36,7 @@ Blob Uncompress(const Blob &source, size_t sizeHint) {
             destLen *= 2;
         }
         dest.reset(malloc(destLen));
-        res = uncompress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
+        res = ::uncompress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
     return res == Z_OK ? Blob::copy(dest.get(), destLen) : Blob();

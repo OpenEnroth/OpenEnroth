@@ -94,7 +94,7 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-RgbaImage PCX::Decode(const Blob &data) {
+RgbaImage pcx::decode(const Blob &data) {
     if (data.size() < sizeof(PCXHeader))
         throw Exception("PCX image too small, expected at least {} bytes, got {}", sizeof(PCXHeader), data.size());
 
@@ -141,7 +141,7 @@ RgbaImage PCX::Decode(const Blob &data) {
     return result;
 }
 
-void *WritePCXHeader(void *pcx_data, int width, int height) {
+void *writePcxHeader(void *pcx_data, int width, int height) {
     int pitch = width;
     if (width & 1) {
         pitch = width + 1;
@@ -166,7 +166,7 @@ void *WritePCXHeader(void *pcx_data, int width, int height) {
     return static_cast<uint8_t *>(pcx_data) + sizeof(PCXHeader);
 }
 
-void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
+void *encodeOneLine(void *pcx_data, void *line, size_t line_size) {
     uint8_t *input = (uint8_t *)line;
     uint8_t *end = input + line_size;
     uint8_t *output = (uint8_t *)pcx_data;
@@ -188,7 +188,7 @@ void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
     return output;
 }
 
-Blob PCX::Encode(RgbaImageView image) {
+Blob pcx::encode(RgbaImageView image) {
     assert(image);
 
     size_t width = image.width();
@@ -204,7 +204,7 @@ Blob PCX::Encode(RgbaImageView image) {
     size_t worstCase = sizeof(PCXHeader) + 3 * pitch * height * 2;
     std::unique_ptr<uint8_t[], FreeDeleter> pcx_data(static_cast<uint8_t *>(malloc(worstCase)));
 
-    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data.get(), width, height);
+    uint8_t *output = (uint8_t *) writePcxHeader(pcx_data.get(), width, height);
 
     std::unique_ptr<uint8_t[]> lineRGB(new uint8_t[3 * pitch]);
     uint8_t *lineR = lineRGB.get();
@@ -221,7 +221,7 @@ Blob PCX::Encode(RgbaImageView image) {
         }
         uint8_t *line = lineRGB.get();
         for (int p = 0; p < 3; p++) {
-            output = (uint8_t *)EncodeOneLine(output, line, pitch);
+            output = (uint8_t *) encodeOneLine(output, line, pitch);
             line += pitch;
         }
     }

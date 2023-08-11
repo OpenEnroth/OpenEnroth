@@ -211,7 +211,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
             GraphicsImage *image = beacon->image;
             if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
                 assert(image->rgba());
-                Blob packedPCX = PCX::Encode(image->rgba());
+                Blob packedPCX = pcx::encode(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 if (lodWriter.Write(str, packedPCX.data(), packedPCX.size(), 0)) {
                     logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));

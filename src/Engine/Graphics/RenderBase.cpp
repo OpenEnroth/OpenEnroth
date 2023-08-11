@@ -609,7 +609,7 @@ void RenderBase::SavePCXScreenshot() {
 void RenderBase::SavePCXImage32(const std::string &filename, RgbaImageView image) {
     // TODO(pskelton): add "Screenshots" folder?
     FileOutputStream output(makeDataPath(filename));
-    output.write(PCX::Encode(image).string_view());
+    output.write(pcx::encode(image).string_view());
     output.close();
 }
 
@@ -618,7 +618,7 @@ void RenderBase::SaveScreenshot(const std::string &filename, const unsigned int 
 }
 
 Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int height) {
-    return PCX::Encode(render->MakeScreenshot32(width, height));
+    return pcx::encode(render->MakeScreenshot32(width, height));
 }
 
 GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
