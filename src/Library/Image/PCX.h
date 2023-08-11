@@ -6,7 +6,7 @@
 #include "Library/Image/Image.h"
 #include "Utility/Memory/Blob.h"
 
-namespace PCX {
+namespace pcx {
 /**
  * Decodes a PCX image from a `Blob`.
  *
@@ -14,7 +14,7 @@ namespace PCX {
  * @return                              Decoded `RgbaImage`.
  * @throws Exception                    On error.
  */
-RgbaImage Decode(const Blob &data);
+RgbaImage decode(const Blob &data);
 
-Blob Encode(RgbaImageView image);
-}  // namespace PCX
+Blob encode(RgbaImageView image);
+}  // namespace pcx

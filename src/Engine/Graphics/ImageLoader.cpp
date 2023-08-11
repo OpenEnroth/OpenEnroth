@@ -119,7 +119,7 @@ bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, 
 }
 
 bool PCX_Loader::InternalLoad(const Blob &data, RgbaImage *rgbaImage) {
-    *rgbaImage = PCX::Decode(data);
+    *rgbaImage = pcx::decode(data);
     return true;
 }
 
