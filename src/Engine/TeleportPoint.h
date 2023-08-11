@@ -22,7 +22,7 @@ class TeleportPoint {
 
     /**
      * Set teleportation target within the map.
-     * Updates teleportation point validity if
+     * Updates teleportation point validity if any of the set values is not zero (or -1 for yaw).
      *
      * @param pos     Party position after teleportation.
      * @param yaw     Camera yaw after teleportation, if set to -1 then yaw will not be changed after teleport.

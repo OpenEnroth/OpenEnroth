@@ -728,9 +728,9 @@ void snapshot(const Character &src, Player_MM7 *dst) {
             continue;
         }
         dst->installedBeacons[i].beaconTime = src.vBeacons[i].uBeaconTime.value;
-        dst->installedBeacons[i].partyPosX = src.vBeacons[i].PartyPos_X;
-        dst->installedBeacons[i].partyPosY = src.vBeacons[i].PartyPos_Y;
-        dst->installedBeacons[i].partyPosZ = src.vBeacons[i].PartyPos_Z;
+        dst->installedBeacons[i].partyPosX = src.vBeacons[i]._partyPos.x;
+        dst->installedBeacons[i].partyPosY = src.vBeacons[i]._partyPos.y;
+        dst->installedBeacons[i].partyPosZ = src.vBeacons[i]._partyPos.z;
         dst->installedBeacons[i].partyViewYaw = src.vBeacons[i]._partyViewYaw;
         dst->installedBeacons[i].partyViewPitch = src.vBeacons[i]._partyViewPitch;
         dst->installedBeacons[i].mapIndexInGamesLod = valueOr(gamesLodIndexByMapId, src.vBeacons[i].mapId, -1);
@@ -982,9 +982,9 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
         if (src.installedBeacons[i].beaconTime != 0) {
             LloydBeacon beacon;
             beacon.uBeaconTime = GameTime(src.installedBeacons[i].beaconTime);
-            beacon.PartyPos_X = src.installedBeacons[i].partyPosX;
-            beacon.PartyPos_Y = src.installedBeacons[i].partyPosY;
-            beacon.PartyPos_Z = src.installedBeacons[i].partyPosZ;
+            beacon._partyPos.x = src.installedBeacons[i].partyPosX;
+            beacon._partyPos.y = src.installedBeacons[i].partyPosY;
+            beacon._partyPos.z = src.installedBeacons[i].partyPosZ;
             beacon._partyViewYaw = src.installedBeacons[i].partyViewYaw;
             beacon._partyViewPitch = src.installedBeacons[i].partyViewPitch;
             beacon.mapId = valueOr(mapIdByGamesLodIndex, src.installedBeacons[i].mapIndexInGamesLod, MAP_INVALID);

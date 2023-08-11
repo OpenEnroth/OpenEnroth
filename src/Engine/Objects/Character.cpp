@@ -7576,9 +7576,7 @@ bool Character::setBeacon(int index, GameTime duration) {
 
     beacon.image = render->TakeScreenshot(92, 68);
     beacon.uBeaconTime = pParty->GetPlayingTime() + duration;
-    beacon.PartyPos_X = pParty->pos.x;
-    beacon.PartyPos_Y = pParty->pos.y;
-    beacon.PartyPos_Z = pParty->pos.z;
+    beacon._partyPos = pParty->pos;
     beacon._partyViewYaw = pParty->_viewYaw;
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.mapId = file_index;

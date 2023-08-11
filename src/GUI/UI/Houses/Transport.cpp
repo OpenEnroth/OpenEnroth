@@ -23,53 +23,51 @@
 
 struct TransportInfo {
     MAP_TYPE uMapInfoID;
-    unsigned char pSchedule[7];
+    std::array<unsigned char, 7> pSchedule;
     unsigned int uTravelTime; // In days.
-    int arrival_x;
-    int arrival_y;
-    int arrival_z;
+    Vec3i arrivalPos;
     int arrival_view_yaw;
     unsigned int uQuestBit;  // quest bit required to set for this travel option to be enabled; otherwise 0
 };
 
 // 004F09B0
 static constexpr std::array<TransportInfo, 35> transportSchedule = {{
-    // location name   days    x        y       z
-    { MAP_ERATHIA, {1, 0, 1, 0, 1, 0, 0 }, 2, -18048, 4636, 833, 1536, 0 },  // for stable
-    { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0 }, 2, -2527, -6773, 1153, 896, 0 },
-    { MAP_TATALIA, { 1, 0, 1, 0, 1, 0, 0 }, 2, 4730, -10580, 320, 1024, 0 },
-    { MAP_HARMONDALE, { 0, 1, 0, 1, 0, 1, 0 }, 2, -5692, 11137, 1, 1024, 0 },
-    { MAP_DEYJA, { 1, 0, 0, 1, 0, 0, 0 }, 3, 7227, -16007, 2625, 640, 0 },
-    { MAP_BRACADA_DESERT, {0, 0, 1, 0, 0, 1, 0 }, 3, 8923, 17191, 1, 512, 0 },
-    { MAP_AVLEE, { 1, 0, 1, 0, 1, 0, 0 }, 3, 17059, 12331, 512, 1152, 0 },
-    { MAP_DEYJA, { 0, 1, 0, 0, 1, 0, 1 }, 2, 7227, -16007, 2625, 640, 0 },
-    { MAP_HARMONDALE, { 0, 1, 0, 1, 0, 1, 0 }, 2, -5692, 11137, 1, 1024, 0 },
-    { MAP_ERATHIA, {1, 0, 1, 0, 1, 0, 0 }, 3, -18048, 4636, 833, 1536, 0 },
-    { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0 }, 2, -2527, -6773, 1153, 896, 0 },
-    { MAP_ERATHIA, {1, 0, 1, 0, 1, 0, 1 }, 3, -18048, 4636, 833, 1536, 0 },
-    { MAP_HARMONDALE, { 0, 1, 0, 0, 0, 1, 0 }, 5, -5692, 11137, 1, 1024, 0 },
-    { MAP_ERATHIA, {0, 1, 0, 1, 0, 1, 0 }, 2, -18048, 4636, 833, 1536, 0 },
-    { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0 }, 3, -2527, -6773, 1153, 896, 0 },
-    { MAP_DEYJA, { 0, 0, 1, 0, 0, 0, 1 }, 5, 7227, -16007, 2625, 640, 0 },
-    { MAP_TATALIA, { 0, 1, 0, 1, 0, 1, 0 }, 2, -2183, -6941, 97, 0, 0 },
-    { MAP_AVLEE, { 1, 0, 0, 0, 1, 0, 0 }, 4, 7913, 9476, 193, 0, 0 },
-    { MAP_EVENMORN_ISLAND, {0, 0, 0, 0, 0, 0, 1 }, 7, 15616, 6390, 193, 1536, QBIT_EVENMORN_MAP_FOUND },
-    { MAP_BRACADA_DESERT, {0, 0, 1, 0, 0, 0, 0 }, 6, 19171, -19722, 193, 1024, 0 },
-    { MAP_AVLEE, { 0, 1, 0, 1, 0, 1, 0 }, 3, 7913, 9476, 193, 0, 0 },
-    { MAP_BRACADA_DESERT, {1, 0, 1, 0, 0, 0, 0 }, 6, 19171, -19722, 193, 1024, 0 },
-    { MAP_TATALIA, { 1, 0, 1, 0, 1, 0, 0 }, 4, -2183, -6941, 97, 0, 0 },
-    { MAP_TULAREAN_FOREST, {0, 0, 0, 0, 0, 1, 0 }, 6, -709, -14087, 193, 1024, 0 },  // for boat
-    { MAP_ERATHIA, {0, 0, 0, 0, 0, 0, 1 }, 6, -10471, 13497, 193, 1536, 0 },
-    { MAP_EVENMORN_ISLAND, {0, 1, 0, 1, 0, 0, 0 }, 1, 15616, 6390, 193, 1536, QBIT_EVENMORN_MAP_FOUND },
-    { MAP_BRACADA_DESERT, {0, 1, 0, 1, 0, 0, 0 }, 1, 19171, -19722, 193, 1024, 0 },
-    { MAP_ERATHIA, {0, 1, 0, 1, 0, 1, 0 }, 2, -10471, 13497, 193, 1536, 0 },
-    { MAP_BRACADA_DESERT, {1, 0, 1, 0, 0, 0, 0 }, 4, 19171, -19722, 193, 1024, 0 },
-    { MAP_EVENMORN_ISLAND, {0, 0, 0, 0, 0, 0, 1 }, 5, 15616, 6390, 193, 1536, QBIT_EVENMORN_MAP_FOUND },
-    { MAP_AVLEE, { 0, 0, 0, 0, 1, 0, 0 }, 5, 7913, 9476, 193, 0, 0 },
-    { MAP_ERATHIA, {0, 1, 0, 0, 0, 1, 0 }, 4, -10471, 13497, 193, 1536, 0 },
-    { MAP_TULAREAN_FOREST, {1, 0, 1, 0, 1, 0, 0 }, 3, -709, -14087, 193, 1024, 0 },
-    { MAP_TATALIA, { 0, 0, 0, 1, 0, 0, 0 }, 5, -2183, -6941, 97, 0, 0 },
-    { MAP_ARENA, { 0, 0, 0, 0, 0, 0, 1 }, 4, 3844, 2906, 193, 512, 0 }
+//    location name        schedule            days  pos                     yaw   qbit
+    { MAP_ERATHIA,         {1, 0, 1, 0, 1, 0, 0}, 2, {-18048,  4636,  833},  1536, 0 },  // for stable
+    { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0}, 2, {-2527,  -6773,  1153}, 896,  0 },
+    { MAP_TATALIA,         {1, 0, 1, 0, 1, 0, 0}, 2, { 4730,  -10580, 320},  1024, 0 },
+    { MAP_HARMONDALE,      {0, 1, 0, 1, 0, 1, 0}, 2, {-5692,   11137, 1},    1024, 0 },
+    { MAP_DEYJA,           {1, 0, 0, 1, 0, 0, 0}, 3, { 7227,  -16007, 2625}, 640,  0 },
+    { MAP_BRACADA_DESERT,  {0, 0, 1, 0, 0, 1, 0}, 3, { 8923,   17191, 1},    512,  0 },
+    { MAP_AVLEE,           {1, 0, 1, 0, 1, 0, 0}, 3, { 17059,  12331, 512},  1152, 0 },
+    { MAP_DEYJA,           {0, 1, 0, 0, 1, 0, 1}, 2, { 7227,  -16007, 2625}, 640,  0 },
+    { MAP_HARMONDALE,      {0, 1, 0, 1, 0, 1, 0}, 2, {-5692,   11137, 1},    1024, 0 },
+    { MAP_ERATHIA,         {1, 0, 1, 0, 1, 0, 0}, 3, {-18048,  4636,  833},  1536, 0 },
+    { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0}, 2, {-2527,  -6773,  1153}, 896,  0 },
+    { MAP_ERATHIA,         {1, 0, 1, 0, 1, 0, 1}, 3, {-18048,  4636,  833},  1536, 0 },
+    { MAP_HARMONDALE,      {0, 1, 0, 0, 0, 1, 0}, 5, {-5692,   11137, 1},    1024, 0 },
+    { MAP_ERATHIA,         {0, 1, 0, 1, 0, 1, 0}, 2, {-18048,  4636,  833},  1536, 0 },
+    { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0}, 3, {-2527,  -6773,  1153}, 896,  0 },
+    { MAP_DEYJA,           {0, 0, 1, 0, 0, 0, 1}, 5, { 7227,  -16007, 2625}, 640,  0 },
+    { MAP_TATALIA,         {0, 1, 0, 1, 0, 1, 0}, 2, {-2183,  -6941,  97},   0,    0 },
+    { MAP_AVLEE,           {1, 0, 0, 0, 1, 0, 0}, 4, { 7913,   9476,  193},  0,    0 },
+    { MAP_EVENMORN_ISLAND, {0, 0, 0, 0, 0, 0, 1}, 7, { 15616,  6390,  193},  1536, QBIT_EVENMORN_MAP_FOUND },
+    { MAP_BRACADA_DESERT,  {0, 0, 1, 0, 0, 0, 0}, 6, { 19171, -19722, 193},  1024, 0 },
+    { MAP_AVLEE,           {0, 1, 0, 1, 0, 1, 0}, 3, { 7913,   9476,  193},  0,    0 },
+    { MAP_BRACADA_DESERT,  {1, 0, 1, 0, 0, 0, 0}, 6, { 19171, -19722, 193},  1024, 0 },
+    { MAP_TATALIA,         {1, 0, 1, 0, 1, 0, 0}, 4, {-2183,  -6941,  97},   0,    0 },
+    { MAP_TULAREAN_FOREST, {0, 0, 0, 0, 0, 1, 0}, 6, {-709,   -14087, 193},  1024, 0 },  // for boat
+    { MAP_ERATHIA,         {0, 0, 0, 0, 0, 0, 1}, 6, {-10471,  13497, 193},  1536, 0 },
+    { MAP_EVENMORN_ISLAND, {0, 1, 0, 1, 0, 0, 0}, 1, { 15616,  6390,  193},  1536, QBIT_EVENMORN_MAP_FOUND },
+    { MAP_BRACADA_DESERT,  {0, 1, 0, 1, 0, 0, 0}, 1, { 19171, -19722, 193},  1024, 0 },
+    { MAP_ERATHIA,         {0, 1, 0, 1, 0, 1, 0}, 2, {-10471,  13497, 193},  1536, 0 },
+    { MAP_BRACADA_DESERT,  {1, 0, 1, 0, 0, 0, 0}, 4, { 19171, -19722, 193},  1024, 0 },
+    { MAP_EVENMORN_ISLAND, {0, 0, 0, 0, 0, 0, 1}, 5, { 15616,  6390,  193},  1536, QBIT_EVENMORN_MAP_FOUND },
+    { MAP_AVLEE,           {0, 0, 0, 0, 1, 0, 0}, 5, { 7913,   9476,  193},  0,    0 },
+    { MAP_ERATHIA,         {0, 1, 0, 0, 0, 1, 0}, 4, {-10471,  13497, 193},  1536, 0 },
+    { MAP_TULAREAN_FOREST, {1, 0, 1, 0, 1, 0, 0}, 3, {-709,   -14087, 193},  1024, 0 },
+    { MAP_TATALIA,         {0, 0, 0, 1, 0, 0, 0}, 5, {-2183,  -6941,  97},   0,    0 },
+    { MAP_ARENA,           {0, 0, 0, 0, 0, 0, 1}, 4, { 3844,   2906,  193},  512,  0 }
 }};
 
 static constexpr IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_LAST_TRANSPORT> transportRoutes = {
@@ -163,13 +161,11 @@ void GUIWindow_Transport::transportDialogue() {
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            engine->_teleportPoint.setTeleportTarget(Vec3i(pTravel->arrival_x, pTravel->arrival_y, pTravel->arrival_z), pTravel->arrival_view_yaw, 0, 0);
+            engine->_teleportPoint.setTeleportTarget(pTravel->arrivalPos, pTravel->arrival_view_yaw, 0, 0);
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;
-            pParty->pos.x = pTravel->arrival_x;
-            pParty->pos.y = pTravel->arrival_y;
-            pParty->pos.z = pTravel->arrival_z;
+            pParty->pos = pTravel->arrivalPos;
             pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewPitch = 0;
             pParty->_viewYaw = pTravel->arrival_view_yaw;
