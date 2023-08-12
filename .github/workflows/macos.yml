@@ -50,10 +50,6 @@ jobs:
         run: |
           cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
 
-      - name: Install dependencies
-        run: |
-          brew install ffmpeg@4
-
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
@@ -68,10 +64,8 @@ jobs:
           save: false
 
       - name: Configure
-        run: >
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
-          matrix.configuration }} -DOE_BUILD_TESTS=ON
-          -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"       
+        run: |
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DOE_BUILD_TESTS=ON
                   
       - name: Build
         working-directory: build
@@ -92,15 +86,11 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Prepare artifact
-        run: >
+        run: |
           mkdir dist
-
           cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-
           cp -r resources/* dist/
-
-          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+
-          -srcfolder dist
+          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Check dependencies
         run: |
