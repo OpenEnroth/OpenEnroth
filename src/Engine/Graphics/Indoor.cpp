@@ -1303,9 +1303,9 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
     for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
         int SectargetrID = 0;
         if (sectargetrflip)
-            SectargetrID = pIndoor->GetSector(target.x, target.y, target.z);
+            SectargetrID = pIndoor->GetSector(target);
         else
-            SectargetrID = pIndoor->GetSector(from.x, from.y, from.z);
+            SectargetrID = pIndoor->GetSector(from);
 
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
@@ -1963,7 +1963,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector
-            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y, pParty->pos.z);
+            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
                 indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID);
@@ -1987,17 +1987,15 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, int z, uint16_t facing) {
+int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, Vec3i pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
-    a1.vPosition.x = x;
-    a1.vPosition.y = y;
-    a1.vPosition.z = z;
+    a1.vPosition = pos;
     a1.uFacing = facing;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(x, y, z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.uSpriteFrameID = 0;
     return a1.Create(0, 0, 0, 0);
 }
@@ -2020,9 +2018,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->random(27) + 20, a2->vPosition.x,
-                           a2->vPosition.y,
-                           a2->vPosition.z, 0);
+            DropTreasureAt(v13, grng->random(27) + 20, a2->vPosition, 0);
             return;
         }
 
@@ -2056,19 +2052,17 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
     }
-    a1a.vPosition.y = a2->vPosition.y;
     a1a.uAttributes = 0;
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
-    a1a.vPosition.z = a2->vPosition.z;
-    a1a.vPosition.x = a2->vPosition.x;
+    a1a.vPosition = a2->vPosition;
     a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
     a1a.uSpriteFrameID = 0;
-    a1a.uSectorID = pIndoor->GetSector(a2->vPosition.x, a2->vPosition.y, a2->vPosition.z);
+    a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
     a1a.Create(0, 0, 0, 0);
 }
 

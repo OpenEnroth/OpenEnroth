@@ -159,7 +159,7 @@ class Actor {
     int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(int monster_id, int x, int y, int z);
+    static void Arena_summon_actor(int monster_id, Vec3i pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                        Vec3i *pVelocity);
     static void MakeActorAIList_ODM();

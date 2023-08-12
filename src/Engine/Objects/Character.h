@@ -28,18 +28,6 @@ class Actor;
 class GraphicsImage;
 
 struct LloydBeacon {
-    LloydBeacon() {
-        uBeaconTime = GameTime(0);
-        PartyPos_X = 0;
-        PartyPos_Y = 0;
-        PartyPos_Z = 0;
-        _partyViewYaw = 0;
-        _partyViewPitch = 0;
-        unknown = 0;
-        mapId = MAP_INVALID;
-        image = nullptr;
-    }
-
     ~LloydBeacon() {
         // if (image != nullptr) {
         //    image->Release();
@@ -48,15 +36,13 @@ struct LloydBeacon {
         image = nullptr;
     }
 
-    GameTime uBeaconTime;
-    int32_t PartyPos_X;
-    int32_t PartyPos_Y;
-    int32_t PartyPos_Z;
-    int16_t _partyViewYaw;
-    int16_t _partyViewPitch;
-    uint16_t unknown;
-    MAP_TYPE mapId;
-    GraphicsImage *image;
+    GameTime uBeaconTime = GameTime(0);
+    Vec3i _partyPos = Vec3i(0, 0, 0);
+    int16_t _partyViewYaw = 0;
+    int16_t _partyViewPitch = 0;
+    uint16_t unknown = 0;
+    MAP_TYPE mapId = MAP_INVALID;
+    GraphicsImage *image = nullptr;
 };
 
 struct CharacterSpellbookChapter {
@@ -444,9 +430,7 @@ class Character {
     int getCharacterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
-    static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos,
-                                            int a4, int16_t a5,
-                                            signed int actchar);
+    static void _42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signed int actchar);
     void cleanupBeacons();
     bool setBeacon(int index, GameTime duration);
 

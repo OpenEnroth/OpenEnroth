@@ -7171,10 +7171,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
                                       target_id, &a3);
         if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
-            _42FA66_do_explosive_impact(
-                actor->pos.x, actor->pos.y,
-                actor->pos.z + actor->height / 2, 0, 512,
-                pParty->activeCharacterIndex());
+            _42FA66_do_explosive_impact(actor->pos + Vec3i(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow_idx) {
         shooting_bow = true;
         pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
@@ -7237,8 +7234,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 }
 
 //----- (0042FA66) --------------------------------------------------------
-void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
-                                         int16_t a5, signed int actchar) {
+void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signed int actchar) {
         // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     // a5 is range?
@@ -7250,11 +7246,9 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     a1a.spell_level = 8;
     a1a.spell_skill = CHARACTER_SKILL_MASTERY_MASTER;
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-    a1a.vPosition.x = xpos;
-    a1a.vPosition.y = ypos;
-    a1a.vPosition.z = zpos;
+    a1a.vPosition = pos;
     a1a.uAttributes = 0;
-    a1a.uSectorID = pIndoor->GetSector(xpos, ypos, zpos);
+    a1a.uSectorID = pIndoor->GetSector(pos);
     a1a.uSpriteFrameID = 0;
     a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
@@ -7576,9 +7570,7 @@ bool Character::setBeacon(int index, GameTime duration) {
 
     beacon.image = render->TakeScreenshot(92, 68);
     beacon.uBeaconTime = pParty->GetPlayingTime() + duration;
-    beacon.PartyPos_X = pParty->pos.x;
-    beacon.PartyPos_Y = pParty->pos.y;
-    beacon.PartyPos_Z = pParty->pos.z;
+    beacon._partyPos = pParty->pos;
     beacon._partyViewYaw = pParty->_viewYaw;
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.mapId = file_index;

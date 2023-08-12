@@ -203,11 +203,9 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].pFilename;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            engine->_teleportPoint.setTeleportTarget(Vec3i(character.vBeacons[beaconId].PartyPos_X, character.vBeacons[beaconId].PartyPos_Y, character.vBeacons[beaconId].PartyPos_Z), character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
+            engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos, character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
         } else {
-            pParty->pos.x = character.vBeacons[beaconId].PartyPos_X;
-            pParty->pos.y = character.vBeacons[beaconId].PartyPos_Y;
-            pParty->pos.z = character.vBeacons[beaconId].PartyPos_Z;
+            pParty->pos = character.vBeacons[beaconId]._partyPos;
             pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewYaw = character.vBeacons[beaconId]._partyViewYaw;
             pParty->_viewPitch = character.vBeacons[beaconId]._partyViewPitch;

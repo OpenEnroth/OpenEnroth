@@ -194,7 +194,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         {
             if (ir.data.move_map_descr.house_id || ir.data.move_map_descr.exit_pic_id) {
                 pDialogueWindow = new GUIWindow_Transition(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                           ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z,
+                                                           Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                            ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
