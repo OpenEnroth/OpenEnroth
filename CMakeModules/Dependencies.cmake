@@ -66,7 +66,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                 IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libswresample-3.so)
         set(SWSCALE_LIBRARIES "ffmpeg::swscale")
         find_package(ZLIB REQUIRED)
-    elseif(OE_USE_PREBUILT_DEPENDENCIES)
+    elseif(OE_USE_PREBUILT_DEPENDENCIES AND BUILD_PLATFORM STREQUAL "windows")
         message(STATUS "Prebuilt dependencies have been enabled")
 
         #TODO: remove that workaround once dependencies archives are updated
