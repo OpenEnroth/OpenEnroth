@@ -14,7 +14,7 @@ add_library(library_lod STATIC ${LIBRARY_LOD_SOURCES} ${LIBRARY_LOD_HEADERS})
 target_link_libraries(library_lod PUBLIC library_lodformats library_serialization library_binary utility)
 target_check_style(library_lod)
 
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_LOD_SOURCES
             Tests/LodReader_ut.cpp)
 

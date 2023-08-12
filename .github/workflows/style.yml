@@ -33,7 +33,7 @@ jobs:
 
       - name: Configure
         run: |
-          cmake -B build -DENABLE_TESTS=On
+          cmake -B build -DOE_BUILD_TESTS=ON
 
       - name: Check style
         working-directory: build

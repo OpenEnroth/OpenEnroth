@@ -22,7 +22,7 @@ target_link_libraries(library_serialization
         PRIVATE
         FastFloat::fast_float)
 
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_SERIALIZATION_SOURCES Tests/Serialization_ut.cpp)
 
     add_library(test_library_serialization OBJECT ${TEST_LIBRARY_SERIALIZATION_SOURCES})

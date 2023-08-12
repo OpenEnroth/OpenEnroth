@@ -53,7 +53,7 @@ target_link_libraries(utility
         PRIVATE
         mio::mio)
 
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
             Memory/Tests/Blob_ut.cpp

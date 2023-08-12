@@ -105,7 +105,7 @@ jobs:
           export CC=gcc-13 && export CXX=g++-13
 
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
-          matrix.configuration }} -DENABLE_TESTS=On
+          matrix.configuration }} -DOE_BUILD_TESTS=ON
 
       - name: Build
         working-directory: build

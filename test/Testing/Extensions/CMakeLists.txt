@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(TESTING_EXTENSIONS_SOURCES
             ThrowingAssertions.cpp)
 

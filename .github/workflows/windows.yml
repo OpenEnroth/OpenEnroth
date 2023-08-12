@@ -99,7 +99,7 @@ jobs:
       - name: Configure
         run: >
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
-          }} -DENABLE_TESTS=On
+          }} -DOE_BUILD_TESTS=ON
 
       - name: Build
         working-directory: build

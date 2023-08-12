@@ -1,7 +1,7 @@
 set(PREBUILT_DEPENDENCIES_LIST)
 
 function(prebuilt_dependencies_add)
-    if(PREBUILT_DEPENDENCIES)
+    if(OE_USE_PREBUILT_DEPENDENCIES)
         foreach(filename ${ARGV})
             if (NOT EXISTS ${filename})
                 message(FATAL_ERROR "Prebuilt dependency does not exist: '${filename}' ")
@@ -14,7 +14,7 @@ function(prebuilt_dependencies_add)
 endfunction()
 
 function(target_resolve_prebuilt_dependencies targetName)
-    if(PREBUILT_DEPENDENCIES)
+    if(OE_USE_PREBUILT_DEPENDENCIES)
         foreach(dep ${PREBUILT_DEPENDENCIES_LIST})
             add_custom_command(
                     TARGET ${targetName}
@@ -66,7 +66,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                 IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libswresample-3.so)
         set(SWSCALE_LIBRARIES "ffmpeg::swscale")
         find_package(ZLIB REQUIRED)
-    elseif(PREBUILT_DEPENDENCIES)
+    elseif(OE_USE_PREBUILT_DEPENDENCIES)
         message(STATUS "Prebuilt dependencies have been enabled")
 
         #TODO: remove that workaround once dependencies archives are updated

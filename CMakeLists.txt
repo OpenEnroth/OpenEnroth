@@ -23,24 +23,37 @@ include(CppLint)
 include(Dependencies)
 include(CheckLinkerFlag)
 
-set(CCACHE_SUPPORT On CACHE BOOL "Enable ccache support")
-set(SCCACHE_SUPPORT ON CACHE BOOL "Enable sccache support")
+# Settings defaults.
+if(BUILD_PLATFORM STREQUAL "windows")
+    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
+else()
+    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
+endif()
 
-if(CCACHE_SUPPORT)
+# User-settable options.
+set(OE_BUILD_TESTS OFF CACHE BOOL "Build OpenEnroth tests.")
+set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
+set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
+set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
+set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available")
+set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that lld takes precedence.")
+
+# Find ccache / sccache.
+if(OE_USE_CCACHE)
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
-        message(STATUS "Using ccache at ${CCACHE_FOUND}")
+        message(STATUS "Using ccache at ${CCACHE_FOUND}.")
         set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
         set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
-    elseif(NOT SCCACHE_SUPPORT)
+    else()
         message(STATUS "ccache is not found.")
     endif()
 endif()
 
-if(SCCACHE_SUPPORT AND NOT CCACHE_FOUND)
+if(OE_USE_SCCACHE AND NOT CCACHE_FOUND)
     find_program(SCCACHE_FOUND sccache)
     if(SCCACHE_FOUND)
-        message(STATUS "Using sccache at ${SCCACHE_FOUND}")
+        message(STATUS "Using sccache at ${SCCACHE_FOUND}.")
         set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE_FOUND})
         set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE_FOUND})
     else()
@@ -48,28 +61,13 @@ if(SCCACHE_SUPPORT AND NOT CCACHE_FOUND)
     endif()
 endif()
 
-# Settings defaults.
-if(BUILD_PLATFORM STREQUAL "windows")
-    set(PREBUILT_DEPENDENCIES_DEFAULT ON)
-else()
-    set(PREBUILT_DEPENDENCIES_DEFAULT OFF)
-endif()
-
-
-# Configurable settings.
-set(ENABLE_TESTS OFF CACHE BOOL "Enable tests")
-set(PREBUILT_DEPENDENCIES ${PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies")
-
-# Compiler options.
-add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals
-add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
-
-#specify linker options
+# Detect available linkers.
 check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
 
-set(USE_LD_GOLD On CACHE BOOL "Use GNU gold linker")
-set(USE_LD_LLD ON CACHE BOOL "Use LLD linker")
+# Set compiler options.
+# We do a lot of tweaks here.
+add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals
 
 if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
@@ -108,10 +106,12 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
 endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
+    # Flags that are available only in gcc but not in clang go here.
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
 elseif(BUILD_COMPILER STREQUAL "clang")
-    add_compile_options(-Werror=unused-comparison) # Comparison result unused, not available in gcc.
-    add_compile_options(-Werror=inconsistent-missing-override) # Clang-specific, goes with -Werror=suggest-override.
+    # Flags that are available only in clang but not in gcc go here.
+    add_compile_options(-Werror=unused-comparison) # Comparison result unused.
+    add_compile_options(-Werror=inconsistent-missing-override) # 'override' only used on some of the overridden functions.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     enable_libcxx_assertions(FALSE)
@@ -136,9 +136,9 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
         add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
         add_link_options(/SAFESEH:NO) # /SAFESEH is x86-only, don't produce safe exception handler tables
     endif()
-    # Allows the compiler to package individual functions in the form of packaged functions (COMDATs)
-    add_compile_options("$<$<CONFIG:RELEASE>:/Gy>")    
-    # retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
+    # Allow the compiler to package individual functions in the form of packaged functions (COMDATs)
+    add_compile_options("$<$<CONFIG:RELEASE>:/Gy>")
+    # Retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
     # /Ob controls inline expansions and /Ob2 expands any function not explicitly marked for no inlining.
     string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")

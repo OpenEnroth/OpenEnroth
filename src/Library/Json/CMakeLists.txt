@@ -17,7 +17,7 @@ target_link_libraries(library_json
         nlohmann_json)
 
 
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(TEST_LIBARY_JSON_SOURCES Tests/Json_ut.cpp)
 
     add_library(test_library_json OBJECT ${TEST_LIBARY_JSON_SOURCES})
