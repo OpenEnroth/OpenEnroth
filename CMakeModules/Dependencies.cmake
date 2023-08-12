@@ -29,9 +29,9 @@ function(target_resolve_prebuilt_dependencies targetName)
     endif()
 endfunction()
 
-function(download_prebuilt_dependencies SOURCE_NAME TARGET_DIR)
-    set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/dependencies/${SOURCE_NAME}")
-    set(TARGET_PATH "${TARGET_DIR}/${SOURCE_NAME}")
+function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
+    set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
+    set(TARGET_PATH "${TARGET_DIR}/${FILE_NAME}")
     message(STATUS "Downloading ${SOURCE_URL}...")
     file(DOWNLOAD
             "${SOURCE_URL}"
@@ -189,10 +189,11 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
         endif()
     elseif(OE_USE_PREBUILT_DEPENDENCIES AND BUILD_PLATFORM STREQUAL "darwin")
-        set(PREBUILT_DEPS_FILENAME "dependencies_${BUILD_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
+        set(PREBUILT_DEPS_TAG "deps_r1")
+        set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
         set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
-            download_prebuilt_dependencies("${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}")
+            download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}")
         endif()
 
         list(APPEND CMAKE_MODULE_PATH ${PREBUILT_DEPS_DIR})
