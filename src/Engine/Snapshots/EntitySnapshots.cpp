@@ -140,6 +140,25 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
     *dst = CombinedSkillValue::fromJoined(src);
 }
 
+static void snapshot(const BBoxi &src, BBoxs *dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+static void reconstruct(const BBoxs &src, BBoxi *dst) {
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
 // Note: IndexedBitset snapshots are very MM-specific, so they stay here instead of going to Library/Snapshots.
 
 template<class T, size_t N, auto L, auto H>
@@ -165,7 +184,7 @@ static void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
         T val = src[j];
         // Bits inside each array element indexed backwards
         for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
+            dst->set(i, val & (1 << ((sizeof(T) * 8) - k - 1)));
         }
         j++;
     }
@@ -179,6 +198,26 @@ void reconstruct(uint16_t src, Pid *dst) {
     *dst = Pid::fromPacked(src);
 }
 
+void snapshot(const Vec3i &src, Vec3s *dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
+void reconstruct(const Vec3s &src, Vec3i *dst) {
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
+void reconstruct(const Planei_MM7 &src, Planef *dst) {
+    dst->normal.x = src.normal.x / 65536.0f;
+    dst->normal.y = src.normal.y / 65536.0f;
+    dst->normal.z = src.normal.z / 65536.0f;
+    dst->dist = src.dist / 65536.0f;
+}
+
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     reconstruct(src.iconName, &dst->icon_name);
     dst->icon_name = toLower(dst->icon_name);
@@ -189,7 +228,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
 
-    dst->scale = src.scale / 65536.0;
+    dst->scale = src.scale / 65536.0f;
     dst->uFlags = src.flags;
 
     dst->uGlowRadius = src.glowRadius;
@@ -210,7 +249,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->resource = nullptr;
     dst->uSectorID = src.sectorId;
     dst->uBackSectorID = src.backSectorId;
-    dst->pBounding = src.bounding;
+    reconstruct(src.bounding, &dst->pBounding);
     dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
     dst->uNumVertices = src.numVertices;
 }
@@ -1078,7 +1117,7 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
 void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {
     memzero(dst);
 
-    dst->pos = src.vPos;
+    snapshot(src.vPos, &dst->pos);
     dst->attributes = src.uAttributes;
     dst->action = src.uAction;
     dst->hour = src.uHour;
@@ -1087,7 +1126,7 @@ void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {
 }
 
 void reconstruct(const ActorJob_MM7 &src, ActorJob *dst) {
-    dst->vPos = src.pos;
+    reconstruct(src.pos, &dst->vPos);
     dst->uAttributes = src.attributes;
     dst->uAction = src.action;
     dst->uHour = src.hour;
@@ -1163,14 +1202,14 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uActorRadius = src.radius;
     dst->uActorHeight = src.height;
     dst->uMovementSpeed = src.moveSpeed;
-    dst->vPosition = src.pos;
-    dst->vVelocity = src.speed;
+    snapshot(src.pos, &dst->vPosition);
+    snapshot(src.speed, &dst->vVelocity);
     dst->uYawAngle = src.yawAngle;
     dst->uPitchAngle = src.pitchAngle;
     dst->uSectorID = src.sectorId;
     dst->uCurrentActionLength = src.currentActionLength;
-    dst->vInitialPosition = src.initialPosition;
-    dst->vGuardingPosition = src.guardingPosition;
+    snapshot(src.initialPosition, &dst->vInitialPosition);
+    snapshot(src.guardingPosition, &dst->vGuardingPosition);
     dst->uTetherDistance = src.tetherDistance;
     dst->uAIState = std::to_underlying(src.aiState);
     dst->uCurrentActionAnimation = std::to_underlying(src.currentActionAnimation);
@@ -1257,14 +1296,14 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->radius = src.uActorRadius;
     dst->height = src.uActorHeight;
     dst->moveSpeed = src.uMovementSpeed;
-    dst->pos = src.vPosition;
-    dst->speed = src.vVelocity;
+    reconstruct(src.vPosition, &dst->pos);
+    reconstruct(src.vVelocity, &dst->speed);
     dst->yawAngle = src.uYawAngle;
     dst->pitchAngle = src.uPitchAngle;
     dst->sectorId = src.uSectorID;
     dst->currentActionLength = src.uCurrentActionLength;
-    dst->initialPosition = src.vInitialPosition;
-    dst->guardingPosition = src.vGuardingPosition;
+    reconstruct(src.vInitialPosition, &dst->initialPosition);
+    reconstruct(src.vGuardingPosition, &dst->guardingPosition);
     dst->tetherDistance = src.uTetherDistance;
     dst->aiState = static_cast<AIState>(src.uAIState);
     dst->currentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
@@ -1341,7 +1380,7 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
     dst->uFirstBSPNode = src.uFirstBSPNode;
     dst->exit_tag = src.exit_tag;
-    dst->pBounding = src.pBounding;
+    snapshot(src.pBounding, &dst->pBounding);
 }
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
@@ -1365,7 +1404,7 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
     dst->uFirstBSPNode = src.uFirstBSPNode;
     dst->exit_tag = src.exit_tag;
-    dst->pBounding = src.pBounding;
+    reconstruct(src.pBounding, &dst->pBounding);
 }
 
 void snapshot(const GUICharMetric &src, GUICharMetric_MM7 *dst) {
@@ -1409,11 +1448,7 @@ void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst) {
 }
 
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
-    dst->facePlane.normal.x = src.facePlane.normal.x / 65536.0;
-    dst->facePlane.normal.y = src.facePlane.normal.y / 65536.0;
-    dst->facePlane.normal.z = src.facePlane.normal.z / 65536.0;
-    dst->facePlane.dist = src.facePlane.dist / 65536.0;
-
+    reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->uAttributes = FaceAttributes(src.attributes);
     dst->pVertexIDs = src.pVertexIDs;
@@ -1422,7 +1457,7 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->resource = nullptr;
     dst->sTextureDeltaU = src.sTextureDeltaU;
     dst->sTextureDeltaV = src.sTextureDeltaV;
-    dst->pBoundingBox = src.pBoundingBox;
+    reconstruct(src.pBoundingBox, &dst->pBoundingBox);
     dst->sCogNumber = src.sCogNumber;
     dst->sCogTriggeredID = src.sCogTriggeredID;
     dst->sCogTriggerType = src.sCogTriggerType;
@@ -1454,7 +1489,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->uType = src.uType;
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
-    dst->vVelocity = src.vVelocity;
+    snapshot(src.vVelocity, &dst->vVelocity);
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = std::to_underlying(src.uAttributes);
@@ -1478,7 +1513,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->uType = static_cast<SPRITE_OBJECT_TYPE>(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
-    dst->vVelocity = src.vVelocity;
+    reconstruct(src.vVelocity, &dst->vVelocity);
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = SpriteAttributes(src.uAttributes);
@@ -1548,7 +1583,7 @@ void reconstruct(const Chest_MM7 &src, Chest *dst) {
 }
 
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
-    dst->vPosition = src.vPosition;
+    reconstruct(src.vPosition, &dst->vPosition);
     dst->uRadius = src.uRadius;
     dst->uRed = src.uRed;
     dst->uGreen = src.uGreen;

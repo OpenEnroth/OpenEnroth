@@ -7,17 +7,6 @@
 
 #include "Utility/Math/TrigLut.h"
 
-template<class From, class To>
-struct vector_conversion_allowed : std::false_type {};
-
-#define MM_ALLOW_VECTOR_CONVERSION(FROM, TO) \
-template<> \
-struct vector_conversion_allowed<FROM, TO> : std::true_type {};
-
-MM_ALLOW_VECTOR_CONVERSION(int16_t, int32_t)
-MM_ALLOW_VECTOR_CONVERSION(int16_t, int64_t)
-MM_ALLOW_VECTOR_CONVERSION(int32_t, int64_t)
-
 template <class T>
 struct Vec2 {
     T x = 0;
@@ -27,7 +16,7 @@ struct Vec2 {
     constexpr Vec2(T a, T b) : x(a), y(b) {}
 
     [[nodiscard]] auto lengthSqr() const {
-        // Note that auto return type is important because this way Vec2s::LengthSqr returns int.
+        // Note that auto return type is important because this way Vec2s::lengthSqr returns int.
         return x * x + y * y;
     }
 
@@ -81,10 +70,6 @@ struct Vec3 {
 
     constexpr Vec3() = default;
     constexpr Vec3(const Vec3 &other) = default;
-
-    template<class OtherT> requires vector_conversion_allowed<OtherT, T>::value
-    constexpr Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
-
     constexpr Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
     static Vec3 fromPolar(T length, int yaw, int pitch) {
@@ -104,10 +89,6 @@ struct Vec3 {
         x *= denom;
         y *= denom;
         z *= denom;
-    }
-
-    [[nodiscard]] Vec3<short> toShort() const requires std::is_floating_point_v<T> {
-        return Vec3<short>(std::round(x), std::round(y), std::round(z));
     }
 
     [[nodiscard]] Vec3<int> toInt() const requires std::is_floating_point_v<T> {
@@ -133,7 +114,7 @@ struct Vec3 {
     }
 
     [[nodiscard]] auto lengthSqr() const {
-        // Note that auto return type is important because this way Vec3s::LengthSqr returns int.
+        // Note that auto return type is important because this way Vec3s::lengthSqr returns int.
         return x * x + y * y + z * z;
     }
 

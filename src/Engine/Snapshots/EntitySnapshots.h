@@ -75,6 +75,9 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs)
 void snapshot(const Pid &src, uint16_t *dst);
 void reconstruct(uint16_t src, Pid *dst);
 
+void snapshot(const Vec3i &src, Vec3s *dst);
+void reconstruct(const Vec3s &src, Vec3i *dst);
+
 
 #pragma pack(push, 1)
 
@@ -84,6 +87,8 @@ struct Planei_MM7 {
 };
 static_assert(sizeof(Planei_MM7) == 16);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Planei_MM7)
+
+void reconstruct(const Planei_MM7 &src, Planef *dst);
 
 
 struct SpriteFrame_MM6 {
@@ -555,7 +560,7 @@ struct ActiveOverlay_MM7 {
     /* 06 */ int16_t animLength;
     /* 08 */ int16_t screenSpaceX;
     /* 0A */ int16_t screenSpaceY;
-    /* 0C */ int16_t pid;
+    /* 0C */ uint16_t pid;
     /* 0E */ int16_t projSize;
     /* 10 */ int32_t fpDamageMod;
     /* 14 */
