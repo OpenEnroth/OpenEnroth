@@ -128,7 +128,11 @@ jobs:
           copy build\src\Bin\OpenEnroth\*.dll dist\ 
           xcopy resources dist\ /E/H/C/I
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ccache-debug
-          path: C:\debug
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: ccache-debug
+#          path: C:\debug
+
+      - name: Check dependencies
+        run: |
+          dumpbin /imports build\src\Bin\OpenEnroth\OpenEnroth.exe
