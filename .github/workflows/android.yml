@@ -1,5 +1,6 @@
 name: Android
-'on':
+
+on:
   pull_request: null
   workflow_dispatch:
     inputs:
@@ -12,6 +13,7 @@ name: Android
   release:
     types:
       - published
+
 # cancels currently running workflow from the same PR, branch or tag
 #concurrency:
 #  group: ${{ github.workflow }}-${{ github.ref }}
@@ -41,11 +43,13 @@ jobs:
           parallel:       2 # Number of parallel speed tests
           sample-size: 1024 # Number of kilobytes to download during the speed from each mirror
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Decode Keystore
         if: '${{ env.super_secret != '''' }}'
         id: decode_keystore
@@ -56,6 +60,7 @@ jobs:
           encodedString: '${{ secrets.KEYSTORE }}'
         env:
           super_secret: '${{ secrets.KEYSTORE }}'
+
       - name: Restore cached NDK
         id: cache-ndk
         uses: actions/cache/restore@v3
@@ -63,6 +68,7 @@ jobs:
           path: |
             /usr/local/lib/android/sdk/ndk/26.0.10404224
           key: android-ndk-r26-beta1-linux
+
       - name: Download NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         run: >
@@ -71,6 +77,7 @@ jobs:
           wget --no-check-certificate
           'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip'
           -O android-ndk-r26-beta1-linux.zip 
+
       - name: Setup NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         run: >
@@ -92,6 +99,7 @@ jobs:
 
           echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/26.0.10404224"
           >> $GITHUB_ENV
+
       - name: Save NDK cache
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         id: cache-ndk-save
@@ -100,6 +108,7 @@ jobs:
           path: |
             /usr/local/lib/android/sdk/ndk/26.0.10404224
           key: android-ndk-r26-beta1-linux
+
       - name: Install dependencies
         run: |
           sudo apt-get install -y yasm
@@ -108,11 +117,13 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y gcc-13-multilib g++-13-multilib
           fi
+
       - uses: actions/setup-java@v2
         with:
           distribution: temurin
           java-version: 17.0.6
           cache: gradle
+
       - name: Check for ffmpeg cache
         id: ffmpeg-cache
         uses: actions/cache/restore@v3
@@ -120,11 +131,13 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
+
       - name: Build ffmpeg
         if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
         working-directory: android/openenroth/jni/FFmpeg
         run: |
           ./build.sh
+
       - name: Save ffmpeg cache
         if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
         id: check-for-ffmpeg-save
@@ -133,18 +146,21 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
+
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
+
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 80M
+
       - name: Build the app per arch
         working-directory: android
         run: |

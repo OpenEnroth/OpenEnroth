@@ -1,5 +1,6 @@
 name: Style
-'on':
+
+on:
   pull_request: null
   workflow_dispatch:
     inputs:
@@ -12,6 +13,7 @@ name: Style
   release:
     types:
       - published
+
 jobs:
   check_style:
     runs-on: ubuntu-22.04
@@ -21,15 +23,18 @@ jobs:
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
           sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
           sudo apt-get install -y libsdl2-dev
+
       - name: Configure
         run: |
           cmake -B build -DENABLE_TESTS=On
+
       - name: Check style
         working-directory: build
         run: |

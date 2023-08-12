@@ -1,5 +1,6 @@
 name: Build Release
-'on':
+
+on:
   schedule:
     - cron: 16 11 * * *
   workflow_dispatch:
@@ -12,8 +13,10 @@ name: Build Release
   push:
     tags:
       - '*'
+
 env:
   TAG_NAME: nightly
+
 jobs:
   advanceNightlyTag:
     name: Advance Nightly Sourcode
@@ -39,9 +42,11 @@ jobs:
               ref: "refs/tags/nightly",
               sha: context.sha
             })
+
       - name: Sleep for 10 seconds
         run: sleep 10s
         shell: bash
+
       - name: Get latest release
         id: latest_release
         uses: kaliber5/action-get-release@v1
@@ -49,11 +54,14 @@ jobs:
           token: '${{ github.token }}'
           tag_name: nightly
           draft: true
-      - uses: eregon/publish-release@v1
+
+      - name: Publish release
+        uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         with:
           release_id: '${{ steps.latest_release.outputs.id }}'
+
   build_android:
     name: Build Android Client
     needs: advanceNightlyTag
@@ -76,12 +84,14 @@ jobs:
           speedtests:    6 # Maximum number of healthy mirrors to test for speed
           parallel:       2 # Number of parallel speed tests
           sample-size: 1024 # Number of kilobytes to download during the speed from each mirror
-          sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish        
+          sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Decode Keystore
         if: '${{ env.super_secret != '''' }}'
         id: decode_keystore
@@ -92,6 +102,7 @@ jobs:
           encodedString: '${{ secrets.KEYSTORE }}'
         env:
           super_secret: '${{ secrets.KEYSTORE }}'
+
       - name: Restore cached NDK
         id: cache-ndk
         uses: actions/cache/restore@v3
@@ -99,6 +110,7 @@ jobs:
           path: |
             /usr/local/lib/android/sdk/ndk/26.0.10404224
           key: android-ndk-r26-beta1-linux
+
       - name: Download NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         run: >
@@ -107,6 +119,7 @@ jobs:
           wget --no-check-certificate
           'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip'
           -O android-ndk-r26-beta1-linux.zip 
+
       - name: Setup NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         run: >
@@ -128,6 +141,7 @@ jobs:
 
           echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/26.0.10404224"
           >> $GITHUB_ENV
+
       - name: Save NDK cache
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         id: cache-ndk-save
@@ -136,17 +150,20 @@ jobs:
           path: |
             /usr/local/lib/android/sdk/ndk/26.0.10404224
           key: android-ndk-r26-beta1-linux
+
       - name: Install dependencies
         run: |
           sudo apt-get install -y yasm
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install -y gcc-13-multilib g++-13-multilib
+
       - uses: actions/setup-java@v2
         with:
           distribution: temurin
           java-version: 17.0.6
           cache: gradle
+
       - name: Check for ffmpeg cache
         id: ffmpeg-cache
         uses: actions/cache/restore@v3
@@ -154,11 +171,13 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
+
       - name: Build ffmpeg
         if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
         working-directory: android/openenroth/jni/FFmpeg
         run: |
           ./build.sh
+
       - name: Save ffmpeg cache
         if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
         id: check-for-ffmpeg-save
@@ -167,11 +186,13 @@ jobs:
           path: |
             android/openenroth/jni/FFmpeg/android/
           key: ffmpeg-cache
+
       - name: ccache
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-multiarch'
           max-size: 250M
+
       - name: Build the app
         working-directory: android
         run: |
@@ -181,6 +202,7 @@ jobs:
           SIGNING_KEY_PASSWORD: '${{ secrets.SIGNING_KEY_PASSWORD }}'
           SIGNING_STORE_PASSWORD: '${{ secrets.SIGNING_STORE_PASSWORD }}'
           CMAKE_BUILD_PARALLEL_LEVEL: 3
+
       - name: Publish debug apk package
         if: '${{ matrix.configuration }} = "Debug"'
         uses: softprops/action-gh-release@v1
@@ -189,6 +211,7 @@ jobs:
           tag_name: '${{ env.TAG_NAME }}'
           files: |
             android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
+
       - name: Publish release apk package
         if: '${{ matrix.configuration }} = "Release"'
         uses: softprops/action-gh-release@v1
@@ -199,9 +222,11 @@ jobs:
             android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
 
             android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
+
       - name: cleanup ccache
         run: >
           ccache -c
+
   build_linux:
     name: Build Linux Client
     needs: advanceNightlyTag
@@ -223,12 +248,14 @@ jobs:
           speedtests:    6 # Maximum number of healthy mirrors to test for speed
           parallel:       2 # Number of parallel speed tests
           sample-size: 1024 # Number of kilobytes to download during the speed from each mirror
-          sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish        
+          sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Check for Data cache
         id: check-for-data-cache
         uses: actions/cache/restore@v3
@@ -236,11 +263,13 @@ jobs:
           path: |
             OpenEnroth_GameData
           key: data-cache
+
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
           cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders
           /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
       - name: Install dependencies
         run: |
           if [ "${{ matrix.architecture }}" = "x86" ]; then
@@ -264,18 +293,21 @@ jobs:
             sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
             sudo apt-get install -y libsdl2-dev
           fi
+
       - name: ccache
         if: matrix.configuration == 'Debug'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 110M
+
       - name: ccache
         if: matrix.configuration == 'Release'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 25M
+
       - name: Configure
         run: >
           if [ "${{ matrix.architecture }}" = "x86" ]; then
@@ -286,14 +318,17 @@ jobs:
 
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
           matrix.configuration }} -DENABLE_TESTS=On
+
       - name: Build
         working-directory: build
         run: |
           make -j3
+
       - name: Tests
         working-directory: build
         run: |
           make UnitTest
+
       - name: GameTest
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         working-directory: build
@@ -301,15 +336,18 @@ jobs:
           make GameTest_Headless
         env:
           OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
       - name: Prepare artifact
         run: |
           mkdir dist
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
           cp -r resources/* dist/
+
       - name: Zip Folder For Release
         run: >-
           zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
           matrix.architecture }}.zip dist
+
       - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
@@ -318,9 +356,11 @@ jobs:
           files: >-
             ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
             matrix.architecture }}.zip
+
       - name: cleanup ccache
         run: >
           ccache -c
+
   build_macos:
     name: Build OSX Client
     needs: advanceNightlyTag
@@ -338,11 +378,13 @@ jobs:
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: 14.3
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Check for Data cache
         id: check-for-data-cache
         uses: actions/cache/restore@v3
@@ -350,40 +392,48 @@ jobs:
           path: |
             OpenEnroth_GameData
           key: data-cache
+
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
           cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders
           /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
       - name: Install dependencies
         run: |
           brew install ffmpeg@4
           brew install sdl2
+
       - name: ccache
         if: matrix.configuration == 'Debug'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 75M
+
       - name: ccache
         if: matrix.configuration == 'Release'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 25M
+
       - name: Configure
         run: >
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
           matrix.configuration }} -DENABLE_TESTS=On
           -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4" 
+
       - name: Build
         working-directory: build
         run: |
           make -j4
+
       - name: Tests
         working-directory: build
         run: |
           make UnitTest
+
       - name: GameTest
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         working-directory: build
@@ -392,6 +442,7 @@ jobs:
           make GameTest_Headless
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
       - name: Prepare artifact
         run: >
           mkdir dist
@@ -402,10 +453,12 @@ jobs:
 
           hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+
           -srcfolder dist
+
       - name: Zip Folder For Release
         run: >-
           zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
           matrix.architecture }}.zip dist
+
       - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
@@ -414,9 +467,11 @@ jobs:
           files: >-
             ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
             matrix.architecture }}.zip
+
       - name: cleanup ccache
         run: >
           ccache -c
+
   build_windows:
     name: Build Windows Client
     needs: advanceNightlyTag
@@ -436,6 +491,7 @@ jobs:
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Check for Data cache
         id: check-for-data-cache
         uses: actions/cache/restore@v3
@@ -444,29 +500,35 @@ jobs:
             OpenEnroth_GameData
           key: data-cache
           enableCrossOsArchive: true
+
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
           xcopy D:\a\OpenEnroth\OpenEnroth\resources
           D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: '${{ matrix.architecture }}'
+
       - name: Restore cached ccache
         id: ccache-cache
         uses: actions/cache/restore@v3
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
+
       - name: add ccache shim
         if: steps.ccache-cache.outputs.cache-hit == 'true'
         run: >
           C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
+
       - name: update ccache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
           choco upgrade ccache
+
       - name: Save ccache to cache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         id: check-for-ccache-save
@@ -474,34 +536,41 @@ jobs:
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
+
       - name: ccache
         if: matrix.configuration == 'Debug'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 110M
+
       - name: ccache
         if: matrix.configuration == 'Release'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 50M
+
       - name: set ccache config values
         run: >
           ccache --set-config=hash_dir=false
+
       - name: Configure
         run: >
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
           }} -DENABLE_TESTS=On
+
       - name: Build
         working-directory: build
         shell: cmd
         run: |
           ninja
+
       - name: Tests
         working-directory: build
         run: |
           ninja UnitTest
+
       - name: GameTest
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         working-directory: build
@@ -509,6 +578,7 @@ jobs:
           ninja GameTest_Headless
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+
       - name: Prepare artifact
         shell: pwsh
         run: >
@@ -539,6 +609,7 @@ jobs:
           Compress-Archive -Path dist -DestinationPath ./Windows_${{
           env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture
           }}.zip
+
       - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
@@ -547,6 +618,7 @@ jobs:
           files: >-
             ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
             matrix.architecture }}.zip
+
       - name: cleanup ccache
         run: >
           ccache -c

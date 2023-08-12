@@ -1,5 +1,6 @@
 name: Windows
-'on':
+
+on:
   pull_request: null
   workflow_dispatch:
     inputs:
@@ -12,6 +13,7 @@ name: Windows
   release:
     types:
       - published
+
 jobs:
   build_windows:
     runs-on: windows-2022
@@ -30,6 +32,7 @@ jobs:
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Check for Data cache
         id: check-for-data-cache
         uses: actions/cache/restore@v3
@@ -38,29 +41,35 @@ jobs:
             OpenEnroth_GameData
           key: data-cache
           enableCrossOsArchive: true
+
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
           xcopy D:\a\OpenEnroth\OpenEnroth\resources
           D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: '${{ matrix.architecture }}'
+
       - name: Restore cached ccache
         id: ccache-cache
         uses: actions/cache/restore@v3
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
+
       - name: add ccache shim
         if: steps.ccache-cache.outputs.cache-hit == 'true'
         run: >
           C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
+
       - name: update ccache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
           choco upgrade ccache
+
       - name: Save ccache to cache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         id: check-for-ccache-save
@@ -68,35 +77,42 @@ jobs:
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
+
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
+
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
+
       - name: set ccache config values
         run: >
           ccache --set-config=hash_dir=false
           mkdir C:\debug
           ccache --set-config=debug_dir=C:\debug
+
       - name: Configure
         run: >
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
           }} -DENABLE_TESTS=On
+
       - name: Build
         working-directory: build
         shell: cmd
         run: |
           ninja 
+
       - name: Tests
         working-directory: build
         run: |
           ninja UnitTest
+
       - name: GameTest
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         working-directory: build
@@ -104,6 +120,7 @@ jobs:
           ninja GameTest_Headless
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+
       - name: Prepare artifact
         shell: pwsh
         run: |
@@ -111,6 +128,7 @@ jobs:
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
           copy build\src\Bin\OpenEnroth\*.dll dist\ 
           xcopy resources dist\ /E/H/C/I
+
       - uses: actions/upload-artifact@v3
         with:
           name: ccache-debug
