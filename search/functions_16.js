@@ -31,7 +31,7 @@ var searchData=
   ['values_28',['values',['../classdetail_1_1TestTapeState.html#aee882cd630b1b0096230c4b385b83dce',1,'detail::TestTapeState::values()'],['../classTestTape.html#a11fc8dd658255fd578f48158b02c06df',1,'TestTape::values()']]],
   ['vanillainputactions_29',['VanillaInputActions',['../InputAction_8h.html#ae87029f48ff9fa584a45d409757f9393',1,'VanillaInputActions():&#160;InputAction.cpp'],['../InputAction_8cpp.html#acd6d030dfa2d67e1e91cf9b2ec880b80',1,'VanillaInputActions():&#160;InputAction.cpp']]],
   ['vec2_30',['Vec2',['../structVec2.html#a37f1bc02613483405562769c246eaba2',1,'Vec2::Vec2()=default'],['../structVec2.html#ae525b2570f57095c5d75e21b2bb7e1b5',1,'Vec2::Vec2(T a, T b)']]],
-  ['vec3_31',['Vec3',['../structVec3.html#aa33ff592ceff2f32f2cbda4aec3813a6',1,'Vec3::Vec3(const Vec3&lt; OtherT &gt; &amp;other)'],['../structVec3.html#af7574de3ec9fa89f86483db70c5cbe90',1,'Vec3::Vec3()=default'],['../structVec3.html#a7f5073b69fd101041779cb63ba2feca5',1,'Vec3::Vec3(T a, T b, T c)'],['../structVec3.html#a31f77b7e8b32cb480fcfcd1adc25bc9d',1,'Vec3::Vec3(const Vec3 &amp;other)=default']]],
+  ['vec3_31',['Vec3',['../structVec3.html#a7f5073b69fd101041779cb63ba2feca5',1,'Vec3::Vec3(T a, T b, T c)'],['../structVec3.html#af7574de3ec9fa89f86483db70c5cbe90',1,'Vec3::Vec3()=default'],['../structVec3.html#a31f77b7e8b32cb480fcfcd1adc25bc9d',1,'Vec3::Vec3(const Vec3 &amp;other)=default']]],
   ['verbose_32',['verbose',['../classLogger.html#a115dc3828922e3d9b0bc4fd5bbb8086b',1,'Logger']]],
   ['videolist_33',['VideoList',['../classVideoList.html#a73bccff3371a9ac599720a357900a6ef',1,'VideoList']]],
   ['view_34',['view',['../classBlob.html#a14c523d7452abe45c8d25bd7db76f41d',1,'Blob']]],
