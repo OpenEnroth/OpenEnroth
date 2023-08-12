@@ -172,7 +172,7 @@ var searchData=
   ['drawworld_169',['drawWorld',['../classEngine.html#a01f2f47484993e77f2787b8fd1d989f9',1,'Engine']]],
   ['drophelditem_170',['dropHeldItem',['../structParty.html#a0693aea0ed8b47d1ae9d99258818fb54',1,'Party']]],
   ['dropitemat_171',['dropItemAt',['../structSpriteObject.html#af03e2b0f3616e142fa60a59ba953b506',1,'SpriteObject']]],
-  ['droptreasureat_172',['DropTreasureAt',['../Indoor_8h.html#a432e8194ed9df808841895f55a83325a',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing):&#160;Indoor.h'],['../Indoor_8cpp.html#afe5fefe7269b2747edf2d6095266e8ab',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, int z, uint16_t facing):&#160;Indoor.cpp']]],
+  ['droptreasureat_172',['DropTreasureAt',['../Indoor_8h.html#a3c12012d4c18fd009a6b4c636c65fa6e',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, Vec3i pos, uint16_t facing):&#160;Indoor.h'],['../Indoor_8cpp.html#a3a4db5144a1dabe065216c9e147d698d',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, Vec3i pos, uint16_t facing):&#160;Indoor.cpp']]],
   ['dummy_173',['dummy',['../classPid.html#a2b54090a269fa38086281f48604715d8',1,'Pid']]],
   ['dummyedit_174',['DummyEdit',['../classorg_1_1libsdl_1_1app_1_1DummyEdit.html#ac4edfe33e7c12d1f47271234a7e7f573',1,'org::libsdl::app::DummyEdit']]],
   ['dump_175',['dump',['../classEventMap.html#a8ad7b6b1ee85fddbdc480c5a69053296',1,'EventMap']]],

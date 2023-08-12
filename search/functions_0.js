@@ -8,7 +8,7 @@ var searchData=
   ['_5f4273bb_5fdoeshitotheractor_5',['_4273BB_DoesHitOtherActor',['../classActor.html#a5318be2551916b68bee9360259fda93e',1,'Actor']]],
   ['_5f427546_6',['_427546',['../structstru319.html#a50d5e3e7c9a0c051896d5714cfe65c74',1,'stru319']]],
   ['_5f42ecb5_5fcharacterattacksactor_7',['_42ECB5_CharacterAttacksActor',['../classCharacter.html#a79b60679dd5ab0f916a32aa85530d46d',1,'Character']]],
-  ['_5f42fa66_5fdo_5fexplosive_5fimpact_8',['_42FA66_do_explosive_impact',['../classCharacter.html#a5eb6e6fe2c8f8350bd636e9bf51fb490',1,'Character']]],
+  ['_5f42fa66_5fdo_5fexplosive_5fimpact_8',['_42FA66_do_explosive_impact',['../classCharacter.html#a9fd09afd6aa3e1ddfe5f440d912ec128',1,'Character']]],
   ['_5f439df3_5fget_5fadditional_5fdamage_9',['_439DF3_get_additional_damage',['../structItemGen.html#a5585a9c039994471276b8224daa6134e',1,'ItemGen']]],
   ['_5f43b3e0_5fcalcdamage_10',['_43B3E0_CalcDamage',['../classActor.html#a01d33a20d9b5a5f986f7dd22a635487e',1,'Actor']]],
   ['_5f43f55f_5fget_5fbillboard_5flight_5flevel_11',['_43F55F_get_billboard_light_level',['../LightmapBuilder_8cpp.html#ae9c04a501d9a011f780e3183b54a681d',1,'_43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel):&#160;LightmapBuilder.cpp'],['../LightmapBuilder_8h.html#ae9c04a501d9a011f780e3183b54a681d',1,'_43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel):&#160;LightmapBuilder.cpp']]],

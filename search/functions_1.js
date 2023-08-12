@@ -126,7 +126,7 @@ var searchData=
   ['arcomageresultdialogue_123',['arcomageResultDialogue',['../classGUIWindow__Tavern.html#a751d9a865fad6f8c56af990fe960064e',1,'GUIWindow_Tavern']]],
   ['arcomagerulesdialogue_124',['arcomageRulesDialogue',['../classGUIWindow__Tavern.html#a72518841e05a01330eca27933a3cc722',1,'GUIWindow_Tavern']]],
   ['arcomagevictoryconddialogue_125',['arcomageVictoryCondDialogue',['../classGUIWindow__Tavern.html#a3fcef83a9d6d91613e0978177cd9e796',1,'GUIWindow_Tavern']]],
-  ['arena_5fsummon_5factor_126',['Arena_summon_actor',['../classActor.html#a7cc03cb6e961b4366e4095a449d5b807',1,'Actor']]],
+  ['arena_5fsummon_5factor_126',['Arena_summon_actor',['../classActor.html#ac1a91bca8cd300bc231a9f4f37893d36',1,'Actor']]],
   ['arenamaindialogue_127',['arenaMainDialogue',['../NPCTopics_8cpp.html#a7b0f1bbb233f36d6ae445f84a3432868',1,'NPCTopics.cpp']]],
   ['arepeasantsofsamefaction_128',['ArePeasantsOfSameFaction',['../classActor.html#acb632732fde4ccab7c888966358df49c',1,'Actor']]],
   ['arerendersurfacesok_129',['AreRenderSurfacesOk',['../classRenderNull.html#a041894c1572e5bba0e46bb65cb9b9d08',1,'RenderNull::AreRenderSurfacesOk()'],['../classRenderOpenGL.html#a7d5ace14c0cecaee45536c6340314fa2',1,'RenderOpenGL::AreRenderSurfacesOk()'],['../classIRender.html#a6793c2d3be80c77d5c7215fa6b02483c',1,'IRender::AreRenderSurfacesOk()']]],

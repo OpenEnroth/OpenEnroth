@@ -450,7 +450,7 @@ var searchData=
   ['drh_5ftexnames_5fby_5fface_447',['drh_texnames_by_face',['../UICharacter_8cpp.html#adbaed93b970d8e1c957765315d384337',1,'UICharacter.cpp']]],
   ['drophelditem_448',['dropHeldItem',['../structParty.html#a0693aea0ed8b47d1ae9d99258818fb54',1,'Party']]],
   ['dropitemat_449',['dropItemAt',['../structSpriteObject.html#af03e2b0f3616e142fa60a59ba953b506',1,'SpriteObject']]],
-  ['droptreasureat_450',['DropTreasureAt',['../Indoor_8cpp.html#afe5fefe7269b2747edf2d6095266e8ab',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, int z, uint16_t facing):&#160;Indoor.cpp'],['../Indoor_8h.html#a432e8194ed9df808841895f55a83325a',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing):&#160;Indoor.h']]],
+  ['droptreasureat_450',['DropTreasureAt',['../Indoor_8cpp.html#a3a4db5144a1dabe065216c9e147d698d',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, Vec3i pos, uint16_t facing):&#160;Indoor.cpp'],['../Indoor_8h.html#a3c12012d4c18fd009a6b4c636c65fa6e',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, Vec3i pos, uint16_t facing):&#160;Indoor.h']]],
   ['dst_451',['dst',['../LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3',1,'LodFormats.cpp']]],
   ['dstx_452',['dstX',['../structProjectileAnim.html#a36151ca9b1b9fbe74c51031170fc1f05',1,'ProjectileAnim']]],
   ['dsty_453',['dstY',['../structProjectileAnim.html#a7f74072719de0bc59426417a24b792c7',1,'ProjectileAnim']]],
