@@ -87,15 +87,6 @@ struct Vec3 {
 
     constexpr Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
-    // TODO(captainurist): this one messes up x and y in return value, drop!
-    static Vec3 fromPolarRetarded(T length, int yaw, int pitch) {
-        float cosPitch = TrigLUT.cos(pitch);
-        float sinPitch = TrigLUT.sin(pitch);
-        float cosYaw = TrigLUT.cos(yaw);
-        float sinYaw = TrigLUT.sin(yaw);
-        return Vec3(sinYaw * cosPitch * length, cosYaw * cosPitch * length, sinPitch * length);
-    }
-
     static Vec3 fromPolar(T length, int yaw, int pitch) {
         float cosPitch = TrigLUT.cos(pitch);
         float sinPitch = TrigLUT.sin(pitch);
