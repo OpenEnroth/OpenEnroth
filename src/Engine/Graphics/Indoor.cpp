@@ -710,7 +710,7 @@ void BLV_UpdateDoors() {
 
         for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            const Vec3s &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+            const Vec3i &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
             face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
             face->zCalc.init(face->facePlane);
 
@@ -847,7 +847,7 @@ void UpdateActors_BLV() {
         if (actor.speed.lengthSqr() >= 400) {
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
-            actor.speed = Vec3s(0, 0, 0);
+            actor.speed = Vec3i(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;

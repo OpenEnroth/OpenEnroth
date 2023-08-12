@@ -36,7 +36,7 @@ struct SpriteObject {
 
     inline void spellSpriteStop() {
         uSpriteFrameID = 0;
-        vVelocity = Vec3s(0.0, 0.0, 0.0);
+        vVelocity = Vec3i(0, 0, 0);
     }
 
     /**
@@ -70,7 +70,7 @@ struct SpriteObject {
     // unsigned __int16 uType;
     uint16_t uObjectDescID = 0; // Zero means free slot, can reuse.
     Vec3i vPosition;
-    Vec3s vVelocity;
+    Vec3i vVelocity;
     uint16_t uFacing = 0;
     uint16_t uSoundID = 0;
     SpriteAttributes uAttributes = 0;

@@ -41,7 +41,7 @@ struct AIDirection {
 };
 
 struct ActorJob {
-    Vec3s vPos;
+    Vec3i vPos;
     uint16_t uAttributes = 0;
     uint8_t uAction = 0;
     uint8_t uHour = 0;
@@ -214,14 +214,14 @@ class Actor {
     uint16_t radius = 32;
     uint16_t height = 128;
     uint16_t moveSpeed = 200;
-    Vec3s pos;
-    Vec3s speed;
+    Vec3i pos;
+    Vec3i speed; // TODO(captainurist): velocity is a better name for this, speed = ||velocity||
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;
     int sectorId = 0;
     uint16_t currentActionLength = 0;
-    Vec3s initialPosition;
-    Vec3s guardingPosition;
+    Vec3i initialPosition;
+    Vec3i guardingPosition;
     uint16_t tetherDistance = 256;
     AIState aiState = Standing;
     ActorAnimation currentActionAnimation = ANIM_Standing;

@@ -521,7 +521,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             break; // We'll try again in the next frame.
         }
 
-        actor.pos = newPos.toShort();
+        actor.pos = newPos.toInt();
         actor.sectorId = collision_state.uSectorID;
         if (fuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
             break; // No collisions happened.
@@ -579,11 +579,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             } else {
                 float velocityDotNormal = dot(face->facePlane.normal, actor.speed.toFloat());
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
-                actor.speed += (velocityDotNormal * face->facePlane.normal).toShort();
+                actor.speed += (velocityDotNormal * face->facePlane.normal).toInt();
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
                     float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos.toFloat());
                     if (overshoot > 0)
-                        actor.pos += (overshoot * pIndoor->pFaces[id].facePlane.normal).toShort();
+                        actor.pos += (overshoot * pIndoor->pFaces[id].facePlane.normal).toInt();
                     actor.yawAngle = TrigLUT.atan2(actor.speed.x, actor.speed.y);
                 }
             }
@@ -644,7 +644,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             }
         }
 
-        actor.pos = newPos.toShort();
+        actor.pos = newPos.toInt();
         if (fuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
             break; // No collision happened.
 
@@ -703,11 +703,11 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                     // Note that not all copies of this code have std::abs. Why?
                     velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
 
-                    actor.speed += (velocityDotNormal * face->facePlane.normal).toShort();
+                    actor.speed += (velocityDotNormal * face->facePlane.normal).toInt();
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
                         float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos.toFloat());
                         if (overshoot > 0)
-                            actor.pos += (overshoot * face->facePlane.normal).toShort();
+                            actor.pos += (overshoot * face->facePlane.normal).toInt();
                         actor.yawAngle = TrigLUT.atan2(actor.speed.x, actor.speed.y);
                     }
                 }

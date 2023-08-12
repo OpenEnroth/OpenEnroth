@@ -319,7 +319,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             int yaw, pitch;
             for (int i = 0; i < meteors; i++) {
                 int originHeight = grng->random(1000);
-                if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
+                if (Vec3f(j, k, originHeight - 2500).length() <= 1.0f) {
                     pitch = 0;
                     yaw = 0;
                 } else {
@@ -3351,8 +3351,8 @@ void Actor::Arena_summon_actor(int monster_id, Vec3i pos) {
     actor->radius = pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
     actor->height = pMonsterList->pMonsters[monster_id - 1].uMonsterHeight;
     actor->moveSpeed = pMonsterList->pMonsters[monster_id - 1].uMovementSpeed;
-    actor->initialPosition = Vec3s(pos.x, pos.y, pos.z);
-    actor->pos = Vec3s(pos.x, pos.y, pos.z);
+    actor->initialPosition = pos;
+    actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
     actor->monsterInfo.uTreasureType = 0;
     actor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
@@ -4259,7 +4259,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     int current_sector = obj1_sector;
     int next_sector = 0;
     BLVFace *portalface;
-    Vec3s *portalverts;
+    Vec3i *portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {

@@ -95,11 +95,11 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set blank velocity
-    vVelocity = Vec3s(0, 0, 0);
+    vVelocity = Vec3i(0, 0, 0);
 
     // calcualte angle velocity
     if (speed) {
-        vVelocity = Vec3s::fromPolar(speed, yaw, pitch);
+        vVelocity = Vec3i::fromPolar(speed, yaw, pitch);
     }
 
     // copy sprite object into slot
@@ -305,7 +305,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                         eventProcessor(face->sCogTriggeredID, Pid(), 1);
                     }
                 } else {
-                    pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
+                    pSpriteObjects[uLayingItemID].vVelocity = Vec3i(0, 0, 0);
                 }
             } else {
                 float dotFix = std::abs(dot(face->facePlane.normal, pSpriteObjects[uLayingItemID].vVelocity.toFloat()));
@@ -493,7 +493,7 @@ LABEL_25:
                     pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
-                pSpriteObject->vVelocity = Vec3s(0, 0, 0);
+                pSpriteObject->vVelocity = Vec3i(0, 0, 0);
                 pSpriteObject->vPosition.z = pIndoor->pVertices[*pIndoor->pFaces[pidId].pVertexIDs].z + 1;
             }
             pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
@@ -516,7 +516,7 @@ LABEL_25:
         pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
         pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         if (pSpriteObject->vVelocity.xy().lengthSqr() < 400) {
-            pSpriteObject->vVelocity = Vec3s(0, 0, 0);
+            pSpriteObject->vVelocity = Vec3i(0, 0, 0);
             if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) {
                 return;
             }
@@ -913,7 +913,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
-            object->vVelocity = Vec3s(0.0, 0.0, 0.0);
+            object->vVelocity = Vec3i(0, 0, 0);
             int iceParticles = (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER) ? 9 : 7;
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             SpriteObject temp = *object;
@@ -988,7 +988,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
-            object->vVelocity = Vec3s(0.0, 0.0, 0.0);
+            object->vVelocity = Vec3i(0, 0, 0);
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             SpriteObject temp = *object;
             for (int i = 0; i < 8; i++) {

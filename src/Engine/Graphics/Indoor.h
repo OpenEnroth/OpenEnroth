@@ -18,7 +18,7 @@
 struct IndoorLocation;
 
 struct BLVLight {
-    Vec3s vPosition;
+    Vec3i vPosition;
     int16_t uRadius = 0;
     char uRed = 0;
     char uGreen = 0;
@@ -146,7 +146,7 @@ struct BLVFace {  // 60h
     int uSectorID = 0;
     int uBackSectorID = 0;
     // TODO(pskelton): Geometry should be float
-    BBoxs pBounding;
+    BBoxi pBounding;
     PolygonType uPolygonType = POLYGON_Invalid;
     uint8_t uNumVertices = 0;
 };
@@ -194,7 +194,7 @@ struct BLVSector {  // 0x74
     int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
     int16_t uFirstBSPNode;
     int16_t exit_tag;
-    BBoxs pBounding;
+    BBoxi pBounding;
 };
 
 /*   89 */
@@ -219,10 +219,6 @@ struct IndoorLocation {
         return GetSector(pos.x, pos.y, pos.z);
     }
 
-    int GetSector(const Vec3s &pos) {
-        return GetSector(pos.x, pos.y, pos.z);
-    }
-
     void Release();
     void Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned);
     void Draw();
@@ -240,7 +236,7 @@ struct IndoorLocation {
 
     std::string filename;
     unsigned int bLoaded = 0;
-    std::vector<Vec3s> pVertices;
+    std::vector<Vec3i> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
     std::vector<BLVSector> pSectors;

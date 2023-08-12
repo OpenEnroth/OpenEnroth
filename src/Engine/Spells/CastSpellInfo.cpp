@@ -982,7 +982,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (; meteor_num; meteor_num--) {
                         int originHeight = grng->random(1000);
                         // TODO(Nik-RE-dev): condition is always false
-                        if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
+                        if (Vec3f(j, k, originHeight - 2500).length() <= 1.0f) {
                             pitch = 0;
                             yaw = 0;
                         } else {
@@ -1185,7 +1185,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (int star_num = 20; star_num; star_num--) {
                         int originHeight = grng->random(1000);
                         // TODO(Nik-RE-dev): condition is always false
-                        if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
+                        if (Vec3f(j, k, originHeight - 2500).length() <= 1.0f) {
                             pitch = 0;
                             yaw = 0;
                         } else {
