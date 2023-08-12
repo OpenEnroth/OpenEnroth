@@ -71,21 +71,26 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
 
         #TODO: remove that workaround once dependencies archives are updated
         set(DEP_PLATFORM ${BUILD_PLATFORM})
-        if (BUILD_PLATFORM STREQUAL "windows")
+        if (DEP_PLATFORM STREQUAL "windows")
             set(DEP_PLATFORM "win32")
         endif()
 
-        set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
-        set(LIBRARY_DIR "${LIB_DIR}/${DEP_PLATFORM}/${BUILD_TYPE}")
+        set(DEP_ARCHITECTURE ${BUILD_ARCHITECTURE})
+        if (DEP_ARCHITECTURE STREQUAL "x86_64")
+            set(DEP_ARCHITECTURE "x64")
+        endif()
 
-        set(DEPS_ZIP_FILENAME "all_deps_${DEP_PLATFORM}_${BUILD_TYPE}.zip")
+        set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
+        set(LIBRARY_DIR "${LIB_DIR}/${DEP_PLATFORM}/${DEP_ARCHITECTURE}")
+
+        set(DEPS_ZIP_FILENAME "all_deps_${DEP_PLATFORM}_${DEP_ARCHITECTURE}.zip")
         set(DEPS_ZIP_FULL_PATH "${LIB_DIR}/${DEPS_ZIP_FILENAME}")
-        if(BUILD_PLATFORM STREQUAL "windows" AND BUILD_TYPE STREQUAL "x64")
+        if(BUILD_PLATFORM STREQUAL "windows" AND BUILD_ARCHITECTURE STREQUAL "x86_64")
             set(DEPS_ZIP_MD5_CHECKSUM "02cbd9b53a221f6014528305c1d1f728")
-        elseif(BUILD_PLATFORM STREQUAL "windows" AND BUILD_TYPE STREQUAL "x86")
+        elseif(BUILD_PLATFORM STREQUAL "windows" AND BUILD_ARCHITECTURE STREQUAL "x86")
             set(DEPS_ZIP_MD5_CHECKSUM "1f6c8a2eb0394cb2eb72670db1af7432")
         else()
-            message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE} are not available!")
+            message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM}/${BUILD_ARCHITECTURE} are not available!")
         endif()
 
         # resolve 3d party libs
@@ -103,10 +108,10 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
                 list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
                 if(${STATUS_CODE} EQUAL 0)
-                    message(STATUS "Prebuilt dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE} successfully downloaded!")
+                    message(STATUS "Prebuilt dependencies for ${BUILD_PLATFORM}/${BUILD_ARCHITECTURE} successfully downloaded!")
                 else()
                     file(REMOVE "${DEPS_ZIP_FULL_PATH}")
-                    message(FATAL_ERROR "Error occurred during download of dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE}: ${ERROR_MESSAGE}")
+                    message(FATAL_ERROR "Error occurred during download of dependencies for ${BUILD_PLATFORM}/${BUILD_ARCHITECTURE}: ${ERROR_MESSAGE}")
                 endif()
             endif()
 
@@ -115,7 +120,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                     RESULT_VARIABLE UNPACK_STATUS)
 
             if (UNPACK_STATUS)
-                message(FATAL_ERROR "Error occurred during unpack of dependencies for ${BUILD_PLATFORM}/${BUILD_TYPE}: ${UNPACK_STATUS}")
+                message(FATAL_ERROR "Error occurred during unpack of dependencies for ${BUILD_PLATFORM}/${BUILD_ARCHITECTURE}: ${UNPACK_STATUS}")
             endif()
         endif()
 

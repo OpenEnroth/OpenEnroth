@@ -14,6 +14,10 @@ execute_process(
         OUTPUT_VARIABLE GIT_REVISION
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+string(TIMESTAMP BUILD_TIME UTC)
+
 add_library(library_buildinfo ${LIBRARY_BUILDINFO_SOURCES} ${LIBRARY_BUILDINFO_HEADERS})
-target_compile_definitions(library_buildinfo PRIVATE MM_GIT_REVISION="${GIT_REVISION}")
+target_compile_definitions(library_buildinfo PRIVATE
+        MM_GIT_REVISION="${GIT_REVISION}"
+        MM_BUILD_TIME="${BUILD_TIME}")
 target_check_style(library_buildinfo)

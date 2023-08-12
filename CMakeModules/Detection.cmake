@@ -1,6 +1,6 @@
 set(BUILD_COMPILER "unknown")
 set(BUILD_PLATFORM "unknown")
-set(BUILD_TYPE "unknown")
+set(BUILD_ARCHITECTURE "unknown")
 
 if(WIN32)
     set(BUILD_PLATFORM "windows")
@@ -23,12 +23,25 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     set(BUILD_PLATFORM "ios")
 endif()
 
-# TODO: We should replace this with proper architecture detection like DetectArchitecture in luajit
-if (CMAKE_SIZEOF_VOID_P MATCHES 8)
-    set(BUILD_TYPE "x64")
-elseif (CMAKE_SIZEOF_VOID_P MATCHES 4)
-    set(BUILD_TYPE "x86")
-endif ()
+# We are being quite lazy here and only distinguishing between "x86", "x86_64", "arm32", "arm64".
+# Yes, "arm32" / "arm64" are questionable catch-alls, but so far there was no need for anything more specific.
+# A better way is to compile a binary and grep the resulting .obj file, but that's a bit too much for now.
+set(X86_PROCESSORS "x86_64" "i386" "i686" "amd64" "x86")
+set(ARM_PROCESSORS "arm64" "aarch64" "armv7-a" "armv8b" "armv8l" "arm")
+string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" CMAKE_SYSTEM_PROCESSOR_LOWER)
+if ("${CMAKE_SYSTEM_PROCESSOR_LOWER}" IN_LIST X86_PROCESSORS)
+    if (CMAKE_SIZEOF_VOID_P MATCHES 8)
+        set(BUILD_ARCHITECTURE "x86_64")
+    elseif (CMAKE_SIZEOF_VOID_P MATCHES 4)
+        set(BUILD_ARCHITECTURE "x86")
+    endif ()
+elseif("${CMAKE_SYSTEM_PROCESSOR_LOWER}" IN_LIST ARM_PROCESSORS)
+    if (CMAKE_SIZEOF_VOID_P MATCHES 8)
+        set(BUILD_ARCHITECTURE "arm64")
+    elseif (CMAKE_SIZEOF_VOID_P MATCHES 4)
+        set(BUILD_ARCHITECTURE "arm32")
+    endif ()
+endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(BUILD_COMPILER "gcc")
@@ -40,4 +53,4 @@ endif()
 
 message(STATUS "Build compiler: ${BUILD_COMPILER}")
 message(STATUS "Build platform: ${BUILD_PLATFORM}")
-message(STATUS "Build type: ${BUILD_TYPE}")
+message(STATUS "Build architecture: ${BUILD_ARCHITECTURE}")

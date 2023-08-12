@@ -93,7 +93,7 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Fallback to default linker.")
     endif()
 
-    if("-m32" IN_LIST CMAKE_CXX_FLAGS)
+    if(BUILD_ARCHITECTURE STREQUAL "x86")
         add_compile_options(-msse2 -mfpmath=sse -march=pentium4) # Don't use x87 fpu in 32-bit builds.
     endif()
 
@@ -130,12 +130,11 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
-    if (BUILD_TYPE STREQUAL "x86")
+    add_link_options(/OPT:REF) # Eliminate unreferenced data & functions.
+    add_link_options(/OPT:ICF) # Enable COMDAT folding, should decrease binary sizes?
+    if (BUILD_ARCHITECTURE STREQUAL "x86")
         add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
-        add_link_options(/SAFESEH:NO) # This is for x86 build
-        add_link_options(/OPT:REF) # in 32-bit environments, /OPT:REF is recommended
-    else()
-        add_link_options(/OPT:REF,ICF) 
+        add_link_options(/SAFESEH:NO) # /SAFESEH is x86-only, don't produce safe exception handler tables
     endif()
     # Allows the compiler to package individual functions in the form of packaged functions (COMDATs)
     add_compile_options("$<$<CONFIG:RELEASE>:/Gy>")    
