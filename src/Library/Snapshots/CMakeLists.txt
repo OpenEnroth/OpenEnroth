@@ -11,7 +11,7 @@ add_library(library_snapshots INTERFACE ${LIBRARY_SNAPSHOTS_SOURCES} ${LIBRARY_S
 target_check_style(library_snapshots)
 target_link_libraries(library_snapshots INTERFACE library_binary utility)
 
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_SNAPSHOTS_SOURCES Tests/Snapshots_ut.cpp)
 
     add_library(test_library_snapshots OBJECT ${TEST_LIBRARY_SNAPSHOTS_SOURCES})

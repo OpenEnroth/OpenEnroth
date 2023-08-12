@@ -1,5 +1,6 @@
 name: Shaders
-'on':
+
+on:
   pull_request: null
   workflow_dispatch:
     inputs:
@@ -12,6 +13,7 @@ name: Shaders
   release:
     types:
       - published
+
 jobs:
   check_shaders:
     runs-on: ubuntu-22.04
@@ -21,10 +23,12 @@ jobs:
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y glslang-tools 
+
       - name: Check OpenGL 4.1 (Core) shaders
         working-directory: resources/shaders
         run: >
@@ -34,6 +38,7 @@ jobs:
           ../shaders_opengl41core/{} && cat {} >> ../shaders_opengl41core/{}' \;
 
           find ../shaders_opengl41core -type f | xargs -n1 glslangValidator
+
       - name: Check OpenGL ES 3.2 shaders
         working-directory: resources/shaders
         run: >

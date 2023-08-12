@@ -72,7 +72,7 @@ Building on Windows
 * Select startup item as `OpenEnroth.exe`.
 * Run!
 
-If you wish you can also disable autoresolving main dependencies by turning off `PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
+If you wish you can also disable autoresolving main dependencies by turning off `OE_USE_PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
 
 __Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
 So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`
@@ -137,7 +137,7 @@ Testing
 -------
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.
 
-Tests are not built by default, and you will need to set `ENABLE_TESTS` cmake variable to be able to build them. You can either use your IDE for that, or just run `cmake` with `-DENABLE_TESTS=ON` from the command line.
+Tests are not built by default, and you will need to set `OE_BUILD_TESTS` cmake variable to be able to build them. You can either use your IDE for that, or just run `cmake` with `-DOE_BUILD_TESTS=ON` from the command line.
 
 Tests in OpenEnroth fall into two categories:
 * Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Tests`.
@@ -161,7 +161,7 @@ To run all unit tests locally, build a `UnitTest` cmake target, or build & run `
 
 To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
 
-Note that if you can't find either `UnitTest` or `GameTest` target in the target list of your IDE, this likely means that you haven't set the `ENABLE_TESTS` cmake variable as described above.
+Note that if you can't find either `UnitTest` or `GameTest` target in the target list of your IDE, this likely means that you haven't set the `OE_BUILD_TESTS` cmake variable as described above.
 
 Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command.
 

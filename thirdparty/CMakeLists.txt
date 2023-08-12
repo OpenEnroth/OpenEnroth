@@ -61,7 +61,7 @@ else()
 endif()
 
 # googletest
-if(ENABLE_TESTS)
+if(OE_BUILD_TESTS)
     set(INSTALL_GTEST OFF)
     set(BUILD_GMOCK OFF)
     add_subdirectory(googletest)
