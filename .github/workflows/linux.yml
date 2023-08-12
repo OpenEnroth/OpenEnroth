@@ -54,9 +54,9 @@ jobs:
 
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
-        run: >
-          cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders
-          /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+        run: |
+          cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
+
       - name: Install dependencies
         run: |
           if [ "${{ matrix.architecture }}" = "x86" ]; then

@@ -267,8 +267,7 @@ jobs:
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
-          cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders
-          /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+          cp -r resources/shaders OpenEnroth_GameData/mm7
 
       - name: Install dependencies
         run: |
@@ -396,8 +395,7 @@ jobs:
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
-          cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders
-          /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+          cp -r resources/shaders OpenEnroth_GameData/mm7
 
       - name: Install dependencies
         run: |
@@ -504,8 +502,7 @@ jobs:
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
-          xcopy D:\a\OpenEnroth\OpenEnroth\resources
-          D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+          xcopy resources OpenEnroth_GameData\mm7 /E/H/C/I
 
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
