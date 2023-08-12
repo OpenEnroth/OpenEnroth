@@ -29,6 +29,35 @@ function(target_resolve_prebuilt_dependencies targetName)
     endif()
 endfunction()
 
+function(download_prebuilt_dependencies SOURCE_NAME TARGET_DIR)
+    set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/dependencies/${SOURCE_NAME}")
+    set(TARGET_PATH "${TARGET_DIR}/${SOURCE_NAME}")
+    message(STATUS "Downloading ${SOURCE_URL}...")
+    file(DOWNLOAD
+            "${SOURCE_URL}"
+            "${TARGET_PATH}"
+            SHOW_PROGRESS
+            STATUS DOWNLOAD_STATUS
+            TIMEOUT 60)  # seconds
+
+    list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+    list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+    if(${STATUS_CODE} EQUAL 0)
+        message(STATUS "Downloaded ${SOURCE_URL}!")
+    else()
+        file(REMOVE "${TARGET_PATH}")
+        message(FATAL_ERROR "Could not download ${SOURCE_URL}: ${ERROR_MESSAGE}")
+    endif()
+
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf "${TARGET_PATH}"
+            WORKING_DIRECTORY ${TARGET_DIR}
+            RESULT_VARIABLE UNPACK_STATUS)
+
+    if (UNPACK_STATUS)
+        message(FATAL_ERROR "Could not unpack ${TARGET_PATH}: ${UNPACK_STATUS}")
+    endif()
+endfunction()
+
 #TODO: all prebuilt dependency artifacts should be built and packaged in the same unified way.
 #      so all code below could be drastically simplified and we wouldn't have per-platform blocks.
 
@@ -159,6 +188,27 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         else()
             message(FATAL_ERROR "Prebuilt dependencies for ${BUILD_PLATFORM} are unknown!")
         endif()
+    elseif(OE_USE_PREBUILT_DEPENDENCIES AND BUILD_PLATFORM STREQUAL "darwin")
+        set(PREBUILT_DEPS_FILENAME "dependencies_${BUILD_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
+        set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
+        if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
+            download_prebuilt_dependencies("${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}")
+        endif()
+
+        list(APPEND CMAKE_MODULE_PATH ${PREBUILT_DEPS_DIR})
+        list(APPEND CMAKE_PREFIX_PATH "${PREBUILT_DEPS_DIR}")
+
+        set(ZLIB_USE_STATIC_LIBS ON)
+        find_package(ZLIB REQUIRED)
+
+        find_package(SDL2 CONFIG REQUIRED GLOBAL)
+        add_library(SDL2OE INTERFACE)
+        target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
+        add_library(SDL2::SDL2OE ALIAS SDL2OE)
+
+        find_package(OpenAL CONFIG REQUIRED GLOBAL)
+
+        find_package(FFmpeg REQUIRED)
     else()
         find_package(FFmpeg REQUIRED)
         find_package(OpenGL REQUIRED)

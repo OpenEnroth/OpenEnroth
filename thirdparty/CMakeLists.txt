@@ -30,14 +30,20 @@ add_library(mini::mini ALIAS mini)
 target_include_directories(mini INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/mini/src)
 
 # openal_soft
-set(LIBTYPE STATIC)
-set(ALSOFT_UTILS OFF)
-set(ALSOFT_EXAMPLES OFF)
-set(ALSOFT_TESTS OFF)
-add_subdirectory(openal_soft)
+if (OPENAL_FOUND)
+    # Resolved in Dependencies.cmake
+else()
+    set(LIBTYPE STATIC)
+    set(ALSOFT_UTILS OFF)
+    set(ALSOFT_EXAMPLES OFF)
+    set(ALSOFT_TESTS OFF)
+    add_subdirectory(openal_soft)
+endif()
 
 # SDL
-if(BUILD_PLATFORM STREQUAL "linux")
+if(SDL2_FOUND)
+    # Resolved in Dependencies.cmake
+elseif(BUILD_PLATFORM STREQUAL "linux")
     find_package(SDL2 CONFIG REQUIRED GLOBAL) # GLOBAL is required for SDL2 to be available in src/
     add_library(SDL2::SDL2OE ALIAS SDL2::SDL2) # Link dynamically on linux.
 elseif(BUILD_PLATFORM STREQUAL "android")
