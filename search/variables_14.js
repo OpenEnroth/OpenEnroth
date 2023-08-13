@@ -190,7 +190,7 @@ var searchData=
   ['turnbasedmodeon_187',['turnBasedModeOn',['../structParty__MM7.html#a25799a43635ef3e644ef69b0f74fcbb3',1,'Party_MM7']]],
   ['turnbasedplayerrecoverytimes_188',['turnBasedPlayerRecoveryTimes',['../structParty__MM7.html#a1f9f0622c6f0dc09ca289dc7a6023203',1,'Party_MM7']]],
   ['turns_5fcount_189',['turns_count',['../structstru262__TurnBased.html#a998fa646c47b2bd6e657bf1ad85403d5',1,'stru262_TurnBased']]],
-  ['turnspeed_190',['TurnSpeed',['../classGameConfig_1_1Settings.html#a56acca8b6d4d272eeaddcd81976fae1b',1,'GameConfig::Settings']]],
+  ['turnspeed_190',['TurnSpeed',['../classGameConfig_1_1Settings.html#a0ce42d8d40cf09311e72878d697752f9',1,'GameConfig::Settings']]],
   ['twodshader_191',['twodshader',['../classRenderOpenGL.html#ada37f13e87af7c542edf7d9481e082b5',1,'RenderOpenGL']]],
   ['twodshaderstore_192',['twodshaderstore',['../RenderOpenGL_8cpp.html#a17cb7cd76c498c55d47b5e20f3293b53',1,'RenderOpenGL.cpp']]],
   ['twodvao_193',['twodVAO',['../classRenderOpenGL.html#aa183b9b9a2809b7586d6f5c85e79431e',1,'RenderOpenGL']]],

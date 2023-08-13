@@ -471,7 +471,7 @@ var searchData=
   ['turnleft_468',['TurnLeft',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca8240c76a9676d55f5d5bfeb9a6fc7028',1,'Io']]],
   ['turnright_469',['TurnRight',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca40dfa38b645f971c52766aa367a474fd',1,'Io']]],
   ['turns_5fcount_470',['turns_count',['../structstru262__TurnBased.html#a998fa646c47b2bd6e657bf1ad85403d5',1,'stru262_TurnBased']]],
-  ['turnspeed_471',['TurnSpeed',['../classGameConfig_1_1Settings.html#a56acca8b6d4d272eeaddcd81976fae1b',1,'GameConfig::Settings']]],
+  ['turnspeed_471',['TurnSpeed',['../classGameConfig_1_1Settings.html#a0ce42d8d40cf09311e72878d697752f9',1,'GameConfig::Settings']]],
   ['twodshader_472',['twodshader',['../classRenderOpenGL.html#ada37f13e87af7c542edf7d9481e082b5',1,'RenderOpenGL']]],
   ['twodshaderstore_473',['twodshaderstore',['../RenderOpenGL_8cpp.html#a17cb7cd76c498c55d47b5e20f3293b53',1,'RenderOpenGL.cpp']]],
   ['twodvao_474',['twodVAO',['../classRenderOpenGL.html#aa183b9b9a2809b7586d6f5c85e79431e',1,'RenderOpenGL']]],
