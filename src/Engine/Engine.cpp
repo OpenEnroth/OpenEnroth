@@ -1852,3 +1852,13 @@ void TeleportToNWCDungeon() {
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
     current_screen_type = SCREEN_GAME;
 }
+
+// Hint to Hybrid laptop drivers that we would rather use the NVidia/AMD GPU rather than Intigrated Graphics...
+#ifdef WIN32
+#include <windows.h>
+extern "C"
+{
+    __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif //def WIN32
