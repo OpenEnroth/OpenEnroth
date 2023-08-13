@@ -17,4 +17,4 @@ target_link_libraries(media_audio
         utility
         application
         # PRIVATE # TODO(captainurist): should be private
-        OpenAL)
+        OpenAL::OpenAL)

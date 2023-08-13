@@ -130,3 +130,7 @@ jobs:
           mkdir dist
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
           cp -r resources/* dist/
+
+      - name: Check dependencies
+        run: |
+          objdump -p build/src/Bin/OpenEnroth/OpenEnroth | grep 'NEEDED'

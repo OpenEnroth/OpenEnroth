@@ -193,14 +193,14 @@ class GameConfig : public Config {
 
             return artifact_limit;
         }
-        static float ValidateInteractionDepth(float depth) {
-            return std::clamp(depth, 64.0f, 16192.0f);
+        static int ValidateInteractionDepth(int depth) {
+            return std::clamp(depth, 64, 16192);
         }
-        static float ValidateRangedAttackDepth(float depth) {
-            return std::clamp(depth, 64.0f, 16192.0f);
+        static int ValidateRangedAttackDepth(int depth) {
+            return std::clamp(depth, 64, 16192);
         }
-        static float ValidateAoeDistance(float depth) {
-            return std::clamp(depth, 64.0f, 16192.0f);
+        static int ValidateAoeDistance(int depth) {
+            return std::clamp(depth, 64, 16192);
         }
         static float ValidateSpellFailureRecoveryMod(float mod) {
             return std::clamp(mod, 0.0f, 1.0f);
@@ -500,9 +500,9 @@ class GameConfig : public Config {
 
         Int ScreenshotNumber = {this, "screenshot_number", 0, "Last saved screenshot number."};
 
-        Float TurnSpeed = {this, "turn_speed", 0.0f, &ValidateTurnSpeed,
-                           "Discrete turn speed, use 0 for smooth, 16 for 64 degrees turn, 32 for 128 degrees turn, etc. "
-                           "Only smooth is usable on modern machines."};
+        Int TurnSpeed = {this, "turn_speed", 0, &ValidateTurnSpeed,
+                         "Discrete turn speed, use 0 for smooth, 16 for 64 degrees turn, 32 for 128 degrees turn, etc. "
+                         "Only smooth is usable on modern machines."};
 
         Int VerticalTurnSpeed = {this, "vertical_turn_speed", 25, &ValidateVerticalTurnSpeed, "Discrete vertical turn speed."};
 
@@ -515,8 +515,8 @@ class GameConfig : public Config {
         static int ValidateVerticalTurnSpeed(int speed) {
             return std::clamp(speed, 1, 128);
         }
-        static float ValidateTurnSpeed(float speed) {
-            return std::clamp(speed, 0.0f, 1024.0f);
+        static int ValidateTurnSpeed(int speed) {
+            return std::clamp(speed, 0, 1024);
         }
     };
 
