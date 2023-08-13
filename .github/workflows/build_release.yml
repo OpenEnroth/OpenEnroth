@@ -553,9 +553,8 @@ jobs:
           ccache --set-config=hash_dir=false
 
       - name: Configure
-        run: >
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration
-          }} -DOE_BUILD_TESTS=ON
+        run: |
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DOE_BUILD_TESTS=ON
 
       - name: Build
         working-directory: build
@@ -582,8 +581,6 @@ jobs:
           mkdir dist
 
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-
-          copy build\src\Bin\OpenEnroth\*.dll dist\ 
 
           if ("${{ matrix.configuration }}" -eq "Debug" -And "${{
           matrix.architecture }}" -eq "x86" ) {
@@ -615,6 +612,10 @@ jobs:
           files: >-
             ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
             matrix.architecture }}.zip
+
+      - name: Check dependencies
+        run: |
+          dumpbin /imports build\src\Bin\OpenEnroth\OpenEnroth.exe
 
       - name: cleanup ccache
         run: >
