@@ -587,7 +587,6 @@ jobs:
             copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
             copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
             copy c:\Windows\SysWOW64\ucrtbased.dll dist\
-            copy build\src\Bin\OpenEnroth\*.pdb dist\ 
           } ElseIf ("${{ matrix.configuration }}" -eq "Debug" -And "${{
           matrix.architecture }}" -eq "x64") {
             copy c:\Windows\System32\msvcp140d.dll dist\ 
