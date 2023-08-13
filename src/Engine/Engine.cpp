@@ -1856,8 +1856,7 @@ void TeleportToNWCDungeon() {
 // Hint to Hybrid laptop drivers that we would rather use the NVidia/AMD GPU rather than Intigrated Graphics...
 #ifdef WIN32
 #include <windows.h>
-extern "C"
-{
+extern "C" {
     __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
