@@ -13,7 +13,6 @@ if(OE_BUILD_TESTS)
     target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game GTest::gtest CLI11::CLI11)
 
     target_check_style(OpenEnroth_GameTest)
-    target_resolve_prebuilt_dependencies(OpenEnroth_GameTest)
 
 
     # OpenEnroth_TestData

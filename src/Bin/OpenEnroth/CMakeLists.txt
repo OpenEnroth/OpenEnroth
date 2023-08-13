@@ -21,6 +21,4 @@ else()
     target_link_libraries(OpenEnroth PUBLIC application CLI11::CLI11)
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
-
-    target_resolve_prebuilt_dependencies(OpenEnroth)
 endif()

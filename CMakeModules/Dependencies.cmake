@@ -1,33 +1,3 @@
-set(PREBUILT_DEPENDENCIES_LIST)
-
-function(prebuilt_dependencies_add)
-    if(OE_USE_PREBUILT_DEPENDENCIES)
-        foreach(filename ${ARGV})
-            if (NOT EXISTS ${filename})
-                message(FATAL_ERROR "Prebuilt dependency does not exist: '${filename}' ")
-            else()
-                list(APPEND PREBUILT_DEPENDENCIES_LIST "${filename}")
-                set (PREBUILT_DEPENDENCIES_LIST ${PREBUILT_DEPENDENCIES_LIST} PARENT_SCOPE)
-            endif()
-        endforeach()
-    endif()
-endfunction()
-
-function(target_resolve_prebuilt_dependencies targetName)
-    if(OE_USE_PREBUILT_DEPENDENCIES)
-        foreach(dep ${PREBUILT_DEPENDENCIES_LIST})
-            add_custom_command(
-                    TARGET ${targetName}
-                    POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy "${dep}" $<TARGET_FILE_DIR:${targetName}>)
-            # Note that we cannot use message() here because it cannot expand a generator expressions.
-            add_custom_command(
-                    TARGET ${targetName}
-                    POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E echo "Copying binary dependency ${dep} to $<TARGET_FILE_DIR:${targetName}>")
-        endforeach()
-    endif()
-endfunction()
 
 function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
     set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
