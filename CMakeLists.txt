@@ -141,10 +141,9 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     # Retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
     # /Ob controls inline expansions and /Ob2 expands any function not explicitly marked for no inlining.
     string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    # Pack debug libs
-    string(REPLACE "-MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "-MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")    
+    string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")   
+    # selects for all targets a multi-threaded statically-linked runtime library with or without debug information depending on the configuration.
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 resolve_dependencies()
