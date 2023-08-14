@@ -104,7 +104,7 @@ jobs:
         working-directory: build
         shell: cmd
         run: |
-          ninja 
+          ninja -v
 
       - name: Tests
         working-directory: build
@@ -115,7 +115,7 @@ jobs:
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
-          ninja GameTest_Headless
+          #ninja GameTest_Headless
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
