@@ -1,6 +1,6 @@
 
 function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
-    set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
+    set(SOURCE_URL "https://github.com/botanicvelious/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
     set(TARGET_PATH "${TARGET_DIR}/${FILE_NAME}")
     message(STATUS "Downloading ${SOURCE_URL}...")
     file(DOWNLOAD
