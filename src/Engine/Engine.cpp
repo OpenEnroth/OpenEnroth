@@ -363,7 +363,7 @@ void Engine::StackPartyTorchLight() {
 
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
-    particle_engine->UpdateParticles();
+    
 
     float depth = 0.0f;
     Vis_SelectionFilter *sprite_filter = nullptr;
@@ -390,11 +390,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // decal reset but actually want bloodsplat reset
     // decal_builder->DecalsCount = 0;
     // decal_builder->curent_decal_id = 0;
-    decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
-    if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
-    }
     return true;
 }
 

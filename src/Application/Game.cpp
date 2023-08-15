@@ -18,6 +18,9 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/LightsStack.h"
+#include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -2060,7 +2063,13 @@ void Game::gameLoop() {
         do {
             MessageLoopWithWait();
 
+            _engine->particle_engine->UpdateParticles();
             _engine->_44EEA7();  // pop up . mouse picking
+            _engine->decal_builder->bloodsplat_container->uNumBloodsplats = 0;
+            if (_engine->uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
+                _engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
+            }
+
             GameUI_WritePointedObjectStatusString();
             keyboardInputHandler->GenerateInputActions();
             processQueuedMessages();
@@ -2075,6 +2084,7 @@ void Game::gameLoop() {
             pEventTimer->Update();
             pMiscTimer->Update();
 
+            // why two??
             _engine->_statusBar->update();
 
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
