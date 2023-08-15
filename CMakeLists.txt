@@ -24,7 +24,7 @@ include(Dependencies)
 include(CheckLinkerFlag)
 
 # Settings defaults.
-if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin")
+if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin" OR BUILD_PLATFORM STREQUAL "linux")
     set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
 else()
     set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
