@@ -2064,7 +2064,7 @@ void Game::gameLoop() {
             MessageLoopWithWait();
 
             _engine->particle_engine->UpdateParticles();
-            _engine->_44EEA7();  // pop up . mouse picking
+            _engine->filterPickMouse();
             _engine->decal_builder->bloodsplat_container->uNumBloodsplats = 0;
             if (_engine->uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
                 _engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;

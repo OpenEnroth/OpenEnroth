@@ -362,9 +362,7 @@ void Engine::StackPartyTorchLight() {
 }
 
 //----- (0044EEA7) --------------------------------------------------------
-bool Engine::_44EEA7() {  // cursor picking - particle update
-    
-
+void Engine::filterPickMouse() {  // cursor picking
     float depth = 0.0f;
     Vis_SelectionFilter *sprite_filter = nullptr;
     Vis_SelectionFilter *face_filter = nullptr;
@@ -385,13 +383,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     }
     Pointi pt = mouse->GetCursorPos();
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-
-
-    // decal reset but actually want bloodsplat reset
-    // decal_builder->DecalsCount = 0;
-    // decal_builder->curent_decal_id = 0;
-
-    return true;
 }
 
 //----- (004645FA) --------------------------------------------------------
