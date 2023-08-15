@@ -24,10 +24,12 @@ include(Dependencies)
 include(CheckLinkerFlag)
 
 # Settings defaults.
-if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin" OR BUILD_PLATFORM STREQUAL "linux")
-    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
-else()
-    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin" OR BUILD_PLATFORM STREQUAL "linux")
+        set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
+    else()
+        set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
+    endif()
 endif()
 
 # User-settable options.
