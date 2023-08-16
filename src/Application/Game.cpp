@@ -1985,7 +1985,6 @@ void Game::gameLoop() {
                 _engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
             }
 
-            GameUI_WritePointedObjectStatusString();
             keyboardInputHandler->GenerateInputActions();
             processQueuedMessages();
             if (pArcomageGame->bGameInProgress) {
@@ -1998,9 +1997,6 @@ void Game::gameLoop() {
 
             pEventTimer->Update();
             pMiscTimer->Update();
-
-            // why two??
-            _engine->_statusBar->update();
 
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
@@ -2019,8 +2015,12 @@ void Game::gameLoop() {
                     UpdateUserInput_and_MapSpecificStuff();
                 }
             }
+
             pAudioPlayer->UpdateSounds();
+
+            GameUI_WritePointedObjectStatusString();
             _engine->_statusBar->update();
+
             if (uGameState == GAME_STATE_PLAYING) {
                 _engine->Draw();
                 continue;
