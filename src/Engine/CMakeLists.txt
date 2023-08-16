@@ -8,6 +8,7 @@ set(ENGINE_SOURCES
         EngineGlobals.cpp
         ErrorHandling.cpp
         EngineIocContainer.cpp
+        GpuHints.cpp
         LOD.cpp
         LodTextureCache.cpp
         LodSpriteCache.cpp
