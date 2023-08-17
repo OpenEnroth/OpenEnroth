@@ -14,4 +14,4 @@ std::string makeDataPath(Ts&&... paths) {
     return makeDataPath({paths...});
 }
 
-bool validateDataPath(const std::string &data_path);
+bool validateDataPath(const std::string &data_path, std::string& missing_file);
