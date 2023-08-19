@@ -691,17 +691,16 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     int pTextHeight = 0;
-    const char *pText = nullptr;
     int pTextColorID = 0;
     pWindow->DrawText(pFontSmallnum, {12, 196}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
     if (!for_effects) {
         pWindow->DrawText(pFontSmallnum, {28, pFontSmallnum->GetHeight() + 193}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
     } else {
-        pText = "";
+        std::string pText;
         pTextHeight = pFontSmallnum->GetHeight() + 193;
-        for (ACTOR_BUFF_INDEX i : pActors[uActorID].buffs.indices()) {
-            if (pActors[uActorID].buffs[i].Active()) {
-                switch (i) {
+        for (ACTOR_BUFF_INDEX buff : pActors[uActorID].buffs.indices()) {
+            if (pActors[uActorID].buffs[buff].Active()) {
+                switch (buff) {
                     case ACTOR_BUFF_CHARM:
                         pTextColorID = 60;
                         pText = localization->GetString(LSTR_CHARMED);
@@ -736,7 +735,6 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         break;
                     case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
                     case ACTOR_BUFF_MASS_DISTORTION:
-                        pText = "";
                         pTextColorID = 0;
                         continue;
                     case ACTOR_BUFF_FATE:
@@ -786,173 +784,146 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         pText = localization->GetString(LSTR_HAMMERHANDS);
                         break;
                     default:
-                        pText = "";
                         break;
                 }
-                if (!iequals(pText, "")) {
+                if (!pText.empty()) {
                     pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, GetSpellColor(pTextColorID), pText);
                     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
                 }
             }
         }
-        if (iequals(pText, ""))
+        if (pText.empty()) {
             pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+        }
     }
 
-    std::string txt2;
+    pTextHeight = doll_rect.y;
+
+    std::string hpStr, acStr;
     if (normal_level) {
-        auto str =
-            fmt::format("{}\f00000\t100{}\n", localization->GetString(LSTR_HIT_POINTS),
-                         pActors[uActorID].monsterInfo.uHP);
-        pWindow->DrawText(pFontSmallnum, {150, doll_rect.y}, colorTable.Jonquil, str);
-        pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
-        txt2 = fmt::format("{}\f00000\t100{}\n", localization->GetString(LSTR_ARMOR_CLASS),
-                            pActors[uActorID].monsterInfo.uAC);
+        hpStr = fmt::format("{}", pActors[uActorID].monsterInfo.uHP);
+        acStr = fmt::format("{}", pActors[uActorID].monsterInfo.uAC);
     } else {
-        auto str = fmt::format(
-            "{}\f00000\t100{}\n", localization->GetString(LSTR_HIT_POINTS),
-            localization->GetString(LSTR_UNKNOWN_VALUE));
-        pWindow->DrawText(pFontSmallnum, {150, doll_rect.y}, colorTable.Jonquil, str);
-        pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
-        txt2 = fmt::format(
-            "{}\f00000\t100{}\n", localization->GetString(LSTR_ARMOR_CLASS),
-            localization->GetString(LSTR_UNKNOWN_VALUE));
+        hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt2);
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 +
-                  pFontSmallnum->GetHeight();
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
+    pWindow->DrawText(pFontSmallnum, {252, pTextHeight}, colorTable.White, hpStr);
+    pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
+    pWindow->DrawText(pFontSmallnum, {252, pTextHeight}, colorTable.White, acStr);
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
 
-    const char *content[11] = {0};
-    content[0] = localization->GetSpellSchoolName(0);
-    content[1] = localization->GetSpellSchoolName(1);
-    content[2] = localization->GetSpellSchoolName(2);
-    content[3] = localization->GetSpellSchoolName(3);
-    content[4] = localization->GetString(LSTR_PHYSICAL);
-    content[5] = localization->GetString(LSTR_MAGIC);
-    content[6] = localization->GetSpellSchoolName(5);
-    content[7] = localization->GetSpellSchoolName(4);
-    content[8] = localization->GetSpellSchoolName(6);
-    content[9] = localization->GetSpellSchoolName(7);
-    content[10] = localization->GetSpellSchoolName(8);
+    std::array<std::string, 11> attackTypes = {
+        localization->GetSpellSchoolName(0),
+        localization->GetSpellSchoolName(1),
+        localization->GetSpellSchoolName(2),
+        localization->GetSpellSchoolName(3),
+        localization->GetString(LSTR_PHYSICAL),
+        localization->GetString(LSTR_MAGIC),
+        localization->GetSpellSchoolName(5),
+        localization->GetSpellSchoolName(4),
+        localization->GetSpellSchoolName(6),
+        localization->GetSpellSchoolName(7),
+        localization->GetSpellSchoolName(8)
+    };
 
-    std::string txt4;
+    std::string attackStr, damageStr;
     if (expert_level) {
-        auto txt3 = fmt::format(
-            "{}\f00000\t080{}\n", localization->GetString(LSTR_ATTACK),
-            content[pActors[uActorID].monsterInfo.uAttack1Type]);
-        pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt3);
-
-        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        if (pActors[uActorID].monsterInfo.uAttack1DamageBonus)
-            txt4 = fmt::format(
-                "{}\f00000\t080{}d{}+{}\n", localization->GetString(LSTR_DAMAGE),
-                pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls,
-                pActors[uActorID].monsterInfo.uAttack1DamageDiceSides,
-                pActors[uActorID].monsterInfo.uAttack1DamageBonus);
-        else
-            txt4 = fmt::format(
-                "{}\f00000\t080{}d{}\n", localization->GetString(LSTR_DAMAGE),
-                pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls,
-                pActors[uActorID].monsterInfo.uAttack1DamageDiceSides);
+        attackStr = attackTypes[pActors[uActorID].monsterInfo.uAttack1Type];
+        if (pActors[uActorID].monsterInfo.uAttack1DamageBonus) {
+            damageStr = fmt::format("{}d{}+{}", pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].monsterInfo.uAttack1DamageDiceSides,
+                                    pActors[uActorID].monsterInfo.uAttack1DamageBonus);
+        } else {
+            damageStr = fmt::format("{}d{}", pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].monsterInfo.uAttack1DamageDiceSides);
+        }
     } else {
-        auto txt3 = fmt::format(
-            "{}\f00000\t080{}\n", localization->GetString(LSTR_ATTACK),
-            localization->GetString(LSTR_UNKNOWN_VALUE)
-        );
-        pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt3);
-        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        txt4 = fmt::format(
-            "{}\f00000\t080{}\n", localization->GetString(LSTR_DAMAGE),
-            localization->GetString(LSTR_UNKNOWN_VALUE)
-        );
+        attackStr = damageStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt4);
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+    pWindow->DrawText(pFontSmallnum, {231, pTextHeight}, colorTable.White, attackStr);
+    pTextHeight += pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+    pWindow->DrawText(pFontSmallnum, {231, pTextHeight}, colorTable.White, damageStr);
+    pTextHeight += pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
 
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 +
-                  pFontSmallnum->GetHeight();
-    if (!master_level) {
-        auto txt5 = fmt::format(
-            "{}\f00000\t080{}\n", localization->GetString(LSTR_SPELL),
-            localization->GetString(LSTR_UNKNOWN_VALUE)
-        );
-        pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt5);
-        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-    } else {
-        pText = localization->GetString(LSTR_SPELL);
-        if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE && pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE)
-            pText = localization->GetString(LSTR_SPELLS);
+    std::string spellTitleStr = localization->GetString(LSTR_SPELL);
+    std::string spell1Str, spell2Str;
+    if (master_level) {
+        if (pActors[uActorID].monsterInfo.uSpell1ID == SPELL_NONE && pActors[uActorID].monsterInfo.uSpell2ID == SPELL_NONE) {
+            spell1Str = localization->GetString(LSTR_NONE);
+        }
+        if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE && pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE) {
+            spellTitleStr = localization->GetString(LSTR_SPELLS);
+        }
         if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE) {
-            auto txt6 = fmt::format(
-                "{}\f00000\t070{}\n", pText,
-                pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell1ID].pShortName
-            );  // "%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt6);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+            spell1Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell1ID].pShortName;
         }
         if (pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE) {
-            auto txt6 = fmt::format(
-                "\f00000\t070{}\n",
-                pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell2ID]
-                    .pShortName);  // "%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt6);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+            spell2Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell2ID].pShortName;
         }
-        if (!pActors[uActorID].monsterInfo.uSpell1ID &&
-            !pActors[uActorID].monsterInfo.uSpell2ID) {
-            auto txt6 = fmt::format(
-                "{}\f00000\t070{}\n", localization->GetString(LSTR_SPELL),
-                localization->GetString(LSTR_NONE));  // "%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt6);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        }
+    } else {
+        spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, spellTitleStr);
+    pWindow->DrawText(pFontSmallnum, {220, pTextHeight}, colorTable.White, spell1Str);
+    pTextHeight += pFontSmallnum->GetHeight() - 3;
+    if (!spell2Str.empty()) {
+        pWindow->DrawText(pFontSmallnum, {220, pTextHeight}, colorTable.White, spell2Str);
+        pTextHeight += pFontSmallnum->GetHeight() - 3;
+    }
+    pTextHeight += pFontSmallnum->GetHeight() - 3;
 
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    std::array<std::string, 10> resTypes = {
+        localization->GetSpellSchoolName(0),
+        localization->GetSpellSchoolName(1),
+        localization->GetSpellSchoolName(2),
+        localization->GetSpellSchoolName(3),
+        localization->GetSpellSchoolName(4),
+        localization->GetSpellSchoolName(5),
+        localization->GetSpellSchoolName(6),
+        localization->GetSpellSchoolName(7),
+        localization->GetSpellSchoolName(8),
+        localization->GetString(LSTR_PHYSICAL)
+    };
+
+    std::array<int, 10> resValues = {
+        pActors[uActorID].monsterInfo.uResFire,
+        pActors[uActorID].monsterInfo.uResAir,
+        pActors[uActorID].monsterInfo.uResWater,
+        pActors[uActorID].monsterInfo.uResEarth,
+        pActors[uActorID].monsterInfo.uResMind,
+        pActors[uActorID].monsterInfo.uResSpirit,
+        pActors[uActorID].monsterInfo.uResBody,
+        pActors[uActorID].monsterInfo.uResLight,
+        pActors[uActorID].monsterInfo.uResPhysical,
+        pActors[uActorID].monsterInfo.uResDark
+    };
+
     pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
 
-    const char *string_name[10] = {0};
-    string_name[0] = localization->GetSpellSchoolName(0);  // Fire
-    string_name[1] = localization->GetSpellSchoolName(1);  // Air
-    string_name[2] = localization->GetSpellSchoolName(2);
-    string_name[3] = localization->GetSpellSchoolName(3);
-    string_name[4] = localization->GetSpellSchoolName(4);
-    string_name[5] = localization->GetSpellSchoolName(5);
-    string_name[6] = localization->GetSpellSchoolName(6);
-    string_name[7] = localization->GetSpellSchoolName(7);
-    string_name[8] = localization->GetSpellSchoolName(8);
-    string_name[9] = localization->GetString(LSTR_PHYSICAL);
-
-    unsigned char resistances[11] = {0};
-    resistances[0] = pActors[uActorID].monsterInfo.uResFire;
-    resistances[1] = pActors[uActorID].monsterInfo.uResAir;
-    resistances[2] = pActors[uActorID].monsterInfo.uResWater;
-    resistances[3] = pActors[uActorID].monsterInfo.uResEarth;
-    resistances[4] = pActors[uActorID].monsterInfo.uResMind;
-    resistances[5] = pActors[uActorID].monsterInfo.uResSpirit;
-    resistances[6] = pActors[uActorID].monsterInfo.uResBody;
-    resistances[7] = pActors[uActorID].monsterInfo.uResLight;
-    resistances[8] = pActors[uActorID].monsterInfo.uResPhysical;
-    resistances[9] = pActors[uActorID].monsterInfo.uResDark;
-
     if (grandmaster_level) {
-        for (uint i = 0; i < 10; i++) {
-            if (resistances[i] == 200) {
-                pText = localization->GetString(LSTR_IMMUNE);
+        std::string resStr;
+        for (int i = 0; i < 10; i++) {
+            if (resValues[i] == 200) {
+                resStr = localization->GetString(LSTR_IMMUNE);
             } else {
-                if (resistances[i])
-                    pText = localization->GetString(LSTR_RESISTANT);
-                else
-                    pText = localization->GetString(LSTR_NONE);
+                if (resValues[i]) {
+                    resStr = localization->GetString(LSTR_RESISTANT);
+                } else {
+                    resStr = localization->GetString(LSTR_NONE);
+                }
             }
 
-            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil, fmt::format("{}\f00000\t070{}\n", string_name[i], pText));
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(pFontSmallnum, {241, pTextHeight}, colorTable.White, resStr);
+            pTextHeight += pFontSmallnum->GetHeight() - 3;
         }
     } else {
-        for (uint i = 0; i < 10; ++i) {
-            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil, fmt::format("{}\f00000\t070{}\n", string_name[i], localization->GetString(LSTR_UNKNOWN_VALUE)));
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+        for (int i = 0; i < 10; ++i) {
+            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(pFontSmallnum, {241, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+            pTextHeight += pFontSmallnum->GetHeight() - 3;
         }
     }
 
