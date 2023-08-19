@@ -50,7 +50,7 @@ void GUIWindow_Training::mainDialogue() {
 
     std::vector<std::string> optionsText = {trainText, localization->GetString(LSTR_LEARN_SKILLS)};
 
-    drawOptions(optionsText, colorTable.Jonquil);
+    drawOptions(optionsText, colorTable.Sunflower);
 }
 
 void GUIWindow_Training::trainDialogue() {
@@ -131,7 +131,7 @@ void GUIWindow_Training::houseSpecificDialogue() {
         trainDialogue();
         break;
       case DIALOGUE_LEARN_SKILLS:
-        learnSkillsDialogue();
+        learnSkillsDialogue(colorTable.Sunflower);
         break;
       default:
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);

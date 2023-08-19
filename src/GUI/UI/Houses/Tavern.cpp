@@ -195,7 +195,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
         buyFoodDialogue();
         break;
       case DIALOGUE_LEARN_SKILLS:
-        learnSkillsDialogue();
+        learnSkillsDialogue(colorTable.PaleCanary);
         break;
       default:
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);

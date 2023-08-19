@@ -259,7 +259,7 @@ void GUIWindow_Shop::mainDialogue() {
     std::vector<std::string> optionsText = {localization->GetString(LSTR_STANDARD), localization->GetString(LSTR_SPECIAL),
                                             localization->GetString(LSTR_DISPLAY), localization->GetString(LSTR_LEARN_SKILLS)};
 
-    drawOptions(optionsText, colorTable.Jonquil);
+    drawOptions(optionsText, colorTable.Sunflower);
 }
 
 void GUIWindow_Shop::displayEquipmentDialogue() {
@@ -272,7 +272,7 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
         optionsText.push_back(localization->GetString(LSTR_REPAIR));
     }
 
-    drawOptions(optionsText, colorTable.Jonquil);
+    drawOptions(optionsText, colorTable.Sunflower);
 }
 
 void GUIWindow_Shop::sellDialogue() {
@@ -766,7 +766,7 @@ void GUIWindow_Shop::houseSpecificDialogue() {
         repairDialogue();
         break;
       case DIALOGUE_LEARN_SKILLS:
-        learnSkillsDialogue();
+        learnSkillsDialogue(colorTable.Sunflower);
         break;
       default:
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
