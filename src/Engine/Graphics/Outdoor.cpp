@@ -823,6 +823,10 @@ void OutdoorLocation::Release() {
 
     // free shader data for outdoor location
     render->ReleaseTerrain();
+
+    if (viewparams->location_minimap)
+        viewparams->location_minimap->Release();
+    viewparams->location_minimap = nullptr;
 }
 
 void OutdoorLocation::Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
@@ -847,6 +851,8 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         Error("Unable to find %s in Games.LOD", filename.c_str());
 
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
+    if (viewparams->location_minimap)
+        viewparams->location_minimap->Release();
     viewparams->location_minimap = assets->getImage_Solid(minimap_filename);
 
     std::string odm_filename = std::string(filename);
