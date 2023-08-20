@@ -139,7 +139,7 @@ void GUIWindow_Temple::houseSpecificDialogue() {
         donateDialogue();
         break;
       case DIALOGUE_LEARN_SKILLS:
-        learnSkillsDialogue();
+        learnSkillsDialogue(colorTable.PaleCanary);
         break;
       default:
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
