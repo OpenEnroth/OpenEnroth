@@ -1,6 +1,7 @@
 #include "GUI/GUIFont.h"
 
 #include <sstream>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

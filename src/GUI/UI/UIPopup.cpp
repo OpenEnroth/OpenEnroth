@@ -806,12 +806,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
-    pWindow->DrawText(pFontSmallnum, {252, pTextHeight}, colorTable.White, hpStr);
-    pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
-    pWindow->DrawText(pFontSmallnum, {252, pTextHeight}, colorTable.White, acStr);
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
+    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
+    pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, hpStr);
+    pTextHeight = doll_rect.y + assets->pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
+    pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, acStr);
+    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
 
     std::array<std::string, 11> attackTypes = {
         localization->GetSpellSchoolName(0),
@@ -839,12 +839,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         attackStr = damageStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
-    pWindow->DrawText(pFontSmallnum, {231, pTextHeight}, colorTable.White, attackStr);
-    pTextHeight += pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
-    pWindow->DrawText(pFontSmallnum, {231, pTextHeight}, colorTable.White, damageStr);
-    pTextHeight += pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
+    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+    pWindow->DrawText(assets->pFontSmallnum.get(), {231, pTextHeight}, colorTable.White, attackStr);
+    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+    pWindow->DrawText(assets->pFontSmallnum.get(), {231, pTextHeight}, colorTable.White, damageStr);
+    pTextHeight += assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
 
     std::string spellTitleStr = localization->GetString(LSTR_SPELL);
     std::string spell1Str, spell2Str;
@@ -864,14 +864,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, spellTitleStr);
-    pWindow->DrawText(pFontSmallnum, {220, pTextHeight}, colorTable.White, spell1Str);
-    pTextHeight += pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, spellTitleStr);
+    pWindow->DrawText(assets->pFontSmallnum.get(), {220, pTextHeight}, colorTable.White, spell1Str);
+    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
     if (!spell2Str.empty()) {
-        pWindow->DrawText(pFontSmallnum, {220, pTextHeight}, colorTable.White, spell2Str);
-        pTextHeight += pFontSmallnum->GetHeight() - 3;
+        pWindow->DrawText(assets->pFontSmallnum.get(), {220, pTextHeight}, colorTable.White, spell2Str);
+        pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
     }
-    pTextHeight += pFontSmallnum->GetHeight() - 3;
+    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
 
     std::array<std::string, 10> resTypes = {
         localization->GetSpellSchoolName(0),
@@ -899,8 +899,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pActors[uActorID].monsterInfo.uResDark
     };
 
-    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
+    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 3;
 
     if (grandmaster_level) {
         std::string resStr;
@@ -915,15 +915,15 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 }
             }
 
-            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(pFontSmallnum, {241, pTextHeight}, colorTable.White, resStr);
-            pTextHeight += pFontSmallnum->GetHeight() - 3;
+            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, resStr);
+            pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
         }
     } else {
         for (int i = 0; i < 10; ++i) {
-            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(pFontSmallnum, {241, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
-            pTextHeight += pFontSmallnum->GetHeight() - 3;
+            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+            pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
         }
     }
 

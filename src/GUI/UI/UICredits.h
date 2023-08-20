@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GUI/GUIWindow.h"
 
 class GUIFont;

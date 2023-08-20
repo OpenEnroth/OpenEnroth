@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Library/Color/Color.h"
 #include "Library/Image/Palette.h"
