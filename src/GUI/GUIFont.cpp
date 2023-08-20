@@ -126,10 +126,14 @@ void GUIFont::CreateFontTex() {
 }
 
 void GUIFont::ReleaseFontTex() {
-    if (this->fonttex)
+    if (this->fonttex) {
         this->fonttex->releaseRenderId();
-    if (this->fontshadow)
+        this->fonttex->Release();
+    }
+    if (this->fontshadow) {
         this->fontshadow->releaseRenderId();
+        this->fontshadow->Release();
+    }
 }
 
 bool GUIFont::IsCharValid(unsigned char c) const {
