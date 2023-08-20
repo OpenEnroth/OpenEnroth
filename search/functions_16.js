@@ -3,7 +3,7 @@ var searchData=
   ['valid_0',['Valid',['../structGameTime.html#a7be2495c8b562bc9065128876a224679',1,'GameTime']]],
   ['validateaoedistance_1',['ValidateAoeDistance',['../classGameConfig_1_1Gameplay.html#a1a577fec5df711a61f463d3b344cf7fa',1,'GameConfig::Gameplay']]],
   ['validateartifactlimit_2',['ValidateArtifactLimit',['../classGameConfig_1_1Gameplay.html#a03a7b525a140ada800253c533b8a7bd7',1,'GameConfig::Gameplay']]],
-  ['validatedatapath_3',['validateDataPath',['../DataPath_8cpp.html#a2fc07bbc4ad979168d091d1e709f457f',1,'validateDataPath(const std::string &amp;data_path):&#160;DataPath.cpp'],['../DataPath_8h.html#a2fc07bbc4ad979168d091d1e709f457f',1,'validateDataPath(const std::string &amp;data_path):&#160;DataPath.cpp']]],
+  ['validatedatapath_3',['validateDataPath',['../DataPath_8cpp.html#a541c3796dbe97a4d1fa899e1e1bc9e39',1,'validateDataPath(const std::string &amp;data_path, std::string &amp;missing_file):&#160;DataPath.cpp'],['../DataPath_8h.html#a541c3796dbe97a4d1fa899e1e1bc9e39',1,'validateDataPath(const std::string &amp;data_path, std::string &amp;missing_file):&#160;DataPath.cpp']]],
   ['validatefloorcheckseps_4',['ValidateFloorChecksEps',['../classGameConfig_1_1Gameplay.html#ae0a1e1c85f3a59f7ee7fad990bb6a34c',1,'GameConfig::Gameplay']]],
   ['validateframetime_5',['ValidateFrameTime',['../classGameConfig_1_1Debug.html#a0e0b0eebbddc004958689cfe6980dc6c',1,'GameConfig::Debug']]],
   ['validategamma_6',['ValidateGamma',['../classGameConfig_1_1Graphics.html#ab0ceeff3de48a2d35e3df0ecb3a9e4bd',1,'GameConfig::Graphics']]],
