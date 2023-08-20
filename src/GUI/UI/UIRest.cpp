@@ -43,7 +43,7 @@ void GUIWindow_RestWindow::Update() {
     GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, *(static_cast<Image **>(wData.ptr) + 15));
-    GUIButton2.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, 0, 0);
+    GUIButton2.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), assets->pFontCreate, 0, 0);
     GUIButton2.pParent = 0;
     Release();
 }
@@ -165,16 +165,16 @@ void GUIWindow_Rest::Update() {
         tmp_button.uWidth = 171;
         tmp_button.uHeight = 37;
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, colorTable.Diesel, colorTable.StarkWhite);
+        tmp_button.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.pParent = 0;
 
         auto str1 = fmt::format("\r408{}", foodRequiredToRest);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {0, 164}, colorTable.Diesel, str1, 0, colorTable.StarkWhite);
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {0, 164}, colorTable.Diesel, str1, 0, colorTable.StarkWhite);
 
-        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate, colorTable.Diesel, colorTable.StarkWhite);
-        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(LSTR_WAIT_1_HOUR), pFontCreate, colorTable.Diesel, colorTable.StarkWhite);
-        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(LSTR_WAIT_5_MINUTES), pFontCreate, colorTable.Diesel, colorTable.StarkWhite);
-        pButton_RestUI_Exit->DrawLabel(localization->GetString(LSTR_EXIT_REST), pFontCreate, colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(LSTR_WAIT_1_HOUR), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(LSTR_WAIT_5_MINUTES), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_Exit->DrawLabel(localization->GetString(LSTR_EXIT_REST), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.uX = 45;
         tmp_button.uY = 199;
 
@@ -185,16 +185,16 @@ void GUIWindow_Rest::Update() {
         tmp_button.uHeight = 30;
 
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(LSTR_WAIT_WITHOUT_HEALING), pFontCreate, colorTable.Diesel, colorTable.StarkWhite);
+        tmp_button.DrawLabel(localization->GetString(LSTR_WAIT_WITHOUT_HEALING), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.pParent = 0;
         std::string str2 = fmt::format("{}:{:02} {}", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {368, 168}, colorTable.Diesel, str2, 0, colorTable.StarkWhite);
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {368, 168}, colorTable.Diesel, str2, 0, colorTable.StarkWhite);
         std::string str3 = fmt::format("{}\r190{}", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 190}, colorTable.Diesel, str3, 0, colorTable.StarkWhite);
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 190}, colorTable.Diesel, str3, 0, colorTable.StarkWhite);
         std::string str4 = fmt::format("{}\r190{}", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 222}, colorTable.Diesel, str4, 0, colorTable.StarkWhite);
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 222}, colorTable.Diesel, str4, 0, colorTable.StarkWhite);
         std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 254}, colorTable.Diesel, str5, 0, colorTable.StarkWhite);
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 254}, colorTable.Diesel, str5, 0, colorTable.StarkWhite);
         if (currentRestType != REST_NONE) {
             Party::restOneFrame();
         }

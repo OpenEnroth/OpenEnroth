@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -267,7 +268,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
-    int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13) + 7;
+    int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13) + 7;
 
     // TODO(pskelton): This doesnt work properly and we dont want draw calls here
     render->BeginScene3D();
@@ -280,8 +281,8 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
      render->BeginScene2D();
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-    std::string text = pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13);
-    pDialogueWindow->DrawText(pFontArrus, {13, 354 - textHeight}, colorTable.White, text);
+    std::string text = assets->pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13);
+    pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
 
     pParty->pos = Vec3i(3849, 5770, 1);

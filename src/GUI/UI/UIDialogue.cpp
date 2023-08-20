@@ -111,7 +111,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialo
     pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                    localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
 
-    int text_line_height = pFontArrus->GetHeight() - 3;
+    int text_line_height = assets->pFontArrus->GetHeight() - 3;
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     std::vector<DIALOGUE_TYPE> optionList;
 
@@ -185,7 +185,7 @@ void GUIWindow_Dialogue::Update() {
     render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseNpcs[0].icon);
 
-    window.DrawTitleText(pFontArrus, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3);
+    window.DrawTitleText(assets->pFontArrus.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3);
 
     pParty->getPartyFame();
 
@@ -251,11 +251,11 @@ void GUIWindow_Dialogue::Update() {
     if (!dialogue_string.empty()) {
         window.uFrameWidth = game_viewport_width;
         window.uFrameZ = 452;
-        GUIFont *font = pFontArrus;
-        pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
+        GUIFont *font = assets->pFontArrus.get();
+        pTextHeight = assets->pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
-            font = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
+            font = assets->pFontCreate.get();
+            pTextHeight = assets->pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
         }
 
         if (ui_leather_mm7)
@@ -308,7 +308,7 @@ void GUIWindow_Dialogue::Update() {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
         if (!pButton)
             break;
-        all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
         index++;
     }
 
@@ -322,7 +322,7 @@ void GUIWindow_Dialogue::Update() {
             if (!pButton)
                 break;
             pButton->uY = (unsigned int)(v45 + v42);
-            pTextHeight = pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+            pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
             pButton->uHeight = pTextHeight;
             v42 = pButton->uY + pTextHeight - 1;
             pButton->uW = v42;
@@ -330,7 +330,7 @@ void GUIWindow_Dialogue::Update() {
             if (pDialogueWindow->pCurrentPosActiveItem == i) {
                 pTextColor = ui_game_dialogue_option_highlight_color;
             }
-            window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);
+            window.DrawTitleText(assets->pFontArrus.get(), 0, pButton->uY, pTextColor, pButton->sLabel, 3);
         }
     }
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);

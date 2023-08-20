@@ -144,8 +144,8 @@ void GUIWindow_MainMenu::drawMM7CopyrightWindow() {
     Dst.uFrameHeight = 256;
     Dst.uFrameX = 8;
     Dst.uFrameY = 30;
-    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0);
-    Dst.uFrameHeight += 2 * pFontSmallnum->GetHeight() + 24;
+    Dst.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0);
+    Dst.uFrameHeight += 2 * assets->pFontSmallnum->GetHeight() + 24;
     Dst.uFrameY = 470 - Dst.uFrameHeight;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = 469;
@@ -157,7 +157,7 @@ void GUIWindow_MainMenu::drawMM7CopyrightWindow() {
     Dst.uFrameHeight -= 12;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
-    Dst.DrawTitleText(pFontSmallnum, 0, 12, ui_mainmenu_copyright_color, localization->GetString(LSTR_3DO_COPYRIGHT), 3);
+    Dst.DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->GetString(LSTR_3DO_COPYRIGHT), 3);
 }
 
 void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {

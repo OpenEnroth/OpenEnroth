@@ -51,7 +51,7 @@ void CreateWinnerCertificate() {
     pWindow.uFrameHeight = 338;
     pWindow.uFrameZ = 543;
     pWindow.uFrameW = 397;
-    GUIFont *pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
+    std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
 
     const char *pInString = nullptr;
     if (pParty->isPartyGood())
@@ -70,13 +70,13 @@ void CreateWinnerCertificate() {
     if (!v19) v19 = 1;
 
     pWindow.DrawTitleText(
-        pFont, 1, 0x23, colorTable.Black, localization->GetString(LSTR_CONGRATULATIONS), 3
+        pFont.get(), 1, 0x23, colorTable.Black, localization->GetString(LSTR_CONGRATULATIONS), 3
     );
     uint64_t v23 = 0ull;
     int v20 = 0;
     for (uint i = 0; i < 4; i++) {
         pWindow.DrawTitleText(
-            pFont, 1,
+            pFont.get(), 1,
             i * ((unsigned char)pFont->GetHeight() - 2) +
             (unsigned char)pFont->GetHeight() + 46,
             colorTable.Black,
@@ -90,7 +90,7 @@ void CreateWinnerCertificate() {
     }
     v23 = (int64_t)v23 / v19;
     std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
-    pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
+    pWindow.DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
 
     const char *v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
     if (v17 != 1) v7 = localization->GetString(LSTR_DAYS);
@@ -102,10 +102,10 @@ void CreateWinnerCertificate() {
     if (v14 != 1) v9 = localization->GetString(LSTR_YEARS);
 
     pWindow.DrawTitleText(
-        pFont, 1, pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, colorTable.Black,
+        pFont.get(), 1, pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, colorTable.Black,
         fmt::format("{} {} {}, {} {}, {} {} ", localization->GetString(LSTR_TOTAL_TIME), v14, v9, v18, v8, v17, v7), 3);
 
-    pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, colorTable.Black,
+    pWindow.DrawTitleText(pFont.get(), 1, pWindow.uFrameHeight, colorTable.Black,
         localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
@@ -115,7 +115,6 @@ void CreateWinnerCertificate() {
     render->EndLines2D();
     render->EndTextNew();
     render->SaveWinnersCertificate("MM7_Win.Pcx");
-    free(pFont);
     background->Release();
     background = nullptr;
     tempwindow_SpeakInHouse->Release();

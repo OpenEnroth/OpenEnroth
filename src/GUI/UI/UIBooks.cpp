@@ -14,15 +14,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 void GUIWindow_Book::Release() {
-    free(pFontBookLloyds);
-    pFontBookLloyds = nullptr;
-    free(pFontBookCalendar);
-    pFontBookCalendar = nullptr;
-    free(pFontBookTitle);
-    pFontBookTitle = nullptr;
-    free(pFontBookOnlyShadow);
-    pFontBookOnlyShadow = nullptr;
-
     if (ui_book_map_frame) {
         ui_book_map_frame->Release();
     }
@@ -99,10 +90,14 @@ void GUIWindow_Book::initializeFonts() {
 
     ui_book_map_frame = assets->getImage_Alpha("mapbordr");
 
-    pFontBookCalendar = GUIFont::LoadFont("book.fnt", "FONTPAL");
-    pFontBookTitle = GUIFont::LoadFont("book2.fnt", "FONTPAL");
-    pFontBookOnlyShadow = GUIFont::LoadFont("autonote.fnt", "FONTPAL");
-    pFontBookLloyds = GUIFont::LoadFont("spell.fnt", "FONTPAL");
+    if (!assets->pFontBookCalendar)
+        assets->pFontBookCalendar = GUIFont::LoadFont("book.fnt", "FONTPAL");
+    if (!assets->pFontBookTitle)
+        assets->pFontBookTitle = GUIFont::LoadFont("book2.fnt", "FONTPAL");
+    if (!assets->pFontBookOnlyShadow)
+        assets->pFontBookOnlyShadow = GUIFont::LoadFont("autonote.fnt", "FONTPAL");
+    if (!assets->pFontBookLloyds)
+        assets->pFontBookLloyds = GUIFont::LoadFont("spell.fnt", "FONTPAL");
 }
 
 void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {

@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/LodTextureCache.h"
@@ -13,39 +14,27 @@
 
 #include "GUI/GUIWindow.h"
 
-// TODO(pskelton): Move these to asset manager
-GUIFont *pFontBookOnlyShadow = nullptr;
-GUIFont *pFontBookLloyds = nullptr;
-GUIFont *pFontArrus = nullptr;
-GUIFont *pFontLucida = nullptr;
-GUIFont *pFontBookTitle = nullptr;
-GUIFont *pFontBookCalendar = nullptr;
-GUIFont *pFontCreate = nullptr;
-GUIFont *pFontCChar = nullptr;
-GUIFont *pFontComic = nullptr;
-GUIFont *pFontSmallnum = nullptr;
-
 void ReloadFonts() {
-    if (pFontBookOnlyShadow)
-        pFontBookOnlyShadow->CreateFontTex();
-    if (pFontBookLloyds)
-        pFontBookLloyds->CreateFontTex();
-    if (pFontArrus)
-        pFontArrus->CreateFontTex();
-    if (pFontLucida)
-        pFontLucida->CreateFontTex();
-    if (pFontBookTitle)
-        pFontBookTitle->CreateFontTex();
-    if (pFontBookCalendar)
-        pFontBookCalendar->CreateFontTex();
-    if  (pFontCreate)
-        pFontCreate->CreateFontTex();
-    if (pFontCChar)
-        pFontCChar->CreateFontTex();
-    if (pFontComic)
-        pFontComic->CreateFontTex();
-    if (pFontSmallnum)
-        pFontSmallnum->CreateFontTex();
+    if (assets->pFontBookOnlyShadow)
+        assets->pFontBookOnlyShadow->CreateFontTex();
+    if (assets->pFontBookLloyds)
+        assets->pFontBookLloyds->CreateFontTex();
+    if (assets->pFontArrus)
+        assets->pFontArrus->CreateFontTex();
+    if (assets->pFontLucida)
+        assets->pFontLucida->CreateFontTex();
+    if (assets->pFontBookTitle)
+        assets->pFontBookTitle->CreateFontTex();
+    if (assets->pFontBookCalendar)
+        assets->pFontBookCalendar->CreateFontTex();
+    if (assets->pFontCreate)
+        assets->pFontCreate->CreateFontTex();
+    if (assets->pFontCChar)
+        assets->pFontCChar->CreateFontTex();
+    if (assets->pFontComic)
+        assets->pFontComic->CreateFontTex();
+    if (assets->pFontSmallnum)
+        assets->pFontSmallnum->CreateFontTex();
 }
 
 static Color parseColorTag(const char *tag, const Color &defaultColor) {
@@ -60,15 +49,15 @@ static Color parseColorTag(const char *tag, const Color &defaultColor) {
     }
 }
 
-GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
+std::unique_ptr<GUIFont> GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 
-    GUIFont *pFont = new GUIFont;
+    std::unique_ptr<GUIFont> pFont = std::make_unique<GUIFont>();
 
     // pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
     Blob tmp_font = pIcons_LOD->LoadCompressedTexture(pFontFile);
-    reconstruct(*static_cast<const FontData_MM7 *>(tmp_font.data()), tmp_font.size(), pFont->pData);
+    reconstruct(*static_cast<const FontData_MM7 *>(tmp_font.data()), tmp_font.size(), pFont.get()->pData);
 
     Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
     if (!pallete_texture)

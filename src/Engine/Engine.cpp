@@ -263,25 +263,25 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
+            pPrimaryWindow->DrawText(assets->pFontArrus.get(), {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
         render->drawcalls = 0;
 
 
         int debug_info_offset = 16;
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party position:         {} {} {}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
         debug_info_offset += 16;
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party yaw/pitch:     {} {}", pParty->_viewYaw, pParty->_viewPitch));
         debug_info_offset += 16;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset }, colorTable.White,
+            pPrimaryWindow->DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
                                      fmt::format("Party Sector ID:       {}/{}\n", sector_id, pIndoor->pSectors.size()));
             debug_info_offset += 16;
         }
@@ -308,7 +308,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White, floor_level_str);
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White, floor_level_str);
     }
 }
 

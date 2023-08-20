@@ -795,7 +795,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     Pointi pt = mouse->GetCursorPos();
 
     auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {x, y}, ui_character_header_text_color, str);
 
     int num_skills_drawn = 0;
     for (CharacterSkillType skill : skill_list) {
@@ -837,7 +837,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 } else {
                     Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
                 }
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
+                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             } else {
                 const char *skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
@@ -847,14 +847,14 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
                 auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
                         localization->GetSkillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
+                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             }
         }
     }
 
     if (!num_skills_drawn) {
-        y_offset += pFontLucida->GetHeight() - 3;
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, y_offset}, colorTable.White, localization->GetString(LSTR_NONE));
+        y_offset += assets->pFontLucida->GetHeight() - 3;
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, y_offset}, colorTable.White, localization->GetString(LSTR_NONE));
     }
 
     return y_offset;
@@ -872,18 +872,18 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
                      player->uSkillPoints ? ui_character_bonus_text_color.tag()
                                           : ui_character_default_text_color.tag(),
                      player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, colorTable.White, str);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
 
-    int y = 2 * pFontLucida->GetHeight() + 13;
+    int y = 2 * assets->pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
 
-    y += 2 * pFontLucida->GetHeight() - 10;
+    y += 2 * assets->pFontLucida->GetHeight() - 10;
     CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allMagicSkills(), 400, localization->GetString(LSTR_MAGIC));
 
-    y = 2 * pFontLucida->GetHeight() + 13;
+    y = 2 * assets->pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
 
-    y += 2 * pFontLucida->GetHeight() - 10;
+    y += 2 * assets->pFontLucida->GetHeight() - 10;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allMiscSkills(), 177, localization->GetString(LSTR_MISC));
 }
 
@@ -977,7 +977,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     std::string str = fmt::format("{} {::}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
                                   ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, colorTable.White, str);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
 
 
     if (_awardsCharacterId != pParty->activeCharacterIndex()) {
@@ -988,8 +988,8 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
-        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str);
-        window.uFrameY = pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
+        window.DrawText(assets->pFontArrus.get(), {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str);
+        window.uFrameY = assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
         currentlyDisplayedElems++;
         if (window.uFrameY > window.uFrameHeight) {
             break;
@@ -1478,7 +1478,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     int first_rows = 0;
     Character *curr_player = &pParty->activeCharacter();
 
-    int uCurrFontHeght = pFontLucida->GetHeight();
+    int uCurrFontHeght = assets->pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
     int width = 204;
     for (CharacterSkillType skill : allWeaponSkills()) {
@@ -1541,7 +1541,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
                     localization->GetString(LSTR_SKILL_POINTS),
                     player->uSkillPoints ? ui_character_bonus_text_color.tag() : ui_character_default_text_color.tag(),
                     player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, colorTable.White, str1);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, 18}, colorTable.White, str1);
 
     // Left column
     auto formatLeftCol = [] (int lstr, int current, int max) {
@@ -1555,59 +1555,59 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     };
 
     int pY = 53;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseMight()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_INTELLECT, player->GetActualIntelligence(), player->GetBaseIntelligence()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_PERSONALITY, player->GetActualPersonality(), player->GetBasePersonality()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ENDURANCE, player->GetActualEndurance(), player->GetBaseEndurance()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ACCURACY, player->GetActualAccuracy(), player->GetBaseAccuracy()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_SPEED, player->GetActualSpeed(), player->GetBaseSpeed()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_LUCK, player->GetActualLuck(), player->GetBaseLuck()));
 
-    pY += 2 * pFontArrus->GetHeight() + 5;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += 2 * assets->pFontArrus->GetHeight() + 5;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_HIT_POINTS, player->health, player->GetMaxHealth()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_SPELL_POINTS, player->mana, player->GetMaxMana()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ARMOR_CLASS, player->GetActualAC(), player->GetBaseAC()));
 
-    pY += 2 * pFontArrus->GetHeight() - 2;
+    pY += 2 * assets->pFontArrus->GetHeight() - 2;
     auto str12 =
         fmt::format("{}: {::}{}\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, colorTable.White, str12, 226, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str12, 226, 0);
 
-    pY += pFontArrus->GetHeight() + -1;
+    pY += assets->pFontArrus->GetHeight() + -1;
     std::string spellName = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell != SPELL_NONE)
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, colorTable.White, str13, 226, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str13, 226, 0);
 
     // Right column
     auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
@@ -1625,65 +1625,65 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     };
 
     pY = 50;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_AGE, player->GetActualAge(), player->GetBaseAge()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_LEVEL, player->GetActualLevel(), player->GetBaseLevel()));
 
-    pY += pFontArrus->GetHeight() - 2;
+    pY += assets->pFontArrus->GetHeight() - 2;
     auto str16 =
         fmt::format("{}\r180{::}{}\f00000\n\n",
                     localization->GetString(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
                     player->GetExperienceDisplayColor().tag(), player->experience);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White, str16);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White, str16);
 
-    pY += 2 * pFontArrus->GetHeight();
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += 2 * assets->pFontArrus->GetHeight();
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK), player->GetActualAttack(false)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE), player->GetMeleeDamageString()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT), player->GetRangedAttack()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE), player->GetRangedDamageString()));
 
-    pY += 2 * pFontArrus->GetHeight() - 4;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += 2 * assets->pFontArrus->GetHeight() - 4;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_FIRE, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_AIR, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_WATER, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_EARTH, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
 
-    pY += pFontArrus->GetHeight() - 2;
+    pY += assets->pFontArrus->GetHeight() - 2;
     bool immuneToMind = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
 
-    pY += pFontArrus->GetHeight() - 2;
+    pY += assets->pFontArrus->GetHeight() - 2;
     bool immuneToBody = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
 }
@@ -1711,7 +1711,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     for (int i = (_achievedAwardsList.size() - 1); i >= 0; --i) {
         std::string str = getAchievedAwardsString(i);
 
-        y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
+        y += assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
         if (y > window.uFrameHeight) {
             _scrollableAwardSteps = i + 2;
             break;

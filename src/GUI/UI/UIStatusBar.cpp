@@ -24,13 +24,13 @@ void StatusBar::draw() {
 
     const std::string &status = get();
     if (status.length() > 0) {
-        pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, uGameUIFontShadow);
     }
 }
 
 void StatusBar::drawForced(const std::string &str, Color color) {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
-    pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str);
+    pPrimaryWindow->DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str);
 }
 
 void StatusBar::update() {

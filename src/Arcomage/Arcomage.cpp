@@ -2896,8 +2896,8 @@ void ArcomageGame::PrepareArcomage() {
 
     // load in layout pic containing all AM sprites and set fonts
     ArcomageGame::LoadSprites();
-    pArcomageGame->pfntComic = pFontComic;
-    pArcomageGame->pfntArrus = pFontArrus;
+    pArcomageGame->pfntComic = assets->pFontComic.get();
+    pArcomageGame->pfntArrus = assets->pFontArrus.get();
 
     // calc and clear shown table card slots
     hide_card_anim_runnning = 0;
@@ -2961,7 +2961,7 @@ void SetStartConditions() {
 }
 
 void am_DrawText(const std::string &str, Pointi *pXY) {
-    pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, colorTable.White, str);
+    pPrimaryWindow->DrawText(assets->pFontComic.get(), {pXY->x, pXY->y - ((assets->pFontComic->GetHeight() - 3) / 2) + 3}, colorTable.White, str);
 }
 
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {

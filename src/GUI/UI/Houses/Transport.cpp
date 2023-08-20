@@ -8,6 +8,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 
+#include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/PriceCalculator.h"
@@ -108,7 +109,7 @@ void GUIWindow_Transport::mainDialogue() {
     std::vector<std::string> optionsText;
     int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
     std::string travelCost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, price);
-    int startingOffset = pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (pFontArrus->GetHeight() - 3) + 146;
+    int startingOffset = assets->pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (assets->pFontArrus->GetHeight() - 3) + 146;
     int lastsched = 255;
     bool hasActiveRoute = false;
 
@@ -132,12 +133,12 @@ void GUIWindow_Transport::mainDialogue() {
     }
 
     if (hasActiveRoute) {
-        travel_window.DrawTitleText(pFontArrus, 0, 146, colorTable.White, travelCost, 3);
+        travel_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, travelCost, 3);
         drawOptions(optionsText, colorTable.PaleCanary, startingOffset, true);
     } else {
-        int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
+        int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
         int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-        travel_window.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
+        travel_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
     }
 }
 

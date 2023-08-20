@@ -34,7 +34,12 @@ struct FontData;
 class GUIFont {
  public:
     GUIFont () : pData(new FontData()) {}
-    static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette);
+    ~GUIFont() {
+        ReleaseFontTex();
+        delete pData;
+    }
+
+    static std::unique_ptr<GUIFont> LoadFont(const char *pFontFile, const char *pFontPalette);
 
     void CreateFontTex();
     void ReleaseFontTex();
@@ -96,13 +101,3 @@ class GUIFont {
 };
 
 void ReloadFonts();
-
-extern GUIFont *pFontBookOnlyShadow;
-extern GUIFont *pFontBookLloyds;
-extern GUIFont *pFontArrus;
-extern GUIFont *pFontLucida;
-extern GUIFont *pFontBookTitle;
-extern GUIFont *pFontBookCalendar;
-extern GUIFont *pFontCreate;
-extern GUIFont *pFontComic;
-extern GUIFont *pFontSmallnum;

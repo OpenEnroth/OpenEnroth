@@ -717,18 +717,18 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;
-        house_window.DrawTitleText(pFontCreate, 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
+        house_window.DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
             auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
-            house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
+            house_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
 
-        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[std::to_underlying(id)], house_window.uFrameWidth, 0)) / 2 + 101;
-        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[std::to_underlying(id)], 3);
+        int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(pTransitionStrings[std::to_underlying(id)], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, pTransitionStrings[std::to_underlying(id)], 3);
         return;
     }
 
@@ -736,7 +736,7 @@ void GUIWindow_House::houseNPCDialogue() {
     house_window.uFrameZ -= 10;
     NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
 
-    house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
+    house_window.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
 
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
         if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
@@ -751,10 +751,10 @@ void GUIWindow_House::houseNPCDialogue() {
                     greetString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
                 }
 
-                int textHeight = pFontArrus->CalcTextHeight(greetString, house_window.uFrameWidth, 13) + 7;
+                int textHeight = assets->pFontArrus->CalcTextHeight(greetString, house_window.uFrameWidth, 13) + 7;
                 render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
                 render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(pFontArrus, {13, 354 - textHeight}, colorTable.White, pFontArrus->FitTextInAWindow(greetString, house_window.uFrameWidth, 13));
+                pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, assets->pFontArrus->FitTextInAWindow(greetString, house_window.uFrameWidth, 13));
             }
         }
     }
@@ -787,11 +787,11 @@ void GUIWindow_House::houseNPCDialogue() {
 
         win.uFrameWidth = 458;
         win.uFrameZ = 457;
-        GUIFont *pTextFont = pFontArrus;
-        int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
+        GUIFont *pTextFont = assets->pFontArrus.get();
+        int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
-            pTextFont = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
+            pTextFont = assets->pFontCreate.get();
+            pTextHeight = assets->pFontCreate->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
@@ -831,7 +831,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
         window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
         std::string str = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name, localization->GetString(LSTR_DO_ANYTHING));
-        window.DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3);
+        window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3);
         return false;
     }
 }
@@ -849,7 +849,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
     int activeOptions = 0;
     for (int i = 0; i < optionsText.size(); ++i) {
         if (!optionsText[i].empty()) {
-            allTextHeight += pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
+            allTextHeight += assets->pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
             activeOptions++;
         }
     }
@@ -870,17 +870,17 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
 
         if (!optionsText[i].empty()) {
             Color textColor = (pDialogueWindow->pCurrentPosActiveItem == buttonIndex) ? selectColor : colorTable.White;
-            int textHeight = pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
+            int textHeight = assets->pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
             button->uY = spacing + offset;
             button->uHeight = textHeight;
             button->uW = button->uY + textHeight - 1 + 6;
             button->sLabel = optionsText[i];
             if (denseSpacing) {
-                offset += pFontArrus->GetHeight() - 3 + textHeight;
+                offset += assets->pFontArrus->GetHeight() - 3 + textHeight;
             } else {
                 offset = button->uW;
             }
-            window.DrawTitleText(pFontArrus, 0, button->uY, textColor, optionsText[i], 3);
+            window.DrawTitleText(assets->pFontArrus.get(), 0, button->uY, textColor, optionsText[i], 3);
         } else if (button) {
             button->uW = 0;
             button->uHeight = 0;
@@ -903,11 +903,11 @@ void GUIWindow_House::houseDialogManager() {
         // Draw house title
         if (!buildingTable[houseId()].pName.empty()) {
             if (current_screen_type != SCREEN_SHOP_INVENTORY) {
-                int yPos = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
+                int yPos = 2 * assets->pFontCreate->GetHeight() - 6 - assets->pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
                 if (yPos < 0) {
                     yPos = 0;
                 }
-                pWindow.DrawTitleText(pFontCreate, 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].pName, 3);
+                pWindow.DrawTitleText(assets->pFontCreate.get(), 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].pName, 3);
             }
         }
     }
@@ -927,11 +927,11 @@ void GUIWindow_House::houseDialogManager() {
             GUIWindow pDialogWindow;
             pDialogWindow.uFrameWidth = 458;
             pDialogWindow.uFrameZ = 457;
-            int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, pDialogWindow.uFrameWidth, 13);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, pDialogWindow.uFrameWidth, 13);
             int pTextBackgroundHeight = pTextHeight + 7;
             render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextBackgroundHeight) / 480.0f, ui_leather_mm7, pTextBackgroundHeight);
             render->DrawTextureNew(8 / 640.0f, (347 - pTextBackgroundHeight) / 480.0f, _591428_endcap);
-            DrawText(pFontArrus, {13, 354 - pTextBackgroundHeight}, colorTable.White, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
+            DrawText(assets->pFontArrus.get(), {13, 354 - pTextBackgroundHeight}, colorTable.White, assets->pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
         }
 
         for (int i = 0; i < houseNpcs.size(); ++i) {
@@ -956,7 +956,7 @@ void GUIWindow_House::houseDialogManager() {
                     yPos = pNPCPortraits_y[houseNpcs.size() - 1][i] + houseNpcs[i].icon->height() + 2;
                     break;
                 }
-                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, yPos, colorTable.EasternBlue, pTitleText, 3);
+                pWindow.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, yPos, colorTable.EasternBlue, pTitleText, 3);
             }
         }
         return;
@@ -974,7 +974,7 @@ void GUIWindow_House::houseDialogManager() {
         houseNPCDialogue();
     } else {
         std::string nameAndTitle = NameAndTitle(buildingTable[houseId()].pProprieterName, buildingTable[houseId()].pProprieterTitle);
-        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
+        pWindow.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
         houseSpecificDialogue();
     }
     if (currentHouseNpc != -1 && houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
@@ -1049,13 +1049,13 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
         std::string str = localization->FormatString(LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE, player.name, localization->GetClassName(player.classType));
         str = str + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
 
-        int text_height = pFontArrus->CalcTextHeight(str, dialogue.uFrameWidth, 0);
-        dialogue.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, str, 3);
+        int text_height = assets->pFontArrus->CalcTextHeight(str, dialogue.uFrameWidth, 0);
+        dialogue.DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, str, 3);
         return;
     }
 
     std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, cost);
-    dialogue.DrawTitleText(pFontArrus, 0, 146, colorTable.White, skill_price_label, 3);
+    dialogue.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
 
     drawOptions(optionsText, selectColor, 18);
 }

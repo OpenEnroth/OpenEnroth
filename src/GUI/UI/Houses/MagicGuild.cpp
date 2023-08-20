@@ -143,8 +143,8 @@ void GUIWindow_MagicGuild::mainDialogue() {
 
     if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[houseId()]]) {
         // you must be a member
-        int textHeight = pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
-        working_window.DrawTitleText(pFontArrus, 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[121].pText, 3);
+        int textHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
+        working_window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[121].pText, 3);
         pDialogueWindow->pNumPresenceButton = 0;
         return;
     }
@@ -176,7 +176,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
 
     if (haveLearnableSkills) {
         std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
-        working_window.DrawTitleText(pFontArrus, 0, 146, colorTable.White, skill_price_label, 3);
+        working_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
     }
 
     drawOptions(optionsText, colorTable.PaleCanary, 24);
@@ -238,8 +238,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                     if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
                         MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_MAGIC_SHOP, houseId(), 2);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), 2);
-                        int textHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
-                        working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
+                        int textHeight = assets->pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
+                        working_window.DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         return;
                     }
                 }
