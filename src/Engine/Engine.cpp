@@ -369,15 +369,15 @@ void Engine::filterPickMouse() {  // cursor picking
 
     if (isHoldingMouseRightButton()) {
         face_filter = &vis_face_filter;
-        sprite_filter = &vis_sprite_filter_2;
+        sprite_filter = &vis_allsprites_filter;
         depth = pCamera3D->GetMouseInfoDepth();
     } else {
         if (engine->IsTargetingMode()) {
             face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_filter_1;
+            sprite_filter = &vis_sprite_targets_filter;
         } else {
             face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_filter_4;
+            sprite_filter = &vis_items_filter;
         }
         depth = config->gameplay.RangedAttackDepth.value();
     }

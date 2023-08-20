@@ -1931,7 +1931,7 @@ void Game::processQueuedMessages() {
 void Game::onPressSpace() {
     _engine->PickKeyboard(_engine->config->gameplay.KeyboardInteractionDepth.value(),
                           keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
-                          &vis_sprite_filter_3, &vis_door_filter);
+                          &vis_decoration_noevent_filter, &vis_door_filter);
 
     Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
     if (pid) {
