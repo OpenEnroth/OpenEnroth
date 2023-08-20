@@ -94,18 +94,11 @@ jobs:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
 
-      - name: ccache save cache on merge
-        if: github.ref == 'refs/heads/master'
+      - name: CCache
         uses: botanicvelious/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
-
-      - name: ccache dont save cache
-        if: github.ref != 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
-        with:
-          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
-          save: false
+          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
 
       - name: set ccache config values
         run: >
@@ -137,20 +130,17 @@ jobs:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Prepare artifact
-        if: inputs.releaseTag != ''
         shell: pwsh
         run: >
           mkdir dist
 
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
 
-          if ("${{ matrix.configuration }}" -eq "Debug" -And "${{
-          matrix.architecture }}" -eq "x86" ) {
+          if ("${{matrix.configuration}}" -eq "Debug" -And "${{matrix.architecture}}" -eq "x86" ) {
             copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
             copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
             copy c:\Windows\SysWOW64\ucrtbased.dll dist\
-          } ElseIf ("${{ matrix.configuration }}" -eq "Debug" -And "${{
-          matrix.architecture }}" -eq "x64") {
+          } ElseIf ("${{matrix.configuration}}" -eq "Debug" -And "${{matrix.architecture}}" -eq "x64") {
             copy c:\Windows\System32\msvcp140d.dll dist\ 
             copy c:\Windows\System32\vcruntime140_1d.dll dist\ 
             copy c:\Windows\System32\vcruntime140d.dll dist\ 
