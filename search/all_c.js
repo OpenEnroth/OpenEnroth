@@ -21,7 +21,7 @@ var searchData=
   ['learnableadditionalskilldialogue_18',['learnableAdditionalSkillDialogue',['../MagicGuild_8cpp.html#af213cb30e93bf53a65d4ee425e220d27',1,'MagicGuild.cpp']]],
   ['learnablemagicskilldialogue_19',['learnableMagicSkillDialogue',['../MagicGuild_8cpp.html#ad61dcb83b5799fc6cb47858d52508751',1,'MagicGuild.cpp']]],
   ['learnselectedskill_20',['learnSelectedSkill',['../classGUIWindow__House.html#ac95a88929481e8201b1737fb25c0be9c',1,'GUIWindow_House']]],
-  ['learnskillsdialogue_21',['learnSkillsDialogue',['../classGUIWindow__House.html#a34eff85ed9f49e6d43d799bdb68b397b',1,'GUIWindow_House']]],
+  ['learnskillsdialogue_21',['learnSkillsDialogue',['../classGUIWindow__House.html#a0522a4df5199c5f35d65457bd92baf3a',1,'GUIWindow_House']]],
   ['left_22',['Left',['../classGameConfig_1_1Gamepad.html#a53b3a2c81b768bed02b10275f3a06eba',1,'GameConfig::Gamepad::Left()'],['../classGameConfig_1_1Keybindings.html#ae6d7863985abee2aa378cbb93979e1f7',1,'GameConfig::Keybindings::Left()']]],
   ['left_23',['left',['../structMargins.html#a2350effe4c24e93d9f9cec4b8387c8ef',1,'Margins']]],
   ['length_24',['length',['../structVec3.html#a129e719058dc74a0eec615d6090f1256',1,'Vec3']]],
