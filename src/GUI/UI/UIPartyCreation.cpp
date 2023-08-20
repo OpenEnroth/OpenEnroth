@@ -28,8 +28,6 @@
 using Io::TextInputType;
 
 
-GUIFont *ui_partycreation_font;
-
 GraphicsImage *ui_partycreation_top = nullptr;
 GraphicsImage *ui_partycreation_sky_scroller = nullptr;
 
@@ -51,7 +49,6 @@ static int64_t errorMessageExpireTime; // expiration time (platform time) of err
 static const int ARROW_SPIN_PERIOD_MS = 475;
 
 bool PartyCreationUI_LoopInternal();
-void PartyCreationUI_DeleteFont();
 
 bool PlayerCreation_Choose4Skills() {
     int skills_count;
@@ -260,13 +257,7 @@ bool PartyCreationUI_Loop() {
     pParty->createDefaultParty();
 
     pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
-    if (PartyCreationUI_LoopInternal()) {
-        PartyCreationUI_DeleteFont();
-        return false;
-    } else {
-        PartyCreationUI_DeleteFont();
-        return true;
-    }
+    return !PartyCreationUI_LoopInternal();
 }
 
 //----- (00495B39) --------------------------------------------------------
@@ -734,11 +725,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
     main_menu_background->Release();
-}
-
-void PartyCreationUI_DeleteFont() {
-    free(ui_partycreation_font);
-    ui_partycreation_font = 0;
+    main_menu_background = nullptr;
 }
 
 //----- (00497526) --------------------------------------------------------
@@ -775,6 +762,7 @@ bool PartyCreationUI_LoopInternal() {
     }
 
     pGUIWindow_CurrentMenu->Release();
+    delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
 
     item.Reset();
