@@ -280,40 +280,15 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x, floa
 void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3f &rayStep,
                                 Vis_SelectionList *list,
                                 Vis_SelectionFilter *filter) {
-    int v5;              // eax@1
-    // signed int pFaceID;  // edi@2
-    // int v9; // eax@7
-    unsigned int *pNumPointers;  // eax@7
-    Vis_ObjectInfo *v12;         // edi@7
-    RenderVertexSoft a1;         // [sp+Ch] [bp-44h]@1
-    // void *v15; // [sp+40h] [bp-10h]@7
-    int v17;  // [sp+48h] [bp-8h]@1
+    RenderVertexSoft a1;
 
-    v5 = 0;
-    v17 = 0;
-
-    for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->pFaces.size(); ++v17) {
-        BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
+    for (int faceindex = 0; faceindex < (int)pIndoor->pFaces.size(); ++faceindex) {
+        BLVFace *face = &pIndoor->pFaces[faceindex];
         if (is_part_of_selection(face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &a1,
-                                        face, 0xFFFFFFFFu)) {
+                if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
-                    // v9 = fixpoint_from_float(/*v8,
-                    // */a1.vWorldViewPosition.x); HEXRAYS_LOWORD(v9) =
-                    // 0; v15 = (void *)((Pid(OBJECT_Face,pFaceID)) +
-                    // v9);
-                    pNumPointers = &list->uSize;
-                    v12 = &list->object_pool[list->uSize];
-                    v12->object = &pIndoor->pFaces[/*pFaceID*/v17];
-                    v12->depth = a1.vWorldViewPosition.x;
-                    v12->object_pid = Pid(OBJECT_Face, /*pFaceID*/v17);
-                    v12->object_type = VisObjectType_Face;
-                    ++*pNumPointers;
-                    // logger->Info("raypass");
-                } else {
-                    // __debugbreak();
-                    // logger->Info("rayfaile");
+                    list->AddObject(&pIndoor->pFaces[faceindex], VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceindex));
                 }
             }
         }
@@ -323,8 +298,6 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
         else
             face->uAttributes &= ~FACE_OUTLINED;
         face->uAttributes &= ~FACE_IsPicked;
-
-        v5 = v17 + 1;
     }
 }
 
