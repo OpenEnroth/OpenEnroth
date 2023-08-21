@@ -66,9 +66,9 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         set(SWSCALE_LIBRARIES "ffmpeg::swscale")
         find_package(ZLIB REQUIRED)
     elseif(OE_USE_PREBUILT_DEPENDENCIES)
-        # "r1" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
+        # "r2" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
         # possible to test with dependencies built from different branches of the OpenEnroth_Dependencies repo.
-        set(PREBUILT_DEPS_TAG "deps_r1_master")
+        set(PREBUILT_DEPS_TAG "deps_r2_master")
 
         set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
         set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
