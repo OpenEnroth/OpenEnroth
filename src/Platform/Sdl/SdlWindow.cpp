@@ -170,14 +170,16 @@ uintptr_t SdlWindow::systemHandle() const {
         return 0;
     }
 
-#ifdef _WINDOWS
+#if SDL_VIDEO_DRIVER_WINDOWS
     return reinterpret_cast<uintptr_t>(info.info.win.window);
-#elif __APPLE__
+#elif SDL_VIDEO_DRIVER_X11
+    return static_cast<uintptr_t>(info.info.x11.window);
+#elif SDL_VIDEO_DRIVER_COCOA
     return reinterpret_cast<uintptr_t>(info.info.cocoa.window);
-#elif ANDROID
+#elif SDL_VIDEO_DRIVER_ANDROID
     return reinterpret_cast<uintptr_t>(info.info.android.window);
 #else
-    return static_cast<uintptr_t>(info.info.x11.window);
+#   error "Unsupported SDL video driver."
 #endif
 }
 

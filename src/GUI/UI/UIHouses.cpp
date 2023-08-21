@@ -779,7 +779,7 @@ void GUIWindow_House::houseNPCDialogue() {
     }
 
     if (optionsText.size()) {
-        drawOptions(optionsText, colorTable.Jonquil);
+        drawOptions(optionsText, colorTable.Sunflower);
     }
 
     if (current_npc_text.length() > 0) {
@@ -1019,7 +1019,7 @@ void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> op
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
 
-void GUIWindow_House::learnSkillsDialogue() {
+void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
     if (!checkIfPlayerCanInteract()) {
         return;
     }
@@ -1057,7 +1057,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, cost);
     dialogue.DrawTitleText(pFontArrus, 0, 146, colorTable.White, skill_price_label, 3);
 
-    drawOptions(optionsText, colorTable.Sunflower, 18);
+    drawOptions(optionsText, selectColor, 18);
 }
 
 void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {

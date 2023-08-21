@@ -116,7 +116,7 @@ class GUIWindow_House : public GUIWindow {
     virtual void playHouseGoodbyeSpeech();
 
  protected:
-    void learnSkillsDialogue();
+    void learnSkillsDialogue(Color selectColor);
 
     DIALOGUE_TYPE _currentDialogue = DIALOGUE_NULL;
     int _savedButtonsNum{};

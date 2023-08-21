@@ -24,10 +24,12 @@ include(Dependencies)
 include(CheckLinkerFlag)
 
 # Settings defaults.
-if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin")
-    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
-else()
-    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin" OR BUILD_PLATFORM STREQUAL "linux")
+        set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
+    else()
+        set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
+    endif()
 endif()
 
 # User-settable options.
@@ -76,10 +78,10 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'
 
     # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0. 
-    string(REPLACE "-O0" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "-O0" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    string(REPLACE "-g" "-g -Og" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "-g" "-g -Og" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     
     if(USE_LD_LLD AND COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
         message(STATUS "Using lld linker.")
@@ -142,6 +144,11 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Ob controls inline expansions and /Ob2 expands any function not explicitly marked for no inlining.
     string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+
+    # Prebuilt deps are built with MT/MTd.
+    if (OE_USE_PREBUILT_DEPENDENCIES)
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    endif()
 endif()
 
 resolve_dependencies()

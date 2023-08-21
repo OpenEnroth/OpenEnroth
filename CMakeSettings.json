@@ -10,7 +10,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "cmakeExecutable": "cmake"
+      "cmakeExecutable": "cmake",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "x32-Release",
@@ -22,7 +29,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "cmakeExecutable": "cmake"
+      "cmakeExecutable": "cmake",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Release",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "x64-Debug",
@@ -34,7 +48,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "cmakeExecutable": "cmake"
+      "cmakeExecutable": "cmake",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug",
+          "type": "STRING"
+        }
+      ]
     },
     {
       "name": "x64-Release",
@@ -46,7 +67,14 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "cmakeExecutable": "cmake"
+      "cmakeExecutable": "cmake",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Release",
+          "type": "STRING"
+        }
+      ]
     }
   ]
 }

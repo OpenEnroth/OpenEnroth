@@ -101,7 +101,9 @@ using Graphics::IRenderFactory;
 
 
 void initDataPath(const std::string &dataPath) {
-    if (validateDataPath(dataPath)) {
+    std::string missing_file;
+
+    if (validateDataPath(dataPath, missing_file)) {
         setDataPath(dataPath);
 
         std::string savesPath = makeDataPath("saves");
@@ -112,11 +114,13 @@ void initDataPath(const std::string &dataPath) {
         EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", dataPath);
     } else {
         std::string message = fmt::format(
-            "Required resources aren't found!\n"
-            "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
+            "Required file {} not found.\n"
+            "You should acquire licensed copy of M&M VII and copy its resources to \n{}{}\n\n"
             "Additionally you should also copy the content from\n"
-            "resources directory from our repository there as well!",
-            !dataPath.empty() ? dataPath : "current directory"
+            "resources directory from our repository there as well.",
+            missing_file,
+            !dataPath.empty() ? dataPath : std::filesystem::current_path().string(),
+            !dataPath.empty() ? "" :      " (current directory)"
         );
         EngineIocContainer::ResolveLogger()->critical("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);

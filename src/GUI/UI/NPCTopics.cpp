@@ -402,7 +402,7 @@ void oracleDialogue() {
         pParty->pCharacters[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
-                                        fmt::format("{::}{}\f00000", colorTable.Jonquil.tag(),
+                                        fmt::format("{::}{}\f00000", colorTable.Sunflower.tag(),
                                                     pItemTable->pItems[item_id].pUnidentifiedName));
     }
 

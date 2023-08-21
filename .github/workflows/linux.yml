@@ -65,33 +65,24 @@ jobs:
           sudo apt-get update
           if [ "${{ matrix.architecture }}" = "x86" ]; then
             sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
-            # missing dependency workaround
-            sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
-            sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
-            sudo apt-get install -f libswresample3:i386
-            # -
-            sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
-            sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
+            sudo apt-get install -y libglu1-mesa-dev:i386
             sudo apt-get install -y libsdl2-dev:i386
-            sudo apt-get install -y libopenal-dev:i386
           fi
           if [ "${{ matrix.architecture }}" = "x64" ]; then
             sudo apt-get install -y gcc-13 g++-13 lld
-            sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
-            sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+            sudo apt-get install -y libglu1-mesa-dev
             sudo apt-get install -y libsdl2-dev
-            sudo apt-get install -y libopenal-dev
           fi
 
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
 
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
