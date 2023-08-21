@@ -51,7 +51,7 @@ jobs:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
 
-      # Data cache is created by nightly build.
+      # Data cache is created by Populate Data Cache build.
       - name: Check for Data cache
         id: check-for-data-cache
         uses: actions/cache/restore@v3
