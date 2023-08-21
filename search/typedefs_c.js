@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['paudiodatasource_0',['PAudioDataSource',['../Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b',1,'Media.h']]],
-  ['paudiosample_1',['PAudioSample',['../Media_8h.html#aec9137d201f9fdc6dc340ae7b19f86f8',1,'Media.h']]],
-  ['paudiotrack_2',['PAudioTrack',['../Media_8h.html#ae0744a89d3eaa9875de4dfc82c051b0b',1,'Media.h']]],
-  ['pmovie_3',['PMovie',['../Media_8h.html#a6a20c0b91ed94a979f220e4e1d767616',1,'Media.h']]],
-  ['point_4',['Point',['../Point_8h.html#a31cc6bf62ad01290e6dabbca44b3b139',1,'Point.h']]],
-  ['pointer_5',['pointer',['../classdetail_1_1RangeIterator.html#a1443ce6f4b09318bda5e811b76fbcd58',1,'detail::RangeIterator']]],
-  ['pointi_6',['Pointi',['../Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4',1,'Point.h']]]
+  ['recti_0',['Recti',['../Rect_8h.html#a32073cc1967b01302be5d39e09079649',1,'Rect.h']]],
+  ['reference_1',['reference',['../classdetail_1_1RangeIterator.html#ae8c8fbfa4ba36b2ce4382fa136b792db',1,'detail::RangeIterator::reference()'],['../classSegment.html#af0ff246cdf8ecd8984307446636ea09c',1,'Segment::reference()']]],
+  ['rgbaimage_2',['RgbaImage',['../Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd',1,'Image.h']]],
+  ['rgbaimageview_3',['RgbaImageView',['../Library_2Image_2Image_8h.html#ab46117a6bb4ec93c50bc59858278d567',1,'Image.h']]]
 ];
