@@ -1,20 +1,14 @@
 #pragma once
 
 #include <SDL.h>
-#include <SDL_video.h>
-#include <stdint.h>
+
 #include <memory>
 #include <string>
 
 #include "Platform/PlatformWindow.h"
-#include "Platform/PlatformEnums.h"
-#include "Utility/Geometry/Margins.h"
-#include "Utility/Geometry/Point.h"
-#include "Utility/Geometry/Size.h"
 
 class SdlPlatformSharedState;
-class PlatformOpenGLContext;
-struct PlatformOpenGLOptions;
+class PlatformEventHandler;
 
 class SdlWindow : public PlatformWindow {
  public:
