@@ -1,7 +1,6 @@
 #include "Engine/Graphics/Indoor.h"
 
 #include <assert.h>
-#include <bits/std_abs.h>
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
