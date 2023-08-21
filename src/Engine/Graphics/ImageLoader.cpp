@@ -1,24 +1,21 @@
 #include "ImageLoader.h"
 
-#include <stddef.h>
-#include <stdint.h>
 #include <unordered_set>
 #include <string_view>
-#include <array>
-#include <span>
+#include <memory>
 
 #include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
+
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/PCX.h"
 #include "Library/Logger/Logger.h"
+
 #include "Utility/DataPath.h"
-#include "Library/Image/Palette.h"
-#include "Library/Lod/LodReader.h"
-#include "Utility/Memory/Blob.h"
 
 // List of textures that require additional processing for transparent pixels.
 // TODO: move to OpenEnroth config file.
