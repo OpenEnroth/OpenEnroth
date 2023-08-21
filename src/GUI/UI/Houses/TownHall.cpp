@@ -1,10 +1,7 @@
-#include <stdlib.h>
 #include <cassert>
-#include <array>
-#include <compare>
-#include <memory>
 
 #include "GUI/UI/Houses/TownHall.h"
+
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
@@ -12,27 +9,16 @@
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Engine.h"
+
 #include "GUI/UI/UIHouses.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+
 #include "Io/KeyboardActionMapping.h"
+
 #include "Library/Random/Random.h"
-#include "Engine/Events/EventEnums.h"
-#include "Engine/Objects/Character.h"
-#include "Engine/Objects/CharacterEnums.h"
-#include "Engine/PartyEnums.h"
-#include "Engine/Tables/NPCTable.h"
-#include "Engine/Time.h"
-#include "GUI/GUIDialogues.h"
-#include "GUI/GUIEnums.h"
-#include "Io/KeyboardInputHandler.h"
-#include "Library/Color/Color.h"
-#include "Library/Color/ColorTable.h"
-#include "Library/Random/RandomEngine.h"
-#include "Utility/IndexedArray.h"
-#include "fmt/core.h"
-#include "fmt/printf.h"
 
 using Io::TextInputType;
 

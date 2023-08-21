@@ -10,18 +10,6 @@
 
 class FilteringEventHandler;
 class ApplicationProxy;
-class Platform;
-class PlatformApplicationAware;
-class PlatformEventFilter;
-class PlatformEventHandler;
-class PlatformEventLoop;
-class PlatformOpenGLContext;
-class PlatformWindow;
-class ProxyEventLoop;
-class ProxyOpenGLContext;
-class ProxyPlatform;
-class ProxyWindow;
-struct PlatformOpenGLOptions;
 
 /**
  * This class ties together everything in platform for a particular use case of an application with a single window.

@@ -1,15 +1,13 @@
 #include "Blob.h"
 
-#include <mio/mmap.hpp>
-#include <string.h>
 #include <string>
-#include <algorithm>
+
+#include <mio/mmap.hpp>
 
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Exception.h"
+
 #include "FreeDeleter.h"
-#include "fmt/core.h"
-#include "mio/detail/mmap.ipp"
 
 Blob Blob::subBlob(size_t offset, size_t size) const {
     if (offset >= _size || size == 0)

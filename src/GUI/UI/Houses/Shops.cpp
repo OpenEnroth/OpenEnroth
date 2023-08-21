@@ -1,10 +1,7 @@
-#include <assert.h>
-#include <stdint.h>
+#include <cstdlib>
 #include <algorithm>
 #include <string>
 #include <array>
-#include <compare>
-#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
@@ -20,38 +17,22 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/ItemTable.h"
+
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
-#include "Io/Mouse.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "Library/Random/Random.h"
-#include "Utility/IndexedArray.h"
-#include "Engine/Graphics/LocationInfo.h"
-#include "Engine/MM7.h"
-#include "Engine/MapEnums.h"
-#include "Engine/Objects/Character.h"
-#include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Objects/ItemEnums.h"
-#include "Engine/Tables/BuildingTable.h"
-#include "Engine/Time.h"
-#include "Engine/mm7_data.h"
-#include "GUI/GUIDialogues.h"
-#include "GUI/GUIEnums.h"
-#include "Io/KeyboardInputHandler.h"
-#include "Library/Color/ColorTable.h"
-#include "Library/Random/RandomEngine.h"
-#include "Media/Audio/SoundEnums.h"
-#include "Utility/Flags.h"
-#include "Utility/Geometry/Point.h"
-#include "Utility/IndexedBitset.h"
-#include "Utility/Segment.h"
-#include "Utility/Workaround/ToUnderlying.h"
 
-enum class MerchantPhrase;
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
+#include "Library/Random/Random.h"
+
+#include "Utility/IndexedArray.h"
 
 struct ITEM_VARIATION {
     ITEM_TREASURE_LEVEL treasure_level;

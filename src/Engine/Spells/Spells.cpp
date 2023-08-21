@@ -1,15 +1,7 @@
 #include "Engine/Spells/Spells.h"
 
-#include <assert.h>
-#include <string.h>
 #include <map>
 #include <string>
-#include <algorithm>
-#include <cmath>
-#include <compare>
-#include <memory>
-#include <utility>
-#include <vector>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
@@ -19,28 +11,11 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
-#include "Engine/EngineIocContainer.h"
-#include "Engine/Graphics/LocationEnums.h"
-#include "Engine/Graphics/LocationFunctions.h"
-#include "Engine/Objects/Character.h"
-#include "Engine/Objects/Items.h"
-#include "Engine/Objects/Monsters.h"
-#include "Engine/Objects/SpriteObjectEnums.h"
-#include "Engine/PartyEnums.h"
-#include "Engine/Pid.h"
-#include "Engine/Spells/SpellBuff.h"
-#include "Engine/Spells/SpellEnums.h"
-#include "Engine/Time.h"
-#include "Library/Random/RandomEngine.h"
-#include "Media/Audio/SoundEnums.h"
-#include "Utility/Geometry/Vec.h"
-#include "Utility/Memory/Blob.h"
-#include "Utility/Segment.h"
-#include "Utility/String.h"
-#include "Utility/Workaround/ToUnderlying.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
