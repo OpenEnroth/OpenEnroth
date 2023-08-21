@@ -2,7 +2,6 @@
 
 #include <sstream>
 
-#include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/LodTextureCache.h"
 

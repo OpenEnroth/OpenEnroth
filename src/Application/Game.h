@@ -3,13 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "GameConfig.h"
-#include "GameMenu.h"
-#include "GameIocContainer.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineIocContainer.h"
-#include "Io/KeyboardInputHandler.h"
-#include "Io/Mouse.h"
 
 class Engine;
 class GameConfig;

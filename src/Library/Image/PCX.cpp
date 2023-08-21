@@ -1,5 +1,6 @@
 #include "PCX.h"
 
+#include <memory>
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>

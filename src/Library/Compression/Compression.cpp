@@ -5,6 +5,7 @@
 #include <zconf.h>
 #include <cstring>
 #include <memory>
+#include <algorithm>
 
 #include "Utility/Memory/FreeDeleter.h"
 

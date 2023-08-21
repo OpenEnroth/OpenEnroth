@@ -16,7 +16,6 @@
 #include "Application/GameTraceHandler.h"
 #include "Application/GameMenu.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
