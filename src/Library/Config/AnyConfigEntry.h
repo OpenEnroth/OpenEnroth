@@ -10,7 +10,6 @@
 class AnyConfigEntry {
  public:
     using Validator = std::function<std::any(std::any)>;
-    using Listener = std::function<void(const std::any &)>;
 
     AnyConfigEntry(ConfigSection *section, const std::string &name, const std::string &description, AnyHandler *handler,
                    std::any defaultValue, Validator validator);
