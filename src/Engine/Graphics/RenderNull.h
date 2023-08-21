@@ -9,6 +9,7 @@ class RenderNull : public RenderBase {
     using RenderBase::RenderBase;
 
     virtual bool Initialize() override;
+    virtual bool Reinitialize(bool firstInit) override;
 
     virtual bool NuklearInitialize(struct nk_tex_font *tfont) override;
     virtual bool NuklearCreateDevice() override;
