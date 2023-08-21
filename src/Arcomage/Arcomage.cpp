@@ -1,27 +1,24 @@
 #include "Arcomage/Arcomage.h"
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
-#include <array>
-#include <memory>
-#include <span>
-
+#include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/Time.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/AssetsManager.h"
+
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
+
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-#include "Library/Random/Random.h"
 
-enum class PlatformKey : int;
+#include "Library/Random/Random.h"
 
 
 void SetStartConditions();
