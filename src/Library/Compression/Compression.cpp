@@ -3,7 +3,6 @@
 #include <zlib.h>
 
 #include <cstring>
-#include <algorithm>
 #include <memory>
 
 #include "Utility/Memory/FreeDeleter.h"

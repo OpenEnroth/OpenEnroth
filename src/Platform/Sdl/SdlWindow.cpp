@@ -6,9 +6,6 @@
 #endif
 
 #include <cassert>
-#include <utility>
-
-#include "Platform/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"

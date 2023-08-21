@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string_view>
 #include <utility>
 
 #include "Platform/PlatformLogger.h"

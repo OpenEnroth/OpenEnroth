@@ -8,7 +8,6 @@
 #include "Platform/PlatformWindow.h"
 
 class SdlPlatformSharedState;
-class PlatformEventHandler;
 
 class SdlWindow : public PlatformWindow {
  public:

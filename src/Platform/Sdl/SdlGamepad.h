@@ -2,7 +2,6 @@
 
 #include <SDL.h>
 
-#include <memory>
 #include <string>
 
 #include "Platform/PlatformGamepad.h"

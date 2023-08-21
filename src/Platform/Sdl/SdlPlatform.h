@@ -6,8 +6,6 @@
 
 #include "Platform/Platform.h"
 
-class SdlWindow;
-class SdlGamepad;
 class SdlPlatformSharedState;
 
 class SdlPlatform: public Platform {

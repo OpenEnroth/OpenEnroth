@@ -8,10 +8,7 @@
 #include <memory>
 
 class SdlWindow;
-class SdlPlatform;
 class SdlGamepad;
-class PlatformEvent;
-class PlatformEventHandler;
 class PlatformLogger;
 class PlatformGamepad;
 

@@ -1,10 +1,7 @@
 #include "String.h"
 
-#include <cstdarg>
 #include <vector>
 #include <algorithm>
-
-#include "Format.h"
 
 static inline unsigned char asciiToLower(unsigned char c) {
     return ((((c) >= 'A') && ((c) <= 'Z')) ? ((c) - 'A' + 'a') : (c));

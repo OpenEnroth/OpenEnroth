@@ -4,15 +4,10 @@
 
 #include <cassert>
 #include <memory>
-#include <utility>
-
-#include "Platform/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEventLoop.h"
 #include "SdlWindow.h"
-#include "SdlLogger.h"
-#include "SdlGamepad.h"
 
 SdlPlatform::SdlPlatform(PlatformLogger *logger) {
     assert(logger);

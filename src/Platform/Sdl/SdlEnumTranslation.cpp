@@ -1,6 +1,5 @@
 #include "SdlEnumTranslation.h"
 
-#include <algorithm>
 #include <cassert>
 
 PlatformKey translateSdlKey(SDL_Scancode key) {

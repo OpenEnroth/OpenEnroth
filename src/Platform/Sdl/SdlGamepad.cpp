@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "SdlPlatformSharedState.h"
+//#include "SdlPlatformSharedState.h"
 
 SdlGamepad::SdlGamepad(SdlPlatformSharedState *state, SDL_GameController *gamepad, SDL_JoystickID id): _state(state), _gamepad(gamepad), _id(id) {
     assert(state);

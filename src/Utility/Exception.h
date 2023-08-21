@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 #include <string_view>
-#include <string>
 #include <utility>
 
 #include "Format.h"

@@ -5,7 +5,6 @@
 #include "Utility/MapAccess.h"
 
 #include "SdlWindow.h"
-#include "SdlPlatform.h"
 #include "SdlLogger.h"
 #include "SdlGamepad.h"
 

@@ -1,7 +1,5 @@
 #include "SerializationExceptions.h"
 
-#include <string>
-
 #include "Utility/Exception.h"
 
 void throwEnumSerializationError(int64_t value, std::string_view typeName, bool isFlags) {

@@ -5,9 +5,6 @@
 #include <typeindex>
 #include <vector>
 #include <unordered_map>
-#include <utility>
-
-#include "Platform/PlatformOpenGLOptions.h"
 
 #include "PlatformIntrospection.h"
 

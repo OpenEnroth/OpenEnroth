@@ -1,5 +1,3 @@
-#include <SDL.h>
-
 int platformMain(int argc, char **argv);
 
 // This gets #defined by SDL into SDL_main.

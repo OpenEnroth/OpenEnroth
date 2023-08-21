@@ -7,7 +7,6 @@
 #include <vector>
 #include <functional>
 #include <utility>
-#include <type_traits>
 
 #include "Utility/Flags.h"
 

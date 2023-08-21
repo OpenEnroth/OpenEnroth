@@ -16,8 +16,6 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
 
-#include "Media/Audio/AudioPlayer.h"
-
 #include "Io/Mouse.h"
 
 #include "Utility/Geometry/Rect.h"

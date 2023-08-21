@@ -1,22 +1,16 @@
 #include "SdlEventLoop.h"
 
-#include <SDL.h>
-
 #include <algorithm>
 #include <cassert>
-#include <utility>
 #include <vector>
-#include <unordered_map>
 
 #include "Platform/PlatformEventHandler.h"
 #include "Platform/PlatformEnums.h"
 
-#include "Utility/Segment.h"
 #include "Utility/ScopeGuard.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
-#include "SdlLogger.h"
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
 

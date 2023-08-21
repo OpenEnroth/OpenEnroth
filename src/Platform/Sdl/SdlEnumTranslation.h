@@ -2,8 +2,6 @@
 
 #include <SDL.h>
 
-#include <utility>
-
 #include "Platform/PlatformEnums.h"
 #include "Platform/PlatformOpenGLOptions.h"
 
