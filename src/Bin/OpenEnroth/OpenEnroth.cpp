@@ -11,6 +11,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
+#include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 
@@ -56,17 +57,16 @@ int runOpenEnroth(OpenEnrothOptions options) {
 
 int openEnrothMain(int argc, char **argv) {
     try {
+        StackTraceOnCrash st;
         UnicodeCrt _(argc, argv);
         OpenEnrothOptions options = OpenEnrothOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;
 
         switch (options.subcommand) {
+        default: assert(false); [[fallthrough]];
         case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(std::move(options));
         case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(std::move(options));
-        default:
-            assert(false);
-            return 1;
         }
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());

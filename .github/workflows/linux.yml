@@ -87,11 +87,13 @@ jobs:
             sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
             sudo apt-get install -y libglu1-mesa-dev:i386
             sudo apt-get install -y libsdl2-dev:i386
+            sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
           fi
           if [ "${{matrix.architecture}}" = "x86_64" ]; then
             sudo apt-get install -y gcc-13 g++-13 lld
             sudo apt-get install -y libglu1-mesa-dev
             sudo apt-get install -y libsdl2-dev
+            sudo apt-get install -y libdwarf-dev libelf-dev
           fi
 
       - name: Run ccache
