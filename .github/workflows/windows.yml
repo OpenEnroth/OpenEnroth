@@ -147,7 +147,7 @@ jobs:
           
       - name: Zip Folder For Release
         if: inputs.releaseTag != ''
-        run: |
+        run: >-
           Compress-Archive -Path dist -DestinationPath ./Windows_${{
           inputs.releaseTag }}_${{ matrix.configuration }}_${{ matrix.architecture
           }}.zip
