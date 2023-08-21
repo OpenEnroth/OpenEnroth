@@ -1,7 +1,6 @@
 #include "Collisions.h"
 
 #include <assert.h>
-#include <bits/std_abs.h>
 #include <algorithm>
 #include <limits>
 #include <array>

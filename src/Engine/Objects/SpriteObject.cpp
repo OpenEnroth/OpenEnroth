@@ -1,7 +1,7 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include <assert.h>
-#include <bits/std_abs.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
