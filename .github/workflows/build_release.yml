@@ -164,7 +164,7 @@ jobs:
           key: ffmpeg-cache
 
       - name: ccache
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-multiarch'
           max-size: 250M
@@ -271,14 +271,14 @@ jobs:
 
       - name: ccache
         if: matrix.configuration == 'Debug'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 110M
 
       - name: ccache
         if: matrix.configuration == 'Release'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 25M
@@ -375,14 +375,14 @@ jobs:
 
       - name: ccache
         if: matrix.configuration == 'Debug'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 75M
 
       - name: ccache
         if: matrix.configuration == 'Release'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 25M
