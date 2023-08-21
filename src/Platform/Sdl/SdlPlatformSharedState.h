@@ -1,11 +1,13 @@
 #pragma once
 
 #include <SDL.h>
-
+#include <SDL_joystick.h>
 #include <cstdint>
 #include <vector>
 #include <unordered_map>
 #include <memory>
+
+#include "Platform/Sdl/SdlGamepad.h"
 
 class SdlWindow;
 class SdlGamepad;

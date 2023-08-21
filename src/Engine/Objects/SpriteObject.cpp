@@ -1,8 +1,13 @@
 #include "Engine/Objects/SpriteObject.h"
 
+#include <assert.h>
+#include <bits/std_abs.h>
+#include <stdlib.h>
+#include <string.h>
 #include <algorithm>
 #include <memory>
 #include <utility>
+#include <array>
 
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
@@ -13,12 +18,9 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
 #include "Engine/MapInfo.h"
-
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
-
 #include "Engine/Tables/ItemTable.h"
-
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -26,13 +28,27 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
-
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/mm7_data.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Plane.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
 
 // should be injected in SpriteObject but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();

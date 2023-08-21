@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "Utility/Exception.h"
+#include "fmt/core.h"
 
 BlobInputStream::BlobInputStream(Blob &&blob) {
     _blob = std::move(blob);

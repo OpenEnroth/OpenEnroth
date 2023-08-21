@@ -1,5 +1,6 @@
 #include "FactionTable.h"
 
+#include <stdlib.h>
 #include <cstring>
 #include <string>
 

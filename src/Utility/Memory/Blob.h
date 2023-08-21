@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <cstdlib>
 #include <utility>
 #include <memory>
@@ -9,6 +10,7 @@
 #include "FreeDeleter.h"
 
 class FileInputStream;
+struct FreeDeleter;
 
 /**
  * `Blob` is an abstraction that couples a contiguous memory region with the knowledge of how to deallocate it.

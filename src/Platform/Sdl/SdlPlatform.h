@@ -1,12 +1,19 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
 #include <memory>
 #include <string>
 
 #include "Platform/Platform.h"
+#include "Utility/Geometry/Rect.h"
 
 class SdlPlatformSharedState;
+class PlatformEventLoop;
+class PlatformGamepad;
+class PlatformLogger;
+class PlatformWindow;
+enum class PlatformStorage;
 
 class SdlPlatform: public Platform {
  public:

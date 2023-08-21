@@ -1,15 +1,15 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 
 #include "Engine/Graphics/FrameLimiter.h"
-
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Rect.h"
-
 #include "Platform/PlatformEnums.h"
 
 class GraphicsImage;
+enum class PlatformKey : int;
 
 enum class ArcomageCheck {
     CHECK_ALWAYS_SECONDARY = 0,

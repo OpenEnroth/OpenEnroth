@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <memory>
 #include <string>
 
@@ -9,6 +10,9 @@
 #include "Engine/Time.h"
 
 class GUIWindow;
+namespace Io {
+class IKeyboardController;
+}  // namespace Io
 
 constexpr int DELAY_TOGGLE_TIME_FIRST = Timer::Second / 2;
 constexpr int DELAY_TOGGLE_TIME_AFTER = Timer::Second / 15;

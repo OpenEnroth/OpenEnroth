@@ -2,6 +2,18 @@
 
 #include "PlatformEvents.h"
 
+class PlatformEvent;
+class PlatformGamepadAxisEvent;
+class PlatformGamepadEvent;
+class PlatformGamepadKeyEvent;
+class PlatformKeyEvent;
+class PlatformMouseEvent;
+class PlatformMoveEvent;
+class PlatformNativeEvent;
+class PlatformResizeEvent;
+class PlatformWheelEvent;
+class PlatformWindowEvent;
+
 /**
  * Event handler interface, to be implemented in user code.
  *

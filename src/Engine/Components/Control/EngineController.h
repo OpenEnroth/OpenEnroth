@@ -2,14 +2,17 @@
 
 #include <string>
 #include <memory>
+#include <functional>
+#include <string_view>
 
 #include "Platform/PlatformEnums.h"
 #include "Platform/PlatformEvents.h"
-
 #include "EngineControlStateHandle.h"
 
 class GUIButton;
 class PlatformEvent;
+enum class PlatformKey : int;
+enum class PlatformMouseButton;
 
 // TODO(captainurist): std::string vs std::string_view in interfaces? Spell this out in HACKING.
 

@@ -1,18 +1,21 @@
 #include "Game.h"
 
+#include <assert.h>
+#include <bits/std_abs.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <algorithm>
 #include <filesystem>
 #include <string>
-#include <utility>
+#include <array>
+#include <initializer_list>
+#include <vector>
 
 #include "Arcomage/Arcomage.h"
-
 #include "Application/GameKeyboardController.h"
 #include "Application/GameWindowHandler.h"
-#include "Application/GamePathResolver.h"
 #include "Application/GameTraceHandler.h"
 #include "Application/GameMenu.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -53,7 +56,6 @@
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -80,20 +82,56 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
+#include "Application/GameConfig.h"
+#include "Application/GameIocContainer.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/TeleportPoint.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEventLoop.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Segment.h"
+#include "Utility/String.h"
+#include "fmt/core.h"
+
+enum DIALOGUE_TYPE : int32_t;
+struct ODMRenderParams;
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 

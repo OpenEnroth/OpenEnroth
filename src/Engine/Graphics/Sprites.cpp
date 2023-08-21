@@ -1,20 +1,18 @@
 #include "Engine/Graphics/Sprites.h"
 
+#include <assert.h>
 #include <cstdlib>
-#include <cstring>
 #include <algorithm>
 
-#include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/OurMath.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/LodSpriteCache.h"
-
 #include "Library/Logger/Logger.h"
-
 #include "Utility/String.h"
+#include "Engine/MM7.h"
+#include "fmt/core.h"
 
 struct SpriteFrameTable *pSpriteFrameTable;
 

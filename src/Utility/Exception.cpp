@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cerrno>
 #include <system_error>
+#include <string>
 
 void Exception::throwFromErrno(std::string_view arg) {
     assert(errno != 0);

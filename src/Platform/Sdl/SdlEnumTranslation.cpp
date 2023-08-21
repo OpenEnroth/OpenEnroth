@@ -1,6 +1,10 @@
 #include "SdlEnumTranslation.h"
 
+#include <SDL_keycode.h>
+#include <SDL_mouse.h>
 #include <cassert>
+
+#include "Platform/PlatformOpenGLOptions.h"
 
 PlatformKey translateSdlKey(SDL_Scancode key) {
     switch (key) {

@@ -1,5 +1,7 @@
 #include "CompositeSnapshots.h"
 
+#include <assert.h>
+#include <stddef.h>
 #include <string>
 
 #include "Engine/Graphics/Indoor.h"
@@ -16,8 +18,29 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
-
 #include "Library/Snapshots/CommonSnapshots.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "Library/Binary/BinarySerialization.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Binary/ContainerSerialization.h"
+#include "Library/Binary/MemCopySerialization.h"
+#include "Library/Lod/LodReader.h"
+#include "Utility/Flags.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Streams/InputStream.h"
+#include "Utility/Streams/OutputStream.h"
+
+struct SaveGameHeader;
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);

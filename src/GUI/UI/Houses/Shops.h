@@ -1,11 +1,13 @@
 #pragma once
 
 #include <vector>
+#include <array>
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
-
 #include "Engine/Tables/BuildingTable.h"
+
+enum DIALOGUE_TYPE : int32_t;
 
 class GUIWindow_Shop : public GUIWindow_House {
  public:

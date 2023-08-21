@@ -3,24 +3,27 @@
 #include <cassert>
 #include <filesystem>
 #include <utility>
-#include <thread>
-
-#include "Arcomage/Arcomage.h"
+#include <list>
+#include <queue>
+#include <vector>
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
-
 #include "Library/Application/PlatformApplication.h"
-
 #include "Platform/PlatformEvents.h"
-
 #include "Utility/Exception.h"
 #include "Utility/DataPath.h"
+#include "Engine/Components/Control/EngineControlState.h"
+#include "Engine/Components/Control/EngineControlStateHandle.h"
+#include "GUI/GUIEnums.h"
+#include "Platform/PlatformEnums.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Geometry/Point.h"
+#include "fmt/core.h"
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 

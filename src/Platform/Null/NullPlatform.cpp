@@ -5,6 +5,12 @@
 #include "NullPlatformSharedState.h"
 #include "NullWindow.h"
 #include "NullEventLoop.h"
+#include "Platform/Null/NullPlatformOptions.h"
+
+class PlatformEventLoop;
+class PlatformGamepad;
+class PlatformWindow;
+enum class PlatformStorage;
 
 NullPlatform::NullPlatform(NullPlatformOptions options): _state(std::make_unique<NullPlatformSharedState>()) {
     _state->options = std::move(options);

@@ -2,25 +2,26 @@
 
 #include <cassert>
 #include <filesystem>
-#include <utility>
 #include <memory>
+#include <vector>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
-
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
-
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Random/Random.h"
-
 #include "Utility/ScopeGuard.h"
-
 #include "EngineTraceSimpleRecorder.h"
 #include "EngineTraceStateAccessor.h"
+#include "Application/GameConfig.h"
+#include "Engine/Components/Trace/EngineTraceEnums.h"
+#include "Library/Random/RandomEngine.h"
+#include "Platform/PlatformEvents.h"
+#include "Utility/Flags.h"
 
 EngineTraceRecorder::EngineTraceRecorder() {}
 

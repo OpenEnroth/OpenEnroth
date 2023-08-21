@@ -1,4 +1,9 @@
+#include <assert.h>
+#include <stddef.h>
 #include <string>
+#include <array>
+#include <memory>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
@@ -10,13 +15,31 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/LloydsBook.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Application/GameConfig.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/TeleportPoint.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIMessageQueue.h"
+#include "GUI/GUIWindow.h"
+#include "Io/InputAction.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/String.h"
+#include "fmt/core.h"
+
+class GraphicsImage;
 
 std::array<int, 5> lloydsBeaconsPreviewXs = {{61, 281, 61, 281, 171}};
 std::array<int, 5> lloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};

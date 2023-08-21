@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <array>
 #include <string>
 
@@ -13,6 +14,17 @@
 #include "Engine/Graphics/FaceEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
+
+enum SPELL_TYPE : uint8_t;
+enum SPRITE_OBJECT_TYPE : uint16_t;
+enum class ACTOR_KILL_CHECK_POLICY;
+enum class ActorAttribute : uint32_t;
+enum class CharacterChoosePolicy;
+enum class DAMAGE_TYPE : unsigned int;
+enum class ITEM_TREASURE_LEVEL : int8_t;
+enum class ITEM_TYPE : int32_t;
+enum class Season;
+enum class VariableType;
 
 class EventIR {
  public:

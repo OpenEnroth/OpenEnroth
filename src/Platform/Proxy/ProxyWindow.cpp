@@ -1,6 +1,11 @@
 #include "ProxyWindow.h"
 
 #include "Platform/PlatformOpenGLContext.h"
+#include "Platform/PlatformWindow.h"
+#include "Platform/Proxy/ProxyBase.h"
+
+class PlatformOpenGLContext;
+struct PlatformOpenGLOptions;
 
 ProxyWindow::ProxyWindow(PlatformWindow *base) : ProxyBase<PlatformWindow>(base) {}
 

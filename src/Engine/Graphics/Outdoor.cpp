@@ -1,7 +1,11 @@
 #include "Engine/Graphics/Outdoor.h"
 
+#include <bits/std_abs.h>
+#include <float.h>
+#include <stdlib.h>
 #include <algorithm>
 #include <memory>
+#include <cmath>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -36,21 +40,53 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/MapInfo.h"
 #include "Engine/LOD.h"
-
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UITransition.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/LocationInfo.h"
+#include "Engine/Graphics/LocationTime.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Tables/TileEnums.h"
+#include "Engine/TeleportPoint.h"
+#include "Engine/mm7_data.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Lod/LodReader.h"
+#include "Library/Random/RandomEngine.h"
+#include "Library/Serialization/Serialization.h"
+#include "Platform/Platform.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Plane.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Memory/Blob.h"
+#include "fmt/core.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();

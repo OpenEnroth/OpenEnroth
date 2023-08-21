@@ -1,9 +1,9 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
 
 #include "Library/Color/Color.h"
-
 #include "Utility/Geometry/Vec.h"
 
 class Logger;

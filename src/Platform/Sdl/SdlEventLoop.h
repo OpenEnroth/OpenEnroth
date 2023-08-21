@@ -1,11 +1,14 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_events.h>
 
 #include "Platform/PlatformEventLoop.h"
 #include "Platform/PlatformEvents.h"
 
 class SdlPlatformSharedState;
+class PlatformEvent;
+class PlatformEventHandler;
 
 class SdlEventLoop: public PlatformEventLoop {
  public:

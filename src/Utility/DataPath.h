@@ -2,6 +2,8 @@
 
 #include <string>
 #include <type_traits>
+#include <initializer_list>
+#include <string_view>
 
 void setDataPath(const std::string &data_path);
 

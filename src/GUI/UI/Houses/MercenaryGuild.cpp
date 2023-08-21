@@ -1,16 +1,28 @@
 #include "GUI/UI/Houses/MercenaryGuild.h"
 
+#include <stdint.h>
+#include <array>
+#include <memory>
+
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIFont.h"
-#include "GUI/GUIButton.h"
-
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
 
 std::array<int16_t, 49> word_4F0754;
 

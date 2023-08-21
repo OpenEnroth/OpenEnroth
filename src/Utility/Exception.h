@@ -3,8 +3,10 @@
 #include <stdexcept>
 #include <string_view>
 #include <utility>
+#include <system_error>
 
 #include "Format.h"
+#include "fmt/core.h"
 
 class Exception : public std::runtime_error {
  public:

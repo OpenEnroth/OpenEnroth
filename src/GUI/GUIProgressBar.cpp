@@ -1,19 +1,24 @@
 #include "GUI/GUIProgressBar.h"
 
+#include <math.h>
 #include <algorithm>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Tables/IconFrameTable.h"
-
 #include "GUI/GUIWindow.h"
-
 #include "Library/Random/Random.h"
 #include "Utility/IndexedArray.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/mm7_data.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "fmt/core.h"
 
 static constexpr IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> ProgressBarResourceByAlignment = {
     {PartyAlignment_Good, "bardata-b"},

@@ -1,21 +1,30 @@
 #include "LodFormats.h"
 
+#include <string.h>
 #include <optional>
 #include <span> // NOLINT: not a C header.
 #include <vector>
+#include <array>
+#include <cstdint>
 
 #include "LodFormatSnapshots.h"
-
 #include "Library/Binary/ContainerSerialization.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Serialization/EnumSerialization.h"
-
 #include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 #include "Utility/Exception.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/MemCopySerialization.h"
+#include "Library/Color/Color.h"
+#include "Library/LodFormats/LodFormatEnums.h"
+#include "Library/Serialization/EnumSerializer.h"
+#include "Library/Serialization/Serialization.h"
+#include "Utility/Streams/InputStream.h"
+#include "fmt/core.h"
 
 // Serialization is for exception messages.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(LodFileFormat, CASE_SENSITIVE, {

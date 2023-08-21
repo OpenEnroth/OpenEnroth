@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include "InputStream.h"
 
 class MemoryInputStream: public InputStream {

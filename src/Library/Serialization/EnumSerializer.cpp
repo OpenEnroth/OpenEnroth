@@ -1,5 +1,6 @@
 #include "EnumSerializer.h"
 
+#include <stddef.h>
 #include <cassert>
 #include <algorithm>
 

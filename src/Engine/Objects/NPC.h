@@ -1,14 +1,16 @@
 #pragma once
 
+#include <stddef.h>
 #include <vector>
 #include <cstdint>
 #include <string>
+#include <array>
 
 #include "Utility/IndexedArray.h"
-
 #include "Engine/Objects/NPCEnums.h"
 
 struct NPCData;
+enum class NPCProf : int32_t;
 
 enum class NpcType {
     NPC_TYPE_QUEST = 1,

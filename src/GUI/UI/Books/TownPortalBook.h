@@ -1,5 +1,6 @@
 #pragma once
 #include "GUI/UI/UIBooks.h"
+#include "Engine/Pid.h"
 
 class GUIWindow_TownPortalBook : public GUIWindow_Book {
  public:

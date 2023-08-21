@@ -1,7 +1,12 @@
 #include "Collisions.h"
 
+#include <assert.h>
+#include <bits/std_abs.h>
 #include <algorithm>
 #include <limits>
+#include <array>
+#include <cmath>
+#include <vector>
 
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -15,10 +20,20 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Plane.h"
 
 CollisionState collision_state;
 

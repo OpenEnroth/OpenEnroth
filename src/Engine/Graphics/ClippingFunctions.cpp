@@ -1,11 +1,10 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 
-#include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-
 #include "Library/Logger/Logger.h"
-
-#include "Camera.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Utility/Geometry/Plane.h"
 
 //----- (00498377) --------------------------------------------------------
 bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  // test skipping this

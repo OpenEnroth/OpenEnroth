@@ -4,6 +4,8 @@
 
 #include "Engine/Pid.h"
 
+class Pid;
+
 /**
  * @offset 0x4613C4
  */

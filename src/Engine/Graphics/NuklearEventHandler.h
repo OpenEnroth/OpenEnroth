@@ -1,6 +1,12 @@
 #pragma once
 
 #include "Platform/Filters/PlatformEventFilter.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/Geometry/Point.h"
+
+class PlatformKeyEvent;
+class PlatformMouseEvent;
+class PlatformWheelEvent;
 
 class NuklearEventHandler : public PlatformEventFilter {
  public:

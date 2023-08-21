@@ -1,16 +1,20 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
 #include <string>
 #include <optional>
+#include <array>
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Pid.h"
-
 #include "Utility/Geometry/Vec.h"
 #include "Utility/Memory/Blob.h"
-
 #include "ChestEnums.h"
+#include "Utility/Flags.h"
+
+class Pid;
+enum class ITEM_TYPE : int32_t;
 
 struct ChestDesc {
     std::string sName;

@@ -1,12 +1,13 @@
 #pragma once
 
 #include <cstdarg>
-
 #include <unordered_map>
 #include <string>
 #include <thread>
 
 #include "Library/Logger/Logger.h"
+
+class Logger;
 
 // TODO(captainurist): rework when I get to logging, this should just be a way to hook into av_log, an API taking std::function.
 class MediaLogger {

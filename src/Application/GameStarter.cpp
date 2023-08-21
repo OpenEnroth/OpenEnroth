@@ -3,21 +3,25 @@
 #include <utility>
 #include <filesystem>
 #include <string>
+#include <optional>
 
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-
 #include "Platform/PlatformLogger.h"
 #include "Platform/Platform.h"
 #include "Platform/Null/NullPlatform.h"
-
 #include "GamePathResolver.h"
 #include "GameConfig.h"
 #include "Game.h"
+#include "Application/GameStarterOptions.h"
+#include "Engine/Graphics/RenderEnums.h"
+#include "Library/Config/ConfigEntry.h"
+#include "Platform/Null/NullPlatformOptions.h"
+#include "Platform/PlatformEnums.h"
+#include "fmt/core.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init logger.

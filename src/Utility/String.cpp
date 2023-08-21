@@ -1,5 +1,6 @@
 #include "String.h"
 
+#include <ctype.h>
 #include <vector>
 #include <algorithm>
 

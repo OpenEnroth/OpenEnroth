@@ -4,6 +4,10 @@
 
 #include "Indoor.h"
 #include "Outdoor.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationInfo.h"
+
+struct LocationTime;
 
 LevelType uCurrentlyLoadedLevelType = LEVEL_NULL;
 

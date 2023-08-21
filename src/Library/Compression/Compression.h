@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include "Utility/Memory/Blob.h"
 
 namespace zlib {

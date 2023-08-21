@@ -1,14 +1,11 @@
 #include "Engine/Graphics/BSPModel.h"
 
-#include <cstring>
-#include <cstdlib>
-#include <algorithm>
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/FaceEnums.h"
 
 // ODMFace
 

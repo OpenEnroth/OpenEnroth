@@ -4,6 +4,8 @@
 
 #include "Engine/Events/EventEnums.h"
 
+enum class EventType : uint8_t;
+
 struct _evt_raw {
     unsigned char _e_size;
     unsigned char v1;

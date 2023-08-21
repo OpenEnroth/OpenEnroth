@@ -1,6 +1,13 @@
 #include "ImageFunctions.h"
 
+#include <string.h>
 #include <cassert>
+#include <array>
+#include <span>
+
+#include "Library/Color/Color.h"
+#include "Library/Image/Image.h"
+#include "Library/Image/Palette.h"
 
 RgbaImage makeRgbaImage(GrayscaleImageView indexedImage, const Palette &palette) {
     if (!indexedImage)

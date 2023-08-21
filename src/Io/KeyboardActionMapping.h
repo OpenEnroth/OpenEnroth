@@ -6,10 +6,13 @@
 
 #include "Platform/PlatformEnums.h"
 #include "Io/InputAction.h"
-
 #include "Application/GameConfig.h"
 
+enum class PlatformKey : int;
+
 namespace Io {
+enum class InputAction : int;
+
 enum class KeyToggleType {
     TOGGLE_Continuously = 0,
     TOGGLE_OneTimePress = 1,

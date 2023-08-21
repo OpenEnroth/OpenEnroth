@@ -1,10 +1,12 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
 
 #include "Engine/Objects/CharacterEnums.h"
-
 #include "Utility/Memory/Blob.h"
+
+enum CharacterExpressionID : uint16_t;
 
 struct PlayerFrame {
     CharacterExpressionID expression;

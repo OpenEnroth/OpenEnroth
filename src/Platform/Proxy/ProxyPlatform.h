@@ -1,12 +1,19 @@
 #pragma once
 
+#include <stdint.h>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "Platform/Platform.h"
-
 #include "ProxyBase.h"
+#include "Utility/Geometry/Rect.h"
+
+class Platform;
+class PlatformEventLoop;
+class PlatformGamepad;
+class PlatformWindow;
+enum class PlatformStorage;
 
 class ProxyPlatform : public ProxyBase<Platform> {
  public:

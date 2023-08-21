@@ -2,6 +2,8 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
 
 class TargetedSpellUI : public GUIWindow {
  public:

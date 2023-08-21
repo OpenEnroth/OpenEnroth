@@ -1,8 +1,22 @@
 #pragma once
 
 #include <vector>
+#include <initializer_list>
 
 #include "Platform/PlatformEvents.h"
+
+class PlatformEvent;
+class PlatformGamepadAxisEvent;
+class PlatformGamepadEvent;
+class PlatformGamepadKeyEvent;
+class PlatformKeyEvent;
+class PlatformMouseEvent;
+class PlatformMoveEvent;
+class PlatformNativeEvent;
+class PlatformResizeEvent;
+class PlatformWheelEvent;
+class PlatformWindowEvent;
+enum class PlatformEventType;
 
 enum class PlatformEventWildcard {
     EVENTS_ALL

@@ -1,11 +1,11 @@
 #include "SdlLogger.h"
 
+#include <SDL_log.h>
 #include <cassert>
 #include <ctime>
 
-#include <SDL_log.h>
-
 #include "SdlEnumTranslation.h"
+#include "Platform/PlatformEnums.h"
 
 // This one is not in `SdlEnumTranslation.h` because it's closely tied to the implementation below.
 static SDL_LogCategory translatePlatformLogCategory(PlatformLogCategory category) {

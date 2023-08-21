@@ -1,5 +1,11 @@
 #include "Engine/AttackList.h"
+
+#include <memory>
+
 #include "Engine/Engine.h"
+#include "Application/GameConfig.h"
+
+enum class ABILITY_INDEX : char;
 
 std::vector<AttackDescription> attackList;
 

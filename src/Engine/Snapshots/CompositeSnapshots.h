@@ -1,9 +1,17 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
 #include <tuple>
+#include <array>
 
 #include "EntitySnapshots.h"
+#include "Utility/Geometry/Vec.h"
+
+class InputStream;
+class OutputStream;
+struct SaveGameHeader;
+template <class T> class ContextTag;
 
 /**
  * @file
@@ -20,6 +28,7 @@ struct IndoorLocation;
 struct OutdoorLocation;
 struct SpriteFrameTable;
 class LodReader;
+
 namespace LOD {
 class WriteableFile;
 } // namespace LOD

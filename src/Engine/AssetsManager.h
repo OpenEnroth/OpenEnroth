@@ -6,6 +6,7 @@
 #include "Library/Color/ColorTable.h"
 
 class GraphicsImage;
+struct Color;
 
 class AssetsManager {
  public:

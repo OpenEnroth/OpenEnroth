@@ -1,22 +1,27 @@
 #include <string>
+#include <array>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
-
 #include "Engine/Tables/StorylineTextTable.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/Books/JournalBook.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Io/InputAction.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 GraphicsImage *ui_book_journal_background = nullptr;
 

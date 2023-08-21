@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+class PlatformEventHandler;
+
 NullEventLoop::NullEventLoop(NullPlatformSharedState *state): _state(state) {
     assert(state);
 }

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Platform/PlatformEventLoop.h"
-
 #include "ProxyBase.h"
+
+class PlatformEventHandler;
+class PlatformEventLoop;
 
 class ProxyEventLoop: public ProxyBase<PlatformEventLoop> {
  public:

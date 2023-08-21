@@ -1,17 +1,24 @@
 #include "GUI/GUIFont.h"
 
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sstream>
+#include <algorithm>
+#include <memory>
+#include <span>
 
-#include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/LodTextureCache.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-
 #include "Engine/Snapshots/EntitySnapshots.h"
-
 #include "GUI/GUIWindow.h"
+#include "Engine/Graphics/Texture_MM7.h"
+#include "Engine/MM7.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Image/Palette.h"
+#include "Utility/Memory/Blob.h"
 
 // TODO(pskelton): Move these to asset manager
 GUIFont *pFontBookOnlyShadow = nullptr;

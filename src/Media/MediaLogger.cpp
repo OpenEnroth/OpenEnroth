@@ -7,6 +7,9 @@ extern "C" {
 #include <cassert>
 #include <mutex>
 
+#include "Library/Logger/Logger.h"
+#include "Platform/PlatformEnums.h"
+
 static std::mutex GlobalMediaLoggerMutex;
 static MediaLogger *GlobalMediaLoggerInstance = nullptr;
 

@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "Library/Application/PlatformApplicationAware.h"
-
 #include "EngineTraceEnums.h"
 
 class EngineController;

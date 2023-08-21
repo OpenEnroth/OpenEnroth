@@ -1,5 +1,7 @@
 #include "Engine/Objects/ObjectList.h"
 
+#include <stddef.h>
+
 #include "Engine/Graphics/Sprites.h"
 
 struct ObjectList *pObjectList;

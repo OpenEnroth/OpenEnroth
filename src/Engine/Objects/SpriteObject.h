@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
 
 #include "Engine/Objects/Items.h"
@@ -7,10 +8,10 @@
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Pid.h"
-
 #include "Library/Color/Color.h"
-
 #include "Utility/Geometry/Vec.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Utility/Flags.h"
 
 class SpriteFrame;
 

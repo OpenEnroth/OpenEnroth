@@ -1,15 +1,15 @@
 #include "GLShaderLoader.h"
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
+#include <stddef.h>
 
 #include "Engine/EngineIocContainer.h"
-
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
-
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
+#include "Library/Serialization/EnumSerializer.h"
 
 namespace detail_extension {
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {

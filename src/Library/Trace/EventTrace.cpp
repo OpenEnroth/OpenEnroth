@@ -1,17 +1,24 @@
 #include "EventTrace.h"
 
+#include <assert.h>
 #include <memory>
 #include <string>
+#include <map>
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Io/Key.h"
 #include "Library/Json/Json.h"
-
-#include "Io/Key.h" // TODO(captainurist): doesn't belong here
-
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
-
 #include "PaintEvent.h"
+#include "Library/Json/JsonFwd.h"
+#include "Library/Serialization/EnumSerializer.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
+#include "nlohmann/json.hpp"
+
+class PlatformWindow;
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Pointi, (
     (x, "x"),

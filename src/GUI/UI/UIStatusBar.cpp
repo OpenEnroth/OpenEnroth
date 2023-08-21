@@ -1,15 +1,16 @@
 #include "UIStatusBar.h"
 
-#include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
+#include <memory>
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
-
 #include "Engine/Graphics/IRender.h"
-
 #include "GUI/GUIFont.h"
-
 #include "GUI/UI/UIGame.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/Color.h"
+#include "Platform/Platform.h"
 
 const std::string &StatusBar::get() {
     if (_eventStatusExpireTime) {

@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "GUI/GUIWindow.h"
 
 void GameUI_LoadPlayerPortraintsAndVoices();
@@ -50,6 +52,7 @@ class GUIWindow_DebugMenu : public GUIWindow {
 };
 
 class GraphicsImage;
+
 extern GraphicsImage *game_ui_statusbar;
 extern GraphicsImage *game_ui_rightframe;
 extern GraphicsImage *game_ui_topframe;

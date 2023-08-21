@@ -1,7 +1,8 @@
 #include "Compression.h"
 
 #include <zlib.h>
-
+#include <stdlib.h>
+#include <zconf.h>
 #include <cstring>
 #include <memory>
 

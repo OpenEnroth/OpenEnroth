@@ -7,12 +7,12 @@
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
 #include "Library/Application/PlatformApplicationAware.h"
-
 #include "EngineControlStateHandle.h"
 
 class EngineController;
 class EngineControlState;
 class PlatformEvent;
+class PlatformEventHandler;
 
 /**
  * This component exposes a coroutine-like API that makes it possible to control the game by passing in synthetic

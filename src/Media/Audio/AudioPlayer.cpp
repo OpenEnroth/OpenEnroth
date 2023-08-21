@@ -1,5 +1,8 @@
 #include "AudioPlayer.h"
 
+#include <assert.h>
+#include <math.h>
+#include <stdint.h>
 #include <algorithm>
 #include <map>
 #include <string>
@@ -7,28 +10,42 @@
 #include <utility>
 #include <vector>
 #include <thread>
+#include <chrono>
+#include <iterator>
+#include <memory>
 
+#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
-
 #include "Media/Audio/OpenALSoundProvider.h"
-
 #include "GUI/GUIWindow.h"
-
 #include "Library/Snapshots/SnapshotSerialization.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
-
 #include "Utility/DataPath.h"
-
 #include "SoundInfo.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Binary/ContainerSerialization.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/String.h"
+#include "fmt/core.h"
+
+struct SoundInfo_MM6;
+struct SoundInfo_MM7;
 
 int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;

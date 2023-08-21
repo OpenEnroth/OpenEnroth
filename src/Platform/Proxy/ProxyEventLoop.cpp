@@ -1,5 +1,10 @@
 #include "ProxyEventLoop.h"
 
+#include "Platform/PlatformEventLoop.h"
+#include "Platform/Proxy/ProxyBase.h"
+
+class PlatformEventHandler;
+
 ProxyEventLoop::ProxyEventLoop(PlatformEventLoop *base) : ProxyBase<PlatformEventLoop>(base) {}
 
 void ProxyEventLoop::exec(PlatformEventHandler *eventHandler) {

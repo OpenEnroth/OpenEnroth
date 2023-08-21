@@ -2,17 +2,22 @@
 
 #include <cassert>
 #include <utility>
+#include <algorithm>
 
-#include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 #include "Library/LodFormats/LodFormats.h"
-
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Exception.h"
 #include "Utility/String.h"
-
 #include "LodSnapshots.h"
 #include "LodEnums.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/ContainerSerialization.h"
+#include "Library/Binary/MemCopySerialization.h"
+#include "Library/LodFormats/LodFormatEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Streams/InputStream.h"
+#include "fmt/core.h"
 
 static size_t fileEntrySize(LodVersion version) {
     switch (version) {

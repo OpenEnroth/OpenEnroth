@@ -1,5 +1,7 @@
 #include "AutonoteTable.h"
 
+#include <string.h>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 

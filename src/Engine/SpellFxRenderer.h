@@ -5,12 +5,14 @@
 #include <cstdint>
 
 #include "Engine/Spells/SpellEnums.h"
-
 #include "Library/Color/ColorTable.h"
+#include "Library/Color/Color.h"
 
 class Actor;
 class GraphicsImage;
 class ParticleEngine;
+enum SPELL_TYPE : uint8_t;
+struct SpriteObject;
 
 struct SpellFX_Billboard {
     /**

@@ -1,9 +1,13 @@
 #include "UICharacter.h"
 
+#include <stddef.h>
 #include <algorithm>
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <cmath>
+#include <initializer_list>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -18,20 +22,38 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Spells/Spells.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/ItemGrid.h"
 #include "GUI/UI/UIInventory.h"
-
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Utility/MapAccess.h"
-#include "Library/Random/Random.h"
+#include "Application/GameConfig.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Platform/Platform.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
+#include "fmt/printf.h"
 
 void CharacterUI_LoadPaperdollTextures();
 

@@ -1,19 +1,20 @@
 #pragma once
 
+#include <stddef.h>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "Engine/Graphics/Nuklear.h"
-
 #include "Library/Image/Image.h"
 #include "Library/Color/Color.h"
 #include "Library/Color/ColorTable.h"
-
 #include "Utility/Geometry/Rect.h"
-
 #include "TextureRenderId.h"
 #include "RenderEntities.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/Geometry/Vec.h"
 
 class Actor;
 class GraphicsImage;
@@ -26,6 +27,7 @@ class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
 class Logger;
+class Blob;
 
 namespace LOD {
 class File;

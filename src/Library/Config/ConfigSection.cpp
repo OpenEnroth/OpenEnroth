@@ -3,8 +3,8 @@
 #include <cassert>
 
 #include "Utility/MapAccess.h"
-
 #include "Config.h"
+#include "Library/Config/AnyConfigEntry.h"
 
 ConfigSection::ConfigSection(Config *config, const std::string &name): _config(config), _name(name) {
     assert(config);

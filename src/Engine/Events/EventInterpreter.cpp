@@ -1,6 +1,10 @@
+#include <assert.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <string>
-#include <utility>
 #include <functional>
+#include <array>
+#include <memory>
 
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/EventIR.h"
@@ -16,14 +20,10 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
 #include "Library/Random/Random.h"
-
 #include "Utility/Math/TrigLut.h"
-
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"
@@ -31,6 +31,28 @@
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Events/EventMap.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/SpawnPoint.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/TeleportPoint.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/String.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 /**
  * @offset 0x4465DF

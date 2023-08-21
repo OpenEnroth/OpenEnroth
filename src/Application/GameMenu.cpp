@@ -1,10 +1,12 @@
 #include <map>
 #include <string>
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <vector>
 
 #include "GameMenu.h"
-
 #include "Game.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -15,19 +17,26 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 #include "Engine/EngineIocContainer.h"
-
-#include "Platform/PlatformEnums.h"
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Application/GameConfig.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/MM7.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Point.h"
+
+enum class PlatformKey : int;
 
 using Io::TextInputType;
 using Io::KeyToggleType;

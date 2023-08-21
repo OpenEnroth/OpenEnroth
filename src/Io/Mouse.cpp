@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 #include <list>
+#include <cmath>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -10,18 +12,30 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AssetsManager.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/IndexedArray.h"
 
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 

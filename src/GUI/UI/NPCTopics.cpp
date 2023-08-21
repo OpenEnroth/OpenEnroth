@@ -1,12 +1,14 @@
 #include "GUI/UI/NPCTopics.h"
 
+#include <assert.h>
+#include <stdint.h>
 #include <utility>
+#include <array>
+#include <memory>
 
 #include "Engine/Engine.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Localization.h"
@@ -15,17 +17,44 @@
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Events/Processor.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/String.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
+#include "fmt/printf.h"
 
 int membershipOrTrainingApproved;
 int topicEventId; // event id of currently viewed scripted NPC event

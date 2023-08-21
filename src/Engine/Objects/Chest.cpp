@@ -1,7 +1,11 @@
 #include "Engine/Objects/Chest.h"
 
+#include <assert.h>
+#include <string.h>
 #include <numeric>
 #include <unordered_map>
+#include <cmath>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -12,27 +16,46 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"
-
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
-
 #include "Utility/Math/TrigLut.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Events/EventIR.h"
+#include "Engine/Events/EventMap.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ChestEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
 
 ChestDescList *pChestList;
 std::vector<Chest> vChests;

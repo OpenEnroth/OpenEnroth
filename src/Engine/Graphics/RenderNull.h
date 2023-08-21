@@ -1,8 +1,20 @@
 #pragma once
 
-#include "RenderBase.h"
-
+#include <nuklear_config.h>
+#include <stddef.h>
 #include <string>
+
+#include "RenderBase.h"
+#include "Engine/Graphics/TextureRenderId.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Image/Image.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Rect.h"
+#include "Utility/Geometry/Vec.h"
+
+class GraphicsImage;
+struct Color;
+struct RenderVertexD3D3;
 
 class RenderNull : public RenderBase {
  public:

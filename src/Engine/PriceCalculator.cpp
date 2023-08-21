@@ -1,11 +1,14 @@
+#include <stdint.h>
 #include <algorithm>
+#include <cmath>
 
 #include "Engine/PriceCalculator.h"
-
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Party.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 
 int PriceCalculator::baseItemIdentifyPrice(float priceMultiplier) {
     int baseCost = (int)(priceMultiplier * 50.0f);

@@ -4,6 +4,9 @@
 
 #include "GUI/GUIWindow.h"
 
+class GUIButton;
+class GraphicsImage;
+
 class GUIWindow_MainMenu : public GUIWindow {
  public:
     GUIWindow_MainMenu();

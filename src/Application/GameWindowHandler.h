@@ -7,6 +7,17 @@
 #include "Platform/Filters/PlatformEventFilter.h"
 #include "Library/Application/PlatformApplicationAware.h"
 #include "Utility/Geometry/Size.h"
+#include "Utility/Geometry/Point.h"
+
+class PlatformGamepadAxisEvent;
+class PlatformGamepadEvent;
+class PlatformGamepadKeyEvent;
+class PlatformKeyEvent;
+class PlatformMouseEvent;
+class PlatformMoveEvent;
+class PlatformResizeEvent;
+class PlatformWheelEvent;
+class PlatformWindowEvent;
 
 namespace Io {
 class Mouse;

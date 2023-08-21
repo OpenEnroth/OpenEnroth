@@ -3,8 +3,10 @@
 #include <array>
 
 #include "Engine/Spells/SpellEnums.h"
-
 #include "GUI/GUIWindow.h"
+
+class GraphicsImage;
+enum SPELL_TYPE : uint8_t;
 
 class GUIWindow_Spellbook : public GUIWindow {
  public:

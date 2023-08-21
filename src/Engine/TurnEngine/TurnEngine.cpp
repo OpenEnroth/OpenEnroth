@@ -1,27 +1,35 @@
-#include <cstdlib>
-
+#include <assert.h>
+#include <stdint.h>
+#include <string.h>
 #include <utility>
+#include <array>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
 #include "Engine/Pid.h"
-
 #include "Engine/TurnEngine/TurnEngine.h"
-
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
-
-#include "Engine/Graphics/Viewport.h"
-
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
-
 #include "Engine/Party.h"
 #include "Engine/AttackList.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
 
 struct stru262_TurnBased *pTurnEngine = new stru262_TurnBased;
 

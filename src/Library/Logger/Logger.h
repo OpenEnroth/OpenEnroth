@@ -4,6 +4,8 @@
 
 #include "Platform/PlatformLogger.h"
 #include "Utility/Format.h"
+#include "Platform/PlatformEnums.h"
+#include "fmt/core.h"
 
 class Logger {
  public:

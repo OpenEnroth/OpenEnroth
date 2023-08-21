@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "Utility/Exception.h"
+#include "fmt/core.h"
 
 void InputStream::readOrFail(void *data, size_t size) {
     size_t bytes = read(data, size);

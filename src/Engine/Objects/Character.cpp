@@ -1,13 +1,15 @@
 #include "Engine/Objects/Character.h"
 
+#include <assert.h>
+#include <string.h>
 #include <algorithm>
 #include <memory>
+#include <compare>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
@@ -30,23 +32,43 @@
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Conditions.h"
-
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIMessageScroll.h"
 #include "GUI/UI/Books/AutonotesBook.h"
-
 #include "Library/Random/Random.h"
-
 #include "Utility/Memory/MemSet.h"
 #include "Utility/Math/FixPoint.h"
 #include "Utility/IndexedArray.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/LocationInfo.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Segment.h"
+#include "fmt/core.h"
+
+struct DecalBuilder;
 
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();

@@ -1,17 +1,22 @@
+#include <assert.h>
+#include <math.h>
+#include <stdlib.h>
 #include <cstring>
 #include <memory>
+#include <compare>
+#include <initializer_list>
+#include <string_view>
+#include <variant>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
-
 #include "Engine/Events/Processor.h"
 #include "Engine/Events/Loader.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -58,8 +63,6 @@
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
-
-#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -67,17 +70,58 @@
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIMessageScroll.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
 #include "Io/Mouse.h"
-
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
-
 #include "Utility/DataPath.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/Segment.h"
+#include "Utility/String.h"
+#include "fmt/core.h"
+
+namespace Graphics {
+class IRenderFactory;
+}  // namespace Graphics
 
 using Graphics::IRenderFactory;
 

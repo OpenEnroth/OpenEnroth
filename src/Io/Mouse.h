@@ -1,14 +1,15 @@
 #pragma once
 
+#include <stdint.h>
 #include <memory>
 #include <string>
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Pid.h"
-
 #include "Utility/Geometry/Point.h"
 
 class GraphicsImage;
+enum class ITEM_TYPE : int32_t;
 
 namespace Io {
 class Mouse {

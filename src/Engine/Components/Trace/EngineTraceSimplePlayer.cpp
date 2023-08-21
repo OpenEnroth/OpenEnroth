@@ -1,16 +1,21 @@
 #include "EngineTraceSimplePlayer.h"
 
+#include <stdint.h>
 #include <cassert>
 #include <utility>
 
 #include "Engine/Components/Control/EngineController.h"
-
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Random/Random.h"
-
 #include "Utility/ScopeGuard.h"
 #include "Utility/Exception.h"
+#include "Engine/Components/Trace/EngineTraceEnums.h"
+#include "Library/Random/RandomEngine.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEvents.h"
+#include "Utility/Flags.h"
+#include "fmt/core.h"
 
 EngineTraceSimplePlayer::EngineTraceSimplePlayer() = default;
 EngineTraceSimplePlayer::~EngineTraceSimplePlayer() = default;

@@ -5,9 +5,7 @@
 #include <memory>
 
 #include "Engine/Graphics/Texture_MM7.h"
-
 #include "Library/Lod/LodReader.h"
-
 #include "Utility/Memory/Blob.h"
 
 class LodReader;

@@ -1,29 +1,51 @@
+#include <assert.h>
+#include <ctype.h>
+#include <stdint.h>
+#include <string.h>
 #include <cstdlib>
 #include <string>
+#include <array>
+#include <initializer_list>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
-
-#include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Platform/Platform.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
+#include "fmt/core.h"
 
 using Io::TextInputType;
 

@@ -1,10 +1,12 @@
 #include "GameWindowHandler.h"
 
+#include <assert.h>
+#include <stddef.h>
 #include <algorithm>
 #include <vector>
+#include <string>
 
 #include "Arcomage/Arcomage.h"
-
 #include "Engine/ErrorHandling.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -16,21 +18,28 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Time.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
 #include "Library/Logger/Logger.h"
 #include "Library/Application/PlatformApplication.h"
-
 #include "Platform/PlatformGamepad.h"
+#include "Application/GameConfig.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Library/Config/ConfigEntry.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEvents.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Rect.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 using Io::InputAction;
 

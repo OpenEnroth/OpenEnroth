@@ -5,8 +5,8 @@
 
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/PlatformEventFilter.h"
-
 #include "Library/Application/PlatformApplicationAware.h"
+#include "Platform/PlatformEvents.h"
 
 /**
  * Component that can be used to record events.

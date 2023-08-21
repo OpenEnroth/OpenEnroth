@@ -7,6 +7,9 @@
 #include "Engine/Graphics/RenderEnums.h"
 #include "Io/Key.h"
 #include "Platform/PlatformEnums.h"
+#include "Library/Config/ConfigEntry.h"
+#include "Library/Config/ConfigSection.h"
+#include "Library/Serialization/SerializationFwd.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES

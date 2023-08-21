@@ -1,25 +1,28 @@
+#include <assert.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string>
+#include <array>
+#include <memory>
 
 #include "GameOver.h"
-
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
-#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
-
-#include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Color/ColorTable.h"
+#include "fmt/core.h"
 
 
 //----- (004BF91E) --------------------------------------------------------

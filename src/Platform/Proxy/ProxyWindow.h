@@ -1,11 +1,19 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 #include <memory>
 
 #include "Platform/PlatformWindow.h"
-
 #include "ProxyBase.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/Geometry/Margins.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
+
+class PlatformOpenGLContext;
+class PlatformWindow;
+struct PlatformOpenGLOptions;
 
 class ProxyWindow : public ProxyBase<PlatformWindow> {
  public:

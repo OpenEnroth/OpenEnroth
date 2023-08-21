@@ -1,13 +1,12 @@
 #include <string>
+#include <algorithm>
+#include <array>
+#include <memory>
 
 #include "GUI/UI/Houses/Temple.h"
-
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
-#include "GUI/GUIFont.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/LocationInfo.h"
@@ -15,8 +14,17 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedArray.h"
+#include "fmt/core.h"
 
 void GUIWindow_Temple::mainDialogue() {
     int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()].fPriceMultiplier);

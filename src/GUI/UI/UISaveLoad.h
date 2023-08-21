@@ -2,6 +2,8 @@
 
 #include "GUI/GUIWindow.h"
 
+class GraphicsImage;
+
 class GUIWindow_Save : public GUIWindow {
  public:
     GUIWindow_Save();

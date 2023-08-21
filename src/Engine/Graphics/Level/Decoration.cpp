@@ -1,12 +1,15 @@
 #include "Engine/Graphics/Level/Decoration.h"
 
-#include <cstdlib>
+#include <string.h>
 #include <algorithm>
+#include <array>
+#include <memory>
 
 #include "../../Party.h"
-#include "Engine/Engine.h"
-
 #include "Library/Random/Random.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/PartyEnums.h"
+#include "Library/Random/RandomEngine.h"
 
 std::vector<LevelDecoration> pLevelDecorations;
 std::vector<int> decorationsWithSound;

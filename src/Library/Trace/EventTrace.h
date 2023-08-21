@@ -6,8 +6,9 @@
 #include <string>
 
 #include "Platform/PlatformEvents.h"
-
 #include "Utility/Geometry/Vec.h"
+
+class PlatformWindow;
 
 // TODO(captainurist): this should go to Core/, not Library/,
 

@@ -1,6 +1,7 @@
 #include "MapEnums.h"
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(MapStartPoint, CASE_SENSITIVE, {
     {MapStartPoint_Party, "Party Start"},

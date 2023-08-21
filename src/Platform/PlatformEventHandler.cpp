@@ -1,5 +1,8 @@
 #include "PlatformEventHandler.h"
 
+#include "Platform/PlatformEnums.h"
+#include "Platform/PlatformEvents.h"
+
 void PlatformEventHandler::event(const PlatformEvent *event) {
     switch (event->type) {
     case EVENT_KEY_PRESS:

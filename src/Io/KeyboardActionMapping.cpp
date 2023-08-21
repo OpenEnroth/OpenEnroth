@@ -1,20 +1,13 @@
+#include <stddef.h>
 #include <string>
-#include <tuple>
-#include <vector>
+#include <array>
+#include <utility>
 
 #include "Io/KeyboardActionMapping.h"
-
-#include "Engine/Engine.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Vis.h"
-#include "Engine/Graphics/Weather.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Party.h"
-#include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Time.h"
-#include "Engine/TurnEngine/TurnEngine.h"
-
-#include "GUI/GUIWindow.h"
+#include "Io/InputAction.h"
+#include "Library/Config/ConfigEntry.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 using Io::InputAction;
 using Io::KeyToggleType;

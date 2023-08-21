@@ -1,16 +1,18 @@
 #include "PaletteManager.h"
 
+#include <stddef.h>
 #include <algorithm>
 #include <string>
+#include <array>
 
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/LodTextureCache.h"
-
 #include "Library/Color/Color.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Format.h"
+#include "Library/Color/Colorf.h"
+#include "Library/Color/HsvColorf.h"
+#include "fmt/core.h"
 
 PaletteManager *pPaletteManager = new PaletteManager;
 

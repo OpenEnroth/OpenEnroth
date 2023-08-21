@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Platform/PlatformOpenGLContext.h"
-
 #include "ProxyBase.h"
+
+class PlatformOpenGLContext;
 
 class ProxyOpenGLContext: public ProxyBase<PlatformOpenGLContext> {
  public:

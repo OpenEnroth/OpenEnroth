@@ -1,22 +1,37 @@
 #include "Engine/Objects/NPC.h"
 
+#include <assert.h>
+#include <bits/std_abs.h>
+#include <stdlib.h>
+#include <memory>
+
 #include "Engine/Engine.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/NPCTable.h"
-
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
 
 bool CheckPortretAgainstSex(int portret_num, int sex);
 

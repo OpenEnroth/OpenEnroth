@@ -1,18 +1,17 @@
 #include "Engine/AssetsManager.h"
 
 #include <memory>
+#include <utility>
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
-
 #include "GUI/GUIFont.h"
-
 #include "Library/Logger/Logger.h"
-
 #include "Utility/String.h"
+#include "Library/Color/Color.h"
 
 AssetsManager *assets = new AssetsManager();
 

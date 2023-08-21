@@ -3,8 +3,9 @@
 #include <string>
 
 #include "Engine/Events/EventEnums.h"
-
 #include "GUI/GUIWindow.h"
+
+enum class EventType : uint8_t;
 
 class GUIWindow_BranchlessDialogue : public GUIWindow {
  public:

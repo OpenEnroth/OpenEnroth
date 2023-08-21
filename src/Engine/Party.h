@@ -1,5 +1,7 @@
 #pragma once
 
+#include <assert.h>
+#include <stddef.h>
 #include <cstdint>
 #include <array>
 #include <vector>
@@ -12,8 +14,12 @@
 #include "GUI/UI/UIHouseEnums.h"
 #include "Media/Audio/SoundEnums.h"
 #include "Utility/IndexedBitset.h"
-
 #include "PartyEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
 
 class RandomEngine;
 

@@ -3,8 +3,12 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIEnums.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
 
 class GraphicsImage;
+class GUIButton;
 
 enum class BookButtonAction {
     BOOK_ZOOM_IN = 0,

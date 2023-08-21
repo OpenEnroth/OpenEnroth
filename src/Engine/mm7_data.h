@@ -11,17 +11,15 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/MapEnums.h"
-
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
-
 #include "Library/Color/Color.h"
-
 #include "Utility/IndexedArray.h"
 #include "Utility/Geometry/Vec.h"
 
 class GUIButton;
 class Actor;
+enum UIMessageType : uint32_t;
 
 //-------------------------------------------------------------------------
 // Data declarations

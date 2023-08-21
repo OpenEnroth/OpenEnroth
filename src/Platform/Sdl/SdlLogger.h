@@ -2,6 +2,9 @@
 
 #include <Platform/PlatformLogger.h>
 
+enum class PlatformLogCategory;
+enum class PlatformLogLevel;
+
 class SdlLogger: public PlatformLogger {
  public:
     virtual void setLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) override;

@@ -8,6 +8,8 @@
 #include "ConfigSection.h"
 #include "ConfigEntry.h"
 
+class ConfigSection;
+
 class Config {
  public:
     Config() = default;

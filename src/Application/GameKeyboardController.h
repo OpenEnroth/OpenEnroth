@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Utility/IndexedArray.h"
-
 #include "Platform/Filters/PlatformEventFilter.h"
-
 #include "Io/IKeyboardController.h"
+#include "Platform/PlatformEnums.h"
+
+class PlatformKeyEvent;
 
 class GameKeyboardController: public Io::IKeyboardController, public PlatformEventFilter {
  public:

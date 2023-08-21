@@ -3,8 +3,12 @@
 #include <string>
 #include <functional>
 #include <any>
+#include <typeinfo>
 
 #include "ConfigFwd.h"
+
+class AnyHandler;
+class ConfigSection;
 
 class AnyConfigEntry {
  public:

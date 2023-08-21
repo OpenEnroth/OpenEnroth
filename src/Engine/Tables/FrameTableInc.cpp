@@ -1,6 +1,6 @@
 #include "Engine/Tables/FrameTableInc.h"
 
-#include <memory.h>
+#include <string.h>
 
 // identical function to work in differnt threads
 

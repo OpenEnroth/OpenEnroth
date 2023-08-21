@@ -4,10 +4,10 @@
 
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
-
 #include "LodFormatEnums.h"
 
 class Blob;
+enum class LodFileFormat;
 
 struct LodSprite {
     GrayscaleImage image;

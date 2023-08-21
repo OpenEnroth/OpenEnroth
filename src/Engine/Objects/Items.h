@@ -1,17 +1,19 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time.h"
 #include "Engine/MapEnums.h"
-
 #include "Utility/IndexedArray.h"
-
 #include "GUI/UI/UIHouseEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Segment.h"
 
 class Character;
+enum class MAP_TREASURE_LEVEL : int8_t;
 
 struct ItemGen {  // 0x24
     static void PopulateSpecialBonusMap();

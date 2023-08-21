@@ -1,13 +1,12 @@
+#include <assert.h>
 #include <string>
 #include <array>
+#include <memory>
 
 #include "GUI/UI/Houses/Transport.h"
-
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIFont.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Engine/Localization.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/PriceCalculator.h"
@@ -16,10 +15,24 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Utility/IndexedArray.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/TeleportPoint.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedBitset.h"
 
 struct TransportInfo {
     MAP_TYPE uMapInfoID;

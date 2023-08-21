@@ -1,6 +1,12 @@
 #include "Engine/Events/Loader.h"
+
+#include <memory>
+
 #include "Engine/Engine.h"
 #include "Engine/GameResourceManager.h"
+#include "Engine/Events/EventIR.h"
+#include "Engine/Events/EventMap.h"
+#include "Utility/Memory/Blob.h"
 
 void initGlobalEvents() {
     Blob blob = engine->_gameResourceManager->getEventsFile("global.evt");

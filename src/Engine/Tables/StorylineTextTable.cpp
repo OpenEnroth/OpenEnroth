@@ -1,5 +1,9 @@
 #include "StorylineTextTable.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include <vector>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 

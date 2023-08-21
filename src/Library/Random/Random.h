@@ -4,6 +4,8 @@
 
 #include "RandomEngine.h"
 
+class RandomEngine;
+
 // TODO(captaiurist): actually these static vars belong to Engine/
 
 /**

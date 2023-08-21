@@ -1,6 +1,9 @@
 #include "Key.h"
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
+#include "Library/Serialization/Serialization.h"
+#include "Platform/PlatformEnums.h"
 
 // TODO(captainurist): recheck that ALL keys are actually serializable
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKey, CASE_INSENSITIVE, {

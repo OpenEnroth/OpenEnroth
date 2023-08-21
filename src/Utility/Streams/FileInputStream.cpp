@@ -1,9 +1,11 @@
 #include "FileInputStream.h"
 
+#include <stdint.h>
 #include <cassert>
 #include <algorithm> // For std::min.
 
 #include "Utility/Exception.h"
+#include "fmt/core.h"
 
 #ifdef _WINDOWS
 #   define ftello _ftelli64

@@ -1,5 +1,9 @@
 #include "TableSerialization.h"
 
+#include <assert.h>
+#include <stddef.h>
+#include <vector>
+
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/TileTable.h"
@@ -8,13 +12,13 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TextureFrameTable.h"
-
 #include "Library/Snapshots/SnapshotSerialization.h"
-
 #include "EntitySnapshots.h"
 #include "CompositeSnapshots.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Binary/ContainerSerialization.h"
 
 void deserialize(const TriBlob &src, PlayerFrameTable *dst) {
     dst->pFrames.clear();

@@ -1,11 +1,19 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 #include <memory>
 
 #include "Platform/PlatformWindow.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Margins.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
 
 class NullPlatformSharedState;
+class PlatformOpenGLContext;
+struct PlatformOpenGLOptions;
 
 class NullWindow : public PlatformWindow {
  public:

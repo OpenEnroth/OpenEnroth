@@ -1,3 +1,7 @@
+#include <assert.h>
+#include <array>
+#include <memory>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
@@ -10,15 +14,30 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
-
 #include "Io/Mouse.h"
-
 #include "Utility/Geometry/Rect.h"
+#include "Application/GameConfig.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/TeleportPoint.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIMessageQueue.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
+
+class GraphicsImage;
 
 struct TownPortalData {
     Vec3i pos;

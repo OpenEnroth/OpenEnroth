@@ -3,10 +3,11 @@
 #include <vector>
 
 #include "Platform/PlatformEventHandler.h"
-
 #include "Utility/IndexedArray.h"
+#include "Platform/PlatformEnums.h"
 
 class PlatformEventFilter;
+class PlatformEvent;
 
 class FilteringEventHandler : public PlatformEventHandler {
  public:

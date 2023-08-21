@@ -1,12 +1,29 @@
 #include "Engine/Graphics/PortalFunctions.h"
 
+#include <assert.h>
+#include <float.h>
+#include <math.h>
+#include <string.h>
+#include <array>
+#include <memory>
+#include <vector>
+
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/Camera.h"
 #include "Indoor.h"
-
 #include "Library/Color/ColorTable.h"
 #include "Library/Logger/Logger.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Engine/mm7_data.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Plane.h"
+#include "glm/detail/type_vec4.hpp"
 
 int _49CE9E_sub0_x(RenderVertexSoft *pVertices, unsigned int uNumVertices,
                    float test_val) {

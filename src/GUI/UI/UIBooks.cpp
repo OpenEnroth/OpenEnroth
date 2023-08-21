@@ -1,17 +1,18 @@
 #include <cstdlib>
+#include <memory>
+#include <vector>
 
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIBooks.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/Time.h"
+#include "Io/InputAction.h"
+#include "Media/Audio/SoundEnums.h"
 
 void GUIWindow_Book::Release() {
     free(pFontBookLloyds);

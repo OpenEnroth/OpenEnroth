@@ -1,8 +1,12 @@
+#include <assert.h>
 #include <cstdio>
 #include <utility>
+#include <exception>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "Application/GameStarter.h"
-
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -11,13 +15,14 @@
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/EngineGlobals.h"
-
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
-
-#include "Utility/Format.h"
-
 #include "OpenEnrothOptions.h"
+#include "Application/GameConfig.h"
+#include "Engine/Components/Trace/EngineTraceEnums.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEvents.h"
+#include "fmt/core.h"
 
 int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);

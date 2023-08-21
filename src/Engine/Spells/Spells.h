@@ -7,12 +7,11 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteObjectEnums.h"
-
 #include "Utility/IndexedArray.h"
-
 #include "SpellEnums.h"
 
 class Blob;
+enum SPRITE_OBJECT_TYPE : uint16_t;
 
 struct SpellInfo {
     std::string name;

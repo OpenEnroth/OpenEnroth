@@ -2,7 +2,8 @@
 
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
-#include "OurMath.h"
+
+enum UIMessageType : uint32_t;
 
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
@@ -141,10 +142,8 @@ std::array<int32_t, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sph
      0x00000026, 0x00000028, 0x00000041, 0x00000028, 0x00000031, 0x00000041,
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
-#include "Engine/Tables/IconFrameTable.h"
 struct IconFrameTable *pIconsFrameTable;
 
-#include "Engine/Tables/CharacterFrameTable.h"
 struct PlayerFrameTable *pPlayerFrameTable;  // idb
 
 //-------------------------------------------------------------------------

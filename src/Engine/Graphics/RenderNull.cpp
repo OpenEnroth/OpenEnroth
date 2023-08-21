@@ -1,12 +1,16 @@
 #include "RenderNull.h"
 
-#include <memory>
-
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Engine/EngineGlobals.h"
-
 #include "Library/Application/PlatformApplication.h"
+#include "Engine/Graphics/RenderBase.h"
+#include "Library/Color/Color.h"
+#include "Platform/PlatformOpenGLContext.h"
+#include "Platform/PlatformOpenGLOptions.h"
+
+class GraphicsImage;
+struct RenderVertexD3D3;
 
 bool RenderNull::Initialize() {
     application->initializeOpenGLContext(PlatformOpenGLOptions());

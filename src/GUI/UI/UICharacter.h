@@ -1,8 +1,14 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <array>
 
 #include "GUI/GUIWindow.h"
+
+class Character;
+class GraphicsImage;
+enum class ScreenType;
+struct ItemGen;
 
 class GUIWindow_CharacterRecord : public GUIWindow {
  public:
@@ -56,6 +62,7 @@ bool ringscreenactive();
 static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsImage *item_texture = nullptr, bool doZDraw = false);
 
 class GraphicsImage;
+
 extern GraphicsImage *ui_character_skills_background;
 extern GraphicsImage *ui_character_awards_background;
 extern GraphicsImage *ui_character_stats_background;

@@ -1,13 +1,15 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
 #include <vector>
 #include <string>
 
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h"
-
 #include "FaceEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Vec.h"
 
 class GraphicsImage;
 

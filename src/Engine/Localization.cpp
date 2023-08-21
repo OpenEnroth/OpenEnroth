@@ -1,11 +1,13 @@
-#include <stdarg.h>
+#include <string.h>
 #include <vector>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/GameResourceManager.h"
-
 #include "Utility/String.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/Segment.h"
 
 Localization *localization = nullptr;
 

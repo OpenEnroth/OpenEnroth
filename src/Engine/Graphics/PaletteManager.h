@@ -7,6 +7,7 @@
 #include "Library/Image/Palette.h"
 
 class LodTextureCache;
+struct Color;
 
 class PaletteManager {
  public:

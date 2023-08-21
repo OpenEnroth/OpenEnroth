@@ -6,6 +6,9 @@
 
 #include "ConfigFwd.h"
 
+class AnyConfigEntry;
+class Config;
+
 class ConfigSection {
  public:
     ConfigSection(Config *config, const std::string &name); // Defined in Config.cpp

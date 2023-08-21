@@ -1,15 +1,23 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 #include <vector>
+#include <array>
 
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/MapEnums.h"
-
 #include "GUI/GUIWindow.h"
 #include "Utility/IndexedArray.h"
 #include "UIHouseEnums.h"
+#include "GUI/GUIDialogues.h"
+
+class GUIButton;
+class GraphicsImage;
+enum class CharacterSkillType : int8_t;
+struct Color;
+struct NPCData;
 
 // Right hand side dialogue writing constants
 constexpr int SIDE_TEXT_BOX_WIDTH = 144;

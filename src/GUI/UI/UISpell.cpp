@@ -1,17 +1,16 @@
 #include "UISpell.h"
+
+#include <memory>
+
 #include "UIStatusBar.h"
-
-#include "GUI/GUIButton.h"
-
-#include "Media/Audio/AudioPlayer.h"
-
 #include "Engine/Engine.h"
-#include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
-
 #include "Io/Mouse.h"
+#include "Engine/Time.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
 
 TargetedSpellUI::TargetedSpellUI(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : GUIWindow(WINDOW_CastSpell, position, dimensions, data, hint) {

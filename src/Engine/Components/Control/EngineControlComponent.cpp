@@ -1,10 +1,15 @@
 #include "EngineControlComponent.h"
 
+#include <assert.h>
 #include <utility>
+#include <exception>
+#include <queue>
 
 #include "Platform/PlatformEventHandler.h"
-
 #include "EngineController.h"
+#include "Engine/Components/Control/EngineControlState.h"
+#include "Engine/Components/Control/EngineControlStateHandle.h"
+#include "Platform/PlatformEvents.h"
 
 static void controlThread(EngineControlState *unsafeState) {
     EngineControlStateHandle state(SIDE_CONTROL, unsafeState);

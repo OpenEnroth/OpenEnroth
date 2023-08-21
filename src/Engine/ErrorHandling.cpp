@@ -1,12 +1,13 @@
 #include "ErrorHandling.h"
 
+#include <stdlib.h>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <sstream>
 #include <utility>
 
-#include "Utility/Format.h"
+#include "fmt/core.h"
 
 [[noreturn]] static void defaultErrorHandler(const std::string &title, const std::string &message) {
     fmt::println(stderr, "{}", title);

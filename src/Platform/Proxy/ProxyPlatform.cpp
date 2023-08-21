@@ -1,7 +1,14 @@
 #include "ProxyPlatform.h"
 
-#include "Platform/PlatformWindow.h"
+#include "Platform/Platform.h"
+#include "Platform/Proxy/ProxyBase.h"
 #include "Platform/PlatformEventLoop.h"
+#include "Platform/PlatformWindow.h"
+
+class PlatformEventLoop;
+class PlatformGamepad;
+class PlatformWindow;
+enum class PlatformStorage;
 
 ProxyPlatform::ProxyPlatform(Platform *base): ProxyBase<Platform>(base) {}
 

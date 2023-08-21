@@ -1,27 +1,41 @@
 #include "Engine/Graphics/Vis.h"
 
+#include <assert.h>
+#include <bits/std_abs.h>
+#include <float.h>
 #include <cstdlib>
 #include <algorithm>
 #include <vector>
 #include <utility>
+#include <memory>
+#include <span>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/OurMath.h"
-
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
-
 #include "Library/Logger/Logger.h"
-
 #include "Utility/Math/TrigLut.h"
+#include "Application/GameConfig.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Monsters.h"
+#include "Library/Color/Color.h"
+#include "Library/Image/Image.h"
+#include "Utility/Geometry/Plane.h"
+#include "Utility/Math/Float.h"
+#include "glm/detail/type_vec4.hpp"
 
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 

@@ -1,14 +1,15 @@
 #pragma once
 
+#include <assert.h>
 #include <string>
 #include <utility>
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
-
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/Format.h"
+#include "fmt/printf.h"
 
 #define LSTR_AC                               0   // "AC"
 #define LSTR_ACCURACY                         1   // "Accuracy"

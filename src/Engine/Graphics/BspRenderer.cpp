@@ -1,10 +1,22 @@
 #include "Engine/Graphics/BspRenderer.h"
 
+#include <assert.h>
+#include <memory>
+#include <vector>
+
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Engine.h"
-
 #include "Library/Logger/Logger.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Utility/Geometry/Plane.h"
+#include "Utility/Geometry/Vec.h"
+#include "glm/detail/type_vec4.hpp"
 
 BspRenderer *pBspRenderer = new BspRenderer();
 

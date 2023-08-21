@@ -5,7 +5,6 @@
 #include <string>
 
 #include "Utility/IndexedArray.h"
-
 #include "MapEnums.h"
 
 class Blob;

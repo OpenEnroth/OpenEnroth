@@ -1,9 +1,10 @@
 #include "EntitySnapshots.h"
 
+#include <assert.h>
 #include <algorithm>
-#include <type_traits>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -15,7 +16,6 @@
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/NPC.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
@@ -25,17 +25,42 @@
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Time.h"
-
 #include "Media/Audio/SoundInfo.h"
-
 #include "GUI/GUIFont.h"
-
 #include "Library/Color/ColorTable.h"
 #include "Library/Snapshots/CommonSnapshots.h"
-
 #include "Utility/Memory/MemSet.h"
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationInfo.h"
+#include "Engine/Graphics/LocationTime.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ChestEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/SpawnPoint.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Library/Color/Color.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Workaround/ToUnderlying.h"
+
+enum SPELL_TYPE : uint8_t;
+enum Tileset : int16_t;
+enum class NPCProf : int32_t;
+template <auto FirstIndex, auto LastIndex> class IndexedBitset;
 
 /**
  * Mapping used for beacon map id serialization.

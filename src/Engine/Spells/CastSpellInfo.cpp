@@ -1,23 +1,25 @@
 #include "CastSpellInfo.h"
 
+#include <assert.h>
+#include <stddef.h>
 #include <vector>
 #include <string>
+#include <array>
+#include <cmath>
+#include <memory>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/ItemTable.h"
@@ -25,19 +27,46 @@
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/Spells.h"
-
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
-
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/LocationInfo.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/ItemEnchantment.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
 
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 

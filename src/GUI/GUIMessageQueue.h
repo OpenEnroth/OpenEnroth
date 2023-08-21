@@ -6,6 +6,8 @@
 
 #include "GUI/GUIEnums.h"
 
+enum UIMessageType : uint32_t;
+
 struct GUIMessage {
     UIMessageType type;
     int param;

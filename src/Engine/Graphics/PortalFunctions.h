@@ -3,6 +3,9 @@
 #include "Utility/Geometry/Vec.h"
 #include "Utility/Geometry/Plane.h"
 
+struct Planef;
+struct RenderVertexSoft;
+
 struct stru10 {
     stru10();
     virtual ~stru10();

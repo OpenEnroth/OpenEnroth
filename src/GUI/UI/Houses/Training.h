@@ -4,8 +4,9 @@
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
-
 #include "Utility/IndexedArray.h"
+
+enum DIALOGUE_TYPE : int32_t;
 
 void TrainingDialog(const char *s);
 

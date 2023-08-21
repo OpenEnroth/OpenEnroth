@@ -3,6 +3,8 @@
 #include <cassert>
 
 #include "Utility/Segment.h"
+#include "Platform/PlatformEnums.h"
+#include "Platform/PlatformEvents.h"
 
 PlatformEventFilter::PlatformEventFilter(std::initializer_list<PlatformEventType> eventTypes) : _eventTypes(eventTypes) {}
 

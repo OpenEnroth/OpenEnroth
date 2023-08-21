@@ -1,6 +1,7 @@
 #include "RenderEnums.h"
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RendererType, CASE_INSENSITIVE, {
     {RENDERER_OPENGL,       "OpenGL"},

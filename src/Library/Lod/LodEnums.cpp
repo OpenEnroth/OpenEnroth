@@ -1,6 +1,7 @@
 #include "LodEnums.h"
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(LodVersion, CASE_SENSITIVE, {
     {LOD_VERSION_MM6,       "MMVI"},

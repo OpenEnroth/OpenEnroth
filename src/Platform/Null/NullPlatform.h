@@ -1,14 +1,20 @@
 #pragma once
 
+#include <stdint.h>
 #include <memory>
 #include <vector>
 #include <string>
 
 #include "Platform/Platform.h"
-
 #include "NullPlatformOptions.h"
+#include "Utility/Geometry/Rect.h"
 
 class NullPlatformSharedState;
+class PlatformEventLoop;
+class PlatformGamepad;
+class PlatformWindow;
+enum class PlatformStorage;
+struct NullPlatformOptions;
 
 class NullPlatform : public Platform {
  public:

@@ -8,6 +8,8 @@
 #include "Library/Random/Random.h"
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Trace/EventTrace.h"
+#include "Library/Random/RandomEngine.h"
+#include "Platform/Platform.h"
 
 EngineTraceSimpleRecorder::EngineTraceSimpleRecorder(): PlatformEventFilter(EVENTS_ALL) {}
 EngineTraceSimpleRecorder::~EngineTraceSimpleRecorder() = default;

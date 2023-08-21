@@ -1,6 +1,10 @@
+#include <stddef.h>
+#include <stdint.h>
 #include <array>
 #include <algorithm>
 #include <string>
+#include <memory>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -22,9 +26,7 @@
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 #include "Engine/Conditions.h"
-
 #include "Io/Mouse.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
@@ -34,11 +36,48 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
+#include "Application/GameConfig.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnchantment.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "GUI/UI/UIHouses.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Rect.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
+#include "fmt/printf.h"
 
 GraphicsImage *parchment = nullptr;
 GraphicsImage *messagebox_corner_x = nullptr;       // 5076AC

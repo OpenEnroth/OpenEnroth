@@ -1,6 +1,9 @@
 #pragma once
 
+#include <stdint.h>
+
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIEnums.h"
 
 class GUIWindow_GameOver : public GUIWindow {
  public:

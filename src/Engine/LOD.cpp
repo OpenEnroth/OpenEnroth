@@ -1,19 +1,18 @@
 #include "LOD.h"
 
+#include <assert.h>
+#include <stdlib.h>
 #include <filesystem>
 #include <memory>
 
-#include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/EngineIocContainer.h"
-
-#include "Library/Compression/Compression.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Memory/FreeDeleter.h"
 #include "Utility/String.h"
 #include "Utility/DataPath.h"
+#include "Engine/MM7.h"
+#include "Library/Lod/LodReader.h"
 
 std::unique_ptr<LodReader> pSave_LOD; // LOD pointing to the savegame file currently being processed
 std::unique_ptr<LodReader> pGames_LOD; // LOD pointing to data/games.lod

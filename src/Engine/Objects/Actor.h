@@ -1,22 +1,28 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
 #include <string>
+#include <array>
 
 #include "Engine/Spells/SpellBuff.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
-
 #include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
-
 #include "ActorEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Utility/Flags.h"
 
 class Actor;
 class Vis;
 struct SpawnPoint;
+class Character;
+class CombinedSkillValue;
+enum SPELL_TYPE : uint8_t;
+enum class CharacterSkillMastery;
 
 struct stru319 {
     stru319();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <memory>
 
 #include "Platform/Proxy/ProxyPlatform.h"

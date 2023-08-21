@@ -1,10 +1,12 @@
 #pragma once
 
+#include <stdint.h>
 #include <memory>
 
 #include "Platform/PlatformEnums.h"
-
 #include "GUI/GUIEnums.h"
+
+enum class PlatformKey : int;
 
 #define NUKLEAR_MAX_VERTEX_MEMORY 512 * 1024
 #define NUKLEAR_MAX_ELEMENT_MEMORY 128 * 1024

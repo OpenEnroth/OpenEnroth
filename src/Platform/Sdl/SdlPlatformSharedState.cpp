@@ -1,12 +1,16 @@
 #include "SdlPlatformSharedState.h"
 
+#include <SDL_error.h>
+#include <SDL_gamecontroller.h>
+#include <stdio.h>
 #include <cassert>
+#include <utility>
 
 #include "Utility/MapAccess.h"
-
 #include "SdlWindow.h"
-#include "SdlLogger.h"
 #include "SdlGamepad.h"
+#include "Platform/PlatformEnums.h"
+#include "Platform/PlatformLogger.h"
 
 SdlPlatformSharedState::SdlPlatformSharedState(PlatformLogger *logger): _logger(logger) {
     assert(logger);

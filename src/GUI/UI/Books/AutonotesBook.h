@@ -5,6 +5,8 @@
 #include "GUI/UI/UIBooks.h"
 #include "Engine/Tables/AutonoteTable.h"
 
+enum class AUTONOTE_TYPE : uint32_t;
+
 struct GUIWindow_AutonotesBook : public GUIWindow_Book {
     GUIWindow_AutonotesBook();
     virtual ~GUIWindow_AutonotesBook() {}

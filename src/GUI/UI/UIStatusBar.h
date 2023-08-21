@@ -4,8 +4,9 @@
 #include <utility>
 
 #include "Engine/Localization.h"
-
 #include "Library/Color/Color.h"
+
+struct Color;
 
 class StatusBar {
  public:

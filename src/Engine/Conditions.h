@@ -5,6 +5,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 
 class Character;
+enum class Condition : uint32_t;
 
 /**
  * @param character                     Character that's about to receive a condition.

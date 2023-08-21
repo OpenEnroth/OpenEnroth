@@ -3,6 +3,8 @@
 #include "Platform/Filters/PlatformEventFilter.h"
 #include "Library/Application/PlatformApplicationAware.h"
 
+class PlatformKeyEvent;
+
 // TODO(captainurist): tbh we just need a hotkey system instead of this monstrosity.
 /**
  * Event filter that reacts to start/stop recording hotkey and calls into event tracer to start/stop recording.

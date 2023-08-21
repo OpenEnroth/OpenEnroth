@@ -1,7 +1,12 @@
 #include "Engine/Graphics/Indoor.h"
 
+#include <assert.h>
+#include <bits/std_abs.h>
+#include <stdlib.h>
+#include <string.h>
 #include <algorithm>
 #include <limits>
+#include <cmath>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -18,7 +23,6 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
@@ -35,20 +39,52 @@
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/LOD.h"
-
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
+#include "Application/GameConfig.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/LocationInfo.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Lod/LodReader.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Math/Float.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/Segment.h"
+#include "Utility/String.h"
+
+enum SPRITE_OBJECT_TYPE : uint16_t;
 
 // TODO(pskelton): make this neater
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();

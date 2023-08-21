@@ -5,6 +5,8 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
+enum DIALOGUE_TYPE : int32_t;
+
 class GUIWindow_Tavern : public GUIWindow_House {
  public:
     explicit GUIWindow_Tavern(HOUSE_ID houseId) : GUIWindow_House(houseId) {}

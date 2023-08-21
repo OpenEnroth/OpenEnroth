@@ -5,6 +5,24 @@
 #include <vector>
 
 #include "Engine/Graphics/IRender.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Image/Image.h"
+#include "Utility/Geometry/Rect.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/Memory/Blob.h"
+
+class Actor;
+class GameConfig;
+class GraphicsImage;
+class Logger;
+class ParticleEngine;
+class SpriteFrame;
+class Vis;
+struct Color;
+struct DecalBuilder;
+struct RenderBillboard;
+struct SoftwareBillboard;
+struct SpellFxRenderer;
 
 class RenderBase : public IRender {
  public:

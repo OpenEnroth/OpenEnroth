@@ -1,13 +1,15 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
 #include <vector>
 #include <string>
 
 #include "Library/Color/Color.h"
 #include "Library/Image/Palette.h"
-
 #include "Utility/Geometry/Point.h"
+
+struct Palette;
 
 struct GUICharMetric {
     int32_t uLeftSpacing;

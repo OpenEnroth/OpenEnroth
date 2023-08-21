@@ -1,12 +1,21 @@
 #include "NPCTable.h"
 
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include <memory>
+
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/GameResourceManager.h"
-
 #include "Library/Random/Random.h"
-
 #include "Utility/String.h"
+#include "Library/Random/RandomEngine.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
+
+enum class MAP_TYPE : uint32_t;
 
 std::array<NPCTopic, 789> pNPCTopics;
 struct NPCStats *pNPCStats = nullptr;

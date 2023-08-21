@@ -1,12 +1,19 @@
 #pragma once
 
+#include <glm/glm.hpp>
+#include <math.h>
 #include <array>
 
-#include <glm/glm.hpp>
-
 #include "Engine/Graphics/RenderEntities.h"
-
 #include "Utility/Geometry/Plane.h"
+#include "Utility/Geometry/Vec.h"
+#include "glm/ext/matrix_float3x3.hpp"
+#include "glm/ext/vector_float3.hpp"
+#include "glm/ext/vector_float4.hpp"
+
+struct Color;
+struct Planef;
+struct RenderVertexSoft;
 
 struct Camera3D {
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);

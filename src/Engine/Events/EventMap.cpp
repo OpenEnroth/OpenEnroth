@@ -1,16 +1,16 @@
+#include <assert.h>
 #include <utility>
 #include <vector>
 
-#include "Engine/Party.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/mm7_data.h"
-
 #include "Library/Logger/Logger.h"
-
-#include "Utility/MapAccess.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
 
 void EventMap::add(int eventId, EventIR ir) {
     _eventsById[eventId].push_back(ir);

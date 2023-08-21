@@ -1,5 +1,7 @@
 #include "IRender.h"
 
+#include <string.h>
+
 IRender::IRender(
     std::shared_ptr<GameConfig> config,
     DecalBuilder *decal_builder,

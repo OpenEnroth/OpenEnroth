@@ -1,20 +1,30 @@
 #include <string>
+#include <array>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-#include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIQuickReference.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
+#include "fmt/core.h"
 
-#include "Media/Audio/AudioPlayer.h"
+class GraphicsImage;
 
 GraphicsImage *ui_game_quickref_background = nullptr;
 

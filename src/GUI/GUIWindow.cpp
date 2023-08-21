@@ -1,13 +1,11 @@
 #include "GUI/GUIWindow.h"
 
-#include <cstdlib>
 #include <sstream>
 #include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
@@ -15,16 +13,13 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Time.h"
 #include "Engine/MapInfo.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
@@ -32,18 +27,34 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"
-#include "GUI/UI/UIStatusBar.h"
-
 #include "Io/InputAction.h"
-#include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
-#include "Library/Serialization/EnumSerialization.h"
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/Nuklear.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Library/Random/RandomEngine.h"
+#include "Library/Serialization/Serialization.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Segment.h"
+#include "fmt/core.h"
 
 GUIWindow *pPrimaryWindow;
 

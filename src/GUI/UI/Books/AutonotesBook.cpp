@@ -1,17 +1,26 @@
+#include <array>
+#include <memory>
+
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/Books/AutonotesBook.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/Tables/AutonoteTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Io/InputAction.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Workaround/ToUnderlying.h"
+
+class GraphicsImage;
 
 GraphicsImage *ui_book_autonotes_background = nullptr;
 

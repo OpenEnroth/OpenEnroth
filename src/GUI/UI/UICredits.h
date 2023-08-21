@@ -3,6 +3,7 @@
 #include "GUI/GUIWindow.h"
 
 class GUIFont;
+class GraphicsImage;
 
 class GUICredits : public GUIWindow {
  public:

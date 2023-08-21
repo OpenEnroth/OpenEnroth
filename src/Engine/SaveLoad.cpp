@@ -1,41 +1,51 @@
 #include "SaveLoad.h"
 
+#include <string.h>
 #include <cassert>
 #include <filesystem>
 #include <algorithm>
 #include <string>
 #include <memory>
+#include <system_error>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
-
 #include "Engine/Objects/SpriteObject.h"
-
 #include "Engine/Snapshots/CompositeSnapshots.h"
-
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Snapshots/SnapshotSerialization.h"
 #include "Library/Image/PCX.h"
-#include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
-
 #include "Utility/DataPath.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/LocationTime.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Lod/LodEnums.h"
+#include "Library/Lod/LodReader.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Memory/Blob.h"
+#include "fmt/core.h"
 
 struct SavegameList *pSavegameList = new SavegameList;
 

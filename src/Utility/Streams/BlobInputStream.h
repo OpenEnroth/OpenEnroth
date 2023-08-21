@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Utility/Memory/Blob.h"
+#include <stddef.h>
 
+#include "Utility/Memory/Blob.h"
 #include "InputStream.h"
 
 /**

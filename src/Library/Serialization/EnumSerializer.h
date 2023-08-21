@@ -7,6 +7,8 @@
 #include <vector>
 #include <functional>
 #include <utility>
+#include <initializer_list>
+#include <iterator>
 
 #include "Utility/Flags.h"
 

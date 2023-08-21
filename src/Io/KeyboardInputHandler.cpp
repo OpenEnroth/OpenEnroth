@@ -1,16 +1,31 @@
 #include "Io/KeyboardInputHandler.h"
 
-#include "Engine/Graphics/Indoor.h"
+#include <ctype.h>
+#include <vector>
+
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Engine.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
+#include "Application/GameConfig.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/IKeyboardController.h"
+#include "Io/InputAction.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler = nullptr;
 

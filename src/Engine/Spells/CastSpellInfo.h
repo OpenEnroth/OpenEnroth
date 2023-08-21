@@ -4,10 +4,9 @@
 
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
-
 #include "Utility/Flags.h"
-
 #include "SpellEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 namespace CastSpellInfoHelpers {
     /**

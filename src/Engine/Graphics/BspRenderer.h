@@ -3,8 +3,10 @@
 #include <array>
 
 #include "Utility/Geometry/Plane.h"
-
 #include "Engine/Graphics/Camera.h"
+
+struct Planef;
+struct RenderVertexSoft;
 
 struct BspRenderer_ViewportNode {
     int uSectorID = 0;  // sector that this node shows

@@ -3,6 +3,7 @@
 #include "Platform/PlatformEventLoop.h"
 
 class NullPlatformSharedState;
+class PlatformEventHandler;
 
 class NullEventLoop : public PlatformEventLoop {
  public:

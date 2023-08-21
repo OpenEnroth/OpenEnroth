@@ -1,12 +1,10 @@
 #include "LodSpriteCache.h"
 
-#include <vector>
+#include <stddef.h>
 #include <utility>
+#include <memory>
 
 #include "Library/LodFormats/LodFormats.h"
-
-#include "Utility/Streams/BlobInputStream.h"
-
 #include "AssetsManager.h"
 
 LodSpriteCache *pSprites_LOD = nullptr;

@@ -1,23 +1,30 @@
 #include "ItemTable.h"
 
+#include <assert.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 #include <map>
 #include <vector>
 #include <string>
-#include <utility>
+#include <memory>
 
-#include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/GameResourceManager.h"
-
-#include "GUI/UI/UIHouses.h"
-
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
-
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
+#include "Application/GameConfig.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Library/Random/RandomEngine.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 static void strtokSkipLines(int n) {
     for (int i = 0; i < n; ++i) {

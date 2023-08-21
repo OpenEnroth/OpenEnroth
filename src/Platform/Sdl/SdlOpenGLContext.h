@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_video.h>
 
 #include "Platform/PlatformOpenGLContext.h"
 

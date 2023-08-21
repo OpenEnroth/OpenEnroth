@@ -4,23 +4,26 @@
 #include <utility>
 #include <filesystem>
 #include <memory>
+#include <string_view>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
-
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Engine.h"
-
-#include "Library/Trace/PaintEvent.h"
 #include "Library/Trace/EventTrace.h"
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
-
 #include "Utility/ScopeGuard.h"
 #include "Utility/Exception.h"
-
 #include "EngineTraceStateAccessor.h"
 #include "EngineTraceSimplePlayer.h"
+#include "Application/GameConfig.h"
+#include "Engine/Components/Trace/EngineTraceEnums.h"
+#include "Library/Random/RandomEngine.h"
+#include "Platform/PlatformEvents.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Vec.h"
+#include "fmt/core.h"
 
 EngineTracePlayer::EngineTracePlayer() {}
 

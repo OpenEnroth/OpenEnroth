@@ -1,7 +1,10 @@
 #include "MerchantTable.h"
 
+#include <string.h>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
+#include "Utility/Segment.h"
 
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;

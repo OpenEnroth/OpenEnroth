@@ -1,7 +1,8 @@
 #include "TextureFrameTable.h"
 
-#include "Engine/AssetsManager.h"
+#include <stddef.h>
 
+#include "Engine/AssetsManager.h"
 #include "Utility/String.h"
 
 struct TextureFrameTable *pTextureFrameTable;

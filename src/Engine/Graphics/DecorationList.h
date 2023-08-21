@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <string_view>
 
 #include "Library/Color/Color.h"
-
 #include "Utility/Flags.h"
 #include "Utility/Memory/Blob.h"
 

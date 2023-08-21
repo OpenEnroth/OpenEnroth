@@ -8,6 +8,7 @@
 #include "Utility/IndexedArray.h"
 
 class Blob;
+enum class MAP_TYPE : uint32_t;
 
 enum class BuildingType : uint16_t {
     BUILDING_INVALID = 0,

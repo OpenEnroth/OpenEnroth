@@ -1,12 +1,11 @@
+#include <assert.h>
 #include <vector>
+#include <array>
+#include <memory>
 
 #include "UIDialogue.h"
-
-#include "Engine/Events/Processor.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
@@ -15,18 +14,31 @@
 #include "Engine/mm7_data.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/NPCTopics.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/Time.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/Flags.h"
+#include "Utility/String.h"
+#include "fmt/core.h"
 
-#include "Io/KeyboardInputHandler.h"
-
-#include "Media/Audio/AudioPlayer.h"
+namespace Io {
+enum class TextInputType;
+}  // namespace Io
 
 using Io::TextInputType;
 

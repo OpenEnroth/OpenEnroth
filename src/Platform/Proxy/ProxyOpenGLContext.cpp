@@ -1,5 +1,8 @@
 #include "ProxyOpenGLContext.h"
 
+#include "Platform/PlatformOpenGLContext.h"
+#include "Platform/Proxy/ProxyBase.h"
+
 ProxyOpenGLContext::ProxyOpenGLContext(PlatformOpenGLContext *base) : ProxyBase<PlatformOpenGLContext>(base) {}
 
 bool ProxyOpenGLContext::bind() {

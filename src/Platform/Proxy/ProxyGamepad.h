@@ -3,8 +3,9 @@
 #include <string>
 
 #include "Platform/PlatformGamepad.h"
-
 #include "ProxyBase.h"
+
+class PlatformGamepad;
 
 class ProxyGamepad: public ProxyBase<PlatformGamepad> {
  public:

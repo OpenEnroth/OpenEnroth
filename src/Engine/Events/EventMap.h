@@ -6,6 +6,8 @@
 
 #include "Engine/Events/EventIR.h"
 
+enum class EventType : uint8_t;
+
 struct EventTrigger {
     int eventId;
     int eventStep;

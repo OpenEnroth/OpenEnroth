@@ -1,19 +1,30 @@
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include <limits>
+#include <algorithm>
+#include <array>
+#include <memory>
 
 #include "GUI/UI/Houses/Training.h"
-
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/GUIFont.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Time.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/IndexedArray.h"
+#include "fmt/core.h"
 
 static constexpr IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
     {HOUSE_TRAINING_HALL_EMERALD_ISLE, 5},

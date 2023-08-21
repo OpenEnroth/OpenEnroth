@@ -1,7 +1,13 @@
 #include "BuildingTable.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
+#include "Utility/Segment.h"
+
+enum class MAP_TYPE : uint32_t;
 
 IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;
 

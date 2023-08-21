@@ -1,13 +1,25 @@
 #include "SdlPlatform.h"
 
 #include <SDL.h>
-
+#include <SDL_events.h>
+#include <SDL_messagebox.h>
+#include <SDL_mouse.h>
+#include <SDL_rect.h>
+#include <SDL_timer.h>
+#include <SDL_video.h>
+#include <stddef.h>
 #include <cassert>
 #include <memory>
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEventLoop.h"
 #include "SdlWindow.h"
+
+class PlatformEventLoop;
+class PlatformGamepad;
+class PlatformLogger;
+class PlatformWindow;
+enum class PlatformStorage;
 
 SdlPlatform::SdlPlatform(PlatformLogger *logger) {
     assert(logger);

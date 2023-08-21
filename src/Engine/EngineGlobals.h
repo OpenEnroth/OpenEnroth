@@ -6,6 +6,11 @@
 #include "Platform/PlatformEventLoop.h"
 
 class PlatformApplication;
+class Platform;
+class PlatformEventHandler;
+class PlatformEventLoop;
+class PlatformOpenGLContext;
+class PlatformWindow;
 
 namespace detail {
 void globalProcessMessages();

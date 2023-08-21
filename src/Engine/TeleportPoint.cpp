@@ -1,4 +1,7 @@
 #include "Engine/TeleportPoint.h"
+
+#include <assert.h>
+
 #include "Engine/Party.h"
 
 void TeleportPoint::invalidate() {

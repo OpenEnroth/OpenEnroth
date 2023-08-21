@@ -3,6 +3,8 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
+enum DIALOGUE_TYPE : int32_t;
+
 void MercenaryGuildDialog();
 
 class GUIWindow_MercenaryGuild : public GUIWindow_House {

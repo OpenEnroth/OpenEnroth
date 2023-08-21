@@ -6,12 +6,21 @@
 #include "GameConfig.h"
 #include "GameMenu.h"
 #include "GameIocContainer.h"
-
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
+
+class Engine;
+class GameConfig;
+class Logger;
+class Menu;
+class Nuklear;
+class Vis;
+namespace Io {
+class Mouse;
+}  // namespace Io
+struct DecalBuilder;
 
 
 using Io::Mouse;

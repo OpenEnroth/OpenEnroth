@@ -1,9 +1,10 @@
 #include "NullOpenGLContext.h"
 
 #include <cassert>
+#include <thread>
+#include <unordered_map>
 
 #include "Utility/MapAccess.h"
-
 #include "NullPlatformSharedState.h"
 
 NullOpenGLContext::NullOpenGLContext(NullPlatformSharedState *state) : _state(state) {

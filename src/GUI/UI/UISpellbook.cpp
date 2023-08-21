@@ -1,10 +1,11 @@
 #include "GUI/UI/UISpellbook.h"
 
 #include <string>
+#include <initializer_list>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
@@ -12,15 +13,23 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
-
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Random/Random.h"
+#include "Application/GameConfig.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/IndexedArray.h"
+#include "fmt/core.h"
 
 std::array<std::string, 9> spellbook_texture_filename_suffices = {{"f", "a", "w", "e", "s", "m", "b", "l", "d"}};
 

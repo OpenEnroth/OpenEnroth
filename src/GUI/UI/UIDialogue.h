@@ -3,8 +3,11 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
-
 #include "Utility/IndexedArray.h"
+#include "Engine/PartyEnums.h"
+#include "GUI/GUIDialogues.h"
+
+class Actor;
 
 class GUIWindow_Dialogue : public GUIWindow {
  public:

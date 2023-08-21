@@ -1,13 +1,12 @@
 #include "Engine/Graphics/DecorationList.h"
 
-#include <cstdlib>
+#include <array>
 
 #include "Engine/Engine.h"
 #include "Level/Decoration.h"
-
 #include "Utility/String.h"
-
 #include "Sprites.h"
+#include "Engine/MM7.h"
 
 DecorationList *pDecorationList;
 

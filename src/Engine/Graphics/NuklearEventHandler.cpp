@@ -1,8 +1,11 @@
 #include "NuklearEventHandler.h"
 
 #include <nuklear_config.h>
+#include <memory>
 
 #include "Nuklear.h"
+#include "Platform/PlatformEvents.h"
+#include "Utility/Flags.h"
 
 NuklearEventHandler::NuklearEventHandler() : PlatformEventFilter(EVENTS_ALL) {}
 

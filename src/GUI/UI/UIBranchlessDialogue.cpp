@@ -1,16 +1,24 @@
 #include "UIBranchlessDialogue.h"
 
+#include <memory>
+#include <string>
+
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Engine.h"
-#include "Engine/Party.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIGame.h"
-
 #include "Io/KeyboardInputHandler.h"
+#include "Engine/Pid.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Library/Color/ColorTable.h"
+
+enum class EventType : uint8_t;
 
 GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(WindowData data) : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions(), data) {
     prev_screen_type = current_screen_type;

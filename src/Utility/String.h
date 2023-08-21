@@ -3,6 +3,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <string_view>
 
 std::string toLower(std::string_view text);
 std::string toUpper(std::string_view text);

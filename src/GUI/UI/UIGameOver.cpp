@@ -1,15 +1,20 @@
 #include "GUI/UI/UIGameOver.h"
 
-#include "GUI/GUIMessageQueue.h"
+#include <assert.h>
+#include <memory>
+#include <string>
 
+#include "GUI/GUIMessageQueue.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/IRender.h"
-
 #include "Application/GameOver.h"
+#include "Engine/mm7_data.h"
+#include "Platform/Platform.h"
+#include "fmt/core.h"
 
 GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)
     : GUIWindow(WINDOW_GameOverWindow, {0, 0}, render->GetRenderDimensions(), on_release_event) {

@@ -4,6 +4,10 @@
 
 #include "NullPlatformSharedState.h"
 #include "NullOpenGLContext.h"
+#include "Platform/Null/NullPlatformOptions.h"
+
+class PlatformOpenGLContext;
+struct PlatformOpenGLOptions;
 
 NullWindow::NullWindow(NullPlatformSharedState *state): _state(state) {
     assert(state);

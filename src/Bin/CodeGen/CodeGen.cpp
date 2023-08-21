@@ -1,20 +1,29 @@
-#include "CodeGenOptions.h"
-
+#include <assert.h>
+#include <ctype.h>
+#include <stdio.h>
 #include <unordered_map>
 #include <vector>
 #include <utility>
+#include <algorithm>
+#include <exception>
+#include <string>
 
+#include "CodeGenOptions.h"
 #include "Application/GameStarter.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
-
 #include "Library/Lod/LodReader.h"
-
-#include "Utility/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/String.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
+#include "fmt/core.h"
+
+enum class MAP_TYPE : uint32_t;
 
 // TODO(captainurist): use std::string::contains once Android have full C++23 support.
 static auto contains = [](const std::string &haystack, const std::string &needle) {

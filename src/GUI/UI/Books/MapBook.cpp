@@ -1,3 +1,11 @@
+#include <bits/std_abs.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <array>
+#include <memory>
+#include <span>
+#include <vector>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/IRender.h"
@@ -10,16 +18,30 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UIGame.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Io/InputAction.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, int br_y, int dummy);
 

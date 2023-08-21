@@ -11,6 +11,8 @@ class LodSpriteCache;
 class LodTextureCache;
 class LodReader;
 class Logger;
+class Blob;
+struct Palette;
 
 class ImageLoader {
  public:

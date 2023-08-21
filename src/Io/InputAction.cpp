@@ -1,6 +1,7 @@
 #include "Io/InputAction.h"
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
 
 using Io::InputAction;
 

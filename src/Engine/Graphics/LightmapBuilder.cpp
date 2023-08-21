@@ -1,18 +1,26 @@
 #include "LightmapBuilder.h"
 
+#include <bits/std_abs.h>
+#include <math.h>
+#include <algorithm>
+#include <array>
+#include <vector>
+
 // TODO(pskelton): rename - lighting functions
 
 #include "Engine/Engine.h"
-
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-
 #include "Library/Color/ColorTable.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Library/Color/Color.h"
 
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;

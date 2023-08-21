@@ -1,6 +1,10 @@
 #include "UIChest.h"
 
-#include "Engine/Engine.h"
+#include <assert.h>
+#include <array>
+#include <memory>
+#include <vector>
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
@@ -8,9 +12,12 @@
 #include "Engine/Time.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/UI/ItemGrid.h"
+#include "Engine/Objects/Items.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "fmt/core.h"
 
 int pChestPixelOffsetX[8] = {42, 18, 18, 42, 42, 42, 18, 42};
 int pChestPixelOffsetY[8] = {34, 30, 30, 34, 34, 34, 30, 34};

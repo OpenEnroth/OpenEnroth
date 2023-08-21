@@ -1,11 +1,13 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
+#include <array>
 
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/Items.h"
-
 #include "Utility/IndexedArray.h"
+#include "Engine/Objects/ItemEnums.h"
 
 class GameResourceManager;
 class Blob;

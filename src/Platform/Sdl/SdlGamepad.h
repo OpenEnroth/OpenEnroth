@@ -1,7 +1,8 @@
 #pragma once
 
 #include <SDL.h>
-
+#include <SDL_gamecontroller.h>
+#include <SDL_joystick.h>
 #include <string>
 
 #include "Platform/PlatformGamepad.h"

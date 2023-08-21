@@ -1,5 +1,8 @@
 #include "FileSystem.h"
 
+#include <stdlib.h>
+#include <system_error>
+
 #include "String.h"
 
 static std::string homePath() {

@@ -1,12 +1,13 @@
 #pragma once
 
+#include <stddef.h>
 #include <map>
 #include <unordered_set>
 #include <string>
 #include <list>
+#include <array>
 
 #include "Utility/Workaround/ToUnderlying.h"
-
 #include "Utility/String.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
@@ -14,8 +15,9 @@
 #include "Engine/Pid.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/ActorEnums.h"
-
 #include "SoundEnums.h"
+
+enum SPELL_TYPE : uint8_t;
 
 struct AudioSamplePoolEntry {
     AudioSamplePoolEntry(PAudioSample samplePtr, SoundID id, Pid pid) : samplePtr(samplePtr), id(id), pid(pid) {}

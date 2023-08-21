@@ -1,11 +1,12 @@
 #include "LodTextureCache.h"
 
+#include <stddef.h>
 #include <utility>
+#include <memory>
 
 #include "Library/LodFormats/LodFormats.h"
-
-#include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
+#include "Library/Image/Palette.h"
 
 LodTextureCache *pIcons_LOD = nullptr;
 LodTextureCache *pIcons_LOD_mm6 = nullptr;

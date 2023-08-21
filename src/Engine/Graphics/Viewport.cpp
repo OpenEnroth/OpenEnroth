@@ -1,5 +1,11 @@
 #include "Engine/Graphics/Viewport.h"
 
+#include <assert.h>
+#include <array>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "Engine/Engine.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -12,17 +18,32 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
-#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetScreen(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {

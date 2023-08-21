@@ -1,16 +1,15 @@
 #include "Engine/Graphics/ParticleEngine.h"
 
+#include <assert.h>
+#include <math.h>
+#include <memory>
+
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/LOD.h"
-#include "Engine/OurMath.h"
 #include "Engine/Time.h"
-
 #include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
-
-#include "Outdoor.h"
-#include "Sprites.h"
+#include "Library/Random/RandomEngine.h"
 
 TrailParticleGenerator trail_particle_generator;
 

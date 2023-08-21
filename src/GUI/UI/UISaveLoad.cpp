@@ -1,35 +1,49 @@
 #include "GUI/UI/UISaveLoad.h"
 
+#include <assert.h>
 #include <string>
 #include <filesystem>
 #include <algorithm>
 #include <memory>
+#include <array>
+#include <cmath>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/SaveLoad.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Library/Lod/LodReader.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
-
 #include "Utility/DataPath.h"
+#include "Engine/MM7.h"
+#include "Engine/Time.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Binary/MemCopySerialization.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Lod/LodEnums.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/String.h"
+#include "fmt/core.h"
+
+namespace Io {
+enum class TextInputType;
+}  // namespace Io
+struct SaveGameHeader_MM7;
 
 using Io::TextInputType;
 

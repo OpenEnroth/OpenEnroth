@@ -2,15 +2,10 @@
 
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Objects/Character.h"
-#include "Engine/Objects/SpriteObject.h"
-
 #include "Library/Logger/Logger.h"
-
 #include "Io/Mouse.h"
 
 using Io::Mouse;

@@ -1,5 +1,8 @@
 #include "ProxyGamepad.h"
 
+#include "Platform/PlatformGamepad.h"
+#include "Platform/Proxy/ProxyBase.h"
+
 ProxyGamepad::ProxyGamepad(PlatformGamepad *base): ProxyBase<PlatformGamepad>(base) {}
 
 std::string ProxyGamepad::model() const {

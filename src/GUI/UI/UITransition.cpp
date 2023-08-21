@@ -1,4 +1,5 @@
-#include <cstdlib>
+#include <array>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -13,16 +14,26 @@
 #include "Engine/Time.h"
 #include "Engine/Tables/TransitionTable.h"
 #include "Engine/mm7_data.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
-
-#include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/TeleportPoint.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 GraphicsImage *transition_ui_icon = nullptr;
 

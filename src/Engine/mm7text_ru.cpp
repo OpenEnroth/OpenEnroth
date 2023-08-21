@@ -1,11 +1,11 @@
+#include <assert.h>
+#include <bits/std_abs.h>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <cstdarg>
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/EngineIocContainer.h"
-
 #include "Library/Logger/Logger.h"
 
 #ifdef _WINDOWS

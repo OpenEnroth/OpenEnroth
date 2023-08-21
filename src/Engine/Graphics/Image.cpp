@@ -3,12 +3,11 @@
 #include <cassert>
 #include <utility>
 
-#include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-
 #include "Engine/Graphics/ImageLoader.h"
-
 #include "IRender.h"
+#include "Engine/Graphics/TextureRenderId.h"
+#include "Library/Color/Color.h"
 
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 

@@ -1,9 +1,17 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_gamecontroller.h>
+#include <SDL_log.h>
+#include <SDL_scancode.h>
+#include <SDL_video.h>
+#include <stdint.h>
 
 #include "Platform/PlatformEnums.h"
 #include "Platform/PlatformOpenGLOptions.h"
+
+enum class PlatformOpenGLProfile;
+enum class PlatformVSyncMode;
 
 PlatformKey translateSdlKey(SDL_Scancode key);
 PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button);

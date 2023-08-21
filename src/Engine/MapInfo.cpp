@@ -1,13 +1,15 @@
 #include "MapInfo.h"
 
+#include <string.h>
 #include <cstdlib>
 #include <sstream>
 
 #include "Engine/ErrorHandling.h"
-
 #include "Utility/Memory/Blob.h"
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/String.h"
+#include "Engine/MapEnums.h"
+#include "Utility/Segment.h"
 
 MapStats *pMapStats;
 

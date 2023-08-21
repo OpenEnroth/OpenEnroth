@@ -6,9 +6,22 @@ extern "C" {
     #include <libavutil/avutil.h>
     #include <libavutil/imgutils.h>
     #include <libavutil/mem.h>
-    #include <libavutil/opt.h>
     #include <libswresample/swresample.h>
     #include <libswscale/swscale.h>
+#include <errno.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/packet.h>
+#include <libavformat/avio.h>
+#include <libavformat/version_major.h>
+#include <libavutil/channel_layout.h>
+#include <libavutil/error.h>
+#include <libavutil/frame.h>
+#include <libavutil/pixfmt.h>
+#include <libavutil/rational.h>
+#include <libavutil/samplefmt.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 }
 
 #include <algorithm>
@@ -28,18 +41,28 @@ extern "C" {
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-
-#include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 #include "Media/MediaLogger.h"
-
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/DataPath.h"
-
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
+#include "Application/GameConfig.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Image/Image.h"
+#include "Library/Logger/Logger.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Geometry/Rect.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/String.h"
+
+struct Color;
+struct SwsContext;
 
 using namespace std::chrono_literals; // NOLINT
 

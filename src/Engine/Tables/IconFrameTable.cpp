@@ -1,7 +1,8 @@
 #include "Engine/Tables/IconFrameTable.h"
 
-#include "Engine/AssetsManager.h"
+#include <cstring>
 
+#include "Engine/AssetsManager.h"
 #include "Utility/String.h"
 
 GraphicsImage *Icon::GetTexture() {

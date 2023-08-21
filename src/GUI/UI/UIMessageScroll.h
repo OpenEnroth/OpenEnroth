@@ -1,10 +1,14 @@
 #pragma once
 
+#include <assert.h>
 #include <string>
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIWindow.h"
 #include "Engine/Objects/ItemEnums.h"
+#include "Io/InputAction.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
 
 class GUIWindow_MessageScroll : public GUIWindow {
  public:

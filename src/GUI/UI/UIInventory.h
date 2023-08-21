@@ -3,6 +3,9 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIEnums.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
 
 struct CastSpellInfo;
 

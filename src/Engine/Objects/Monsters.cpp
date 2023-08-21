@@ -1,19 +1,25 @@
 #include "Engine/Objects/Monsters.h"
 
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <string>
 #include <utility>
+#include <string_view>
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/EngineIocContainer.h"
-
 #include "../Tables/FrameTableInc.h"
-
 #include "Library/Logger/Logger.h"
-#include "Library/Serialization/Serialization.h"
-
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 #include "Utility/Exception.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Library/Serialization/StandardSerialization.h"
+#include "fmt/core.h"
 
 struct MonsterStats *pMonsterStats;
 struct MonsterList *pMonsterList;

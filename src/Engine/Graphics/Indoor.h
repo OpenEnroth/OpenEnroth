@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
 #include <memory>
 #include <string>
@@ -8,14 +9,26 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
-
 #include "BSPModel.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationEnums.h"
 #include "LocationFunctions.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/BBox.h"
+#include "Utility/Geometry/Plane.h"
+#include "Utility/Geometry/Vec.h"
 
 struct IndoorLocation;
+class GraphicsImage;
+class Logger;
+class ParticleEngine;
+class Pid;
+enum class ITEM_TREASURE_LEVEL : int8_t;
+struct DecalBuilder;
+struct MapInfo;
+struct SpellFxRenderer;
 
 struct BLVLight {
     Vec3i vPosition;

@@ -1,11 +1,7 @@
 #include "GameConfig.h"
 
-#include <filesystem>
-
-#include "Engine/EngineIocContainer.h"
-
-#include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_WINDOWED, "windowed"},

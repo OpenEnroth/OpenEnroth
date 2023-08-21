@@ -1,6 +1,7 @@
 #include "GUI/UI/UICredits.h"
 
 #include <string>
+#include <memory>
 
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
@@ -8,12 +9,15 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/GameResourceManager.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Media/Audio/AudioPlayer.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/ColorTable.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Memory/Blob.h"
 
 GUICredits::GUICredits() :
     GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions(), 0) {

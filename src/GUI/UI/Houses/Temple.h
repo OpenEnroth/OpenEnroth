@@ -6,6 +6,9 @@
 #include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/Character.h"
 
+class Character;
+enum DIALOGUE_TYPE : int32_t;
+
 class GUIWindow_Temple : public GUIWindow_House {
  public:
     explicit GUIWindow_Temple(HOUSE_ID houseId);

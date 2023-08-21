@@ -1,30 +1,38 @@
 #include "Engine/SpellFxRenderer.h"
 
+#include <math.h>
+#include <string.h>
 #include <algorithm>
+#include <vector>
 
-#include "Engine/Engine.h"
 #include "Engine/OurMath.h"
 #include "Engine/Time.h"
 #include "Engine/stru160.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
-
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/IRender.h"
-
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
-
 #include "Engine/Tables/IconFrameTable.h"
-
 #include "Library/Random/Random.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/mm7_data.h"
+#include "Library/Random/RandomEngine.h"
+#include "Utility/Flags.h"
+#include "Utility/IndexedArray.h"
+#include "fmt/core.h"
 
 //----- (004A7063) --------------------------------------------------------
 Color ModulateColor(Color diffuse, float multiplier) {

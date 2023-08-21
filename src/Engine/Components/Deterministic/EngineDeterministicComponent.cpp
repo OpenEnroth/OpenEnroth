@@ -5,6 +5,7 @@
 
 #include "Library/Random/Random.h"
 #include "Library/Random/NonRandomEngine.h"
+#include "Library/Random/RandomEngine.h"
 
 EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;

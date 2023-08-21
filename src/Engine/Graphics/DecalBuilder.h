@@ -1,10 +1,12 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
 
 #include "Engine/Graphics/RenderEntities.h"
-
 #include "Utility/Flags.h"
+#include "Library/Color/Color.h"
+#include "Utility/Geometry/Vec.h"
 
 struct ODMFace;
 struct Planef;

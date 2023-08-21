@@ -1,9 +1,10 @@
+#include <assert.h>
 #include <vector>
-#include <algorithm>
+#include <compare>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -15,10 +16,14 @@
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Party.h"
-
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Library/Logger/Logger.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/Graphics/LocationTime.h"
+#include "Engine/Pid.h"
+#include "Engine/Time.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Vec.h"
 
 struct MapTimer {
     GameTime interval = GameTime(0);

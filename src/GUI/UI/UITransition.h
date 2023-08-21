@@ -1,9 +1,12 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouseEnums.h"
+#include "Engine/MapEnums.h"
+#include "Utility/Geometry/Vec.h"
 
 class GUIWindow_Travel : public GUIWindow {
  public:

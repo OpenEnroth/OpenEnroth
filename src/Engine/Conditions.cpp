@@ -1,9 +1,18 @@
 #include "Engine/Conditions.h"
 
 #include <cassert>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Application/GameConfig.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Utility/Flags.h"
+#include "Utility/IndexedArray.h"
 
 struct ConditionEquipment {
     ITEM_TYPE item = ITEM_NULL;

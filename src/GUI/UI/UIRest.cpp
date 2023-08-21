@@ -1,19 +1,30 @@
+#include <math.h>
 #include <string>
+#include <array>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
 #include "GUI/GUIFont.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/IndexedBitset.h"
+#include "fmt/core.h"
 
 GraphicsImage *rest_ui_btn_4 = nullptr;
 GraphicsImage *rest_ui_btn_exit = nullptr;

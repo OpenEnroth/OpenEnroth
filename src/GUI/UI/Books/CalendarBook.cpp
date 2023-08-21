@@ -1,18 +1,25 @@
 #include "GUI/UI/Books/CalendarBook.h"
 
 #include <string>
+#include <array>
+#include <memory>
 
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "Engine/MapEnums.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Utility/IndexedArray.h"
+#include "fmt/core.h"
+
+class GraphicsImage;
 
 GraphicsImage *ui_book_calendar_background = nullptr;
 

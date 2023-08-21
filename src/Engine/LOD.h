@@ -1,13 +1,16 @@
 #pragma once
 
+#include <stdint.h>
+#include <stdio.h>
 #include <cstring>
 #include <string>
 #include <vector>
 #include <memory>
 
 #include "Library/Lod/LodReader.h"
-
 #include "Utility/Memory/Blob.h"
+
+class LodReader;
 
 namespace LOD {
 #pragma pack(push, 1)

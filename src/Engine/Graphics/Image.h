@@ -1,13 +1,12 @@
 #pragma once
 
+#include <stddef.h>
 #include <string>
 #include <memory>
 
 #include "Utility/Geometry/Size.h"
-
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
-
 #include "TextureRenderId.h"
 
 class ImageLoader;

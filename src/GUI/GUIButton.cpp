@@ -1,10 +1,11 @@
 #include "GUI/GUIButton.h"
 
 #include <vector>
-
-#include "Engine/Graphics/IRender.h"
+#include <algorithm>
 
 #include "GUI/GUIFont.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/Color.h"
 
 
 GUIButton *pBtn_CloseBook;

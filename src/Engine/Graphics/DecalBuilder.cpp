@@ -1,18 +1,25 @@
 #include "Engine/Graphics/DecalBuilder.h"
 
+#include <cmath>
+#include <memory>
+#include <vector>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ClippingFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Time.h"
 #include "Engine/stru314.h"
-
 #include "Library/Logger/Logger.h"
-
 #include "LightmapBuilder.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/MM7.h"
+#include "Engine/Tables/TileEnums.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/Geometry/Plane.h"
 
 //----- (0043B570) --------------------------------------------------------
 float Decal::Fade_by_time() {

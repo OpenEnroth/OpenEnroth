@@ -1,9 +1,12 @@
 #pragma once
 
+#include <stddef.h>
 #include <cstdint>
 #include <vector>
 #include <string>
 #include <utility>
+#include <array>
+#include <initializer_list>
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
@@ -17,15 +20,24 @@
 #include "Engine/Events/EventEnums.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Pid.h"
-
 #include "Library/Color/Color.h"
-
 #include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Time.h"
+#include "GUI/UI/UIHouseEnums.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 class Actor;
 class GraphicsImage;
+class Pid;
+enum SPELL_TYPE : uint8_t;
+enum class ABILITY_INDEX : char;
+enum class BuildingType : uint16_t;
+enum class MerchantPhrase;
+enum class VariableType;
+struct SpellBuff;
 
 struct LloydBeacon {
     ~LloydBeacon() {

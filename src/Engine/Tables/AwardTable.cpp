@@ -1,5 +1,8 @@
 #include "AwardTable.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 

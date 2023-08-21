@@ -1,20 +1,24 @@
 #include "GUI/UI/UIMainMenu.h"
 
+#include <memory>
+#include <vector>
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
+#include "Engine/Graphics/Nuklear.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Point.h"
 
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
