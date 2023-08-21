@@ -149,7 +149,7 @@ jobs:
         if: inputs.releaseTag != ''
         run: >-
           Compress-Archive -Path dist -DestinationPath ./Windows_${{
-          env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture
+          inputs.releaseTag }}_${{ matrix.configuration }}_${{ matrix.architecture
           }}.zip
 
       - name: Publish Release
