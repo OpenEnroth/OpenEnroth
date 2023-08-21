@@ -1,14 +1,9 @@
 #include "Engine/Party.h"
 
-
 #include <cstdlib>
 #include <climits>
 #include <algorithm>
 #include <string>
-#include <compare>
-#include <initializer_list>
-#include <memory>
-#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -27,31 +22,18 @@
 #include "Engine/OurMath.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIRest.h"
+
 #include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
-#include "Application/GameConfig.h"
-#include "Engine/EngineIocContainer.h"
-#include "Engine/Graphics/LocationFunctions.h"
-#include "Engine/Graphics/LocationInfo.h"
-#include "Engine/MM7.h"
-#include "Engine/MapEnums.h"
-#include "Engine/Objects/ActorEnums.h"
-#include "Engine/Objects/CombinedSkillValue.h"
-#include "Engine/Objects/Monsters.h"
-#include "Engine/Objects/NPCEnums.h"
-#include "Engine/Objects/SpriteObjectEnums.h"
-#include "Engine/PartyEnums.h"
-#include "Engine/Pid.h"
-#include "Engine/mm7_data.h"
-#include "GUI/GUIEnums.h"
-#include "Library/Random/RandomEngine.h"
-#include "Utility/Segment.h"
 
 using Io::Mouse;
 
