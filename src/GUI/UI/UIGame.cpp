@@ -2048,7 +2048,6 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
 
         default: {
             logger->warning("GameUI_handleHintMessage - Unhandled message type: {}", type);
-            __debugbreak();
             break;
         }
     }
