@@ -529,6 +529,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
 Engine::~Engine() {
     delete pStru10Instance;
     delete pCamera3D;
+    pAudioPlayer.reset();
 }
 
 void Engine::LogEngineBuildInfo() {
@@ -917,7 +918,7 @@ void MM6_Initialize() {
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y;
 
-    pAudioPlayer = new AudioPlayer;
+    pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
     pODMRenderParams->outdoor_no_mist = 0;

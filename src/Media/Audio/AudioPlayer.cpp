@@ -31,7 +31,7 @@
 #include "SoundInfo.h"
 
 int sLastTrackLengthMS;
-AudioPlayer *pAudioPlayer;
+std::unique_ptr<AudioPlayer> pAudioPlayer;
 SoundList *pSoundList;
 
 std::array<float, 10> pSoundVolumeLevels = {
@@ -60,6 +60,11 @@ void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
 }
 
 extern OpenALSoundProvider *provider;
+
+AudioPlayer::~AudioPlayer() {
+    // TODO(captainurist): actually get rid of this global
+    mapSounds.clear();
+}
 
 void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
     if (currentMusicTrack == eTrack) {

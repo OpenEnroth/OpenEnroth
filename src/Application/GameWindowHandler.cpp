@@ -403,7 +403,7 @@ void GameWindowHandler::OnDeactivated() {
                 pMiscTimer->Pause();
         }
 
-        if (pAudioPlayer != nullptr) {
+        if (pAudioPlayer) {
             pAudioPlayer->pauseAllSounds();
             pAudioPlayer->MusicPause();
         }
