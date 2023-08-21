@@ -44,12 +44,14 @@ jobs:
           - x86
           - x64
     steps:
+      # Checkout Code
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
 
+      # Data cache is created by nightly build.
       - name: Check for Data cache
         id: check-for-data-cache
         uses: actions/cache/restore@v3
@@ -59,16 +61,19 @@ jobs:
           key: data-cache
           enableCrossOsArchive: true
 
+      # If datacache is restored than we will be running gametest and need shaders.
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         run: >
           xcopy resources OpenEnroth_GameData\mm7 /E/H/C/I
 
+      # Setup the MSVC build enviroment
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: '${{ matrix.architecture }}'
 
+      # Restore ccache file from cache if possible so we don't have to download it.
       - name: Restore cached ccache
         id: ccache-cache
         uses: actions/cache/restore@v3
@@ -76,16 +81,19 @@ jobs:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
 
+      # Chocolatey uses shims so create the shim if we used the cached ccache exe
       - name: add ccache shim
         if: steps.ccache-cache.outputs.cache-hit == 'true'
         run: >
           C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
 
+      # If ccache can't be restored from cache upgrade it
       - name: update ccache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
           choco upgrade ccache
 
+      # If ccache can't be restored from cache after upgrade cache it
       - name: Save ccache to cache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         id: check-for-ccache-save
@@ -94,17 +102,18 @@ jobs:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
 
+      # GH action for ccache, only save cache if its on master branch or has a release build tag
       - name: CCache
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
-
+          max-size: 50M
+          
+      # MSVC hit rate is higher with ignoring the hash_dir and is safe
       - name: set ccache config values
         run: >
           ccache --set-config=hash_dir=false
-          mkdir C:\debug
-          ccache --set-config=debug_dir=C:\debug
 
       - name: Configure
         run: |
@@ -121,6 +130,7 @@ jobs:
         run: |
           ninja UnitTest
 
+      # Only run gametest if we restored game data.
       - name: GameTest
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
         working-directory: build
@@ -129,13 +139,10 @@ jobs:
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
-      - name: Prepare artifact
-        shell: pwsh
+      - name: Prepare files for packaging
         run: >
           mkdir dist
-
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-
           xcopy resources dist\ /E/H/C/I
           
       - name: Zip Folder For Release
