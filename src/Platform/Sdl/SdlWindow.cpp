@@ -1,24 +1,18 @@
 #include "SdlWindow.h"
 
 #include <SDL_syswm.h>
-#include <SDL2/_real_SDL_config.h>
-#include <SDL_hints.h>
-#include <SDL_stdinc.h>
-#include <SDL_version.h>
-#include <X11/X.h>
 #ifdef None
 #undef None
 #endif
 
 #include <cassert>
+#include <utility>
+
+#include "Platform/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
 #include "SdlOpenGLContext.h"
-#include "Platform/PlatformOpenGLOptions.h"
-#include "Utility/Flags.h"
-
-class PlatformOpenGLContext;
 
 SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id): _state(state), _window(window), _id(id) {
     assert(state);

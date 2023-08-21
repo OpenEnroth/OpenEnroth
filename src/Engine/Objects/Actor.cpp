@@ -1,19 +1,13 @@
 #include "Engine/Objects/Actor.h"
 
-#include <assert.h>
-
-#include <limits.h>
-#include <math.h>
-#include <stdlib.h>
 #include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
-#include <initializer_list>
-#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/IRender.h"
@@ -35,43 +29,18 @@
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
+
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
-#include "Application/GameConfig.h"
-#include "Engine/EngineIocContainer.h"
-#include "Engine/ErrorHandling.h"
-#include "Engine/Graphics/LocationEnums.h"
-#include "Engine/Graphics/LocationFunctions.h"
-#include "Engine/Graphics/LocationInfo.h"
-#include "Engine/MM7.h"
-#include "Engine/MapEnums.h"
-#include "Engine/Objects/ActorEnums.h"
-#include "Engine/Objects/Character.h"
-#include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Objects/CombinedSkillValue.h"
-#include "Engine/Objects/SpriteObjectEnums.h"
-#include "Engine/PartyEnums.h"
-#include "Engine/SpawnPoint.h"
-#include "Engine/Spells/SpellEnums.h"
-#include "Engine/mm7_data.h"
-#include "GUI/UI/UIHouseEnums.h"
-#include "Library/Color/ColorTable.h"
-#include "Library/Random/RandomEngine.h"
-#include "Media/Audio/SoundEnums.h"
-#include "Utility/Geometry/BBox.h"
-#include "Utility/Geometry/Plane.h"
-#include "Utility/IndexedBitset.h"
-#include "Utility/Segment.h"
-#include "Utility/Workaround/ToUnderlying.h"
-
-class GraphicsImage;
-struct DecalBuilder;
 
 // should be injected into Actor but struct size cant be changed
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
