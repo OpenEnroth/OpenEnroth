@@ -1,9 +1,5 @@
 #include "SdlEventLoop.h"
 
-#include <SDL_gamecontroller.h>
-#include <SDL_mouse.h>
-#include <SDL_video.h>
-#include <stdint.h>
 #include <algorithm>
 #include <cassert>
 #include <vector>
