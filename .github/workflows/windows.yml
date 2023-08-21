@@ -136,17 +136,6 @@ jobs:
 
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
 
-          if ("${{matrix.configuration}}" -eq "Debug" -And "${{matrix.architecture}}" -eq "x86" ) {
-            copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
-            copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
-            copy c:\Windows\SysWOW64\ucrtbased.dll dist\
-          } ElseIf ("${{matrix.configuration}}" -eq "Debug" -And "${{matrix.architecture}}" -eq "x64") {
-            copy c:\Windows\System32\msvcp140d.dll dist\ 
-            copy c:\Windows\System32\vcruntime140_1d.dll dist\ 
-            copy c:\Windows\System32\vcruntime140d.dll dist\ 
-            copy c:\Windows\System32\ucrtbased.dll dist\ 
-          }
-
           xcopy resources dist\ /E/H/C/I
           
       - name: Zip Folder For Release
