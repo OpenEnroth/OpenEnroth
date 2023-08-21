@@ -119,14 +119,14 @@ jobs:
 
       - name: ccache dont save cache
         if: github.ref != 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
           save: false
 
       - name: ccache save cache on merge
         if: github.ref == 'refs/heads/master'
-        uses: botanicvelious/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'android-${{ matrix.configuration }}-${{ matrix.architecture }}'
           max-size: 80M
