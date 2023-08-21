@@ -64,7 +64,7 @@ jobs:
       # If datacache is restored than we will be running gametest and need shaders.
       - name: Copy shaders
         if: steps.check-for-data-cache.outputs.cache-hit == 'true'
-        run: >
+        run: |
           xcopy resources OpenEnroth_GameData\mm7 /E/H/C/I
 
       # Setup the MSVC build enviroment
@@ -84,7 +84,7 @@ jobs:
       # Chocolatey uses shims so create the shim if we used the cached ccache exe
       - name: add ccache shim
         if: steps.ccache-cache.outputs.cache-hit == 'true'
-        run: >
+        run: |
           C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
 
       # If ccache can't be restored from cache upgrade it
@@ -112,7 +112,7 @@ jobs:
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
       - name: set ccache config values
-        run: >
+        run: |
           ccache --set-config=hash_dir=false
 
       - name: Configure
@@ -140,14 +140,14 @@ jobs:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Prepare files for packaging
-        run: >
+        run: |
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
           xcopy resources dist\ /E/H/C/I
           
       - name: Zip Folder For Release
         if: inputs.releaseTag != ''
-        run: >-
+        run: |
           Compress-Archive -Path dist -DestinationPath ./Windows_${{
           inputs.releaseTag }}_${{ matrix.configuration }}_${{ matrix.architecture
           }}.zip
