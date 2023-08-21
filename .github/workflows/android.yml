@@ -14,6 +14,12 @@ on:
     types:
       - published
 
+env:
+  # These should be in sync, also this version is referenced in android/openenroth/build.gradle,
+  # see https://developer.android.com/ndk/downloads.
+  NDK_REVISION: r26-rc1
+  NDK_VERSION: 26.0.10636728
+
 # cancels currently running workflow from the same PR, branch or tag
 #concurrency:
 #  group: ${{ github.workflow }}-${{ github.ref }}
@@ -61,53 +67,17 @@ jobs:
         env:
           super_secret: '${{ secrets.KEYSTORE }}'
 
-      - name: Restore cached NDK
-        id: cache-ndk
-        uses: actions/cache/restore@v3
+      - name: Get NDK
+        id: setup-ndk
+        uses: captainurist/setup-ndk@main
         with:
-          path: |
-            /usr/local/lib/android/sdk/ndk/26.0.10404224
-          key: android-ndk-r26-beta1-linux
-
-      - name: Download NDK
-        if: steps.cache-ndk.outputs.cache-hit != 'true'
-        run: >
-          cd /usr/local/lib/android/sdk/ndk/
-
-          wget --no-check-certificate
-          'https://dl.google.com/android/repository/android-ndk-r26-beta1-linux.zip'
-          -O android-ndk-r26-beta1-linux.zip 
+          ndk-version: '${{env.NDK_REVISION}}'
+          add-to-path: false
+          local-cache: true
 
       - name: Setup NDK
-        if: steps.cache-ndk.outputs.cache-hit != 'true'
-        run: >
-          cd /usr/local/lib/android/sdk/ndk/
-
-          unzip android-ndk-r26-beta1-linux.zip
-
-          mv android-ndk-r26-beta1 /usr/local/lib/android/sdk/ndk/26.0.10404224
-
-          echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/26.0.10404224" >>
-          $GITHUB_ENV
-
-          echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224"
-          >> $GITHUB_ENV
-
-          echo
-          "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224"
-          >> $GITHUB_ENV        
-
-          echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/26.0.10404224"
-          >> $GITHUB_ENV
-
-      - name: Save NDK cache
-        if: steps.cache-ndk.outputs.cache-hit != 'true'
-        id: cache-ndk-save
-        uses: actions/cache/save@v3
-        with:
-          path: |
-            /usr/local/lib/android/sdk/ndk/26.0.10404224
-          key: android-ndk-r26-beta1-linux
+        run: |
+          ln -s "${{steps.setup-ndk.outputs.ndk-path}}" "/usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}"
 
       - name: Install dependencies
         run: |

@@ -40,7 +40,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
-        learnSkillsDialogue();
+        learnSkillsDialogue(colorTable.PaleCanary);
         return;
     }
 

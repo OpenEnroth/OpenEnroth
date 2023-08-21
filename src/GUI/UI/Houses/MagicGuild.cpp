@@ -179,7 +179,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         working_window.DrawTitleText(pFontArrus, 0, 146, colorTable.White, skill_price_label, 3);
     }
 
-    drawOptions(optionsText, colorTable.Sunflower, 24);
+    drawOptions(optionsText, colorTable.PaleCanary, 24);
 }
 
 void GUIWindow_MagicGuild::buyBooksDialogue() {

@@ -1610,6 +1610,14 @@ GAME_TEST(Issues, Issue1191) {
     // EXPECT_EQ(pParty->GetFood(), 7);
 }
 
+GAME_TEST(Issues, Issue1196) {
+    // Assert fails in Character::playEmotion when character looks down
+    auto expr = tapes.custom([] { return pParty->activeCharacter().expression; });
+    test.playTraceFromTestData("issue_1196.mm7", "issue_1196.json");
+    EXPECT_FALSE(expr.contains(CHARACTER_EXPRESSION_32));
+    EXPECT_TRUE(expr.contains(CHARACTER_EXPRESSION_LOOK_UP));
+    EXPECT_TRUE(expr.contains(CHARACTER_EXPRESSION_LOOK_DOWN));
+}
 
 GAME_TEST(Issues, Issue1197) {
     //Assert on party death
