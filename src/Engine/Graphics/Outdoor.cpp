@@ -1,6 +1,6 @@
 #include "Engine/Graphics/Outdoor.h"
 
-#include <bits/std_abs.h>
+
 #include <float.h>
 #include <stdlib.h>
 #include <algorithm>

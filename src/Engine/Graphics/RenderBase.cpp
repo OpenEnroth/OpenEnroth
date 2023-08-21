@@ -1,6 +1,6 @@
 #include "Engine/Graphics/RenderBase.h"
 
-#include <bits/std_abs.h>
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>

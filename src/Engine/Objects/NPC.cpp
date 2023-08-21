@@ -1,7 +1,7 @@
 #include "Engine/Objects/NPC.h"
 
 #include <assert.h>
-#include <bits/std_abs.h>
+
 #include <stdlib.h>
 #include <memory>
 
