@@ -12,4 +12,5 @@ set(LIBRARY_RANDOM_HEADERS
         RandomEngineEnums.h)
 
 add_library(library_random STATIC ${LIBRARY_RANDOM_SOURCES} ${LIBRARY_RANDOM_HEADERS})
+target_link_libraries(library_random utility backward)
 target_check_style(library_random)

@@ -78,3 +78,5 @@ if(OE_BUILD_TESTS)
     set(BUILD_GMOCK OFF)
     add_subdirectory(googletest)
 endif()
+
+add_subdirectory(backward_cpp)
