@@ -85,7 +85,7 @@ void GUIWindow_LloydsBook::Update() {
         pText = localization->GetString(LSTR_SET_BEACON);
     }
 
-    pWindow.DrawTitleText(pFontBookTitle, 0, 22, colorTable.White, pText, 3);
+    pWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3);
     if (_recallingBeacon) {
         render->DrawTextureNew(pBtn_Book_1->uX / 640.0f, pBtn_Book_1->uY / 480.0f, ui_book_button1_on);
         render->DrawTextureNew(pBtn_Book_2->uX / 640.0f, pBtn_Book_2->uY / 480.0f, ui_book_button1_off);
@@ -112,9 +112,9 @@ void GUIWindow_LloydsBook::Update() {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId];
             render->DrawTextureNew(lloydsBeaconsPreviewXs[beaconId] / 640.0f, lloydsBeaconsPreviewYs[beaconId] / 480.0f, beacon.image);
             std::string Str = pMapStats->pInfos[beacon.mapId].pName;
-            unsigned int pTextHeight = pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
+            unsigned int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
             pWindow.uFrameY -= 6 + pTextHeight;
-            pWindow.DrawTitleText(pFontBookLloyds, 0, 0, colorTable.Black, Str, 3);
+            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3);
 
             pWindow.uFrameY = lloydsBeaconsPreviewYs[beaconId];
             GameTime remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
@@ -129,10 +129,10 @@ void GUIWindow_LloydsBook::Update() {
                 str = fmt::format("{} {}", pDays + 1, localization->GetString(LSTR_DAY_CAPITALIZED));
             }
             pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
-            pWindow.DrawTitleText(pFontBookLloyds, 0, 0, colorTable.Black, str, 3);
+            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3);
         } else {
-            unsigned int pTextHeight = pFontBookLloyds->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
-            pWindow.DrawTitleText(pFontBookLloyds, 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, colorTable.Black, localization->GetString(LSTR_AVAILABLE), 3);
+            unsigned int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
+            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, colorTable.Black, localization->GetString(LSTR_AVAILABLE), 3);
         }
     }
 }

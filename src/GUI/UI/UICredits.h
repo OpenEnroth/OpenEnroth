@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GUI/GUIWindow.h"
 
 class GUIFont;
@@ -15,8 +17,8 @@ class GUICredits : public GUIWindow {
     void EventLoop();
 
  protected:
-    GUIFont *pFontQuick;
-    GUIFont *pFontCChar;
+    std::unique_ptr<GUIFont> pFontQuick;
+    std::unique_ptr<GUIFont> pFontCChar;
 
     GraphicsImage *mm6title;
 

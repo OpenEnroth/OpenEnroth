@@ -18,6 +18,9 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/LightsStack.h"
+#include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -1080,12 +1083,6 @@ void Game::processQueuedMessages() {
                 }
                 continue;
 
-            case UIMSG_HintBeaconSlot:
-                if (pGUIWindow_CurrentMenu) {
-                    ((GUIWindow_LloydsBook *)pGUIWindow_CurrentMenu)->hintBeaconSlot(uMessageParam);
-                }
-                continue;
-
             case UIMSG_CloseAfterInstallBeacon:
                 playButtonSoundOnEscape = false;
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
@@ -1100,12 +1097,6 @@ void Game::processQueuedMessages() {
             case UIMSG_ClickTownInTP:
                 if (pGUIWindow_CurrentMenu) {
                     ((GUIWindow_TownPortalBook *)pGUIWindow_CurrentMenu)->clickTown(uMessageParam);
-                }
-                continue;
-
-            case UIMSG_HintTownPortal:
-                if (pGUIWindow_CurrentMenu) {
-                    ((GUIWindow_TownPortalBook *)pGUIWindow_CurrentMenu)->hintTown(uMessageParam);
                 }
                 continue;
 
@@ -1408,35 +1399,6 @@ void Game::processQueuedMessages() {
                 remainingRestTime = timeUntilDawn();
                 continue;
 
-            case UIMSG_HintSelectRemoveQuickSpellBtn: {
-                if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
-                    _engine->_statusBar->setPermanent(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name);
-                } else {
-                    if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
-                        _engine->_statusBar->setPermanent(LSTR_CLICK_TO_REMOVE_QUICKSPELL);
-                    else
-                        _engine->_statusBar->setPermanent(LSTR_CLICK_TO_SET_QUICKSPELL);
-                }
-                continue;
-            }
-
-            case UIMSG_Spellbook_ShowHightlightedSpellInfo: {
-                // this used to check if character had the spell activated - no longer required here ??
-                if (!pParty->hasActiveCharacter())
-                    continue;
-
-                if (isHoldingMouseRightButton()) {
-                    dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
-                }
-                SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + uMessageParam + 1);
-                if (spellbookSelectedSpell == selectedSpell) {
-                    _engine->_statusBar->setPermanent(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name);
-                } else {
-                    _engine->_statusBar->setPermanent(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name);
-                }
-                continue;
-            }
-
             case UIMSG_ClickInstallRemoveQuickSpellBtn: {
                 new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
                 if (!pParty->hasActiveCharacter())
@@ -1698,51 +1660,6 @@ void Game::processQueuedMessages() {
                 engine->_messageQueue->clear();
                 GameUI_OnPlayerPortraitLeftClick(uMessageParam);
                 continue;
-            case UIMSG_ShowStatus_Funds: {
-                engine->_statusBar->setPermanent(LSTR_FMT_D_TOTAL_GOLD_D_IN_BANK, pParty->GetGold() + pParty->uNumGoldInBank, pParty->uNumGoldInBank);
-                continue;
-            }
-            case UIMSG_ShowStatus_DateTime:
-                currHour = pParty->uCurrentHour;
-                uNumSeconds = 1;
-                if (pParty->uCurrentHour > 12) {
-                    if (pParty->uCurrentHour >= 24) uNumSeconds = 0;
-                    currHour = (currHour - 12);
-                } else {
-                    if (pParty->uCurrentHour < 12)  // 12:00 is PM
-                        uNumSeconds = 0;
-                    if (pParty->uCurrentHour == 0) currHour = 12;
-                }
-                engine->_statusBar->setPermanent(fmt::format("{}:{:02}{} {} {} {} {}", currHour, pParty->uCurrentMinute, localization->GetAmPm(uNumSeconds),
-                                                            localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
-                                                            7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
-                                                            localization->GetMonthName(pParty->uCurrentMonth), pParty->uCurrentYear));
-                continue;
-
-            case UIMSG_ShowStatus_Food: {
-                engine->_statusBar->setPermanent(LSTR_FMT_YOU_HAVE_D_FOOD, pParty->GetFood());
-                continue;
-            }
-
-            case UIMSG_ShowStatus_Player: {
-                Character *character = &pParty->pCharacters[uMessageParam - 1];
-
-                engine->_statusBar->setPermanent(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
-                                                            localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
-
-                _mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * uMessageParam - 8) | 4);
-                continue;
-            }
-
-            case UIMSG_ShowStatus_ManaHP: {
-                Character *character = &pParty->pCharacters[uMessageParam - 1];
-
-                engine->_statusBar->setPermanent(fmt::format("{} / {} {}    {} / {} {}",
-                                                            character->GetHealth(), character->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
-                                                            character->GetMana(), character->GetMaxMana(), localization->GetString(LSTR_SPELL_POINTS)));
-                continue;
-            }
-
             case UIMSG_CHEST_ClickItem:
                 if (current_screen_type == SCREEN_CHEST_INVENTORY) {
                     pParty->activeCharacter().OnInventoryLeftClick();
@@ -1991,6 +1908,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             default:
+                logger->warning("Game::processQueuedMessages - Unhandled message type: {}", uMessage);
                 continue;
         }
     }
@@ -2013,7 +1931,7 @@ void Game::processQueuedMessages() {
 void Game::onPressSpace() {
     _engine->PickKeyboard(_engine->config->gameplay.KeyboardInteractionDepth.value(),
                           keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
-                          &vis_sprite_filter_3, &vis_door_filter);
+                          &vis_decoration_noevent_filter, &vis_door_filter);
 
     Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
     if (pid) {
@@ -2060,8 +1978,13 @@ void Game::gameLoop() {
         do {
             MessageLoopWithWait();
 
-            _engine->_44EEA7();  // pop up . mouse picking
-            GameUI_WritePointedObjectStatusString();
+            _engine->particle_engine->UpdateParticles();
+            _engine->filterPickMouse();
+            _engine->decal_builder->bloodsplat_container->uNumBloodsplats = 0;
+            if (_engine->uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
+                _engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
+            }
+
             keyboardInputHandler->GenerateInputActions();
             processQueuedMessages();
             if (pArcomageGame->bGameInProgress) {
@@ -2074,8 +1997,6 @@ void Game::gameLoop() {
 
             pEventTimer->Update();
             pMiscTimer->Update();
-
-            _engine->_statusBar->update();
 
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
@@ -2094,8 +2015,12 @@ void Game::gameLoop() {
                     UpdateUserInput_and_MapSpecificStuff();
                 }
             }
+
             pAudioPlayer->UpdateSounds();
+
+            GameUI_WritePointedObjectStatusString();
             _engine->_statusBar->update();
+
             if (uGameState == GAME_STATE_PLAYING) {
                 _engine->Draw();
                 continue;

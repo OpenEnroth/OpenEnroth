@@ -514,13 +514,14 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // Trace enters throne room - resurecta - final task and exits gameover loop.
     auto screenTape = tapes.screen();
     auto mapTape = tapes.map();
+    auto certTape = tapes.custom([] { return assets->winnerCert; });
     test.playTraceFromTestData("issue_408.mm7", "issue_408.json");
     // we should return to game screen
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAMEOVER_WINDOW, SCREEN_GAME));
     // windowlist size should be 1
     EXPECT_EQ(lWindowList.size(), 1);
-    // should have save a winner cert tex
-    EXPECT_NE(assets->winnerCert, nullptr);
+    // should have saved a winner cert tex
+    EXPECT_GT(certTape.size(), 1);
     // we should be teleported to harmondale
     EXPECT_EQ(mapTape, tape("d30.blv", "out02.odm"));
 

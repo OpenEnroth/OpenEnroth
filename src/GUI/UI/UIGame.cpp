@@ -29,6 +29,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
@@ -39,9 +40,12 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
+#include "GUI/UI/Books/LloydsBook.h"
+#include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UISpellbook.h"
 
 #include "Io/InputAction.h"
 #include "Io/Mouse.h"
@@ -49,6 +53,8 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
 #include "Utility/String.h"
+
+#include "Library/Logger/Logger.h"
 
 using Io::InputAction;
 
@@ -345,13 +351,13 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1));
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]));
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2));
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]));
     }
 }
 
@@ -431,7 +437,7 @@ void GUIWindow_GameVideoOptions::Update() {
         msg_window.uFrameZ = 232;
         msg_window.uFrameW = 268;
         msg_window.DrawTitleText(
-            pFontSmallnum, 0, 0, ui_gamemenu_video_gamma_title_color,
+            assets->pFontSmallnum.get(), 0, 0, ui_gamemenu_video_gamma_title_color,
             localization->GetString(LSTR_GAMMA_DESCRIPTION), 3
         );
     }
@@ -788,8 +794,8 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", pParty->GetFood()), 0, uGameUIFontShadow);
-        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", pParty->GetGold()), 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", pParty->GetFood()), 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", pParty->GetGold()), 0, uGameUIFontShadow);
         // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
         render->EndTextNew();
     }
@@ -1047,11 +1053,11 @@ void GameUI_WritePointedObjectStatusString() {
                     switch (pButton->uButtonType) {
                         case 1:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
-                                pMessageType1 = (UIMessageType)pButton->uData;
-                                // TODO(pskelton): consider handling this output in same turn now - message doesnt action till next frame
-                                if (pMessageType1)
-                                    engine->_messageQueue->addMessageCurrentFrame(pMessageType1, pButton->msg_param, 0);
                                 engine->_statusBar->setPermanent(pButton->sLabel);
+                                pMessageType1 = (UIMessageType)pButton->uData;
+                                if (pMessageType1)
+                                    GameUI_handleHintMessage(pMessageType1, pButton->msg_param);
+
                                 uLastPointedObjectID = Pid::dummy();
                                 return;
                             }
@@ -1069,11 +1075,11 @@ void GameUI_WritePointedObjectStatusString() {
                                     (pButton->uHeight * pButton->uHeight);
 
                                 if (ratioX + ratioY < 1.0) {
-                                    pMessageType2 = (UIMessageType)pButton->uData;
-                                    // TODO(pskelton): consider handling this output in same turn now - message doesnt action till next frame
-                                    if (pMessageType2 != 0)
-                                        engine->_messageQueue->addMessageCurrentFrame(pMessageType2, pButton->msg_param, 0);
                                     engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
+                                    pMessageType2 = (UIMessageType)pButton->uData;
+                                    if (pMessageType2 != 0)
+                                        GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
+
                                     uLastPointedObjectID = Pid::dummy();
                                     return;
                                 }
@@ -1160,8 +1166,7 @@ void GameUI_WritePointedObjectStatusString() {
                             if (pMessageType3 == 0) {  // For books
                                 engine->_statusBar->setPermanent(pButton->sLabel);
                             } else {
-                                // TODO(pskelton): consider handling this output in same turn now - message doesnt action till next frame
-                                engine->_messageQueue->addMessageCurrentFrame(pMessageType3, pButton->msg_param, 0);
+                                GameUI_handleHintMessage(pMessageType3, pButton->msg_param);
                             }
                             uLastPointedObjectID = Pid::dummy();
                             return;
@@ -1179,11 +1184,10 @@ void GameUI_WritePointedObjectStatusString() {
                                 (pButton->uHeight * pButton->uHeight);
 
                             if (ratioX + ratioY < 1.0) {
-                                pMessageType2 = (UIMessageType)pButton->uData;
-                                // TODO(pskelton): consider handling this output in same turn - message doesnt action till next frame
-                                if (pMessageType2 != 0)
-                                    engine->_messageQueue->addMessageCurrentFrame(pMessageType2, pButton->msg_param, 0);
                                 engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
+                                pMessageType2 = (UIMessageType)pButton->uData;
+                                if (pMessageType2 != 0)
+                                    GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
                                 uLastPointedObjectID = Pid::dummy();
                                 return;
                             }
@@ -1873,7 +1877,7 @@ void GUIWindow_DebugMenu::Update() {
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, colorTable.White, "Debug Menu");
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {0, 10}, colorTable.White, "Debug Menu");
 
     buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.value());
     buttonbox(127, 140, "Give Gold", 2);
@@ -1945,5 +1949,106 @@ void buttonbox(int x, int y, const char *text, int col) {
     if (col == 1) {
         colour = ui_character_bonus_text_color;
     }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x+1, y+2}, colour, text);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {x+1, y+2}, colour, text);
+}
+
+void GameUI_handleHintMessage(UIMessageType type, int param) {
+    switch (type) {
+        case UIMSG_HintSelectRemoveQuickSpellBtn: {
+            if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
+                engine->_statusBar->setPermanent(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name);
+            } else {
+                if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
+                    engine->_statusBar->setPermanent(LSTR_CLICK_TO_REMOVE_QUICKSPELL);
+                else
+                    engine->_statusBar->setPermanent(LSTR_CLICK_TO_SET_QUICKSPELL);
+            }
+            break;
+        }
+
+        case UIMSG_Spellbook_ShowHightlightedSpellInfo: {
+            // TODO(pskelton): this used to check if character had the spell activated - no longer required here ??
+            if (!pParty->hasActiveCharacter())
+                break;
+            if (isHoldingMouseRightButton()) {
+                dword_507B00_spell_info_to_draw_in_popup = param + 1;
+            }
+            SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + param + 1);
+            if (spellbookSelectedSpell == selectedSpell) {
+                engine->_statusBar->setPermanent(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name);
+            } else {
+                engine->_statusBar->setPermanent(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name);
+            }
+            break;
+        }
+
+        case UIMSG_ShowStatus_DateTime: {
+            uint currHour = pParty->uCurrentHour;
+            uint uNumSeconds = 1;
+            if (pParty->uCurrentHour > 12) {
+                if (pParty->uCurrentHour >= 24) uNumSeconds = 0;
+                currHour = (currHour - 12);
+            } else {
+                if (pParty->uCurrentHour < 12)  // 12:00 is PM
+                    uNumSeconds = 0;
+                if (pParty->uCurrentHour == 0) currHour = 12;
+            }
+            engine->_statusBar->setPermanent(fmt::format("{}:{:02}{} {} {} {} {}", currHour, pParty->uCurrentMinute, localization->GetAmPm(uNumSeconds),
+                localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
+                7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
+                localization->GetMonthName(pParty->uCurrentMonth), pParty->uCurrentYear));
+            break;
+        }
+
+        case UIMSG_ShowStatus_ManaHP: {
+            Character* character = &pParty->pCharacters[param - 1];
+            engine->_statusBar->setPermanent(fmt::format("{} / {} {}    {} / {} {}",
+                character->GetHealth(), character->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
+                character->GetMana(), character->GetMaxMana(), localization->GetString(LSTR_SPELL_POINTS)));
+            break;
+        }
+
+        case UIMSG_ShowStatus_Player: {
+            Character* character = &pParty->pCharacters[param - 1];
+            engine->_statusBar->setPermanent(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
+                localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
+            engine->mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * param - 8) | 4);
+            break;
+        }
+
+        case UIMSG_ShowStatus_Food: {
+            engine->_statusBar->setPermanent(LSTR_FMT_YOU_HAVE_D_FOOD, pParty->GetFood());
+            break;
+        }
+
+        case UIMSG_ShowStatus_Funds: {
+            engine->_statusBar->setPermanent(LSTR_FMT_D_TOTAL_GOLD_D_IN_BANK, pParty->GetGold() + pParty->uNumGoldInBank, pParty->uNumGoldInBank);
+            break;
+        }
+
+        case UIMSG_HintBeaconSlot: {
+            if (pGUIWindow_CurrentMenu) {
+                ((GUIWindow_LloydsBook*)pGUIWindow_CurrentMenu)->hintBeaconSlot(param);
+            }
+            break;
+        }
+
+        case UIMSG_HintTownPortal: {
+            if (pGUIWindow_CurrentMenu) {
+                ((GUIWindow_TownPortalBook*)pGUIWindow_CurrentMenu)->hintTown(param);
+            }
+            break;
+        }
+
+        case UIMSG_7A: {
+            // unknown
+            // button msg UIMSG_InventoryLeftClick
+            break;
+        }
+
+        default: {
+            logger->warning("GameUI_handleHintMessage - Unhandled message type: {}", type);
+            break;
+        }
+    }
 }

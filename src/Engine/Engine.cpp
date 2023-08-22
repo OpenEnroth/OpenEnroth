@@ -17,6 +17,7 @@
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -262,25 +263,25 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
+            pPrimaryWindow->DrawText(assets->pFontArrus.get(), {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
         render->drawcalls = 0;
 
 
         int debug_info_offset = 16;
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party position:         {} {} {}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
         debug_info_offset += 16;
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party yaw/pitch:     {} {}", pParty->_viewYaw, pParty->_viewPitch));
         debug_info_offset += 16;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset }, colorTable.White,
+            pPrimaryWindow->DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
                                      fmt::format("Party Sector ID:       {}/{}\n", sector_id, pIndoor->pSectors.size()));
             debug_info_offset += 16;
         }
@@ -307,7 +308,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White, floor_level_str);
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White, floor_level_str);
     }
 }
 
@@ -362,40 +363,27 @@ void Engine::StackPartyTorchLight() {
 }
 
 //----- (0044EEA7) --------------------------------------------------------
-bool Engine::_44EEA7() {  // cursor picking - particle update
-    particle_engine->UpdateParticles();
-
+void Engine::filterPickMouse() {  // cursor picking
     float depth = 0.0f;
     Vis_SelectionFilter *sprite_filter = nullptr;
     Vis_SelectionFilter *face_filter = nullptr;
 
     if (isHoldingMouseRightButton()) {
         face_filter = &vis_face_filter;
-        sprite_filter = &vis_sprite_filter_2;
+        sprite_filter = &vis_allsprites_filter;
         depth = pCamera3D->GetMouseInfoDepth();
     } else {
         if (engine->IsTargetingMode()) {
             face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_filter_1;
+            sprite_filter = &vis_sprite_targets_filter;
         } else {
             face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_filter_4;
+            sprite_filter = &vis_items_filter;
         }
         depth = config->gameplay.RangedAttackDepth.value();
     }
     Pointi pt = mouse->GetCursorPos();
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-
-
-    // decal reset but actually want bloodsplat reset
-    // decal_builder->DecalsCount = 0;
-    // decal_builder->curent_decal_id = 0;
-    decal_builder->bloodsplat_container->uNumBloodsplats = 0;
-
-    if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
-    }
-    return true;
 }
 
 //----- (004645FA) --------------------------------------------------------
@@ -541,6 +529,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
 Engine::~Engine() {
     delete pStru10Instance;
     delete pCamera3D;
+    pAudioPlayer.reset();
 }
 
 void Engine::LogEngineBuildInfo() {
@@ -929,7 +918,7 @@ void MM6_Initialize() {
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y;
 
-    pAudioPlayer = new AudioPlayer;
+    pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
     pODMRenderParams->outdoor_no_mist = 0;
@@ -1000,6 +989,11 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
 void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
+
+    if (assets->winnerCert) {
+        assets->winnerCert->Release();
+        assets->winnerCert = nullptr;
+    }
 
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;

@@ -105,7 +105,7 @@ class Engine {
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4); // TODO(captainurist): drop?
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
-    bool _44EEA7();
+    void filterPickMouse();
     void StackPartyTorchLight();
     void Deinitialize();
     void DrawParticles();

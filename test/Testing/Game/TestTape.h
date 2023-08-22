@@ -55,6 +55,10 @@ class TestTape {
         return result;
     }
 
+    int size() const {
+        return values().size();
+    }
+
     T delta() {
         assert(!values().empty());
         return values().back() - values().front();

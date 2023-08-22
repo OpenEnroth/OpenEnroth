@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 
+#include "Engine/AssetsManager.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Party.h"
 
@@ -15,8 +16,8 @@
 
 void GUIWindow_Inventory::Update() {
     DrawMessageBox(0);
-    DrawText(pFontLucida, {10, 20}, colorTable.White, "Making item number");
-    DrawText(pFontLucida, {10, 40}, colorTable.White, keyboardInputHandler->GetTextInput());
+    DrawText(assets->pFontLucida.get(), {10, 20}, colorTable.White, "Making item number");
+    DrawText(assets->pFontLucida.get(), {10, 40}, colorTable.White, keyboardInputHandler->GetTextInput());
 
     // a hack to capture end of user input (enter) while avoiding listening to UI message handler
     // redo this in a more clean way

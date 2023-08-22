@@ -137,13 +137,13 @@ void GUIWindow_MapBook::Update() {
 
     MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
-        map_window.DrawTitleText(pFontBookTitle, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
+        map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
     }
 
     auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, pParty->pos.x, pParty->pos.y);
 
     map_window.uFrameX = 0;
-    map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
+    map_window.DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
 }
 
 //----- (00442955) --------------------------------------------------------

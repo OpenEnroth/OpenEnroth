@@ -3,6 +3,7 @@
 #include <map>
 #include <unordered_set>
 #include <string>
+#include <memory>
 #include <list>
 
 #include "Utility/Workaround/ToUnderlying.h"
@@ -57,7 +58,7 @@ class AudioPlayer {
  public:
     AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uMusicVolume(0), uVoiceVolume(0),
                     _voiceSoundPool(false), _regularSoundPool(false), _loopingSoundPool(true) {}
-    virtual ~AudioPlayer() {}
+    virtual ~AudioPlayer();
 
     void Initialize();
 
@@ -189,7 +190,7 @@ class SoundList {
 };
 
 extern int sLastTrackLengthMS;
-extern AudioPlayer *pAudioPlayer;
+extern std::unique_ptr<AudioPlayer> pAudioPlayer;
 extern SoundList *pSoundList;
 
 extern std::array<float, 10> pSoundVolumeLevels;

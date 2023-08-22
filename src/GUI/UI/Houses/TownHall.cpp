@@ -20,6 +20,8 @@
 
 #include "Library/Random/Random.h"
 
+#include "Engine/AssetsManager.h"
+
 using Io::TextInputType;
 
 void GUIWindow_TownHall::mainDialogue() {
@@ -30,7 +32,7 @@ void GUIWindow_TownHall::mainDialogue() {
 
     std::vector<std::string> optionsText = {localization->GetString(LSTR_BOUNTY_HUNT)};
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
+    townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     if (pParty->uFine > 0) {
         optionsText.push_back(localization->GetString(LSTR_PAY_FINE));
@@ -46,17 +48,17 @@ void GUIWindow_TownHall::bountyHuntDialogue() {
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
+    townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     current_npc_text = bountyHuntingText();
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = 458;
     window.uFrameZ = 457;
-    GUIFont *pOutString = pFontArrus;
-    int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
+    GUIFont *pOutString = assets->pFontArrus.get();
+    int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
     if (352 - pTextHeight < 8) {
-        pOutString = pFontCreate;
-        pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
+        pOutString = assets->pFontCreate.get();
+        pTextHeight = assets->pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
     }
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
@@ -70,13 +72,13 @@ void GUIWindow_TownHall::payFineDialogue() {
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
+    townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
-        townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
+        townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.PaleCanary,
                                       fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
-        townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
-        townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, pFontArrus);
+        townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
+        townHall_window.DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, assets->pFontArrus.get());
         return;
     } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         int sum = atoi(keyboardInputHandler->GetTextInput().c_str());

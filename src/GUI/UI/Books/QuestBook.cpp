@@ -73,7 +73,7 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameY = game_viewport_y;
     questbook_window.uFrameZ = game_viewport_z;
     questbook_window.uFrameW = game_viewport_w;
-    questbook_window.DrawTitleText(pFontBookTitle, 0, 22, ui_book_quests_title_color, localization->GetString(LSTR_CURRENT_QUESTS), 3);
+    questbook_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->GetString(LSTR_CURRENT_QUESTS), 3);
 
     // for other text
     questbook_window.uFrameX = 48;
@@ -102,8 +102,8 @@ void GUIWindow_QuestBook::Update() {
     for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {
         _currentPageQuests++;
 
-        questbook_window.DrawText(pFontBookOnlyShadow, {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]]);
-        pTextHeight = pFontBookOnlyShadow->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.uFrameWidth, 1);
+        questbook_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]]);
+        pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.uFrameWidth, 1);
         if ((questbook_window.uFrameY + pTextHeight) > questbook_window.uFrameHeight) {
             break;
         }

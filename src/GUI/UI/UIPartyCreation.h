@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GUI/GUIWindow.h"
 
 class GraphicsImage;
@@ -14,5 +16,6 @@ class GUIWindow_PartyCreation : public GUIWindow {
     virtual void Update() override;
 
  protected:
-    GraphicsImage *main_menu_background;
+    GraphicsImage *main_menu_background = nullptr;
+    std::unique_ptr<GUIFont> ui_partycreation_font;
 };
