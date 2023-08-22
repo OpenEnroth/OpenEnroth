@@ -48,7 +48,7 @@ if(USE_IWYU)
         message(FATAL_ERROR "Could not find the program include-what-you-use")
     endif()
     message("Found IWYU ${IWYU_PATH}")
-    set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
+    set(CMAKE_C_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
     set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
 endif()
 
