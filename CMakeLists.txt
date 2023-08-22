@@ -33,7 +33,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # User-settable options.
-set(OE_BUILD_TESTS OFF CACHE BOOL "Build OpenEnroth tests.")
+set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
