@@ -52,6 +52,8 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
 // Scrolls or NPC spells casted with MASTER mastery of skill level 5
 static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, CHARACTER_SKILL_MASTERY_MASTER);
+// Wands cast at novice mastery skill level 8
+static const CombinedSkillValue WANDS_SKILL_VALUE(8, CHARACTER_SKILL_MASTERY_NOVICE);
 
 // Recovery time when spell failed because of curse
 static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;

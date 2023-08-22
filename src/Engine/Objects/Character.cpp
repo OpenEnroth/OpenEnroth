@@ -7228,7 +7228,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
         int main_hand_idx = character->pEquipment.uMainHand;
         pushSpellOrRangedAttack(wandSpellIds[character->pInventoryItemList[main_hand_idx - 1].uItemID],
-                                pParty->activeCharacterIndex() - 1, CombinedSkillValue::novice(8), 0, pParty->activeCharacterIndex() + 8);
+                                pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             character->pEquipment.uMainHand = 0;
