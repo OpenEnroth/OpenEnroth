@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f898dff</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3fa1cb0</span>
    </div>
   </td>
  </tr>
@@ -108,6 +108,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="NPC_8h.html">Engine/Objects/NPC.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IconFrameTable_8h.html">Engine/Tables/IconFrameTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterFrameTable_8h.html">Engine/Tables/CharacterFrameTable.h</a>&quot;</code><br />
@@ -117,14 +118,18 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LloydsBook_8h.html">GUI/UI/Books/LloydsBook.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TownPortalBook_8h.html">GUI/UI/Books/TownPortalBook.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UICharacter_8h.html">GUI/UI/UICharacter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UISpellbook_8h.html">GUI/UI/UISpellbook.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FixPoint_8h.html">Utility/Math/FixPoint.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -175,6 +180,8 @@ Functions</h2></td></tr>
 <tr class="separator:a8424959389a95f3a45236eec62fbdf01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70225fa4405c71b7fe143f2dd18ac0c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a70225fa4405c71b7fe143f2dd18ac0c5">buttonbox</a> (int x, int y, const char *text, int col)</td></tr>
 <tr class="separator:a70225fa4405c71b7fe143f2dd18ac0c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad516679b49ae71471f7d64f72a8e51e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ad516679b49ae71471f7d64f72a8e51e7">GameUI_handleHintMessage</a> (<a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02">UIMessageType</a> type, int param)</td></tr>
+<tr class="separator:ad516679b49ae71471f7d64f72a8e51e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -649,6 +656,34 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad516679b49ae71471f7d64f72a8e51e7" name="ad516679b49ae71471f7d64f72a8e51e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad516679b49ae71471f7d64f72a8e51e7">&#9670;&#160;</a></span>GameUI_handleHintMessage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameUI_handleHintMessage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02">UIMessageType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>param</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

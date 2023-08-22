@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f898dff</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3fa1cb0</span>
    </div>
   </td>
  </tr>
@@ -74,13 +74,14 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">GUIFont.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodTextureCache_8h.html">Engine/LodTextureCache.h</a>&quot;</code><br />
@@ -97,29 +98,6 @@ Functions</h2></td></tr>
 <tr class="separator:a64ca718d5f2a661aca0df9b891bb5bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7088ffbe880c803e0d69c369b8dbadea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a7088ffbe880c803e0d69c369b8dbadea">DrawCharToBuff</a> (<a class="el" href="structColor.html">Color</a> *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight, const <a class="el" href="structPalette.html">Palette</a> &amp;pFontPalette, <a class="el" href="structColor.html">Color</a> draw_color, int line_width)</td></tr>
 <tr class="separator:a7088ffbe880c803e0d69c369b8dbadea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:af050b3ab741a0bcd596fec0a192e0ca2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#af050b3ab741a0bcd596fec0a192e0ca2">pFontBookOnlyShadow</a> = nullptr</td></tr>
-<tr class="separator:af050b3ab741a0bcd596fec0a192e0ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04d42bd3b92a01a830512a673af7a7f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a04d42bd3b92a01a830512a673af7a7f2">pFontBookLloyds</a> = nullptr</td></tr>
-<tr class="separator:a04d42bd3b92a01a830512a673af7a7f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45c1d51c36b4ee9c4bdfc2f3b65cf2bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a45c1d51c36b4ee9c4bdfc2f3b65cf2bc">pFontArrus</a> = nullptr</td></tr>
-<tr class="separator:a45c1d51c36b4ee9c4bdfc2f3b65cf2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20125354aa9f9043e5405fc5c9a4898c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a20125354aa9f9043e5405fc5c9a4898c">pFontLucida</a> = nullptr</td></tr>
-<tr class="separator:a20125354aa9f9043e5405fc5c9a4898c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f7631964a173039b50259f80bf6f16a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a2f7631964a173039b50259f80bf6f16a">pFontBookTitle</a> = nullptr</td></tr>
-<tr class="separator:a2f7631964a173039b50259f80bf6f16a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc60827521f8dbbc36f1aecce1fcd185"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#afc60827521f8dbbc36f1aecce1fcd185">pFontBookCalendar</a> = nullptr</td></tr>
-<tr class="separator:afc60827521f8dbbc36f1aecce1fcd185"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58be15783993a5541a86ecc68a74fb89"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a58be15783993a5541a86ecc68a74fb89">pFontCreate</a> = nullptr</td></tr>
-<tr class="separator:a58be15783993a5541a86ecc68a74fb89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada075e746575ccf941e08fa2d2636951"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#ada075e746575ccf941e08fa2d2636951">pFontCChar</a> = nullptr</td></tr>
-<tr class="separator:ada075e746575ccf941e08fa2d2636951"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9323cb3a480b3f7b76310d78b8bd11f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a9323cb3a480b3f7b76310d78b8bd11f1">pFontComic</a> = nullptr</td></tr>
-<tr class="separator:a9323cb3a480b3f7b76310d78b8bd11f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e07a9b4c2f22ec0a4985defe865852b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIFont.html">GUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a2e07a9b4c2f22ec0a4985defe865852b">pFontSmallnum</a> = nullptr</td></tr>
-<tr class="separator:a2e07a9b4c2f22ec0a4985defe865852b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a7088ffbe880c803e0d69c369b8dbadea" name="a7088ffbe880c803e0d69c369b8dbadea"></a>
@@ -227,147 +205,6 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a45c1d51c36b4ee9c4bdfc2f3b65cf2bc" name="a45c1d51c36b4ee9c4bdfc2f3b65cf2bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45c1d51c36b4ee9c4bdfc2f3b65cf2bc">&#9670;&#160;</a></span>pFontArrus</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontArrus = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afc60827521f8dbbc36f1aecce1fcd185" name="afc60827521f8dbbc36f1aecce1fcd185"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc60827521f8dbbc36f1aecce1fcd185">&#9670;&#160;</a></span>pFontBookCalendar</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontBookCalendar = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a04d42bd3b92a01a830512a673af7a7f2" name="a04d42bd3b92a01a830512a673af7a7f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04d42bd3b92a01a830512a673af7a7f2">&#9670;&#160;</a></span>pFontBookLloyds</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontBookLloyds = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af050b3ab741a0bcd596fec0a192e0ca2" name="af050b3ab741a0bcd596fec0a192e0ca2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af050b3ab741a0bcd596fec0a192e0ca2">&#9670;&#160;</a></span>pFontBookOnlyShadow</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontBookOnlyShadow = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2f7631964a173039b50259f80bf6f16a" name="a2f7631964a173039b50259f80bf6f16a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f7631964a173039b50259f80bf6f16a">&#9670;&#160;</a></span>pFontBookTitle</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontBookTitle = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ada075e746575ccf941e08fa2d2636951" name="ada075e746575ccf941e08fa2d2636951"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada075e746575ccf941e08fa2d2636951">&#9670;&#160;</a></span>pFontCChar</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontCChar = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9323cb3a480b3f7b76310d78b8bd11f1" name="a9323cb3a480b3f7b76310d78b8bd11f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9323cb3a480b3f7b76310d78b8bd11f1">&#9670;&#160;</a></span>pFontComic</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontComic = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a58be15783993a5541a86ecc68a74fb89" name="a58be15783993a5541a86ecc68a74fb89"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58be15783993a5541a86ecc68a74fb89">&#9670;&#160;</a></span>pFontCreate</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontCreate = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a20125354aa9f9043e5405fc5c9a4898c" name="a20125354aa9f9043e5405fc5c9a4898c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20125354aa9f9043e5405fc5c9a4898c">&#9670;&#160;</a></span>pFontLucida</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontLucida = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2e07a9b4c2f22ec0a4985defe865852b" name="a2e07a9b4c2f22ec0a4985defe865852b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e07a9b4c2f22ec0a4985defe865852b">&#9670;&#160;</a></span>pFontSmallnum</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIFont.html">GUIFont</a>* pFontSmallnum = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
