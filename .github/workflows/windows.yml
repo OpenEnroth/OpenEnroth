@@ -144,11 +144,14 @@ jobs:
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
           xcopy resources dist\ /E/H/C/I
-          
+
       - name: Zip folder for release
         if: inputs.releaseTag != ''
-        run: |
-          Compress-Archive -Path dist -DestinationPath ./${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: zip
+          filename: ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+          path: dist
 
       - name: Publish release
         if: inputs.releaseTag != ''
