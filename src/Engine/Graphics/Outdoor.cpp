@@ -299,21 +299,21 @@ static constexpr IndexedArray<std::array<int, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS
 
 static constexpr IndexedArray<std::array<MapStartPoint, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_arrival_points = {
     // from                      north                south                east                 west
-    {MAP_EMERALD_ISLAND,        {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_HARMONDALE,            {MapStartPoint_South, MapStartPoint_North, MapStartPoint_South, MapStartPoint_East}},
-    {MAP_ERATHIA,               {MapStartPoint_South, MapStartPoint_North, MapStartPoint_West, MapStartPoint_East}},
-    {MAP_TULAREAN_FOREST,       {MapStartPoint_East, MapStartPoint_North, MapStartPoint_Party, MapStartPoint_East}},
-    {MAP_DEYJA,                 {MapStartPoint_West, MapStartPoint_North, MapStartPoint_West, MapStartPoint_North}},
-    {MAP_BRACADA_DESERT,        {MapStartPoint_South, MapStartPoint_Party, MapStartPoint_West, MapStartPoint_Party}},
-    {MAP_CELESTE,               {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_PIT,                   {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_EVENMORN_ISLAND,       {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_MOUNT_NIGHON,          {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_BARROW_DOWNS,          {MapStartPoint_South, MapStartPoint_East, MapStartPoint_South, MapStartPoint_East}},
-    {MAP_LAND_OF_THE_GIANTS,    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_TATALIA,               {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_West, MapStartPoint_Party}},
-    {MAP_AVLEE,                 {MapStartPoint_Party, MapStartPoint_North, MapStartPoint_North, MapStartPoint_Party}},
-    {MAP_SHOALS,                {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
+    {MAP_EMERALD_ISLAND,        {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_HARMONDALE,            {MAP_START_POINT_SOUTH, MAP_START_POINT_NORTH, MAP_START_POINT_SOUTH, MAP_START_POINT_EAST}},
+    {MAP_ERATHIA,               {MAP_START_POINT_SOUTH, MAP_START_POINT_NORTH, MAP_START_POINT_WEST,  MAP_START_POINT_EAST}},
+    {MAP_TULAREAN_FOREST,       {MAP_START_POINT_EAST,  MAP_START_POINT_NORTH, MAP_START_POINT_PARTY, MAP_START_POINT_EAST}},
+    {MAP_DEYJA,                 {MAP_START_POINT_WEST,  MAP_START_POINT_NORTH, MAP_START_POINT_WEST,  MAP_START_POINT_NORTH}},
+    {MAP_BRACADA_DESERT,        {MAP_START_POINT_SOUTH, MAP_START_POINT_PARTY, MAP_START_POINT_WEST,  MAP_START_POINT_PARTY}},
+    {MAP_CELESTE,               {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_PIT,                   {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_EVENMORN_ISLAND,       {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_MOUNT_NIGHON,          {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_BARROW_DOWNS,          {MAP_START_POINT_SOUTH, MAP_START_POINT_EAST,  MAP_START_POINT_SOUTH, MAP_START_POINT_EAST}},
+    {MAP_LAND_OF_THE_GIANTS,    {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_TATALIA,               {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_WEST,  MAP_START_POINT_PARTY}},
+    {MAP_AVLEE,                 {MAP_START_POINT_PARTY, MAP_START_POINT_NORTH, MAP_START_POINT_NORTH, MAP_START_POINT_PARTY}},
+    {MAP_SHOALS,                {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
 };
 
 //----- (0048902E) --------------------------------------------------------
@@ -352,14 +352,14 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
         if (wholePartyUnderwaterSuitEquipped) {
             uDefaultTravelTime_ByFoot = 1;
             *pOut = "out15.odm";  // Shoals
-            uLevel_StartingPointType = MapStartPoint_East;
+            uLevel_StartingPointType = MAP_START_POINT_EAST;
             pParty->uFlags &= 0xFD7Bu; // ~0x0284
             return true;
         }
     } else if (mapNumberAsInt == MAP_SHOALS && direction == 3) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
         *pOut = "out14.odm";  // Avlee
-        uLevel_StartingPointType = MapStartPoint_West;
+        uLevel_StartingPointType = MAP_START_POINT_WEST;
         pParty->uFlags &= 0xFD7Bu; // ~0x0284
         return true;
     }

@@ -895,7 +895,7 @@ void Game::processQueuedMessages() {
                     if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         onMapLeave();
-                        Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MapStartPoint_Party);
+                        Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                     } else {
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();

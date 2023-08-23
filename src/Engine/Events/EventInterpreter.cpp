@@ -211,7 +211,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 }
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                Transition_StopSound_Autosave(ir.str, MapStartPoint_Party);
+                Transition_StopSound_Autosave(ir.str, MAP_START_POINT_PARTY);
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {

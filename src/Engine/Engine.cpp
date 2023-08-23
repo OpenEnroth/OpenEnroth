@@ -1120,7 +1120,7 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.z = 100;
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
-    uLevel_StartingPointType = MapStartPoint_Party;
+    uLevel_StartingPointType = MAP_START_POINT_PARTY;
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }
@@ -1843,6 +1843,6 @@ void TeleportToNWCDungeon() {
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-    Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
+    Transition_StopSound_Autosave("nwc.blv", MAP_START_POINT_PARTY);
     current_screen_type = SCREEN_GAME;
 }

@@ -117,11 +117,11 @@ enum class MAP_TREASURE_LEVEL : int8_t {
 using enum MAP_TREASURE_LEVEL;
 
 enum class MapStartPoint : uint32_t {
-    MapStartPoint_Party = 0,
-    MapStartPoint_North = 1,
-    MapStartPoint_South = 2,
-    MapStartPoint_East = 3,
-    MapStartPoint_West = 4
+    MAP_START_POINT_PARTY = 0,
+    MAP_START_POINT_NORTH = 1,
+    MAP_START_POINT_SOUTH = 2,
+    MAP_START_POINT_EAST = 3,
+    MAP_START_POINT_WEST = 4
 };
 using enum MapStartPoint;
 MM_DECLARE_SERIALIZATION_FUNCTIONS(MapStartPoint)
