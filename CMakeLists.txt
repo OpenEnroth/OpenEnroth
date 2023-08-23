@@ -1,14 +1,5 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
-# Setting CMAKE_OSX_DEPLOYMENT_TARGET should go before the project() call.
-if(APPLE)
-    if(CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
-        set (CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "Minimum OS X deployment version" FORCE)
-    else()
-        set (CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment version" FORCE)
-    endif()
-endif()
-
 project("OpenEnroth")
 
 set(CMAKE_CXX_STANDARD 20)
