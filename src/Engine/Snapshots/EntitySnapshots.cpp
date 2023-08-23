@@ -660,7 +660,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     snapshot(src.name, &dst->name);
 
     dst->sex = src.uSex;
-    dst->classType = src.classType;
+    dst->classType = std::to_underlying(src.classType);
     dst->currentFace = src.uCurrentFace;
     dst->might = src.uMight;
     dst->mightBonus = src.uMightBonus;

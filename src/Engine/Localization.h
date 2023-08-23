@@ -466,11 +466,11 @@ class Localization {
         return this->spell_names[index];
     }
 
-    const char *GetClassName(unsigned int index) const {
+    const char *GetClassName(CharacterClassType index) const {
         return this->class_names[index];
     }
 
-    const char *GetClassDescription(unsigned int index) const {
+    const char *GetClassDescription(CharacterClassType index) const {
         return this->class_desciptions[index];
     }
 
@@ -655,8 +655,8 @@ class Localization {
     const char *moon_phase_names[5]{};
     const char *spell_school_names[9]{};
     const char *spell_names[44]{};
-    const char *class_names[36]{};
-    const char *class_desciptions[36]{};
+    IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_names = {{}};
+    IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_desciptions = {{}};
     const char *attribute_names[7]{};
     const char *attribute_descriptions[7]{};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_names = {{}};

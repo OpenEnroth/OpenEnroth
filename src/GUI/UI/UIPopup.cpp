@@ -1911,11 +1911,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreationSelectClass:  // Available
                                                                // Class Info
-                            popup_window.sHint =
-                                localization->GetClassDescription(
-                                    pButton->msg_param);
-                            pStr =
-                                localization->GetClassName(pButton->msg_param);
+                            popup_window.sHint = localization->GetClassDescription(static_cast<CharacterClassType>(pButton->msg_param));
+                            pStr = localization->GetClassName(static_cast<CharacterClassType>(pButton->msg_param));
                             break;
                         case UIMSG_PlayerCreationClickOK:  // OK Info
                             popup_window.sHint = localization->GetString(

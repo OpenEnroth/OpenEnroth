@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdint>
 
+#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 enum class Condition : uint32_t {
@@ -328,10 +329,8 @@ inline std::initializer_list<CharacterSkillType> allMagicSkills() {
     return result;
 }
 
-/*  329 */
-// TODO(Nik-RE-dev): turn it into enum class
 // TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterClassType : uint8_t {
+enum class CharacterClassType : uint8_t {
     CHARACTER_CLASS_KNIGHT = 0,
     CHARACTER_CLASS_CAVALIER = 1,
     CHARACTER_CLASS_CHAMPION = 2,
@@ -369,28 +368,30 @@ enum CharacterClassType : uint8_t {
     CHARACTER_CLASS_ARCHAMGE = 34,
     CHARACTER_CLASS_LICH = 35,
 
-    PLAYER_CLASS_FIRST = CHARACTER_CLASS_KNIGHT,
-    PLAYER_CLASS_LAST = CHARACTER_CLASS_LICH
+    CHARACTER_CLASS_FIRST = CHARACTER_CLASS_KNIGHT,
+    CHARACTER_CLASS_LAST = CHARACTER_CLASS_LICH
 };
+using enum CharacterClassType;
 
 inline CharacterClassType getTier1Class(CharacterClassType classType) {
-    int tier = classType % 4;
-    return (CharacterClassType)(classType - tier);
+    return static_cast<CharacterClassType>(std::to_underlying(classType) & ~3);
 }
 
 inline CharacterClassType getTier2Class(CharacterClassType classType) {
-    int tier = classType % 4;
-    return (CharacterClassType)(classType - tier + 1);
+    return static_cast<CharacterClassType>((std::to_underlying(classType) & ~3) + 1);
 }
 
 inline CharacterClassType getTier3LightClass(CharacterClassType classType) {
-    int tier = classType % 4;
-    return (CharacterClassType)(classType - tier + 2);
+    return static_cast<CharacterClassType>((std::to_underlying(classType) & ~3) + 2);
 }
 
 inline CharacterClassType getTier3DarkClass(CharacterClassType classType) {
-    int tier = classType % 4;
-    return (CharacterClassType)(classType - tier + 3);
+    return static_cast<CharacterClassType>((std::to_underlying(classType) & ~3) + 3);
+}
+
+inline int getClassTier(CharacterClassType classType) {
+    int index = (std::to_underlying(classType) & 3);
+    return index == 3 ? 3 : index + 1;
 }
 
 /**
@@ -403,11 +404,11 @@ inline CharacterClassType getTier3DarkClass(CharacterClassType classType) {
  * @param classType     Character class.
  */
 inline Segment<CharacterClassType> getClassPromotions(CharacterClassType classType) {
-    int tier = classType % 4;
+    int tier = getClassTier(classType);
 
-    if (tier == 0) {
+    if (tier == 1) {
         return {getTier2Class(classType), getTier3DarkClass(classType)};
-    } else if (tier == 1) {
+    } else if (tier == 2) {
         return {getTier3LightClass(classType), getTier3DarkClass(classType)};
     } else {
         return {}; // tier 3 max
