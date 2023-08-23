@@ -99,7 +99,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
     // Bonus range for Standard by Level
     strtokSkipLines(5);
-    for (ITEM_TREASURE_LEVEL i : bonusRanges.indices()) {  // counted from 1
+    for (ItemTreasureLevel i : bonusRanges.indices()) {  // counted from 1
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() == 4 && "Invalid number of tokens");
@@ -218,7 +218,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
     // ChanceByTreasureLvl Summ - to calculate chance
     memset(&chanceByTreasureLevelSums, 0, 24);
-    for (ITEM_TREASURE_LEVEL i : chanceByTreasureLevelSums.indices())
+    for (ItemTreasureLevel i : chanceByTreasureLevelSums.indices())
         for (ItemId j : pItems.indices())
             chanceByTreasureLevelSums[i] += pItems[j].uChanceByTreasureLvl[i];
 
@@ -365,7 +365,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     }
 }
 
-void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
+void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
     assert(isRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43

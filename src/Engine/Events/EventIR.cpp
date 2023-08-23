@@ -1032,7 +1032,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.npc_move_descr.location_id = EVT_DWORD(_evt->v9);
             break;
         case EVENT_GiveItem:
-            ir.data.give_item_descr.treasure_level = (ITEM_TREASURE_LEVEL)_evt->v5;
+            ir.data.give_item_descr.treasure_level = (ItemTreasureLevel)_evt->v5;
             ir.data.give_item_descr.treasure_type = _evt->v6;
             ir.data.give_item_descr.item_id = (ItemId)EVT_DWORD(_evt->v7);
             break;

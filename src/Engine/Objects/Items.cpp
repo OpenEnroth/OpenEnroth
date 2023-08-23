@@ -778,7 +778,7 @@ bool ItemGen::MerchandiseTest(HOUSE_ID houseId) {
     return test;
 }
 
-Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
+Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
     // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
     // Original offset was 0x004E8168.
     static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
@@ -795,5 +795,5 @@ Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasure
     int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_VALID);
     int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_FIRST);
     Segment<int> result = mapping[itemIdx][mapIdx];
-    return {ITEM_TREASURE_LEVEL(result.front()), ITEM_TREASURE_LEVEL(result.back())};
+    return {ItemTreasureLevel(result.front()), ItemTreasureLevel(result.back())};
 }

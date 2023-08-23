@@ -546,7 +546,7 @@ void GenerateItemsInChest() {
                 currItem->placedInChest = false;
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
-                ITEM_TREASURE_LEVEL resultTreasureLevel = grng->randomSample(
+                ItemTreasureLevel resultTreasureLevel = grng->randomSample(
                     RemapTreasureLevel(randomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
                     for (int k = 0; k < additionaItemCount; k++) {

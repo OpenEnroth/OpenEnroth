@@ -154,7 +154,7 @@ class EventIR {
             int group;
         } npc_groups_descr;
         struct {
-            ITEM_TREASURE_LEVEL treasure_level;
+            ItemTreasureLevel treasure_level;
             int treasure_type;
             ItemId item_id;
         } give_item_descr;

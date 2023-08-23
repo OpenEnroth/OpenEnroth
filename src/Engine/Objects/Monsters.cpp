@@ -604,7 +604,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                             } while (str_pos < str_len);
 
                             pInfos[curr_rec_num].uTreasureLevel =
-                                ITEM_TREASURE_LEVEL(test_string[str_pos + 1] - '0');
+                                ItemTreasureLevel(test_string[str_pos + 1] - '0');
                             item_name = &test_string[str_pos + 2];
                             if (*item_name) {
                                 if (iequals(item_name, "WEAPON"))

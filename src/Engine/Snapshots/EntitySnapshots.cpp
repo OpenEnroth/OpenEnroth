@@ -1241,7 +1241,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uTreasureDropChance = src.pMonsterInfo.treasureDropChance;
     dst->monsterInfo.uTreasureDiceRolls = src.pMonsterInfo.treasureDiceRolls;
     dst->monsterInfo.uTreasureDiceSides = src.pMonsterInfo.treasureDiceSides;
-    dst->monsterInfo.uTreasureLevel = static_cast<ITEM_TREASURE_LEVEL>(src.pMonsterInfo.treasureLevel);
+    dst->monsterInfo.uTreasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
     dst->monsterInfo.uTreasureType = src.pMonsterInfo.treasureType;
     dst->monsterInfo.uFlying = src.pMonsterInfo.flying;
     dst->monsterInfo.uMovementType = src.pMonsterInfo.movementType;
@@ -1476,7 +1476,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
         dst->uMonsterIndex = src.uIndex;
     } else {
         assert(dst->uKind == OBJECT_Item);
-        dst->uItemIndex = static_cast<ITEM_TREASURE_LEVEL>(src.uIndex);
+        dst->uItemIndex = static_cast<ItemTreasureLevel>(src.uIndex);
         dst->uMonsterIndex = 0;
     }
     dst->uAttributes = src.uAttributes;

@@ -132,7 +132,7 @@ enum class ITEM_MATERIAL : uint8_t {
 };
 using enum ITEM_MATERIAL;
 
-enum class ITEM_TREASURE_LEVEL : int8_t {
+enum class ItemTreasureLevel : int8_t {
     ITEM_TREASURE_LEVEL_INVALID = 0,
     ITEM_TREASURE_LEVEL_1 = 1,
     ITEM_TREASURE_LEVEL_2 = 2,
@@ -151,9 +151,9 @@ enum class ITEM_TREASURE_LEVEL : int8_t {
     ITEM_TREASURE_LEVEL_FIRST_RANDOM = ITEM_TREASURE_LEVEL_1,
     ITEM_TREASURE_LEVEL_LAST_RANDOM = ITEM_TREASURE_LEVEL_6,
 };
-using enum ITEM_TREASURE_LEVEL;
+using enum ItemTreasureLevel;
 
-inline bool isRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
+inline bool isRandomTreasureLevel(ItemTreasureLevel level) {
     return level >= ITEM_TREASURE_LEVEL_FIRST_RANDOM && level <= ITEM_TREASURE_LEVEL_LAST_RANDOM;
 }
 
@@ -1068,9 +1068,9 @@ inline bool isRandomItem(ItemId type) {
     return type >= ITEM_FIRST_RANDOM && type <= ITEM_LAST_RANDOM;
 }
 
-inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ItemId type) {
+inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {
     assert(isRandomItem(type));
-    return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
+    return ItemTreasureLevel(-std::to_underlying(type));
 }
 
 inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
