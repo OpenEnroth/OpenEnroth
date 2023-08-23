@@ -22,20 +22,7 @@ struct ItemEnchantment {  // Bonus|Sta|Of
                           // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
     std::string pBonusStat;
     std::string pOfName;
-    /*	union{
-                    struct {
-                            unsigned char to_arm;
-                            unsigned char to_shld;
-                            unsigned char to_helm;
-                            unsigned char to_belt;
-                            unsigned char to_cape;
-                            unsigned char to_gaunt;
-                            unsigned char to_boot;
-                            unsigned char to_ring;
-                            unsigned char to_amul;
-                            }; */
     IndexedArray<unsigned char, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> chancesByItemType;
-    // };
 };
 
 struct ItemSpecialEnchantment {  // 1Ch
