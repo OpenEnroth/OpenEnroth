@@ -52,8 +52,8 @@ jobs:
           ref: '${{ inputs.myCommit }}'
 
       # Data cache is created by Populate Data Cache build.
-      - name: Check for Data cache
-        id: check-for-data-cache
+      - name: Restore data cache
+        id: restore-data-cache
         uses: actions/cache/restore@v3
         with:
           path: |
@@ -63,7 +63,7 @@ jobs:
 
       # If datacache is restored than we will be running gametest and need shaders.
       - name: Copy shaders
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         run: |
           xcopy resources OpenEnroth_GameData\mm7 /E/H/C/I
 
@@ -132,7 +132,7 @@ jobs:
 
       # Only run gametest if we restored game data.
       - name: Run game tests
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           ninja GameTest_Headless
@@ -147,10 +147,8 @@ jobs:
           
       - name: Zip folder for release
         if: inputs.releaseTag != ''
-        run: >-
-          Compress-Archive -Path dist -DestinationPath ./Windows_${{
-          inputs.releaseTag }}_${{ matrix.configuration }}_${{ matrix.architecture
-          }}.zip
+        run: |
+          Compress-Archive -Path dist -DestinationPath ./${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
 
       - name: Publish release
         if: inputs.releaseTag != ''
