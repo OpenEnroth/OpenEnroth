@@ -10,7 +10,7 @@ on:
         default: ''
         type: string
       releaseTag:
-        description: Tag for a release to create
+        description: Release tag
         required: false
         default: ''
         type: string
@@ -22,7 +22,7 @@ on:
         default: ''
         type: string
       releaseTag:
-        description: Tag for a release to create
+        description: Release tag
         required: false
         default: ''
         type: string
@@ -52,8 +52,8 @@ jobs:
           ref: '${{ inputs.myCommit }}'
 
       # Data cache is created by Populate Data Cache build.
-      - name: Check for Data cache
-        id: check-for-data-cache
+      - name: Restore data cache
+        id: restore-data-cache
         uses: actions/cache/restore@v3
         with:
           path: |
@@ -63,7 +63,7 @@ jobs:
 
       # If datacache is restored than we will be running gametest and need shaders.
       - name: Copy shaders
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         run: |
           xcopy resources OpenEnroth_GameData\mm7 /E/H/C/I
 
@@ -82,13 +82,13 @@ jobs:
           key: windows-ccache
 
       # Chocolatey uses shims so create the shim if we used the cached ccache exe
-      - name: add ccache shim
+      - name: Add ccache shim
         if: steps.ccache-cache.outputs.cache-hit == 'true'
         run: |
           C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
 
       # If ccache can't be restored from cache upgrade it
-      - name: update ccache
+      - name: Update ccache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
           choco upgrade ccache --version=4.8.2
@@ -103,7 +103,7 @@ jobs:
           key: windows-ccache
 
       # GH action for ccache, only save cache if its on master branch or has a release build tag
-      - name: CCache
+      - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
         with:
           key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
@@ -111,7 +111,7 @@ jobs:
           max-size: 100M
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
-      - name: set ccache config values
+      - name: Set ccache config values
         run: |
           ccache --set-config=hash_dir=false
 
@@ -125,47 +125,44 @@ jobs:
         run: |
           ninja -v
 
-      - name: Tests
+      - name: Run unit tests
         working-directory: build
         run: |
           ninja UnitTest
 
       # Only run gametest if we restored game data.
-      - name: GameTest
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+      - name: Run game tests
+        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           ninja GameTest_Headless
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
-      - name: Prepare files for packaging
+      - name: Prepare files for release
         run: |
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
           xcopy resources dist\ /E/H/C/I
           
-      - name: Zip Folder For Release
+      - name: Zip folder for release
         if: inputs.releaseTag != ''
-        run: >-
-          Compress-Archive -Path dist -DestinationPath ./Windows_${{
-          inputs.releaseTag }}_${{ matrix.configuration }}_${{ matrix.architecture
-          }}.zip
+        run: |
+          Compress-Archive -Path dist -DestinationPath ./${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
 
-      - name: Publish Release
+      - name: Publish release
         if: inputs.releaseTag != ''
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
           tag_name: '${{ inputs.releaseTag }}'
-          files: >-
-            ${{ runner.os }}_${{ inputs.releaseTag }}_${{ matrix.configuration }}_${{
-            matrix.architecture }}.zip
+          files: |
+            ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
 
       - name: Check dependencies
         run: |
           dumpbin /imports build\src\Bin\OpenEnroth\OpenEnroth.exe
 
-      - name: cleanup ccache
-        run: >
+      - name: Cleanup ccache
+        run: |
           ccache -c
