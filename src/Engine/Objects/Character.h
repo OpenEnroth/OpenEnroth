@@ -211,7 +211,7 @@ class Character {
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment) const;
-    bool WearsItem(ITEM_TYPE item_id, ItemSlot equip_type) const;
+    bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -279,23 +279,23 @@ class Character {
     /**
      * @offset 0x492528
      */
-    bool canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const;
+    bool canFitItem(unsigned int uSlot, ItemId uItemID) const;
 
     /**
      * @offset 0x4925E6
      */
     int findFreeInventoryListSlot() const;
-    int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
+    int CreateItemInInventory(unsigned int uSlot, ItemId uItemID);
     int HasSkill(CharacterSkillType skill) const;
-    void WearItem(ITEM_TYPE uItemID);
-    int AddItem(int uSlot, ITEM_TYPE uItemID);
+    void WearItem(ItemId uItemID);
+    int AddItem(int uSlot, ItemId uItemID);
     int AddItem2(int uSlot, ItemGen *Src);
     int CreateItemInInventory2(unsigned int index, ItemGen *Src);
-    void PutItemArInventoryIndex(ITEM_TYPE uItemID, int itemListPos, int uSlot);
+    void PutItemArInventoryIndex(ItemId uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct() const;
     bool CanSteal() const;
-    bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const;
+    bool CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const;
     void SetCondition(Condition condition, int blockable);
 
     /**
@@ -333,7 +333,7 @@ class Character {
     /**
      * @offset 0x43EE15
      */
-    bool hasItem(ITEM_TYPE uItemID, bool checkHeldItem);
+    bool hasItem(ItemId uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
     bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);
@@ -342,7 +342,7 @@ class Character {
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
-    bool wearsItemAnywhere(ITEM_TYPE item_id) const;
+    bool wearsItemAnywhere(ItemId item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillReaction();
     void PlayAwardSound_Anim();

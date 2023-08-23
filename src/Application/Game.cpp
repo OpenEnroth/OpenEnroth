@@ -1757,7 +1757,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for(size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
+                    ItemId pItemID = grng->randomSample(allSpawnableItems());
                     if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                         if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
                             pAudioPlayer->playUISound(SOUND_error);
@@ -1774,7 +1774,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for (size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
+                    ItemId pItemID = grng->randomSample(allSpawnableItems());
                     // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                     //   (item_id - 40015 + 1)) {
                     if (!pParty->activeCharacter().AddItem(-1, pItemID)) {

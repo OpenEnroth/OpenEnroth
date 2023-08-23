@@ -1034,7 +1034,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
         case EVENT_GiveItem:
             ir.data.give_item_descr.treasure_level = (ITEM_TREASURE_LEVEL)_evt->v5;
             ir.data.give_item_descr.treasure_type = _evt->v6;
-            ir.data.give_item_descr.item_id = (ITEM_TYPE)EVT_DWORD(_evt->v7);
+            ir.data.give_item_descr.item_id = (ItemId)EVT_DWORD(_evt->v7);
             break;
         case EVENT_ChangeEvent:
             ir.data.event_id = EVT_DWORD(_evt->v5);
@@ -1064,7 +1064,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_NPCSetItem:
             ir.data.npc_item_descr.id = EVT_DWORD(_evt->v5);
-            ir.data.npc_item_descr.item = (ITEM_TYPE)EVT_DWORD(_evt->v9);
+            ir.data.npc_item_descr.item = (ItemId)EVT_DWORD(_evt->v9);
             ir.data.npc_item_descr.is_give = _evt->v13;
             break;
         case EVENT_SetNPCGreeting:
@@ -1112,7 +1112,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_SetActorItem:
             ir.data.npc_item_descr.id = EVT_DWORD(_evt->v5);
-            ir.data.npc_item_descr.item = (ITEM_TYPE)EVT_DWORD(_evt->v9);
+            ir.data.npc_item_descr.item = (ItemId)EVT_DWORD(_evt->v9);
             ir.data.npc_item_descr.is_give = _evt->v13;
             break;
         case EVENT_OnDateTimer:

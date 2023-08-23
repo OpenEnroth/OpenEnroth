@@ -345,7 +345,7 @@ void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HOUSE_
 //----- (0043EEF3) --------------------------------------------------------
 bool Character::NothingOrJustBlastersEquipped() const {
     signed int item_idx;
-    ITEM_TYPE item_id;
+    ItemId item_id;
 
     // scan through all equipped items
     for (ItemSlot i : allItemSlots()) {
@@ -461,7 +461,7 @@ bool Character::CanSteal() const {
 }
 
 //----- (00492C4E) --------------------------------------------------------
-bool Character::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
+bool Character::CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const {
     switch (uItemID) {
         case ITEM_RELIC_ETHRICS_STAFF:
         case ITEM_RELIC_OLD_NICK:
@@ -630,7 +630,7 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
-bool Character::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
+bool Character::canFitItem(unsigned int uSlot, ItemId uItemID) const {
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
     unsigned int slotWidth = GetSizeInInventorySlots(img->width());
     unsigned int slotHeight = GetSizeInInventorySlots(img->height());
@@ -661,7 +661,7 @@ int Character::findFreeInventoryListSlot() const {
 }
 
 //----- (00492600) --------------------------------------------------------
-int Character::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
+int Character::CreateItemInInventory(unsigned int uSlot, ItemId uItemID) {
     signed int freeSlot = findFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
@@ -690,7 +690,7 @@ int Character::HasSkill(CharacterSkillType skill) const {
 }
 
 //----- (00492745) --------------------------------------------------------
-void Character::WearItem(ITEM_TYPE uItemID) {
+void Character::WearItem(ItemId uItemID) {
     int item_indx = findFreeInventoryListSlot();
 
     if (item_indx != -1) {
@@ -702,7 +702,7 @@ void Character::WearItem(ITEM_TYPE uItemID) {
 }
 
 //----- (004927A8) --------------------------------------------------------
-int Character::AddItem(int index, ITEM_TYPE uItemID) {
+int Character::AddItem(int index, ItemId uItemID) {
     if (uItemID == ITEM_NULL) {
         return 0;
     }
@@ -769,7 +769,7 @@ int Character::CreateItemInInventory2(unsigned int index,
 
 //----- (0049298B) --------------------------------------------------------
 void Character::PutItemArInventoryIndex(
-    ITEM_TYPE uItemID, int itemListPos,
+    ItemId uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
@@ -1087,7 +1087,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             ItemGen *mainHandItemGen = this->GetMainHandItem();
-            ITEM_TYPE itemId = mainHandItemGen->uItemID;
+            ItemId itemId = mainHandItemGen->uItemID;
             bool addOneDice = false;
             if (pItemTable->pItems[itemId].uSkillType == CHARACTER_SKILL_SPEAR &&
                 !this->pEquipment
@@ -1132,7 +1132,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                                unsigned int uTargetActorID,
                                                bool addOneDice) {
-    ITEM_TYPE itemId = weapon->uItemID;
+    ItemId itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
 
     if (addOneDice) diceCount++;
@@ -1462,13 +1462,13 @@ bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Character::WearsItem(ITEM_TYPE item_id, ItemSlot equip_type) const {
+bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
     // check aginst specific item and slot
     assert(equip_type != ITEM_SLOT_INVALID && "Invalid item slot passed to WearsItem");
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Character::wearsItemAnywhere(ITEM_TYPE item_id) const {
+bool Character::wearsItemAnywhere(ItemId item_id) const {
     for (ItemSlot i : allItemSlots())
         if (WearsItem(item_id, i))
             return true;
@@ -1575,7 +1575,7 @@ int Character::StealFromActor(
             tempItem.Reset();
 
             int randslot = grng->random(4);
-            ITEM_TYPE carriedItemId = actroPtr->carriedItemId;
+            ItemId carriedItemId = actroPtr->carriedItemId;
 
             // check if we have an item to steal
             if (carriedItemId != ITEM_NULL || actroPtr->items[randslot].uItemID != ITEM_NULL && !actroPtr->items[randslot].isGold()) {
@@ -4190,11 +4190,11 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
             for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                if (pInventoryItemList[i].uItemID == ITEM_TYPE(pValue)) {
+                if (pInventoryItemList[i].uItemID == ItemId(pValue)) {
                     return true;
                 }
             }
-            return pParty->pPickedItem.uItemID == ITEM_TYPE(pValue);
+            return pParty->pPickedItem.uItemID == ItemId(pValue);
 
         case VAR_Hour:
             return pParty->GetPlayingTime().GetHoursOfDay() == pValue;
@@ -4456,7 +4456,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             v4 = 0;
             for (Character &character : pParty->pCharacters) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
-                    ITEM_TYPE itemId;
+                    ItemId itemId;
 
                     if (invPos < INVENTORY_SLOT_COUNT) {
                         itemId = character.pInventoryItemList[invPos].uItemID;
@@ -4533,7 +4533,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_ItemEquipped:
             for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i) &&
-                    GetNthEquippedIndexItem(i)->uItemID == ITEM_TYPE(pValue)) {
+                    GetNthEquippedIndexItem(i)->uItemID == ItemId(pValue)) {
                     return true;
                 }
             }
@@ -4663,11 +4663,11 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
-            item.uItemID = ITEM_TYPE(var_value);
+            item.uItemID = ItemId(var_value);
             item.uAttributes = ITEM_IDENTIFIED;
             pParty->setHoldingItem(&item);
-            if (isSpawnableArtifact(ITEM_TYPE(var_value)))
-                pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = true;
+            if (isSpawnableArtifact(ItemId(var_value)))
+                pParty->pIsArtifactFound[ItemId(var_value)] = true;
             return;
         case VAR_FixedGold:
             pParty->SetGold(var_value);
@@ -5273,10 +5273,10 @@ void Character::AddVariable(VariableType var_type, signed int val) {
         case VAR_PlayerItemInHands:
             item.Reset();
             item.uAttributes = ITEM_IDENTIFIED;
-            item.uItemID = ITEM_TYPE(val);
-            if (isSpawnableArtifact(ITEM_TYPE(val))) {
-                pParty->pIsArtifactFound[ITEM_TYPE(val)] = true;
-            } else if (isWand(ITEM_TYPE(val))) {
+            item.uItemID = ItemId(val);
+            if (isSpawnableArtifact(ItemId(val))) {
+                pParty->pIsArtifactFound[ItemId(val)] = true;
+            } else if (isWand(ItemId(val))) {
                 item.uNumCharges = grng->random(6) + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
@@ -5789,7 +5789,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
                 if (id_ > 0) {
                     if (this->pInventoryItemList[this->pEquipment.pIndices[i] -
                                                  1]
-                            .uItemID == ITEM_TYPE(pValue)) {
+                            .uItemID == ItemId(pValue)) {
                         this->pEquipment.pIndices[i] = 0;
                     }
                 }
@@ -5797,13 +5797,13 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
                 int id_ = this->pInventoryMatrix[i];
                 if (id_ > 0) {
-                    if (this->pInventoryItemList[id_ - 1].uItemID == ITEM_TYPE(pValue)) {
+                    if (this->pInventoryItemList[id_ - 1].uItemID == ItemId(pValue)) {
                         RemoveItemAtInventoryIndex(i);
                         return;
                     }
                 }
             }
-            if (pParty->pPickedItem.uItemID == ITEM_TYPE(pValue)) {
+            if (pParty->pPickedItem.uItemID == ItemId(pValue)) {
                 mouse->RemoveHoldingItem();
                 return;
             }
@@ -6362,7 +6362,7 @@ bool Character::hasUnderwaterSuitEquipped() {
     return true;
 }
 
-bool Character::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
+bool Character::hasItem(ItemId uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
         for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
@@ -6798,7 +6798,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 }
 
 void Character::OnInventoryLeftClick() {
-    ITEM_TYPE pickedItemId;  // esi@12
+    ItemId pickedItemId;  // esi@12
     unsigned int invItemIndex;  // eax@12
     unsigned int itemPos;       // eax@18
     ItemGen tmpItem;            // [sp+Ch] [bp-3Ch]@1
@@ -7160,10 +7160,10 @@ void Character::_42ECB5_CharacterAttacksActor() {
         bow_idx = 0;
 
     // v32 = 0;
-    ITEM_TYPE wand_item_id = ITEM_NULL;
+    ItemId wand_item_id = ITEM_NULL;
     // v33 = 0;
 
-    ITEM_TYPE laser_weapon_item_id = ITEM_NULL;
+    ItemId laser_weapon_item_id = ITEM_NULL;
 
     int main_hand_idx = character->pEquipment.uMainHand;
     if (main_hand_idx) {
@@ -7449,7 +7449,7 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
 //----- (00490EEE) --------------------------------------------------------
 MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
-    ITEM_TYPE idemId;   // edx@1
+    ItemId idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
     float multiplier;      // ST04_4@26
     int price;             // edi@26

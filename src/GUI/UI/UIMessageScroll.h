@@ -8,7 +8,7 @@
 
 class GUIWindow_MessageScroll : public GUIWindow {
  public:
-    GUIWindow_MessageScroll(Pointi position, Sizei dimensions, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
+    GUIWindow_MessageScroll(Pointi position, Sizei dimensions, ItemId scroll_type, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_Scroll, position, dimensions, 0, hint) {
         assert(isMessageScroll(scroll_type));
 
@@ -23,10 +23,10 @@ class GUIWindow_MessageScroll : public GUIWindow {
 
     virtual void Update() override;
 
-    ITEM_TYPE scroll_type = ITEM_NULL;
+    ItemId scroll_type = ITEM_NULL;
 };
 
 /**
  * @offset 0x467F48
  */
-void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
+void CreateMsgScrollWindow(ItemId mscroll_id);

@@ -44,7 +44,7 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
 
     items.emplace_back("NULL", "");
 
-    for(ITEM_TYPE i : itemTable.pItems.indices()) {
+    for(ItemId i : itemTable.pItems.indices()) {
         const ItemDesc &desc = itemTable.pItems[i];
         std::string icon = desc.iconName;
         std::string name = desc.name;

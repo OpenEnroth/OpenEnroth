@@ -6,7 +6,7 @@
 #include "Engine/Party.h"
 
 struct ConditionEquipment {
-    ITEM_TYPE item = ITEM_NULL;
+    ItemId item = ITEM_NULL;
     ItemSlot slot = ITEM_SLOT_INVALID;
 };
 
@@ -26,11 +26,11 @@ struct ConditionTableEntry {
     constexpr ConditionTableEntry() = default;
     constexpr ConditionTableEntry(ConditionFlags flags,
                                   ITEM_ENCHANTMENT enchantment = ITEM_ENCHANTMENT_NULL,
-                                  ITEM_TYPE item1 = ITEM_NULL,
+                                  ItemId item1 = ITEM_NULL,
                                   ItemSlot slot1 = ITEM_SLOT_INVALID,
-                                  ITEM_TYPE item2 = ITEM_NULL,
+                                  ItemId item2 = ITEM_NULL,
                                   ItemSlot slot2 = ITEM_SLOT_INVALID,
-                                  ITEM_TYPE item3 = ITEM_NULL,
+                                  ItemId item3 = ITEM_NULL,
                                   ItemSlot slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
         flags = flags;
         enchantment = enchantment;

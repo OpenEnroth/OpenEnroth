@@ -164,7 +164,7 @@ inline bool isRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
  *
  * @see runItemIdCodeGen
  */
-enum class ITEM_TYPE : int32_t {
+enum class ItemId : int32_t {
     ITEM_NULL = 0,
     ITEM_CRUDE_LONGSWORD = 1,
     ITEM_ELVEN_SABER = 2,
@@ -1018,7 +1018,7 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_SPAWNABLE = ITEM_499,
 };
-using enum ITEM_TYPE;
+using enum ItemId;
 
 /**
  * Checks if item is a regular item - a weapon or equipment that's not a quest item or an artifact.
@@ -1028,47 +1028,47 @@ using enum ITEM_TYPE;
  * @param type                          Item type to check.
  * @return                              Whether the provided item is a regular item.
  */
-inline bool isRegular(ITEM_TYPE type) {
+inline bool isRegular(ItemId type) {
     return type >= ITEM_FIRST_REGULAR && type <= ITEM_LAST_REGULAR;
 }
 
-inline bool isRecipe(ITEM_TYPE type) {
+inline bool isRecipe(ItemId type) {
     return type >= ITEM_FIRST_RECIPE && type <= ITEM_LAST_RECIPE;
 }
 
-inline bool isWand(ITEM_TYPE type) {
+inline bool isWand(ItemId type) {
     return type >= ITEM_FIRST_WAND && type <= ITEM_LAST_WAND;
 }
 
-inline bool isPotion(ITEM_TYPE type) {
+inline bool isPotion(ItemId type) {
     return type >= ITEM_FIRST_POTION && type <= ITEM_LAST_POTION;
 }
 
-inline bool isReagent(ITEM_TYPE type) {
+inline bool isReagent(ItemId type) {
     return type >= ITEM_FIRST_REAGENT && type <= ITEM_LAST_REAGENT;
 }
 
-inline bool isEnchantingPotion(ITEM_TYPE type) {
+inline bool isEnchantingPotion(ItemId type) {
     return type >= ITEM_POTION_FLAMING && type <= ITEM_POTION_SWIFT || type == ITEM_POTION_SLAYING;
 }
 
-inline bool isMessageScroll(ITEM_TYPE type) {
+inline bool isMessageScroll(ItemId type) {
     return type >= ITEM_FIRST_MESSAGE_SCROLL && type <= ITEM_LAST_MESSAGE_SCROLL;
 }
 
-inline bool isArtifact(ITEM_TYPE type) {
+inline bool isArtifact(ItemId type) {
     return type >= ITEM_FIRST_ARTIFACT && type <= ITEM_LAST_ARTIFACT;
 }
 
-inline bool isSpawnableArtifact(ITEM_TYPE type) {
+inline bool isSpawnableArtifact(ItemId type) {
     return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
 }
 
-inline bool isRandomItem(ITEM_TYPE type) {
+inline bool isRandomItem(ItemId type) {
     return type >= ITEM_FIRST_RANDOM && type <= ITEM_LAST_RANDOM;
 }
 
-inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ITEM_TYPE type) {
+inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ItemId type) {
     assert(isRandomItem(type));
     return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
 }
@@ -1089,17 +1089,17 @@ inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
     }
 }
 
-inline Segment<ITEM_TYPE> spellbooksOfSchool(DAMAGE_TYPE damage, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+inline Segment<ItemId> spellbooksOfSchool(DAMAGE_TYPE damage, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
     assert(damage != DMGT_PHISYCAL && damage != DMGT_MAGICAL);
     int spellSchoolSequential = (damage >= DMGT_SPIRIT) ? std::to_underlying(damage) - 2 : std::to_underlying(damage);
     int firstSpell = std::to_underlying(ITEM_FIRST_SPELL_BOOK);
     int numSpells = spellCountForMastery(maxMastery);
     int firstSpellInSchool = firstSpell + 11 * spellSchoolSequential;
     int lastSpellInSchool = firstSpellInSchool + numSpells - 1;
-    return Segment(ITEM_TYPE(firstSpellInSchool), ITEM_TYPE(lastSpellInSchool));
+    return Segment(ItemId(firstSpellInSchool), ItemId(lastSpellInSchool));
 }
 
-inline Segment<ITEM_TYPE> allRecipeScrolls() {
+inline Segment<ItemId> allRecipeScrolls() {
     return Segment(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
 }
 
@@ -1107,7 +1107,7 @@ inline Segment<ITEM_TYPE> allRecipeScrolls() {
  * @return                              Range of all items that can be randomly generated as loot. Note that not all
  *                                      of the entries might actually be valid.
  */
-inline Segment<ITEM_TYPE> allSpawnableItems() {
+inline Segment<ItemId> allSpawnableItems() {
     return Segment(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
 }
 
@@ -1117,15 +1117,15 @@ inline Segment<ITEM_TYPE> allSpawnableItems() {
  *                                      generated this way, e.g. Hermes' Sandals can only be picked up from a
  *                                      Mega Dragon's corpse.
  */
-inline Segment<ITEM_TYPE> allSpawnableArtifacts() {
+inline Segment<ItemId> allSpawnableArtifacts() {
     return Segment(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
 }
 
 /**
  * @return                              List of lowest level (power=1) alchemical reagents.
  */
-inline std::initializer_list<ITEM_TYPE> allLevel1Reagents() {
-    static constexpr std::initializer_list<ITEM_TYPE> result = {
+inline std::initializer_list<ItemId> allLevel1Reagents() {
+    static constexpr std::initializer_list<ItemId> result = {
         ITEM_REAGENT_WIDOWSWEEP_BERRIES,
         ITEM_REAGENT_PHIRNA_ROOT,
         ITEM_REAGENT_POPPYSNAPS
@@ -1133,7 +1133,7 @@ inline std::initializer_list<ITEM_TYPE> allLevel1Reagents() {
     return result;
 }
 
-inline ITEM_ENCHANTMENT potionEnchantment(ITEM_TYPE enchantingPotion) {
+inline ITEM_ENCHANTMENT potionEnchantment(ItemId enchantingPotion) {
     assert(isEnchantingPotion(enchantingPotion));
 
     switch (enchantingPotion) {

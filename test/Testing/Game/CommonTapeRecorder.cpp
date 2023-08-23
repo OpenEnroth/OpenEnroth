@@ -44,7 +44,7 @@ TestTape<int> CommonTapeRecorder::totalItemCount() {
     });
 }
 
-TestTape<bool> CommonTapeRecorder::hasItem(ITEM_TYPE item) {
+TestTape<bool> CommonTapeRecorder::hasItem(ItemId item) {
     return custom([item] { return pParty->hasItem(item); });
 }
 

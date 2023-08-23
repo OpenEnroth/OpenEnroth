@@ -7,7 +7,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIMessageScroll.h"
 
-void CreateMsgScrollWindow(ITEM_TYPE mscroll_id) {
+void CreateMsgScrollWindow(ItemId mscroll_id) {
     if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id)) {
         pGUIWindow_ScrollWindow = new GUIWindow_MessageScroll({0, 0}, render->GetRenderDimensions(), mscroll_id, "");
     }

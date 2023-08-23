@@ -103,7 +103,7 @@ struct ItemGen {  // 0x24
     }
 
 
-    ITEM_TYPE uItemID = ITEM_NULL;        // 0
+    ItemId uItemID = ITEM_NULL;        // 0
     // TODO(captainurist): this is actually CharacterAttributeType plus one (because 0 means no enchantment),
     // with values in [0..24], i.e. up to & including CHARACTER_ATTRIBUTE_SKILL_UNARMED
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
@@ -169,7 +169,7 @@ struct SummonedItem {
     int field_18_expire_year = 0;
 };
 
-std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder);
+std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);
 
 Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel);
 

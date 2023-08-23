@@ -422,7 +422,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
 }
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = static_cast<ITEM_TYPE>(src.itemID);
+    dst->uItemID = static_cast<ItemId>(src.itemID);
     dst->uEnchantmentType = src.enchantmentType;
     dst->m_enchantmentStrength = src.enchantmentStrength;
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
@@ -1307,7 +1307,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->tetherDistance = src.uTetherDistance;
     dst->aiState = static_cast<AIState>(src.uAIState);
     dst->currentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
-    dst->carriedItemId = ITEM_TYPE(src.uCarriedItemID);
+    dst->carriedItemId = ItemId(src.uCarriedItemID);
     dst->currentActionTime = src.uCurrentActionTime;
 
     reconstruct(src.pSpriteIDs, &dst->spriteIds);

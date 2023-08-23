@@ -285,7 +285,7 @@ void Party::switchToNextActiveCharacter() {
     return;
 }
 
-bool Party::hasItem(ITEM_TYPE uItemID) {
+bool Party::hasItem(ItemId uItemID) {
     for (Character &player : this->pCharacters) {
         for (ItemGen &item : player.pOwnItems) {
             if (item.uItemID == uItemID)

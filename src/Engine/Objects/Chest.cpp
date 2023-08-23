@@ -242,7 +242,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
     return 0;
 }
 
-bool Chest::CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChestID) {
+bool Chest::CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID) {
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
@@ -339,7 +339,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 }
 
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
-    ITEM_TYPE uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
+    ItemId uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
     if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
         int v6 = grng->random(21) + 10;
@@ -388,7 +388,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     }
 
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
-        ITEM_TYPE chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
+        ItemId chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
         assert(chest_item_id >= ITEM_NULL && "Checking that generated items are valid");
         if (chest_item_id != ITEM_NULL && !vChests[uChestID].igChestItems[items_counter].placedInChest) {
             int test_position = 0;

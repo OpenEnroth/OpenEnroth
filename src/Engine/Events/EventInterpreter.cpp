@@ -306,7 +306,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Substract:
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands && _who == CHOOSE_PARTY) {
                 for (Character &player : pParty->pCharacters) {
-                    if (player.hasItem((ITEM_TYPE)ir.data.variable_descr.value, 1)) {
+                    if (player.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
                         player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // only take one item
                     }

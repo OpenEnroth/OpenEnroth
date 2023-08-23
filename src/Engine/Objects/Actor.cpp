@@ -140,7 +140,7 @@ void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
     }
 }
 
-void npcSetItem(int npc, ITEM_TYPE item, int a3) {
+void npcSetItem(int npc, ItemId item, int a3) {
     for (uint i = 0; i < pActors.size(); i++) {
         if (pActors[i].npcId == npc) {
             Actor::giveItem(i, item, a3);
@@ -148,7 +148,7 @@ void npcSetItem(int npc, ITEM_TYPE item, int a3) {
     }
 }
 
-void Actor::giveItem(signed int uActorID, ITEM_TYPE uItemID, unsigned int bGive) {
+void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
     if ((uActorID >= 0) && (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
         if (bGive) {
             if (pActors[uActorID].carriedItemId == ITEM_NULL)

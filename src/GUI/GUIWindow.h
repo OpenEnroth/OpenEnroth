@@ -249,7 +249,7 @@ void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
-void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
+void CreateMsgScrollWindow(ItemId mscroll_id);
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
 void DialogueEnding();
