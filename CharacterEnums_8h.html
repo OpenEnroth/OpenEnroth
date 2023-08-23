@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;83fd1b3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e920112</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -371,54 +372,54 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:afb7e1cb64c82efee699c6bd5b7467bb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affc99db0cab57aa5ce6f7f21cf5d56b6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> : uint8_t { <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ab35572f80d8a6c2e1da1b0d5092b3762">CHARACTER_CLASS_KNIGHT</a> = 0
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a897dc0628de084d3d959f28ae73e8b08">CHARACTER_CLASS_CAVALIER</a> = 1
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aa668b310cd8f710164355f9811973b0e">CHARACTER_CLASS_CHAMPION</a> = 2
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a99bc7c8c1ffc118437895af2f85b9d3e">CHARACTER_CLASS_BLACK_KNIGHT</a> = 3
+<tr class="memitem:affc99db0cab57aa5ce6f7f21cf5d56b6"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> : uint8_t { <br />
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a7cb9d4af8bc45aede2d6f647dd529b3d">CHARACTER_CLASS_KNIGHT</a> = 0
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a9d5c7affd50fa377437528011b2fe623">CHARACTER_CLASS_CAVALIER</a> = 1
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a1545ae917447de08fdb16be9b0e7d8cd">CHARACTER_CLASS_CHAMPION</a> = 2
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a7ad2720e81f9d693f25db8254386eaeb">CHARACTER_CLASS_BLACK_KNIGHT</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a7342ec201df785a01ec4edbdad58d1ed">CHARACTER_CLASS_THIEF</a> = 4
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a26a1e2651c3b9cd5e20d080012c5ebc9">CHARACTER_CLASS_ROGUE</a> = 5
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ae5918999aadff6a9ce30d6274f353ea0">CHARACTER_CLASS_SPY</a> = 6
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ad420b3589e3e42236040ea11242444b0">CHARACTER_CLASS_ASSASSIN</a> = 7
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a645adcf2a690e9c2e93b55524b80f1df">CHARACTER_CLASS_THIEF</a> = 4
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac02dc39915ca5d339db161184c30d5e1">CHARACTER_CLASS_ROGUE</a> = 5
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ad5668be49227e432f7e5c98e9d8a994c">CHARACTER_CLASS_SPY</a> = 6
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6accb33ddfd6c8b6d683fc364cefa5c923">CHARACTER_CLASS_ASSASSIN</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaaa4fe21ec7963435272cc71670d237b">CHARACTER_CLASS_MONK</a> = 8
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ab40ccc1674b7a074f493827956740214">CHARACTER_CLASS_INITIATE</a> = 9
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a6f4e7e36b398615e34aa0c5934c8a687">CHARACTER_CLASS_MASTER</a> = 10
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aea4d0b0d5ab6cfc262a86a12378f0ef5">CHARACTER_CLASS_NINJA</a> = 11
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac324e346027f56d0a179b17a7223e431">CHARACTER_CLASS_MONK</a> = 8
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a6501c1b4448ed84922d65c1496ee22ca">CHARACTER_CLASS_INITIATE</a> = 9
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a09da16a44b0a182f4f161a909ffa0195">CHARACTER_CLASS_MASTER</a> = 10
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a9234fafe844f4f05a0825fe372f8ac9a">CHARACTER_CLASS_NINJA</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6abb60adaa1aa1a39ddefce78a737e7829">CHARACTER_CLASS_PALADIN</a> = 12
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6af793358f5b8f3525eb660a895f475028">CHARACTER_CLASS_CRUSADER</a> = 13
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aafd1533acf428c139f3af2c03dd1b1b0">CHARACTER_CLASS_HERO</a> = 14
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a178a8ac5fbfccf0fd7d5f51d2ce838d3">CHARACTER_CLASS_VILLIAN</a> = 15
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a66701ec2e5a21e235dd4ad86141acd45">CHARACTER_CLASS_PALADIN</a> = 12
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac46c925e726aeeb1e3144c88b0641d1b">CHARACTER_CLASS_CRUSADER</a> = 13
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac53c59fa15047c1bf67a26b210fd05bf">CHARACTER_CLASS_HERO</a> = 14
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ab0442ab5fba321422892806737d59368">CHARACTER_CLASS_VILLIAN</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a19e42e707719a639eb81ab19e369338a">CHARACTER_CLASS_ARCHER</a> = 16
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6adcde7e4fc8a193d96b78fdc6d96905d8">CHARACTER_CLASS_WARRIOR_MAGE</a> = 17
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aa5da50863ca9947b3fa058346d957d4a">CHARACTER_CLASS_MASTER_ARCHER</a> = 18
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a7b6290e26c0ddf820546ad1d67113744">CHARACTER_CLASS_SNIPER</a> = 19
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ad2e1f780b0a9eb82fe2886eb88f56f35">CHARACTER_CLASS_ARCHER</a> = 16
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac5fd989df42915b65d6c58f01453b2d3">CHARACTER_CLASS_WARRIOR_MAGE</a> = 17
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a1ac3a41d4d3b80ae87c886c5ef8c4d3b">CHARACTER_CLASS_MASTER_ARCHER</a> = 18
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aa76c9a14ba3bff761aaa39bfb5f7d1af">CHARACTER_CLASS_SNIPER</a> = 19
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a8eeb06438d62f828cd5b5bc7c62ced65">CHARACTER_CLASS_RANGER</a> = 20
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a396e454691c6c551a2e88a87dcae131a">CHARACTER_CLASS_HUNTER</a> = 21
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a98d4f360871e71ccadb58de98be61832">CHARACTER_CLASS_RANGER_LORD</a> = 22
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a11eac50a44e0007469894b51e3940072">CHARACTER_CLASS_BOUNTY_HUNTER</a> = 23
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6af2c8181d25371490481f30930ea4b323">CHARACTER_CLASS_RANGER</a> = 20
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac9fd6e0ecdb05e0d1cc4f9781ec7f667">CHARACTER_CLASS_HUNTER</a> = 21
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ae69abbd0c099adcaec0f2ee64b9aec8f">CHARACTER_CLASS_RANGER_LORD</a> = 22
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ad991a30d6e8fd820542de9ed75c2f1da">CHARACTER_CLASS_BOUNTY_HUNTER</a> = 23
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a4cadb60f71cfb89bcfac4482da40f4e0">CHARACTER_CLASS_CLERIC</a> = 24
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a932d5eed4c055e8fab3a33fabdf346ed">CHARACTER_CLASS_PRIEST</a> = 25
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aadddf180ef46beeaeb9bcccadc47e2e8">CHARACTER_CLASS_PRIEST_OF_SUN</a> = 26
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a1fd45a7912e644552c5776b09c2d73ae">CHARACTER_CLASS_PRIEST_OF_MOON</a> = 27
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a9ee157f4882a3be2acb5b0843d54b0b7">CHARACTER_CLASS_CLERIC</a> = 24
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ada17f99a15e7f31858bc1fca19dbec7d">CHARACTER_CLASS_PRIEST</a> = 25
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a5b1bbea75ca58a15566900a5019dc853">CHARACTER_CLASS_PRIEST_OF_SUN</a> = 26
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ae832f70109dfc2bf85ff33ee22867ab1">CHARACTER_CLASS_PRIEST_OF_MOON</a> = 27
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a6ab0f69346713275c2875eda8c7c039a">CHARACTER_CLASS_DRUID</a> = 28
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a5dd8d97a6d03954b06c3573ba7e61016">CHARACTER_CLASS_GREAT_DRUID</a> = 29
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a9f91c1b422e5c85c24c73bc808b3e4ba">CHARACTER_CLASS_ARCH_DRUID</a> = 30
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a6d987d9aad7b141f3164c186023ac0e6">CHARACTER_CLASS_WARLOCK</a> = 31
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6afca2a6b855b956f0763efeec15abe94e">CHARACTER_CLASS_DRUID</a> = 28
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aa8728f1247ebe3c0e22538dbb5030f50">CHARACTER_CLASS_GREAT_DRUID</a> = 29
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a629a5532c9cab205b24eec5979f6b0ac">CHARACTER_CLASS_ARCH_DRUID</a> = 30
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ac4879f3fdc5ed374d30e9fb7313324b0">CHARACTER_CLASS_WARLOCK</a> = 31
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6ad289f8ba3ae81393d00f1c1284b001b3">CHARACTER_CLASS_SORCERER</a> = 32
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aab38fa94c3b5bfe131f4484da43cb000">CHARACTER_CLASS_WIZARD</a> = 33
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a98fd1c2dffa6aac4c353a64932bd9559">CHARACTER_CLASS_ARCHAMGE</a> = 34
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a96eedd43023a91420b81483df2556649">CHARACTER_CLASS_LICH</a> = 35
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6af794ecfeb326dcc3b69fcb9d79e2cab0">CHARACTER_CLASS_SORCERER</a> = 32
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a59ac5c1cf99286c1a0fa56731c47652d">CHARACTER_CLASS_WIZARD</a> = 33
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a50d9087a08b7fe0b9201d577d4a32b4e">CHARACTER_CLASS_ARCHAMGE</a> = 34
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aedf6e55f0d20f6ae4fc50d259c41a363">CHARACTER_CLASS_LICH</a> = 35
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6a64a9b3f7adb38b0409fbedc169493621">PLAYER_CLASS_FIRST</a> = CHARACTER_CLASS_KNIGHT
-, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6abea1e42aac61c2c7c32a81a9a44f9e92">PLAYER_CLASS_LAST</a> = CHARACTER_CLASS_LICH
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaf173981ab0f00b8c2e7cb33a2c688e0">CHARACTER_CLASS_FIRST</a> = CHARACTER_CLASS_KNIGHT
+, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaa9ef3fcc3b349ef203aefd88e01e767">CHARACTER_CLASS_LAST</a> = CHARACTER_CLASS_LICH
 <br />
  }</td></tr>
 <tr class="separator:affc99db0cab57aa5ce6f7f21cf5d56b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -578,6 +579,8 @@ Functions</h2></td></tr>
 <tr class="separator:a9797abcdb18964a4cff48ceb18e6b68e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab72af8264b818a5f74825bbe983c9909"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#ab72af8264b818a5f74825bbe983c9909">getTier3DarkClass</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> classType)</td></tr>
 <tr class="separator:ab72af8264b818a5f74825bbe983c9909"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03dbb0f38db8acc5594d79abfda04f67"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a03dbb0f38db8acc5594d79abfda04f67">getClassTier</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> classType)</td></tr>
+<tr class="separator:a03dbb0f38db8acc5594d79abfda04f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85faf7b64c4b87e2a2a435cf8b44cf0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a85faf7b64c4b87e2a2a435cf8b44cf0b">getClassPromotions</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> classType)</td></tr>
 <tr class="separator:a85faf7b64c4b87e2a2a435cf8b44cf0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -690,51 +693,59 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> : uint8_t</td>
+          <td class="memname">enum class <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> : uint8_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ab35572f80d8a6c2e1da1b0d5092b3762" name="affc99db0cab57aa5ce6f7f21cf5d56b6ab35572f80d8a6c2e1da1b0d5092b3762"></a>CHARACTER_CLASS_KNIGHT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a897dc0628de084d3d959f28ae73e8b08" name="affc99db0cab57aa5ce6f7f21cf5d56b6a897dc0628de084d3d959f28ae73e8b08"></a>CHARACTER_CLASS_CAVALIER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aa668b310cd8f710164355f9811973b0e" name="affc99db0cab57aa5ce6f7f21cf5d56b6aa668b310cd8f710164355f9811973b0e"></a>CHARACTER_CLASS_CHAMPION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a99bc7c8c1ffc118437895af2f85b9d3e" name="affc99db0cab57aa5ce6f7f21cf5d56b6a99bc7c8c1ffc118437895af2f85b9d3e"></a>CHARACTER_CLASS_BLACK_KNIGHT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a7342ec201df785a01ec4edbdad58d1ed" name="affc99db0cab57aa5ce6f7f21cf5d56b6a7342ec201df785a01ec4edbdad58d1ed"></a>CHARACTER_CLASS_THIEF&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a26a1e2651c3b9cd5e20d080012c5ebc9" name="affc99db0cab57aa5ce6f7f21cf5d56b6a26a1e2651c3b9cd5e20d080012c5ebc9"></a>CHARACTER_CLASS_ROGUE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ae5918999aadff6a9ce30d6274f353ea0" name="affc99db0cab57aa5ce6f7f21cf5d56b6ae5918999aadff6a9ce30d6274f353ea0"></a>CHARACTER_CLASS_SPY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ad420b3589e3e42236040ea11242444b0" name="affc99db0cab57aa5ce6f7f21cf5d56b6ad420b3589e3e42236040ea11242444b0"></a>CHARACTER_CLASS_ASSASSIN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aaaa4fe21ec7963435272cc71670d237b" name="affc99db0cab57aa5ce6f7f21cf5d56b6aaaa4fe21ec7963435272cc71670d237b"></a>CHARACTER_CLASS_MONK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ab40ccc1674b7a074f493827956740214" name="affc99db0cab57aa5ce6f7f21cf5d56b6ab40ccc1674b7a074f493827956740214"></a>CHARACTER_CLASS_INITIATE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a6f4e7e36b398615e34aa0c5934c8a687" name="affc99db0cab57aa5ce6f7f21cf5d56b6a6f4e7e36b398615e34aa0c5934c8a687"></a>CHARACTER_CLASS_MASTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aea4d0b0d5ab6cfc262a86a12378f0ef5" name="affc99db0cab57aa5ce6f7f21cf5d56b6aea4d0b0d5ab6cfc262a86a12378f0ef5"></a>CHARACTER_CLASS_NINJA&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6abb60adaa1aa1a39ddefce78a737e7829" name="affc99db0cab57aa5ce6f7f21cf5d56b6abb60adaa1aa1a39ddefce78a737e7829"></a>CHARACTER_CLASS_PALADIN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6af793358f5b8f3525eb660a895f475028" name="affc99db0cab57aa5ce6f7f21cf5d56b6af793358f5b8f3525eb660a895f475028"></a>CHARACTER_CLASS_CRUSADER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aafd1533acf428c139f3af2c03dd1b1b0" name="affc99db0cab57aa5ce6f7f21cf5d56b6aafd1533acf428c139f3af2c03dd1b1b0"></a>CHARACTER_CLASS_HERO&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a178a8ac5fbfccf0fd7d5f51d2ce838d3" name="affc99db0cab57aa5ce6f7f21cf5d56b6a178a8ac5fbfccf0fd7d5f51d2ce838d3"></a>CHARACTER_CLASS_VILLIAN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a19e42e707719a639eb81ab19e369338a" name="affc99db0cab57aa5ce6f7f21cf5d56b6a19e42e707719a639eb81ab19e369338a"></a>CHARACTER_CLASS_ARCHER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6adcde7e4fc8a193d96b78fdc6d96905d8" name="affc99db0cab57aa5ce6f7f21cf5d56b6adcde7e4fc8a193d96b78fdc6d96905d8"></a>CHARACTER_CLASS_WARRIOR_MAGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aa5da50863ca9947b3fa058346d957d4a" name="affc99db0cab57aa5ce6f7f21cf5d56b6aa5da50863ca9947b3fa058346d957d4a"></a>CHARACTER_CLASS_MASTER_ARCHER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a7b6290e26c0ddf820546ad1d67113744" name="affc99db0cab57aa5ce6f7f21cf5d56b6a7b6290e26c0ddf820546ad1d67113744"></a>CHARACTER_CLASS_SNIPER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a8eeb06438d62f828cd5b5bc7c62ced65" name="affc99db0cab57aa5ce6f7f21cf5d56b6a8eeb06438d62f828cd5b5bc7c62ced65"></a>CHARACTER_CLASS_RANGER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a396e454691c6c551a2e88a87dcae131a" name="affc99db0cab57aa5ce6f7f21cf5d56b6a396e454691c6c551a2e88a87dcae131a"></a>CHARACTER_CLASS_HUNTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a98d4f360871e71ccadb58de98be61832" name="affc99db0cab57aa5ce6f7f21cf5d56b6a98d4f360871e71ccadb58de98be61832"></a>CHARACTER_CLASS_RANGER_LORD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a11eac50a44e0007469894b51e3940072" name="affc99db0cab57aa5ce6f7f21cf5d56b6a11eac50a44e0007469894b51e3940072"></a>CHARACTER_CLASS_BOUNTY_HUNTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a4cadb60f71cfb89bcfac4482da40f4e0" name="affc99db0cab57aa5ce6f7f21cf5d56b6a4cadb60f71cfb89bcfac4482da40f4e0"></a>CHARACTER_CLASS_CLERIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a932d5eed4c055e8fab3a33fabdf346ed" name="affc99db0cab57aa5ce6f7f21cf5d56b6a932d5eed4c055e8fab3a33fabdf346ed"></a>CHARACTER_CLASS_PRIEST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aadddf180ef46beeaeb9bcccadc47e2e8" name="affc99db0cab57aa5ce6f7f21cf5d56b6aadddf180ef46beeaeb9bcccadc47e2e8"></a>CHARACTER_CLASS_PRIEST_OF_SUN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a1fd45a7912e644552c5776b09c2d73ae" name="affc99db0cab57aa5ce6f7f21cf5d56b6a1fd45a7912e644552c5776b09c2d73ae"></a>CHARACTER_CLASS_PRIEST_OF_MOON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a6ab0f69346713275c2875eda8c7c039a" name="affc99db0cab57aa5ce6f7f21cf5d56b6a6ab0f69346713275c2875eda8c7c039a"></a>CHARACTER_CLASS_DRUID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a5dd8d97a6d03954b06c3573ba7e61016" name="affc99db0cab57aa5ce6f7f21cf5d56b6a5dd8d97a6d03954b06c3573ba7e61016"></a>CHARACTER_CLASS_GREAT_DRUID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a9f91c1b422e5c85c24c73bc808b3e4ba" name="affc99db0cab57aa5ce6f7f21cf5d56b6a9f91c1b422e5c85c24c73bc808b3e4ba"></a>CHARACTER_CLASS_ARCH_DRUID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a6d987d9aad7b141f3164c186023ac0e6" name="affc99db0cab57aa5ce6f7f21cf5d56b6a6d987d9aad7b141f3164c186023ac0e6"></a>CHARACTER_CLASS_WARLOCK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ad289f8ba3ae81393d00f1c1284b001b3" name="affc99db0cab57aa5ce6f7f21cf5d56b6ad289f8ba3ae81393d00f1c1284b001b3"></a>CHARACTER_CLASS_SORCERER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aab38fa94c3b5bfe131f4484da43cb000" name="affc99db0cab57aa5ce6f7f21cf5d56b6aab38fa94c3b5bfe131f4484da43cb000"></a>CHARACTER_CLASS_WIZARD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a98fd1c2dffa6aac4c353a64932bd9559" name="affc99db0cab57aa5ce6f7f21cf5d56b6a98fd1c2dffa6aac4c353a64932bd9559"></a>CHARACTER_CLASS_ARCHAMGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a96eedd43023a91420b81483df2556649" name="affc99db0cab57aa5ce6f7f21cf5d56b6a96eedd43023a91420b81483df2556649"></a>CHARACTER_CLASS_LICH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a64a9b3f7adb38b0409fbedc169493621" name="affc99db0cab57aa5ce6f7f21cf5d56b6a64a9b3f7adb38b0409fbedc169493621"></a>PLAYER_CLASS_FIRST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6abea1e42aac61c2c7c32a81a9a44f9e92" name="affc99db0cab57aa5ce6f7f21cf5d56b6abea1e42aac61c2c7c32a81a9a44f9e92"></a>PLAYER_CLASS_LAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a7cb9d4af8bc45aede2d6f647dd529b3d" name="affc99db0cab57aa5ce6f7f21cf5d56b6a7cb9d4af8bc45aede2d6f647dd529b3d"></a>CHARACTER_CLASS_KNIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a9d5c7affd50fa377437528011b2fe623" name="affc99db0cab57aa5ce6f7f21cf5d56b6a9d5c7affd50fa377437528011b2fe623"></a>CHARACTER_CLASS_CAVALIER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a1545ae917447de08fdb16be9b0e7d8cd" name="affc99db0cab57aa5ce6f7f21cf5d56b6a1545ae917447de08fdb16be9b0e7d8cd"></a>CHARACTER_CLASS_CHAMPION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a7ad2720e81f9d693f25db8254386eaeb" name="affc99db0cab57aa5ce6f7f21cf5d56b6a7ad2720e81f9d693f25db8254386eaeb"></a>CHARACTER_CLASS_BLACK_KNIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a645adcf2a690e9c2e93b55524b80f1df" name="affc99db0cab57aa5ce6f7f21cf5d56b6a645adcf2a690e9c2e93b55524b80f1df"></a>CHARACTER_CLASS_THIEF&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac02dc39915ca5d339db161184c30d5e1" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac02dc39915ca5d339db161184c30d5e1"></a>CHARACTER_CLASS_ROGUE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ad5668be49227e432f7e5c98e9d8a994c" name="affc99db0cab57aa5ce6f7f21cf5d56b6ad5668be49227e432f7e5c98e9d8a994c"></a>CHARACTER_CLASS_SPY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6accb33ddfd6c8b6d683fc364cefa5c923" name="affc99db0cab57aa5ce6f7f21cf5d56b6accb33ddfd6c8b6d683fc364cefa5c923"></a>CHARACTER_CLASS_ASSASSIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac324e346027f56d0a179b17a7223e431" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac324e346027f56d0a179b17a7223e431"></a>CHARACTER_CLASS_MONK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a6501c1b4448ed84922d65c1496ee22ca" name="affc99db0cab57aa5ce6f7f21cf5d56b6a6501c1b4448ed84922d65c1496ee22ca"></a>CHARACTER_CLASS_INITIATE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a09da16a44b0a182f4f161a909ffa0195" name="affc99db0cab57aa5ce6f7f21cf5d56b6a09da16a44b0a182f4f161a909ffa0195"></a>CHARACTER_CLASS_MASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a9234fafe844f4f05a0825fe372f8ac9a" name="affc99db0cab57aa5ce6f7f21cf5d56b6a9234fafe844f4f05a0825fe372f8ac9a"></a>CHARACTER_CLASS_NINJA&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a66701ec2e5a21e235dd4ad86141acd45" name="affc99db0cab57aa5ce6f7f21cf5d56b6a66701ec2e5a21e235dd4ad86141acd45"></a>CHARACTER_CLASS_PALADIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac46c925e726aeeb1e3144c88b0641d1b" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac46c925e726aeeb1e3144c88b0641d1b"></a>CHARACTER_CLASS_CRUSADER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac53c59fa15047c1bf67a26b210fd05bf" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac53c59fa15047c1bf67a26b210fd05bf"></a>CHARACTER_CLASS_HERO&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ab0442ab5fba321422892806737d59368" name="affc99db0cab57aa5ce6f7f21cf5d56b6ab0442ab5fba321422892806737d59368"></a>CHARACTER_CLASS_VILLIAN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ad2e1f780b0a9eb82fe2886eb88f56f35" name="affc99db0cab57aa5ce6f7f21cf5d56b6ad2e1f780b0a9eb82fe2886eb88f56f35"></a>CHARACTER_CLASS_ARCHER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac5fd989df42915b65d6c58f01453b2d3" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac5fd989df42915b65d6c58f01453b2d3"></a>CHARACTER_CLASS_WARRIOR_MAGE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a1ac3a41d4d3b80ae87c886c5ef8c4d3b" name="affc99db0cab57aa5ce6f7f21cf5d56b6a1ac3a41d4d3b80ae87c886c5ef8c4d3b"></a>CHARACTER_CLASS_MASTER_ARCHER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aa76c9a14ba3bff761aaa39bfb5f7d1af" name="affc99db0cab57aa5ce6f7f21cf5d56b6aa76c9a14ba3bff761aaa39bfb5f7d1af"></a>CHARACTER_CLASS_SNIPER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6af2c8181d25371490481f30930ea4b323" name="affc99db0cab57aa5ce6f7f21cf5d56b6af2c8181d25371490481f30930ea4b323"></a>CHARACTER_CLASS_RANGER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac9fd6e0ecdb05e0d1cc4f9781ec7f667" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac9fd6e0ecdb05e0d1cc4f9781ec7f667"></a>CHARACTER_CLASS_HUNTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ae69abbd0c099adcaec0f2ee64b9aec8f" name="affc99db0cab57aa5ce6f7f21cf5d56b6ae69abbd0c099adcaec0f2ee64b9aec8f"></a>CHARACTER_CLASS_RANGER_LORD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ad991a30d6e8fd820542de9ed75c2f1da" name="affc99db0cab57aa5ce6f7f21cf5d56b6ad991a30d6e8fd820542de9ed75c2f1da"></a>CHARACTER_CLASS_BOUNTY_HUNTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a9ee157f4882a3be2acb5b0843d54b0b7" name="affc99db0cab57aa5ce6f7f21cf5d56b6a9ee157f4882a3be2acb5b0843d54b0b7"></a>CHARACTER_CLASS_CLERIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ada17f99a15e7f31858bc1fca19dbec7d" name="affc99db0cab57aa5ce6f7f21cf5d56b6ada17f99a15e7f31858bc1fca19dbec7d"></a>CHARACTER_CLASS_PRIEST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a5b1bbea75ca58a15566900a5019dc853" name="affc99db0cab57aa5ce6f7f21cf5d56b6a5b1bbea75ca58a15566900a5019dc853"></a>CHARACTER_CLASS_PRIEST_OF_SUN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ae832f70109dfc2bf85ff33ee22867ab1" name="affc99db0cab57aa5ce6f7f21cf5d56b6ae832f70109dfc2bf85ff33ee22867ab1"></a>CHARACTER_CLASS_PRIEST_OF_MOON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6afca2a6b855b956f0763efeec15abe94e" name="affc99db0cab57aa5ce6f7f21cf5d56b6afca2a6b855b956f0763efeec15abe94e"></a>CHARACTER_CLASS_DRUID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aa8728f1247ebe3c0e22538dbb5030f50" name="affc99db0cab57aa5ce6f7f21cf5d56b6aa8728f1247ebe3c0e22538dbb5030f50"></a>CHARACTER_CLASS_GREAT_DRUID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a629a5532c9cab205b24eec5979f6b0ac" name="affc99db0cab57aa5ce6f7f21cf5d56b6a629a5532c9cab205b24eec5979f6b0ac"></a>CHARACTER_CLASS_ARCH_DRUID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6ac4879f3fdc5ed374d30e9fb7313324b0" name="affc99db0cab57aa5ce6f7f21cf5d56b6ac4879f3fdc5ed374d30e9fb7313324b0"></a>CHARACTER_CLASS_WARLOCK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6af794ecfeb326dcc3b69fcb9d79e2cab0" name="affc99db0cab57aa5ce6f7f21cf5d56b6af794ecfeb326dcc3b69fcb9d79e2cab0"></a>CHARACTER_CLASS_SORCERER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a59ac5c1cf99286c1a0fa56731c47652d" name="affc99db0cab57aa5ce6f7f21cf5d56b6a59ac5c1cf99286c1a0fa56731c47652d"></a>CHARACTER_CLASS_WIZARD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6a50d9087a08b7fe0b9201d577d4a32b4e" name="affc99db0cab57aa5ce6f7f21cf5d56b6a50d9087a08b7fe0b9201d577d4a32b4e"></a>CHARACTER_CLASS_ARCHAMGE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aedf6e55f0d20f6ae4fc50d259c41a363" name="affc99db0cab57aa5ce6f7f21cf5d56b6aedf6e55f0d20f6ae4fc50d259c41a363"></a>CHARACTER_CLASS_LICH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aaf173981ab0f00b8c2e7cb33a2c688e0" name="affc99db0cab57aa5ce6f7f21cf5d56b6aaf173981ab0f00b8c2e7cb33a2c688e0"></a>CHARACTER_CLASS_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="affc99db0cab57aa5ce6f7f21cf5d56b6aaa9ef3fcc3b349ef203aefd88e01e767" name="affc99db0cab57aa5ce6f7f21cf5d56b6aaa9ef3fcc3b349ef203aefd88e01e767"></a>CHARACTER_CLASS_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -1327,6 +1338,32 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a03dbb0f38db8acc5594d79abfda04f67" name="a03dbb0f38db8acc5594d79abfda04f67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03dbb0f38db8acc5594d79abfda04f67">&#9670;&#160;</a></span>getClassTier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int getClassTier </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a>&#160;</td>
+          <td class="paramname"><em>classType</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
