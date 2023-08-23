@@ -106,7 +106,7 @@ void GUIWindow_CalendarBook::Update() {
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_MOON), localization->GetMoonPhaseName(pDayMoonPhase[pParty->uCurrentDayOfMonth]));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 8 * (unsigned char)assets->pFontBookCalendar->GetHeight() + 31}, ui_book_calendar_moon_color, str);
 
-    MAP_TYPE pMapID = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     std::string pMapName;
     if (pMapID != MAP_INVALID) {
         pMapName = pMapStats->pInfos[pMapID].pName;

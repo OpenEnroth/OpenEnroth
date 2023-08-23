@@ -26,7 +26,7 @@ struct TownPortalData {
     Vec3i pos;
     int viewYaw;
     int viewPitch;
-    MAP_TYPE mapInfoID;
+    MapId mapInfoID;
     int qBit;
 };
 

@@ -259,7 +259,7 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
     return false;
 }
 
-static constexpr IndexedArray<std::array<MAP_TYPE, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_destinations = {
+static constexpr IndexedArray<std::array<MapId, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_destinations = {
     // from                      north                south                east                 west
     {MAP_EMERALD_ISLAND,        {MAP_INVALID,         MAP_INVALID,         MAP_INVALID,         MAP_INVALID}},
     {MAP_HARMONDALE,            {MAP_TULAREAN_FOREST, MAP_BARROW_DOWNS,    MAP_TULAREAN_FOREST, MAP_ERATHIA}},
@@ -319,11 +319,11 @@ static constexpr IndexedArray<std::array<MapStartPoint, 4>, MAP_EMERALD_ISLAND, 
 //----- (0048902E) --------------------------------------------------------
 bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string *pOut) {
     signed int direction;       // esi@7
-    MAP_TYPE destinationMap;  // eax@23
+    MapId destinationMap;  // eax@23
 
     std::string str = this->level_filename;
     str = str.substr(str.find_first_of("0123456789"));
-    MAP_TYPE mapNumberAsInt = static_cast<MAP_TYPE>(atoi(str.c_str()));
+    MapId mapNumberAsInt = static_cast<MapId>(atoi(str.c_str()));
 
     // TODO(captainurist): pit & celeste fall into the range below. Also, the logic here is retarded.
     if (this->level_filename.length() != 9 || mapNumberAsInt < MAP_EMERALD_ISLAND || mapNumberAsInt > MAP_SHOALS)
@@ -469,7 +469,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
 void OutdoorLocation::SetFog() {
     pOutdoor->level_filename = pCurrentMapName;
 
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id == MAP_INVALID || map_id == MAP_CELESTE ||
         map_id == MAP_PIT || map_id > MAP_SHOALS)
         return;
@@ -1200,7 +1200,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
 }
 
 //----- (0047F2D3) --------------------------------------------------------
-bool OutdoorLocation::InitalizeActors(MAP_TYPE a1) {
+bool OutdoorLocation::InitalizeActors(MapId a1) {
     bool alert_status;  // [sp+348h] [bp-8h]@1
                        //  int v9; // [sp+34Ch] [bp-4h]@1
 
@@ -2674,7 +2674,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0;
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];

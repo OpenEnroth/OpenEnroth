@@ -1139,7 +1139,7 @@ void Game::processQueuedMessages() {
                 txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
                 std::string status_string;
                 if (frameTableTxtLine.uPropCount == 1) {
-                    MAP_TYPE map_index = static_cast<MAP_TYPE>(atoi(frameTableTxtLine.pProperties[0]));
+                    MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
                     if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
                     std::string map_name = pMapStats->pInfos[map_index].pFilename;
                     pCurrentMapName = map_name;
@@ -1345,7 +1345,7 @@ void Game::processQueuedMessages() {
                     for (Character &character : pParty->pCharacters) {
                         character.SetAsleep(pParty->GetPlayingTime());
                     }
-                    MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
+                    MapId mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
                     assert(mapIdx != MAP_INVALID);
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)

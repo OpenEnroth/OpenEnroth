@@ -1287,7 +1287,7 @@ bool Actor::IsPeasant() {
 void Actor::StealFrom(unsigned int uActorID) {
     Character *pPlayer;     // edi@1
     int v4;              // ebx@2
-    MAP_TYPE v5;     // eax@2
+    MapId v5;     // eax@2
     LocationInfo *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 

@@ -433,7 +433,7 @@ void prepareHouse(HOUSE_ID house) {
     // Dungeon entry (not present in MM7)
     if (buildingTable[house].uExitPicID) {
         if (!buildingTable[house]._quest_bit || !pParty->_questBits[buildingTable[house]._quest_bit]) {
-            MAP_TYPE id = buildingTable[house].uExitMapID;
+            MapId id = buildingTable[house].uExitMapID;
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
@@ -713,7 +713,7 @@ void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
 void GUIWindow_House::houseNPCDialogue() {
     GUIWindow house_window = *pDialogueWindow;
     if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
-        MAP_TYPE id = houseNpcs[currentHouseNpc].targetMapID;
+        MapId id = houseNpcs[currentHouseNpc].targetMapID;
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;

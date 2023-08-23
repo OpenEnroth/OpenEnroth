@@ -881,7 +881,7 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0;
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;

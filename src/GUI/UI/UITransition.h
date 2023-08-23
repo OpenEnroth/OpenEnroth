@@ -22,7 +22,7 @@ class GUIWindow_Transition : public GUIWindow {
     virtual void Update() override;
     virtual void Release() override;
 
-    MAP_TYPE mapid = MAP_INVALID;
+    MapId mapid = MAP_INVALID;
     std::string _mapName{};
 };
 

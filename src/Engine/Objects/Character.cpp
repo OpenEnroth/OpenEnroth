@@ -7632,7 +7632,7 @@ void Character::cleanupBeacons() {
 }
 
 bool Character::setBeacon(int index, GameTime duration) {
-    MAP_TYPE file_index = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId file_index = pMapStats->GetMapInfo(pCurrentMapName);
     if (file_index == MAP_INVALID) {
         return false;
     }

@@ -44,7 +44,7 @@
  *
  * @see runBeaconsCodeGen
  */
-static const std::unordered_map<MAP_TYPE, uint16_t> gamesLodIndexByMapId = {
+static const std::unordered_map<MapId, uint16_t> gamesLodIndexByMapId = {
     {MAP_ERATHIAN_SEWERS, 0},
     {MAP_MAZE, 1},
     {MAP_CASTLE_GLOAMING, 2},
@@ -122,7 +122,7 @@ static const std::unordered_map<MAP_TYPE, uint16_t> gamesLodIndexByMapId = {
     {MAP_GRAND_TEMPLE_OF_THE_SUN, 74},
     {MAP_HALL_OF_THE_PIT, 75},
 };
-static const std::unordered_map<uint16_t, MAP_TYPE> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
+static const std::unordered_map<uint16_t, MapId> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
 
 static void snapshot(const GameTime &src, int64_t *dst) {
     *dst = src.value;

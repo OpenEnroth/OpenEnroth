@@ -23,7 +23,7 @@
 #include "Utility/IndexedArray.h"
 
 struct TransportInfo {
-    MAP_TYPE uMapInfoID;
+    MapId uMapInfoID;
     std::array<unsigned char, 7> pSchedule;
     unsigned int uTravelTime; // In days.
     Vec3i arrivalPos;
