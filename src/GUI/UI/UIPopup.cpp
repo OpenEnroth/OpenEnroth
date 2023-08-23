@@ -1660,7 +1660,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(assets->pFontArrus.get(), {100, 36}, colorTable.White, BuildDialogueString(pText, pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0));
+                popup_window.DrawText(assets->pFontArrus.get(), {100, 36}, colorTable.White, BuildDialogueString(pText, 0, 0, HOUSE_INVALID, 0));
             }
         }
     }
