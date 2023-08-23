@@ -72,7 +72,7 @@ static bool checkSeason(Season season) {
  */
 static void spawnMonsters(int16_t typeindex, int16_t level, int count,
                           Vec3i pos, int group, unsigned int uUniqueName) {
-    MAP_TYPE mapId = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
     SpawnPoint pSpawnPoint;
 
     pSpawnPoint.vPosition = pos;
@@ -211,7 +211,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 }
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                Transition_StopSound_Autosave(ir.str, MapStartPoint_Party);
+                Transition_StopSound_Autosave(ir.str, MAP_START_POINT_PARTY);
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
@@ -306,7 +306,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Substract:
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands && _who == CHOOSE_PARTY) {
                 for (Character &player : pParty->pCharacters) {
-                    if (player.hasItem((ITEM_TYPE)ir.data.variable_descr.value, 1)) {
+                    if (player.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
                         player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // only take one item
                     }

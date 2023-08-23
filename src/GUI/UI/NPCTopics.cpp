@@ -187,7 +187,7 @@ static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> 
     {CHARACTER_SKILL_MISC,         0} // hidden, not used
 }};
 
-static constexpr std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
+static constexpr std::array<std::pair<int16_t, ItemId>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
     {0x0D4, ITEM_QUEST_VASE},
     {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
     {0x0D6, ITEM_MESSAGE_SCROLL_OF_WAVES},
@@ -381,7 +381,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
  */
 void oracleDialogue() {
     ItemGen *item = nullptr;
-    ITEM_TYPE item_id = ITEM_NULL;
+    ItemId item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
     current_npc_text = pNPCTopics[667].pText;
@@ -390,7 +390,7 @@ void oracleDialogue() {
     for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
         int quest_id = pair.first;
         if (pParty->_questBits[quest_id]) {
-            ITEM_TYPE search_item_id = pair.second;
+            ItemId search_item_id = pair.second;
             if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
                 item_id = search_item_id;
                 break;

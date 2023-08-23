@@ -895,7 +895,7 @@ void Game::processQueuedMessages() {
                     if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         onMapLeave();
-                        Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MapStartPoint_Party);
+                        Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                     } else {
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();
@@ -1139,7 +1139,7 @@ void Game::processQueuedMessages() {
                 txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
                 std::string status_string;
                 if (frameTableTxtLine.uPropCount == 1) {
-                    MAP_TYPE map_index = static_cast<MAP_TYPE>(atoi(frameTableTxtLine.pProperties[0]));
+                    MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
                     if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
                     std::string map_name = pMapStats->pInfos[map_index].pFilename;
                     pCurrentMapName = map_name;
@@ -1345,7 +1345,7 @@ void Game::processQueuedMessages() {
                     for (Character &character : pParty->pCharacters) {
                         character.SetAsleep(pParty->GetPlayingTime());
                     }
-                    MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
+                    MapId mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
                     assert(mapIdx != MAP_INVALID);
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)
@@ -1757,7 +1757,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for(size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
+                    ItemId pItemID = grng->randomSample(allSpawnableItems());
                     if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                         if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
                             pAudioPlayer->playUISound(SOUND_error);
@@ -1774,7 +1774,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for (size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
+                    ItemId pItemID = grng->randomSample(allSpawnableItems());
                     // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                     //   (item_id - 40015 + 1)) {
                     if (!pParty->activeCharacter().AddItem(-1, pItemID)) {

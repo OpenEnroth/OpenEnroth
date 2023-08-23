@@ -52,7 +52,7 @@ void MapStats::Initialize(const Blob &mapStats) {
     int work_str_pos;
     int work_str_len;
 
-    MAP_TYPE i = MAP_FIRST;
+    MapId i = MAP_FIRST;
     while (!stream.eof()) {
         std::getline(stream, tmpString);
         std::stringstream line(tmpString);
@@ -200,14 +200,14 @@ void MapStats::Initialize(const Blob &mapStats) {
             }
             decode_step++;
         }
-        i = static_cast<MAP_TYPE>(std::to_underlying(i) + 1);
+        i = static_cast<MapId>(std::to_underlying(i) + 1);
     }
 }
 
-MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
+MapId MapStats::GetMapInfo(const std::string &Str2) {
     std::string map_name = toLower(Str2);
 
-    for (MAP_TYPE i : pInfos.indices()) {
+    for (MapId i : pInfos.indices()) {
         if (pInfos[i].pFilename == map_name) {
             return i;
         }

@@ -156,7 +156,7 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
             engine->_statusBar->setPermanent(LSTR_FMT_RECALL_TO_S, mapName);
         }
     } else {
-        MAP_TYPE mapId = pMapStats->GetMapInfo(pCurrentMapName);
+        MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
         std::string mapName = "Not in Map Stats";
         if (mapId != MAP_INVALID) {
             mapName = pMapStats->pInfos[mapId].pName;

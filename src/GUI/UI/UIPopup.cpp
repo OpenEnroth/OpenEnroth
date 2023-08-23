@@ -1293,7 +1293,7 @@ static void drawBuffPopupWindow() {
 /**
  * @offset 0x4B1523
  */
-void showSpellbookInfo(ITEM_TYPE spellItemId) {
+void showSpellbookInfo(ItemId spellItemId) {
     // TODO(captainurist): deal away with casts.
     SPELL_TYPE spellId = static_cast<SPELL_TYPE>(std::to_underlying(spellItemId) - 399);
     int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
@@ -2029,7 +2029,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 item = &pParty->activeCharacter().pInventoryItemList[item_pid];
             }
         } else {  // rings displayed
-            ITEM_SLOT pos = ITEM_SLOT_INVALID;
+            ItemSlot pos = ITEM_SLOT_INVALID;
 
             if (mouse->uMouseX < 490 || mouse->uMouseX > 618) {
                 return;
@@ -2096,10 +2096,10 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isPotion(pParty->pPickedItem.uItemID) && isPotion(item->uItemID)) { // potion mixing
-        ITEM_TYPE potionSrc1 = item->uItemID;
-        ITEM_TYPE potionSrc2 = pParty->pPickedItem.uItemID;
+        ItemId potionSrc1 = item->uItemID;
+        ItemId potionSrc2 = pParty->pPickedItem.uItemID;
 
-        ITEM_TYPE potionID;
+        ItemId potionID;
         if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST || item->uItemID == ITEM_POTION_CATALYST) {
             potionID = ITEM_POTION_CATALYST;
         } else {

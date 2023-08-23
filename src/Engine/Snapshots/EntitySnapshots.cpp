@@ -44,7 +44,7 @@
  *
  * @see runBeaconsCodeGen
  */
-static const std::unordered_map<MAP_TYPE, uint16_t> gamesLodIndexByMapId = {
+static const std::unordered_map<MapId, uint16_t> gamesLodIndexByMapId = {
     {MAP_ERATHIAN_SEWERS, 0},
     {MAP_MAZE, 1},
     {MAP_CASTLE_GLOAMING, 2},
@@ -122,7 +122,7 @@ static const std::unordered_map<MAP_TYPE, uint16_t> gamesLodIndexByMapId = {
     {MAP_GRAND_TEMPLE_OF_THE_SUN, 74},
     {MAP_HALL_OF_THE_PIT, 75},
 };
-static const std::unordered_map<uint16_t, MAP_TYPE> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
+static const std::unordered_map<uint16_t, MapId> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
 
 static void snapshot(const GameTime &src, int64_t *dst) {
     *dst = src.value;
@@ -422,13 +422,13 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
 }
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = static_cast<ITEM_TYPE>(src.itemID);
+    dst->uItemID = static_cast<ItemId>(src.itemID);
     dst->uEnchantmentType = src.enchantmentType;
     dst->m_enchantmentStrength = src.enchantmentStrength;
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
     dst->uNumCharges = src.numCharges;
     dst->uAttributes = ItemFlags(src.attributes);
-    dst->uBodyAnchor = static_cast<ITEM_SLOT>(src.bodyAnchor);
+    dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
     dst->uHolderPlayer = src.holderPlayer;
     dst->placedInChest = src.placedInChest;
@@ -1241,7 +1241,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uTreasureDropChance = src.pMonsterInfo.treasureDropChance;
     dst->monsterInfo.uTreasureDiceRolls = src.pMonsterInfo.treasureDiceRolls;
     dst->monsterInfo.uTreasureDiceSides = src.pMonsterInfo.treasureDiceSides;
-    dst->monsterInfo.uTreasureLevel = static_cast<ITEM_TREASURE_LEVEL>(src.pMonsterInfo.treasureLevel);
+    dst->monsterInfo.uTreasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
     dst->monsterInfo.uTreasureType = src.pMonsterInfo.treasureType;
     dst->monsterInfo.uFlying = src.pMonsterInfo.flying;
     dst->monsterInfo.uMovementType = src.pMonsterInfo.movementType;
@@ -1307,7 +1307,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->tetherDistance = src.uTetherDistance;
     dst->aiState = static_cast<AIState>(src.uAIState);
     dst->currentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
-    dst->carriedItemId = ITEM_TYPE(src.uCarriedItemID);
+    dst->carriedItemId = ItemId(src.uCarriedItemID);
     dst->currentActionTime = src.uCurrentActionTime;
 
     reconstruct(src.pSpriteIDs, &dst->spriteIds);
@@ -1476,7 +1476,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
         dst->uMonsterIndex = src.uIndex;
     } else {
         assert(dst->uKind == OBJECT_Item);
-        dst->uItemIndex = static_cast<ITEM_TREASURE_LEVEL>(src.uIndex);
+        dst->uItemIndex = static_cast<ItemTreasureLevel>(src.uIndex);
         dst->uMonsterIndex = 0;
     }
     dst->uAttributes = src.uAttributes;

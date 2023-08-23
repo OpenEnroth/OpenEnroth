@@ -140,7 +140,7 @@ void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
     }
 }
 
-void npcSetItem(int npc, ITEM_TYPE item, int a3) {
+void npcSetItem(int npc, ItemId item, int a3) {
     for (uint i = 0; i < pActors.size(); i++) {
         if (pActors[i].npcId == npc) {
             Actor::giveItem(i, item, a3);
@@ -148,7 +148,7 @@ void npcSetItem(int npc, ITEM_TYPE item, int a3) {
     }
 }
 
-void Actor::giveItem(signed int uActorID, ITEM_TYPE uItemID, unsigned int bGive) {
+void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
     if ((uActorID >= 0) && (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
         if (bGive) {
             if (pActors[uActorID].carriedItemId == ITEM_NULL)
@@ -1287,7 +1287,7 @@ bool Actor::IsPeasant() {
 void Actor::StealFrom(unsigned int uActorID) {
     Character *pPlayer;     // edi@1
     int v4;              // ebx@2
-    MAP_TYPE v5;     // eax@2
+    MapId v5;     // eax@2
     LocationInfo *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
@@ -3249,7 +3249,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
             uDamageAmount +=
                 pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
         } else {
-            for (ITEM_SLOT i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
+            for (ItemSlot i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
                 if (character->HasItemEquipped(i)) {
                     ItemGen *item;
                     if (i == ITEM_SLOT_OFF_HAND)

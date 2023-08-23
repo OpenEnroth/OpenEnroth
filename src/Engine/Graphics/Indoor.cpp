@@ -881,7 +881,7 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0;
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
@@ -1987,7 +1987,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, Vec3i pos, uint16_t facing) {
+int DropTreasureAt(ItemTreasureLevel trs_level, int trs_type, Vec3i pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
@@ -2008,7 +2008,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 
     int v34 = 0;
     int v5 = grng->random(100);
-    ITEM_TREASURE_LEVEL v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->Treasure_prob));
+    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->Treasure_prob));
     if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
         // [0, 20) -- nothing
         // [20, 60) -- gold

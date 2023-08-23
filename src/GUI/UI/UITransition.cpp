@@ -202,7 +202,7 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
 
-    MAP_TYPE map_id = mapid;
+    MapId map_id = mapid;
     if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && engine->_teleportPoint.getTeleportMap()[0] != ' ') {
         map_id = pMapStats->GetMapInfo(_mapName);
     }

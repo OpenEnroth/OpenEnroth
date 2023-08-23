@@ -697,7 +697,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 std::string GameUI_GetMinimapHintText() {
     double v3;            // st7@1
     int v7;               // eax@4
-    MAP_TYPE pMapID;  // eax@14
+    MapId pMapID;  // eax@14
     int global_coord_X;   // [sp+10h] [bp-1Ch]@1
     int global_coord_Y;   // [sp+14h] [bp-18h]@1
     int pY;      // [sp+1Ch] [bp-10h]@1

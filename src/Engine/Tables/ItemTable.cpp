@@ -99,7 +99,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
     // Bonus range for Standard by Level
     strtokSkipLines(5);
-    for (ITEM_TREASURE_LEVEL i : bonusRanges.indices()) {  // counted from 1
+    for (ItemTreasureLevel i : bonusRanges.indices()) {  // counted from 1
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() == 4 && "Invalid number of tokens");
@@ -143,7 +143,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
 
-        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
+        ItemId item_counter = ItemId(atoi(tokens[0]));
         pItems[item_counter].iconName = removeQuotes(tokens[1]);
         pItems[item_counter].name = removeQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
@@ -207,7 +207,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() > 7 && "Invalid number of tokens");
 
-        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
+        ItemId item_counter = ItemId(atoi(tokens[0]));
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
@@ -218,8 +218,8 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
     // ChanceByTreasureLvl Summ - to calculate chance
     memset(&chanceByTreasureLevelSums, 0, 24);
-    for (ITEM_TREASURE_LEVEL i : chanceByTreasureLevelSums.indices())
-        for (ITEM_TYPE j : pItems.indices())
+    for (ItemTreasureLevel i : chanceByTreasureLevelSums.indices())
+        for (ItemId j : pItems.indices())
             chanceByTreasureLevelSums[i] += pItems[j].uChanceByTreasureLvl[i];
 
     strtokSkipLines(5);
@@ -301,12 +301,12 @@ void ItemTable::LoadPotions(const Blob &potions) {
         return;
     }
 
-    for (ITEM_TYPE row : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+    for (ItemId row : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
             return;
         }
-        for (ITEM_TYPE column : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+        for (ItemId column : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
             potion_value = atoi(currValue);
@@ -314,7 +314,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
                 // values like "E{x}" represent damage level {x} when using invalid potion combination
                 potion_value = atoi(currValue + 1);
             }
-            this->potionCombination[row][column] = (ITEM_TYPE)potion_value;
+            this->potionCombination[row][column] = (ItemId)potion_value;
         }
 
         test_string = strtok(NULL, "\r") + 1;
@@ -345,12 +345,12 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
         return;
     }
 
-    for (ITEM_TYPE row : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+    for (ItemId row : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
             return;
         }
-        for (ITEM_TYPE column : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+        for (ItemId column : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
             this->potionNotes[row][column] = atoi(currValue);
@@ -365,16 +365,16 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     }
 }
 
-void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
+void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
     assert(isRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47
-    ITEM_TYPE artifactRandomId;       // ebx@57
+    ItemId artifactRandomId;       // ebx@57
     int v18;                      // edx@62
     //    unsigned int v34; // eax@97
     int j;              // eax@121
-    std::array<ITEM_TYPE, 800> spawnableRequestedItems;  // [sp+Ch] [bp-C88h]@33
+    std::array<ItemId, 800> spawnableRequestedItems;  // [sp+Ch] [bp-C88h]@33
     std::array<ITEM_ENCHANTMENT, 800> possibleSpecialIds;
     int total_chance;   // [sp+C8Ch] [bp-8h]@33
     int v57;            // [sp+CA0h] [bp+Ch]@62
@@ -480,7 +480,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         j = 0;
         // a2a = 1;
         if (requested_skill == CHARACTER_SKILL_INVALID) {  // no skill for this item needed
-            for (ITEM_TYPE i : allSpawnableItems()) {
+            for (ItemId i : allSpawnableItems()) {
                 if (pItems[i].uEquipType == requested_equip) {
                     spawnableRequestedItems[j] = i;
                     ++j;
@@ -489,7 +489,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
                 }
             }
         } else {  // have needed skill
-            for (ITEM_TYPE itemId : allSpawnableItems()) {
+            for (ItemId itemId : allSpawnableItems()) {
                 if (pItems[itemId].uSkillType == requested_skill) {
                     spawnableRequestedItems[j] = itemId;
                     ++j;
@@ -516,7 +516,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         // artifact
         if (treasure_level == ITEM_TREASURE_LEVEL_6) {
             int artifactsFound = 0;  // [sp+CA0h] [bp+Ch]@55
-            for (ITEM_TYPE i : allSpawnableArtifacts())
+            for (ItemId i : allSpawnableArtifacts())
                 artifactsFound += pParty->pIsArtifactFound[i];
             artifactRandomId = grng->randomSample(allSpawnableArtifacts());
             if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] &&
@@ -533,7 +533,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         v18 = grng->random(this->chanceByTreasureLevelSums[treasure_level]) + 1;
         while (v57 < v18) {
             // TODO(captainurist): what's going on here? Get rid of casts.
-            outItem->uItemID = ITEM_TYPE(std::to_underlying(outItem->uItemID) + 1);
+            outItem->uItemID = ItemId(std::to_underlying(outItem->uItemID) + 1);
             v57 += pItems[outItem->uItemID].uChanceByTreasureLvl[treasure_level];
         }
     }

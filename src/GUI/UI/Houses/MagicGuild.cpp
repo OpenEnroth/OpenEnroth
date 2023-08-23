@@ -358,10 +358,10 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
 
     DAMAGE_TYPE schoolType = guildSpellsSchool[guildType];
     CharacterSkillMastery maxMastery = guildSpellsMastery[houseId()];
-    Segment<ITEM_TYPE> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
+    Segment<ItemId> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
 
     for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
-        ITEM_TYPE pItemNum = grng->randomSample(spellbooksForGuild);
+        ItemId pItemNum = grng->randomSample(spellbooksForGuild);
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
             if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED]) {

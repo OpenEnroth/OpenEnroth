@@ -259,7 +259,7 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
     return false;
 }
 
-static constexpr IndexedArray<std::array<MAP_TYPE, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_destinations = {
+static constexpr IndexedArray<std::array<MapId, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_destinations = {
     // from                      north                south                east                 west
     {MAP_EMERALD_ISLAND,        {MAP_INVALID,         MAP_INVALID,         MAP_INVALID,         MAP_INVALID}},
     {MAP_HARMONDALE,            {MAP_TULAREAN_FOREST, MAP_BARROW_DOWNS,    MAP_TULAREAN_FOREST, MAP_ERATHIA}},
@@ -299,31 +299,31 @@ static constexpr IndexedArray<std::array<int, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS
 
 static constexpr IndexedArray<std::array<MapStartPoint, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_arrival_points = {
     // from                      north                south                east                 west
-    {MAP_EMERALD_ISLAND,        {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_HARMONDALE,            {MapStartPoint_South, MapStartPoint_North, MapStartPoint_South, MapStartPoint_East}},
-    {MAP_ERATHIA,               {MapStartPoint_South, MapStartPoint_North, MapStartPoint_West, MapStartPoint_East}},
-    {MAP_TULAREAN_FOREST,       {MapStartPoint_East, MapStartPoint_North, MapStartPoint_Party, MapStartPoint_East}},
-    {MAP_DEYJA,                 {MapStartPoint_West, MapStartPoint_North, MapStartPoint_West, MapStartPoint_North}},
-    {MAP_BRACADA_DESERT,        {MapStartPoint_South, MapStartPoint_Party, MapStartPoint_West, MapStartPoint_Party}},
-    {MAP_CELESTE,               {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_PIT,                   {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_EVENMORN_ISLAND,       {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_MOUNT_NIGHON,          {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_BARROW_DOWNS,          {MapStartPoint_South, MapStartPoint_East, MapStartPoint_South, MapStartPoint_East}},
-    {MAP_LAND_OF_THE_GIANTS,    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
-    {MAP_TATALIA,               {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_West, MapStartPoint_Party}},
-    {MAP_AVLEE,                 {MapStartPoint_Party, MapStartPoint_North, MapStartPoint_North, MapStartPoint_Party}},
-    {MAP_SHOALS,                {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
+    {MAP_EMERALD_ISLAND,        {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_HARMONDALE,            {MAP_START_POINT_SOUTH, MAP_START_POINT_NORTH, MAP_START_POINT_SOUTH, MAP_START_POINT_EAST}},
+    {MAP_ERATHIA,               {MAP_START_POINT_SOUTH, MAP_START_POINT_NORTH, MAP_START_POINT_WEST,  MAP_START_POINT_EAST}},
+    {MAP_TULAREAN_FOREST,       {MAP_START_POINT_EAST,  MAP_START_POINT_NORTH, MAP_START_POINT_PARTY, MAP_START_POINT_EAST}},
+    {MAP_DEYJA,                 {MAP_START_POINT_WEST,  MAP_START_POINT_NORTH, MAP_START_POINT_WEST,  MAP_START_POINT_NORTH}},
+    {MAP_BRACADA_DESERT,        {MAP_START_POINT_SOUTH, MAP_START_POINT_PARTY, MAP_START_POINT_WEST,  MAP_START_POINT_PARTY}},
+    {MAP_CELESTE,               {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_PIT,                   {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_EVENMORN_ISLAND,       {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_MOUNT_NIGHON,          {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_BARROW_DOWNS,          {MAP_START_POINT_SOUTH, MAP_START_POINT_EAST,  MAP_START_POINT_SOUTH, MAP_START_POINT_EAST}},
+    {MAP_LAND_OF_THE_GIANTS,    {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+    {MAP_TATALIA,               {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_WEST,  MAP_START_POINT_PARTY}},
+    {MAP_AVLEE,                 {MAP_START_POINT_PARTY, MAP_START_POINT_NORTH, MAP_START_POINT_NORTH, MAP_START_POINT_PARTY}},
+    {MAP_SHOALS,                {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
 };
 
 //----- (0048902E) --------------------------------------------------------
 bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string *pOut) {
     signed int direction;       // esi@7
-    MAP_TYPE destinationMap;  // eax@23
+    MapId destinationMap;  // eax@23
 
     std::string str = this->level_filename;
     str = str.substr(str.find_first_of("0123456789"));
-    MAP_TYPE mapNumberAsInt = static_cast<MAP_TYPE>(atoi(str.c_str()));
+    MapId mapNumberAsInt = static_cast<MapId>(atoi(str.c_str()));
 
     // TODO(captainurist): pit & celeste fall into the range below. Also, the logic here is retarded.
     if (this->level_filename.length() != 9 || mapNumberAsInt < MAP_EMERALD_ISLAND || mapNumberAsInt > MAP_SHOALS)
@@ -352,14 +352,14 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
         if (wholePartyUnderwaterSuitEquipped) {
             uDefaultTravelTime_ByFoot = 1;
             *pOut = "out15.odm";  // Shoals
-            uLevel_StartingPointType = MapStartPoint_East;
+            uLevel_StartingPointType = MAP_START_POINT_EAST;
             pParty->uFlags &= 0xFD7Bu; // ~0x0284
             return true;
         }
     } else if (mapNumberAsInt == MAP_SHOALS && direction == 3) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
         *pOut = "out14.odm";  // Avlee
-        uLevel_StartingPointType = MapStartPoint_West;
+        uLevel_StartingPointType = MAP_START_POINT_WEST;
         pParty->uFlags &= 0xFD7Bu; // ~0x0284
         return true;
     }
@@ -469,7 +469,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
 void OutdoorLocation::SetFog() {
     pOutdoor->level_filename = pCurrentMapName;
 
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id == MAP_INVALID || map_id == MAP_CELESTE ||
         map_id == MAP_PIT || map_id > MAP_SHOALS)
         return;
@@ -1200,7 +1200,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
 }
 
 //----- (0047F2D3) --------------------------------------------------------
-bool OutdoorLocation::InitalizeActors(MAP_TYPE a1) {
+bool OutdoorLocation::InitalizeActors(MapId a1) {
     bool alert_status;  // [sp+348h] [bp-8h]@1
                        //  int v9; // [sp+34Ch] [bp-4h]@1
 
@@ -2674,7 +2674,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0;
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];

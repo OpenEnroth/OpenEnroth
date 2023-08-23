@@ -135,7 +135,7 @@ void GUIWindow_MapBook::Update() {
     map_window.uFrameZ = game_viewport_z;
     map_window.uFrameW = game_viewport_w;
 
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
     }

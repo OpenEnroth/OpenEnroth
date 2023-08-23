@@ -314,7 +314,7 @@ const int paperdoll_Boot[4][7][2] = {  // 4E5490
     0x1F, 0x127, 0x1F, 0x122, 0x1B, 0x11B, 0x1D, 0x117, 0x1D, 0x116,
     0x1B, 0x11F, 0x1D, 0x137,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_boots_indexByType = {
     {ITEM_LEATHER_BOOTS, 0},
     {ITEM_STEEL_PLATED_BOOTS, 1},
     {ITEM_RANGER_BOOTS, 2},
@@ -323,7 +323,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
     {ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 5},
     {ITEM_ARTIFACT_HERMES_SANDALS, 6},
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
 
 const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x11, 0x68, 0x0F, 0x68, 0x14, 0x71, 0x19, 0x6B, 0x21, 0x6F, 0x05, 0x68,
@@ -338,7 +338,7 @@ const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x14, 0x92, 0x10, 0x92, 0x15, 0x98, 0x1F, 0x91, 0x22, 0x90, 0x08, 0x92,
     0x0C, 0x92, 0x15, 0x98, 0x03, 0x91, 0x03, 0x90,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
     {ITEM_LEATHER_CLOAK, 0},
     {ITEM_HUNTSMANS_CLOAK, 1},
     {ITEM_RANGERS_CLOAK, 2},
@@ -350,7 +350,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
     {ITEM_RARE_MOON_CLOAK, 8},
     {ITEM_RARE_VAMPIRES_CAPE, 9}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
 const int paperdoll_CloakCollar[4][10][2] = {  // 4E56B0
     0,    0,    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x20, 0x67, 0x21, 0x68,
@@ -379,7 +379,7 @@ const int paperdoll_Belt[4][7][2] = {  // 4E57F0
     0x42, 0xD2, 0x3F, 0xD0, 0x3B, 0xD7, 0x3C, 0xD5, 0x3B, 0xD6, 0x3E, 0xCF,
     0x36, 0xD6,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_belt_indexByType = {
     {ITEM_LEATHER_BELT, 0},
     {ITEM_FINE_BELT, 1},
     {ITEM_STRONG_BELT, 2},
@@ -388,7 +388,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
     {ITEM_RELIC_TITANS_BELT, 5},
     {ITEM_ARTIFACT_HEROS_BELT, 6}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
 
 const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x3E, 0x1F, 0x41, 0x2C, 0x37, 0x2F, 0x31, 0x32, 0x37, 0x2A, 0x39, 0x28,
@@ -407,7 +407,7 @@ const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x39, 0x5B, 0x45, 0x5C, 0x47, 0x5C, 0x44, 0x4B, 0x44, 0x57, 0x43, 0x55,
     0x44, 0x4A, 0x3E, 0x45, 0x3C, 0x54, 0x47, 0x70,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_helm_indexByType = {
     {ITEM_HORNED_HELM, 0},
     {ITEM_CONSCRIPTS_HELM, 1},
     {ITEM_FULL_HELM, 2},
@@ -425,7 +425,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
     {ITEM_ARTIFACT_MINDS_EYE, 14},
     {ITEM_RARE_SHADOWS_MASK, 15}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
 
 const int pPaperdoll_Beards[4] = {  // 4E5AD0
     52,
@@ -465,7 +465,7 @@ const int paperdoll_Armor_Coord[4][17][2] = {  // 4E4E30
     0x33, 0x8E, 0x2F, 0x8F, 0x16, 0x8D, 0x18, 0x8C, 0x19, 0x8C, 0x1B, 0x8E,
     0x0C, 0x8C, 0x21, 0x8B, 0x0C, 0x8C, 0x18, 0x8C, 0x2F, 0x8F,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_armor_indexByType = {
     {ITEM_LEATHER_ARMOR, 0},
     {ITEM_STUDDED_LEATHER, 1},
     {ITEM_OFFICERS_LEATHER, 2},
@@ -484,7 +484,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
     {ITEM_ARTIFACT_GOVERNORS_ARMOR, 15},
     {ITEM_ARTIFACT_ELVEN_CHAINMAIL, 16}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
 
 const int paperdoll_shoulder_coord[4][17][2] = {  // 4E5050
     0x64, 0x67, 0x61, 0x67, 0x65, 0x68, 0x6E, 0x74, 0x6C, 0x68, 0x61, 0x67,
@@ -1779,7 +1779,7 @@ void OnPaperdollLeftClick() {
     static int amulety = 91;
 
     int slot = 32;
-    ITEM_SLOT pos = ITEM_SLOT_INVALID;
+    ItemSlot pos = ITEM_SLOT_INVALID;
 
     ItemGen *pitem = NULL;  // condesnse with this??
                             // pitem.Reset();
@@ -1795,7 +1795,7 @@ void OnPaperdollLeftClick() {
     int v34;  // esi@90
 
     //  unsigned int v48; // [sp+30h] [bp-1Ch]@88
-    ITEM_TYPE v50;  // [sp+38h] [bp-14h]@50
+    ItemId v50;  // [sp+38h] [bp-14h]@50
     // int v51; // [sp+3Ch] [bp-10h]@1
     int freeslot;  // [sp+40h] [bp-Ch]@5
     ITEM_EQUIP_TYPE pEquipType = EQUIP_NONE;
@@ -1811,7 +1811,7 @@ void OnPaperdollLeftClick() {
         twohandedequip = mainhandequip;
     }
 
-    ITEM_TYPE pickeditem = pParty->pPickedItem.uItemID;
+    ItemId pickeditem = pParty->pPickedItem.uItemID;
 
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // hold item
         pEquipType = pParty->pPickedItem.GetItemEquipType();
@@ -1890,7 +1890,7 @@ void OnPaperdollLeftClick() {
                     //слоты для колец
                     // equippos = 0;
 
-                    for (ITEM_SLOT equippos : allRingSlots()) {
+                    for (ItemSlot equippos : allRingSlots()) {
                         if (!pParty->activeCharacter().pEquipment.pIndices[equippos]) {
                             freeslot = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space

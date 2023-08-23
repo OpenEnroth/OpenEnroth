@@ -44,7 +44,7 @@ class EventIR {
         } npc_descr;
         struct {
             int id;
-            ITEM_TYPE item;
+            ItemId item;
             bool is_give;
         } npc_item_descr;
         struct {
@@ -154,9 +154,9 @@ class EventIR {
             int group;
         } npc_groups_descr;
         struct {
-            ITEM_TREASURE_LEVEL treasure_level;
+            ItemTreasureLevel treasure_level;
             int treasure_type;
-            ITEM_TYPE item_id;
+            ItemId item_id;
         } give_item_descr;
         struct {
             int chest_id;

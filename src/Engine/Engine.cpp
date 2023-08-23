@@ -657,7 +657,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // char *v3;         // eax@1
-    MAP_TYPE v5;  // eax@3
+    MapId v5;  // eax@3
 
     // v9 = bLoading;
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
@@ -1025,7 +1025,7 @@ void Engine::_461103_load_level_sub() {
     int16_t v14;     // ax@41
     int v17;  // [sp+14h] [bp-48h]@3
     // int v18;  // [sp+14h] [bp-48h]@23
-    MAP_TYPE v19;         // [sp+18h] [bp-44h]@1
+    MapId v19;         // [sp+18h] [bp-44h]@1
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
@@ -1120,7 +1120,7 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.z = 100;
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
-    uLevel_StartingPointType = MapStartPoint_Party;
+    uLevel_StartingPointType = MAP_START_POINT_PARTY;
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }
@@ -1641,7 +1641,7 @@ void RegeneratePartyHealthMana() {
 
             // HP/SP regeneration and HP deterioration
             for (Character &character : pParty->pCharacters) {
-                for (ITEM_SLOT idx : allItemSlots()) {
+                for (ItemSlot idx : allItemSlots()) {
                     bool recovery_HP = false;
                     bool decrease_HP = false;
                     bool recovery_SP = false;
@@ -1843,6 +1843,6 @@ void TeleportToNWCDungeon() {
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-    Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
+    Transition_StopSound_Autosave("nwc.blv", MAP_START_POINT_PARTY);
     current_screen_type = SCREEN_GAME;
 }
