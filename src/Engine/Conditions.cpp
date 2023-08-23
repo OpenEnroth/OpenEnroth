@@ -7,7 +7,7 @@
 
 struct ConditionEquipment {
     ITEM_TYPE item = ITEM_NULL;
-    ITEM_SLOT slot = ITEM_SLOT_INVALID;
+    ItemSlot slot = ITEM_SLOT_INVALID;
 };
 
 enum class ConditionFlag {
@@ -27,11 +27,11 @@ struct ConditionTableEntry {
     constexpr ConditionTableEntry(ConditionFlags flags,
                                   ITEM_ENCHANTMENT enchantment = ITEM_ENCHANTMENT_NULL,
                                   ITEM_TYPE item1 = ITEM_NULL,
-                                  ITEM_SLOT slot1 = ITEM_SLOT_INVALID,
+                                  ItemSlot slot1 = ITEM_SLOT_INVALID,
                                   ITEM_TYPE item2 = ITEM_NULL,
-                                  ITEM_SLOT slot2 = ITEM_SLOT_INVALID,
+                                  ItemSlot slot2 = ITEM_SLOT_INVALID,
                                   ITEM_TYPE item3 = ITEM_NULL,
-                                  ITEM_SLOT slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
+                                  ItemSlot slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
         flags = flags;
         enchantment = enchantment;
         equipment[0].item = item1;

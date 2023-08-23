@@ -2029,7 +2029,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 item = &pParty->activeCharacter().pInventoryItemList[item_pid];
             }
         } else {  // rings displayed
-            ITEM_SLOT pos = ITEM_SLOT_INVALID;
+            ItemSlot pos = ITEM_SLOT_INVALID;
 
             if (mouse->uMouseX < 490 || mouse->uMouseX > 618) {
                 return;

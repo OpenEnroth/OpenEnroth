@@ -206,12 +206,12 @@ class Character {
     bool CanTrainToNextLevel();
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
-    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const;
-    CharacterSkillType GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const;
+    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ItemSlot uEquipSlot) const;
+    CharacterSkillType GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
-    bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
+    bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment) const;
-    bool WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const;
+    bool WearsItem(ITEM_TYPE item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -408,7 +408,7 @@ class Character {
     ItemGen *GetBootItem();
     ItemGen *GetAmuletItem();
     ItemGen *GetNthRingItem(int ringNum);
-    ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
+    ItemGen *GetNthEquippedIndexItem(ItemSlot index);
     ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos);
 
     const ItemGen *GetMainHandItem() const;
@@ -422,7 +422,7 @@ class Character {
     const ItemGen *GetBootItem() const;
     const ItemGen *GetAmuletItem() const;
     const ItemGen *GetNthRingItem(int ringNum) const;
-    const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
+    const ItemGen *GetNthEquippedIndexItem(ItemSlot index) const;
     const ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.

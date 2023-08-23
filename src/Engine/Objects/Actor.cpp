@@ -3249,7 +3249,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
             uDamageAmount +=
                 pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
         } else {
-            for (ITEM_SLOT i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
+            for (ItemSlot i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
                 if (character->HasItemEquipped(i)) {
                     ItemGen *item;
                     if (i == ITEM_SLOT_OFF_HAND)

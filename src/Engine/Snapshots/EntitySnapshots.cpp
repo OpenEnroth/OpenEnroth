@@ -428,7 +428,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
     dst->uNumCharges = src.numCharges;
     dst->uAttributes = ItemFlags(src.attributes);
-    dst->uBodyAnchor = static_cast<ITEM_SLOT>(src.bodyAnchor);
+    dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
     dst->uHolderPlayer = src.holderPlayer;
     dst->placedInChest = src.placedInChest;

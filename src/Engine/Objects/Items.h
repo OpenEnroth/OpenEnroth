@@ -111,7 +111,7 @@ struct ItemGen {  // 0x24
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
     int32_t uNumCharges = 0;           // 10
     ItemFlags uAttributes = 0;          // 14
-    ITEM_SLOT uBodyAnchor = ITEM_SLOT_INVALID; // 18
+    ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // 18
     uint8_t uMaxCharges = 0;           // 19
     int8_t uHolderPlayer = -1;        // 1A
     bool placedInChest = false;        // 1B (was unused, repurposed)

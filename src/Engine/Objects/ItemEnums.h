@@ -1215,7 +1215,7 @@ inline bool isWeapon(ITEM_EQUIP_TYPE type) {
 /**
  * Slot on the paperdoll that the item can be equipped into.
  */
-enum class ITEM_SLOT : uint8_t {
+enum class ItemSlot : uint8_t {
     ITEM_SLOT_INVALID = 0,
 
     ITEM_SLOT_OFF_HAND = 1,
@@ -1240,17 +1240,17 @@ enum class ITEM_SLOT : uint8_t {
     ITEM_SLOT_FIRST_VALID = ITEM_SLOT_OFF_HAND,
     ITEM_SLOT_LAST_VALID = ITEM_SLOT_RING6,
 };
-using enum ITEM_SLOT;
+using enum ItemSlot;
 
-inline Segment<ITEM_SLOT> allRingSlots() {
+inline Segment<ItemSlot> allRingSlots() {
     return Segment(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
 }
 
-inline ITEM_SLOT ringSlot(int index) {
+inline ItemSlot ringSlot(int index) {
     assert(index >= 0 && index <= 5);
-    return static_cast<ITEM_SLOT>(std::to_underlying(ITEM_SLOT_RING1) + index);
+    return static_cast<ItemSlot>(std::to_underlying(ITEM_SLOT_RING1) + index);
 }
 
-inline Segment<ITEM_SLOT> allItemSlots() {
+inline Segment<ItemSlot> allItemSlots() {
     return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
 }

@@ -1779,7 +1779,7 @@ void OnPaperdollLeftClick() {
     static int amulety = 91;
 
     int slot = 32;
-    ITEM_SLOT pos = ITEM_SLOT_INVALID;
+    ItemSlot pos = ITEM_SLOT_INVALID;
 
     ItemGen *pitem = NULL;  // condesnse with this??
                             // pitem.Reset();
@@ -1890,7 +1890,7 @@ void OnPaperdollLeftClick() {
                     //слоты для колец
                     // equippos = 0;
 
-                    for (ITEM_SLOT equippos : allRingSlots()) {
+                    for (ItemSlot equippos : allRingSlots()) {
                         if (!pParty->activeCharacter().pEquipment.pIndices[equippos]) {
                             freeslot = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
