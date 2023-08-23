@@ -291,8 +291,7 @@ jobs:
 
           export CC=gcc-13 && export CXX=g++-13
 
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
-          matrix.configuration }} -DOE_BUILD_TESTS=ON
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
 
       - name: Build
         working-directory: build
@@ -337,113 +336,12 @@ jobs:
           ccache -c
 
   build_macos:
-    name: Build OSX Client
     needs: advanceNightlyTag
-    runs-on: macos-13
-    strategy:
-      fail-fast: false
-      matrix:
-        configuration:
-          - Debug
-          - Release
-        architecture:
-          - x64
-    steps:
-      - name: Set up Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: 14.3
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          ref: '${{ inputs.myCommit }}'
-
-      - name: Check for Data cache
-        id: check-for-data-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            OpenEnroth_GameData
-          key: data-cache
-
-      - name: Copy shaders
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
-        run: >
-          cp -r resources/shaders OpenEnroth_GameData/mm7
-
-      - name: ccache
-        if: matrix.configuration == 'Debug'
-        uses: hendrikmuhs/ccache-action@v1.2.10
-        with:
-          key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
-          max-size: 75M
-
-      - name: ccache
-        if: matrix.configuration == 'Release'
-        uses: hendrikmuhs/ccache-action@v1.2.10
-        with:
-          key: 'macos-${{ matrix.configuration }}-${{ matrix.architecture }}'
-          max-size: 25M
-
-      - name: Configure
-        run: >
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
-          matrix.configuration }} -DOE_BUILD_TESTS=ON
-          -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4" 
-
-      - name: Build
-        working-directory: build
-        run: |
-          make -j4
-
-      - name: Tests
-        working-directory: build
-        run: |
-          make UnitTest
-
-      - name: GameTest
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
-        working-directory: build
-        run: |
-          pwd
-          make GameTest_Headless
-        env:
-          OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
-
-      - name: Prepare artifact
-        run: >
-          mkdir dist
-
-          cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-
-          cp -r resources/* dist/
-
-          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+
-          -srcfolder dist
-
-      - name: Zip Folder For Release
-        run: >-
-          zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
-          matrix.architecture }}.zip dist
-
-      - name: Publish Release
-        uses: softprops/action-gh-release@v1
-        with:
-          prerelease: true
-          tag_name: '${{ env.TAG_NAME }}'
-          files: >-
-            ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{
-            matrix.architecture }}.zip
-
-      - name: Check dependencies
-        run: |
-          otool -L build/src/Bin/OpenEnroth/OpenEnroth.app/Contents/MacOS/OpenEnroth
-
-      - name: cleanup ccache
-        run: >
-          ccache -c
+    uses: ./.github/workflows/macos.yml
+    secrets: inherit
+    with:
+      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
+      myCommit: '${{inputs.myCommit}}'
 
   build_windows:
     needs: advanceNightlyTag
