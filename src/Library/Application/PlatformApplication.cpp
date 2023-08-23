@@ -1,6 +1,7 @@
 #include "PlatformApplication.h"
 
 #include <cassert>
+#include <ranges> // NOLINT
 
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
@@ -8,10 +9,8 @@
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/FilteringEventHandler.h"
 #include "Platform/PlatformLogger.h"
-#include "Platform/Null/NullPlatform.h"
 
 #include "Utility/MapAccess.h"
-#include "Utility/Reversed.h"
 
 class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public ProxyWindow, public ProxyOpenGLContext {
  public:
@@ -81,10 +80,10 @@ PlatformApplication::PlatformApplication(Platform *platform) : _platform(platfor
 
 PlatformApplication::~PlatformApplication() {
     // First call the routines in reverse order - this should uninstall everything.
-    for (const auto &routine : reversed(_cleanupRoutines))
+    for (const auto &routine : _cleanupRoutines | std::views::reverse)
         routine();
 
-    // User should uninstall all components that platform application doesn't own before destroying it.
+    // User should uninstall all components that platform application doesn't own before destroying the platform application.
     assert(_componentByType.empty());
 
     // Then destroy every component that we own.
