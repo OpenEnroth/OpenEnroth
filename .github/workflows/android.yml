@@ -133,7 +133,8 @@ jobs:
         with:
           key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
-          max-size: 250M
+          verbose: 2
+          max-size: ${{ fromJson('["100M", "300M"]')[matrix.architecture == 'universal'] }}
 
       - name: Build the app
         working-directory: android
