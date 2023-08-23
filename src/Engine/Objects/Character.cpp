@@ -143,12 +143,83 @@ static constexpr IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBo
 static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
                                         25, 20, 20, 0,  0,  0};
 static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
-static constexpr unsigned char pBaseHealthPerLevelByClass[36] = {
-    5, 7, 9, 9, 4, 6, 8, 8, 5, 6, 8, 8, 4, 5, 6, 6, 3, 4,
-    6, 6, 4, 5, 6, 6, 2, 3, 4, 4, 2, 3, 4, 4, 2, 3, 3, 3};
-static constexpr unsigned char pBaseManaPerLevelByClass[36] = {
-    0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 3, 3, 1, 2,
-    3, 3, 0, 2, 3, 3, 3, 4, 5, 5, 3, 4, 5, 5, 3, 4, 6, 6};
+
+static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> pBaseHealthPerLevelByClass = {
+    {CHARACTER_CLASS_KNIGHT,            5},
+    {CHARACTER_CLASS_CAVALIER,          7},
+    {CHARACTER_CLASS_CHAMPION,          9},
+    {CHARACTER_CLASS_BLACK_KNIGHT,      9},
+    {CHARACTER_CLASS_THIEF,             4},
+    {CHARACTER_CLASS_ROGUE,             6},
+    {CHARACTER_CLASS_SPY,               8},
+    {CHARACTER_CLASS_ASSASSIN,          8},
+    {CHARACTER_CLASS_MONK,              5},
+    {CHARACTER_CLASS_INITIATE,          6},
+    {CHARACTER_CLASS_MASTER,            8},
+    {CHARACTER_CLASS_NINJA,             8},
+    {CHARACTER_CLASS_PALADIN,           4},
+    {CHARACTER_CLASS_CRUSADER,          5},
+    {CHARACTER_CLASS_HERO,              6},
+    {CHARACTER_CLASS_VILLIAN,           6},
+    {CHARACTER_CLASS_ARCHER,            3},
+    {CHARACTER_CLASS_WARRIOR_MAGE,      4},
+    {CHARACTER_CLASS_MASTER_ARCHER,     6},
+    {CHARACTER_CLASS_SNIPER,            6},
+    {CHARACTER_CLASS_RANGER,            4},
+    {CHARACTER_CLASS_HUNTER,            5},
+    {CHARACTER_CLASS_RANGER_LORD,       6},
+    {CHARACTER_CLASS_BOUNTY_HUNTER,     6},
+    {CHARACTER_CLASS_CLERIC,            2},
+    {CHARACTER_CLASS_PRIEST,            3},
+    {CHARACTER_CLASS_PRIEST_OF_SUN,     4},
+    {CHARACTER_CLASS_PRIEST_OF_MOON,    4},
+    {CHARACTER_CLASS_DRUID,             2},
+    {CHARACTER_CLASS_GREAT_DRUID,       3},
+    {CHARACTER_CLASS_ARCH_DRUID,        4},
+    {CHARACTER_CLASS_WARLOCK,           4},
+    {CHARACTER_CLASS_SORCERER,          2},
+    {CHARACTER_CLASS_WIZARD,            3},
+    {CHARACTER_CLASS_ARCHAMGE,          3},
+    {CHARACTER_CLASS_LICH,              3}
+};
+static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> pBaseManaPerLevelByClass = {
+    {CHARACTER_CLASS_KNIGHT,            0},
+    {CHARACTER_CLASS_CAVALIER,          0},
+    {CHARACTER_CLASS_CHAMPION,          0},
+    {CHARACTER_CLASS_BLACK_KNIGHT,      0},
+    {CHARACTER_CLASS_THIEF,             0},
+    {CHARACTER_CLASS_ROGUE,             1},
+    {CHARACTER_CLASS_SPY,               1},
+    {CHARACTER_CLASS_ASSASSIN,          1},
+    {CHARACTER_CLASS_MONK,              0},
+    {CHARACTER_CLASS_INITIATE,          1},
+    {CHARACTER_CLASS_MASTER,            1},
+    {CHARACTER_CLASS_NINJA,             1},
+    {CHARACTER_CLASS_PALADIN,           1},
+    {CHARACTER_CLASS_CRUSADER,          2},
+    {CHARACTER_CLASS_HERO,              3},
+    {CHARACTER_CLASS_VILLIAN,           3},
+    {CHARACTER_CLASS_ARCHER,            1},
+    {CHARACTER_CLASS_WARRIOR_MAGE,      2},
+    {CHARACTER_CLASS_MASTER_ARCHER,     3},
+    {CHARACTER_CLASS_SNIPER,            3},
+    {CHARACTER_CLASS_RANGER,            0},
+    {CHARACTER_CLASS_HUNTER,            2},
+    {CHARACTER_CLASS_RANGER_LORD,       3},
+    {CHARACTER_CLASS_BOUNTY_HUNTER,     3},
+    {CHARACTER_CLASS_CLERIC,            3},
+    {CHARACTER_CLASS_PRIEST,            4},
+    {CHARACTER_CLASS_PRIEST_OF_SUN,     5},
+    {CHARACTER_CLASS_PRIEST_OF_MOON,    5},
+    {CHARACTER_CLASS_DRUID,             3},
+    {CHARACTER_CLASS_GREAT_DRUID,       4},
+    {CHARACTER_CLASS_ARCH_DRUID,        5},
+    {CHARACTER_CLASS_WARLOCK,           5},
+    {CHARACTER_CLASS_SORCERER,          3},
+    {CHARACTER_CLASS_WIZARD,            4},
+    {CHARACTER_CLASS_ARCHAMGE,          6},
+    {CHARACTER_CLASS_LICH,              6}
+};
 
 static constexpr unsigned char pConditionAttributeModifier[7][19] = {
     {100, 100, 100, 120, 50, 200, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
@@ -2089,7 +2160,7 @@ int Character::GetMaxHealth() const {
     int healthbylevel =
         pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_HEALTH) + healthbylevel;
-    int maxhealth = uFullHealthBonus + pBaseHealthByClass[classType / 4] +
+    int maxhealth = uFullHealthBonus + pBaseHealthByClass[std::to_underlying(classType) / 4] +
                     GetSkillBonus(CHARACTER_ATTRIBUTE_HEALTH) + itembonus;
 
     if (maxhealth < 0)  // min zero
@@ -2159,7 +2230,7 @@ int Character::GetMaxMana() const {
     int manabylevel =
         pBaseManaPerLevelByClass[classType] * (GetActualLevel() + statbonus);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MANA) + manabylevel;
-    int maxmana = uFullManaBonus + pBaseManaByClass[classType / 4] +
+    int maxmana = uFullManaBonus + pBaseManaByClass[std::to_underlying(classType) / 4] +
                   GetSkillBonus(CHARACTER_ATTRIBUTE_MANA) + itembonus;
 
     if (maxmana < 0)  // min of 0
@@ -3274,7 +3345,7 @@ void Character::Reset(CharacterClassType cls) {
     uQuickSpell = SPELL_NONE;
 
     for (CharacterSkillType i : allSkills()) {
-        if (pSkillAvailabilityPerClass[classType / 4][i] != CLASS_SKILL_PRIMARY)
+        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != CLASS_SKILL_PRIMARY)
             continue;
 
         setSkillValue(i, CombinedSkillValue::novice());
@@ -3314,7 +3385,7 @@ CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
     counter = 0;
     for (CharacterSkillType i : allVisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
-            pSkillAvailabilityPerClass[classType / 4][i] == requiredValue) {
+            pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] == requiredValue) {
             if (counter == order - offset) return i;
             ++counter;
         }
@@ -4089,7 +4160,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Sex:
             return (pValue == this->uSex);
         case VAR_Class:
-            return (pValue == this->classType);
+            return (pValue == std::to_underlying(this->classType));
         case VAR_Race:
             return pValue == GetRace();
         case VAR_CurrentHP:

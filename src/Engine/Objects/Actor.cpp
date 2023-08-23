@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <optional>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
@@ -3384,9 +3385,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
     int for_sex;           // [sp+13Ch] [bp-Ch]@1
     int for_race;          // [sp+140h] [bp-8h]@1
-    int for_class;         // [sp+144h] [bp-4h]@1
+    std::optional<CharacterClassType> for_class;         // [sp+144h] [bp-4h]@1
 
-    for_class = -1;
     for_race = -1;
     for_sex = -1;
     v2 = 0;
@@ -3396,31 +3396,31 @@ int stru319::which_player_to_attack(Actor *pActor) {
             if (v22) {
                 switch (v22) {
                     case 1:
-                        for_class = 0;
+                        for_class = CHARACTER_CLASS_KNIGHT;
                         break;
                     case 2:
-                        for_class = 12;
+                        for_class = CHARACTER_CLASS_PALADIN;
                         break;
                     case 4:
-                        for_class = 16;
+                        for_class = CHARACTER_CLASS_ARCHER;
                         break;
                     case 8:
-                        for_class = 28;
+                        for_class = CHARACTER_CLASS_DRUID;
                         break;
                     case 16:
-                        for_class = 24;
+                        for_class = CHARACTER_CLASS_CLERIC;
                         break;
                     case 32:
-                        for_class = 32;
+                        for_class = CHARACTER_CLASS_SORCERER;
                         break;
                     case 64:
-                        for_class = 20;
+                        for_class = CHARACTER_CLASS_RANGER;
                         break;
                     case 128:
-                        for_class = 4;
+                        for_class = CHARACTER_CLASS_THIEF;
                         break;
                     case 256:
-                        for_class = 8;
+                        for_class = CHARACTER_CLASS_MONK;
                         break;
                     case 512:
                         for_sex = 0;
@@ -3444,7 +3444,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
                 v2 = 0;
                 for (int j = 0; j < pParty->pCharacters.size(); ++j) {
                     bool flag = 0;
-                    if (for_class != -1 && for_class == pParty->pCharacters[j].classType) {
+                    // TODO(captainurist): this doesn't work for promoted classes. Need to wrap in getTier1Class?
+                    if (for_class && *for_class == pParty->pCharacters[j].classType) {
                         flag = true;
                     }
                     if (for_sex != -1 && for_sex == pParty->pCharacters[j].uSex) {
