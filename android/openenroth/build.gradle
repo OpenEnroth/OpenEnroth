@@ -35,17 +35,16 @@ android {
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
-            //build all by default runner only build v8a
-            if ( System.env['GITHUBARCH'] != null ) { 
+            if ( System.env['GITHUBARCH'] == "universal" || System.env['GITHUBARCH'] == null) {
                 cmake {
                     arguments "-DANDROID_STL=c++_static", "-DOE_BUILD_TESTS=OFF"
-                    abiFilters System.env['GITHUBARCH']
+                    abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
                     version "3.24.0+"
                 }
             } else {
                 cmake {
                     arguments "-DANDROID_STL=c++_static", "-DOE_BUILD_TESTS=OFF"
-                    abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86' 
+                    abiFilters System.env['GITHUBARCH']
                     version "3.24.0+"
                 }
             }

@@ -42,7 +42,7 @@ jobs:
           - Release
         architecture:
           - x86
-          - x64
+          - x86_64
     steps:
       # Checkout Code
       - name: Checkout
@@ -71,7 +71,7 @@ jobs:
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          arch: '${{ matrix.architecture }}'
+          arch: '${{matrix.architecture}}'
 
       # Restore ccache file from cache if possible so we don't have to download it.
       - name: Restore cached ccache
@@ -106,8 +106,9 @@ jobs:
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
         with:
-          key: 'windows-${{ matrix.configuration }}-${{ matrix.architecture }}'
+          key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
+          verbose: 2
           max-size: 100M
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
@@ -144,11 +145,14 @@ jobs:
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
           xcopy resources dist\ /E/H/C/I
-          
+
       - name: Zip folder for release
         if: inputs.releaseTag != ''
-        run: |
-          Compress-Archive -Path dist -DestinationPath ./${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: zip
+          filename: ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+          path: dist
 
       - name: Publish release
         if: inputs.releaseTag != ''

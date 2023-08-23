@@ -72,6 +72,7 @@ jobs:
         with:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
+          verbose: 2
           max-size: 100M
 
       # MacOS deployment target here should be kept in sync with what's set in OpenEnroth_Dependencies:
@@ -111,8 +112,11 @@ jobs:
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''
-        run: |
-          zip -r ./${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip dist
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: zip
+          filename: ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+          path: dist
 
       - name: Publish release
         if: inputs.releaseTag != ''

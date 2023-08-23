@@ -47,7 +47,7 @@ jobs:
           - Release
         architecture:
           - x86
-          - x64
+          - x86_64
     steps:
       - name: Configure fast APT mirror
         uses: vegardit/fast-apt-mirror.sh@v1
@@ -79,16 +79,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ "${{ matrix.architecture }}" = "x86" ]; then
+          if [ "${{matrix.architecture}}" = "x86" ]; then
             sudo dpkg --add-architecture i386
           fi
           sudo apt-get update
-          if [ "${{ matrix.architecture }}" = "x86" ]; then
+          if [ "${{matrix.architecture}}" = "x86" ]; then
             sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
             sudo apt-get install -y libglu1-mesa-dev:i386
             sudo apt-get install -y libsdl2-dev:i386
           fi
-          if [ "${{ matrix.architecture }}" = "x64" ]; then
+          if [ "${{matrix.architecture}}" = "x86_64" ]; then
             sudo apt-get install -y gcc-13 g++-13 lld
             sudo apt-get install -y libglu1-mesa-dev
             sudo apt-get install -y libsdl2-dev
@@ -99,6 +99,7 @@ jobs:
         with:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
+          verbose: 2
           max-size: 100M
 
       - name: Configure
@@ -135,8 +136,11 @@ jobs:
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''
-        run: |
-          zip -r ./${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip dist
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: zip
+          filename: ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+          path: dist
 
       - name: Publish release
         if: inputs.releaseTag != ''
