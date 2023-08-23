@@ -2,7 +2,7 @@ var searchData=
 [
   ['magicenum_0',['MagicEnum',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3',1,'Serialization_ut.cpp']]],
   ['map_5ftreasure_5flevel_1',['MAP_TREASURE_LEVEL',['../MapEnums_8h.html#aa5e8f9854586648a9b0c43f8572d84d1',1,'MapEnums.h']]],
-  ['map_5ftype_2',['MAP_TYPE',['../MapEnums_8h.html#adf27fa94c483739f6a21ebe139e71e26',1,'MapEnums.h']]],
+  ['mapid_2',['MapId',['../MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0',1,'MapEnums.h']]],
   ['mapstartpoint_3',['MapStartPoint',['../MapEnums_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f',1,'MapEnums.h']]],
   ['menutype_4',['MenuType',['../GUIEnums_8h.html#ae5c7b6b4f6e696391cd7faaea6571bb4',1,'GUIEnums.h']]],
   ['merchantphrase_5',['MerchantPhrase',['../NPCEnums_8h.html#ae5f0216e8dba588cb07f084d31620936',1,'NPCEnums.h']]],

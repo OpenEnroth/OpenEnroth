@@ -124,7 +124,7 @@ var searchData=
   ['npcprof_121',['NPCProf',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4',1,'NPCEnums.h']]],
   ['npcprofession_122',['NPCProfession',['../structNPCProfession.html',1,'']]],
   ['npcprofessionchance_123',['NPCProfessionChance',['../structNPCProfessionChance.html',1,'']]],
-  ['npcsetitem_124',['npcSetItem',['../Actor_8h.html#ac1de5d39efd4c35ab1d72516f79bb945',1,'npcSetItem(int npc, ITEM_TYPE item, int a3):&#160;Actor.cpp'],['../Actor_8cpp.html#ac1de5d39efd4c35ab1d72516f79bb945',1,'npcSetItem(int npc, ITEM_TYPE item, int a3):&#160;Actor.cpp']]],
+  ['npcsetitem_124',['npcSetItem',['../Actor_8h.html#ae08f64c59d2712521fde3d1ab32fe5f0',1,'npcSetItem(int npc, ItemId item, int a3):&#160;Actor.cpp'],['../Actor_8cpp.html#ae08f64c59d2712521fde3d1ab32fe5f0',1,'npcSetItem(int npc, ItemId item, int a3):&#160;Actor.cpp']]],
   ['npcstats_125',['NPCStats',['../structNPCStats.html',1,'NPCStats'],['../structNPCStats.html#a155d3fc6e16a002aef73a1b5e4e9c1e4',1,'NPCStats::NPCStats()']]],
   ['npctable_2ecpp_126',['NPCTable.cpp',['../NPCTable_8cpp.html',1,'']]],
   ['npctable_2eh_127',['NPCTable.h',['../NPCTable_8h.html',1,'']]],
