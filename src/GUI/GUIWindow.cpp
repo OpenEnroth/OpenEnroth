@@ -123,7 +123,7 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     return 0;
 }
 
-void GUIWindow::setKeyboardControlGroup(int buttonsCount, int msgOnSelect, int selectStep, int initialPosition) {
+void GUIWindow::setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int selectStep, int initialPosition) {
     this->pNumPresenceButton = buttonsCount;
     this->_msgOnKeyboardSelect = msgOnSelect;
     this->_selectStep = selectStep;

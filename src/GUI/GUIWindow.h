@@ -78,7 +78,7 @@ class GUIWindow {
     /**
      * @offset 0x41D08F
      */
-    void setKeyboardControlGroup(int buttonsCount, int msgOnSelect, int selectStep, int initialPosition);
+    void setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int selectStep, int initialPosition);
 
     virtual void Update() {}
     virtual void Release();
