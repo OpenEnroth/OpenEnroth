@@ -1352,7 +1352,7 @@ void ShowPopupShopSkills() {
     int pY = 0;
     mouse->GetClickPos(&pX, &pY);
 
-    if (pDialogueWindow) {
+    if (pDialogueWindow && pDialogueWindow->pNumPresenceButton != 0) {
         for (GUIButton *pButton : pDialogueWindow->vButtons) {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
