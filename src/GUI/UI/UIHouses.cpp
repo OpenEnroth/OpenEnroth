@@ -997,7 +997,6 @@ void GUIWindow_House::initializeProprietorDialogue() {
             pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectProprietorDialogueOption, optionList[i], Io::InputAction::Invalid, "");
         }
         pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
-
     }
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }

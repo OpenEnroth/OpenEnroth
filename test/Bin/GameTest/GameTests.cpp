@@ -1628,3 +1628,9 @@ GAME_TEST(Issues, Issue1197) {
     EXPECT_TRUE(loc.contains("out01.odm")); // make it back to emerald
     EXPECT_EQ(deaths.delta(), 1);
 }
+
+GAME_TEST(Issues, Issue1277) {
+    // Crash when press enter on character skills tab
+    test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
+    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
+}
