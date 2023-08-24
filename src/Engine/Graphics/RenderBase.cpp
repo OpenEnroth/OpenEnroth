@@ -136,8 +136,13 @@ void RenderBase::DrawSpriteObjects() {
             if (!IsCylinderInFrustum(object->vPosition.toFloat(), 512.0f)) continue;
         }
 
+        // This workaround is turning dragon breath into an arrow.
+        // Please remove it when dragon breath becomes visible in turn base mode.
+        bool workaround_for_1175 = pParty->bTurnBasedModeOn && object->uType >= 500 && object->uType < 600;
+
         // render as sprte 500 - 9081
         if (spell_fx_renderer->RenderAsSprite(object) ||
+            workaround_for_1175 ||
             ((object->uType < 1000 || object->uType >= 10000) &&
                 (object->uType < 500 || object->uType >= 600) &&
                 (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) {

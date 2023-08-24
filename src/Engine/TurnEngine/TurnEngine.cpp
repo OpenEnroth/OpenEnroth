@@ -638,125 +638,115 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
 
 //----- (0040680F) --------------------------------------------------------
 void stru262_TurnBased::AI_Action_(int queue_index) {
-    unsigned int actor_id;  // edi@2
-    AIDirection v7;         // esi@10
-    int v9;                 // ecx@10
-    signed int v10;         // eax@13
-    ABILITY_INDEX v14;                // eax@29
-    AIDirection a3;         // [sp+Ch] [bp-44h]@10
-    AIDirection v18;        // [sp+28h] [bp-28h]@10
-    Pid v22;         // [sp+58h] [bp+8h]@10
+    unsigned int actor_id;       // edi@2
+    AIDirection actorDirection;  // esi@10
+    int distance;                // ecx@10
+    signed int engagementRange;  // eax@13
+    ABILITY_INDEX abilityIndex;  // eax@29
+    AIDirection a3;              // [sp+Ch] [bp-44h]@10
+    AIDirection actorDirection2; // [sp+28h] [bp-28h]@10
+    Pid target;                  // [sp+58h] [bp+8h]@10
 
     pQueue[queue_index].uActionLength = 0;
-    if (pQueue[queue_index].uPackedID.type() == OBJECT_Actor) {
-        actor_id = pQueue[queue_index].uPackedID.id();
-        if (!(pActors[actor_id].aiState == Dying ||
-              pActors[actor_id].aiState == Dead ||
-              pActors[actor_id].aiState == Summoned ||
-              pActors[actor_id].aiState == Disabled ||
-              pActors[actor_id].aiState == Removed)) {
-            Actor::_SelectTarget(actor_id,
-                                 &ai_near_actors_targets_pid[actor_id], true);
-            v22 = ai_near_actors_targets_pid[actor_id];
-            if (pActors[actor_id].monsterInfo.uHostilityType && !v22)
-                pActors[actor_id].monsterInfo.uHostilityType =
-                    MonsterInfo::Hostility_Friendly;
-            Actor::GetDirectionInfo(Pid(OBJECT_Actor, actor_id), v22, &v7, 0);
-            memcpy(&a3, &v7, sizeof(AIDirection));
-            memcpy(&v18, &a3, sizeof(AIDirection));
-            v9 = a3.uDistance - pActors[actor_id].radius;
-            if (v9 < 0) v9 = 0;
-            if (v22.type() == OBJECT_Actor)
-                // v10 = (uint8_t)*(&byte_5C8D1A[89 *
-                // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
-                // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
-                v10 = pFactionTable->relations
-                          [(pMonsterStats
-                                ->pInfos[pActors[v22.id()].monsterInfo.uID]
-                                .uID) /
-                               3 +
-                           1][(pActors[actor_id].monsterInfo.uID - 1) / 3 + 1];
-            else
-                v10 = 4;
-            switch (v10) {
-                case 1:
-                    if ((double)(signed int)v9 < 307.2)
-                        pActors[actor_id].monsterInfo.uHostilityType =
-                            MonsterInfo::Hostility_Long;
-                    break;
-                case 2:
-                    if (v9 < 1024)
-                        pActors[actor_id].monsterInfo.uHostilityType =
-                            MonsterInfo::Hostility_Long;
-                    break;
-                case 3:
-                    if (v9 < 2560)
-                        pActors[actor_id].monsterInfo.uHostilityType =
-                            MonsterInfo::Hostility_Long;
-                    break;
-                case 4:
-                    if (v9 < 5120)
-                        pActors[actor_id].monsterInfo.uHostilityType =
-                            MonsterInfo::Hostility_Long;
-                    break;
-            }
-            if (pActors[actor_id].monsterInfo.uHostilityType == 4 && v22 &&
-                (signed int)v9 < 5120) {
-                v14 = pActors[actor_id].special_ability_use_check(actor_id);
-                pQueue[queue_index].AI_action_type = TE_AI_STAND;
-                switch (v14) {
-                    case ABILITY_ATTACK1:
-                        if (pActors[actor_id].monsterInfo.uMissleAttack1Type) {
-                            Actor::AI_MissileAttack1(actor_id, v22, &v18);
-                            pQueue[queue_index].AI_action_type =
-                                    TE_AI_RANGED_ATTACK;
-                        }
-                    case ABILITY_ATTACK2:
-                        if (pActors[actor_id].monsterInfo.uMissleAttack2Type) {
-                            Actor::AI_MissileAttack2(actor_id, v22, &v18);
-                            pQueue[queue_index].AI_action_type =
-                                TE_AI_RANGED_ATTACK;
-                        }
-                        break;
-                    case ABILITY_SPELL1:
-                        if (pActors[actor_id].monsterInfo.uSpell1ID != SPELL_NONE) {
-                            Actor::AI_SpellAttack1(actor_id, v22, &v18);
-                            pQueue[queue_index].AI_action_type =
-                                TE_AI_RANGED_ATTACK;
-                        }
-                        break;
-                    case ABILITY_SPELL2:
-                        if (pActors[actor_id].monsterInfo.uSpell2ID != SPELL_NONE) {
-                            Actor::AI_SpellAttack2(actor_id, v22, &v18);
-                            pQueue[queue_index].AI_action_type =
-                                TE_AI_RANGED_ATTACK;
-                        }
-                        break;
-                    default:
-                        assert(false && "Unreachable");
-                }
-                // if (!pQueue[queue_index].AI_action_type)
-                if ((double)v9 < 307.2) {
-                    Actor::AI_MeleeAttack(actor_id, v22, &v18);
-                    pQueue[queue_index].AI_action_type = TE_AI_MELEE_ATTACK;
-                    pQueue[queue_index].uActionLength =
-                        pActors[actor_id].currentActionLength;
-                    return;
-                } else {
-                    Actor::AI_Stand(actor_id, v22, 64, &v18);
-                    pQueue[queue_index].AI_action_type = TE_AI_STAND;
-                    pQueue[queue_index].uActionLength =
-                        pActors[actor_id].currentActionLength;
-                    return;
-                }
-            } else {
-                Actor::AI_Stand(actor_id, v22, 64, &v18);
-                pQueue[queue_index].AI_action_type = TE_AI_STAND;
-            }
-            pQueue[queue_index].uActionLength =
-                pActors[actor_id].currentActionLength;
-        }
+    if (pQueue[queue_index].uPackedID.type() != OBJECT_Actor)
+        return;
+
+    actor_id = pQueue[queue_index].uPackedID.id();
+    Actor& actor = pActors[actor_id];
+
+    if ( actor.aiState == Dying ||
+         actor.aiState == Dead ||
+         actor.aiState == Summoned ||
+         actor.aiState == Disabled ||
+         actor.aiState == Removed)
+        return;
+
+    Actor::_SelectTarget(actor_id, &ai_near_actors_targets_pid[actor_id], true);
+    target = ai_near_actors_targets_pid[actor_id];
+    if (actor.monsterInfo.uHostilityType && !target)
+        actor.monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    Actor::GetDirectionInfo(Pid(OBJECT_Actor, actor_id), target, &actorDirection, 0);
+    memcpy(&a3, &actorDirection, sizeof(AIDirection));
+    memcpy(&actorDirection2, &a3, sizeof(AIDirection));
+
+    distance = actorDirection.uDistance - actor.radius;
+    if (distance < 0) distance = 0;
+    if (target.type() == OBJECT_Actor)
+        // v10 = (uint8_t)*(&byte_5C8D1A[89 *
+        // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
+        // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
+        engagementRange = pFactionTable->relations
+                  [(pMonsterStats->pInfos[pActors[target.id()].monsterInfo.uID].uID) / 3 + 1]
+                  [(actor.monsterInfo.uID - 1) / 3 + 1];
+    else
+        engagementRange = 4;
+
+    switch (engagementRange) {
+    case 1:
+        if ((double)(signed int)distance < 307.2)
+            actor.monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+        break;
+    case 2:
+        if (distance < 1024)
+            actor.monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+        break;
+    case 3:
+        if (distance < 2560)
+            actor.monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+        break;
+    case 4:
+        if (distance < 5120)
+            actor.monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+        break;
     }
+
+    if (actor.monsterInfo.uHostilityType == MonsterInfo::Hostility_Long &&
+            target && distance < 5120) {
+        abilityIndex = actor.special_ability_use_check(actor_id);
+        pQueue[queue_index].AI_action_type = TE_AI_STAND;
+        switch (abilityIndex) {
+        case ABILITY_ATTACK1:
+            if (actor.monsterInfo.uMissleAttack1Type) {
+                Actor::AI_MissileAttack1(actor_id, target, &actorDirection2);
+                pQueue[queue_index].AI_action_type = TE_AI_RANGED_ATTACK;
+            }
+            break;
+        case ABILITY_ATTACK2:
+            if (actor.monsterInfo.uMissleAttack2Type) {
+                Actor::AI_MissileAttack2(actor_id, target, &actorDirection2);
+                pQueue[queue_index].AI_action_type = TE_AI_RANGED_ATTACK;
+            }
+            break;
+        case ABILITY_SPELL1:
+            if (actor.monsterInfo.uSpell1ID != SPELL_NONE) {
+                Actor::AI_SpellAttack1(actor_id, target, &actorDirection2);
+                pQueue[queue_index].AI_action_type = TE_AI_RANGED_ATTACK;
+            }
+            break;
+        case ABILITY_SPELL2:
+            if (actor.monsterInfo.uSpell2ID != SPELL_NONE) {
+                Actor::AI_SpellAttack2(actor_id, target, &actorDirection2);
+                pQueue[queue_index].AI_action_type = TE_AI_RANGED_ATTACK;
+            }
+            break;
+        default:
+            assert(false && "Unreachable");
+        }
+        if (pQueue[queue_index].AI_action_type == TE_AI_STAND) {
+            if ((double)distance < 307.2) {
+                Actor::AI_MeleeAttack(actor_id, target, &actorDirection2);
+                pQueue[queue_index].AI_action_type = TE_AI_MELEE_ATTACK;
+            } else {
+                Actor::AI_Stand(actor_id, target, 64, &actorDirection2);
+                pQueue[queue_index].AI_action_type = TE_AI_STAND;
+            }
+        }
+    } else {
+        Actor::AI_Stand(actor_id, target, 64, &actorDirection2);
+        pQueue[queue_index].AI_action_type = TE_AI_STAND;
+    }
+
+    pQueue[queue_index].uActionLength = actor.currentActionLength;
 }
 
 //----- (00406A63) --------------------------------------------------------
