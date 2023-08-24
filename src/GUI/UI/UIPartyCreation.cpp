@@ -691,7 +691,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         uX += 158;
     } while ((signed int)uControlParam < 30);
 
-    _41D08F_set_keyboard_control_group(28, 0, 7, 40);
+    setKeyboardControlGroup(28, true, 7, 40);
 
     CreateButton({323, 417}, {65, v0}, 1, 0, UIMSG_PlayerCreationSelectClass, 0);
     CreateButton({323, v0 + 417}, {65, v0}, 1, 0, UIMSG_PlayerCreationSelectClass, 0xC);

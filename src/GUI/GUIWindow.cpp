@@ -123,20 +123,16 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     return 0;
 }
 
-//----- (0041D08F) --------------------------------------------------------
-void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3,
-    int a4, int a5) {
-    if (num_buttons) {
-        this->pNumPresenceButton = num_buttons;
-        this->field_30 = a3;
-        this->field_34 = a4;
-        this->pCurrentPosActiveItem = a5;
-        this->pStartingPosActiveItem = a5;
+void GUIWindow::setKeyboardControlGroup(int buttonsCount, int msgOnSelect, int selectStep, int initialPosition) {
+    this->pNumPresenceButton = buttonsCount;
+    this->_msgOnKeyboardSelect = msgOnSelect;
+    this->_selectStep = selectStep;
+
+    if (buttonsCount) {
+        this->pCurrentPosActiveItem = initialPosition;
+        this->pStartingPosActiveItem = initialPosition;
         this->receives_keyboard_input = true;
     } else {
-        this->pNumPresenceButton = 0;
-        this->field_30 = a3;
-        this->field_34 = a4;
         this->pCurrentPosActiveItem = 0;
         this->pStartingPosActiveItem = 0;
         this->receives_keyboard_input = false;

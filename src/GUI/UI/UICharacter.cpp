@@ -635,7 +635,7 @@ void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
                 pButton->uY = savedInventoryLeftClickButtonY;
                 pButton->uZ = savedInventoryLeftClickButtonZ;
                 pButton->uW = savedInventoryLeftClickButtonW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
+                pGUIWindow_CurrentMenu->setKeyboardControlGroup(1, true, 0, 0);
             }
         }
     }
@@ -1523,8 +1523,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
 
     if (buttons_count) {
-        pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(
-            buttons_count, 1, 0, buttons_count);
+        pGUIWindow_CurrentMenu->setKeyboardControlGroup(buttons_count, false, 0, buttons_count);
     }
 }
 
@@ -2290,7 +2289,7 @@ void CharacterUI_ReleaseButtons() {
                 pButton->uY = savedInventoryLeftClickButtonY;
                 pButton->uZ = savedInventoryLeftClickButtonZ;
                 pButton->uW = savedInventoryLeftClickButtonW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
+                pGUIWindow_CurrentMenu->setKeyboardControlGroup(1, true, 0, 0);
             }
         }
     }

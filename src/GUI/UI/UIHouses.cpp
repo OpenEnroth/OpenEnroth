@@ -469,7 +469,7 @@ void NPCHireableDialogPrepare() {
     }
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
         UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
-    pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
+    pDialogueWindow->setKeyboardControlGroup(v0 + 1, false, 0, 2);
     window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
 
@@ -996,7 +996,8 @@ void GUIWindow_House::initializeProprietorDialogue() {
         for (int i = 0; i < optionList.size(); i++) {
             pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectProprietorDialogueOption, optionList[i], Io::InputAction::Invalid, "");
         }
-        pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
+        pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
+
     }
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
@@ -1014,7 +1015,7 @@ void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> op
         for (int i = 0; i < optionList.size(); i++) {
             pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
         }
-        pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
+        pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     }
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
