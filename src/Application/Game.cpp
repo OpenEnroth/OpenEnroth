@@ -2064,7 +2064,8 @@ void Game::gameLoop() {
                         pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
                 }
                 pMediaPlayer->PlayFullscreenMovie("losegame");
-                if (pMovie_Track) pMediaPlayer->Unload();
+                if (pMovie_Track)
+                    pMediaPlayer->Unload();
                 ++pParty->uNumDeaths;
                 for (Character &character : pParty->pCharacters) {
                     character.SetVariable(VAR_Award, Award_Deaths);
@@ -2111,6 +2112,9 @@ void Game::gameLoop() {
                     engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
+                pMiscTimer->Resume();
+                pEventTimer->Resume();
+
                 Actor::InitializeActors();
 
                 int playerId = pParty->getRandomActiveCharacterId(vrng.get());
