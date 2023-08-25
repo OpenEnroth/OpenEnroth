@@ -1,23 +1,18 @@
-#include <stdlib.h>
 #include <string>
-#include <memory>
 
 #include "GUI/UI/Houses/Bank.h"
+
+#include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIButton.h"
 
+#include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+
 #include "Io/KeyboardActionMapping.h"
-#include "Engine/Objects/Character.h"
-#include "Engine/Objects/CharacterEnums.h"
-#include "GUI/GUIDialogues.h"
-#include "GUI/GUIEnums.h"
-#include "GUI/GUIWindow.h"
-#include "Io/KeyboardInputHandler.h"
-#include "Library/Color/ColorTable.h"
-#include "fmt/core.h"
 
 using Io::TextInputType;
 

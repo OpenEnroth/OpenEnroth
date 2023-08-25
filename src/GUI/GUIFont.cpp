@@ -3,6 +3,8 @@
 #include <sstream>
 #include <memory>
 
+#include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/LodTextureCache.h"
 

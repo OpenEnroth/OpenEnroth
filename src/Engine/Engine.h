@@ -1,24 +1,21 @@
 #pragma once
 
-#include <stdint.h>
 #include <memory>
 #include <string>
 #include <vector>
 #include <array>
 
 #include "Application/GameConfig.h"
+
 #include "Engine/Events/EventMap.h"
 #include "Engine/MapEnums.h"
 #include "Engine/TeleportPoint.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Time.h"
-#include "Utility/Memory/Blob.h"
-#include "GUI/GUIMessageQueue.h"
-#include "Utility/Geometry/Vec.h"
 
-class Blob;
-class GameConfig;
-enum MapStartPoint : uint32_t;
+#include "Utility/Memory/Blob.h"
+
+#include "GUI/GUIMessageQueue.h"
 
 namespace Io {
 class Mouse;
