@@ -31,18 +31,6 @@ set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache tak
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available")
 set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that lld takes precedence.")
 
-option(USE_IWYU "Enable include-what-you-use reports during build" OFF)
-
-if(USE_IWYU)
-    find_program(IWYU_PATH NAMES include-what-you-use iwyu)
-    if(NOT IWYU_PATH)
-        message(FATAL_ERROR "Could not find the program include-what-you-use")
-    endif()
-    message("Found IWYU ${IWYU_PATH}")
-    set(CMAKE_C_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
-    set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
-endif()
-
 # Find ccache / sccache.
 if(OE_USE_CCACHE)
     find_program(CCACHE_FOUND ccache)
