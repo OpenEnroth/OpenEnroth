@@ -486,14 +486,14 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
     // p(t) = p0 + tu;
     Intersection->vWorldPosition = origin + t * step;
 
-    if (!CheckIntersectBModel(pFace, Intersection->vWorldPosition.toInt(), pBModelID))
+    if (!CheckIntersectFace(pFace, Intersection->vWorldPosition.toInt(), pBModelID))
         return false;
 
     return true;
 }
 
 //----- (004C1D2B) --------------------------------------------------------
-bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID) {
+bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID) {
     if (!pFace->pBounding.contains(IntersectPoint))
         return false;
 

@@ -134,7 +134,7 @@ private:
     bool Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
                             RenderVertexSoft *Intersection, BLVFace *pFace,
                             signed int pBModelID);
-    bool CheckIntersectBModel(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID);
+    bool CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID);
     void CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *origin, Vec3f *step);
     void SortVerticesByX(struct RenderVertexD3D3 *pArray, unsigned int uStart,
                          unsigned int uEnd);
