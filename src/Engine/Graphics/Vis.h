@@ -141,7 +141,6 @@ private:
 
 private:
     Vis_SelectionList _selectionList;
-    RenderVertexSoft _debugpick;
     Logger *_log = nullptr;
 };
 

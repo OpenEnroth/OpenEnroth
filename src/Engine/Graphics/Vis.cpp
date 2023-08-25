@@ -484,15 +484,8 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sM
     if (!pFace->Contains(IntersectPoint, sModelID))
         return false;
 
-    if (engine->config->debug.ShowPickedFace.value()) {
+    if (engine->config->debug.ShowPickedFace.value())
         pFace->uAttributes |= FACE_IsPicked;
-
-        // save debug pick line for later
-        _debugpick.vWorldPosition.x = IntersectPoint.x;
-        _debugpick.vWorldPosition.y = IntersectPoint.y;
-        _debugpick.vWorldPosition.z = IntersectPoint.z;
-    }
-
 
     return true;
     /*
