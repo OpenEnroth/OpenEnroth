@@ -635,7 +635,6 @@ void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
                 pButton->uY = savedInventoryLeftClickButtonY;
                 pButton->uZ = savedInventoryLeftClickButtonZ;
                 pButton->uW = savedInventoryLeftClickButtonW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
             }
         }
     }
@@ -1521,11 +1520,6 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
-
-    if (buttons_count) {
-        pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(
-            buttons_count, 1, 0, buttons_count);
-    }
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
@@ -2290,7 +2284,6 @@ void CharacterUI_ReleaseButtons() {
                 pButton->uY = savedInventoryLeftClickButtonY;
                 pButton->uZ = savedInventoryLeftClickButtonZ;
                 pButton->uW = savedInventoryLeftClickButtonW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
             }
         }
     }

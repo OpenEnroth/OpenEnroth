@@ -196,7 +196,7 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     pBtn_Resume = CreateButton({241, 263}, {214, 40}, 1, 0,
         UIMSG_GameMenu_ReturnToGame, 0, Io::InputAction::ReturnToGame, localization->GetString(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
 
-    _41D08F_set_keyboard_control_group(6, 1, 0, 0);
+    setKeyboardControlGroup(6, false, 0, 0);
 }
 
 void GUIWindow_GameMenu::Update() {

@@ -144,7 +144,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialo
     for (int i = 0; i < optionList.size(); i++) {
         CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
     }
-    _41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 1);
+    setKeyboardControlGroup(optionList.size(), false, 0, 1);
 
     CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
     CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
@@ -364,7 +364,7 @@ void selectNPCDialogueOption(DIALOGUE_TYPE option) {
             for (int i = 0; i < topics.size(); i++) {
                 pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, topics[i], Io::InputAction::Invalid, "");
             }
-            pDialogueWindow->_41D08F_set_keyboard_control_group(topics.size(), 1, 0, 1);
+            pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);
 
             pDialogueWindow->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
             pDialogueWindow->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");

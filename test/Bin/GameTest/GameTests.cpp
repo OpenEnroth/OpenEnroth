@@ -1635,3 +1635,9 @@ GAME_TEST(Issues, Issue1273) {
     test.playTraceFromTestData("issue_1273.mm7", "issue_1273.json");
     EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN));
 }
+
+GAME_TEST(Issues, Issue1277) {
+    // Crash when press enter on character skills tab
+    test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
+    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
+}
