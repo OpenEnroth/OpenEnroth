@@ -1,7 +1,6 @@
 #include "Engine/Graphics/Vis.h"
 #include <span>
 #include <assert.h>
-#include <bits/std_abs.h>
 #include <float.h>
 #include <cstdlib>
 #include <algorithm>

@@ -1,6 +1,5 @@
 #include "LightmapBuilder.h"
 #include <math.h>
-#include <bits/std_abs.h>
 #include <algorithm>
 #include <array>
 #include <vector>

@@ -1,7 +1,6 @@
 #include "Engine/Objects/NPC.h"
 #include <assert.h>
 #include <stdlib.h>
-#include <bits/std_abs.h>
 #include <memory>
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"

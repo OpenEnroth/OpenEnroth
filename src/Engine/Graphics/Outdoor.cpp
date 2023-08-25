@@ -1,7 +1,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include <float.h>
 #include <stdlib.h>
-#include <bits/std_abs.h>
 #include <algorithm>
 #include <memory>
 #include <cmath>
