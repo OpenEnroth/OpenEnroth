@@ -444,16 +444,16 @@ Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
         }
 
         default:
-            log->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
+            _log->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
             return InvalidPIDAndDepth();
     }
 }
 
 //----- (004C1BF1) --------------------------------------------------------
 Vis_PIDAndDepth Vis::get_picked_object_zbuf_val() {
-    if (!default_list.uSize) return InvalidPIDAndDepth();
+    if (!_defaultList.uSize) return InvalidPIDAndDepth();
 
-    return get_object_zbuf_val(default_list.object_pointers[0]);
+    return get_object_zbuf_val(_defaultList.object_pointers[0]);
 }
 
 //----- (004C1C0C) --------------------------------------------------------
@@ -500,9 +500,9 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3i IntersectPoint, signed int 
         pFace->uAttributes |= FACE_IsPicked;
 
         // save debug pick line for later
-        debugpick.vWorldPosition.x = IntersectPoint.x;
-        debugpick.vWorldPosition.y = IntersectPoint.y;
-        debugpick.vWorldPosition.z = IntersectPoint.z;
+        _debugpick.vWorldPosition.x = IntersectPoint.x;
+        _debugpick.vWorldPosition.y = IntersectPoint.y;
+        _debugpick.vWorldPosition.z = IntersectPoint.z;
     }
 
 
@@ -692,14 +692,14 @@ void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
 
 //----- (004C04AF) --------------------------------------------------------
 Vis::Vis() {
-    this->log = EngineIocContainer::ResolveLogger();
+    this->_log = EngineIocContainer::ResolveLogger();
 }
 
 //----- (004C05CC) --------------------------------------------------------
 bool Vis::PickKeyboard(float pick_depth, Vis_SelectionList *list,
                        Vis_SelectionFilter *sprite_filter,
                        Vis_SelectionFilter *face_filter) {
-    if (!list) list = &default_list;
+    if (!list) list = &_defaultList;
     list->uSize = 0;
 
     PickBillboards_Keyboard(pick_depth, list, sprite_filter);
@@ -722,29 +722,29 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
                     Vis_SelectionFilter *face_filter) {
     Vec3f rayOrigin, rayStep;  // [sp+1Ch] [bp-60h]@1
 
-    default_list.uSize = 0;
+    _defaultList.uSize = 0;
     CastPickRay(fMouseX, fMouseY, fDepth, &rayOrigin, &rayStep);
 
     // log->Info("Sx: {}, Sy: {}, Sz: {} \n Fx: {}, Fy: {}, Fz: {}",
     //     pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
     //     (pMouseRay+1)->vWorldPosition.x, (pMouseRay + 1)->vWorldPosition.y, (pMouseRay + 1)->vWorldPosition.z);
 
-    PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list, sprite_filter);
+    PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &_defaultList, sprite_filter);
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &default_list, face_filter);
+        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_defaultList, face_filter);
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &default_list, face_filter, false);
+        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_defaultList, face_filter, false);
     } else {
-        log->warning("Picking mouse in undefined level");  // picking in main menu is
+        _log->warning("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
                                                   // behaviour. should've
                                                   // returned false in
                                                   // Game::PickMouse
         return false;
     }
-    default_list.create_object_pointers(Vis_SelectionList::All);
-    default_list.sort_object_pointers();
+    _defaultList.create_object_pointers(Vis_SelectionList::All);
+    _defaultList.sort_object_pointers();
 
     return true;
 }
@@ -791,7 +791,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
             if (filter->select_flags & ExclusionIfNoEvent) {
                 if (object_type != filter->object_type) return true;
                 if (filter->object_type != OBJECT_Decoration) {
-                    log->warning("Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
+                    _log->warning("Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
                     return true;
                 }
                 if (pLevelDecorations[object_idx].uCog ||
@@ -801,7 +801,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
             }
             if (object_type == filter->object_type) {
                 if (object_type != OBJECT_Actor) {
-                    log->warning("Default case reached in VIS");
+                    _log->warning("Default case reached in VIS");
                     return true;
                 }
 

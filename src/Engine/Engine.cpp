@@ -557,7 +557,7 @@ void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
 bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
                           Vis_SelectionFilter *face_filter) {
     if (current_screen_type == SCREEN_GAME) {
-        bool r = vis->PickKeyboard(pick_depth, &vis->default_list, sprite_filter, face_filter);
+        bool r = vis->PickKeyboard(pick_depth, &vis->_defaultList, sprite_filter, face_filter);
 
         if (bOutline)
             OutlineSelection();
@@ -582,10 +582,10 @@ return Result::Success;
 
 //----- (0044EB5A) --------------------------------------------------------
 void Engine::OutlineSelection() {
-    if (!vis->default_list.uSize)
+    if (!vis->_defaultList.uSize)
         return;
 
-    Vis_ObjectInfo *object_info = vis->default_list.object_pointers[0];
+    Vis_ObjectInfo *object_info = vis->_defaultList.object_pointers[0];
     if (object_info) {
         switch (object_info->object_type) {
             case VisObjectType_Sprite: {
