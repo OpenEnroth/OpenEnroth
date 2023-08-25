@@ -383,7 +383,7 @@ void Engine::filterPickMouse() {  // cursor picking
         depth = config->gameplay.RangedAttackDepth.value();
     }
     Pointi pt = mouse->GetCursorPos();
-    PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
+    PickMouse(depth, pt.x, pt.y, sprite_filter, face_filter);
 }
 
 //----- (004645FA) --------------------------------------------------------
@@ -538,31 +538,20 @@ void Engine::LogEngineBuildInfo() {
 }
 
 //----- (0044EA5E) --------------------------------------------------------
-void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
-                       unsigned int uMouseY, bool bOutline,
-                       Vis_SelectionFilter *sprite_filter,
-                       Vis_SelectionFilter *face_filter) {
+void Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+                       Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
     if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
         uMouseX <= (signed int)pViewport->uScreen_BR_X &&
         uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
         uMouseY <= (signed int)pViewport->uScreen_BR_Y) {
         vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
-
-        if (bOutline)
-            OutlineSelection(vis->mousePickedObject());
     }
 }
 
 //----- (0044EB12) --------------------------------------------------------
-bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
-                          Vis_SelectionFilter *face_filter) {
-    if (current_screen_type == SCREEN_GAME) {
-        bool r = vis->PickKeyboard(pick_depth, sprite_filter, face_filter);
-
-        if (bOutline)
-            OutlineSelection(vis->keyboardPickedObject());
-        return r;
-    }
+bool Engine::PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
+    if (current_screen_type == SCREEN_GAME)
+        return vis->PickKeyboard(pick_depth, sprite_filter, face_filter);
     return false;
 }
 /*
@@ -579,31 +568,6 @@ return Result::Success;
 }
 */
 // 4E28F8: using guessed type int current_screen_type;
-
-//----- (0044EB5A) --------------------------------------------------------
-void Engine::OutlineSelection(const Vis_PIDAndDepth &selection) {
-    if (!selection.object_pid)
-        return;
-
-    if (selection.object_pid.type() != OBJECT_Face)
-        return;
-
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        ODMFace *face = &pOutdoor->face(selection.object_pid);
-        if (face->uAttributes & FACE_OUTLINED)
-            face->uAttributes &= ~FACE_OUTLINED;
-        else
-            face->uAttributes |= FACE_OUTLINED;
-    } else {
-        assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
-
-        BLVFace *face = &pIndoor->pFaces[selection.object_pid.id()];
-        if (face->uAttributes & FACE_OUTLINED)
-            face->uAttributes &= ~FACE_OUTLINED;
-        else
-            face->uAttributes |= FACE_OUTLINED;
-    }
-}
 
 void PlayButtonClickSound() {
     pAudioPlayer->playNonResetableSound(SOUND_StartMainChoice02);

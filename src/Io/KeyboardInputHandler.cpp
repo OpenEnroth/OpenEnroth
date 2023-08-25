@@ -449,10 +449,6 @@ bool Io::KeyboardInputHandler::IsTurnStrafingToggled() const {
     return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
 }
 
-bool Io::KeyboardInputHandler::IsKeyboardPickingOutlineToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
-}
-
 bool Io::KeyboardInputHandler::IsStealingToggled() const {
     return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
 }

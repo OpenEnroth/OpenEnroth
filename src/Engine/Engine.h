@@ -23,6 +23,7 @@ class KeyboardInputHandler;
 class KeyboardActionMapping;
 } // namespace Io
 
+struct Vis_SelectionFilter;
 struct Vis_PIDAndDepth;
 struct Polygon;
 class DecalBuilder;
@@ -93,16 +94,13 @@ class Engine {
 
     void Initialize();
     void PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
-                   bool bOutline, struct Vis_SelectionFilter *sprite_filter,
-                   struct Vis_SelectionFilter *face_filter);
-    bool PickKeyboard(float pick_depth, bool bOutline, struct Vis_SelectionFilter *sprite_filter,
-                      struct Vis_SelectionFilter *face_filter);
+                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+    bool PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
 
     /**
      * @offset 0x42213C
      */
     void onGameViewportClick();
-    void OutlineSelection(const Vis_PIDAndDepth &selection);
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4); // TODO(captainurist): drop?
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
