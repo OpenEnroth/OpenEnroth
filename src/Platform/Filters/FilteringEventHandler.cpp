@@ -1,8 +1,10 @@
 #include "FilteringEventHandler.h"
 
+#include <ranges>
+
 #include "Utility/ScopeGuard.h"
+
 #include "PlatformEventFilter.h"
-#include "Platform/PlatformEvents.h"
 
 void FilteringEventHandler::event(const PlatformEvent *event) {
     _insideEvent = true;
