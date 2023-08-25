@@ -38,4 +38,4 @@ jobs:
       - name: Check style
         working-directory: build
         run: |
-          make check_style
+          make -j2 check_style
