@@ -1621,12 +1621,19 @@ GAME_TEST(Issues, Issue1196) {
 }
 
 GAME_TEST(Issues, Issue1197) {
-    //Assert on party death
+    // Assert on party death
     auto loc = tapes.map();
     auto deaths = tapes.custom([] { return pParty->uNumDeaths; });
     test.playTraceFromTestData("issue_1197.mm7", "issue_1197.json");
     EXPECT_TRUE(loc.contains("out01.odm")); // make it back to emerald
     EXPECT_EQ(deaths.delta(), 1);
+}
+
+GAME_TEST(Issues, Issue1273) {
+    // Assert when clicking on shop video area
+    auto dialogueTape = tapes.dialogueType();
+    test.playTraceFromTestData("issue_1273.mm7", "issue_1273.json");
+    EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN));
 }
 
 GAME_TEST(Issues, Issue1277) {

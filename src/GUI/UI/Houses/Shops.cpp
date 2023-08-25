@@ -1139,7 +1139,7 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         default:
-            assert(false);
+            // Do nothing
             break;
     }
 }
