@@ -91,7 +91,7 @@ class Vis {
     Pid PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                          VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
 
-private:
+ private:
     void PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
                                  Vis_SelectionFilter *filter);
     void PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
@@ -139,7 +139,7 @@ private:
     void SortByScreenSpaceY(struct RenderVertexSoft *pArray, int start,
                             int end);
 
-private:
+ private:
     Vis_SelectionList _selectionList;
     Logger *_log = nullptr;
 };
