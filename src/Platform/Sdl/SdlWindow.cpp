@@ -3,7 +3,6 @@
 #include <SDL_hints.h>
 #include <SDL_stdinc.h>
 #include <SDL_version.h>
-#include <X11/X.h>
 #ifdef None
 #undef None
 #endif

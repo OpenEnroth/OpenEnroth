@@ -6,14 +6,12 @@ extern "C" {
     #include <libavutil/avutil.h>
     #include <libavutil/imgutils.h>
     #include <libavutil/mem.h>
-    #include <libavutil/opt.h>
     #include <libswresample/swresample.h>
     #include <libswscale/swscale.h>
 #include <errno.h>
 #include <libavcodec/codec.h>
 #include <libavcodec/packet.h>
 #include <libavformat/avio.h>
-#include <libavformat/version_major.h>
 #include <libavutil/channel_layout.h>
 #include <libavutil/error.h>
 #include <libavutil/frame.h>
