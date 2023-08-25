@@ -51,8 +51,6 @@ void Io::Mouse::SetCursorImage(const std::string &name) {
     if (this->cursor_name != name)
         this->cursor_name = name;
 
-    engine->SetTargetingMode(name == "MICON2");
-
     ClearCursor();
     if (name == "MICON1") {  // arrow
         this->bActive = false;

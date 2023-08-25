@@ -120,8 +120,6 @@ class Engine {
     void _461103_load_level_sub();
     void MM7_Initialize();
 
-    inline bool IsTargetingMode() const { return is_targeting; }
-    inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
     inline bool IsUnderwater() const { return is_underwater; }
     inline void SetUnderwater(bool is_underwater) { this->is_underwater = is_underwater; }
     inline bool IsSaturateFaces() const { return is_saturate_faces; }
@@ -130,7 +128,6 @@ class Engine {
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
     bool is_underwater = false;
-    bool is_targeting = false;
     bool is_saturate_faces = false;
     bool is_fog = false; // keeps track of whether fog enabled in d3d
 
