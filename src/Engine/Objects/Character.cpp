@@ -8,6 +8,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
