@@ -227,13 +227,11 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                                Vis_SelectionFilter *filter) {
     for (int i = 0; i < render->uNumBillboardsToDraw; ++i) {
         RenderBillboardD3D *d3d_billboard = &render->pBillboardRenderListD3D[i];
-        if (is_part_of_selection(i, filter) && IsPointInsideD3DBillboard(d3d_billboard, fX, fY)) {
+        if (isBillboardPartOfSelection(i, filter) && IsPointInsideD3DBillboard(d3d_billboard, fX, fY)) {
             if (DoesRayIntersectBillboard(fPickDepth, i)) {
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
-                list->AddObject(d3d_billboard->sParentBillboardID,
-                                VisObjectType_Sprite, billboard->screen_space_z,
-                                billboard->object_pid);
+                list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
             }
         }
     }
@@ -284,11 +282,11 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
 
     for (int faceindex = 0; faceindex < (int)pIndoor->pFaces.size(); ++faceindex) {
         BLVFace *face = &pIndoor->pFaces[faceindex];
-        if (is_part_of_selection(face, filter)) {
+        if (isFacePartOfSelection(nullptr, face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                 if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
-                    list->AddObject(&pIndoor->pFaces[faceindex], VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceindex));
+                    list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceindex));
                 }
             }
         }
@@ -367,7 +365,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
         }
 
         for (ODMFace &face : model.pFaces) {
-            if (is_part_of_selection(&face, filter)) {
+            if (isFacePartOfSelection(&face, nullptr, filter)) {
                 BLVFace blv_face;
                 blv_face.FromODM(&face);
 
@@ -380,8 +378,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     // v13 += Pid(OBJECT_Face, j | (i << 6));
                     Pid pid =
                         Pid(OBJECT_Face, face.index | (model.index << 6));
-                    list->AddObject(&face, VisObjectType_Face,
-                                    intersection.vWorldViewPosition.x, pid);
+                    list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
                 }
 
                 if (blv_face.uAttributes & FACE_IsPicked)
@@ -762,13 +759,11 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
     for (int i = 0; i < render->uNumBillboardsToDraw; ++i) {
         RenderBillboardD3D *d3d_billboard = &render->pBillboardRenderListD3D[i];
 
-        if (is_part_of_selection(i, filter)) {
+        if (isBillboardPartOfSelection(i, filter)) {
             if (DoesRayIntersectBillboard(pick_depth, i)) {
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
-                list->AddObject(d3d_billboard->sParentBillboardID,
-                                VisObjectType_Sprite, billboard->screen_space_z,
-                                billboard->object_pid);
+                list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
             }
         }
     }
@@ -777,92 +772,89 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
 // tests the object against selection filter to determine whether it can be
 // picked or not
 //----- (004C0791) --------------------------------------------------------
-bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filter) {
-    switch (filter->vis_object_type) {
-        case VisObjectType_Any:
+bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filter) {
+    if (filter->vis_object_type == VisObjectType_Any)
+        return true;
+    assert(filter->vis_object_type == VisObjectType_Sprite);
+
+    int parentBillboardId = render->pBillboardRenderListD3D[billboardId].sParentBillboardID;
+
+    if (parentBillboardId == -1)
+        return false;
+
+    // v5 = filter->select_flags;
+    int object_idx = pBillboardRenderList[parentBillboardId].object_pid.id();
+    ObjectType object_type = pBillboardRenderList[parentBillboardId].object_pid.type();
+    if (filter->select_flags & ExcludeType) {
+        return object_type != filter->object_type;
+    }
+    if (filter->select_flags & ExclusionIfNoEvent) {
+        if (object_type != filter->object_type) return true;
+        if (filter->object_type != OBJECT_Decoration) {
+            _log->warning("Unsupported \"exclusion if no event\" type in CVis::isBillboardPartOfSelection");
+            return true;
+        }
+        if (pLevelDecorations[object_idx].uCog ||
+            pLevelDecorations[object_idx].uEventID)
+            return true;
+        return pLevelDecorations[object_idx].IsInteractive();
+    }
+    if (object_type == filter->object_type) {
+        if (object_type != OBJECT_Actor) {
+            _log->warning("Default case reached in VIS");
+            return true;
+        }
+
+        // v10 = &pActors[object_idx];
+        int aiState = 1 << static_cast<int>(pActors[object_idx].aiState); // TODO(captainurist): Flags.
+
+        if (aiState & filter->no_at_ai_state)
+            return false;
+        if (!(aiState & filter->at_ai_state))
+            return false;
+
+        auto only_target_undead = filter->select_flags & TargetUndead;
+        auto target_not_undead = MonsterStats::BelongsToSupertype(pActors[object_idx].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) == 0;
+
+        if (only_target_undead && target_not_undead)
+            return false;
+
+        if (!(filter->select_flags & VisSelectFlags_1))
             return true;
 
-        case VisObjectType_Sprite: {
-            int parentBillboardId =
-                render->pBillboardRenderListD3D[std::get<int>(what)].sParentBillboardID;
-
-            if (parentBillboardId == -1)
-                return false;
-
-            // v5 = filter->select_flags;
-            int object_idx = pBillboardRenderList[parentBillboardId].object_pid.id();
-            ObjectType object_type = pBillboardRenderList[parentBillboardId].object_pid.type();
-            if (filter->select_flags & ExcludeType) {
-                return object_type != filter->object_type;
-            }
-            if (filter->select_flags & ExclusionIfNoEvent) {
-                if (object_type != filter->object_type) return true;
-                if (filter->object_type != OBJECT_Decoration) {
-                    _log->warning("Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
-                    return true;
-                }
-                if (pLevelDecorations[object_idx].uCog ||
-                    pLevelDecorations[object_idx].uEventID)
-                    return true;
-                return pLevelDecorations[object_idx].IsInteractive();
-            }
-            if (object_type == filter->object_type) {
-                if (object_type != OBJECT_Actor) {
-                    _log->warning("Default case reached in VIS");
-                    return true;
-                }
-
-                // v10 = &pActors[object_idx];
-                int aiState = 1 << static_cast<int>(pActors[object_idx].aiState); // TODO(captainurist): Flags.
-
-                if (aiState & filter->no_at_ai_state)
-                    return false;
-                if (!(aiState & filter->at_ai_state))
-                    return false;
-
-                auto only_target_undead = filter->select_flags & TargetUndead;
-                auto target_not_undead = MonsterStats::BelongsToSupertype(pActors[object_idx].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) == 0;
-
-                if (only_target_undead && target_not_undead)
-                    return false;
-
-                if (!(filter->select_flags & VisSelectFlags_1))
-                    return true;
-
-                auto relation = pActors[object_idx].GetActorsRelation(nullptr);
-                if (relation == 0) return false;
-                return true;
-            }
-            return false;
-        }
-
-        case VisObjectType_Face: {
-            FaceAttributes face_attrib;
-            bool no_event = true;
-            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                ODMFace *face = std::get<ODMFace *>(what);
-                no_event = face->sCogTriggeredID == 0;
-                face_attrib = face->uAttributes;
-            } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                BLVFace *face = std::get<BLVFace *>(what);
-                no_event = pIndoor->pFaceExtras[face->uFaceExtraID].uEventID == 0;
-                face_attrib = face->uAttributes;
-            } else {
-                assert(false);
-            }
-
-            if (filter->object_type != OBJECT_Door) return true;
-
-            FaceAttributes invalid_face_attrib = face_attrib & FaceAttributes(filter->no_at_ai_state);
-            if (no_event || invalid_face_attrib)  // face_attrib = 0x2009408 incorrect
-                return false;
-            return face_attrib & FaceAttributes(filter->at_ai_state);
-        }
-
-        default:
-            assert(false);
-            return false;
+        auto relation = pActors[object_idx].GetActorsRelation(nullptr);
+        if (relation == 0) return false;
+        return true;
     }
+
+    return false;
+}
+
+bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_SelectionFilter *filter) {
+    assert(!!odmFace ^ !!bvlFace); // Only one should be valid.
+
+    if (filter->vis_object_type == VisObjectType_Any)
+        return true;
+    assert(filter->vis_object_type == VisObjectType_Face);
+
+    FaceAttributes face_attrib;
+    bool no_event = true;
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        no_event = odmFace->sCogTriggeredID == 0;
+        face_attrib = odmFace->uAttributes;
+    } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        no_event = pIndoor->pFaceExtras[bvlFace->uFaceExtraID].uEventID == 0;
+        face_attrib = bvlFace->uAttributes;
+    } else {
+        assert(false);
+    }
+
+    if (filter->object_type != OBJECT_Door) return true;
+
+    FaceAttributes invalid_face_attrib = face_attrib & FaceAttributes(filter->no_at_ai_state);
+    if (no_event || invalid_face_attrib)  // face_attrib = 0x2009408 incorrect
+        return false;
+    return face_attrib & FaceAttributes(filter->at_ai_state);
 }
 
 //----- (004C091D) --------------------------------------------------------
@@ -977,10 +969,10 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
         int pFaceID = pBspRenderer->faces[i].uFaceID;
         BLVFace *pFace = &pIndoor->pFaces[pFaceID];
         if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
-            if (is_part_of_selection(pFace, filter)) {
+            if (isFacePartOfSelection(nullptr, pFace, filter)) {
                 Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
                 if (v8)
-                    list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
+                    list->AddObject(v8->object_type, v8->depth, v8->object_pid);
             }
         }
     }
@@ -993,16 +985,14 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
                 for (ODMFace &face : model.pFaces) {
-                    if (is_part_of_selection(&face, filter)) {
+                    if (isFacePartOfSelection(&face, nullptr, filter)) {
                         BLVFace blv_face;
                         blv_face.FromODM(&face);
 
                         Pid pid = Pid(OBJECT_Face, face.index | (model.index << 6));
                         if (Vis_ObjectInfo *object_info =
                                 DetermineFacetIntersection(&blv_face, pid, pick_depth)) {
-                            list->AddObject(
-                                object_info->object, object_info->object_type,
-                                object_info->depth, object_info->object_pid);
+                            list->AddObject(object_info->object_type, object_info->depth, object_info->object_pid);
                         }
                     }
                 }

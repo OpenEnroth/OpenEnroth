@@ -1,7 +1,5 @@
 #pragma once
 
-#include <variant>
-
 #include "Utility/Flags.h"
 #include "Utility/Geometry/Plane.h"
 
@@ -54,10 +52,7 @@ struct Vis_PIDAndDepth {
     int16_t depth;
 };
 
-using Vis_Object = std::variant<std::monostate, int /* index */, ODMFace *, BLVFace *>;
-
 struct Vis_ObjectInfo {
-    Vis_Object object;
     Pid object_pid = Pid();
     int16_t depth = -1;
     VisObjectType object_type = VisObjectType_Any;
@@ -71,8 +66,7 @@ struct Vis_SelectionList {
     void create_object_pointers(PointerCreationType type = All);
     void sort_object_pointers();
 
-    inline void AddObject(Vis_Object object, VisObjectType type, int depth, Pid pid) {
-        object_pool[uSize].object = object;
+    inline void AddObject(VisObjectType type, int depth, Pid pid) {
         object_pool[uSize].object_type = type;
         object_pool[uSize].depth = depth;
         object_pool[uSize].object_pid = pid;
@@ -121,8 +115,9 @@ private:
                                 Vis_SelectionFilter *filter,
                                 bool only_reachable);
 
-    bool is_part_of_selection(const Vis_Object &what,
-                              Vis_SelectionFilter *filter);
+    bool isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filter);
+    bool isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_SelectionFilter *filter);
+
     Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face, Pid pid, float pick_depth);
     bool IsPolygonOccludedByBillboard(struct RenderVertexSoft *vertices,
                                       int num_vertices, float x, float y);
