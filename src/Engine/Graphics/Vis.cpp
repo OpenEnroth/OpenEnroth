@@ -232,6 +232,10 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
             if (DoesRayIntersectBillboard(fPickDepth, i)) {
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
+                Pid pid = billboard->object_pid;
+                if (pid.type() == OBJECT_Item && pSpriteObjects[pid.id()].uObjectDescID == 0)
+                    continue; // Sprite object already removed.
+
                 list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
             }
         }
