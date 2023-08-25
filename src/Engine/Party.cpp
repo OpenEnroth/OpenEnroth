@@ -1084,7 +1084,9 @@ void Party::placeHeldItemInInventoryOrDrop() {
         return;
     }
 
-    if (!addItemToParty(&pPickedItem, true)) {
+    if (addItemToParty(&pPickedItem, true)) {
+        mouse->RemoveHoldingItem();
+    } else {
         dropHeldItem();
     }
 }

@@ -72,7 +72,7 @@ TestTape<DIALOGUE_TYPE> CommonTapeRecorder::dialogueType() {
     return custom([] {
         if (GUIWindow_Dialogue *dlg = dynamic_cast<GUIWindow_Dialogue*>(pDialogueWindow)) {
             return dlg->getDisplayedDialogueType();
-        } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(pDialogueWindow)) {
+        } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(window_SpeakInHouse)) {
             return dlg->getCurrentDialogue();
         } else {
             return DIALOGUE_NULL;

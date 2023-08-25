@@ -559,6 +559,8 @@ void selectProprietorDialogueOption(DIALOGUE_TYPE option) {
         return;
     }
 
+    pParty->placeHeldItemInInventoryOrDrop();
+
     render->ClearZBuffer();
 
     window_SpeakInHouse->houseDialogueOptionSelected(option);
@@ -572,6 +574,7 @@ bool houseDialogPressEscape() {
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
+    pParty->placeHeldItemInInventoryOrDrop();
 
     if (currentHouseNpc == -1) {
         return false;
