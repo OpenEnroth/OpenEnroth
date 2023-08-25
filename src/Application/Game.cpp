@@ -1007,7 +1007,7 @@ void Game::processQueuedMessages() {
                 current_screen_type = SCREEN_GAME;
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
-                Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
+                Pid pid = _vis->mousePickedObject().object_pid;
                 ObjectType type = pid.type();
                 int id = pid.id();
                 bool interactionPossible = false;
@@ -1187,8 +1187,8 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpell_TargetActorBuff:
             case UIMSG_CastSpell_TargetActor: {
-                Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
-                int depth = _vis->get_picked_object_zbuf_val().depth;
+                Pid pid = _vis->mousePickedObject().object_pid;
+                int depth = _vis->mousePickedObject().depth;
                 if (pid.type() == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
                     spellTargetPicked(pid, -1);
                     closeTargetedSpellWindow();
@@ -1933,7 +1933,7 @@ void Game::onPressSpace() {
                           keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
                           &vis_decoration_noevent_filter, &vis_door_filter);
 
-    Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
+    Pid pid = _vis->keyboardPickedObject().object_pid;
     if (pid) {
         DoInteractionWithTopmostZObject(pid);
     }

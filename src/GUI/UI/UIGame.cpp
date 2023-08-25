@@ -902,7 +902,7 @@ void GameUI_WritePointedObjectStatusString() {
             auto vis = EngineIocContainer::ResolveVis();
 
             // get_picked_object_zbuf_val contains both the pid and the depth
-            pickedObject = vis->get_picked_object_zbuf_val();
+            pickedObject = vis->mousePickedObject();
             mouse->uPointingObjectID = pickedObject.object_pid;
             pickedObjectID = (signed)pickedObject.object_pid.id();
             if (pickedObject.object_pid.type() == OBJECT_Item) {

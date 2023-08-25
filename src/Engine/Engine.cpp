@@ -549,7 +549,7 @@ void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
         vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
 
         if (bOutline)
-            OutlineSelection();
+            OutlineSelection(vis->mousePickedObject());
     }
 }
 
@@ -557,10 +557,10 @@ void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
 bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
                           Vis_SelectionFilter *face_filter) {
     if (current_screen_type == SCREEN_GAME) {
-        bool r = vis->PickKeyboard(pick_depth, &vis->_defaultList, sprite_filter, face_filter);
+        bool r = vis->PickKeyboard(pick_depth, sprite_filter, face_filter);
 
         if (bOutline)
-            OutlineSelection();
+            OutlineSelection(vis->keyboardPickedObject());
         return r;
     }
     return false;
@@ -581,43 +581,29 @@ return Result::Success;
 // 4E28F8: using guessed type int current_screen_type;
 
 //----- (0044EB5A) --------------------------------------------------------
-void Engine::OutlineSelection() {
-    if (!vis->_defaultList.uSize)
+void Engine::OutlineSelection(const Vis_PIDAndDepth &selection) {
+    if (!selection.object_pid)
         return;
 
-    Vis_ObjectInfo *object_info = vis->_defaultList.object_pointers[0];
-    if (object_info) {
-        switch (object_info->object_type) {
-            case VisObjectType_Sprite: {
-                log->warning("Sprite outline currently unsupported");
-                return;
-            }
+    if (selection.object_pid.type() != OBJECT_Face)
+        return;
 
-            case VisObjectType_Face: {
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    ODMFace *face = std::get<ODMFace *>(object_info->object);
-                    if (face->uAttributes & FACE_OUTLINED)
-                        face->uAttributes &= ~FACE_OUTLINED;
-                    else
-                        face->uAttributes |= FACE_OUTLINED;
-                } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                    BLVFace *face = std::get<BLVFace *>(object_info->object);
-                    if (face->uAttributes & FACE_OUTLINED)
-                        face->uAttributes &= ~FACE_OUTLINED;
-                    else
-                        face->uAttributes |= FACE_OUTLINED;
-                } else {
-                    Error("Invalid level type", uCurrentlyLoadedLevelType);
-                }
-            } break;
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        ODMFace *face = &pOutdoor->face(selection.object_pid);
+        if (face->uAttributes & FACE_OUTLINED)
+            face->uAttributes &= ~FACE_OUTLINED;
+        else
+            face->uAttributes |= FACE_OUTLINED;
+    } else {
+        assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
 
-            default:
-                Error("Undefined CObjectInfo type requested in CGame::outline_selection()");
-        }
+        BLVFace *face = &pIndoor->pFaces[selection.object_pid.id()];
+        if (face->uAttributes & FACE_OUTLINED)
+            face->uAttributes &= ~FACE_OUTLINED;
+        else
+            face->uAttributes |= FACE_OUTLINED;
     }
 }
-
-
 
 void PlayButtonClickSound() {
     pAudioPlayer->playNonResetableSound(SOUND_StartMainChoice02);

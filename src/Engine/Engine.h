@@ -23,6 +23,7 @@ class KeyboardInputHandler;
 class KeyboardActionMapping;
 } // namespace Io
 
+struct Vis_PIDAndDepth;
 struct Polygon;
 class DecalBuilder;
 class BloodsplatContainer;
@@ -101,7 +102,7 @@ class Engine {
      * @offset 0x42213C
      */
     void onGameViewportClick();
-    void OutlineSelection();
+    void OutlineSelection(const Vis_PIDAndDepth &selection);
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4); // TODO(captainurist): drop?
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();

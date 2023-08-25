@@ -126,12 +126,12 @@ struct OutdoorLocation {
 
     static void LoadActualSkyFrame();
 
-    const ODMFace &face(Pid pid) {
+    ODMFace &face(Pid pid) {
         assert(pid.type() == OBJECT_Face);
         return pBModels[pid.id() >> 6].pFaces[pid.id() & 0x3F];
     }
 
-    const BSPModel &model(Pid pid) {
+    BSPModel &model(Pid pid) {
         assert(pid.type() == OBJECT_Face);
         return pBModels[pid.id() >> 6];
     }

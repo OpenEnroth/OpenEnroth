@@ -88,14 +88,15 @@ class Vis {
  public:
     Vis();
 
-    bool PickKeyboard(float pick_depth, Vis_SelectionList *list,
+    bool PickKeyboard(float pick_depth,
                       Vis_SelectionFilter *sprite_filter,
                       Vis_SelectionFilter *face_filter);
     bool PickMouse(float fDepth, float fMouseX, float fMouseY,
                    Vis_SelectionFilter *sprite_filter,
                    Vis_SelectionFilter *face_filter);
 
-    Vis_PIDAndDepth get_picked_object_zbuf_val();
+    Vis_PIDAndDepth mousePickedObject();
+    Vis_PIDAndDepth keyboardPickedObject();
 
     bool DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx);
 
@@ -149,8 +150,9 @@ private:
     void SortByScreenSpaceY(struct RenderVertexSoft *pArray, int start,
                             int end);
 
-public:
-    Vis_SelectionList _defaultList;
+private:
+    Vis_SelectionList _mouseList;
+    Vis_SelectionList _keyboardList;
     RenderVertexSoft _debugpick;
     Logger *_log = nullptr;
 };

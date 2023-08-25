@@ -1803,7 +1803,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 // if ( render->pRenderD3D )
 
                 auto vis = EngineIocContainer::ResolveVis();
-                v5 = vis->get_picked_object_zbuf_val().object_pid;
+                v5 = vis->mousePickedObject().object_pid;
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
                 if (v5.type() == OBJECT_Actor) {
