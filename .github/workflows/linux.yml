@@ -1,5 +1,6 @@
 name: Linux
-'on':
+
+on:
   pull_request: null
   workflow_dispatch:
     inputs:
@@ -8,14 +9,33 @@ name: Linux
         required: false
         default: ''
         type: string
+      releaseTag:
+        description: Release tag
+        required: false
+        default: ''
+        type: string
+  workflow_call:
+    inputs:
+      myCommit:
+        description: Commit SHA1
+        required: false
+        default: ''
+        type: string
+      releaseTag:
+        description: Release tag
+        required: false
+        default: ''
+        type: string
   push: null
   release:
     types:
       - published
+
 # cancels currently running workflow from the same PR, branch or tag
 #concurrency:
-#  group: ${{ github.workflow }}-${{ github.ref }}
+#  group: ${{github.workflow}}-${{github.ref}}
 #  cancel-in-progress: true
+
 jobs:
   build_linux:
     runs-on: ubuntu-22.04
@@ -27,9 +47,9 @@ jobs:
           - Release
         architecture:
           - x86
-          - x64
+          - x86_64
     steps:
-      - name: Configure Fast APT Mirror
+      - name: Configure fast APT mirror
         uses: vegardit/fast-apt-mirror.sh@v1
         with: # the following parameters are listed with their action default values and are optional
           healthchecks:  10 # Number of mirrors from the mirrors list to check for availability and up-to-dateness
@@ -42,10 +62,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          ref: '${{ inputs.myCommit }}'
+          ref: '${{inputs.myCommit}}'
 
-      - name: Check for Data cache
-        id: check-for-data-cache
+      - name: Restore data cache
+        id: restore-data-cache
         uses: actions/cache/restore@v3
         with:
           path: |
@@ -53,63 +73,55 @@ jobs:
           key: data-cache
 
       - name: Copy shaders
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         run: |
           cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
 
       - name: Install dependencies
         run: |
-          if [ "${{ matrix.architecture }}" = "x86" ]; then
+          if [ "${{matrix.architecture}}" = "x86" ]; then
             sudo dpkg --add-architecture i386
           fi
           sudo apt-get update
-          if [ "${{ matrix.architecture }}" = "x86" ]; then
+          if [ "${{matrix.architecture}}" = "x86" ]; then
             sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
             sudo apt-get install -y libglu1-mesa-dev:i386
             sudo apt-get install -y libsdl2-dev:i386
           fi
-          if [ "${{ matrix.architecture }}" = "x64" ]; then
+          if [ "${{matrix.architecture}}" = "x86_64" ]; then
             sudo apt-get install -y gcc-13 g++-13 lld
             sudo apt-get install -y libglu1-mesa-dev
             sudo apt-get install -y libsdl2-dev
           fi
 
-      - name: ccache save cache on merge
-        if: github.ref == 'refs/heads/master'
+      - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
         with:
-          key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
-
-      - name: ccache dont save cache
-        if: github.ref != 'refs/heads/master'
-        uses: hendrikmuhs/ccache-action@v1.2.10
-        with:
-          key: 'linux-${{ matrix.configuration }}-${{ matrix.architecture }}'
-          save: false
+          key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
+          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
+          verbose: 2
+          max-size: 100M
 
       - name: Configure
-        run: >
-          if [ "${{ matrix.architecture }}" = "x86" ]; then
+        run: |
+          if [ "${{matrix.architecture}}" = "x86" ]; then
             export CFLAGS="-m32" CXXFLAGS="-m32" 
           fi
-
           export CC=gcc-13 && export CXX=g++-13
-
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{
-          matrix.configuration }} -DOE_BUILD_TESTS=ON
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
 
       - name: Build
         working-directory: build
         run: |
           make -j3
 
-      - name: Tests
+      - name: Run unit tests
         working-directory: build
         run: |
           make UnitTest
 
-      - name: GameTest
-        if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+      - name: Run game tests
+        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           make GameTest_Headless
@@ -122,6 +134,27 @@ jobs:
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
           cp -r resources/* dist/
 
+      - name: Zip folder for release
+        if: inputs.releaseTag != ''
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: zip
+          filename: ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+          path: dist
+
+      - name: Publish release
+        if: inputs.releaseTag != ''
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{inputs.releaseTag}}'
+          files: |
+            ${{runner.os}}_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.zip
+
       - name: Check dependencies
         run: |
           objdump -p build/src/Bin/OpenEnroth/OpenEnroth | grep 'NEEDED'
+
+      - name: Cleanup ccache
+        run: |
+          ccache -c

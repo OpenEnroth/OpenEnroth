@@ -154,7 +154,7 @@ class Actor {
     /**
      * @offset 0x4485A7
      */
-    static void giveItem(signed int uActorID, ITEM_TYPE uItemID, unsigned int bGive);
+    static void giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive);
 
     /**
      * @offset 0x448A40
@@ -231,7 +231,7 @@ class Actor {
     uint16_t tetherDistance = 256;
     AIState aiState = Standing;
     ActorAnimation currentActionAnimation = ANIM_Standing;
-    ITEM_TYPE carriedItemId = ITEM_NULL; // carried items are special items the
+    ItemId carriedItemId = ITEM_NULL; // carried items are special items the
                                          // ncp carries (ie lute from bard)
     unsigned int currentActionTime = 0;
     IndexedArray<uint16_t, ANIM_First, ANIM_Last> spriteIds = {{}};
@@ -254,7 +254,7 @@ bool CheckActors_proximity();
 /**
  * @offset 0x448518
  */
-void npcSetItem(int npc, ITEM_TYPE item, int a3);
+void npcSetItem(int npc, ItemId item, int a3);
 
 /**
  * @offset 0x448A98

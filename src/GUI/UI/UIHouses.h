@@ -76,7 +76,7 @@ struct HouseNpcDesc {
     std::string label = "";
     GraphicsImage *icon = nullptr;
     GUIButton *button = nullptr;
-    MAP_TYPE targetMapID = MAP_INVALID;
+    MapId targetMapID = MAP_INVALID;
     NPCData *npc = nullptr;
 };
 

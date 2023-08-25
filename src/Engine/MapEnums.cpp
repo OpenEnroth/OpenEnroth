@@ -4,9 +4,9 @@
 #include "Library/Serialization/EnumSerializer.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(MapStartPoint, CASE_SENSITIVE, {
-    {MapStartPoint_Party, "Party Start"},
-    {MapStartPoint_North, "North Start"},
-    {MapStartPoint_South, "South Start"},
-    {MapStartPoint_East, "East Start"},
-    {MapStartPoint_West, "West Start"}
+    {MAP_START_POINT_PARTY, "Party Start"},
+    {MAP_START_POINT_NORTH, "North Start"},
+    {MAP_START_POINT_SOUTH, "South Start"},
+    {MAP_START_POINT_EAST, "East Start"},
+    {MAP_START_POINT_WEST, "West Start"}
 })

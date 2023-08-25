@@ -336,7 +336,7 @@ const int paperdoll_Boot[4][7][2] = {  // 4E5490
     0x1F, 0x127, 0x1F, 0x122, 0x1B, 0x11B, 0x1D, 0x117, 0x1D, 0x116,
     0x1B, 0x11F, 0x1D, 0x137,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_boots_indexByType = {
     {ITEM_LEATHER_BOOTS, 0},
     {ITEM_STEEL_PLATED_BOOTS, 1},
     {ITEM_RANGER_BOOTS, 2},
@@ -345,7 +345,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
     {ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 5},
     {ITEM_ARTIFACT_HERMES_SANDALS, 6},
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
 
 const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x11, 0x68, 0x0F, 0x68, 0x14, 0x71, 0x19, 0x6B, 0x21, 0x6F, 0x05, 0x68,
@@ -360,7 +360,7 @@ const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x14, 0x92, 0x10, 0x92, 0x15, 0x98, 0x1F, 0x91, 0x22, 0x90, 0x08, 0x92,
     0x0C, 0x92, 0x15, 0x98, 0x03, 0x91, 0x03, 0x90,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
     {ITEM_LEATHER_CLOAK, 0},
     {ITEM_HUNTSMANS_CLOAK, 1},
     {ITEM_RANGERS_CLOAK, 2},
@@ -372,7 +372,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
     {ITEM_RARE_MOON_CLOAK, 8},
     {ITEM_RARE_VAMPIRES_CAPE, 9}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
 const int paperdoll_CloakCollar[4][10][2] = {  // 4E56B0
     0,    0,    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x20, 0x67, 0x21, 0x68,
@@ -401,7 +401,7 @@ const int paperdoll_Belt[4][7][2] = {  // 4E57F0
     0x42, 0xD2, 0x3F, 0xD0, 0x3B, 0xD7, 0x3C, 0xD5, 0x3B, 0xD6, 0x3E, 0xCF,
     0x36, 0xD6,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_belt_indexByType = {
     {ITEM_LEATHER_BELT, 0},
     {ITEM_FINE_BELT, 1},
     {ITEM_STRONG_BELT, 2},
@@ -410,7 +410,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
     {ITEM_RELIC_TITANS_BELT, 5},
     {ITEM_ARTIFACT_HEROS_BELT, 6}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
 
 const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x3E, 0x1F, 0x41, 0x2C, 0x37, 0x2F, 0x31, 0x32, 0x37, 0x2A, 0x39, 0x28,
@@ -429,7 +429,7 @@ const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x39, 0x5B, 0x45, 0x5C, 0x47, 0x5C, 0x44, 0x4B, 0x44, 0x57, 0x43, 0x55,
     0x44, 0x4A, 0x3E, 0x45, 0x3C, 0x54, 0x47, 0x70,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_helm_indexByType = {
     {ITEM_HORNED_HELM, 0},
     {ITEM_CONSCRIPTS_HELM, 1},
     {ITEM_FULL_HELM, 2},
@@ -447,7 +447,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
     {ITEM_ARTIFACT_MINDS_EYE, 14},
     {ITEM_RARE_SHADOWS_MASK, 15}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
 
 const int pPaperdoll_Beards[4] = {  // 4E5AD0
     52,
@@ -487,7 +487,7 @@ const int paperdoll_Armor_Coord[4][17][2] = {  // 4E4E30
     0x33, 0x8E, 0x2F, 0x8F, 0x16, 0x8D, 0x18, 0x8C, 0x19, 0x8C, 0x1B, 0x8E,
     0x0C, 0x8C, 0x21, 0x8B, 0x0C, 0x8C, 0x18, 0x8C, 0x2F, 0x8F,
 };
-const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
+const std::unordered_map<ItemId, int> paperdoll_armor_indexByType = {
     {ITEM_LEATHER_ARMOR, 0},
     {ITEM_STUDDED_LEATHER, 1},
     {ITEM_OFFICERS_LEATHER, 2},
@@ -506,7 +506,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
     {ITEM_ARTIFACT_GOVERNORS_ARMOR, 15},
     {ITEM_ARTIFACT_ELVEN_CHAINMAIL, 16}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
+const std::unordered_map<int, ItemId> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
 
 const int paperdoll_shoulder_coord[4][17][2] = {  // 4E5050
     0x64, 0x67, 0x61, 0x67, 0x65, 0x68, 0x6E, 0x74, 0x6C, 0x68, 0x61, 0x67,
@@ -657,7 +657,6 @@ void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
                 pButton->uY = savedInventoryLeftClickButtonY;
                 pButton->uZ = savedInventoryLeftClickButtonZ;
                 pButton->uW = savedInventoryLeftClickButtonW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
             }
         }
     }
@@ -817,7 +816,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     Pointi pt = mouse->GetCursorPos();
 
     auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {x, y}, ui_character_header_text_color, str);
 
     int num_skills_drawn = 0;
     for (CharacterSkillType skill : skill_list) {
@@ -859,7 +858,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 } else {
                     Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
                 }
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
+                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             } else {
                 const char *skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
@@ -869,14 +868,14 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
                 auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
                         localization->GetSkillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
+                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             }
         }
     }
 
     if (!num_skills_drawn) {
-        y_offset += pFontLucida->GetHeight() - 3;
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, y_offset}, colorTable.White, localization->GetString(LSTR_NONE));
+        y_offset += assets->pFontLucida->GetHeight() - 3;
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, y_offset}, colorTable.White, localization->GetString(LSTR_NONE));
     }
 
     return y_offset;
@@ -894,18 +893,18 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
                      player->uSkillPoints ? ui_character_bonus_text_color.tag()
                                           : ui_character_default_text_color.tag(),
                      player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, colorTable.White, str);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
 
-    int y = 2 * pFontLucida->GetHeight() + 13;
+    int y = 2 * assets->pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
 
-    y += 2 * pFontLucida->GetHeight() - 10;
+    y += 2 * assets->pFontLucida->GetHeight() - 10;
     CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allMagicSkills(), 400, localization->GetString(LSTR_MAGIC));
 
-    y = 2 * pFontLucida->GetHeight() + 13;
+    y = 2 * assets->pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
 
-    y += 2 * pFontLucida->GetHeight() - 10;
+    y += 2 * assets->pFontLucida->GetHeight() - 10;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allMiscSkills(), 177, localization->GetString(LSTR_MISC));
 }
 
@@ -999,7 +998,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     std::string str = fmt::format("{} {::}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
                                   ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, colorTable.White, str);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
 
 
     if (_awardsCharacterId != pParty->activeCharacterIndex()) {
@@ -1010,8 +1009,8 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
-        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str);
-        window.uFrameY = pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
+        window.DrawText(assets->pFontArrus.get(), {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str);
+        window.uFrameY = assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
         currentlyDisplayedElems++;
         if (window.uFrameY > window.uFrameHeight) {
             break;
@@ -1500,7 +1499,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     int first_rows = 0;
     Character *curr_player = &pParty->activeCharacter();
 
-    int uCurrFontHeght = pFontLucida->GetHeight();
+    int uCurrFontHeght = assets->pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
     int width = 204;
     for (CharacterSkillType skill : allWeaponSkills()) {
@@ -1543,11 +1542,6 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
-
-    if (buttons_count) {
-        pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(
-            buttons_count, 1, 0, buttons_count);
-    }
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
@@ -1563,7 +1557,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
                     localization->GetString(LSTR_SKILL_POINTS),
                     player->uSkillPoints ? ui_character_bonus_text_color.tag() : ui_character_default_text_color.tag(),
                     player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, colorTable.White, str1);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, 18}, colorTable.White, str1);
 
     // Left column
     auto formatLeftCol = [] (int lstr, int current, int max) {
@@ -1577,59 +1571,59 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     };
 
     int pY = 53;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseMight()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_INTELLECT, player->GetActualIntelligence(), player->GetBaseIntelligence()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_PERSONALITY, player->GetActualPersonality(), player->GetBasePersonality()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ENDURANCE, player->GetActualEndurance(), player->GetBaseEndurance()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ACCURACY, player->GetActualAccuracy(), player->GetBaseAccuracy()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_SPEED, player->GetActualSpeed(), player->GetBaseSpeed()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_LUCK, player->GetActualLuck(), player->GetBaseLuck()));
 
-    pY += 2 * pFontArrus->GetHeight() + 5;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += 2 * assets->pFontArrus->GetHeight() + 5;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_HIT_POINTS, player->health, player->GetMaxHealth()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_SPELL_POINTS, player->mana, player->GetMaxMana()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ARMOR_CLASS, player->GetActualAC(), player->GetBaseAC()));
 
-    pY += 2 * pFontArrus->GetHeight() - 2;
+    pY += 2 * assets->pFontArrus->GetHeight() - 2;
     auto str12 =
         fmt::format("{}: {::}{}\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, colorTable.White, str12, 226, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str12, 226, 0);
 
-    pY += pFontArrus->GetHeight() + -1;
+    pY += assets->pFontArrus->GetHeight() + -1;
     std::string spellName = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell != SPELL_NONE)
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, colorTable.White, str13, 226, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str13, 226, 0);
 
     // Right column
     auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
@@ -1647,65 +1641,65 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     };
 
     pY = 50;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_AGE, player->GetActualAge(), player->GetBaseAge()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_LEVEL, player->GetActualLevel(), player->GetBaseLevel()));
 
-    pY += pFontArrus->GetHeight() - 2;
+    pY += assets->pFontArrus->GetHeight() - 2;
     auto str16 =
         fmt::format("{}\r180{::}{}\f00000\n\n",
                     localization->GetString(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
                     player->GetExperienceDisplayColor().tag(), player->experience);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White, str16);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White, str16);
 
-    pY += 2 * pFontArrus->GetHeight();
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += 2 * assets->pFontArrus->GetHeight();
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK), player->GetActualAttack(false)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE), player->GetMeleeDamageString()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT), player->GetRangedAttack()));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE), player->GetRangedDamageString()));
 
-    pY += 2 * pFontArrus->GetHeight() - 4;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += 2 * assets->pFontArrus->GetHeight() - 4;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_FIRE, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_AIR, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_WATER, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)));
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pY += assets->pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_EARTH, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
 
-    pY += pFontArrus->GetHeight() - 2;
+    pY += assets->pFontArrus->GetHeight() - 2;
     bool immuneToMind = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
 
-    pY += pFontArrus->GetHeight() - 2;
+    pY += assets->pFontArrus->GetHeight() - 2;
     bool immuneToBody = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
 }
@@ -1733,7 +1727,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     for (int i = (_achievedAwardsList.size() - 1); i >= 0; --i) {
         std::string str = getAchievedAwardsString(i);
 
-        y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
+        y += assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
         if (y > window.uFrameHeight) {
             _scrollableAwardSteps = i + 2;
             break;
@@ -1801,7 +1795,7 @@ void OnPaperdollLeftClick() {
     static int amulety = 91;
 
     int slot = 32;
-    ITEM_SLOT pos = ITEM_SLOT_INVALID;
+    ItemSlot pos = ITEM_SLOT_INVALID;
 
     ItemGen *pitem = NULL;  // condesnse with this??
                             // pitem.Reset();
@@ -1817,7 +1811,7 @@ void OnPaperdollLeftClick() {
     int v34;  // esi@90
 
     //  unsigned int v48; // [sp+30h] [bp-1Ch]@88
-    ITEM_TYPE v50;  // [sp+38h] [bp-14h]@50
+    ItemId v50;  // [sp+38h] [bp-14h]@50
     // int v51; // [sp+3Ch] [bp-10h]@1
     int freeslot;  // [sp+40h] [bp-Ch]@5
     ITEM_EQUIP_TYPE pEquipType = EQUIP_NONE;
@@ -1833,7 +1827,7 @@ void OnPaperdollLeftClick() {
         twohandedequip = mainhandequip;
     }
 
-    ITEM_TYPE pickeditem = pParty->pPickedItem.uItemID;
+    ItemId pickeditem = pParty->pPickedItem.uItemID;
 
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // hold item
         pEquipType = pParty->pPickedItem.GetItemEquipType();
@@ -1912,7 +1906,7 @@ void OnPaperdollLeftClick() {
                     //слоты для колец
                     // equippos = 0;
 
-                    for (ITEM_SLOT equippos : allRingSlots()) {
+                    for (ItemSlot equippos : allRingSlots()) {
                         if (!pParty->activeCharacter().pEquipment.pIndices[equippos]) {
                             freeslot = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
@@ -2312,7 +2306,6 @@ void CharacterUI_ReleaseButtons() {
                 pButton->uY = savedInventoryLeftClickButtonY;
                 pButton->uZ = savedInventoryLeftClickButtonZ;
                 pButton->uW = savedInventoryLeftClickButtonW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
             }
         }
     }

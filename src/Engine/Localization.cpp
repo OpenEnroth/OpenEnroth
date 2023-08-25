@@ -302,54 +302,54 @@ void Localization::InitializeSkillNames() {
 }
 
 void Localization::InitializeClassNames() {
-    this->class_names[0] = this->localization_strings[253];  // Knight
-    this->class_names[1] = this->localization_strings[254];  // Cavalier
-    this->class_names[2] = this->localization_strings[255];  // Champion
-    this->class_names[3] = this->localization_strings[2];    // Black Knight
+    this->class_names[CHARACTER_CLASS_KNIGHT] = this->localization_strings[253];  // Knight
+    this->class_names[CHARACTER_CLASS_CAVALIER] = this->localization_strings[254];  // Cavalier
+    this->class_names[CHARACTER_CLASS_CHAMPION] = this->localization_strings[255];  // Champion
+    this->class_names[CHARACTER_CLASS_BLACK_KNIGHT] = this->localization_strings[2];    // Black Knight
 
-    this->class_names[4] = this->localization_strings[307];  // Thief
-    this->class_names[5] = this->localization_strings[114];  // Rogue
-    this->class_names[6] = this->localization_strings[3];    // Spy
-    this->class_names[7] = this->localization_strings[13];   // Assassin
+    this->class_names[CHARACTER_CLASS_THIEF] = this->localization_strings[307];  // Thief
+    this->class_names[CHARACTER_CLASS_ROGUE] = this->localization_strings[114];  // Rogue
+    this->class_names[CHARACTER_CLASS_SPY] = this->localization_strings[3];    // Spy
+    this->class_names[CHARACTER_CLASS_ASSASSIN] = this->localization_strings[13];   // Assassin
 
-    this->class_names[8] = this->localization_strings[21];    // Monk
-    this->class_names[9] = this->localization_strings[26];    // Initiate
-    this->class_names[10] = this->localization_strings[432];  // Master
-    this->class_names[11] = this->localization_strings[27];   // Ninja
+    this->class_names[CHARACTER_CLASS_MONK] = this->localization_strings[21];    // Monk
+    this->class_names[CHARACTER_CLASS_INITIATE] = this->localization_strings[26];    // Initiate
+    this->class_names[CHARACTER_CLASS_MASTER] = this->localization_strings[432];  // Master
+    this->class_names[CHARACTER_CLASS_NINJA] = this->localization_strings[27];   // Ninja
 
-    this->class_names[12] = this->localization_strings[262];  // Paladin
-    this->class_names[13] = this->localization_strings[263];  // Crusader
-    this->class_names[14] = this->localization_strings[264];  // Hero
-    this->class_names[15] = this->localization_strings[28];   // Villian
+    this->class_names[CHARACTER_CLASS_PALADIN] = this->localization_strings[262];  // Paladin
+    this->class_names[CHARACTER_CLASS_CRUSADER] = this->localization_strings[263];  // Crusader
+    this->class_names[CHARACTER_CLASS_HERO] = this->localization_strings[264];  // Hero
+    this->class_names[CHARACTER_CLASS_VILLIAN] = this->localization_strings[28];   // Villian
 
-    this->class_names[16] = this->localization_strings[265];  // Archer
-    this->class_names[17] = this->localization_strings[267];  // Battle Mage
-    this->class_names[18] = this->localization_strings[119];
-    this->class_names[19] = this->localization_strings[124];  // Sniper
+    this->class_names[CHARACTER_CLASS_ARCHER] = this->localization_strings[265];  // Archer
+    this->class_names[CHARACTER_CLASS_WARRIOR_MAGE] = this->localization_strings[267];  // Battle Mage
+    this->class_names[CHARACTER_CLASS_MASTER_ARCHER] = this->localization_strings[119];
+    this->class_names[CHARACTER_CLASS_SNIPER] = this->localization_strings[124];  // Sniper
 
-    this->class_names[20] = this->localization_strings[31];   // Ranger
-    this->class_names[21] = this->localization_strings[370];  // Hunter
-    this->class_names[22] = this->localization_strings[33];   // Ranger Lord
-    this->class_names[23] = this->localization_strings[40];
+    this->class_names[CHARACTER_CLASS_RANGER] = this->localization_strings[31];   // Ranger
+    this->class_names[CHARACTER_CLASS_HUNTER] = this->localization_strings[370];  // Hunter
+    this->class_names[CHARACTER_CLASS_RANGER_LORD] = this->localization_strings[33];   // Ranger Lord
+    this->class_names[CHARACTER_CLASS_BOUNTY_HUNTER] = this->localization_strings[40];
 
-    this->class_names[24] = this->localization_strings[256];  // Cleric
-    this->class_names[25] = this->localization_strings[257];
-    this->class_names[26] = this->localization_strings[44];
-    this->class_names[27] = this->localization_strings[46];
+    this->class_names[CHARACTER_CLASS_CLERIC] = this->localization_strings[256];  // Cleric
+    this->class_names[CHARACTER_CLASS_PRIEST] = this->localization_strings[257];
+    this->class_names[CHARACTER_CLASS_PRIEST_OF_SUN] = this->localization_strings[44];
+    this->class_names[CHARACTER_CLASS_PRIEST_OF_MOON] = this->localization_strings[46];
 
-    this->class_names[28] = this->localization_strings[268];  // Druid
-    this->class_names[29] = this->localization_strings[269];
-    this->class_names[30] = this->localization_strings[270];
-    this->class_names[31] = this->localization_strings[48];  // Warlock
+    this->class_names[CHARACTER_CLASS_DRUID] = this->localization_strings[268];  // Druid
+    this->class_names[CHARACTER_CLASS_GREAT_DRUID] = this->localization_strings[269];
+    this->class_names[CHARACTER_CLASS_ARCH_DRUID] = this->localization_strings[270];
+    this->class_names[CHARACTER_CLASS_WARLOCK] = this->localization_strings[48];  // Warlock
 
-    this->class_names[32] = this->localization_strings[259];  // Sorcerer
-    this->class_names[33] = this->localization_strings[260];  // Wizard
-    this->class_names[34] = this->localization_strings[261];  // Archmage
-    this->class_names[35] = this->localization_strings[49];   // Lich
+    this->class_names[CHARACTER_CLASS_SORCERER] = this->localization_strings[259];  // Sorcerer
+    this->class_names[CHARACTER_CLASS_WIZARD] = this->localization_strings[260];  // Wizard
+    this->class_names[CHARACTER_CLASS_ARCHAMGE] = this->localization_strings[261];  // Archmage
+    this->class_names[CHARACTER_CLASS_LICH] = this->localization_strings[49];   // Lich
 
     this->class_desc_raw = engine->_gameResourceManager->getEventsFile("class.txt").string_view();
     strtok(this->class_desc_raw.data(), "\r");
-    for (int i = 0; i < 36; ++i) {
+    for (CharacterClassType i : class_desciptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(test_string, '\t');
         assert(tokens.size() == 3 && "Invalid number of tokens");

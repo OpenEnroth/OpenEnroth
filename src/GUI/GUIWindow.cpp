@@ -134,20 +134,16 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     return 0;
 }
 
-//----- (0041D08F) --------------------------------------------------------
-void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3,
-    int a4, int a5) {
-    if (num_buttons) {
-        this->pNumPresenceButton = num_buttons;
-        this->field_30 = a3;
-        this->field_34 = a4;
-        this->pCurrentPosActiveItem = a5;
-        this->pStartingPosActiveItem = a5;
+void GUIWindow::setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int selectStep, int initialPosition) {
+    this->pNumPresenceButton = buttonsCount;
+    this->_msgOnKeyboardSelect = msgOnSelect;
+    this->_selectStep = selectStep;
+
+    if (buttonsCount) {
+        this->pCurrentPosActiveItem = initialPosition;
+        this->pStartingPosActiveItem = initialPosition;
         this->receives_keyboard_input = true;
     } else {
-        this->pNumPresenceButton = 0;
-        this->field_30 = a3;
-        this->field_34 = a4;
         this->pCurrentPosActiveItem = 0;
         this->pStartingPosActiveItem = 0;
         this->receives_keyboard_input = false;
@@ -238,7 +234,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     unsigned int uBoxHeight;
     if (!sHint.empty()) {
         uBoxHeight =
-            pFontLucida->CalcTextHeight(sHint, current_window.uFrameWidth, 0) +
+            assets->pFontLucida->CalcTextHeight(sHint, current_window.uFrameWidth, 0) +
             24;
     } else {
         uBoxHeight = uFrameHeight;
@@ -253,8 +249,8 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         uBoxHeight);
     if (!sHint.empty()) {
         current_window.DrawTitleText(
-            pFontLucida,
-            0, (int)(uBoxHeight - pFontLucida->CalcTextHeight(this->sHint, current_window.uFrameWidth, 0)) / 2 - 14,
+            assets->pFontLucida.get(),
+            0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(this->sHint, current_window.uFrameWidth, 0)) / 2 - 14,
             colorTable.White, this->sHint, 3);
     }
 }
@@ -300,7 +296,7 @@ std::string MakeDateTimeString(GameTime time) {
 //----- (004B1854) --------------------------------------------------------
 void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     auto str = MakeDateTimeString(time);
-    this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
+    this->DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
 
 //----- (0044D406) --------------------------------------------------------
@@ -430,7 +426,7 @@ void OnButtonClick::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 }
@@ -447,7 +443,7 @@ void OnButtonClick2::Update() {
         }
     }
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 }
@@ -458,7 +454,7 @@ void OnButtonClick3::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 }
@@ -480,7 +476,7 @@ void OnSaveLoad::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -498,7 +494,7 @@ void OnCancel::Update() {
     GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     if (!sHint.empty()) {
-        pGUIButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pGUIButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -512,7 +508,7 @@ void OnCancel2::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -527,7 +523,7 @@ void OnCancel3::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
+        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -1134,12 +1130,16 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
     // for (uint i = 0; i < 480; ++i) {  // must be 480 - needs sorting
     //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
     // }
-
-    pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL");
-    pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL");
-    pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL");
-    pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL");
-    pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL");
+    if (!assets->pFontArrus)
+        assets->pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL");
+    if (!assets->pFontLucida)
+        assets->pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL");
+    if (!assets->pFontCreate)
+        assets->pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL");
+    if (!assets->pFontSmallnum)
+        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL");
+    if (!assets->pFontComic)
+        assets->pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL");
 }
 
 static void LoadPartyBuffIcons() {

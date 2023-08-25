@@ -99,7 +99,7 @@ void GUIWindow_Spellbook::openSpellbook() {
 
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_SpellBook_PressTab, 0, Io::InputAction::CharCycle);
     if (pageSpells) {
-        _41D08F_set_keyboard_control_group(pageSpells, 0, 0, 0);
+        setKeyboardControlGroup(pageSpells, true, 0, 0);
     }
 
     if (player.pActiveSkills[CHARACTER_SKILL_FIRE] || engine->config->debug.AllMagic.value())

@@ -68,7 +68,7 @@ struct BuildingDesc {
     uint16_t uOpenTime;
     uint16_t uCloseTime;
     int16_t uExitPicID;
-    MAP_TYPE uExitMapID;
+    MapId uExitMapID;
     int16_t _quest_bit;
     int16_t field_32;
 };

@@ -89,6 +89,8 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
 void Game_OpenLoadGameDialog() {
     engine->_messageQueue->clear();
     pGUIWindow_CurrentMenu->Release();
+    // TODO(captainurist): uncommenting delete pGUIWindow_CurrentMenu calls in this file leads to crashes, wtf?
+    // delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
     engine->_statusBar->clearEvent();
     // LoadUI_Load(1);
@@ -180,6 +182,7 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 pGUIWindow_CurrentMenu->Release();
+                // delete pGUIWindow_CurrentMenu;
                 engine->_statusBar->clearEvent();
                 current_screen_type = SCREEN_SAVEGAME;
                 pGUIWindow_CurrentMenu = new GUIWindow_Save();
@@ -209,6 +212,7 @@ void Menu::EventLoop() {
                 engine->_messageQueue->clear();
 
                 pGUIWindow_CurrentMenu->Release();
+                // delete pGUIWindow_CurrentMenu;
                 pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
 
                 current_screen_type = SCREEN_OPTIONS;
@@ -221,6 +225,7 @@ void Menu::EventLoop() {
                 engine->_messageQueue->clear();
 
                 pGUIWindow_CurrentMenu->Release();
+                // delete pGUIWindow_CurrentMenu;
                 pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
 
                 current_screen_type = SCREEN_KEYBOARD_OPTIONS;
@@ -264,6 +269,7 @@ void Menu::EventLoop() {
                 engine->_messageQueue->clear();
 
                 pGUIWindow_CurrentMenu->Release();
+                // delete pGUIWindow_CurrentMenu;
                 pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();
                 current_screen_type = SCREEN_VIDEO_OPTIONS;
 
@@ -409,15 +415,18 @@ void Menu::EventLoop() {
                     // crt_deconstruct_ptr_6A0118();
 
                     pGUIWindow_CurrentMenu->Release();
+                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == SCREEN_OPTIONS) {
                     options_menu_skin.Release();
                     pGUIWindow_CurrentMenu->Release();
+                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
                     pGUIWindow_CurrentMenu->Release();
+                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
@@ -449,6 +458,7 @@ void Menu::EventLoop() {
                     }
 
                     pGUIWindow_CurrentMenu->Release();
+                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
@@ -497,6 +507,7 @@ void Menu::MenuLoop() {
     }
 
     pGUIWindow_CurrentMenu->Release();
+    // delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
 
     if (gamma_preview_image) {

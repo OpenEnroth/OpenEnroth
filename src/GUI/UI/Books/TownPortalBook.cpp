@@ -43,7 +43,7 @@ struct TownPortalData {
     Vec3i pos;
     int viewYaw;
     int viewPitch;
-    MAP_TYPE mapInfoID;
+    MapId mapInfoID;
     int qBit;
 };
 
@@ -123,7 +123,7 @@ void GUIWindow_TownPortalBook::Update() {
         }
     }
 
-    townPortalWindow.DrawTitleText(pFontBookTitle, 0, 22, colorTable.White, localization->GetString(LSTR_TOWN_PORTAL), 3);
+    townPortalWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, localization->GetString(LSTR_TOWN_PORTAL), 3);
 }
 
 void GUIWindow_TownPortalBook::clickTown(int townId) {

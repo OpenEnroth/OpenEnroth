@@ -35,7 +35,7 @@
 #include "Utility/IndexedArray.h"
 
 struct ITEM_VARIATION {
-    ITEM_TREASURE_LEVEL treasure_level;
+    ItemTreasureLevel treasure_level;
     std::array<uint16_t, 4> item_class;
 };
 
@@ -143,7 +143,7 @@ static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST
     {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }}
 }};
 
-static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandart = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandart = {{
     {HOUSE_MAGE_EMERALD_ISLE,    ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGE_HARMONDALE,      ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGE_ERATHIA,         ITEM_TREASURE_LEVEL_2},
@@ -159,7 +159,7 @@ static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE
     {HOUSE_MAGE_41,              ITEM_TREASURE_LEVEL_2}
 }};
 
-static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationSpecial = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationSpecial = {{
     {HOUSE_MAGE_EMERALD_ISLE,    ITEM_TREASURE_LEVEL_2},
     {HOUSE_MAGE_HARMONDALE,      ITEM_TREASURE_LEVEL_2},
     {HOUSE_MAGE_ERATHIA,         ITEM_TREASURE_LEVEL_3},
@@ -175,7 +175,7 @@ static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE
     {HOUSE_MAGE_41,              ITEM_TREASURE_LEVEL_3}
 }};
 
-static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandart = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandart = {{
     {HOUSE_ALCHEMIST_EMERALD_ISLE,      ITEM_TREASURE_LEVEL_1},
     {HOUSE_ALCHEMIST_HARMONDALE,        ITEM_TREASURE_LEVEL_1},
     {HOUSE_ALCHEMIST_ERATHIA,           ITEM_TREASURE_LEVEL_2},
@@ -190,7 +190,7 @@ static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOU
     {HOUSE_ALCHEMIST_53,                ITEM_TREASURE_LEVEL_2}
 }};
 
-static constexpr IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationSpecial = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationSpecial = {{
     {HOUSE_ALCHEMIST_EMERALD_ISLE,      ITEM_TREASURE_LEVEL_2},
     {HOUSE_ALCHEMIST_HARMONDALE,        ITEM_TREASURE_LEVEL_2},
     {HOUSE_ALCHEMIST_ERATHIA,           ITEM_TREASURE_LEVEL_3},
@@ -298,8 +298,8 @@ void GUIWindow_Shop::sellDialogue() {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 3);
             std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), 3);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
     }
 }
@@ -335,8 +335,8 @@ void GUIWindow_Shop::identifyDialogue() {
                 str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, item, houseId(), 4);
             }
 
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
     }
 }
@@ -367,8 +367,8 @@ void GUIWindow_Shop::repairDialogue() {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 5);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), 5);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
     }
 }
@@ -427,8 +427,8 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), 2);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-                            dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
                         }
                     }
                 }
@@ -513,8 +513,8 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), 2);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-                            dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
                         }
                     }
                 }
@@ -616,8 +616,8 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), 2);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-                            dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
                         }
                     }
                 }
@@ -648,7 +648,7 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         int itemClass;
-        ITEM_TREASURE_LEVEL treasureLvl;
+        ItemTreasureLevel treasureLvl;
 
         if (i >= 4) {
             treasureLvl = variationBottom.treasure_level;
@@ -666,7 +666,7 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
+    ItemTreasureLevel treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         pItemTable->generateItem(treasureLvl, 22, &itemArray[i]);
@@ -678,7 +678,7 @@ void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
+    ItemTreasureLevel treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
     int bottomRowItemClass = isSpecial ? 44 : 45;
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
@@ -1139,7 +1139,7 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         default:
-            assert(false);
+            // Do nothing
             break;
     }
 }

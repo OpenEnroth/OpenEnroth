@@ -8,6 +8,7 @@ void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID);  // idb
 void buttonbox(int x, int y, const char *text, int col);
+void GameUI_handleHintMessage(UIMessageType type, int param);
 
 class GUIWindow_GameMenu : public GUIWindow {
  public:

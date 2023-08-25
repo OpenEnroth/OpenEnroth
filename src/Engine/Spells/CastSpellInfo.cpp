@@ -648,6 +648,11 @@ void CastSpellInfoHelpers::castSpell() {
                         GameTime spell_duration;
 
                         switch (spell_mastery) {
+                            case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 have different durations
+                                // the only way to cast novice charm in MM7 is Wand of Charms
+                                assert(pCastSpell->overrideSkillValue && "SPELL_MIND_CHARM override");
+                                spell_duration = GameTime::FromMinutes(5 * spell_level);
+                                break;
                             case CHARACTER_SKILL_MASTERY_EXPERT:
                                 spell_duration = GameTime::FromMinutes(5 * spell_level);
                                 break;
@@ -658,7 +663,6 @@ void CastSpellInfoHelpers::castSpell() {
                                 // Time must be infinite until the player leaves the map
                                 spell_duration = GameTime::FromYears(1);
                                 break;
-                            case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 have different durations
                             default:
                                 assert(false);
                         }

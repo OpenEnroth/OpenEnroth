@@ -53,7 +53,7 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
 
     items.emplace_back("NULL", "");
 
-    for(ITEM_TYPE i : itemTable.pItems.indices()) {
+    for(ItemId i : itemTable.pItems.indices()) {
         const ItemDesc &desc = itemTable.pItems[i];
         std::string icon = desc.iconName;
         std::string name = desc.name;
@@ -178,7 +178,7 @@ int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
     std::vector<std::string> maps;
 
     maps.emplace_back("INVALID");
-    for (MAP_TYPE i : mapStats.pInfos.indices())
+    for (MapId i : mapStats.pInfos.indices())
         maps.emplace_back(mapIdEnumName(mapStats.pInfos[i]));
 
     for (size_t i = 0; i < maps.size(); i++)

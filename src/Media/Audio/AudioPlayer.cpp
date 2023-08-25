@@ -48,7 +48,7 @@ struct SoundInfo_MM6;
 struct SoundInfo_MM7;
 
 int sLastTrackLengthMS;
-AudioPlayer *pAudioPlayer;
+std::unique_ptr<AudioPlayer> pAudioPlayer;
 SoundList *pSoundList;
 
 std::array<float, 10> pSoundVolumeLevels = {
@@ -77,6 +77,11 @@ void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
 }
 
 extern OpenALSoundProvider *provider;
+
+AudioPlayer::~AudioPlayer() {
+    // TODO(captainurist): actually get rid of this global
+    mapSounds.clear();
+}
 
 void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
     if (currentMusicTrack == eTrack) {
@@ -583,7 +588,7 @@ void AudioPlayer::Initialize() {
 }
 
 void PlayLevelMusic() {
-    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         pAudioPlayer->MusicPlayTrack((MusicID)pMapStats->pInfos[map_id].uRedbookTrackID);
     }

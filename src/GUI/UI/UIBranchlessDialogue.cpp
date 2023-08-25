@@ -1,8 +1,5 @@
 #include "UIBranchlessDialogue.h"
 
-#include <memory>
-#include <string>
-
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -40,7 +37,7 @@ void GUIWindow_BranchlessDialogue::Release() {
 }
 
 void GUIWindow_BranchlessDialogue::Update() {
-    GUIFont *pFont = pFontArrus;
+    GUIFont *pFont = assets->pFontArrus.get();
 
     if (current_npc_text.length() > 0 && branchless_dialogue_str.empty())
         branchless_dialogue_str = current_npc_text;
@@ -48,10 +45,10 @@ void GUIWindow_BranchlessDialogue::Update() {
     GUIWindow BranchlessDlg_window;
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
     BranchlessDlg_window.uFrameZ = 452;
-    int pTextHeight = pFontArrus->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
+    int pTextHeight = assets->pFontArrus->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8) {
-        pFont = pFontCreate;
-        pTextHeight = pFontCreate->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
+        pFont = assets->pFontCreate.get();
+        pTextHeight = assets->pFontCreate->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
     }
 
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);

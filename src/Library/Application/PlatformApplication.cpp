@@ -1,7 +1,6 @@
 #include "PlatformApplication.h"
 
 #include <cassert>
-#include <utility>
 
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
@@ -89,10 +88,10 @@ PlatformApplication::PlatformApplication(Platform *platform) : _platform(platfor
 
 PlatformApplication::~PlatformApplication() {
     // First call the routines in reverse order - this should uninstall everything.
-    for (const auto &routine : reversed(_cleanupRoutines))
+    for (const auto &routine : _cleanupRoutines | std::views::reverse)
         routine();
 
-    // User should uninstall all components that platform application doesn't own before destroying it.
+    // User should uninstall all components that platform application doesn't own before destroying the platform application.
     assert(_componentByType.empty());
 
     // Then destroy every component that we own.

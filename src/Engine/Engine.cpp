@@ -17,6 +17,7 @@
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -262,25 +263,25 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
+            pPrimaryWindow->DrawText(assets->pFontArrus.get(), {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
         render->drawcalls = 0;
 
 
         int debug_info_offset = 16;
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party position:         {} {} {}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
         debug_info_offset += 16;
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White,
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
                                  fmt::format("Party yaw/pitch:     {} {}", pParty->_viewYaw, pParty->_viewPitch));
         debug_info_offset += 16;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset }, colorTable.White,
+            pPrimaryWindow->DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
                                      fmt::format("Party Sector ID:       {}/{}\n", sector_id, pIndoor->pSectors.size()));
             debug_info_offset += 16;
         }
@@ -307,7 +308,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset}, colorTable.White, floor_level_str);
+        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White, floor_level_str);
     }
 }
 
@@ -362,40 +363,27 @@ void Engine::StackPartyTorchLight() {
 }
 
 //----- (0044EEA7) --------------------------------------------------------
-bool Engine::_44EEA7() {  // cursor picking - particle update
-    particle_engine->UpdateParticles();
-
+void Engine::filterPickMouse() {  // cursor picking
     float depth = 0.0f;
     Vis_SelectionFilter *sprite_filter = nullptr;
     Vis_SelectionFilter *face_filter = nullptr;
 
     if (isHoldingMouseRightButton()) {
         face_filter = &vis_face_filter;
-        sprite_filter = &vis_sprite_filter_2;
+        sprite_filter = &vis_allsprites_filter;
         depth = pCamera3D->GetMouseInfoDepth();
     } else {
         if (engine->IsTargetingMode()) {
             face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_filter_1;
+            sprite_filter = &vis_sprite_targets_filter;
         } else {
             face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_filter_4;
+            sprite_filter = &vis_items_filter;
         }
         depth = config->gameplay.RangedAttackDepth.value();
     }
     Pointi pt = mouse->GetCursorPos();
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-
-
-    // decal reset but actually want bloodsplat reset
-    // decal_builder->DecalsCount = 0;
-    // decal_builder->curent_decal_id = 0;
-    decal_builder->bloodsplat_container->uNumBloodsplats = 0;
-
-    if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
-    }
-    return true;
 }
 
 //----- (004645FA) --------------------------------------------------------
@@ -541,6 +529,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
 Engine::~Engine() {
     delete pStru10Instance;
     delete pCamera3D;
+    pAudioPlayer.reset();
 }
 
 void Engine::LogEngineBuildInfo() {
@@ -668,7 +657,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // char *v3;         // eax@1
-    MAP_TYPE v5;  // eax@3
+    MapId v5;  // eax@3
 
     // v9 = bLoading;
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
@@ -929,7 +918,7 @@ void MM6_Initialize() {
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y;
 
-    pAudioPlayer = new AudioPlayer;
+    pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
     pODMRenderParams->outdoor_no_mist = 0;
@@ -1001,6 +990,11 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
+    if (assets->winnerCert) {
+        assets->winnerCert->Release();
+        assets->winnerCert = nullptr;
+    }
+
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
@@ -1031,7 +1025,7 @@ void Engine::_461103_load_level_sub() {
     int16_t v14;     // ax@41
     int v17;  // [sp+14h] [bp-48h]@3
     // int v18;  // [sp+14h] [bp-48h]@23
-    MAP_TYPE v19;         // [sp+18h] [bp-44h]@1
+    MapId v19;         // [sp+18h] [bp-44h]@1
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
@@ -1126,7 +1120,7 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.z = 100;
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
-    uLevel_StartingPointType = MapStartPoint_Party;
+    uLevel_StartingPointType = MAP_START_POINT_PARTY;
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }
@@ -1647,7 +1641,7 @@ void RegeneratePartyHealthMana() {
 
             // HP/SP regeneration and HP deterioration
             for (Character &character : pParty->pCharacters) {
-                for (ITEM_SLOT idx : allItemSlots()) {
+                for (ItemSlot idx : allItemSlots()) {
                     bool recovery_HP = false;
                     bool decrease_HP = false;
                     bool recovery_SP = false;
@@ -1849,6 +1843,6 @@ void TeleportToNWCDungeon() {
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-    Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
+    Transition_StopSound_Autosave("nwc.blv", MAP_START_POINT_PARTY);
     current_screen_type = SCREEN_GAME;
 }

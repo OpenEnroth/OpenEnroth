@@ -78,7 +78,11 @@ class GUIWindow {
     void DrawShops_next_generation_time_string(GameTime time);
     void DrawMessageBox(bool inside_game_viewport);
     GUIButton *GetControl(unsigned int uID);
-    void _41D08F_set_keyboard_control_group(int num_buttons, int a3, int a4, int a5);
+
+    /**
+     * @offset 0x41D08F
+     */
+    void setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int selectStep, int initialPosition);
 
     virtual void Update() {}
     virtual void Release();
@@ -97,8 +101,8 @@ class GUIWindow {
     int field_24 = 0;
     int pNumPresenceButton = 0;
     int pCurrentPosActiveItem = 0;
-    int field_30 = 0;
-    int field_34 = 0;
+    bool _msgOnKeyboardSelect = true;
+    int _selectStep = 0;
     int pStartingPosActiveItem = 0;
     WindowInputStatus keyboard_input_status = WINDOW_INPUT_NONE;
     bool receives_keyboard_input = false;
@@ -253,7 +257,7 @@ void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
-void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
+void CreateMsgScrollWindow(ItemId mscroll_id);
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
 void DialogueEnding();

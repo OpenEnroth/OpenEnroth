@@ -116,7 +116,7 @@ static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKIL
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
-static constexpr IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
+static constexpr IndexedArray<ItemSlot, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
     {EQUIP_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
     {EQUIP_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
     {EQUIP_BOW,            ITEM_SLOT_BOW},
@@ -143,12 +143,83 @@ static constexpr IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBo
 static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
                                         25, 20, 20, 0,  0,  0};
 static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
-static constexpr unsigned char pBaseHealthPerLevelByClass[36] = {
-    5, 7, 9, 9, 4, 6, 8, 8, 5, 6, 8, 8, 4, 5, 6, 6, 3, 4,
-    6, 6, 4, 5, 6, 6, 2, 3, 4, 4, 2, 3, 4, 4, 2, 3, 3, 3};
-static constexpr unsigned char pBaseManaPerLevelByClass[36] = {
-    0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 3, 3, 1, 2,
-    3, 3, 0, 2, 3, 3, 3, 4, 5, 5, 3, 4, 5, 5, 3, 4, 6, 6};
+
+static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> pBaseHealthPerLevelByClass = {
+    {CHARACTER_CLASS_KNIGHT,            5},
+    {CHARACTER_CLASS_CAVALIER,          7},
+    {CHARACTER_CLASS_CHAMPION,          9},
+    {CHARACTER_CLASS_BLACK_KNIGHT,      9},
+    {CHARACTER_CLASS_THIEF,             4},
+    {CHARACTER_CLASS_ROGUE,             6},
+    {CHARACTER_CLASS_SPY,               8},
+    {CHARACTER_CLASS_ASSASSIN,          8},
+    {CHARACTER_CLASS_MONK,              5},
+    {CHARACTER_CLASS_INITIATE,          6},
+    {CHARACTER_CLASS_MASTER,            8},
+    {CHARACTER_CLASS_NINJA,             8},
+    {CHARACTER_CLASS_PALADIN,           4},
+    {CHARACTER_CLASS_CRUSADER,          5},
+    {CHARACTER_CLASS_HERO,              6},
+    {CHARACTER_CLASS_VILLIAN,           6},
+    {CHARACTER_CLASS_ARCHER,            3},
+    {CHARACTER_CLASS_WARRIOR_MAGE,      4},
+    {CHARACTER_CLASS_MASTER_ARCHER,     6},
+    {CHARACTER_CLASS_SNIPER,            6},
+    {CHARACTER_CLASS_RANGER,            4},
+    {CHARACTER_CLASS_HUNTER,            5},
+    {CHARACTER_CLASS_RANGER_LORD,       6},
+    {CHARACTER_CLASS_BOUNTY_HUNTER,     6},
+    {CHARACTER_CLASS_CLERIC,            2},
+    {CHARACTER_CLASS_PRIEST,            3},
+    {CHARACTER_CLASS_PRIEST_OF_SUN,     4},
+    {CHARACTER_CLASS_PRIEST_OF_MOON,    4},
+    {CHARACTER_CLASS_DRUID,             2},
+    {CHARACTER_CLASS_GREAT_DRUID,       3},
+    {CHARACTER_CLASS_ARCH_DRUID,        4},
+    {CHARACTER_CLASS_WARLOCK,           4},
+    {CHARACTER_CLASS_SORCERER,          2},
+    {CHARACTER_CLASS_WIZARD,            3},
+    {CHARACTER_CLASS_ARCHAMGE,          3},
+    {CHARACTER_CLASS_LICH,              3}
+};
+static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> pBaseManaPerLevelByClass = {
+    {CHARACTER_CLASS_KNIGHT,            0},
+    {CHARACTER_CLASS_CAVALIER,          0},
+    {CHARACTER_CLASS_CHAMPION,          0},
+    {CHARACTER_CLASS_BLACK_KNIGHT,      0},
+    {CHARACTER_CLASS_THIEF,             0},
+    {CHARACTER_CLASS_ROGUE,             1},
+    {CHARACTER_CLASS_SPY,               1},
+    {CHARACTER_CLASS_ASSASSIN,          1},
+    {CHARACTER_CLASS_MONK,              0},
+    {CHARACTER_CLASS_INITIATE,          1},
+    {CHARACTER_CLASS_MASTER,            1},
+    {CHARACTER_CLASS_NINJA,             1},
+    {CHARACTER_CLASS_PALADIN,           1},
+    {CHARACTER_CLASS_CRUSADER,          2},
+    {CHARACTER_CLASS_HERO,              3},
+    {CHARACTER_CLASS_VILLIAN,           3},
+    {CHARACTER_CLASS_ARCHER,            1},
+    {CHARACTER_CLASS_WARRIOR_MAGE,      2},
+    {CHARACTER_CLASS_MASTER_ARCHER,     3},
+    {CHARACTER_CLASS_SNIPER,            3},
+    {CHARACTER_CLASS_RANGER,            0},
+    {CHARACTER_CLASS_HUNTER,            2},
+    {CHARACTER_CLASS_RANGER_LORD,       3},
+    {CHARACTER_CLASS_BOUNTY_HUNTER,     3},
+    {CHARACTER_CLASS_CLERIC,            3},
+    {CHARACTER_CLASS_PRIEST,            4},
+    {CHARACTER_CLASS_PRIEST_OF_SUN,     5},
+    {CHARACTER_CLASS_PRIEST_OF_MOON,    5},
+    {CHARACTER_CLASS_DRUID,             3},
+    {CHARACTER_CLASS_GREAT_DRUID,       4},
+    {CHARACTER_CLASS_ARCH_DRUID,        5},
+    {CHARACTER_CLASS_WARLOCK,           5},
+    {CHARACTER_CLASS_SORCERER,          3},
+    {CHARACTER_CLASS_WIZARD,            4},
+    {CHARACTER_CLASS_ARCHAMGE,          6},
+    {CHARACTER_CLASS_LICH,              6}
+};
 
 static constexpr unsigned char pConditionAttributeModifier[7][19] = {
     {100, 100, 100, 120, 50, 200, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
@@ -274,10 +345,10 @@ void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HOUSE_
 //----- (0043EEF3) --------------------------------------------------------
 bool Character::NothingOrJustBlastersEquipped() const {
     signed int item_idx;
-    ITEM_TYPE item_id;
+    ItemId item_id;
 
     // scan through all equipped items
-    for (ITEM_SLOT i : allItemSlots()) {
+    for (ItemSlot i : allItemSlots()) {
         item_idx = pEquipment.pIndices[i];
 
         if (item_idx) {
@@ -390,7 +461,7 @@ bool Character::CanSteal() const {
 }
 
 //----- (00492C4E) --------------------------------------------------------
-bool Character::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
+bool Character::CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const {
     switch (uItemID) {
         case ITEM_RELIC_ETHRICS_STAFF:
         case ITEM_RELIC_OLD_NICK:
@@ -559,7 +630,7 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
-bool Character::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
+bool Character::canFitItem(unsigned int uSlot, ItemId uItemID) const {
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
     unsigned int slotWidth = GetSizeInInventorySlots(img->width());
     unsigned int slotHeight = GetSizeInInventorySlots(img->height());
@@ -590,7 +661,7 @@ int Character::findFreeInventoryListSlot() const {
 }
 
 //----- (00492600) --------------------------------------------------------
-int Character::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
+int Character::CreateItemInInventory(unsigned int uSlot, ItemId uItemID) {
     signed int freeSlot = findFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
@@ -619,19 +690,19 @@ int Character::HasSkill(CharacterSkillType skill) const {
 }
 
 //----- (00492745) --------------------------------------------------------
-void Character::WearItem(ITEM_TYPE uItemID) {
+void Character::WearItem(ItemId uItemID) {
     int item_indx = findFreeInventoryListSlot();
 
     if (item_indx != -1) {
         pInventoryItemList[item_indx].uItemID = uItemID;
-        ITEM_SLOT item_body_anch = pEquipTypeToBodyAnchor[pItemTable->pItems[uItemID].uEquipType];
+        ItemSlot item_body_anch = pEquipTypeToBodyAnchor[pItemTable->pItems[uItemID].uEquipType];
         pEquipment.pIndices[item_body_anch] = item_indx + 1;
         pInventoryItemList[item_indx].uBodyAnchor = item_body_anch;
     }
 }
 
 //----- (004927A8) --------------------------------------------------------
-int Character::AddItem(int index, ITEM_TYPE uItemID) {
+int Character::AddItem(int index, ItemId uItemID) {
     if (uItemID == ITEM_NULL) {
         return 0;
     }
@@ -698,7 +769,7 @@ int Character::CreateItemInInventory2(unsigned int index,
 
 //----- (0049298B) --------------------------------------------------------
 void Character::PutItemArInventoryIndex(
-    ITEM_TYPE uItemID, int itemListPos,
+    ItemId uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
@@ -1016,7 +1087,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             ItemGen *mainHandItemGen = this->GetMainHandItem();
-            ITEM_TYPE itemId = mainHandItemGen->uItemID;
+            ItemId itemId = mainHandItemGen->uItemID;
             bool addOneDice = false;
             if (pItemTable->pItems[itemId].uSkillType == CHARACTER_SKILL_SPEAR &&
                 !this->pEquipment
@@ -1061,7 +1132,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                                unsigned int uTargetActorID,
                                                bool addOneDice) {
-    ITEM_TYPE itemId = weapon->uItemID;
+    ItemId itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
 
     if (addOneDice) diceCount++;
@@ -1354,12 +1425,12 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Character::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const {
+ITEM_EQUIP_TYPE Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
 //----- (0048D651) --------------------------------------------------------
-CharacterSkillType Character::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const {
+CharacterSkillType Character::GetEquippedItemSkillType(ItemSlot uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
 }
 
@@ -1371,7 +1442,7 @@ bool Character::IsUnarmed() const {
 }
 
 //----- (0048D6AA) --------------------------------------------------------
-bool Character::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
+bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
     uint i = pEquipment.pIndices[uEquipIndex];
     if (i)
         return !pOwnItems[i - 1].IsBroken();
@@ -1381,7 +1452,7 @@ bool Character::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
 
 //----- (0048D6D0) --------------------------------------------------------
 bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
-    for (ITEM_SLOT i : allItemSlots()) {  // search over equipped inventory
+    for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
             return true;  // check item equipped and is enchanted
@@ -1391,14 +1462,14 @@ bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Character::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
+bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
     // check aginst specific item and slot
     assert(equip_type != ITEM_SLOT_INVALID && "Invalid item slot passed to WearsItem");
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Character::wearsItemAnywhere(ITEM_TYPE item_id) const {
-    for (ITEM_SLOT i : allItemSlots())
+bool Character::wearsItemAnywhere(ItemId item_id) const {
+    for (ItemSlot i : allItemSlots())
         if (WearsItem(item_id, i))
             return true;
     return false;
@@ -1504,7 +1575,7 @@ int Character::StealFromActor(
             tempItem.Reset();
 
             int randslot = grng->random(4);
-            ITEM_TYPE carriedItemId = actroPtr->carriedItemId;
+            ItemId carriedItemId = actroPtr->carriedItemId;
 
             // check if we have an item to steal
             if (carriedItemId != ITEM_NULL || actroPtr->items[randslot].uItemID != ITEM_NULL && !actroPtr->items[randslot].isGold()) {
@@ -1675,7 +1746,7 @@ int Character::ReceiveSpecialAttackEffect(
             break;
 
         case SPECIAL_ATTACK_BREAK_ARMOR:
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_ARMOUR)
                         itemstobreaklist[itemstobreakcounter++] =
@@ -1698,7 +1769,7 @@ int Character::ReceiveSpecialAttackEffect(
             break;
 
         case SPECIAL_ATTACK_BREAK_WEAPON:
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_BOW)
                         itemstobreaklist[itemstobreakcounter++] =
@@ -2089,7 +2160,7 @@ int Character::GetMaxHealth() const {
     int healthbylevel =
         pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_HEALTH) + healthbylevel;
-    int maxhealth = uFullHealthBonus + pBaseHealthByClass[classType / 4] +
+    int maxhealth = uFullHealthBonus + pBaseHealthByClass[std::to_underlying(classType) / 4] +
                     GetSkillBonus(CHARACTER_ATTRIBUTE_HEALTH) + itembonus;
 
     if (maxhealth < 0)  // min zero
@@ -2159,7 +2230,7 @@ int Character::GetMaxMana() const {
     int manabylevel =
         pBaseManaPerLevelByClass[classType] * (GetActualLevel() + statbonus);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MANA) + manabylevel;
-    int maxmana = uFullManaBonus + pBaseManaByClass[classType / 4] +
+    int maxmana = uFullManaBonus + pBaseManaByClass[std::to_underlying(classType) / 4] +
                   GetSkillBonus(CHARACTER_ATTRIBUTE_MANA) + itembonus;
 
     if (maxmana < 0)  // min of 0
@@ -2358,7 +2429,7 @@ int Character::GetParameterBonus(int player_parameter) const {
 
 //----- (0048EA46) --------------------------------------------------------
 int Character::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
-    for (ITEM_SLOT i : allItemSlots()) {
+    for (ItemSlot i : allItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
                 if (GetNthEquippedIndexItem(i)->special_enchantment ==
@@ -2612,7 +2683,7 @@ int Character::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDm
         case CHARACTER_ATTRIBUTE_SKILL_BOW:
         case CHARACTER_ATTRIBUTE_SKILL_SHIELD:
         case CHARACTER_ATTRIBUTE_SKILL_LEARNING:
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     currEquippedItem = GetNthEquippedIndexItem(i);
                     if (attr == CHARACTER_ATTRIBUTE_AC_BONUS) {
@@ -2934,7 +3005,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             bool wearingLeather = false;
             unsigned int ACSum = 0;
 
-            for (ITEM_SLOT j : allItemSlots()) {
+            for (ItemSlot j : allItemSlots()) {
                 const ItemGen *currItem = GetNthEquippedIndexItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
                     CharacterSkillType itemSkillType =
@@ -3003,7 +3074,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                     CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
-            for (ITEM_SLOT i : allItemSlots()) {  // ?? what eh check behaviour
+            for (ItemSlot i : allItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItem = GetNthEquippedIndexItem(i);
                     if (currItem->isMeleeWeapon()) {
@@ -3026,7 +3097,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             break;
 
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     if (currItemPtr->isWeapon()) {
@@ -3054,7 +3125,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
                 return multiplier * unarmedSkillLevel;
             }
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
@@ -3274,7 +3345,7 @@ void Character::Reset(CharacterClassType cls) {
     uQuickSpell = SPELL_NONE;
 
     for (CharacterSkillType i : allSkills()) {
-        if (pSkillAvailabilityPerClass[classType / 4][i] != CLASS_SKILL_PRIMARY)
+        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != CLASS_SKILL_PRIMARY)
             continue;
 
         setSkillValue(i, CombinedSkillValue::novice());
@@ -3314,7 +3385,7 @@ CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
     counter = 0;
     for (CharacterSkillType i : allVisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
-            pSkillAvailabilityPerClass[classType / 4][i] == requiredValue) {
+            pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] == requiredValue) {
             if (counter == order - offset) return i;
             ++counter;
         }
@@ -4089,7 +4160,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Sex:
             return (pValue == this->uSex);
         case VAR_Class:
-            return (pValue == this->classType);
+            return (pValue == std::to_underlying(this->classType));
         case VAR_Race:
             return pValue == GetRace();
         case VAR_CurrentHP:
@@ -4119,11 +4190,11 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
             for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                if (pInventoryItemList[i].uItemID == ITEM_TYPE(pValue)) {
+                if (pInventoryItemList[i].uItemID == ItemId(pValue)) {
                     return true;
                 }
             }
-            return pParty->pPickedItem.uItemID == ITEM_TYPE(pValue);
+            return pParty->pPickedItem.uItemID == ItemId(pValue);
 
         case VAR_Hour:
             return pParty->GetPlayingTime().GetHoursOfDay() == pValue;
@@ -4385,7 +4456,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             v4 = 0;
             for (Character &character : pParty->pCharacters) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
-                    ITEM_TYPE itemId;
+                    ItemId itemId;
 
                     if (invPos < INVENTORY_SLOT_COUNT) {
                         itemId = character.pInventoryItemList[invPos].uItemID;
@@ -4460,9 +4531,9 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i) &&
-                    GetNthEquippedIndexItem(i)->uItemID == ITEM_TYPE(pValue)) {
+                    GetNthEquippedIndexItem(i)->uItemID == ItemId(pValue)) {
                     return true;
                 }
             }
@@ -4592,11 +4663,11 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
-            item.uItemID = ITEM_TYPE(var_value);
+            item.uItemID = ItemId(var_value);
             item.uAttributes = ITEM_IDENTIFIED;
             pParty->setHoldingItem(&item);
-            if (isSpawnableArtifact(ITEM_TYPE(var_value)))
-                pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = true;
+            if (isSpawnableArtifact(ItemId(var_value)))
+                pParty->pIsArtifactFound[ItemId(var_value)] = true;
             return;
         case VAR_FixedGold:
             pParty->SetGold(var_value);
@@ -5202,10 +5273,10 @@ void Character::AddVariable(VariableType var_type, signed int val) {
         case VAR_PlayerItemInHands:
             item.Reset();
             item.uAttributes = ITEM_IDENTIFIED;
-            item.uItemID = ITEM_TYPE(val);
-            if (isSpawnableArtifact(ITEM_TYPE(val))) {
-                pParty->pIsArtifactFound[ITEM_TYPE(val)] = true;
-            } else if (isWand(ITEM_TYPE(val))) {
+            item.uItemID = ItemId(val);
+            if (isSpawnableArtifact(ItemId(val))) {
+                pParty->pIsArtifactFound[ItemId(val)] = true;
+            } else if (isWand(ItemId(val))) {
                 item.uNumCharges = grng->random(6) + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
@@ -5713,12 +5784,12 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             this->playReaction(SPEECH_AWARD_GOT);
             return;
         case VAR_PlayerItemInHands:
-            for (ITEM_SLOT i : allItemSlots()) {
+            for (ItemSlot i : allItemSlots()) {
                 int id_ = this->pEquipment.pIndices[i];
                 if (id_ > 0) {
                     if (this->pInventoryItemList[this->pEquipment.pIndices[i] -
                                                  1]
-                            .uItemID == ITEM_TYPE(pValue)) {
+                            .uItemID == ItemId(pValue)) {
                         this->pEquipment.pIndices[i] = 0;
                     }
                 }
@@ -5726,13 +5797,13 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
                 int id_ = this->pInventoryMatrix[i];
                 if (id_ > 0) {
-                    if (this->pInventoryItemList[id_ - 1].uItemID == ITEM_TYPE(pValue)) {
+                    if (this->pInventoryItemList[id_ - 1].uItemID == ItemId(pValue)) {
                         RemoveItemAtInventoryIndex(i);
                         return;
                     }
                 }
             }
-            if (pParty->pPickedItem.uItemID == ITEM_TYPE(pValue)) {
+            if (pParty->pPickedItem.uItemID == ItemId(pValue)) {
                 mouse->RemoveHoldingItem();
                 return;
             }
@@ -6232,7 +6303,7 @@ void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkill
 
 //----- (00467E7F) --------------------------------------------------------
 void Character::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
-    ITEM_SLOT itemAnchor;          // ebx@1
+    ItemSlot itemAnchor;          // ebx@1
     int itemInvLocation;     // edx@1
     int freeSlot;            // eax@3
     ItemGen tempPickedItem;  // [sp+Ch] [bp-30h]@1
@@ -6291,7 +6362,7 @@ bool Character::hasUnderwaterSuitEquipped() {
     return true;
 }
 
-bool Character::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
+bool Character::hasItem(ItemId uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
         for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
@@ -6301,7 +6372,7 @@ bool Character::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
                     return true;
             }
         }
-        for (ITEM_SLOT i : allItemSlots()) {
+        for (ItemSlot i : allItemSlots()) {
             if (this->pEquipment.pIndices[i]) {
                 if (this
                         ->pInventoryItemList[this->pEquipment.pIndices[i] - 1]
@@ -6727,7 +6798,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 }
 
 void Character::OnInventoryLeftClick() {
-    ITEM_TYPE pickedItemId;  // esi@12
+    ItemId pickedItemId;  // esi@12
     unsigned int invItemIndex;  // eax@12
     unsigned int itemPos;       // eax@18
     ItemGen tmpItem;            // [sp+Ch] [bp-3Ch]@1
@@ -6998,7 +7069,7 @@ ItemGen *Character::GetNthRingItem(int ringNum) {
 }
 const ItemGen *Character::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(ringSlot(ringNum)); }
 
-ItemGen *Character::GetNthEquippedIndexItem(ITEM_SLOT index) {
+ItemGen *Character::GetNthEquippedIndexItem(ItemSlot index) {
     if (this->pEquipment.pIndices[index] == 0) {
         return nullptr;
     }
@@ -7006,7 +7077,7 @@ ItemGen *Character::GetNthEquippedIndexItem(ITEM_SLOT index) {
     return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
 }
 
-const ItemGen *Character::GetNthEquippedIndexItem(ITEM_SLOT index) const {
+const ItemGen *Character::GetNthEquippedIndexItem(ItemSlot index) const {
     return const_cast<Character *>(this)->GetNthEquippedIndexItem(index);
 }
 
@@ -7089,10 +7160,10 @@ void Character::_42ECB5_CharacterAttacksActor() {
         bow_idx = 0;
 
     // v32 = 0;
-    ITEM_TYPE wand_item_id = ITEM_NULL;
+    ItemId wand_item_id = ITEM_NULL;
     // v33 = 0;
 
-    ITEM_TYPE laser_weapon_item_id = ITEM_NULL;
+    ItemId laser_weapon_item_id = ITEM_NULL;
 
     int main_hand_idx = character->pEquipment.uMainHand;
     if (main_hand_idx) {
@@ -7378,7 +7449,7 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
 //----- (00490EEE) --------------------------------------------------------
 MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
-    ITEM_TYPE idemId;   // edx@1
+    ItemId idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
     float multiplier;      // ST04_4@26
     int price;             // edi@26
@@ -7561,7 +7632,7 @@ void Character::cleanupBeacons() {
 }
 
 bool Character::setBeacon(int index, GameTime duration) {
-    MAP_TYPE file_index = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId file_index = pMapStats->GetMapInfo(pCurrentMapName);
     if (file_index == MAP_INVALID) {
         return false;
     }

@@ -53,70 +53,70 @@ void GUIWindow_QuickReference::Update() {
     // void GameUI_QuickRef_Draw()
 
     Color pTextColor;
-    int pFontHeight = pFontArrus->GetHeight() + 1;
+    int pFontHeight = assets->pFontArrus->GetHeight() + 1;
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_game_quickref_background);
 
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, 18}, colorTable.White, localization->GetString(LSTR_NAME), 60, 0);
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, 47}, colorTable.White, localization->GetString(LSTR_LEVEL), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, 18}, colorTable.White, localization->GetString(LSTR_NAME), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, 47}, colorTable.White, localization->GetString(LSTR_LEVEL), 60, 0);
     int pY = pFontHeight + 47;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_CLASS), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_CLASS), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_HP), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_HP), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_SP), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_SP), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_AC), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_AC), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_ATTACK), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_ATTACK), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_DMG), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_DMG), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_SHOOT), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_SHOOT), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_DMG), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_DMG), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_SKILLS), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_SKILLS), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_POINTS), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_POINTS), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_COND), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_COND), 60, 0);
     pY += pFontHeight;
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_QSPELL), 60, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, pY}, colorTable.White, localization->GetString(LSTR_QSPELL), 60, 0);
 
     int pX = 89;
     for (Character &player : pParty->pCharacters) {
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, 18}, ui_character_header_text_color, player.name, 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, 18}, ui_character_header_text_color, player.name, 84, 0);
 
         pTextColor = (player.GetActualLevel() <= player.GetBaseLevel()) ? player.GetExperienceDisplayColor() : ui_character_bonus_text_color;
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, 47}, pTextColor, fmt::format("{}", player.GetActualLevel()), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, 47}, pTextColor, fmt::format("{}", player.GetActualLevel()), 84, 0);
 
         pY = pFontHeight + 47;
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, localization->GetClassName(player.classType), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, localization->GetClassName(player.classType), 84, 0);
         pY += pFontHeight;
 
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player.health, player.GetMaxHealth());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, fmt::format("{}", player.health), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor, fmt::format("{}", player.health), 84, 0);
         pY += pFontHeight;
 
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player.mana, player.GetMaxMana());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, fmt::format("{}", player.mana), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor, fmt::format("{}", player.mana), 84, 0);
         pY += pFontHeight;
 
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player.GetActualAC(), player.GetBaseAC());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, fmt::format("{}", player.GetActualAC()), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor, fmt::format("{}", player.GetActualAC()), 84, 0);
         pY += pFontHeight;
 
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, fmt::format("{:+}", player.GetActualAttack(false)), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, fmt::format("{:+}", player.GetActualAttack(false)), 84, 0);
         pY += pFontHeight;
 
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, player.GetMeleeDamageString(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, player.GetMeleeDamageString(), 84, 0);
         pY += pFontHeight;
 
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, fmt::format("{:+}", player.GetRangedAttack()), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, fmt::format("{:+}", player.GetRangedAttack()), 84, 0);
         pY += pFontHeight;
 
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, player.GetRangedDamageString(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, player.GetRangedDamageString(), 84, 0);
         pY += pFontHeight;
 
         int pSkillsCount = 0;
@@ -125,19 +125,19 @@ void GUIWindow_QuickReference::Update() {
                 ++pSkillsCount;
             }
         }
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, fmt::format("{}", pSkillsCount), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, fmt::format("{}", pSkillsCount), 84, 0);
         pY += pFontHeight;
 
         pTextColor = player.uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color;
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, fmt::format("{}", player.uSkillPoints), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor, fmt::format("{}", player.uSkillPoints), 84, 0);
         pY += pFontHeight;
 
         pTextColor = GetConditionDrawColor(player.GetMajorConditionIdx());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, localization->GetCharacterConditionName(player.GetMajorConditionIdx()), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor, localization->GetCharacterConditionName(player.GetMajorConditionIdx()), 84, 0);
         pY += pFontHeight;
 
         std::string pText = (player.uQuickSpell != SPELL_NONE) ? pSpellStats->pInfos[player.uQuickSpell].pShortName : localization->GetString(LSTR_NONE);
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, colorTable.White, pText, 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, pText, 84, 0);
 
         pX += 94;
     }
@@ -149,7 +149,7 @@ void GUIWindow_QuickReference::Update() {
     }
 
     std::string rep = fmt::format("{}: {::}{}\f00000", localization->GetString(LSTR_REPUTATION), pTextColor.tag(), GetReputationString(pParty->GetPartyReputation()));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {22, 323}, colorTable.White, rep);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {22, 323}, colorTable.White, rep);
     std::string fame = fmt::format("\r261{}: {}", localization->GetString(LSTR_FAME), pParty->getPartyFame());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 323}, colorTable.White, fame);
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {0, 323}, colorTable.White, fame);
 }

@@ -1,8 +1,5 @@
 #include "FilteringEventHandler.h"
 
-#include <assert.h>
-
-#include "Utility/Reversed.h"
 #include "Utility/ScopeGuard.h"
 #include "PlatformEventFilter.h"
 #include "Platform/PlatformEvents.h"
@@ -11,7 +8,7 @@ void FilteringEventHandler::event(const PlatformEvent *event) {
     _insideEvent = true;
     MM_AT_SCOPE_EXIT(_insideEvent = false);
 
-    for (PlatformEventFilter *filter : reversed(_filters[event->type]))
+    for (PlatformEventFilter *filter : _filters[event->type] | std::views::reverse)
         if (filter->event(event))
             return;
 }

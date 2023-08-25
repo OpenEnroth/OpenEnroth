@@ -44,7 +44,7 @@ TestTape<int> CommonTapeRecorder::totalItemCount() {
     });
 }
 
-TestTape<bool> CommonTapeRecorder::hasItem(ITEM_TYPE item) {
+TestTape<bool> CommonTapeRecorder::hasItem(ItemId item) {
     return custom([item] { return pParty->hasItem(item); });
 }
 
@@ -72,7 +72,7 @@ TestTape<DIALOGUE_TYPE> CommonTapeRecorder::dialogueType() {
     return custom([] {
         if (GUIWindow_Dialogue *dlg = dynamic_cast<GUIWindow_Dialogue*>(pDialogueWindow)) {
             return dlg->getDisplayedDialogueType();
-        } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(pDialogueWindow)) {
+        } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(window_SpeakInHouse)) {
             return dlg->getCurrentDialogue();
         } else {
             return DIALOGUE_NULL;

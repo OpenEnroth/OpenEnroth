@@ -7,6 +7,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIFont.h"
+
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Party.h"
@@ -47,8 +48,8 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     if (_currentDialogue == DIALOGUE_MAIN) {
         if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * window_SpeakInHouse->wData.val]]) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
-            int pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
-            dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[171].pText, 3);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
+            dialog_window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[171].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }

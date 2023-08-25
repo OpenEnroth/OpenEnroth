@@ -11,7 +11,7 @@
  *
  * @see runMapIdCodeGen
  */
-enum class MAP_TYPE : uint32_t {
+enum class MapId : uint32_t {
     MAP_INVALID = 0,
     MAP_EMERALD_ISLAND = 1,
     MAP_HARMONDALE = 2,
@@ -93,7 +93,7 @@ enum class MAP_TYPE : uint32_t {
     MAP_FIRST = MAP_EMERALD_ISLAND,
     MAP_LAST = MAP_ARENA,
 };
-using enum MAP_TYPE;
+using enum MapId;
 
 /**
  * Map treasure / danger level, determines how treasure levels of random items are handled by the game.
@@ -116,11 +116,12 @@ enum class MAP_TREASURE_LEVEL : int8_t {
 };
 using enum MAP_TREASURE_LEVEL;
 
-enum MapStartPoint : uint32_t {
-    MapStartPoint_Party = 0,
-    MapStartPoint_North = 1,
-    MapStartPoint_South = 2,
-    MapStartPoint_East = 3,
-    MapStartPoint_West = 4
+enum class MapStartPoint : uint32_t {
+    MAP_START_POINT_PARTY = 0,
+    MAP_START_POINT_NORTH = 1,
+    MAP_START_POINT_SOUTH = 2,
+    MAP_START_POINT_EAST = 3,
+    MAP_START_POINT_WEST = 4
 };
+using enum MapStartPoint;
 MM_DECLARE_SERIALIZATION_FUNCTIONS(MapStartPoint)

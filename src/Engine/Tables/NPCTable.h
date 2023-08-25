@@ -89,7 +89,7 @@ struct NPCStats {
     void InitializeNPCGroups(const Blob &npcGroups);
     void InitializeNPCNews(const Blob &npcNews);
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
-                                  int uLocation2D, MAP_TYPE uMapId);
+                                  int uLocation2D, MapId uMapId);
     /**
      * @offset 0x476C60
      */

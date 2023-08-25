@@ -187,7 +187,7 @@ void GUIWindow_Travel::Update() {
         travel_window.uFrameX = 493;
         travel_window.uFrameWidth = 126;
         travel_window.uFrameZ = 366;
-        travel_window.DrawTitleText(pFontCreate, 0, 4, colorTable.White, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName, 3);
+        travel_window.DrawTitleText(assets->pFontCreate.get(), 0, 4, colorTable.White, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName, 3);
         travel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         travel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         travel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
@@ -201,7 +201,7 @@ void GUIWindow_Travel::Update() {
         str += "\n \n";
         str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
 
-        travel_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
+        travel_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
     }
 }
 
@@ -213,7 +213,7 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
 
-    MAP_TYPE map_id = mapid;
+    MapId map_id = mapid;
     if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && engine->_teleportPoint.getTeleportMap()[0] != ' ') {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
@@ -222,18 +222,18 @@ void GUIWindow_Transition::Update() {
     transition_window.uFrameX = 493;
     transition_window.uFrameWidth = 126;
     transition_window.uFrameZ = 366;
-    transition_window.DrawTitleText(pFontCreate, 0, 5, colorTable.White, pMapStats->pInfos[map_id].pName, 3);
+    transition_window.DrawTitleText(assets->pFontCreate.get(), 0, 5, colorTable.White, pMapStats->pInfos[map_id].pName, 3);
     transition_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     transition_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     transition_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     if (uCurrentHouse_Animation) {
-        unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], transition_window.uFrameWidth, 0)) / 2 + 101;
-        transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[uCurrentHouse_Animation], 3);
+        unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], transition_window.uFrameWidth, 0)) / 2 + 101;
+        transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, pTransitionStrings[uCurrentHouse_Animation], 3);
     } else if (map_id != MAP_INVALID) {
         std::string str = localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].pName);
-        unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
-        transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, str, 3);
+        unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
+        transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, str, 3);
     } else {
         Error("Troubles in da house");
     }

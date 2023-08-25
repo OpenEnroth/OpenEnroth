@@ -1,14 +1,5 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
-# Setting CMAKE_OSX_DEPLOYMENT_TARGET should go before the project() call.
-if(APPLE)
-    if(CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
-        set (CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "Minimum OS X deployment version" FORCE)
-    else()
-        set (CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment version" FORCE)
-    endif()
-endif()
-
 project("OpenEnroth")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -33,7 +24,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # User-settable options.
-set(OE_BUILD_TESTS OFF CACHE BOOL "Build OpenEnroth tests.")
+set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")

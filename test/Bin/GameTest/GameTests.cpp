@@ -514,13 +514,14 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // Trace enters throne room - resurecta - final task and exits gameover loop.
     auto screenTape = tapes.screen();
     auto mapTape = tapes.map();
+    auto certTape = tapes.custom([] { return assets->winnerCert; });
     test.playTraceFromTestData("issue_408.mm7", "issue_408.json");
     // we should return to game screen
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAMEOVER_WINDOW, SCREEN_GAME));
     // windowlist size should be 1
     EXPECT_EQ(lWindowList.size(), 1);
-    // should have save a winner cert tex
-    EXPECT_NE(assets->winnerCert, nullptr);
+    // should have saved a winner cert tex
+    EXPECT_GT(certTape.size(), 1);
     // we should be teleported to harmondale
     EXPECT_EQ(mapTape, tape("d30.blv", "out02.odm"));
 
@@ -996,14 +997,14 @@ GAME_TEST(Issues, Issue674) {
 GAME_TEST(Issues, Issue675) {
     // generateItem used to generate invalid enchantments outside of the [0, 24] range in some cases.
     // Also, generateItem used to assert.
-    std::initializer_list<ITEM_TREASURE_LEVEL> levels = {
+    std::initializer_list<ItemTreasureLevel> levels = {
         ITEM_TREASURE_LEVEL_1, ITEM_TREASURE_LEVEL_2, ITEM_TREASURE_LEVEL_3,
         ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
     };
 
     ItemGen item;
     for (int i = 0; i < 200; i++) {
-        for (ITEM_TREASURE_LEVEL level : levels) {
+        for (ItemTreasureLevel level : levels) {
             pItemTable->generateItem(level, 0, &item);
             if (isPotion(item.uItemID)) {
                 // For potions, uEnchantmentType is potion strength.
@@ -1620,10 +1621,23 @@ GAME_TEST(Issues, Issue1196) {
 }
 
 GAME_TEST(Issues, Issue1197) {
-    //Assert on party death
+    // Assert on party death
     auto loc = tapes.map();
     auto deaths = tapes.custom([] { return pParty->uNumDeaths; });
     test.playTraceFromTestData("issue_1197.mm7", "issue_1197.json");
     EXPECT_TRUE(loc.contains("out01.odm")); // make it back to emerald
     EXPECT_EQ(deaths.delta(), 1);
+}
+
+GAME_TEST(Issues, Issue1273) {
+    // Assert when clicking on shop video area
+    auto dialogueTape = tapes.dialogueType();
+    test.playTraceFromTestData("issue_1273.mm7", "issue_1273.json");
+    EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN));
+}
+
+GAME_TEST(Issues, Issue1277) {
+    // Crash when press enter on character skills tab
+    test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
+    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
 }

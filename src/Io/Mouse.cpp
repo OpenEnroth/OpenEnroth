@@ -51,7 +51,7 @@ void Io::Mouse::RemoveHoldingItem() {
     }
 }
 
-void Io::Mouse::SetCursorBitmapFromItemID(ITEM_TYPE uItemID) {
+void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
     SetCursorImage(pItemTable->pItems[uItemID].iconName);
 }
 
@@ -361,32 +361,29 @@ bool UI_OnKeyDown(PlatformKey key) {
         }
 
         if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogLeft, key)) {
-            int v12 = win->field_34;
-            if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
-                win->pCurrentPosActiveItem -= v12;
+            if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - win->_selectStep >= 0) {
+                win->pCurrentPosActiveItem -= win->_selectStep;
                 if (current_screen_type == SCREEN_PARTY_CREATION) {
                     pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
-            if (win->field_30 != 0) {
-                break;
+            if (win->_msgOnKeyboardSelect) {
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
-            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             break;
         } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogRight, key)) {
-            int v7 = win->pCurrentPosActiveItem + win->field_34;
-            if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
-                win->pCurrentPosActiveItem = v7;
+            int newPos = win->pCurrentPosActiveItem + win->_selectStep;
+            if (newPos < win->pNumPresenceButton + win->pStartingPosActiveItem) {
+                win->pCurrentPosActiveItem = newPos;
                 if (current_screen_type == SCREEN_PARTY_CREATION) {
                     pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
-            if (win->field_30 != 0) {
-                break;
+            if (win->_msgOnKeyboardSelect) {
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
-            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             break;
         } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogDown, key)) {
             int v17 = win->pStartingPosActiveItem;
@@ -395,9 +392,10 @@ bool UI_OnKeyDown(PlatformKey key) {
                 win->pCurrentPosActiveItem = v17;
             else
                 win->pCurrentPosActiveItem = v18 + 1;
-            if (win->field_30 != 0) return true;
-            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
+            if (win->_msgOnKeyboardSelect) {
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
+            }
             return true;
         } else if (key == PlatformKey::KEY_SELECT) {
             int uClickX;
@@ -435,22 +433,24 @@ bool UI_OnKeyDown(PlatformKey key) {
                     win->pNumPresenceButton + v23 - 1;
             else
                 win->pCurrentPosActiveItem = v22 - 1;
-            if (win->field_30 != 0) return true;
-            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
+            if (win->_msgOnKeyboardSelect) {
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
+            }
             return true;
         } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogSelect, key)) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
         } else if (key == PlatformKey::KEY_PAGEDOWN) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
-            if (win->field_30 != 0) {
+            if (!win->_msgOnKeyboardSelect) {
                 int uClickX;
                 int uClickY;
                 EngineIocContainer::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
                 int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
                 for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {
                     GUIButton *pButton = win->GetControl(v4);
-                    if (!pButton) continue;
+                    if (!pButton)
+                        continue;
                     if (uClickX >= pButton->uX && uClickX <= pButton->uZ &&
                         uClickY >= pButton->uY && uClickY <= pButton->uW) {
                         win->pCurrentPosActiveItem = v4;

@@ -35,10 +35,10 @@ GUICredits::GUICredits() :
     credit_window.uFrameY = 19;
 
     width = 250;
-    height = pFontQuick->GetStringHeight2(pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
+    height = pFontQuick->GetStringHeight2(pFontCChar.get(), text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
     cred_texture = GraphicsImage::Create(width, height);
 
-    pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, text, cred_texture);
+    pFontQuick->DrawCreditsEntry(pFontCChar.get(), 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, text, cred_texture);
 
     render->Update_Texture(cred_texture);
 

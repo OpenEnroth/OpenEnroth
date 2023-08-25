@@ -51,15 +51,15 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : _currentIdx(0), GUIWindow_Book(
     journal_window.uFrameWidth = 360;
     journal_window.uFrameHeight = 264;
     journal_window.uFrameZ = 407;
-    journal_window.uFrameHeight = (pFontBookOnlyShadow->GetHeight() - 3) * 264 / pFontBookOnlyShadow->GetHeight() - 3;
+    journal_window.uFrameHeight = (assets->pFontBookOnlyShadow->GetHeight() - 3) * 264 / assets->pFontBookOnlyShadow->GetHeight() - 3;
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
 
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
         if (pParty->PartyTimes.HistoryEventTimes[i].Valid()) {
             if (!pStorylineText->StoreLine[i + 1].pText.empty()) {
                 std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, 0, HOUSE_INVALID, 0, &pParty->PartyTimes.HistoryEventTimes[i]);
-                int pTextHeight = pFontBookOnlyShadow->CalcTextHeight(str, journal_window.uFrameWidth, 1);
-                int pages = ((pTextHeight - (pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
+                int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.uFrameWidth, 1);
+                int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                 for (int j = 0; j < pages; ++j) {
                     _journalIdx.push_back(i + 1);
                     _journalEntryPage.push_back(j);
@@ -95,7 +95,7 @@ void GUIWindow_JournalBook::Update() {
         journal_window.uFrameZ = game_viewport_z;
         journal_window.uFrameW = game_viewport_w;
         if (!pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle.empty()) {
-            journal_window.DrawTitleText(pFontBookTitle, 0, 22, ui_book_journal_title_color, pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle, 3);
+            journal_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle, 3);
         }
     }
 
@@ -121,8 +121,8 @@ void GUIWindow_JournalBook::Update() {
     if (_journalIdx.size()) {
         std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText,
                                               0, 0, HOUSE_INVALID, 0, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
-        std::string pStringOnPage = pFontBookOnlyShadow->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
-        journal_window.DrawText(pFontBookOnlyShadow, {1, 0}, ui_book_journal_text_color, pStringOnPage,
+        std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
+        journal_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage,
                                 journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
     }
 }

@@ -6,6 +6,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
+
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/IRender.h"
@@ -66,10 +67,10 @@ void GUIWindow_Tavern::arcomageRulesDialogue() {
     std::string str = pNPCTopics[354].pText;
     dialog_window.uFrameWidth = game_viewport_width;
     dialog_window.uFrameZ = 452;
-    int pTextHeight = pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
+    int pTextHeight = assets->pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8) {
-        font = pFontCreate;
-        pTextHeight = pFontCreate->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
+        font = assets->pFontCreate.get();
+        pTextHeight = assets->pFontCreate->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
     } else {
         return; // TODO(captainurist): what's going on here?
     }
@@ -87,10 +88,10 @@ void GUIWindow_Tavern::arcomageVictoryCondDialogue() {
     std::string label = pNPCTopics[wData.val + 247].pText;
     dialog_window.uFrameWidth = game_viewport_width;
     dialog_window.uFrameZ = 452;
-    int pTextHeight = pFontArrus->CalcTextHeight(label, dialog_window.uFrameWidth, 12) + 7;
+    int pTextHeight = assets->pFontArrus->CalcTextHeight(label, dialog_window.uFrameWidth, 12) + 7;
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.White, pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
+    DrawText(assets->pFontArrus.get(), {12, 354 - pTextHeight}, colorTable.White, assets->pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
 }
 
 void GUIWindow_Tavern::arcomageResultDialogue() {
@@ -116,8 +117,8 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
     } else {
         pText = localization->GetString(LSTR_A_TIE);
     }
-    int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(pText, dialog_window.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-    dialog_window.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.PaleCanary, pText, 3);
+    int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(pText, dialog_window.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+    dialog_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.PaleCanary, pText, 3);
 }
 
 void GUIWindow_Tavern::restDialogue() {

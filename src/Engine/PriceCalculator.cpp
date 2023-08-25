@@ -218,10 +218,7 @@ int PriceCalculator::trainingCostForPlayer(const Character *player, const Buildi
     int trainPrice = 0;
     uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
     if (player->experience >= expForNextLevel) { // can train
-        int playerClassTier = player->classType % 4 + 1;
-        if (playerClassTier == 4) {
-            playerClassTier = 3;
-        }
+        int playerClassTier = getClassTier(player->classType);
         int baseTrainPrice = player->uLevel * house.fPriceMultiplier * (double)playerClassTier;
         trainPrice = applyMerchantDiscount(player, baseTrainPrice);
         if (trainPrice < baseTrainPrice / 3) {

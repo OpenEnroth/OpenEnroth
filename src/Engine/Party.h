@@ -79,7 +79,7 @@ struct Party {
     /**
      * @offset 0x493244
      */
-    bool hasItem(ITEM_TYPE uItemID);
+    bool hasItem(ItemId uItemID);
 
     /**
      * @offset 0x4936E1
@@ -209,7 +209,7 @@ struct Party {
      * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
-    bool wearsItemAnywhere(ITEM_TYPE item_id) const {
+    bool wearsItemAnywhere(ItemId item_id) const {
         for (const Character &character : pCharacters) {
             if (character.wearsItemAnywhere(item_id)) {
                 return true;

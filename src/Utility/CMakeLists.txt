@@ -33,7 +33,6 @@ set(UTILITY_HEADERS
         Memory/Blob.h
         Memory/FreeDeleter.h
         Memory/MemSet.h
-        Reversed.h
         ScopeGuard.h
         Segment.h
         Streams/BlobInputStream.h

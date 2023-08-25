@@ -25,9 +25,9 @@ struct ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
-static std::map<ITEM_TYPE, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
+static std::map<ItemId, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
-static std::unordered_map<ITEM_TYPE, ITEM_TYPE> itemTextureIdByItemId = {
+static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
     { ITEM_RELIC_HARECKS_LEATHER,       ITEM_POTION_STONESKIN },
     { ITEM_ARTIFACT_YORUBA,             ITEM_POTION_HARDEN_ITEM },
     { ITEM_ARTIFACT_GOVERNORS_ARMOR,    ITEM_POTION_WATER_BREATHING },
@@ -243,12 +243,12 @@ std::string ItemGen::GetIdentifiedName() {
 //----- (004505CC) --------------------------------------------------------
 bool ItemGen::GenerateArtifact() {
     signed int uNumArtifactsNotFound;  // esi@1
-    std::array<ITEM_TYPE, 32> artifacts_list;
+    std::array<ItemId, 32> artifacts_list;
 
     artifacts_list.fill(ITEM_NULL);
     uNumArtifactsNotFound = 0;
 
-    for (ITEM_TYPE i : allSpawnableArtifacts())
+    for (ItemId i : allSpawnableArtifacts())
         if (!pParty->pIsArtifactFound[i])
             artifacts_list[uNumArtifactsNotFound++] = i;
 
@@ -718,7 +718,7 @@ uint8_t ItemGen::GetDamageMod() const {
 }
 
 //----- (0043C91D) --------------------------------------------------------
-std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
+std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     // For some reason artifact textures are stored using different ids,
     // and textures under original ids simply don't exist.
     int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
@@ -778,7 +778,7 @@ bool ItemGen::MerchandiseTest(HOUSE_ID houseId) {
     return test;
 }
 
-Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
+Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
     // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
     // Original offset was 0x004E8168.
     static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
@@ -795,5 +795,5 @@ Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasure
     int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_VALID);
     int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_FIRST);
     Segment<int> result = mapping[itemIdx][mapIdx];
-    return {ITEM_TREASURE_LEVEL(result.front()), ITEM_TREASURE_LEVEL(result.back())};
+    return {ItemTreasureLevel(result.front()), ItemTreasureLevel(result.back())};
 }
