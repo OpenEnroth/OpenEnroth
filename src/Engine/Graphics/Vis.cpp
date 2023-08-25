@@ -425,7 +425,7 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
 Vis_PIDAndDepth InvalidPIDAndDepth() {
     Vis_PIDAndDepth result;
     result.depth = 0;
-    result.object_pid = Pid();
+    result.pid = Pid();
     return result;
 }
 
@@ -436,7 +436,7 @@ Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
         case VisObjectType_Face: {
             Vis_PIDAndDepth result;
             result.depth = info->depth;
-            result.object_pid = info->object_pid;
+            result.pid = info->object_pid;
             return result;
         }
 

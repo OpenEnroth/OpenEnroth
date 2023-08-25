@@ -288,7 +288,7 @@ void Engine::onGameViewportClick() {
     }
 
     auto pidAndDepth = vis->mousePickedObject();
-    Pid pid = pidAndDepth.object_pid;
+    Pid pid = pidAndDepth.pid;
     int16_t distance = pidAndDepth.depth;
     bool in_range = distance < clickable_distance;
     // else

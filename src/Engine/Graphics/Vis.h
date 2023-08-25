@@ -48,8 +48,8 @@ extern Vis_SelectionFilter vis_decoration_noevent_filter;  // 00F93E6C
 extern Vis_SelectionFilter vis_items_filter;  // static to sub_44EEA7
 
 struct Vis_PIDAndDepth {
-    Pid object_pid;
-    int16_t depth;
+    Pid pid;
+    int depth = 0;
 };
 
 struct Vis_ObjectInfo {
