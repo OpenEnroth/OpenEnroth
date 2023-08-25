@@ -1,6 +1,5 @@
 #include "SdlWindow.h"
 #include <SDL_syswm.h>
-#include <SDL2/_real_SDL_config.h>
 #include <SDL_hints.h>
 #include <SDL_stdinc.h>
 #include <SDL_version.h>
