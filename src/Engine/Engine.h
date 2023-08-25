@@ -23,8 +23,8 @@ class KeyboardInputHandler;
 class KeyboardActionMapping;
 } // namespace Io
 
-struct Vis_SelectionFilter;
 struct Vis_PIDAndDepth;
+struct Vis_SelectionFilter;
 struct Polygon;
 class DecalBuilder;
 class BloodsplatContainer;
@@ -93,9 +93,13 @@ class Engine {
     static void LogEngineBuildInfo();
 
     void Initialize();
-    void PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
-                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
-    bool PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+    Vis_PIDAndDepth PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+                              Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+    Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+
+    Vis_PIDAndDepth PickMouseInfoPopup();
+    Vis_PIDAndDepth PickMouseTarget();
+    Vis_PIDAndDepth PickMouseNormal();
 
     /**
      * @offset 0x42213C
@@ -104,7 +108,6 @@ class Engine {
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4); // TODO(captainurist): drop?
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
-    void filterPickMouse();
     void StackPartyTorchLight();
     void Deinitialize();
     void DrawParticles();

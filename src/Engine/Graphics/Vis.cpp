@@ -18,6 +18,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObject.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -422,13 +423,6 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
     std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }
 
-Vis_PIDAndDepth InvalidPIDAndDepth() {
-    Vis_PIDAndDepth result;
-    result.depth = 0;
-    result.pid = Pid();
-    return result;
-}
-
 //----- (004C1BAA) --------------------------------------------------------
 Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
     switch (info->object_type) {
@@ -442,23 +436,8 @@ Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
 
         default:
             _log->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
-            return InvalidPIDAndDepth();
+            return Vis_PIDAndDepth();
     }
-}
-
-//----- (004C1BF1) --------------------------------------------------------
-Vis_PIDAndDepth Vis::mousePickedObject() {
-    if (!_mouseList.uSize)
-        return InvalidPIDAndDepth();
-
-    return get_object_zbuf_val(_mouseList.object_pointers[0]);
-}
-
-Vis_PIDAndDepth Vis::keyboardPickedObject() {
-    if (!_keyboardList.uSize)
-        return InvalidPIDAndDepth();
-
-    return get_object_zbuf_val(_keyboardList.object_pointers[0]);
 }
 
 //----- (004C1C0C) --------------------------------------------------------
@@ -701,56 +680,57 @@ Vis::Vis() {
 }
 
 //----- (004C05CC) --------------------------------------------------------
-bool Vis::PickKeyboard(float pick_depth,
-                       Vis_SelectionFilter *sprite_filter,
-                       Vis_SelectionFilter *face_filter) {
-    _keyboardList.uSize = 0;
+Vis_PIDAndDepth Vis::PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
+    _selectionList.uSize = 0;
 
-    PickBillboards_Keyboard(pick_depth, &_keyboardList, sprite_filter);
+    PickBillboards_Keyboard(pick_depth, &_selectionList, sprite_filter);
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        PickIndoorFaces_Keyboard(pick_depth, &_keyboardList, face_filter);
+        PickIndoorFaces_Keyboard(pick_depth, &_selectionList, face_filter);
     else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
-        PickOutdoorFaces_Keyboard(pick_depth, &_keyboardList, face_filter);
+        PickOutdoorFaces_Keyboard(pick_depth, &_selectionList, face_filter);
     else
         assert(false);
 
-    _keyboardList.create_object_pointers(Vis_SelectionList::Unique);
-    _keyboardList.sort_object_pointers();
+    _selectionList.create_object_pointers(Vis_SelectionList::Unique);
+    _selectionList.sort_object_pointers();
 
-    return true;
+    if (!_selectionList.uSize)
+        return Vis_PIDAndDepth();
+    return get_object_zbuf_val(_selectionList.object_pointers[0]);
 }
 
 //----- (004C0646) --------------------------------------------------------
-bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
-                    Vis_SelectionFilter *sprite_filter,
-                    Vis_SelectionFilter *face_filter) {
-    Vec3f rayOrigin, rayStep;  // [sp+1Ch] [bp-60h]@1
+Vis_PIDAndDepth Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
+                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
+    _selectionList.uSize = 0;
 
-    _mouseList.uSize = 0;
+    Vec3f rayOrigin, rayStep;
     CastPickRay(fMouseX, fMouseY, fDepth, &rayOrigin, &rayStep);
 
     // log->Info("Sx: {}, Sy: {}, Sz: {} \n Fx: {}, Fy: {}, Fz: {}",
     //     pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
     //     (pMouseRay+1)->vWorldPosition.x, (pMouseRay + 1)->vWorldPosition.y, (pMouseRay + 1)->vWorldPosition.z);
 
-    PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &_mouseList, sprite_filter);
+    PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &_selectionList, sprite_filter);
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_mouseList, face_filter);
+        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_selectionList, face_filter);
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_mouseList, face_filter, false);
+        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_selectionList, face_filter, false);
     } else {
         _log->warning("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
                                                   // behaviour. should've
                                                   // returned false in
                                                   // Game::PickMouse
-        return false;
+        return Vis_PIDAndDepth();
     }
-    _mouseList.create_object_pointers(Vis_SelectionList::All);
-    _mouseList.sort_object_pointers();
+    _selectionList.create_object_pointers(Vis_SelectionList::All);
+    _selectionList.sort_object_pointers();
 
-    return true;
+    if (!_selectionList.uSize)
+        return Vis_PIDAndDepth();
+    return get_object_zbuf_val(_selectionList.object_pointers[0]);
 }
 
 //----- (004C06F8) --------------------------------------------------------

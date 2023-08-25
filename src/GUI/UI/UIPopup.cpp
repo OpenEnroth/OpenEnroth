@@ -1668,10 +1668,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
 
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
-    Pid v5;                  // esi@62
-    // GUIButton *pButton;      // esi@84
     std::string pStr;        // edi@85
-    // const char *pHint;       // edx@113
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
     if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
@@ -1802,8 +1799,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 popup_window.uFrameY = 40;
                 // if ( render->pRenderD3D )
 
-                auto vis = EngineIocContainer::ResolveVis();
-                v5 = vis->mousePickedObject().pid;
+                Pid v5 = engine->PickMouseInfoPopup().pid;
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
                 if (v5.type() == OBJECT_Actor) {

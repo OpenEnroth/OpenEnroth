@@ -82,15 +82,9 @@ class Vis {
  public:
     Vis();
 
-    bool PickKeyboard(float pick_depth,
-                      Vis_SelectionFilter *sprite_filter,
-                      Vis_SelectionFilter *face_filter);
-    bool PickMouse(float fDepth, float fMouseX, float fMouseY,
-                   Vis_SelectionFilter *sprite_filter,
-                   Vis_SelectionFilter *face_filter);
-
-    Vis_PIDAndDepth mousePickedObject();
-    Vis_PIDAndDepth keyboardPickedObject();
+    Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+    Vis_PIDAndDepth PickMouse(float fDepth, float fMouseX, float fMouseY,
+                              Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
 
     bool DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx);
 
@@ -146,8 +140,7 @@ private:
                             int end);
 
 private:
-    Vis_SelectionList _mouseList;
-    Vis_SelectionList _keyboardList;
+    Vis_SelectionList _selectionList;
     RenderVertexSoft _debugpick;
     Logger *_log = nullptr;
 };

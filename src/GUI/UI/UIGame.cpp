@@ -902,7 +902,7 @@ void GameUI_WritePointedObjectStatusString() {
             auto vis = EngineIocContainer::ResolveVis();
 
             // get_picked_object_zbuf_val contains both the pid and the depth
-            pickedObject = vis->mousePickedObject();
+            Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
             mouse->uPointingObjectID = pickedObject.pid;
             pickedObjectID = (signed)pickedObject.pid.id();
             if (pickedObject.pid.type() == OBJECT_Item) {
@@ -912,8 +912,7 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = Pid();
                     return;
                 }
-                if (pickedObject.depth >= 0x200u ||
-                    pParty->pPickedItem.uItemID != ITEM_NULL) {
+                if (pickedObject.depth >= 0x200u || pParty->pPickedItem.uItemID != ITEM_NULL) {
                     engine->_statusBar->setPermanent(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 } else {
                     engine->_statusBar->setPermanent(LSTR_FMT_GET_S, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());

@@ -320,7 +320,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    Vis_PIDAndDepth picked_object = EngineIocContainer::ResolveVis()->mousePickedObject();
+    Vis_PIDAndDepth picked_object = engine->PickMouseNormal();
 
     ObjectType type = picked_object.pid.type();
     if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
