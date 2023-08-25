@@ -1,7 +1,8 @@
 #pragma once
 #include <array>
-
 #include "GUI/GUIWindow.h"
+
+enum UIMessageType : uint32_t;
 
 void GameUI_LoadPlayerPortraintsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);

@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-
 #include "Engine/Graphics/Nuklear.h"
 #include "Library/Image/Image.h"
 #include "Library/Color/Color.h"

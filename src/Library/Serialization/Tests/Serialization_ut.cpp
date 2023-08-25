@@ -1,7 +1,11 @@
+#include <gtest/gtest.h>
+#include <limits.h>
+#include <string>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Library/Serialization/Serialization.h"
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Serialization/EnumSerializer.h"
+#include "Utility/Flags.h"
 
 UNIT_TEST(Serialization, Standard) {
     EXPECT_EQ(fromString<int>(toString(0)), 0);

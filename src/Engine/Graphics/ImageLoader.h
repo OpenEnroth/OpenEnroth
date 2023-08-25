@@ -2,7 +2,6 @@
 
 #include <string>
 #include <functional>
-
 #include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"

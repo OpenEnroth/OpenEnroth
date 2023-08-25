@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
-
 #include "Utility/Memory/Blob.h"
 #include "TileEnums.h"
 

@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <vector>
-
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Pid.h"
 #include "Utility/Geometry/Vec.h"

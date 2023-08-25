@@ -3,8 +3,10 @@
 #include <array>
 #include <vector>
 #include <string>
-
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIEnums.h"
+#include "Io/InputAction.h"
+#include "Library/Color/ColorTable.h"
 
 class GraphicsImage;
 class GUIFont;

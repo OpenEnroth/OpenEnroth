@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <string>
 #include <array>
-
 #include "Utility/IndexedArray.h"
 #include "Engine/Objects/NPCEnums.h"
 

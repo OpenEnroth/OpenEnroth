@@ -1,5 +1,6 @@
+#include <gtest/gtest.h>
+#include <memory>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Utility/Math/Float.h"
 
 UNIT_TEST(Float, Fuzzy) {

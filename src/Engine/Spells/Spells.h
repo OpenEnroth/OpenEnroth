@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <array>
 #include <string>
-
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteObjectEnums.h"

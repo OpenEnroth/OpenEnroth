@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <string>
 #include <array>
-
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/MapEnums.h"
 #include "Utility/IndexedArray.h"
@@ -12,6 +11,7 @@
 class Blob;
 class GameResourceManager;
 enum class MAP_TYPE : uint32_t;
+enum class MapId : uint32_t;
 
 // TODO(Nik-RE-dev): It seems that two greet flags are used purely because it's modification is performed
 //                   before greeting string is constructed. It is also ensures that NPC in multi-NPC houses

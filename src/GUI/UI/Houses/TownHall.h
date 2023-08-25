@@ -1,8 +1,8 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 #include <vector>
-
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 

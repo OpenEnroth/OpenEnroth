@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <string>
 #include <thread>
-
 #include "Library/Logger/Logger.h"
 
 class Logger;

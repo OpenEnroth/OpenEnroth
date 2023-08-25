@@ -1,12 +1,10 @@
 #include "Engine/Graphics/Outdoor.h"
-
-
 #include <float.h>
 #include <stdlib.h>
+#include <bits/std_abs.h>
 #include <algorithm>
 #include <memory>
 #include <cmath>
-
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"

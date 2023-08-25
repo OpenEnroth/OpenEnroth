@@ -1,7 +1,7 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
-
 #include "Engine/Objects/CharacterEnums.h"
 
 class Character;

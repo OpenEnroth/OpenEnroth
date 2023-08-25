@@ -4,7 +4,6 @@
 #include <string>
 #include <deque>
 #include <memory>
-
 #include "Engine/Graphics/Sprites.h"
 #include "Library/Image/Image.h"
 #include "Library/Lod/LodReader.h"

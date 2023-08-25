@@ -1,7 +1,7 @@
 #pragma once
+#include <stdint.h>
 #include <vector>
 #include <unordered_map>
-
 #include "GUI/UI/UIBooks.h"
 #include "Engine/Tables/AutonoteTable.h"
 

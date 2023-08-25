@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <array>
-
 #include "GUI/GUIWindow.h"
 
 class Character;

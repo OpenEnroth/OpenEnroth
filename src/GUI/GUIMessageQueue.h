@@ -1,9 +1,9 @@
 #pragma once
 
+#include <stdint.h>
 #include <queue>
 #include <string>
 #include <cassert>
-
 #include "GUI/GUIEnums.h"
 
 enum UIMessageType : uint32_t;

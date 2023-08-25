@@ -3,7 +3,6 @@
 #include <string>
 #include <memory>
 #include <vector>
-
 #include "Library/Application/PlatformApplicationAware.h"
 #include "EngineTraceEnums.h"
 

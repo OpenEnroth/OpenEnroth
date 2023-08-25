@@ -1,9 +1,9 @@
 #include "Engine/mm7_data.h"
-
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
 
 enum UIMessageType : uint32_t;
+enum class MapId : uint32_t;
 
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;

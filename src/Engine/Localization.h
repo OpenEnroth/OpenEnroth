@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <string>
 #include <utility>
-
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Utility/Workaround/ToUnderlying.h"

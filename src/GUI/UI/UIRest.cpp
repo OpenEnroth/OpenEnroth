@@ -2,7 +2,6 @@
 #include <string>
 #include <array>
 #include <memory>
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Image.h"
@@ -13,7 +12,6 @@
 #include "Engine/Time.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
-#include "GUI/GUIFont.h"
 #include "Engine/Graphics/LocationEnums.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Objects/Character.h"

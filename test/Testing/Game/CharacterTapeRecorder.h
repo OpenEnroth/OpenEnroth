@@ -1,12 +1,17 @@
 #pragma once
 
+#include <stdint.h>
 #include <span>
 #include <utility>
 #include <type_traits>
-
 #include "Engine/Objects/Character.h"
-
 #include "TestController.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Testing/Game/TestTape.h"
+#include "Testing/Game/TestVector.h"
+
+class Character;
+class TestController;
 
 class CharacterTapeRecorder {
  public:

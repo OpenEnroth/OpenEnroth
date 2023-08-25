@@ -3,7 +3,6 @@
 #include <nuklear_config.h>
 #include <stddef.h>
 #include <string>
-
 #include "RenderBase.h"
 #include "Engine/Graphics/TextureRenderId.h"
 #include "Library/Color/ColorTable.h"

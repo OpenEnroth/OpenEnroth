@@ -1,5 +1,6 @@
+#include <gtest/gtest.h>
+#include <memory>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Utility/String.h"
 
 UNIT_TEST(String, iequals) {

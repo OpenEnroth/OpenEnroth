@@ -1,7 +1,16 @@
+#include <gtest/gtest.h>
+#include <limits.h>
+#include <map>
+#include <string>
+#include <vector>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
+#include "Library/Json/JsonFwd.h"
+#include "Library/Serialization/EnumSerializer.h"
+#include "nlohmann/detail/conversions/from_json.hpp"
+#include "nlohmann/detail/conversions/to_json.hpp"
+#include "nlohmann/json.hpp"
 
 template<class T>
 void TestRoundTrip(const T &value) {

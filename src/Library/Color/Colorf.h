@@ -1,7 +1,6 @@
 #pragma once
 
 #include <type_traits>
-
 #include "HsvColorf.h"
 
 struct Color;

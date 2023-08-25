@@ -3,7 +3,6 @@
 #include <map>
 #include <memory>
 #include <string>
-
 #include "Platform/PlatformEnums.h"
 #include "Io/InputAction.h"
 #include "Application/GameConfig.h"

@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <string>
-
 #include "Engine/Graphics/FrameLimiter.h"
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Rect.h"

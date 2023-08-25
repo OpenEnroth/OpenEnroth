@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <array>
 #include <memory>
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
@@ -14,7 +13,6 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
-#include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"

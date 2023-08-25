@@ -1,16 +1,13 @@
 #include "TestController.h"
-
 #include <utility>
-
 #include "Library/Application/PlatformApplication.h"
-
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
-
 #include "Application/GameKeyboardController.h"
+#include "Application/GameConfig.h"
 
 TestController::TestController(EngineController *controller, const std::string &testDataPath):
     _controller(controller),

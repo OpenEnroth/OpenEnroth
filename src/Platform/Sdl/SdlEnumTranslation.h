@@ -6,7 +6,6 @@
 #include <SDL_scancode.h>
 #include <SDL_video.h>
 #include <stdint.h>
-
 #include "Platform/PlatformEnums.h"
 #include "Platform/PlatformOpenGLOptions.h"
 

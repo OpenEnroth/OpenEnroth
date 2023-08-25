@@ -1,27 +1,30 @@
 #pragma once
 
+#include <assert.h>
+#include <stdint.h>
 #include <array>
 #include <vector>
 #include <string>
-
 #include "Engine/Tables/TileEnums.h"
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
-
 #include "Media/Audio/SoundEnums.h"
-
 #include "Library/Color/Color.h"
-
 #include "BSPModel.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationEnums.h"
 #include "LocationFunctions.h"
+#include "Engine/Pid.h"
+#include "Utility/Geometry/Vec.h"
 
 class Logger;
 class DecalBuilder;
 class SpellFxRenderer;
 class TileDesc;
+class GraphicsImage;
+enum Tileset : int16_t;
+enum class MapId : uint32_t;
 
 struct OutdoorLocationTileType {
     Tileset tileset;

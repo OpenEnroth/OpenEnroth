@@ -1,6 +1,9 @@
+#include <gtest/gtest.h>
+#include <stddef.h>
+#include <vector>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
 
 UNIT_TEST(IndexedArray, Size) {
     EXPECT_EQ(sizeof(IndexedArray<int, 1, 1>), sizeof(int));

@@ -4,15 +4,19 @@
 #include <utility>
 #include <string>
 #include <type_traits>
-
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Time.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
-
 #include "Library/Config/ConfigEntry.h"
-
 #include "TestController.h"
+#include "Testing/Game/TestTape.h"
+
+class TestController;
+enum DIALOGUE_TYPE : int32_t;
+enum class ScreenType;
+struct GameTime;
+template <class T> class ConfigEntry;
 
 class CommonTapeRecorder {
  public:

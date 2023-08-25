@@ -1,7 +1,7 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
-
 #include "Engine/Events/EventEnums.h"
 #include "GUI/GUIWindow.h"
 

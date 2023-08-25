@@ -1,19 +1,15 @@
-#include <gtest/gtest.h>
-
+#include <stdio.h>
+#include <exception>
 #include "Application/GameStarter.h"
 #include "Application/GameConfig.h"
-
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
-
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestController.h"
-
 #include "Library/Application/PlatformApplication.h"
-
-#include "Utility/Format.h"
-
 #include "GameTestOptions.h"
+#include "Testing/Extensions/ThrowingAssertions.h"
+#include "fmt/core.h"
 
 void printGoogleTestHelp(char *app) {
     int argc = 2;

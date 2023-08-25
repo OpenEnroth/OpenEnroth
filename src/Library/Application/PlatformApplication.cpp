@@ -1,16 +1,23 @@
 #include "PlatformApplication.h"
-
 #include <cassert>
 #include <ranges> // NOLINT
-
+#include <utility>
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
 #include "Platform/Proxy/ProxyWindow.h"
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/FilteringEventHandler.h"
-#include "Platform/PlatformLogger.h"
-
 #include "Utility/MapAccess.h"
+#include "Library/Application/PlatformApplicationAware.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformEventLoop.h"
+#include "Platform/PlatformOpenGLContext.h"
+#include "Platform/PlatformWindow.h"
+
+class PlatformEventFilter;
+class PlatformEventHandler;
+struct PlatformOpenGLOptions;
+template <class T> class ProxyBase;
 
 class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public ProxyWindow, public ProxyOpenGLContext {
  public:

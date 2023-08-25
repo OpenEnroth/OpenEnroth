@@ -6,7 +6,6 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
-
 #include "Platform/Sdl/SdlGamepad.h"
 
 class SdlWindow;

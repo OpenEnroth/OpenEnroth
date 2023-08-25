@@ -7,7 +7,6 @@
 #include <array>
 #include <initializer_list>
 #include <memory>
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -46,6 +45,7 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
 #include "fmt/core.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 using Io::TextInputType;
 

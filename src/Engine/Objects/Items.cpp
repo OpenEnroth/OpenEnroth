@@ -1,23 +1,28 @@
 #include "Engine/Objects/Items.h"
-
+#include <compare>
+#include <assert.h>
 #include <map>
 #include <string>
-#include <vector>
 #include <unordered_map>
-
+#include <array>
+#include <memory>
+#include <utility>
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/ItemEnchantment.h"
-#include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
-
-#include "GUI/GUIButton.h"
-
 #include "Utility/MapAccess.h"
 #include "Library/Random/Random.h"
+#include "Application/GameConfig.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
 
 ItemGen *ptr_50C9A4_ItemToEnchant;
 

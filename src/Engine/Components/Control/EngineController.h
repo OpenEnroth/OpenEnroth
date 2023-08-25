@@ -4,7 +4,6 @@
 #include <memory>
 #include <functional>
 #include <string_view>
-
 #include "Platform/PlatformEnums.h"
 #include "Platform/PlatformEvents.h"
 #include "EngineControlStateHandle.h"

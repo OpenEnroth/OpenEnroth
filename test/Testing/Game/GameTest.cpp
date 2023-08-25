@@ -1,12 +1,15 @@
 #include "GameTest.h"
-
 #include <cassert>
 #include <string>
-
-#include "Engine/Components/Control/EngineController.h"
+#include <exception>
 #include "Engine/Components/Control/EngineControlState.h"
+#include "Testing/Game/CharacterTapeRecorder.h"
+#include "Testing/Game/CommonTapeRecorder.h"
+#include "Testing/Game/TestController.h"
+#include "fmt/core.h"
+#include "gtest/gtest.h"
 
-#include "Utility/Format.h"
+class EngineController;
 
 static EngineController *globalEngineController = nullptr;
 static TestController *globalTestController = nullptr;

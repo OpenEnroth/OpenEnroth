@@ -1,13 +1,13 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <unordered_map>
 #include <vector>
 #include <utility>
 #include <algorithm>
 #include <exception>
 #include <string>
-
 #include "CodeGenOptions.h"
 #include "Application/GameStarter.h"
 #include "Engine/Tables/ItemTable.h"
@@ -23,7 +23,7 @@
 #include "Utility/Segment.h"
 #include "fmt/core.h"
 
-enum class MAP_TYPE : uint32_t;
+enum class MapId : uint32_t;
 
 // TODO(captainurist): use std::string::contains once Android have full C++23 support.
 static auto contains = [](const std::string &haystack, const std::string &needle) {

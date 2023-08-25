@@ -1,5 +1,4 @@
 #include "GUI/UI/UISaveLoad.h"
-
 #include <assert.h>
 #include <string>
 #include <filesystem>
@@ -7,11 +6,10 @@
 #include <memory>
 #include <array>
 #include <cmath>
-
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/EntitySnapshots.h" // IWYU pragma: keep
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"

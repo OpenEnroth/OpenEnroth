@@ -1,12 +1,9 @@
-#include "Compression.h"
-
 #include <zlib.h>
 #include <stdlib.h>
 #include <zconf.h>
-#include <cstring>
-#include <memory>
 #include <algorithm>
-
+#include <memory>
+#include "Compression.h"
 #include "Utility/Memory/FreeDeleter.h"
 
 namespace zlib {

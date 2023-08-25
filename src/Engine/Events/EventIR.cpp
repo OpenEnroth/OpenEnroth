@@ -1,19 +1,24 @@
+#include <assert.h>
 #include <string>
-#include <utility>
-
+#include <string_view>
+#include <vector>
 #include <magic_enum.hpp> // TODO: temporary
-
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventEnums.h"
 #include "Engine/Events/Loader.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Objects/NPC.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
-#include "Engine/mm7_data.h"
-
 #include "Utility/String.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
+
+enum class ChestFlag : uint16_t;
+enum class FaceAttribute : uint32_t;
+enum class ItemId : int32_t;
+enum class ItemTreasureLevel : int8_t;
 
 static std::string getVariableSetStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {

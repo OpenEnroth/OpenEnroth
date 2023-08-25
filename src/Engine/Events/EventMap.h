@@ -1,9 +1,9 @@
 #pragma once
 
+#include <stdint.h>
 #include <unordered_map>
 #include <vector>
 #include <string>
-
 #include "Engine/Events/EventIR.h"
 
 enum class EventType : uint8_t;

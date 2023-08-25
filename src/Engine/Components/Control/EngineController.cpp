@@ -1,12 +1,11 @@
 #include "EngineController.h"
-
 #include <cassert>
 #include <filesystem>
 #include <utility>
 #include <list>
 #include <queue>
 #include <vector>
-
+#include <array>
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"

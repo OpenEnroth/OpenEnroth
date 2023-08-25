@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <string_view>
-
 #include "Utility/Memory/Blob.h"
 
 struct LODSprite;

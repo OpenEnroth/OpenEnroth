@@ -6,24 +6,27 @@
 #include <memory>
 #include <vector>
 #include <string>
-
 #include "Engine/PartyEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ItemEnums.h"
-
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 #include "GUI/UI/UIHouseEnums.h"
-
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
-
 #include "Platform/PlatformEnums.h"
-
 #include "Library/Color/ColorTable.h"
-
 #include "Utility/Geometry/Size.h"
 #include "Utility/Geometry/Point.h"
+#include "Library/Color/Color.h"
+
+enum class CharacterClassType : uint8_t;
+enum class CharacterSkillMastery;
+enum class CharacterSkillType : int8_t;
+enum class Condition : uint32_t;
+enum class ItemId : int32_t;
+enum class PlatformKey : int;
+struct GameTime;
 
 namespace Io {
 class Mouse;
@@ -347,6 +350,7 @@ extern Color ui_game_dialogue_option_normal_color;
 extern Color ui_house_player_cant_interact_color;
 
 class GraphicsImage;
+
 extern GraphicsImage *ui_exit_cancel_button_background;
 extern GraphicsImage *game_ui_right_panel_frame;
 extern GraphicsImage *dialogue_ui_x_ok_u;

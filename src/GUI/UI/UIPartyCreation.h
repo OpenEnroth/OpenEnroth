@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
-
 #include "GUI/GUIWindow.h"
 
 class GraphicsImage;
+class GUIFont;
 
 bool PartyCreationUI_Loop();
 

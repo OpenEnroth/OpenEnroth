@@ -1,6 +1,5 @@
 #include "ProxyWindow.h"
-
-#include "Platform/PlatformOpenGLContext.h"
+#include "Platform/PlatformOpenGLContext.h" // IWYU pragma: keep
 #include "Platform/PlatformWindow.h"
 #include "Platform/Proxy/ProxyBase.h"
 

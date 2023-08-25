@@ -1,10 +1,16 @@
+#include <gtest/gtest.h>
+#include <array>
+#include <string>
+#include <vector>
 #include "Testing/Unit/UnitTest.h"
-
-#include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
-
 #include "Utility/Streams/StringOutputStream.h"
 #include "Utility/Streams/MemoryInputStream.h"
+#include "Library/Binary/BinaryTags.h"
+#include "Library/Binary/BlobSerialization.h"
+#include "Library/Binary/ContainerSerialization.h"
+#include "Library/Binary/MemCopySerialization.h"
+#include "Utility/Memory/Blob.h"
 
 struct Int_MM {
     int dummy;

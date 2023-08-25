@@ -6,7 +6,6 @@
 #include <memory>
 #include <string_view>
 #include <string>
-
 #include "FreeDeleter.h"
 
 class FileInputStream;

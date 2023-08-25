@@ -3,7 +3,6 @@
 #include <array>
 #include <memory>
 #include <cstdint>
-
 #include "Engine/Spells/SpellEnums.h"
 #include "Library/Color/ColorTable.h"
 #include "Library/Color/Color.h"

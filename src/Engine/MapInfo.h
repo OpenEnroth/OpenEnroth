@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <array>
 #include <string>
-
 #include "Utility/IndexedArray.h"
 #include "MapEnums.h"
 

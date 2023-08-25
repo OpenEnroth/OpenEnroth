@@ -1,5 +1,4 @@
 #include "AudioPlayer.h"
-
 #include <assert.h>
 #include <math.h>
 #include <stdint.h>
@@ -13,8 +12,7 @@
 #include <chrono>
 #include <iterator>
 #include <memory>
-
-#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/EntitySnapshots.h" // IWYU pragma: keep
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/Actor.h"
@@ -43,6 +41,8 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/String.h"
 #include "fmt/core.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
 
 struct SoundInfo_MM6;
 struct SoundInfo_MM7;

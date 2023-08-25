@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-
 #include "Application/GameStarterOptions.h"
 #include "Engine/Graphics/RenderEnums.h"
 

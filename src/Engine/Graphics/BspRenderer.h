@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-
 #include "Utility/Geometry/Plane.h"
 #include "Engine/Graphics/Camera.h"
 

@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <initializer_list>
-
 #include "Platform/PlatformEvents.h"
 
 class PlatformEvent;

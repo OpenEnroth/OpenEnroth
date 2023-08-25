@@ -1,9 +1,9 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
 #include <string>
 #include <vector>
-
 #include "Utility/Geometry/Vec.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/NPCTable.h"

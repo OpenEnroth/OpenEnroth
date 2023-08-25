@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <memory>
 #include <string>
-
 #include "Utility/Geometry/Rect.h"
 #include "Utility/Memory/Blob.h"
 

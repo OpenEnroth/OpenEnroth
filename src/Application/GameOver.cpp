@@ -1,12 +1,10 @@
 #include <assert.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <string>
 #include <memory>
-
+#include <array>
 #include "GameOver.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"

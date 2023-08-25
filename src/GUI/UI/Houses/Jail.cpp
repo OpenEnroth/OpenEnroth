@@ -1,9 +1,10 @@
 #include "GUI/UI/Houses/Jail.h"
-
+#include <memory>
 #include "GUI/GUIFont.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/ColorTable.h"
 
 void GUIWindow_Jail::houseSpecificDialogue() {
     GUIWindow jail_dialogue_window = *this;

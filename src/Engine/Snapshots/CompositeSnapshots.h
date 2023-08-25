@@ -4,7 +4,6 @@
 #include <vector>
 #include <tuple>
 #include <array>
-
 #include "EntitySnapshots.h"
 #include "Utility/Geometry/Vec.h"
 

@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-
 #include "Library/Lod/LodReader.h"
 #include "Utility/Memory/Blob.h"
 

@@ -2,7 +2,6 @@
 
 #include <SDL.h>
 #include <SDL_events.h>
-
 #include "Platform/PlatformEventLoop.h"
 #include "Platform/PlatformEvents.h"
 

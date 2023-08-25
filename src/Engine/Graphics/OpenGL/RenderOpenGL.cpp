@@ -1,55 +1,75 @@
 #include "RenderOpenGL.h"
-
+#include <bits/std_abs.h>
+#include <stdint.h>
+#include <stdlib.h>
+//#include <string.h>
+//#include <assert.h>
+#include <span>
+#include <array>
+#include <cmath>
+#include <string_view>
+#include <vector>
+#include <glad/gl.h> // NOLINT: not a C system header.
+#include <nuklear_config.h> // NOLINT: not a C system header.
 #include <algorithm>
 #include <memory>
 #include <utility>
 #include <map>
-
-#include <glad/gl.h> // NOLINT: not a C system header.
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <nuklear_config.h> // NOLINT: not a C system header.
-
+#include <glm/gtc/matrix_transform.hpp> // IWYU pragma: keep
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Polygon.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 #include "Engine/AssetsManager.h"
-
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
-#include "Library/Image/ImageFunctions.h"
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
-
 #include "Utility/Geometry/Size.h"
-#include "Utility/Format.h"
-#include "Utility/Memory/MemSet.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/RenderEnums.h"
+#include "Engine/MM7.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "Library/Color/Color.h"
+#include "Library/Config/ConfigEntry.h"
+#include "Library/Image/Palette.h"
+#include "Library/Serialization/EnumSerializer.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformOpenGLContext.h"
+#include "Platform/PlatformOpenGLOptions.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/BBox.h"
+#include "Utility/Geometry/Plane.h"
+#include "fmt/core.h"
+
+class ParticleEngine;
+struct SpellFxRenderer;
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))

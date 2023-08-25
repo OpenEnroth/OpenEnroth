@@ -1,7 +1,6 @@
 #pragma once
 
 #include <utility>
-
 #include "Platform/PlatformLogger.h"
 #include "Utility/Format.h"
 #include "Platform/PlatformEnums.h"

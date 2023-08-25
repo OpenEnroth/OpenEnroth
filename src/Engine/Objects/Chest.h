@@ -5,7 +5,6 @@
 #include <string>
 #include <optional>
 #include <array>
-
 #include "Engine/Objects/Items.h"
 #include "Engine/Pid.h"
 #include "Utility/Geometry/Vec.h"
@@ -15,6 +14,7 @@
 
 class Pid;
 enum class ITEM_TYPE : int32_t;
+enum class ItemId : int32_t;
 
 struct ChestDesc {
     std::string sName;

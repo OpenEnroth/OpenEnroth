@@ -1,7 +1,7 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
-
 #include "Engine/Events/EventEnums.h"
 
 enum class EventType : uint8_t;

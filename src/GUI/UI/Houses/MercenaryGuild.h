@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 

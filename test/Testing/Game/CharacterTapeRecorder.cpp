@@ -1,6 +1,11 @@
 #include "CharacterTapeRecorder.h"
-
+#include <assert.h>
+#include <functional>
+#include <utility>
 #include "Engine/Party.h"
+#include "Engine/Objects/Character.h"
+
+class TestController;
 
 template<class Member, class... Args>
 static auto bind(Member member, Args... args) {

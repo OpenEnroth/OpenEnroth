@@ -1,22 +1,34 @@
 #pragma once
-
+#include <nuklear_config.h>
+#include <stddef.h>
 #include <memory>
 #include <string>
 #include <map>
 #include <vector>
-
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 #include <glm/glm.hpp>
-
 #include "Engine/Graphics/FrameLimiter.h"
 #include "Engine/Graphics/RenderBase.h"
-
 #include "Library/Color/Colorf.h"
-
 #include "GLShaderLoader.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/Graphics/TextureRenderId.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Image/Image.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Rect.h"
+#include "Utility/Geometry/Vec.h"
 
 class PlatformOpenGLContext;
 struct nk_state;
+class GameConfig;
+class GraphicsImage;
+class Logger;
+class ParticleEngine;
+class Vis;
+struct Color;
+struct DecalBuilder;
+struct SpellFxRenderer;
 
 class RenderOpenGL : public RenderBase {
  public:

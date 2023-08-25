@@ -7,7 +7,6 @@
 #include <utility>
 #include <array>
 #include <initializer_list>
-
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"

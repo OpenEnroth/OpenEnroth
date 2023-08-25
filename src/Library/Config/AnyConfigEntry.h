@@ -4,7 +4,6 @@
 #include <functional>
 #include <any>
 #include <typeinfo>
-
 #include "ConfigFwd.h"
 
 class AnyHandler;

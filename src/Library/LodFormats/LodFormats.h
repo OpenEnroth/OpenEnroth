@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 #include "LodFormatEnums.h"

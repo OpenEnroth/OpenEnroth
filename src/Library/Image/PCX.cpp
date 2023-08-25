@@ -1,12 +1,15 @@
 #include "PCX.h"
-
+#include <span>
+#include <assert.h>
 #include <memory>
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
-
 #include "Utility/Exception.h"
+#include "Library/Color/Color.h"
+#include "Utility/Memory/FreeDeleter.h"
+#include "fmt/core.h"
 
 enum {
     PCX_VERSION_2_5 = 0,

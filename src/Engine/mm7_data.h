@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <utility>
-
 #include "Engine/MM7.h"
 #include "Engine/Pid.h"
 #include "Engine/Objects/ItemEnums.h"
@@ -20,6 +19,7 @@
 class GUIButton;
 class Actor;
 enum UIMessageType : uint32_t;
+enum class MapId : uint32_t;
 
 //-------------------------------------------------------------------------
 // Data declarations

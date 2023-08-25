@@ -1,7 +1,7 @@
 #pragma once
 
+#include <stdint.h>
 #include <array>
-
 #include "Engine/Spells/SpellEnums.h"
 #include "GUI/GUIWindow.h"
 

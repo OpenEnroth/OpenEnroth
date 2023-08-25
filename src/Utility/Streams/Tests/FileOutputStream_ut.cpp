@@ -1,7 +1,10 @@
+#include <gtest/gtest.h>
+#include <stdio.h>
+#include <string.h>
 #include <cstdlib>
-
+#include <string>
+#include <string_view>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
 

@@ -3,13 +3,13 @@
 #include <stdint.h>
 #include <memory>
 #include <string>
-
 #include "Platform/PlatformEnums.h"
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 #include "Engine/Time.h"
 
 class GUIWindow;
+
 namespace Io {
 class IKeyboardController;
 }  // namespace Io

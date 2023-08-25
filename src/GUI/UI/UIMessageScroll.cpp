@@ -1,11 +1,15 @@
+#include <memory>
 #include "Engine/AssetsManager.h"
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Tables/ItemTable.h"
-
 #include "Engine/Graphics/IRender.h"
-
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIMessageScroll.h"
+#include "Engine/Objects/Items.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/IndexedArray.h"
+#include "fmt/core.h"
 
 void CreateMsgScrollWindow(ItemId mscroll_id) {
     if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id)) {

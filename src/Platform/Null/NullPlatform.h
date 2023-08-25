@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 #include <string>
-
 #include "Platform/Platform.h"
 #include "NullPlatformOptions.h"
 #include "Utility/Geometry/Rect.h"

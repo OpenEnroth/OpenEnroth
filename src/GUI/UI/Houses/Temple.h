@@ -1,7 +1,7 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector>
-
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/Character.h"

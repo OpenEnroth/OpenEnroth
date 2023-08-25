@@ -1,12 +1,10 @@
 #include <string>
-
+#include <array>
+#include <memory>
 #include "GUI/UI/Houses/Tavern.h"
-
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIFont.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
@@ -14,10 +12,18 @@
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Engine.h"
-
 #include "Arcomage/Arcomage.h"
-
 #include "Media/MediaPlayer.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "GUI/GUIWindow.h"
+#include "Library/Color/ColorTable.h"
+#include "Utility/IndexedArray.h"
 
 void GUIWindow_Tavern::mainDialogue() {
     if (!checkIfPlayerCanInteract()) {

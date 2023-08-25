@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-
 #include "RandomEngine.h"
 
 class RandomEngine;

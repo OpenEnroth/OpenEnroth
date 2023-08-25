@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <memory>
-
 #include "Library/Color/Color.h"
 #include "Library/Image/Palette.h"
 #include "Utility/Geometry/Point.h"

@@ -1,14 +1,15 @@
 #include <gtest/gtest.h>
-
 #include "Testing/Extensions/ThrowingAssertions.h"
-
 #include "Engine/Components/Control/EngineController.h"
-
 #include "Utility/Preprocessor.h"
-
 #include "TestController.h"
 #include "CharacterTapeRecorder.h"
 #include "CommonTapeRecorder.h"
+
+class CharacterTapeRecorder;
+class CommonTapeRecorder;
+class EngineController;
+class TestController;
 
 class GameTest : public testing::Test {
  public:

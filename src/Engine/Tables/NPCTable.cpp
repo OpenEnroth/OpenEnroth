@@ -1,10 +1,8 @@
 #include "NPCTable.h"
-
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <memory>
-
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/GameResourceManager.h"
@@ -15,7 +13,7 @@
 #include "Utility/Segment.h"
 #include "Utility/Workaround/ToUnderlying.h"
 
-enum class MAP_TYPE : uint32_t;
+enum class MapId : uint32_t;
 
 std::array<NPCTopic, 789> pNPCTopics;
 struct NPCStats *pNPCStats = nullptr;

@@ -1,12 +1,11 @@
 #include "Engine/Graphics/Indoor.h"
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <bits/std_abs.h>
 #include <algorithm>
 #include <limits>
 #include <cmath>
-
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"

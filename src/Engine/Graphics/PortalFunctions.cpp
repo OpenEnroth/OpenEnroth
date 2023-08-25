@@ -1,13 +1,11 @@
 #include "Engine/Graphics/PortalFunctions.h"
-
 #include <assert.h>
 #include <float.h>
-#include <math.h>
 #include <string.h>
 #include <array>
 #include <memory>
 #include <vector>
-
+#include <cmath>
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/Camera.h"

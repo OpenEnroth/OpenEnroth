@@ -1,11 +1,18 @@
+#include <assert.h>
+#include <span>
+#include <compare>
+#include <stdint.h>
+#include <bits/std_abs.h>
+#include <math.h>
+#include <stdlib.h>
 #include <map>
-#include <algorithm>
 #include <string>
-
+#include <list>
+#include <memory>
+#include <utility>
+#include <vector>
 #include "GUI/UI/UIGame.h"
-
 #include "Application/Game.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -16,7 +23,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
@@ -30,31 +36,61 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/LloydsBook.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpellbook.h"
-
 #include "Io/InputAction.h"
 #include "Io/Mouse.h"
-
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
 #include "Utility/String.h"
-
 #include "Library/Logger/Logger.h"
+#include "Application/GameConfig.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/MM7.h"
+#include "Engine/MapEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "Io/Key.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+#include "Platform/Platform.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Size.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/Workaround/ToUnderlying.h"
+#include "fmt/core.h"
+
+enum class PlatformKey : int;
 
 using Io::InputAction;
 

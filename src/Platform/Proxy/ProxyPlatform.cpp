@@ -1,9 +1,8 @@
 #include "ProxyPlatform.h"
-
 #include "Platform/Platform.h"
 #include "Platform/Proxy/ProxyBase.h"
-#include "Platform/PlatformEventLoop.h"
-#include "Platform/PlatformWindow.h"
+#include "Platform/PlatformEventLoop.h" // IWYU pragma: keep
+#include "Platform/PlatformWindow.h" // IWYU pragma: keep
 
 class PlatformEventLoop;
 class PlatformGamepad;

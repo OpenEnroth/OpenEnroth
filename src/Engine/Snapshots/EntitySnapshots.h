@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <array>
-
 #include "Utility/Geometry/Vec.h"
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h" // TODO(captainurist): Don't depend on BBox binary layout.

@@ -1,12 +1,10 @@
 #include "EventTrace.h"
-
 #include <assert.h>
 #include <memory>
 #include <string>
 #include <map>
-
 #include "Library/Serialization/EnumSerialization.h"
-#include "Io/Key.h"
+#include "Io/Key.h" // IWYU pragma: keep
 #include "Library/Json/Json.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"

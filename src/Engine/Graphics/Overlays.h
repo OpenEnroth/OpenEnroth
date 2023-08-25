@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <array>
 #include <vector>
-
 #include "Engine/Pid.h"
 #include "Utility/Memory/Blob.h"
 

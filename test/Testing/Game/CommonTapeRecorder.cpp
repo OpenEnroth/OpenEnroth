@@ -1,15 +1,23 @@
 #include "CommonTapeRecorder.h"
-
+#include <assert.h>
+#include <array>
+#include <memory>
 #include "Engine/Objects/Character.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "Utility/String.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Time.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIWindow.h"
+
+class TestController;
+enum class ScreenType;
 
 CommonTapeRecorder::CommonTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);

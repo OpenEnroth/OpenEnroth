@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-
 #include "Utility/Geometry/Plane.h"
 #include "Engine/Graphics/RenderEntities.h"
 #include "Utility/Geometry/Vec.h"

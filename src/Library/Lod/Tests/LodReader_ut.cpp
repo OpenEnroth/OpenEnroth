@@ -1,6 +1,10 @@
+#include <gtest/gtest.h>
+#include <string>
+#include <vector>
 #include "Testing/Unit/UnitTest.h"
-
 #include "Library/Lod/LodReader.h"
+#include "Library/Lod/LodEnums.h"
+#include "Utility/Memory/Blob.h"
 
 const char brokenLod[] =
     "LOD\0"         "Game"          "MMVI"          "\0\0\0\0"      // signature, version

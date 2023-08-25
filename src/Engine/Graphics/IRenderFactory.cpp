@@ -1,12 +1,11 @@
 #include "Engine/Graphics/IRenderFactory.h"
-
 #include "Application/GameConfig.h"
-
 #include "Library/Logger/Logger.h"
-
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/RenderNull.h"
+#include "Engine/Graphics/RenderEnums.h"
+#include "Library/Config/ConfigEntry.h"
 
 using Graphics::IRenderFactory;
 

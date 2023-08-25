@@ -2,13 +2,13 @@
 
 #include <cstdint>
 #include <string>
-
 #include "Engine/MapEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Utility/IndexedArray.h"
 
 class Blob;
 enum class MAP_TYPE : uint32_t;
+enum class MapId : uint32_t;
 
 enum class BuildingType : uint16_t {
     BUILDING_INVALID = 0,

@@ -4,7 +4,6 @@
 #include <string_view>
 #include <utility>
 #include <system_error>
-
 #include "Format.h"
 #include "fmt/core.h"
 

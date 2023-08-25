@@ -1,9 +1,9 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdint.h>
 #include <array>
 #include <string>
-
 #include "Engine/Events/EventEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
@@ -25,6 +25,11 @@ enum class ITEM_TREASURE_LEVEL : int8_t;
 enum class ITEM_TYPE : int32_t;
 enum class Season;
 enum class VariableType;
+enum class ChestFlag : uint16_t;
+enum class EventType : uint8_t;
+enum class FaceAttribute : uint32_t;
+enum class ItemId : int32_t;
+enum class ItemTreasureLevel : int8_t;
 
 class EventIR {
  public:

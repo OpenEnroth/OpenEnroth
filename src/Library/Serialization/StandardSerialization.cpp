@@ -1,13 +1,11 @@
 #include "StandardSerialization.h"
-
 #include <fast_float/fast_float.h>
 #include <assert.h>
 #include <string>
 #include <charconv>
 #include <string_view>
 #include <system_error>
-#include "Utility/Format.h"
-
+#include "Utility/Format.h" // IWYU pragma: keep
 #include "SerializationExceptions.h"
 #include "fast_float/parse_number.h"
 #include "fmt/compile.h"

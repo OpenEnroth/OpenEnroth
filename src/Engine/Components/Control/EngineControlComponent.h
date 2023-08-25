@@ -3,7 +3,6 @@
 #include <thread>
 #include <functional>
 #include <memory>
-
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
 #include "Library/Application/PlatformApplicationAware.h"

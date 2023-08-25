@@ -1,14 +1,12 @@
 #include "Engine/Objects/SpriteObject.h"
-
 #include <assert.h>
-
 #include <stdlib.h>
 #include <string.h>
+#include <bits/std_abs.h>
 #include <algorithm>
 #include <memory>
 #include <utility>
 #include <array>
-
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"

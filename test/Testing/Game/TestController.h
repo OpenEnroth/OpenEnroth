@@ -6,9 +6,8 @@
 #include <utility>
 #include <vector>
 #include <memory>
-
+#include <type_traits>
 #include "Engine/Components/Trace/EngineTraceEnums.h"
-
 #include "TestTape.h"
 
 class EngineController;

@@ -3,7 +3,6 @@
 #include <span>
 #include <array>
 #include <vector>
-
 #include "Library/Image/Palette.h"
 
 class LodTextureCache;

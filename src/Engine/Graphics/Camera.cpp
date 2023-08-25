@@ -1,14 +1,25 @@
 #include "Engine/Graphics/Camera.h"
-
+#include <float.h>
+#include <string.h>
+#include <cmath>
+#include <memory>
+#include <vector>
 #include "Engine/Engine.h"
 #include "Engine/OurMath.h"
 #include "Engine/ErrorHandling.h"
-
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/IRender.h"
-
 #include "Engine/Graphics/ClippingFunctions.h"
+#include "Application/GameConfig.h"
+#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/LocationEnums.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/RenderEntities.h"
+#include "Engine/MM7.h"
+#include "Engine/mm7_data.h"
+#include "Library/Color/Color.h"
+#include "Utility/Geometry/Plane.h"
 
 Camera3D *pCamera3D = new Camera3D;
 

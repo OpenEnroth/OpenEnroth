@@ -1,4 +1,5 @@
 #include "ThrowingAssertions.h"
+#include "gtest/gtest.h"
 
 static bool globalThrowListenerInstalled = false;
 static bool globalThrowListenerEnabled = false;

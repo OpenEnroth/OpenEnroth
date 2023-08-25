@@ -1,24 +1,22 @@
 #include "SdlEventLoop.h"
-
-#include <SDL.h>
-
+#include <SDL_gamecontroller.h>
+#include <SDL_mouse.h>
+#include <SDL_video.h>
+#include <stdint.h>
 #include <algorithm>
 #include <cassert>
-#include <utility>
 #include <vector>
-#include <unordered_map>
-
 #include "Platform/PlatformEventHandler.h"
 #include "Platform/PlatformEnums.h"
-
 #include "Utility/Segment.h"
 #include "Utility/ScopeGuard.h"
-
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
-#include "SdlLogger.h"
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
+#include "Platform/PlatformEvents.h"
+#include "Platform/PlatformWindow.h"
+#include "Utility/Geometry/Point.h"
 
 SdlEventLoop::SdlEventLoop(SdlPlatformSharedState *state): _state(state) {
     assert(state);

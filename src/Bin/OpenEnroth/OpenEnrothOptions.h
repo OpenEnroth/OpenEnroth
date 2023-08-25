@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-
 #include "Application/GameStarterOptions.h"
 
 class GameConfig;

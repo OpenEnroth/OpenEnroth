@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <array>
 #include <string>
-
 #include "Library/Binary/BinarySerialization.h"
 #include "Library/Binary/MemCopySerialization.h"
 

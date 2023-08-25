@@ -5,7 +5,6 @@
 #include <vector>
 #include <unordered_map>
 #include <string_view>
-
 #include "Utility/Memory/Blob.h"
 #include "LodEnums.h"
 

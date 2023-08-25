@@ -1,6 +1,5 @@
 #include <array>
 #include <memory>
-
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Tables/BuildingTable.h"
@@ -27,7 +26,6 @@
 #include "Engine/MM7.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnums.h"
-#include "Engine/PartyEnums.h"
 #include "Engine/TeleportPoint.h"
 #include "GUI/GUIEnums.h"
 #include "Io/InputAction.h"

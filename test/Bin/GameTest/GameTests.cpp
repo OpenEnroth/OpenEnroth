@@ -1,12 +1,22 @@
+#include <stddef.h>
+#include <stdint.h>
+#include <algorithm>
+#include <array>
+#include <filesystem>
+#include <initializer_list>
+#include <iterator>
+#include <list>
+#include <memory>
+#include <string>
+#include <system_error>
+#include <utility>
+#include <vector>
 #include "Testing/Game/GameTest.h"
-
 #include "Arcomage/Arcomage.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIProgressBar.h"
-
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
@@ -17,9 +27,39 @@
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
+#include "Application/GameConfig.h"
+#include "Engine/Components/Control/EngineController.h"
+#include "Engine/MM7.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellBuff.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/Time.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Platform/PlatformEnums.h"
+#include "Testing/Extensions/ThrowingAssertions.h"
+#include "Testing/Game/CharacterTapeRecorder.h"
+#include "Testing/Game/CommonTapeRecorder.h"
+#include "Testing/Game/TestController.h"
+#include "Testing/Game/TestTape.h"
+#include "Testing/Game/TestVector.h"
+#include "Utility/Flags.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Segment.h"
+#include "gtest/gtest.h"
 
 static std::initializer_list<CharacterBuffs> allPotionBuffs() {
     static constexpr std::initializer_list<CharacterBuffs> result = {

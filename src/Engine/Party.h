@@ -6,7 +6,6 @@
 #include <array>
 #include <vector>
 #include <string>
-
 #include "Engine/Objects/Items.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Character.h"

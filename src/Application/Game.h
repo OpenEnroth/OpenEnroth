@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <string>
-
 #include "Engine/Engine.h"
 
 class Engine;
@@ -11,6 +10,7 @@ class Logger;
 class Menu;
 class Nuklear;
 class Vis;
+
 namespace Io {
 class Mouse;
 }  // namespace Io

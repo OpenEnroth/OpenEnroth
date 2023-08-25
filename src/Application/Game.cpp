@@ -1,15 +1,14 @@
 #include "Game.h"
-
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <bits/std_abs.h>
 #include <algorithm>
 #include <filesystem>
 #include <string>
 #include <array>
 #include <initializer_list>
 #include <vector>
-
 #include "Arcomage/Arcomage.h"
 #include "Application/GameKeyboardController.h"
 #include "Application/GameWindowHandler.h"
@@ -50,7 +49,6 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Spells/Spells.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/AwardTable.h"
@@ -130,6 +128,7 @@
 #include "Utility/Segment.h"
 #include "Utility/String.h"
 #include "fmt/core.h"
+#include "Engine/Engine.h"
 
 enum DIALOGUE_TYPE : int32_t;
 struct ODMRenderParams;

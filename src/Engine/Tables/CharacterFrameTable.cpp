@@ -1,13 +1,10 @@
 #include "CharacterFrameTable.h"
-
 #include <assert.h>
 #include <stddef.h>
 #include <memory>
-
 #include "Library/Random/Random.h"
 #include "Library/Random/RandomEngine.h"
-
-enum CharacterExpressionID : uint16_t;
+#include "Engine/Objects/CharacterEnums.h"
 
 
 //----- (00494AED) --------------------------------------------------------

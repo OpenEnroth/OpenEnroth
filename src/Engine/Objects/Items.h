@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <string>
-
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time.h"

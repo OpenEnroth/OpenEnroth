@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <string>
-
 #include "RenderEnums.h"
 
 class IRender;

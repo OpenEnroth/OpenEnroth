@@ -2,7 +2,6 @@
 
 #include <string>
 #include <algorithm>
-
 #include "Library/Config/Config.h"
 #include "Engine/Graphics/RenderEnums.h"
 #include "Io/Key.h"

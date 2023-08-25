@@ -2,7 +2,6 @@
 
 #include <string>
 #include <utility>
-
 #include "Engine/Localization.h"
 #include "Library/Color/Color.h"
 

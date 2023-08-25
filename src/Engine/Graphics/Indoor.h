@@ -5,7 +5,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
@@ -29,6 +28,7 @@ enum class ITEM_TREASURE_LEVEL : int8_t;
 struct DecalBuilder;
 struct MapInfo;
 struct SpellFxRenderer;
+enum class ItemTreasureLevel : int8_t;
 
 struct BLVLight {
     Vec3i vPosition;

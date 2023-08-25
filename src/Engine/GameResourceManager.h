@@ -2,7 +2,6 @@
 
 #include <string>
 #include <memory>
-
 #include "Utility/Memory/Blob.h"
 #include "Library/Lod/LodReader.h"
 

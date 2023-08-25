@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <string>
 #include <memory>
-
 #include "Platform/PlatformWindow.h"
 #include "ProxyBase.h"
 #include "Platform/PlatformEnums.h"

@@ -1,7 +1,9 @@
 #include "GUI/UI/Houses/MagicGuild.h"
-
+#include <compare>
+#include <assert.h>
 #include <string>
-
+#include <array>
+#include <memory>
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Tables/BuildingTable.h"
@@ -14,19 +16,33 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/AssetsManager.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
-
 #include "Media/Audio/AudioPlayer.h"
-
 #include "Io/Mouse.h"
-
 #include "Library/Random/Random.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/Time.h"
+#include "Engine/mm7_data.h"
+#include "GUI/GUIDialogues.h"
+#include "GUI/GUIEnums.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Random/RandomEngine.h"
+#include "Media/Audio/SoundEnums.h"
+#include "Utility/Geometry/Point.h"
+#include "Utility/IndexedBitset.h"
+#include "Utility/Segment.h"
+
+enum class MerchantPhrase;
 
 static constexpr IndexedArray<DAMAGE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> guildSpellsSchool = {
     {BUILDING_FIRE_GUILD,   DMGT_FIRE},

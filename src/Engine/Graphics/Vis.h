@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <variant>
 #include <array>
-
 #include "Utility/Flags.h"
 #include "Utility/Geometry/Plane.h"
 #include "Engine/Graphics/RenderEntities.h"

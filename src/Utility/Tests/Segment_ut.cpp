@@ -1,8 +1,7 @@
+#include <gtest/gtest.h>
 #include <numeric>
 #include <vector>
-
 #include "Testing/Unit/UnitTest.h"
-
 #include "Utility/Segment.h"
 
 UNIT_TEST(Segment, Iteration) {

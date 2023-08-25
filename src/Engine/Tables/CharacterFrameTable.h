@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <vector>
-
 #include "Engine/Objects/CharacterEnums.h"
 #include "Utility/Memory/Blob.h"
 
