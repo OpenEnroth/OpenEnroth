@@ -51,8 +51,6 @@ void Io::Mouse::SetCursorImage(const std::string &name) {
     if (this->cursor_name != name)
         this->cursor_name = name;
 
-    engine->SetTargetingMode(name == "MICON2");
-
     ClearCursor();
     if (name == "MICON1") {  // arrow
         this->bActive = false;
@@ -320,15 +318,15 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    Vis_PIDAndDepth picked_object = EngineIocContainer::ResolveVis()->get_picked_object_zbuf_val();
+    Vis_PIDAndDepth picked_object = engine->PickMouseNormal();
 
-    ObjectType type = picked_object.object_pid.type();
+    ObjectType type = picked_object.pid.type();
     if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
         pParty->activeCharacter().CanAct() &&
         pParty->activeCharacter().CanSteal()) {
         engine->_messageQueue->addMessageCurrentFrame(
             UIMSG_STEALFROMACTOR,
-            picked_object.object_pid.id(),
+            picked_object.pid.id(),
             0
         );
 

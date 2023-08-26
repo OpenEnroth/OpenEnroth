@@ -362,30 +362,6 @@ void Engine::StackPartyTorchLight() {
     }
 }
 
-//----- (0044EEA7) --------------------------------------------------------
-void Engine::filterPickMouse() {  // cursor picking
-    float depth = 0.0f;
-    Vis_SelectionFilter *sprite_filter = nullptr;
-    Vis_SelectionFilter *face_filter = nullptr;
-
-    if (isHoldingMouseRightButton()) {
-        face_filter = &vis_face_filter;
-        sprite_filter = &vis_allsprites_filter;
-        depth = pCamera3D->GetMouseInfoDepth();
-    } else {
-        if (engine->IsTargetingMode()) {
-            face_filter = &vis_face_filter;
-            sprite_filter = &vis_sprite_targets_filter;
-        } else {
-            face_filter = &vis_face_filter;
-            sprite_filter = &vis_items_filter;
-        }
-        depth = config->gameplay.RangedAttackDepth.value();
-    }
-    Pointi pt = mouse->GetCursorPos();
-    PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-}
-
 //----- (004645FA) --------------------------------------------------------
 void Engine::Deinitialize() {
     if (mouse)
@@ -538,33 +514,44 @@ void Engine::LogEngineBuildInfo() {
 }
 
 //----- (0044EA5E) --------------------------------------------------------
-void Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
-                       unsigned int uMouseY, bool bOutline,
-                       Vis_SelectionFilter *sprite_filter,
-                       Vis_SelectionFilter *face_filter) {
+Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+                                  Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
     if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
         uMouseX <= (signed int)pViewport->uScreen_BR_X &&
         uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
         uMouseY <= (signed int)pViewport->uScreen_BR_Y) {
-        vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
-
-        if (bOutline)
-            OutlineSelection();
+        return vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
+    } else {
+        return Vis_PIDAndDepth();
     }
 }
 
 //----- (0044EB12) --------------------------------------------------------
-bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
-                          Vis_SelectionFilter *face_filter) {
+Vis_PIDAndDepth Engine::PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
     if (current_screen_type == SCREEN_GAME) {
-        bool r = vis->PickKeyboard(pick_depth, &vis->default_list, sprite_filter, face_filter);
-
-        if (bOutline)
-            OutlineSelection();
-        return r;
+        return vis->PickKeyboard(pick_depth, sprite_filter, face_filter);
+    } else {
+        return Vis_PIDAndDepth();
     }
-    return false;
 }
+
+Vis_PIDAndDepth Engine::PickMouseInfoPopup() {
+    Pointi pt = mouse->GetCursorPos();
+    // TODO(captainurist): Right now we can have popups for monsters that are not reachable with a bow, and this is OK.
+    //                     However, such monsters also don't get a hint displayed on mouseover. Probably should fix this?
+    return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_allsprites_filter, &vis_face_filter);
+}
+
+Vis_PIDAndDepth Engine::PickMouseTarget() {
+    Pointi pt = mouse->GetCursorPos();
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_sprite_targets_filter, &vis_face_filter);
+}
+
+Vis_PIDAndDepth Engine::PickMouseNormal() {
+    Pointi pt = mouse->GetCursorPos();
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_items_filter, &vis_face_filter);
+}
+
 /*
 Result::Code Game::PickKeyboard(bool bOutline, struct unnamed_F93E6C *a3, struct
 unnamed_F93E6C *a4)
@@ -579,45 +566,6 @@ return Result::Success;
 }
 */
 // 4E28F8: using guessed type int current_screen_type;
-
-//----- (0044EB5A) --------------------------------------------------------
-void Engine::OutlineSelection() {
-    if (!vis->default_list.uSize)
-        return;
-
-    Vis_ObjectInfo *object_info = vis->default_list.object_pointers[0];
-    if (object_info) {
-        switch (object_info->object_type) {
-            case VisObjectType_Sprite: {
-                log->warning("Sprite outline currently unsupported");
-                return;
-            }
-
-            case VisObjectType_Face: {
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    ODMFace *face = std::get<ODMFace *>(object_info->object);
-                    if (face->uAttributes & FACE_OUTLINED)
-                        face->uAttributes &= ~FACE_OUTLINED;
-                    else
-                        face->uAttributes |= FACE_OUTLINED;
-                } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                    BLVFace *face = std::get<BLVFace *>(object_info->object);
-                    if (face->uAttributes & FACE_OUTLINED)
-                        face->uAttributes &= ~FACE_OUTLINED;
-                    else
-                        face->uAttributes |= FACE_OUTLINED;
-                } else {
-                    Error("Invalid level type", uCurrentlyLoadedLevelType);
-                }
-            } break;
-
-            default:
-                Error("Undefined CObjectInfo type requested in CGame::outline_selection()");
-        }
-    }
-}
-
-
 
 void PlayButtonClickSound() {
     pAudioPlayer->playNonResetableSound(SOUND_StartMainChoice02);

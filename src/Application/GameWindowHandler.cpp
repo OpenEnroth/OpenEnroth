@@ -206,7 +206,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
         }
 
         if (engine) {
-            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.value(), position.x, position.y, false,
+            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.value(), position.x, position.y,
                               &vis_decoration_noevent_filter, &vis_door_filter);
         }
 
@@ -223,7 +223,7 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
         mouse->SetMouseClick(position.x, position.y);
 
         if (engine) {
-            engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, 0, &vis_allsprites_filter, &vis_door_filter);
+            engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
         }
 
         UI_OnMouseRightClick(position.x, position.y);

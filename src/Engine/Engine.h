@@ -23,6 +23,8 @@ class KeyboardInputHandler;
 class KeyboardActionMapping;
 } // namespace Io
 
+struct Vis_PIDAndDepth;
+struct Vis_SelectionFilter;
 struct Polygon;
 class DecalBuilder;
 class BloodsplatContainer;
@@ -91,21 +93,21 @@ class Engine {
     static void LogEngineBuildInfo();
 
     void Initialize();
-    void PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
-                   bool bOutline, struct Vis_SelectionFilter *sprite_filter,
-                   struct Vis_SelectionFilter *face_filter);
-    bool PickKeyboard(float pick_depth, bool bOutline, struct Vis_SelectionFilter *sprite_filter,
-                      struct Vis_SelectionFilter *face_filter);
+    Vis_PIDAndDepth PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+                              Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+    Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+
+    Vis_PIDAndDepth PickMouseInfoPopup();
+    Vis_PIDAndDepth PickMouseTarget();
+    Vis_PIDAndDepth PickMouseNormal();
 
     /**
      * @offset 0x42213C
      */
     void onGameViewportClick();
-    void OutlineSelection();
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4); // TODO(captainurist): drop?
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
-    void filterPickMouse();
     void StackPartyTorchLight();
     void Deinitialize();
     void DrawParticles();
@@ -118,8 +120,6 @@ class Engine {
     void _461103_load_level_sub();
     void MM7_Initialize();
 
-    inline bool IsTargetingMode() const { return is_targeting; }
-    inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
     inline bool IsUnderwater() const { return is_underwater; }
     inline void SetUnderwater(bool is_underwater) { this->is_underwater = is_underwater; }
     inline bool IsSaturateFaces() const { return is_saturate_faces; }
@@ -128,7 +128,6 @@ class Engine {
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
     bool is_underwater = false;
-    bool is_targeting = false;
     bool is_saturate_faces = false;
     bool is_fog = false; // keeps track of whether fog enabled in d3d
 

@@ -902,23 +902,22 @@ void GameUI_WritePointedObjectStatusString() {
             auto vis = EngineIocContainer::ResolveVis();
 
             // get_picked_object_zbuf_val contains both the pid and the depth
-            pickedObject = vis->get_picked_object_zbuf_val();
-            mouse->uPointingObjectID = pickedObject.object_pid;
-            pickedObjectID = (signed)pickedObject.object_pid.id();
-            if (pickedObject.object_pid.type() == OBJECT_Item) {
+            Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
+            mouse->uPointingObjectID = pickedObject.pid;
+            pickedObjectID = (signed)pickedObject.pid.id();
+            if (pickedObject.pid.type() == OBJECT_Item) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     engine->_statusBar->clearPermanent();
                     uLastPointedObjectID = Pid();
                     return;
                 }
-                if (pickedObject.depth >= 0x200u ||
-                    pParty->pPickedItem.uItemID != ITEM_NULL) {
+                if (pickedObject.depth >= 0x200u || pParty->pPickedItem.uItemID != ITEM_NULL) {
                     engine->_statusBar->setPermanent(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 } else {
                     engine->_statusBar->setPermanent(LSTR_FMT_GET_S, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 }  // intentional fallthrough
-            } else if (pickedObject.object_pid.type() == OBJECT_Decoration) {
+            } else if (pickedObject.pid.type() == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     std::string pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
@@ -932,11 +931,11 @@ void GameUI_WritePointedObjectStatusString() {
                         engine->_statusBar->setPermanent(hintString);
                     }
                 }  // intentional fallthrough
-            } else if (pickedObject.object_pid.type() == OBJECT_Face) {
+            } else if (pickedObject.pid.type() == OBJECT_Face) {
                 if (pickedObject.depth < 0x200u) {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
-                        v18b = pickedObject.object_pid.id() >> 6;
+                        v18b = pickedObject.pid.id() >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
                             newString = getEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
@@ -966,7 +965,7 @@ void GameUI_WritePointedObjectStatusString() {
                 engine->_statusBar->clearPermanent();
                 uLastPointedObjectID = Pid();
                 return;
-            } else if (pickedObject.object_pid.type() == OBJECT_Actor) {
+            } else if (pickedObject.pid.type() == OBJECT_Actor) {
                 if (pickedObject.depth >= 0x2000u) {
                     mouse->uPointingObjectID = Pid();
                     if (uLastPointedObjectID) {

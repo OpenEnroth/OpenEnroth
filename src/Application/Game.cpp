@@ -1007,7 +1007,7 @@ void Game::processQueuedMessages() {
                 current_screen_type = SCREEN_GAME;
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
-                Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
+                Pid pid = engine->PickMouseTarget().pid;
                 ObjectType type = pid.type();
                 int id = pid.id();
                 bool interactionPossible = false;
@@ -1187,8 +1187,9 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpell_TargetActorBuff:
             case UIMSG_CastSpell_TargetActor: {
-                Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
-                int depth = _vis->get_picked_object_zbuf_val().depth;
+                Vis_PIDAndDepth object = engine->PickMouseTarget();
+                Pid pid = object.pid;
+                int depth = object.depth;
                 if (pid.type() == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
                     spellTargetPicked(pid, -1);
                     closeTargetedSpellWindow();
@@ -1929,11 +1930,8 @@ void Game::processQueuedMessages() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::onPressSpace() {
-    _engine->PickKeyboard(_engine->config->gameplay.KeyboardInteractionDepth.value(),
-                          keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
-                          &vis_decoration_noevent_filter, &vis_door_filter);
-
-    Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
+    Pid pid = _engine->PickKeyboard(_engine->config->gameplay.KeyboardInteractionDepth.value(),
+                                    &vis_decoration_noevent_filter, &vis_door_filter).pid;
     if (pid) {
         DoInteractionWithTopmostZObject(pid);
     }
@@ -1979,7 +1977,6 @@ void Game::gameLoop() {
             MessageLoopWithWait();
 
             _engine->particle_engine->UpdateParticles();
-            _engine->filterPickMouse();
             _engine->decal_builder->bloodsplat_container->uNumBloodsplats = 0;
             if (_engine->uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
                 _engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;

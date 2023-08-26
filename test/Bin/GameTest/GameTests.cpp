@@ -1641,3 +1641,18 @@ GAME_TEST(Issues, Issue1277) {
     test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
 }
+
+GAME_TEST(Issues, Issue1282) {
+    // Picking up an item asserts.
+    auto itemTape = tapes.hasItem(ITEM_LEATHER_ARMOR);
+    auto totalObjectsTape = tapes.custom([] {
+        int result = 0;
+        for (const SpriteObject &spriteObject : pSpriteObjects)
+            if (spriteObject.containing_item.uItemID != ITEM_NULL)
+                result++;
+        return result;
+    });
+    test.playTraceFromTestData("issue_1282.mm7", "issue_1282.json");
+    EXPECT_EQ(itemTape, tape(false, true));
+    EXPECT_EQ(totalObjectsTape.delta(), -1);
+}

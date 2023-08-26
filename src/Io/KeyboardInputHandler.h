@@ -36,7 +36,6 @@ class KeyboardInputHandler {
         ResetKeys();
     }
 
-    bool IsKeyboardPickingOutlineToggled() const;
     bool IsRunKeyToggled() const;
     bool IsTurnStrafingToggled() const;
     bool IsStealingToggled() const;

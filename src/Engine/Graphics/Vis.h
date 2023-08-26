@@ -1,7 +1,5 @@
 #pragma once
 
-#include <variant>
-
 #include "Utility/Flags.h"
 #include "Utility/Geometry/Plane.h"
 
@@ -50,14 +48,11 @@ extern Vis_SelectionFilter vis_decoration_noevent_filter;  // 00F93E6C
 extern Vis_SelectionFilter vis_items_filter;  // static to sub_44EEA7
 
 struct Vis_PIDAndDepth {
-    Pid object_pid;
-    int16_t depth;
+    Pid pid;
+    int depth = 0;
 };
 
-using Vis_Object = std::variant<std::monostate, int /* index */, ODMFace *, BLVFace *>;
-
 struct Vis_ObjectInfo {
-    Vis_Object object;
     Pid object_pid = Pid();
     int16_t depth = -1;
     VisObjectType object_type = VisObjectType_Any;
@@ -71,8 +66,7 @@ struct Vis_SelectionList {
     void create_object_pointers(PointerCreationType type = All);
     void sort_object_pointers();
 
-    inline void AddObject(Vis_Object object, VisObjectType type, int depth, Pid pid) {
-        object_pool[uSize].object = object;
+    inline void AddObject(VisObjectType type, int depth, Pid pid) {
         object_pool[uSize].object_type = type;
         object_pool[uSize].depth = depth;
         object_pool[uSize].object_pid = pid;
@@ -87,23 +81,23 @@ struct Vis_SelectionList {
 class Vis {
  public:
     Vis();
-    //----- (004C05A2) --------------------------------------------------------
-    // virtual ~Vis() {}
-    //----- (004C05BE) --------------------------------------------------------
-    virtual ~Vis() {}
-    bool PickKeyboard(float pick_depth, Vis_SelectionList *list,
-                      Vis_SelectionFilter *sprite_filter,
-                      Vis_SelectionFilter *face_filter);
+
+    Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+    Vis_PIDAndDepth PickMouse(float fDepth, float fMouseX, float fMouseY,
+                              Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
+
+    bool DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx);
+
+    Pid PickClosestActor(ObjectType object_type, unsigned int pick_depth,
+                         VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
+
+ private:
     void PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
                                  Vis_SelectionFilter *filter);
     void PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                                   Vis_SelectionFilter *filter);
     void PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                                    Vis_SelectionFilter *filter);
-
-    bool PickMouse(float fDepth, float fMouseX, float fMouseY,
-                   Vis_SelectionFilter *sprite_filter,
-                   Vis_SelectionFilter *face_filter);
     void PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                               Vis_SelectionList *list,
                               Vis_SelectionFilter *filter);
@@ -115,9 +109,9 @@ class Vis {
                                 Vis_SelectionFilter *filter,
                                 bool only_reachable);
 
-    bool is_part_of_selection(const Vis_Object &what,
-                              Vis_SelectionFilter *filter);
-    bool DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx);
+    bool isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filter);
+    bool isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_SelectionFilter *filter);
+
     Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face, Pid pid, float pick_depth);
     bool IsPolygonOccludedByBillboard(struct RenderVertexSoft *vertices,
                                       int num_vertices, float x, float y);
@@ -129,15 +123,12 @@ class Vis {
                                      float *out_center_y);
     bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *billboard, float x,
                                    float y);
-    Pid PickClosestActor(ObjectType object_type, unsigned int pick_depth,
-                                    VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
     Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
-    Vis_PIDAndDepth get_picked_object_zbuf_val();
     bool Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
                             RenderVertexSoft *Intersection, BLVFace *pFace,
                             signed int pBModelID);
-    bool CheckIntersectBModel(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID);
+    bool CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID);
     void CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *origin, Vec3f *step);
     void SortVerticesByX(struct RenderVertexD3D3 *pArray, unsigned int uStart,
                          unsigned int uEnd);
@@ -148,10 +139,9 @@ class Vis {
     void SortByScreenSpaceY(struct RenderVertexSoft *pArray, int start,
                             int end);
 
-    Vis_SelectionList default_list;
-    RenderVertexSoft debugpick;
-
-    Logger *log = nullptr;
+ private:
+    Vis_SelectionList _selectionList;
+    Logger *_log = nullptr;
 };
 
 
