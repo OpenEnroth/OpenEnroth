@@ -6,6 +6,5 @@ var searchData=
   ['vec2i_3',['Vec2i',['../Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73',1,'Vec.h']]],
   ['vec3f_4',['Vec3f',['../Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8',1,'Vec.h']]],
   ['vec3i_5',['Vec3i',['../Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2',1,'Vec.h']]],
-  ['vec3s_6',['Vec3s',['../Vec_8h.html#a6292e5605ec40bf04615dbf225d2654c',1,'Vec.h']]],
-  ['vis_5fobject_7',['Vis_Object',['../Vis_8h.html#a901e04389cae1cad859b1597966b7bc3',1,'Vis.h']]]
+  ['vec3s_6',['Vec3s',['../Vec_8h.html#a6292e5605ec40bf04615dbf225d2654c',1,'Vec.h']]]
 ];
