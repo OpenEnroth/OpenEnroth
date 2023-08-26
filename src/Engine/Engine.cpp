@@ -537,7 +537,8 @@ Vis_PIDAndDepth Engine::PickKeyboard(float pick_depth, Vis_SelectionFilter *spri
 
 Vis_PIDAndDepth Engine::PickMouseInfoPopup() {
     Pointi pt = mouse->GetCursorPos();
-    // TODO(captainurist): having a different depth here makes no sense.
+    // TODO(captainurist): Right now we can have popups for monsters that are not reachable with a bow, and this is OK.
+    //                     However, such monsters also don't get a hint displayed on mouseover. Probably should fix this?
     return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_allsprites_filter, &vis_face_filter);
 }
 
