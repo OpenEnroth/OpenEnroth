@@ -499,7 +499,8 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
     int goldcount = 0;
     int goldamount = 0;
 
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
+    int chestId = pGUIWindow_CurrentMenu->wData.val;
+    Chest *chest = &vChests[chestId];
 
     // loop through chest pInvetoryIndices
     for (int loop = 0; loop < 140; loop++) {
@@ -529,6 +530,9 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
         if (all == false)  // only grab 1 item
             break;
     }
+
+    if (engine->config->gameplay.ChestTryPlaceItems.value() == 2)
+        Chest::PlaceItems(chestId);
 
     if (grabcount > 1 || goldcount > 1) {  // found items
         engine->_statusBar->setEvent(fmt::format("You found {} item(s) and {} Gold!", grabcount, goldamount));
