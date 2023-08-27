@@ -183,6 +183,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
 }
 
 void GUIWindow_MagicGuild::buyBooksDialogue() {
+    // TODO(pskelton): Extract common item picking code
     GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
@@ -234,8 +235,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
-                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
+                if (pt.x >= testpos && pt.x <= testpos + static_cast<int>(shop_ui_items_in_store[testx]->width())) {
+                    if ((pt.y >= 90 && pt.y <= (90 + static_cast<int>(shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + static_cast<int>(shop_ui_items_in_store[testx]->height())))) {
                         MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_MAGIC_SHOP, houseId(), 2);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), 2);
                         int textHeight = assets->pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
@@ -318,9 +319,9 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                 testpos = 32 + 70 * testx;
             }
 
-            if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
-                if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) ||
-                    (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
+            if (pt.x >= testpos && pt.x <= testpos + static_cast<int>(shop_ui_items_in_store[testx]->width())) {
+                if ((pt.y >= 90 && pt.y <= (90 + static_cast<int>(shop_ui_items_in_store[testx]->height()))) ||
+                    (pt.y >= 250 && pt.y <= (250 + static_cast<int>(shop_ui_items_in_store[testx]->height())))) {
                     float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
                     int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem.GetValue(), fPriceMultiplier);
 
