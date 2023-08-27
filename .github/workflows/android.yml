@@ -32,10 +32,9 @@ on:
       - published
 
 env:
-  # These should be in sync, also this version is referenced in android/openenroth/build.gradle,
-  # see https://developer.android.com/ndk/downloads.
+  # This version is referenced in android/openenroth/build.gradle.
+  # See https://developer.android.com/ndk/downloads for revision-to-version mapping.
   NDK_REVISION: r26-rc1
-  NDK_VERSION: 26.0.10636728
 
 jobs:
   build_android:
@@ -78,15 +77,19 @@ jobs:
 
       - name: Get NDK
         id: get-ndk
-        uses: captainurist/setup-ndk@main
+        uses: nttld/setup-ndk@v1
         with:
           ndk-version: '${{env.NDK_REVISION}}'
           add-to-path: false
           local-cache: true
+          link-to-sdk: false
 
-      - name: Setup NDK
+      # Workaround for https://github.com/nttld/setup-ndk/issues/498
+      - name: Link NDK
         run: |
-          ln -s "${{steps.get-ndk.outputs.ndk-path}}" "/usr/local/lib/android/sdk/ndk/${{env.NDK_VERSION}}"
+          NDK_VERSION="${{steps.get-ndk.outputs.ndk-full-version}}"
+          NDK_VERSION="${NDK_VERSION%-*}"
+          ln -s "${{steps.get-ndk.outputs.ndk-path}}" "/usr/local/lib/android/sdk/ndk/$NDK_VERSION"
 
       - name: Install dependencies
         run: |
