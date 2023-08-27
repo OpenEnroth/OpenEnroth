@@ -16,10 +16,6 @@ on:
 
 env:
   TAG_NAME: nightly
-  # These should be in sync, also this version is referenced in android/openenroth/build.gradle,
-  # see https://developer.android.com/ndk/downloads.
-  NDK_REVISION: r26-rc1
-  NDK_VERSION: 26.0.10636728
 
 jobs:
   advanceNightlyTag:
