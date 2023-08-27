@@ -77,19 +77,12 @@ jobs:
 
       - name: Get NDK
         id: get-ndk
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@v1.3.1
         with:
           ndk-version: '${{env.NDK_REVISION}}'
           add-to-path: false
           local-cache: true
-          link-to-sdk: false
-
-      # Workaround for https://github.com/nttld/setup-ndk/issues/498
-      - name: Link NDK
-        run: |
-          NDK_VERSION="${{steps.get-ndk.outputs.ndk-full-version}}"
-          NDK_VERSION="${NDK_VERSION%-*}"
-          ln -s "${{steps.get-ndk.outputs.ndk-path}}" "/usr/local/lib/android/sdk/ndk/$NDK_VERSION"
+          link-to-sdk: true
 
       - name: Install dependencies
         run: |
