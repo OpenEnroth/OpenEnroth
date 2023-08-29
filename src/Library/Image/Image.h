@@ -10,6 +10,7 @@
 #include "Library/Color/Color.h"
 #include "Utility/Geometry/Size.h"
 #include "Utility/Memory/FreeDeleter.h"
+#include "Utility/Types.h"
 
 class Blob;
 
@@ -40,12 +41,12 @@ class ImageBase {
         return const_cast<ImageBase &>(*this).pixels();
     }
 
-    [[nodiscard]] size_t width() const {
-        return _width;
+    [[nodiscard]] ssize_t width() const {
+        return static_cast<ssize_t>(_width);
     }
 
-    [[nodiscard]] size_t height() const {
-        return _height;
+    [[nodiscard]] ssize_t height() const {
+        return static_cast<ssize_t>(_height);
     }
 
     [[nodiscard]] Sizei size() const {
