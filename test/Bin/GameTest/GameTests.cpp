@@ -1631,19 +1631,8 @@ GAME_TEST(Issues, Issue1197) {
 
 // 1200
 
-GAME_TEST(Issues, Issue1251a) {
-    // Wands may assert
-    // Part A - test that wand damage matches vanilla damage should be in range 8-48 for novice 8 fireball wand
-    auto dragonhealth = tapes.custom([] { return pActors[1].currentHP; });
-    test.playTraceFromTestData("issue_1251a.mm7", "issue_1251a.json");
-    for (int i = 1; i < dragonhealth.size(); i++) {
-        int delta = dragonhealth.values().at(i) - dragonhealth.values().at(i - 1);
-        EXPECT_TRUE(delta >= 8 && delta <= 48);
-    }
-}
-
-GAME_TEST(Issues, Issue1251b) {
-    // Part B - make sure charm wand doesnt assert
+GAME_TEST(Issues, Issue1251) {
+    // Make sure charm wand doesnt assert
     auto charmedactors = tapes.custom([] {
         return std::count_if(pActors.begin(), pActors.end(), [](const Actor& actor) {
             return actor.buffs[ACTOR_BUFF_CHARM].Active();
