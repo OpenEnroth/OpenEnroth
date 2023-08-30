@@ -1644,9 +1644,9 @@ GAME_TEST(Issues, Issue1251) {
 
 GAME_TEST(Issues, Issue1255) {
     // Cant buy green wand
-    EXPECT_FALSE(pParty->hasItem(ITEM_FAIRY_WAND_OF_LASHING));
+    auto wandTape = tapes.hasItem(ITEM_FAIRY_WAND_OF_LASHING);
     test.playTraceFromTestData("issue_1255.mm7", "issue_1255.json");
-    EXPECT_TRUE(pParty->hasItem(ITEM_FAIRY_WAND_OF_LASHING));
+    EXPECT_EQ(wandTape, tape(false, true));
 }
 
 GAME_TEST(Issues, Issue1273) {

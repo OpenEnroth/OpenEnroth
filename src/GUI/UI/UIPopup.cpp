@@ -1400,9 +1400,9 @@ void ShowPopupShopItem() {
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
                         if (item->uItemID != ITEM_NULL) {
-                            testpos = ((60 - static_cast<int>(shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
-                            if (pt.x >= testpos && pt.x < (testpos + static_cast<int>(shop_ui_items_in_store[testx]->width()))) {
-                                if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + static_cast<int>(shop_ui_items_in_store[testx]->height()))) {
+                            testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
+                            if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
+                                if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
                                     GameUI_DrawItemInfo(item);
                                 }
                             } else {
@@ -1430,14 +1430,14 @@ void ShowPopupShopItem() {
 
                         if (item->uItemID != ITEM_NULL) {
                             if (testx >= 4) {
-                                testpos = ((90 - static_cast<int>(shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);  // low row
+                                testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);  // low row
                             } else {
-                                testpos = ((86 - static_cast<int>(shop_ui_items_in_store[testx]->width() / 2)) + testx * 105);
+                                testpos = ((86 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 105);
                             }
 
-                            if (pt.x >= testpos && pt.x <= testpos + static_cast<int>(shop_ui_items_in_store[testx]->width())) {
-                                if ((pt.y >= 126 && pt.y < (126 + static_cast<int>(shop_ui_items_in_store[testx]->height()))) ||
-                                    (pt.y <= 98 && pt.y >= (98 - static_cast<int>(shop_ui_items_in_store[testx]->height())))) {
+                            if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
+                                if ((pt.y >= 126 && pt.y < (126 + (shop_ui_items_in_store[testx]->height()))) ||
+                                    (pt.y <= 98 && pt.y >= (98 - (shop_ui_items_in_store[testx]->height())))) {
                                     GameUI_DrawItemInfo(item);
                                 } else {
                                     return;
@@ -1465,14 +1465,14 @@ void ShowPopupShopItem() {
 
                         if (item->uItemID != ITEM_NULL) {
                             if (pt.y > 152) {
-                                testpos = 75 * testx - static_cast<int>(shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
+                                testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
                             } else {
-                                testpos = 75 * testx - static_cast<int>(shop_ui_items_in_store[testx]->width() / 2) + 40;
+                                testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40;
                             }
 
-                            if (pt.x >= testpos && pt.x <= testpos + static_cast<int>(shop_ui_items_in_store[testx]->width())) {
-                                if ((pt.y <= 308 && pt.y >= (308 - static_cast<int>(shop_ui_items_in_store[testx]->height()))) ||
-                                    (pt.y <= 152 && pt.y >= (152 - static_cast<int>(shop_ui_items_in_store[testx]->height())))) {
+                            if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
+                                if ((pt.y <= 308 && pt.y >= (308 - (shop_ui_items_in_store[testx]->height()))) ||
+                                    (pt.y <= 152 && pt.y >= (152 - (shop_ui_items_in_store[testx]->height())))) {
                                     GameUI_DrawItemInfo(item);
                                 } else {
                                     return;
@@ -1526,8 +1526,8 @@ void ShowPopupShopItem() {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (pt.x >= testpos && pt.x <= testpos + static_cast<int>(shop_ui_items_in_store[testx]->width())) {
-                    if ((pt.y >= 90 && pt.y <= (90 + static_cast<int>(shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + static_cast<int>(shop_ui_items_in_store[testx]->height())))) {
+                if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
+                    if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
                         showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
                     }
                 }
