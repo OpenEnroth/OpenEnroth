@@ -1629,6 +1629,19 @@ GAME_TEST(Issues, Issue1197) {
     EXPECT_EQ(deaths.delta(), 1);
 }
 
+// 1200
+
+GAME_TEST(Issues, Issue1251) {
+    // Make sure charm wand doesnt assert
+    auto charmedactors = tapes.custom([] {
+        return std::count_if(pActors.begin(), pActors.end(), [](const Actor& actor) {
+            return actor.buffs[ACTOR_BUFF_CHARM].Active();
+            });
+        });
+    test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");
+    EXPECT_EQ(charmedactors.delta(), 3);
+}
+
 GAME_TEST(Issues, Issue1273) {
     // Assert when clicking on shop video area
     auto dialogueTape = tapes.dialogueType();
