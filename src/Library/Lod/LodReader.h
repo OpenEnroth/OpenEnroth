@@ -84,6 +84,7 @@ class LodReader final {
 
  private:
     struct LodRegion {
+        std::string name{};
         size_t offset = 0;
         size_t size = 0;
     };
@@ -93,5 +94,5 @@ class LodReader final {
     std::string _path;
     std::string _description;
     std::string _rootName;
-    std::unordered_map<std::string, LodRegion> _files;
+    std::vector<LodRegion> _files{};
 };
