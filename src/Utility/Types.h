@@ -1,7 +1,11 @@
 #pragma once
 
-// signed size_t for image height and width
 #ifdef _WINDOWS
-    typedef long ssize_t;
+#   include <cstdint>
+#else
+#   include <sys/types.h>
 #endif
 
+#ifdef _WINDOWS
+using ssize_t = intptr_t;
+#endif

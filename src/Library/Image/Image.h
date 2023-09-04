@@ -42,23 +42,23 @@ class ImageBase {
     }
 
     [[nodiscard]] ssize_t width() const {
-        return static_cast<ssize_t>(_width);
+        return _width;
     }
 
     [[nodiscard]] ssize_t height() const {
-        return static_cast<ssize_t>(_height);
+        return _height;
     }
 
     [[nodiscard]] Sizei size() const {
-        return Sizei(_width, _height); // Narrowing size_t -> int, but we're not expecting images 2B pixels wide.
+        return Sizei(_width, _height); // Narrowing ssize_t -> int, but we're not expecting images 2B pixels wide.
     }
 
-    std::span<T> operator[](size_t y) {
-        assert(y < _height);
+    std::span<T> operator[](ssize_t y) {
+        assert(y >= 0 && y < _height);
         return {_pixels.get() + y * _width, _pixels.get() + (y + 1) * _width};
     }
 
-    std::span<const T> operator[](size_t y) const {
+    std::span<const T> operator[](ssize_t y) const {
         return const_cast<ImageBase &>(*this)[y];
     }
 
@@ -73,8 +73,8 @@ class ImageBase {
     }
 
  protected: // Directly accessible from derived classes.
-    size_t _width = 0;
-    size_t _height = 0;
+    ssize_t _width = 0;
+    ssize_t _height = 0;
     Storage _pixels;
 };
 } // namespace detail
@@ -109,7 +109,8 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
      * @return                          Uninitialized image of given size. If width or height is zero, then returns an
      *                                  empty image.
      */
-    static Image uninitialized(size_t width, size_t height) {
+    static Image uninitialized(ssize_t width, ssize_t height) {
+        assert(width >= 0 && height >= 0);
         if (width == 0 || height == 0)
             return Image();
 
@@ -129,7 +130,7 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
      * @return                          Solid-filled image of given size. If width or height is zero, then returns an
      *                                  empty image.
      */
-    static Image solid(size_t width, size_t height, T color) {
+    static Image solid(ssize_t width, ssize_t height, T color) {
         Image result = uninitialized(width, height);
         std::fill_n(result.pixels().data(), result.pixels().size(), color);
         return result;
@@ -143,7 +144,7 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
      * @param pixels                    Pixel buffer to copy.
      * @return                          Newly allocated `Image` containing a copy of the provided pixel buffer.
      */
-    static Image copy(size_t width, size_t height, const T *pixels) {
+    static Image copy(ssize_t width, ssize_t height, const T *pixels) {
         Image result = uninitialized(width, height);
         std::copy_n(pixels, result.pixels().size(), result.pixels().data());
         return result;
@@ -163,7 +164,7 @@ class ImageView : public detail::ImageBase<const T, detail::ViewPointer<const T>
 
     // Default copy & move are OK.
 
-    ImageView(const T *pixels, size_t width, size_t height) {
+    ImageView(const T *pixels, ssize_t width, ssize_t height) {
         this->_width = width;
         this->_height = height;
         this->_pixels.reset(pixels);
