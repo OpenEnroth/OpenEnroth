@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Utility/Geometry/Size.h"
+#include "Utility/Types.h"
 
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
@@ -20,8 +21,8 @@ class GraphicsImage {
     static GraphicsImage *Create(size_t width, size_t height);
     static GraphicsImage *Create(std::unique_ptr<ImageLoader> loader);
 
-    size_t width();
-    size_t height();
+    ssize_t width();
+    ssize_t height();
     Sizei size();
 
     RgbaImage &rgba();

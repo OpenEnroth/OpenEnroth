@@ -1642,6 +1642,13 @@ GAME_TEST(Issues, Issue1251) {
     EXPECT_EQ(charmedactors.delta(), 3);
 }
 
+GAME_TEST(Issues, Issue1255) {
+    // Cant buy green wand
+    auto wandTape = tapes.hasItem(ITEM_FAIRY_WAND_OF_LASHING);
+    test.playTraceFromTestData("issue_1255.mm7", "issue_1255.json");
+    EXPECT_EQ(wandTape, tape(false, true));
+}
+
 GAME_TEST(Issues, Issue1273) {
     // Assert when clicking on shop video area
     auto dialogueTape = tapes.dialogueType();

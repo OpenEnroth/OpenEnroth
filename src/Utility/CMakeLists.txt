@@ -21,6 +21,7 @@ set(UTILITY_HEADERS
         FileSystem.h
         Flags.h
         Format.h
+        Types.h
         Geometry/BBox.h
         Geometry/Margins.h
         Geometry/Plane.h

@@ -33,11 +33,11 @@ GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     return img;
 }
 
-size_t GraphicsImage::width() {
+ssize_t GraphicsImage::width() {
     return rgba().width();
 }
 
-size_t GraphicsImage::height() {
+ssize_t GraphicsImage::height() {
     return rgba().height();
 }
 
