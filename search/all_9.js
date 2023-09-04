@@ -49,7 +49,7 @@ var searchData=
   ['imageloader_2ecpp_46',['ImageLoader.cpp',['../ImageLoader_8cpp.html',1,'']]],
   ['imageloader_2eh_47',['ImageLoader.h',['../ImageLoader_8h.html',1,'']]],
   ['images_48',['images',['../classAssetsManager.html#a8e6fc1fedbb5f14488fd94f6e6d27ece',1,'AssetsManager']]],
-  ['imageview_49',['ImageView',['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#ae4df9cdf900da0b75d2ca2b66926e974',1,'ImageView::ImageView(const T *pixels, size_t width, size_t height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default'],['../classImageView.html',1,'ImageView&lt; T &gt;']]],
+  ['imageview_49',['ImageView',['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#a8fad1d4328bfa9fcb03e984c97bcd816',1,'ImageView::ImageView(const T *pixels, ssize_t width, ssize_t height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default'],['../classImageView.html',1,'ImageView&lt; T &gt;']]],
   ['img_50',['img',['../classIcon.html#ab5cb984a6959ddc7003efa9076f20e4e',1,'Icon::img()'],['../structimg.html',1,'img']]],
   ['imgs_51',['imgs',['../structcontext.html#a5005d3800f027145a9522c05938095b5',1,'context']]],
   ['immolationactive_52',['ImmolationActive',['../structParty.html#ac32cc1fca5b06ad6ef7cd0f9cbfdb5b5',1,'Party']]],

@@ -13,7 +13,7 @@ var searchData=
   ['image_10',['Image',['../classImage.html#a8f420873cb7577a0b517b66a38def6ae',1,'Image::Image(const Image &amp;)=delete'],['../classImage.html#a330df4259a3b908b3a16447ec7dc3227',1,'Image::Image()=default'],['../classImage.html#a8bfb4fc74f65fa65ea211c1c5ea1f771',1,'Image::Image(Image &amp;&amp;)=default']]],
   ['image16bit_5flod_5floader_11',['Image16bit_LOD_Loader',['../classImage16bit__LOD__Loader.html#aef1ff0886c8a9fb29ce9e0ba869227ef',1,'Image16bit_LOD_Loader']]],
   ['imageloader_12',['ImageLoader',['../classImageLoader.html#af0e70316989d3992c23ea52cd337c9ad',1,'ImageLoader']]],
-  ['imageview_13',['ImageView',['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#ae4df9cdf900da0b75d2ca2b66926e974',1,'ImageView::ImageView(const T *pixels, size_t width, size_t height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default']]],
+  ['imageview_13',['ImageView',['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#a8fad1d4328bfa9fcb03e984c97bcd816',1,'ImageView::ImageView(const T *pixels, ssize_t width, ssize_t height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default']]],
   ['immolationactive_14',['ImmolationActive',['../structParty.html#ac32cc1fca5b06ad6ef7cd0f9cbfdb5b5',1,'Party']]],
   ['immolationaffectedactors_15',['immolationAffectedActors',['../structParty.html#adb81d3f92b512ec82e542b13b10f926d',1,'Party']]],
   ['immolationskilllevel_16',['ImmolationSkillLevel',['../structParty.html#a8095c78569f63bbb66e9f86ca3905627',1,'Party']]],
