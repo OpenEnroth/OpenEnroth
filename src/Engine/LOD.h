@@ -89,6 +89,7 @@ class File {
 class WriteableFile : public File {
  public:
     WriteableFile();
+    ~WriteableFile() { FreeSubIndexAndIO(); }
     bool LoadFile(const std::string &filePath, bool bWriting);
     unsigned int Write(const std::string &file_name, const void *pDirData, size_t size, int a4);
     unsigned int Write(const std::string &file_name, const Blob &data);
