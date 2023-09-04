@@ -153,5 +153,6 @@ var searchData=
   ['_7etargetedspellui_5fhirelings_150',['~TargetedSpellUI_Hirelings',['../classTargetedSpellUI__Hirelings.html#a6edafdbe50e4af1f5a290fab149a7a3e',1,'TargetedSpellUI_Hirelings']]],
   ['_7etargetedspellui_5ftelekinesis_151',['~TargetedSpellUI_Telekinesis',['../classTargetedSpellUI__Telekinesis.html#a7672f2c262feb05fcc913f8289b2c569',1,'TargetedSpellUI_Telekinesis']]],
   ['_7evideolist_152',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
-  ['_7ewindowmanager_153',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7ewindowmanager_153',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]],
+  ['_7ewriteablefile_154',['~WriteableFile',['../classLOD_1_1WriteableFile.html#a5ccbd96a3398f21bbd55789d9ed6d6e3',1,'LOD::WriteableFile']]]
 ];
