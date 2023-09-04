@@ -22,8 +22,8 @@ GraphicsImage *GraphicsImage::Create(RgbaImage image) {
     return result;
 }
 
-GraphicsImage *GraphicsImage::Create(size_t width, size_t height) {
-    assert(width != 0 && height != 0);
+GraphicsImage *GraphicsImage::Create(ssize_t width, ssize_t height) {
+    assert(width > 0 && height > 0);
     return Create(RgbaImage::solid(width, height, Color()));
 }
 
