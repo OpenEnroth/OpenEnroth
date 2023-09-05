@@ -20,19 +20,6 @@ class GUIWindow_Rest : public GUIWindow {
     int hourglassLoopTimer;
 };
 
-// This window is unused.
-#if 0
-class GUIWindow_RestWindow : public GUIWindow {
- public:
-    GUIWindow_RestWindow(Pointi position, Sizei dimensions, WindowData data, const char *hint) :
-        GUIWindow(WINDOW_Rest, position, dimensions, data, hint)
-    {}
-    virtual ~GUIWindow_RestWindow() {}
-
-    virtual void Update();
-};
-#endif
-
 enum class RestType {
     REST_NONE = 0,
     REST_WAIT = 1,

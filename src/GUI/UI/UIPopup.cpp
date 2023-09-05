@@ -93,8 +93,10 @@ void Inventory_ItemPopupAndAlchemy();
 Color GetSpellColor(signed int a1);
 uint64_t GetExperienceRequiredForLevel(int level);
 
-//----- (004179BC) --------------------------------------------------------
-void CharacterUI_DrawTooltip(const char *title, std::string &content) {
+/**
+ * @offset 0x4179BC
+ */
+static void CharacterUI_DrawTooltip(const std::string &title, std::string &content) {
     Pointi pt = mouse->GetCursorPos();
 
     GUIWindow popup_window;
@@ -120,7 +122,8 @@ void CharacterUI_DrawTooltip(const char *title, std::string &content) {
     popup_window.DrawText(assets->pFontSmallnum.get(), {1, assets->pFontLucida->GetHeight()}, colorTable.White, content);  // popup_window.uFrameY + popup_window.uFrameHeight
 }
 
-void CharacterUI_DrawTooltip(const char *title, const char *content) {
+// TODO(Nik-RE-dev): use std::string in localization and then remove this function
+void CharacterUI_DrawTooltip(const std::string &title, const char *content) {
     std::string content_str = std::string(content);
     CharacterUI_DrawTooltip(title, content_str);
 }
@@ -1008,8 +1011,8 @@ void CharacterUI_SkillsTab_ShowHint() {
 void CharacterUI_StatsTab_ShowHint() {
     int pStringNum;         // edi@1
     Color pTextColor;  // eax@15
-    const char *pHourWord;  // ecx@17
-    const char *pDayWord;   // eax@20
+    std::string pHourWord;  // ecx@17
+    std::string pDayWord;   // eax@20
     int pHour;              // [sp+14h] [bp-1Ch]@15
     unsigned int pDay;      // [sp+24h] [bp-Ch]@15
 

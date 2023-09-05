@@ -829,16 +829,10 @@ Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerS
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, int a5, GameTime *a6) {
-    std::string str = std::string(lpsz);
-    return BuildDialogueString(str, uPlayerID, a3, houseId, a5, a6);
-}
-
-//----- (00495461) --------------------------------------------------------
-std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, int shop_screen, GameTime *a6) {
+std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, int shop_screen, GameTime *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
-    const char *pText;     // esi@7
+    std::string pText;     // esi@7
     int64_t v18;    // qax@18
     int v29;               // eax@68
     std::vector<int> addressingBits;

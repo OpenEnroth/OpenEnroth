@@ -50,7 +50,7 @@ static Color parseColorTag(const char *tag, const Color &defaultColor) {
     }
 }
 
-std::unique_ptr<GUIFont> GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
+std::unique_ptr<GUIFont> GUIFont::LoadFont(const std::string &pFontFile, const std::string &pFontPalette) {
     // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 

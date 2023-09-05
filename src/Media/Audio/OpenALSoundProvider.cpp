@@ -31,7 +31,7 @@ bool CheckError() {
     }
 
     const char *message = alGetString(code1);
-    logger->warning("OpenAL: error #{} \"{}\"", code1, message);
+    logger->warning("OpenAL: error #{} \"{}\"", code1, message ? message : "");
 
     return true;
 }
@@ -58,8 +58,7 @@ bool OpenALSoundProvider::Initialize() {
     }
 
     if (device_names) {
-        for (const char *device_name = device_names; device_name[0];
-             device_name += strlen(device_name) + 1) {
+        for (const char *device_name = device_names; device_name[0]; device_name += strlen(device_name) + 1) {
             logger->info("OpenAL: device found \"{}\"", device_name);
         }
     }

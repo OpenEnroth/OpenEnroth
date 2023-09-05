@@ -49,8 +49,10 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
     ui_book_calendar_moon_full = assets->getImage_ColorKey("moon_ful");
 }
 
-//----- (00413D3C) --------------------------------------------------------
-static const char *GetDayPart() {
+/**
+ * @offset 0x413D3C
+ */
+static std::string getDayPart() {
     if (pParty->uCurrentHour > 5 && pParty->uCurrentHour < 20) {
         return localization->GetString(LSTR_DAY_CAPITALIZED);
     } else if (pParty->uCurrentHour == 5) {
@@ -89,7 +91,7 @@ void GUIWindow_CalendarBook::Update() {
     calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->GetString(LSTR_TIME_IN_ERATHIA), 3);
 
     std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), hour,
-                                  pParty->uCurrentMinute, localization->GetAmPm(am), GetDayPart());
+                                  pParty->uCurrentMinute, localization->GetAmPm(am), getDayPart());
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 55}, ui_book_calendar_time_color, str);
 
     str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1,
