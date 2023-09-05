@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e478b22</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;72b727d</span>
    </div>
   </td>
  </tr>
@@ -126,8 +126,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:af00d2e0397208cf4d98ce0e07d0098fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a514da2c28fe82dfb02f00f9682655cce"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a514da2c28fe82dfb02f00f9682655cce">_rootName</a></td></tr>
 <tr class="separator:a514da2c28fe82dfb02f00f9682655cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afca35026c61b1b0d4e3840a9459cbf85"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#afca35026c61b1b0d4e3840a9459cbf85">_files</a></td></tr>
-<tr class="separator:afca35026c61b1b0d4e3840a9459cbf85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28f4e10cfcda97a31bf06cdb875ef0e8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a28f4e10cfcda97a31bf06cdb875ef0e8">_files</a> {}</td></tr>
+<tr class="separator:a28f4e10cfcda97a31bf06cdb875ef0e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A single stop shop to read <a class="el" href="namespaceLOD.html">LOD</a> files. Even though LODs support a multi-directory structure, in reality vanilla games only ever had a single directory each.</p>
@@ -529,8 +529,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afca35026c61b1b0d4e3840a9459cbf85" name="afca35026c61b1b0d4e3840a9459cbf85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afca35026c61b1b0d4e3840a9459cbf85">&#9670;&#160;</a></span>_files</h2>
+<a id="a28f4e10cfcda97a31bf06cdb875ef0e8" name="a28f4e10cfcda97a31bf06cdb875ef0e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28f4e10cfcda97a31bf06cdb875ef0e8">&#9670;&#160;</a></span>_files</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -539,7 +539,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a>&gt; LodReader::_files</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a>&gt; LodReader::_files {}</td>
         </tr>
       </table>
   </td>
@@ -548,6 +548,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Vanilla save structure expects a certain order of the lod container. Using a vector here to maintain correct sequence. Maintain OE save backwards compatability - see #1270. </p>
 
 </div>
 </div>
