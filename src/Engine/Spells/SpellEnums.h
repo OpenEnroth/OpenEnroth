@@ -129,7 +129,7 @@ enum SPELL_TYPE : uint8_t {
 
     BECOME_MAGIC_GUILD_MEMBER = 150,
     SPELL_QUEST_COMPLETED = 151,
-    SPELL_152 = 152,
+    SPELL_STAT_DECREASE = 152, // used for face overlay when something is subtracted from character like stat/res/gold/condition etc.
     SPELL_DISEASE = 153
 };
 

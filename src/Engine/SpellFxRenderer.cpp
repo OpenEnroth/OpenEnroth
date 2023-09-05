@@ -1093,8 +1093,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
             v6 = "spboost2";
             break;
 
-        case SPELL_152:
-            __debugbreak();  // spell id == 152 wtf
+        case SPELL_STAT_DECREASE:
         case SPELL_LIGHT_HOUR_OF_POWER:
         case SPELL_LIGHT_DAY_OF_THE_GODS:
         case SPELL_LIGHT_DAY_OF_PROTECTION:
