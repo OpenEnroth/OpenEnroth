@@ -5751,23 +5751,23 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
     switch (VarNum) {
         case VAR_CurrentHP:
             receiveDamage((signed int)pValue, DMGT_PHISYCAL);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_CurrentSP:
             this->mana = std::max(this->mana - pValue, 0);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_ACModifier:
             this->sACModifier -= (uint8_t)pValue;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_BaseLevel:
             this->uLevel -= (uint8_t)pValue;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_LevelModifier:
             this->sLevelModifier -= (uint8_t)pValue;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Age:
             this->sAgeModifier -= (int16_t)pValue;
@@ -5777,7 +5777,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_Experience:
             this->experience -= pValue;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_QBits_QuestsDone:
             pParty->_questBits.reset(pValue);
@@ -5825,7 +5825,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_FixedFood:
             pParty->TakeFood(pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_RandomFood:
             randFood = grng->random(pValue) + 1;
@@ -5834,365 +5834,365 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             pParty->TakeFood(randFood);
             engine->_statusBar->setEvent(LSTR_FMT_YOU_LOSE_D_FOOD, randFood);
             GameUI_DrawFoodAndGold();
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uPersonalityBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BaseMight:
             this->uMight -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
             this->uPersonality -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
             this->uEndurance -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
             this->uSpeed -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
             this->uLuck -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistance:
             this->sResFireBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_AirResistance:
             this->sResAirBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MindResistance:
             this->sResMindBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_LightResistance:
             this->sResLightBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
+            this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_StaffSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_STAFF, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_SwordSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_SWORD, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DaggerSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_DAGGER, pValue);;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_AxeSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_AXE, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_SpearSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_BOW, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_BowSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_BOW, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_MaceSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_MACE, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_BlasterSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_BLASTER, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_ShieldSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_SHIELD, pValue);;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_LeatherSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_LEATHER, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_SkillChain:
             SubtractSkillByEvent(CHARACTER_SKILL_CHAIN, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_PlateSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_PLATE, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_FireSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_FIRE, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_AirSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_AIR, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_WaterSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_WATER, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_EarthSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_EARTH, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_SpiritSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_SPIRIT, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_MindSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_MIND, pValue);;
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_BodySkill:
             SubtractSkillByEvent(CHARACTER_SKILL_BODY, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_LightSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_LIGHT, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DarkSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_DARK, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_IdentifyItemSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_ITEM_ID, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_MerchantSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_MERCHANT, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_RepairSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_REPAIR, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_BodybuildingSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_BODYBUILDING, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_MeditationSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_MEDITATION, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_PerceptionSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_PERCEPTION, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiplomacySkill:
             SubtractSkillByEvent(CHARACTER_SKILL_DIPLOMACY, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_ThieverySkill:
             Error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_TRAP_DISARM, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DodgeSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_DODGE, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_UnarmedSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_UNARMED, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_IdentifyMonsterSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_MONSTER_ID, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_ArmsmasterSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_ARMSMASTER, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_StealingSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_STEALING, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_AlchemySkill:
             SubtractSkillByEvent(CHARACTER_SKILL_ALCHEMY, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_LearningSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_LEARNING, pValue);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Cursed:
             this->conditions.Reset(CONDITION_CURSED);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Weak:
             this->conditions.Reset(CONDITION_WEAK);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Asleep:
             this->conditions.Reset(CONDITION_SLEEP);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Afraid:
             this->conditions.Reset(CONDITION_FEAR);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Drunk:
             this->conditions.Reset(CONDITION_DRUNK);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Insane:
             this->conditions.Reset(CONDITION_INSANE);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_PoisonedGreen:
             this->conditions.Reset(CONDITION_POISON_WEAK);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiseasedGreen:
             this->conditions.Reset(CONDITION_DISEASE_WEAK);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_PoisonedYellow:
             this->conditions.Reset(CONDITION_POISON_MEDIUM);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiseasedYellow:
             this->conditions.Reset(CONDITION_DISEASE_MEDIUM);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_PoisonedRed:
             this->conditions.Reset(CONDITION_POISON_SEVERE);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiseasedRed:
             this->conditions.Reset(CONDITION_DISEASE_SEVERE);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Paralyzed:
             this->conditions.Reset(CONDITION_PARALYZED);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Unconsious:
             this->conditions.Reset(CONDITION_UNCONSCIOUS);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Dead:
             this->conditions.Reset(CONDITION_DEAD);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Stoned:
             this->conditions.Reset(CONDITION_PETRIFIED);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_Eradicated:
             this->conditions.Reset(CONDITION_ERADICATED);
-            PlayAwardSound_Anim98();
+            PlayAwardSound_AnimSubtract();
             return;
         case VAR_AutoNotes:
             // TODO(Nik-RE-dev): decreasing 1 seems wrong, also bits indexing was changed
@@ -6276,16 +6276,16 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::PlayAwardSound_Anim98() {
+void Character::PlayAwardSound_AnimSubtract() {
     int playerIndex = getCharacterIndex();
-    spell_fx_renderer->SetPlayerBuffAnim(SPELL_152, playerIndex);
+    spell_fx_renderer->SetPlayerBuffAnim(SPELL_STAT_DECREASE, playerIndex);
     PlayAwardSound();
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::PlayAwardSound_Anim98_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_AnimSubtract_Face(CharacterSpeech speech) {
     this->playReaction(speech);
-    PlayAwardSound_Anim98();
+    PlayAwardSound_AnimSubtract();
 }
 
 //----- (new function) --------------------------------------------------------

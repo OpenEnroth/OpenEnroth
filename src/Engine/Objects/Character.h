@@ -350,8 +350,8 @@ class Character {
     void PlayAwardSound_Anim97();
     void PlayAwardSound_Anim97_Face(CharacterSpeech speech);
     void AddSkillByEvent(CharacterSkillType, uint16_t addSkillValue);
-    void PlayAwardSound_Anim98();
-    void PlayAwardSound_Anim98_Face(CharacterSpeech speech);
+    void PlayAwardSound_AnimSubtract();
+    void PlayAwardSound_AnimSubtract_Face(CharacterSpeech speech);
     void SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue);
 
     bool IsWeak() const;
