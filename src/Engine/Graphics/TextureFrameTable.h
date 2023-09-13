@@ -5,23 +5,26 @@
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Flags.h"
 
 class GraphicsImage;
 
-// TODO(captainurist): where is this used?
-enum TEXTURE_FRAME_TABLE_FLAGS {
+enum class TextureFrameFlag {
     TEXTURE_FRAME_TABLE_MORE_FRAMES = 0x1,
     TEXTURE_FRAME_TABLE_FIRST = 0x2,
 };
+using enum TextureFrameFlag;
+MM_DECLARE_FLAGS(TextureFrameFlags, TextureFrameFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(TextureFrameFlags)
 
 class TextureFrame {
  public:
     inline TextureFrame() : tex(nullptr) {}
 
     std::string name = "null";
-    int16_t uAnimTime = 0;
-    int16_t uAnimLength = 0;
-    int16_t uFlags = 0;  // 1 for anim
+    int16_t animTime = 0; // Frame time, in 1/16ths of a real-time second.
+    int16_t animLength = 0; // Total animation length, in 1/16ths of a real-time second. Set only for the first frame in a sequence.
+    TextureFrameFlags flags = 0;
 
     GraphicsImage *GetTexture();
 
@@ -30,7 +33,6 @@ class TextureFrame {
 };
 
 struct TextureFrameTable {
-    void LoadAnimationSequenceAndPalettes(int uIconID);
     GraphicsImage *GetFrameTexture(int frameId, int time);
     /**
     * @param   frameID        TextureFrameTable index
