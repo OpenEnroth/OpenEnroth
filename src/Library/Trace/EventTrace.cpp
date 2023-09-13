@@ -134,6 +134,7 @@ inline void dispatchByEventType(PlatformEventType type, Callable &&callable) {
     case EVENT_WINDOW_DEACTIVATE:
     case EVENT_WINDOW_CLOSE_REQUEST:
         callable(static_cast<PlatformWindowEvent *>(nullptr));
+        break;
     case EVENT_PAINT:
         callable(static_cast<PaintEvent *>(nullptr));
         break;
