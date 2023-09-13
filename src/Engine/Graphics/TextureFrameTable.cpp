@@ -13,24 +13,6 @@ GraphicsImage *TextureFrame::GetTexture() {
     return this->tex;
 }
 
-void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
-    if (uFrameID <= textures.size() && uFrameID >= 0) {
-        for (unsigned int i = uFrameID;; ++i) {
-            // this->pTextures[i].uTextureID =
-            // pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName,
-            // TEXTURE_DEFAULT);
-
-            // if (this->pTextures[i].uTextureID != -1)
-            //    pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2
-            //    =
-            //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
-
-            if (textures[i].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) break;
-        }
-    }
-    return;
-}
-
 int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
     std::string name = toLower(Str2);
 
