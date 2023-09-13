@@ -14,13 +14,11 @@ include(CppLint)
 include(Dependencies)
 include(CheckLinkerFlag)
 
-# Settings defaults.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(BUILD_PLATFORM STREQUAL "windows" OR BUILD_PLATFORM STREQUAL "darwin" OR BUILD_PLATFORM STREQUAL "linux")
-        set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
-    else()
-        set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
-    endif()
+# Defaults.
+if (CMAKE_BUILD_TYPE)
+    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
+else()
+    set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
 endif()
 if (BUILD_PLATFORM STREQUAL "linux" AND BUILD_ARCHITECTURE STREQUAL "x86")
     # TODO(captainurist): Prebuilt ffmpeg on x86 linux is built with --enable-asm, and ffmpeg x86 asm code doesn't
@@ -154,6 +152,12 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     if (OE_USE_PREBUILT_DEPENDENCIES)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
+endif()
+
+# We're getting linker errors on Android if we don't pass -Bsymbolic.
+# See https://github.com/google/ExoPlayer/issues/9933#issuecomment-1029775358.
+if(BUILD_PLATFORM STREQUAL "android")
+    add_link_options("-Wl,-Bsymbolic")
 endif()
 
 resolve_dependencies()

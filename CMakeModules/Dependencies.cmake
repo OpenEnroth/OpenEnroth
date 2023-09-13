@@ -2,7 +2,7 @@
 function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
     set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
     set(TARGET_PATH "${TARGET_DIR}/${FILE_NAME}")
-    message(STATUS "Downloading ${SOURCE_URL}...")
+    message(STATUS "Downloading ${SOURCE_URL} to ${TARGET_PATH}...")
     file(DOWNLOAD
             "${SOURCE_URL}"
             "${TARGET_PATH}"
@@ -19,9 +19,11 @@ function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
         message(FATAL_ERROR "Could not download ${SOURCE_URL}: ${ERROR_MESSAGE}")
     endif()
 
+    message(STATUS "Extracting ${TARGET_PATH} to ${TARGET_DIR}")
     execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf "${TARGET_PATH}"
             WORKING_DIRECTORY ${TARGET_DIR}
-            RESULT_VARIABLE UNPACK_STATUS)
+            RESULT_VARIABLE UNPACK_STATUS
+            COMMAND_ECHO STDOUT)
 
     if (UNPACK_STATUS)
         message(FATAL_ERROR "Could not unpack ${TARGET_PATH}: ${UNPACK_STATUS}")
@@ -32,68 +34,50 @@ endfunction()
 #      so all code below could be drastically simplified and we wouldn't have per-platform blocks.
 
 macro(resolve_dependencies) # Intentionally a macro - we want set() to work in parent scope.
-    if(BUILD_PLATFORM STREQUAL "android")
-        # NOTE: ${CMAKE_SOURCE_DIR} is pointing to OpenEnroth_Android/openenroth/jni directory in this case
-        add_library(ffmpeg::avcodec SHARED IMPORTED)
-        set_target_properties(ffmpeg::avcodec PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/include
-                IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libavcodec-58.so)
-        set(AVCODEC_LIBRARIES "ffmpeg::avcodec")
-        add_library(ffmpeg::avformat SHARED IMPORTED)
-        set_target_properties(ffmpeg::avformat PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/include
-                IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libavformat-58.so)
-        set(AVFORMAT_LIBRARIES "ffmpeg::avformat")
-        add_library(ffmpeg::avfilter SHARED IMPORTED)
-        set_target_properties(ffmpeg::avfilter PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/include
-                IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libavfilter-7.so)
-        set(AVFILTER_LIBRARIES "ffmpeg::avfilter")
-        add_library(ffmpeg::avutil SHARED IMPORTED)
-        set_target_properties(ffmpeg::avutil PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/include
-                IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libavutil-56.so)
-        set(AVUTIL_LIBRARIES "ffmpeg::avutil")
-        add_library(ffmpeg::swscale SHARED IMPORTED)
-        set_target_properties(ffmpeg::swscale PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/include
-                IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libswscale-5.so)
-        set(SWRESAMPLE_LIBRARIES "ffmpeg::swresample")
-        add_library(ffmpeg::swresample SHARED IMPORTED)
-        set_target_properties(ffmpeg::swresample PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/include
-                IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/FFmpeg/android/${ANDROID_ABI}/lib/libswresample-3.so)
-        set(SWSCALE_LIBRARIES "ffmpeg::swscale")
-        find_package(ZLIB REQUIRED)
-    elseif(OE_USE_PREBUILT_DEPENDENCIES)
+    if(OE_USE_PREBUILT_DEPENDENCIES)
         # "r2" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
         # possible to test with dependencies built from different branches of the OpenEnroth_Dependencies repo.
         set(PREBUILT_DEPS_TAG "deps_r2_master")
+        message(STATUS "Using prebuilt dependencies with PREBUILT_DEPS_TAG=${PREBUILT_DEPS_TAG}")
 
-        set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${CMAKE_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
+        set(PREBUILT_DEPS_BUILD_TYPE "${CMAKE_BUILD_TYPE}")
+        if (PREBUILT_DEPS_BUILD_TYPE STREQUAL "RelWithDebInfo" OR PREBUILT_DEPS_BUILD_TYPE STREQUAL "MinSizeRel")
+            set(PREBUILT_DEPS_BUILD_TYPE "Release")
+        endif()
+
+        set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
         set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
             download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}")
         endif()
 
-        list(APPEND CMAKE_MODULE_PATH "${PREBUILT_DEPS_DIR}")
-        list(APPEND CMAKE_PREFIX_PATH "${PREBUILT_DEPS_DIR}")
+        if(CMAKE_FIND_ROOT_PATH)
+            list(APPEND CMAKE_FIND_ROOT_PATH "${PREBUILT_DEPS_DIR}")
+            list(APPEND CMAKE_MODULE_PATH "/")
+            list(APPEND CMAKE_PREFIX_PATH "/")
+        else()
+            list(APPEND CMAKE_MODULE_PATH "${PREBUILT_DEPS_DIR}")
+            list(APPEND CMAKE_PREFIX_PATH "${PREBUILT_DEPS_DIR}")
+        endif()
 
         set(ZLIB_USE_STATIC_LIBS ON)
         find_package(ZLIB REQUIRED)
 
-        find_package(SDL2 CONFIG REQUIRED GLOBAL)
-        add_library(SDL2OE INTERFACE)
-        target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
-        if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
-            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
-        endif()
-        add_library(SDL2::SDL2OE ALIAS SDL2OE)
+        if (NOT BUILD_PLATFORM STREQUAL "android") # TODO(captainurist) : add more android prebuilt libs
+            find_package(SDL2 CONFIG REQUIRED GLOBAL)
+            add_library(SDL2OE INTERFACE)
+            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
+            if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
+                target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
+            endif()
+            add_library(SDL2::SDL2OE ALIAS SDL2OE)
 
-        find_package(OpenAL CONFIG REQUIRED GLOBAL)
+            find_package(OpenAL CONFIG REQUIRED GLOBAL)
+        endif()
 
         find_package(FFmpeg REQUIRED)
     else()
+        message(STATUS "Not using prebuilt dependencies")
         find_package(FFmpeg REQUIRED)
         find_package(OpenGL REQUIRED)
         find_package(ZLIB REQUIRED)

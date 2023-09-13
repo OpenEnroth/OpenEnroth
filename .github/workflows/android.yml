@@ -101,29 +101,6 @@ jobs:
           java-version: 17.0.6
           cache: gradle
 
-      - name: Check for ffmpeg cache
-        id: ffmpeg-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            android/openenroth/jni/FFmpeg/android/
-          key: ffmpeg-cache
-
-      - name: Build ffmpeg
-        if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
-        working-directory: android/openenroth/jni/FFmpeg
-        run: |
-          ./build.sh
-
-      - name: Save ffmpeg cache
-        if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
-        id: check-for-ffmpeg-save
-        uses: actions/cache/save@v3
-        with:
-          path: |
-            android/openenroth/jni/FFmpeg/android/
-          key: ffmpeg-cache
-
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
         with:
@@ -157,3 +134,4 @@ jobs:
       - name: Cleanup ccache
         run: |
           ccache -c
+
