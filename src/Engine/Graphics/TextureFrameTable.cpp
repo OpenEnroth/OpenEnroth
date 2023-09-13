@@ -25,7 +25,7 @@ void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
             //    =
             //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
 
-            if (textures[i].uFlags & 1) break;
+            if (textures[i].uFlags & TEXTURE_FRAME_TABLE_MORE_FRAMES) break;
         }
     }
     return;
@@ -43,7 +43,7 @@ int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
 GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
     int animLength = textures[frameId].uAnimLength;
 
-    if (textures[frameId].uFlags & 1 && animLength != 0) {
+    if ((textures[frameId].uFlags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animLength != 0) {
         int step = (time >> 3) % animLength;
         while (textures[frameId].uAnimTime < step) {
             step -= textures[frameId].uAnimTime;
@@ -56,7 +56,7 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
 
 int TextureFrameTable::textureFrameAnimLength(int frameID) {
     int animLength = textures[frameID].uAnimLength;
-    if (textures[frameID].uFlags & 1 && animLength != 0) {
+    if ((textures[frameID].uFlags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animLength != 0) {
         return animLength;
     }
     return 1;

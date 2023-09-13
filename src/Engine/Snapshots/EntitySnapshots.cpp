@@ -273,7 +273,7 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
 
     dst->uAnimLength = src.animLength;
     dst->uAnimTime = src.animTime;
-    dst->uFlags = src.flags;
+    dst->uFlags = static_cast<TextureFrameFlags>(src.flags);
 }
 
 void snapshot(const Timer &src, Timer_MM7 *dst) {
