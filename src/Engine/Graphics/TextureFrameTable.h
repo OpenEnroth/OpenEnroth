@@ -22,9 +22,9 @@ class TextureFrame {
     inline TextureFrame() : tex(nullptr) {}
 
     std::string name = "null";
-    int16_t uAnimTime = 0; // Frame time, in 1/16ths of a real-time second.
-    int16_t uAnimLength = 0; // Total animation length, in 1/16ths of a real-time second. Set only for the first frame in a sequence.
-    TextureFrameFlags uFlags = 0;
+    int16_t animTime = 0; // Frame time, in 1/16ths of a real-time second.
+    int16_t animLength = 0; // Total animation length, in 1/16ths of a real-time second. Set only for the first frame in a sequence.
+    TextureFrameFlags flags = 0;
 
     GraphicsImage *GetTexture();
 
