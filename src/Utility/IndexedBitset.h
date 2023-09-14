@@ -55,6 +55,10 @@ class IndexedBitset {
         return _bitset[static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)];
     }
 
+    friend bool operator==(const IndexedBitset &l, const IndexedBitset &r) {
+        return l._bitset == r._bitset;
+    }
+
  private:
     void checkIndex(key_type index) const {
         assert(index >= FirstIndex && index <= LastIndex);

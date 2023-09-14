@@ -159,37 +159,6 @@ static void reconstruct(const BBoxs &src, BBoxi *dst) {
     dst->z2 = src.z2;
 }
 
-// Note: IndexedBitset snapshots are very MM-specific, so they stay here instead of going to Library/Snapshots.
-
-template<class T, size_t N, auto L, auto H>
-static void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
-    assert(dst->size() * sizeof(T) * 8 == src.size());
-    size_t i = 1, j = 0;
-    while (i < src.size()) {
-        T val = 0;
-        // Bits inside each array element indexed backwards
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            val |= src[i] << ((sizeof(T) * 8) - k - 1);
-        }
-        (*dst)[j] = val;
-        j++;
-    }
-}
-
-template<class T, size_t N, auto L, auto H>
-static void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
-    assert(dst->size() == src.size() * sizeof(T) * 8);
-    size_t i = 1, j = 0;
-    while (i < dst->size()) {
-        T val = src[j];
-        // Bits inside each array element indexed backwards
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            dst->set(i, val & (1 << ((sizeof(T) * 8) - k - 1)));
-        }
-        j++;
-    }
-}
-
 void snapshot(const Pid &src, uint16_t *dst) {
     *dst = src.packed();
 }
@@ -500,14 +469,14 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 
     dst->daysPlayedWithoutRest = src.days_played_without_rest;
 
-    snapshot(src._questBits, &dst->questBits);
+    snapshot(src._questBits, &dst->questBits, tags::reverseBits);
     snapshot(src.pArcomageWins, &dst->arcomageWins);
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
     dst->numArenaWins = src.uNumArenaWins;
 
     snapshot(src.pIsArtifactFound, &dst->isArtifactFound);
-    snapshot(src._autonoteBits, &dst->autonoteBits);
+    snapshot(src._autonoteBits, &dst->autonoteBits, tags::reverseBits);
 
     dst->numArcomageWins = src.uNumArcomageWins;
     dst->numArcomageLoses = src.uNumArcomageLoses;
@@ -597,14 +566,14 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     dst->days_played_without_rest = src.daysPlayedWithoutRest;
 
-    reconstruct(src.questBits, &dst->_questBits);
+    reconstruct(src.questBits, &dst->_questBits, tags::reverseBits);
     reconstruct(src.arcomageWins, &dst->pArcomageWins);
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
     dst->uNumArenaWins = src.numArenaWins;
 
     reconstruct(src.isArtifactFound, &dst->pIsArtifactFound);
-    reconstruct(src.autonoteBits, &dst->_autonoteBits);
+    reconstruct(src.autonoteBits, &dst->_autonoteBits, tags::reverseBits);
 
     dst->uNumArcomageWins = src.numArcomageWins;
     dst->uNumArcomageLoses = src.numArcomageLoses;
@@ -692,7 +661,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->field_104 = src.field_104;
 
     snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
-    snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits);
+    snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
 
     dst->pureLuckUsed = src.pure_luck_used;
@@ -745,7 +714,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
-    snapshot(src._characterEventBits, &dst->playerEventBits);
+    snapshot(src._characterEventBits, &dst->playerEventBits, tags::reverseBits);
 
     dst->someAttackBonus = src._some_attack_bonus;
     dst->meleeDmgBonus = src._melee_dmg_bonus;
@@ -943,7 +912,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->field_104 = src.field_104;
 
     reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
-    reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits);
+    reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
 
     dst->pure_luck_used = src.pureLuckUsed;
@@ -996,7 +965,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
-    reconstruct(src.playerEventBits, &dst->_characterEventBits);
+    reconstruct(src.playerEventBits, &dst->_characterEventBits, tags::reverseBits);
 
     dst->_some_attack_bonus = src.someAttackBonus;
     dst->_melee_dmg_bonus = src.meleeDmgBonus;
