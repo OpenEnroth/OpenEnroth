@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f53a60d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;27407d6</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,8 @@ $(function() {
   <div class="headertitle"><div class="title">UIGame.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -107,8 +108,8 @@ Functions</h2></td></tr>
 <tr class="separator:a19b0f805a3fa3ae0a2fbde27e8df406a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae479cc6554179c2014b9ab9e262c4735"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8h.html#ae479cc6554179c2014b9ab9e262c4735">GameUI_OnPlayerPortraitLeftClick</a> (unsigned int uPlayerID)</td></tr>
 <tr class="separator:ae479cc6554179c2014b9ab9e262c4735"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70225fa4405c71b7fe143f2dd18ac0c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8h.html#a70225fa4405c71b7fe143f2dd18ac0c5">buttonbox</a> (int x, int y, const char *text, int col)</td></tr>
-<tr class="separator:a70225fa4405c71b7fe143f2dd18ac0c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef84afbc1e950f3df229eacaad4e5b0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8h.html#aef84afbc1e950f3df229eacaad4e5b0b">buttonbox</a> (int x, int y, const std::string &amp;text, int col)</td></tr>
+<tr class="separator:aef84afbc1e950f3df229eacaad4e5b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad516679b49ae71471f7d64f72a8e51e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8h.html#ad516679b49ae71471f7d64f72a8e51e7">GameUI_handleHintMessage</a> (<a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02">UIMessageType</a> type, int param)</td></tr>
 <tr class="separator:ad516679b49ae71471f7d64f72a8e51e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -224,8 +225,8 @@ Variables</h2></td></tr>
 <tr class="separator:aad8fee78c22b710592f9800e5126ede8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a70225fa4405c71b7fe143f2dd18ac0c5" name="a70225fa4405c71b7fe143f2dd18ac0c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70225fa4405c71b7fe143f2dd18ac0c5">&#9670;&#160;</a></span>buttonbox()</h2>
+<a id="aef84afbc1e950f3df229eacaad4e5b0b" name="aef84afbc1e950f3df229eacaad4e5b0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef84afbc1e950f3df229eacaad4e5b0b">&#9670;&#160;</a></span>buttonbox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -245,7 +246,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>text</em>, </td>
         </tr>
         <tr>

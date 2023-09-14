@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f53a60d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;27407d6</span>
    </div>
   </td>
  </tr>
@@ -130,10 +130,10 @@ Functions</h2></td></tr>
 <tr class="separator:a2efaa0781befb9945ef056e308c8eff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ff4540fde6912df464fdc62bcb9987c"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a4ff4540fde6912df464fdc62bcb9987c">GetExperienceRequiredForLevel</a> (int level)</td></tr>
 <tr class="separator:a4ff4540fde6912df464fdc62bcb9987c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d8eb310251677d1e7cd8b756671e070"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a6d8eb310251677d1e7cd8b756671e070">CharacterUI_DrawTooltip</a> (const char *title, std::string &amp;content)</td></tr>
-<tr class="separator:a6d8eb310251677d1e7cd8b756671e070"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac566e817fdff46e93721eeb645adaccf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#ac566e817fdff46e93721eeb645adaccf">CharacterUI_DrawTooltip</a> (const char *title, const char *content)</td></tr>
-<tr class="separator:ac566e817fdff46e93721eeb645adaccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0aff88fb8f6f50ca393fdd3ccde6881"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#aa0aff88fb8f6f50ca393fdd3ccde6881">CharacterUI_DrawTooltip</a> (const std::string &amp;title, std::string &amp;content)</td></tr>
+<tr class="separator:aa0aff88fb8f6f50ca393fdd3ccde6881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04810a8794d8e5aee810a13b9dbac53c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a04810a8794d8e5aee810a13b9dbac53c">CharacterUI_DrawTooltip</a> (const std::string &amp;title, const char *content)</td></tr>
+<tr class="separator:a04810a8794d8e5aee810a13b9dbac53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae63663fb59f9435405c4bbbb6cc18dfe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#ae63663fb59f9435405c4bbbb6cc18dfe">DrawPopupWindow</a> (unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight)</td></tr>
 <tr class="separator:ae63663fb59f9435405c4bbbb6cc18dfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9920ae2d9d62a92b2952fa613ba55ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#ab9920ae2d9d62a92b2952fa613ba55ba">GameUI_DrawItemInfo</a> (struct <a class="el" href="structItemGen.html">ItemGen</a> *inspect_item)</td></tr>
@@ -200,8 +200,8 @@ Variables</h2></td></tr>
 <tr class="separator:ac301b91e713b85ec45e5337683e92dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ac566e817fdff46e93721eeb645adaccf" name="ac566e817fdff46e93721eeb645adaccf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac566e817fdff46e93721eeb645adaccf">&#9670;&#160;</a></span>CharacterUI_DrawTooltip() <span class="overload">[1/2]</span></h2>
+<a id="a04810a8794d8e5aee810a13b9dbac53c" name="a04810a8794d8e5aee810a13b9dbac53c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04810a8794d8e5aee810a13b9dbac53c">&#9670;&#160;</a></span>CharacterUI_DrawTooltip() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -209,7 +209,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void CharacterUI_DrawTooltip </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>title</em>, </td>
         </tr>
         <tr>
@@ -228,16 +228,19 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a6d8eb310251677d1e7cd8b756671e070" name="a6d8eb310251677d1e7cd8b756671e070"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d8eb310251677d1e7cd8b756671e070">&#9670;&#160;</a></span>CharacterUI_DrawTooltip() <span class="overload">[2/2]</span></h2>
+<a id="aa0aff88fb8f6f50ca393fdd3ccde6881" name="aa0aff88fb8f6f50ca393fdd3ccde6881"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0aff88fb8f6f50ca393fdd3ccde6881">&#9670;&#160;</a></span>CharacterUI_DrawTooltip() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void CharacterUI_DrawTooltip </td>
+          <td class="memname">static void CharacterUI_DrawTooltip </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>title</em>, </td>
         </tr>
         <tr>
@@ -252,7 +255,13 @@ Variables</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4179BC </dd></dl>
 
 </div>
 </div>

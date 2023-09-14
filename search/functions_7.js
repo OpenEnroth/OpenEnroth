@@ -144,7 +144,7 @@ var searchData=
   ['getdamagemod_141',['GetDamageMod',['../structItemGen.html#a166334828a18f6f669d44d2106934f94',1,'ItemGen']]],
   ['getdamageroll_142',['GetDamageRoll',['../structItemGen.html#a1e98f38e42f3f6ca3eec76ccb1bb84f2',1,'ItemGen']]],
   ['getdayname_143',['GetDayName',['../classLocalization.html#ad943ce0e8c3b9428b732b58f8b259bcc',1,'Localization']]],
-  ['getdaypart_144',['GetDayPart',['../CalendarBook_8cpp.html#a7753b6e05f9a7f9845fa610484345320',1,'CalendarBook.cpp']]],
+  ['getdaypart_144',['getDayPart',['../CalendarBook_8cpp.html#aaad68f22c6922baf321322eef8414fce',1,'CalendarBook.cpp']]],
   ['getdays_145',['GetDays',['../structGameTime.html#a63923f44c458d6327dec9c87660700a5',1,'GameTime']]],
   ['getdaysofmonth_146',['GetDaysOfMonth',['../structGameTime.html#a641f4d3ee68d3353156b0291d1858745',1,'GameTime']]],
   ['getdaysofweek_147',['GetDaysOfWeek',['../structGameTime.html#a0ec14829aa4069e06cdd6dbaa1b10778',1,'GameTime']]],
