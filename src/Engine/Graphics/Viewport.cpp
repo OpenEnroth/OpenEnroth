@@ -236,7 +236,7 @@ void ItemInteraction(unsigned int item_id) {
             pParty->_questBits.set(QBIT_SPLITTER_FOUND);
         }
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_REMOVE_FEAR) {
-            pParty->_questBits.set(185);
+            pParty->_questBits.set(QBIT_REMOVE_FEAR_FOUND);
         }
         if (!pParty->addItemToParty(&pSpriteObjects[item_id].containing_item)) {
             pParty->setHoldingItem(&pSpriteObjects[item_id].containing_item);

@@ -965,7 +965,7 @@ void Party::restOneFrame() {
     }
 }
 
-bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {
+bool TestPartyQuestBit(QuestBit bit) {
     return pParty->_questBits[bit];
 }
 

@@ -39,7 +39,7 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(
     pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, ui_book_button2_on->size(), 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), Io::InputAction::DialogRight, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
-    for (int i = 1; i < pQuestTable.size(); ++i) {
+    for (auto i : pQuestTable.indices()) {
         if (pParty->_questBits[i] && !pQuestTable[i].empty()) {
             _activeQuestsIdx.push_back(i);
         }

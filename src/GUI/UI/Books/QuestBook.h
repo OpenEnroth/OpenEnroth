@@ -14,6 +14,6 @@ struct GUIWindow_QuestBook : public GUIWindow_Book {
     int _startingQuestIdx;
     int _currentPage;
     int _currentPageQuests;
-    std::vector<int> _activeQuestsIdx;
+    std::vector<QuestBit> _activeQuestsIdx;
     std::unordered_map<int, int> _questsPerPage;
 };

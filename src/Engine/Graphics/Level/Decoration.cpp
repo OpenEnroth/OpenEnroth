@@ -315,7 +315,7 @@ bool LevelDecoration::IsObeliskChestActive() {
     // bool v1; // ebx@1
     // LevelDecoration *v2; // edi@1
 
-    static const std::array<const PARTY_QUEST_BITS, 14> aObeliskQuests = {{
+    static constexpr std::array<QuestBit, 14> aObeliskQuests = {{
         QBIT_OBELISK_IN_HARMONDALE_FOUND,
         QBIT_OBELISK_IN_ERATHIA_FOUND,
         QBIT_OBELISK_IN_TULAREAN_FOREST_FOUND,

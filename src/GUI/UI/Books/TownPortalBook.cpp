@@ -27,7 +27,7 @@ struct TownPortalData {
     int viewYaw;
     int viewPitch;
     MapId mapInfoID;
-    int qBit;
+    QuestBit qBit;
 };
 
 static const int TOWN_PORTAL_DESTINATION_COUNT = 6;
