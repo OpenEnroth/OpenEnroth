@@ -176,31 +176,23 @@ namespace tags {
 constexpr ReverseBitOrderTag reverseBits;
 } // namespace tags
 
-template<class T, size_t N, auto L, auto H>
-static void snapshot(const IndexedBitset<L, H> &src, std::array<T , N> *dst, ReverseBitOrderTag) {
-    assert(dst->size() * sizeof(T) * 8 == src.size());
-    size_t i = 1, j = 0;
-    while (i < src.size()) {
-        T val = 0;
-        // Bits inside each array element indexed backwards
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            val |= src[i] << ((sizeof(T) * 8) - k - 1);
-        }
-        (*dst)[j] = val;
-        j++;
+template<size_t N, auto L, auto H>
+static void snapshot(const IndexedBitset<L, H> &src, std::array<uint8_t, N> *dst, ReverseBitOrderTag) {
+    assert(dst->size() * 8 == src.size());
+
+    dst->fill(0);
+    for (size_t i = 0; auto index : src.indices()) {
+        (*dst)[i / 8] |= src[index] << (7 - i % 8);
+        i++;
     }
 }
 
-template<class T, size_t N, auto L, auto H>
-static void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst, ReverseBitOrderTag) {
-    assert(dst->size() == src.size() * sizeof(T) * 8);
-    size_t i = 1, j = 0;
-    while (i < dst->size()) {
-        T val = src[j];
-        // Bits inside each array element indexed backwards
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            dst->set(i, val & (1 << ((sizeof(T) * 8) - k - 1)));
-        }
-        j++;
+template<size_t N, auto L, auto H>
+static void reconstruct(const std::array<uint8_t, N> &src, IndexedBitset<L, H> *dst, ReverseBitOrderTag) {
+    assert(dst->size() == src.size() * 8);
+
+    for (size_t i = 0; auto index : dst->indices()) {
+        dst->set(index, (src[i / 8] >> (7 - i % 8)) & 1);
+        i++;
     }
 }
