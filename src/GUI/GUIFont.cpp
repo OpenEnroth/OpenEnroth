@@ -61,8 +61,9 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(const std::string &pFontFile, const s
     reconstruct(*static_cast<const FontData_MM7 *>(tmp_font.data()), tmp_font.size(), pFont.get()->pData);
 
     Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
-    if (!pallete_texture)
-        Error("Unable to open %s", pFontPalette);
+    if (!pallete_texture) {
+        Error("Unable to open %s", pFontPalette.c_str());
+    }
 
     pFont->pData->pFontPalettes[0] = pallete_texture->palette;
     pFont->pData->palletes_count = 1;
