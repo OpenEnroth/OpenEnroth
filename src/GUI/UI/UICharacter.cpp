@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <array>
 #include <unordered_map>
 
 #include "Engine/AssetsManager.h"
@@ -521,32 +522,32 @@ const int paperdoll_shoulder_second_coord[4][17][2] = {  // dword_4E5270
     0x36, 0x90, 0x67, 0x8F, 0x36, 0x90, 0x65, 0x8C, 0x6E, 0x91,
 };
 
-const char *dlad_texnames_by_face[25] = {
+static constexpr std::array<const char *, 25> dlad_texnames_by_face = {
     "pc01lad", "pc02lad", "pc03lad", "pc04lad", "pc05lad", "pc06lad", "pc07lad",
     "pc08lad", "pc09lad", "pc10lad", "pc11lad", "pc12lad", "pc13lad", "pc14lad",
     "pc15lad", "pc16lad", "pc17lad", "pc18lad", "pc19lad", "pc20lad", "pc21lad",
     "pc22lad", "pc23lad", "pc24lad", "pc25lad"};
-const char *dlau_texnames_by_face[25] = {
+static constexpr std::array<const char *, 25> dlau_texnames_by_face = {
     "pc01lau", "pc02lau", "pc03lau", "pc04lau", "pc05lau", "pc06lau", "pc07lau",
     "pc08lau", "pc09lau", "pc10lau", "pc11lau", "pc12lau", "pc13lau", "pc14lau",
     "pc15lau", "pc16lau", "pc17lau", "pc18lau", "pc19lau", "pc20lau", "pc21lau",
     "pc22lau", "pc23lau", "pc24lau", "pc25lau"};
-const char *dbod_texnames_by_face[25] = {
+static constexpr std::array<const char *, 25> dbod_texnames_by_face = {
     "pc01bod", "pc02bod", "pc03bod", "pc04bod", "pc05bod", "pc06bod", "pc07bod",
     "pc08bod", "pc09bod", "pc10bod", "pc11bod", "pc12bod", "pc13bod", "pc14bod",
     "pc15bod", "pc16bod", "pc17bod", "pc18bod", "pc19bod", "pc20bod", "pc21bod",
     "pc22bod", "pc23bod", "pc24bod", "pc25bod"};
-const char *drh_texnames_by_face[25] = {
+static constexpr std::array<const char *, 25> drh_texnames_by_face = {
     "pc01rh", "pc02rh", "pc03rh", "pc04rh", "pc05rh", "pc06rh", "pc07rh",
     "pc08rh", "pc09rh", "pc10rh", "pc11rh", "pc12rh", "pc13rh", "pc14rh",
     "pc15rh", "pc16rh", "pc17rh", "pc18rh", "pc19rh", "pc20rh", "pc21rh",
     "pc22rh", "pc23rh", "pc24rh", "pc25rh"};
-const char *dlh_texnames_by_face[25] = {
+static constexpr std::array<const char *, 25> dlh_texnames_by_face = {
     "pc01lh", "pc02lh", "pc03lh", "pc04lh", "pc05lh", "pc06lh", "pc07lh",
     "pc08lh", "pc09lh", "pc10lh", "pc11lh", "pc12lh", "pc13lh", "pc14lh",
     "pc15lh", "pc16lh", "pc17lh", "pc18lh", "pc19lh", "pc20lh", "pc21lh",
     "pc22lh", "pc23lh", "pc24lh", "pc25lh"};
-const char *dlhu_texnames_by_face[25] = {
+static constexpr std::array<const char *, 25> dlhu_texnames_by_face = {
     "pc01lhu", "pc02lhu", "pc03lhu", "pc04lhu", "pc05lhu", "pc06lhu", "pc07lhu",
     "pc08lhu", "pc09lhu", "pc10lhu", "pc11lhu", "pc12lhu", "pc13lhu", "pc14lhu",
     "pc15lhu", "pc16lhu", "pc17lhu", "pc18lhu", "pc19lhu", "pc20lhu", "pc21lhu",
@@ -787,9 +788,8 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     return CS_inventory_window;
 }
 
-static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
-    Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
-    int right_margin, const char *skill_group_name) {
+static int drawSkillTable(Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
+                          int right_margin, const std::string &skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
 
@@ -838,7 +838,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 }
                 pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             } else {
-                const char *skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
+                std::string skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
                 if (skill_mastery_color == Color()) {
                     skill_mastery_color = ui_character_header_text_color;
@@ -874,16 +874,16 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
 
     int y = 2 * assets->pFontLucida->GetHeight() + 13;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
+    y = drawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
 
     y += 2 * assets->pFontLucida->GetHeight() - 10;
-    CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allMagicSkills(), 400, localization->GetString(LSTR_MAGIC));
+    drawSkillTable(player, 24, y, allMagicSkills(), 400, localization->GetString(LSTR_MAGIC));
 
     y = 2 * assets->pFontLucida->GetHeight() + 13;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
+    y = drawSkillTable(player, 248, y, allArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
 
     y += 2 * assets->pFontLucida->GetHeight() - 10;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allMiscSkills(), 177, localization->GetString(LSTR_MISC));
+    y = drawSkillTable(player, 248, y, allMiscSkills(), 177, localization->GetString(LSTR_MISC));
 }
 
 GUIWindow GUIWindow_CharacterRecord::prepareAwardsWindow() {
@@ -1523,8 +1523,6 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
-    const char *text_format;  // [sp+14h] [bp-Ch]@4
-
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_stats_background);
 
@@ -1539,12 +1537,11 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
 
     // Left column
     auto formatLeftCol = [] (int lstr, int current, int max) {
-        const char *str = localization->GetString(lstr);
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (max < 1000) {
-            return fmt::format("{}{::}\r424{}\f00000 /\t185{}\n", str, color16.tag(), current, max);
+            return fmt::format("{}{::}\r424{}\f00000 /\t185{}\n", localization->GetString(lstr), color16.tag(), current, max);
         } else {
-            return fmt::format("{}{::}\r388{}\f00000 / {}\n", str, color16.tag(), current, max);
+            return fmt::format("{}{::}\r388{}\f00000 / {}\n", localization->GetString(lstr), color16.tag(), current, max);
         }
     };
 
@@ -1605,15 +1602,14 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
 
     // Right column
     auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
-        const char *str = localization->GetString(lstr);
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
-            return fmt::format("{}{::}\r180{}\n", str, color16.tag(), localization->GetString(LSTR_IMMUNE));
+            return fmt::format("{}{::}\r180{}\n", localization->GetString(lstr), color16.tag(), localization->GetString(LSTR_IMMUNE));
         } else {
             if (current < 100 && max < 100) {
-                return fmt::format("{}{::}\t110{}\f00000 / {}\n", str, color16.tag(), current, max);
+                return fmt::format("{}{::}\t110{}\f00000 / {}\n", localization->GetString(lstr), color16.tag(), current, max);
             } else {
-                return fmt::format("{}{::}\r180{}\f00000 / {}\n", str, color16.tag(), current, max);
+                return fmt::format("{}{::}\r180{}\f00000 / {}\n", localization->GetString(lstr), color16.tag(), current, max);
             }
         }
     };

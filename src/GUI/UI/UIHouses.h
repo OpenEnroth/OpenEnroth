@@ -125,7 +125,7 @@ class GUIWindow_House : public GUIWindow {
 
 // Originally was a packed struct.
 struct HouseAnimDescr {
-    const char *video_name;
+    std::string video_name;
     int field_4;
     int house_npc_id;
     BuildingType uBuildingType; // Originally was 1 byte.

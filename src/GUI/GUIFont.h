@@ -40,7 +40,7 @@ class GUIFont {
         delete pData;
     }
 
-    static std::unique_ptr<GUIFont> LoadFont(const char *pFontFile, const char *pFontPalette);
+    static std::unique_ptr<GUIFont> LoadFont(const std::string &pFontFile, const std::string &pFontPalette);
 
     void CreateFontTex();
     void ReleaseFontTex();

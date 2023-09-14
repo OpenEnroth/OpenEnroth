@@ -50,7 +50,7 @@ static Color parseColorTag(const char *tag, const Color &defaultColor) {
     }
 }
 
-std::unique_ptr<GUIFont> GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
+std::unique_ptr<GUIFont> GUIFont::LoadFont(const std::string &pFontFile, const std::string &pFontPalette) {
     // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 
@@ -61,8 +61,9 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(const char *pFontFile, const char *pF
     reconstruct(*static_cast<const FontData_MM7 *>(tmp_font.data()), tmp_font.size(), pFont.get()->pData);
 
     Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
-    if (!pallete_texture)
-        Error("Unable to open %s", pFontPalette);
+    if (!pallete_texture) {
+        Error("Unable to open %s", pFontPalette.c_str());
+    }
 
     pFont->pData->pFontPalettes[0] = pallete_texture->palette;
     pFont->pData->palletes_count = 1;

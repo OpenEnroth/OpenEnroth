@@ -7,8 +7,6 @@
 
 #include "Utility/IndexedArray.h"
 
-void TrainingDialog(const char *s);
-
 class GUIWindow_Training : public GUIWindow_House {
  public:
     explicit GUIWindow_Training(HOUSE_ID houseId);

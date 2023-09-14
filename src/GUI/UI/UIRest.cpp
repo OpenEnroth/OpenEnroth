@@ -29,26 +29,6 @@ int foodRequiredToRest;
 GameTime remainingRestTime;
 RestType currentRestType;
 
-// GUIWindow_RestWindow is unused
-#if 0
-void GUIWindow_RestWindow::Update() {
-    __debugbreak();  // doesnt seems to get here, check stack trace & conditions
-    GUIButton GUIButton2;  // [sp+28h] [bp-E0h]@133
-    GUIButton2.uZ = 197;
-    GUIButton2.uW = 197;
-    GUIButton2.uX = 27;
-    GUIButton2.uY = 161;
-    GUIButton2.uWidth = 171;
-    GUIButton2.uHeight = 37;
-    GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, *(static_cast<Image **>(wData.ptr) + 15));
-    GUIButton2.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), assets->pFontCreate, 0, 0);
-    GUIButton2.pParent = 0;
-    Release();
-}
-#endif
-
 static void prepareToLoadRestUI() {
     if (current_screen_type != SCREEN_GAME) {
         if (pGUIWindow_CurrentMenu) {

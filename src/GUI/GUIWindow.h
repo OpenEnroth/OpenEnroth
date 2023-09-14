@@ -263,12 +263,12 @@ void DialogueEnding();
  */
 bool isHoldingMouseRightButton();
 
-std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
-                           struct ItemGen *a3, HOUSE_ID houseId, int a5,
-                           GameTime *a6 = nullptr);
-std::string BuildDialogueString(std::string &str, uint8_t uPlayerID,
-                           struct ItemGen *a3, HOUSE_ID houseId, int shop_screen,
-                           GameTime *a6 = nullptr);
+/**
+ * @offset 0x495461
+ */
+std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
+                                struct ItemGen *a3, HOUSE_ID houseId, int shop_screen,
+                                GameTime *a6 = nullptr);
 
 
 std::string NameAndTitle(const std::string &name, const std::string &title);
