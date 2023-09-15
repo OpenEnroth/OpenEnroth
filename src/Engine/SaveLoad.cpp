@@ -39,6 +39,14 @@
 
 struct SavegameList *pSavegameList = new SavegameList;
 
+static LodInfo makeSaveLodInfo() {
+    LodInfo result;
+    result.version = LOD_VERSION_MM7;
+    result.rootName = "chapter";
+    result.description = "newmaps for MMVII";
+    return result;
+}
+
 void LoadGame(unsigned int uSlot) {
     if (!pSavegameList->pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->playUISound(SOUND_error);
@@ -332,12 +340,7 @@ void SaveNewGame() {
     pSave_LOD->close();
     std::filesystem::remove(file_path);  // удалить new.lod
 
-    LodInfo info;
-    info.version = LOD_VERSION_MM7;
-    info.rootName = "chapter";
-    info.description = "newmaps for MMVII";
-
-    LodWriter lodWriter(file_path, info);
+    LodWriter lodWriter(file_path, makeSaveLodInfo());
 
     // Copy ddm & dlv files, can actually just filter by extension instead.
     for (const std::string &name : pGames_LOD->ls())
