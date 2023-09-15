@@ -342,46 +342,47 @@ void SaveNewGame() {
     lodWriter.AllocSubIndicesAndIO(300, 100000);
 
     lodWriter.CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
-    if (lodWriter.LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
-        lodWriter.CreateTempFile();  // создаётся временный файл OutputFileHandle
-        lodWriter.ClearSubNodes();
+    if (!lodWriter.LoadFile(file_path, false))  // загрузить файл new.lod(isFileOpened = true)
+        return;
 
-        // Copy ddm & dlv files, can actually just filter by extension instead.
-        for (const std::string &name : pGames_LOD->ls()) {
-            if (!name.ends_with(".ddm") && !name.ends_with(".dlv"))
-                continue;
+    lodWriter.CreateTempFile();  // создаётся временный файл OutputFileHandle
+    lodWriter.ClearSubNodes();
 
-            Blob data = pGames_LOD->readRaw(name);
-            lodWriter.AppendDirectory(name, data.data(), data.size());
-        }
+    // Copy ddm & dlv files, can actually just filter by extension instead.
+    for (const std::string &name : pGames_LOD->ls()) {
+        if (!name.ends_with(".ddm") && !name.ends_with(".dlv"))
+            continue;
 
-        pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
-
-        // TODO(captainurist): encapsulate
-        SaveGameHeader_MM7 headerMm7;
-        snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
-
-        lodWriter.AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
-
-        lodWriter.FixDirectoryOffsets();
-        lodWriter.CloseWriteFile();
-
-        pParty->lastPos.x = 12552;
-        pParty->lastPos.y = 1816;
-        pParty->lastPos.z = 193;
-
-        pParty->pos.x = 12552;
-        pParty->pos.y = 1816;
-        pParty->pos.z = 193;
-
-        pParty->uFallStartZ = 193;
-
-        pParty->_viewPrevPitch = 0;
-        pParty->_viewPrevYaw = 512;
-
-        pParty->_viewPitch = 0;
-        pParty->_viewYaw = 512;
-
-        SaveGame(1, 1);
+        Blob data = pGames_LOD->readRaw(name);
+        lodWriter.AppendDirectory(name, data.data(), data.size());
     }
+
+    pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
+
+    // TODO(captainurist): encapsulate
+    SaveGameHeader_MM7 headerMm7;
+    snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
+
+    lodWriter.AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
+
+    lodWriter.FixDirectoryOffsets();
+    lodWriter.CloseWriteFile();
+
+    pParty->lastPos.x = 12552;
+    pParty->lastPos.y = 1816;
+    pParty->lastPos.z = 193;
+
+    pParty->pos.x = 12552;
+    pParty->pos.y = 1816;
+    pParty->pos.z = 193;
+
+    pParty->uFallStartZ = 193;
+
+    pParty->_viewPrevPitch = 0;
+    pParty->_viewPrevYaw = 512;
+
+    pParty->_viewPitch = 0;
+    pParty->_viewYaw = 512;
+
+    SaveGame(1, 1);
 }
