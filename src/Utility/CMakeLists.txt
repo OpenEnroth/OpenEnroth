@@ -7,6 +7,7 @@ set(UTILITY_SOURCES
         Math/TrigLut.cpp
         Memory/Blob.cpp
         Streams/BlobInputStream.cpp
+        Streams/BlobOutputStream.cpp
         Streams/FileInputStream.cpp
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
@@ -37,6 +38,7 @@ set(UTILITY_HEADERS
         ScopeGuard.h
         Segment.h
         Streams/BlobInputStream.h
+        Streams/BlobOutputStream.h
         Streams/FileInputStream.h
         Streams/FileOutputStream.h
         Streams/InputStream.h

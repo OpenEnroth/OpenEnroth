@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "Utility/Streams/MemoryInputStream.h"
-#include "Utility/Streams/StringOutputStream.h"
+#include "Utility/Streams/BlobOutputStream.h"
 #include "Utility/Memory/Blob.h"
 
 #include "BinaryConcepts.h"
@@ -16,10 +16,9 @@ struct is_proxy_binary_source<Blob> : std::true_type {};
 
 template<class Src, class... Tags>
 void serialize(const Src &src, Blob *dst, const Tags &... tags) {
-    std::string tmp;
-    StringOutputStream stream(&tmp);
+    BlobOutputStream stream(dst);
     serialize(src, &stream, tags...);
-    *dst = Blob::fromString(std::move(tmp));
+    stream.close(); // Flush data into a Blob.
 }
 
 template<class Dst, class... Tags>
