@@ -21,7 +21,9 @@ LodWriter::LodWriter(OutputStream *stream, std::string_view path, LodInfo info) 
     open(stream, path, std::move(info));
 }
 
-LodWriter::~LodWriter() = default;
+LodWriter::~LodWriter() {
+    close();
+}
 
 void LodWriter::open(std::string_view path, LodInfo info) {
     _ownedStream = std::make_unique<TempFileOutputStream>(path); // If this throws, no field is overwritten.
@@ -84,10 +86,11 @@ void LodWriter::close() {
         _stream->write(data.string_view());
 
     // Close shop.
-    _ownedStream = {};
+    _files.clear(); // Important to release the Blobs first, as they might point into a file that we're about to overwrite...
+    _ownedStream = {}; // ...here.
+    _stream = {};
     _path = {};
     _info = {};
-    _files.clear();
 }
 
 void LodWriter::write(const std::string &filename, const Blob &data) {
@@ -97,5 +100,5 @@ void LodWriter::write(const std::string &filename, const Blob &data) {
 void LodWriter::write(const std::string &filename, Blob &&data) {
     assert(isOpen());
 
-    _files.emplace(toLower(filename), std::move(data));
+    _files.insert_or_assign(toLower(filename), std::move(data));
 }

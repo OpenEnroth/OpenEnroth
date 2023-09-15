@@ -1,3 +1,5 @@
+#include <filesystem>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Lod/LodReader.h"
@@ -40,4 +42,51 @@ UNIT_TEST(LodWriter, TestWrite) {
     EXPECT_EQ(reader.readRaw("2").string_view(), file2);
     EXPECT_EQ(reader.readRaw("3").string_view(), file3);
     EXPECT_EQ(reader.readRaw("4").string_view(), file4);
+}
+
+UNIT_TEST(LodWriter, Overwrite) {
+    std::string fileName = "tmp.lod";
+
+    auto cleanup = [&] {
+        std::error_code ec;
+        std::filesystem::remove(fileName, ec);
+    };
+    cleanup(); // Just in case.
+
+    std::string file1 = "123";
+    std::string file2 = "a";
+    std::string file2_2 = "b";
+
+    LodInfo info;
+    info.version = LOD_VERSION_MM6;
+    info.description = "Test LOD";
+    info.rootName = "Hello";
+
+    LodWriter writer0(fileName, info);
+    writer0.write("1", Blob::view(file1));
+    writer0.write("2", Blob::view(file2));
+    writer0.close();
+
+    LodReader reader(fileName);
+
+    // Writing into the same LOD while also reading from it is OK...
+    LodWriter writer1(fileName, reader.info());
+    for (const std::string &name : reader.ls())
+        writer1.write(name, reader.read(name));
+    writer1.write("2", Blob::view(file2_2));
+
+    // ...as long as you close them in the right order.
+    reader.close();
+    writer1.close();
+
+    reader.open(fileName);
+    EXPECT_EQ(reader.info().version, info.version);
+    EXPECT_EQ(reader.info().description, info.description);
+    EXPECT_EQ(reader.info().rootName, info.rootName);
+    EXPECT_TRUE(reader.exists("1"));
+    EXPECT_TRUE(reader.exists("2"));
+    EXPECT_EQ(reader.readRaw("1").string_view(), file1);
+    EXPECT_EQ(reader.readRaw("2").string_view(), file2_2);
+
+    cleanup();
 }
