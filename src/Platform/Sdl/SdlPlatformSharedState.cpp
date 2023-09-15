@@ -80,6 +80,8 @@ SdlGamepad *SdlPlatformSharedState::initializeGamepad(int gamepadId) {
     // TODO(captainurist): The assert below triggers with @pskelton's xbox controller, and it shouldn't trigger.
     // Figure out why it happens and either fix the bug in our logic, or add a comment here describing what's happening.
     // assert(!_gamepadById.contains(id));
+    if (SdlGamepad *result = _gamepadById[id].get())
+        return result;
 
     return _gamepadById.emplace(id, std::make_unique<SdlGamepad>(this, gamepad.release(), id)).first->second.get();
 }
