@@ -78,7 +78,7 @@ enum class CharacterBuff {
 using enum CharacterBuff;
 
 /*  301 */
-enum CharacterSpeech {
+enum class CharacterSpeech {
     SPEECH_NONE = 0,
     SPEECH_KILL_WEAK_ENEMY = 1,
     SPEECH_KILL_STRONG_ENEMY = 2,
@@ -194,6 +194,7 @@ enum CharacterSpeech {
     SPEECH_FIRST = SPEECH_NONE,
     SPEECH_LAST = SPEECH_110
 };
+using enum CharacterSpeech;
 
 // TODO(pskelton): drop CHARACTER_ at start?
 enum class CharacterRace {
