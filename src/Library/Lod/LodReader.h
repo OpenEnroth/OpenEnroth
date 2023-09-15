@@ -10,7 +10,6 @@
 #include "LodInfo.h"
 
 class InputStream;
-struct LodEntry;
 
 /**
  * A single stop shop to read LOD files.
@@ -81,7 +80,6 @@ class LodReader final {
 
  private:
     struct LodRegion {
-        std::string name;
         size_t offset = 0;
         size_t size = 0;
     };
@@ -90,9 +88,5 @@ class LodReader final {
     Blob _lod;
     std::string _path;
     LodInfo _info;
-    /**
-     * Vanilla save structure expects a certain order of the lod container. Using a vector here to maintain correct sequence.
-     * Maintain OE save backwards compatability - see #1270.
-     */
-    std::vector<LodRegion> _files;
+    std::unordered_map<std::string, LodRegion> _files;
 };
