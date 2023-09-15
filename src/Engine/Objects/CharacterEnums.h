@@ -196,12 +196,16 @@ enum CharacterSpeech {
 };
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterRace {
+enum class CharacterRace {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
     CHARACTER_RACE_GOBLIN = 2,
     CHARACTER_RACE_DWARF = 3,
+
+    CHARACTER_RACE_FIRST = CHARACTER_RACE_HUMAN,
+    CHARACTER_RACE_LAST = CHARACTER_RACE_DWARF
 };
+using enum CharacterRace;
 
 enum class ClassSkillAffinity : uint8_t {
     CLASS_SKILL_DENIED = 0,

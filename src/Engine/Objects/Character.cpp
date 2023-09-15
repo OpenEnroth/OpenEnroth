@@ -59,43 +59,45 @@ struct CharacterCreationAttributeProps {
     unsigned char uBaseStep;
 };
 
-static constexpr CharacterCreationAttributeProps
-    StatTable[4][7] =  // [human , elf, goblin, dwarf] [might, int, per , end,
-                       // acc, speed, luck]
-    {{
-         {11, 25, 1, 1},
-         {11, 25, 1, 1},
-         {11, 25, 1, 1},
-         {9, 25, 1, 1},
-         {11, 25, 1, 1},
-         {11, 25, 1, 1},
-         {9, 25, 1, 1},
-     },
-     {
-         {7, 15, 2, 1},
-         {14, 30, 1, 2},
-         {11, 25, 1, 1},
-         {7, 15, 2, 1},
-         {14, 30, 1, 2},
-         {11, 25, 1, 1},
-         {9, 20, 1, 1},
-     },
-     {
-         {14, 30, 1, 2},
-         {7, 15, 2, 1},
-         {7, 15, 2, 1},
-         {11, 25, 1, 1},
-         {11, 25, 1, 1},
-         {14, 30, 1, 2},
-         {9, 20, 1, 1},
-     },
-     {{14, 30, 1, 2},
-      {11, 25, 1, 1},
-      {11, 25, 1, 1},
-      {14, 30, 1, 2},
-      {7, 15, 2, 1},
-      {7, 15, 2, 1},
-      {9, 20, 1, 1}}};
+static constexpr IndexedArray<std::array<CharacterCreationAttributeProps, 7>, CHARACTER_RACE_FIRST, CHARACTER_RACE_LAST> StatTable = {
+    // [might, int, per , end, acc, speed, luck]
+    {CHARACTER_RACE_HUMAN, {{
+        {11, 25, 1, 1},
+        {11, 25, 1, 1},
+        {11, 25, 1, 1},
+        {9, 25, 1, 1},
+        {11, 25, 1, 1},
+        {11, 25, 1, 1},
+        {9, 25, 1, 1},
+    }}},
+    {CHARACTER_RACE_ELF, {{
+        {7, 15, 2, 1},
+        {14, 30, 1, 2},
+        {11, 25, 1, 1},
+        {7, 15, 2, 1},
+        {14, 30, 1, 2},
+        {11, 25, 1, 1},
+        {9, 20, 1, 1},
+    }}},
+    {CHARACTER_RACE_GOBLIN, {{
+        {14, 30, 1, 2},
+        {7, 15, 2, 1},
+        {7, 15, 2, 1},
+        {11, 25, 1, 1},
+        {11, 25, 1, 1},
+        {14, 30, 1, 2},
+        {9, 20, 1, 1},
+    }}},
+    {CHARACTER_RACE_DWARF, {{
+        {14, 30, 1, 2},
+        {11, 25, 1, 1},
+        {11, 25, 1, 1},
+        {14, 30, 1, 2},
+        {7, 15, 2, 1},
+        {7, 15, 2, 1},
+        {9, 20, 1, 1}
+    }}}
+};
 
 static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
     // {CHARACTER_SKILL_MASTERY_NONE, 0},
@@ -259,13 +261,12 @@ static constexpr signed int parameter_to_bonus_value[29] = {
 int CharacterCreation_GetUnspentAttributePointCount() {
     int CurrentStatValue = 50;
     int RemainingStatPoints = 50;
-    int raceId;
     int StatBaseValue;
     int PenaltyMult;
     int BonusMult;
 
     for (Character &character : pParty->pCharacters) {
-        raceId = character.GetRace();
+        CharacterRace raceId = character.GetRace();
 
         for (int statNum = 0; statNum <= 6; statNum++) {
             switch (statNum) {
@@ -3402,7 +3403,7 @@ void Character::DecreaseAttribute(int eAttribute) {
     int pStep;         // esi@1
     int uMinValue;     // [sp+Ch] [bp-4h]@1
 
-    int raceId = GetRace();
+    CharacterRace raceId = GetRace();
     pBaseValue = StatTable[raceId][eAttribute].uBaseValue;
     pDroppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     uMinValue = pBaseValue - 2;
@@ -3438,7 +3439,6 @@ void Character::DecreaseAttribute(int eAttribute) {
 //----- (004905F5) --------------------------------------------------------
 // signed int  PartyCreation_BtnPlusClick(Character *this, int eAttribute)
 void Character::IncreaseAttribute(int eAttribute) {
-    int raceId;              // eax@1
     int maxValue;            // ebx@1
     signed int baseStep;     // edi@1
     signed int tmp;          // eax@17
@@ -3447,7 +3447,7 @@ void Character::IncreaseAttribute(int eAttribute) {
     signed int droppedStep;  // [sp+10h] [bp-4h]@1
     unsigned short *statToChange;
 
-    raceId = GetRace();
+    CharacterRace raceId = GetRace();
     maxValue = StatTable[raceId][eAttribute].uMaxValue;
     baseStep = StatTable[raceId][eAttribute].uBaseStep;
     baseValue = StatTable[raceId][eAttribute].uBaseValue;
@@ -4162,7 +4162,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Class:
             return (pValue == std::to_underlying(this->classType));
         case VAR_Race:
-            return pValue == GetRace();
+            return pValue == std::to_underlying(GetRace());
         case VAR_CurrentHP:
             return this->health >= pValue;
         case VAR_MaxHP:
