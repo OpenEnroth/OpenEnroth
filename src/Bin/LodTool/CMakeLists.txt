@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
+
+set(BIN_LODTOOL_SOURCES
+        LodTool.cpp
+        LodToolOptions.cpp)
+
+set(BIN_LODTOOL_HEADERS
+        LodToolOptions.h)
+
+if(NOT BUILD_PLATFORM STREQUAL "android")
+    add_executable(LodTool ${BIN_LODTOOL_SOURCES} ${BIN_LODTOOL_HEADERS})
+    target_fix_libcxx_assertions(LodTool)
+    target_link_libraries(LodTool PUBLIC library_lod library_lodformats CLI11::CLI11)
+    target_check_style(LodTool)
+endif()
