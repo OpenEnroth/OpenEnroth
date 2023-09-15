@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Utility/Flags.h"
+
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
 // reference "quests.txt" and pQuestTable
@@ -92,7 +94,7 @@ enum class QuestBit : uint16_t {
 using enum QuestBit;
 
 /*  355 */
-enum PARTY_FLAGS_1 : int32_t {
+enum class PARTY_FLAG_1 : int32_t {
     PARTY_FLAGS_1_UNUSED = 0x0002, // was force drawing
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
     PARTY_FLAGS_1_AIRBORNE = 0x0008,
@@ -108,6 +110,10 @@ enum PARTY_FLAGS_1 : int32_t {
     // New to OE - flag used to negate landing damage after jumping
     PARTY_FLAGS_1_JUMPING = 0x0400
 };
+using enum PARTY_FLAG_1;
+MM_DECLARE_FLAGS(PARTY_FLAGS_1, PARTY_FLAG_1)
+MM_DECLARE_OPERATORS_FOR_FLAGS(PARTY_FLAGS_1)
+
 enum PARTY_FLAGS_2 : int32_t {
     PARTY_FLAGS_2_RUNNING = 0x2,
 };
