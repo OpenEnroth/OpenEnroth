@@ -4186,7 +4186,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Experience:
             return this->experience >= pValue;  // TODO(_) change pValue to long long
         case VAR_QBits_QuestsDone:
-            return pParty->_questBits[pValue];
+            return pParty->_questBits[static_cast<QuestBit>(pValue)]; // TODO(captainurist): values coming from scripts should be bound-checked.
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
             for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
@@ -4653,13 +4653,14 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            if (!pParty->_questBits[var_value] && !pQuestTable[var_value].empty()) {
+            // TODO(captainurist): qbits value is coming from a script, need to bound-check.
+            if (!pParty->_questBits[static_cast<QuestBit>(var_value)] && !pQuestTable[static_cast<QuestBit>(var_value)].empty()) {
                 bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, getCharacterIndex());
                 PlayAwardSound();
                 this->playReaction(SPEECH_QUEST_GOT);
             }
-            pParty->_questBits.set(var_value);
+            pParty->_questBits.set(static_cast<QuestBit>(var_value));
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
@@ -5264,11 +5265,12 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
-            if (!pParty->_questBits[val] && !pQuestTable[val].empty()) {
+            // TODO(captainurist): quest bit is coming from a script, do range checking here.
+            if (!pParty->_questBits[static_cast<QuestBit>(val)] && !pQuestTable[static_cast<QuestBit>(val)].empty()) {
                 bFlashQuestBook = true;
                 PlayAwardSound_Anim97_Face(SPEECH_QUEST_GOT);
             }
-            pParty->_questBits.set(val);
+            pParty->_questBits.set(static_cast<QuestBit>(val));
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
@@ -5780,7 +5782,8 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_QBits_QuestsDone:
-            pParty->_questBits.reset(pValue);
+            // TODO(captainurist): quest bit is coming from a script, do range checking here.
+            pParty->_questBits.reset(static_cast<QuestBit>(pValue));
             this->playReaction(SPEECH_AWARD_GOT);
             return;
         case VAR_PlayerItemInHands:

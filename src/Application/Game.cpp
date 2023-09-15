@@ -1060,7 +1060,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
-                v53 = buildingTable[window_SpeakInHouse->houseId()]._quest_bit;
+                v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
                     engine->_teleportPoint.setTeleportTarget(Vec3i(dword_4E4560[v54], dword_4E4578[v54], dword_4E4590[v54]), dword_4E45A8[v54], 0, 0);

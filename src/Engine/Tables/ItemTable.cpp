@@ -545,7 +545,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTre
         outItem->uEnchantmentType = outItem->uEnchantmentType * std::to_underlying(treasure_level);
     }
 
-    if (outItem->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[239])
+    if (outItem->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->uItemID = ITEM_SPELLBOOK_SUNRAY;
     if (pItemTable->pItems[outItem->uItemID].uItemID_Rep_St)
         outItem->uAttributes = 0;

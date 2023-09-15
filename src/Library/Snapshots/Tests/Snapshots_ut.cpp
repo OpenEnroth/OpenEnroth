@@ -85,3 +85,29 @@ UNIT_TEST(Snapshots, ArrayVia) {
     deserialize(blob, &ref, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints123);
 }
+
+UNIT_TEST(Snapshots, IndexedBitset) {
+    std::array<uint8_t, 4> bytes = {255, 1, 128, 0};
+
+    IndexedBitset<1, 32> bits;
+    bits.fill(0);
+    bits[1] = 1;
+    bits[2] = 1;
+    bits[3] = 1;
+    bits[4] = 1;
+    bits[5] = 1;
+    bits[6] = 1;
+    bits[7] = 1;
+    bits[8] = 1;
+    bits[16] = 1;
+    bits[17] = 1;
+
+    std::array<uint8_t, 4> bytes2;
+    IndexedBitset<1, 32> bits2;
+
+    snapshot(bits, &bytes2, tags::reverseBits);
+    reconstruct(bytes, &bits2, tags::reverseBits);
+
+    EXPECT_EQ(bytes, bytes2);
+    EXPECT_EQ(bits, bits2);
+}

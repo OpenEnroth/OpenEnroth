@@ -187,34 +187,34 @@ static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> 
     {CHARACTER_SKILL_MISC,         0} // hidden, not used
 }};
 
-static constexpr std::array<std::pair<int16_t, ItemId>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
-    {0x0D4, ITEM_QUEST_VASE},
-    {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
-    {0x0D6, ITEM_MESSAGE_SCROLL_OF_WAVES},
-    {0x0D7, ITEM_MESSAGE_CIPHER},
-    {0x0D8, ITEM_QUEST_WORN_BELT},
-    {0x0D9, ITEM_QUEST_HEART_OF_THE_WOOD},
-    {0x0DA, ITEM_MESSAGE_MAP_TO_EVENMORN_ISLAND},
-    {0x0DB, ITEM_QUEST_GOLEM_HEAD},
-    {0x0DC, ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD},
-    {0x0DD, ITEM_QUEST_GOLEM_RIGHT_ARM},
-    {0x0DE, ITEM_QUEST_GOLEM_LEFT_ARM},
-    {0x0DF, ITEM_QUEST_GOLEM_RIGHT_LEG},
-    {0x0E0, ITEM_QUEST_GOLEM_LEFT_LEG},
-    {0x0E1, ITEM_QUEST_GOLEM_CHEST},
-    {0x0E2, ITEM_SPELLBOOK_DIVINE_INTERVENTION},
-    {0x0E3, ITEM_QUEST_DRAGON_EGG},
-    {0x0E4, ITEM_QUEST_ZOKARR_IVS_SKULL},
-    {0x0E5, ITEM_QUEST_LICH_JAR_EMPTY},
-    {0x0E6, ITEM_QUEST_ELIXIR},
-    {0x0E7, ITEM_QUEST_CASE_OF_SOUL_JARS},
-    {0x0E8, ITEM_QUEST_ALTAR_PIECE_1},
-    {0x0E9, ITEM_QUEST_ALTAR_PIECE_2},
-    {0x0EA, ITEM_QUEST_CONTROL_CUBE},
-    {0x0EB, ITEM_QUEST_WETSUIT},
-    {0x0EC, ITEM_QUEST_OSCILLATION_OVERTHRUSTER},
-    {0x0ED, ITEM_QUEST_LICH_JAR_FULL},
-    {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
+static constexpr std::array<std::pair<QuestBit, ItemId>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
+    {QBIT_212, ITEM_QUEST_VASE},
+    {QBIT_213, ITEM_RARE_LADY_CARMINES_DAGGER},
+    {QBIT_214, ITEM_MESSAGE_SCROLL_OF_WAVES},
+    {QBIT_215, ITEM_MESSAGE_CIPHER},
+    {QBIT_216, ITEM_QUEST_WORN_BELT},
+    {QBIT_217, ITEM_QUEST_HEART_OF_THE_WOOD},
+    {QBIT_218, ITEM_MESSAGE_MAP_TO_EVENMORN_ISLAND},
+    {QBIT_219, ITEM_QUEST_GOLEM_HEAD},
+    {QBIT_220, ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD},
+    {QBIT_221, ITEM_QUEST_GOLEM_RIGHT_ARM},
+    {QBIT_222, ITEM_QUEST_GOLEM_LEFT_ARM},
+    {QBIT_223, ITEM_QUEST_GOLEM_RIGHT_LEG},
+    {QBIT_224, ITEM_QUEST_GOLEM_LEFT_LEG},
+    {QBIT_225, ITEM_QUEST_GOLEM_CHEST},
+    {QBIT_226, ITEM_SPELLBOOK_DIVINE_INTERVENTION},
+    {QBIT_227, ITEM_QUEST_DRAGON_EGG},
+    {QBIT_228, ITEM_QUEST_ZOKARR_IVS_SKULL},
+    {QBIT_229, ITEM_QUEST_LICH_JAR_EMPTY},
+    {QBIT_230, ITEM_QUEST_ELIXIR},
+    {QBIT_231, ITEM_QUEST_CASE_OF_SOUL_JARS},
+    {QBIT_232, ITEM_QUEST_ALTAR_PIECE_1},
+    {QBIT_233, ITEM_QUEST_ALTAR_PIECE_2},
+    {QBIT_234, ITEM_QUEST_CONTROL_CUBE},
+    {QBIT_235, ITEM_QUEST_WETSUIT},
+    {QBIT_236, ITEM_QUEST_OSCILLATION_OVERTHRUSTER},
+    {QBIT_237, ITEM_QUEST_LICH_JAR_FULL},
+    {QBIT_241, ITEM_RARE_THE_PERFECT_BOW}
 }};
 
 DIALOGUE_TYPE arenaMainDialogue() {
@@ -388,7 +388,7 @@ void oracleDialogue() {
 
     // only items with special subquest in range 212-237 and also 241 are recoverable
     for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
-        int quest_id = pair.first;
+        QuestBit quest_id = pair.first;
         if (pParty->_questBits[quest_id]) {
             ItemId search_item_id = pair.second;
             if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
@@ -524,10 +524,10 @@ std::string masteryTeacherOptionString() {
     if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_MASTER) {
         switch (skillBeingTaught) {
           case CHARACTER_SKILL_LIGHT:
-            canLearn = pParty->_questBits[114];
+            canLearn = pParty->_questBits[QBIT_114];
             break;
           case CHARACTER_SKILL_DARK:
-            canLearn = pParty->_questBits[110];
+            canLearn = pParty->_questBits[QBIT_110];
             break;
           case CHARACTER_SKILL_MERCHANT:
             canLearn = activePlayer->GetBasePersonality() >= 50;

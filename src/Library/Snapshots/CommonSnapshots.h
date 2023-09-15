@@ -11,6 +11,7 @@
 
 #include "Utility/Segment.h"
 #include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
 
 #include "SnapshotConcepts.h"
 
@@ -163,4 +164,35 @@ void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, Segm
     static_assert(L <= LL && HH <= H && SegmentTag<LL, HH>::SIZE == N);
     for (size_t i = 0; auto index : tag.segment())
         reconstruct(src[i++], &(*dst)[index]);
+}
+
+
+//
+// IndexedBitset support.
+// MM uses inverted bit order for serialization, we don't want to have this as default behavior, so we introduce a tag.
+//
+struct ReverseBitOrderTag {};
+namespace tags {
+constexpr ReverseBitOrderTag reverseBits;
+} // namespace tags
+
+template<size_t N, auto L, auto H>
+static void snapshot(const IndexedBitset<L, H> &src, std::array<uint8_t, N> *dst, ReverseBitOrderTag) {
+    assert(dst->size() * 8 == src.size());
+
+    dst->fill(0);
+    for (size_t i = 0; auto index : src.indices()) {
+        (*dst)[i / 8] |= src[index] << (7 - i % 8);
+        i++;
+    }
+}
+
+template<size_t N, auto L, auto H>
+static void reconstruct(const std::array<uint8_t, N> &src, IndexedBitset<L, H> *dst, ReverseBitOrderTag) {
+    assert(dst->size() == src.size() * 8);
+
+    for (size_t i = 0; auto index : dst->indices()) {
+        dst->set(index, (src[i / 8] >> (7 - i % 8)) & 1);
+        i++;
+    }
 }

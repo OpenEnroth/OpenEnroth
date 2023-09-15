@@ -1,7 +1,10 @@
 #pragma once
 
-#include <array>
 #include <string>
+
+#include "Engine/PartyEnums.h"
+
+#include "Utility/IndexedArray.h"
 
 class Blob;
 
@@ -10,4 +13,4 @@ class Blob;
  */
 void initializeQuests(const Blob &quests);
 
-extern std::array<std::string, 513> pQuestTable;
+extern IndexedArray<std::string, QBIT_FIRST, QBIT_LAST> pQuestTable;

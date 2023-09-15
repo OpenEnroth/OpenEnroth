@@ -3,6 +3,8 @@
 #include <bitset>
 #include <type_traits>
 
+#include "Segment.h"
+
 template<auto FirstIndex, auto LastIndex>
 class IndexedBitset {
     static_assert(LastIndex >= FirstIndex, "IndexedBitset must be non-empty");
@@ -12,6 +14,10 @@ class IndexedBitset {
  public:
     static constexpr size_t SIZE = static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(FirstIndex) + 1;
     using key_type = decltype(FirstIndex);
+
+    constexpr Segment<key_type> indices() const {
+        return Segment(FirstIndex, LastIndex);
+    }
 
     size_t size() const {
         return _bitset.size();
@@ -38,11 +44,11 @@ class IndexedBitset {
     }
 
     void set(key_type index, bool value = true) {
-        _bitset.set(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex), value);
+        _bitset.set(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex), value); // Throws on out of range access.
     }
 
     bool test(key_type index) {
-        return _bitset.test(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex));
+        return _bitset.test(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)); // Throws on out of range access.
     }
 
     auto operator[](key_type index) {
@@ -53,6 +59,10 @@ class IndexedBitset {
     auto operator[](key_type index) const {
         checkIndex(index);
         return _bitset[static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)];
+    }
+
+    friend bool operator==(const IndexedBitset &l, const IndexedBitset &r) {
+        return l._bitset == r._bitset;
     }
 
  private:

@@ -181,7 +181,7 @@ void initializeBuildings(const Blob &buildings) {
                     buildingTable[houseId].uExitMapID = static_cast<MapId>(atoi(test_string));
                     break;
                 case 22:
-                    buildingTable[houseId]._quest_bit = atoi(test_string);
+                    buildingTable[houseId]._quest_bit = static_cast<QuestBit>(atoi(test_string));
                     break;
                 case 23:
                     buildingTable[houseId].pEnterText = removeQuotes(test_string);

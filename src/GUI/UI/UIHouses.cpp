@@ -432,7 +432,7 @@ void prepareHouse(HOUSE_ID house) {
 
     // Dungeon entry (not present in MM7)
     if (buildingTable[house].uExitPicID) {
-        if (!buildingTable[house]._quest_bit || !pParty->_questBits[buildingTable[house]._quest_bit]) {
+        if (buildingTable[house]._quest_bit == QBIT_INVALID || !pParty->_questBits[buildingTable[house]._quest_bit]) {
             MapId id = buildingTable[house].uExitMapID;
 
             HouseNpcDesc desc;

@@ -179,6 +179,10 @@ class IndexedArray: public std::array<T, Size> {
         return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(FirstIndex));
     }
 
+    friend bool operator==(const IndexedArray &l, const IndexedArray &r) {
+        return static_cast<const base_type &>(l) == static_cast<const base_type &>(r);
+    }
+
  private:
     constexpr static bool is_unique(std::initializer_list<std::pair<key_type, value_type>> init) {
         for (auto i = init.begin(); i < init.end(); i++)

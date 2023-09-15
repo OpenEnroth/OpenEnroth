@@ -3,7 +3,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
-std::array<std::string, 513> pQuestTable;
+IndexedArray<std::string, QBIT_FIRST, QBIT_LAST> pQuestTable;
 
 void initializeQuests(const Blob &quests) {
     char *test_string;
@@ -16,7 +16,7 @@ void initializeQuests(const Blob &quests) {
     std::string txtRaw(quests.string_view());
     strtok(txtRaw.data(), "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
-    for (int i = 1; i < pQuestTable.size(); ++i) {
+    for (auto i : pQuestTable.indices()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
