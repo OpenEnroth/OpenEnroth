@@ -137,7 +137,7 @@ enum PARTY_BUFF_INDEX {
 };
 
 /*  300 */
-enum PartyAction : uint32_t {
+enum class PartyAction : uint32_t {
     PARTY_INVALID = 0,
     PARTY_TurnLeft = 1,
     PARTY_TurnRight = 2,
@@ -161,6 +161,7 @@ enum PartyAction : uint32_t {
 
     PARTY_dword = 0xFFFFFFFF
 };
+using enum PartyAction;
 
 enum class PartyAlignment: int32_t {
     PartyAlignment_Good = 0,
