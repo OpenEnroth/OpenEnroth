@@ -14,11 +14,11 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/Party.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Lod/LodWriter.h"
+#include "Library/Lod/LodReader.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);

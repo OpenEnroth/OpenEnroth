@@ -3,7 +3,6 @@
 #include "Library/Lod/LodReader.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Serialization/Serialization.h"
-#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Format.h"
 #include "Utility/String.h"
