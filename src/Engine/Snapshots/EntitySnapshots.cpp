@@ -481,7 +481,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->numArcomageWins = src.uNumArcomageWins;
     dst->numArcomageLoses = src.uNumArcomageLoses;
     dst->turnBasedModeOn = src.bTurnBasedModeOn;
-    dst->flags2 = src.uFlags2;
+    dst->flags2 = std::to_underlying(src.uFlags2);
 
     uint align = 0;
     if (src.alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
@@ -578,7 +578,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uNumArcomageWins = src.numArcomageWins;
     dst->uNumArcomageLoses = src.numArcomageLoses;
     dst->bTurnBasedModeOn = src.turnBasedModeOn;
-    dst->uFlags2 = src.flags2;
+    dst->uFlags2 = static_cast<PARTY_FLAGS_2>(src.flags2);
 
     switch (src.alignment) {
         case 0:

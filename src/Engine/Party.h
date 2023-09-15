@@ -318,7 +318,7 @@ struct Party {
     int uNumArcomageWins;
     int uNumArcomageLoses;
     bool bTurnBasedModeOn;
-    int uFlags2;
+    PARTY_FLAGS_2 uFlags2;
     PartyAlignment alignment;
     IndexedArray<SpellBuff, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> pPartyBuffs;
     std::array<Character, 4> pCharacters;
