@@ -135,7 +135,8 @@ void Party::Zero() {
     bTurnBasedModeOn = false;
     uFlags2 = 0;
     alignment = PartyAlignment::PartyAlignment_Neutral;
-    for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
+    for (SpellBuff &buff : pPartyBuffs)
+        buff.Reset();
     pPickedItem.Reset();
     uFlags = 0;
 

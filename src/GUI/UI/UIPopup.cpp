@@ -1248,18 +1248,28 @@ static void drawBuffPopupWindow() {
     GUIWindow popupWindow;
     int stringCount;
 
-    static const std::array<Color, 20> spellTooltipColors = { {
-        colorTable.Anakiwa,       colorTable.FlushOrange,
-        colorTable.PaleCanary,    colorTable.Mercury,
-        colorTable.Gray,          colorTable.Anakiwa,
-        colorTable.DarkOrange,    colorTable.Anakiwa,
-        colorTable.DarkOrange,    colorTable.Mercury,
-        colorTable.DarkOrange,    colorTable.Anakiwa,
-        colorTable.PurplePink,    colorTable.FlushOrange,
-        colorTable.Anakiwa,       colorTable.Gray,
-        colorTable.DarkOrange,    colorTable.AzureRadiance,
-        colorTable.AzureRadiance, colorTable.Anakiwa
-    } };
+    static constexpr IndexedArray<Color, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> spellTooltipColors = {
+        {PARTY_BUFF_RESIST_AIR,             colorTable.Anakiwa},
+        {PARTY_BUFF_RESIST_BODY,            colorTable.FlushOrange},
+        {PARTY_BUFF_DAY_OF_GODS,            colorTable.PaleCanary},
+        {PARTY_BUFF_DETECT_LIFE,            colorTable.Mercury},
+        {PARTY_BUFF_RESIST_EARTH,           colorTable.Gray},
+        {PARTY_BUFF_FEATHER_FALL,           colorTable.Anakiwa},
+        {PARTY_BUFF_RESIST_FIRE,            colorTable.DarkOrange},
+        {PARTY_BUFF_FLY,                    colorTable.Anakiwa},
+        {PARTY_BUFF_HASTE,                  colorTable.DarkOrange},
+        {PARTY_BUFF_HEROISM,                colorTable.Mercury},
+        {PARTY_BUFF_IMMOLATION,             colorTable.DarkOrange},
+        {PARTY_BUFF_INVISIBILITY,           colorTable.Anakiwa},
+        {PARTY_BUFF_RESIST_MIND,            colorTable.PurplePink},
+        {PARTY_BUFF_PROTECTION_FROM_MAGIC,  colorTable.FlushOrange},
+        {PARTY_BUFF_SHIELD,                 colorTable.Anakiwa},
+        {PARTY_BUFF_STONE_SKIN,             colorTable.Gray},
+        {PARTY_BUFF_TORCHLIGHT,             colorTable.DarkOrange},
+        {PARTY_BUFF_RESIST_WATER,           colorTable.AzureRadiance},
+        {PARTY_BUFF_WATER_WALK,             colorTable.AzureRadiance},
+        {PARTY_BUFF_WIZARD_EYE,             colorTable.Anakiwa}
+    };
 
     popupWindow.sHint.clear();
     popupWindow.uFrameWidth = 400;
@@ -1282,11 +1292,11 @@ static void drawBuffPopupWindow() {
     }
 
     stringCount = 0;
-    for (int i = 0; i < pParty->pPartyBuffs.size(); i++) {
+    for (PARTY_BUFF_INDEX i : pParty->pPartyBuffs.indices()) {
         if (pParty->pPartyBuffs[i].Active()) {
             GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * assets->pFontComic->GetHeight() + 40;
-            popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetSpellName(i));
+            popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
             stringCount++;
         }
@@ -1608,7 +1618,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
             v36 = uFramesetIDa++ * assets->pFontComic->GetHeight() + 134;
             window->DrawText(assets->pFontComic.get(), {52, v36},
                              ui_game_character_record_playerbuff_colors[i],
-                             localization->GetSpellName(20 + i));
+                             localization->GetCharacterBuffName(static_cast<CharacterBuffs>(i)));
             DrawBuff_remaining_time_string(
                 v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
                 assets->pFontComic.get());

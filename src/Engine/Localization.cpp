@@ -92,55 +92,51 @@ bool Localization::Initialize() {
 }
 
 void Localization::InitializeSpellNames() {
-    this->spell_names[0] =
-        this->localization_strings[202];  // Protection from Air
-    this->spell_names[1] = this->localization_strings[204];
-    this->spell_names[2] = this->localization_strings[219];
-    this->spell_names[3] = this->localization_strings[215];
-    this->spell_names[4] = this->localization_strings[208];
-    this->spell_names[5] = this->localization_strings[454];  // Feather Fall
-    this->spell_names[6] = this->localization_strings[24];
-    this->spell_names[7] = this->localization_strings[455];
-    this->spell_names[8] = this->localization_strings[441];
-    this->spell_names[9] = this->localization_strings[440];
-    this->spell_names[10] = this->localization_strings[218];  // Ring of Fire
-    this->spell_names[11] = this->localization_strings[217];
-    this->spell_names[12] = this->localization_strings[213];
-    this->spell_names[13] = this->localization_strings[462];
-    this->spell_names[14] = this->localization_strings[279];
-    this->spell_names[15] = this->localization_strings[442];  // Stoneskin
-    this->spell_names[16] = this->localization_strings[452];
-    this->spell_names[17] = this->localization_strings[194];
-    this->spell_names[18] = this->localization_strings[456];
-    this->spell_names[19] = this->localization_strings[453];
-    this->spell_names[20] =
-        this->localization_strings[202];  // Protection from Air
-    this->spell_names[21] = this->localization_strings[443];
-    this->spell_names[22] = this->localization_strings[204];
-    this->spell_names[23] = this->localization_strings[208];
-    this->spell_names[24] = this->localization_strings[221];
-    this->spell_names[25] =
-        this->localization_strings[24];  // Protection from Fire
-    this->spell_names[26] = this->localization_strings[228];
-    this->spell_names[27] = this->localization_strings[441];
-    this->spell_names[28] = this->localization_strings[440];
-    this->spell_names[29] = this->localization_strings[213];
-    this->spell_names[30] = this->localization_strings[229];  // Pain Reflection
-    this->spell_names[31] = this->localization_strings[233];
-    this->spell_names[32] = this->localization_strings[234];
-    this->spell_names[33] = this->localization_strings[279];
-    this->spell_names[34] = this->localization_strings[442];
-    this->spell_names[35] =
-        this->localization_strings[235];  // Temporary Accuracy
-    this->spell_names[36] = this->localization_strings[246];
-    this->spell_names[37] = this->localization_strings[247];
-    this->spell_names[38] = this->localization_strings[248];
-    this->spell_names[39] = this->localization_strings[674];
-    this->spell_names[40] =
-        this->localization_strings[249];  // Temporary Personality
-    this->spell_names[41] = this->localization_strings[258];
-    this->spell_names[42] = this->localization_strings[194];
-    this->spell_names[43] = this->localization_strings[657];  // Water Breathing
+    this->party_buff_names[PARTY_BUFF_RESIST_AIR]               = this->localization_strings[202];  // Protection from Air
+    this->party_buff_names[PARTY_BUFF_RESIST_BODY]              = this->localization_strings[204];
+    this->party_buff_names[PARTY_BUFF_DAY_OF_GODS]              = this->localization_strings[219];
+    this->party_buff_names[PARTY_BUFF_DETECT_LIFE]              = this->localization_strings[215];
+    this->party_buff_names[PARTY_BUFF_RESIST_EARTH]             = this->localization_strings[208];
+    this->party_buff_names[PARTY_BUFF_FEATHER_FALL]             = this->localization_strings[454];  // Feather Fall
+    this->party_buff_names[PARTY_BUFF_RESIST_FIRE]              = this->localization_strings[24];
+    this->party_buff_names[PARTY_BUFF_FLY]                      = this->localization_strings[455];
+    this->party_buff_names[PARTY_BUFF_HASTE]                    = this->localization_strings[441];
+    this->party_buff_names[PARTY_BUFF_HEROISM]                  = this->localization_strings[440];
+    this->party_buff_names[PARTY_BUFF_IMMOLATION]               = this->localization_strings[218];  // Ring of Fire
+    this->party_buff_names[PARTY_BUFF_INVISIBILITY]             = this->localization_strings[217];
+    this->party_buff_names[PARTY_BUFF_RESIST_MIND]              = this->localization_strings[213];
+    this->party_buff_names[PARTY_BUFF_PROTECTION_FROM_MAGIC]    = this->localization_strings[462];
+    this->party_buff_names[PARTY_BUFF_SHIELD]                   = this->localization_strings[279];
+    this->party_buff_names[PARTY_BUFF_STONE_SKIN]               = this->localization_strings[442];  // Stoneskin
+    this->party_buff_names[PARTY_BUFF_TORCHLIGHT]               = this->localization_strings[452];
+    this->party_buff_names[PARTY_BUFF_RESIST_WATER]             = this->localization_strings[194];
+    this->party_buff_names[PARTY_BUFF_WATER_WALK]               = this->localization_strings[456];
+    this->party_buff_names[PARTY_BUFF_WIZARD_EYE]               = this->localization_strings[453];
+
+    this->character_buff_names[CHARACTER_BUFF_RESIST_AIR]       = this->localization_strings[202];  // Protection from Air
+    this->character_buff_names[CHARACTER_BUFF_BLESS]            = this->localization_strings[443];
+    this->character_buff_names[CHARACTER_BUFF_RESIST_BODY]      = this->localization_strings[204];
+    this->character_buff_names[CHARACTER_BUFF_RESIST_EARTH]     = this->localization_strings[208];
+    this->character_buff_names[CHARACTER_BUFF_FATE]             = this->localization_strings[221];
+    this->character_buff_names[CHARACTER_BUFF_RESIST_FIRE]      = this->localization_strings[24];  // Protection from Fire
+    this->character_buff_names[CHARACTER_BUFF_HAMMERHANDS]      = this->localization_strings[228];
+    this->character_buff_names[CHARACTER_BUFF_HASTE]            = this->localization_strings[441];
+    this->character_buff_names[CHARACTER_BUFF_HEROISM]          = this->localization_strings[440];
+    this->character_buff_names[CHARACTER_BUFF_RESIST_MIND]      = this->localization_strings[213];
+    this->character_buff_names[CHARACTER_BUFF_PAIN_REFLECTION]  = this->localization_strings[229];  // Pain Reflection
+    this->character_buff_names[CHARACTER_BUFF_PRESERVATION]     = this->localization_strings[233];
+    this->character_buff_names[CHARACTER_BUFF_REGENERATION]     = this->localization_strings[234];
+    this->character_buff_names[CHARACTER_BUFF_SHIELD]           = this->localization_strings[279];
+    this->character_buff_names[CHARACTER_BUFF_STONESKIN]        = this->localization_strings[442];
+    this->character_buff_names[CHARACTER_BUFF_ACCURACY]         = this->localization_strings[235];  // Temporary Accuracy
+    this->character_buff_names[CHARACTER_BUFF_ENDURANCE]        = this->localization_strings[246];
+    this->character_buff_names[CHARACTER_BUFF_INTELLIGENCE]     = this->localization_strings[247];
+    this->character_buff_names[CHARACTER_BUFF_LUCK]             = this->localization_strings[248];
+    this->character_buff_names[CHARACTER_BUFF_STRENGTH]         = this->localization_strings[674];
+    this->character_buff_names[CHARACTER_BUFF_PERSONALITY]      = this->localization_strings[249];  // Temporary Personality
+    this->character_buff_names[CHARACTER_BUFF_SPEED]            = this->localization_strings[258];
+    this->character_buff_names[CHARACTER_BUFF_RESIST_WATER]     = this->localization_strings[194];
+    this->character_buff_names[CHARACTER_BUFF_WATER_WALK]       = this->localization_strings[657];  // Water Breathing
 }
 
 void Localization::InitializeNpcProfessionNames() {

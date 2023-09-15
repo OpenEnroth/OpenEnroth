@@ -320,7 +320,7 @@ struct Party {
     bool bTurnBasedModeOn;
     int uFlags2;
     PartyAlignment alignment;
-    std::array<SpellBuff, 20> pPartyBuffs;
+    IndexedArray<SpellBuff, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> pPartyBuffs;
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
     ItemGen pPickedItem;
