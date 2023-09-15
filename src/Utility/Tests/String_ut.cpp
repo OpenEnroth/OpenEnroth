@@ -23,3 +23,7 @@ UNIT_TEST(String, iless) {
     EXPECT_FALSE(iless("B", "b"));
     EXPECT_TRUE(iless("@", "`"));
 }
+
+UNIT_TEST(String, Printable) {
+    EXPECT_EQ(toPrintable("123\xFF", '.'), "123.");
+}
