@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(LIBRARY_COLOR_SOURCES
         Colorf.cpp
-        ColorTable.cpp
         HsvColorf.cpp)
 
 set(LIBRARY_COLOR_HEADERS

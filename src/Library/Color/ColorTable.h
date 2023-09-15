@@ -75,4 +75,4 @@ class ColorTable {
     const Color OliveDrab = Color(92, 143, 37);         // #5C8F25
 };
 
-extern const ColorTable colorTable;
+inline constexpr ColorTable colorTable;
