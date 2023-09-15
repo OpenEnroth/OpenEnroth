@@ -76,7 +76,7 @@ void LoadGame(unsigned int uSlot) {
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
 
     // TODO(captainurist): incapsulate this too
-    pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
+    pParty->bTurnBasedModeOn = false; // We always start in realtime after loading a game.
     for (size_t i = 0; i < 4; i++) {
         Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; j++) {
@@ -160,7 +160,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     assert(IsAutoSAve || !title.empty());
 
     s_SavedMapName = pCurrentMapName;
-    if (pCurrentMapName == "d05.blv") {  // arena
+    if (pCurrentMapName == "d05.blv") { // arena
         return {};
     }
 
@@ -266,7 +266,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
 }
 
 void DoSavegame(unsigned int uSlot) {
-    if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
+    if (pCurrentMapName != "d05.blv") {  // Not Arena
         pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
 
         std::string src = makeDataPath("data", "new.lod");
@@ -333,11 +333,11 @@ void SavegameList::Reset() {
 void SaveNewGame() {
     std::string file_path = makeDataPath("data", "new.lod");
     pSave_LOD->close();
-    std::filesystem::remove(file_path);  // удалить new.lod
+    std::filesystem::remove(file_path);
 
     LodWriter lodWriter(file_path, makeSaveLodInfo());
 
-    // Copy ddm & dlv files, can actually just filter by extension instead.
+    // Copy ddm & dlv files.
     for (const std::string &name : pGames_LOD->ls())
         if (name.ends_with(".ddm") || name.ends_with(".dlv"))
             lodWriter.write(name, pGames_LOD->readRaw(name));
