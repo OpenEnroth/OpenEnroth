@@ -89,6 +89,12 @@ class Blob final {
     [[nodiscard]] static Blob view(const void *data, size_t size);
 
     /**
+     * @param data                      Memory region
+     * @return                          Non-owning blob view into the provided memory region.
+     */
+    [[nodiscard]] static Blob view(std::string_view data);
+
+    /**
      * @param file                      File to read from.
      * @param size                      Number of bytes to read.
      * @return                          Blob that owns the data that was read from the provided file.

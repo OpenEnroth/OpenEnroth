@@ -77,6 +77,10 @@ Blob Blob::view(const void *data, size_t size) {
     return result;
 }
 
+Blob Blob::view(std::string_view data) {
+    return view(data.data(), data.size());
+}
+
 Blob Blob::read(FILE *file, size_t size) {
     if (size == 0)
         return Blob();

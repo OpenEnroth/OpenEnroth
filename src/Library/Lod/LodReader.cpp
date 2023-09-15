@@ -14,20 +14,6 @@
 #include "LodSnapshots.h"
 #include "LodEnums.h"
 
-static size_t fileEntrySize(LodVersion version) {
-    switch (version) {
-        case LOD_VERSION_MM6:
-        case LOD_VERSION_MM6_GAME:
-        case LOD_VERSION_MM7:
-            return sizeof(LodEntry_MM6);
-        case LOD_VERSION_MM8:
-            return sizeof(LodFileEntry_MM8);
-        default:
-            assert(false);
-            return 0;
-    }
-}
-
 static LodHeader parseHeader(InputStream &stream, std::string_view path, LodVersion *version) {
     LodHeader header;
     deserialize(stream, &header, tags::via<LodHeader_MM6>);
@@ -130,16 +116,17 @@ void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
     // All good, this is a valid LOD, can update `this`.
     _lod = std::move(blob);
     _path = path;
-    _description = std::move(header.description);
-    _rootName = std::move(rootEntry.name);
+    _info.version = version;
+    _info.description = std::move(header.description);
+    _info.rootName = std::move(rootEntry.name);
     _files = std::move(files);
 }
 
 void LodReader::close() {
+    // Double-closing is OK.
     _lod = Blob();
     _path = {};
-    _description = {};
-    _rootName = {};
+    _info = {};
     _files = {};
 }
 
@@ -178,11 +165,9 @@ std::vector<std::string> LodReader::ls() const {
     return result;
 }
 
-const std::string &LodReader::description() const {
-    return _description;
-}
+[[nodiscard]] const LodInfo &LodReader::info() const {
+    assert(isOpen());
 
-const std::string &LodReader::rootName() const {
-    return _rootName;
+    return _info;
 }
 
