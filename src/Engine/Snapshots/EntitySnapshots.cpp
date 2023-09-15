@@ -724,7 +724,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->healthRelated = src._health_related;
     dst->fullManaBonus = src.uFullManaBonus;
     dst->manaRelated = src._mana_related;
-    dst->expression = src.expression;
+    dst->expression = std::to_underlying(src.expression);
     dst->expressionTimePassed = src.uExpressionTimePassed;
     dst->expressionTimeLength = src.uExpressionTimeLength;
     dst->field_1AA2 = src.uExpressionImageIndex;
@@ -975,7 +975,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->expression = (CharacterExpressionID)src.expression;
+    dst->expression = static_cast<CharacterExpressionID>(src.expression);
     dst->uExpressionTimePassed = src.expressionTimePassed;
     dst->uExpressionTimeLength = src.expressionTimeLength;
     dst->uExpressionImageIndex = src.field_1AA2;

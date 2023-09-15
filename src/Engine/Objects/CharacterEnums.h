@@ -423,7 +423,7 @@ inline Segment<CharacterClassType> getClassPromotions(CharacterClassType classTy
 }
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterExpressionID : uint16_t {
+enum class CharacterExpressionID : uint16_t {
     CHARACTER_EXPRESSION_INVALID = 0,
     CHARACTER_EXPRESSION_NORMAL = 1,
     CHARACTER_EXPRESSION_CURSED = 2,
@@ -481,6 +481,7 @@ enum CharacterExpressionID : uint16_t {
     CHARACTER_EXPRESSION_DEAD = 98,
     CHARACTER_EXPRESSION_ERADICATED = 99,
 };
+using enum CharacterExpressionID;
 
 enum CharacterSex : uint8_t {
     SEX_MALE = 0,
