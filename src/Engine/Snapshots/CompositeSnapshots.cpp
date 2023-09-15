@@ -18,6 +18,7 @@
 #include "Engine/Party.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"
+#include "Library/Lod/LodWriter.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);

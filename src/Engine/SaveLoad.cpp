@@ -34,6 +34,7 @@
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
+#include "Library/Lod/LodWriter.h"
 
 #include "Utility/DataPath.h"
 
