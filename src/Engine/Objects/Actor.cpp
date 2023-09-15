@@ -3383,11 +3383,10 @@ int stru319::which_player_to_attack(Actor *pActor) {
     signed int v2;         // ebx@1
     int v22;               // [sp+8h] [bp-140h]@3
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
-    int for_sex;           // [sp+13Ch] [bp-Ch]@1
+    std::optional<CharacterSex> for_sex;           // [sp+13Ch] [bp-Ch]@1
     std::optional<CharacterRace> for_race;          // [sp+140h] [bp-8h]@1
     std::optional<CharacterClassType> for_class;         // [sp+144h] [bp-4h]@1
 
-    for_sex = -1;
     v2 = 0;
     if (pActor->monsterInfo.uAttackPreference) {
         for (uint i = 0; i < 16; i++) {
@@ -3422,10 +3421,10 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         for_class = CHARACTER_CLASS_MONK;
                         break;
                     case 512:
-                        for_sex = 0;
+                        for_sex = SEX_MALE;
                         break;
                     case 1024:
-                        for_sex = 1;
+                        for_sex = SEX_FEMALE;
                         break;
                     case 2048:
                         for_race = CHARACTER_RACE_HUMAN;
@@ -3447,7 +3446,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
                     if (for_class && *for_class == pParty->pCharacters[j].classType) {
                         flag = true;
                     }
-                    if (for_sex != -1 && for_sex == pParty->pCharacters[j].uSex) {
+                    if (for_sex && for_sex == pParty->pCharacters[j].uSex) {
                         flag = true;
                     }
                     if (for_race && for_race == pParty->pCharacters[j].GetRace()) {

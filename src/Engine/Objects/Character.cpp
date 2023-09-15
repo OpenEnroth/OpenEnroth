@@ -4158,9 +4158,9 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
 
     switch (VarNum) {
         case VAR_Sex:
-            return (pValue == this->uSex);
+            return pValue == std::to_underlying(this->uSex);
         case VAR_Class:
-            return (pValue == std::to_underlying(this->classType));
+            return pValue == std::to_underlying(this->classType);
         case VAR_Race:
             return pValue == std::to_underlying(GetRace());
         case VAR_CurrentHP:
@@ -4597,10 +4597,10 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
                 if (this->sResEarthBase < 20) this->sResEarthBase = 20;
                 this->sResMindBase = 200;
                 this->sResBodyBase = 200;
-                int sex = this->GetSexByVoice();
+                CharacterSex sex = this->GetSexByVoice();
                 this->uPrevVoiceID = this->uVoiceID;
                 this->uPrevFace = this->uCurrentFace;
-                if (sex) {
+                if (sex == SEX_FEMALE) {
                     this->uCurrentFace = 21;
                     this->uVoiceID = 21;
                 } else {

@@ -87,7 +87,7 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_VoicePrev:
         {
-            int sex = pParty->pCharacters[param].GetSexByVoice();
+            CharacterSex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
                 if (pParty->pCharacters[param].uVoiceID == 0)
                     pParty->pCharacters[param].uVoiceID = 19;
@@ -104,7 +104,7 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_VoiceNext:
         {
-            int sex = pParty->pCharacters[param].GetSexByVoice();
+            CharacterSex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
                 pParty->pCharacters[param].uVoiceID =
                     (pParty->pCharacters[param].uVoiceID + 1) % 20;

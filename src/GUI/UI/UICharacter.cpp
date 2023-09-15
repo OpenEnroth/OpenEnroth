@@ -1190,7 +1190,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
                 GraphicsImage *texture = nullptr;
                 if (IsDwarf != 1 || item->uItemID != ITEM_PHYNAXIAN_HELM)
-                    texture = paperdoll_helm_texture[player->GetSexByVoice()][index];
+                    texture = paperdoll_helm_texture[std::to_underlying(player->GetSexByVoice())][index];
                 else
                     texture = paperdoll_dbrds[11];
 
@@ -1690,9 +1690,9 @@ void WetsuitOn(unsigned int uPlayerID) {
         int texture_num;
 
         if (player->GetRace() == CHARACTER_RACE_DWARF) {
-            texture_num = (player->GetSexByVoice() != 0) + 3;
+            texture_num = (player->GetSexByVoice() != SEX_MALE) + 3;
         } else {
-            texture_num = (player->GetSexByVoice() != 0) + 1;
+            texture_num = (player->GetSexByVoice() != SEX_MALE) + 1;
         }
         paperdoll_dbods[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
         paperdoll_dlads[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand

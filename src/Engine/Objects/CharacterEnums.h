@@ -483,10 +483,14 @@ enum class CharacterExpressionID : uint16_t {
 };
 using enum CharacterExpressionID;
 
-enum CharacterSex : uint8_t {
+enum class CharacterSex : uint8_t {
     SEX_MALE = 0,
-    SEX_FEMALE = 1
+    SEX_FEMALE = 1,
+
+    SEX_FIRST = SEX_MALE,
+    SEX_LAST = SEX_FEMALE,
 };
+using enum CharacterSex;
 
 // TODO(pskelton): drop CHARACTER_ at start?
 enum CharacterAttributeType {

@@ -290,7 +290,7 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     dst->evt_D = src.dialogue_4_evt_id;
     dst->evt_E = src.dialogue_5_evt_id;
     dst->evt_F = src.dialogue_6_evt_id;
-    dst->sex = src.uSex;
+    dst->sex = std::to_underlying(src.uSex);
     dst->hasUsedAbility = src.bHasUsedTheAbility;
     dst->newsTopic = src.news_topic;
 }
@@ -312,7 +312,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = src.sex;
+    dst->uSex = static_cast<CharacterSex>(src.sex);
     dst->bHasUsedTheAbility = src.hasUsedAbility;
     dst->news_topic = src.newsTopic;
 }
@@ -628,7 +628,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 
     snapshot(src.name, &dst->name);
 
-    dst->sex = src.uSex;
+    dst->sex = std::to_underlying(src.uSex);
     dst->classType = std::to_underlying(src.classType);
     dst->currentFace = src.uCurrentFace;
     dst->might = src.uMight;

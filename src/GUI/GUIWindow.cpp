@@ -913,13 +913,13 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += pText;
                 break;
             case 6:
-                if (pPlayer->uSex)
+                if (pPlayer->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_LADY_LOWERCASE);
                 else
                     result += localization->GetString(LSTR_SIR_LOWERCASE);
                 break;
             case 7:
-                if (pPlayer->uSex)
+                if (pPlayer->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_LADY);
                 else
                     result += localization->GetString(LSTR_SIR);
@@ -939,13 +939,13 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 }
                 break;
             case 9:
-                if (npc->uSex)
+                if (npc->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_HER);
                 else
                     result += localization->GetString(LSTR_HIS);
                 break;
             case 10:
-                if (pPlayer->uSex)
+                if (pPlayer->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_LADY);
                 else
                     result += localization->GetString(LSTR_LORD);
@@ -960,7 +960,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
                 break;
             case 14:
-                if (npc->uSex)
+                if (npc->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_SISTER);
                 else
                     result += localization->GetString(LSTR_BROTHER);
@@ -969,7 +969,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += localization->GetString(LSTR_DAUGHTER);
                 break;
             case 16:
-                if (npc->uSex)
+                if (npc->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_SISTER);
                 else
                     result += localization->GetString(LSTR_BROTHER);
