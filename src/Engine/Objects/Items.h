@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
@@ -102,11 +103,9 @@ struct ItemGen {  // 0x24
         return ::isPassiveEquipment(GetItemEquipType());
     }
 
-
     ItemId uItemID = ITEM_NULL;        // 0
-    // TODO(captainurist): this is actually CharacterAttributeType plus one (because 0 means no enchantment),
-    // with values in [0..24], i.e. up to & including CHARACTER_ATTRIBUTE_SKILL_UNARMED
-    int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
+    int potionPower = 0;
+    std::optional<CharacterAttributeType> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
     int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
     int32_t uNumCharges = 0;           // 10
@@ -138,7 +137,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageMod = 0;   // 20 24
     ITEM_MATERIAL uMaterial = MATERIAL_COMMON;    // 21 25
     char _additional_value = 0;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT?
-    char _bonus_type = 0;             // 23  27 // TODO(captainurist): actually ITEM_ENCHANTMENT??
+    std::optional<CharacterAttributeType> _bonus_type;
     char _bonus_strength = 0;         // 24 28
     char field_25 = 0;                // 25  29
     char field_26 = 0;                // 26   2A

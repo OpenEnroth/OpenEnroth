@@ -378,7 +378,13 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
     dst->itemID = std::to_underlying(src.uItemID);
-    dst->enchantmentType = src.uEnchantmentType;
+    if (isPotion(src.uItemID)) {
+        dst->attributeEnchantmentOrPotionPower = src.potionPower;
+    } else if (src.attributeEnchantment) {
+        dst->attributeEnchantmentOrPotionPower = std::to_underlying(*src.attributeEnchantment) + 1;
+    } else {
+        dst->attributeEnchantmentOrPotionPower = 0;
+    }
     dst->enchantmentStrength = src.m_enchantmentStrength;
     dst->specialEnchantment = src.special_enchantment;
     dst->numCharges = src.uNumCharges;
@@ -392,7 +398,16 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uItemID = static_cast<ItemId>(src.itemID);
-    dst->uEnchantmentType = src.enchantmentType;
+    if (isPotion(dst->uItemID)) {
+        dst->potionPower = src.attributeEnchantmentOrPotionPower;
+        dst->attributeEnchantment = {};
+    } else if (src.attributeEnchantmentOrPotionPower) {
+        dst->potionPower = 0;
+        dst->attributeEnchantment = static_cast<CharacterAttributeType>(src.attributeEnchantmentOrPotionPower - 1);
+    } else {
+        dst->potionPower = 0;
+        dst->attributeEnchantment = {};
+    }
     dst->m_enchantmentStrength = src.enchantmentStrength;
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
     dst->uNumCharges = src.numCharges;

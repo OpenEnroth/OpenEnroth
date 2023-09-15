@@ -256,10 +256,10 @@ class Character {
     void SetSexByVoice();
     void Reset(CharacterClassType classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
-    void DecreaseAttribute(int eAttribute);
-    void IncreaseAttribute(int eAttribute);
+    void DecreaseAttribute(CharacterAttributeType eAttribute);
+    void IncreaseAttribute(CharacterAttributeType eAttribute);
     void resetTempBonuses();
-    Color GetStatColor(int uStat) const;
+    Color GetStatColor(CharacterAttributeType uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
     MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType);
     int GetBodybuilding() const;

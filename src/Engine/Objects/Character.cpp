@@ -59,44 +59,43 @@ struct CharacterCreationAttributeProps {
     unsigned char uBaseStep;
 };
 
-static constexpr IndexedArray<std::array<CharacterCreationAttributeProps, 7>, CHARACTER_RACE_FIRST, CHARACTER_RACE_LAST> StatTable = {
-    // [might, int, per , end, acc, speed, luck]
-    {CHARACTER_RACE_HUMAN, {{
-        {11, 25, 1, 1},
-        {11, 25, 1, 1},
-        {11, 25, 1, 1},
-        {9, 25, 1, 1},
-        {11, 25, 1, 1},
-        {11, 25, 1, 1},
-        {9, 25, 1, 1},
-    }}},
-    {CHARACTER_RACE_ELF, {{
-        {7, 15, 2, 1},
-        {14, 30, 1, 2},
-        {11, 25, 1, 1},
-        {7, 15, 2, 1},
-        {14, 30, 1, 2},
-        {11, 25, 1, 1},
-        {9, 20, 1, 1},
-    }}},
-    {CHARACTER_RACE_GOBLIN, {{
-        {14, 30, 1, 2},
-        {7, 15, 2, 1},
-        {7, 15, 2, 1},
-        {11, 25, 1, 1},
-        {11, 25, 1, 1},
-        {14, 30, 1, 2},
-        {9, 20, 1, 1},
-    }}},
-    {CHARACTER_RACE_DWARF, {{
-        {14, 30, 1, 2},
-        {11, 25, 1, 1},
-        {11, 25, 1, 1},
-        {14, 30, 1, 2},
-        {7, 15, 2, 1},
-        {7, 15, 2, 1},
-        {9, 20, 1, 1}
-    }}}
+static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT>, CHARACTER_RACE_FIRST, CHARACTER_RACE_LAST> StatTable = {
+    {CHARACTER_RACE_HUMAN, {
+        {CHARACTER_ATTRIBUTE_MIGHT,         {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_PERSONALITY,   {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_ENDURANCE,     {9, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_ACCURACY,      {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_SPEED,         {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_LUCK,          {9, 25, 1, 1}},
+    }},
+    {CHARACTER_RACE_ELF, {
+        {CHARACTER_ATTRIBUTE_MIGHT,         {7, 15, 2, 1}},
+        {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {14, 30, 1, 2}},
+        {CHARACTER_ATTRIBUTE_PERSONALITY,   {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_ENDURANCE,     {7, 15, 2, 1}},
+        {CHARACTER_ATTRIBUTE_ACCURACY,      {14, 30, 1, 2}},
+        {CHARACTER_ATTRIBUTE_SPEED,         {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_LUCK,          {9, 20, 1, 1}},
+    }},
+    {CHARACTER_RACE_GOBLIN, {
+        {CHARACTER_ATTRIBUTE_MIGHT,         {14, 30, 1, 2}},
+        {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {7, 15, 2, 1}},
+        {CHARACTER_ATTRIBUTE_PERSONALITY,   {7, 15, 2, 1}},
+        {CHARACTER_ATTRIBUTE_ENDURANCE,     {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_ACCURACY,      {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_SPEED,         {14, 30, 1, 2}},
+        {CHARACTER_ATTRIBUTE_LUCK,          {9, 20, 1, 1}},
+    }},
+    {CHARACTER_RACE_DWARF, {
+        {CHARACTER_ATTRIBUTE_MIGHT,         {14, 30, 1, 2}},
+        {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_PERSONALITY,   {11, 25, 1, 1}},
+        {CHARACTER_ATTRIBUTE_ENDURANCE,     {14, 30, 1, 2}},
+        {CHARACTER_ATTRIBUTE_ACCURACY,      {7, 15, 2, 1}},
+        {CHARACTER_ATTRIBUTE_SPEED,         {7, 15, 2, 1}},
+        {CHARACTER_ATTRIBUTE_LUCK,          {9, 20, 1, 1}}
+    }}
 };
 
 static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
@@ -223,30 +222,25 @@ static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> 
     {CHARACTER_CLASS_LICH,              6}
 };
 
-static constexpr unsigned char pConditionAttributeModifier[7][19] = {
-    {100, 100, 100, 120, 50, 200, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
-     100, 100, 100},  // Might
-    {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100,
-     100, 1, 100},  // Intelligence
-    {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100,
-     100, 1, 100},  // Personality
-    {100, 100, 100, 100, 50, 150, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
-     100, 100, 100},  // Endurance
-    {100, 100, 100, 50, 10, 100, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
-     100, 50, 100},  // Accuracy
-    {100, 100, 100, 120, 20, 120, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
-     100, 50, 100},  // Speed
-    {100, 100, 100, 100, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
-     100, 100, 100, 100}};  // Luck
+static constexpr IndexedArray<std::array<int, 19>, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> pConditionAttributeModifier = {
+    {CHARACTER_ATTRIBUTE_MIGHT,         {100, 100, 100, 120, 50, 200, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100, 100, 100, 100}},
+    {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100, 100, 1, 100}},
+    {CHARACTER_ATTRIBUTE_PERSONALITY,   {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100, 100, 1, 100}},
+    {CHARACTER_ATTRIBUTE_ENDURANCE,     {100, 100, 100, 100, 50, 150, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100, 100, 100, 100}},
+    {CHARACTER_ATTRIBUTE_ACCURACY,      {100, 100, 100, 50, 10, 100, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100, 100, 50, 100}},
+    {CHARACTER_ATTRIBUTE_SPEED,         {100, 100, 100, 120, 20, 120, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100, 100, 50, 100}},
+    {CHARACTER_ATTRIBUTE_LUCK,          {100, 100, 100, 100, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100}}
+};
 
-static constexpr unsigned char pAgingAttributeModifier[7][4] = {
-    {100, 75, 40, 10},      // Might
-    {100, 150, 100, 10},    // Intelligence
-    {100, 150, 100, 10},    // Personality
-    {100, 75, 40, 10},      // Endurance
-    {100, 100, 40, 10},     // Accuracy
-    {100, 100, 40, 10},     // Speed
-    {100, 100, 100, 100}};  // Luck
+static constexpr IndexedArray<std::array<int, 4>, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> pAgingAttributeModifier = {
+    {CHARACTER_ATTRIBUTE_MIGHT,         {100, 75, 40, 10}},
+    {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {100, 150, 100, 10}},
+    {CHARACTER_ATTRIBUTE_PERSONALITY,   {100, 150, 100, 10}},
+    {CHARACTER_ATTRIBUTE_ENDURANCE,     {100, 75, 40, 10}},
+    {CHARACTER_ATTRIBUTE_ACCURACY,      {100, 100, 40, 10}},
+    {CHARACTER_ATTRIBUTE_SPEED,         {100, 100, 40, 10}},
+    {CHARACTER_ATTRIBUTE_LUCK,          {100, 100, 100, 100}}
+};
 
 static constexpr unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
 
@@ -268,35 +262,34 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     for (Character &character : pParty->pCharacters) {
         CharacterRace raceId = character.GetRace();
 
-        for (int statNum = 0; statNum <= 6; statNum++) {
+        for (CharacterAttributeType statNum : statAttributes()) {
             switch (statNum) {
-                case 0:
+                case CHARACTER_ATTRIBUTE_MIGHT:
                     CurrentStatValue = character.uMight;
                     break;
-                case 1:
+                case CHARACTER_ATTRIBUTE_INTELLIGENCE:
                     CurrentStatValue = character.uIntelligence;
                     break;
-                case 2:
+                case CHARACTER_ATTRIBUTE_PERSONALITY:
                     CurrentStatValue = character.uPersonality;
                     break;
-                case 3:
+                case CHARACTER_ATTRIBUTE_ENDURANCE:
                     CurrentStatValue = character.uEndurance;
                     break;
-                case 4:
+                case CHARACTER_ATTRIBUTE_ACCURACY:
                     CurrentStatValue = character.uAccuracy;
                     break;
-                case 5:
+                case CHARACTER_ATTRIBUTE_SPEED:
                     CurrentStatValue = character.uSpeed;
                     break;
-                case 6:
+                case CHARACTER_ATTRIBUTE_LUCK:
                     CurrentStatValue = character.uLuck;
                     break;
             }
 
             StatBaseValue = StatTable[raceId][statNum].uBaseValue;
 
-            if (CurrentStatValue >=
-                StatBaseValue) {  // bonus or penalty increase
+            if (CurrentStatValue >= StatBaseValue) {  // bonus or penalty increase
                 PenaltyMult = StatTable[raceId][statNum].uDroppedStep;
                 BonusMult = StatTable[raceId][statNum].uBaseStep;
             } else {  // less than base
@@ -1587,7 +1580,7 @@ int Character::StealFromActor(
                         tempItem.uNumCharges = grng->random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
                         tempItem.uMaxCharges = tempItem.uNumCharges;
                     } else if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
-                        tempItem.uEnchantmentType = 2 * grng->random(4) + 2;
+                        tempItem.potionPower = 2 * grng->random(4) + 2;
                     }
                 } else {
                     ItemGen *itemToSteal = &actroPtr->items[randslot];
@@ -2695,18 +2688,12 @@ int Character::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDm
                     }
                     if (pItemTable->IsMaterialNonCommon(currEquippedItem) &&
                         !pItemTable->IsMaterialSpecial(currEquippedItem)) {
-                        currEquippedItem->GetItemBonusArtifact(this, attr,
-                                                               &v62);
-                    } else if (currEquippedItem->uEnchantmentType != 0) {
-                        if (this->pInventoryItemList
-                                    [this->pEquipment.pIndices[i] - 1]
-                                        .uEnchantmentType -
-                                1 == attr) {  // if
-                                   // (currEquippedItem->IsRegularEnchanmentForAttribute(attr))
+                        currEquippedItem->GetItemBonusArtifact(this, attr, &v62);
+                    } else if (currEquippedItem->attributeEnchantment) {
+                        if (*currEquippedItem->attributeEnchantment == attr) {
+                            // if (currEquippedItem->IsRegularEnchanmentForAttribute(attr))
                             if (attr > CHARACTER_ATTRIBUTE_RESIST_BODY &&
-                                v5 < currEquippedItem
-                                         ->m_enchantmentStrength)  // for skills
-                                                                   // bonuses
+                                v5 < currEquippedItem->m_enchantmentStrength)  // for skills bonuses
                                 v5 = currEquippedItem->m_enchantmentStrength;
                             else  // for resists and attributes bonuses
                                 v5 += currEquippedItem->m_enchantmentStrength;
@@ -3275,13 +3262,13 @@ CharacterSex Character::GetSexByVoice() const {
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
     CharacterRace race = GetRace();
-    uMight = StatTable[race][0].uBaseValue;
-    uIntelligence = StatTable[race][1].uBaseValue;
-    uPersonality = StatTable[race][2].uBaseValue;
-    uEndurance = StatTable[race][3].uBaseValue;
-    uAccuracy = StatTable[race][4].uBaseValue;
-    uSpeed = StatTable[race][5].uBaseValue;
-    uLuck = StatTable[race][6].uBaseValue;
+    uMight = StatTable[race][CHARACTER_ATTRIBUTE_MIGHT].uBaseValue;
+    uIntelligence = StatTable[race][CHARACTER_ATTRIBUTE_INTELLIGENCE].uBaseValue;
+    uPersonality = StatTable[race][CHARACTER_ATTRIBUTE_PERSONALITY].uBaseValue;
+    uEndurance = StatTable[race][CHARACTER_ATTRIBUTE_ENDURANCE].uBaseValue;
+    uAccuracy = StatTable[race][CHARACTER_ATTRIBUTE_ACCURACY].uBaseValue;
+    uSpeed = StatTable[race][CHARACTER_ATTRIBUTE_SPEED].uBaseValue;
+    uLuck = StatTable[race][CHARACTER_ATTRIBUTE_LUCK].uBaseValue;
 }
 
 //----- (004901FC) --------------------------------------------------------
@@ -3397,7 +3384,7 @@ CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
 
 //----- (0049048D) --------------------------------------------------------
 // uint16_t PartyCreation_BtnMinusClick(Character *_this, int eAttribute)
-void Character::DecreaseAttribute(int eAttribute) {
+void Character::DecreaseAttribute(CharacterAttributeType eAttribute) {
     int pBaseValue;    // ecx@1
     int pDroppedStep;  // ebx@1
     int pStep;         // esi@1
@@ -3438,7 +3425,7 @@ void Character::DecreaseAttribute(int eAttribute) {
 
 //----- (004905F5) --------------------------------------------------------
 // signed int  PartyCreation_BtnPlusClick(Character *this, int eAttribute)
-void Character::IncreaseAttribute(int eAttribute) {
+void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
     int maxValue;            // ebx@1
     signed int baseStep;     // edi@1
     signed int tmp;          // eax@17
@@ -3454,25 +3441,25 @@ void Character::IncreaseAttribute(int eAttribute) {
     droppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     CharacterCreation_GetUnspentAttributePointCount();
     switch (eAttribute) {
-        case 0:
+        case CHARACTER_ATTRIBUTE_MIGHT:
             statToChange = &this->uMight;
             break;
-        case 1:
+        case CHARACTER_ATTRIBUTE_INTELLIGENCE:
             statToChange = &this->uIntelligence;
             break;
-        case 2:
+        case CHARACTER_ATTRIBUTE_PERSONALITY:
             statToChange = &this->uPersonality;
             break;
-        case 3:
+        case CHARACTER_ATTRIBUTE_ENDURANCE:
             statToChange = &this->uEndurance;
             break;
-        case 4:
+        case CHARACTER_ATTRIBUTE_ACCURACY:
             statToChange = &this->uAccuracy;
             break;
-        case 5:
+        case CHARACTER_ATTRIBUTE_SPEED:
             statToChange = &this->uSpeed;
             break;
-        case 6:
+        case CHARACTER_ATTRIBUTE_LUCK:
             statToChange = &this->uLuck;
             break;
         default:
@@ -3534,30 +3521,30 @@ void Character::resetTempBonuses() {
 }
 
 //----- (004907E7) --------------------------------------------------------
-Color Character::GetStatColor(int uStat) const {
+Color Character::GetStatColor(CharacterAttributeType uStat) const {
     int attribute_value;  // edx@1
 
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
     switch (uStat) {
-        case 0:
+        case CHARACTER_ATTRIBUTE_MIGHT:
             attribute_value = uMight;
             break;
-        case 1:
+        case CHARACTER_ATTRIBUTE_INTELLIGENCE:
             attribute_value = uIntelligence;
             break;
-        case 2:
+        case CHARACTER_ATTRIBUTE_PERSONALITY:
             attribute_value = uPersonality;
             break;
-        case 3:
+        case CHARACTER_ATTRIBUTE_ENDURANCE:
             attribute_value = uEndurance;
             break;
-        case 4:
+        case CHARACTER_ATTRIBUTE_ACCURACY:
             attribute_value = uAccuracy;
             break;
-        case 5:
+        case CHARACTER_ATTRIBUTE_SPEED:
             attribute_value = uSpeed;
             break;
-        case 6:
+        case CHARACTER_ATTRIBUTE_LUCK:
             attribute_value = uLuck;
             break;
         default:
@@ -3628,7 +3615,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
     if (pParty->pPickedItem.isPotion()) {
         // TODO(Nik-RE-dev): no CanAct check?
-        int potionStrength = pParty->pPickedItem.uEnchantmentType;
+        int potionStrength = pParty->pPickedItem.potionPower;
         GameTime buffDuration = GameTime::FromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:

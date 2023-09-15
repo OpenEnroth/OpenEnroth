@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "Testing/Game/GameTest.h"
 
 #include "Arcomage/Arcomage.h"
@@ -1002,20 +1004,27 @@ GAME_TEST(Issues, Issue675) {
         ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
     };
 
+    std::unordered_set<CharacterAttributeType> generatedEnchantments;
+
     ItemGen item;
-    for (int i = 0; i < 200; i++) {
+    for (int i = 0; i < 300; i++) {
         for (ItemTreasureLevel level : levels) {
             pItemTable->generateItem(level, 0, &item);
             if (isPotion(item.uItemID)) {
-                // For potions, uEnchantmentType is potion strength.
-                EXPECT_GE(item.uEnchantmentType, 1);
+                EXPECT_GE(item.potionPower, 1);
+                EXPECT_FALSE(item.attributeEnchantment);
             } else {
-                // For non-potions, it's a number in [0, 24].
-                EXPECT_GE(item.uEnchantmentType, 0);
-                EXPECT_LE(item.uEnchantmentType, 24);
+                EXPECT_EQ(item.potionPower, 0);
+                if (item.attributeEnchantment) {
+                    EXPECT_GE(*item.attributeEnchantment, CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE);
+                    EXPECT_LE(*item.attributeEnchantment, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE);
+                    generatedEnchantments.insert(*item.attributeEnchantment);
+                }
             }
         }
     }
+
+    EXPECT_EQ(generatedEnchantments.size(), 24); // All possible enchantments can be generated.
 }
 
 GAME_TEST(Issues, Issue676) {

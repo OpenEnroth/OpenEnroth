@@ -404,14 +404,14 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if (!GoldAmount) {
         // this is CORRECT! do not move to switch!
         if (inspect_item->isPotion()) {
-            if (inspect_item->uEnchantmentType)
-                text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->uEnchantmentType);
+            if (inspect_item->potionPower)
+                text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->potionPower);
         } else if (inspect_item->isReagent()) {
             text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
-        } else if (inspect_item->uEnchantmentType) {
+        } else if (inspect_item->attributeEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->standardEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
+                                  pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].pBonusStat,
                                   inspect_item->m_enchantmentStrength);
         } else if (inspect_item->special_enchantment) {
             text[2] = fmt::format("{}: {}",
@@ -439,7 +439,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
-        (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
+        (inspect_item->special_enchantment || inspect_item->attributeEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
     if (assets->pFontArrus->GetHeight()) {
@@ -498,7 +498,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
-            (inspect_item->special_enchantment || inspect_item->uEnchantmentType)) {
+            (inspect_item->special_enchantment || inspect_item->attributeEnchantment)) {
             v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
 
             std::string txt4 = "Duration:";
@@ -2180,17 +2180,17 @@ void Inventory_ItemPopupAndAlchemy() {
         } else {  // if ( damage_level == 0 )
             if (item->uItemID == ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
                 // Both potions are catalyst: power is maximum of two
-                item->uEnchantmentType = std::max(item->uEnchantmentType, pParty->pPickedItem.uEnchantmentType);
+                item->potionPower = std::max(item->potionPower, pParty->pPickedItem.potionPower);
             } else if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
                 // One of the potion is catalyst: power of potion is replaced by power of catalyst
                 if (item->uItemID == ITEM_POTION_CATALYST) {
                     item->uItemID = pParty->pPickedItem.uItemID;
                 } else {
-                    item->uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
+                    item->potionPower = pParty->pPickedItem.potionPower;
                 }
             } else {
                 item->uItemID = potionID;
-                item->uEnchantmentType = (pParty->pPickedItem.uEnchantmentType + item->uEnchantmentType) / 2;
+                item->potionPower = (pParty->pPickedItem.potionPower + item->potionPower) / 2;
                 // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
                 // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
                 if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
@@ -2219,7 +2219,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
         if (item->isWand()) { // can recharge only wands
-            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.uEnchantmentType;
+            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.potionPower;
             if (maxChargesDecreasePercent < 0) {
                 maxChargesDecreasePercent = 0;
             }
@@ -2271,14 +2271,14 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
         if (item->isWeapon()) {
-            if (item->special_enchantment || item->uEnchantmentType) {
+            if (item->special_enchantment || item->attributeEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;
                 return;
             }
 
-            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.uEnchantmentType);
+            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
@@ -2296,7 +2296,7 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isReagent(pParty->pPickedItem.uItemID) && item->uItemID == ITEM_POTION_BOTTLE) {
-        item->uEnchantmentType = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
+        item->potionPower = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:

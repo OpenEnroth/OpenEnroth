@@ -686,7 +686,7 @@ void CastSpellInfoHelpers::castSpell() {
                             item->IsBroken() ||
                             pItemTable->IsMaterialNonCommon(item) ||
                             item->special_enchantment != ITEM_ENCHANTMENT_NULL ||
-                            item->uEnchantmentType != 0 ||
+                            item->attributeEnchantment ||
                             !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
@@ -1403,7 +1403,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if ((spell_mastery == CHARACTER_SKILL_MASTERY_MASTER || spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) &&
                             isRegular(spell_item_to_enchant->uItemID) &&
                             spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
-                            spell_item_to_enchant->uEnchantmentType == 0 &&
+                            !spell_item_to_enchant->attributeEnchantment &&
                             spell_item_to_enchant->m_enchantmentStrength == 0 &&
                             !spell_item_to_enchant->IsBroken()) {
                         // break items with low value
@@ -1424,17 +1424,17 @@ void CastSpellInfoHelpers::castSpell() {
                                 if (rnd < 80 && isPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    int ench_array[100] = { 0 };
+                                    CharacterAttributeType ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
-                                    for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
-                                        const std::string &bonusStat = pItemTable->standardEnchantments[norm_ench_loop].pBonusStat;
+                                    for (CharacterAttributeType attr : enchantableAttributes()) {
+                                        const std::string &bonusStat = pItemTable->standardEnchantments[attr].pBonusStat;
                                         if (!bonusStat.empty()) {
-                                            int this_to_apply = pItemTable->standardEnchantments[norm_ench_loop].chancesByItemType[this_equip_type];
+                                            int this_to_apply = pItemTable->standardEnchantments[attr].chancesByItemType[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
-                                                ench_array[ench_found] = norm_ench_loop;
+                                                ench_array[ench_found] = attr;
                                                 ench_found++;
                                             }
                                         }
@@ -1456,7 +1456,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     }
 
                                     // assign ench and power
-                                    spell_item_to_enchant->uEnchantmentType = (ITEM_ENCHANTMENT)ench_array[step];
+                                    spell_item_to_enchant->attributeEnchantment = ench_array[step];
 
                                     int ench_power = 0;
                                     // master 3-8  - guess work needs checking

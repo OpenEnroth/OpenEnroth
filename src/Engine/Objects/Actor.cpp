@@ -3715,7 +3715,7 @@ void Actor::LootActor() {
             Dst.uMaxCharges = Dst.uNumCharges;
         }
         if (Dst.isPotion() && Dst.uItemID != ITEM_POTION_BOTTLE) {
-            Dst.uEnchantmentType = 2 * grng->random(4) + 2;
+            Dst.potionPower = 2 * grng->random(4) + 2;
         }
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->addItemToParty(&Dst)) {
