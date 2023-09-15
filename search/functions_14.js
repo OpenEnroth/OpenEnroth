@@ -22,7 +22,7 @@ var searchData=
   ['templehealingcostforplayer_19',['templeHealingCostForPlayer',['../classPriceCalculator.html#a65da4c643c43b8db36eeb3e928b4c47f',1,'PriceCalculator']]],
   ['test_20',['test',['../classIndexedBitset.html#ab39b440077c307640632b0b7a9b3dcbf',1,'IndexedBitset']]],
   ['testcontroller_21',['TestController',['../classTestController.html#a99052f8ad73bcbefd65b3d52b6c5e2a6',1,'TestController']]],
-  ['testpartyquestbit_22',['TestPartyQuestBit',['../Party_8cpp.html#a4e3b1773dfc5d7a21fe51039de25d2f9',1,'TestPartyQuestBit(PARTY_QUEST_BITS bit):&#160;Party.cpp'],['../Party_8h.html#a4e3b1773dfc5d7a21fe51039de25d2f9',1,'TestPartyQuestBit(PARTY_QUEST_BITS bit):&#160;Party.cpp']]],
+  ['testpartyquestbit_22',['TestPartyQuestBit',['../Party_8cpp.html#a97b5ca74e79a90098ce1559f6d25525c',1,'TestPartyQuestBit(QuestBit bit):&#160;Party.cpp'],['../Party_8h.html#a97b5ca74e79a90098ce1559f6d25525c',1,'TestPartyQuestBit(QuestBit bit):&#160;Party.cpp']]],
   ['testroundtrip_23',['TestRoundTrip',['../Json__ut_8cpp.html#a4dc838094e7c48108da37a0726c0ce7b',1,'Json_ut.cpp']]],
   ['testtape_24',['TestTape',['../classTestTape.html#a509c618967b04a611d9aa21d7164bebd',1,'TestTape']]],
   ['testtapestate_25',['TestTapeState',['../classdetail_1_1TestTapeState.html#a3ac9e9ddcada480c026f5c8d13e96198',1,'detail::TestTapeState']]],

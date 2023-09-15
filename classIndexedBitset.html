@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;27407d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
    </div>
   </td>
  </tr>
@@ -75,6 +75,7 @@ $(function() {
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classIndexedBitset-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">IndexedBitset&lt; FirstIndex, LastIndex &gt; Class Template Reference</div></div>
 </div><!--header-->
@@ -89,6 +90,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a5cf2f39d83c8b014e8d7ac9d1519ef83"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="classIndexedBitset.html#a2e6d7baed3f130092b026d0ed983d0d2">key_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedBitset.html#a5cf2f39d83c8b014e8d7ac9d1519ef83">indices</a> () const</td></tr>
+<tr class="separator:a5cf2f39d83c8b014e8d7ac9d1519ef83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee99351e9126849eaf1f0deeb5d717a3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedBitset.html#aee99351e9126849eaf1f0deeb5d717a3">size</a> () const</td></tr>
 <tr class="separator:aee99351e9126849eaf1f0deeb5d717a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2ac2f6ec1fdb0190922fd5d8fb318d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedBitset.html#ab2ac2f6ec1fdb0190922fd5d8fb318d1">fill</a> (bool value)</td></tr>
@@ -122,6 +125,11 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a497fdfdd43533b777de4009ae2ca6701"><td class="memItemLeft" align="right" valign="top">std::bitset&lt; <a class="el" href="classIndexedBitset.html#a8124c5ade5efccaa13f519ff80c3831a">SIZE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedBitset.html#a497fdfdd43533b777de4009ae2ca6701">_bitset</a></td></tr>
 <tr class="separator:a497fdfdd43533b777de4009ae2ca6701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a8505dde21dd4623c4d5b7ecaf15b56e4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedBitset.html#a8505dde21dd4623c4d5b7ecaf15b56e4">operator==</a> (const <a class="el" href="classIndexedBitset.html">IndexedBitset</a> &amp;l, const <a class="el" href="classIndexedBitset.html">IndexedBitset</a> &amp;r)</td></tr>
+<tr class="separator:a8505dde21dd4623c4d5b7ecaf15b56e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a2e6d7baed3f130092b026d0ed983d0d2" name="a2e6d7baed3f130092b026d0ed983d0d2"></a>
@@ -191,6 +199,33 @@ template&lt;auto FirstIndex, auto LastIndex&gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5cf2f39d83c8b014e8d7ac9d1519ef83" name="a5cf2f39d83c8b014e8d7ac9d1519ef83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cf2f39d83c8b014e8d7ac9d1519ef83">&#9670;&#160;</a></span>indices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;auto FirstIndex, auto LastIndex&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="classIndexedBitset.html#a2e6d7baed3f130092b026d0ed983d0d2">key_type</a> &gt; <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; FirstIndex, LastIndex &gt;::indices </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -422,6 +457,45 @@ template&lt;auto FirstIndex, auto LastIndex&gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="a8505dde21dd4623c4d5b7ecaf15b56e4" name="a8505dde21dd4623c4d5b7ecaf15b56e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8505dde21dd4623c4d5b7ecaf15b56e4">&#9670;&#160;</a></span>operator==</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;auto FirstIndex, auto LastIndex&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; FirstIndex, LastIndex &gt; &amp;&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; FirstIndex, LastIndex &gt; &amp;&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

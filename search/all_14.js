@@ -88,7 +88,7 @@ var searchData=
   ['testing_85',['testing',['../namespacetesting.html',1,'']]],
   ['testmultitape_86',['TestMultiTape',['../TestTape_8h.html#a2761573f2591d0fa4392fec6cf37d98e',1,'TestTape.h']]],
   ['testpair_87',['TestPair',['../structTestPair.html',1,'']]],
-  ['testpartyquestbit_88',['TestPartyQuestBit',['../Party_8h.html#a4e3b1773dfc5d7a21fe51039de25d2f9',1,'TestPartyQuestBit(PARTY_QUEST_BITS bit):&#160;Party.cpp'],['../Party_8cpp.html#a4e3b1773dfc5d7a21fe51039de25d2f9',1,'TestPartyQuestBit(PARTY_QUEST_BITS bit):&#160;Party.cpp']]],
+  ['testpartyquestbit_88',['TestPartyQuestBit',['../Party_8h.html#a97b5ca74e79a90098ce1559f6d25525c',1,'TestPartyQuestBit(QuestBit bit):&#160;Party.cpp'],['../Party_8cpp.html#a97b5ca74e79a90098ce1559f6d25525c',1,'TestPartyQuestBit(QuestBit bit):&#160;Party.cpp']]],
   ['testpath_89',['testPath',['../structGameTestOptions.html#a0461048914836534896a9dc574bc0aac',1,'GameTestOptions']]],
   ['testroundtrip_90',['TestRoundTrip',['../Json__ut_8cpp.html#a4dc838094e7c48108da37a0726c0ce7b',1,'Json_ut.cpp']]],
   ['teststruct_91',['TestStruct',['../structTestStruct.html',1,'']]],

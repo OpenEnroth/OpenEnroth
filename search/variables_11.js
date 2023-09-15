@@ -1,7 +1,7 @@
 var searchData=
 [
   ['q_0',['q',['../structforcepersverts.html#aeb507719f0f6dde9b4aba4db676e3415',1,'forcepersverts']]],
-  ['qbit_1',['qBit',['../structTownPortalData.html#a0ba855d7c792ed566bd4765456ba00a5',1,'TownPortalData']]],
+  ['qbit_1',['qBit',['../structTownPortalData.html#a88fbf24736052e6eca0df9914ee3d102',1,'TownPortalData']]],
   ['quarry_5fbonus_2',['quarry_bonus',['../Arcomage_8cpp.html#a06d1a04207275f162cc5ee67fc747ee3',1,'Arcomage.cpp']]],
   ['quarry_5flevel_3',['quarry_level',['../structArcomagePlayer.html#a9cb6d7ca78930519c9afcda3b7a980a1',1,'ArcomagePlayer::quarry_level()'],['../structArcomageStartConditions.html#aadcccc0544042fcbb6714943a76039a9',1,'ArcomageStartConditions::quarry_level()']]],
   ['quest_4',['Quest',['../classGameConfig_1_1Gamepad.html#a66ff1247e5d439a910f64c01429e528e',1,'GameConfig::Gamepad::Quest()'],['../classGameConfig_1_1Keybindings.html#a21dc4e7f62a0818c87d8ca40e5bc2b6c',1,'GameConfig::Keybindings::Quest()']]],

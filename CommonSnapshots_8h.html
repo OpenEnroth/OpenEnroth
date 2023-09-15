@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;27407d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="BinaryConcepts_8h.html">Library/Binary/BinaryConcepts.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedBitset_8h.html">Utility/IndexedBitset.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SnapshotConcepts_8h.html">SnapshotConcepts.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -97,6 +98,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structConvertTag.html">ConvertTag&lt; From, To &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSegmentTag.html">SegmentTag&lt; FirstIndex, LastIndex &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structReverseBitOrderTag.html">ReverseBitOrderTag</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -152,6 +155,12 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
 <tr class="memitem:adefc4d6a0872c9a11cdba13f3dc9c4ea"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt; </td></tr>
 <tr class="memitem:adefc4d6a0872c9a11cdba13f3dc9c4ea"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonSnapshots_8h.html#adefc4d6a0872c9a11cdba13f3dc9c4ea">reconstruct</a> (const std::array&lt; T1, N &gt; &amp;src, <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>, <a class="el" href="structSegmentTag.html">SegmentTag</a>&lt; LL, HH &gt; tag)</td></tr>
 <tr class="separator:adefc4d6a0872c9a11cdba13f3dc9c4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9cc546b5906683a5cfa2e22c1685e2d"><td class="memTemplParams" colspan="2">template&lt;size_t N, auto L, auto H&gt; </td></tr>
+<tr class="memitem:ac9cc546b5906683a5cfa2e22c1685e2d"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonSnapshots_8h.html#ac9cc546b5906683a5cfa2e22c1685e2d">snapshot</a> (const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; &amp;src, std::array&lt; uint8_t, N &gt; *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>, <a class="el" href="structReverseBitOrderTag.html">ReverseBitOrderTag</a>)</td></tr>
+<tr class="separator:ac9cc546b5906683a5cfa2e22c1685e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3831495bb06c1fdac1497445dcb3cdcb"><td class="memTemplParams" colspan="2">template&lt;size_t N, auto L, auto H&gt; </td></tr>
+<tr class="memitem:a3831495bb06c1fdac1497445dcb3cdcb"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonSnapshots_8h.html#a3831495bb06c1fdac1497445dcb3cdcb">reconstruct</a> (const std::array&lt; uint8_t, N &gt; &amp;src, <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>, <a class="el" href="structReverseBitOrderTag.html">ReverseBitOrderTag</a>)</td></tr>
+<tr class="separator:a3831495bb06c1fdac1497445dcb3cdcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -161,10 +170,12 @@ Variables</h2></td></tr>
 <tr class="memitem:a8514cbca4d8b5eedd8e4b41d21ce64ec"><td class="memTemplParams" colspan="2">template&lt;auto First, auto Last&gt; </td></tr>
 <tr class="memitem:a8514cbca4d8b5eedd8e4b41d21ce64ec"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structSegmentTag.html">SegmentTag</a>&lt; First, Last &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetags.html#a8514cbca4d8b5eedd8e4b41d21ce64ec">tags::segment</a></td></tr>
 <tr class="separator:a8514cbca4d8b5eedd8e4b41d21ce64ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9e7ac13c05fddd8f86f19d2b2ace2a4"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structReverseBitOrderTag.html">ReverseBitOrderTag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetags.html#ad9e7ac13c05fddd8f86f19d2b2ace2a4">tags::reverseBits</a></td></tr>
+<tr class="separator:ad9e7ac13c05fddd8f86f19d2b2ace2a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a026c6076df22e380273b5178f978f3ba" name="a026c6076df22e380273b5178f978f3ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a026c6076df22e380273b5178f978f3ba">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a026c6076df22e380273b5178f978f3ba">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,7 +212,7 @@ requires <a class="el" href="conceptDifferentElementTypes.html">DifferentElement
 </div>
 </div>
 <a id="ad1a960c1639bc2f5c0bb901570f1a96e" name="ad1a960c1639bc2f5c0bb901570f1a96e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1a960c1639bc2f5c0bb901570f1a96e">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1a960c1639bc2f5c0bb901570f1a96e">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +242,7 @@ template&lt;size_t N&gt; </div>
 </div>
 </div>
 <a id="a0918e3410cde02d9995907bc48564eba" name="a0918e3410cde02d9995907bc48564eba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0918e3410cde02d9995907bc48564eba">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0918e3410cde02d9995907bc48564eba">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -267,7 +278,7 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, class... Tags&gt; </
 </div>
 </div>
 <a id="adefc4d6a0872c9a11cdba13f3dc9c4ea" name="adefc4d6a0872c9a11cdba13f3dc9c4ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adefc4d6a0872c9a11cdba13f3dc9c4ea">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adefc4d6a0872c9a11cdba13f3dc9c4ea">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -303,7 +314,7 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt;
 </div>
 </div>
 <a id="a2e96c220c478620337e08d04a1d3a907" name="a2e96c220c478620337e08d04a1d3a907"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e96c220c478620337e08d04a1d3a907">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e96c220c478620337e08d04a1d3a907">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,8 +350,52 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
 
 </div>
 </div>
+<a id="a3831495bb06c1fdac1497445dcb3cdcb" name="a3831495bb06c1fdac1497445dcb3cdcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3831495bb06c1fdac1497445dcb3cdcb">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;size_t N, auto L, auto H&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void reconstruct </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; uint8_t, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structReverseBitOrderTag.html">ReverseBitOrderTag</a>&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a5acc70236fd798c511aa27eea409f8c2" name="a5acc70236fd798c511aa27eea409f8c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5acc70236fd798c511aa27eea409f8c2">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5acc70236fd798c511aa27eea409f8c2">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -370,7 +425,7 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <a id="a8d42bd0f6892964fbc656a5e311f9fe6" name="a8d42bd0f6892964fbc656a5e311f9fe6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d42bd0f6892964fbc656a5e311f9fe6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d42bd0f6892964fbc656a5e311f9fe6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[8/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -406,7 +461,7 @@ template&lt;class T1 , class T2 &gt; </div>
 </div>
 </div>
 <a id="a286bada911fd38cca9edbd3f40606e2e" name="a286bada911fd38cca9edbd3f40606e2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a286bada911fd38cca9edbd3f40606e2e">&#9670;&#160;</a></span>snapshot() <span class="overload">[1/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a286bada911fd38cca9edbd3f40606e2e">&#9670;&#160;</a></span>snapshot() <span class="overload">[1/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -442,7 +497,7 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, class... Tags&gt; </
 </div>
 </div>
 <a id="abe74d4a8c52dbc64cf0589b298df0adc" name="abe74d4a8c52dbc64cf0589b298df0adc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe74d4a8c52dbc64cf0589b298df0adc">&#9670;&#160;</a></span>snapshot() <span class="overload">[2/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abe74d4a8c52dbc64cf0589b298df0adc">&#9670;&#160;</a></span>snapshot() <span class="overload">[2/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -477,8 +532,52 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt;
 
 </div>
 </div>
+<a id="ac9cc546b5906683a5cfa2e22c1685e2d" name="ac9cc546b5906683a5cfa2e22c1685e2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9cc546b5906683a5cfa2e22c1685e2d">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;size_t N, auto L, auto H&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void snapshot </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::array&lt; uint8_t, N &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structReverseBitOrderTag.html">ReverseBitOrderTag</a>&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a03939cc85008c7358f0c3157ec7ea50b" name="a03939cc85008c7358f0c3157ec7ea50b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03939cc85008c7358f0c3157ec7ea50b">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a03939cc85008c7358f0c3157ec7ea50b">&#9670;&#160;</a></span>snapshot() <span class="overload">[4/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -515,7 +614,7 @@ requires <a class="el" href="conceptDifferentElementTypes.html">DifferentElement
 </div>
 </div>
 <a id="a93aa902703b0ad84da5328245c5d98a2" name="a93aa902703b0ad84da5328245c5d98a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93aa902703b0ad84da5328245c5d98a2">&#9670;&#160;</a></span>snapshot() <span class="overload">[4/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a93aa902703b0ad84da5328245c5d98a2">&#9670;&#160;</a></span>snapshot() <span class="overload">[5/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -552,7 +651,7 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
 </div>
 </div>
 <a id="abd599780f62289c9b9c81e5b16c16f39" name="abd599780f62289c9b9c81e5b16c16f39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd599780f62289c9b9c81e5b16c16f39">&#9670;&#160;</a></span>snapshot() <span class="overload">[5/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abd599780f62289c9b9c81e5b16c16f39">&#9670;&#160;</a></span>snapshot() <span class="overload">[6/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -582,7 +681,7 @@ template&lt;size_t N&gt; </div>
 </div>
 </div>
 <a id="a1f0f2388e8fed123396a5528122ecd17" name="a1f0f2388e8fed123396a5528122ecd17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f0f2388e8fed123396a5528122ecd17">&#9670;&#160;</a></span>snapshot() <span class="overload">[6/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f0f2388e8fed123396a5528122ecd17">&#9670;&#160;</a></span>snapshot() <span class="overload">[7/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -612,7 +711,7 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <a id="ad27b8b5dc2dbbef6a095dbd67f07e1bf" name="ad27b8b5dc2dbbef6a095dbd67f07e1bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad27b8b5dc2dbbef6a095dbd67f07e1bf">&#9670;&#160;</a></span>snapshot() <span class="overload">[7/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad27b8b5dc2dbbef6a095dbd67f07e1bf">&#9670;&#160;</a></span>snapshot() <span class="overload">[8/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

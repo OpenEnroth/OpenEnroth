@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;27407d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
    </div>
   </td>
  </tr>
@@ -75,6 +75,7 @@ $(function() {
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classIndexedArray-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">IndexedArray&lt; T, FirstIndex, LastIndex, Size &gt; Class Template Reference</div></div>
 </div><!--header-->
@@ -124,6 +125,11 @@ Private Types</h2></td></tr>
 Static Private Member Functions</h2></td></tr>
 <tr class="memitem:a532d671febdbb2fd866117bfc69d1565"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a532d671febdbb2fd866117bfc69d1565">is_unique</a> (std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#a684e5352e693d9e1439c207cbb5f1fe3">key_type</a>, value_type &gt; &gt; init)</td></tr>
 <tr class="separator:a532d671febdbb2fd866117bfc69d1565"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:accc12c6ee24bea179898159cc5a4b5eb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#accc12c6ee24bea179898159cc5a4b5eb">operator==</a> (const <a class="el" href="classIndexedArray.html">IndexedArray</a> &amp;l, const <a class="el" href="classIndexedArray.html">IndexedArray</a> &amp;r)</td></tr>
+<tr class="separator:accc12c6ee24bea179898159cc5a4b5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T, auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt;<br />
@@ -462,6 +468,45 @@ template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_c
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="accc12c6ee24bea179898159cc5a4b5eb" name="accc12c6ee24bea179898159cc5a4b5eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accc12c6ee24bea179898159cc5a4b5eb">&#9670;&#160;</a></span>operator==</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
