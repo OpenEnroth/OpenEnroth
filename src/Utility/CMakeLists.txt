@@ -13,6 +13,7 @@ set(UTILITY_SOURCES
         Streams/InputStream.cpp
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
+        Streams/TempFileOutputStream.cpp
         String.cpp)
 
 set(UTILITY_HEADERS
@@ -45,6 +46,7 @@ set(UTILITY_HEADERS
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
         Streams/StringOutputStream.h
+        Streams/TempFileOutputStream.h
         String.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})

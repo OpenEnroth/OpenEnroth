@@ -17,5 +17,8 @@ class BlobOutputStream : private Embedded<std::string>, public StringOutputStrea
     virtual void close() override;
 
  private:
+    void closeInternal();
+
+ private:
     Blob *_target = nullptr;
 };

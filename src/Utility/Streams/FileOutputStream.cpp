@@ -13,6 +13,8 @@ FileOutputStream::~FileOutputStream() {
 }
 
 void FileOutputStream::open(std::string_view path) {
+    close();
+
     _path = std::string(path);
     _file = fopen(_path.c_str(), "wb");
     if (!_file)

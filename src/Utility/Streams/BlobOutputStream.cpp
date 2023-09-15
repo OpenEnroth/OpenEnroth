@@ -8,7 +8,7 @@ BlobOutputStream::BlobOutputStream(Blob *target) : base_type(&Embedded::get()), 
 }
 
 BlobOutputStream::~BlobOutputStream() {
-    close();
+    closeInternal();
 }
 
 void BlobOutputStream::flush() {
@@ -20,6 +20,10 @@ void BlobOutputStream::flush() {
 }
 
 void BlobOutputStream::close() {
+    closeInternal();
+}
+
+void BlobOutputStream::closeInternal() {
     if (!_target)
         return;
 
