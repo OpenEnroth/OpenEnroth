@@ -20,9 +20,7 @@ struct IndoorLocation;
 struct OutdoorLocation;
 struct SpriteFrameTable;
 class LodReader;
-namespace LOD {
-class WriteableFile;
-} // namespace LOD
+class LodWriter;
 
 
 struct IndoorLocation_MM7 {
@@ -137,7 +135,7 @@ struct SaveGame_MM7 {
 // TODO(captainurist): header here is essentially the whole savegame. Redo properly.
 void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst);
 void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst);
-void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst);
+void serialize(const SaveGame_MM7 &src, LodWriter *dst);
 void deserialize(const LodReader &src, SaveGame_MM7 *dst);
 
 

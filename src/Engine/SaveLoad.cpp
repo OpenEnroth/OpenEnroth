@@ -192,14 +192,14 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     //}
 
     pSave_LOD->close();
-    LOD::WriteableFile lodWriter;
-    lodWriter.AllocSubIndicesAndIO(300, 100000);
-    lodWriter.LoadFile(makeDataPath("data", "new.lod"), 0); // We append to an existing file here.
+    LodWriter lodWriter(makeDataPath("data", "new.lod"), makeSaveLodInfo());
 
-    Blob packedScreenshot{ render->PackScreenshot(150, 112) };  // создание скриншота
-    if (lodWriter.Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
-        logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
-    }
+    LodReader lodReader(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
+    for (const std::string &name : lodReader.ls())
+        lodWriter.write(name, lodReader.readRaw(name));
+    lodReader.close();
+
+    lodWriter.write("image.pcx", render->PackScreenshot(150, 112));
 
     SaveGameHeader save_header;
     save_header.name = title;
@@ -219,11 +219,8 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
             GraphicsImage *image = beacon->image;
             if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
                 assert(image->rgba());
-                Blob packedPCX = pcx::encode(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                if (lodWriter.Write(str, packedPCX.data(), packedPCX.size(), 0)) {
-                    logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
-                }
+                lodWriter.write(str, pcx::encode(image->rgba()));
             }
         }
     }
@@ -240,15 +237,13 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
             serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
         }
 
-        Blob mapBlob = lod::encodeCompressed(uncompressed);
-
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
-        if (lodWriter.Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 208));
-        }
+        lodWriter.write(file_name, lod::encodeCompressed(uncompressed));
     }
+
+    lodWriter.close();
 
     if (IsAutoSAve) {
         std::string src = makeDataPath("data", "new.lod");
@@ -264,7 +259,6 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     pParty->_viewYaw = partyViewYaw;
     pParty->_viewPitch = partyViewPitch;
 
-    lodWriter.CloseWriteFile();
     pSave_LOD->open(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
 
     return save_header;
