@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Library/Lod/LodReader.h"
+#include "Library/Lod/LodWriter.h"
 
 #include "Utility/Memory/Blob.h"
 

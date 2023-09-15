@@ -332,41 +332,25 @@ void SaveNewGame() {
     pSave_LOD->close();
     std::filesystem::remove(file_path);  // удалить new.lod
 
-    LOD::FileHeader header;  // заголовок
-    strcpy(header.LodVersion, "MMVII");
-    strcpy(header.LodDescription, "newmaps for MMVII");
-    header.LODSize = 100;
-    header.dword_0000A8 = 0;
+    LodInfo info;
+    info.version = LOD_VERSION_MM7;
+    info.rootName = "chapter";
+    info.description = "newmaps for MMVII";
 
-    LOD::WriteableFile lodWriter;
-    lodWriter.AllocSubIndicesAndIO(300, 100000);
-
-    lodWriter.CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
-    if (!lodWriter.LoadFile(file_path, false))  // загрузить файл new.lod(isFileOpened = true)
-        return;
-
-    lodWriter.CreateTempFile();  // создаётся временный файл OutputFileHandle
-    lodWriter.ClearSubNodes();
+    LodWriter lodWriter(file_path, info);
 
     // Copy ddm & dlv files, can actually just filter by extension instead.
-    for (const std::string &name : pGames_LOD->ls()) {
-        if (!name.ends_with(".ddm") && !name.ends_with(".dlv"))
-            continue;
-
-        Blob data = pGames_LOD->readRaw(name);
-        lodWriter.AppendDirectory(name, data.data(), data.size());
-    }
+    for (const std::string &name : pGames_LOD->ls())
+        if (name.ends_with(".ddm") || name.ends_with(".dlv"))
+            lodWriter.write(name, pGames_LOD->readRaw(name));
 
     pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
 
     // TODO(captainurist): encapsulate
     SaveGameHeader_MM7 headerMm7;
     snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
-
-    lodWriter.AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
-
-    lodWriter.FixDirectoryOffsets();
-    lodWriter.CloseWriteFile();
+    lodWriter.write("header.bin", Blob::view(&headerMm7, sizeof(headerMm7)));
+    lodWriter.close();
 
     pParty->lastPos.x = 12552;
     pParty->lastPos.y = 1816;
