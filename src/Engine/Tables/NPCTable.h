@@ -4,6 +4,7 @@
 #include <array>
 
 #include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/MapEnums.h"
 
 #include "Utility/IndexedArray.h"
@@ -49,7 +50,7 @@ struct NPCData {  // 4Ch
     unsigned int dialogue_4_evt_id = 0;  // and absolutely crazy stuff when it's in party hierlings (npc2)
     unsigned int dialogue_5_evt_id = 0;
     unsigned int dialogue_6_evt_id = 0;
-    unsigned int uSex = 0;       // 40
+    CharacterSex uSex = SEX_MALE;       // 40
     int bHasUsedTheAbility = 0;  // 44
     int news_topic = 0;          // 48
 };
@@ -74,7 +75,7 @@ struct NPCGreeting {
 
 struct NPCStats {
     inline NPCStats() {
-        uNumNPCNames[0] = uNumNPCNames[1] = 0;
+        uNumNPCNames[SEX_MALE] = uNumNPCNames[SEX_FEMALE] = 0;
     }
 
     void Initialize(GameResourceManager *resourceManager);
@@ -93,12 +94,12 @@ struct NPCStats {
      * @offset 0x476C60
      */
     void setNPCNamesOnLoad();
-    const std::string &sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId);
+    const std::string &sub_495366_MispronounceName(uint8_t firstLetter, CharacterSex genderId);
 
     std::array<NPCData, 501> pNPCData;     // 0 - 94BCh count from 1
     std::array<NPCData, 501> pNewNPCData;  // 94BCh- 12978h count from 1
-    std::array<std::array<std::string, 2>, 540> pNPCNames{};
-    IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {{}};  // count from 1
+    std::array<IndexedArray<std::string, SEX_FIRST, SEX_LAST>, 540> pNPCNames = {};
+    IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};  // count from 1
     std::array<NPCData, 100> pAdditionalNPC = {{}};
     std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
     std::array<std::string, 500> pNPCUnicNames{};  // from first batch
@@ -112,7 +113,7 @@ struct NPCStats {
     unsigned int uNumNewNPCs{};
     int field_17FC8 = 0;
     unsigned int uNumNPCProfessions{};
-    unsigned int uNumNPCNames[2]{};  // 0 male 1 female
+    IndexedArray<int, SEX_FIRST, SEX_LAST> uNumNPCNames = {};
 
     static int dword_AE336C_LastMispronouncedNameFirstLetter;
     static int dword_AE3370_LastMispronouncedNameResult;

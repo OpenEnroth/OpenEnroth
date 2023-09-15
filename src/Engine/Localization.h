@@ -5,6 +5,7 @@
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/PartyEnums.h"
 
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/IndexedArray.h"
@@ -462,8 +463,12 @@ class Localization {
         return this->spell_school_names[index];
     }
 
-    const char *GetSpellName(unsigned int index) const {
-        return this->spell_names[index];
+    const char *GetPartyBuffName(PARTY_BUFF_INDEX index) const {
+        return this->party_buff_names[index];
+    }
+
+    const char *GetCharacterBuffName(CharacterBuff index) const {
+        return this->character_buff_names[index];
     }
 
     const char *GetClassName(CharacterClassType index) const {
@@ -654,7 +659,8 @@ class Localization {
     const char *day_names[7]{};
     const char *moon_phase_names[5]{};
     const char *spell_school_names[9]{};
-    const char *spell_names[44]{};
+    IndexedArray<const char *, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names = {{}};
+    IndexedArray<const char *, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names = {{}};
     IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_names = {{}};
     IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_desciptions = {{}};
     const char *attribute_names[7]{};

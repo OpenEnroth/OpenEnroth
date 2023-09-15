@@ -29,7 +29,7 @@ struct ItemTable {
     bool IsMaterialNonCommon(const ItemGen *pItem);
 
     IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> pItems;                   // 4-9604h
-    std::array<ItemEnchantment, 24> standardEnchantments;                // 9604h
+    IndexedArray<ItemEnchantment, CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;                // 9604h
     IndexedArray<ItemSpecialEnchantment, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h
     char field_9FC4[5000];
     char field_B348[5000];

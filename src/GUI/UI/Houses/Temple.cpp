@@ -47,9 +47,9 @@ void GUIWindow_Temple::healDialogue() {
             if (pParty->activeCharacter().conditions.HasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
                 pParty->activeCharacter().uPrevFace = pParty->activeCharacter().uCurrentFace;
                 pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
-                pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
-                pParty->activeCharacter().uCurrentFace = (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
-                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, (pParty->activeCharacter().GetSexByVoice() != 0) + 23);
+                pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
+                pParty->activeCharacter().uCurrentFace = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
+                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23);
                 setZombie = true;
             }
         }

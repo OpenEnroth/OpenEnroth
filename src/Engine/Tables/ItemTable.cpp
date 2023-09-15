@@ -84,7 +84,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     strtokSkipLines(3);
     // Standard Bonuses by Group
     chanceByItemTypeSums.fill(0);
-    for (int i = 0; i < 24; ++i) {
+    for (CharacterAttributeType i : enchantableAttributes()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         standardEnchantments[i].pBonusStat = removeQuotes(tokens[0]);
@@ -167,11 +167,11 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter].uSpriteID = atoi(tokens[11]);
 
         pItems[item_counter]._additional_value = 0;
-        pItems[item_counter]._bonus_type = 0;
+        pItems[item_counter]._bonus_type = {};
         if (pItems[item_counter].uMaterial == MATERIAL_SPECIAL) {
-            for (int ii = 0; ii < 24; ++ii) {
+            for (CharacterAttributeType ii : enchantableAttributes()) {
                 if (iequals(tokens[12], standardEnchantments[ii].pOfName)) {
-                    pItems[item_counter]._bonus_type = ii + 1;
+                    pItems[item_counter]._bonus_type = ii;
                     break;
                 }
             }
@@ -263,7 +263,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 //----- (00456D17) --------------------------------------------------------
 void ItemTable::SetSpecialBonus(ItemGen *pItem) {
     if (pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL) {
-        pItem->uEnchantmentType = pItems[pItem->uItemID]._bonus_type;
+        pItem->attributeEnchantment = pItems[pItem->uItemID]._bonus_type;
         pItem->special_enchantment =
                 (ITEM_ENCHANTMENT)pItems[pItem->uItemID]._additional_value;
         pItem->m_enchantmentStrength = pItems[pItem->uItemID]._bonus_strength;
@@ -538,11 +538,11 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTre
         }
     }
     if (outItem->isPotion() && outItem->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
-        outItem->uEnchantmentType = 0;
+        outItem->potionPower = 0;
         for (int i = 0; i < 2; ++i) {
-            outItem->uEnchantmentType += grng->random(4) + 1;
+            outItem->potionPower += grng->random(4) + 1;
         }
-        outItem->uEnchantmentType = outItem->uEnchantmentType * std::to_underlying(treasure_level);
+        outItem->potionPower = outItem->potionPower * std::to_underlying(treasure_level);
     }
 
     if (outItem->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
@@ -554,7 +554,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTre
 
     if (!outItem->isPotion()) {
         outItem->special_enchantment = ITEM_ENCHANTMENT_NULL;
-        outItem->uEnchantmentType = 0;
+        outItem->attributeEnchantment = {};
     }
     // try get special enhansment
     switch (outItem->GetItemEquipType()) {
@@ -578,15 +578,18 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTre
             if (bonusChanceRoll < uBonusChanceStandart[treasure_level]) {
                 int enchantmentChanceSumRoll = grng->random(chanceByItemTypeSums[outItem->GetItemEquipType()]) + 1;
                 int currentEnchantmentChancesSum = 0;
-                while (currentEnchantmentChancesSum < enchantmentChanceSumRoll) {
-                    currentEnchantmentChancesSum +=
-                        standardEnchantments[outItem->uEnchantmentType].chancesByItemType[outItem->GetItemEquipType()];
-                    ++outItem->uEnchantmentType;
+                for (CharacterAttributeType attr : enchantableAttributes()) {
+                    if (currentEnchantmentChancesSum >= enchantmentChanceSumRoll)
+                        break;
+
+                    currentEnchantmentChancesSum += standardEnchantments[attr].chancesByItemType[outItem->GetItemEquipType()];
+                    outItem->attributeEnchantment = attr;
                 }
+                assert(outItem->attributeEnchantment);
 
                 outItem->m_enchantmentStrength = bonusRanges[treasure_level].minR +
                                                  grng->random(bonusRanges[treasure_level].maxR - bonusRanges[treasure_level].minR + 1);
-                CharacterAttributeType standardEnchantmentAttributeSkill = static_cast<CharacterAttributeType>(outItem->uEnchantmentType - 1);
+                CharacterAttributeType standardEnchantmentAttributeSkill = *outItem->attributeEnchantment;
                 if (standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER ||
                     standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_DODGE ||
                     standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_UNARMED) {

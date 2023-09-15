@@ -147,7 +147,7 @@ void ItemGen::Reset() {
 void ItemGen::UpdateTempBonus(GameTime time) {
     if (this->uAttributes & ITEM_TEMP_BONUS) {
         if (time > this->uExpireTime) {
-            this->uEnchantmentType = 0;
+            this->attributeEnchantment = {};
             this->special_enchantment = ITEM_ENCHANTMENT_NULL;
             this->uAttributes &= ~ITEM_TEMP_BONUS;
         }
@@ -160,10 +160,10 @@ unsigned int ItemGen::GetValue() const {
     unsigned int mod, bonus;
 
     uBaseValue = pItemTable->pItems[this->uItemID].uValue;
-    if (this->uAttributes & ITEM_TEMP_BONUS ||
-        pItemTable->IsMaterialNonCommon(this))
+    if (uAttributes & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
-    if (uEnchantmentType) return uBaseValue + 100 * m_enchantmentStrength;
+    if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
+        return uBaseValue + 100 * m_enchantmentStrength;
 
     if (special_enchantment != ITEM_ENCHANTMENT_NULL) {
         mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
@@ -204,9 +204,9 @@ std::string ItemGen::GetIdentifiedName() {
     }
 
     if (!pItemTable->IsMaterialNonCommon(this)) {
-        if (uEnchantmentType) {
+        if (attributeEnchantment) {
             return std::string(pItemTable->pItems[uItemID].name) + " " +
-                   pItemTable->standardEnchantments[uEnchantmentType - 1].pOfName;
+                   pItemTable->standardEnchantments[*attributeEnchantment].pOfName;
         } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
             return pItemTable->pItems[uItemID].name;
         } else {
@@ -677,11 +677,13 @@ void ItemGen::GetItemBonusArtifact(const Character *owner,
 }
 
 bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet) {
-    auto pos = specialBonusMap.find(this->uEnchantmentType);
-    if (pos == specialBonusMap.end())
-        return false;
+    //auto pos = specialBonusMap.find(this->attributeEnchantment);
+    //if (pos == specialBonusMap.end())
+    //    return false;
 
-    return pos->second.find(attrToGet) != pos->second.end();
+    //return pos->second.find(attrToGet) != pos->second.end();
+    // TODO(captainurist): what is this code about? ^
+    return false;
 }
 
 ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() const {

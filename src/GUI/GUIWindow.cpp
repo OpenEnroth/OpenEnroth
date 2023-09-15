@@ -87,6 +87,35 @@ GraphicsImage *ui_leather_mm7 = nullptr;
 std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                                     50, 51, 52, 53, 54, 55, 56, 60}};
+
+constinit const IndexedArray<Color, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> ui_game_character_record_playerbuff_colors = {
+    {CHARACTER_BUFF_RESIST_AIR,         colorTable.Anakiwa},
+    {CHARACTER_BUFF_BLESS,              colorTable.Mercury},
+    {CHARACTER_BUFF_RESIST_BODY,        colorTable.FlushOrange},
+    {CHARACTER_BUFF_RESIST_EARTH,       colorTable.Gray},
+    {CHARACTER_BUFF_FATE,               colorTable.Mercury},
+    {CHARACTER_BUFF_RESIST_FIRE,        colorTable.DarkOrange},
+    {CHARACTER_BUFF_HAMMERHANDS,        colorTable.FlushOrange},
+    {CHARACTER_BUFF_HASTE,              colorTable.DarkOrange},
+    {CHARACTER_BUFF_HEROISM,            colorTable.Mercury},
+    {CHARACTER_BUFF_RESIST_MIND,        colorTable.PurplePink},
+    {CHARACTER_BUFF_PAIN_REFLECTION,    colorTable.MoonRaker},
+    {CHARACTER_BUFF_PRESERVATION,       colorTable.Mercury},
+    {CHARACTER_BUFF_REGENERATION,       colorTable.FlushOrange},
+    {CHARACTER_BUFF_SHIELD,             colorTable.Anakiwa},
+    {CHARACTER_BUFF_STONESKIN,          colorTable.Gray},
+    {CHARACTER_BUFF_ACCURACY,           colorTable.PaleCanary},
+    {CHARACTER_BUFF_ENDURANCE,          colorTable.PaleCanary},
+    {CHARACTER_BUFF_INTELLIGENCE,       colorTable.PaleCanary},
+    {CHARACTER_BUFF_LUCK,               colorTable.PaleCanary},
+    {CHARACTER_BUFF_STRENGTH,           colorTable.PaleCanary},
+    {CHARACTER_BUFF_PERSONALITY,        colorTable.PaleCanary},
+    {CHARACTER_BUFF_SPEED,              colorTable.PaleCanary},
+    {CHARACTER_BUFF_RESIST_WATER,       colorTable.AzureRadiance},
+    {CHARACTER_BUFF_WATER_WALK,         colorTable.AzureRadiance},
+};
+
+
 void SetCurrentMenuID(MenuType uMenu) {
     sCurrentMenuID = uMenu;
 }
@@ -884,13 +913,13 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += pText;
                 break;
             case 6:
-                if (pPlayer->uSex)
+                if (pPlayer->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_LADY_LOWERCASE);
                 else
                     result += localization->GetString(LSTR_SIR_LOWERCASE);
                 break;
             case 7:
-                if (pPlayer->uSex)
+                if (pPlayer->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_LADY);
                 else
                     result += localization->GetString(LSTR_SIR);
@@ -910,13 +939,13 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 }
                 break;
             case 9:
-                if (npc->uSex)
+                if (npc->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_HER);
                 else
                     result += localization->GetString(LSTR_HIS);
                 break;
             case 10:
-                if (pPlayer->uSex)
+                if (pPlayer->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_LADY);
                 else
                     result += localization->GetString(LSTR_LORD);
@@ -931,7 +960,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
                 break;
             case 14:
-                if (npc->uSex)
+                if (npc->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_SISTER);
                 else
                     result += localization->GetString(LSTR_BROTHER);
@@ -940,7 +969,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += localization->GetString(LSTR_DAUGHTER);
                 break;
             case 16:
-                if (npc->uSex)
+                if (npc->uSex == SEX_FEMALE)
                     result += localization->GetString(LSTR_SISTER);
                 else
                     result += localization->GetString(LSTR_BROTHER);

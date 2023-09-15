@@ -175,16 +175,16 @@ struct Party {
     }
 
     inline bool GetRedAlert() const {
-        return (uFlags & PARTY_FLAGS_1_ALERT_RED) != 0;
+        return uFlags & PARTY_FLAGS_1_ALERT_RED;
     }
     inline void SetRedAlert() { uFlags |= PARTY_FLAGS_1_ALERT_RED; }
     inline bool GetYellowAlert() const {
-        return (uFlags & PARTY_FLAGS_1_ALERT_YELLOW) != 0;
+        return uFlags & PARTY_FLAGS_1_ALERT_YELLOW;
     }
     inline void SetYellowAlert() { uFlags |= PARTY_FLAGS_1_ALERT_YELLOW; }
 
     inline bool GetRedOrYellowAlert() const {
-        return (uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW) != 0;
+        return uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
     }
 
     inline bool isAirborne() const {
@@ -318,13 +318,13 @@ struct Party {
     int uNumArcomageWins;
     int uNumArcomageLoses;
     bool bTurnBasedModeOn;
-    int uFlags2;
+    PARTY_FLAGS_2 uFlags2;
     PartyAlignment alignment;
-    std::array<SpellBuff, 20> pPartyBuffs;
+    IndexedArray<SpellBuff, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> pPartyBuffs;
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
     ItemGen pPickedItem;
-    unsigned int uFlags; // TODO(captainurist): Flags
+    PARTY_FLAGS_1 uFlags;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;

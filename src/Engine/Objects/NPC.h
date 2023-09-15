@@ -7,6 +7,7 @@
 #include "Utility/IndexedArray.h"
 
 #include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 struct NPCData;
 
@@ -18,7 +19,7 @@ using enum NpcType;
 
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------
-inline bool CheckPortretAgainstSex(int a1, int) { return true; }
+inline bool CheckPortretAgainstSex(int a1, CharacterSex) { return true; }
 
 bool PartyHasDragon();
 bool CheckHiredNPCSpeciality(NPCProf prof);

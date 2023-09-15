@@ -3383,12 +3383,10 @@ int stru319::which_player_to_attack(Actor *pActor) {
     signed int v2;         // ebx@1
     int v22;               // [sp+8h] [bp-140h]@3
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
-    int for_sex;           // [sp+13Ch] [bp-Ch]@1
-    int for_race;          // [sp+140h] [bp-8h]@1
+    std::optional<CharacterSex> for_sex;           // [sp+13Ch] [bp-Ch]@1
+    std::optional<CharacterRace> for_race;          // [sp+140h] [bp-8h]@1
     std::optional<CharacterClassType> for_class;         // [sp+144h] [bp-4h]@1
 
-    for_race = -1;
-    for_sex = -1;
     v2 = 0;
     if (pActor->monsterInfo.uAttackPreference) {
         for (uint i = 0; i < 16; i++) {
@@ -3423,22 +3421,22 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         for_class = CHARACTER_CLASS_MONK;
                         break;
                     case 512:
-                        for_sex = 0;
+                        for_sex = SEX_MALE;
                         break;
                     case 1024:
-                        for_sex = 1;
+                        for_sex = SEX_FEMALE;
                         break;
                     case 2048:
-                        for_race = 0;
+                        for_race = CHARACTER_RACE_HUMAN;
                         break;
                     case 4096:
-                        for_race = 1;
+                        for_race = CHARACTER_RACE_ELF;
                         break;
                     case 8192:
-                        for_race = 3;
+                        for_race = CHARACTER_RACE_DWARF;
                         break;
                     case 16384:
-                        for_race = 2;
+                        for_race = CHARACTER_RACE_GOBLIN;
                         break;
                 }
                 v2 = 0;
@@ -3448,15 +3446,15 @@ int stru319::which_player_to_attack(Actor *pActor) {
                     if (for_class && *for_class == pParty->pCharacters[j].classType) {
                         flag = true;
                     }
-                    if (for_sex != -1 && for_sex == pParty->pCharacters[j].uSex) {
+                    if (for_sex && for_sex == pParty->pCharacters[j].uSex) {
                         flag = true;
                     }
-                    if (for_race != -1 && for_race == pParty->pCharacters[j].GetRace()) {
+                    if (for_race && for_race == pParty->pCharacters[j].GetRace()) {
                         flag = true;
                     }
                     if (flag == true) {
                         if (pParty->pCharacters[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
-                                                                    CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                                                                       CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             Victims_list[v2++] = j;
                         }
                     }
@@ -3717,7 +3715,7 @@ void Actor::LootActor() {
             Dst.uMaxCharges = Dst.uNumCharges;
         }
         if (Dst.isPotion() && Dst.uItemID != ITEM_POTION_BOTTLE) {
-            Dst.uEnchantmentType = 2 * grng->random(4) + 2;
+            Dst.potionPower = 2 * grng->random(4) + 2;
         }
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->addItemToParty(&Dst)) {

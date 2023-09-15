@@ -404,14 +404,14 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if (!GoldAmount) {
         // this is CORRECT! do not move to switch!
         if (inspect_item->isPotion()) {
-            if (inspect_item->uEnchantmentType)
-                text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->uEnchantmentType);
+            if (inspect_item->potionPower)
+                text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->potionPower);
         } else if (inspect_item->isReagent()) {
             text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
-        } else if (inspect_item->uEnchantmentType) {
+        } else if (inspect_item->attributeEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->standardEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
+                                  pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].pBonusStat,
                                   inspect_item->m_enchantmentStrength);
         } else if (inspect_item->special_enchantment) {
             text[2] = fmt::format("{}: {}",
@@ -439,7 +439,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
-        (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
+        (inspect_item->special_enchantment || inspect_item->attributeEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
     if (assets->pFontArrus->GetHeight()) {
@@ -498,7 +498,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
-            (inspect_item->special_enchantment || inspect_item->uEnchantmentType)) {
+            (inspect_item->special_enchantment || inspect_item->attributeEnchantment)) {
             v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
 
             std::string txt4 = "Duration:";
@@ -1248,18 +1248,28 @@ static void drawBuffPopupWindow() {
     GUIWindow popupWindow;
     int stringCount;
 
-    static const std::array<Color, 20> spellTooltipColors = { {
-        colorTable.Anakiwa,       colorTable.FlushOrange,
-        colorTable.PaleCanary,    colorTable.Mercury,
-        colorTable.Gray,          colorTable.Anakiwa,
-        colorTable.DarkOrange,    colorTable.Anakiwa,
-        colorTable.DarkOrange,    colorTable.Mercury,
-        colorTable.DarkOrange,    colorTable.Anakiwa,
-        colorTable.PurplePink,    colorTable.FlushOrange,
-        colorTable.Anakiwa,       colorTable.Gray,
-        colorTable.DarkOrange,    colorTable.AzureRadiance,
-        colorTable.AzureRadiance, colorTable.Anakiwa
-    } };
+    static constexpr IndexedArray<Color, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> spellTooltipColors = {
+        {PARTY_BUFF_RESIST_AIR,             colorTable.Anakiwa},
+        {PARTY_BUFF_RESIST_BODY,            colorTable.FlushOrange},
+        {PARTY_BUFF_DAY_OF_GODS,            colorTable.PaleCanary},
+        {PARTY_BUFF_DETECT_LIFE,            colorTable.Mercury},
+        {PARTY_BUFF_RESIST_EARTH,           colorTable.Gray},
+        {PARTY_BUFF_FEATHER_FALL,           colorTable.Anakiwa},
+        {PARTY_BUFF_RESIST_FIRE,            colorTable.DarkOrange},
+        {PARTY_BUFF_FLY,                    colorTable.Anakiwa},
+        {PARTY_BUFF_HASTE,                  colorTable.DarkOrange},
+        {PARTY_BUFF_HEROISM,                colorTable.Mercury},
+        {PARTY_BUFF_IMMOLATION,             colorTable.DarkOrange},
+        {PARTY_BUFF_INVISIBILITY,           colorTable.Anakiwa},
+        {PARTY_BUFF_RESIST_MIND,            colorTable.PurplePink},
+        {PARTY_BUFF_PROTECTION_FROM_MAGIC,  colorTable.FlushOrange},
+        {PARTY_BUFF_SHIELD,                 colorTable.Anakiwa},
+        {PARTY_BUFF_STONE_SKIN,             colorTable.Gray},
+        {PARTY_BUFF_TORCHLIGHT,             colorTable.DarkOrange},
+        {PARTY_BUFF_RESIST_WATER,           colorTable.AzureRadiance},
+        {PARTY_BUFF_WATER_WALK,             colorTable.AzureRadiance},
+        {PARTY_BUFF_WIZARD_EYE,             colorTable.Anakiwa}
+    };
 
     popupWindow.sHint.clear();
     popupWindow.uFrameWidth = 400;
@@ -1282,11 +1292,11 @@ static void drawBuffPopupWindow() {
     }
 
     stringCount = 0;
-    for (int i = 0; i < pParty->pPartyBuffs.size(); i++) {
+    for (PARTY_BUFF_INDEX i : pParty->pPartyBuffs.indices()) {
         if (pParty->pPartyBuffs[i].Active()) {
             GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * assets->pFontComic->GetHeight() + 40;
-            popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetSpellName(i));
+            popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
             stringCount++;
         }
@@ -1549,9 +1559,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
 
     uint numActivePlayerBuffs = 0;
-    for (uint i = 0; i < 24; ++i) {
-        if (player->pCharacterBuffs[i].Active()) ++numActivePlayerBuffs;
-    }
+    for (const SpellBuff &buff : player->pCharacterBuffs)
+        if (buff.Active())
+            ++numActivePlayerBuffs;
 
     window->uFrameHeight = ((assets->pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * assets->pFontArrus->GetHeight()));
     window->uFrameZ = window->uFrameWidth + window->uFrameX - 1;
@@ -1602,13 +1612,13 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     window->DrawText(assets->pFontArrus.get(), {120, 22}, colorTable.White, str);
 
     uFramesetIDa = 0;
-    for (uint i = 0; i < 24; ++i) {
+    for (CharacterBuff i : player->pCharacterBuffs.indices()) {
         SpellBuff *buff = &player->pCharacterBuffs[i];
         if (buff->Active()) {
             v36 = uFramesetIDa++ * assets->pFontComic->GetHeight() + 134;
             window->DrawText(assets->pFontComic.get(), {52, v36},
                              ui_game_character_record_playerbuff_colors[i],
-                             localization->GetSpellName(20 + i));
+                             localization->GetCharacterBuffName(i));
             DrawBuff_remaining_time_string(
                 v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
                 assets->pFontComic.get());
@@ -2170,17 +2180,17 @@ void Inventory_ItemPopupAndAlchemy() {
         } else {  // if ( damage_level == 0 )
             if (item->uItemID == ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
                 // Both potions are catalyst: power is maximum of two
-                item->uEnchantmentType = std::max(item->uEnchantmentType, pParty->pPickedItem.uEnchantmentType);
+                item->potionPower = std::max(item->potionPower, pParty->pPickedItem.potionPower);
             } else if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
                 // One of the potion is catalyst: power of potion is replaced by power of catalyst
                 if (item->uItemID == ITEM_POTION_CATALYST) {
                     item->uItemID = pParty->pPickedItem.uItemID;
                 } else {
-                    item->uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
+                    item->potionPower = pParty->pPickedItem.potionPower;
                 }
             } else {
                 item->uItemID = potionID;
-                item->uEnchantmentType = (pParty->pPickedItem.uEnchantmentType + item->uEnchantmentType) / 2;
+                item->potionPower = (pParty->pPickedItem.potionPower + item->potionPower) / 2;
                 // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
                 // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
                 if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
@@ -2209,7 +2219,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
         if (item->isWand()) { // can recharge only wands
-            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.uEnchantmentType;
+            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.potionPower;
             if (maxChargesDecreasePercent < 0) {
                 maxChargesDecreasePercent = 0;
             }
@@ -2261,14 +2271,14 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
         if (item->isWeapon()) {
-            if (item->special_enchantment || item->uEnchantmentType) {
+            if (item->special_enchantment || item->attributeEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;
                 return;
             }
 
-            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.uEnchantmentType);
+            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
@@ -2286,7 +2296,7 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isReagent(pParty->pPickedItem.uItemID) && item->uItemID == ITEM_POTION_BOTTLE) {
-        item->uEnchantmentType = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
+        item->potionPower = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:

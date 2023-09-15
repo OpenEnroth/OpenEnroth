@@ -87,7 +87,7 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_VoicePrev:
         {
-            int sex = pParty->pCharacters[param].GetSexByVoice();
+            CharacterSex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
                 if (pParty->pCharacters[param].uVoiceID == 0)
                     pParty->pCharacters[param].uVoiceID = 19;
@@ -104,7 +104,7 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_VoiceNext:
         {
-            int sex = pParty->pCharacters[param].GetSexByVoice();
+            CharacterSex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
                 pParty->pCharacters[param].uVoiceID =
                     (pParty->pCharacters[param].uVoiceID + 1) % 20;
@@ -164,17 +164,13 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute(
-                (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
-                    pGUIWindow_CurrentMenu->pStartingPosActiveItem) %
-                7);
+                static_cast<CharacterAttributeType>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickMinus);
             break;
         case UIMSG_PlayerCreationClickMinus:
             new OnButtonClick2({523, 393}, {0, 0}, pPlayerCreationUI_BtnMinus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute(
-                (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
-                    pGUIWindow_CurrentMenu->pStartingPosActiveItem) %
-                7);
+                static_cast<CharacterAttributeType>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickPlus);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
@@ -386,31 +382,31 @@ void GUIWindow_PartyCreation::Update() {
         int posY = 169;
 
         auto str1 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_MIGHT), pX_Numbers, pParty->pCharacters[i].GetActualMight());
-        pStatColor = pParty->pCharacters[i].GetStatColor(0);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_MIGHT);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, posY}, pStatColor, str1);
 
         auto str2 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_INTELLECT), pX_Numbers, pParty->pCharacters[i].GetActualIntelligence());
-        pStatColor = pParty->pCharacters[i].GetStatColor(1);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_INTELLIGENCE);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, pIntervalY + posY}, pStatColor, str2);
 
         auto str3 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pCharacters[i].GetActualPersonality());
-        pStatColor = pParty->pCharacters[i].GetStatColor(2);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_PERSONALITY);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 2 * pIntervalY + posY}, pStatColor, str3);
 
         auto str4 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ENDURANCE), pX_Numbers, pParty->pCharacters[i].GetActualEndurance());
-        pStatColor = pParty->pCharacters[i].GetStatColor(3);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_ENDURANCE);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 3 * pIntervalY + posY}, pStatColor, str4);
 
         auto str5 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ACCURACY), pX_Numbers, pParty->pCharacters[i].GetActualAccuracy());
-        pStatColor = pParty->pCharacters[i].GetStatColor(4);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_ACCURACY);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 4 * pIntervalY + posY}, pStatColor, str5);
 
         auto str6 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_SPEED), pX_Numbers, pParty->pCharacters[i].GetActualSpeed());
-        pStatColor = pParty->pCharacters[i].GetStatColor(5);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_SPEED);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 5 * pIntervalY + posY}, pStatColor, str6);
 
         auto str7 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_LUCK), pX_Numbers, pParty->pCharacters[i].GetActualLuck());
-        pStatColor = pParty->pCharacters[i].GetStatColor(6);
+        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_LUCK);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 6 * pIntervalY + posY}, pStatColor, str7);
 
         posY = 311;
@@ -769,8 +765,8 @@ bool PartyCreationUI_LoopInternal() {
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pCharacters[i].classType == CHARACTER_CLASS_KNIGHT)
             pParty->pCharacters[i].sResMagicBase = 10;
-        // TODO(pskelton): why just 22?
-        pParty->pCharacters[i].pCharacterBuffs[22].Reset();
+        // TODO(pskelton): why just CHARACTER_BUFF_RESIST_WATER?
+        pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Reset();
         int page = 0;
         for (CharacterSkillType j : allMagicSkills()) {
             if (pParty->pCharacters[i].pActiveSkills[j]) {

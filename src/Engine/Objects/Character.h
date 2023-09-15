@@ -256,10 +256,10 @@ class Character {
     void SetSexByVoice();
     void Reset(CharacterClassType classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
-    void DecreaseAttribute(int eAttribute);
-    void IncreaseAttribute(int eAttribute);
+    void DecreaseAttribute(CharacterAttributeType eAttribute);
+    void IncreaseAttribute(CharacterAttributeType eAttribute);
     void resetTempBonuses();
-    Color GetStatColor(int uStat) const;
+    Color GetStatColor(CharacterAttributeType uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
     MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType);
     int GetBodybuilding() const;
@@ -514,7 +514,7 @@ class Character {
     int16_t sResBodyBonus;
     int16_t sResLightBonus;
     int16_t sResDarkBonus;
-    std::array<SpellBuff, 24> pCharacterBuffs;
+    IndexedArray<SpellBuff, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> pCharacterBuffs;
     unsigned int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;

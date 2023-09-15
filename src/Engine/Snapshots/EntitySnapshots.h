@@ -202,7 +202,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst);
 
 struct ItemGen_MM7 {
     /* 00 */ int32_t itemID;
-    /* 04 */ int32_t enchantmentType;
+    /* 04 */ int32_t attributeEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for attribute enchantments.
     /* 08 */ int32_t enchantmentStrength;
     /* 0C */ int32_t specialEnchantment;
     /* 10 */ int32_t numCharges;

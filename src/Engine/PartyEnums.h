@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Utility/Flags.h"
+
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
 // reference "quests.txt" and pQuestTable
@@ -92,7 +94,7 @@ enum class QuestBit : uint16_t {
 using enum QuestBit;
 
 /*  355 */
-enum PARTY_FLAGS_1 : int32_t {
+enum class PARTY_FLAG_1 : int32_t {
     PARTY_FLAGS_1_UNUSED = 0x0002, // was force drawing
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
     PARTY_FLAGS_1_AIRBORNE = 0x0008,
@@ -108,12 +110,19 @@ enum PARTY_FLAGS_1 : int32_t {
     // New to OE - flag used to negate landing damage after jumping
     PARTY_FLAGS_1_JUMPING = 0x0400
 };
-enum PARTY_FLAGS_2 : int32_t {
+using enum PARTY_FLAG_1;
+MM_DECLARE_FLAGS(PARTY_FLAGS_1, PARTY_FLAG_1)
+MM_DECLARE_OPERATORS_FOR_FLAGS(PARTY_FLAGS_1)
+
+enum class PARTY_FLAG_2 : int32_t {
     PARTY_FLAGS_2_RUNNING = 0x2,
 };
+using enum PARTY_FLAG_2;
+MM_DECLARE_FLAGS(PARTY_FLAGS_2, PARTY_FLAG_2)
+MM_DECLARE_OPERATORS_FOR_FLAGS(PARTY_FLAGS_2)
 
 /*  347 */
-enum PARTY_BUFF_INDEX {
+enum class PARTY_BUFF_INDEX {
     PARTY_BUFF_RESIST_AIR = 0,
     PARTY_BUFF_RESIST_BODY = 1,
     PARTY_BUFF_DAY_OF_GODS = 2,
@@ -134,10 +143,14 @@ enum PARTY_BUFF_INDEX {
     PARTY_BUFF_RESIST_WATER = 17,
     PARTY_BUFF_WATER_WALK = 18,
     PARTY_BUFF_WIZARD_EYE = 19,
+
+    PARTY_BUFF_FIRST = PARTY_BUFF_RESIST_AIR,
+    PARTY_BUFF_LAST = PARTY_BUFF_WIZARD_EYE
 };
+using enum PARTY_BUFF_INDEX;
 
 /*  300 */
-enum PartyAction : uint32_t {
+enum class PartyAction : uint32_t {
     PARTY_INVALID = 0,
     PARTY_TurnLeft = 1,
     PARTY_TurnRight = 2,
@@ -161,6 +174,7 @@ enum PartyAction : uint32_t {
 
     PARTY_dword = 0xFFFFFFFF
 };
+using enum PartyAction;
 
 enum class PartyAlignment: int32_t {
     PartyAlignment_Good = 0,

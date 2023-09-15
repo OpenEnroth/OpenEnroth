@@ -1702,7 +1702,6 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_ClickZoomInBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
-                pParty->uFlags |= 2u;
                 new OnButtonClick2({519, 136}, {0, 0}, pBtn_ZoomIn);
                 uNumSeconds = 131072;
 
@@ -1724,7 +1723,6 @@ void Game::processQueuedMessages() {
                 break;
             case UIMSG_ClickZoomOutBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
-                pParty->uFlags |= 2;
                 new OnButtonClick2({574, 136}, {0, 0}, pBtn_ZoomOut);
                 uNumSeconds = 32768;
 
@@ -2069,7 +2067,7 @@ void Game::gameLoop() {
                 }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += GameTime::FromDays(7);  // += 2580480
-                pParty->uFlags &= ~0x204;
+                pParty->uFlags &= ~(PARTY_FLAGS_1_WATER_DAMAGE | PARTY_FLAGS_1_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
                 pParty->pPartyBuffs.fill(SpellBuff());

@@ -290,7 +290,7 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     dst->evt_D = src.dialogue_4_evt_id;
     dst->evt_E = src.dialogue_5_evt_id;
     dst->evt_F = src.dialogue_6_evt_id;
-    dst->sex = src.uSex;
+    dst->sex = std::to_underlying(src.uSex);
     dst->hasUsedAbility = src.bHasUsedTheAbility;
     dst->newsTopic = src.news_topic;
 }
@@ -312,7 +312,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = src.sex;
+    dst->uSex = static_cast<CharacterSex>(src.sex);
     dst->bHasUsedTheAbility = src.hasUsedAbility;
     dst->news_topic = src.newsTopic;
 }
@@ -378,7 +378,13 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
     dst->itemID = std::to_underlying(src.uItemID);
-    dst->enchantmentType = src.uEnchantmentType;
+    if (isPotion(src.uItemID)) {
+        dst->attributeEnchantmentOrPotionPower = src.potionPower;
+    } else if (src.attributeEnchantment) {
+        dst->attributeEnchantmentOrPotionPower = std::to_underlying(*src.attributeEnchantment) + 1;
+    } else {
+        dst->attributeEnchantmentOrPotionPower = 0;
+    }
     dst->enchantmentStrength = src.m_enchantmentStrength;
     dst->specialEnchantment = src.special_enchantment;
     dst->numCharges = src.uNumCharges;
@@ -392,7 +398,16 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uItemID = static_cast<ItemId>(src.itemID);
-    dst->uEnchantmentType = src.enchantmentType;
+    if (isPotion(dst->uItemID)) {
+        dst->potionPower = src.attributeEnchantmentOrPotionPower;
+        dst->attributeEnchantment = {};
+    } else if (src.attributeEnchantmentOrPotionPower) {
+        dst->potionPower = 0;
+        dst->attributeEnchantment = static_cast<CharacterAttributeType>(src.attributeEnchantmentOrPotionPower - 1);
+    } else {
+        dst->potionPower = 0;
+        dst->attributeEnchantment = {};
+    }
     dst->m_enchantmentStrength = src.enchantmentStrength;
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
     dst->uNumCharges = src.numCharges;
@@ -481,7 +496,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->numArcomageWins = src.uNumArcomageWins;
     dst->numArcomageLoses = src.uNumArcomageLoses;
     dst->turnBasedModeOn = src.bTurnBasedModeOn;
-    dst->flags2 = src.uFlags2;
+    dst->flags2 = std::to_underlying(src.uFlags2);
 
     uint align = 0;
     if (src.alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
@@ -494,7 +509,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 
     snapshot(src.pPickedItem, &dst->pickedItem);
 
-    dst->flags = src.uFlags;
+    dst->flags = std::to_underlying(src.uFlags);
 
     dst->standartItemsInShop0.fill({});
     snapshot(src.standartItemsInShops, &dst->standartItemsInShops);
@@ -578,7 +593,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uNumArcomageWins = src.numArcomageWins;
     dst->uNumArcomageLoses = src.numArcomageLoses;
     dst->bTurnBasedModeOn = src.turnBasedModeOn;
-    dst->uFlags2 = src.flags2;
+    dst->uFlags2 = static_cast<PARTY_FLAGS_2>(src.flags2);
 
     switch (src.alignment) {
         case 0:
@@ -600,7 +615,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     reconstruct(src.pickedItem, &dst->pPickedItem);
 
-    dst->uFlags = src.flags;
+    dst->uFlags = static_cast<PARTY_FLAGS_1>(src.flags);
 
     reconstruct(src.standartItemsInShops, &dst->standartItemsInShops);
     reconstruct(src.specialItemsInShops, &dst->specialItemsInShops);
@@ -628,7 +643,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 
     snapshot(src.name, &dst->name);
 
-    dst->sex = src.uSex;
+    dst->sex = std::to_underlying(src.uSex);
     dst->classType = std::to_underlying(src.classType);
     dst->currentFace = src.uCurrentFace;
     dst->might = src.uMight;
@@ -724,7 +739,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->healthRelated = src._health_related;
     dst->fullManaBonus = src.uFullManaBonus;
     dst->manaRelated = src._mana_related;
-    dst->expression = src.expression;
+    dst->expression = std::to_underlying(src.expression);
     dst->expressionTimePassed = src.uExpressionTimePassed;
     dst->expressionTimeLength = src.uExpressionTimeLength;
     dst->field_1AA2 = src.uExpressionImageIndex;
@@ -975,7 +990,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->expression = (CharacterExpressionID)src.expression;
+    dst->expression = static_cast<CharacterExpressionID>(src.expression);
     dst->uExpressionTimePassed = src.expressionTimePassed;
     dst->uExpressionTimeLength = src.expressionTimeLength;
     dst->uExpressionImageIndex = src.field_1AA2;

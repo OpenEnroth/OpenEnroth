@@ -375,8 +375,8 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
             c = *(unsigned char *)test_string;
             temp_str_len = 0;
             if (c == '\t') {
-                if ((decode_step == 1) && (!uNumNPCNames[1]))
-                    uNumNPCNames[1] = i;
+                if ((decode_step == 1) && (!uNumNPCNames[SEX_FEMALE]))
+                    uNumNPCNames[SEX_FEMALE] = i;
             } else {
                 while ((c != '\n') && (c != '\t') && (c > 0)) {
                     ++temp_str_len;
@@ -388,19 +388,19 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
                 if (temp_str_len) {
                     *tmp_pos = 0;
                     if (decode_step == 0)
-                        pNPCNames[i][0] = removeQuotes(test_string);
+                        pNPCNames[i][SEX_MALE] = removeQuotes(test_string);
                     else if (decode_step == 1)
-                        pNPCNames[i][1] = removeQuotes(test_string);
+                        pNPCNames[i][SEX_FEMALE] = removeQuotes(test_string);
                 } else {
-                    if ((decode_step == 1) && (!uNumNPCNames[1]))
-                        uNumNPCNames[1] = i;
+                    if ((decode_step == 1) && (!uNumNPCNames[SEX_FEMALE]))
+                        uNumNPCNames[SEX_FEMALE] = i;
                 }
             }
             ++decode_step;
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
-    uNumNPCNames[0] = i;
+    uNumNPCNames[SEX_MALE] = i;
 }
 
 void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
@@ -467,7 +467,6 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                                         int uLocation2D, MapId uMapId) {
     int rep_gen;
-    int uNPCSex;              // esi@1
     int uGeneratedPortret;    // ecx@23
     int test_prof_summ;       // ecx@37
     int gen_profession;       // eax@37
@@ -479,11 +478,93 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     int uPortretMin;          // [sp+24h] [bp+Ch]@1
     int uPortretMax;
 
-    static const uint8_t NPCSexGenTable[86] = {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-        1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0,
-        1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0};
+    static constexpr CharacterSex NPCSexGenTable[86] = {
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_FEMALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE,
+        SEX_MALE};
     static const uint8_t NPCRaceGenTable[86] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
@@ -491,7 +572,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0};
 
     uint8_t seed = (uint8_t)((double)(npc_uid - 1) / 3.0);
-    uNPCSex = NPCSexGenTable[seed];
+    CharacterSex uNPCSex = NPCSexGenTable[seed];
     uRace = NPCRaceGenTable[seed];
     pNPCDataBuff->uSex = uNPCSex;
     pNPCDataBuff->pName = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
@@ -502,7 +583,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     do {
         switch (uRace) {
             case 0:
-                if (uNPCSex == 0) {
+                if (uNPCSex == SEX_MALE) {
                     uPortretMin = 2;
                     uPortretMax = 100;
                 } else {
@@ -510,7 +591,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                     uPortretMax = 250;
                 }
             case 1:
-                if (uNPCSex == 0) {
+                if (uNPCSex == SEX_MALE) {
                     uPortretMin = 400;
                     uPortretMax = 430;
                 } else {
@@ -519,7 +600,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                 }
                 break;
             case 2:
-                if (uNPCSex == 0) {
+                if (uNPCSex == SEX_MALE) {
                     uPortretMin = 500;
                     uPortretMax = 520;
                 } else {
@@ -528,7 +609,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                 }
                 break;
             case 3:
-                if (uNPCSex == 0) {
+                if (uNPCSex == SEX_MALE) {
                     uPortretMin = 300;
                     uPortretMax = 330;
                 } else {
@@ -596,7 +677,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
 }
 
 //----- (00495366) --------------------------------------------------------
-const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId) {
+const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, CharacterSex genderId) {
     int pickedName;  // edx@2
 
     if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
@@ -604,9 +685,8 @@ const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, ui
     } else {
         dword_AE336C_LastMispronouncedNameFirstLetter = firstLetter;
         if (this->uNumNPCNames[genderId] == 0) {
-            pickedName = vrng->random(this->uNumNPCNames[(genderId + 1) % 2]);
-                     // originally without " + 1) % 2", but
-                     // that would yield a div by zero
+            pickedName = vrng->random(this->uNumNPCNames[genderId == SEX_MALE ? SEX_FEMALE : SEX_MALE]);
+            // originally unmodified genderId was passed, but this will assert.
         } else {
             int rangeBottom = 0;
             int rangeTop = 0;

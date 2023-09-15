@@ -46,8 +46,7 @@ inline Segment<CharacterSkillMastery> SkillMasteries() {
     return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);
 }
 
-// TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterBuffs {
+enum class CharacterBuff {
     CHARACTER_BUFF_RESIST_AIR = 0,
     CHARACTER_BUFF_BLESS = 1,
     CHARACTER_BUFF_RESIST_BODY = 2,
@@ -71,12 +70,15 @@ enum CharacterBuffs {
     CHARACTER_BUFF_PERSONALITY = 20,
     CHARACTER_BUFF_SPEED = 21,
     CHARACTER_BUFF_RESIST_WATER = 22,
-    CHARACTER_BUFF_WATER_WALK = 23
-};
+    CHARACTER_BUFF_WATER_WALK = 23,
 
+    CHARACTER_BUFF_FIRST = CHARACTER_BUFF_RESIST_AIR,
+    CHARACTER_BUFF_LAST = CHARACTER_BUFF_WATER_WALK
+};
+using enum CharacterBuff;
 
 /*  301 */
-enum CharacterSpeech {
+enum class CharacterSpeech {
     SPEECH_NONE = 0,
     SPEECH_KILL_WEAK_ENEMY = 1,
     SPEECH_KILL_STRONG_ENEMY = 2,
@@ -192,14 +194,19 @@ enum CharacterSpeech {
     SPEECH_FIRST = SPEECH_NONE,
     SPEECH_LAST = SPEECH_110
 };
+using enum CharacterSpeech;
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterRace {
+enum class CharacterRace {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
     CHARACTER_RACE_GOBLIN = 2,
     CHARACTER_RACE_DWARF = 3,
+
+    CHARACTER_RACE_FIRST = CHARACTER_RACE_HUMAN,
+    CHARACTER_RACE_LAST = CHARACTER_RACE_DWARF
 };
+using enum CharacterRace;
 
 enum class ClassSkillAffinity : uint8_t {
     CLASS_SKILL_DENIED = 0,
@@ -416,7 +423,7 @@ inline Segment<CharacterClassType> getClassPromotions(CharacterClassType classTy
 }
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterExpressionID : uint16_t {
+enum class CharacterExpressionID : uint16_t {
     CHARACTER_EXPRESSION_INVALID = 0,
     CHARACTER_EXPRESSION_NORMAL = 1,
     CHARACTER_EXPRESSION_CURSED = 2,
@@ -474,14 +481,19 @@ enum CharacterExpressionID : uint16_t {
     CHARACTER_EXPRESSION_DEAD = 98,
     CHARACTER_EXPRESSION_ERADICATED = 99,
 };
+using enum CharacterExpressionID;
 
-enum CharacterSex : uint8_t {
+enum class CharacterSex : uint8_t {
     SEX_MALE = 0,
-    SEX_FEMALE = 1
+    SEX_FEMALE = 1,
+
+    SEX_FIRST = SEX_MALE,
+    SEX_LAST = SEX_FEMALE,
 };
+using enum CharacterSex;
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterAttributeType {
+enum class CharacterAttributeType {
     CHARACTER_ATTRIBUTE_MIGHT = 0,
     CHARACTER_ATTRIBUTE_INTELLIGENCE = 1,
     CHARACTER_ATTRIBUTE_PERSONALITY = 2,
@@ -532,5 +544,20 @@ enum CharacterAttributeType {
     CHARACTER_ATTRIBUTE_SKILL_MEDITATION = 43,
     CHARACTER_ATTRIBUTE_SKILL_BOW = 44,
     CHARACTER_ATTRIBUTE_SKILL_SHIELD = 45,
-    CHARACTER_ATTRIBUTE_SKILL_LEARNING = 46
+    CHARACTER_ATTRIBUTE_SKILL_LEARNING = 46,
+
+    CHARACTER_ATTRIBUTE_FIRST_STAT = CHARACTER_ATTRIBUTE_MIGHT,
+    CHARACTER_ATTRIBUTE_LAST_STAT = CHARACTER_ATTRIBUTE_LUCK,
+
+    CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE = CHARACTER_ATTRIBUTE_MIGHT,
+    CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE = CHARACTER_ATTRIBUTE_SKILL_UNARMED
 };
+using enum CharacterAttributeType;
+
+inline Segment<CharacterAttributeType> enchantableAttributes() {
+    return Segment(CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE);
+}
+
+inline Segment<CharacterAttributeType> statAttributes() {
+    return Segment(CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT);
+}
