@@ -244,6 +244,12 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
         lodWriter.write(file_name, lod::encodeCompressed(uncompressed));
     }
 
+    // Apparently vanilla had two bugs canceling each other out:
+    // 1. Broken binary search implementation when looking up LOD entries.
+    // 2. Writing additional duplicate entry at the end of a saves LOD file.
+    // Our code doesn't support duplicate entries, so we just add a dummy entry
+    lodWriter.write("z.bin", Blob::fromString("dummy"));
+
     lodWriter.close();
 
     if (IsAutoSAve) {
