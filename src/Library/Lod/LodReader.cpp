@@ -76,13 +76,17 @@ LodReader::LodReader(Blob blob, std::string_view path, LodOpenFlags openFlags) {
     open(std::move(blob), path, openFlags);
 }
 
-LodReader::~LodReader() = default;
+LodReader::~LodReader() {
+    close();
+}
 
 void LodReader::open(std::string_view path, LodOpenFlags openFlags) {
     open(Blob::fromFile(path), path, openFlags); // Blob::fromFile throws if the file doesn't exist.
 }
 
 void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
+    close();
+
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
     if (blob.size() < expectedSize)
         throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", path, expectedSize, _lod.size());

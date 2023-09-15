@@ -26,12 +26,15 @@ LodWriter::~LodWriter() {
 }
 
 void LodWriter::open(std::string_view path, LodInfo info) {
-    _ownedStream = std::make_unique<TempFileOutputStream>(path); // If this throws, no field is overwritten.
-    open(_ownedStream.get(), path, std::move(info));
+    std::unique_ptr<OutputStream> ownedStream = std::make_unique<TempFileOutputStream>(path); // If this throws, no field is overwritten.
+    open(ownedStream.get(), path, std::move(info));
+    _ownedStream = std::move(ownedStream);
 }
 
 void LodWriter::open(OutputStream *stream, std::string_view path, LodInfo info) {
     assert(stream);
+
+    close();
 
     _stream = stream;
     _path = path;
