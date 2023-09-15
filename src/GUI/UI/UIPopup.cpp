@@ -1559,9 +1559,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
 
     uint numActivePlayerBuffs = 0;
-    for (uint i = 0; i < 24; ++i) {
-        if (player->pCharacterBuffs[i].Active()) ++numActivePlayerBuffs;
-    }
+    for (const SpellBuff &buff : player->pCharacterBuffs)
+        if (buff.Active())
+            ++numActivePlayerBuffs;
 
     window->uFrameHeight = ((assets->pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * assets->pFontArrus->GetHeight()));
     window->uFrameZ = window->uFrameWidth + window->uFrameX - 1;
@@ -1612,13 +1612,13 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     window->DrawText(assets->pFontArrus.get(), {120, 22}, colorTable.White, str);
 
     uFramesetIDa = 0;
-    for (uint i = 0; i < 24; ++i) {
+    for (CharacterBuff i : player->pCharacterBuffs.indices()) {
         SpellBuff *buff = &player->pCharacterBuffs[i];
         if (buff->Active()) {
             v36 = uFramesetIDa++ * assets->pFontComic->GetHeight() + 134;
             window->DrawText(assets->pFontComic.get(), {52, v36},
                              ui_game_character_record_playerbuff_colors[i],
-                             localization->GetCharacterBuffName(static_cast<CharacterBuffs>(i)));
+                             localization->GetCharacterBuffName(i));
             DrawBuff_remaining_time_string(
                 v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
                 assets->pFontComic.get());

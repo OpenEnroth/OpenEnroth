@@ -769,8 +769,8 @@ bool PartyCreationUI_LoopInternal() {
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pCharacters[i].classType == CHARACTER_CLASS_KNIGHT)
             pParty->pCharacters[i].sResMagicBase = 10;
-        // TODO(pskelton): why just 22?
-        pParty->pCharacters[i].pCharacterBuffs[22].Reset();
+        // TODO(pskelton): why just CHARACTER_BUFF_RESIST_WATER?
+        pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Reset();
         int page = 0;
         for (CharacterSkillType j : allMagicSkills()) {
             if (pParty->pCharacters[i].pActiveSkills[j]) {

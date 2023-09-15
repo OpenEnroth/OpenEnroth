@@ -83,7 +83,6 @@ Color ui_game_minimap_actor_corpse_color;
 Color ui_game_minimap_decoration_color_1;
 Color ui_game_minimap_projectile_color;
 Color ui_game_minimap_treasure_color;
-std::array<Color, 24> ui_game_character_record_playerbuff_colors;
 
 Color ui_gamemenu_video_gamma_title_color;
 Color ui_gamemenu_keys_action_name_color;
@@ -156,31 +155,6 @@ void set_default_ui_skin() {
     ui_game_minimap_decoration_color_1 = colorTable.White;
     ui_game_minimap_projectile_color = colorTable.Red;
     ui_game_minimap_treasure_color = colorTable.Blue;
-
-    ui_game_character_record_playerbuff_colors[0] = colorTable.Anakiwa;
-    ui_game_character_record_playerbuff_colors[1] = colorTable.Mercury;
-    ui_game_character_record_playerbuff_colors[2] = colorTable.FlushOrange;
-    ui_game_character_record_playerbuff_colors[3] = colorTable.Gray;
-    ui_game_character_record_playerbuff_colors[4] = colorTable.Mercury;
-    ui_game_character_record_playerbuff_colors[5] = colorTable.DarkOrange;
-    ui_game_character_record_playerbuff_colors[6] = colorTable.FlushOrange;
-    ui_game_character_record_playerbuff_colors[7] = colorTable.DarkOrange;
-    ui_game_character_record_playerbuff_colors[8] = colorTable.Mercury;
-    ui_game_character_record_playerbuff_colors[9] = colorTable.PurplePink;
-    ui_game_character_record_playerbuff_colors[10] = colorTable.MoonRaker;
-    ui_game_character_record_playerbuff_colors[11] = colorTable.Mercury;
-    ui_game_character_record_playerbuff_colors[12] = colorTable.FlushOrange;
-    ui_game_character_record_playerbuff_colors[13] = colorTable.Anakiwa;
-    ui_game_character_record_playerbuff_colors[14] = colorTable.Gray;
-    ui_game_character_record_playerbuff_colors[15] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[16] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[17] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[18] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[19] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[20] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[21] = colorTable.PaleCanary;
-    ui_game_character_record_playerbuff_colors[22] = colorTable.AzureRadiance;
-    ui_game_character_record_playerbuff_colors[23] = colorTable.AzureRadiance;
 
     ui_gamemenu_video_gamma_title_color = colorTable.PaleCanary;
     ui_gamemenu_keys_action_name_color = colorTable.White;

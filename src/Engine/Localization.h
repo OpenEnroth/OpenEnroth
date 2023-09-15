@@ -467,7 +467,7 @@ class Localization {
         return this->party_buff_names[index];
     }
 
-    const char *GetCharacterBuffName(CharacterBuffs index) const {
+    const char *GetCharacterBuffName(CharacterBuff index) const {
         return this->character_buff_names[index];
     }
 

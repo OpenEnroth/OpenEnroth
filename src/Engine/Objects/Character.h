@@ -514,7 +514,7 @@ class Character {
     int16_t sResBodyBonus;
     int16_t sResLightBonus;
     int16_t sResDarkBonus;
-    std::array<SpellBuff, 24> pCharacterBuffs;
+    IndexedArray<SpellBuff, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> pCharacterBuffs;
     unsigned int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;

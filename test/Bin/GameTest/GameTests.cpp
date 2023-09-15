@@ -21,8 +21,8 @@
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
 
-static std::initializer_list<CharacterBuffs> allPotionBuffs() {
-    static constexpr std::initializer_list<CharacterBuffs> result = {
+static std::initializer_list<CharacterBuff> allPotionBuffs() {
+    static constexpr std::initializer_list<CharacterBuff> result = {
         CHARACTER_BUFF_RESIST_AIR,
         CHARACTER_BUFF_BLESS,
         CHARACTER_BUFF_RESIST_BODY,
@@ -591,9 +591,9 @@ GAME_TEST(Issues, Issue417b) {
 
 static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
     for (int character : players) {
-        for (CharacterBuffs buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
+        for (CharacterBuff buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
             EXPECT_EQ(pParty->pCharacters[character].pCharacterBuffs[buff].Active(), hasBuff)
-                << "(with ctx=" << ctx << ", character=" << character << ", buff=" << buff << ")";
+                << "(with ctx=" << ctx << ", character=" << character << ", buff=" << std::to_underlying(buff) << ")";
         }
     }
 }
@@ -1213,7 +1213,7 @@ GAME_TEST(Issues, Issue779) {
 }
 
 void check783784Buffs(bool haveBuffs) {
-    for (CharacterBuffs buff : allPotionBuffs())
+    for (CharacterBuff buff : allPotionBuffs())
         EXPECT_EQ(pParty->pCharacters[0].pCharacterBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
@@ -1224,7 +1224,7 @@ GAME_TEST(Issues, Issue783) {
         check783784Buffs(true); // Should have all buffs at start.
 
         // And all buffs should expire way in the future.
-        for (CharacterBuffs buff : allPotionBuffs())
+        for (CharacterBuff buff : allPotionBuffs())
             EXPECT_GT(pParty->pCharacters[0].pCharacterBuffs[buff].GetExpireTime(), pParty->GetPlayingTime() + GameTime::FromHours(10));
     });
 

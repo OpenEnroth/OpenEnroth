@@ -46,8 +46,7 @@ inline Segment<CharacterSkillMastery> SkillMasteries() {
     return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);
 }
 
-// TODO(pskelton): drop CHARACTER_ at start?
-enum CharacterBuffs {
+enum class CharacterBuff {
     CHARACTER_BUFF_RESIST_AIR = 0,
     CHARACTER_BUFF_BLESS = 1,
     CHARACTER_BUFF_RESIST_BODY = 2,
@@ -76,6 +75,7 @@ enum CharacterBuffs {
     CHARACTER_BUFF_FIRST = CHARACTER_BUFF_RESIST_AIR,
     CHARACTER_BUFF_LAST = CHARACTER_BUFF_WATER_WALK
 };
+using enum CharacterBuff;
 
 /*  301 */
 enum CharacterSpeech {

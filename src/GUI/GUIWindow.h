@@ -24,6 +24,7 @@
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Geometry/Point.h"
+#include "Utility/IndexedArray.h"
 
 namespace Io {
 class Mouse;
@@ -319,7 +320,6 @@ extern Color ui_game_minimap_actor_corpse_color;
 extern Color ui_game_minimap_decoration_color_1;
 extern Color ui_game_minimap_projectile_color;
 extern Color ui_game_minimap_treasure_color;
-extern std::array<Color, 24> ui_game_character_record_playerbuff_colors;
 extern Color ui_gamemenu_video_gamma_title_color;
 extern Color ui_gamemenu_keys_action_name_color;
 extern Color ui_gamemenu_keys_key_selection_blink_color_1;
@@ -372,3 +372,5 @@ MenuType GetCurrentMenuID();
 
 extern ScreenType current_screen_type;
 extern ScreenType prev_screen_type;
+
+extern const IndexedArray<Color, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> ui_game_character_record_playerbuff_colors;
