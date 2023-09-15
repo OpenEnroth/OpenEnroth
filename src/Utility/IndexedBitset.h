@@ -44,11 +44,11 @@ class IndexedBitset {
     }
 
     void set(key_type index, bool value = true) {
-        _bitset.set(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex), value); // Throws on out of rance access.
+        _bitset.set(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex), value); // Throws on out of range access.
     }
 
     bool test(key_type index) {
-        return _bitset.test(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)); // Throws on out of rance access.
+        return _bitset.test(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)); // Throws on out of range access.
     }
 
     auto operator[](key_type index) {
