@@ -27,12 +27,16 @@ int runDump(const LodToolOptions &options) {
 
     for (const std::string &name : reader.ls()) {
         Blob data = reader.readRaw(name);
+        LodFileFormat format = lod::magic(data, name);
+        bool isCompressed = format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE;
+        if (isCompressed)
+            data = lod::decodeCompressed(data);
 
         fmt::println("");
         fmt::println("Entry: {}", name);
-        fmt::println("Size: {}", data.size());
-        fmt::println("Type: {}", toString(lod::magic(data, name)));
-        fmt::println("Data:");
+        fmt::println("Format: {}", toString(lod::magic(data, name)));
+        fmt::println("Size{}: {}", isCompressed ? " (uncompressed)" : "", data.size());
+        fmt::println("Data{}:", isCompressed ? " (uncompressed)" : "");
 
         std::string line;
         for (size_t offset = 0; offset < data.size(); offset += 16) {
