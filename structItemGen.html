@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0b6fedc</span>
    </div>
   </td>
  </tr>
@@ -180,8 +180,10 @@ Static Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a0381de303e5903bc04fbd136edf58994"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemGen.html#a0381de303e5903bc04fbd136edf58994">uItemID</a> = <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0bac038a004f35849b7d2c38e5ba310f384">ITEM_NULL</a></td></tr>
 <tr class="separator:a0381de303e5903bc04fbd136edf58994"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf8c3705ea232d0cdda119e7ebd91341"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemGen.html#adf8c3705ea232d0cdda119e7ebd91341">uEnchantmentType</a> = <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1b165f33de669ea48df78787334f3645">ITEM_ENCHANTMENT_NULL</a></td></tr>
-<tr class="separator:adf8c3705ea232d0cdda119e7ebd91341"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cf4fe18177d08ed29587da5009e1bd8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemGen.html#a5cf4fe18177d08ed29587da5009e1bd8">potionPower</a> = 0</td></tr>
+<tr class="separator:a5cf4fe18177d08ed29587da5009e1bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab82132940cfcd544064cf290140151d5"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="CharacterEnums_8h.html#a5283119c60345ad4a9e4af5f447f5aa2">CharacterAttributeType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemGen.html#ab82132940cfcd544064cf290140151d5">attributeEnchantment</a></td></tr>
+<tr class="separator:ab82132940cfcd544064cf290140151d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba684f664611cf96ab87a36debd487d2"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemGen.html#aba684f664611cf96ab87a36debd487d2">m_enchantmentStrength</a> = 0</td></tr>
 <tr class="separator:aba684f664611cf96ab87a36debd487d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae74a62d934982caa83635750c1066b78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemGen.html#ae74a62d934982caa83635750c1066b78">special_enchantment</a> = <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1b165f33de669ea48df78787334f3645">ITEM_ENCHANTMENT_NULL</a></td></tr>
@@ -1246,6 +1248,20 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="ab82132940cfcd544064cf290140151d5" name="ab82132940cfcd544064cf290140151d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab82132940cfcd544064cf290140151d5">&#9670;&#160;</a></span>attributeEnchantment</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;<a class="el" href="CharacterEnums_8h.html#a5283119c60345ad4a9e4af5f447f5aa2">CharacterAttributeType</a>&gt; ItemGen::attributeEnchantment</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aba684f664611cf96ab87a36debd487d2" name="aba684f664611cf96ab87a36debd487d2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aba684f664611cf96ab87a36debd487d2">&#9670;&#160;</a></span>m_enchantmentStrength</h2>
 
@@ -1268,6 +1284,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool ItemGen::placedInChest = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5cf4fe18177d08ed29587da5009e1bd8" name="a5cf4fe18177d08ed29587da5009e1bd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cf4fe18177d08ed29587da5009e1bd8">&#9670;&#160;</a></span>potionPower</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ItemGen::potionPower = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1310,20 +1340,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> ItemGen::uBodyAnchor = <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351a6d1622261c59a80efd13c444a2420654">ITEM_SLOT_INVALID</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adf8c3705ea232d0cdda119e7ebd91341" name="adf8c3705ea232d0cdda119e7ebd91341"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf8c3705ea232d0cdda119e7ebd91341">&#9670;&#160;</a></span>uEnchantmentType</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t ItemGen::uEnchantmentType = <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1b165f33de669ea48df78787334f3645">ITEM_ENCHANTMENT_NULL</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -2,8 +2,8 @@ var searchData=
 [
   ['particleflag_0',['ParticleFlag',['../ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034',1,'ParticleEngine.h']]],
   ['party_5fbuff_5findex_1',['PARTY_BUFF_INDEX',['../PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df',1,'PartyEnums.h']]],
-  ['party_5fflags_5f1_2',['PARTY_FLAGS_1',['../PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1',1,'PartyEnums.h']]],
-  ['party_5fflags_5f2_3',['PARTY_FLAGS_2',['../PartyEnums_8h.html#a09dcebc28a84afbca0bf362f5e1348d8',1,'PartyEnums.h']]],
+  ['party_5fflag_5f1_2',['PARTY_FLAG_1',['../PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8',1,'PartyEnums.h']]],
+  ['party_5fflag_5f2_3',['PARTY_FLAG_2',['../PartyEnums_8h.html#ae8d1f902df00a1c08eda7397206379e5',1,'PartyEnums.h']]],
   ['partyaction_4',['PartyAction',['../PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9b',1,'PartyEnums.h']]],
   ['partyalignment_5',['PartyAlignment',['../PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36',1,'PartyEnums.h']]],
   ['platformeventtype_6',['PlatformEventType',['../PlatformEnums_8h.html#a6a1d0a28a0e3e29d51315d4192d852f4',1,'PlatformEnums.h']]],

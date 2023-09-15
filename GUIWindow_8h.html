@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0b6fedc</span>
    </div>
   </td>
  </tr>
@@ -99,6 +99,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="ColorTable_8h.html">Library/Color/ColorTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Size_8h.html">Utility/Geometry/Size.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Point_8h.html">Utility/Geometry/Point.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -299,8 +300,6 @@ Variables</h2></td></tr>
 <tr class="separator:a76e6c36d4a2e10e720a2073e71a18b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d96fc5c21600c278ecb54462dfb65b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a7d96fc5c21600c278ecb54462dfb65b6">ui_game_minimap_treasure_color</a></td></tr>
 <tr class="separator:a7d96fc5c21600c278ecb54462dfb65b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b3e18d047a69092efece4a7acbbd18b"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structColor.html">Color</a>, 24 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a4b3e18d047a69092efece4a7acbbd18b">ui_game_character_record_playerbuff_colors</a></td></tr>
-<tr class="separator:a4b3e18d047a69092efece4a7acbbd18b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bd221c98ae8e1a59412b2cf877198b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a4bd221c98ae8e1a59412b2cf877198b9">ui_gamemenu_video_gamma_title_color</a></td></tr>
 <tr class="separator:a4bd221c98ae8e1a59412b2cf877198b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70964eb2068bfab75a073a61af738b9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a70964eb2068bfab75a073a61af738b9a">ui_gamemenu_keys_action_name_color</a></td></tr>
@@ -385,6 +384,8 @@ Variables</h2></td></tr>
 <tr class="separator:a1a55c58353729e76ac3d3297a1e4e1d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3710b35f2f02bb4bcb416f455842b03"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GUIEnums_8h.html#a9f5ff9109158e83287c5c888bf7bb8a7">ScreenType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#ab3710b35f2f02bb4bcb416f455842b03">prev_screen_type</a></td></tr>
 <tr class="separator:ab3710b35f2f02bb4bcb416f455842b03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af845969bf7ce9892377fc90302bbf921"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structColor.html">Color</a>, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aa021851d6c9073af69290ba409f22c925">CHARACTER_BUFF_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aacdfc60b9a5273182c3a4209d8670c91e">CHARACTER_BUFF_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#af845969bf7ce9892377fc90302bbf921">ui_game_character_record_playerbuff_colors</a></td></tr>
+<tr class="separator:af845969bf7ce9892377fc90302bbf921"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aee403929b4f5fdbdd66718e4bcf24d62" name="aee403929b4f5fdbdd66718e4bcf24d62"></a>
@@ -2660,8 +2661,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a4b3e18d047a69092efece4a7acbbd18b" name="a4b3e18d047a69092efece4a7acbbd18b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b3e18d047a69092efece4a7acbbd18b">&#9670;&#160;</a></span>ui_game_character_record_playerbuff_colors</h2>
+<a id="af845969bf7ce9892377fc90302bbf921" name="af845969bf7ce9892377fc90302bbf921"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af845969bf7ce9892377fc90302bbf921">&#9670;&#160;</a></span>ui_game_character_record_playerbuff_colors</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2670,7 +2671,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structColor.html">Color</a>, 24&gt; ui_game_character_record_playerbuff_colors</td>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structColor.html">Color</a>, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aa021851d6c9073af69290ba409f22c925">CHARACTER_BUFF_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aacdfc60b9a5273182c3a4209d8670c91e">CHARACTER_BUFF_LAST</a>&gt; ui_game_character_record_playerbuff_colors</td>
         </tr>
       </table>
   </td>

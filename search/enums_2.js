@@ -2,7 +2,7 @@ var searchData=
 [
   ['casesensitivity_0',['CaseSensitivity',['../EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159b',1,'EnumSerializer.h']]],
   ['characterattributetype_1',['CharacterAttributeType',['../CharacterEnums_8h.html#a5283119c60345ad4a9e4af5f447f5aa2',1,'CharacterEnums.h']]],
-  ['characterbuffs_2',['CharacterBuffs',['../CharacterEnums_8h.html#a7b9cbb74f2ba0de133004db7917479b6',1,'CharacterEnums.h']]],
+  ['characterbuff_2',['CharacterBuff',['../CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95a',1,'CharacterEnums.h']]],
   ['characterchoosepolicy_3',['CharacterChoosePolicy',['../EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69',1,'EventEnums.h']]],
   ['characterclasstype_4',['CharacterClassType',['../CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6',1,'CharacterEnums.h']]],
   ['characterexpressionid_5',['CharacterExpressionID',['../CharacterEnums_8h.html#a5c8a22b675e8c120160f676143ed75b5',1,'CharacterEnums.h']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0b6fedc</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -178,80 +179,83 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:aab0780fca5f3ce09b3a361f3eec4460a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ba652169aade3baa03ee56a91cb5dc1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1">PARTY_FLAGS_1</a> : int32_t { <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a59db4d331ffbd850249dd4deb3832c88">PARTY_FLAGS_1_UNUSED</a> = 0x0002
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a0911b3acfb27eaf58c995ae401a76895">PARTY_FLAGS_1_WATER_DAMAGE</a> = 0x0004
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a7643361696b8f3ed0710d8ab1c58ac73">PARTY_FLAGS_1_AIRBORNE</a> = 0x0008
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a10c54c69c3f257f5dc866fba216a009a">PARTY_FLAGS_1_ALERT_RED</a> = 0x0010
+<tr class="memitem:afa755c717b2a7b6bac7b2efc7273d0e8"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8">PARTY_FLAG_1</a> : int32_t { <br />
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8af6c8ee7830483f74cd83e4b47d559ff8">PARTY_FLAGS_1_UNUSED</a> = 0x0002
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8abcd88fc2063847c3185680598bd22c8c">PARTY_FLAGS_1_WATER_DAMAGE</a> = 0x0004
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8afe9508acfc00a58bca72d7e72f46281a">PARTY_FLAGS_1_AIRBORNE</a> = 0x0008
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8a6a8cca8f3f1f0c8260c212ce5b4d7da0">PARTY_FLAGS_1_ALERT_RED</a> = 0x0010
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1aeb0381955490c08e94080b7fd27b1492">PARTY_FLAGS_1_ALERT_YELLOW</a> = 0x0020
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1ab66d5b30583dfaa3b40e7934668dbdfd">PARTY_FLAGS_1_ALERT_RED_OR_YELLOW</a> = 0x0030
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a7f6dabf76eda41e29a95123c1fe33fd6">PARTY_FLAGS_1_STANDING_ON_WATER</a> = 0x0080
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a0d4efebf09d06c08133b90267b858d30">PARTY_FLAGS_1_LANDING</a> = 0x0100
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8a2eb41e8fa9f36e459d4d180bc1c4ae66">PARTY_FLAGS_1_ALERT_YELLOW</a> = 0x0020
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8a9259e8ad5c97dbe12310da55701aeed6">PARTY_FLAGS_1_ALERT_RED_OR_YELLOW</a> = 0x0030
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8aebd5893853ce7dc74264c78fccc75d48">PARTY_FLAGS_1_STANDING_ON_WATER</a> = 0x0080
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8aa848f93ae3ce017a32cc356809341dd0">PARTY_FLAGS_1_LANDING</a> = 0x0100
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a1294e24b863533d78aaee423877e478b">PARTY_FLAGS_1_BURNING</a> = 0x0200
-, <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1a42e483015ae9026ed2caa4eb0c15dda0">PARTY_FLAGS_1_JUMPING</a> = 0x0400
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8a81c936f0a85c2974396f6720fcd6edb2">PARTY_FLAGS_1_BURNING</a> = 0x0200
+, <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8aeb012645518718422c56562bccc772b4">PARTY_FLAGS_1_JUMPING</a> = 0x0400
 <br />
  }</td></tr>
-<tr class="separator:a7ba652169aade3baa03ee56a91cb5dc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09dcebc28a84afbca0bf362f5e1348d8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#a09dcebc28a84afbca0bf362f5e1348d8">PARTY_FLAGS_2</a> : int32_t { <a class="el" href="PartyEnums_8h.html#a09dcebc28a84afbca0bf362f5e1348d8ab905663a9d31df27dda341a2bc9a8c2b">PARTY_FLAGS_2_RUNNING</a> = 0x2
+<tr class="separator:afa755c717b2a7b6bac7b2efc7273d0e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8d1f902df00a1c08eda7397206379e5"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#ae8d1f902df00a1c08eda7397206379e5">PARTY_FLAG_2</a> : int32_t { <a class="el" href="PartyEnums_8h.html#ae8d1f902df00a1c08eda7397206379e5a1714d56ca7312e805f9ff005917ccfc5">PARTY_FLAGS_2_RUNNING</a> = 0x2
  }</td></tr>
-<tr class="separator:a09dcebc28a84afbca0bf362f5e1348d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7935db13258ffa8a17fd65aa633b80df"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df">PARTY_BUFF_INDEX</a> { <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa0cfd076d0ee96fcabe3f0cbe7ac5f02e">PARTY_BUFF_RESIST_AIR</a> = 0
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa19d0e136a15d2fd35fd2c5138d1d9c72">PARTY_BUFF_RESIST_BODY</a> = 1
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfab13703d70e23ca64a2f30328ef02420a">PARTY_BUFF_DAY_OF_GODS</a> = 2
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa49d31b7873b1806ed400d0fd66eb407b">PARTY_BUFF_DETECT_LIFE</a> = 3
+<tr class="separator:ae8d1f902df00a1c08eda7397206379e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7935db13258ffa8a17fd65aa633b80df"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df">PARTY_BUFF_INDEX</a> { <br />
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfaf12dcaa9615ca6f21554c0926fc08d7b">PARTY_BUFF_RESIST_AIR</a> = 0
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfada02f62df8350b64963b91bb6f375900">PARTY_BUFF_RESIST_BODY</a> = 1
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa2b74bc7d19b92d6e8810fd343498031f">PARTY_BUFF_DAY_OF_GODS</a> = 2
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa2cfc102cb326c5f12d5f22f0acf37f11">PARTY_BUFF_DETECT_LIFE</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa9db51cc9d4c57a15ec0c83b5f59db342">PARTY_BUFF_RESIST_EARTH</a> = 4
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfaf8c5cf5be4e693823c7ef7a8e46fc623">PARTY_BUFF_FEATHER_FALL</a> = 5
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa95364e4632a66b4e3033629ee350d101">PARTY_BUFF_RESIST_FIRE</a> = 6
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa46d524d4e7026f1b90643679fc2a2d0d">PARTY_BUFF_FLY</a> = 7
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa0a55105c6f3ac3f556a31d35a28a1541">PARTY_BUFF_RESIST_EARTH</a> = 4
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfaa167c3f17823bd6e393fa966e27ec0ec">PARTY_BUFF_FEATHER_FALL</a> = 5
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa92cf2b16c7dda2398c182d05bb0c4a1f">PARTY_BUFF_RESIST_FIRE</a> = 6
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa59ca2a69e4540c0f98252676bacf45c9">PARTY_BUFF_FLY</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa714e9cc910fc85bd06a140c2b023caf5">PARTY_BUFF_HASTE</a> = 8
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfad0aea79e5c43712776c90aa7d0cd1625">PARTY_BUFF_HEROISM</a> = 9
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa0873a4f505e8da2be49aa61b88b9c10d">PARTY_BUFF_IMMOLATION</a> = 10
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfaeaaac556d8c0d8843c6dfcb01f4306be">PARTY_BUFF_INVISIBILITY</a> = 11
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa423a9bb59d12fb4e97519c779f4cac89">PARTY_BUFF_HASTE</a> = 8
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa1c98437532682cd8b3fb60566dde39b5">PARTY_BUFF_HEROISM</a> = 9
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfab38a7d30a704ca63b3588633b84bd3cb">PARTY_BUFF_IMMOLATION</a> = 10
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa4cc86fa711482c23fcad66241489a53d">PARTY_BUFF_INVISIBILITY</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa25b168c1e2df55713ae2f5b946f411cb">PARTY_BUFF_RESIST_MIND</a> = 12
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa5830c2dcd2ccbc70732a6de712218a99">PARTY_BUFF_PROTECTION_FROM_MAGIC</a> = 13
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa1bd052767f3c587e3d020387b829696a">PARTY_BUFF_SHIELD</a> = 14
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa138bf4e6964a5755193bbb9b504da7af">PARTY_BUFF_STONE_SKIN</a> = 15
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfad1347271a05daa1b91766bbfc126aaa5">PARTY_BUFF_RESIST_MIND</a> = 12
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa142bc5dcd7a96bc1fde1f84ca1c9ffe1">PARTY_BUFF_PROTECTION_FROM_MAGIC</a> = 13
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfafbf2f9a8ee141215419e9cdff7900419">PARTY_BUFF_SHIELD</a> = 14
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa31a8d357bf06f42274752db193f5cd8a">PARTY_BUFF_STONE_SKIN</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa58eb6c8c27d21c054cfb5fd11738d17f">PARTY_BUFF_TORCHLIGHT</a> = 16
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa5ddb27c75588446b065c12eb9d5afcc9">PARTY_BUFF_RESIST_WATER</a> = 17
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa457dcbd00b5c38c730d8ce1d83d7d637">PARTY_BUFF_WATER_WALK</a> = 18
-, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfabd2b2983b02dda98c4dff6711e971cd1">PARTY_BUFF_WIZARD_EYE</a> = 19
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa85992de5759ae007c11492af20f7f110">PARTY_BUFF_TORCHLIGHT</a> = 16
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfaf486a0e8efe41131f061a62047c63725">PARTY_BUFF_RESIST_WATER</a> = 17
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa371018c07d6cfe81fdb67ff1745da961">PARTY_BUFF_WATER_WALK</a> = 18
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfad4c0327d17f9f24eb0b810f0748cdc08">PARTY_BUFF_WIZARD_EYE</a> = 19
+, <br />
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa87fbd23eba88e57587cdd34a392fcf7b">PARTY_BUFF_FIRST</a> = PARTY_BUFF_RESIST_AIR
+, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa9a921a5b789b54f864fe383a3cad428b">PARTY_BUFF_LAST</a> = PARTY_BUFF_WIZARD_EYE
 <br />
  }</td></tr>
 <tr class="separator:a7935db13258ffa8a17fd65aa633b80df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae22569c4d0bb9a2f547ede442cd02b9b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9b">PartyAction</a> : uint32_t { <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba78abe3d01861684ef7d3e860083cd75b">PARTY_INVALID</a> = 0
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bab6899ebff5771a5422118e3b6e026e60">PARTY_TurnLeft</a> = 1
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba88ca4edb9b0f641cdecd64f7b67a3f5f">PARTY_TurnRight</a> = 2
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bad65778804e1010e5e928ee715e1ba51a">PARTY_StrafeLeft</a> = 3
+<tr class="memitem:ae22569c4d0bb9a2f547ede442cd02b9b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9b">PartyAction</a> : uint32_t { <br />
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9baf4529649a03f507ceb84b6ef74b0d0eb">PARTY_INVALID</a> = 0
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba070742276ab17b7427291b3a3aa3f37d">PARTY_TurnLeft</a> = 1
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba56e4aedfcd8e3ede8221b54b92478f76">PARTY_TurnRight</a> = 2
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9badb80e0bf5ad0e21bc7e1aedfa8f98a9e">PARTY_StrafeLeft</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bad4ea271467e29fb978148d4adf8bb08b">PARTY_StrafeRight</a> = 4
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9badc7a4d713fe35144207975db42eae4e9">PARTY_WalkForward</a> = 5
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba64f6a03f9a52992802eb0efebca0ad9c">PARTY_WalkBackward</a> = 6
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9baa319c6d3681f7f4009f955f38b21d8b7">PARTY_LookUp</a> = 7
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bae4bb3dbfaebee99f02e6f62303d32085">PARTY_StrafeRight</a> = 4
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba1d7921030cb73a3e47184d3210303fe4">PARTY_WalkForward</a> = 5
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba738f71ee2f8ab4fcf37a595c0b8ef5a8">PARTY_WalkBackward</a> = 6
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba986b66252596b25ecae118aa0ab72675">PARTY_LookUp</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9babc828745d9efc6eed08eac2ad9164422">PARTY_LookDown</a> = 8
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba24b2857af610a82656874589c4a84478">PARTY_CenterView</a> = 9
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bab5420b0b560d4d213ffd656f8ac5f596">PARTY_unkA</a> = 10
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba610645fe137132373c9d4f66b3cf0738">PARTY_unkB</a> = 11
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bac30ae36f6721205e338b49e94219cf3f">PARTY_LookDown</a> = 8
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba4a0550ab06334afc2cad0f24c5930e2f">PARTY_CenterView</a> = 9
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba0e9540193e79be9a7e6458aac37bfc47">PARTY_unkA</a> = 10
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba58f0a6a90335b895c94fe1aa40e8f27b">PARTY_unkB</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bad9c91444353cd06cc639b326338935ae">PARTY_Jump</a> = 12
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba95eeaa6dae426f180022dc37497f4685">PARTY_FlyUp</a> = 13
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bad2598d40d3ab2a68c1f6d665d1c5cd38">PARTY_FlyDown</a> = 14
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bad48d0b3396be46a1eddb780bfbbdb1bd">PARTY_Land</a> = 15
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bab2cc4374a44b4ada8e08f66431bea9b2">PARTY_Jump</a> = 12
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba0d1e17963a92da60787932307a67512c">PARTY_FlyUp</a> = 13
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba2cc1567a68fbedf69d3c3a8af45ed412">PARTY_FlyDown</a> = 14
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba23dc60e46813ca40b2047c408cf41167">PARTY_Land</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba4554047b9f09100dbbafa31a6aac9bd3">PARTY_RunForward</a> = 16
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba18b584268c26076a3feadae59e1c992b">PARTY_RunBackward</a> = 17
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba277ee913e22ee1d1e925552d71d7742d">PARTY_FastTurnLeft</a> = 18
-, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bac9f1c75823fb84b30d4eb96fe3646142">PARTY_FastTurnRight</a> = 19
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba28af7edebef280b29358770d891a403c">PARTY_RunForward</a> = 16
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9baf833031d43a043f9c58603c2b096c4b7">PARTY_RunBackward</a> = 17
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba7dffd8a2fa90205279ca9e20a4eb559d">PARTY_FastTurnLeft</a> = 18
+, <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba49d3c176257e303190bfc4bc623afa56">PARTY_FastTurnRight</a> = 19
 , <br />
-&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9ba5d8e496dde6817b2b814a3fab9dfa95f">PARTY_dword</a> = 0xFFFFFFFF
+&#160;&#160;<a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9bafde583bdb4850d6b72c711236782838c">PARTY_dword</a> = 0xFFFFFFFF
 <br />
  }</td></tr>
 <tr class="separator:ae22569c4d0bb9a2f547ede442cd02b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -315,76 +319,102 @@ Enumerations</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df">PARTY_BUFF_INDEX</a></td>
+          <td class="memname">enum class <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df">PARTY_BUFF_INDEX</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa0cfd076d0ee96fcabe3f0cbe7ac5f02e" name="a7935db13258ffa8a17fd65aa633b80dfa0cfd076d0ee96fcabe3f0cbe7ac5f02e"></a>PARTY_BUFF_RESIST_AIR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa19d0e136a15d2fd35fd2c5138d1d9c72" name="a7935db13258ffa8a17fd65aa633b80dfa19d0e136a15d2fd35fd2c5138d1d9c72"></a>PARTY_BUFF_RESIST_BODY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfab13703d70e23ca64a2f30328ef02420a" name="a7935db13258ffa8a17fd65aa633b80dfab13703d70e23ca64a2f30328ef02420a"></a>PARTY_BUFF_DAY_OF_GODS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa49d31b7873b1806ed400d0fd66eb407b" name="a7935db13258ffa8a17fd65aa633b80dfa49d31b7873b1806ed400d0fd66eb407b"></a>PARTY_BUFF_DETECT_LIFE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa9db51cc9d4c57a15ec0c83b5f59db342" name="a7935db13258ffa8a17fd65aa633b80dfa9db51cc9d4c57a15ec0c83b5f59db342"></a>PARTY_BUFF_RESIST_EARTH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfaf8c5cf5be4e693823c7ef7a8e46fc623" name="a7935db13258ffa8a17fd65aa633b80dfaf8c5cf5be4e693823c7ef7a8e46fc623"></a>PARTY_BUFF_FEATHER_FALL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa95364e4632a66b4e3033629ee350d101" name="a7935db13258ffa8a17fd65aa633b80dfa95364e4632a66b4e3033629ee350d101"></a>PARTY_BUFF_RESIST_FIRE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa46d524d4e7026f1b90643679fc2a2d0d" name="a7935db13258ffa8a17fd65aa633b80dfa46d524d4e7026f1b90643679fc2a2d0d"></a>PARTY_BUFF_FLY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa714e9cc910fc85bd06a140c2b023caf5" name="a7935db13258ffa8a17fd65aa633b80dfa714e9cc910fc85bd06a140c2b023caf5"></a>PARTY_BUFF_HASTE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfad0aea79e5c43712776c90aa7d0cd1625" name="a7935db13258ffa8a17fd65aa633b80dfad0aea79e5c43712776c90aa7d0cd1625"></a>PARTY_BUFF_HEROISM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa0873a4f505e8da2be49aa61b88b9c10d" name="a7935db13258ffa8a17fd65aa633b80dfa0873a4f505e8da2be49aa61b88b9c10d"></a>PARTY_BUFF_IMMOLATION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfaeaaac556d8c0d8843c6dfcb01f4306be" name="a7935db13258ffa8a17fd65aa633b80dfaeaaac556d8c0d8843c6dfcb01f4306be"></a>PARTY_BUFF_INVISIBILITY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa25b168c1e2df55713ae2f5b946f411cb" name="a7935db13258ffa8a17fd65aa633b80dfa25b168c1e2df55713ae2f5b946f411cb"></a>PARTY_BUFF_RESIST_MIND&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa5830c2dcd2ccbc70732a6de712218a99" name="a7935db13258ffa8a17fd65aa633b80dfa5830c2dcd2ccbc70732a6de712218a99"></a>PARTY_BUFF_PROTECTION_FROM_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa1bd052767f3c587e3d020387b829696a" name="a7935db13258ffa8a17fd65aa633b80dfa1bd052767f3c587e3d020387b829696a"></a>PARTY_BUFF_SHIELD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa138bf4e6964a5755193bbb9b504da7af" name="a7935db13258ffa8a17fd65aa633b80dfa138bf4e6964a5755193bbb9b504da7af"></a>PARTY_BUFF_STONE_SKIN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa58eb6c8c27d21c054cfb5fd11738d17f" name="a7935db13258ffa8a17fd65aa633b80dfa58eb6c8c27d21c054cfb5fd11738d17f"></a>PARTY_BUFF_TORCHLIGHT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa5ddb27c75588446b065c12eb9d5afcc9" name="a7935db13258ffa8a17fd65aa633b80dfa5ddb27c75588446b065c12eb9d5afcc9"></a>PARTY_BUFF_RESIST_WATER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa457dcbd00b5c38c730d8ce1d83d7d637" name="a7935db13258ffa8a17fd65aa633b80dfa457dcbd00b5c38c730d8ce1d83d7d637"></a>PARTY_BUFF_WATER_WALK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfabd2b2983b02dda98c4dff6711e971cd1" name="a7935db13258ffa8a17fd65aa633b80dfabd2b2983b02dda98c4dff6711e971cd1"></a>PARTY_BUFF_WIZARD_EYE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfaf12dcaa9615ca6f21554c0926fc08d7b" name="a7935db13258ffa8a17fd65aa633b80dfaf12dcaa9615ca6f21554c0926fc08d7b"></a>PARTY_BUFF_RESIST_AIR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfada02f62df8350b64963b91bb6f375900" name="a7935db13258ffa8a17fd65aa633b80dfada02f62df8350b64963b91bb6f375900"></a>PARTY_BUFF_RESIST_BODY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa2b74bc7d19b92d6e8810fd343498031f" name="a7935db13258ffa8a17fd65aa633b80dfa2b74bc7d19b92d6e8810fd343498031f"></a>PARTY_BUFF_DAY_OF_GODS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa2cfc102cb326c5f12d5f22f0acf37f11" name="a7935db13258ffa8a17fd65aa633b80dfa2cfc102cb326c5f12d5f22f0acf37f11"></a>PARTY_BUFF_DETECT_LIFE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa0a55105c6f3ac3f556a31d35a28a1541" name="a7935db13258ffa8a17fd65aa633b80dfa0a55105c6f3ac3f556a31d35a28a1541"></a>PARTY_BUFF_RESIST_EARTH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfaa167c3f17823bd6e393fa966e27ec0ec" name="a7935db13258ffa8a17fd65aa633b80dfaa167c3f17823bd6e393fa966e27ec0ec"></a>PARTY_BUFF_FEATHER_FALL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa92cf2b16c7dda2398c182d05bb0c4a1f" name="a7935db13258ffa8a17fd65aa633b80dfa92cf2b16c7dda2398c182d05bb0c4a1f"></a>PARTY_BUFF_RESIST_FIRE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa59ca2a69e4540c0f98252676bacf45c9" name="a7935db13258ffa8a17fd65aa633b80dfa59ca2a69e4540c0f98252676bacf45c9"></a>PARTY_BUFF_FLY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa423a9bb59d12fb4e97519c779f4cac89" name="a7935db13258ffa8a17fd65aa633b80dfa423a9bb59d12fb4e97519c779f4cac89"></a>PARTY_BUFF_HASTE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa1c98437532682cd8b3fb60566dde39b5" name="a7935db13258ffa8a17fd65aa633b80dfa1c98437532682cd8b3fb60566dde39b5"></a>PARTY_BUFF_HEROISM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfab38a7d30a704ca63b3588633b84bd3cb" name="a7935db13258ffa8a17fd65aa633b80dfab38a7d30a704ca63b3588633b84bd3cb"></a>PARTY_BUFF_IMMOLATION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa4cc86fa711482c23fcad66241489a53d" name="a7935db13258ffa8a17fd65aa633b80dfa4cc86fa711482c23fcad66241489a53d"></a>PARTY_BUFF_INVISIBILITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfad1347271a05daa1b91766bbfc126aaa5" name="a7935db13258ffa8a17fd65aa633b80dfad1347271a05daa1b91766bbfc126aaa5"></a>PARTY_BUFF_RESIST_MIND&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa142bc5dcd7a96bc1fde1f84ca1c9ffe1" name="a7935db13258ffa8a17fd65aa633b80dfa142bc5dcd7a96bc1fde1f84ca1c9ffe1"></a>PARTY_BUFF_PROTECTION_FROM_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfafbf2f9a8ee141215419e9cdff7900419" name="a7935db13258ffa8a17fd65aa633b80dfafbf2f9a8ee141215419e9cdff7900419"></a>PARTY_BUFF_SHIELD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa31a8d357bf06f42274752db193f5cd8a" name="a7935db13258ffa8a17fd65aa633b80dfa31a8d357bf06f42274752db193f5cd8a"></a>PARTY_BUFF_STONE_SKIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa85992de5759ae007c11492af20f7f110" name="a7935db13258ffa8a17fd65aa633b80dfa85992de5759ae007c11492af20f7f110"></a>PARTY_BUFF_TORCHLIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfaf486a0e8efe41131f061a62047c63725" name="a7935db13258ffa8a17fd65aa633b80dfaf486a0e8efe41131f061a62047c63725"></a>PARTY_BUFF_RESIST_WATER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa371018c07d6cfe81fdb67ff1745da961" name="a7935db13258ffa8a17fd65aa633b80dfa371018c07d6cfe81fdb67ff1745da961"></a>PARTY_BUFF_WATER_WALK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfad4c0327d17f9f24eb0b810f0748cdc08" name="a7935db13258ffa8a17fd65aa633b80dfad4c0327d17f9f24eb0b810f0748cdc08"></a>PARTY_BUFF_WIZARD_EYE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa87fbd23eba88e57587cdd34a392fcf7b" name="a7935db13258ffa8a17fd65aa633b80dfa87fbd23eba88e57587cdd34a392fcf7b"></a>PARTY_BUFF_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7935db13258ffa8a17fd65aa633b80dfa9a921a5b789b54f864fe383a3cad428b" name="a7935db13258ffa8a17fd65aa633b80dfa9a921a5b789b54f864fe383a3cad428b"></a>PARTY_BUFF_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="a7ba652169aade3baa03ee56a91cb5dc1" name="a7ba652169aade3baa03ee56a91cb5dc1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ba652169aade3baa03ee56a91cb5dc1">&#9670;&#160;</a></span>PARTY_FLAGS_1</h2>
+<a id="afa755c717b2a7b6bac7b2efc7273d0e8" name="afa755c717b2a7b6bac7b2efc7273d0e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa755c717b2a7b6bac7b2efc7273d0e8">&#9670;&#160;</a></span>PARTY_FLAG_1</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="PartyEnums_8h.html#a7ba652169aade3baa03ee56a91cb5dc1">PARTY_FLAGS_1</a> : int32_t</td>
+          <td class="memname">enum class <a class="el" href="PartyEnums_8h.html#afa755c717b2a7b6bac7b2efc7273d0e8">PARTY_FLAG_1</a> : int32_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a59db4d331ffbd850249dd4deb3832c88" name="a7ba652169aade3baa03ee56a91cb5dc1a59db4d331ffbd850249dd4deb3832c88"></a>PARTY_FLAGS_1_UNUSED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a0911b3acfb27eaf58c995ae401a76895" name="a7ba652169aade3baa03ee56a91cb5dc1a0911b3acfb27eaf58c995ae401a76895"></a>PARTY_FLAGS_1_WATER_DAMAGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a7643361696b8f3ed0710d8ab1c58ac73" name="a7ba652169aade3baa03ee56a91cb5dc1a7643361696b8f3ed0710d8ab1c58ac73"></a>PARTY_FLAGS_1_AIRBORNE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a10c54c69c3f257f5dc866fba216a009a" name="a7ba652169aade3baa03ee56a91cb5dc1a10c54c69c3f257f5dc866fba216a009a"></a>PARTY_FLAGS_1_ALERT_RED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1aeb0381955490c08e94080b7fd27b1492" name="a7ba652169aade3baa03ee56a91cb5dc1aeb0381955490c08e94080b7fd27b1492"></a>PARTY_FLAGS_1_ALERT_YELLOW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1ab66d5b30583dfaa3b40e7934668dbdfd" name="a7ba652169aade3baa03ee56a91cb5dc1ab66d5b30583dfaa3b40e7934668dbdfd"></a>PARTY_FLAGS_1_ALERT_RED_OR_YELLOW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a7f6dabf76eda41e29a95123c1fe33fd6" name="a7ba652169aade3baa03ee56a91cb5dc1a7f6dabf76eda41e29a95123c1fe33fd6"></a>PARTY_FLAGS_1_STANDING_ON_WATER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a0d4efebf09d06c08133b90267b858d30" name="a7ba652169aade3baa03ee56a91cb5dc1a0d4efebf09d06c08133b90267b858d30"></a>PARTY_FLAGS_1_LANDING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a1294e24b863533d78aaee423877e478b" name="a7ba652169aade3baa03ee56a91cb5dc1a1294e24b863533d78aaee423877e478b"></a>PARTY_FLAGS_1_BURNING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7ba652169aade3baa03ee56a91cb5dc1a42e483015ae9026ed2caa4eb0c15dda0" name="a7ba652169aade3baa03ee56a91cb5dc1a42e483015ae9026ed2caa4eb0c15dda0"></a>PARTY_FLAGS_1_JUMPING&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8af6c8ee7830483f74cd83e4b47d559ff8" name="afa755c717b2a7b6bac7b2efc7273d0e8af6c8ee7830483f74cd83e4b47d559ff8"></a>PARTY_FLAGS_1_UNUSED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8abcd88fc2063847c3185680598bd22c8c" name="afa755c717b2a7b6bac7b2efc7273d0e8abcd88fc2063847c3185680598bd22c8c"></a>PARTY_FLAGS_1_WATER_DAMAGE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8afe9508acfc00a58bca72d7e72f46281a" name="afa755c717b2a7b6bac7b2efc7273d0e8afe9508acfc00a58bca72d7e72f46281a"></a>PARTY_FLAGS_1_AIRBORNE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8a6a8cca8f3f1f0c8260c212ce5b4d7da0" name="afa755c717b2a7b6bac7b2efc7273d0e8a6a8cca8f3f1f0c8260c212ce5b4d7da0"></a>PARTY_FLAGS_1_ALERT_RED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8a2eb41e8fa9f36e459d4d180bc1c4ae66" name="afa755c717b2a7b6bac7b2efc7273d0e8a2eb41e8fa9f36e459d4d180bc1c4ae66"></a>PARTY_FLAGS_1_ALERT_YELLOW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8a9259e8ad5c97dbe12310da55701aeed6" name="afa755c717b2a7b6bac7b2efc7273d0e8a9259e8ad5c97dbe12310da55701aeed6"></a>PARTY_FLAGS_1_ALERT_RED_OR_YELLOW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8aebd5893853ce7dc74264c78fccc75d48" name="afa755c717b2a7b6bac7b2efc7273d0e8aebd5893853ce7dc74264c78fccc75d48"></a>PARTY_FLAGS_1_STANDING_ON_WATER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8aa848f93ae3ce017a32cc356809341dd0" name="afa755c717b2a7b6bac7b2efc7273d0e8aa848f93ae3ce017a32cc356809341dd0"></a>PARTY_FLAGS_1_LANDING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8a81c936f0a85c2974396f6720fcd6edb2" name="afa755c717b2a7b6bac7b2efc7273d0e8a81c936f0a85c2974396f6720fcd6edb2"></a>PARTY_FLAGS_1_BURNING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afa755c717b2a7b6bac7b2efc7273d0e8aeb012645518718422c56562bccc772b4" name="afa755c717b2a7b6bac7b2efc7273d0e8aeb012645518718422c56562bccc772b4"></a>PARTY_FLAGS_1_JUMPING&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="a09dcebc28a84afbca0bf362f5e1348d8" name="a09dcebc28a84afbca0bf362f5e1348d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09dcebc28a84afbca0bf362f5e1348d8">&#9670;&#160;</a></span>PARTY_FLAGS_2</h2>
+<a id="ae8d1f902df00a1c08eda7397206379e5" name="ae8d1f902df00a1c08eda7397206379e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8d1f902df00a1c08eda7397206379e5">&#9670;&#160;</a></span>PARTY_FLAG_2</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="PartyEnums_8h.html#a09dcebc28a84afbca0bf362f5e1348d8">PARTY_FLAGS_2</a> : int32_t</td>
+          <td class="memname">enum class <a class="el" href="PartyEnums_8h.html#ae8d1f902df00a1c08eda7397206379e5">PARTY_FLAG_2</a> : int32_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a09dcebc28a84afbca0bf362f5e1348d8ab905663a9d31df27dda341a2bc9a8c2b" name="a09dcebc28a84afbca0bf362f5e1348d8ab905663a9d31df27dda341a2bc9a8c2b"></a>PARTY_FLAGS_2_RUNNING&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae8d1f902df00a1c08eda7397206379e5a1714d56ca7312e805f9ff005917ccfc5" name="ae8d1f902df00a1c08eda7397206379e5a1714d56ca7312e805f9ff005917ccfc5"></a>PARTY_FLAGS_2_RUNNING&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -394,34 +424,42 @@ Enumerations</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9b">PartyAction</a> : uint32_t</td>
+          <td class="memname">enum class <a class="el" href="PartyEnums_8h.html#ae22569c4d0bb9a2f547ede442cd02b9b">PartyAction</a> : uint32_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba78abe3d01861684ef7d3e860083cd75b" name="ae22569c4d0bb9a2f547ede442cd02b9ba78abe3d01861684ef7d3e860083cd75b"></a>PARTY_INVALID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bab6899ebff5771a5422118e3b6e026e60" name="ae22569c4d0bb9a2f547ede442cd02b9bab6899ebff5771a5422118e3b6e026e60"></a>PARTY_TurnLeft&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba88ca4edb9b0f641cdecd64f7b67a3f5f" name="ae22569c4d0bb9a2f547ede442cd02b9ba88ca4edb9b0f641cdecd64f7b67a3f5f"></a>PARTY_TurnRight&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bad65778804e1010e5e928ee715e1ba51a" name="ae22569c4d0bb9a2f547ede442cd02b9bad65778804e1010e5e928ee715e1ba51a"></a>PARTY_StrafeLeft&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bad4ea271467e29fb978148d4adf8bb08b" name="ae22569c4d0bb9a2f547ede442cd02b9bad4ea271467e29fb978148d4adf8bb08b"></a>PARTY_StrafeRight&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9badc7a4d713fe35144207975db42eae4e9" name="ae22569c4d0bb9a2f547ede442cd02b9badc7a4d713fe35144207975db42eae4e9"></a>PARTY_WalkForward&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba64f6a03f9a52992802eb0efebca0ad9c" name="ae22569c4d0bb9a2f547ede442cd02b9ba64f6a03f9a52992802eb0efebca0ad9c"></a>PARTY_WalkBackward&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9baa319c6d3681f7f4009f955f38b21d8b7" name="ae22569c4d0bb9a2f547ede442cd02b9baa319c6d3681f7f4009f955f38b21d8b7"></a>PARTY_LookUp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9babc828745d9efc6eed08eac2ad9164422" name="ae22569c4d0bb9a2f547ede442cd02b9babc828745d9efc6eed08eac2ad9164422"></a>PARTY_LookDown&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba24b2857af610a82656874589c4a84478" name="ae22569c4d0bb9a2f547ede442cd02b9ba24b2857af610a82656874589c4a84478"></a>PARTY_CenterView&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bab5420b0b560d4d213ffd656f8ac5f596" name="ae22569c4d0bb9a2f547ede442cd02b9bab5420b0b560d4d213ffd656f8ac5f596"></a>PARTY_unkA&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba610645fe137132373c9d4f66b3cf0738" name="ae22569c4d0bb9a2f547ede442cd02b9ba610645fe137132373c9d4f66b3cf0738"></a>PARTY_unkB&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bad9c91444353cd06cc639b326338935ae" name="ae22569c4d0bb9a2f547ede442cd02b9bad9c91444353cd06cc639b326338935ae"></a>PARTY_Jump&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba95eeaa6dae426f180022dc37497f4685" name="ae22569c4d0bb9a2f547ede442cd02b9ba95eeaa6dae426f180022dc37497f4685"></a>PARTY_FlyUp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bad2598d40d3ab2a68c1f6d665d1c5cd38" name="ae22569c4d0bb9a2f547ede442cd02b9bad2598d40d3ab2a68c1f6d665d1c5cd38"></a>PARTY_FlyDown&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bad48d0b3396be46a1eddb780bfbbdb1bd" name="ae22569c4d0bb9a2f547ede442cd02b9bad48d0b3396be46a1eddb780bfbbdb1bd"></a>PARTY_Land&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba4554047b9f09100dbbafa31a6aac9bd3" name="ae22569c4d0bb9a2f547ede442cd02b9ba4554047b9f09100dbbafa31a6aac9bd3"></a>PARTY_RunForward&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba18b584268c26076a3feadae59e1c992b" name="ae22569c4d0bb9a2f547ede442cd02b9ba18b584268c26076a3feadae59e1c992b"></a>PARTY_RunBackward&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba277ee913e22ee1d1e925552d71d7742d" name="ae22569c4d0bb9a2f547ede442cd02b9ba277ee913e22ee1d1e925552d71d7742d"></a>PARTY_FastTurnLeft&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bac9f1c75823fb84b30d4eb96fe3646142" name="ae22569c4d0bb9a2f547ede442cd02b9bac9f1c75823fb84b30d4eb96fe3646142"></a>PARTY_FastTurnRight&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba5d8e496dde6817b2b814a3fab9dfa95f" name="ae22569c4d0bb9a2f547ede442cd02b9ba5d8e496dde6817b2b814a3fab9dfa95f"></a>PARTY_dword&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9baf4529649a03f507ceb84b6ef74b0d0eb" name="ae22569c4d0bb9a2f547ede442cd02b9baf4529649a03f507ceb84b6ef74b0d0eb"></a>PARTY_INVALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba070742276ab17b7427291b3a3aa3f37d" name="ae22569c4d0bb9a2f547ede442cd02b9ba070742276ab17b7427291b3a3aa3f37d"></a>PARTY_TurnLeft&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba56e4aedfcd8e3ede8221b54b92478f76" name="ae22569c4d0bb9a2f547ede442cd02b9ba56e4aedfcd8e3ede8221b54b92478f76"></a>PARTY_TurnRight&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9badb80e0bf5ad0e21bc7e1aedfa8f98a9e" name="ae22569c4d0bb9a2f547ede442cd02b9badb80e0bf5ad0e21bc7e1aedfa8f98a9e"></a>PARTY_StrafeLeft&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bae4bb3dbfaebee99f02e6f62303d32085" name="ae22569c4d0bb9a2f547ede442cd02b9bae4bb3dbfaebee99f02e6f62303d32085"></a>PARTY_StrafeRight&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba1d7921030cb73a3e47184d3210303fe4" name="ae22569c4d0bb9a2f547ede442cd02b9ba1d7921030cb73a3e47184d3210303fe4"></a>PARTY_WalkForward&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba738f71ee2f8ab4fcf37a595c0b8ef5a8" name="ae22569c4d0bb9a2f547ede442cd02b9ba738f71ee2f8ab4fcf37a595c0b8ef5a8"></a>PARTY_WalkBackward&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba986b66252596b25ecae118aa0ab72675" name="ae22569c4d0bb9a2f547ede442cd02b9ba986b66252596b25ecae118aa0ab72675"></a>PARTY_LookUp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bac30ae36f6721205e338b49e94219cf3f" name="ae22569c4d0bb9a2f547ede442cd02b9bac30ae36f6721205e338b49e94219cf3f"></a>PARTY_LookDown&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba4a0550ab06334afc2cad0f24c5930e2f" name="ae22569c4d0bb9a2f547ede442cd02b9ba4a0550ab06334afc2cad0f24c5930e2f"></a>PARTY_CenterView&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba0e9540193e79be9a7e6458aac37bfc47" name="ae22569c4d0bb9a2f547ede442cd02b9ba0e9540193e79be9a7e6458aac37bfc47"></a>PARTY_unkA&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba58f0a6a90335b895c94fe1aa40e8f27b" name="ae22569c4d0bb9a2f547ede442cd02b9ba58f0a6a90335b895c94fe1aa40e8f27b"></a>PARTY_unkB&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bab2cc4374a44b4ada8e08f66431bea9b2" name="ae22569c4d0bb9a2f547ede442cd02b9bab2cc4374a44b4ada8e08f66431bea9b2"></a>PARTY_Jump&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba0d1e17963a92da60787932307a67512c" name="ae22569c4d0bb9a2f547ede442cd02b9ba0d1e17963a92da60787932307a67512c"></a>PARTY_FlyUp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba2cc1567a68fbedf69d3c3a8af45ed412" name="ae22569c4d0bb9a2f547ede442cd02b9ba2cc1567a68fbedf69d3c3a8af45ed412"></a>PARTY_FlyDown&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba23dc60e46813ca40b2047c408cf41167" name="ae22569c4d0bb9a2f547ede442cd02b9ba23dc60e46813ca40b2047c408cf41167"></a>PARTY_Land&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba28af7edebef280b29358770d891a403c" name="ae22569c4d0bb9a2f547ede442cd02b9ba28af7edebef280b29358770d891a403c"></a>PARTY_RunForward&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9baf833031d43a043f9c58603c2b096c4b7" name="ae22569c4d0bb9a2f547ede442cd02b9baf833031d43a043f9c58603c2b096c4b7"></a>PARTY_RunBackward&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba7dffd8a2fa90205279ca9e20a4eb559d" name="ae22569c4d0bb9a2f547ede442cd02b9ba7dffd8a2fa90205279ca9e20a4eb559d"></a>PARTY_FastTurnLeft&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9ba49d3c176257e303190bfc4bc623afa56" name="ae22569c4d0bb9a2f547ede442cd02b9ba49d3c176257e303190bfc4bc623afa56"></a>PARTY_FastTurnRight&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae22569c4d0bb9a2f547ede442cd02b9bafde583bdb4850d6b72c711236782838c" name="ae22569c4d0bb9a2f547ede442cd02b9bafde583bdb4850d6b72c711236782838c"></a>PARTY_dword&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

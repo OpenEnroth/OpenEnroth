@@ -28,7 +28,7 @@ var searchData=
   ['_5fbitset_25',['_bitset',['../classIndexedBitset.html#a497fdfdd43533b777de4009ae2ca6701',1,'IndexedBitset']]],
   ['_5fblob_26',['_blob',['../classBlobInputStream.html#a5cba6e75c9adbe112902e6bf9a2770e4',1,'BlobInputStream']]],
   ['_5fbonus_5fstrength_27',['_bonus_strength',['../structItemDesc.html#a1551f45b8b2b0985ee67dc022958fea1',1,'ItemDesc']]],
-  ['_5fbonus_5ftype_28',['_bonus_type',['../structItemDesc.html#af7572c9aab3b23aa059ffdcdd69aca8f',1,'ItemDesc']]],
+  ['_5fbonus_5ftype_28',['_bonus_type',['../structItemDesc.html#a3197ac71d15020c2edbc51febd668209',1,'ItemDesc']]],
   ['_5fbookbuttonaction_29',['_bookButtonAction',['../classGUIWindow__Book.html#af9fdcb4776315f8a95afb7a624318fb4',1,'GUIWindow_Book']]],
   ['_5fbookbuttonclicked_30',['_bookButtonClicked',['../classGUIWindow__Book.html#a5d57f31b64384602d79168eb10e3136e',1,'GUIWindow_Book']]],
   ['_5fbountyhuntmonsterid_31',['_bountyHuntMonsterId',['../classGUIWindow__TownHall.html#a4a0884f203eeb11b206a900e1df7e1c0',1,'GUIWindow_TownHall']]],

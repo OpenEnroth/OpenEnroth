@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65006b0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0b6fedc</span>
    </div>
   </td>
  </tr>
@@ -97,8 +97,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6978a558852c8af29efc5761546408a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f753991ed787d49343554f9387750ba"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a1f753991ed787d49343554f9387750ba">GetSpellSchoolName</a> (unsigned int index) const</td></tr>
 <tr class="separator:a1f753991ed787d49343554f9387750ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b8208c58d7ccdd1b97dc9ca08d024fa"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a9b8208c58d7ccdd1b97dc9ca08d024fa">GetSpellName</a> (unsigned int index) const</td></tr>
-<tr class="separator:a9b8208c58d7ccdd1b97dc9ca08d024fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba3e307b8faf01d49f8c3819c7e5b799"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#aba3e307b8faf01d49f8c3819c7e5b799">GetPartyBuffName</a> (<a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df">PARTY_BUFF_INDEX</a> index) const</td></tr>
+<tr class="separator:aba3e307b8faf01d49f8c3819c7e5b799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a423fd27b0800d6cf1bded5622bfba90f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a423fd27b0800d6cf1bded5622bfba90f">GetCharacterBuffName</a> (<a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95a">CharacterBuff</a> index) const</td></tr>
+<tr class="separator:a423fd27b0800d6cf1bded5622bfba90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc5ea2a5e1fa7037bb14bf743d0e9cf6"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#abc5ea2a5e1fa7037bb14bf743d0e9cf6">GetClassName</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> index) const</td></tr>
 <tr class="separator:abc5ea2a5e1fa7037bb14bf743d0e9cf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc27ca53ebddf199a0f1dcca86e4a1e7"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#abc27ca53ebddf199a0f1dcca86e4a1e7">GetClassDescription</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> index) const</td></tr>
@@ -219,8 +221,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a0b03040684b262eb6c923bb73db2090b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2a94f0449e491944ed765b1fdd3ac79"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#ac2a94f0449e491944ed765b1fdd3ac79">spell_school_names</a> [9] {}</td></tr>
 <tr class="separator:ac2a94f0449e491944ed765b1fdd3ac79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a259124c18f8b2e43e32685de47e6845f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a259124c18f8b2e43e32685de47e6845f">spell_names</a> [44] {}</td></tr>
-<tr class="separator:a259124c18f8b2e43e32685de47e6845f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8976699a78eec0ea05b31cd6db2dc865"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa87fbd23eba88e57587cdd34a392fcf7b">PARTY_BUFF_FIRST</a>, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa9a921a5b789b54f864fe383a3cad428b">PARTY_BUFF_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a8976699a78eec0ea05b31cd6db2dc865">party_buff_names</a> = {{}}</td></tr>
+<tr class="separator:a8976699a78eec0ea05b31cd6db2dc865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a246686de5427e8d7e15a7b962bdf16ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aa021851d6c9073af69290ba409f22c925">CHARACTER_BUFF_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aacdfc60b9a5273182c3a4209d8670c91e">CHARACTER_BUFF_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a246686de5427e8d7e15a7b962bdf16ed">character_buff_names</a> = {{}}</td></tr>
+<tr class="separator:a246686de5427e8d7e15a7b962bdf16ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8ffbae69687444aca9b0613d5adbe8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaf173981ab0f00b8c2e7cb33a2c688e0">CHARACTER_CLASS_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaa9ef3fcc3b349ef203aefd88e01e767">CHARACTER_CLASS_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a3f8ffbae69687444aca9b0613d5adbe8">class_names</a> = {{}}</td></tr>
 <tr class="separator:a3f8ffbae69687444aca9b0613d5adbe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a57b81b47fbfe0181cdd0f55259c2a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaf173981ab0f00b8c2e7cb33a2c688e0">CHARACTER_CLASS_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6aaa9ef3fcc3b349ef203aefd88e01e767">CHARACTER_CLASS_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a2a57b81b47fbfe0181cdd0f55259c2a4">class_desciptions</a> = {{}}</td></tr>
@@ -515,6 +519,32 @@ template&lt;class... Args&gt; </div>
           <td class="memname">const char * Localization::getBodyResistanceDescription </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a423fd27b0800d6cf1bded5622bfba90f" name="a423fd27b0800d6cf1bded5622bfba90f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a423fd27b0800d6cf1bded5622bfba90f">&#9670;&#160;</a></span>GetCharacterBuffName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * Localization::GetCharacterBuffName </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95a">CharacterBuff</a>&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -959,6 +989,32 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="aba3e307b8faf01d49f8c3819c7e5b799" name="aba3e307b8faf01d49f8c3819c7e5b799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba3e307b8faf01d49f8c3819c7e5b799">&#9670;&#160;</a></span>GetPartyBuffName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * Localization::GetPartyBuffName </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80df">PARTY_BUFF_INDEX</a>&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae02358b6a0320f7fe2bb5c19d5ab8461" name="ae02358b6a0320f7fe2bb5c19d5ab8461"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae02358b6a0320f7fe2bb5c19d5ab8461">&#9670;&#160;</a></span>getRangedAttackDescription()</h2>
 
@@ -1239,32 +1295,6 @@ template&lt;class... Args&gt; </div>
           <td class="memname">const char * Localization::getSPDescription </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9b8208c58d7ccdd1b97dc9ca08d024fa" name="a9b8208c58d7ccdd1b97dc9ca08d024fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b8208c58d7ccdd1b97dc9ca08d024fa">&#9670;&#160;</a></span>GetSpellName()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char * Localization::GetSpellName </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>index</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -1845,6 +1875,28 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="a246686de5427e8d7e15a7b962bdf16ed" name="a246686de5427e8d7e15a7b962bdf16ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a246686de5427e8d7e15a7b962bdf16ed">&#9670;&#160;</a></span>character_buff_names</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aa021851d6c9073af69290ba409f22c925">CHARACTER_BUFF_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95aacdfc60b9a5273182c3a4209d8670c91e">CHARACTER_BUFF_LAST</a>&gt; Localization::character_buff_names = {{}}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad56e8b06677de6fabacbd8fb3e9efae4" name="ad56e8b06677de6fabacbd8fb3e9efae4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad56e8b06677de6fabacbd8fb3e9efae4">&#9670;&#160;</a></span>character_condition_description</h2>
 
@@ -2307,6 +2359,28 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="a8976699a78eec0ea05b31cd6db2dc865" name="a8976699a78eec0ea05b31cd6db2dc865"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8976699a78eec0ea05b31cd6db2dc865">&#9670;&#160;</a></span>party_buff_names</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa87fbd23eba88e57587cdd34a392fcf7b">PARTY_BUFF_FIRST</a>, <a class="el" href="PartyEnums_8h.html#a7935db13258ffa8a17fd65aa633b80dfa9a921a5b789b54f864fe383a3cad428b">PARTY_BUFF_LAST</a>&gt; Localization::party_buff_names = {{}}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aaf4c39783c62b392de7a9f56731faa96" name="aaf4c39783c62b392de7a9f56731faa96"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaf4c39783c62b392de7a9f56731faa96">&#9670;&#160;</a></span>ranged_attack_description</h2>
 
@@ -2538,28 +2612,6 @@ template&lt;class... Args&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">const char* Localization::sp_description {}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a259124c18f8b2e43e32685de47e6845f" name="a259124c18f8b2e43e32685de47e6845f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a259124c18f8b2e43e32685de47e6845f">&#9670;&#160;</a></span>spell_names</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* Localization::spell_names[44] {}</td>
         </tr>
       </table>
   </td>
