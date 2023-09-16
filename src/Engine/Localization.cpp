@@ -411,13 +411,13 @@ void Localization::InitializeSpellSchoolNames() {
 
 //----- (0041411B) --------------------------------------------------------
 void Localization::InitializeAttributeNames() {
-    this->attribute_names[0] = this->localization_strings[144];  // Might
-    this->attribute_names[1] = this->localization_strings[116];  // Intelligence
-    this->attribute_names[2] = this->localization_strings[163];  // Personality
-    this->attribute_names[3] = this->localization_strings[75];   // Endurance
-    this->attribute_names[4] = this->localization_strings[1];    // Accuracy
-    this->attribute_names[5] = this->localization_strings[211];  // Speed
-    this->attribute_names[6] = this->localization_strings[136];  // Luck
+    this->attribute_names[CHARACTER_ATTRIBUTE_MIGHT]        = this->localization_strings[144];
+    this->attribute_names[CHARACTER_ATTRIBUTE_INTELLIGENCE] = this->localization_strings[116];
+    this->attribute_names[CHARACTER_ATTRIBUTE_PERSONALITY]  = this->localization_strings[163];
+    this->attribute_names[CHARACTER_ATTRIBUTE_ENDURANCE]    = this->localization_strings[75];
+    this->attribute_names[CHARACTER_ATTRIBUTE_ACCURACY]     = this->localization_strings[1];
+    this->attribute_names[CHARACTER_ATTRIBUTE_SPEED]        = this->localization_strings[211];
+    this->attribute_names[CHARACTER_ATTRIBUTE_LUCK]         = this->localization_strings[136];
 
     this->attribute_desc_raw = engine->_gameResourceManager->getEventsFile("stats.txt").string_view();
     strtok(this->attribute_desc_raw.data(), "\r");
@@ -433,7 +433,7 @@ void Localization::InitializeAttributeNames() {
             case 4:
             case 5:
             case 6:
-                this->attribute_descriptions[i] = removeQuotes(tokens[1]);
+                this->attribute_descriptions[static_cast<CharacterAttributeType>(i)] = removeQuotes(tokens[1]);
                 break;
             case 7:
                 this->hp_description = removeQuotes(tokens[1]);

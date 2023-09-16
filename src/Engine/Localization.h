@@ -479,11 +479,11 @@ class Localization {
         return this->class_desciptions[index];
     }
 
-    const char *GetAttirubteName(unsigned int index) const {
+    const char *GetAttirubteName(CharacterAttributeType index) const {
         return this->attribute_names[index];
     }
 
-    const char *GetAttributeDescription(unsigned int index) const {
+    const char *GetAttributeDescription(CharacterAttributeType index) const {
         return this->attribute_descriptions[index];
     }
 
@@ -663,8 +663,8 @@ class Localization {
     IndexedArray<const char *, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names = {{}};
     IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_names = {{}};
     IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_desciptions = {{}};
-    const char *attribute_names[7]{};
-    const char *attribute_descriptions[7]{};
+    IndexedArray<const char *, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> attribute_names = {{}};
+    IndexedArray<const char *, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> attribute_descriptions = {{}};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_names = {{}};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions = {{}};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_normal = {{}};

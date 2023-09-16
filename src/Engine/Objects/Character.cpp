@@ -3980,31 +3980,31 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             switch (pParty->uCurrentMonth) {
                 case 0: // Jan
                     playerAffected->uMight += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(0), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_MIGHT), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 1: // Feb
                     playerAffected->uIntelligence += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(1), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_INTELLIGENCE), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 2: // Mar
                     playerAffected->uPersonality += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(2), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_PERSONALITY), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 3: // Apr
                     playerAffected->uEndurance += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(3), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_ENDURANCE), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 4: // May
                     playerAffected->uAccuracy += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(4), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_ACCURACY), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 5: // Jun
                     playerAffected->uSpeed += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(5), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_SPEED), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 6: // Jul
                     playerAffected->uLuck += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(6), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_LUCK), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 7: // Aug
                     pParty->partyFindsGold(1000 * value, GOLD_RECEIVE_SHARE);
