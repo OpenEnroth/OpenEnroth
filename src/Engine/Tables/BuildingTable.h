@@ -28,8 +28,9 @@ enum class BuildingType : uint16_t {
     BUILDING_ELEMENTAL_GUILD = 14, // In MM6 it was Element Guild
     BUILDING_SELF_GUILD = 15, // Exist only in MM6 and MM8
     BUILDING_MIRRORED_PATH_GUILD = 16, // Mirrored Path Guild of Light and Dark (not made it into any released game)
-    BUILDING_TOWN_HALL = 17,
-    BUILDING_MERCENARY_GUILD = 18,
+    BUILDING_TOWN_HALL = 17, // Thieves guild in MM6.
+    BUILDING_MERCENARY_GUILD = 18, // TODO(captainurist): Somehow this is the type of almost all houses in the game.
+                                   //                     So, not a mercenary guild?
     BUILDING_TOWN_HALL_MM6 = 19,
     BUILDING_THRONE_ROOM = 20,
     BUILDING_TAVERN = 21,
