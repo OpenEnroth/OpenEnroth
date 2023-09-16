@@ -63,7 +63,7 @@ inline Segment<TILE_SECT> allSpecialTileSects() {
 
 #pragma warning(push)
 #pragma warning(disable : 4341)
-enum Tileset : int16_t {
+enum class Tileset : int16_t {
     Tileset_Grass = 0,
     Tileset_Snow = 1,
     Tileset_Desert = 2,
@@ -92,4 +92,5 @@ enum Tileset : int16_t {
     Tileset_NULL = -1,
     Tileset_Start = -2
 };
+using enum Tileset;
 #pragma warning(pop)

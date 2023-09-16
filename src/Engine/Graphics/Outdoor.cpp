@@ -956,7 +956,7 @@ int OutdoorLocation::getTileIdByTileMapId(int mapId) {
     if (mapId >= 90) {
         v3 = (mapId - 90) / 36;
         if (v3 && v3 != 1 && v3 != 2) {
-            if (v3 == Tileset_CooledLava)
+            if (v3 == 3)
                 result = this->pTileTypes[3].uTileID;
             else
                 result = mapId;

@@ -41,11 +41,11 @@ void TileTable::InitializeTileset(Tileset tileset) {
 }
 
 //----- (00487ED6) --------------------------------------------------------
-int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
+int TileTable::GetTileForTerrainType(Tileset terrain_type, bool not_random) {
     int v5;  // edx@3
     int v6;  // edx@11
 
-    if (not_random || terrain_type > 8) {
+    if (not_random || terrain_type > Tileset_Tropical) {
         return GetTileId(terrain_type, TILE_SECT_Base1);
     }
     v5 = vrng->random(50);
@@ -62,7 +62,7 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
 }
 
 //----- (00487F84) --------------------------------------------------------
-unsigned int TileTable::GetTileId(unsigned int uTerrainType, TILE_SECT uSection) {
+unsigned int TileTable::GetTileId(Tileset uTerrainType, TILE_SECT uSection) {
     for (size_t i = 0; i < tiles.size(); ++i) {
         if ((tiles[i].tileset == uTerrainType) &&
             (tiles[i].uSection == uSection))
