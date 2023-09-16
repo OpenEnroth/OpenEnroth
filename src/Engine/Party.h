@@ -30,7 +30,7 @@ struct ActionQueue {
 
 /*  208 */
 struct PartyTimeStruct {
-    IndexedArray<GameTime, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> bountyHuntNextGenTime; // Size was 10 originally.
+    IndexedArray<GameTime, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> bountyHuntNextGenTime; // Size was 10 originally.
     IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopNextRefreshTime;
     IndexedArray<GameTime, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildNextRefreshTime;
     IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopBanTimes;
@@ -306,8 +306,8 @@ struct Party {
     unsigned int uNumDeaths;
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
-    IndexedArray<int16_t, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_id_for_hunting;
-    IndexedArray<bool, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_for_hunting_killed;
+    IndexedArray<int16_t, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;
+    IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
     IndexedBitset<QBIT_FIRST, QBIT_LAST> _questBits;
     std::array<uint8_t, 16> pArcomageWins;

@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <string>
+#include <unordered_map>
 #include <map>
 
 #include "Utility/Workaround/ToUnderlying.h"
