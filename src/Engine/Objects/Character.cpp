@@ -4023,34 +4023,41 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                     status = fmt::format("+{} {}", 2500ll * value, localization->GetString(LSTR_EXPERIENCE));
                     break;
                 case 11: { // Dec
-                    int res = grng->random(6);
-
-                    // No spirit res
-                    res = (res == 5 ? res + 1 : res);
+                    static constexpr std::initializer_list<MagicSchool> possibleResistances = {
+                        MAGIC_SCHOOL_FIRE,
+                        MAGIC_SCHOOL_AIR,
+                        MAGIC_SCHOOL_WATER,
+                        MAGIC_SCHOOL_EARTH,
+                        MAGIC_SCHOOL_MIND,
+                        MAGIC_SCHOOL_BODY
+                        // Note: no spirit resistance.
+                    };
+                    static_assert(possibleResistances.size() == 6);
+                    MagicSchool res = grng->randomSample(possibleResistances);
 
                     const char *spell_school_name = localization->GetSpellSchoolName(res);
 
                     switch (res) {
-                        case 0:  // Fire
+                        case MAGIC_SCHOOL_FIRE:
                             playerAffected->sResFireBase += value;
                             break;
-                        case 1:  // Air
+                        case MAGIC_SCHOOL_AIR:
                             playerAffected->sResAirBase += value;
                             break;
-                        case 2:  // Water
+                        case MAGIC_SCHOOL_WATER:
                             playerAffected->sResWaterBase += value;
                             break;
-                        case 3:  // Earth
+                        case MAGIC_SCHOOL_EARTH:
                             playerAffected->sResEarthBase += value;
                             break;
-                        case 4:  // Mind
+                        case MAGIC_SCHOOL_MIND:
                             playerAffected->sResMindBase += value;
                             break;
-                        case 6:  // Body
+                        case MAGIC_SCHOOL_BODY:
                             playerAffected->sResBodyBase += value;
                             break;
                         default:
-                            // ("Unexpected attribute");
+                            assert(false);
                             return;
                     }
                     status = fmt::format("+{} {} {}", value, spell_school_name, localization->GetString(LSTR_PERMANENT));

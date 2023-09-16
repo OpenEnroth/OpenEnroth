@@ -459,7 +459,7 @@ class Localization {
         return this->moon_phase_names[index];
     }
 
-    const char *GetSpellSchoolName(unsigned int index) const {
+    const char *GetSpellSchoolName(MagicSchool index) const {
         return this->spell_school_names[index];
     }
 
@@ -658,7 +658,7 @@ class Localization {
     const char *month_names[12]{};
     const char *day_names[7]{};
     const char *moon_phase_names[5]{};
-    const char *spell_school_names[9]{};
+    IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spell_school_names = {{}};
     IndexedArray<const char *, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names = {{}};
     IndexedArray<const char *, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names = {{}};
     IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_names = {{}};

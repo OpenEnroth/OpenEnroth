@@ -817,17 +817,17 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
 
     IndexedArray<std::string, DAMAGE_FIRST, DAMAGE_LAST> attackTypes = {
-        {DAMAGE_FIRE,       localization->GetSpellSchoolName(0)},
-        {DAMAGE_AIR,        localization->GetSpellSchoolName(1)},
-        {DAMAGE_WATER,      localization->GetSpellSchoolName(2)},
-        {DAMAGE_EARTH,      localization->GetSpellSchoolName(3)},
+        {DAMAGE_FIRE,       localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE)},
+        {DAMAGE_AIR,        localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR)},
+        {DAMAGE_WATER,      localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER)},
+        {DAMAGE_EARTH,      localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH)},
         {DAMAGE_PHYSICAL,   localization->GetString(LSTR_PHYSICAL)},
         {DAMAGE_MAGIC,      localization->GetString(LSTR_MAGIC)},
-        {DAMAGE_SPIRIT,     localization->GetSpellSchoolName(5)},
-        {DAMAGE_MIND,       localization->GetSpellSchoolName(4)},
-        {DAMAGE_BODY,       localization->GetSpellSchoolName(6)},
-        {DAMAGE_LIGHT,      localization->GetSpellSchoolName(7)},
-        {DAMAGE_DARK,       localization->GetSpellSchoolName(8)}
+        {DAMAGE_SPIRIT,     localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT)},
+        {DAMAGE_MIND,       localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND)},
+        {DAMAGE_BODY,       localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY)},
+        {DAMAGE_LIGHT,      localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT)},
+        {DAMAGE_DARK,       localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK)}
     };
 
     std::string attackStr, damageStr;
@@ -877,15 +877,15 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
 
     std::array<std::string, 10> resTypes = {
-        localization->GetSpellSchoolName(0),
-        localization->GetSpellSchoolName(1),
-        localization->GetSpellSchoolName(2),
-        localization->GetSpellSchoolName(3),
-        localization->GetSpellSchoolName(4),
-        localization->GetSpellSchoolName(5),
-        localization->GetSpellSchoolName(6),
-        localization->GetSpellSchoolName(7),
-        localization->GetSpellSchoolName(8),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK),
         localization->GetString(LSTR_PHYSICAL)
     };
 
@@ -894,12 +894,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pActors[uActorID].monsterInfo.uResAir,
         pActors[uActorID].monsterInfo.uResWater,
         pActors[uActorID].monsterInfo.uResEarth,
-        pActors[uActorID].monsterInfo.uResMind,
         pActors[uActorID].monsterInfo.uResSpirit,
+        pActors[uActorID].monsterInfo.uResMind,
         pActors[uActorID].monsterInfo.uResBody,
         pActors[uActorID].monsterInfo.uResLight,
+        pActors[uActorID].monsterInfo.uResDark,
         pActors[uActorID].monsterInfo.uResPhysical,
-        pActors[uActorID].monsterInfo.uResDark
     };
 
     pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));

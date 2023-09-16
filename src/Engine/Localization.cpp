@@ -398,15 +398,15 @@ void Localization::InitializeDayNames() {
 
 //----- (004140BB) --------------------------------------------------------
 void Localization::InitializeSpellSchoolNames() {
-    this->spell_school_names[0] = this->localization_strings[87];   // Fire
-    this->spell_school_names[1] = this->localization_strings[6];    // Air
-    this->spell_school_names[2] = this->localization_strings[240];  // Water
-    this->spell_school_names[3] = this->localization_strings[70];   // Earth
-    this->spell_school_names[4] = this->localization_strings[142];  // Mind
-    this->spell_school_names[5] = this->localization_strings[214];  // Spirit
-    this->spell_school_names[6] = this->localization_strings[29];   // Body
-    this->spell_school_names[7] = this->localization_strings[133];  // Light
-    this->spell_school_names[8] = this->localization_strings[54];   // Dark
+    this->spell_school_names[MAGIC_SCHOOL_FIRE]   = this->localization_strings[87];
+    this->spell_school_names[MAGIC_SCHOOL_AIR]    = this->localization_strings[6];
+    this->spell_school_names[MAGIC_SCHOOL_WATER]  = this->localization_strings[240];
+    this->spell_school_names[MAGIC_SCHOOL_EARTH]  = this->localization_strings[70];
+    this->spell_school_names[MAGIC_SCHOOL_SPIRIT] = this->localization_strings[214];
+    this->spell_school_names[MAGIC_SCHOOL_MIND]   = this->localization_strings[142];
+    this->spell_school_names[MAGIC_SCHOOL_BODY]   = this->localization_strings[29];
+    this->spell_school_names[MAGIC_SCHOOL_LIGHT]  = this->localization_strings[133];
+    this->spell_school_names[MAGIC_SCHOOL_DARK]   = this->localization_strings[54];
 }
 
 //----- (0041411B) --------------------------------------------------------
