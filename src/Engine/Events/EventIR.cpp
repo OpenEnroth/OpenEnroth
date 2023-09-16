@@ -996,7 +996,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             // Nothing?
             break;
         case EVENT_SummonItem:
-            ir.data.summon_item_descr.sprite = (SPRITE_OBJECT_TYPE)EVT_DWORD(_evt->v5);
+            ir.data.summon_item_descr.sprite = static_cast<SPRITE_OBJECT_TYPE>(EVT_DWORD(_evt->v5));
             ir.data.summon_item_descr.x = EVT_DWORD(_evt->v9);
             ir.data.summon_item_descr.y = EVT_DWORD(_evt->v13);
             ir.data.summon_item_descr.z = EVT_DWORD(_evt->v17);

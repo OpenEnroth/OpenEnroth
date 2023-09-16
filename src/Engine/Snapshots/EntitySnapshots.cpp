@@ -1480,7 +1480,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
 void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     memzero(dst);
 
-    dst->uType = src.uType;
+    dst->uType = std::to_underlying(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
     snapshot(src.vVelocity, &dst->vVelocity);
@@ -1655,7 +1655,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     reconstruct(src.name, &dst->name);
-    dst->uObjectID = src.uObjectID;
+    dst->uObjectID = static_cast<SPRITE_OBJECT_TYPE>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);
@@ -1668,7 +1668,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     reconstruct(src.name, &dst->name);
-    dst->uObjectID = src.uObjectID;
+    dst->uObjectID = static_cast<SPRITE_OBJECT_TYPE>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 
+#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Flags.h"
 
-enum SPRITE_OBJECT_TYPE : uint16_t {
+enum class SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_NULL = 0,
 
-    //SPRITE_REAGENT = 38
     SPRITE_REAGENT_PHIRNAROOT = 35,
     SPRITE_REAGENT_WIDOWSWEEP = 36,
     SPRITE_REAGENT = 37,
@@ -39,10 +40,6 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_PROJECTILE_EXPLOSIVE = 550,
     SPRITE_BLASTER_PROJECTILE = 555,
     SPRITE_BLASTER_IMPACT = 556,
-    SPRITE_OBJECT_EXPLODE = 600,  // some reddish mobile light applied -  actor explode
-    SPRITE_OBJECT_EXPLODE_IMPACT = 601,
-
-    SPRITE_WATER_SPLASH = 800,
 
     SPRITE_546 = 546,
     SPRITE_547 = 547,
@@ -95,6 +92,11 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_597 = 597,
     SPRITE_598 = 598,
     SPRITE_599 = 599,
+
+    SPRITE_OBJECT_EXPLODE = 600,  // some reddish mobile light applied - actor explode.
+    SPRITE_OBJECT_EXPLODE_IMPACT = 601,
+
+    SPRITE_WATER_SPLASH = 800,
 
     SPRITE_TRAP_FIRE = 811,
     SPRITE_TRAP_LIGHTNING = 812,
@@ -240,7 +242,18 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_SPELL_DARK_DRAGON_BREATH_1 = 9081,
     SPRITE_SPELL_DARK_ARMAGEDDON = 9090,
     SPRITE_SPELL_DARK_SOULDRINKER = 9100,
+
+    SPRITE_10000 = 10000,
+
+    SPRITE_FIRST_PROJECTILE = SPRITE_PROJECTILE_AIRBOLT,
+    SPRITE_LAST_PROJECTILE = SPRITE_599,
 };
+using enum SPRITE_OBJECT_TYPE;
+
+inline SPRITE_OBJECT_TYPE impactSprite(SPRITE_OBJECT_TYPE projectile) {
+    assert(std::to_underlying(projectile) % 5 == 0);
+    return static_cast<SPRITE_OBJECT_TYPE>(std::to_underlying(projectile) + 1);
+}
 
 /**
  * Sprite attributes, values taken from MMExtension, see MMExtension code,

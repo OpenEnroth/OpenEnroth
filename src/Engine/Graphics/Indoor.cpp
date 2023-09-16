@@ -1990,7 +1990,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 int DropTreasureAt(ItemTreasureLevel trs_level, int trs_type, Vec3i pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
-    a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
+    a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition = pos;
     a1.uFacing = facing;
@@ -2041,14 +2041,14 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = grng->random(3001) + 2000;
         }
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.containing_item.SetIdentified();
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
     }

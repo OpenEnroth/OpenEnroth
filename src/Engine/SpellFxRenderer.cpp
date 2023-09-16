@@ -641,7 +641,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
 //----- (004A81CA) --------------------------------------------------------
 bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     // SpellFxRenderer *v2; // ebx@1
-    int result;  // eax@1
+    SPRITE_OBJECT_TYPE result;  // eax@1
                  //  int v4; // eax@27
     // unsigned int diffuse; // esi@41
     // int v6; // ecx@49

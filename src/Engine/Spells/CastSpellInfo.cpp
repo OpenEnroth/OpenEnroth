@@ -358,7 +358,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int spikes_active = 0;
                     for (const SpriteObject &spriteObject : pSpriteObjects) {
-                        if (spriteObject.uType &&
+                        if (spriteObject.uType != SPRITE_NULL &&
                                 spriteObject.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
                                 spriteObject.spell_caster_pid == Pid(OBJECT_Character, pCastSpell->casterCharacterIndex)) {
                             ++spikes_active;

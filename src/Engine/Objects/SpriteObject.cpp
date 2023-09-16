@@ -715,7 +715,7 @@ void SpriteObject::createSplashObject(Vec3i pos) {
 }
 
 static void updateSpriteOnImpact(SpriteObject *object) {
-    object->uType = static_cast<SPRITE_OBJECT_TYPE>(object->uType + 1);
+    object->uType = impactSprite(object->uType);
     object->uObjectDescID = pObjectList->ObjectIDByItemID(object->uType);
 }
 

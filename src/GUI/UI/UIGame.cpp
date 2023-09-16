@@ -1541,8 +1541,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (bWizardEyeActive) {
         if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
             for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-                if (!pSpriteObjects[i].uType ||
-                    !pSpriteObjects[i].uObjectDescID)
+                if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
                 pPoint_X =
