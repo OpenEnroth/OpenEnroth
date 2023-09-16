@@ -14,10 +14,12 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 
+struct RawEvent;
+
 class EventIR {
  public:
     std::string toString() const;
-    static EventIR parse(const void *data, size_t maxSize);
+    static EventIR parse(const RawEvent *evt, size_t size);
 
     EventType type;
     int step;

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(ENGINE_EVENTS_SOURCES
+        EventEnums.cpp
         EventIR.cpp
         EventMap.cpp
         EventInterpreter.cpp
-        Loader.cpp
         Processor.cpp)
 
 set(ENGINE_EVENTS_HEADERS
@@ -12,7 +12,7 @@ set(ENGINE_EVENTS_HEADERS
         EventMap.h
         EventInterpreter.h
         EventEnums.h
-        Loader.h
+        RawEvent.h
         Processor.h)
 
 add_library(engine_events STATIC ${ENGINE_EVENTS_SOURCES} ${ENGINE_EVENTS_HEADERS})

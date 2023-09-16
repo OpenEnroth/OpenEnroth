@@ -6,6 +6,8 @@
 
 #include "Engine/Events/EventIR.h"
 
+class Blob;
+
 struct EventTrigger {
     int eventId;
     int eventStep;
@@ -30,6 +32,8 @@ class EventMap {
 
     void dumpAll() const;
     void dump(int eventId) const;
+
+    static EventMap load(const Blob &rawData);
 
  private:
     std::unordered_map<int, std::vector<EventIR>> _eventsById;

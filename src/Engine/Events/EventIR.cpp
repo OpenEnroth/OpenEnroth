@@ -1,19 +1,18 @@
+#include "EventIR.h"
+
 #include <string>
-#include <utility>
 
-#include <magic_enum.hpp> // TODO: temporary
-
-#include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventEnums.h"
-#include "Engine/Events/Loader.h"
+#include "Engine/Events/RawEvent.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Objects/NPC.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
-#include "Engine/mm7_data.h"
+
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/String.h"
+#include "Utility/Exception.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
@@ -842,246 +841,298 @@ std::string EventIR::toString() const {
             break;
     }
 
-    return fmt::format("{}: UNPROCESSED/{}", step, magic_enum::enum_name(type));
+    return fmt::format("{}: UNPROCESSED/{}", step, ::toString(type));
 }
 
-EventIR EventIR::parse(const void *data, size_t maxSize) {
-    _evt_raw *_evt = (_evt_raw*)data;
-    int id = _evt->v1 + (_evt->v2 << 8);
+EventIR EventIR::parse(const RawEvent *evt, size_t size) {
     EventIR ir;
+    ir.type = evt->_e_type;
+    ir.step = evt->v3;
 
-    assert(maxSize == sizeof(_evt_raw));
+    auto requireSize = [&](size_t minSize) {
+        if (size < minSize)
+            throw Exception("Invalid evt record size for event '{}': expected at least {} bytes, got {} bytes", ::toString(ir.type), minSize, size);
+    };
 
-    ir.type = _evt->_e_type;
-    ir.step = _evt->v3;
+    auto parseString = [&](const uint8_t *ptr) {
+        const uint8_t *end = &evt->_e_size + size;
+        assert(ptr >= &evt->v5);
+        assert(ptr < end);
+
+        size_t runway = end - ptr;
+        const uint8_t *pos = static_cast<const uint8_t *>(memchr(ptr, 0, runway));
+        size_t length = pos == nullptr ? runway : pos - ptr;
+        return std::string(reinterpret_cast<const char *>(ptr), length);
+    };
 
     switch (ir.type) {
         case EVENT_Exit:
             break;
         case EVENT_SpeakInHouse:
-            ir.data.house_id = (HOUSE_ID)EVT_DWORD(_evt->v5);
+            requireSize(6);
+            ir.data.house_id = static_cast<HOUSE_ID>(EVT_DWORD(&evt->v5));
             break;
         case EVENT_PlaySound:
-            ir.data.sound_descr.sound_id = (SoundID)EVT_DWORD(_evt->v5);
-            ir.data.sound_descr.x = (SoundID)EVT_DWORD(_evt->v9);
-            ir.data.sound_descr.y = (SoundID)EVT_DWORD(_evt->v13);
+            requireSize(17);
+            ir.data.sound_descr.sound_id = static_cast<SoundID>(EVT_DWORD(&evt->v5));
+            ir.data.sound_descr.x = EVT_DWORD(&evt->v9);
+            ir.data.sound_descr.y = EVT_DWORD(&evt->v13);
             break;
         case EVENT_MouseOver:
-            ir.data.text_id = _evt->v5;
+            requireSize(6);
+            ir.data.text_id = evt->v5;
             ir.step = -1; // Step duplicated for other command, so ignore it
             break;
         case EVENT_LocationName:
             ir.step = -1; // Step duplicated for other command, so ignore it
             break;
         case EVENT_MoveToMap:
-            ir.data.move_map_descr.x = EVT_DWORD(_evt->v5);
-            ir.data.move_map_descr.y = EVT_DWORD(_evt->v9);
-            ir.data.move_map_descr.z = EVT_DWORD(_evt->v13);
-            ir.data.move_map_descr.yaw = EVT_DWORD(_evt->v17);
-            ir.data.move_map_descr.pitch = EVT_DWORD(_evt->v21);
-            ir.data.move_map_descr.zspeed = EVT_DWORD(_evt->v25);
-            ir.data.move_map_descr.house_id = (HOUSE_ID)_evt->v29;
-            ir.data.move_map_descr.exit_pic_id = _evt->v30;
-            ir.str = (char *)&_evt->v31;
+            requireSize(32);
+            ir.data.move_map_descr.x = EVT_DWORD(&evt->v5);
+            ir.data.move_map_descr.y = EVT_DWORD(&evt->v9);
+            ir.data.move_map_descr.z = EVT_DWORD(&evt->v13);
+            ir.data.move_map_descr.yaw = EVT_DWORD(&evt->v17);
+            ir.data.move_map_descr.pitch = EVT_DWORD(&evt->v21);
+            ir.data.move_map_descr.zspeed = EVT_DWORD(&evt->v25);
+            ir.data.move_map_descr.house_id = static_cast<HOUSE_ID>(evt->v29); // TODO(captainurist): Is this correct? Houses can have ids > 255.
+            ir.data.move_map_descr.exit_pic_id = evt->v30;
+            ir.str = parseString(&evt->v31);
             break;
         case EVENT_OpenChest:
-            ir.data.chest_id = _evt->v5;
+            requireSize(6);
+            ir.data.chest_id = evt->v5;
             break;
         case EVENT_ShowFace:
-            ir.who = (CharacterChoosePolicy)_evt->v5;
-            ir.data.expr_id = (CharacterExpressionID)_evt->v6;
+            requireSize(7);
+            ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
+            ir.data.expr_id = static_cast<CharacterExpressionID>(evt->v6);
             break;
         case EVENT_ReceiveDamage:
-            ir.data.damage_descr.damage_type = static_cast<DAMAGE_TYPE>(_evt->v6);
-            ir.data.damage_descr.damage = EVT_DWORD(_evt->v7);
+            requireSize(11);
+            ir.data.damage_descr.damage_type = static_cast<DAMAGE_TYPE>(evt->v6);
+            ir.data.damage_descr.damage = EVT_DWORD(&evt->v7);
             break;
         case EVENT_SetSnow:
-            ir.data.snow_descr.is_nop = _evt->v5;
-            ir.data.snow_descr.is_enable = _evt->v6;
+            requireSize(7);
+            ir.data.snow_descr.is_nop = evt->v5;
+            ir.data.snow_descr.is_enable = evt->v6;
             break;
         case EVENT_SetTexture:
-            ir.data.sprite_texture_descr.cog = EVT_DWORD(_evt->v5);
-            ir.str = (char *)&_evt->v9;
+            requireSize(10);
+            ir.data.sprite_texture_descr.cog = EVT_DWORD(&evt->v5);
+            ir.str = parseString(&evt->v9);
             break;
         case EVENT_ShowMovie:
-            ir.data.movie_unknown_field = _evt->v6;
-            ir.str = (char *)&_evt->v7;
+            requireSize(8);
+            ir.data.movie_unknown_field = evt->v6;
+            ir.str = parseString(&evt->v7);
             break;
         case EVENT_SetSprite:
-            ir.data.sprite_texture_descr.cog = EVT_DWORD(_evt->v5);
-            ir.data.sprite_texture_descr.hide = _evt->v9;
-            ir.str = (char *)&_evt->v10;
+            requireSize(11);
+            ir.data.sprite_texture_descr.cog = EVT_DWORD(&evt->v5);
+            ir.data.sprite_texture_descr.hide = evt->v9;
+            ir.str = parseString(&evt->v10);
             break;
         case EVENT_Compare:
-            ir.target_step = _evt->v11;
-            ir.data.variable_descr.type = (VariableType)EVT_WORD(_evt->v5);
-            ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
+            requireSize(11);
+            ir.target_step = evt->v11;
+            ir.data.variable_descr.type = static_cast<VariableType>(EVT_WORD(&evt->v5));
+            ir.data.variable_descr.value = EVT_DWORD(&evt->v7);
             break;
         case EVENT_ChangeDoorState:
-            ir.data.door_descr.door_id = _evt->v5;
-            ir.data.door_descr.door_new_state = _evt->v6;
+            requireSize(7);
+            ir.data.door_descr.door_id = evt->v5;
+            ir.data.door_descr.door_new_state = evt->v6;
             break;
         case EVENT_Add:
         case EVENT_Substract:
         case EVENT_Set:
-            ir.data.variable_descr.type = (VariableType)EVT_WORD(_evt->v5);
-            ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
+            requireSize(8);
+            ir.data.variable_descr.type = static_cast<VariableType>(EVT_WORD(&evt->v5));
+            ir.data.variable_descr.value = EVT_DWORD(&evt->v7);
             break;
         case EVENT_SummonMonsters:
-            ir.data.monster_descr.type = _evt->v5;
-            ir.data.monster_descr.level = _evt->v6;
-            ir.data.monster_descr.count = _evt->v7;
-            ir.data.monster_descr.x = EVT_DWORD(_evt->v8);
-            ir.data.monster_descr.y = EVT_DWORD(_evt->v12);
-            ir.data.monster_descr.z = EVT_DWORD(_evt->v16);
-            ir.data.monster_descr.group = EVT_DWORD(_evt->v20);
-            ir.data.monster_descr.name_id = EVT_DWORD(_evt->v24);
+            requireSize(28);
+            ir.data.monster_descr.type = evt->v5;
+            ir.data.monster_descr.level = evt->v6;
+            ir.data.monster_descr.count = evt->v7;
+            ir.data.monster_descr.x = EVT_DWORD(&evt->v8);
+            ir.data.monster_descr.y = EVT_DWORD(&evt->v12);
+            ir.data.monster_descr.z = EVT_DWORD(&evt->v16);
+            ir.data.monster_descr.group = EVT_DWORD(&evt->v20);
+            ir.data.monster_descr.name_id = EVT_DWORD(&evt->v24);
             break;
         case EVENT_CastSpell:
-            ir.data.spell_descr.spell_id = static_cast<SpellId>(_evt->v5);
-            ir.data.spell_descr.spell_mastery = static_cast<CharacterSkillMastery>(_evt->v6 + 1);
-            ir.data.spell_descr.spell_level = _evt->v7;
-            ir.data.spell_descr.fromx = EVT_DWORD(_evt->v8);
-            ir.data.spell_descr.fromy = EVT_DWORD(_evt->v12);
-            ir.data.spell_descr.fromz = EVT_DWORD(_evt->v16);
-            ir.data.spell_descr.tox = EVT_DWORD(_evt->v20);
-            ir.data.spell_descr.toy = EVT_DWORD(_evt->v24);
-            ir.data.spell_descr.toz = EVT_DWORD(_evt->v28);
+            requireSize(32);
+            ir.data.spell_descr.spell_id = static_cast<SpellId>(evt->v5);
+            ir.data.spell_descr.spell_mastery = static_cast<CharacterSkillMastery>(evt->v6 + 1);
+            ir.data.spell_descr.spell_level = evt->v7;
+            ir.data.spell_descr.fromx = EVT_DWORD(&evt->v8);
+            ir.data.spell_descr.fromy = EVT_DWORD(&evt->v12);
+            ir.data.spell_descr.fromz = EVT_DWORD(&evt->v16);
+            ir.data.spell_descr.tox = EVT_DWORD(&evt->v20);
+            ir.data.spell_descr.toy = EVT_DWORD(&evt->v24);
+            ir.data.spell_descr.toz = EVT_DWORD(&evt->v28);
             break;
         case EVENT_SpeakNPC:
-            ir.data.npc_descr.npc_id = EVT_DWORD(_evt->v5);
+            requireSize(9);
+            ir.data.npc_descr.npc_id = EVT_DWORD(&evt->v5);
             break;
         case EVENT_SetFacesBit:
-            ir.data.faces_bit_descr.cog = EVT_DWORD(_evt->v5);
-            ir.data.faces_bit_descr.face_bit = (FaceAttribute)EVT_DWORD(_evt->v9);
-            ir.data.faces_bit_descr.is_on = _evt->v13;
+            requireSize(14);
+            ir.data.faces_bit_descr.cog = EVT_DWORD(&evt->v5);
+            ir.data.faces_bit_descr.face_bit = static_cast<FaceAttribute>(EVT_DWORD(&evt->v9));
+            ir.data.faces_bit_descr.is_on = evt->v13;
             break;
         case EVENT_ToggleActorFlag:
-            ir.data.actor_flag_descr.id = EVT_DWORD(_evt->v5);
-            ir.data.actor_flag_descr.attr = ActorAttribute(EVT_DWORD(_evt->v9));
-            ir.data.actor_flag_descr.is_set = _evt->v13;
+            requireSize(14);
+            ir.data.actor_flag_descr.id = EVT_DWORD(&evt->v5);
+            ir.data.actor_flag_descr.attr = static_cast<ActorAttribute>(EVT_DWORD(&evt->v9));
+            ir.data.actor_flag_descr.is_set = evt->v13;
             break;
         case EVENT_RandomGoTo:
-            ir.data.random_goto_descr.random_goto[0] = _evt->v5;
-            ir.data.random_goto_descr.random_goto[1] = _evt->v6;
-            ir.data.random_goto_descr.random_goto[2] = _evt->v7;
-            ir.data.random_goto_descr.random_goto[3] = _evt->v8;
-            ir.data.random_goto_descr.random_goto[4] = _evt->v9;
-            ir.data.random_goto_descr.random_goto[5] = _evt->v10;
-            ir.data.random_goto_descr.random_goto_len = 1 + !!_evt->v6 + !!_evt->v7 + !!_evt->v8 + !!_evt->v9 + !!_evt->v10;
+            requireSize(11);
+            ir.data.random_goto_descr.random_goto[0] = evt->v5;
+            ir.data.random_goto_descr.random_goto[1] = evt->v6;
+            ir.data.random_goto_descr.random_goto[2] = evt->v7;
+            ir.data.random_goto_descr.random_goto[3] = evt->v8;
+            ir.data.random_goto_descr.random_goto[4] = evt->v9;
+            ir.data.random_goto_descr.random_goto[5] = evt->v10;
+            ir.data.random_goto_descr.random_goto_len = 1 + !!evt->v6 + !!evt->v7 + !!evt->v8 + !!evt->v9 + !!evt->v10;
             break;
         case EVENT_InputString:
-            ir.data.text_id = EVT_DWORD(_evt->v5);
+            requireSize(9);
+            ir.data.text_id = EVT_DWORD(&evt->v5);
             break;
         case EVENT_StatusText:
-            ir.data.text_id = EVT_DWORD(_evt->v5);
+            requireSize(9);
+            ir.data.text_id = EVT_DWORD(&evt->v5);
             break;
         case EVENT_ShowMessage:
-            ir.data.text_id = EVT_DWORD(_evt->v5);
+            requireSize(9);
+            ir.data.text_id = EVT_DWORD(&evt->v5);
             break;
         case EVENT_OnTimer:
-            ir.data.timer_descr.is_yearly = _evt->v5;
-            ir.data.timer_descr.is_monthly = _evt->v6;
-            ir.data.timer_descr.is_weekly = _evt->v7;
-            ir.data.timer_descr.daily_start_hour = _evt->v8;
-            ir.data.timer_descr.daily_start_minute = _evt->v9;
-            ir.data.timer_descr.daily_start_second = _evt->v10;
-            ir.data.timer_descr.alt_halfmin_interval = _evt->v11 + (_evt->v12 << 8);
+            requireSize(13);
+            ir.data.timer_descr.is_yearly = evt->v5;
+            ir.data.timer_descr.is_monthly = evt->v6;
+            ir.data.timer_descr.is_weekly = evt->v7;
+            ir.data.timer_descr.daily_start_hour = evt->v8;
+            ir.data.timer_descr.daily_start_minute = evt->v9;
+            ir.data.timer_descr.daily_start_second = evt->v10;
+            ir.data.timer_descr.alt_halfmin_interval = evt->v11 + (evt->v12 << 8);
             break;
         case EVENT_ToggleIndoorLight:
-            ir.data.light_descr.light_id = EVT_DWORD(_evt->v5);
-            ir.data.light_descr.is_enable = _evt->v9;
+            requireSize(10);
+            ir.data.light_descr.light_id = EVT_DWORD(&evt->v5);
+            ir.data.light_descr.is_enable = evt->v9;
             break;
         case EVENT_PressAnyKey:
             // Nothing?
             break;
         case EVENT_SummonItem:
-            ir.data.summon_item_descr.sprite = static_cast<SPRITE_OBJECT_TYPE>(EVT_DWORD(_evt->v5));
-            ir.data.summon_item_descr.x = EVT_DWORD(_evt->v9);
-            ir.data.summon_item_descr.y = EVT_DWORD(_evt->v13);
-            ir.data.summon_item_descr.z = EVT_DWORD(_evt->v17);
-            ir.data.summon_item_descr.speed = EVT_DWORD(_evt->v21);
-            ir.data.summon_item_descr.count = _evt->v25;
-            ir.data.summon_item_descr.random_rotate = (bool)_evt->v26;
+            requireSize(27);
+            ir.data.summon_item_descr.sprite = static_cast<SPRITE_OBJECT_TYPE>(EVT_DWORD(&evt->v5));
+            ir.data.summon_item_descr.x = EVT_DWORD(&evt->v9);
+            ir.data.summon_item_descr.y = EVT_DWORD(&evt->v13);
+            ir.data.summon_item_descr.z = EVT_DWORD(&evt->v17);
+            ir.data.summon_item_descr.speed = EVT_DWORD(&evt->v21);
+            ir.data.summon_item_descr.count = evt->v25;
+            ir.data.summon_item_descr.random_rotate = evt->v26;
             break;
         case EVENT_ForPartyMember:
-            ir.who = (CharacterChoosePolicy)_evt->v5;
+            requireSize(6);
+            ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
             break;
         case EVENT_Jmp:
-            ir.target_step = _evt->v5;
+            requireSize(6);
+            ir.target_step = evt->v5;
             break;
         case EVENT_OnMapReload:
             // Nothing?
             break;
         case EVENT_OnLongTimer:
-            ir.data.timer_descr.is_yearly = _evt->v5;
-            ir.data.timer_descr.is_monthly = _evt->v6;
-            ir.data.timer_descr.is_weekly = _evt->v7;
-            ir.data.timer_descr.daily_start_hour = _evt->v8;
-            ir.data.timer_descr.daily_start_minute = _evt->v9;
-            ir.data.timer_descr.daily_start_second = _evt->v10;
-            ir.data.timer_descr.alt_halfmin_interval = _evt->v11 + (_evt->v12 << 8);
+            requireSize(13);
+            ir.data.timer_descr.is_yearly = evt->v5;
+            ir.data.timer_descr.is_monthly = evt->v6;
+            ir.data.timer_descr.is_weekly = evt->v7;
+            ir.data.timer_descr.daily_start_hour = evt->v8;
+            ir.data.timer_descr.daily_start_minute = evt->v9;
+            ir.data.timer_descr.daily_start_second = evt->v10;
+            ir.data.timer_descr.alt_halfmin_interval = evt->v11 + (evt->v12 << 8);
             break;
         case EVENT_SetNPCTopic:
-            ir.data.npc_topic_descr.npc_id = EVT_DWORD(_evt->v5);
-            ir.data.npc_topic_descr.index = _evt->v9;
-            ir.data.npc_topic_descr.event_id = EVT_DWORD(_evt->v10);
+            requireSize(14);
+            ir.data.npc_topic_descr.npc_id = EVT_DWORD(&evt->v5);
+            ir.data.npc_topic_descr.index = evt->v9;
+            ir.data.npc_topic_descr.event_id = EVT_DWORD(&evt->v10);
             break;
         case EVENT_MoveNPC:
-            ir.data.npc_move_descr.npc_id = EVT_DWORD(_evt->v5);
-            ir.data.npc_move_descr.location_id = EVT_DWORD(_evt->v9);
+            requireSize(10);
+            ir.data.npc_move_descr.npc_id = EVT_DWORD(&evt->v5);
+            ir.data.npc_move_descr.location_id = EVT_DWORD(&evt->v9);
             break;
         case EVENT_GiveItem:
-            ir.data.give_item_descr.treasure_level = (ItemTreasureLevel)_evt->v5;
-            ir.data.give_item_descr.treasure_type = _evt->v6;
-            ir.data.give_item_descr.item_id = (ItemId)EVT_DWORD(_evt->v7);
+            requireSize(11);
+            ir.data.give_item_descr.treasure_level = (ItemTreasureLevel)evt->v5;
+            ir.data.give_item_descr.treasure_type = evt->v6;
+            ir.data.give_item_descr.item_id = static_cast<ItemId>(EVT_DWORD(&evt->v7));
             break;
         case EVENT_ChangeEvent:
-            ir.data.event_id = EVT_DWORD(_evt->v5);
+            requireSize(9);
+            ir.data.event_id = EVT_DWORD(&evt->v5);
             break;
         case EVENT_CheckSkill:
-            ir.data.check_skill_descr.skill_type = (CharacterSkillType)_evt->v5;
-            ir.data.check_skill_descr.skill_mastery = (CharacterSkillMastery)_evt->v6;
-            ir.data.check_skill_descr.skill_level = EVT_DWORD(_evt->v7);
-            ir.target_step = _evt->v11;
+            requireSize(12);
+            ir.data.check_skill_descr.skill_type = static_cast<CharacterSkillType>(evt->v5);
+            ir.data.check_skill_descr.skill_mastery = static_cast<CharacterSkillMastery>(evt->v6);
+            ir.data.check_skill_descr.skill_level = EVT_DWORD(&evt->v7);
+            ir.target_step = evt->v11;
             break;
         case EVENT_OnCanShowDialogItemCmp:
-            ir.target_step = _evt->v11;
-            ir.data.variable_descr.type = (VariableType)EVT_WORD(_evt->v5);
-            ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
+            requireSize(12);
+            ir.data.variable_descr.type = static_cast<VariableType>(EVT_WORD(&evt->v5));
+            ir.data.variable_descr.value = EVT_DWORD(&evt->v7);
+            ir.target_step = evt->v11;
             break;
         case EVENT_EndCanShowDialogItem:
             break;
         case EVENT_SetCanShowDialogItem:
-            ir.data.can_show_npc_dialogue = EVT_BYTE(_evt->v5);
+            requireSize(6);
+            ir.data.can_show_npc_dialogue = evt->v5;
             break;
         case EVENT_SetNPCGroupNews:
-            ir.data.npc_groups_descr.groups_id = EVT_DWORD(_evt->v5);
-            ir.data.npc_groups_descr.group = EVT_DWORD(_evt->v9);
+            requireSize(13);
+            ir.data.npc_groups_descr.groups_id = EVT_DWORD(&evt->v5);
+            ir.data.npc_groups_descr.group = EVT_DWORD(&evt->v9);
             break;
         case EVENT_SetActorGroup:
             // TODO
             break;
         case EVENT_NPCSetItem:
-            ir.data.npc_item_descr.id = EVT_DWORD(_evt->v5);
-            ir.data.npc_item_descr.item = (ItemId)EVT_DWORD(_evt->v9);
-            ir.data.npc_item_descr.is_give = _evt->v13;
+            requireSize(14);
+            ir.data.npc_item_descr.id = EVT_DWORD(&evt->v5);
+            ir.data.npc_item_descr.item = static_cast<ItemId>(EVT_DWORD(&evt->v9));
+            ir.data.npc_item_descr.is_give = evt->v13;
             break;
         case EVENT_SetNPCGreeting:
-            ir.data.npc_descr.npc_id = EVT_DWORD(_evt->v5);
-            ir.data.npc_descr.greeting = EVT_DWORD(_evt->v9);
+            requireSize(13);
+            ir.data.npc_descr.npc_id = EVT_DWORD(&evt->v5);
+            ir.data.npc_descr.greeting = EVT_DWORD(&evt->v9);
             break;
         case EVENT_IsActorKilled:
-            ir.data.actor_descr.policy = (ACTOR_KILL_CHECK_POLICY)_evt->v5;
-            ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
-            ir.data.actor_descr.num = _evt->v10;
-            ir.target_step = _evt->v11;
+            requireSize(12);
+            ir.data.actor_descr.policy = static_cast<ACTOR_KILL_CHECK_POLICY>(evt->v5);
+            ir.data.actor_descr.param = EVT_DWORD(&evt->v6);
+            ir.data.actor_descr.num = evt->v10;
+            ir.target_step = evt->v11;
             break;
         case EVENT_CanShowTopic_IsActorKilled:
-            ir.data.actor_descr.policy = (ACTOR_KILL_CHECK_POLICY)_evt->v5;
-            ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
-            ir.data.actor_descr.num = _evt->v10;
-            ir.target_step = _evt->v11;
+            requireSize(12);
+            ir.data.actor_descr.policy = static_cast<ACTOR_KILL_CHECK_POLICY>(evt->v5);
+            ir.data.actor_descr.param = EVT_DWORD(&evt->v6);
+            ir.data.actor_descr.num = evt->v10;
+            ir.target_step = evt->v11;
             break;
         case EVENT_OnMapLeave:
             // Nothing?
@@ -1093,27 +1144,32 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             // TODO
             break;
         case EVENT_CheckSeason:
-            ir.data.season = (Season)_evt->v5;
-            ir.target_step = _evt->v6;
+            requireSize(7);
+            ir.data.season = static_cast<Season>(evt->v5);
+            ir.target_step = evt->v6;
             break;
         case EVENT_ToggleActorGroupFlag:
-            ir.data.actor_flag_descr.id = EVT_DWORD(_evt->v5);
-            ir.data.actor_flag_descr.attr = ActorAttribute(EVT_DWORD(_evt->v9));
-            ir.data.actor_flag_descr.is_set = _evt->v13;
+            requireSize(14);
+            ir.data.actor_flag_descr.id = EVT_DWORD(&evt->v5);
+            ir.data.actor_flag_descr.attr = ActorAttribute(EVT_DWORD(&evt->v9));
+            ir.data.actor_flag_descr.is_set = evt->v13;
             break;
         case EVENT_ToggleChestFlag:
-            ir.data.chest_flag_descr.chest_id = EVT_DWORD(_evt->v5);
-            ir.data.chest_flag_descr.flag = (ChestFlag)EVT_DWORD(_evt->v9);
-            ir.data.chest_flag_descr.is_set = _evt->v13;
+            requireSize(14);
+            ir.data.chest_flag_descr.chest_id = EVT_DWORD(&evt->v5);
+            ir.data.chest_flag_descr.flag = (ChestFlag)EVT_DWORD(&evt->v9);
+            ir.data.chest_flag_descr.is_set = evt->v13;
             break;
         case EVENT_CharacterAnimation:
-            ir.who = (CharacterChoosePolicy)_evt->v5;
-            ir.data.speech_id = (CharacterSpeech)_evt->v6;
+            requireSize(7);
+            ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
+            ir.data.speech_id = static_cast<CharacterSpeech>(evt->v6);
             break;
         case EVENT_SetActorItem:
-            ir.data.npc_item_descr.id = EVT_DWORD(_evt->v5);
-            ir.data.npc_item_descr.item = (ItemId)EVT_DWORD(_evt->v9);
-            ir.data.npc_item_descr.is_give = _evt->v13;
+            requireSize(14);
+            ir.data.npc_item_descr.id = EVT_DWORD(&evt->v5);
+            ir.data.npc_item_descr.item = static_cast<ItemId>(EVT_DWORD(&evt->v9));
+            ir.data.npc_item_descr.is_give = evt->v13;
             break;
         case EVENT_OnDateTimer:
             // TODO

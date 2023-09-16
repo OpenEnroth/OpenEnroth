@@ -6,7 +6,7 @@
 #include "Engine/AssetsManager.h"
 
 #include "Engine/Events/Processor.h"
-#include "Engine/Events/Loader.h"
+#include "Engine/Events/RawEvent.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -839,7 +839,8 @@ void Engine::SecondaryInitialization() {
     initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
     initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
 
-    initGlobalEvents();
+    engine->_globalEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile("global.evt"));
+
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
 
@@ -1751,7 +1752,8 @@ void Level_LoadEvtAndStr(const std::string &pLevelName) {
     }
 
     initLevelStrings(blob);
-    initLocalEvents(pLevelName);
+
+    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(pLevelName + ".evt"));
 }
 
 bool _44100D_should_alter_right_panel() {
