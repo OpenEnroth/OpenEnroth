@@ -413,7 +413,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_MASS_DISTORTION]
                             .Apply(GameTime(pMiscTimer->uTotalTimeElapsed + 128), spell_mastery, 0, 0, 0);
@@ -549,7 +549,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_LIGHT)) {
                         Actor::AI_Stand(monster_id, Pid::character(0), 0x80, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
@@ -596,7 +596,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     // v721 = 836 * spell_targeted_at.id();
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
                         pActors[monster_id].buffs[ACTOR_BUFF_SLOWED].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
                         spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], Color()); // TODO(captainurist): why transparent black?
@@ -614,7 +614,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                         // Wrong durations from vanilla fixed
                         GameTime spell_duration;
 
@@ -2028,7 +2028,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     // v730 = 836 * monster_id;
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK]
@@ -2065,7 +2065,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED]
@@ -2108,7 +2108,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pSpellSprite.vPosition = actor->pos - Vec3i(0, 0, actor->height * -0.8);
                             pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                             pSpellSprite.Create(0, 0, 0, 0);
-                            if (actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
+                            if (actor->DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                                 actor->buffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                             }
                         }
@@ -2748,7 +2748,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
+                    if (!pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_DARK)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);

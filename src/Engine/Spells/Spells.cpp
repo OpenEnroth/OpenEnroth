@@ -1100,7 +1100,7 @@ void armageddonProgress() {
             continue; // TODO(captainurist): paralyzed & summoned actors should receive damage too!
         }
 
-        int incomingDamage = actor.CalcMagicalDamageToActor(DMGT_MAGICAL, outgoingDamage);
+        int incomingDamage = actor.CalcMagicalDamageToActor(DAMAGE_MAGIC, outgoingDamage);
         if (incomingDamage > 0) {
             actor.currentHP -= incomingDamage;
 
@@ -1117,7 +1117,7 @@ void armageddonProgress() {
 
     for (Character &player : pParty->pCharacters) {
         if (!player.conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-            player.receiveDamage(outgoingDamage, DMGT_MAGICAL);
+            player.receiveDamage(outgoingDamage, DAMAGE_MAGIC);
         }
     }
 }

@@ -12,17 +12,17 @@
 
 // TODO(captainurist): this is the same enum as SPELL_SCHOOL in SpellEnums.h
 enum class DAMAGE_TYPE : unsigned int {
-    DMGT_FIRE = 0,
-    DMGT_ELECTR = 1,
-    DMGT_COLD = 2,
-    DMGT_EARTH = 3,
-    DMGT_PHISYCAL = 4,
-    DMGT_MAGICAL = 5,
-    DMGT_SPIRIT = 6,
-    DMGT_MIND = 7,
-    DMGT_BODY = 8,
-    DMGT_LIGHT = 9,
-    DMGT_DARK = 10
+    DAMAGE_FIRE = 0,
+    DAMAGE_AIR = 1,
+    DAMAGE_WATER = 2,
+    DAMAGE_EARTH = 3,
+    DAMAGE_PHYSICAL = 4,
+    DAMAGE_MAGIC = 5,
+    DAMAGE_SPIRIT = 6,
+    DAMAGE_MIND = 7,
+    DAMAGE_BODY = 8,
+    DAMAGE_LIGHT = 9,
+    DAMAGE_DARK = 10
 };
 using enum DAMAGE_TYPE;
 
@@ -1095,8 +1095,8 @@ inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
 }
 
 inline Segment<ItemId> spellbooksOfSchool(DAMAGE_TYPE damage, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-    assert(damage != DMGT_PHISYCAL && damage != DMGT_MAGICAL);
-    int spellSchoolSequential = (damage >= DMGT_SPIRIT) ? std::to_underlying(damage) - 2 : std::to_underlying(damage);
+    assert(damage != DAMAGE_PHYSICAL && damage != DAMAGE_MAGIC);
+    int spellSchoolSequential = (damage >= DAMAGE_SPIRIT) ? std::to_underlying(damage) - 2 : std::to_underlying(damage);
     int firstSpell = std::to_underlying(ITEM_FIRST_SPELL_BOOK);
     int numSpells = spellCountForMastery(maxMastery);
     int firstSpellInSchool = firstSpell + 11 * spellSchoolSequential;

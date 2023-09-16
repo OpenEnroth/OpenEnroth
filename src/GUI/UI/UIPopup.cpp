@@ -2153,12 +2153,12 @@ void Inventory_ItemPopupAndAlchemy() {
             pParty->activeCharacter().RemoveItemAtInventoryIndex(invMatrixIndex);
 
             if (damage_level == 1) {
-                pParty->activeCharacter().receiveDamage(grng->random(11) + 10, DMGT_FIRE);
+                pParty->activeCharacter().receiveDamage(grng->random(11) + 10, DAMAGE_FIRE);
             } else if (damage_level == 2) {
-                pParty->activeCharacter().receiveDamage(grng->random(71) + 30, DMGT_FIRE);
+                pParty->activeCharacter().receiveDamage(grng->random(71) + 30, DAMAGE_FIRE);
                 pParty->activeCharacter().ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pParty->activeCharacter().receiveDamage(grng->random(201) + 50, DMGT_FIRE);
+                pParty->activeCharacter().receiveDamage(grng->random(201) + 50, DAMAGE_FIRE);
                 pParty->activeCharacter().ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
                 pParty->activeCharacter().SetCondition(CONDITION_ERADICATED, 0);

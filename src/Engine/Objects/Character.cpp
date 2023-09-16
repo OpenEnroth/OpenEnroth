@@ -1349,25 +1349,25 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 
     int resist_value = 0;
     switch (dmg_type) {  // get resistance
-        case DMGT_FIRE:
+        case DAMAGE_FIRE:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE);
             break;
-        case DMGT_ELECTR:
+        case DAMAGE_AIR:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR);
             break;
-        case DMGT_COLD:
+        case DAMAGE_WATER:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER);
             break;
-        case DMGT_EARTH:
+        case DAMAGE_EARTH:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
             break;
-        case DMGT_SPIRIT:
+        case DAMAGE_SPIRIT:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);
             break;
-        case DMGT_MIND:
+        case DAMAGE_MIND:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
             break;
-        case DMGT_BODY:
+        case DAMAGE_BODY:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
             break;
         default:
@@ -1388,7 +1388,7 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
     }
 
     ItemGen *equippedArmor = GetArmorItem();
-    if ((dmg_type == DMGT_PHISYCAL) &&
+    if ((dmg_type == DAMAGE_PHYSICAL) &&
         (equippedArmor != nullptr)) {      // physical damage and wearing armour
         if (!equippedArmor->IsBroken()) {  // armour isnt broken
             CharacterSkillType armor_skill = equippedArmor->GetPlayerSkillType();
@@ -5731,7 +5731,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
 
     switch (VarNum) {
         case VAR_CurrentHP:
-            receiveDamage((signed int)pValue, DMGT_PHISYCAL);
+            receiveDamage((signed int)pValue, DAMAGE_PHYSICAL);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_CurrentSP:
@@ -6529,7 +6529,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
                 break;
             default:
-                damageType = 4;  // DMGT_PHISYCAL
+                damageType = 4;  // DAMAGE_PHYSICAL
                 break;
         }
 

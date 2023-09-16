@@ -1267,7 +1267,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
-                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
+                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
@@ -1284,7 +1284,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
         for (Character &character : pParty->pCharacters) {
-            character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
+            character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 engine->_statusBar->setEventShort(LSTR_ON_FIRE);
             }
