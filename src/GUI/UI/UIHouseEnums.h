@@ -4,7 +4,7 @@
 
 #include "Utility/Segment.h"
 
-enum GUILD_ID : int32_t {
+enum class GUILD_ID : int32_t {
     GUILD_OF_ELEMENTS = 0,
     GUILD_OF_SELF = 1,
     GUILD_OF_AIR = 2,
@@ -20,6 +20,7 @@ enum GUILD_ID : int32_t {
     GUILD_FIRST = GUILD_OF_ELEMENTS,
     GUILD_LAST = GUILD_OF_DARK
 };
+using enum GUILD_ID;
 
 enum HOUSE_ID {
     HOUSE_INVALID = 0,
