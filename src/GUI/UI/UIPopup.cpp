@@ -899,7 +899,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pActors[uActorID].monsterInfo.uResBody,
         pActors[uActorID].monsterInfo.uResLight,
         pActors[uActorID].monsterInfo.uResDark,
-        pActors[uActorID].monsterInfo.uResPhysical,
+        pActors[uActorID].monsterInfo.uResPhysical, // Physical & Dark were switched, was a bug?
     };
 
     pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
