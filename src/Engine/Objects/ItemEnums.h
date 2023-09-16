@@ -22,7 +22,10 @@ enum class DAMAGE_TYPE : unsigned int {
     DAMAGE_MIND = 7,
     DAMAGE_BODY = 8,
     DAMAGE_LIGHT = 9,
-    DAMAGE_DARK = 10
+    DAMAGE_DARK = 10,
+
+    DAMAGE_FIRST = DAMAGE_FIRE,
+    DAMAGE_LAST = DAMAGE_DARK
 };
 using enum DAMAGE_TYPE;
 

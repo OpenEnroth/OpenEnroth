@@ -18,7 +18,6 @@
 struct MonsterStats *pMonsterStats;
 struct MonsterList *pMonsterList;
 
-int ParseAttackType(const char *damage_type_str);
 void ParseDamage(char *damage_str, uint8_t *dice_rolls,
                  uint8_t *dice_sides, uint8_t *dmg_bonus);
 int ParseMissleAttackType(const char *missle_attack_str);
@@ -149,29 +148,30 @@ CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_vie
 }
 
 //----- (00454CB4) --------------------------------------------------------
-int ParseAttackType(const char *damage_type_str) {
+static DAMAGE_TYPE ParseAttackType(const char *damage_type_str) {
     switch (tolower(*damage_type_str)) {
         case 'f':
-            return 0;  // fire
+            return DAMAGE_FIRE;  // fire
         case 'a':
-            return 1;  // air
+            return DAMAGE_AIR;  // air
         case 'w':
-            return 2;  // water
+            return DAMAGE_WATER;  // water
         case 'e':
-            return 3;  // earth
+            return DAMAGE_EARTH;  // earth
 
         case 's':
-            return 6;  // spirit
+            return DAMAGE_SPIRIT;  // spirit
         case 'm':
-            return 7;  // mind
-            // m ?? 8
+            return DAMAGE_MIND;  // mind
+
+            // TODO(captainurist): where is DAMAGE_BODY?
+
         case 'l':
-            return 9;  // light
+            return DAMAGE_LIGHT;  // light
         case 'd':
-            return 10;  // dark
-            // d?? 11
+            return DAMAGE_DARK;  // dark
     }
-    return 4;  // phis
+    return DAMAGE_PHYSICAL;  // phis
 }
 
 //----- (00454D7D) --------------------------------------------------------
@@ -825,8 +825,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         }
                     } break;
                     case 17:
-                        pInfos[curr_rec_num].uAttack1Type =
-                            ParseAttackType(test_string);
+                        pInfos[curr_rec_num].uAttack1Type = ParseAttackType(test_string);
                         break;
                     case 18: {
                         ParseDamage(
@@ -1069,7 +1068,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                              .uSpecialAbilityDamageDiceBonus);
                                     pInfos[curr_rec_num]
                                         .field_3C_some_special_attack =
-                                        ParseAttackType(test_string);
+                                        std::to_underlying(ParseAttackType(test_string));
                                 }
                             }
                         }

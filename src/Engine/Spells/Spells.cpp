@@ -14,8 +14,10 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
+
+#include "Utility/Math/TrigLut.h"
+#include "Utility/MapAccess.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
@@ -724,17 +726,17 @@ bool SpellBuff::Apply(GameTime expire_time, CharacterSkillMastery uSkillMastery,
 }
 
 void SpellStats::Initialize(const Blob &spells) {
-    std::map<std::string, SPELL_SCHOOL, ILess> spellSchoolMaps;
-    spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
-    spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
-    spellSchoolMaps["water"] = SPELL_SCHOOL_WATER;
-    spellSchoolMaps["earth"] = SPELL_SCHOOL_EARTH;
-    spellSchoolMaps["spirit"] = SPELL_SCHOOL_SPIRIT;
-    spellSchoolMaps["mind"] = SPELL_SCHOOL_MIND;
-    spellSchoolMaps["body"] = SPELL_SCHOOL_BODY;
-    spellSchoolMaps["light"] = SPELL_SCHOOL_LIGHT;
-    spellSchoolMaps["dark"] = SPELL_SCHOOL_DARK;
-    spellSchoolMaps["magic"] = SPELL_SCHOOL_MAGIC;
+    std::map<std::string, DAMAGE_TYPE, ILess> spellSchoolMaps;
+    spellSchoolMaps["fire"] = DAMAGE_FIRE;
+    spellSchoolMaps["air"] = DAMAGE_AIR;
+    spellSchoolMaps["water"] = DAMAGE_WATER;
+    spellSchoolMaps["earth"] = DAMAGE_EARTH;
+    spellSchoolMaps["spirit"] = DAMAGE_SPIRIT;
+    spellSchoolMaps["mind"] = DAMAGE_MIND;
+    spellSchoolMaps["body"] = DAMAGE_BODY;
+    spellSchoolMaps["light"] = DAMAGE_LIGHT;
+    spellSchoolMaps["dark"] = DAMAGE_DARK;
+    spellSchoolMaps["magic"] = DAMAGE_MAGIC;
 
     char *test_string;
 
@@ -750,10 +752,7 @@ void SpellStats::Initialize(const Blob &spells) {
         auto tokens = tokenize(test_string, '\t');
 
         pInfos[uSpellID].name = removeQuotes(tokens[2]);
-        auto findResult = spellSchoolMaps.find(tokens[3]);
-        pInfos[uSpellID].uSchool = findResult == spellSchoolMaps.end()
-                                ? SPELL_SCHOOL_NONE
-                                : findResult->second;
+        pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
         pInfos[uSpellID].pShortName = removeQuotes(tokens[4]);
         pInfos[uSpellID].pDescription = removeQuotes(tokens[5]);
         pInfos[uSpellID].pBasicSkillDesc = removeQuotes(tokens[6]);

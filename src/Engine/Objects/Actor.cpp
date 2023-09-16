@@ -2382,7 +2382,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
-    int v12;    // ecx@20
+    DAMAGE_TYPE v12;    // ecx@20
     int finalDmg;      // edi@30
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 
@@ -2426,19 +2426,18 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                 } else if (a4 == ABILITY_SPELL1) {
                     v12 = pSpellStats
                         ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell1ID]
-                        .uSchool;
+                        .damageType;
                 } else if (a4 == ABILITY_SPELL2) {
                     v12 = pSpellStats
                         ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell2ID]
-                        .uSchool;
+                        .damageType;
                 } else if (a4 == ABILITY_SPECIAL) {
-                    v12 = pActors[attacker_id.id()]
-                        .monsterInfo.field_3C_some_special_attack;
+                    v12 = static_cast<DAMAGE_TYPE>(pActors[attacker_id.id()].monsterInfo.field_3C_some_special_attack);
                 } else {
-                    v12 = 4;
+                    v12 = DAMAGE_PHYSICAL;
                 }
                 finalDmg = pActors[actor_id].CalcMagicalDamageToActor(
-                    (DAMAGE_TYPE)v12, dmgToRecv);
+                    v12, dmgToRecv);
                 pActors[actor_id].currentHP -= finalDmg;
                 if (finalDmg) {
                     if (pActors[actor_id].currentHP > 0)
@@ -3177,7 +3176,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
             case SPELL_EARTH_BLADES:
                 skillLevel = 5 * projectileSprite->spell_level;
                 attackElement =
-                    (DAMAGE_TYPE)character->GetSpellSchool(SPELL_EARTH_BLADES);
+                    character->GetSpellDamageType(SPELL_EARTH_BLADES);
                 uDamageAmount = CalcSpellDamage(
                     SPELL_EARTH_BLADES, projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->currentHP);
@@ -3215,8 +3214,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 break;
 
             default:
-                attackElement = (DAMAGE_TYPE)character->GetSpellSchool(
-                    projectileSprite->uSpellID);
+                attackElement = character->GetSpellDamageType(projectileSprite->uSpellID);
                 IsAdditionalDamagePossible = false;
                 uDamageAmount = CalcSpellDamage(
                     projectileSprite->uSpellID,

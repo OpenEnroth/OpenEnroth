@@ -816,18 +816,18 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, acStr);
     pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
 
-    std::array<std::string, 11> attackTypes = {
-        localization->GetSpellSchoolName(0),
-        localization->GetSpellSchoolName(1),
-        localization->GetSpellSchoolName(2),
-        localization->GetSpellSchoolName(3),
-        localization->GetString(LSTR_PHYSICAL),
-        localization->GetString(LSTR_MAGIC),
-        localization->GetSpellSchoolName(5),
-        localization->GetSpellSchoolName(4),
-        localization->GetSpellSchoolName(6),
-        localization->GetSpellSchoolName(7),
-        localization->GetSpellSchoolName(8)
+    IndexedArray<std::string, DAMAGE_FIRST, DAMAGE_LAST> attackTypes = {
+        {DAMAGE_FIRE,       localization->GetSpellSchoolName(0)},
+        {DAMAGE_AIR,        localization->GetSpellSchoolName(1)},
+        {DAMAGE_WATER,      localization->GetSpellSchoolName(2)},
+        {DAMAGE_EARTH,      localization->GetSpellSchoolName(3)},
+        {DAMAGE_PHYSICAL,   localization->GetString(LSTR_PHYSICAL)},
+        {DAMAGE_MAGIC,      localization->GetString(LSTR_MAGIC)},
+        {DAMAGE_SPIRIT,     localization->GetSpellSchoolName(5)},
+        {DAMAGE_MIND,       localization->GetSpellSchoolName(4)},
+        {DAMAGE_BODY,       localization->GetSpellSchoolName(6)},
+        {DAMAGE_LIGHT,      localization->GetSpellSchoolName(7)},
+        {DAMAGE_DARK,       localization->GetSpellSchoolName(8)}
     };
 
     std::string attackStr, damageStr;

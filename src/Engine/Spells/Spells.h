@@ -22,7 +22,7 @@ struct SpellInfo {
     std::string pExpertSkillDesc;
     std::string pMasterSkillDesc;
     std::string pGrandmasterSkillDesc;
-    SPELL_SCHOOL uSchool;
+    DAMAGE_TYPE damageType;
     int field_20;
 };
 
@@ -64,7 +64,7 @@ class SpellData {
     };
     int8_t baseDamage;
     int8_t bonusSkillDamage;
-    int16_t stats;
+    int16_t stats; // TODO(captainurist): flags.
     CharacterSkillMastery skillMastery;
     // char field_12;
     // char field_13;

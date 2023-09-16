@@ -223,9 +223,8 @@ class Character {
     int receiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
     int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
 
-    // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL
-    // TODO(captainurist): move to SpellEnums.h
-    unsigned int GetSpellSchool(SPELL_TYPE uSpellID) const;
+    // TODO(captainurist): move closer to Spells data.
+    DAMAGE_TYPE GetSpellDamageType(SPELL_TYPE uSpellID) const;
     int GetAttackRecoveryTime(bool bRangedAttack) const;
 
     int GetHealth() const { return this->health; }

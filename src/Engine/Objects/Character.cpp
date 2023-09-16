@@ -1994,8 +1994,8 @@ int Character::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Character::GetSpellSchool(SPELL_TYPE uSpellID) const {
-    return pSpellStats->pInfos[uSpellID].uSchool;
+DAMAGE_TYPE Character::GetSpellDamageType(SPELL_TYPE uSpellID) const {
+    return pSpellStats->pInfos[uSpellID].damageType;
 }
 
 //----- (0048E1B5) --------------------------------------------------------
@@ -6509,7 +6509,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 dmgToReceive /= spellPower;
         }
 
-        int damageType;
+        DAMAGE_TYPE damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
                 damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6519,28 +6519,28 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 break;
             case ABILITY_SPELL1:
                 spellId = actorPtr->monsterInfo.uSpell1ID;
-                damageType = pSpellStats->pInfos[spellId].uSchool;
+                damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPELL2:
                 spellId = actorPtr->monsterInfo.uSpell2ID;
-                damageType = pSpellStats->pInfos[spellId].uSchool;
+                damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPECIAL:
-                damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
+                damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
                 break;
             default:
-                damageType = 4;  // DAMAGE_PHYSICAL
+                damageType = DAMAGE_PHYSICAL;
                 break;
         }
 
         // calc damage
-        dmgToReceive = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+        dmgToReceive = playerPtr->receiveDamage(dmgToReceive, damageType);
 
         // pain reflection back on attacker
         if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
             AIState actorState = actorPtr->aiState;
             if (actorState != Dying && actorState != Dead) {
-                int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
+                int reflectedDamage = actorPtr->CalcMagicalDamageToActor(damageType, dmgToReceive);
                 actorPtr->currentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->currentHP >= 1) {
@@ -6613,18 +6613,18 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             }
 
             int damage;
-            int damagetype;
+            DAMAGE_TYPE damagetype;
             if (uActorType != OBJECT_Character ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
                                          spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
-                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
+                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
                 damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
-                damagetype = 0;
+                damagetype = DAMAGE_FIRE; // TODO(captainurist): doesn't look like a proper default.
             }
-            playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            playerPtr->receiveDamage(damage, damagetype);
             if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
@@ -6683,7 +6683,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 if (spellPower > 0) dmgToReceive /= spellPower;
             }
 
-            int damageType;
+            DAMAGE_TYPE damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
                     damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6693,25 +6693,25 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                     break;
                 case ABILITY_SPELL1:
                     spellId = actorPtr->monsterInfo.uSpell1ID;
-                    damageType = pSpellStats->pInfos[spellId].uSchool;
+                    damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPELL2:
                     spellId = actorPtr->monsterInfo.uSpell2ID;
-                    damageType = pSpellStats->pInfos[spellId].uSchool;
+                    damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPECIAL:
-                    damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
+                    damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
                     break;
                 default:
-                    damageType = 4;
+                    damageType = DAMAGE_PHYSICAL;
                     break;
             }
 
-            int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+            int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, damageType);
             if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
                 AIState actorState = actorPtr->aiState;
                 if (actorState != Dying && actorState != Dead) {
-                    recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
+                    recvdMagicDmg = actorPtr->CalcMagicalDamageToActor(damageType, reflectedDmg);
                     actorPtr->currentHP -= recvdMagicDmg;
 
                     if (recvdMagicDmg >= 0) {
@@ -6756,20 +6756,20 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             // party hits self
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
-            int damagetype;
+            DAMAGE_TYPE damagetype;
             if (uActorType != OBJECT_Character ||
                 spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
                                          spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
-                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
+                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
                 damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
-                damagetype = 0;
+                damagetype = DAMAGE_FIRE; // TODO(captainurist): another weird default.
             }
 
-            playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            playerPtr->receiveDamage(damage, damagetype);
             if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }

@@ -892,7 +892,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.expr_id = (CharacterExpressionID)_evt->v6;
             break;
         case EVENT_ReceiveDamage:
-            ir.data.damage_descr.damage_type = (DAMAGE_TYPE)_evt->v6;
+            ir.data.damage_descr.damage_type = static_cast<DAMAGE_TYPE>(_evt->v6);
             ir.data.damage_descr.damage = EVT_DWORD(_evt->v7);
             break;
         case EVENT_SetSnow:
