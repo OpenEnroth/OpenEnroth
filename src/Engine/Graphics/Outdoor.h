@@ -77,7 +77,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x47EDB3
      */
-    int getTileAttribByGrid(int gridX, int gridY);
+    TILE_DESC_FLAGS getTileAttribByGrid(int gridX, int gridY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
 
     /**
@@ -97,7 +97,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x488EB1
      */
-    int getTileAttribByPos(int sX, int sY);
+    TILE_DESC_FLAGS getTileAttribByPos(int sX, int sY);
 
     /**
      * @offset 0x488EEF

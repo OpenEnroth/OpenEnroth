@@ -233,7 +233,7 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
     dst->uTileID = src.tileId;
     dst->tileset = static_cast<Tileset>(src.tileSet);
     dst->uSection = src.section;
-    dst->uAttributes = src.attributes;
+    dst->uAttributes = static_cast<TILE_DESC_FLAGS>(src.attributes);
 }
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {

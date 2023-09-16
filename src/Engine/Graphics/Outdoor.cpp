@@ -201,7 +201,7 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-int OutdoorLocation::getTileAttribByPos(int sX, int sY) {
+TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(int sX, int sY) {
     int gridY = WorldPosToGridCellY(sY);
     int gridX = WorldPosToGridCellX(sX);
 
@@ -1037,7 +1037,7 @@ int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
     return this->pTerrain.pTilemap[128 * gridY + gridX];
 }
 
-int OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
+TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 

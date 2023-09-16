@@ -17,13 +17,13 @@ class TileDesc {
     uint16_t uTileID = 0;
     Tileset tileset = Tileset_NULL;
     uint16_t uSection = 0;
-    uint16_t uAttributes = TILE_DESC_NULL;
+    TILE_DESC_FLAGS uAttributes = TILE_DESC_NULL;
 
     GraphicsImage *GetTexture();
 
     // inline bool IsWaterTile() const         { return this->name == "wtrtyl";
     // }
-    inline bool IsWaterTile() const { return this->uAttributes & 2; }
+    inline bool IsWaterTile() const { return this->uAttributes & TILE_DESC_WATER; }
     inline bool IsWaterBorderTile() const {
         return this->name.find("wtrdr", 0) == 0 ||
                this->name.find("hwtrdr") == 0;
