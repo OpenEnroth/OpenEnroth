@@ -10,6 +10,7 @@
 #include "Engine/Pid.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Spells/SpellEnums.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIEnums.h"
@@ -68,7 +69,7 @@ extern Pid uLastPointedObjectID;
 extern int KeyboardPageNum;
 extern Color uGameUIFontShadow;
 extern Color uGameUIFontMain;
-extern int dword_507B00_spell_info_to_draw_in_popup;
+extern SPELL_TYPE dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
 extern int enchantingActiveCharacter;

@@ -14,8 +14,7 @@ class GUIWindow_Spellbook : public GUIWindow {
     virtual void Update() override;
     virtual void Release() override;
 
-    // TODO(captainurist): turn parameter into an enum
-    void openSpellbookPage(int page);
+    void openSpellbookPage(SPELL_SCHOOL page);
 
  protected:
     void loadSpellbook();
@@ -30,8 +29,8 @@ class GUIWindow_Spellbook : public GUIWindow {
     GraphicsImage *ui_spellbook_btn_close = nullptr;
     GraphicsImage *ui_spellbook_btn_close_click = nullptr;
 
-    std::array<GraphicsImage *, 9> ui_spellbook_school_backgrounds{};
-    std::array<std::array<GraphicsImage *, 2>, 9> ui_spellbook_school_tabs{};
+    IndexedArray<GraphicsImage *, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> ui_spellbook_school_backgrounds = {};
+    IndexedArray<std::array<GraphicsImage *, 2>, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> ui_spellbook_school_tabs = {};
 
     std::array<GraphicsImage *, 12> SBPageCSpellsTextureList{};
     std::array<GraphicsImage *, 12> SBPageSSpellsTextureList{};

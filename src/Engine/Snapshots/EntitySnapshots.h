@@ -245,18 +245,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpellbookChapter_MM7)
 
 
 struct PlayerSpells_MM7 {
-    union {
-        struct {
-            /* 00 */ std::array<PlayerSpellbookChapter_MM7, 9> chapters;
-            /* 63 */ char _pad1;
-            /* 64 */
-        };
-        struct {
-            /* 00 */ std::array<char, 99> haveSpell;
-            /* 63 */ char _pad2;
-            /* 64 */
-        };
-    };
+    std::array<bool, 99> haveSpell;
+    uint8_t _pad;
 };
 static_assert(sizeof(PlayerSpells_MM7) == 0x64);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpells_MM7)

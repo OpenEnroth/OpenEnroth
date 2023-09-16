@@ -767,14 +767,11 @@ bool PartyCreationUI_LoopInternal() {
             pParty->pCharacters[i].sResMagicBase = 10;
         // TODO(pskelton): why just CHARACTER_BUFF_RESIST_WATER?
         pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Reset();
-        int page = 0;
-        for (CharacterSkillType j : allMagicSkills()) {
-            if (pParty->pCharacters[i].pActiveSkills[j]) {
+        for (SPELL_SCHOOL page : allSpellSchools()) {
+            if (pParty->pCharacters[i].pActiveSkills[schoolSkill(page)]) {
                 pParty->pCharacters[i].lastOpenedSpellbookPage = page;
                 break;
             }
-
-            page++;
         }
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &item);
         pParty->pCharacters[i].AddItem2(-1, &item);
@@ -822,43 +819,31 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             case CHARACTER_SKILL_FIRE:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
-                pParty->pCharacters[i]
-                    .spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_FIRE_TORCH_LIGHT] = true;
                 break;
             case CHARACTER_SKILL_AIR:
-                pParty->pCharacters[i].AddItem(
-                    -1, ITEM_SPELLBOOK_FEATHER_FALL);
-                pParty->pCharacters[i]
-                    .spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_AIR_WIZARD_EYE] = true;
                 break;
             case CHARACTER_SKILL_WATER:
-                pParty->pCharacters[i].AddItem(
-                    -1, ITEM_SPELLBOOK_POISON_SPRAY);
-                pParty->pCharacters[i]
-                    .spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_WATER_AWAKEN] = true;
                 break;
             case CHARACTER_SKILL_EARTH:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_SLOW);
-                pParty->pCharacters[i]
-                    .spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_EARTH_STUN] = true;
                 break;
             case CHARACTER_SKILL_SPIRIT:
-                pParty->pCharacters[i].AddItem(-1,
-                                            ITEM_SPELLBOOK_BLESS);
-                pParty->pCharacters[i]
-                    .spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_BLESS);
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_SPIRIT_DETECT_LIFE] = true;
                 break;
             case CHARACTER_SKILL_MIND:
-                pParty->pCharacters[i].AddItem(-1,
-                                            ITEM_SPELLBOOK_MIND_BLAST);
-                pParty->pCharacters[i]
-                    .spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_MIND_REMOVE_FEAR] = true;
                 break;
             case CHARACTER_SKILL_BODY:
-                pParty->pCharacters[i].AddItem(-1,
-                                            ITEM_SPELLBOOK_HEAL);
-                pParty->pCharacters[i]
-                    .spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
+                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_HEAL);
+                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_BODY_CURE_WEAKNESS] = true;
                 break;
             case CHARACTER_SKILL_LIGHT:
             case CHARACTER_SKILL_DARK:

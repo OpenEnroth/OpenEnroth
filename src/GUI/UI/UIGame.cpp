@@ -1969,10 +1969,10 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
             // TODO(pskelton): this used to check if character had the spell activated - no longer required here ??
             if (!pParty->hasActiveCharacter())
                 break;
+            SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(param);
             if (isHoldingMouseRightButton()) {
-                dword_507B00_spell_info_to_draw_in_popup = param + 1;
+                dword_507B00_spell_info_to_draw_in_popup = selectedSpell;
             }
-            SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + param + 1);
             if (spellbookSelectedSpell == selectedSpell) {
                 engine->_statusBar->setPermanent(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name);
             } else {

@@ -495,15 +495,12 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
         if (pCharacter.classType == CHARACTER_CLASS_KNIGHT)
             pCharacter.sResMagicBase = 10;
 
-        pCharacter.lastOpenedSpellbookPage = 0;
-        int count = 0;
-        for (CharacterSkillType skill : allMagicSkills()) {  // for Magic Book
-            if (pCharacter.pActiveSkills[skill]) {
-                pCharacter.lastOpenedSpellbookPage = count;
+        pCharacter.lastOpenedSpellbookPage = SPELL_SCHOOL_FIRE;
+        for (SPELL_SCHOOL page : allSpellSchools()) {
+            if (pCharacter.pActiveSkills[schoolSkill(page)]) {
+                pCharacter.lastOpenedSpellbookPage = page;
                 break;
             }
-
-            count++;
         }
 
         pCharacter.uExpressionTimePassed = 0;
@@ -512,8 +509,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             Dst.Reset();
             pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
             pCharacter.AddItem2(-1, &Dst);
-            for (int uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
-                CharacterSkillType skill = (CharacterSkillType)uSkillIdx;
+            for (CharacterSkillType skill : allVisibleSkills()) {
                 if (pCharacter.pActiveSkills[skill]) {
                     switch (skill) {
                         case CHARACTER_SKILL_STAFF:

@@ -1,12 +1,13 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 
 #include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Segment.h"
 
-enum SPELL_TYPE : uint8_t {
+enum class SPELL_TYPE : uint8_t {
     SPELL_NONE = 0,
 
     SPELL_FIRE_TORCH_LIGHT = 1,
@@ -132,6 +133,7 @@ enum SPELL_TYPE : uint8_t {
     SPELL_STAT_DECREASE = 152, // used for face overlay when something is subtracted from character like stat/res/gold/condition etc.
     SPELL_DISEASE = 153
 };
+using enum SPELL_TYPE;
 
 /**
  * @return                              All regular spell types.
@@ -193,17 +195,59 @@ inline CharacterSkillType getSkillTypeForSpell(SPELL_TYPE uSpellID) {
     return CHARACTER_SKILL_INVALID;
 }
 
-// TODO(captainurist): this is the same enum as DAMAGE_TYPE in ItemEnums.h
-enum SPELL_SCHOOL : int {
+/**
+ * Spell school, note that order corresponds to the enum order in `SPELL_TYPE`.
+ */
+enum class SPELL_SCHOOL {
     SPELL_SCHOOL_FIRE = 0,
     SPELL_SCHOOL_AIR = 1,
     SPELL_SCHOOL_WATER = 2,
     SPELL_SCHOOL_EARTH = 3,
-    SPELL_SCHOOL_NONE = 4,
-    SPELL_SCHOOL_MAGIC = 5,
-    SPELL_SCHOOL_SPIRIT = 6,
-    SPELL_SCHOOL_MIND = 7,
-    SPELL_SCHOOL_BODY = 8,
-    SPELL_SCHOOL_LIGHT = 9,
-    SPELL_SCHOOL_DARK = 10
+    SPELL_SCHOOL_SPIRIT = 4,
+    SPELL_SCHOOL_MIND = 5,
+    SPELL_SCHOOL_BODY = 6,
+    SPELL_SCHOOL_LIGHT = 7,
+    SPELL_SCHOOL_DARK = 8,
+
+    SPELL_SCHOOL_FIRST = SPELL_SCHOOL_FIRE,
+    SPELL_SCHOOL_LAST = SPELL_SCHOOL_DARK
 };
+using enum SPELL_SCHOOL;
+
+inline Segment<SPELL_SCHOOL> allSpellSchools() {
+    return {SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST};
+}
+
+inline Segment<SPELL_TYPE> schoolSpells(SPELL_SCHOOL school) {
+    int first = 1 + std::to_underlying(school) * 11;
+    int last = first + 10;
+    return {static_cast<SPELL_TYPE>(first), static_cast<SPELL_TYPE>(last)};
+}
+
+inline SPELL_SCHOOL spellSchool(SPELL_TYPE spell) {
+    assert(spell >= SPELL_FIRST_REGULAR && spell <= SPELL_LAST_REGULAR);
+
+    return static_cast<SPELL_SCHOOL>((std::to_underlying(spell) - 1) / 11);
+}
+
+// TODO(captainurist): I think we can drop most usages of this function.
+inline int spellIndexInSchool(SPELL_TYPE spell) {
+    return (std::to_underlying(spell) - 1) % 11;
+}
+
+inline CharacterSkillType schoolSkill(SPELL_SCHOOL school) {
+    switch (school) {
+    case SPELL_SCHOOL_FIRE:     return CHARACTER_SKILL_FIRE;
+    case SPELL_SCHOOL_AIR:      return CHARACTER_SKILL_AIR;
+    case SPELL_SCHOOL_WATER:    return CHARACTER_SKILL_WATER;
+    case SPELL_SCHOOL_EARTH:    return CHARACTER_SKILL_EARTH;
+    case SPELL_SCHOOL_SPIRIT:   return CHARACTER_SKILL_SPIRIT;
+    case SPELL_SCHOOL_MIND:     return CHARACTER_SKILL_MIND;
+    case SPELL_SCHOOL_BODY:     return CHARACTER_SKILL_BODY;
+    case SPELL_SCHOOL_LIGHT:    return CHARACTER_SKILL_LIGHT;
+    case SPELL_SCHOOL_DARK:     return CHARACTER_SKILL_DARK;
+    default:
+        assert(false);
+        return CHARACTER_SKILL_INVALID;
+    }
+}

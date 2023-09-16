@@ -10,7 +10,6 @@
 #include "Utility/Segment.h"
 #include "Utility/Workaround/ToUnderlying.h"
 
-// TODO(captainurist): this is the same enum as SPELL_SCHOOL in SpellEnums.h
 enum class DAMAGE_TYPE : unsigned int {
     DAMAGE_FIRE = 0,
     DAMAGE_AIR = 1,

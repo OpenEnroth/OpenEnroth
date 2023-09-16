@@ -2571,7 +2571,7 @@ void Actor::UpdateActorAI() {
     double v42;              // st7@176
     double v43;              // st6@176
     ABILITY_INDEX v45;                 // eax@192
-    uint8_t v46;     // cl@197
+    SPELL_TYPE v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
@@ -2855,7 +2855,7 @@ void Actor::UpdateActorAI() {
                         v46 = pActor->monsterInfo.uSpell1ID;
                     else
                         v46 = pActor->monsterInfo.uSpell2ID;
-                    if (v46) {
+                    if (v46 != SPELL_NONE) {
                         if (pActor->monsterInfo.uRecoveryTime <= 0) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
@@ -4799,7 +4799,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
 
     if (!pActors[uActorID].IsNotAlive()) {
         if (uObjID.type() == OBJECT_Item) {
-            if (pSpriteObjects[uObjID.id()].uSpellID) {
+            if (pSpriteObjects[uObjID.id()].uSpellID != SPELL_NONE) {
                 v6 = CalcSpellDamage(
                     pSpriteObjects[uObjID.id()].uSpellID,
                     pSpriteObjects[uObjID.id()].spell_level,

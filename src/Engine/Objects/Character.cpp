@@ -3902,7 +3902,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         } else {
             mouse->RemoveHoldingItem();
             // Process spell on next frame after game exits inventory window.
-            engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, scrollSpellId, targetCharacter);
+            engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, std::to_underlying(scrollSpellId), targetCharacter);
             if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
@@ -3912,7 +3912,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
     if (pParty->pPickedItem.isBook()) {
         SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
-        if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR]) {
+        if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
             engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
@@ -3932,7 +3932,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR] = 1;
+        playerAffected->spellbook.bHaveSpell[bookSpellId] = true;
         playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -7597,7 +7597,7 @@ Character::Character() {
     _expression21_animtime = 0;
     _expression21_frameset = 0;
 
-    lastOpenedSpellbookPage = 0;
+    lastOpenedSpellbookPage = SPELL_SCHOOL_FIRE;
 }
 
 void Character::cleanupBeacons() {

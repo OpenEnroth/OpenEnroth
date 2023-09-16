@@ -736,7 +736,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 
     snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
 
-    dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
+    dst->lastOpenedSpellbookPage = std::to_underlying(src.lastOpenedSpellbookPage);
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
     snapshot(src._characterEventBits, &dst->playerEventBits, tags::reverseBits);
@@ -987,7 +987,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 
     reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
 
-    dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
+    dst->lastOpenedSpellbookPage = static_cast<SPELL_SCHOOL>(src.lastOpenedSpellbookPage);
     dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
     reconstruct(src.playerEventBits, &dst->_characterEventBits, tags::reverseBits);

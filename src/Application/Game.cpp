@@ -453,7 +453,7 @@ void Game::processQueuedMessages() {
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
     std::string pOut;                // [sp+BCh] [bp-540h]@370
-    int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
+    std::array<SPELL_SCHOOL, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
     bool playButtonSoundOnEscape = true;
 
@@ -1424,15 +1424,13 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter()) continue;
                 int skill_count = 0;
                 int uAction = 0;
-                int page = 0;
-                for (CharacterSkillType i : allMagicSkills()) {
-                    if (pParty->activeCharacter().pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
+                for (SPELL_SCHOOL page : allSpellSchools()) {
+                    CharacterSkillType skill = schoolSkill(page);
+                    if (pParty->activeCharacter().pActiveSkills[skill] || _engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
                         spellbookPages[skill_count++] = page;
                     }
-
-                    page++;
                 }
                 if (!skill_count) {  //нет скиллов
                     pAudioPlayer->playUISound(vrng->randomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
@@ -1453,10 +1451,10 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenSpellbookPage:
                 if (pTurnEngine->turn_stage == TE_MOVEMENT ||
                     !pParty->hasActiveCharacter() ||
-                    uMessageParam == pParty->activeCharacter().lastOpenedSpellbookPage) {
+                    static_cast<SPELL_SCHOOL>(uMessageParam) == pParty->activeCharacter().lastOpenedSpellbookPage) {
                     continue;
                 }
-                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(uMessageParam);
+                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(static_cast<SPELL_SCHOOL>(uMessageParam));
                 continue;
             case UIMSG_SelectSpell: {
                 if (pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -1467,15 +1465,15 @@ void Game::processQueuedMessages() {
                 }
 
                 Character *character = &pParty->activeCharacter();
-                if (character->spellbook.pChapters[character->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam] || _engine->config->debug.AllMagic.value()) {
-                    SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * character->lastOpenedSpellbookPage + uMessageParam + 1);
+                SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(uMessageParam);
+                if (character->spellbook.bHaveSpell[selectedSpell] || _engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
                         pEventTimer->Resume();
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
-                        engine->_messageQueue->addMessageNextFrame( UIMSG_CastSpellFromBook, selectedSpell, pParty->activeCharacterIndex() - 1);
+                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook, std::to_underlying(selectedSpell), pParty->activeCharacterIndex() - 1);
                     } else {
                         spellbookSelectedSpell = selectedSpell;
                     }

@@ -1175,13 +1175,12 @@ void CharacterUI_StatsTab_ShowHint() {
 }
 
 //----- (00410B28) --------------------------------------------------------
-void DrawSpellDescriptionPopup(int spell_index_in_book) {
+void DrawSpellDescriptionPopup(SPELL_TYPE spell_id) {
     SpellInfo *spell;             // esi@1
     unsigned int v3;              // eax@2
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
     Pointi pt = mouse->GetCursorPos();
-    SPELL_TYPE spell_id = static_cast<SPELL_TYPE>(spell_index_in_book + 11 * pParty->activeCharacter().lastOpenedSpellbookPage + 1);
 
     spell = &pSpellStats->pInfos[spell_id];
     if (pt.y <= 250)
@@ -1227,7 +1226,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    CharacterSkillType skill = static_cast<CharacterSkillType>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
+    CharacterSkillType skill = schoolSkill(pParty->activeCharacter().lastOpenedSpellbookPage);
     CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(assets->pFontComic.get(), 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
@@ -1238,7 +1237,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
         assets->pFontComic.get(), 12,
         spell_info_window.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str2,
         3);
-    dword_507B00_spell_info_to_draw_in_popup = 0;
+    dword_507B00_spell_info_to_draw_in_popup = SPELL_NONE;
 }
 
 /**
@@ -1868,9 +1867,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case SCREEN_SPELL_BOOK: {
-            if (dword_507B00_spell_info_to_draw_in_popup)
-                DrawSpellDescriptionPopup(
-                    dword_507B00_spell_info_to_draw_in_popup - 1);
+            if (dword_507B00_spell_info_to_draw_in_popup != SPELL_NONE)
+                DrawSpellDescriptionPopup(dword_507B00_spell_info_to_draw_in_popup);
             break;
         }
         case SCREEN_HOUSE: {

@@ -78,7 +78,7 @@ struct SpellBookIconPos {
 
 extern struct SpellStats *pSpellStats;
 
-extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
+extern IndexedArray<std::array<struct SpellBookIconPos, 12>, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> pIconPos;
 
 extern const IndexedArray<SPRITE_OBJECT_TYPE, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping;  // 4E3ACC
 extern IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas;

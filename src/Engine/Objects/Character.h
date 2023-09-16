@@ -50,28 +50,7 @@ struct CharacterSpellbookChapter {
 };
 
 struct CharacterSpells {
-    union {
-        struct {
-            CharacterSpellbookChapter pFireSpellbook;
-            CharacterSpellbookChapter pAirSpellbook;
-            CharacterSpellbookChapter pWaterSpellbook;
-            CharacterSpellbookChapter pEarthSpellbook;
-            CharacterSpellbookChapter pSpiritSpellbook;
-            CharacterSpellbookChapter pMindSpellbook;
-            CharacterSpellbookChapter pBodySpellbook;
-            CharacterSpellbookChapter pLightSpellbook;
-            CharacterSpellbookChapter pDarkSpellbook;
-            char _pad_0;
-        };
-        struct {
-            std::array<CharacterSpellbookChapter, 9> pChapters;
-            char _pad_1;
-        };
-        struct {
-            std::array<char, 99> bHaveSpell;
-            char _pad_2;
-        };
-    };
+    IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
 };
 
 union CharacterEquipment {
@@ -523,7 +502,7 @@ class Character {
     int mana;
     unsigned int uBirthYear;
     CharacterEquipment pEquipment;
-    char lastOpenedSpellbookPage;
+    SPELL_SCHOOL lastOpenedSpellbookPage;
     SPELL_TYPE uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;
     char _some_attack_bonus;
