@@ -232,7 +232,7 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
 
     dst->uTileID = src.tileId;
     dst->tileset = static_cast<Tileset>(src.tileSet);
-    dst->uSection = src.section;
+    dst->uSection = static_cast<TILE_SECT>(src.section);
     dst->uAttributes = static_cast<TILE_DESC_FLAGS>(src.attributes);
 }
 

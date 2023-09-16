@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Utility/Flags.h"
+#include "Utility/Segment.h"
 
 enum class TILE_DESC_FLAG {
     TILE_DESC_NULL = 0,
@@ -24,7 +25,7 @@ using enum TILE_DESC_FLAG;
 MM_DECLARE_FLAGS(TILE_DESC_FLAGS, TILE_DESC_FLAG)
 MM_DECLARE_OPERATORS_FOR_FLAGS(TILE_DESC_FLAGS)
 
-enum TILE_SECT_FLAGS {
+enum class TILE_SECT {
     TILE_SECT_NULL = -1,
     TILE_SECT_Start = -2,
     TILE_SECT_Base1 = 0,
@@ -49,8 +50,16 @@ enum TILE_SECT_FLAGS {
     TILE_SECT_S1_DSW = 0x13,
     TILE_SECT_XNE1_XSE1_DNE = 0x14,
     TILE_SECT_DSE = 0x15,
-    TILE_SECT_XNW1_XSW1_DNW = 0x16
+    TILE_SECT_XNW1_XSW1_DNW = 0x16,
+
+    TILE_SECT_FIRST_SPECIAL = TILE_SECT_Special1_N_W,
+    TILE_SECT_LAST_SPECIAL = TILE_SECT_Special8_NCAP,
 };
+using enum TILE_SECT;
+
+inline Segment<TILE_SECT> allSpecialTileSects() {
+    return {TILE_SECT_FIRST_SPECIAL, TILE_SECT_LAST_SPECIAL};
+}
 
 #pragma warning(push)
 #pragma warning(disable : 4341)

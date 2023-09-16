@@ -46,24 +46,23 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
     int v6;  // edx@11
 
     if (not_random || terrain_type > 8) {
-        return GetTileId(terrain_type, 0);
+        return GetTileId(terrain_type, TILE_SECT_Base1);
     }
     v5 = vrng->random(50);
     if (v5 < 20) {
-        return GetTileId(terrain_type, 0);
+        return GetTileId(terrain_type, TILE_SECT_Base1);
     } else if (v5 < 30) {
-        return GetTileId(terrain_type, 1);
+        return GetTileId(terrain_type, TILE_SECT_Base2_NS);
     } else if (v5 < 40) {
-        return GetTileId(terrain_type, 2);
+        return GetTileId(terrain_type, TILE_SECT_Base3_EW);
     } else if (v5 < 48) {
-        return GetTileId(terrain_type, 3);
+        return GetTileId(terrain_type, TILE_SECT_Base4_N_E);
     }
-    v6 = vrng->random(8);
-    return GetTileId(terrain_type, v6 + 4);
+    return GetTileId(terrain_type, vrng->randomSample(allSpecialTileSects()));
 }
 
 //----- (00487F84) --------------------------------------------------------
-unsigned int TileTable::GetTileId(unsigned int uTerrainType, unsigned int uSection) {
+unsigned int TileTable::GetTileId(unsigned int uTerrainType, TILE_SECT uSection) {
     for (size_t i = 0; i < tiles.size(); ++i) {
         if ((tiles[i].tileset == uTerrainType) &&
             (tiles[i].uSection == uSection))
@@ -181,13 +180,13 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 v35 = v84.pProperties[4];
 
                 // Default
-                tile.uSection = 0;
+                tile.uSection = TILE_SECT_Base1;
                 tile.uAttributes = 0;
 
                 if (iequals(v35, "TTsect_NULL")) {
-                    tile.uSection |= TILE_SECT_NULL;
+                    tile.uSection = TILE_SECT_NULL;
                 } else if (iequals(v35, "TTsect_Start")) {
-                    tile.uSection |= TILE_SECT_Start;
+                    tile.uSection = TILE_SECT_Start;
                 } else if (iequals(v35, "TTsect_Base1")) {
                     tile.uSection = TILE_SECT_Base1;
                 } else if (iequals(v35, "TTsect_Base2")) {
