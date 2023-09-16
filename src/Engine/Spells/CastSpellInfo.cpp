@@ -1471,7 +1471,7 @@ void CastSpellInfoHelpers::castSpell() {
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    int ench_array[100] = { 0 };
+                                    ITEM_ENCHANTMENT ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     if (pItemTable->pSpecialEnchantments_count > 0) {
@@ -1958,10 +1958,8 @@ void CastSpellInfoHelpers::castSpell() {
                             pActors[monster_id].SetRandomGoldIfTheresNoItem();
                         }
                         int gold_num = 0;
-                        if (pActors[monster_id].items[3].uItemID != ITEM_NULL) {
-                            if (pItemTable->pItems[pActors[monster_id].items[3].uItemID].uEquipType == EQUIP_GOLD) {
-                                gold_num = pActors[monster_id].items[3].special_enchantment;
-                            }
+                        if (pActors[monster_id].items[3].isGold()) {
+                            gold_num = pActors[monster_id].items[3].goldAmount;
                         }
                         ItemGen item;
                         item.Reset();
@@ -2168,8 +2166,8 @@ void CastSpellInfoHelpers::castSpell() {
 
                     int obj_id = spell_targeted_at.id();
                     if (spell_targeted_at.type() == OBJECT_Item) {
-                        if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
-                            pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
+                        if (pSpriteObjects[obj_id].containing_item.isGold()) {
+                            pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
                             engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {

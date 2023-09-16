@@ -210,7 +210,7 @@ class Character {
     CharacterSkillType GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
-    bool HasEnchantedItemEquipped(int uEnchantment) const;
+    bool HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const;
     bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);

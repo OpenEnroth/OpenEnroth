@@ -250,7 +250,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     int GoldAmount = 0;
     if (inspect_item->isGold()) {
-        GoldAmount = inspect_item->special_enchantment;
+        GoldAmount = inspect_item->goldAmount;
     }
 
     if (pParty->hasActiveCharacter()) {
@@ -413,7 +413,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                   localization->GetString(LSTR_SPECIAL_2),
                                   pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].pBonusStat,
                                   inspect_item->m_enchantmentStrength);
-        } else if (inspect_item->special_enchantment) {
+        } else if (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
                                   localization->GetString(LSTR_SPECIAL_2),
                                   pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
@@ -439,7 +439,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
-        (inspect_item->special_enchantment || inspect_item->attributeEnchantment))
+        (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
     if (assets->pFontArrus->GetHeight()) {
@@ -498,7 +498,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
-            (inspect_item->special_enchantment || inspect_item->attributeEnchantment)) {
+            (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
             v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
 
             std::string txt4 = "Duration:";
@@ -2271,7 +2271,7 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
         if (item->isWeapon()) {
-            if (item->special_enchantment || item->attributeEnchantment) {
+            if (item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->attributeEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;

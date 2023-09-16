@@ -166,7 +166,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter].pUnidentifiedName = removeQuotes(tokens[10]);
         pItems[item_counter].uSpriteID = atoi(tokens[11]);
 
-        pItems[item_counter]._additional_value = 0;
+        pItems[item_counter]._additional_value = ITEM_ENCHANTMENT_NULL;
         pItems[item_counter]._bonus_type = {};
         if (pItems[item_counter].uMaterial == MATERIAL_SPECIAL) {
             for (CharacterAttributeType ii : enchantableAttributes()) {

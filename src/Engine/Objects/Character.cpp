@@ -1246,25 +1246,17 @@ int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
              damagefromroll;  // total damage
 
     if (uMonsterInfoID) {  // check against bow enchantments
-        if (itemenchant == 64 &&
-            MonsterStats::BelongsToSupertype(
-                uMonsterInfoID,
-                MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
+        if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
+            MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
             damage *= 2;
-        } else if (itemenchant == 39 &&
-                   MonsterStats::BelongsToSupertype(
-                       uMonsterInfoID,
-                       MONSTER_SUPERTYPE_KREEGAN)) {  // double vs devils
+        } else if (itemenchant == ITEM_ENCHANTMENT_DEMON_SLAYING &&
+                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_KREEGAN)) {  // double vs devils
             damage *= 2;
-        } else if (itemenchant == 40 &&
-                   MonsterStats::BelongsToSupertype(
-                       uMonsterInfoID,
-                       MONSTER_SUPERTYPE_DRAGON)) {  // double vs dragons
+        } else if (itemenchant == ITEM_ENCHANTMENT_DRAGON_SLAYING &&
+                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_DRAGON)) {  // double vs dragons
             damage *= 2;
-        } else if (itemenchant == 63 &&
-                   MonsterStats::BelongsToSupertype(
-                       uMonsterInfoID,
-                       MONSTER_SUPERTYPE_ELF)) {  // double vs elf
+        } else if (itemenchant == ITEM_ENCHANTMENT_ELF_SLAYING &&
+                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_ELF)) {  // double vs elf
             damage *= 2;
         }
     }
@@ -1445,7 +1437,7 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
+bool Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const {
     for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)

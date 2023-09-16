@@ -204,7 +204,7 @@ struct ItemGen_MM7 {
     /* 00 */ int32_t itemID;
     /* 04 */ int32_t attributeEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for attribute enchantments.
     /* 08 */ int32_t enchantmentStrength;
-    /* 0C */ int32_t specialEnchantment;
+    /* 0C */ int32_t specialEnchantmentOrGoldAmount; // Gold amount for gold, otherwise special enchantment.
     /* 10 */ int32_t numCharges;
     /* 14 */ uint32_t attributes;
     /* 18 */ uint8_t bodyAnchor;

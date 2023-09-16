@@ -24,7 +24,7 @@ ItemGen *ptr_50C9A4_ItemToEnchant;
 struct ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
-static std::map<int, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
+static std::map<ITEM_ENCHANTMENT, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
 static std::map<ItemId, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
 static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {

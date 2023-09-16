@@ -43,7 +43,7 @@ using enum ItemFlag;
 MM_DECLARE_FLAGS(ItemFlags, ItemFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ItemFlags)
 
-enum ITEM_ENCHANTMENT : unsigned int {
+enum class ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
     ITEM_ENCHANTMENT_OF_PROTECTION = 1,    // Adds +10 to all Resistances
@@ -122,6 +122,7 @@ enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_FIRST_VALID = 1,
     ITEM_ENCHANTMENT_LAST_VALID = 72
 };
+using enum ITEM_ENCHANTMENT;
 
 // TODO(captainurist): Actually ITEM_RARITY
 enum class ITEM_MATERIAL : uint8_t {
@@ -1014,6 +1015,9 @@ enum class ItemId : int32_t {
 
     ITEM_FIRST_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_SPAWNABLE = ITEM_499,
+
+    ITEM_FIRST_GOLD = ITEM_GOLD_SMALL,
+    ITEM_LAST_GOLD = ITEM_GOLD_LARGE,
 };
 using enum ItemId;
 
@@ -1059,6 +1063,10 @@ inline bool isArtifact(ItemId type) {
 
 inline bool isSpawnableArtifact(ItemId type) {
     return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
+}
+
+inline bool isGold(ItemId type) {
+    return type >= ITEM_FIRST_GOLD && type <= ITEM_LAST_GOLD;
 }
 
 inline bool isRandomItem(ItemId type) {

@@ -104,10 +104,11 @@ struct ItemGen {  // 0x24
     }
 
     ItemId uItemID = ITEM_NULL;        // 0
-    int potionPower = 0;
+    int potionPower = 0; // Only for potions.
+    int goldAmount = 0; // Only for gold.
     std::optional<CharacterAttributeType> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
     int32_t m_enchantmentStrength = 0;  // 8
-    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
+    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;
     int32_t uNumCharges = 0;           // 10
     ItemFlags uAttributes = 0;          // 14
     ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // 18
@@ -136,7 +137,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageRoll = 0;  // 1f 23
     uint8_t uDamageMod = 0;   // 20 24
     ITEM_MATERIAL uMaterial = MATERIAL_COMMON;    // 21 25
-    char _additional_value = 0;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT?
+    ITEM_ENCHANTMENT _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
     std::optional<CharacterAttributeType> _bonus_type;
     char _bonus_strength = 0;         // 24 28
     char field_25 = 0;                // 25  29

@@ -3697,7 +3697,7 @@ void Actor::LootActor() {
         }
     } else {
         if (this->items[3].isGold()) {
-            foundGold = this->items[3].special_enchantment;
+            foundGold = this->items[3].goldAmount;
             this->items[3].Reset();
             if (foundGold) {
                 pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);

@@ -386,7 +386,11 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
         dst->attributeEnchantmentOrPotionPower = 0;
     }
     dst->enchantmentStrength = src.m_enchantmentStrength;
-    dst->specialEnchantment = src.special_enchantment;
+    if (isGold(src.uItemID)) {
+        dst->specialEnchantmentOrGoldAmount = src.goldAmount;
+    } else {
+        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.special_enchantment);
+    }
     dst->numCharges = src.uNumCharges;
     dst->attributes = std::to_underlying(src.uAttributes);
     dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
@@ -409,7 +413,13 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
         dst->attributeEnchantment = {};
     }
     dst->m_enchantmentStrength = src.enchantmentStrength;
-    dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
+    if (isGold(dst->uItemID)) {
+        dst->goldAmount = src.specialEnchantmentOrGoldAmount;
+        dst->special_enchantment = ITEM_ENCHANTMENT_NULL;
+    } else {
+        dst->goldAmount = 0;
+        dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantmentOrGoldAmount);
+    }
     dst->uNumCharges = src.numCharges;
     dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
