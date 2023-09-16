@@ -52,4 +52,10 @@ UNIT_TEST(Segment, Empty) {
     for (int i : emptySegment) {
         EXPECT_FALSE(true);
     }
+    EXPECT_EQ(emptySegment.size(), 0);
+}
+
+UNIT_TEST(Segment, Size) {
+    constexpr Segment segment(1, 3);
+    EXPECT_EQ(segment.size(), 3);
 }

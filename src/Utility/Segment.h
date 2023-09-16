@@ -84,35 +84,40 @@ class Segment {
     using iterator = detail::RangeIterator<T>;
     using value_type = typename iterator::value_type;
     using difference_type = typename iterator::difference_type;
+    using size_type = std::size_t;
     using reference = typename iterator::reference;
 
     constexpr Segment() {}
     constexpr Segment(T first, T last) : _first(first), _last(last) {}
 
-    constexpr iterator begin() const {
+    [[nodiscard]] constexpr iterator begin() const {
         return iterator(_first);
     }
 
-    constexpr iterator end() const {
+    [[nodiscard]] constexpr iterator end() const {
         return iterator(_last) + 1;
     }
 
-    constexpr T front() const {
+    [[nodiscard]] constexpr T front() const {
         return _first;
     }
 
-    constexpr T back() const {
+    [[nodiscard]] constexpr T back() const {
         return _last;
     }
 
-    constexpr T operator[](size_t index) const {
+    [[nodiscard]] constexpr T operator[](size_type index) const {
         assert(begin() + index < end());
 
         return *(begin() + index);
     }
 
-    constexpr bool contains(T value) const {
+    [[nodiscard]] constexpr bool contains(T value) const {
         return _first <= value && value <= _last;
+    }
+
+    [[nodiscard]] constexpr size_type size() const {
+        return end() - begin();
     }
 
  private:
