@@ -1015,7 +1015,7 @@ void Engine::_461103_load_level_sub() {
         if (v17) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.uID, 0, v19);
+                pActors[i].monsterInfo.uID, HOUSE_INVALID, v19);
             v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
             ++pNPCStats->uNewlNPCBufPos;
             pActors[i].npcId = v14;

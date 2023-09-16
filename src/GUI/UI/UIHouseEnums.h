@@ -22,7 +22,7 @@ enum class GUILD_ID : int32_t {
 };
 using enum GUILD_ID;
 
-enum HOUSE_ID {
+enum class HOUSE_ID {
     HOUSE_INVALID = 0,
     HOUSE_WEAPON_SHOP_EMERALD_ISLAND = 1,
     HOUSE_WEAPON_SHOP_HARMONDALE = 2,
@@ -586,9 +586,13 @@ enum HOUSE_ID {
     HOUSE_FIRST_TOWN_HALL = HOUSE_TOWN_HALL_HARMONDALE,
     HOUSE_LAST_TOWN_HALL = HOUSE_TOWN_HALL_PIT,
 
+    HOUSE_FIRST_ARCOMAGE_TAVERN = HOUSE_TAVERN_HARMONDALE,
+    HOUSE_LAST_ARCOMAGE_TAVERN = HOUSE_TAVERN_STONE_CITY,
+
     HOUSE_FIRST = HOUSE_WEAPON_SHOP_EMERALD_ISLAND,
     HOUSE_LAST = HOUSE_524
 };
+using enum HOUSE_ID;
 
 inline Segment<HOUSE_ID> allTownhallHouses() {
     return {HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL};
@@ -596,6 +600,10 @@ inline Segment<HOUSE_ID> allTownhallHouses() {
 
 inline Segment<HOUSE_ID> allHouses() {
     return {HOUSE_FIRST, HOUSE_LAST};
+}
+
+inline Segment<HOUSE_ID> allArcomageTaverns() {
+    return {HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN};
 }
 
 inline bool isShop(HOUSE_ID houseId) {
@@ -628,6 +636,10 @@ inline bool isStable(HOUSE_ID houseId) {
 
 inline bool isBoat(HOUSE_ID houseId) {
     return houseId >= HOUSE_FIRST_BOAT && houseId <= HOUSE_LAST_BOAT;
+}
+
+inline bool isArcomageTavern(HOUSE_ID houseId) {
+    return houseId >= HOUSE_FIRST_ARCOMAGE_TAVERN && houseId <= HOUSE_LAST_ARCOMAGE_TAVERN;
 }
 
 enum class HouseSoundType : uint32_t {

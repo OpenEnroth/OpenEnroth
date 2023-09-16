@@ -1086,7 +1086,8 @@ void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     }
 }
 
-GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), houseId) {
+// TODO(captainurist): drop std::to_underlying(houseId) here v
+GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), std::to_underlying(houseId)) {
     pEventTimer->Pause();  // pause timer so not attacked
 
     current_screen_type = SCREEN_HOUSE;

@@ -1174,7 +1174,7 @@ void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) { 
         reputationDelta = 2;
     }
 
-    pParty->InTheShopFlags[std::to_underlying(houseId())] = 1;
+    pParty->InTheShopFlags[houseId()] = 1;
 
     LocationInfo &loc = currentLocationInfo();
     loc.reputation += reputationDelta;

@@ -1493,7 +1493,7 @@ GAME_TEST(Issues, Issue1034) {
     // Crash when casting telekinesis outdoors
     test.playTraceFromTestData("issue_1034.mm7", "issue_1034.json");
     // check we have entered into the shop
-    EXPECT_EQ(window_SpeakInHouse->houseId(), 1);
+    EXPECT_EQ(window_SpeakInHouse->houseId(), HOUSE_WEAPON_SHOP_EMERALD_ISLAND);
 }
 
 GAME_TEST(Issues, Issue1036) {

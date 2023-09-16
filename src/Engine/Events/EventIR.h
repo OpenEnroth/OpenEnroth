@@ -149,7 +149,7 @@ class EventIR {
         } summon_item_descr;
         struct {
             int npc_id;
-            int location_id;
+            HOUSE_ID location_id;
         } npc_move_descr;
         struct {
             int groups_id;

@@ -2846,20 +2846,20 @@ void GameResultsApply() {
         // 108..120 - tavern ids
         // TODO: get rid of static cast, just place HOUSE_ID in proper place
         HOUSE_ID houseId = static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val);
-        if ((houseId >= 108) && (houseId <= 120)) {
-            if (!pParty->pArcomageWins[houseId - 108]) {
-                pParty->pArcomageWins[houseId - 108] = 1;
+        if (isArcomageTavern(houseId)) {
+            if (!pParty->pArcomageWins[houseId]) {
+                pParty->pArcomageWins[houseId] = 1;
                 pParty->partyFindsGold(buildingTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
             }
         }
 
         // arcomage quest test
         tavern_num = 0;
-        for (uint i = 108; i <= 120; ++i) {
-            if (!pParty->pArcomageWins[i - 108]) break;
+        for (HOUSE_ID i : allArcomageTaverns()) {
+            if (!pParty->pArcomageWins[i]) break;
             tavern_num++;
         }
-        if (tavern_num == 13) {
+        if (tavern_num == allArcomageTaverns().size()) {
             pParty->_questBits.set(QBIT_ARCOMAGE_CHAMPION);
         }
 

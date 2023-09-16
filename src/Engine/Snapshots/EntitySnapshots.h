@@ -475,7 +475,8 @@ struct Party_MM7 {
     /* 0075A */ std::array<int16_t, 5> monsterForHuntingKilled;
     /* 00764 */ uint8_t daysPlayedWithoutRest;
     /* 00765 */ std::array<uint8_t, 64> questBits;
-    /* 007A5 */ std::array<uint8_t, 16> arcomageWins;
+    /* 007A5 */ std::array<bool, 13> arcomageWins;
+                std::array<bool, 3> arcomageWinsUnused; // Original array was 16 elements long, but we only have 13 taverns.
     /* 007B5 */ char field_7B5_in_arena_quest;
     /* 007B6 */ std::array<char, 4> numArenaWins;
     /* 007BA */ std::array<bool, 29> isArtifactFound;  // 7ba
@@ -507,7 +508,8 @@ struct Party_MM7 {
     /* 1613C */ int32_t armageddonTimer;
     /* 16140 */ int32_t armageddonDamage;
     /* 16144 */ std::array<int32_t, 4> turnBasedPlayerRecoveryTimes;
-    /* 16154 */ std::array<int32_t, 53> inTheShopFlags;
+                int32_t inTheShopFlag0; // Unused flag for HOUSE_INVALID.
+    /* 16154 */ std::array<int32_t, 52> inTheShopFlags;
     /* 16228 */ int32_t fine;
 
     // Not sure why torchlight color is even stored in savegames in vanilla. Testing it on old savegames, it seems

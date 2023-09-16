@@ -665,10 +665,10 @@ std::string EventIR::toString() const {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
         case EVENT_SpeakInHouse:
-            if ((data.house_id - 1) < buildingTable.size() && !buildingTable[data.house_id].pName.empty()) {
-                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, data.house_id, buildingTable[data.house_id].pName);
+            if (buildingTable.indices().contains(data.house_id) && !buildingTable[data.house_id].pName.empty()) {
+                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, std::to_underlying(data.house_id), buildingTable[data.house_id].pName);
             } else {
-                return fmt::format("{}: SpeakInHouse({})", step, data.house_id);
+                return fmt::format("{}: SpeakInHouse({})", step, std::to_underlying(data.house_id));
             }
         case EVENT_PlaySound:
             return fmt::format("{}: PlaySound({}, ({}, {}))", step, std::to_underlying(data.sound_descr.sound_id), data.sound_descr.x, data.sound_descr.y);
@@ -769,7 +769,7 @@ std::string EventIR::toString() const {
         case EVENT_SetNPCTopic:
             return fmt::format("{}: SetNPCTopic({}, {}, {})", step, data.npc_topic_descr.npc_id, data.npc_topic_descr.index, data.npc_topic_descr.event_id);
         case EVENT_MoveNPC:
-            return fmt::format("{}: MoveNPC({}, {})", step, data.npc_move_descr.npc_id, data.npc_move_descr.location_id);
+            return fmt::format("{}: MoveNPC({}, {})", step, data.npc_move_descr.npc_id, std::to_underlying(data.npc_move_descr.location_id));
         case EVENT_GiveItem:
             return fmt::format("{}: GiveItem({}, {}, {})", step, std::to_underlying(data.give_item_descr.treasure_level), data.give_item_descr.treasure_type, std::to_underlying(data.give_item_descr.item_id));
         case EVENT_ChangeEvent:
@@ -1070,7 +1070,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
         case EVENT_MoveNPC:
             requireSize(10);
             ir.data.npc_move_descr.npc_id = EVT_DWORD(&evt->v5);
-            ir.data.npc_move_descr.location_id = EVT_DWORD(&evt->v9);
+            ir.data.npc_move_descr.location_id = static_cast<HOUSE_ID>(EVT_DWORD(&evt->v9));
             break;
         case EVENT_GiveItem:
             requireSize(11);

@@ -7,6 +7,8 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/MapEnums.h"
 
+#include "GUI/UI/UIHouseEnums.h"
+
 #include "Utility/IndexedArray.h"
 #include "Utility/Flags.h"
 
@@ -39,7 +41,7 @@ struct NPCData {  // 4Ch
     NpcFlags uFlags = 0;  // 8
     int fame = 0;                  // c
     int rep = 0;                   // 10
-    unsigned int Location2D = 0;   // 14  house_id
+    HOUSE_ID Location2D = HOUSE_INVALID;   // 14  house_id
     NPCProf profession = NoProfession;  // 18
     int greet = 0;                 // 1c
     int is_joinable = 0;           // 20
@@ -89,7 +91,7 @@ struct NPCStats {
     void InitializeNPCGroups(const Blob &npcGroups);
     void InitializeNPCNews(const Blob &npcNews);
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
-                                  int uLocation2D, MapId uMapId);
+                                  HOUSE_ID uLocation2D, MapId uMapId);
     /**
      * @offset 0x476C60
      */

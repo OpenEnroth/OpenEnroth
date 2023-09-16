@@ -310,7 +310,7 @@ struct Party {
     IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
     IndexedBitset<QBIT_FIRST, QBIT_LAST> _questBits;
-    std::array<uint8_t, 16> pArcomageWins;
+    IndexedArray<bool, HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN> pArcomageWins;
     int8_t field_7B5_in_arena_quest; // 0, DIALOGUE_ARENA_SELECT_PAGE..DIALOGUE_ARENA_SELECT_CHAMPION, or -1 for win
     std::array<char, 4> uNumArenaWins; // 0=page, 1=squire, 2=knight, 3=lord
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
@@ -336,7 +336,7 @@ struct Party {
     // Stops actors being yeeted high in the air at high fps
     int armageddonForceCount{ 0 };
     std::array<int, 4> pTurnBasedCharacterRecoveryTimes;
-    std::array<int, 53> InTheShopFlags;
+    IndexedArray<int, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> InTheShopFlags;
     int uFine;
     float TorchLightLastIntensity;
 

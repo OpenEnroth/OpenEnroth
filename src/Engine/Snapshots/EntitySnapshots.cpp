@@ -279,7 +279,7 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     dst->flags = std::to_underlying(src.uFlags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->location2d = src.Location2D;
+    dst->location2d = std::to_underlying(src.Location2D);
     dst->profession = std::to_underlying(src.profession);
     dst->greet = src.greet;
     dst->joins = src.is_joinable;
@@ -301,7 +301,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->uFlags = NpcFlags(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->Location2D = src.location2d;
+    dst->Location2D = static_cast<HOUSE_ID>(src.location2d);
     dst->profession = static_cast<NPCProf>(src.profession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
