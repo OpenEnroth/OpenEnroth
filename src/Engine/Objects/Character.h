@@ -203,7 +203,7 @@ class Character {
     int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
 
     // TODO(captainurist): move closer to Spells data.
-    DAMAGE_TYPE GetSpellDamageType(SPELL_TYPE uSpellID) const;
+    DAMAGE_TYPE GetSpellDamageType(SpellId uSpellID) const;
     int GetAttackRecoveryTime(bool bRangedAttack) const;
 
     int GetHealth() const { return this->health; }
@@ -502,8 +502,8 @@ class Character {
     int mana;
     unsigned int uBirthYear;
     CharacterEquipment pEquipment;
-    SPELL_SCHOOL lastOpenedSpellbookPage;
-    SPELL_TYPE uQuickSpell;
+    MagicSchool lastOpenedSpellbookPage;
+    SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;
     char _some_attack_bonus;
     char _melee_dmg_bonus;

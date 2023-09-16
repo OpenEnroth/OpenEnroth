@@ -182,7 +182,7 @@ void CastSpellInfoHelpers::castSpell() {
             spell_level = pCastSpell->overrideSkillValue.level();
             spell_mastery = pCastSpell->overrideSkillValue.mastery();
         } else {
-            which_skill = getSkillTypeForSpell(pCastSpell->uSpellID);
+            which_skill = skillForSpell(pCastSpell->uSpellID);
 
             CombinedSkillValue val = pPlayer->getActualSkillValue(which_skill);
             spell_level = val.level();
@@ -2924,7 +2924,7 @@ void CastSpellInfoHelpers::castSpell() {
  *
  * @offset 0x00427DA0
  */
-static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
+static size_t pushCastSpellInfo(SpellId uSpellID,
                                 int casterIndex,
                                 CombinedSkillValue skill_level,
                                 SpellCastFlags uFlags,
@@ -2972,7 +2972,7 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
     }
 }
 
-void pushSpellOrRangedAttack(SPELL_TYPE spell,
+void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
                              SpellCastFlags flags,
@@ -3163,18 +3163,18 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
     }
 }
 
-void pushTempleSpell(SPELL_TYPE spell) {
+void pushTempleSpell(SpellId spell) {
     CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, CHARACTER_SKILL_MASTERY_MASTER);
 
     pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
 }
 
-void pushNPCSpell(SPELL_TYPE spell) {
+void pushNPCSpell(SpellId spell) {
     pushSpellOrRangedAttack(spell, 0, SCROLL_OR_NPC_SPELL_SKILL_VALUE, 0, 0);
 }
 
-void pushScrollSpell(SPELL_TYPE spell, int casterIndex) {
+void pushScrollSpell(SpellId spell, int casterIndex) {
     pushSpellOrRangedAttack(spell, casterIndex, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
 }
 

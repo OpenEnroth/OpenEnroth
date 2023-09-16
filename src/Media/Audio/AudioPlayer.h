@@ -105,7 +105,7 @@ class AudioPlayer {
      * @param mode                      Playback mode.
      * @param pid                       `Pid` of sound originator. See `playSound` description.
      */
-    void playSpellSound(SPELL_TYPE spell, bool is_impact, SoundPlaybackMode mode, Pid pid = Pid());
+    void playSpellSound(SpellId spell, bool is_impact, SoundPlaybackMode mode, Pid pid = Pid());
 
     /**
      * Play generic UI sound.

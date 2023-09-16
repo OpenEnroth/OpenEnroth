@@ -1994,7 +1994,7 @@ int Character::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-DAMAGE_TYPE Character::GetSpellDamageType(SPELL_TYPE uSpellID) const {
+DAMAGE_TYPE Character::GetSpellDamageType(SpellId uSpellID) const {
     return pSpellStats->pInfos[uSpellID].damageType;
 }
 
@@ -3893,7 +3893,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
 
         // TODO(Nik-RE-dev): spell scroll is removed before actual casting and will be consumed even if casting is canceled.
-        SPELL_TYPE scrollSpellId = scrollSpellIds[pParty->pPickedItem.uItemID];
+        SpellId scrollSpellId = scrollSpellIds[pParty->pPickedItem.uItemID];
         if (isSpellTargetsItem(scrollSpellId)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
@@ -3911,7 +3911,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 
     if (pParty->pPickedItem.isBook()) {
-        SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
+        SpellId bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
         if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
             engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
@@ -3924,7 +3924,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
 
         CharacterSkillMastery requiredMastery = pSpellDatas[bookSpellId].skillMastery;
-        CharacterSkillType skill = getSkillTypeForSpell(bookSpellId);
+        CharacterSkillType skill = skillForSpell(bookSpellId);
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
         if (requiredMastery > val.mastery() || val.level() == 0) {
@@ -6420,7 +6420,7 @@ bool IsDwarfPresentInParty(bool a1) {
 void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
     // target character? if any
 
-    SPELL_TYPE spellId;
+    SpellId spellId;
     signed int recvdMagicDmg;     // eax@139
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
@@ -7597,7 +7597,7 @@ Character::Character() {
     _expression21_animtime = 0;
     _expression21_frameset = 0;
 
-    lastOpenedSpellbookPage = SPELL_SCHOOL_FIRE;
+    lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
 }
 
 void Character::cleanupBeacons() {

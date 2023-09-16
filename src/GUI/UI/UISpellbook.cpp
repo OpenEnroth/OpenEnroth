@@ -22,67 +22,67 @@
 
 #include "Library/Random/Random.h"
 
-static constexpr IndexedArray<const char *, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> spellbook_texture_filename_suffices = {
-    {SPELL_SCHOOL_FIRE,     "f"},
-    {SPELL_SCHOOL_AIR,      "a"},
-    {SPELL_SCHOOL_WATER,    "w"},
-    {SPELL_SCHOOL_EARTH,    "e"},
-    {SPELL_SCHOOL_SPIRIT,   "s"},
-    {SPELL_SCHOOL_MIND,     "m"},
-    {SPELL_SCHOOL_BODY,     "b"},
-    {SPELL_SCHOOL_LIGHT,    "l"},
-    {SPELL_SCHOOL_DARK,     "d"}
+static constexpr IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spellbook_texture_filename_suffices = {
+    {MAGIC_SCHOOL_FIRE,   "f"},
+    {MAGIC_SCHOOL_AIR,    "a"},
+    {MAGIC_SCHOOL_WATER,  "w"},
+    {MAGIC_SCHOOL_EARTH,  "e"},
+    {MAGIC_SCHOOL_SPIRIT, "s"},
+    {MAGIC_SCHOOL_MIND,   "m"},
+    {MAGIC_SCHOOL_BODY,   "b"},
+    {MAGIC_SCHOOL_LIGHT,  "l"},
+    {MAGIC_SCHOOL_DARK,   "d"}
 };
 
-static constexpr IndexedArray<std::array<unsigned char, 12>, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> pSpellbookSpellIndices = {{
-    {SPELL_SCHOOL_FIRE,     {0, 3, 1, 8, 11, 7, 4, 10, 6, 2, 5, 9}},
-    {SPELL_SCHOOL_AIR,      {0, 11, 2, 9, 6, 8, 5, 10, 3, 7, 1, 4}},
-    {SPELL_SCHOOL_WATER,    {0, 4, 8, 9, 1, 10, 3, 11, 7, 6, 2, 5}},
-    {SPELL_SCHOOL_EARTH,    {0, 7, 10, 8, 2, 11, 1, 5, 3, 6, 4, 9}},
-    {SPELL_SCHOOL_SPIRIT,   {0, 5, 10, 11, 7, 2, 8, 1, 4, 9, 3, 6}},
-    {SPELL_SCHOOL_MIND,     {0, 5, 9, 8, 3, 7, 6, 4, 1, 11, 2, 10}},
-    {SPELL_SCHOOL_BODY,     {0, 1, 6, 9, 3, 5, 8, 11, 7, 10, 4, 2}},
-    {SPELL_SCHOOL_LIGHT,    {0, 1, 10, 11, 9, 4, 3, 6, 5, 7, 8, 2}},
-    {SPELL_SCHOOL_DARK,     {0, 9, 3, 7, 1, 5, 2, 10, 11, 8, 6, 4}}
+static constexpr IndexedArray<std::array<unsigned char, 12>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> pSpellbookSpellIndices = {{
+    {MAGIC_SCHOOL_FIRE,     {0, 3, 1, 8, 11, 7, 4, 10, 6, 2, 5, 9}},
+    {MAGIC_SCHOOL_AIR,      {0, 11, 2, 9, 6, 8, 5, 10, 3, 7, 1, 4}},
+    {MAGIC_SCHOOL_WATER,    {0, 4, 8, 9, 1, 10, 3, 11, 7, 6, 2, 5}},
+    {MAGIC_SCHOOL_EARTH,    {0, 7, 10, 8, 2, 11, 1, 5, 3, 6, 4, 9}},
+    {MAGIC_SCHOOL_SPIRIT,   {0, 5, 10, 11, 7, 2, 8, 1, 4, 9, 3, 6}},
+    {MAGIC_SCHOOL_MIND,     {0, 5, 9, 8, 3, 7, 6, 4, 1, 11, 2, 10}},
+    {MAGIC_SCHOOL_BODY,     {0, 1, 6, 9, 3, 5, 8, 11, 7, 10, 4, 2}},
+    {MAGIC_SCHOOL_LIGHT,    {0, 1, 10, 11, 9, 4, 3, 6, 5, 7, 8, 2}},
+    {MAGIC_SCHOOL_DARK,     {0, 9, 3, 7, 1, 5, 2, 10, 11, 8, 6, 4}}
 }};
 
-static constexpr IndexedArray<const char *, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> texNames = {
-    {SPELL_SCHOOL_FIRE,     "SBFB00"},
-    {SPELL_SCHOOL_AIR,      "SBAB00"},
-    {SPELL_SCHOOL_WATER,    "SBWB00"},
-    {SPELL_SCHOOL_EARTH,    "SBEB00"},
-    {SPELL_SCHOOL_SPIRIT,   "SBSB00"},
-    {SPELL_SCHOOL_MIND,     "SBMB00"},
-    {SPELL_SCHOOL_BODY,     "SBBB00"},
-    {SPELL_SCHOOL_LIGHT,    "SBLB00"},
-    {SPELL_SCHOOL_DARK,     "SBDB00"}
+static constexpr IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> texNames = {
+    {MAGIC_SCHOOL_FIRE,   "SBFB00"},
+    {MAGIC_SCHOOL_AIR,    "SBAB00"},
+    {MAGIC_SCHOOL_WATER,  "SBWB00"},
+    {MAGIC_SCHOOL_EARTH,  "SBEB00"},
+    {MAGIC_SCHOOL_SPIRIT, "SBSB00"},
+    {MAGIC_SCHOOL_MIND,   "SBMB00"},
+    {MAGIC_SCHOOL_BODY,   "SBBB00"},
+    {MAGIC_SCHOOL_LIGHT,  "SBLB00"},
+    {MAGIC_SCHOOL_DARK,   "SBDB00"}
 };
 
-static constexpr IndexedArray<std::array<int, 2>, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> texture_tab_coord1 = {{
-    {SPELL_SCHOOL_FIRE,     {406, 9}},
-    {SPELL_SCHOOL_AIR,      {406, 46}},
-    {SPELL_SCHOOL_WATER,    {406, 84}},
-    {SPELL_SCHOOL_EARTH,    {406, 121}},
-    {SPELL_SCHOOL_SPIRIT,   {407, 158}},
-    {SPELL_SCHOOL_MIND,     {405, 196}},
-    {SPELL_SCHOOL_BODY,     {405, 234}},
-    {SPELL_SCHOOL_LIGHT,    {405, 272}},
-    {SPELL_SCHOOL_DARK,     {405, 309}}
+static constexpr IndexedArray<std::array<int, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> texture_tab_coord1 = {{
+    {MAGIC_SCHOOL_FIRE,     {406, 9}},
+    {MAGIC_SCHOOL_AIR,      {406, 46}},
+    {MAGIC_SCHOOL_WATER,    {406, 84}},
+    {MAGIC_SCHOOL_EARTH,    {406, 121}},
+    {MAGIC_SCHOOL_SPIRIT,   {407, 158}},
+    {MAGIC_SCHOOL_MIND,     {405, 196}},
+    {MAGIC_SCHOOL_BODY,     {405, 234}},
+    {MAGIC_SCHOOL_LIGHT,    {405, 272}},
+    {MAGIC_SCHOOL_DARK,     {405, 309}}
 }};
 
-static constexpr IndexedArray<std::array<int, 2>, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> texture_tab_coord0 = {{
-    {SPELL_SCHOOL_FIRE,     {415, 10}},
-    {SPELL_SCHOOL_AIR,      {415, 46}},
-    {SPELL_SCHOOL_WATER,    {415, 83}},
-    {SPELL_SCHOOL_EARTH,    {415, 121}},
-    {SPELL_SCHOOL_SPIRIT,   {415, 158}},
-    {SPELL_SCHOOL_MIND,     {416, 196}},
-    {SPELL_SCHOOL_BODY,     {416, 234}},
-    {SPELL_SCHOOL_LIGHT,    {416, 271}},
-    {SPELL_SCHOOL_DARK,     {416, 307}}
+static constexpr IndexedArray<std::array<int, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> texture_tab_coord0 = {{
+    {MAGIC_SCHOOL_FIRE,     {415, 10}},
+    {MAGIC_SCHOOL_AIR,      {415, 46}},
+    {MAGIC_SCHOOL_WATER,    {415, 83}},
+    {MAGIC_SCHOOL_EARTH,    {415, 121}},
+    {MAGIC_SCHOOL_SPIRIT,   {415, 158}},
+    {MAGIC_SCHOOL_MIND,     {416, 196}},
+    {MAGIC_SCHOOL_BODY,     {416, 234}},
+    {MAGIC_SCHOOL_LIGHT,    {416, 271}},
+    {MAGIC_SCHOOL_DARK,     {416, 307}}
 }};
 
-SPELL_TYPE spellbookSelectedSpell;
+SpellId spellbookSelectedSpell;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook() : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions(), 0) {
     current_screen_type = SCREEN_SPELL_BOOK;
@@ -95,7 +95,7 @@ GUIWindow_Spellbook::GUIWindow_Spellbook() : GUIWindow(WINDOW_SpellBook, {0, 0},
     pAudioPlayer->playUISound(SOUND_48);
 }
 
-void GUIWindow_Spellbook::openSpellbookPage(SPELL_SCHOOL page) {
+void GUIWindow_Spellbook::openSpellbookPage(MagicSchool page) {
     onCloseSpellBookPage();
     pParty->activeCharacter().lastOpenedSpellbookPage = page;
     openSpellbook();
@@ -108,12 +108,12 @@ void GUIWindow_Spellbook::openSpellbook() {
 
     loadSpellbook();
 
-    SPELL_SCHOOL chapter = player.lastOpenedSpellbookPage;
-    for (SPELL_TYPE spell : schoolSpells(chapter)) {
+    MagicSchool chapter = player.lastOpenedSpellbookPage;
+    for (SpellId spell : spellsForMagicSchool(chapter)) {
         if (!player.spellbook.bHaveSpell[spell] && !engine->config->debug.AllMagic.value())
             continue;
 
-        int index = spellIndexInSchool(spell);
+        int index = spellIndexInMagicSchool(spell);
         CreateButton(fmt::format("SpellBook_Spell{}", index),
                      {pViewport->uViewportTL_X + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Xpos,
                      pViewport->uViewportTL_Y + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Ypos},
@@ -160,8 +160,8 @@ void GUIWindow_Spellbook::Update() {
 
     render->ClearZBuffer();
 
-    for (SPELL_SCHOOL page : allSpellSchools()) {
-        CharacterSkillType skill = schoolSkill(page);
+    for (MagicSchool page : allMagicSchools()) {
+        CharacterSkillType skill = skillForMagicSchool(page);
 
         if (player.pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
             auto pPageTexture = ui_spellbook_school_tabs[page][0];
@@ -176,8 +176,8 @@ void GUIWindow_Spellbook::Update() {
             }
             render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
 
-            for (SPELL_TYPE spell : schoolSpells(player.lastOpenedSpellbookPage)) {
-                int index = spellIndexInSchool(spell);
+            for (SpellId spell : spellsForMagicSchool(player.lastOpenedSpellbookPage)) {
+                int index = spellIndexInMagicSchool(spell);
                 if (player.spellbook.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
                     // this should check if player knows spell
                     if (SBPageSSpellsTextureList[index + 1]) {
@@ -224,15 +224,15 @@ void GUIWindow_Spellbook::Release() {
 void GUIWindow_Spellbook::loadSpellbook() {
     // TODO(captainurist): encapsulate this enum arithmetic properly
     // TODO(Nik-RE-dev): turn variable into an enum
-    SPELL_SCHOOL page = pParty->activeCharacter().lastOpenedSpellbookPage;
-    if (pParty->activeCharacter().uQuickSpell != SPELL_NONE && spellSchool(pParty->activeCharacter().uQuickSpell) == page)
+    MagicSchool page = pParty->activeCharacter().lastOpenedSpellbookPage;
+    if (pParty->activeCharacter().uQuickSpell != SPELL_NONE && magicSchoolForSpell(pParty->activeCharacter().uQuickSpell) == page)
         spellbookSelectedSpell = pParty->activeCharacter().uQuickSpell;
     else
         spellbookSelectedSpell = SPELL_NONE;
 
-    for (SPELL_TYPE spell : schoolSpells(page)) {
+    for (SpellId spell : spellsForMagicSchool(page)) {
         if (pParty->activeCharacter().spellbook.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
-            int index = spellIndexInSchool(spell);
+            int index = spellIndexInMagicSchool(spell);
             std::string pContainer;
 
             pContainer = fmt::format("SB{}S{:02}", spellbook_texture_filename_suffices[page], pSpellbookSpellIndices[page][index + 1]);
@@ -245,7 +245,7 @@ void GUIWindow_Spellbook::loadSpellbook() {
 }
 
 void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
-    SPELL_SCHOOL page = SPELL_SCHOOL_FIRE;
+    MagicSchool page = MAGIC_SCHOOL_FIRE;
     if (pParty->hasActiveCharacter()) {
         page = pParty->activeCharacter().lastOpenedSpellbookPage;
     }
@@ -263,7 +263,7 @@ void GUIWindow_Spellbook::initializeTextures() {
     ui_spellbook_btn_quckspell = assets->getImage_Solid("ib-m6-u");
     ui_spellbook_btn_quckspell_click = assets->getImage_Solid("ib-m6-d");
 
-    for (SPELL_SCHOOL page : allSpellSchools()) {
+    for (MagicSchool page : allMagicSchools()) {
         ui_spellbook_school_backgrounds[page] = assets->getImage_ColorKey(texNames[page]);
         ui_spellbook_school_tabs[page][0] = assets->getImage_Alpha(fmt::format("tab{}a", std::to_underlying(page) + 1));
         ui_spellbook_school_tabs[page][1] = assets->getImage_Alpha(fmt::format("tab{}b", std::to_underlying(page) + 1));
@@ -289,7 +289,7 @@ void GUIWindow_Spellbook::onCloseSpellBook() {
         ui_spellbook_btn_quckspell_click = nullptr;
     }
 
-    for (SPELL_SCHOOL page : allSpellSchools()) {
+    for (MagicSchool page : allMagicSchools()) {
         if (ui_spellbook_school_backgrounds[page]) {
             ui_spellbook_school_backgrounds[page]->Release();
             ui_spellbook_school_backgrounds[page] = nullptr;

@@ -987,8 +987,8 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 
     reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
 
-    dst->lastOpenedSpellbookPage = static_cast<SPELL_SCHOOL>(src.lastOpenedSpellbookPage);
-    dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
+    dst->lastOpenedSpellbookPage = static_cast<MagicSchool>(src.lastOpenedSpellbookPage);
+    dst->uQuickSpell = static_cast<SpellId>(src.quickSpell);
 
     reconstruct(src.playerEventBits, &dst->_characterEventBits, tags::reverseBits);
 
@@ -1255,9 +1255,9 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uAttack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;
     dst->monsterInfo.uMissleAttack2Type = src.pMonsterInfo.missileAttack2Type;
     dst->monsterInfo.uSpell1UseChance = src.pMonsterInfo.spell1UseChance;
-    dst->monsterInfo.uSpell1ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.spell1Id);
+    dst->monsterInfo.uSpell1ID = static_cast<SpellId>(src.pMonsterInfo.spell1Id);
     dst->monsterInfo.uSpell2UseChance = src.pMonsterInfo.spell2UseChance;
-    dst->monsterInfo.uSpell2ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.spell2Id);
+    dst->monsterInfo.uSpell2ID = static_cast<SpellId>(src.pMonsterInfo.spell2Id);
     dst->monsterInfo.uResFire = src.pMonsterInfo.resFire;
     dst->monsterInfo.uResAir = src.pMonsterInfo.resAir;
     dst->monsterInfo.uResWater = src.pMonsterInfo.resWater;
@@ -1516,7 +1516,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->tempLifetime = src.tempLifetime;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     reconstruct(src.containing_item, &dst->containing_item);
-    dst->uSpellID = static_cast<SPELL_TYPE>(src.uSpellID);
+    dst->uSpellID = static_cast<SpellId>(src.uSpellID);
     dst->spell_level = src.spell_level;
     dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
     dst->field_54 = src.field_54;

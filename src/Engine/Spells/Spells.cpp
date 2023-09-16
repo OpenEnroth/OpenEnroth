@@ -291,7 +291,7 @@ IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_DARK_SOULDRINKER,            SpellData(60, 60, 60, 60,  300,  300,  300,  300, 25,  8, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)}
 };
 
-const IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds = {
+const IndexedArray<SpellId, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds = {
     {ITEM_WAND_OF_FIRE,                SPELL_FIRE_FIRE_BOLT},
     {ITEM_WAND_OF_SPARKS,              SPELL_AIR_SPARKS},
     {ITEM_WAND_OF_POISON,              SPELL_WATER_POISON_SPRAY},
@@ -323,7 +323,7 @@ const IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds = {
     {ITEM_MYSTIC_WAND_OF_INCINERATION, SPELL_FIRE_INCINERATE}
 };
 
-const IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds = {
+const IndexedArray<SpellId, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds = {
     {ITEM_SCROLL_TORCH_LIGHT,           SPELL_FIRE_TORCH_LIGHT},
     {ITEM_SCROLL_FIRE_BOLT,             SPELL_FIRE_FIRE_BOLT},
     {ITEM_SCROLL_FIRE_RESISTANCE,       SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -433,7 +433,7 @@ const IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> 
     {ITEM_SCROLL_SOULDRINKER,           SPELL_DARK_SOULDRINKER}
 };
 
-const IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds = {
+const IndexedArray<SpellId, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds = {
     {ITEM_SPELLBOOK_TORCH_LIGHT,           SPELL_FIRE_TORCH_LIGHT},
     {ITEM_SPELLBOOK_FIRE_BOLT,             SPELL_FIRE_FIRE_BOLT},
     {ITEM_SPELLBOOK_FIRE_RESISTANCE,       SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -543,32 +543,32 @@ const IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> book
     {ITEM_SPELLBOOK_SOULDRINKER,           SPELL_DARK_SOULDRINKER}
 };
 
-IndexedArray<std::array<struct SpellBookIconPos, 12>, SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST> pIconPos = {
-    {SPELL_SCHOOL_FIRE, {{{0,   0},   {17,  13},  {115, 2},   {217, 15},  {299, 6},   {28,  125},
+IndexedArray<std::array<struct SpellBookIconPos, 12>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> pIconPos = {
+    {MAGIC_SCHOOL_FIRE, {{{0,   0},   {17,  13},  {115, 2},   {217, 15},  {299, 6},   {28,  125},
                           {130, 133}, {294, 114}, {11,  232}, {134, 233}, {237, 171}, {296, 231}}}},
 
-    {SPELL_SCHOOL_AIR, {{{0,   0},   {19,  9},   {117, 3},   {206, 13},  {285, 7},   {16,  123},
+    {MAGIC_SCHOOL_AIR, {{{0,   0},   {19,  9},   {117, 3},   {206, 13},  {285, 7},   {16,  123},
                          {113, 101}, {201, 118}, {317, 110}, {11,  230}, {149, 236}, {296, 234}}}},
 
-    {SPELL_SCHOOL_WATER, {{{0,  0},   {17,  9},   {140, 0},   {210, 34},  {293, 5},   {15,  98},
+    {MAGIC_SCHOOL_WATER, {{{0,  0},   {17,  9},   {140, 0},   {210, 34},  {293, 5},   {15,  98},
                            {78, 121}, {175, 136}, {301, 115}, {15,  226}, {154, 225}, {272, 220}}}},
 
-    {SPELL_SCHOOL_EARTH, {{{0,   0},   {7,   9},   {156, 2},   {277, 9},   {11,  117}, {111, 82},
+    {MAGIC_SCHOOL_EARTH, {{{0,   0},   {7,   9},   {156, 2},   {277, 9},   {11,  117}, {111, 82},
                            {180, 102}, {303, 108}, {10,  229}, {120, 221}, {201, 217}, {296, 225}}}},
 
-    {SPELL_SCHOOL_SPIRIT, {{{0,   0},   {18,  8},   {89,  15},  {192, 14},  {292, 7},   {22,  129},
+    {MAGIC_SCHOOL_SPIRIT, {{{0,   0},   {18,  8},   {89,  15},  {192, 14},  {292, 7},   {22,  129},
                             {125, 146}, {217, 136}, {305, 115}, {22,  226}, {174, 237}, {290, 231}}}},
 
-    {SPELL_SCHOOL_MIND, {{{0,   0},  {18,  12},  {148, 9},   {292, 7},   {17,  122}, {121, 99},
+    {MAGIC_SCHOOL_MIND, {{{0,   0},  {18,  12},  {148, 9},   {292, 7},   {17,  122}, {121, 99},
                           {220, 87}, {293, 112}, {13,  236}, {128, 213}, {220, 223}, {315, 223}}}},
 
-    {SPELL_SCHOOL_BODY, {{{0,   0},   {23,  14},  {127, 8},   {204, 0},   {306, 8},   {14,  115},
+    {MAGIC_SCHOOL_BODY, {{{0,   0},   {23,  14},  {127, 8},   {204, 0},   {306, 8},   {14,  115},
                           {122, 132}, {200, 116}, {293, 122}, {20,  228}, {154, 228}, {294, 239}}}},
 
-    {SPELL_SCHOOL_LIGHT, {{{0,   0},  {19,  14},  {124, 10},  {283, 12},  {8,   105}, {113, 89},
+    {MAGIC_SCHOOL_LIGHT, {{{0,   0},  {19,  14},  {124, 10},  {283, 12},  {8,   105}, {113, 89},
                            {190, 82}, {298, 108}, {18,  181}, {101, 204}, {204, 203}, {285, 218}}}},
 
-    {SPELL_SCHOOL_DARK, {{{0,   0},   {18,  17},  {110, 16},  {201, 15},  {307, 15},  {18,  148},
+    {MAGIC_SCHOOL_DARK, {{{0,   0},   {18,  17},  {110, 16},  {201, 15},  {307, 15},  {18,  148},
                           {125, 166}, {201, 123}, {275, 120}, {28,  235}, {217, 222}, {324, 216}}}}
 };
 
@@ -743,7 +743,7 @@ void SpellStats::Initialize(const Blob &spells) {
     std::string txtRaw(spells.string_view());
 
     strtok(txtRaw.data(), "\r");
-    for (SPELL_TYPE uSpellID : allRegularSpells()) {
+    for (SpellId uSpellID : allRegularSpells()) {
         if (((std::to_underlying(uSpellID) % 11) - 1) == 0) {
             strtok(NULL, "\r");
         }
@@ -766,7 +766,7 @@ void SpellStats::Initialize(const Blob &spells) {
     }
 }
 
-void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
+void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
     assert(skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && skillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER);
@@ -1032,11 +1032,11 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
     }
 }
 
-bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID) {
+bool IsSpellQuickCastableOnShiftClick(SpellId uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
 
-int CalcSpellDamage(SPELL_TYPE uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
+int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
     int result;       // eax@1
     unsigned int diceSides;  // [sp-4h] [bp-8h]@9
 

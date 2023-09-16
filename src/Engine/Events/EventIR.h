@@ -71,7 +71,7 @@ class EventIR {
             int is_set;
         } actor_flag_descr;
         struct {
-            SPELL_TYPE spell_id;
+            SpellId spell_id;
             CharacterSkillMastery spell_mastery;
             int spell_level;
             int fromx;

@@ -1175,7 +1175,7 @@ void CharacterUI_StatsTab_ShowHint() {
 }
 
 //----- (00410B28) --------------------------------------------------------
-void DrawSpellDescriptionPopup(SPELL_TYPE spell_id) {
+void DrawSpellDescriptionPopup(SpellId spell_id) {
     SpellInfo *spell;             // esi@1
     unsigned int v3;              // eax@2
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
@@ -1226,7 +1226,7 @@ void DrawSpellDescriptionPopup(SPELL_TYPE spell_id) {
     spell_info_window.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    CharacterSkillType skill = schoolSkill(pParty->activeCharacter().lastOpenedSpellbookPage);
+    CharacterSkillType skill = skillForMagicSchool(pParty->activeCharacter().lastOpenedSpellbookPage);
     CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(assets->pFontComic.get(), 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
@@ -1307,7 +1307,7 @@ static void drawBuffPopupWindow() {
  */
 void showSpellbookInfo(ItemId spellItemId) {
     // TODO(captainurist): deal away with casts.
-    SPELL_TYPE spellId = static_cast<SPELL_TYPE>(std::to_underlying(spellItemId) - 399);
+    SpellId spellId = static_cast<SpellId>(std::to_underlying(spellItemId) - 399);
     int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
     unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
 

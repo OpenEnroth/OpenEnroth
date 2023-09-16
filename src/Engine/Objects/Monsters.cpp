@@ -24,7 +24,7 @@ int ParseMissleAttackType(const char *missle_attack_str);
 int ParseSpecialAttack(const char *spec_att_str);
 
 //----- (004548E2) --------------------------------------------------------
-SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
+SpellId ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
     if (!tbl->pProperties[0]) {
         ++*next_token;
         return SPELL_NONE;

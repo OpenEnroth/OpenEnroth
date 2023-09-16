@@ -495,9 +495,9 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
         if (pCharacter.classType == CHARACTER_CLASS_KNIGHT)
             pCharacter.sResMagicBase = 10;
 
-        pCharacter.lastOpenedSpellbookPage = SPELL_SCHOOL_FIRE;
-        for (SPELL_SCHOOL page : allSpellSchools()) {
-            if (pCharacter.pActiveSkills[schoolSkill(page)]) {
+        pCharacter.lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
+        for (MagicSchool page : allMagicSchools()) {
+            if (pCharacter.pActiveSkills[skillForMagicSchool(page)]) {
                 pCharacter.lastOpenedSpellbookPage = page;
                 break;
             }

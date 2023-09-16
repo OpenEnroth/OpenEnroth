@@ -218,11 +218,11 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
 
-            SPELL_TYPE quickSpellNumber = pParty->activeCharacter().uQuickSpell;
+            SpellId quickSpellNumber = pParty->activeCharacter().uQuickSpell;
 
             int uRequiredMana = 0;
             if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
-                CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(getSkillTypeForSpell(quickSpellNumber)).mastery();
+                CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
 
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }

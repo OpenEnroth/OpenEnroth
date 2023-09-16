@@ -69,7 +69,7 @@ extern Pid uLastPointedObjectID;
 extern int KeyboardPageNum;
 extern Color uGameUIFontShadow;
 extern Color uGameUIFontMain;
-extern SPELL_TYPE dword_507B00_spell_info_to_draw_in_popup;
+extern SpellId dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
 extern int enchantingActiveCharacter;

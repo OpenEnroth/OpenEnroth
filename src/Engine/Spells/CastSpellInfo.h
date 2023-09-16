@@ -62,7 +62,7 @@ static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
 struct CastSpellInfo {
     GUIWindow *GetCastSpellInInventoryWindow();
 
-    SPELL_TYPE uSpellID = SPELL_NONE; // Spell being cast.
+    SpellId uSpellID = SPELL_NONE; // Spell being cast.
     int casterCharacterIndex = -1; // 0-based index of the character who cast the spell.
     int targetCharacterIndex = -1; // 0-based index of the target character, if any.
                                    // TODO(captainurist): also hireling index for dark sacrifice.
@@ -96,7 +96,7 @@ struct CastSpellInfo {
  * @param flags                         Spell flags. Can be empty or have several flags.
  * @param overrideSoundId                            ???
  */
-void pushSpellOrRangedAttack(SPELL_TYPE spell,
+void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
                              SpellCastFlags flags,
@@ -108,14 +108,14 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
  *
  * @param spell                         Spell id.
  */
-void pushTempleSpell(SPELL_TYPE spell);
+void pushTempleSpell(SpellId spell);
 
 /**
  * Register spell cast by NPC companions.
  *
  * @param spell                         Spell id.
  */
-void pushNPCSpell(SPELL_TYPE spell);
+void pushNPCSpell(SpellId spell);
 
 /**
  * Register spell cast through scroll.
@@ -123,7 +123,7 @@ void pushNPCSpell(SPELL_TYPE spell);
  * @param spell                         Spell id.
  * @param casterIndex                   0-based index of the character casting the spell.
  */
-void pushScrollSpell(SPELL_TYPE spell, int casterIndex);
+void pushScrollSpell(SpellId spell, int casterIndex);
 
 /**
  * Process successful picking target for spell.

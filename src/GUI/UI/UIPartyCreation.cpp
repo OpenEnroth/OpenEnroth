@@ -767,8 +767,8 @@ bool PartyCreationUI_LoopInternal() {
             pParty->pCharacters[i].sResMagicBase = 10;
         // TODO(pskelton): why just CHARACTER_BUFF_RESIST_WATER?
         pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Reset();
-        for (SPELL_SCHOOL page : allSpellSchools()) {
-            if (pParty->pCharacters[i].pActiveSkills[schoolSkill(page)]) {
+        for (MagicSchool page : allMagicSchools()) {
+            if (pParty->pCharacters[i].pActiveSkills[skillForMagicSchool(page)]) {
                 pParty->pCharacters[i].lastOpenedSpellbookPage = page;
                 break;
             }

@@ -154,9 +154,9 @@ struct MonsterInfo {
     uint8_t uAttack2DamageBonus = 0;
     uint8_t uMissleAttack2Type = 0;
     uint8_t uSpell1UseChance = 0;
-    SPELL_TYPE uSpell1ID = SPELL_NONE;
+    SpellId uSpell1ID = SPELL_NONE;
     uint8_t uSpell2UseChance = 0;
-    SPELL_TYPE uSpell2ID = SPELL_NONE;
+    SpellId uSpell2ID = SPELL_NONE;
     uint8_t uResFire = 0;
     uint8_t uResAir = 0;
     uint8_t uResWater = 0;

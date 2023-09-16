@@ -938,8 +938,8 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.monster_descr.name_id = EVT_DWORD(_evt->v24);
             break;
         case EVENT_CastSpell:
-            ir.data.spell_descr.spell_id = (SPELL_TYPE)_evt->v5;
-            ir.data.spell_descr.spell_mastery = (CharacterSkillMastery)(_evt->v6 + 1);
+            ir.data.spell_descr.spell_id = static_cast<SpellId>(_evt->v5);
+            ir.data.spell_descr.spell_mastery = static_cast<CharacterSkillMastery>(_evt->v6 + 1);
             ir.data.spell_descr.spell_level = _evt->v7;
             ir.data.spell_descr.fromx = EVT_DWORD(_evt->v8);
             ir.data.spell_descr.fromy = EVT_DWORD(_evt->v12);

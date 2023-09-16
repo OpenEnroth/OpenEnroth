@@ -61,7 +61,7 @@ stru319::stru319() {
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
-bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {
+bool ShouldMonsterPlayAttackAnim(SpellId spell_id) {
     switch (spell_id) {
         case SPELL_FIRE_HASTE:
         case SPELL_AIR_SHIELD:
@@ -211,7 +211,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
+                           SpellId uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
@@ -685,7 +685,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     }
 }
 
-unsigned short Actor::GetObjDescId(SPELL_TYPE spellId) {
+unsigned short Actor::GetObjDescId(SpellId spellId) {
     return pObjectList->ObjectIDByItemID(SpellSpriteMapping[spellId]);  // crash here
 }
 
@@ -1215,7 +1215,7 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int damageDiceRolls;
     int damageDiceSides;
     int damageBonus;
-    SPELL_TYPE spellID;
+    SpellId spellID;
     int spellPower = 0;
     CombinedSkillValue skill;
     int skillLevel = 0;
@@ -1392,7 +1392,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     int16_t v13;         // ax@10
-    SPELL_TYPE v16;      // ecx@17
+    SpellId v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
@@ -2571,7 +2571,7 @@ void Actor::UpdateActorAI() {
     double v42;              // st7@176
     double v43;              // st6@176
     ABILITY_INDEX v45;                 // eax@192
-    SPELL_TYPE v46;     // cl@197
+    SpellId v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
@@ -3783,7 +3783,7 @@ void Actor::LootActor() {
 }
 
 //----- (00427102) --------------------------------------------------------
-bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
+bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
     switch (spell) {
         case SPELL_BODY_POWER_CURE: {
             if (this->currentHP >= this->monsterInfo.uHP) return false;

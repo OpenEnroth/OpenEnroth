@@ -7,7 +7,7 @@
 
 #include "Utility/Segment.h"
 
-enum class SPELL_TYPE : uint8_t {
+enum class SpellId : uint8_t {
     SPELL_NONE = 0,
 
     SPELL_FIRE_TORCH_LIGHT = 1,
@@ -133,19 +133,19 @@ enum class SPELL_TYPE : uint8_t {
     SPELL_STAT_DECREASE = 152, // used for face overlay when something is subtracted from character like stat/res/gold/condition etc.
     SPELL_DISEASE = 153
 };
-using enum SPELL_TYPE;
+using enum SpellId;
 
 /**
  * @return                              All regular spell types.
  */
-inline Segment<SPELL_TYPE> allRegularSpells() {
+inline Segment<SpellId> allRegularSpells() {
     return {SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR};
 }
 
 /**
  * Is spell target is item in inventory?
  */
-inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
+inline bool isSpellTargetsItem(SpellId uSpellID) {
     return uSpellID == SPELL_WATER_ENCHANT_ITEM ||
            uSpellID == SPELL_FIRE_FIRE_AURA ||
            uSpellID == SPELL_DARK_VAMPIRIC_WEAPON ||
@@ -155,99 +155,76 @@ inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
 /**
  * Is spell ID references any regular spell?
  */
-inline bool isRegularSpell(SPELL_TYPE uSpellID) {
+inline bool isRegularSpell(SpellId uSpellID) {
     return uSpellID >= SPELL_FIRST_REGULAR && uSpellID <= SPELL_LAST_REGULAR;
 }
 
 /**
- * Get skill used for casting given spell.
+ * Magic school, note that order corresponds to the enum order in `SPELL_TYPE`.
  */
-inline CharacterSkillType getSkillTypeForSpell(SPELL_TYPE uSpellID) {
-    assert(uSpellID != SPELL_NONE);
+enum class MagicSchool {
+    MAGIC_SCHOOL_FIRE = 0,
+    MAGIC_SCHOOL_AIR = 1,
+    MAGIC_SCHOOL_WATER = 2,
+    MAGIC_SCHOOL_EARTH = 3,
+    MAGIC_SCHOOL_SPIRIT = 4,
+    MAGIC_SCHOOL_MIND = 5,
+    MAGIC_SCHOOL_BODY = 6,
+    MAGIC_SCHOOL_LIGHT = 7,
+    MAGIC_SCHOOL_DARK = 8,
 
-    if (uSpellID < SPELL_AIR_WIZARD_EYE) {
-        return CHARACTER_SKILL_FIRE;
-    } else if (uSpellID < SPELL_WATER_AWAKEN) {
-        return CHARACTER_SKILL_AIR;
-    } else if (uSpellID < SPELL_EARTH_STUN) {
-        return CHARACTER_SKILL_WATER;
-    } else if (uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
-        return CHARACTER_SKILL_EARTH;
-    } else if (uSpellID < SPELL_MIND_REMOVE_FEAR) {
-        return CHARACTER_SKILL_SPIRIT;
-    } else if (uSpellID < SPELL_BODY_CURE_WEAKNESS) {
-        return CHARACTER_SKILL_MIND;
-    } else if (uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
-        return CHARACTER_SKILL_BODY;
-    } else if (uSpellID < SPELL_DARK_REANIMATE) {
-        return CHARACTER_SKILL_LIGHT;
-    } else if (uSpellID < SPELL_BOW_ARROW) {
-        return CHARACTER_SKILL_DARK;
-    } else if (uSpellID == SPELL_BOW_ARROW) {
-        return CHARACTER_SKILL_BOW;
-    } else if (uSpellID == SPELL_101 ||
-               uSpellID == SPELL_LASER_PROJECTILE) {
-        return CHARACTER_SKILL_BLASTER;
-    } else {
-        assert(false && "Unknown spell");
-    }
-
-    return CHARACTER_SKILL_INVALID;
-}
-
-/**
- * Spell school, note that order corresponds to the enum order in `SPELL_TYPE`.
- */
-enum class SPELL_SCHOOL {
-    SPELL_SCHOOL_FIRE = 0,
-    SPELL_SCHOOL_AIR = 1,
-    SPELL_SCHOOL_WATER = 2,
-    SPELL_SCHOOL_EARTH = 3,
-    SPELL_SCHOOL_SPIRIT = 4,
-    SPELL_SCHOOL_MIND = 5,
-    SPELL_SCHOOL_BODY = 6,
-    SPELL_SCHOOL_LIGHT = 7,
-    SPELL_SCHOOL_DARK = 8,
-
-    SPELL_SCHOOL_FIRST = SPELL_SCHOOL_FIRE,
-    SPELL_SCHOOL_LAST = SPELL_SCHOOL_DARK
+    MAGIC_SCHOOL_FIRST = MAGIC_SCHOOL_FIRE,
+    MAGIC_SCHOOL_LAST = MAGIC_SCHOOL_DARK
 };
-using enum SPELL_SCHOOL;
+using enum MagicSchool;
 
-inline Segment<SPELL_SCHOOL> allSpellSchools() {
-    return {SPELL_SCHOOL_FIRST, SPELL_SCHOOL_LAST};
+inline Segment<MagicSchool> allMagicSchools() {
+    return {MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST};
 }
 
-inline Segment<SPELL_TYPE> schoolSpells(SPELL_SCHOOL school) {
+inline Segment<SpellId> spellsForMagicSchool(MagicSchool school) {
     int first = 1 + std::to_underlying(school) * 11;
     int last = first + 10;
-    return {static_cast<SPELL_TYPE>(first), static_cast<SPELL_TYPE>(last)};
+    return {static_cast<SpellId>(first), static_cast<SpellId>(last)};
 }
 
-inline SPELL_SCHOOL spellSchool(SPELL_TYPE spell) {
+inline MagicSchool magicSchoolForSpell(SpellId spell) {
     assert(spell >= SPELL_FIRST_REGULAR && spell <= SPELL_LAST_REGULAR);
 
-    return static_cast<SPELL_SCHOOL>((std::to_underlying(spell) - 1) / 11);
+    return static_cast<MagicSchool>((std::to_underlying(spell) - 1) / 11);
 }
 
 // TODO(captainurist): I think we can drop most usages of this function.
-inline int spellIndexInSchool(SPELL_TYPE spell) {
+inline int spellIndexInMagicSchool(SpellId spell) {
     return (std::to_underlying(spell) - 1) % 11;
 }
 
-inline CharacterSkillType schoolSkill(SPELL_SCHOOL school) {
+inline CharacterSkillType skillForMagicSchool(MagicSchool school) {
     switch (school) {
-    case SPELL_SCHOOL_FIRE:     return CHARACTER_SKILL_FIRE;
-    case SPELL_SCHOOL_AIR:      return CHARACTER_SKILL_AIR;
-    case SPELL_SCHOOL_WATER:    return CHARACTER_SKILL_WATER;
-    case SPELL_SCHOOL_EARTH:    return CHARACTER_SKILL_EARTH;
-    case SPELL_SCHOOL_SPIRIT:   return CHARACTER_SKILL_SPIRIT;
-    case SPELL_SCHOOL_MIND:     return CHARACTER_SKILL_MIND;
-    case SPELL_SCHOOL_BODY:     return CHARACTER_SKILL_BODY;
-    case SPELL_SCHOOL_LIGHT:    return CHARACTER_SKILL_LIGHT;
-    case SPELL_SCHOOL_DARK:     return CHARACTER_SKILL_DARK;
+    case MAGIC_SCHOOL_FIRE:     return CHARACTER_SKILL_FIRE;
+    case MAGIC_SCHOOL_AIR:      return CHARACTER_SKILL_AIR;
+    case MAGIC_SCHOOL_WATER:    return CHARACTER_SKILL_WATER;
+    case MAGIC_SCHOOL_EARTH:    return CHARACTER_SKILL_EARTH;
+    case MAGIC_SCHOOL_SPIRIT:   return CHARACTER_SKILL_SPIRIT;
+    case MAGIC_SCHOOL_MIND:     return CHARACTER_SKILL_MIND;
+    case MAGIC_SCHOOL_BODY:     return CHARACTER_SKILL_BODY;
+    case MAGIC_SCHOOL_LIGHT:    return CHARACTER_SKILL_LIGHT;
+    case MAGIC_SCHOOL_DARK:     return CHARACTER_SKILL_DARK;
     default:
         assert(false);
+        return CHARACTER_SKILL_INVALID;
+    }
+}
+
+inline CharacterSkillType skillForSpell(SpellId spell) {
+    if (isRegularSpell(spell)) {
+        return skillForMagicSchool(magicSchoolForSpell(spell));
+    } else if (spell == SPELL_BOW_ARROW) {
+        return CHARACTER_SKILL_BOW;
+    } else if (spell == SPELL_LASER_PROJECTILE) {
+        return CHARACTER_SKILL_BLASTER;
+    } else {
+        assert(false && "Unknown spell");
         return CHARACTER_SKILL_INVALID;
     }
 }

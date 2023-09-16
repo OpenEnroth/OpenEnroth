@@ -1969,7 +1969,7 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
             // TODO(pskelton): this used to check if character had the spell activated - no longer required here ??
             if (!pParty->hasActiveCharacter())
                 break;
-            SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(param);
+            SpellId selectedSpell = static_cast<SpellId>(param);
             if (isHoldingMouseRightButton()) {
                 dword_507B00_spell_info_to_draw_in_popup = selectedSpell;
             }

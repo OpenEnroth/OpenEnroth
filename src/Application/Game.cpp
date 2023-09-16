@@ -453,7 +453,7 @@ void Game::processQueuedMessages() {
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
     std::string pOut;                // [sp+BCh] [bp-540h]@370
-    std::array<SPELL_SCHOOL, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
+    std::array<MagicSchool, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
     bool playButtonSoundOnEscape = true;
 
@@ -1424,8 +1424,8 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter()) continue;
                 int skill_count = 0;
                 int uAction = 0;
-                for (SPELL_SCHOOL page : allSpellSchools()) {
-                    CharacterSkillType skill = schoolSkill(page);
+                for (MagicSchool page : allMagicSchools()) {
+                    CharacterSkillType skill = skillForMagicSchool(page);
                     if (pParty->activeCharacter().pActiveSkills[skill] || _engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
@@ -1451,10 +1451,10 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenSpellbookPage:
                 if (pTurnEngine->turn_stage == TE_MOVEMENT ||
                     !pParty->hasActiveCharacter() ||
-                    static_cast<SPELL_SCHOOL>(uMessageParam) == pParty->activeCharacter().lastOpenedSpellbookPage) {
+                    static_cast<MagicSchool>(uMessageParam) == pParty->activeCharacter().lastOpenedSpellbookPage) {
                     continue;
                 }
-                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(static_cast<SPELL_SCHOOL>(uMessageParam));
+                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(static_cast<MagicSchool>(uMessageParam));
                 continue;
             case UIMSG_SelectSpell: {
                 if (pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -1465,7 +1465,7 @@ void Game::processQueuedMessages() {
                 }
 
                 Character *character = &pParty->activeCharacter();
-                SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(uMessageParam);
+                SpellId selectedSpell = static_cast<SpellId>(uMessageParam);
                 if (character->spellbook.bHaveSpell[selectedSpell] || _engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
@@ -1483,13 +1483,13 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpellFromBook:
                 if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                    pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2, CombinedSkillValue::none(), 0, 0);
+                    pushSpellOrRangedAttack(static_cast<SpellId>(uMessageParam), uMessageParam2, CombinedSkillValue::none(), 0, 0);
                 }
                 continue;
 
             case UIMSG_SpellScrollUse:
                 if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                    pushScrollSpell(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2);
+                    pushScrollSpell(static_cast<SpellId>(uMessageParam), uMessageParam2);
                 }
                 continue;
 

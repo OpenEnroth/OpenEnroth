@@ -2391,7 +2391,7 @@ int KeyboardPageNum;
 //int dword_506F1C;
 Color uGameUIFontShadow;
 Color uGameUIFontMain;
-SPELL_TYPE dword_507B00_spell_info_to_draw_in_popup;
+SpellId dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
 int enchantingActiveCharacter;
