@@ -28,16 +28,16 @@
 
 #include "Library/Random/Random.h"
 
-static constexpr IndexedArray<DAMAGE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> guildSpellsSchool = {
-    {BUILDING_FIRE_GUILD,   DAMAGE_FIRE},
-    {BUILDING_AIR_GUILD,    DAMAGE_AIR},
-    {BUILDING_WATER_GUILD,  DAMAGE_WATER},
-    {BUILDING_EARTH_GUILD,  DAMAGE_EARTH},
-    {BUILDING_SPIRIT_GUILD, DAMAGE_SPIRIT},
-    {BUILDING_MIND_GUILD,   DAMAGE_MIND},
-    {BUILDING_BODY_GUILD,   DAMAGE_BODY},
-    {BUILDING_LIGHT_GUILD,  DAMAGE_LIGHT},
-    {BUILDING_DARK_GUILD,   DAMAGE_DARK}
+static constexpr IndexedArray<MagicSchool, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> guildSpellsSchool = {
+    {BUILDING_FIRE_GUILD,   MAGIC_SCHOOL_FIRE},
+    {BUILDING_AIR_GUILD,    MAGIC_SCHOOL_AIR},
+    {BUILDING_WATER_GUILD,  MAGIC_SCHOOL_WATER},
+    {BUILDING_EARTH_GUILD,  MAGIC_SCHOOL_EARTH},
+    {BUILDING_SPIRIT_GUILD, MAGIC_SCHOOL_SPIRIT},
+    {BUILDING_MIND_GUILD,   MAGIC_SCHOOL_MIND},
+    {BUILDING_BODY_GUILD,   MAGIC_SCHOOL_BODY},
+    {BUILDING_LIGHT_GUILD,  MAGIC_SCHOOL_LIGHT},
+    {BUILDING_DARK_GUILD,   MAGIC_SCHOOL_DARK}
 };
 
 static constexpr IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableMagicSkillDialogue = {
@@ -357,9 +357,9 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     // Combined guilds exist only in MM6/MM8 and need to be processed separately
     assert(guildType >= BUILDING_FIRE_GUILD && guildType <= BUILDING_DARK_GUILD);
 
-    DAMAGE_TYPE schoolType = guildSpellsSchool[guildType];
+    MagicSchool schoolType = guildSpellsSchool[guildType];
     CharacterSkillMastery maxMastery = guildSpellsMastery[houseId()];
-    Segment<ItemId> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
+    Segment<ItemId> spellbooksForGuild = spellbooksForSchool(schoolType, maxMastery);
 
     for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
         ItemId pItemNum = grng->randomSample(spellbooksForGuild);

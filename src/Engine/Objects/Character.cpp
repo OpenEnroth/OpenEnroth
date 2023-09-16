@@ -2013,7 +2013,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[wandSpellIds[weapon->uItemID]].uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[spellForWand(weapon->uItemID)].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
@@ -3893,7 +3893,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
 
         // TODO(Nik-RE-dev): spell scroll is removed before actual casting and will be consumed even if casting is canceled.
-        SpellId scrollSpellId = scrollSpellIds[pParty->pPickedItem.uItemID];
+        SpellId scrollSpellId = spellForScroll(pParty->pPickedItem.uItemID);
         if (isSpellTargetsItem(scrollSpellId)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
@@ -3911,7 +3911,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 
     if (pParty->pPickedItem.isBook()) {
-        SpellId bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
+        SpellId bookSpellId = spellForSpellbook(pParty->pPickedItem.uItemID);
         if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
             engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
@@ -7209,7 +7209,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shooting_wand = true;
 
         int main_hand_idx = character->pEquipment.uMainHand;
-        pushSpellOrRangedAttack(wandSpellIds[character->pInventoryItemList[main_hand_idx - 1].uItemID],
+        pushSpellOrRangedAttack(spellForWand(character->pInventoryItemList[main_hand_idx - 1].uItemID),
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)

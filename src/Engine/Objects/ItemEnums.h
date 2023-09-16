@@ -5,10 +5,12 @@
 #include <utility>
 
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Spells/SpellEnums.h"
 
+#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
-#include "Utility/Workaround/ToUnderlying.h"
+#include "Utility/IndexedArray.h"
 
 enum class DAMAGE_TYPE : unsigned int {
     DAMAGE_FIRE = 0,
@@ -1008,8 +1010,8 @@ enum class ItemId : int32_t {
     ITEM_FIRST_SPELL_SCROLL = ITEM_SCROLL_TORCH_LIGHT,
     ITEM_LAST_SPELL_SCROLL = ITEM_SCROLL_SOULDRINKER,
 
-    ITEM_FIRST_SPELL_BOOK = ITEM_SPELLBOOK_TORCH_LIGHT,
-    ITEM_LAST_SPELL_BOOK = ITEM_SPELLBOOK_SOULDRINKER,
+    ITEM_FIRST_SPELLBOOK = ITEM_SPELLBOOK_TORCH_LIGHT,
+    ITEM_LAST_SPELLBOOK = ITEM_SPELLBOOK_SOULDRINKER,
 
     // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
     ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
@@ -1022,6 +1024,12 @@ enum class ItemId : int32_t {
     ITEM_LAST_GOLD = ITEM_GOLD_LARGE,
 };
 using enum ItemId;
+
+namespace detail {
+extern const IndexedArray<SpellId, ITEM_FIRST_WAND, ITEM_LAST_WAND> spellForWand;
+extern const IndexedArray<SpellId, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> spellForScroll;
+extern const IndexedArray<SpellId, ITEM_FIRST_SPELLBOOK, ITEM_LAST_SPELLBOOK> spellForSpellbook;
+} // namespace detail
 
 /**
  * Checks if item is a regular item - a weapon or equipment that's not a quest item or an artifact.
@@ -1075,6 +1083,10 @@ inline bool isRandomItem(ItemId type) {
     return type >= ITEM_FIRST_RANDOM && type <= ITEM_LAST_RANDOM;
 }
 
+inline bool isSpellbook(ItemId item) {
+    return item >= ITEM_FIRST_SPELLBOOK && item <= ITEM_LAST_SPELLBOOK;
+}
+
 inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {
     assert(isRandomItem(type));
     return ItemTreasureLevel(-std::to_underlying(type));
@@ -1096,10 +1108,9 @@ inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
     }
 }
 
-inline Segment<ItemId> spellbooksOfSchool(DAMAGE_TYPE damage, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-    assert(damage != DAMAGE_PHYSICAL && damage != DAMAGE_MAGIC);
-    int spellSchoolSequential = (damage >= DAMAGE_SPIRIT) ? std::to_underlying(damage) - 2 : std::to_underlying(damage);
-    int firstSpell = std::to_underlying(ITEM_FIRST_SPELL_BOOK);
+inline Segment<ItemId> spellbooksForSchool(MagicSchool school, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+    int spellSchoolSequential = std::to_underlying(school);
+    int firstSpell = std::to_underlying(ITEM_FIRST_SPELLBOOK);
     int numSpells = spellCountForMastery(maxMastery);
     int firstSpellInSchool = firstSpell + 11 * spellSchoolSequential;
     int lastSpellInSchool = firstSpellInSchool + numSpells - 1;
@@ -1156,8 +1167,20 @@ inline ITEM_ENCHANTMENT potionEnchantment(ItemId enchantingPotion) {
     }
 }
 
-// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS, and current ITEM_TYPE is ITEM_ID
-/*  331 */
+inline SpellId spellForSpellbook(ItemId spellbook) {
+    return detail::spellForSpellbook[spellbook];
+}
+
+inline SpellId spellForScroll(ItemId scroll) {
+    return detail::spellForScroll[scroll];
+}
+
+inline SpellId spellForWand(ItemId wand) {
+    return detail::spellForWand[wand];
+}
+
+
+// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS
 enum class ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_SINGLE_HANDED = 0,
     EQUIP_TWO_HANDED = 1,

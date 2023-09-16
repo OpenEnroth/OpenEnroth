@@ -1305,11 +1305,9 @@ static void drawBuffPopupWindow() {
 /**
  * @offset 0x4B1523
  */
-void showSpellbookInfo(ItemId spellItemId) {
-    // TODO(captainurist): deal away with casts.
-    SpellId spellId = static_cast<SpellId>(std::to_underlying(spellItemId) - 399);
-    int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
-    unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
+void showSpellbookInfo(ItemId spellbook) {
+    assert(isSpellbook(spellbook));
+    SpellId spell = spellForSpellbook(spellbook);
 
     Pointi cursorPos = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int popupVertPos = 30;
@@ -1332,11 +1330,11 @@ void showSpellbookInfo(ItemId spellItemId) {
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))});
 
     std::string str = fmt::format("{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
-                                  pSpellStats->pInfos[spellId].pDescription,
-                                  localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
-                                  localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
-                                  localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc,
-                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
+                                  pSpellStats->pInfos[spell].pDescription,
+                                  localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pBasicSkillDesc,
+                                  localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pExpertSkillDesc,
+                                  localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pMasterSkillDesc,
+                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
 
     popup.uFrameHeight += assets->pFontSmallnum->CalcTextHeight(str, popup.uFrameWidth, 0);
     if (popup.uFrameHeight < 150) {
@@ -1348,13 +1346,13 @@ void showSpellbookInfo(ItemId spellItemId) {
     popup.uFrameHeight -= 12;
     popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;
     popup.uFrameW = popup.uFrameHeight + popup.uFrameY - 1;
-    popup.DrawTitleText(assets->pFontArrus.get(), 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spellId].name, 3u);
+    popup.DrawTitleText(assets->pFontArrus.get(), 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spell].name, 3u);
     popup.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     popup.uFrameZ = popup.uFrameX + 107;
     popup.uFrameWidth = 108;
-    popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<CharacterSkillType>(spellSchool / 4 + 12)), 3u);
+    popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(skillForSpell(spell)), 3u);
 
-    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].uNormalLevelMana);
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, popup.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str, 3);
 }
 
