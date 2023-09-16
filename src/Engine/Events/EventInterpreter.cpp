@@ -632,7 +632,7 @@ void EventInterpreter::prepare(const EventMap &eventMap, int eventId, Pid object
     _objectPid = objectPid;
 
     _events.clear();
-    if (eventMap.isHaveEvents(eventId)) {
-        _events = eventMap.getEvents(eventId);
+    if (eventMap.hasEvent(eventId)) {
+        _events = eventMap.events(eventId);
     }
 }

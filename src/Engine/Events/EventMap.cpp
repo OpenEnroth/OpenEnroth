@@ -1,45 +1,46 @@
-#include <utility>
 #include <vector>
 
 #include "Engine/Party.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/mm7_data.h"
 
 #include "Library/Logger/Logger.h"
 
 #include "Utility/MapAccess.h"
+#include "Utility/Exception.h"
 
 void EventMap::add(int eventId, EventIR ir) {
     _eventsById[eventId].push_back(ir);
 }
 
-EventIR EventMap::get(int eventId, int step) const {
-    for (const EventIR &ir : _eventsById.at(eventId)) {
-        if (ir.step == step) {
-            return ir;
-        }
-    }
-    assert(false);
-
-    return EventIR();
+void EventMap::clear() {
+    _eventsById.clear();
 }
 
-const std::vector<EventIR>& EventMap::getEvents(int eventId) const {
-    return _eventsById.at(eventId);
+EventIR EventMap::event(int eventId, int step) const {
+    for (const EventIR &ir : events(eventId))
+        if (ir.step == step)
+            return ir;
+    throw Exception("Event {}:{} not found", eventId, step);
+}
+
+const std::vector<EventIR>& EventMap::events(int eventId) const {
+    const auto *result = valuePtr(_eventsById, eventId);
+    if (!result)
+        throw Exception("Event {} not found", eventId);
+    return *result;
 }
 
 std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
     std::vector<EventTrigger> triggers;
 
-    for (const auto &mapElem : _eventsById) {
-        for (const EventIR &ir : mapElem.second) {
-            if (ir.type == triggerType) {
+    for (const auto &[id, events] : _eventsById) {
+        for (const EventIR &event : events) {
+            if (event.type == triggerType) {
                 EventTrigger trigger;
-                trigger.eventId = mapElem.first;
-                trigger.eventStep = ir.step;
+                trigger.eventId = id;
+                trigger.eventStep = event.step;
 
                 triggers.push_back(trigger);
             }
@@ -50,21 +51,18 @@ std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
 }
 
 bool EventMap::hasHint(int eventId) const {
-    if (!_eventsById.contains(eventId)) {
+    if (!_eventsById.contains(eventId))
         return false;
-    }
 
-    const std::vector<EventIR>& eventInsn = _eventsById.at(eventId);
-
-    if (eventInsn.size() < 2) {
+    const std::vector<EventIR>& events = _eventsById.at(eventId);
+    if (events.size() < 2)
         return false;
-    }
 
-    return eventInsn[0].type == EVENT_MouseOver && eventInsn[1].type == EVENT_Exit;
+    return events[0].type == EVENT_MouseOver && events[1].type == EVENT_Exit;
 }
 
-std::string EventMap::getHintString(int eventId) const {
-    std::string result = "";
+std::string EventMap::hint(int eventId) const {
+    std::string result;
     bool mouseOverFound = false;
 
     if (!_eventsById.contains(eventId)) { // no entry in .evt file

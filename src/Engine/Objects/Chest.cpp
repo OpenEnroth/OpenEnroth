@@ -619,8 +619,8 @@ void UpdateChestPositions() {
     auto processEvent = [&](int eventId, const Vec3i &position) {
         // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
         // break out of the loop below early. If yes... Well. This should work.
-        if (engine->_localEventMap.isHaveEvents(eventId))
-            for (const EventIR &event : engine->_localEventMap.getEvents(eventId))
+        if (engine->_localEventMap.hasEvent(eventId))
+            for (const EventIR &event : engine->_localEventMap.events(eventId))
                 if (event.type == EVENT_OpenChest)
                     pointsByChestId[event.data.chest_id].push_back(position);
     };
