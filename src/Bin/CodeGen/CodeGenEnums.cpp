@@ -20,7 +20,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BuildingType, CASE_INSENSITIVE, {
     {BUILDING_SELF_GUILD,           "SELF_GUILD"},
     {BUILDING_MIRRORED_PATH_GUILD,  "MIRRORED_PATH_GUILD"},
     {BUILDING_TOWN_HALL,            "TOWN_HALL"},
-    {BUILDING_MERCENARY_GUILD,      "MERCENARY_GUILD"},
+    {BUILDING_MERCENARY_GUILD,      "HOUSE"}, // Not a mercenary guild.
+    {BUILDING_TOWN_HALL_MM6,        "TOWN_HALL_MM6"},
     {BUILDING_THRONE_ROOM,          "THRONE_ROOM"},
     {BUILDING_TAVERN,               "TAVERN"},
     {BUILDING_BANK,                 "BANK"},
@@ -30,6 +31,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BuildingType, CASE_INSENSITIVE, {
     {BUILDING_SEER,                 "SEER"},
     {BUILDING_STABLE,               "STABLE"},
     {BUILDING_BOAT,                 "BOAT"},
+    {BUILDING_HOUSE,                "HOUSE?"},
     {BUILDING_TRAINING_GROUND,      "TRAINING_HALL"},
     {BUILDING_JAIL,                 "JAIL"},
     {BUILDING_CIRCUS,               "CIRCUS"},
