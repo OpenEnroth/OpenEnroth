@@ -222,8 +222,6 @@ void GUIWindow_Spellbook::Release() {
 }
 
 void GUIWindow_Spellbook::loadSpellbook() {
-    // TODO(captainurist): encapsulate this enum arithmetic properly
-    // TODO(Nik-RE-dev): turn variable into an enum
     MagicSchool page = pParty->activeCharacter().lastOpenedSpellbookPage;
     if (pParty->activeCharacter().uQuickSpell != SPELL_NONE && magicSchoolForSpell(pParty->activeCharacter().uQuickSpell) == page)
         spellbookSelectedSpell = pParty->activeCharacter().uQuickSpell;
