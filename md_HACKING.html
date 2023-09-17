@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5ac4d24</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;381315b</span>
    </div>
   </td>
  </tr>
@@ -73,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p >This document describes the development process we're following. It's required reading for anyone intending to contribute.</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md1"></a>
 Dependencies</h1>
 <p >Main dependencies:</p><ul>
 <li><a href="https://www.libsdl.org/download-2.0.php">SDL2</a> — crossplatform media framework;</li>
@@ -101,7 +101,7 @@ Dependencies</h1>
 <li>Visual Studio Code (2022 or later);</li>
 <li>CLion (2022 or later).</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md2"></a>
 Building on *nix platforms</h1>
 <p >This project uses the <a href="https://cmake.org">CMake</a> build system. Use the following commands to clone repository and build (it is recommended to build in a separate directory as shown here):</p>
 <div class="fragment"><div class="line">$ git clone https://github.com/OpenEnroth/OpenEnroth.git</div>
@@ -110,7 +110,7 @@ Building on *nix platforms</h1>
 <div class="line">$ cmake --build build</div>
 </div><!-- fragment --><p >To compile x86 build on x86_64 platform you can pass <code>-m32</code> via compiler flags to cmake. For example instead of just <code>cmake ..</code> above execute <code>CFLAGS="-m32" CXXFLAGS="-m32" cmake ..</code></p>
 <p >You can also select platform dependent <a href="https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html">generator</a> for your favorite IDE.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md3"></a>
 Building on Windows</h1>
 <ul>
 <li>Get git (<code><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></code>) and Visual Studio 2022.</li>
@@ -128,7 +128,7 @@ Building on Windows</h1>
 </ul>
 <p >If you wish you can also disable autoresolving main dependencies by turning off <code>OE_USE_PREBUILT_DEPENDENCIES</code> cmake option and pass your own dependencies source, e.g. via <a href="https://github.com/microsoft/vcpkg">vcpkg</a> integration.</p>
 <p ><b>Be aware</b> that Visual Studio has a bug with git submodules not syncing between branches. So when checking out the branch or switching to different branch you may need to run the following command manually: <code>git submodule update --init</code></p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Coding style</h1>
 <p >For the C++ code we are following the <a href="http://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>.\ Source code is automatically checked against it and Pull Request will fail if you don't follow it.</p>
 <p >To perform style check before pushing anything you can build <code>check_style</code> target. In Visual Studio you can do that by going to <em><b>Solution Explorer → Change Views → CMake targets</b></em>. Right click and build <code>check_style</code>, errors will be listed in output.</p>
@@ -161,7 +161,7 @@ Coding style</h1>
 <li>We generally refrain from using namespaces, and we consider the approach where namespace hierarchy follows the directory structure an antipattern that might make sense in other languages (e.g. Java), but not in C++. Besides, OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. <a class="el" href="classException.html">Exception</a> to this rule is <code>namespace detail</code> that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.</li>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Code Organization</h1>
 <p >OpenEnroth code is broken up as follows:</p><ul>
 <li><code>thirdparty</code> – this is where all external libraries go.</li>
@@ -174,7 +174,7 @@ Code Organization</h1>
 <li>One <code>CMakeLists.txt</code> file per folder. There are exceptions, but those are not yet codified.</li>
 <li>One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md9"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Testing</h1>
 <p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.</p>
 <p >Tests are not built by default, and you will need to set <code>OE_BUILD_TESTS</code> cmake variable to be able to build them. You can either use your IDE for that, or just run <code>cmake</code> with <code>-DOE_BUILD_TESTS=ON</code> from the command line.</p>
@@ -198,10 +198,10 @@ Testing</h1>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
 <p >Note that if you can't find either <code>UnitTest</code> or <code><a class="el" href="classGameTest.html">GameTest</a></code> target in the target list of your IDE, this likely means that you haven't set the <code>OE_BUILD_TESTS</code> cmake variable as described above.</p>
 <p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
-<h1><a class="anchor" id="autotoc_md10"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Support</h1>
 <p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a> </p>
 </div></div><!-- contents -->

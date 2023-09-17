@@ -9,6 +9,5 @@ var searchData=
   ['decorationlist_6',['DecorationList',['../classDecorationList.html',1,'']]],
   ['directory_7',['Directory',['../structLOD_1_1Directory.html',1,'LOD']]],
   ['dmap_8',['DMap',['../structDMap.html',1,'']]],
-  ['dummy_9',['Dummy',['../structFlags_1_1Dummy.html',1,'Flags']]],
-  ['dummyedit_10',['DummyEdit',['../classorg_1_1libsdl_1_1app_1_1DummyEdit.html',1,'org::libsdl::app']]]
+  ['dummy_9',['Dummy',['../structFlags_1_1Dummy.html',1,'Flags']]]
 ];

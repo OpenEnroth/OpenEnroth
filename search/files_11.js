@@ -4,7 +4,7 @@ var searchData=
   ['random_2eh_1',['Random.h',['../Random_8h.html',1,'']]],
   ['randomengine_2ecpp_2',['RandomEngine.cpp',['../RandomEngine_8cpp.html',1,'']]],
   ['randomengine_2eh_3',['RandomEngine.h',['../RandomEngine_8h.html',1,'']]],
-  ['readme_2emd_4',['README.md',['../android_2README_8md.html',1,'(Global Namespace)'],['../README_8md.html',1,'(Global Namespace)']]],
+  ['readme_2emd_4',['README.md',['../README_8md.html',1,'']]],
   ['rect_2eh_5',['Rect.h',['../Rect_8h.html',1,'']]],
   ['renderbase_2ecpp_6',['RenderBase.cpp',['../RenderBase_8cpp.html',1,'']]],
   ['renderbase_2eh_7',['RenderBase.h',['../RenderBase_8h.html',1,'']]],
