@@ -2,9 +2,9 @@ var searchData=
 [
   ['acquire_0',['acquire',['../classorg_1_1libsdl_1_1app_1_1HIDDeviceManager.html#a0e3d294a1b0519d2fc3ac034198de42d',1,'org::libsdl::app::HIDDeviceManager']]],
   ['actionqueue_1',['ActionQueue',['../structActionQueue.html#ae7adeb728fa9129b671d421cbf4e492e',1,'ActionQueue']]],
-  ['activate_2',['activate',['../classNullWindow.html#a24e33b7e8f1c46fc378f0fbf614a44ff',1,'NullWindow']]],
+  ['activate_2',['activate',['../classPlatformWindow.html#a78f32f6b20a72efdc7fabfc863ce4cfb',1,'PlatformWindow::activate()'],['../classNullWindow.html#a24e33b7e8f1c46fc378f0fbf614a44ff',1,'NullWindow::activate()']]],
   ['activate_3',['Activate',['../classIo_1_1Mouse.html#a585e35b9bf24c0ad0238efa88785073d',1,'Io::Mouse']]],
-  ['activate_4',['activate',['../classSdlWindow.html#a33434fd7e269e9e411d551563bed2197',1,'SdlWindow::activate()'],['../classProxyWindow.html#abea6190d1e5b6e74f19cf23077fcd0cc',1,'ProxyWindow::activate()'],['../classPlatformWindow.html#a78f32f6b20a72efdc7fabfc863ce4cfb',1,'PlatformWindow::activate()']]],
+  ['activate_4',['activate',['../classSdlWindow.html#a33434fd7e269e9e411d551563bed2197',1,'SdlWindow::activate()'],['../classProxyWindow.html#abea6190d1e5b6e74f19cf23077fcd0cc',1,'ProxyWindow::activate()']]],
   ['activationevent_5',['activationEvent',['../classGameWindowHandler.html#a054151cb11b61c9f49adffb73c54d757',1,'GameWindowHandler::activationEvent()'],['../classPlatformEventFilter.html#adddb81b11301b7291eddca142a0a8be1',1,'PlatformEventFilter::activationEvent()'],['../classPlatformEventHandler.html#a7ff58bbe3a59e85ca8288ba03f70137d',1,'PlatformEventHandler::activationEvent()']]],
   ['active_6',['Active',['../structSpellBuff.html#aa8120188fb27f4eac35052ee945cce00',1,'SpellBuff']]],
   ['activecharacter_7',['activeCharacter',['../structParty.html#a2b9d645592af600eb5bb72e90a2207af',1,'Party']]],
