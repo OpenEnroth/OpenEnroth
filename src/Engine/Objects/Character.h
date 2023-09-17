@@ -50,28 +50,7 @@ struct CharacterSpellbookChapter {
 };
 
 struct CharacterSpells {
-    union {
-        struct {
-            CharacterSpellbookChapter pFireSpellbook;
-            CharacterSpellbookChapter pAirSpellbook;
-            CharacterSpellbookChapter pWaterSpellbook;
-            CharacterSpellbookChapter pEarthSpellbook;
-            CharacterSpellbookChapter pSpiritSpellbook;
-            CharacterSpellbookChapter pMindSpellbook;
-            CharacterSpellbookChapter pBodySpellbook;
-            CharacterSpellbookChapter pLightSpellbook;
-            CharacterSpellbookChapter pDarkSpellbook;
-            char _pad_0;
-        };
-        struct {
-            std::array<CharacterSpellbookChapter, 9> pChapters;
-            char _pad_1;
-        };
-        struct {
-            std::array<char, 99> bHaveSpell;
-            char _pad_2;
-        };
-    };
+    IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
 };
 
 union CharacterEquipment {
@@ -210,7 +189,7 @@ class Character {
     CharacterSkillType GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
-    bool HasEnchantedItemEquipped(int uEnchantment) const;
+    bool HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const;
     bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
@@ -223,9 +202,8 @@ class Character {
     int receiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
     int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
 
-    // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL
-    // TODO(captainurist): move to SpellEnums.h
-    unsigned int GetSpellSchool(SPELL_TYPE uSpellID) const;
+    // TODO(captainurist): move closer to Spells data.
+    DAMAGE_TYPE GetSpellDamageType(SpellId uSpellID) const;
     int GetAttackRecoveryTime(bool bRangedAttack) const;
 
     int GetHealth() const { return this->health; }
@@ -524,8 +502,8 @@ class Character {
     int mana;
     unsigned int uBirthYear;
     CharacterEquipment pEquipment;
-    char lastOpenedSpellbookPage;
-    SPELL_TYPE uQuickSpell;
+    MagicSchool lastOpenedSpellbookPage;
+    SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;
     char _some_attack_bonus;
     char _melee_dmg_bonus;

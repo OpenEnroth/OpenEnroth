@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(BIN_CODEGEN_SOURCES
         CodeGen.cpp
-        CodeGenOptions.cpp)
+        CodeGenOptions.cpp
+        CodeGenEnums.cpp)
 
 set(BIN_CODEGEN_HEADERS
-        CodeGenOptions.h)
+        CodeGenOptions.h
+        CodeGenEnums.h
+        CodeGenMap.h)
 
 if(NOT BUILD_PLATFORM STREQUAL "android")
     add_executable(CodeGen ${BIN_CODEGEN_SOURCES} ${BIN_CODEGEN_HEADERS})

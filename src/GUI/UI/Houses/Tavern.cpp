@@ -32,7 +32,7 @@ void GUIWindow_Tavern::mainDialogue() {
                                             localization->FormatString(LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD, foodNum, pPriceFood),
                                             localization->GetString(LSTR_LEARN_SKILLS)};
 
-    if (houseId() != HOUSE_TAVERN_EMERALD_ISLE) {
+    if (houseId() != HOUSE_TAVERN_EMERALD_ISLAND) {
         optionsText.push_back(localization->GetString(LSTR_PLAY_ARCOMAGE));
     }
 
@@ -207,7 +207,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
 std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
-        if (houseId() == HOUSE_TAVERN_EMERALD_ISLE) {
+        if (houseId() == HOUSE_TAVERN_EMERALD_ISLAND) {
             return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS};
         } else {
             return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS, DIALOGUE_TAVERN_ARCOMAGE_MAIN};

@@ -1,20 +1,27 @@
 #include "CodeGenOptions.h"
 
+#include <set>
 #include <unordered_map>
 #include <vector>
 #include <utility>
 
 #include "Application/GameStarter.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Events/EventMap.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
 #include "Library/Lod/LodReader.h"
+#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/String.h"
+
+#include "CodeGenEnums.h"
+#include "CodeGenMap.h"
 
 // TODO(captainurist): use std::string::contains once Android have full C++23 support.
 static auto contains = [](const std::string &haystack, const std::string &needle) {
@@ -38,11 +45,8 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
     ItemTable itemTable;
     itemTable.Initialize(resourceManager);
 
-    std::unordered_map<std::string, int> countByName;
-    std::unordered_map<std::string, int> indexByName;
-    std::vector<std::pair<std::string, std::string>> items;
-
-    items.emplace_back("NULL", "");
+    CodeGenMap map;
+    map.insert(ITEM_NULL, "NULL", "");
 
     for(ItemId i : itemTable.pItems.indices()) {
         const ItemDesc &desc = itemTable.pItems[i];
@@ -51,29 +55,29 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
         std::string description = desc.pDescription;
 
         if (icon.empty() || icon == "null") {
-            items.emplace_back("", "Unused.");
+            map.insert(i, "", "Unused.");
             continue;
         }
 
         std::string enumName = toUpperCaseEnum(name);
 
         if (enumName == "EMPTY_MESSAGE_SCROLL" || enumName == "NAME_OF_MESSAGE") {
-            items.emplace_back("", "Empty scroll placeholder, unused.");
+            map.insert(i, "", "Empty scroll placeholder, unused.");
             continue;
         }
 
         if (enumName == "NEWNAME_KEY") {
-            items.emplace_back("", "Key placeholder, unused.");
+            map.insert(i, "", "Key placeholder, unused.");
             continue;
         }
 
         if (contains(enumName, "PLACEHOLDER") || contains(enumName, "SEALED_LETTER")) {
-            items.emplace_back("", name + ", unused.");
+            map.insert(i, "", name + ", unused.");
             continue;
         }
 
         if (contains(enumName, "ORDERS_FROM_SNERGLE")) {
-            items.emplace_back("", name + ", unused remnant from MM6.");
+            map.insert(i, "", name + ", unused remnant from MM6.");
             continue;
         }
 
@@ -130,27 +134,10 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
             enumName = "QUEST_" + enumName;
         }
 
-        if (indexByName.contains(enumName)) {
-            int count = ++countByName[enumName];
-            if (count == 2)
-                items[indexByName[enumName]].first = enumName + "_1";
-
-            enumName = enumName + "_" + std::to_string(count);
-        } else {
-            indexByName[enumName] = items.size();
-            countByName[enumName] = 1;
-        }
-
-        items.emplace_back(enumName, "");
+        map.insert(i, enumName, "");
     }
 
-    for (size_t i = 0; i < items.size(); i++) {
-        if (!items[i].first.empty()) {
-            fmt::print("    ITEM_{} = {},\n", items[i].first, i);
-        } else {
-            fmt::print("    ITEM_{} = {}, // {}\n", i, i, items[i].second);
-        }
-    }
+    map.dump(stdout, "ITEM_");
 
     return 0;
 }
@@ -166,16 +153,23 @@ int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
-    std::vector<std::string> maps;
+    CodeGenMap map;
+    map.insert(MAP_INVALID, "INVALID", "");
 
-    maps.emplace_back("INVALID");
     for (MapId i : mapStats.pInfos.indices())
-        maps.emplace_back(mapIdEnumName(mapStats.pInfos[i]));
+        map.insert(i, mapIdEnumName(mapStats.pInfos[i]), "");
 
-    for (size_t i = 0; i < maps.size(); i++)
-        fmt::print("    MAP_{} = {},\n", maps[i], i);
-
+    map.dump(stdout, "MAP_");
     return 0;
+}
+
+const MapInfo &mapInfoByFileName(const MapStats &mapStats, const std::string &fileName) {
+    auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
+        return toLower(mapInfo.pFilename) == toLower(fileName);
+    });
+    if (pos == mapStats.pInfos.end())
+        throw Exception("Unrecognized map '{}'", fileName);
+    return *pos;
 }
 
 int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
@@ -187,19 +181,76 @@ int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
 
     for (size_t i = 0; i < fileNames.size(); i++) {
         const std::string &fileName = fileNames[i];
-
         if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
             continue; // Not a level file.
 
-        auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-            return toLower(mapInfo.pFilename) == toLower(fileName);
-        });
-        if (pos == mapStats.pInfos.end())
-            throw Exception("Unrecognized map '{}'", fileName);
-
-        fmt::println("    {{MAP_{}, {}}},", mapIdEnumName(*pos), i);
+        fmt::println("    {{MAP_{}, {}}},", mapIdEnumName(mapInfoByFileName(mapStats, fileName)), i);
     }
 
+    return 0;
+}
+
+int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+    MapStats mapStats;
+    mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
+
+    initializeBuildings(resourceManager->getEventsFile("2dEvents.txt"));
+    // ^ Initializes buildingTable.
+
+    std::unordered_map<HOUSE_ID, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
+
+    LodReader gamesLod(makeDataPath("data", "games.lod"));
+    for (const std::string &fileName : gamesLod.ls()) {
+        if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
+            continue; // Not a level file.
+
+        std::string mapName = mapIdEnumName(mapInfoByFileName(mapStats, fileName));
+        EventMap eventMap = EventMap::load(resourceManager->getEventsFile(fileName.substr(0, fileName.size() - 4) + ".evt"));
+
+        for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_SpeakInHouse)) {
+            HOUSE_ID houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.house_id;
+            if (houseId == HOUSE_INVALID)
+                throw Exception("Invalid house id encountered in house event");
+            mapNamesByHouseId[houseId].insert(mapName);
+        }
+
+        for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_MoveToMap)) {
+            HOUSE_ID houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.move_map_descr.house_id;
+            if (houseId != HOUSE_INVALID)
+                mapNamesByHouseId[houseId].insert(mapName);
+        }
+    }
+
+    CodeGenMap map;
+    map.insert(HOUSE_INVALID, "INVALID", "");
+
+    for (HOUSE_ID i : buildingTable.indices()) {
+        const BuildingDesc &desc = buildingTable[i];
+        bool hasMap = mapNamesByHouseId.contains(i);
+        std::string mapName;
+        if (hasMap)
+            mapName = fmt::format("{}", fmt::join(mapNamesByHouseId[i], "_"));
+
+        if (i == HOUSE_JAIL) {
+            map.insert(i, "JAIL", "");
+        } else if (desc.uType == BUILDING_INVALID && hasMap) {
+            map.insert(i, "", fmt::format("Used in MAP_{} but invalid, hmm...", mapName));
+        } else if (desc.uType == BUILDING_INVALID) {
+            map.insert(i, "", "Unused.");
+        } else if (!hasMap && !desc.pName.empty()) {
+            map.insert(i, "", fmt::format("Unused {} named \"{}\".", toString(desc.uType), desc.pName));
+        } else if (!hasMap) {
+            map.insert(i, "", "Unused.");
+        } else if (toUpperCaseEnum(desc.pName) == fmt::format("HOUSE_{}", std::to_underlying(i))) {
+            map.insert(i, "", fmt::format("Used in MAP_{}, named \"{}\", looks totally like a placeholder...", mapName, desc.pName));
+        } else if (desc.uType == BUILDING_HOUSE || desc.uType == BUILDING_MERCENARY_GUILD) {
+            map.insert(i, fmt::format("{}_{}", mapName, toUpperCaseEnum(desc.pName)), "");
+        } else {
+            map.insert(i, fmt::format("{}_{}", toString(desc.uType), mapName), fmt::format("\"{}\".", trim(desc.pName)));
+        }
+    }
+
+    map.dump(stdout, "HOUSE_");
     return 0;
 }
 
@@ -218,6 +269,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_ITEM_ID: return runItemIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MAP_ID: return runMapIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_BEACON_MAPPING: return runBeaconsCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_HOUSE_ID: return runHouseIdCodeGen(std::move(options), &resourceManager);
         default:
             assert(false);
             return 1;

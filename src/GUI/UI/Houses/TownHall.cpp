@@ -148,7 +148,7 @@ int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
     while (true) {
         int result = grng->random(258) + 1;
         switch (townhall) {
-        case HOUSE_TOWNHALL_HARMONDALE:
+        case HOUSE_TOWN_HALL_HARMONDALE:
             if ((result < 115 || result > 132) &&
                 (result < 235 || result > 252) &&
                 (result < 133 || result > 150) &&
@@ -164,7 +164,7 @@ int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
                 return result;
             break;
 
-        case HOUSE_TOWNHALL_ERATHIA:
+        case HOUSE_TOWN_HALL_ERATHIA:
             if ((result < 115 || result > 132) &&
                 (result < 0xE8u || result > 0xF9u) &&
                 (result < 0x85u || result > 0x96u) &&
@@ -183,7 +183,7 @@ int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
                 return result;
             break;
 
-        case HOUSE_TOWNHALL_TULAREAN_FOREST:
+        case HOUSE_TOWN_HALL_TULAREAN_FOREST:
             if ((result < 0x73u || result > 0x84u) &&
                 (result < 0xE8u || result > 0xF9u) &&
                 (result < 0x85u || result > 0x96u) &&
@@ -199,7 +199,7 @@ int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
                 return result;
             break;
 
-        case HOUSE_TOWNHALL_CELESTE:
+        case HOUSE_TOWN_HALL_CELESTE:
             if ((result < 0x73u || result > 0x84u) &&
                 (result < 0xE8u || result > 0xF9u) &&
                 (result < 0x85u || result > 0x96u) &&
@@ -218,7 +218,7 @@ int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
                 return result;
             break;
 
-        case HOUSE_TOWNHALL_THE_PIT:
+        case HOUSE_TOWN_HALL_PIT:
             if ((result < 0x73u || result > 0x84u) &&
                 (result < 0xE8u || result > 0xF9u) &&
                 (result < 0x85u || result > 0x96u) &&

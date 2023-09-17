@@ -94,7 +94,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
     triggers->clear();
     for (EventTrigger &trigger : timerTriggers) {
         MapTimer timer;
-        EventIR ir = engine->_localEventMap.get(trigger.eventId, trigger.eventStep);
+        EventIR ir = engine->_localEventMap.event(trigger.eventId, trigger.eventStep);
 
         if (ir.data.timer_descr.alt_halfmin_interval) {
             // Alternative interval is defined in terms of half-minutes
@@ -193,7 +193,7 @@ bool hasEventHint(int eventId) {
 }
 
 std::string getEventHintString(int eventId) {
-    return engine->_localEventMap.getHintString(eventId);
+    return engine->_localEventMap.hint(eventId);
 }
 
 static void registerEventTriggers() {

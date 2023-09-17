@@ -551,16 +551,16 @@ void SpriteObject::explosionTraps() {
         DAMAGE_TYPE pDamageType;
         switch (this->uType) {
             case SPRITE_TRAP_FIRE:
-                pDamageType = DMGT_FIRE;
+                pDamageType = DAMAGE_FIRE;
                 break;
             case SPRITE_TRAP_LIGHTNING:
-                pDamageType = DMGT_ELECTR;
+                pDamageType = DAMAGE_AIR;
                 break;
             case SPRITE_TRAP_COLD:
-                pDamageType = DMGT_COLD;
+                pDamageType = DAMAGE_WATER;
                 break;
             case SPRITE_TRAP_BODY:
-                pDamageType = DMGT_BODY;
+                pDamageType = DAMAGE_BODY;
                 break;
             default:
                 return;
@@ -651,7 +651,7 @@ bool SpriteObject::applyShrinkRayAoe() {
             int checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
 
             if (distanceSq <= checkDistanceSq) {
-                if (actor.DoesDmgTypeDoDamage(DMGT_DARK)) {
+                if (actor.DoesDmgTypeDoDamage(DAMAGE_DARK)) {
                     actor.buffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, 0);
                     actor.attributes |= ACTOR_AGGRESSOR;
                     isApplied = true;
@@ -715,7 +715,7 @@ void SpriteObject::createSplashObject(Vec3i pos) {
 }
 
 static void updateSpriteOnImpact(SpriteObject *object) {
-    object->uType = static_cast<SPRITE_OBJECT_TYPE>(object->uType + 1);
+    object->uType = impactSprite(object->uType);
     object->uObjectDescID = pObjectList->ObjectIDByItemID(object->uType);
 }
 
@@ -1113,15 +1113,15 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             ACTOR_BUFF_INDEX buffIdx;
             switch (object->uType) {
                 case SPRITE_SPELL_MIND_CHARM:
-                    dmgType = DMGT_MIND;
+                    dmgType = DAMAGE_MIND;
                     buffIdx = ACTOR_BUFF_CHARM;
                     break;
                 case SPRITE_SPELL_LIGHT_PARALYZE:
-                    dmgType = DMGT_LIGHT;
+                    dmgType = DAMAGE_LIGHT;
                     buffIdx = ACTOR_BUFF_PARALYZED;
                     break;
                 case SPRITE_SPELL_DARK_SHRINKING_RAY:
-                    dmgType = DMGT_DARK;
+                    dmgType = DAMAGE_DARK;
                     buffIdx = ACTOR_BUFF_SHRINK;
                     break;
                 default:

@@ -398,26 +398,26 @@ void Localization::InitializeDayNames() {
 
 //----- (004140BB) --------------------------------------------------------
 void Localization::InitializeSpellSchoolNames() {
-    this->spell_school_names[0] = this->localization_strings[87];   // Fire
-    this->spell_school_names[1] = this->localization_strings[6];    // Air
-    this->spell_school_names[2] = this->localization_strings[240];  // Water
-    this->spell_school_names[3] = this->localization_strings[70];   // Earth
-    this->spell_school_names[4] = this->localization_strings[142];  // Mind
-    this->spell_school_names[5] = this->localization_strings[214];  // Spirit
-    this->spell_school_names[6] = this->localization_strings[29];   // Body
-    this->spell_school_names[7] = this->localization_strings[133];  // Light
-    this->spell_school_names[8] = this->localization_strings[54];   // Dark
+    this->spell_school_names[MAGIC_SCHOOL_FIRE]   = this->localization_strings[87];
+    this->spell_school_names[MAGIC_SCHOOL_AIR]    = this->localization_strings[6];
+    this->spell_school_names[MAGIC_SCHOOL_WATER]  = this->localization_strings[240];
+    this->spell_school_names[MAGIC_SCHOOL_EARTH]  = this->localization_strings[70];
+    this->spell_school_names[MAGIC_SCHOOL_SPIRIT] = this->localization_strings[214];
+    this->spell_school_names[MAGIC_SCHOOL_MIND]   = this->localization_strings[142];
+    this->spell_school_names[MAGIC_SCHOOL_BODY]   = this->localization_strings[29];
+    this->spell_school_names[MAGIC_SCHOOL_LIGHT]  = this->localization_strings[133];
+    this->spell_school_names[MAGIC_SCHOOL_DARK]   = this->localization_strings[54];
 }
 
 //----- (0041411B) --------------------------------------------------------
 void Localization::InitializeAttributeNames() {
-    this->attribute_names[0] = this->localization_strings[144];  // Might
-    this->attribute_names[1] = this->localization_strings[116];  // Intelligence
-    this->attribute_names[2] = this->localization_strings[163];  // Personality
-    this->attribute_names[3] = this->localization_strings[75];   // Endurance
-    this->attribute_names[4] = this->localization_strings[1];    // Accuracy
-    this->attribute_names[5] = this->localization_strings[211];  // Speed
-    this->attribute_names[6] = this->localization_strings[136];  // Luck
+    this->attribute_names[CHARACTER_ATTRIBUTE_MIGHT]        = this->localization_strings[144];
+    this->attribute_names[CHARACTER_ATTRIBUTE_INTELLIGENCE] = this->localization_strings[116];
+    this->attribute_names[CHARACTER_ATTRIBUTE_PERSONALITY]  = this->localization_strings[163];
+    this->attribute_names[CHARACTER_ATTRIBUTE_ENDURANCE]    = this->localization_strings[75];
+    this->attribute_names[CHARACTER_ATTRIBUTE_ACCURACY]     = this->localization_strings[1];
+    this->attribute_names[CHARACTER_ATTRIBUTE_SPEED]        = this->localization_strings[211];
+    this->attribute_names[CHARACTER_ATTRIBUTE_LUCK]         = this->localization_strings[136];
 
     this->attribute_desc_raw = engine->_gameResourceManager->getEventsFile("stats.txt").string_view();
     strtok(this->attribute_desc_raw.data(), "\r");
@@ -433,7 +433,7 @@ void Localization::InitializeAttributeNames() {
             case 4:
             case 5:
             case 6:
-                this->attribute_descriptions[i] = removeQuotes(tokens[1]);
+                this->attribute_descriptions[static_cast<CharacterAttributeType>(i)] = removeQuotes(tokens[1]);
                 break;
             case 7:
                 this->hp_description = removeQuotes(tokens[1]);

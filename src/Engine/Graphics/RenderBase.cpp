@@ -138,9 +138,9 @@ void RenderBase::DrawSpriteObjects() {
 
         // render as sprte 500 - 9081
         if (spell_fx_renderer->RenderAsSprite(object) ||
-            ((object->uType < 1000 || object->uType >= 10000) &&
-                (object->uType < 500 || object->uType >= 600) &&
-                (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) {
+            ((object->uType < SPRITE_SPELL_FIRE_TORCH_LIGHT || object->uType >= SPRITE_10000) && // Not a spell sprite.
+             (object->uType < SPRITE_PROJECTILE_AIRBOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
+             (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
                 logger->verbose("Trying to draw sprite with null frame");

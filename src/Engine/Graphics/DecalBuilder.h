@@ -3,6 +3,7 @@
 #include <array>
 
 #include "Engine/Graphics/RenderEntities.h"
+#include "Engine/Tables/TileEnums.h"
 
 #include "Utility/Flags.h"
 
@@ -99,8 +100,8 @@ struct DecalBuilder {
      * 
      * @return                              True if bloodsplat_container->uNumBloodsplats > 0, false otherwise.
      */
-    bool ApplyBloodSplatToTerrain(const int terrainFlags, Vec3f *terrnorm, float *tridotdist,
-                                RenderVertexSoft *triverts, const int whichsplat);
+    bool ApplyBloodSplatToTerrain(TILE_DESC_FLAGS terrainFlags, Vec3f *terrnorm, float *tridotdist,
+                                  RenderVertexSoft *triverts, const int whichsplat);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();

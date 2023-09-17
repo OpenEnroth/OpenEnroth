@@ -182,7 +182,7 @@ void CastSpellInfoHelpers::castSpell() {
             spell_level = pCastSpell->overrideSkillValue.level();
             spell_mastery = pCastSpell->overrideSkillValue.mastery();
         } else {
-            which_skill = getSkillTypeForSpell(pCastSpell->uSpellID);
+            which_skill = skillForSpell(pCastSpell->uSpellID);
 
             CombinedSkillValue val = pPlayer->getActualSkillValue(which_skill);
             spell_level = val.level();
@@ -358,7 +358,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int spikes_active = 0;
                     for (const SpriteObject &spriteObject : pSpriteObjects) {
-                        if (spriteObject.uType &&
+                        if (spriteObject.uType != SPRITE_NULL &&
                                 spriteObject.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
                                 spriteObject.spell_caster_pid == Pid(OBJECT_Character, pCastSpell->casterCharacterIndex)) {
                             ++spikes_active;
@@ -413,7 +413,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_MASS_DISTORTION]
                             .Apply(GameTime(pMiscTimer->uTotalTimeElapsed + 128), spell_mastery, 0, 0, 0);
@@ -549,7 +549,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_LIGHT)) {
                         Actor::AI_Stand(monster_id, Pid::character(0), 0x80, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
@@ -596,7 +596,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     // v721 = 836 * spell_targeted_at.id();
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
                         pActors[monster_id].buffs[ACTOR_BUFF_SLOWED].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
                         spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], Color()); // TODO(captainurist): why transparent black?
@@ -614,7 +614,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                         // Wrong durations from vanilla fixed
                         GameTime spell_duration;
 
@@ -1471,7 +1471,7 @@ void CastSpellInfoHelpers::castSpell() {
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    int ench_array[100] = { 0 };
+                                    ITEM_ENCHANTMENT ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     if (pItemTable->pSpecialEnchantments_count > 0) {
@@ -1958,10 +1958,8 @@ void CastSpellInfoHelpers::castSpell() {
                             pActors[monster_id].SetRandomGoldIfTheresNoItem();
                         }
                         int gold_num = 0;
-                        if (pActors[monster_id].items[3].uItemID != ITEM_NULL) {
-                            if (pItemTable->pItems[pActors[monster_id].items[3].uItemID].uEquipType == EQUIP_GOLD) {
-                                gold_num = pActors[monster_id].items[3].special_enchantment;
-                            }
+                        if (pActors[monster_id].items[3].isGold()) {
+                            gold_num = pActors[monster_id].items[3].goldAmount;
                         }
                         ItemGen item;
                         item.Reset();
@@ -2030,7 +2028,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     // v730 = 836 * monster_id;
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK]
@@ -2067,7 +2065,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED]
@@ -2110,7 +2108,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pSpellSprite.vPosition = actor->pos - Vec3i(0, 0, actor->height * -0.8);
                             pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                             pSpellSprite.Create(0, 0, 0, 0);
-                            if (actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
+                            if (actor->DoesDmgTypeDoDamage(DAMAGE_MIND)) {
                                 actor->buffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                             }
                         }
@@ -2168,8 +2166,8 @@ void CastSpellInfoHelpers::castSpell() {
 
                     int obj_id = spell_targeted_at.id();
                     if (spell_targeted_at.type() == OBJECT_Item) {
-                        if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
-                            pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
+                        if (pSpriteObjects[obj_id].containing_item.isGold()) {
+                            pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
                             engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
@@ -2750,7 +2748,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
+                    if (!pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_DARK)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -2926,7 +2924,7 @@ void CastSpellInfoHelpers::castSpell() {
  *
  * @offset 0x00427DA0
  */
-static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
+static size_t pushCastSpellInfo(SpellId uSpellID,
                                 int casterIndex,
                                 CombinedSkillValue skill_level,
                                 SpellCastFlags uFlags,
@@ -2974,7 +2972,7 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
     }
 }
 
-void pushSpellOrRangedAttack(SPELL_TYPE spell,
+void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
                              SpellCastFlags flags,
@@ -3165,18 +3163,18 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
     }
 }
 
-void pushTempleSpell(SPELL_TYPE spell) {
+void pushTempleSpell(SpellId spell) {
     CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, CHARACTER_SKILL_MASTERY_MASTER);
 
     pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
 }
 
-void pushNPCSpell(SPELL_TYPE spell) {
+void pushNPCSpell(SpellId spell) {
     pushSpellOrRangedAttack(spell, 0, SCROLL_OR_NPC_SPELL_SKILL_VALUE, 0, 0);
 }
 
-void pushScrollSpell(SPELL_TYPE spell, int casterIndex) {
+void pushScrollSpell(SpellId spell, int casterIndex) {
     pushSpellOrRangedAttack(spell, casterIndex, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
 }
 

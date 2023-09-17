@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Library/Serialization/SerializationFwd.h"
+
 enum class EventType : uint8_t {
     EVENT_Invalid = 0,
     EVENT_Exit = 1,
@@ -73,6 +75,7 @@ enum class EventType : uint8_t {
     EVENT_IsNPCInParty = 68,
 };
 using enum EventType;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EventType)
 
 enum class VariableType {
     VAR_Sex = 0x1,

@@ -495,15 +495,12 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
         if (pCharacter.classType == CHARACTER_CLASS_KNIGHT)
             pCharacter.sResMagicBase = 10;
 
-        pCharacter.lastOpenedSpellbookPage = 0;
-        int count = 0;
-        for (CharacterSkillType skill : allMagicSkills()) {  // for Magic Book
-            if (pCharacter.pActiveSkills[skill]) {
-                pCharacter.lastOpenedSpellbookPage = count;
+        pCharacter.lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
+        for (MagicSchool page : allMagicSchools()) {
+            if (pCharacter.pActiveSkills[skillForMagicSchool(page)]) {
+                pCharacter.lastOpenedSpellbookPage = page;
                 break;
             }
-
-            count++;
         }
 
         pCharacter.uExpressionTimePassed = 0;
@@ -512,8 +509,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             Dst.Reset();
             pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
             pCharacter.AddItem2(-1, &Dst);
-            for (int uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
-                CharacterSkillType skill = (CharacterSkillType)uSkillIdx;
+            for (CharacterSkillType skill : allVisibleSkills()) {
                 if (pCharacter.pActiveSkills[skill]) {
                     switch (skill) {
                         case CHARACTER_SKILL_STAFF:
@@ -1061,7 +1057,7 @@ void Party::dropHeldItem() {
     }
 
     SpriteObject sprite;
-    sprite.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
+    sprite.uType = pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3i(0, 0, eyeLevel);
@@ -1199,7 +1195,7 @@ void Party::giveFallDamage(int distance) {
     for (Character &player : pParty->pCharacters) {  // receive falling damage
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
-            player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DMGT_PHISYCAL);
+            player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DAMAGE_PHYSICAL);
             int bonus = 20 - player.GetParameterBonus(player.GetActualEndurance());
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
         }

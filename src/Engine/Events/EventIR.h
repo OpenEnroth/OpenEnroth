@@ -14,10 +14,12 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 
+struct RawEvent;
+
 class EventIR {
  public:
     std::string toString() const;
-    static EventIR parse(const void *data, size_t maxSize);
+    static EventIR parse(const RawEvent *evt, size_t size);
 
     EventType type;
     int step;
@@ -71,7 +73,7 @@ class EventIR {
             int is_set;
         } actor_flag_descr;
         struct {
-            SPELL_TYPE spell_id;
+            SpellId spell_id;
             CharacterSkillMastery spell_mastery;
             int spell_level;
             int fromx;
@@ -147,7 +149,7 @@ class EventIR {
         } summon_item_descr;
         struct {
             int npc_id;
-            int location_id;
+            HOUSE_ID location_id;
         } npc_move_descr;
         struct {
             int groups_id;

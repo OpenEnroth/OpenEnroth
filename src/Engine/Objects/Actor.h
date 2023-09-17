@@ -135,11 +135,11 @@ class Actor {
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
                                 int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
-                               SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkill);
+                               SpellId uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
                                        Vec3i *pVelocity, ABILITY_INDEX a4);
 
-    static unsigned short GetObjDescId(SPELL_TYPE spellId);
+    static unsigned short GetObjDescId(SpellId spellId);
 
     static void AggroSurroundingPeasants(unsigned int uActorID, int a2);
     static bool ArePeasantsOfSameFaction(Actor *a1, Actor *a2);
@@ -196,7 +196,7 @@ class Actor {
     static int searchDeadActorsByID(int *pTotalActors, int id);
 
     void LootActor();
-    bool _427102_IsOkToCastSpell(SPELL_TYPE spell);
+    bool _427102_IsOkToCastSpell(SpellId spell);
     ABILITY_INDEX special_ability_use_check(int a2);
     bool _4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4);
     bool ActorHitOrMiss(Character *pPlayer);

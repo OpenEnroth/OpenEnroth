@@ -142,21 +142,21 @@ struct MonsterInfo {
     HostilityRadius uHostilityType = Hostility_Friendly;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t uSpecialAttackLevel = 0;
-    uint8_t uAttack1Type = 0;
+    DAMAGE_TYPE uAttack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
     uint8_t uAttack1DamageDiceRolls = 0;
     uint8_t uAttack1DamageDiceSides = 0;
     uint8_t uAttack1DamageBonus = 0;
     uint8_t uMissleAttack1Type = 0;
     uint8_t uAttack2Chance = 0;
-    uint8_t uAttack2Type = 0;
+    DAMAGE_TYPE uAttack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
     uint8_t uAttack2DamageDiceRolls = 0;
     uint8_t uAttack2DamageDiceSides = 0;
     uint8_t uAttack2DamageBonus = 0;
     uint8_t uMissleAttack2Type = 0;
     uint8_t uSpell1UseChance = 0;
-    SPELL_TYPE uSpell1ID = SPELL_NONE;
+    SpellId uSpell1ID = SPELL_NONE;
     uint8_t uSpell2UseChance = 0;
-    SPELL_TYPE uSpell2ID = SPELL_NONE;
+    SpellId uSpell2ID = SPELL_NONE;
     uint8_t uResFire = 0;
     uint8_t uResAir = 0;
     uint8_t uResWater = 0;
@@ -179,7 +179,7 @@ struct MonsterInfo {
     bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
     CombinedSkillValue uSpellSkillAndMastery1;
     CombinedSkillValue uSpellSkillAndMastery2;
-    int16_t field_3C_some_special_attack = 0;
+    int16_t field_3C_some_special_attack = 0; // TODO(captainurist): what is this?
     int16_t field_3E = 0;
     unsigned int uHP = 0;
     unsigned int uAC = 0;

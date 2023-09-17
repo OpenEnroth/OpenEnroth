@@ -223,7 +223,7 @@ void ViewingParams::_443365() {
 
 void ItemInteraction(unsigned int item_id) {
     if (pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
-        pParty->partyFindsGold(pSpriteObjects[item_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
+        pParty->partyFindsGold(pSpriteObjects[item_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
     } else {
         if (pParty->pPickedItem.uItemID != ITEM_NULL) {
             return;

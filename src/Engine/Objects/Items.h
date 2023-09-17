@@ -5,6 +5,7 @@
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
 #include "Engine/Time.h"
 #include "Engine/MapEnums.h"
 
@@ -104,10 +105,11 @@ struct ItemGen {  // 0x24
     }
 
     ItemId uItemID = ITEM_NULL;        // 0
-    int potionPower = 0;
+    int potionPower = 0; // Only for potions.
+    int goldAmount = 0; // Only for gold.
     std::optional<CharacterAttributeType> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
     int32_t m_enchantmentStrength = 0;  // 8
-    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
+    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;
     int32_t uNumCharges = 0;           // 10
     ItemFlags uAttributes = 0;          // 14
     ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // 18
@@ -126,7 +128,7 @@ struct ItemDesc {  // 30h
     std::string pUnidentifiedName = "";      // 8 c
     std::string pDescription = "";           // 0c 10
     uint32_t uValue = 0;          // 10 14
-    uint16_t uSpriteID = 0;   // 14 18
+    SPRITE_OBJECT_TYPE uSpriteID = SPRITE_NULL;   // 14 18
     int16_t field_1A = 0;             // 16
     int16_t uEquipX = 0;       // 18  1c
     int16_t uEquipY = 0;       // 1a  1e
@@ -136,7 +138,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageRoll = 0;  // 1f 23
     uint8_t uDamageMod = 0;   // 20 24
     ITEM_MATERIAL uMaterial = MATERIAL_COMMON;    // 21 25
-    char _additional_value = 0;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT?
+    ITEM_ENCHANTMENT _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
     std::optional<CharacterAttributeType> _bonus_type;
     char _bonus_strength = 0;         // 24 28
     char field_25 = 0;                // 25  29

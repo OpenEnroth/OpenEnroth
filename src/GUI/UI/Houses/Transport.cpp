@@ -72,26 +72,26 @@ static constexpr std::array<TransportInfo, 35> transportSchedule = {{
 }};
 
 static constexpr IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_LAST_TRANSPORT> transportRoutes = {
-    {HOUSE_STABLES_HARMONDALE,      { 0, 1, 1, 34 }},
-    {HOUSE_STABLES_STEADWICK,       { 2, 3, 4, 5 }},
-    {HOUSE_STABLES_TULAREAN_FOREST, { 6, 7, 8, 8 }},
-    {HOUSE_STABLES_DEYJA,           { 9, 10, 10, 10 }},
-    {HOUSE_STABLES_BRACADA_DESERT,  { 11, 11, 12, 12 }},
-    {HOUSE_STABLES_TATALIA,         { 13, 13, 13, 13 }},
-    {HOUSE_STABLES_AVLEE,           { 14, 14, 15, 15 }},
-    {HOUSE_STABLES_61,              { 255, 255, 255, 255 }},
-    {HOUSE_STABLES_62,              { 255, 255, 255, 255 }},
-    {HOUSE_BOATS_EMERALD_ISLE,      { 255, 255, 255, 255 }},
-    {HOUSE_BOATS_ERATHIA,           { 16, 17, 18, 19 }},
-    {HOUSE_BOATS_TULAREAN_FOREST,   { 18, 20, 21, 21 }},
-    {HOUSE_BOATS_BRACADA_DESERT,    { 22, 23, 24, 25 }},
-    {HOUSE_BOATS_EVENMORN_ISLAND,   { 22, 22, 23, 23 }},
-    {HOUSE_BOATS_PIT,               { 255, 255, 255, 255 }},
-    {HOUSE_BOATS_TATALIA,           { 27, 28, 29, 30 }},
-    {HOUSE_BOATS_AVLEE,             { 31, 32, 33, 33 }},
-    {HOUSE_BOATS_CELESTE,           { 24, 24, 24, 24 }},
-    {HOUSE_BOATS_72,                { 255, 255, 255, 255 }},
-    {HOUSE_BOATS_73,                { 255, 255, 255, 255 }}
+    {HOUSE_STABLE_HARMONDALE,       { 0, 1, 1, 34 }},
+    {HOUSE_STABLE_ERATHIA,          { 2, 3, 4, 5 }},
+    {HOUSE_STABLE_TULAREAN_FOREST,  { 6, 7, 8, 8 }},
+    {HOUSE_STABLE_DEYJA,            { 9, 10, 10, 10 }},
+    {HOUSE_STABLE_BRACADA_DESERT,   { 11, 11, 12, 12 }},
+    {HOUSE_STABLE_TATALIA,          { 13, 13, 13, 13 }},
+    {HOUSE_STABLE_AVLEE,            { 14, 14, 15, 15 }},
+    {HOUSE_61,                      { 255, 255, 255, 255 }},
+    {HOUSE_62,                      { 255, 255, 255, 255 }},
+    {HOUSE_BOAT_EMERALD_ISLAND,     { 255, 255, 255, 255 }},
+    {HOUSE_BOAT_ERATHIA,            { 16, 17, 18, 19 }},
+    {HOUSE_BOAT_TULAREAN_FOREST,    { 18, 20, 21, 21 }},
+    {HOUSE_BOAT_BRACADA_DESERT,     { 22, 23, 24, 25 }},
+    {HOUSE_BOAT_EVENMORN_ISLAND,    { 22, 22, 23, 23 }},
+    {HOUSE_68,                      { 255, 255, 255, 255 }},
+    {HOUSE_BOAT_TATALIA,            { 27, 28, 29, 30 }},
+    {HOUSE_BOAT_AVLEE,              { 31, 32, 33, 33 }},
+    {HOUSE_71,                      { 24, 24, 24, 24 }},
+    {HOUSE_72,                      { 255, 255, 255, 255 }},
+    {HOUSE_73,                      { 255, 255, 255, 255 }}
 };
 
 void GUIWindow_Transport::mainDialogue() {

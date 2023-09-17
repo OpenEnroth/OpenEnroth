@@ -61,7 +61,7 @@ stru319::stru319() {
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
-bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {
+bool ShouldMonsterPlayAttackAnim(SpellId spell_id) {
     switch (spell_id) {
         case SPELL_FIRE_HASTE:
         case SPELL_AIR_SHIELD:
@@ -211,7 +211,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
+                           SpellId uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
@@ -685,7 +685,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     }
 }
 
-unsigned short Actor::GetObjDescId(SPELL_TYPE spellId) {
+unsigned short Actor::GetObjDescId(SpellId spellId) {
     return pObjectList->ObjectIDByItemID(SpellSpriteMapping[spellId]);  // crash here
 }
 
@@ -1215,7 +1215,7 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int damageDiceRolls;
     int damageDiceSides;
     int damageBonus;
-    SPELL_TYPE spellID;
+    SpellId spellID;
     int spellPower = 0;
     CombinedSkillValue skill;
     int skillLevel = 0;
@@ -1392,7 +1392,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     int16_t v13;         // ax@10
-    SPELL_TYPE v16;      // ecx@17
+    SpellId v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
@@ -1878,7 +1878,7 @@ void Actor::Die(unsigned int uActorID) {
     }
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
-        SpriteObject::dropItemAt((SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
+        SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
                                  actor->pos + Vec3i(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
@@ -2382,7 +2382,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
-    int v12;    // ecx@20
+    DAMAGE_TYPE v12;    // ecx@20
     int finalDmg;      // edi@30
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 
@@ -2426,19 +2426,18 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                 } else if (a4 == ABILITY_SPELL1) {
                     v12 = pSpellStats
                         ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell1ID]
-                        .uSchool;
+                        .damageType;
                 } else if (a4 == ABILITY_SPELL2) {
                     v12 = pSpellStats
                         ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell2ID]
-                        .uSchool;
+                        .damageType;
                 } else if (a4 == ABILITY_SPECIAL) {
-                    v12 = pActors[attacker_id.id()]
-                        .monsterInfo.field_3C_some_special_attack;
+                    v12 = static_cast<DAMAGE_TYPE>(pActors[attacker_id.id()].monsterInfo.field_3C_some_special_attack);
                 } else {
-                    v12 = 4;
+                    v12 = DAMAGE_PHYSICAL;
                 }
                 finalDmg = pActors[actor_id].CalcMagicalDamageToActor(
-                    (DAMAGE_TYPE)v12, dmgToRecv);
+                    v12, dmgToRecv);
                 pActors[actor_id].currentHP -= finalDmg;
                 if (finalDmg) {
                     if (pActors[actor_id].currentHP > 0)
@@ -2572,7 +2571,7 @@ void Actor::UpdateActorAI() {
     double v42;              // st7@176
     double v43;              // st6@176
     ABILITY_INDEX v45;                 // eax@192
-    uint8_t v46;     // cl@197
+    SpellId v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
@@ -2856,7 +2855,7 @@ void Actor::UpdateActorAI() {
                         v46 = pActor->monsterInfo.uSpell1ID;
                     else
                         v46 = pActor->monsterInfo.uSpell2ID;
-                    if (v46) {
+                    if (v46 != SPELL_NONE) {
                         if (pActor->monsterInfo.uRecoveryTime <= 0) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
@@ -3128,7 +3127,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                     break;
             }
         }
-        attackElement = DMGT_PHISYCAL;
+        attackElement = DAMAGE_PHYSICAL;
         uDamageAmount = character->CalculateMeleeDamageTo(false, false, pMonster->monsterInfo.uID);
         if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
             character->playReaction(SPEECH_ATTACK_MISS);
@@ -3156,7 +3155,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 v61 = 1;
                 if (character->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
                     skillLevel = character->getSkillValue(CHARACTER_SKILL_BLASTER).level();
-                attackElement = DMGT_PHISYCAL;
+                attackElement = DAMAGE_PHYSICAL;
                 uDamageAmount = character->CalculateMeleeDamageTo(true, true, 0);
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
@@ -3164,7 +3163,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 }
                 break;
             case SPELL_101:
-                attackElement = DMGT_FIRE;
+                attackElement = DAMAGE_FIRE;
                 uDamageAmount = character->CalculateRangedDamageTo(0);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
@@ -3177,7 +3176,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
             case SPELL_EARTH_BLADES:
                 skillLevel = 5 * projectileSprite->spell_level;
                 attackElement =
-                    (DAMAGE_TYPE)character->GetSpellSchool(SPELL_EARTH_BLADES);
+                    character->GetSpellDamageType(SPELL_EARTH_BLADES);
                 uDamageAmount = CalcSpellDamage(
                     SPELL_EARTH_BLADES, projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->currentHP);
@@ -3191,7 +3190,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 break;
             case SPELL_EARTH_STUN:
                 uDamageAmount = 0;
-                attackElement = DMGT_PHISYCAL;
+                attackElement = DAMAGE_PHYSICAL;
                 hit_will_stun = 1;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
@@ -3199,7 +3198,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 }
                 break;
             case SPELL_BOW_ARROW:
-                attackElement = DMGT_PHISYCAL;
+                attackElement = DAMAGE_PHYSICAL;
                 uDamageAmount = character->CalculateRangedDamageTo(
                     pMonster->word_000086_some_monster_id);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
@@ -3207,7 +3206,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 IsAdditionalDamagePossible = true;
                 if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
-                    attackElement = DMGT_FIRE;
+                    attackElement = DAMAGE_FIRE;
                 } else if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
                     return;
@@ -3215,8 +3214,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 break;
 
             default:
-                attackElement = (DAMAGE_TYPE)character->GetSpellSchool(
-                    projectileSprite->uSpellID);
+                attackElement = character->GetSpellDamageType(projectileSprite->uSpellID);
                 IsAdditionalDamagePossible = false;
                 uDamageAmount = CalcSpellDamage(
                     projectileSprite->uSpellID,
@@ -3232,7 +3230,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     if (!projectileSprite && character->IsUnarmed() &&
         character->pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active()) {
         v61 += pMonster->CalcMagicalDamageToActor(
-            DMGT_BODY,
+            DAMAGE_BODY,
             character->pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].power);
     }
     uDamageAmount = v61;
@@ -3303,7 +3301,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         character->receiveDamage(uDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.uHP;
     if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
-         hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
+         hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         extraRecoveryTime = 20;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
@@ -3314,7 +3312,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
-        pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
+        pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         CombinedSkillValue maceSkill = character->getActualSkillValue(CHARACTER_SKILL_MACE);
         GameTime v46 = GameTime(0, maceSkill.level());  // ??
         pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
@@ -3697,7 +3695,7 @@ void Actor::LootActor() {
         }
     } else {
         if (this->items[3].isGold()) {
-            foundGold = this->items[3].special_enchantment;
+            foundGold = this->items[3].goldAmount;
             this->items[3].Reset();
             if (foundGold) {
                 pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);
@@ -3785,7 +3783,7 @@ void Actor::LootActor() {
 }
 
 //----- (00427102) --------------------------------------------------------
-bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
+bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
     switch (spell) {
         case SPELL_BODY_POWER_CURE: {
             if (this->currentHP >= this->monsterInfo.uHP) return false;
@@ -3915,40 +3913,40 @@ int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
     if (this->buffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
         v5 = this->buffs[ACTOR_BUFF_HOUR_OF_POWER].power;
     switch (dmgType) {
-        case DMGT_FIRE:
+        case DAMAGE_FIRE:
             v6 = this->monsterInfo.uResFire;
             v4 = v5;
             break;
-        case DMGT_ELECTR:
+        case DAMAGE_AIR:
             v6 = this->monsterInfo.uResAir;
             v4 = v5;
             break;
-        case DMGT_COLD:
+        case DAMAGE_WATER:
             v6 = this->monsterInfo.uResWater;
             v4 = v5;
             break;
-        case DMGT_EARTH:
+        case DAMAGE_EARTH:
             v6 = this->monsterInfo.uResEarth;
             v4 = v5;
             break;
-        case DMGT_PHISYCAL:
+        case DAMAGE_PHYSICAL:
             v6 = this->monsterInfo.uResPhysical;
             break;
-        case DMGT_SPIRIT:
+        case DAMAGE_SPIRIT:
             v6 = this->monsterInfo.uResSpirit;
             break;
-        case DMGT_MIND:
+        case DAMAGE_MIND:
             v6 = this->monsterInfo.uResMind;
             v4 = v5;
             break;
-        case DMGT_BODY:
+        case DAMAGE_BODY:
             v6 = this->monsterInfo.uResBody;
             v4 = v5;
             break;
-        case DMGT_LIGHT:
+        case DAMAGE_LIGHT:
             v6 = this->monsterInfo.uResLight;
             break;
-        case DMGT_DARK:
+        case DAMAGE_DARK:
             v6 = this->monsterInfo.uResDark;
             break;
         default:
@@ -3973,33 +3971,33 @@ bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
     signed int resist;  // esi@2
 
     switch (uType) {
-        case DMGT_FIRE:
+        case DAMAGE_FIRE:
             resist = this->monsterInfo.uResFire;
             break;
-        case DMGT_ELECTR:
+        case DAMAGE_AIR:
             resist = this->monsterInfo.uResAir;
             break;
-        case DMGT_COLD:
+        case DAMAGE_WATER:
             resist = this->monsterInfo.uResWater;
             break;
-        case DMGT_EARTH:
+        case DAMAGE_EARTH:
             resist = this->monsterInfo.uResEarth;
             break;
-        case DMGT_PHISYCAL:
+        case DAMAGE_PHYSICAL:
             resist = this->monsterInfo.uResPhysical;
             break;
-        case DMGT_SPIRIT:
+        case DAMAGE_SPIRIT:
             resist = this->monsterInfo.uResSpirit;
             break;
-        case DMGT_MIND:
+        case DAMAGE_MIND:
             resist = this->monsterInfo.uResMind;
-        case DMGT_BODY:
+        case DAMAGE_BODY:
             resist = this->monsterInfo.uResBody;
             break;
-        case DMGT_LIGHT:
+        case DAMAGE_LIGHT:
             resist = this->monsterInfo.uResLight;
             break;
-        case DMGT_DARK:
+        case DAMAGE_DARK:
             resist = this->monsterInfo.uResDark;
             break;
         default:
@@ -4801,14 +4799,14 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
 
     if (!pActors[uActorID].IsNotAlive()) {
         if (uObjID.type() == OBJECT_Item) {
-            if (pSpriteObjects[uObjID.id()].uSpellID) {
+            if (pSpriteObjects[uObjID.id()].uSpellID != SPELL_NONE) {
                 v6 = CalcSpellDamage(
                     pSpriteObjects[uObjID.id()].uSpellID,
                     pSpriteObjects[uObjID.id()].spell_level,
                     pSpriteObjects[uObjID.id()].spell_skill,
                     pActors[uActorID].currentHP);
                 damage = pActors[uActorID].CalcMagicalDamageToActor(
-                    DMGT_FIRE, v6);
+                    DAMAGE_FIRE, v6);
                 pActors[uActorID].currentHP -= damage;
                 if (damage) {
                     if (pActors[uActorID].currentHP > 0)

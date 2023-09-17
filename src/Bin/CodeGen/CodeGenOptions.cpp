@@ -27,6 +27,9 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CLI::App *beacons = app->add_subcommand("beacons", "Generate beacons mapping.")->fallthrough();
     beacons->callback([&] { result.subcommand = SUBCOMMAND_BEACON_MAPPING; });
 
+    CLI::App *houses = app->add_subcommand("houses", "Generate house ids enum.")->fallthrough();
+    houses->callback([&] { result.subcommand = SUBCOMMAND_HOUSE_ID; });
+
     try {
         app->parse(argc, argv);
     } catch (const CLI::ParseError &e) {

@@ -641,7 +641,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
 //----- (004A81CA) --------------------------------------------------------
 bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     // SpellFxRenderer *v2; // ebx@1
-    int result;  // eax@1
+    SPRITE_OBJECT_TYPE result;  // eax@1
                  //  int v4; // eax@27
     // unsigned int diffuse; // esi@41
     // int v6; // ecx@49
@@ -1064,7 +1064,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 }
 
 //----- (004A89BD) --------------------------------------------------------
-void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
+void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
                                         uint16_t uPlayerID) {
     // SpellFxRenderer *v3; // edi@1
     PlayerBuffAnim *v4;  // esi@1
@@ -1181,7 +1181,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
             pIconsFrameTable->GetIcon(v4->uSpellIconID)->GetAnimLength();
 }
 
-void SpellFxRenderer::SetPartyBuffAnim(SPELL_TYPE uSpellID) {
+void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
     for (int i = 0; i < pParty->pCharacters.size(); i++) {
         SetPlayerBuffAnim(uSpellID, i);
     }

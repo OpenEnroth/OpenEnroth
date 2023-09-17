@@ -4,7 +4,7 @@
 
 struct ObjectList *pObjectList;
 
-unsigned int ObjectList::ObjectIDByItemID(unsigned int uItemID) {
+unsigned int ObjectList::ObjectIDByItemID(SPRITE_OBJECT_TYPE uItemID) {
     for (size_t i = 0; i < pObjects.size(); i++)
         if (uItemID == pObjects[i].uObjectID)
             return i;

@@ -1246,25 +1246,17 @@ int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
              damagefromroll;  // total damage
 
     if (uMonsterInfoID) {  // check against bow enchantments
-        if (itemenchant == 64 &&
-            MonsterStats::BelongsToSupertype(
-                uMonsterInfoID,
-                MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
+        if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
+            MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
             damage *= 2;
-        } else if (itemenchant == 39 &&
-                   MonsterStats::BelongsToSupertype(
-                       uMonsterInfoID,
-                       MONSTER_SUPERTYPE_KREEGAN)) {  // double vs devils
+        } else if (itemenchant == ITEM_ENCHANTMENT_DEMON_SLAYING &&
+                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_KREEGAN)) {  // double vs devils
             damage *= 2;
-        } else if (itemenchant == 40 &&
-                   MonsterStats::BelongsToSupertype(
-                       uMonsterInfoID,
-                       MONSTER_SUPERTYPE_DRAGON)) {  // double vs dragons
+        } else if (itemenchant == ITEM_ENCHANTMENT_DRAGON_SLAYING &&
+                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_DRAGON)) {  // double vs dragons
             damage *= 2;
-        } else if (itemenchant == 63 &&
-                   MonsterStats::BelongsToSupertype(
-                       uMonsterInfoID,
-                       MONSTER_SUPERTYPE_ELF)) {  // double vs elf
+        } else if (itemenchant == ITEM_ENCHANTMENT_ELF_SLAYING &&
+                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_ELF)) {  // double vs elf
             damage *= 2;
         }
     }
@@ -1357,25 +1349,25 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 
     int resist_value = 0;
     switch (dmg_type) {  // get resistance
-        case DMGT_FIRE:
+        case DAMAGE_FIRE:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE);
             break;
-        case DMGT_ELECTR:
+        case DAMAGE_AIR:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR);
             break;
-        case DMGT_COLD:
+        case DAMAGE_WATER:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER);
             break;
-        case DMGT_EARTH:
+        case DAMAGE_EARTH:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
             break;
-        case DMGT_SPIRIT:
+        case DAMAGE_SPIRIT:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);
             break;
-        case DMGT_MIND:
+        case DAMAGE_MIND:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
             break;
-        case DMGT_BODY:
+        case DAMAGE_BODY:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
             break;
         default:
@@ -1396,7 +1388,7 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
     }
 
     ItemGen *equippedArmor = GetArmorItem();
-    if ((dmg_type == DMGT_PHISYCAL) &&
+    if ((dmg_type == DAMAGE_PHYSICAL) &&
         (equippedArmor != nullptr)) {      // physical damage and wearing armour
         if (!equippedArmor->IsBroken()) {  // armour isnt broken
             CharacterSkillType armor_skill = equippedArmor->GetPlayerSkillType();
@@ -1445,7 +1437,7 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
+bool Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const {
     for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
@@ -2002,8 +1994,8 @@ int Character::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Character::GetSpellSchool(SPELL_TYPE uSpellID) const {
-    return pSpellStats->pInfos[uSpellID].uSchool;
+DAMAGE_TYPE Character::GetSpellDamageType(SpellId uSpellID) const {
+    return pSpellStats->pInfos[uSpellID].damageType;
 }
 
 //----- (0048E1B5) --------------------------------------------------------
@@ -2021,7 +2013,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[wandSpellIds[weapon->uItemID]].uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[spellForWand(weapon->uItemID)].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
@@ -3901,7 +3893,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
 
         // TODO(Nik-RE-dev): spell scroll is removed before actual casting and will be consumed even if casting is canceled.
-        SPELL_TYPE scrollSpellId = scrollSpellIds[pParty->pPickedItem.uItemID];
+        SpellId scrollSpellId = spellForScroll(pParty->pPickedItem.uItemID);
         if (isSpellTargetsItem(scrollSpellId)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
@@ -3910,7 +3902,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         } else {
             mouse->RemoveHoldingItem();
             // Process spell on next frame after game exits inventory window.
-            engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, scrollSpellId, targetCharacter);
+            engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, std::to_underlying(scrollSpellId), targetCharacter);
             if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
@@ -3919,8 +3911,8 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 
     if (pParty->pPickedItem.isBook()) {
-        SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
-        if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR]) {
+        SpellId bookSpellId = spellForSpellbook(pParty->pPickedItem.uItemID);
+        if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
             engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
@@ -3932,7 +3924,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
 
         CharacterSkillMastery requiredMastery = pSpellDatas[bookSpellId].skillMastery;
-        CharacterSkillType skill = getSkillTypeForSpell(bookSpellId);
+        CharacterSkillType skill = skillForSpell(bookSpellId);
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
         if (requiredMastery > val.mastery() || val.level() == 0) {
@@ -3940,7 +3932,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR] = 1;
+        playerAffected->spellbook.bHaveSpell[bookSpellId] = true;
         playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -3988,31 +3980,31 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             switch (pParty->uCurrentMonth) {
                 case 0: // Jan
                     playerAffected->uMight += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(0), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_MIGHT), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 1: // Feb
                     playerAffected->uIntelligence += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(1), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_INTELLIGENCE), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 2: // Mar
                     playerAffected->uPersonality += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(2), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_PERSONALITY), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 3: // Apr
                     playerAffected->uEndurance += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(3), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_ENDURANCE), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 4: // May
                     playerAffected->uAccuracy += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(4), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_ACCURACY), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 5: // Jun
                     playerAffected->uSpeed += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(5), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_SPEED), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 6: // Jul
                     playerAffected->uLuck += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(6), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_LUCK), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 7: // Aug
                     pParty->partyFindsGold(1000 * value, GOLD_RECEIVE_SHARE);
@@ -4031,34 +4023,41 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                     status = fmt::format("+{} {}", 2500ll * value, localization->GetString(LSTR_EXPERIENCE));
                     break;
                 case 11: { // Dec
-                    int res = grng->random(6);
-
-                    // No spirit res
-                    res = (res == 5 ? res + 1 : res);
+                    static constexpr std::initializer_list<MagicSchool> possibleResistances = {
+                        MAGIC_SCHOOL_FIRE,
+                        MAGIC_SCHOOL_AIR,
+                        MAGIC_SCHOOL_WATER,
+                        MAGIC_SCHOOL_EARTH,
+                        MAGIC_SCHOOL_MIND,
+                        MAGIC_SCHOOL_BODY
+                        // Note: no spirit resistance.
+                    };
+                    static_assert(possibleResistances.size() == 6);
+                    MagicSchool res = grng->randomSample(possibleResistances);
 
                     const char *spell_school_name = localization->GetSpellSchoolName(res);
 
                     switch (res) {
-                        case 0:  // Fire
+                        case MAGIC_SCHOOL_FIRE:
                             playerAffected->sResFireBase += value;
                             break;
-                        case 1:  // Air
+                        case MAGIC_SCHOOL_AIR:
                             playerAffected->sResAirBase += value;
                             break;
-                        case 2:  // Water
+                        case MAGIC_SCHOOL_WATER:
                             playerAffected->sResWaterBase += value;
                             break;
-                        case 3:  // Earth
+                        case MAGIC_SCHOOL_EARTH:
                             playerAffected->sResEarthBase += value;
                             break;
-                        case 4:  // Mind
+                        case MAGIC_SCHOOL_MIND:
                             playerAffected->sResMindBase += value;
                             break;
-                        case 6:  // Body
+                        case MAGIC_SCHOOL_BODY:
                             playerAffected->sResBodyBase += value;
                             break;
                         default:
-                            // ("Unexpected attribute");
+                            assert(false);
                             return;
                     }
                     status = fmt::format("+{} {} {}", value, spell_school_name, localization->GetString(LSTR_PERMANENT));
@@ -5739,7 +5738,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
 
     switch (VarNum) {
         case VAR_CurrentHP:
-            receiveDamage((signed int)pValue, DMGT_PHISYCAL);
+            receiveDamage((signed int)pValue, DAMAGE_PHYSICAL);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_CurrentSP:
@@ -6428,7 +6427,7 @@ bool IsDwarfPresentInParty(bool a1) {
 void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
     // target character? if any
 
-    SPELL_TYPE spellId;
+    SpellId spellId;
     signed int recvdMagicDmg;     // eax@139
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
@@ -6517,7 +6516,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 dmgToReceive /= spellPower;
         }
 
-        int damageType;
+        DAMAGE_TYPE damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
                 damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6527,28 +6526,28 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 break;
             case ABILITY_SPELL1:
                 spellId = actorPtr->monsterInfo.uSpell1ID;
-                damageType = pSpellStats->pInfos[spellId].uSchool;
+                damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPELL2:
                 spellId = actorPtr->monsterInfo.uSpell2ID;
-                damageType = pSpellStats->pInfos[spellId].uSchool;
+                damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPECIAL:
-                damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
+                damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
                 break;
             default:
-                damageType = 4;  // DMGT_PHISYCAL
+                damageType = DAMAGE_PHYSICAL;
                 break;
         }
 
         // calc damage
-        dmgToReceive = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+        dmgToReceive = playerPtr->receiveDamage(dmgToReceive, damageType);
 
         // pain reflection back on attacker
         if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
             AIState actorState = actorPtr->aiState;
             if (actorState != Dying && actorState != Dead) {
-                int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
+                int reflectedDamage = actorPtr->CalcMagicalDamageToActor(damageType, dmgToReceive);
                 actorPtr->currentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->currentHP >= 1) {
@@ -6621,18 +6620,18 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             }
 
             int damage;
-            int damagetype;
+            DAMAGE_TYPE damagetype;
             if (uActorType != OBJECT_Character ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
                                          spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
-                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
+                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
                 damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
-                damagetype = 0;
+                damagetype = DAMAGE_FIRE; // TODO(captainurist): doesn't look like a proper default.
             }
-            playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            playerPtr->receiveDamage(damage, damagetype);
             if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
@@ -6642,7 +6641,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-            uint16_t spriteType = spritefrom->uType;
+            SPRITE_OBJECT_TYPE spriteType = spritefrom->uType;
 
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
@@ -6691,7 +6690,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 if (spellPower > 0) dmgToReceive /= spellPower;
             }
 
-            int damageType;
+            DAMAGE_TYPE damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
                     damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6701,25 +6700,25 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                     break;
                 case ABILITY_SPELL1:
                     spellId = actorPtr->monsterInfo.uSpell1ID;
-                    damageType = pSpellStats->pInfos[spellId].uSchool;
+                    damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPELL2:
                     spellId = actorPtr->monsterInfo.uSpell2ID;
-                    damageType = pSpellStats->pInfos[spellId].uSchool;
+                    damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPECIAL:
-                    damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
+                    damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
                     break;
                 default:
-                    damageType = 4;
+                    damageType = DAMAGE_PHYSICAL;
                     break;
             }
 
-            int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+            int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, damageType);
             if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
                 AIState actorState = actorPtr->aiState;
                 if (actorState != Dying && actorState != Dead) {
-                    recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
+                    recvdMagicDmg = actorPtr->CalcMagicalDamageToActor(damageType, reflectedDmg);
                     actorPtr->currentHP -= recvdMagicDmg;
 
                     if (recvdMagicDmg >= 0) {
@@ -6764,20 +6763,20 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             // party hits self
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
-            int damagetype;
+            DAMAGE_TYPE damagetype;
             if (uActorType != OBJECT_Character ||
                 spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
                                          spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
-                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
+                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
                 damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
-                damagetype = 0;
+                damagetype = DAMAGE_FIRE; // TODO(captainurist): another weird default.
             }
 
-            playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            playerPtr->receiveDamage(damage, damagetype);
             if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
@@ -7217,7 +7216,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shooting_wand = true;
 
         int main_hand_idx = character->pEquipment.uMainHand;
-        pushSpellOrRangedAttack(wandSpellIds[character->pInventoryItemList[main_hand_idx - 1].uItemID],
+        pushSpellOrRangedAttack(spellForWand(character->pInventoryItemList[main_hand_idx - 1].uItemID),
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
@@ -7605,7 +7604,7 @@ Character::Character() {
     _expression21_animtime = 0;
     _expression21_frameset = 0;
 
-    lastOpenedSpellbookPage = 0;
+    lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
 }
 
 void Character::cleanupBeacons() {

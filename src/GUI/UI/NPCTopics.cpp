@@ -457,7 +457,7 @@ const std::string &joinGuildOptionString() {
         } else {
             if (gold_transaction_amount <= pParty->GetGold()) {
                 membershipOrTrainingApproved = true;
-                return pNPCTopics[dialogue_base + guild_id].pText;
+                return pNPCTopics[dialogue_base + std::to_underlying(guild_id)].pText;
             } else {
                 return pNPCTopics[dialogue_base + 14].pText;
             }

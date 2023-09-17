@@ -232,8 +232,8 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
 
     dst->uTileID = src.tileId;
     dst->tileset = static_cast<Tileset>(src.tileSet);
-    dst->uSection = src.section;
-    dst->uAttributes = src.attributes;
+    dst->uSection = static_cast<TILE_SECT>(src.section);
+    dst->uAttributes = static_cast<TILE_DESC_FLAGS>(src.attributes);
 }
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
@@ -279,7 +279,7 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     dst->flags = std::to_underlying(src.uFlags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->location2d = src.Location2D;
+    dst->location2d = std::to_underlying(src.Location2D);
     dst->profession = std::to_underlying(src.profession);
     dst->greet = src.greet;
     dst->joins = src.is_joinable;
@@ -301,7 +301,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->uFlags = NpcFlags(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->Location2D = src.location2d;
+    dst->Location2D = static_cast<HOUSE_ID>(src.location2d);
     dst->profession = static_cast<NPCProf>(src.profession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
@@ -386,7 +386,11 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
         dst->attributeEnchantmentOrPotionPower = 0;
     }
     dst->enchantmentStrength = src.m_enchantmentStrength;
-    dst->specialEnchantment = src.special_enchantment;
+    if (isGold(src.uItemID)) {
+        dst->specialEnchantmentOrGoldAmount = src.goldAmount;
+    } else {
+        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.special_enchantment);
+    }
     dst->numCharges = src.uNumCharges;
     dst->attributes = std::to_underlying(src.uAttributes);
     dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
@@ -409,7 +413,13 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
         dst->attributeEnchantment = {};
     }
     dst->m_enchantmentStrength = src.enchantmentStrength;
-    dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
+    if (isGold(dst->uItemID)) {
+        dst->goldAmount = src.specialEnchantmentOrGoldAmount;
+        dst->special_enchantment = ITEM_ENCHANTMENT_NULL;
+    } else {
+        dst->goldAmount = 0;
+        dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantmentOrGoldAmount);
+    }
     dst->uNumCharges = src.numCharges;
     dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
@@ -726,7 +736,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 
     snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
 
-    dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
+    dst->lastOpenedSpellbookPage = std::to_underlying(src.lastOpenedSpellbookPage);
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
     snapshot(src._characterEventBits, &dst->playerEventBits, tags::reverseBits);
@@ -977,8 +987,8 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 
     reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
 
-    dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
-    dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
+    dst->lastOpenedSpellbookPage = static_cast<MagicSchool>(src.lastOpenedSpellbookPage);
+    dst->uQuickSpell = static_cast<SpellId>(src.quickSpell);
 
     reconstruct(src.playerEventBits, &dst->_characterEventBits, tags::reverseBits);
 
@@ -1136,16 +1146,16 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.flying = src.monsterInfo.uFlying;
     dst->pMonsterInfo.movementType = src.monsterInfo.uMovementType;
     dst->pMonsterInfo.aiType = src.monsterInfo.uAIType;
-    dst->pMonsterInfo.hostilityType = (uint8_t)src.monsterInfo.uHostilityType;
+    dst->pMonsterInfo.hostilityType = std::to_underlying(src.monsterInfo.uHostilityType);
     dst->pMonsterInfo.specialAttackType = src.monsterInfo.uSpecialAttackType;
     dst->pMonsterInfo.specialAttackLevel = src.monsterInfo.uSpecialAttackLevel;
-    dst->pMonsterInfo.attack1Type = src.monsterInfo.uAttack1Type;
+    dst->pMonsterInfo.attack1Type = std::to_underlying(src.monsterInfo.uAttack1Type);
     dst->pMonsterInfo.attack1DamageDiceRolls = src.monsterInfo.uAttack1DamageDiceRolls;
     dst->pMonsterInfo.attack1DamageDiceSides = src.monsterInfo.uAttack1DamageDiceSides;
     dst->pMonsterInfo.attack1DamageBonus = src.monsterInfo.uAttack1DamageBonus;
     dst->pMonsterInfo.missileAttack1Type = src.monsterInfo.uMissleAttack1Type;
     dst->pMonsterInfo.attack2Chance = src.monsterInfo.uAttack2Chance;
-    dst->pMonsterInfo.attack2Type = src.monsterInfo.uAttack2Type;
+    dst->pMonsterInfo.attack2Type = std::to_underlying(src.monsterInfo.uAttack2Type);
     dst->pMonsterInfo.attack2DamageDiceRolls = src.monsterInfo.uAttack2DamageDiceRolls;
     dst->pMonsterInfo.attack2DamageDiceSides = src.monsterInfo.uAttack2DamageDiceSides;
     dst->pMonsterInfo.attack2DamageBonus = src.monsterInfo.uAttack2DamageBonus;
@@ -1233,21 +1243,21 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.hostilityType);
     dst->monsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.uSpecialAttackLevel = src.pMonsterInfo.specialAttackLevel;
-    dst->monsterInfo.uAttack1Type = src.pMonsterInfo.attack1Type;
+    dst->monsterInfo.uAttack1Type = static_cast<DAMAGE_TYPE>(src.pMonsterInfo.attack1Type);
     dst->monsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
     dst->monsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.attack1DamageDiceSides;
     dst->monsterInfo.uAttack1DamageBonus = src.pMonsterInfo.attack1DamageBonus;
     dst->monsterInfo.uMissleAttack1Type = src.pMonsterInfo.missileAttack1Type;
     dst->monsterInfo.uAttack2Chance = src.pMonsterInfo.attack2Chance;
-    dst->monsterInfo.uAttack2Type = src.pMonsterInfo.attack2Type;
+    dst->monsterInfo.uAttack2Type = static_cast<DAMAGE_TYPE>(src.pMonsterInfo.attack2Type);
     dst->monsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.attack2DamageDiceRolls;
     dst->monsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.attack2DamageDiceSides;
     dst->monsterInfo.uAttack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;
     dst->monsterInfo.uMissleAttack2Type = src.pMonsterInfo.missileAttack2Type;
     dst->monsterInfo.uSpell1UseChance = src.pMonsterInfo.spell1UseChance;
-    dst->monsterInfo.uSpell1ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.spell1Id);
+    dst->monsterInfo.uSpell1ID = static_cast<SpellId>(src.pMonsterInfo.spell1Id);
     dst->monsterInfo.uSpell2UseChance = src.pMonsterInfo.spell2UseChance;
-    dst->monsterInfo.uSpell2ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.spell2Id);
+    dst->monsterInfo.uSpell2ID = static_cast<SpellId>(src.pMonsterInfo.spell2Id);
     dst->monsterInfo.uResFire = src.pMonsterInfo.resFire;
     dst->monsterInfo.uResAir = src.pMonsterInfo.resAir;
     dst->monsterInfo.uResWater = src.pMonsterInfo.resWater;
@@ -1470,7 +1480,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
 void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     memzero(dst);
 
-    dst->uType = src.uType;
+    dst->uType = std::to_underlying(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
     snapshot(src.vVelocity, &dst->vVelocity);
@@ -1506,7 +1516,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->tempLifetime = src.tempLifetime;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     reconstruct(src.containing_item, &dst->containing_item);
-    dst->uSpellID = static_cast<SPELL_TYPE>(src.uSpellID);
+    dst->uSpellID = static_cast<SpellId>(src.uSpellID);
     dst->spell_level = src.spell_level;
     dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
     dst->field_54 = src.field_54;
@@ -1645,7 +1655,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     reconstruct(src.name, &dst->name);
-    dst->uObjectID = src.uObjectID;
+    dst->uObjectID = static_cast<SPRITE_OBJECT_TYPE>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);
@@ -1658,7 +1668,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     reconstruct(src.name, &dst->name);
-    dst->uObjectID = src.uObjectID;
+    dst->uObjectID = static_cast<SPRITE_OBJECT_TYPE>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);

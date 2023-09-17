@@ -476,7 +476,7 @@ void Chest::OnChestLeftClick() {
                 int itemindex = chestindex - 1;
                 chest->igChestItems[itemindex].placedInChest = false;
                 if (chest->igChestItems[itemindex].isGold()) {
-                    pParty->partyFindsGold(chest->igChestItems[itemindex].special_enchantment, GOLD_RECEIVE_SHARE);
+                    pParty->partyFindsGold(chest->igChestItems[itemindex].goldAmount, GOLD_RECEIVE_SHARE);
                 } else {
                     pParty->setHoldingItem(&chest->igChestItems[itemindex]);
                 }
@@ -511,8 +511,8 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
         ItemGen chestitem = chest->igChestItems[itemindex];
         chestitem.placedInChest = false;
         if (chestitem.isGold()) {
-            pParty->partyFindsGold(chestitem.special_enchantment, GOLD_RECEIVE_SHARE);
-            goldamount += chestitem.special_enchantment;
+            pParty->partyFindsGold(chestitem.goldAmount, GOLD_RECEIVE_SHARE);
+            goldamount += chestitem.goldAmount;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
             if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
@@ -619,8 +619,8 @@ void UpdateChestPositions() {
     auto processEvent = [&](int eventId, const Vec3i &position) {
         // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
         // break out of the loop below early. If yes... Well. This should work.
-        if (engine->_localEventMap.isHaveEvents(eventId))
-            for (const EventIR &event : engine->_localEventMap.getEvents(eventId))
+        if (engine->_localEventMap.hasEvent(eventId))
+            for (const EventIR &event : engine->_localEventMap.events(eventId))
                 if (event.type == EVENT_OpenChest)
                     pointsByChestId[event.data.chest_id].push_back(position);
     };

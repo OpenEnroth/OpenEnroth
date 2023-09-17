@@ -1541,8 +1541,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (bWizardEyeActive) {
         if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
             for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-                if (!pSpriteObjects[i].uType ||
-                    !pSpriteObjects[i].uObjectDescID)
+                if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
                 pPoint_X =
@@ -1969,10 +1968,10 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
             // TODO(pskelton): this used to check if character had the spell activated - no longer required here ??
             if (!pParty->hasActiveCharacter())
                 break;
+            SpellId selectedSpell = static_cast<SpellId>(param);
             if (isHoldingMouseRightButton()) {
-                dword_507B00_spell_info_to_draw_in_popup = param + 1;
+                dword_507B00_spell_info_to_draw_in_popup = selectedSpell;
             }
-            SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + param + 1);
             if (spellbookSelectedSpell == selectedSpell) {
                 engine->_statusBar->setPermanent(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name);
             } else {

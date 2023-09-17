@@ -164,9 +164,9 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], MATERIAL_COMMON);
         pItems[item_counter].uItemID_Rep_St = atoi(tokens[9]);
         pItems[item_counter].pUnidentifiedName = removeQuotes(tokens[10]);
-        pItems[item_counter].uSpriteID = atoi(tokens[11]);
+        pItems[item_counter].uSpriteID = static_cast<SPRITE_OBJECT_TYPE>(atoi(tokens[11]));
 
-        pItems[item_counter]._additional_value = 0;
+        pItems[item_counter]._additional_value = ITEM_ENCHANTMENT_NULL;
         pItems[item_counter]._bonus_type = {};
         if (pItems[item_counter].uMaterial == MATERIAL_SPECIAL) {
             for (CharacterAttributeType ii : enchantableAttributes()) {

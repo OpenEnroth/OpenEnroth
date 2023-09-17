@@ -14,8 +14,11 @@ struct Polygon {
     // void _normalize_v_18();
     // void Create_48607B(struct SkyBillboardStruct *a2);
 
-    inline bool IsWater() const { return this->flags & 2; }
-    inline bool IsWaterAnimDisabled() const { return this->flags & 0x3C00; }
+    inline bool IsWater() const { return this->flags & TILE_DESC_WATER; }
+    inline bool IsWaterAnimDisabled() const {
+        // TODO(captainurist) : is this check correct? We're checking that at least one of the flags is set.
+        return this->flags & (TILE_DESC_SCROLL_DOWN | TILE_DESC_SCROLL_UP | TILE_DESC_SCROLL_LEFT | TILE_DESC_SCROLL_RIGHT);
+    }
 
     float field_0 = 0;
     float field_4 = 0;
@@ -27,7 +30,7 @@ struct Polygon {
     int field_24 = 0;  // dot dist
     int sTextureDeltaU = 0;
     int sTextureDeltaV = 0;
-    int16_t flags = 0;  // &2 -> Water  &3C00 still water (no anim)
+    TILE_DESC_FLAGS flags = 0;
     int16_t field_32 = 0;
     int field_34 = 0;
     struct SkyBillboardStruct *ptr_38 = nullptr;

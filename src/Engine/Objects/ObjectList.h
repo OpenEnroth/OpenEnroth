@@ -10,6 +10,8 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Flags.h"
 
+#include "SpriteObjectEnums.h"
+
 enum class ObjectDescFlag : int16_t {
     OBJECT_DESC_NO_SPRITE = 0x1,
     OBJECT_DESC_NO_COLLISION = 0x2,
@@ -31,7 +33,7 @@ struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
     std::string name; // TODO(captainurist): why is this unused?
-    int16_t uObjectID;
+    SPRITE_OBJECT_TYPE uObjectID;
     int16_t uRadius;
     int16_t uHeight;
     ObjectDescFlags uFlags;
@@ -44,7 +46,7 @@ struct ObjectDesc {
 class ObjectList {
  public:
     void InitializeSprites();
-    unsigned int ObjectIDByItemID(unsigned int uItemID);
+    unsigned int ObjectIDByItemID(SPRITE_OBJECT_TYPE uItemID);
 
  public:
     std::vector<ObjectDesc> pObjects;

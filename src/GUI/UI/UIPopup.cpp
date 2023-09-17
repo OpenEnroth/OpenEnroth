@@ -250,7 +250,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     int GoldAmount = 0;
     if (inspect_item->isGold()) {
-        GoldAmount = inspect_item->special_enchantment;
+        GoldAmount = inspect_item->goldAmount;
     }
 
     if (pParty->hasActiveCharacter()) {
@@ -413,7 +413,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                   localization->GetString(LSTR_SPECIAL_2),
                                   pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].pBonusStat,
                                   inspect_item->m_enchantmentStrength);
-        } else if (inspect_item->special_enchantment) {
+        } else if (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
                                   localization->GetString(LSTR_SPECIAL_2),
                                   pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
@@ -439,7 +439,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
-        (inspect_item->special_enchantment || inspect_item->attributeEnchantment))
+        (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
     if (assets->pFontArrus->GetHeight()) {
@@ -498,7 +498,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
-            (inspect_item->special_enchantment || inspect_item->attributeEnchantment)) {
+            (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
             v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
 
             std::string txt4 = "Duration:";
@@ -816,18 +816,18 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, acStr);
     pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
 
-    std::array<std::string, 11> attackTypes = {
-        localization->GetSpellSchoolName(0),
-        localization->GetSpellSchoolName(1),
-        localization->GetSpellSchoolName(2),
-        localization->GetSpellSchoolName(3),
-        localization->GetString(LSTR_PHYSICAL),
-        localization->GetString(LSTR_MAGIC),
-        localization->GetSpellSchoolName(5),
-        localization->GetSpellSchoolName(4),
-        localization->GetSpellSchoolName(6),
-        localization->GetSpellSchoolName(7),
-        localization->GetSpellSchoolName(8)
+    IndexedArray<std::string, DAMAGE_FIRST, DAMAGE_LAST> attackTypes = {
+        {DAMAGE_FIRE,       localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE)},
+        {DAMAGE_AIR,        localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR)},
+        {DAMAGE_WATER,      localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER)},
+        {DAMAGE_EARTH,      localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH)},
+        {DAMAGE_PHYSICAL,   localization->GetString(LSTR_PHYSICAL)},
+        {DAMAGE_MAGIC,      localization->GetString(LSTR_MAGIC)},
+        {DAMAGE_SPIRIT,     localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT)},
+        {DAMAGE_MIND,       localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND)},
+        {DAMAGE_BODY,       localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY)},
+        {DAMAGE_LIGHT,      localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT)},
+        {DAMAGE_DARK,       localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK)}
     };
 
     std::string attackStr, damageStr;
@@ -877,15 +877,15 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
 
     std::array<std::string, 10> resTypes = {
-        localization->GetSpellSchoolName(0),
-        localization->GetSpellSchoolName(1),
-        localization->GetSpellSchoolName(2),
-        localization->GetSpellSchoolName(3),
-        localization->GetSpellSchoolName(4),
-        localization->GetSpellSchoolName(5),
-        localization->GetSpellSchoolName(6),
-        localization->GetSpellSchoolName(7),
-        localization->GetSpellSchoolName(8),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT),
+        localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK),
         localization->GetString(LSTR_PHYSICAL)
     };
 
@@ -894,12 +894,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pActors[uActorID].monsterInfo.uResAir,
         pActors[uActorID].monsterInfo.uResWater,
         pActors[uActorID].monsterInfo.uResEarth,
-        pActors[uActorID].monsterInfo.uResMind,
         pActors[uActorID].monsterInfo.uResSpirit,
+        pActors[uActorID].monsterInfo.uResMind,
         pActors[uActorID].monsterInfo.uResBody,
         pActors[uActorID].monsterInfo.uResLight,
-        pActors[uActorID].monsterInfo.uResPhysical,
-        pActors[uActorID].monsterInfo.uResDark
+        pActors[uActorID].monsterInfo.uResDark,
+        pActors[uActorID].monsterInfo.uResPhysical, // Physical & Dark were switched, was a bug?
     };
 
     pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
@@ -1037,8 +1037,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 5:
         case 6:
             CharacterUI_DrawTooltip(
-                localization->GetAttirubteName(pStringNum),
-                localization->GetAttributeDescription(pStringNum));
+                localization->GetAttirubteName(static_cast<CharacterAttributeType>(pStringNum)),
+                localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pStringNum)));
             break;
         case 7:  // Health Points
             CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
@@ -1175,13 +1175,12 @@ void CharacterUI_StatsTab_ShowHint() {
 }
 
 //----- (00410B28) --------------------------------------------------------
-void DrawSpellDescriptionPopup(int spell_index_in_book) {
+void DrawSpellDescriptionPopup(SpellId spell_id) {
     SpellInfo *spell;             // esi@1
     unsigned int v3;              // eax@2
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
     Pointi pt = mouse->GetCursorPos();
-    SPELL_TYPE spell_id = static_cast<SPELL_TYPE>(spell_index_in_book + 11 * pParty->activeCharacter().lastOpenedSpellbookPage + 1);
 
     spell = &pSpellStats->pInfos[spell_id];
     if (pt.y <= 250)
@@ -1227,7 +1226,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    CharacterSkillType skill = static_cast<CharacterSkillType>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
+    CharacterSkillType skill = skillForMagicSchool(pParty->activeCharacter().lastOpenedSpellbookPage);
     CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(assets->pFontComic.get(), 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
@@ -1238,7 +1237,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
         assets->pFontComic.get(), 12,
         spell_info_window.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str2,
         3);
-    dword_507B00_spell_info_to_draw_in_popup = 0;
+    dword_507B00_spell_info_to_draw_in_popup = SPELL_NONE;
 }
 
 /**
@@ -1306,11 +1305,9 @@ static void drawBuffPopupWindow() {
 /**
  * @offset 0x4B1523
  */
-void showSpellbookInfo(ItemId spellItemId) {
-    // TODO(captainurist): deal away with casts.
-    SPELL_TYPE spellId = static_cast<SPELL_TYPE>(std::to_underlying(spellItemId) - 399);
-    int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
-    unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
+void showSpellbookInfo(ItemId spellbook) {
+    assert(isSpellbook(spellbook));
+    SpellId spell = spellForSpellbook(spellbook);
 
     Pointi cursorPos = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int popupVertPos = 30;
@@ -1333,11 +1330,11 @@ void showSpellbookInfo(ItemId spellItemId) {
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))});
 
     std::string str = fmt::format("{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
-                                  pSpellStats->pInfos[spellId].pDescription,
-                                  localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
-                                  localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
-                                  localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc,
-                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
+                                  pSpellStats->pInfos[spell].pDescription,
+                                  localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pBasicSkillDesc,
+                                  localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pExpertSkillDesc,
+                                  localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pMasterSkillDesc,
+                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
 
     popup.uFrameHeight += assets->pFontSmallnum->CalcTextHeight(str, popup.uFrameWidth, 0);
     if (popup.uFrameHeight < 150) {
@@ -1349,13 +1346,13 @@ void showSpellbookInfo(ItemId spellItemId) {
     popup.uFrameHeight -= 12;
     popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;
     popup.uFrameW = popup.uFrameHeight + popup.uFrameY - 1;
-    popup.DrawTitleText(assets->pFontArrus.get(), 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spellId].name, 3u);
+    popup.DrawTitleText(assets->pFontArrus.get(), 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spell].name, 3u);
     popup.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     popup.uFrameZ = popup.uFrameX + 107;
     popup.uFrameWidth = 108;
-    popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<CharacterSkillType>(spellSchool / 4 + 12)), 3u);
+    popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(skillForSpell(spell)), 3u);
 
-    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].uNormalLevelMana);
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, popup.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str, 3);
 }
 
@@ -1868,9 +1865,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case SCREEN_SPELL_BOOK: {
-            if (dword_507B00_spell_info_to_draw_in_popup)
-                DrawSpellDescriptionPopup(
-                    dword_507B00_spell_info_to_draw_in_popup - 1);
+            if (dword_507B00_spell_info_to_draw_in_popup != SPELL_NONE)
+                DrawSpellDescriptionPopup(dword_507B00_spell_info_to_draw_in_popup);
             break;
         }
         case SCREEN_HOUSE: {
@@ -1891,8 +1887,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(pButton->msg_param % 7);
-                            pStr = localization->GetAttirubteName(pButton->msg_param % 7);
+                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
+                            pStr = localization->GetAttirubteName(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);
@@ -2153,12 +2149,12 @@ void Inventory_ItemPopupAndAlchemy() {
             pParty->activeCharacter().RemoveItemAtInventoryIndex(invMatrixIndex);
 
             if (damage_level == 1) {
-                pParty->activeCharacter().receiveDamage(grng->random(11) + 10, DMGT_FIRE);
+                pParty->activeCharacter().receiveDamage(grng->random(11) + 10, DAMAGE_FIRE);
             } else if (damage_level == 2) {
-                pParty->activeCharacter().receiveDamage(grng->random(71) + 30, DMGT_FIRE);
+                pParty->activeCharacter().receiveDamage(grng->random(71) + 30, DAMAGE_FIRE);
                 pParty->activeCharacter().ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pParty->activeCharacter().receiveDamage(grng->random(201) + 50, DMGT_FIRE);
+                pParty->activeCharacter().receiveDamage(grng->random(201) + 50, DAMAGE_FIRE);
                 pParty->activeCharacter().ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
                 pParty->activeCharacter().SetCondition(CONDITION_ERADICATED, 0);
@@ -2271,7 +2267,7 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
         if (item->isWeapon()) {
-            if (item->special_enchantment || item->attributeEnchantment) {
+            if (item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->attributeEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;

@@ -192,7 +192,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_MoveToMap:
         {
-            if (ir.data.move_map_descr.house_id || ir.data.move_map_descr.exit_pic_id) {
+            if (ir.data.move_map_descr.house_id != HOUSE_INVALID || ir.data.move_map_descr.exit_pic_id) {
                 pDialogueWindow = new GUIWindow_Transition(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                            Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                            ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
@@ -416,8 +416,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (ir.data.npc_topic_descr.event_id == 78) {
                     houseDialogPressEscape();
                     window_SpeakInHouse->Release();
-                    if (enterHouse(HOUSE_DARK_GUILD_PARAMOUNT_PIT)) {
-                        createHouseUI(HOUSE_DARK_GUILD_PARAMOUNT_PIT);
+                    if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
+                        createHouseUI(HOUSE_DARK_GUILD_PIT);
                         current_npc_text = pNPCTopics[90].pText;
                     }
                 }
@@ -632,7 +632,7 @@ void EventInterpreter::prepare(const EventMap &eventMap, int eventId, Pid object
     _objectPid = objectPid;
 
     _events.clear();
-    if (eventMap.isHaveEvents(eventId)) {
-        _events = eventMap.getEvents(eventId);
+    if (eventMap.hasEvent(eventId)) {
+        _events = eventMap.events(eventId);
     }
 }

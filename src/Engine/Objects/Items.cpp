@@ -24,7 +24,7 @@ ItemGen *ptr_50C9A4_ItemToEnchant;
 struct ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
-static std::map<int, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
+static std::map<ITEM_ENCHANTMENT, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
 static std::map<ItemId, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
 static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
@@ -51,89 +51,89 @@ static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
 int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE *damage_type,
                                            bool *draintargetHP) {
     *draintargetHP = false;
-    *damage_type = DMGT_FIRE;
+    *damage_type = DAMAGE_FIRE;
     if (uItemID == ITEM_NULL) return 0;
 
     UpdateTempBonus(pParty->GetPlayingTime());
     if (uItemID == ITEM_ARTIFACT_IRON_FEATHER) {
-        *damage_type = DMGT_ELECTR;
+        *damage_type = DAMAGE_AIR;
         return grng->random(10) + 6;
     }
     if (uItemID == ITEM_ARTIFACT_GHOULSBANE) {
-        *damage_type = DMGT_FIRE;
+        *damage_type = DAMAGE_FIRE;
         return grng->random(16) + 3;
     }
     if (uItemID == ITEM_ARTIFACT_ULLYSES) {
-        *damage_type = DMGT_COLD;
+        *damage_type = DAMAGE_WATER;
         return grng->random(4) + 9;
     }
     if (uItemID == ITEM_RELIC_OLD_NICK) {
-        *damage_type = DMGT_BODY;
+        *damage_type = DAMAGE_BODY;
         return 8;
     }
 
     switch (special_enchantment) {
         case ITEM_ENCHANTMENT_OF_COLD:
-            *damage_type = DMGT_COLD;
+            *damage_type = DAMAGE_WATER;
             return grng->random(2) + 3;
             break;
         case ITEM_ENCHANTMENT_OF_FROST:
-            *damage_type = DMGT_COLD;
+            *damage_type = DAMAGE_WATER;
             return grng->random(3) + 6;
             break;
         case ITEM_ENCHANTMENT_OF_ICE:
-            *damage_type = DMGT_COLD;
+            *damage_type = DAMAGE_WATER;
             return grng->random(4) + 9;
             break;
         case ITEM_ENCHANTMENT_OF_SPARKS:
-            *damage_type = DMGT_ELECTR;
+            *damage_type = DAMAGE_AIR;
             return grng->random(4) + 2;
             break;
         case ITEM_ENCHANTMENT_OF_LIGHTNING:
-            *damage_type = DMGT_ELECTR;
+            *damage_type = DAMAGE_AIR;
             return grng->random(7) + 4;
             break;
         case ITEM_ENCHANTMENT_OF_THUNDERBOLTS:
-            *damage_type = DMGT_ELECTR;
+            *damage_type = DAMAGE_AIR;
             return grng->random(10) + 6;
             break;
         case ITEM_ENCHANTMENT_OF_FIRE:
-            *damage_type = DMGT_FIRE;
+            *damage_type = DAMAGE_FIRE;
             return grng->randomDice(1, 6);
             break;
         case ITEM_ENCHANTMENT_OF_FLAME:
-            *damage_type = DMGT_FIRE;
+            *damage_type = DAMAGE_FIRE;
             return grng->randomDice(2, 6);
             break;
         case ITEM_ENCHANTMENT_OF_INFERNOS:
-            *damage_type = DMGT_FIRE;
+            *damage_type = DAMAGE_FIRE;
             return grng->randomDice(3, 6);
             break;
         case ITEM_ENCHANTMENT_OF_POISON:
-            *damage_type = DMGT_BODY;
+            *damage_type = DAMAGE_BODY;
             return 5;
             break;
         case ITEM_ENCHANTMENT_OF_VENOM:
-            *damage_type = DMGT_BODY;
+            *damage_type = DAMAGE_BODY;
             return 8;
             break;
         case ITEM_ENCHANTMENT_OF_ACID:
-            *damage_type = DMGT_BODY;
+            *damage_type = DAMAGE_BODY;
             return 12;
             break;
         case ITEM_ENCHANTMENT_VAMPIRIC:
         case ITEM_ENCHANTMENT_OF_DARKNESS:
-            *damage_type = DMGT_DARK;
+            *damage_type = DAMAGE_DARK;
             *draintargetHP = true;
             return 0;
             break;
 
         case ITEM_ENCHANTMENT_OF_DRAGON:
-            *damage_type = DMGT_FIRE;
+            *damage_type = DAMAGE_FIRE;
             return grng->random(11) + 10;
             break;
         default:
-            *damage_type = DMGT_FIRE;
+            *damage_type = DAMAGE_FIRE;
             return 0;
     }
 }

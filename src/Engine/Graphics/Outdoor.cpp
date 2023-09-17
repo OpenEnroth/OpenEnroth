@@ -201,7 +201,7 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-int OutdoorLocation::getTileAttribByPos(int sX, int sY) {
+TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(int sX, int sY) {
     int gridY = WorldPosToGridCellY(sY);
     int gridX = WorldPosToGridCellX(sX);
 
@@ -956,7 +956,7 @@ int OutdoorLocation::getTileIdByTileMapId(int mapId) {
     if (mapId >= 90) {
         v3 = (mapId - 90) / 36;
         if (v3 && v3 != 1 && v3 != 2) {
-            if (v3 == Tileset_CooledLava)
+            if (v3 == 3)
                 result = this->pTileTypes[3].uTileID;
             else
                 result = mapId;
@@ -1037,7 +1037,7 @@ int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
     return this->pTerrain.pTilemap[128 * gridY + gridX];
 }
 
-int OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
+TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 

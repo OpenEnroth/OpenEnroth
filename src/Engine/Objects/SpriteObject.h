@@ -79,7 +79,7 @@ struct SpriteObject {
     int16_t tempLifetime = 0;
     int16_t field_22_glow_radius_multiplier = 1;
     ItemGen containing_item;
-    SPELL_TYPE uSpellID = SPELL_NONE;
+    SpellId uSpellID = SPELL_NONE;
     int spell_level = 0;
     CharacterSkillMastery spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     int field_54 = 0;

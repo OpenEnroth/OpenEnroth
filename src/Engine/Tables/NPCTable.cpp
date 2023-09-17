@@ -189,10 +189,10 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                         pNPCData[i + 1].uPortraitID = atoi(test_string);
                         break;
                     case 6:
-                        pNPCData[i + 1].Location2D = atoi(test_string);
+                        pNPCData[i + 1].Location2D = static_cast<HOUSE_ID>(atoi(test_string));
                         break;
                     case 7:
-                        pNPCData[i + 1].profession = (NPCProf)atoi(test_string);
+                        pNPCData[i + 1].profession = static_cast<NPCProf>(atoi(test_string));
                         break;
                     case 8:
                         pNPCData[i + 1].greet = atoi(test_string);
@@ -465,7 +465,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 
 //----- (0047732C) --------------------------------------------------------
 void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
-                                        int uLocation2D, MapId uMapId) {
+                                        HOUSE_ID uLocation2D, MapId uMapId) {
     int rep_gen;
     int uGeneratedPortret;    // ecx@23
     int test_prof_summ;       // ecx@37

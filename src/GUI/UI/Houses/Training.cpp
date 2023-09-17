@@ -15,14 +15,14 @@
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 
-static constexpr IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
-    {HOUSE_TRAINING_HALL_EMERALD_ISLE, 5},
+static constexpr IndexedArray<int, HOUSE_FIRST_TRAINING_HALL, HOUSE_LAST_TRAINING_HALL> trainingHallMaxLevels = {
+    {HOUSE_TRAINING_HALL_EMERALD_ISLAND, 5},
     {HOUSE_TRAINING_HALL_HARMONDALE, 15},
     {HOUSE_TRAINING_HALL_ERATHIA, 25},
     {HOUSE_TRAINING_HALL_TULAREAN_FOREST, 25},
     {HOUSE_TRAINING_HALL_CELESTE, 200},
     {HOUSE_TRAINING_HALL_PIT, 200},
-    {HOUSE_TRAINING_HALL_NIGHON, std::numeric_limits<int>::max()}, // no limit
+    {HOUSE_TRAINING_HALL_MOUNT_NIGHON, std::numeric_limits<int>::max()}, // no limit
     {HOUSE_TRAINING_HALL_TATALIA, 50},
     {HOUSE_TRAINING_HALL_AVLEE, 50},
     {HOUSE_TRAINING_HALL_STONE_CITY, 100},
@@ -76,7 +76,7 @@ void GUIWindow_Training::trainDialogue() {
                 int maxLevelStepsAfter = *std::max_element(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end());
                 if (maxLevelStepsAfter > maxLevelStepsBefore) {
                     GameTime trainingTime = timeUntilDawn().AddHours(4);
-                    if (houseId() == HOUSE_TRAINING_HALL_PIT || houseId() == HOUSE_TRAINING_HALL_NIGHON) {
+                    if (houseId() == HOUSE_TRAINING_HALL_PIT || houseId() == HOUSE_TRAINING_HALL_MOUNT_NIGHON) {
                         trainingTime += GameTime::FromHours(12);
                     }
                     restAndHeal(trainingTime.AddDays(7));

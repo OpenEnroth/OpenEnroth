@@ -14,8 +14,10 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
+
+#include "Utility/Math/TrigLut.h"
+#include "Utility/MapAccess.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
@@ -289,286 +291,34 @@ IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_DARK_SOULDRINKER,            SpellData(60, 60, 60, 60,  300,  300,  300,  300, 25,  8, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)}
 };
 
-const IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds = {
-    {ITEM_WAND_OF_FIRE,                SPELL_FIRE_FIRE_BOLT},
-    {ITEM_WAND_OF_SPARKS,              SPELL_AIR_SPARKS},
-    {ITEM_WAND_OF_POISON,              SPELL_WATER_POISON_SPRAY},
-    {ITEM_WAND_OF_STUNNING,            SPELL_EARTH_STUN},
-    {ITEM_WAND_OF_HARM,                SPELL_BODY_HARM},
+IndexedArray<std::array<struct SpellBookIconPos, 12>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> pIconPos = {
+    {MAGIC_SCHOOL_FIRE, {{{0,   0},   {17,  13},  {115, 2},   {217, 15},  {299, 6},   {28,  125},
+                          {130, 133}, {294, 114}, {11,  232}, {134, 233}, {237, 171}, {296, 231}}}},
 
-    {ITEM_FAIRY_WAND_OF_LIGHT,         SPELL_LIGHT_LIGHT_BOLT},
-    {ITEM_FAIRY_WAND_OF_ICE,           SPELL_WATER_ICE_BOLT},
-    {ITEM_FAIRY_WAND_OF_LASHING,       SPELL_SPIRIT_SPIRIT_LASH},
-    {ITEM_FAIRY_WAND_OF_MIND,          SPELL_MIND_MIND_BLAST},
-    {ITEM_FAIRY_WAND_OF_SWARMS,        SPELL_EARTH_DEADLY_SWARM},
+    {MAGIC_SCHOOL_AIR, {{{0,   0},   {19,  9},   {117, 3},   {206, 13},  {285, 7},   {16,  123},
+                         {113, 101}, {201, 118}, {317, 110}, {11,  230}, {149, 236}, {296, 234}}}},
 
-    {ITEM_ALACORN_WAND_OF_FIREBALLS,   SPELL_FIRE_FIREBALL},
-    {ITEM_ALACORN_WAND_OF_ACID,        SPELL_WATER_ACID_BURST},
-    {ITEM_ALACORN_WAND_OF_LIGHTNING,   SPELL_AIR_LIGHTNING_BOLT},
-    {ITEM_ALACORN_WAND_OF_BLADES,      SPELL_EARTH_BLADES},
-    {ITEM_ALACORN_WAND_OF_CHARMS,      SPELL_MIND_CHARM},
+    {MAGIC_SCHOOL_WATER, {{{0,  0},   {17,  9},   {140, 0},   {210, 34},  {293, 5},   {15,  98},
+                           {78, 121}, {175, 136}, {301, 115}, {15,  226}, {154, 225}, {272, 220}}}},
 
-    {ITEM_ARCANE_WAND_OF_BLASTING,     SPELL_WATER_ICE_BLAST},
-    {ITEM_ARCANE_WAND_OF_THE_FIST,     SPELL_BODY_FLYING_FIST},
-    {ITEM_ARCANE_WAND_OF_ROCKS,        SPELL_EARTH_ROCK_BLAST},
-    {ITEM_ARCANE_WAND_OF_PARALYZING,   SPELL_LIGHT_PARALYZE},
-    {ITEM_ARCANE_WAND_OF_CLOUDS,       SPELL_DARK_TOXIC_CLOUD},
+    {MAGIC_SCHOOL_EARTH, {{{0,   0},   {7,   9},   {156, 2},   {277, 9},   {11,  117}, {111, 82},
+                           {180, 102}, {303, 108}, {10,  229}, {120, 221}, {201, 217}, {296, 225}}}},
 
-    {ITEM_MYSTIC_WAND_OF_IMPLOSION,    SPELL_AIR_IMPLOSION},
-    {ITEM_MYSTIC_WAND_OF_DISTORTION,   SPELL_EARTH_MASS_DISTORTION},
-    {ITEM_MYSTIC_WAND_OF_SHRAPMETAL,   SPELL_DARK_SHARPMETAL},
-    {ITEM_MYSTIC_WAND_OF_SHRINKING,    SPELL_DARK_SHRINKING_RAY},
-    {ITEM_MYSTIC_WAND_OF_INCINERATION, SPELL_FIRE_INCINERATE}
+    {MAGIC_SCHOOL_SPIRIT, {{{0,   0},   {18,  8},   {89,  15},  {192, 14},  {292, 7},   {22,  129},
+                            {125, 146}, {217, 136}, {305, 115}, {22,  226}, {174, 237}, {290, 231}}}},
+
+    {MAGIC_SCHOOL_MIND, {{{0,   0},  {18,  12},  {148, 9},   {292, 7},   {17,  122}, {121, 99},
+                          {220, 87}, {293, 112}, {13,  236}, {128, 213}, {220, 223}, {315, 223}}}},
+
+    {MAGIC_SCHOOL_BODY, {{{0,   0},   {23,  14},  {127, 8},   {204, 0},   {306, 8},   {14,  115},
+                          {122, 132}, {200, 116}, {293, 122}, {20,  228}, {154, 228}, {294, 239}}}},
+
+    {MAGIC_SCHOOL_LIGHT, {{{0,   0},  {19,  14},  {124, 10},  {283, 12},  {8,   105}, {113, 89},
+                           {190, 82}, {298, 108}, {18,  181}, {101, 204}, {204, 203}, {285, 218}}}},
+
+    {MAGIC_SCHOOL_DARK, {{{0,   0},   {18,  17},  {110, 16},  {201, 15},  {307, 15},  {18,  148},
+                          {125, 166}, {201, 123}, {275, 120}, {28,  235}, {217, 222}, {324, 216}}}}
 };
-
-const IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds = {
-    {ITEM_SCROLL_TORCH_LIGHT,           SPELL_FIRE_TORCH_LIGHT},
-    {ITEM_SCROLL_FIRE_BOLT,             SPELL_FIRE_FIRE_BOLT},
-    {ITEM_SCROLL_FIRE_RESISTANCE,       SPELL_FIRE_PROTECTION_FROM_FIRE},
-    {ITEM_SCROLL_FIRE_AURA,             SPELL_FIRE_FIRE_AURA},
-    {ITEM_SCROLL_HASTE,                 SPELL_FIRE_HASTE},
-    {ITEM_SCROLL_FIREBALL,              SPELL_FIRE_FIREBALL},
-    {ITEM_SCROLL_FIRE_SPIKE,            SPELL_FIRE_FIRE_SPIKE},
-    {ITEM_SCROLL_IMMOLATION,            SPELL_FIRE_IMMOLATION},
-    {ITEM_SCROLL_METEOR_SHOWER,         SPELL_FIRE_METEOR_SHOWER},
-    {ITEM_SCROLL_INFERNO,               SPELL_FIRE_INFERNO},
-    {ITEM_SCROLL_INCINERATE,            SPELL_FIRE_INCINERATE},
-
-    {ITEM_SCROLL_WIZARD_EYE,            SPELL_AIR_WIZARD_EYE},
-    {ITEM_SCROLL_FEATHER_FALL,          SPELL_AIR_FEATHER_FALL},
-    {ITEM_SCROLL_AIR_RESISTANCE,        SPELL_AIR_PROTECTION_FROM_AIR},
-    {ITEM_SCROLL_SPARKS,                SPELL_AIR_SPARKS},
-    {ITEM_SCROLL_JUMP,                  SPELL_AIR_JUMP},
-    {ITEM_SCROLL_SHIELD,                SPELL_AIR_SHIELD},
-    {ITEM_SCROLL_LIGHTNING_BOLT,        SPELL_AIR_LIGHTNING_BOLT},
-    {ITEM_SCROLL_INVISIBILITY,          SPELL_AIR_INVISIBILITY},
-    {ITEM_SCROLL_IMPLOSION,             SPELL_AIR_IMPLOSION},
-    {ITEM_SCROLL_FLY,                   SPELL_AIR_FLY},
-    {ITEM_SCROLL_STARBURST,             SPELL_AIR_STARBURST},
-
-    {ITEM_SCROLL_AWAKEN,                SPELL_WATER_AWAKEN},
-    {ITEM_SCROLL_POISON_SPRAY,          SPELL_WATER_POISON_SPRAY},
-    {ITEM_SCROLL_WATER_RESISTANCE,      SPELL_WATER_PROTECTION_FROM_WATER},
-    {ITEM_SCROLL_ICE_BOLT,              SPELL_WATER_ICE_BOLT},
-    {ITEM_SCROLL_WATER_WALK,            SPELL_WATER_WATER_WALK},
-    {ITEM_SCROLL_RECHARGE_ITEM,         SPELL_WATER_RECHARGE_ITEM},
-    {ITEM_SCROLL_ACID_BURST,            SPELL_WATER_ACID_BURST},
-    {ITEM_SCROLL_ENCHANT_ITEM,          SPELL_WATER_ENCHANT_ITEM},
-    {ITEM_SCROLL_TOWN_PORTAL,           SPELL_WATER_TOWN_PORTAL},
-    {ITEM_SCROLL_ICE_BLAST,             SPELL_WATER_ICE_BLAST},
-    {ITEM_SCROLL_LLOYDS_BEACON,         SPELL_WATER_LLOYDS_BEACON},
-
-    {ITEM_SCROLL_STUN,                  SPELL_EARTH_STUN},
-    {ITEM_SCROLL_SLOW,                  SPELL_EARTH_SLOW},
-    {ITEM_SCROLL_EARTH_RESISTANCE,      SPELL_EARTH_PROTECTION_FROM_EARTH},
-    {ITEM_SCROLL_DEADLY_SWARM,          SPELL_EARTH_DEADLY_SWARM},
-    {ITEM_SCROLL_STONE_SKIN,            SPELL_EARTH_STONESKIN},
-    {ITEM_SCROLL_BLADES,                SPELL_EARTH_BLADES},
-    {ITEM_SCROLL_STONE_TO_FLESH,        SPELL_EARTH_STONE_TO_FLESH},
-    {ITEM_SCROLL_ROCK_BLAST,            SPELL_EARTH_ROCK_BLAST},
-    {ITEM_SCROLL_TELEKINESIS,           SPELL_EARTH_TELEKINESIS},
-    {ITEM_SCROLL_DEATH_BLOSSOM,         SPELL_EARTH_DEATH_BLOSSOM},
-    {ITEM_SCROLL_MASS_DISTORTION,       SPELL_EARTH_MASS_DISTORTION},
-
-    {ITEM_SCROLL_DETECT_LIFE,           SPELL_SPIRIT_DETECT_LIFE},
-    {ITEM_SCROLL_BLESS,                 SPELL_SPIRIT_BLESS},
-    {ITEM_SCROLL_FATE,                  SPELL_SPIRIT_FATE},
-    {ITEM_SCROLL_TURN_UNDEAD,           SPELL_SPIRIT_TURN_UNDEAD},
-    {ITEM_SCROLL_REMOVE_CURSE,          SPELL_SPIRIT_REMOVE_CURSE},
-    {ITEM_SCROLL_PRESERVATION,          SPELL_SPIRIT_PRESERVATION},
-    {ITEM_SCROLL_HEROISM,               SPELL_SPIRIT_HEROISM},
-    {ITEM_SCROLL_SPIRIT_LASH,           SPELL_SPIRIT_SPIRIT_LASH},
-    {ITEM_SCROLL_RAISE_DEAD,            SPELL_SPIRIT_RAISE_DEAD},
-    {ITEM_SCROLL_SHARED_LIFE,           SPELL_SPIRIT_SHARED_LIFE},
-    {ITEM_SCROLL_RESURRECTION,          SPELL_SPIRIT_RESSURECTION},
-
-    {ITEM_SCROLL_REMOVE_FEAR,           SPELL_MIND_REMOVE_FEAR},
-    {ITEM_SCROLL_MIND_BLAST,            SPELL_MIND_MIND_BLAST},
-    {ITEM_SCROLL_MIND_RESISTANCE,       SPELL_MIND_PROTECTION_FROM_MIND},
-    {ITEM_SCROLL_TELEPATHY,             SPELL_MIND_TELEPATHY},
-    {ITEM_SCROLL_CHARM,                 SPELL_MIND_CHARM},
-    {ITEM_SCROLL_CURE_PARALYSIS,        SPELL_MIND_CURE_PARALYSIS},
-    {ITEM_SCROLL_BERSERK,               SPELL_MIND_BERSERK},
-    {ITEM_SCROLL_MASS_FEAR,             SPELL_MIND_MASS_FEAR},
-    {ITEM_SCROLL_CURE_INSANITY,         SPELL_MIND_CURE_INSANITY},
-    {ITEM_SCROLL_PSYCHIC_SHOCK,         SPELL_MIND_PSYCHIC_SHOCK},
-    {ITEM_SCROLL_ENSLAVE,               SPELL_MIND_ENSLAVE},
-
-    {ITEM_SCROLL_CURE_WEAKNESS,         SPELL_BODY_CURE_WEAKNESS},
-    {ITEM_SCROLL_HEAL,                  SPELL_BODY_FIRST_AID},
-    {ITEM_SCROLL_BODY_RESISTANCE,       SPELL_BODY_PROTECTION_FROM_BODY},
-    {ITEM_SCROLL_HARM,                  SPELL_BODY_HARM},
-    {ITEM_SCROLL_REGENERATION,          SPELL_BODY_REGENERATION},
-    {ITEM_SCROLL_CURE_POISON,           SPELL_BODY_CURE_POISON},
-    {ITEM_SCROLL_HAMMERHANDS,           SPELL_BODY_HAMMERHANDS},
-    {ITEM_SCROLL_CURE_DISEASE,          SPELL_BODY_CURE_DISEASE},
-    {ITEM_SCROLL_PROTECTION_FROM_MAGIC, SPELL_BODY_PROTECTION_FROM_MAGIC},
-    {ITEM_SCROLL_FLYING_FIST,           SPELL_BODY_FLYING_FIST},
-    {ITEM_SCROLL_POWER_CURE,            SPELL_BODY_POWER_CURE},
-
-    {ITEM_SCROLL_LIGHT_BOLT,            SPELL_LIGHT_LIGHT_BOLT},
-    {ITEM_SCROLL_DESTROY_UNDEAD,        SPELL_LIGHT_DESTROY_UNDEAD},
-    {ITEM_SCROLL_DISPEL_MAGIC,          SPELL_LIGHT_DISPEL_MAGIC},
-    {ITEM_SCROLL_PARALYZE,              SPELL_LIGHT_PARALYZE},
-    {ITEM_SCROLL_SUMMON_ELEMENTAL,      SPELL_LIGHT_SUMMON_ELEMENTAL},
-    {ITEM_SCROLL_DAY_OF_THE_GODS,       SPELL_LIGHT_DAY_OF_THE_GODS},
-    {ITEM_SCROLL_PRISMATIC_LIGHT,       SPELL_LIGHT_PRISMATIC_LIGHT},
-    {ITEM_SCROLL_DAY_OF_PROTECTION,     SPELL_LIGHT_DAY_OF_PROTECTION},
-    {ITEM_SCROLL_HOUR_OF_POWER,         SPELL_LIGHT_HOUR_OF_POWER},
-    {ITEM_SCROLL_SUNRAY,                SPELL_LIGHT_SUNRAY},
-    {ITEM_SCROLL_DIVINE_INTERVENTION,   SPELL_LIGHT_DIVINE_INTERVENTION},
-
-    {ITEM_SCROLL_REANIMATE,             SPELL_DARK_REANIMATE},
-    {ITEM_SCROLL_TOXIC_CLOUD,           SPELL_DARK_TOXIC_CLOUD},
-    {ITEM_SCROLL_VAMPIRIC_WEAPON,       SPELL_DARK_VAMPIRIC_WEAPON},
-    {ITEM_SCROLL_SHRINKING_RAY,         SPELL_DARK_SHRINKING_RAY},
-    {ITEM_SCROLL_SHRAPMETAL,            SPELL_DARK_SHARPMETAL},
-    {ITEM_SCROLL_CONTROL_UNDEAD,        SPELL_DARK_CONTROL_UNDEAD},
-    {ITEM_SCROLL_PAIN_REFLECTION,       SPELL_DARK_PAIN_REFLECTION},
-    {ITEM_SCROLL_SACRIFICE,             SPELL_DARK_SACRIFICE},
-    {ITEM_SCROLL_DRAGON_BREATH,         SPELL_DARK_DRAGON_BREATH},
-    {ITEM_SCROLL_ARMAGEDDON,            SPELL_DARK_ARMAGEDDON},
-    {ITEM_SCROLL_SOULDRINKER,           SPELL_DARK_SOULDRINKER}
-};
-
-const IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds = {
-    {ITEM_SPELLBOOK_TORCH_LIGHT,           SPELL_FIRE_TORCH_LIGHT},
-    {ITEM_SPELLBOOK_FIRE_BOLT,             SPELL_FIRE_FIRE_BOLT},
-    {ITEM_SPELLBOOK_FIRE_RESISTANCE,       SPELL_FIRE_PROTECTION_FROM_FIRE},
-    {ITEM_SPELLBOOK_FIRE_AURA,             SPELL_FIRE_FIRE_AURA},
-    {ITEM_SPELLBOOK_HASTE,                 SPELL_FIRE_HASTE},
-    {ITEM_SPELLBOOK_FIREBALL,              SPELL_FIRE_FIREBALL},
-    {ITEM_SPELLBOOK_FIRE_SPIKE,            SPELL_FIRE_FIRE_SPIKE},
-    {ITEM_SPELLBOOK_IMMOLATION,            SPELL_FIRE_IMMOLATION},
-    {ITEM_SPELLBOOK_METEOR_SHOWER,         SPELL_FIRE_METEOR_SHOWER},
-    {ITEM_SPELLBOOK_INFERNO,               SPELL_FIRE_INFERNO},
-    {ITEM_SPELLBOOK_INCINERATE,            SPELL_FIRE_INCINERATE},
-
-    {ITEM_SPELLBOOK_WIZARD_EYE,            SPELL_AIR_WIZARD_EYE},
-    {ITEM_SPELLBOOK_FEATHER_FALL,          SPELL_AIR_FEATHER_FALL},
-    {ITEM_SPELLBOOK_AIR_RESISTANCE,        SPELL_AIR_PROTECTION_FROM_AIR},
-    {ITEM_SPELLBOOK_SPARKS,                SPELL_AIR_SPARKS},
-    {ITEM_SPELLBOOK_JUMP,                  SPELL_AIR_JUMP},
-    {ITEM_SPELLBOOK_SHIELD,                SPELL_AIR_SHIELD},
-    {ITEM_SPELLBOOK_LIGHTNING_BOLT,        SPELL_AIR_LIGHTNING_BOLT},
-    {ITEM_SPELLBOOK_INVISIBILITY,          SPELL_AIR_INVISIBILITY},
-    {ITEM_SPELLBOOK_IMPLOSION,             SPELL_AIR_IMPLOSION},
-    {ITEM_SPELLBOOK_FLY,                   SPELL_AIR_FLY},
-    {ITEM_SPELLBOOK_STARBURST,             SPELL_AIR_STARBURST},
-
-    {ITEM_SPELLBOOK_AWAKEN,                SPELL_WATER_AWAKEN},
-    {ITEM_SPELLBOOK_POISON_SPRAY,          SPELL_WATER_POISON_SPRAY},
-    {ITEM_SPELLBOOK_WATER_RESISTANCE,      SPELL_WATER_PROTECTION_FROM_WATER},
-    {ITEM_SPELLBOOK_ICE_BOLT,              SPELL_WATER_ICE_BOLT},
-    {ITEM_SPELLBOOK_WATER_WALK,            SPELL_WATER_WATER_WALK},
-    {ITEM_SPELLBOOK_RECHARGE_ITEM,         SPELL_WATER_RECHARGE_ITEM},
-    {ITEM_SPELLBOOK_ACID_BURST,            SPELL_WATER_ACID_BURST},
-    {ITEM_SPELLBOOK_ENCHANT_ITEM,          SPELL_WATER_ENCHANT_ITEM},
-    {ITEM_SPELLBOOK_TOWN_PORTAL,           SPELL_WATER_TOWN_PORTAL},
-    {ITEM_SPELLBOOK_ICE_BLAST,             SPELL_WATER_ICE_BLAST},
-    {ITEM_SPELLBOOK_LLOYDS_BEACON,         SPELL_WATER_LLOYDS_BEACON},
-
-    {ITEM_SPELLBOOK_STUN,                  SPELL_EARTH_STUN},
-    {ITEM_SPELLBOOK_SLOW,                  SPELL_EARTH_SLOW},
-    {ITEM_SPELLBOOK_EARTH_RESISTANCE,      SPELL_EARTH_PROTECTION_FROM_EARTH},
-    {ITEM_SPELLBOOK_DEADLY_SWARM,          SPELL_EARTH_DEADLY_SWARM},
-    {ITEM_SPELLBOOK_STONE_SKIN,            SPELL_EARTH_STONESKIN},
-    {ITEM_SPELLBOOK_BLADES,                SPELL_EARTH_BLADES},
-    {ITEM_SPELLBOOK_STONE_TO_FLESH,        SPELL_EARTH_STONE_TO_FLESH},
-    {ITEM_SPELLBOOK_ROCK_BLAST,            SPELL_EARTH_ROCK_BLAST},
-    {ITEM_SPELLBOOK_TELEKINESIS,           SPELL_EARTH_TELEKINESIS},
-    {ITEM_SPELLBOOK_DEATH_BLOSSOM,         SPELL_EARTH_DEATH_BLOSSOM},
-    {ITEM_SPELLBOOK_MASS_DISTORTION,       SPELL_EARTH_MASS_DISTORTION},
-
-    {ITEM_SPELLBOOK_DETECT_LIFE,           SPELL_SPIRIT_DETECT_LIFE},
-    {ITEM_SPELLBOOK_BLESS,                 SPELL_SPIRIT_BLESS},
-    {ITEM_SPELLBOOK_FATE,                  SPELL_SPIRIT_FATE},
-    {ITEM_SPELLBOOK_TURN_UNDEAD,           SPELL_SPIRIT_TURN_UNDEAD},
-    {ITEM_SPELLBOOK_REMOVE_CURSE,          SPELL_SPIRIT_REMOVE_CURSE},
-    {ITEM_SPELLBOOK_PRESERVATION,          SPELL_SPIRIT_PRESERVATION},
-    {ITEM_SPELLBOOK_HEROISM,               SPELL_SPIRIT_HEROISM},
-    {ITEM_SPELLBOOK_SPIRIT_LASH,           SPELL_SPIRIT_SPIRIT_LASH},
-    {ITEM_SPELLBOOK_RAISE_DEAD,            SPELL_SPIRIT_RAISE_DEAD},
-    {ITEM_SPELLBOOK_SHARED_LIFE,           SPELL_SPIRIT_SHARED_LIFE},
-    {ITEM_SPELLBOOK_RESURRECTION,          SPELL_SPIRIT_RESSURECTION},
-
-    {ITEM_SPELLBOOK_REMOVE_FEAR,           SPELL_MIND_REMOVE_FEAR},
-    {ITEM_SPELLBOOK_MIND_BLAST,            SPELL_MIND_MIND_BLAST},
-    {ITEM_SPELLBOOK_MIND_RESISTANCE,       SPELL_MIND_PROTECTION_FROM_MIND},
-    {ITEM_SPELLBOOK_TELEPATHY,             SPELL_MIND_TELEPATHY},
-    {ITEM_SPELLBOOK_CHARM,                 SPELL_MIND_CHARM},
-    {ITEM_SPELLBOOK_CURE_PARALYSIS,        SPELL_MIND_CURE_PARALYSIS},
-    {ITEM_SPELLBOOK_BERSERK,               SPELL_MIND_BERSERK},
-    {ITEM_SPELLBOOK_MASS_FEAR,             SPELL_MIND_MASS_FEAR},
-    {ITEM_SPELLBOOK_CURE_INSANITY,         SPELL_MIND_CURE_INSANITY},
-    {ITEM_SPELLBOOK_PSYCHIC_SHOCK,         SPELL_MIND_PSYCHIC_SHOCK},
-    {ITEM_SPELLBOOK_ENSLAVE,               SPELL_MIND_ENSLAVE},
-
-    {ITEM_SPELLBOOK_CURE_WEAKNESS,         SPELL_BODY_CURE_WEAKNESS},
-    {ITEM_SPELLBOOK_HEAL,                  SPELL_BODY_FIRST_AID},
-    {ITEM_SPELLBOOK_BODY_RESISTANCE,       SPELL_BODY_PROTECTION_FROM_BODY},
-    {ITEM_SPELLBOOK_HARM,                  SPELL_BODY_HARM},
-    {ITEM_SPELLBOOK_REGENERATION,          SPELL_BODY_REGENERATION},
-    {ITEM_SPELLBOOK_CURE_POISON,           SPELL_BODY_CURE_POISON},
-    {ITEM_SPELLBOOK_HAMMERHANDS,           SPELL_BODY_HAMMERHANDS},
-    {ITEM_SPELLBOOK_CURE_DISEASE,          SPELL_BODY_CURE_DISEASE},
-    {ITEM_SPELLBOOK_PROTECTION_FROM_MAGIC, SPELL_BODY_PROTECTION_FROM_MAGIC},
-    {ITEM_SPELLBOOK_FLYING_FIST,           SPELL_BODY_FLYING_FIST},
-    {ITEM_SPELLBOOK_POWER_CURE,            SPELL_BODY_POWER_CURE},
-
-    {ITEM_SPELLBOOK_LIGHT_BOLT,            SPELL_LIGHT_LIGHT_BOLT},
-    {ITEM_SPELLBOOK_DESTROY_UNDEAD,        SPELL_LIGHT_DESTROY_UNDEAD},
-    {ITEM_SPELLBOOK_DISPEL_MAGIC,          SPELL_LIGHT_DISPEL_MAGIC},
-    {ITEM_SPELLBOOK_PARALYZE,              SPELL_LIGHT_PARALYZE},
-    {ITEM_SPELLBOOK_SUMMON_ELEMENTAL,      SPELL_LIGHT_SUMMON_ELEMENTAL},
-    {ITEM_SPELLBOOK_DAY_OF_THE_GODS,       SPELL_LIGHT_DAY_OF_THE_GODS},
-    {ITEM_SPELLBOOK_PRISMATIC_LIGHT,       SPELL_LIGHT_PRISMATIC_LIGHT},
-    {ITEM_SPELLBOOK_DAY_OF_PROTECTION,     SPELL_LIGHT_DAY_OF_PROTECTION},
-    {ITEM_SPELLBOOK_HOUR_OF_POWER,         SPELL_LIGHT_HOUR_OF_POWER},
-    {ITEM_SPELLBOOK_SUNRAY,                SPELL_LIGHT_SUNRAY},
-    {ITEM_SPELLBOOK_DIVINE_INTERVENTION,   SPELL_LIGHT_DIVINE_INTERVENTION},
-
-    {ITEM_SPELLBOOK_REANIMATE,             SPELL_DARK_REANIMATE},
-    {ITEM_SPELLBOOK_TOXIC_CLOUD,           SPELL_DARK_TOXIC_CLOUD},
-    {ITEM_SPELLBOOK_VAMPIRIC_WEAPON,       SPELL_DARK_VAMPIRIC_WEAPON},
-    {ITEM_SPELLBOOK_SHRINKING_RAY,         SPELL_DARK_SHRINKING_RAY},
-    {ITEM_SPELLBOOK_SHRAPMETAL,            SPELL_DARK_SHARPMETAL},
-    {ITEM_SPELLBOOK_CONTROL_UNDEAD,        SPELL_DARK_CONTROL_UNDEAD},
-    {ITEM_SPELLBOOK_PAIN_REFLECTION,       SPELL_DARK_PAIN_REFLECTION},
-    {ITEM_SPELLBOOK_SACRIFICE,             SPELL_DARK_SACRIFICE},
-    {ITEM_SPELLBOOK_DRAGON_BREATH,         SPELL_DARK_DRAGON_BREATH},
-    {ITEM_SPELLBOOK_ARMAGEDDON,            SPELL_DARK_ARMAGEDDON},
-    {ITEM_SPELLBOOK_SOULDRINKER,           SPELL_DARK_SOULDRINKER}
-};
-
-std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos = {{
-    {{{0,   0},   {17,  13},  {115, 2},   {217, 15},  {299, 6},   {28,  125},
-      {130, 133}, {294, 114}, {11,  232}, {134, 233}, {237, 171}, {296, 231}}},
-
-    {{{0,   0},   {19,  9},   {117, 3},   {206, 13},  {285, 7},   {16,  123},
-      {113, 101}, {201, 118}, {317, 110}, {11,  230}, {149, 236}, {296, 234}}},
-
-    {{{0,  0},   {17,  9},   {140, 0},   {210, 34},  {293, 5},   {15,  98},
-      {78, 121}, {175, 136}, {301, 115}, {15,  226}, {154, 225}, {272, 220}}},
-
-    {{{0,   0},   {7,   9},   {156, 2},   {277, 9},   {11,  117}, {111, 82},
-      {180, 102}, {303, 108}, {10,  229}, {120, 221}, {201, 217}, {296, 225}}},
-
-    {{{0,   0},   {18,  8},   {89,  15},  {192, 14},  {292, 7},   {22,  129},
-      {125, 146}, {217, 136}, {305, 115}, {22,  226}, {174, 237}, {290, 231}}},
-
-    {{{0,   0},  {18,  12},  {148, 9},   {292, 7},   {17,  122}, {121, 99},
-      {220, 87}, {293, 112}, {13,  236}, {128, 213}, {220, 223}, {315, 223}}},
-
-    {{{0,   0},   {23,  14},  {127, 8},   {204, 0},   {306, 8},   {14,  115},
-      {122, 132}, {200, 116}, {293, 122}, {20,  228}, {154, 228}, {294, 239}}},
-
-    {{{0,   0},  {19,  14},  {124, 10},  {283, 12},  {8,   105}, {113, 89},
-      {190, 82}, {298, 108}, {18,  181}, {101, 204}, {204, 203}, {285, 218}}},
-
-    {{{0,   0},   {18,  17},  {110, 16},  {201, 15},  {307, 15},  {18,  148},
-      {125, 166}, {201, 123}, {275, 120}, {28,  235}, {217, 222}, {324, 216}}}
-}};
 
 // TODO: use SoundID not uint16_t
 // TODO(captainurist): Originally the array was two elements shorter, last two zeros are my addition. Can we drop elements for non-regular spells?
@@ -724,24 +474,24 @@ bool SpellBuff::Apply(GameTime expire_time, CharacterSkillMastery uSkillMastery,
 }
 
 void SpellStats::Initialize(const Blob &spells) {
-    std::map<std::string, SPELL_SCHOOL, ILess> spellSchoolMaps;
-    spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
-    spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
-    spellSchoolMaps["water"] = SPELL_SCHOOL_WATER;
-    spellSchoolMaps["earth"] = SPELL_SCHOOL_EARTH;
-    spellSchoolMaps["spirit"] = SPELL_SCHOOL_SPIRIT;
-    spellSchoolMaps["mind"] = SPELL_SCHOOL_MIND;
-    spellSchoolMaps["body"] = SPELL_SCHOOL_BODY;
-    spellSchoolMaps["light"] = SPELL_SCHOOL_LIGHT;
-    spellSchoolMaps["dark"] = SPELL_SCHOOL_DARK;
-    spellSchoolMaps["magic"] = SPELL_SCHOOL_MAGIC;
+    std::map<std::string, DAMAGE_TYPE, ILess> spellSchoolMaps;
+    spellSchoolMaps["fire"] = DAMAGE_FIRE;
+    spellSchoolMaps["air"] = DAMAGE_AIR;
+    spellSchoolMaps["water"] = DAMAGE_WATER;
+    spellSchoolMaps["earth"] = DAMAGE_EARTH;
+    spellSchoolMaps["spirit"] = DAMAGE_SPIRIT;
+    spellSchoolMaps["mind"] = DAMAGE_MIND;
+    spellSchoolMaps["body"] = DAMAGE_BODY;
+    spellSchoolMaps["light"] = DAMAGE_LIGHT;
+    spellSchoolMaps["dark"] = DAMAGE_DARK;
+    spellSchoolMaps["magic"] = DAMAGE_MAGIC;
 
     char *test_string;
 
     std::string txtRaw(spells.string_view());
 
     strtok(txtRaw.data(), "\r");
-    for (SPELL_TYPE uSpellID : allRegularSpells()) {
+    for (SpellId uSpellID : allRegularSpells()) {
         if (((std::to_underlying(uSpellID) % 11) - 1) == 0) {
             strtok(NULL, "\r");
         }
@@ -750,10 +500,7 @@ void SpellStats::Initialize(const Blob &spells) {
         auto tokens = tokenize(test_string, '\t');
 
         pInfos[uSpellID].name = removeQuotes(tokens[2]);
-        auto findResult = spellSchoolMaps.find(tokens[3]);
-        pInfos[uSpellID].uSchool = findResult == spellSchoolMaps.end()
-                                ? SPELL_SCHOOL_NONE
-                                : findResult->second;
+        pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
         pInfos[uSpellID].pShortName = removeQuotes(tokens[4]);
         pInfos[uSpellID].pDescription = removeQuotes(tokens[5]);
         pInfos[uSpellID].pBasicSkillDesc = removeQuotes(tokens[6]);
@@ -767,7 +514,7 @@ void SpellStats::Initialize(const Blob &spells) {
     }
 }
 
-void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
+void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
     assert(skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && skillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER);
@@ -1033,11 +780,11 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int
     }
 }
 
-bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID) {
+bool IsSpellQuickCastableOnShiftClick(SpellId uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
 
-int CalcSpellDamage(SPELL_TYPE uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
+int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
     int result;       // eax@1
     unsigned int diceSides;  // [sp-4h] [bp-8h]@9
 
@@ -1100,7 +847,7 @@ void armageddonProgress() {
             continue; // TODO(captainurist): paralyzed & summoned actors should receive damage too!
         }
 
-        int incomingDamage = actor.CalcMagicalDamageToActor(DMGT_MAGICAL, outgoingDamage);
+        int incomingDamage = actor.CalcMagicalDamageToActor(DAMAGE_MAGIC, outgoingDamage);
         if (incomingDamage > 0) {
             actor.currentHP -= incomingDamage;
 
@@ -1117,7 +864,7 @@ void armageddonProgress() {
 
     for (Character &player : pParty->pCharacters) {
         if (!player.conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-            player.receiveDamage(outgoingDamage, DMGT_MAGICAL);
+            player.receiveDamage(outgoingDamage, DAMAGE_MAGIC);
         }
     }
 }

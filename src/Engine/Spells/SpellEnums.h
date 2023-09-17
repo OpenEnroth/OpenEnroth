@@ -1,12 +1,12 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 
-#include "Engine/Objects/CharacterEnums.h"
-
+#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
-enum SPELL_TYPE : uint8_t {
+enum class SpellId {
     SPELL_NONE = 0,
 
     SPELL_FIRE_TORCH_LIGHT = 1,
@@ -118,7 +118,7 @@ enum SPELL_TYPE : uint8_t {
     SPELL_DARK_SOULDRINKER = 99,
 
     SPELL_BOW_ARROW = 100,
-    SPELL_101 = 101,
+    SPELL_101 = 101, // Flaming arrow?
     SPELL_LASER_PROJECTILE = 102,
 
     SPELL_FIRST_REGULAR = SPELL_FIRE_TORCH_LIGHT,
@@ -132,18 +132,19 @@ enum SPELL_TYPE : uint8_t {
     SPELL_STAT_DECREASE = 152, // used for face overlay when something is subtracted from character like stat/res/gold/condition etc.
     SPELL_DISEASE = 153
 };
+using enum SpellId;
 
 /**
  * @return                              All regular spell types.
  */
-inline Segment<SPELL_TYPE> allRegularSpells() {
+inline Segment<SpellId> allRegularSpells() {
     return {SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR};
 }
 
 /**
  * Is spell target is item in inventory?
  */
-inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
+inline bool isSpellTargetsItem(SpellId uSpellID) {
     return uSpellID == SPELL_WATER_ENCHANT_ITEM ||
            uSpellID == SPELL_FIRE_FIRE_AURA ||
            uSpellID == SPELL_DARK_VAMPIRIC_WEAPON ||
@@ -153,57 +154,46 @@ inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
 /**
  * Is spell ID references any regular spell?
  */
-inline bool isRegularSpell(SPELL_TYPE uSpellID) {
+inline bool isRegularSpell(SpellId uSpellID) {
     return uSpellID >= SPELL_FIRST_REGULAR && uSpellID <= SPELL_LAST_REGULAR;
 }
 
 /**
- * Get skill used for casting given spell.
+ * Magic school, note that order corresponds to the enum order in `SPELL_TYPE`.
  */
-inline CharacterSkillType getSkillTypeForSpell(SPELL_TYPE uSpellID) {
-    assert(uSpellID != SPELL_NONE);
+enum class MagicSchool {
+    MAGIC_SCHOOL_FIRE = 0,
+    MAGIC_SCHOOL_AIR = 1,
+    MAGIC_SCHOOL_WATER = 2,
+    MAGIC_SCHOOL_EARTH = 3,
+    MAGIC_SCHOOL_SPIRIT = 4,
+    MAGIC_SCHOOL_MIND = 5,
+    MAGIC_SCHOOL_BODY = 6,
+    MAGIC_SCHOOL_LIGHT = 7,
+    MAGIC_SCHOOL_DARK = 8,
 
-    if (uSpellID < SPELL_AIR_WIZARD_EYE) {
-        return CHARACTER_SKILL_FIRE;
-    } else if (uSpellID < SPELL_WATER_AWAKEN) {
-        return CHARACTER_SKILL_AIR;
-    } else if (uSpellID < SPELL_EARTH_STUN) {
-        return CHARACTER_SKILL_WATER;
-    } else if (uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
-        return CHARACTER_SKILL_EARTH;
-    } else if (uSpellID < SPELL_MIND_REMOVE_FEAR) {
-        return CHARACTER_SKILL_SPIRIT;
-    } else if (uSpellID < SPELL_BODY_CURE_WEAKNESS) {
-        return CHARACTER_SKILL_MIND;
-    } else if (uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
-        return CHARACTER_SKILL_BODY;
-    } else if (uSpellID < SPELL_DARK_REANIMATE) {
-        return CHARACTER_SKILL_LIGHT;
-    } else if (uSpellID < SPELL_BOW_ARROW) {
-        return CHARACTER_SKILL_DARK;
-    } else if (uSpellID == SPELL_BOW_ARROW) {
-        return CHARACTER_SKILL_BOW;
-    } else if (uSpellID == SPELL_101 ||
-               uSpellID == SPELL_LASER_PROJECTILE) {
-        return CHARACTER_SKILL_BLASTER;
-    } else {
-        assert(false && "Unknown spell");
-    }
+    MAGIC_SCHOOL_FIRST = MAGIC_SCHOOL_FIRE,
+    MAGIC_SCHOOL_LAST = MAGIC_SCHOOL_DARK
+};
+using enum MagicSchool;
 
-    return CHARACTER_SKILL_INVALID;
+inline Segment<MagicSchool> allMagicSchools() {
+    return {MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST};
 }
 
-// TODO(captainurist): this is the same enum as DAMAGE_TYPE in ItemEnums.h
-enum SPELL_SCHOOL : int {
-    SPELL_SCHOOL_FIRE = 0,
-    SPELL_SCHOOL_AIR = 1,
-    SPELL_SCHOOL_WATER = 2,
-    SPELL_SCHOOL_EARTH = 3,
-    SPELL_SCHOOL_NONE = 4,
-    SPELL_SCHOOL_MAGIC = 5,
-    SPELL_SCHOOL_SPIRIT = 6,
-    SPELL_SCHOOL_MIND = 7,
-    SPELL_SCHOOL_BODY = 8,
-    SPELL_SCHOOL_LIGHT = 9,
-    SPELL_SCHOOL_DARK = 10
-};
+inline Segment<SpellId> spellsForMagicSchool(MagicSchool school) {
+    int first = 1 + std::to_underlying(school) * 11;
+    int last = first + 10;
+    return {static_cast<SpellId>(first), static_cast<SpellId>(last)};
+}
+
+inline MagicSchool magicSchoolForSpell(SpellId spell) {
+    assert(spell >= SPELL_FIRST_REGULAR && spell <= SPELL_LAST_REGULAR);
+
+    return static_cast<MagicSchool>((std::to_underlying(spell) - 1) / 11);
+}
+
+// TODO(captainurist): I think we can drop most usages of this function.
+inline int spellIndexInMagicSchool(SpellId spell) {
+    return (std::to_underlying(spell) - 1) % 11;
+}

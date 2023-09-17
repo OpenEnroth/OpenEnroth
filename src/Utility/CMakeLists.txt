@@ -47,7 +47,8 @@ set(UTILITY_HEADERS
         Streams/OutputStream.h
         Streams/StringOutputStream.h
         Streams/TempFileOutputStream.h
-        String.h)
+        String.h
+        Unaligned.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)

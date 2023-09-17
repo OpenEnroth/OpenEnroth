@@ -6,7 +6,7 @@
 #include "Engine/AssetsManager.h"
 
 #include "Engine/Events/Processor.h"
-#include "Engine/Events/Loader.h"
+#include "Engine/Events/RawEvent.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -839,7 +839,8 @@ void Engine::SecondaryInitialization() {
     initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
     initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
 
-    initGlobalEvents();
+    engine->_globalEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile("global.evt"));
+
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
 
@@ -1014,7 +1015,7 @@ void Engine::_461103_load_level_sub() {
         if (v17) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.uID, 0, v19);
+                pActors[i].monsterInfo.uID, HOUSE_INVALID, v19);
             v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
             ++pNPCStats->uNewlNPCBufPos;
             pActors[i].npcId = v14;
@@ -1267,7 +1268,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
-                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
+                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
@@ -1284,7 +1285,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
         for (Character &character : pParty->pCharacters) {
-            character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
+            character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 engine->_statusBar->setEventShort(LSTR_ON_FIRE);
             }
@@ -1751,7 +1752,8 @@ void Level_LoadEvtAndStr(const std::string &pLevelName) {
     }
 
     initLevelStrings(blob);
-    initLocalEvents(pLevelName);
+
+    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(pLevelName + ".evt"));
 }
 
 bool _44100D_should_alter_right_panel() {

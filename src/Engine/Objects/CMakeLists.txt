@@ -4,6 +4,7 @@ set(ENGINE_OBJECTS_SOURCES
         Actor.cpp
         Chest.cpp
         CombinedSkillValue.cpp
+        ItemEnums.cpp
         Items.cpp
         Monsters.cpp
         NPC.cpp
