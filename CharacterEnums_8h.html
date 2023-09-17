@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="SpellEnums_8h.html">Engine/Spells/SpellEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -586,6 +587,10 @@ Functions</h2></td></tr>
 <tr class="separator:a7a1686cdc9e265306bb3bbf8b7b501d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa78846cda535f85c048e9c72c2b28df6"><td class="memItemLeft" align="right" valign="top">std::initializer_list&lt; <a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#aa78846cda535f85c048e9c72c2b28df6">allMagicSkills</a> ()</td></tr>
 <tr class="separator:aa78846cda535f85c048e9c72c2b28df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53814a9f216de00f843bba018dba955d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a53814a9f216de00f843bba018dba955d">skillForMagicSchool</a> (<a class="el" href="SpellEnums_8h.html#a2906cf412f4a8ce5dfc642a72e4b85f4">MagicSchool</a> school)</td></tr>
+<tr class="separator:a53814a9f216de00f843bba018dba955d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0397dd73643e10343b43c61baaf51140"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a0397dd73643e10343b43c61baaf51140">skillForSpell</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spell)</td></tr>
+<tr class="separator:a0397dd73643e10343b43c61baaf51140"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48ea8e8429180483975388404dce6037"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a48ea8e8429180483975388404dce6037">getTier1Class</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> classType)</td></tr>
 <tr class="separator:a48ea8e8429180483975388404dce6037"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a982a3293544eb70c6283a6de09e5a2e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a982a3293544eb70c6283a6de09e5a2e8">getTier2Class</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> classType)</td></tr>
@@ -1561,6 +1566,58 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a>&#160;</td>
           <td class="paramname"><em>classType</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a53814a9f216de00f843bba018dba955d" name="a53814a9f216de00f843bba018dba955d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53814a9f216de00f843bba018dba955d">&#9670;&#160;</a></span>skillForMagicSchool()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> skillForMagicSchool </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a2906cf412f4a8ce5dfc642a72e4b85f4">MagicSchool</a>&#160;</td>
+          <td class="paramname"><em>school</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0397dd73643e10343b43c61baaf51140" name="a0397dd73643e10343b43c61baaf51140"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0397dd73643e10343b43c61baaf51140">&#9670;&#160;</a></span>skillForSpell()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> skillForSpell </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td>
+          <td class="paramname"><em>spell</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

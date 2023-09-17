@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -219,9 +219,9 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a9f11328ebf002d5c6178dc52d38a5dc0">GetSkillIdxByOrder</a>(signed int order)</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a6e6d61edf9e264f2f823fd0b7e5eece8">getSkillValue</a>(CharacterSkillType skill) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a9b7ac0bab41623d8d5e811d8cfecea5f">GetSpecialItemBonus</a>(ITEM_ENCHANTMENT enchantment) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a1f6b19da45c52bbbd322b56e075dca8f">GetSpellSchool</a>(SPELL_TYPE uSpellID) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#afa09a286a8fd4a0d283dc72a0d73379c">GetSpellDamageType</a>(SpellId uSpellID) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a9a990b4b706e641e16abf2fabd33e775">GetStatColor</a>(CharacterAttributeType uStat) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a64a38b65aeda0ba96900fccfd6befe7a">HasEnchantedItemEquipped</a>(int uEnchantment) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a06a86a2caaf3e3b4f9539e0dfd195020">HasEnchantedItemEquipped</a>(ITEM_ENCHANTMENT uEnchantment) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a0e9dcfc8da4941d94c51123ca208b934">hasItem</a>(ItemId uItemID, bool checkHeldItem)</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a97014b5c9c5d8121fbf91f84d65cba62">HasItemEquipped</a>(ItemSlot uEquipIndex) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#ad487cd821e6f87e5057c984a1b03cd2c">HasSkill</a>(CharacterSkillType skill) const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
@@ -251,7 +251,7 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a77078e0e614424b2b6b0541d29592cc2">IsWeak</a>() const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a56201818b529417bd68fe46431682be4">IsZombie</a>() const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a2d92a23abf8222682292747b03e0e1d0">ItemsPotionDmgBreak</a>(int enchant_count)</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a439dec71f9bbc5b028a2adc3d9824c46">lastOpenedSpellbookPage</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#aecf6e21dce7b9cbb6ae5493c4f39e6d8">lastOpenedSpellbookPage</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a76946523d3821f6b2bffba2da1bcffd6">mana</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a6592c35167738421f3e04ca8808d37db">name</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#af360069e1cb3ab75fb1c0d07b7da568d">NothingOrJustBlastersEquipped</a>() const</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
@@ -377,7 +377,7 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#aae7c364c9d95f9a9d760fa9422996b21">uPersonalityBonus</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a9fb7d1882e6670ddae465db952230100">uPrevFace</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a9e690ea654c542d8ccc3e5519f8c96cc">uPrevVoiceID</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a01858f34e5a924082c475939daddc431">uQuickSpell</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#a1ca9b69193dae6e475f44a5b2d74ded7">uQuickSpell</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#a9ed9309e2615635961a047eeb769783a">useItem</a>(int targetCharacter, bool isPortraitClick)</td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCharacter.html#ae9a26e146c1e47b03a3daf5d0e68ed32">uSex</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classCharacter.html#abacf3d2a3f94d99c7780f0dede2fc1ad">uSkillPoints</a></td><td class="entry"><a class="el" href="classCharacter.html">Character</a></td><td class="entry"></td></tr>

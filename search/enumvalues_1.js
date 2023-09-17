@@ -2,7 +2,7 @@ var searchData=
 [
   ['banker_0',['Banker',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9c20f2154ddd42475793ee059c1ff50d',1,'NPCEnums.h']]],
   ['bard_1',['Bard',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a51a547788c5ebad8e66b330b9fa747c5',1,'NPCEnums.h']]],
-  ['become_5fmagic_5fguild_5fmember_2',['BECOME_MAGIC_GUILD_MEMBER',['../SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a7b26614b5cae72d067d6b2a2857d8348',1,'SpellEnums.h']]],
+  ['become_5fmagic_5fguild_5fmember_2',['BECOME_MAGIC_GUILD_MEMBER',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90ae042cd921bb2a7ea017fc2726a6b991f',1,'SpellEnums.h']]],
   ['book_5fnext_5fpage_3',['BOOK_NEXT_PAGE',['../UIBooks_8h.html#abbda3eb2bdcb9adac18ddd95a07a17caac304e3a8ddca2eb5cc0a79b6a448f535',1,'UIBooks.h']]],
   ['book_5fnotes_5ffountain_4',['BOOK_NOTES_FOUNTAIN',['../UIBooks_8h.html#abbda3eb2bdcb9adac18ddd95a07a17caa11b9222a154cdf635899fd8c30c1626c',1,'UIBooks.h']]],
   ['book_5fnotes_5finstructors_5',['BOOK_NOTES_INSTRUCTORS',['../UIBooks_8h.html#abbda3eb2bdcb9adac18ddd95a07a17caabe230183eadd347609bef8b7715121f7',1,'UIBooks.h']]],

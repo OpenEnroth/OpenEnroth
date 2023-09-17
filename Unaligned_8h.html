@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Events/Loader.cpp File Reference</title>
+<title>OpenEnroth: src/Utility/Unaligned.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -69,61 +69,49 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_eaa02307cc4840e18867bc607bee3cb2.html">Events</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_9761b53e3d9349800c0cb59b71c8cd3d.html">Utility</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Loader.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">Unaligned.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Loader_8h.html">Engine/Events/Loader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameResourceManager_8h.html">Engine/GameResourceManager.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae5e96e9e7d97656fb2c6c8f27be8349c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Loader_8cpp.html#ae5e96e9e7d97656fb2c6c8f27be8349c">initGlobalEvents</a> ()</td></tr>
-<tr class="separator:ae5e96e9e7d97656fb2c6c8f27be8349c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c76baebf111bf444d2b9c5cc331f483"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Loader_8cpp.html#a1c76baebf111bf444d2b9c5cc331f483">initLocalEvents</a> (const std::string &amp;mapName)</td></tr>
-<tr class="separator:a1c76baebf111bf444d2b9c5cc331f483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1ec4386333724a4ed1bd8e00b5b122e"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:af1ec4386333724a4ed1bd8e00b5b122e"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Unaligned_8h.html#af1ec4386333724a4ed1bd8e00b5b122e">readUnaligned</a> (const void *data)</td></tr>
+<tr class="separator:af1ec4386333724a4ed1bd8e00b5b122e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae5e96e9e7d97656fb2c6c8f27be8349c" name="ae5e96e9e7d97656fb2c6c8f27be8349c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5e96e9e7d97656fb2c6c8f27be8349c">&#9670;&#160;</a></span>initGlobalEvents()</h2>
+<a id="af1ec4386333724a4ed1bd8e00b5b122e" name="af1ec4386333724a4ed1bd8e00b5b122e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1ec4386333724a4ed1bd8e00b5b122e">&#9670;&#160;</a></span>readUnaligned()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void initGlobalEvents </td>
+          <td class="memname">T readUnaligned </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x443DA1 </dd></dl>
-
-</div>
-</div>
-<a id="a1c76baebf111bf444d2b9c5cc331f483" name="a1c76baebf111bf444d2b9c5cc331f483"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c76baebf111bf444d2b9c5cc331f483">&#9670;&#160;</a></span>initLocalEvents()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void initLocalEvents </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>mapName</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x443EF8 </dd></dl>
+<p >Reading unaligned memory is UB in C++, so this is what this wrapper is for.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Unaligned data to read. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Read data. </dd></dl>
 
 </div>
 </div>

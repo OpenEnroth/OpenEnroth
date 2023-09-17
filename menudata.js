@@ -277,17 +277,12 @@ var menudata={children:[
 {text:"w",url:"globals_enum.html#index_w"}]},
 {text:"Enumerator",url:"globals_eval.html",children:[
 {text:"a",url:"globals_eval.html#index_a"},
-{text:"b",url:"globals_eval_b.html#index_b"},
 {text:"d",url:"globals_eval_d.html#index_d"},
 {text:"f",url:"globals_eval_f.html#index_f"},
-{text:"g",url:"globals_eval_g.html#index_g"},
-{text:"h",url:"globals_eval_h.html#index_h"},
-{text:"i",url:"globals_eval_i.html#index_i"},
 {text:"l",url:"globals_eval_l.html#index_l"},
 {text:"m",url:"globals_eval_m.html#index_m"},
 {text:"p",url:"globals_eval_p.html#index_p"},
 {text:"s",url:"globals_eval_s.html#index_s"},
-{text:"t",url:"globals_eval_t.html#index_t"},
 {text:"u",url:"globals_eval_u.html#index_u"},
 {text:"w",url:"globals_eval_w.html#index_w"}]},
 {text:"Macros",url:"globals_defs.html",children:[

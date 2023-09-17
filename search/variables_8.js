@@ -3,7 +3,7 @@ var searchData=
   ['h_0',['h',['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()'],['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp'],['../structHsvColorf.html#a498bdc7c0eb58b13ee06619b2dae8718',1,'HsvColorf::h()'],['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()']]],
   ['hasusedability_1',['hasUsedAbility',['../structNPCData__MM7.html#a843dc988665e8dda5ccfb34e2529fd3f',1,'NPCData_MM7']]],
   ['have_5feffect_2',['have_effect',['../structam__effects__struct.html#a614d154a3e142d30197a5b5cf74893d6',1,'am_effects_struct']]],
-  ['havespell_3',['haveSpell',['../structPlayerSpells__MM7.html#a1fbd3671709002abb719d0eda93eff84',1,'PlayerSpells_MM7']]],
+  ['havespell_3',['haveSpell',['../structPlayerSpells__MM7.html#a91e03eb9e9e99861bfbf06ad21e705d3',1,'PlayerSpells_MM7']]],
   ['hd_5fwater_5fcurrent_5fframe_4',['hd_water_current_frame',['../classIRender.html#a5a4fa7ac179b1cb9634a3a7bc566a515',1,'IRender']]],
   ['hd_5fwater_5ftile_5fanim_5',['hd_water_tile_anim',['../classIRender.html#a0c7432eeb532b95a5cd89fc7222c6e79',1,'IRender']]],
   ['hdpi_6',['hdpi',['../structPCXHeader.html#a30a0df6cd5155de2f951930098082e03',1,'PCXHeader']]],

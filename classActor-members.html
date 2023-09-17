@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -76,7 +76,7 @@ $(function() {
 <p>This is the complete list of members for <a class="el" href="classActor.html">Actor</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#a848b69de6c4e3f7917ad4902a002d7f0">_4031C1_update_job_never_gets_called</a>(unsigned int uActorID, signed int a2, int a3)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classActor.html#ad229e838cebd1d17c1328468882a1453">_427102_IsOkToCastSpell</a>(SPELL_TYPE spell)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classActor.html#aece52ce7ddcd967578e82824ab16061e">_427102_IsOkToCastSpell</a>(SpellId spell)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#a5318be2551916b68bee9360259fda93e">_4273BB_DoesHitOtherActor</a>(Actor *defender, int a3, int a4)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a01d33a20d9b5a5f986f7dd22a635487e">_43B3E0_CalcDamage</a>(ABILITY_INDEX dmgSource)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#ae68fd9faf29b645a7664aabc93dd3076">_SelectTarget</a>(unsigned int uActorID, Pid *OutTargetPID, bool can_target_party)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
@@ -101,7 +101,7 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a50aa7569099b2383918bd4469792f6df">AI_Pursue3</a>(unsigned int uActorID, Pid a2, signed int uActionLength, struct AIDirection *a4)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#aabd2c5148700848c9d1a99a6d1efae1a">AI_RandomMove</a>(unsigned int uActor_id, Pid uTarget_id, int radius, int uActionLength)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a21e41a27011d8e1a88fa6cfc3f993bc6">AI_RangedAttack</a>(unsigned int uActorID, struct AIDirection *a2, int type, ABILITY_INDEX a4)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classActor.html#a28c656a8baedc4bc5e50167005ed3341">AI_SpellAttack</a>(unsigned int uActorID, struct AIDirection *pDir, SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkill)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classActor.html#aeaea4b7c52e2dcdedc27c8e0c702fbd5">AI_SpellAttack</a>(unsigned int uActorID, struct AIDirection *pDir, SpellId uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkill)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#aac857b8337db0350ba9de58d7ca9429f">AI_SpellAttack1</a>(unsigned int uActorID, Pid sTargetPid, struct AIDirection *pDir)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#a8756b4b11a9f17271fb44273c5b87812">AI_SpellAttack2</a>(unsigned int uActorID, Pid sTargetPid, struct AIDirection *pDir)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#ae8fce8eb7dd17993322ac35502c0abef">AI_Stand</a>(unsigned int uActorID, Pid object_to_face_pid, unsigned int uActionLength, struct AIDirection *a4)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
@@ -130,7 +130,7 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#aa03a8044db9c631c68d58499d4f630d0">Explode</a>(unsigned int uActorID)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a78b581fc4547721206d858d3681aa8de">GetActorsRelation</a>(Actor *a2)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#a4483f034bdc08bff333d86d69f55c50a">GetDirectionInfo</a>(Pid uObj1ID, Pid uObj2ID, struct AIDirection *pOut, int a4)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a1d72a998a7fd8d6fd4d54cd0b976d405">GetObjDescId</a>(SPELL_TYPE spellId)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a4ee7d405ac5f625e922231b53d20c067">GetObjDescId</a>(SpellId spellId)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#aa8890342a8535b5f449ee8f7f117133a">giveItem</a>(signed int uActorID, ItemId uItemID, unsigned int bGive)</td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classActor.html#a3adc1ed7b6a5847355941c6f497f1437">group</a></td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classActor.html#a6d1dd70386e9309546bffefd148cce43">guardingPosition</a></td><td class="entry"><a class="el" href="classActor.html">Actor</a></td><td class="entry"></td></tr>

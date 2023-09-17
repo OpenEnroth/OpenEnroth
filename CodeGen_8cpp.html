@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -80,18 +80,24 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="CodeGenOptions_8h.html">CodeGenOptions.h</a>&quot;</code><br />
+<code>#include &lt;set&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="GameStarter_8h.html">Application/GameStarter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EventMap_8h.html">Engine/Events/EventMap.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GameResourceManager_8h.html">Engine/GameResourceManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodReader_8h.html">Library/Lod/LodReader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EnumSerialization_8h.html">Library/Serialization/EnumSerialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/Format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DataPath_8h.html">Utility/DataPath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CodeGenEnums_8h.html">CodeGenEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CodeGenMap_8h.html">CodeGenMap.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -103,8 +109,12 @@ Functions</h2></td></tr>
 <tr class="separator:aa883fe1ae82f43fcfe2360711465b8a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd5b9084c8e588a36f862cc090ce4cc6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#acd5b9084c8e588a36f862cc090ce4cc6">runMapIdCodeGen</a> (<a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
 <tr class="separator:acd5b9084c8e588a36f862cc090ce4cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85d67a438bff59090878bab1225c7fc4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structMapInfo.html">MapInfo</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a85d67a438bff59090878bab1225c7fc4">mapInfoByFileName</a> (const <a class="el" href="structMapStats.html">MapStats</a> &amp;mapStats, const std::string &amp;fileName)</td></tr>
+<tr class="separator:a85d67a438bff59090878bab1225c7fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecaef5ecfc7460980092c5372b247eb2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#aecaef5ecfc7460980092c5372b247eb2">runBeaconsCodeGen</a> (<a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
 <tr class="separator:aecaef5ecfc7460980092c5372b247eb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab89375b8f5a9e20e695cc0608e9e86de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#ab89375b8f5a9e20e695cc0608e9e86de">runHouseIdCodeGen</a> (<a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
+<tr class="separator:ab89375b8f5a9e20e695cc0608e9e86de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac514b18d4266e4a2f5a39f9d19a88f77"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#ac514b18d4266e4a2f5a39f9d19a88f77">platformMain</a> (int argc, char **argv)</td></tr>
 <tr class="separator:ac514b18d4266e4a2f5a39f9d19a88f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -126,6 +136,34 @@ Variables</h2></td></tr>
           <td class="paramtype">const <a class="el" href="structMapInfo.html">MapInfo</a> &amp;&#160;</td>
           <td class="paramname"><em>mapInfo</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a85d67a438bff59090878bab1225c7fc4" name="a85d67a438bff59090878bab1225c7fc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85d67a438bff59090878bab1225c7fc4">&#9670;&#160;</a></span>mapInfoByFileName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structMapInfo.html">MapInfo</a> &amp; mapInfoByFileName </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMapStats.html">MapStats</a> &amp;&#160;</td>
+          <td class="paramname"><em>mapStats</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>fileName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -168,6 +206,34 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int runBeaconsCodeGen </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCodeGenOptions.html">CodeGenOptions</a>&#160;</td>
+          <td class="paramname"><em>options</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classGameResourceManager.html">GameResourceManager</a> *&#160;</td>
+          <td class="paramname"><em>resourceManager</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab89375b8f5a9e20e695cc0608e9e86de" name="ab89375b8f5a9e20e695cc0608e9e86de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab89375b8f5a9e20e695cc0608e9e86de">&#9670;&#160;</a></span>runHouseIdCodeGen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int runHouseIdCodeGen </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structCodeGenOptions.html">CodeGenOptions</a>&#160;</td>
           <td class="paramname"><em>options</em>, </td>

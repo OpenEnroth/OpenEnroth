@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classEventMap-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">EventMap Class Reference</div></div>
@@ -83,24 +84,29 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a192947eeff4207f927603b161b9f92b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a192947eeff4207f927603b161b9f92b6">add</a> (int eventId, <a class="el" href="classEventIR.html">EventIR</a> ir)</td></tr>
 <tr class="separator:a192947eeff4207f927603b161b9f92b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c41252310b2c46c9507d42b19531f6b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a9c41252310b2c46c9507d42b19531f6b">isHaveEvents</a> (int eventId) const</td></tr>
-<tr class="separator:a9c41252310b2c46c9507d42b19531f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b5f3f6a9c36a18e725195c856f0e671"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEventIR.html">EventIR</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a3b5f3f6a9c36a18e725195c856f0e671">get</a> (int eventId, int step) const</td></tr>
-<tr class="separator:a3b5f3f6a9c36a18e725195c856f0e671"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73e0ea3906b4325ce8d15d1402216e3e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classEventIR.html">EventIR</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a73e0ea3906b4325ce8d15d1402216e3e">getEvents</a> (int eventId) const</td></tr>
-<tr class="separator:a73e0ea3906b4325ce8d15d1402216e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0d813c0cd42d719b66f367580905f7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#aa0d813c0cd42d719b66f367580905f7e">clear</a> ()</td></tr>
 <tr class="separator:aa0d813c0cd42d719b66f367580905f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abff669d890d80096dd3e7e4dccb390c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#abff669d890d80096dd3e7e4dccb390c4">hasEvent</a> (int eventId) const</td></tr>
+<tr class="separator:abff669d890d80096dd3e7e4dccb390c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee64a9c1f32e2609a46ad42e04ad5d5c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classEventIR.html">EventIR</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#aee64a9c1f32e2609a46ad42e04ad5d5c">event</a> (int eventId, int step) const</td></tr>
+<tr class="separator:aee64a9c1f32e2609a46ad42e04ad5d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a258bcbe72f7b088849d42105d3264794"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classEventIR.html">EventIR</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a258bcbe72f7b088849d42105d3264794">events</a> (int eventId) const</td></tr>
+<tr class="separator:a258bcbe72f7b088849d42105d3264794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27e9f85fb7ff6ecb6ca282f1e9b03132"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structEventTrigger.html">EventTrigger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a27e9f85fb7ff6ecb6ca282f1e9b03132">enumerateTriggers</a> (<a class="el" href="EventEnums_8h.html#afdf2c10d40c582d9884ac5635a374a34">EventType</a> triggerType)</td></tr>
 <tr class="separator:a27e9f85fb7ff6ecb6ca282f1e9b03132"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbb196aeb9c5e92bb57ef8d27c12aa82"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#acbb196aeb9c5e92bb57ef8d27c12aa82">hasHint</a> (int eventId) const</td></tr>
 <tr class="separator:acbb196aeb9c5e92bb57ef8d27c12aa82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdd4f3b0c99fe998c3c6046a8099587c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#acdd4f3b0c99fe998c3c6046a8099587c">getHintString</a> (int eventId) const</td></tr>
-<tr class="separator:acdd4f3b0c99fe998c3c6046a8099587c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf1212b6254e2fc4028bf9ea78efb615"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#adf1212b6254e2fc4028bf9ea78efb615">hint</a> (int eventId) const</td></tr>
+<tr class="separator:adf1212b6254e2fc4028bf9ea78efb615"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8116841cc91c74eaef88048fc278b454"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a8116841cc91c74eaef88048fc278b454">dumpAll</a> () const</td></tr>
 <tr class="separator:a8116841cc91c74eaef88048fc278b454"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ad7b6b1ee85fddbdc480c5a69053296"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#a8ad7b6b1ee85fddbdc480c5a69053296">dump</a> (int eventId) const</td></tr>
 <tr class="separator:a8ad7b6b1ee85fddbdc480c5a69053296"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:afc99b60a5ff237f0efc64109fa3c9b90"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classEventMap.html">EventMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventMap.html#afc99b60a5ff237f0efc64109fa3c9b90">load</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;rawData)</td></tr>
+<tr class="separator:afc99b60a5ff237f0efc64109fa3c9b90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -141,9 +147,6 @@ Private Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void EventMap::clear </td>
@@ -152,11 +155,6 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -211,17 +209,24 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">triggerType</td><td>Event type to look for. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of all event positions that have the given event type. </dd></dl>
 
 </div>
 </div>
-<a id="a3b5f3f6a9c36a18e725195c856f0e671" name="a3b5f3f6a9c36a18e725195c856f0e671"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b5f3f6a9c36a18e725195c856f0e671">&#9670;&#160;</a></span>get()</h2>
+<a id="aee64a9c1f32e2609a46ad42e04ad5d5c" name="aee64a9c1f32e2609a46ad42e04ad5d5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee64a9c1f32e2609a46ad42e04ad5d5c">&#9670;&#160;</a></span>event()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEventIR.html">EventIR</a> EventMap::get </td>
+          <td class="memname">const <a class="el" href="classEventIR.html">EventIR</a> &amp; EventMap::event </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>eventId</em>, </td>
@@ -239,17 +244,31 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eventId</td><td>Event id. </td></tr>
+    <tr><td class="paramname">step</td><td>Step in the script to get event for. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to an event for the given <code>eventId</code> and <code>step</code>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If the event doesn't exist for the provided <code>eventId</code> and <code>step</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="a73e0ea3906b4325ce8d15d1402216e3e" name="a73e0ea3906b4325ce8d15d1402216e3e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73e0ea3906b4325ce8d15d1402216e3e">&#9670;&#160;</a></span>getEvents()</h2>
+<a id="a258bcbe72f7b088849d42105d3264794" name="a258bcbe72f7b088849d42105d3264794"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a258bcbe72f7b088849d42105d3264794">&#9670;&#160;</a></span>events()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; <a class="el" href="classEventIR.html">EventIR</a> &gt; &amp; EventMap::getEvents </td>
+          <td class="memname">const std::vector&lt; <a class="el" href="classEventIR.html">EventIR</a> &gt; &amp; EventMap::events </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>eventId</em></td><td>)</td>
@@ -257,23 +276,44 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eventId</td><td>Event id. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to a list of events for the provided <code>eventId</code>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there are no events for the provided <code>eventId</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="acdd4f3b0c99fe998c3c6046a8099587c" name="acdd4f3b0c99fe998c3c6046a8099587c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acdd4f3b0c99fe998c3c6046a8099587c">&#9670;&#160;</a></span>getHintString()</h2>
+<a id="abff669d890d80096dd3e7e4dccb390c4" name="abff669d890d80096dd3e7e4dccb390c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abff669d890d80096dd3e7e4dccb390c4">&#9670;&#160;</a></span>hasEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string EventMap::getHintString </td>
+          <td class="memname">bool EventMap::hasEvent </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>eventId</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -293,11 +333,43 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eventId</td><td>Event id to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether a script exists for the provided <code>eventId</code> that shows a hint. </dd></dl>
 
 </div>
 </div>
-<a id="a9c41252310b2c46c9507d42b19531f6b" name="a9c41252310b2c46c9507d42b19531f6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c41252310b2c46c9507d42b19531f6b">&#9670;&#160;</a></span>isHaveEvents()</h2>
+<a id="adf1212b6254e2fc4028bf9ea78efb615" name="adf1212b6254e2fc4028bf9ea78efb615"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf1212b6254e2fc4028bf9ea78efb615">&#9670;&#160;</a></span>hint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string EventMap::hint </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>eventId</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eventId</td><td>Event id to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Hint to show, if any. Note that unlike <code><a class="el" href="classEventMap.html#a258bcbe72f7b088849d42105d3264794">events()</a></code>, this function returns an empty string for non-existent events. </dd></dl>
+
+</div>
+</div>
+<a id="afc99b60a5ff237f0efc64109fa3c9b90" name="afc99b60a5ff237f0efc64109fa3c9b90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc99b60a5ff237f0efc64109fa3c9b90">&#9670;&#160;</a></span>load()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,16 +378,16 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool EventMap::isHaveEvents </td>
+          <td class="memname"><a class="el" href="classEventMap.html">EventMap</a> EventMap::load </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>eventId</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>rawData</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

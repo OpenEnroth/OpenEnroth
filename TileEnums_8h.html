@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -74,176 +74,204 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">TileEnums.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a2cad1e88b6356c36f6dbc1bd0002ff8c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8c">TILE_DESC_FLAGS</a> { <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8caaa4f3a335ad8425821b62f9561ec34cd">TILE_DESC_NULL</a> = 0
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca1fc6fb6d7f12bff477172e9fc726b4dc">TILE_DESC_BURN</a> = 0x1
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca992db571e1b2f06576986e7a978bd61d">TILE_DESC_WATER</a> = 0x2
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca8932b79269db18b511b71696d6c162e9">TILE_DESC_BLOCK</a> = 0x4
+<tr class="memitem:a1ff972c26567891625d017eed4de6b81"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81">TILE_DESC_FLAG</a> { <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a2a7ab64e2b6dc9b12ce1ce850f8533fe">TILE_DESC_NULL</a> = 0
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a43583ef6f67d380a14d724b72fb54d36">TILE_DESC_BURN</a> = 0x1
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81aabb7feb8e099a7c809b0f5c0b303d18a">TILE_DESC_WATER</a> = 0x2
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a106eeeb38c5078620b0253c2625cf5e8">TILE_DESC_BLOCK</a> = 0x4
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca0bd38fafdc69dd3e076fc9b96287a997">TILE_DESC_REPULSE</a> = 0x8
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8cac14a47ef48de5aebe98ed442dbe043b0">TILE_DESC_FLAT</a> = 0x10
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca5515150cf25354a9d58859ee46ce6ef0">TILE_DESC_WAVY</a> = 0x20
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca70c379175b9ea074368e5aa83a938a67">TILE_DESC_DONT_DRAW</a> = 0x40
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a597cefb9d1800a4f53a076e39bbeaa02">TILE_DESC_REPULSE</a> = 0x8
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81afdcbaaca5c66f5ca58e96f582638bb36">TILE_DESC_FLAT</a> = 0x10
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a31f281e0728231c2ea828eb203c29623">TILE_DESC_WAVY</a> = 0x20
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a0dce0dacb9996a4da2e0bcb5735edaea">TILE_DESC_DONT_DRAW</a> = 0x40
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca981e03c475534cb0e03a78900c03687b">TILE_DESC_WATER_2</a> = 0x100
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca2f7b6cbb21fbdbeefb10894a06c25f53">TILE_DESC_TRANSITION</a> = 0x200
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca9db9b3c75539efc702174b9ebb521a3c">TILE_DESC_SCROLL_DOWN</a> = 0x400
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca42343e98be6602b6dc299eeb638c77f7">TILE_DESC_SCROLL_UP</a> = 0x800
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81ae18639fe8c79ba07ae73c6e8adc50043">TILE_DESC_WATER_2</a> = 0x100
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81afbbf98c48b5076729cc26651c8e6727d">TILE_DESC_TRANSITION</a> = 0x200
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81ace784f1d08df594bda2fa48724427f69">TILE_DESC_SCROLL_DOWN</a> = 0x400
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a40c265c064901d21cbdafa76d9b52808">TILE_DESC_SCROLL_UP</a> = 0x800
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8cab4364ae03a870b8529e9c5b1ddb7b157">TILE_DESC_SCROLL_LEFT</a> = 0x1000
-, <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8caae8d6382c420de03622484abebd71cd7">TILE_DESC_SCROLL_RIGHT</a> = 0x2000
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a8e054a386d6d5ffdd9e9ee7334170018">TILE_DESC_SCROLL_LEFT</a> = 0x1000
+, <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81a31a9efb6eb1ec944534e845217c81fe2">TILE_DESC_SCROLL_RIGHT</a> = 0x2000
 <br />
  }</td></tr>
-<tr class="separator:a2cad1e88b6356c36f6dbc1bd0002ff8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a847d8799de183ba6e57180cf13a3a87d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87d">TILE_SECT_FLAGS</a> { <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87daeeb36ab0e0fcc1b75cff1fe22aadf61f">TILE_SECT_NULL</a> = -1
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87dad33fcf2db123aae9db32f81d89fcb540">TILE_SECT_Start</a> = -2
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da412c86e6cad72cac26c0cbcba7183331">TILE_SECT_Base1</a> = 0
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da02f3bb1e091c357f0149921d9918c66d">TILE_SECT_Base2_NS</a> = 1
+<tr class="separator:a1ff972c26567891625d017eed4de6b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3110b267b30f84d40004b3d197f9565d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a> { <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dab152fe21a58ab99a02938a016145f5d6">TILE_SECT_NULL</a> = -1
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da4feceed166bdc0d06dcdab683e5a0df4">TILE_SECT_Start</a> = -2
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dab2dd2ada8db2d7c35298140ae7e8c981">TILE_SECT_Base1</a> = 0
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da7eb9fcdfb0aed576031ce3a8d5acac1f">TILE_SECT_Base2_NS</a> = 1
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87daccdc5a819d3dcda503b2b508bd088542">TILE_SECT_Base3_EW</a> = 2
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da90afbd645ea63bd6710abc0d3b70db81">TILE_SECT_Base4_N_E</a> = 3
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87dae309c08efe58ded6c4dcf7ac9f4130d3">TILE_SECT_Special1_N_W</a> = 4
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87daecfa0d4d123b2dd58ee7da853d2c153e">TILE_SECT_Special2_S_E</a> = 5
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da078345bffd9b05de958a02d232043455">TILE_SECT_Base3_EW</a> = 2
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dafe15a66872e3efdc6e799b479e60599c">TILE_SECT_Base4_N_E</a> = 3
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da62b64f4b060380984b9db66fd0ca2221">TILE_SECT_Special1_N_W</a> = 4
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565daf6ae104c7f68a05f936ac1fd7357e4dd">TILE_SECT_Special2_S_E</a> = 5
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da4f2b766e8ccf9b3069aad72b4c98236a">TILE_SECT_Special3_S_W</a> = 6
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87daa21c07bdd96fbbe93b9c37f4b997925c">TILE_SECT_Special4_NS_E</a> = 7
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da4e60f05d5ddb2b690e332db7f841e498">TILE_SECT_Special5_NS_W</a> = 8
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87dac519de68eb2f38fe90bec5212a2f6ca9">TILE_SECT_Special6_EW_N</a> = 9
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da95fe99d6ffc843a13e28bf99611cb961">TILE_SECT_Special3_S_W</a> = 6
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da388e170b086e5468786323170f9230b4">TILE_SECT_Special4_NS_E</a> = 7
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da6084c5c7851e4da3b974bcc27e8fbf6b">TILE_SECT_Special5_NS_W</a> = 8
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da923f936670867ce3948413a584748494">TILE_SECT_Special6_EW_N</a> = 9
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da916a94f9251dd9b8dbb6718e21aef188">TILE_SECT_Special7_EW_S</a> = 0xA
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da79c59f0c761258e912a2ceba30e2d181">TILE_SECT_Special8_NCAP</a> = 0xB
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87dadd36fd93a927d79f05826c4b473c57b9">TILE_SECT_NE1_SE1_ECAP</a> = 0xC
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da7c0ae732861a40bddea37ddcc322df1b">TILE_SECT_SCAP</a> = 0xD
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dadc066116bfdb60c395039196e4551b1a">TILE_SECT_Special7_EW_S</a> = 0xA
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da6885b787b8293b8b81e72213dbce6798">TILE_SECT_Special8_NCAP</a> = 0xB
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565daa9ee8ce5c9c3df95d247780cfea1c91c">TILE_SECT_NE1_SE1_ECAP</a> = 0xC
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dac2189232b2faf4e31324b1765a4e9740">TILE_SECT_SCAP</a> = 0xD
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87daa2bcaf7d2857d9be4489506a761faa21">TILE_SECT_NW1_SW1_WCAP</a> = 0xE
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da27a1d0fee2e5ffc4cfddd7408e5d231f">TILE_SECT_DN</a> = 0xF
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da0d55f7813fa4d588920dd5b641663e3a">TILE_SECT_E1_DS</a> = 0x10
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da6e77e3fb85fd134a279f5c571f5c5fa3">TILE_SECT_W1_DW</a> = 0x11
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da4bd1f10aee3fcbaf6534817c7c416237">TILE_SECT_NW1_SW1_WCAP</a> = 0xE
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dad9cee4d0e249b4f045c6ab9a0facb9e2">TILE_SECT_DN</a> = 0xF
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da7308f0e087158a0aacbfe92a7b12e0a9">TILE_SECT_E1_DS</a> = 0x10
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da511f9e1fbc8db7eca1025b39e74cd1ef">TILE_SECT_W1_DW</a> = 0x11
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87daea1322b1de7baacd13d91296d28996fd">TILE_SECT_N1_DE</a> = 0x12
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87dab0e12915efd2463b04cbcceaa24e604d">TILE_SECT_S1_DSW</a> = 0x13
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da9ac708c645af143a6aa72fae81e5315d">TILE_SECT_XNE1_XSE1_DNE</a> = 0x14
-, <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87da313205cdb970155732c23086ce3adaa3">TILE_SECT_DSE</a> = 0x15
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dafc5d8d0307d2c396b410a5efc18a808b">TILE_SECT_N1_DE</a> = 0x12
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da723ca0fe22aa9dfcd6888875e33e8bf5">TILE_SECT_S1_DSW</a> = 0x13
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da232a878762b6aff9610a35ef420d9ab2">TILE_SECT_XNE1_XSE1_DNE</a> = 0x14
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dac7d033ab03099acbbe646ee6f4f9d9e0">TILE_SECT_DSE</a> = 0x15
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87dab7c1455f9687110d8d453e969041e64b">TILE_SECT_XNW1_XSW1_DNW</a> = 0x16
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dadeee27c1f59377200fdcc1ed36a963f0">TILE_SECT_XNW1_XSW1_DNW</a> = 0x16
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565da6b1f8921f1b1672f76004f8f21021ec5">TILE_SECT_FIRST_SPECIAL</a> = TILE_SECT_Special1_N_W
+, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565dac62122ef2400479758350c73c93f808d">TILE_SECT_LAST_SPECIAL</a> = TILE_SECT_Special8_NCAP
 <br />
  }</td></tr>
-<tr class="separator:a847d8799de183ba6e57180cf13a3a87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a853fa224fcbff1ba70f01db3865fa9e3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> : int16_t { <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a303a2f9122ab11118bfb10a970a43031">Tileset_Grass</a> = 0
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ae74049f21343e6d7f820a94e7263555c">Tileset_Snow</a> = 1
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ac046347fae4059cabd38d43b0856f297">Tileset_Desert</a> = 2
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a7c8c6ad7b512213005351281bf27b4b2">Tileset_CooledLava</a> = 3
+<tr class="separator:a3110b267b30f84d40004b3d197f9565d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a853fa224fcbff1ba70f01db3865fa9e3"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> : int16_t { <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a630e1254d107364baf714175da8099d5">Tileset_Grass</a> = 0
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a8859a57448d917da706c33ef5228817c">Tileset_Snow</a> = 1
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a5b1947f3c84a76c9dd570297cf44aca8">Tileset_Desert</a> = 2
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a3984ca80a9d1a0d87f892ce1a18ceffa">Tileset_CooledLava</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a32b01a02a1c3747697c0d86e8fe7f9bb">Tileset_Dirt</a> = 4
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a1eaadadf904201eedb04eb8a7d60f050">Tileset_Water</a> = 5
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a02137fcb86aef1ae4322b67c0d0ae847">Tileset_Badlands</a> = 6
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3abe503a95c3a9ae9966a73fba29c47ef7">Tileset_Swamp</a> = 7
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a64f57834c37489ed0bc0682bcb680e4d">Tileset_Dirt</a> = 4
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a35199608070849ccef7346b2dc8235a3">Tileset_Water</a> = 5
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a206a3881eec6c530324415e9001aa1f9">Tileset_Badlands</a> = 6
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ae88a85c446a47e55074da047630f009e">Tileset_Swamp</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a3d4625184eed0ad78e035629bd4c21e8">Tileset_Tropical</a> = 8
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a542683806ea6b5816f005caf36d88a05">Tileset_City</a> = 9
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ac78993b8215f735ea159e7088d435dcc">Tileset_RoadGrassCobble</a> = 10
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3abc9f263abacb8abd763c9881e289e251">Tileset_RoadGrassDirt</a> = 11
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a94af7006cefa5df4290afac484d0bfe4">Tileset_Tropical</a> = 8
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a7da42bf0fb766901386072721f7a6cdd">Tileset_City</a> = 9
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a668d6d7bbbf9775d7cb79b6eba81ae56">Tileset_RoadGrassCobble</a> = 10
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a1333427ec58e9be905598e44da672ddf">Tileset_RoadGrassDirt</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a523a88e1066f0ddc1376932606a3f121">Tileset_RoadSnowCobble</a> = 12
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a13e14e2e02cb84b1f004eaa82aa89b1e">Tileset_RoadSnowDirt</a> = 13
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ac62d4468422facd27f307e78e2c0b45e">Tileset_RoadSandCobble</a> = 14
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a15d834b08cd6269e318d49041dec65df">Tileset_RoadSandDirt</a> = 15
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ae3460496059cf2fd86104573f4a9b4c8">Tileset_RoadSnowCobble</a> = 12
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a34da4add44aed3fa4225c1d0847a0098">Tileset_RoadSnowDirt</a> = 13
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a8726b6e79428be29dc2b210c94732068">Tileset_RoadSandCobble</a> = 14
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a3c96050f451adf14a87c938baa71d992">Tileset_RoadSandDirt</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a81de19a9aa7e91d2261c2c57ce01f919">Tileset_RoadVolcanoCobble</a> = 16
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3aeda62047a9b86463eecc704ba62618bb">Tileset_RoadVolcanoDirt</a> = 17
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a88b7c3f20e262bb208f704203a74cf1a">Tileset_RoadCrackedCobble</a> = 22
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a577f04a52bb7a6048539ca5967d0c8c7">Tileset_RoadCrackedDirt</a> = 23
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a71f71e62d4184a30ad9486fb38d03f86">Tileset_RoadVolcanoCobble</a> = 16
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a14f1cc8bf2ce92ec72f2e9d39378869c">Tileset_RoadVolcanoDirt</a> = 17
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a1fbcaf3f2a644c425d0d3a4f74c06113">Tileset_RoadCrackedCobble</a> = 22
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3aeaaaa14b11387fec162655f2fa1984a3">Tileset_RoadCrackedDirt</a> = 23
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a2948047b68ee556469dd14ee8f85bfa9">Tileset_RoadSwampCobble</a> = 24
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3ac2ef2db5d2835a602ee41458b47a2b69">Tileset_RoadSwampDir</a> = 25
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a8a692b9c50646f12c202fff5acea4468">Tileset_RoadTropicalCobble</a> = 26
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a99a83f44bde178b957b7bc4ec4d570ae">Tileset_RoadTropicalDirt</a> = 27
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a6c8532bd943c6ba4762be2abad71d092">Tileset_RoadSwampCobble</a> = 24
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3aa1a703f4b15fcaa4e2b34c365500e2b5">Tileset_RoadSwampDir</a> = 25
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a19137b99f60e83c9e9753e217f8794e2">Tileset_RoadTropicalCobble</a> = 26
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3aedec30128cc6085a0b2b2b2aa7283ac8">Tileset_RoadTropicalDirt</a> = 27
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3aeeaaa90285b0e990590ffc3cb9251012">Tileset_RoadCityStone</a> = 28
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3af2d943adcf32ecea8869158161f74608">Tileset_NULL</a> = -1
-, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3abda2e9c4bd992b193a6704f1c42e8241">Tileset_Start</a> = -2
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a58ee1a855eaec623a88c44f631bee3c1">Tileset_RoadCityStone</a> = 28
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a6d884c41afa0c11fa3ad8d4545e14461">Tileset_NULL</a> = -1
+, <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3a25f9b5d0d8990fa3fd27ad86f00d0d29">Tileset_Start</a> = -2
 <br />
  }</td></tr>
 <tr class="separator:a853fa224fcbff1ba70f01db3865fa9e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a0e235dcd0e8170e75e9af6b293b91db7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a0e235dcd0e8170e75e9af6b293b91db7">allSpecialTileSects</a> ()</td></tr>
+<tr class="separator:a0e235dcd0e8170e75e9af6b293b91db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a2cad1e88b6356c36f6dbc1bd0002ff8c" name="a2cad1e88b6356c36f6dbc1bd0002ff8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cad1e88b6356c36f6dbc1bd0002ff8c">&#9670;&#160;</a></span>TILE_DESC_FLAGS</h2>
+<a id="a1ff972c26567891625d017eed4de6b81" name="a1ff972c26567891625d017eed4de6b81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ff972c26567891625d017eed4de6b81">&#9670;&#160;</a></span>TILE_DESC_FLAG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="TileEnums_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8c">TILE_DESC_FLAGS</a></td>
+          <td class="memname">enum class <a class="el" href="TileEnums_8h.html#a1ff972c26567891625d017eed4de6b81">TILE_DESC_FLAG</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8caaa4f3a335ad8425821b62f9561ec34cd" name="a2cad1e88b6356c36f6dbc1bd0002ff8caaa4f3a335ad8425821b62f9561ec34cd"></a>TILE_DESC_NULL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca1fc6fb6d7f12bff477172e9fc726b4dc" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca1fc6fb6d7f12bff477172e9fc726b4dc"></a>TILE_DESC_BURN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca992db571e1b2f06576986e7a978bd61d" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca992db571e1b2f06576986e7a978bd61d"></a>TILE_DESC_WATER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca8932b79269db18b511b71696d6c162e9" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca8932b79269db18b511b71696d6c162e9"></a>TILE_DESC_BLOCK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca0bd38fafdc69dd3e076fc9b96287a997" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca0bd38fafdc69dd3e076fc9b96287a997"></a>TILE_DESC_REPULSE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8cac14a47ef48de5aebe98ed442dbe043b0" name="a2cad1e88b6356c36f6dbc1bd0002ff8cac14a47ef48de5aebe98ed442dbe043b0"></a>TILE_DESC_FLAT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca5515150cf25354a9d58859ee46ce6ef0" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca5515150cf25354a9d58859ee46ce6ef0"></a>TILE_DESC_WAVY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca70c379175b9ea074368e5aa83a938a67" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca70c379175b9ea074368e5aa83a938a67"></a>TILE_DESC_DONT_DRAW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca981e03c475534cb0e03a78900c03687b" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca981e03c475534cb0e03a78900c03687b"></a>TILE_DESC_WATER_2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca2f7b6cbb21fbdbeefb10894a06c25f53" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca2f7b6cbb21fbdbeefb10894a06c25f53"></a>TILE_DESC_TRANSITION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca9db9b3c75539efc702174b9ebb521a3c" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca9db9b3c75539efc702174b9ebb521a3c"></a>TILE_DESC_SCROLL_DOWN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8ca42343e98be6602b6dc299eeb638c77f7" name="a2cad1e88b6356c36f6dbc1bd0002ff8ca42343e98be6602b6dc299eeb638c77f7"></a>TILE_DESC_SCROLL_UP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8cab4364ae03a870b8529e9c5b1ddb7b157" name="a2cad1e88b6356c36f6dbc1bd0002ff8cab4364ae03a870b8529e9c5b1ddb7b157"></a>TILE_DESC_SCROLL_LEFT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2cad1e88b6356c36f6dbc1bd0002ff8caae8d6382c420de03622484abebd71cd7" name="a2cad1e88b6356c36f6dbc1bd0002ff8caae8d6382c420de03622484abebd71cd7"></a>TILE_DESC_SCROLL_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a2a7ab64e2b6dc9b12ce1ce850f8533fe" name="a1ff972c26567891625d017eed4de6b81a2a7ab64e2b6dc9b12ce1ce850f8533fe"></a>TILE_DESC_NULL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a43583ef6f67d380a14d724b72fb54d36" name="a1ff972c26567891625d017eed4de6b81a43583ef6f67d380a14d724b72fb54d36"></a>TILE_DESC_BURN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81aabb7feb8e099a7c809b0f5c0b303d18a" name="a1ff972c26567891625d017eed4de6b81aabb7feb8e099a7c809b0f5c0b303d18a"></a>TILE_DESC_WATER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a106eeeb38c5078620b0253c2625cf5e8" name="a1ff972c26567891625d017eed4de6b81a106eeeb38c5078620b0253c2625cf5e8"></a>TILE_DESC_BLOCK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a597cefb9d1800a4f53a076e39bbeaa02" name="a1ff972c26567891625d017eed4de6b81a597cefb9d1800a4f53a076e39bbeaa02"></a>TILE_DESC_REPULSE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81afdcbaaca5c66f5ca58e96f582638bb36" name="a1ff972c26567891625d017eed4de6b81afdcbaaca5c66f5ca58e96f582638bb36"></a>TILE_DESC_FLAT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a31f281e0728231c2ea828eb203c29623" name="a1ff972c26567891625d017eed4de6b81a31f281e0728231c2ea828eb203c29623"></a>TILE_DESC_WAVY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a0dce0dacb9996a4da2e0bcb5735edaea" name="a1ff972c26567891625d017eed4de6b81a0dce0dacb9996a4da2e0bcb5735edaea"></a>TILE_DESC_DONT_DRAW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81ae18639fe8c79ba07ae73c6e8adc50043" name="a1ff972c26567891625d017eed4de6b81ae18639fe8c79ba07ae73c6e8adc50043"></a>TILE_DESC_WATER_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81afbbf98c48b5076729cc26651c8e6727d" name="a1ff972c26567891625d017eed4de6b81afbbf98c48b5076729cc26651c8e6727d"></a>TILE_DESC_TRANSITION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81ace784f1d08df594bda2fa48724427f69" name="a1ff972c26567891625d017eed4de6b81ace784f1d08df594bda2fa48724427f69"></a>TILE_DESC_SCROLL_DOWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a40c265c064901d21cbdafa76d9b52808" name="a1ff972c26567891625d017eed4de6b81a40c265c064901d21cbdafa76d9b52808"></a>TILE_DESC_SCROLL_UP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a8e054a386d6d5ffdd9e9ee7334170018" name="a1ff972c26567891625d017eed4de6b81a8e054a386d6d5ffdd9e9ee7334170018"></a>TILE_DESC_SCROLL_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1ff972c26567891625d017eed4de6b81a31a9efb6eb1ec944534e845217c81fe2" name="a1ff972c26567891625d017eed4de6b81a31a9efb6eb1ec944534e845217c81fe2"></a>TILE_DESC_SCROLL_RIGHT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="a847d8799de183ba6e57180cf13a3a87d" name="a847d8799de183ba6e57180cf13a3a87d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a847d8799de183ba6e57180cf13a3a87d">&#9670;&#160;</a></span>TILE_SECT_FLAGS</h2>
+<a id="a3110b267b30f84d40004b3d197f9565d" name="a3110b267b30f84d40004b3d197f9565d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3110b267b30f84d40004b3d197f9565d">&#9670;&#160;</a></span>TILE_SECT</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="TileEnums_8h.html#a847d8799de183ba6e57180cf13a3a87d">TILE_SECT_FLAGS</a></td>
+          <td class="memname">enum class <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87daeeb36ab0e0fcc1b75cff1fe22aadf61f" name="a847d8799de183ba6e57180cf13a3a87daeeb36ab0e0fcc1b75cff1fe22aadf61f"></a>TILE_SECT_NULL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87dad33fcf2db123aae9db32f81d89fcb540" name="a847d8799de183ba6e57180cf13a3a87dad33fcf2db123aae9db32f81d89fcb540"></a>TILE_SECT_Start&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da412c86e6cad72cac26c0cbcba7183331" name="a847d8799de183ba6e57180cf13a3a87da412c86e6cad72cac26c0cbcba7183331"></a>TILE_SECT_Base1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da02f3bb1e091c357f0149921d9918c66d" name="a847d8799de183ba6e57180cf13a3a87da02f3bb1e091c357f0149921d9918c66d"></a>TILE_SECT_Base2_NS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87daccdc5a819d3dcda503b2b508bd088542" name="a847d8799de183ba6e57180cf13a3a87daccdc5a819d3dcda503b2b508bd088542"></a>TILE_SECT_Base3_EW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da90afbd645ea63bd6710abc0d3b70db81" name="a847d8799de183ba6e57180cf13a3a87da90afbd645ea63bd6710abc0d3b70db81"></a>TILE_SECT_Base4_N_E&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87dae309c08efe58ded6c4dcf7ac9f4130d3" name="a847d8799de183ba6e57180cf13a3a87dae309c08efe58ded6c4dcf7ac9f4130d3"></a>TILE_SECT_Special1_N_W&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87daecfa0d4d123b2dd58ee7da853d2c153e" name="a847d8799de183ba6e57180cf13a3a87daecfa0d4d123b2dd58ee7da853d2c153e"></a>TILE_SECT_Special2_S_E&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da4f2b766e8ccf9b3069aad72b4c98236a" name="a847d8799de183ba6e57180cf13a3a87da4f2b766e8ccf9b3069aad72b4c98236a"></a>TILE_SECT_Special3_S_W&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87daa21c07bdd96fbbe93b9c37f4b997925c" name="a847d8799de183ba6e57180cf13a3a87daa21c07bdd96fbbe93b9c37f4b997925c"></a>TILE_SECT_Special4_NS_E&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da4e60f05d5ddb2b690e332db7f841e498" name="a847d8799de183ba6e57180cf13a3a87da4e60f05d5ddb2b690e332db7f841e498"></a>TILE_SECT_Special5_NS_W&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87dac519de68eb2f38fe90bec5212a2f6ca9" name="a847d8799de183ba6e57180cf13a3a87dac519de68eb2f38fe90bec5212a2f6ca9"></a>TILE_SECT_Special6_EW_N&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da916a94f9251dd9b8dbb6718e21aef188" name="a847d8799de183ba6e57180cf13a3a87da916a94f9251dd9b8dbb6718e21aef188"></a>TILE_SECT_Special7_EW_S&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da79c59f0c761258e912a2ceba30e2d181" name="a847d8799de183ba6e57180cf13a3a87da79c59f0c761258e912a2ceba30e2d181"></a>TILE_SECT_Special8_NCAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87dadd36fd93a927d79f05826c4b473c57b9" name="a847d8799de183ba6e57180cf13a3a87dadd36fd93a927d79f05826c4b473c57b9"></a>TILE_SECT_NE1_SE1_ECAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da7c0ae732861a40bddea37ddcc322df1b" name="a847d8799de183ba6e57180cf13a3a87da7c0ae732861a40bddea37ddcc322df1b"></a>TILE_SECT_SCAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87daa2bcaf7d2857d9be4489506a761faa21" name="a847d8799de183ba6e57180cf13a3a87daa2bcaf7d2857d9be4489506a761faa21"></a>TILE_SECT_NW1_SW1_WCAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da27a1d0fee2e5ffc4cfddd7408e5d231f" name="a847d8799de183ba6e57180cf13a3a87da27a1d0fee2e5ffc4cfddd7408e5d231f"></a>TILE_SECT_DN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da0d55f7813fa4d588920dd5b641663e3a" name="a847d8799de183ba6e57180cf13a3a87da0d55f7813fa4d588920dd5b641663e3a"></a>TILE_SECT_E1_DS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da6e77e3fb85fd134a279f5c571f5c5fa3" name="a847d8799de183ba6e57180cf13a3a87da6e77e3fb85fd134a279f5c571f5c5fa3"></a>TILE_SECT_W1_DW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87daea1322b1de7baacd13d91296d28996fd" name="a847d8799de183ba6e57180cf13a3a87daea1322b1de7baacd13d91296d28996fd"></a>TILE_SECT_N1_DE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87dab0e12915efd2463b04cbcceaa24e604d" name="a847d8799de183ba6e57180cf13a3a87dab0e12915efd2463b04cbcceaa24e604d"></a>TILE_SECT_S1_DSW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da9ac708c645af143a6aa72fae81e5315d" name="a847d8799de183ba6e57180cf13a3a87da9ac708c645af143a6aa72fae81e5315d"></a>TILE_SECT_XNE1_XSE1_DNE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87da313205cdb970155732c23086ce3adaa3" name="a847d8799de183ba6e57180cf13a3a87da313205cdb970155732c23086ce3adaa3"></a>TILE_SECT_DSE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a847d8799de183ba6e57180cf13a3a87dab7c1455f9687110d8d453e969041e64b" name="a847d8799de183ba6e57180cf13a3a87dab7c1455f9687110d8d453e969041e64b"></a>TILE_SECT_XNW1_XSW1_DNW&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dab152fe21a58ab99a02938a016145f5d6" name="a3110b267b30f84d40004b3d197f9565dab152fe21a58ab99a02938a016145f5d6"></a>TILE_SECT_NULL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da4feceed166bdc0d06dcdab683e5a0df4" name="a3110b267b30f84d40004b3d197f9565da4feceed166bdc0d06dcdab683e5a0df4"></a>TILE_SECT_Start&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dab2dd2ada8db2d7c35298140ae7e8c981" name="a3110b267b30f84d40004b3d197f9565dab2dd2ada8db2d7c35298140ae7e8c981"></a>TILE_SECT_Base1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da7eb9fcdfb0aed576031ce3a8d5acac1f" name="a3110b267b30f84d40004b3d197f9565da7eb9fcdfb0aed576031ce3a8d5acac1f"></a>TILE_SECT_Base2_NS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da078345bffd9b05de958a02d232043455" name="a3110b267b30f84d40004b3d197f9565da078345bffd9b05de958a02d232043455"></a>TILE_SECT_Base3_EW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dafe15a66872e3efdc6e799b479e60599c" name="a3110b267b30f84d40004b3d197f9565dafe15a66872e3efdc6e799b479e60599c"></a>TILE_SECT_Base4_N_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da62b64f4b060380984b9db66fd0ca2221" name="a3110b267b30f84d40004b3d197f9565da62b64f4b060380984b9db66fd0ca2221"></a>TILE_SECT_Special1_N_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565daf6ae104c7f68a05f936ac1fd7357e4dd" name="a3110b267b30f84d40004b3d197f9565daf6ae104c7f68a05f936ac1fd7357e4dd"></a>TILE_SECT_Special2_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da95fe99d6ffc843a13e28bf99611cb961" name="a3110b267b30f84d40004b3d197f9565da95fe99d6ffc843a13e28bf99611cb961"></a>TILE_SECT_Special3_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da388e170b086e5468786323170f9230b4" name="a3110b267b30f84d40004b3d197f9565da388e170b086e5468786323170f9230b4"></a>TILE_SECT_Special4_NS_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da6084c5c7851e4da3b974bcc27e8fbf6b" name="a3110b267b30f84d40004b3d197f9565da6084c5c7851e4da3b974bcc27e8fbf6b"></a>TILE_SECT_Special5_NS_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da923f936670867ce3948413a584748494" name="a3110b267b30f84d40004b3d197f9565da923f936670867ce3948413a584748494"></a>TILE_SECT_Special6_EW_N&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dadc066116bfdb60c395039196e4551b1a" name="a3110b267b30f84d40004b3d197f9565dadc066116bfdb60c395039196e4551b1a"></a>TILE_SECT_Special7_EW_S&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da6885b787b8293b8b81e72213dbce6798" name="a3110b267b30f84d40004b3d197f9565da6885b787b8293b8b81e72213dbce6798"></a>TILE_SECT_Special8_NCAP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565daa9ee8ce5c9c3df95d247780cfea1c91c" name="a3110b267b30f84d40004b3d197f9565daa9ee8ce5c9c3df95d247780cfea1c91c"></a>TILE_SECT_NE1_SE1_ECAP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dac2189232b2faf4e31324b1765a4e9740" name="a3110b267b30f84d40004b3d197f9565dac2189232b2faf4e31324b1765a4e9740"></a>TILE_SECT_SCAP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da4bd1f10aee3fcbaf6534817c7c416237" name="a3110b267b30f84d40004b3d197f9565da4bd1f10aee3fcbaf6534817c7c416237"></a>TILE_SECT_NW1_SW1_WCAP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dad9cee4d0e249b4f045c6ab9a0facb9e2" name="a3110b267b30f84d40004b3d197f9565dad9cee4d0e249b4f045c6ab9a0facb9e2"></a>TILE_SECT_DN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da7308f0e087158a0aacbfe92a7b12e0a9" name="a3110b267b30f84d40004b3d197f9565da7308f0e087158a0aacbfe92a7b12e0a9"></a>TILE_SECT_E1_DS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da511f9e1fbc8db7eca1025b39e74cd1ef" name="a3110b267b30f84d40004b3d197f9565da511f9e1fbc8db7eca1025b39e74cd1ef"></a>TILE_SECT_W1_DW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dafc5d8d0307d2c396b410a5efc18a808b" name="a3110b267b30f84d40004b3d197f9565dafc5d8d0307d2c396b410a5efc18a808b"></a>TILE_SECT_N1_DE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da723ca0fe22aa9dfcd6888875e33e8bf5" name="a3110b267b30f84d40004b3d197f9565da723ca0fe22aa9dfcd6888875e33e8bf5"></a>TILE_SECT_S1_DSW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da232a878762b6aff9610a35ef420d9ab2" name="a3110b267b30f84d40004b3d197f9565da232a878762b6aff9610a35ef420d9ab2"></a>TILE_SECT_XNE1_XSE1_DNE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dac7d033ab03099acbbe646ee6f4f9d9e0" name="a3110b267b30f84d40004b3d197f9565dac7d033ab03099acbbe646ee6f4f9d9e0"></a>TILE_SECT_DSE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dadeee27c1f59377200fdcc1ed36a963f0" name="a3110b267b30f84d40004b3d197f9565dadeee27c1f59377200fdcc1ed36a963f0"></a>TILE_SECT_XNW1_XSW1_DNW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565da6b1f8921f1b1672f76004f8f21021ec5" name="a3110b267b30f84d40004b3d197f9565da6b1f8921f1b1672f76004f8f21021ec5"></a>TILE_SECT_FIRST_SPECIAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3110b267b30f84d40004b3d197f9565dac62122ef2400479758350c73c93f808d" name="a3110b267b30f84d40004b3d197f9565dac62122ef2400479758350c73c93f808d"></a>TILE_SECT_LAST_SPECIAL&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -253,41 +281,75 @@ Enumerations</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> : int16_t</td>
+          <td class="memname">enum class <a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> : int16_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a303a2f9122ab11118bfb10a970a43031" name="a853fa224fcbff1ba70f01db3865fa9e3a303a2f9122ab11118bfb10a970a43031"></a>Tileset_Grass&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ae74049f21343e6d7f820a94e7263555c" name="a853fa224fcbff1ba70f01db3865fa9e3ae74049f21343e6d7f820a94e7263555c"></a>Tileset_Snow&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ac046347fae4059cabd38d43b0856f297" name="a853fa224fcbff1ba70f01db3865fa9e3ac046347fae4059cabd38d43b0856f297"></a>Tileset_Desert&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a7c8c6ad7b512213005351281bf27b4b2" name="a853fa224fcbff1ba70f01db3865fa9e3a7c8c6ad7b512213005351281bf27b4b2"></a>Tileset_CooledLava&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a32b01a02a1c3747697c0d86e8fe7f9bb" name="a853fa224fcbff1ba70f01db3865fa9e3a32b01a02a1c3747697c0d86e8fe7f9bb"></a>Tileset_Dirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a1eaadadf904201eedb04eb8a7d60f050" name="a853fa224fcbff1ba70f01db3865fa9e3a1eaadadf904201eedb04eb8a7d60f050"></a>Tileset_Water&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a02137fcb86aef1ae4322b67c0d0ae847" name="a853fa224fcbff1ba70f01db3865fa9e3a02137fcb86aef1ae4322b67c0d0ae847"></a>Tileset_Badlands&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3abe503a95c3a9ae9966a73fba29c47ef7" name="a853fa224fcbff1ba70f01db3865fa9e3abe503a95c3a9ae9966a73fba29c47ef7"></a>Tileset_Swamp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a3d4625184eed0ad78e035629bd4c21e8" name="a853fa224fcbff1ba70f01db3865fa9e3a3d4625184eed0ad78e035629bd4c21e8"></a>Tileset_Tropical&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a542683806ea6b5816f005caf36d88a05" name="a853fa224fcbff1ba70f01db3865fa9e3a542683806ea6b5816f005caf36d88a05"></a>Tileset_City&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ac78993b8215f735ea159e7088d435dcc" name="a853fa224fcbff1ba70f01db3865fa9e3ac78993b8215f735ea159e7088d435dcc"></a>Tileset_RoadGrassCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3abc9f263abacb8abd763c9881e289e251" name="a853fa224fcbff1ba70f01db3865fa9e3abc9f263abacb8abd763c9881e289e251"></a>Tileset_RoadGrassDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a523a88e1066f0ddc1376932606a3f121" name="a853fa224fcbff1ba70f01db3865fa9e3a523a88e1066f0ddc1376932606a3f121"></a>Tileset_RoadSnowCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a13e14e2e02cb84b1f004eaa82aa89b1e" name="a853fa224fcbff1ba70f01db3865fa9e3a13e14e2e02cb84b1f004eaa82aa89b1e"></a>Tileset_RoadSnowDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ac62d4468422facd27f307e78e2c0b45e" name="a853fa224fcbff1ba70f01db3865fa9e3ac62d4468422facd27f307e78e2c0b45e"></a>Tileset_RoadSandCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a15d834b08cd6269e318d49041dec65df" name="a853fa224fcbff1ba70f01db3865fa9e3a15d834b08cd6269e318d49041dec65df"></a>Tileset_RoadSandDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a81de19a9aa7e91d2261c2c57ce01f919" name="a853fa224fcbff1ba70f01db3865fa9e3a81de19a9aa7e91d2261c2c57ce01f919"></a>Tileset_RoadVolcanoCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3aeda62047a9b86463eecc704ba62618bb" name="a853fa224fcbff1ba70f01db3865fa9e3aeda62047a9b86463eecc704ba62618bb"></a>Tileset_RoadVolcanoDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a88b7c3f20e262bb208f704203a74cf1a" name="a853fa224fcbff1ba70f01db3865fa9e3a88b7c3f20e262bb208f704203a74cf1a"></a>Tileset_RoadCrackedCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a577f04a52bb7a6048539ca5967d0c8c7" name="a853fa224fcbff1ba70f01db3865fa9e3a577f04a52bb7a6048539ca5967d0c8c7"></a>Tileset_RoadCrackedDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a2948047b68ee556469dd14ee8f85bfa9" name="a853fa224fcbff1ba70f01db3865fa9e3a2948047b68ee556469dd14ee8f85bfa9"></a>Tileset_RoadSwampCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ac2ef2db5d2835a602ee41458b47a2b69" name="a853fa224fcbff1ba70f01db3865fa9e3ac2ef2db5d2835a602ee41458b47a2b69"></a>Tileset_RoadSwampDir&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a8a692b9c50646f12c202fff5acea4468" name="a853fa224fcbff1ba70f01db3865fa9e3a8a692b9c50646f12c202fff5acea4468"></a>Tileset_RoadTropicalCobble&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a99a83f44bde178b957b7bc4ec4d570ae" name="a853fa224fcbff1ba70f01db3865fa9e3a99a83f44bde178b957b7bc4ec4d570ae"></a>Tileset_RoadTropicalDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3aeeaaa90285b0e990590ffc3cb9251012" name="a853fa224fcbff1ba70f01db3865fa9e3aeeaaa90285b0e990590ffc3cb9251012"></a>Tileset_RoadCityStone&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3af2d943adcf32ecea8869158161f74608" name="a853fa224fcbff1ba70f01db3865fa9e3af2d943adcf32ecea8869158161f74608"></a>Tileset_NULL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3abda2e9c4bd992b193a6704f1c42e8241" name="a853fa224fcbff1ba70f01db3865fa9e3abda2e9c4bd992b193a6704f1c42e8241"></a>Tileset_Start&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a630e1254d107364baf714175da8099d5" name="a853fa224fcbff1ba70f01db3865fa9e3a630e1254d107364baf714175da8099d5"></a>Tileset_Grass&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a8859a57448d917da706c33ef5228817c" name="a853fa224fcbff1ba70f01db3865fa9e3a8859a57448d917da706c33ef5228817c"></a>Tileset_Snow&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a5b1947f3c84a76c9dd570297cf44aca8" name="a853fa224fcbff1ba70f01db3865fa9e3a5b1947f3c84a76c9dd570297cf44aca8"></a>Tileset_Desert&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a3984ca80a9d1a0d87f892ce1a18ceffa" name="a853fa224fcbff1ba70f01db3865fa9e3a3984ca80a9d1a0d87f892ce1a18ceffa"></a>Tileset_CooledLava&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a64f57834c37489ed0bc0682bcb680e4d" name="a853fa224fcbff1ba70f01db3865fa9e3a64f57834c37489ed0bc0682bcb680e4d"></a>Tileset_Dirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a35199608070849ccef7346b2dc8235a3" name="a853fa224fcbff1ba70f01db3865fa9e3a35199608070849ccef7346b2dc8235a3"></a>Tileset_Water&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a206a3881eec6c530324415e9001aa1f9" name="a853fa224fcbff1ba70f01db3865fa9e3a206a3881eec6c530324415e9001aa1f9"></a>Tileset_Badlands&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ae88a85c446a47e55074da047630f009e" name="a853fa224fcbff1ba70f01db3865fa9e3ae88a85c446a47e55074da047630f009e"></a>Tileset_Swamp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a94af7006cefa5df4290afac484d0bfe4" name="a853fa224fcbff1ba70f01db3865fa9e3a94af7006cefa5df4290afac484d0bfe4"></a>Tileset_Tropical&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a7da42bf0fb766901386072721f7a6cdd" name="a853fa224fcbff1ba70f01db3865fa9e3a7da42bf0fb766901386072721f7a6cdd"></a>Tileset_City&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a668d6d7bbbf9775d7cb79b6eba81ae56" name="a853fa224fcbff1ba70f01db3865fa9e3a668d6d7bbbf9775d7cb79b6eba81ae56"></a>Tileset_RoadGrassCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a1333427ec58e9be905598e44da672ddf" name="a853fa224fcbff1ba70f01db3865fa9e3a1333427ec58e9be905598e44da672ddf"></a>Tileset_RoadGrassDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3ae3460496059cf2fd86104573f4a9b4c8" name="a853fa224fcbff1ba70f01db3865fa9e3ae3460496059cf2fd86104573f4a9b4c8"></a>Tileset_RoadSnowCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a34da4add44aed3fa4225c1d0847a0098" name="a853fa224fcbff1ba70f01db3865fa9e3a34da4add44aed3fa4225c1d0847a0098"></a>Tileset_RoadSnowDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a8726b6e79428be29dc2b210c94732068" name="a853fa224fcbff1ba70f01db3865fa9e3a8726b6e79428be29dc2b210c94732068"></a>Tileset_RoadSandCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a3c96050f451adf14a87c938baa71d992" name="a853fa224fcbff1ba70f01db3865fa9e3a3c96050f451adf14a87c938baa71d992"></a>Tileset_RoadSandDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a71f71e62d4184a30ad9486fb38d03f86" name="a853fa224fcbff1ba70f01db3865fa9e3a71f71e62d4184a30ad9486fb38d03f86"></a>Tileset_RoadVolcanoCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a14f1cc8bf2ce92ec72f2e9d39378869c" name="a853fa224fcbff1ba70f01db3865fa9e3a14f1cc8bf2ce92ec72f2e9d39378869c"></a>Tileset_RoadVolcanoDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a1fbcaf3f2a644c425d0d3a4f74c06113" name="a853fa224fcbff1ba70f01db3865fa9e3a1fbcaf3f2a644c425d0d3a4f74c06113"></a>Tileset_RoadCrackedCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3aeaaaa14b11387fec162655f2fa1984a3" name="a853fa224fcbff1ba70f01db3865fa9e3aeaaaa14b11387fec162655f2fa1984a3"></a>Tileset_RoadCrackedDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a6c8532bd943c6ba4762be2abad71d092" name="a853fa224fcbff1ba70f01db3865fa9e3a6c8532bd943c6ba4762be2abad71d092"></a>Tileset_RoadSwampCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3aa1a703f4b15fcaa4e2b34c365500e2b5" name="a853fa224fcbff1ba70f01db3865fa9e3aa1a703f4b15fcaa4e2b34c365500e2b5"></a>Tileset_RoadSwampDir&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a19137b99f60e83c9e9753e217f8794e2" name="a853fa224fcbff1ba70f01db3865fa9e3a19137b99f60e83c9e9753e217f8794e2"></a>Tileset_RoadTropicalCobble&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3aedec30128cc6085a0b2b2b2aa7283ac8" name="a853fa224fcbff1ba70f01db3865fa9e3aedec30128cc6085a0b2b2b2aa7283ac8"></a>Tileset_RoadTropicalDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a58ee1a855eaec623a88c44f631bee3c1" name="a853fa224fcbff1ba70f01db3865fa9e3a58ee1a855eaec623a88c44f631bee3c1"></a>Tileset_RoadCityStone&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a6d884c41afa0c11fa3ad8d4545e14461" name="a853fa224fcbff1ba70f01db3865fa9e3a6d884c41afa0c11fa3ad8d4545e14461"></a>Tileset_NULL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a853fa224fcbff1ba70f01db3865fa9e3a25f9b5d0d8990fa3fd27ad86f00d0d29" name="a853fa224fcbff1ba70f01db3865fa9e3a25f9b5d0d8990fa3fd27ad86f00d0d29"></a>Tileset_Start&#160;</td><td class="fielddoc"></td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a0e235dcd0e8170e75e9af6b293b91db7" name="a0e235dcd0e8170e75e9af6b293b91db7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e235dcd0e8170e75e9af6b293b91db7">&#9670;&#160;</a></span>allSpecialTileSects()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a> &gt; allSpecialTileSects </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

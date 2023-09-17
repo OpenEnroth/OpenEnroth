@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">ItemEnums.h File Reference</div></div>
@@ -83,26 +84,36 @@ $(function() {
 <code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SpellEnums_8h.html">Engine/Spells/SpellEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacedetail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html">detail</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a55231e9660ce1c5b6f7613a3f9d66891"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a> : unsigned int { <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aa9c007ed02cde831d351b9d9534528bf">DMGT_FIRE</a> = 0
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a35224331d667278ee0e24ebaca3f0158">DMGT_ELECTR</a> = 1
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733">DMGT_COLD</a> = 2
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a6793f75b6f72999db447835db8874abf">DMGT_EARTH</a> = 3
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aa2941497e79b10b3fec0f1e524180e25">DAMAGE_FIRE</a> = 0
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a6545cd2aaed648fe1dfcc453ce982613">DAMAGE_AIR</a> = 1
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a5b88adeabca29c68e4412e864cc7cef1">DAMAGE_WATER</a> = 2
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a522c454b8d8746ab716792a2282f05ae">DAMAGE_EARTH</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a1e98024d16ffcffe406ae542d1bf6244">DMGT_PHISYCAL</a> = 4
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a21ab4299cdd61789ddab2698d5e729c4">DMGT_MAGICAL</a> = 5
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555">DMGT_SPIRIT</a> = 6
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431">DMGT_MIND</a> = 7
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ac60a23005b3016ba3ee29aa5faf78d5d">DAMAGE_PHYSICAL</a> = 4
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891acea015b6d080f394abaaddde20e97d9f">DAMAGE_MAGIC</a> = 5
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ab8e1c315a1fe45508e3a47906bab0aba">DAMAGE_SPIRIT</a> = 6
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ac8fa5b15dd5013651493a22e797f5ecc">DAMAGE_MIND</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98">DMGT_BODY</a> = 8
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a62762cad957121241f40a3a9458f3565">DMGT_LIGHT</a> = 9
-, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ae0c84bd6591ead469dd6882c15d4f181">DMGT_DARK</a> = 10
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891afeab5b9d7e40a8164a525f63d9f87e37">DAMAGE_BODY</a> = 8
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a0ded8ad33a52bb25c75c0c92217600e1">DAMAGE_LIGHT</a> = 9
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a5a40a231f1b56988725eb18a36e29b02">DAMAGE_DARK</a> = 10
+, <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a86e609f47d5163b97e9a59c7d26fb0b6">DAMAGE_FIRST</a> = DAMAGE_FIRE
+, <br />
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891afa020e8458a24b94aca59adb32910947">DAMAGE_LAST</a> = DAMAGE_DARK
 <br />
  }</td></tr>
 <tr class="separator:a55231e9660ce1c5b6f7613a3f9d66891"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,100 +133,100 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a5685ba28d9855504dffcfd0e3cbf3732"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32eb1d58cce67b93f07281e8a3464d19"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a> : unsigned int { <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1b165f33de669ea48df78787334f3645">ITEM_ENCHANTMENT_NULL</a> = 0
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8890f30003ec17f9463cd14613e91989">ITEM_ENCHANTMENT_OF_PROTECTION</a> = 1
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8bb09fb2feb415a2ce004230d10c8bd8">ITEM_ENCHANTMENT_OF_GODS</a> = 2
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8a087ac27f39d50e7b287410fc5ee01b">ITEM_ENCHANTMENT_OF_CARNAGE</a> = 3
+<tr class="memitem:a32eb1d58cce67b93f07281e8a3464d19"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a> : unsigned int { <br />
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a974325902cd74b7293862788c2ec955e">ITEM_ENCHANTMENT_NULL</a> = 0
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a4963d4c1f8674bdee12012a7cb90a1ae">ITEM_ENCHANTMENT_OF_PROTECTION</a> = 1
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aaa349c989403fb0e21d68c83f38544c5">ITEM_ENCHANTMENT_OF_GODS</a> = 2
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a54bf0c17affee66613851a204570a82d">ITEM_ENCHANTMENT_OF_CARNAGE</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ac15891c04ce67097f42f69edaef7928f">ITEM_ENCHANTMENT_OF_COLD</a> = 4
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a4d3a2851e2953d0b6bb6ce4be16635e5">ITEM_ENCHANTMENT_OF_FROST</a> = 5
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a847ca2096a1ca8ecc670aca6a9148d36">ITEM_ENCHANTMENT_OF_ICE</a> = 6
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a564b75ba2248f3c877f3df1b35050d67">ITEM_ENCHANTMENT_OF_SPARKS</a> = 7
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3b1464dad7ffb4d512b8234e7fa4a7ba">ITEM_ENCHANTMENT_OF_COLD</a> = 4
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad29d6ef3a20108cf551f24853c9a31e7">ITEM_ENCHANTMENT_OF_FROST</a> = 5
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a14769eed96f9360ccf141f418ceade83">ITEM_ENCHANTMENT_OF_ICE</a> = 6
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3023e8d43c30a652d66347605fe01d26">ITEM_ENCHANTMENT_OF_SPARKS</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a7c7715282975a444f2964a112e7d76c0">ITEM_ENCHANTMENT_OF_LIGHTNING</a> = 8
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a48f3b946c187b4b9aefdfe9299e9279b">ITEM_ENCHANTMENT_OF_THUNDERBOLTS</a> = 9
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a68b38d33b784299430093dab41796221">ITEM_ENCHANTMENT_OF_FIRE</a> = 10
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a697bdcfde635d9323d60b3bbaa10c120">ITEM_ENCHANTMENT_OF_FLAME</a> = 11
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aa8461a6180cb5bbb5dbb57833e424fe4">ITEM_ENCHANTMENT_OF_LIGHTNING</a> = 8
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a2a8adec15c6614940b7f8a6aac77a67b">ITEM_ENCHANTMENT_OF_THUNDERBOLTS</a> = 9
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a22232bedd3782b1ad48774b1bc2f27cb">ITEM_ENCHANTMENT_OF_FIRE</a> = 10
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a6259912f29239332d5e91e619d43e42b">ITEM_ENCHANTMENT_OF_FLAME</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad3a2e5702d5b2fe0faf3ce8422901353">ITEM_ENCHANTMENT_OF_INFERNOS</a> = 12
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a011c27e21243e2e01466685214fe6a09">ITEM_ENCHANTMENT_OF_POISON</a> = 13
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a22400cf214475d5a73c9bb1053a37d2c">ITEM_ENCHANTMENT_OF_VENOM</a> = 14
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a73b8dc0a7b214abdcc0b51a197b38e9a">ITEM_ENCHANTMENT_OF_ACID</a> = 15
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a2cc88b5743eb3f171609b481540cc27c">ITEM_ENCHANTMENT_OF_INFERNOS</a> = 12
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a2ba422bfef7a4987d69d3b143d41b085">ITEM_ENCHANTMENT_OF_POISON</a> = 13
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a428a84a499a21439188d9de3d226c166">ITEM_ENCHANTMENT_OF_VENOM</a> = 14
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aeacb1cd84ce160fe2dd358b527d771a7">ITEM_ENCHANTMENT_OF_ACID</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ab6707c6568fcec934e745c60a6caaf80">ITEM_ENCHANTMENT_VAMPIRIC</a> = 16
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aeec84d91eb8a4c17781a536f638d3836">ITEM_ENCHANTMENT_OF_RECOVERY</a> = 17
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19abe5fac46d65a8fc3240f2e7af6b5a719">ITEM_ENCHANTMENT_OF_IMMUNITY</a> = 18
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a6fe926afbcb5b4042ed3876e3f4288d0">ITEM_ENCHANTMENT_OF_SANITY</a> = 19
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ab247ec5237bb0da20b2c82ba4c6e452c">ITEM_ENCHANTMENT_VAMPIRIC</a> = 16
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a4348541436cd4336bf14a17441e24b4c">ITEM_ENCHANTMENT_OF_RECOVERY</a> = 17
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19af8f8565fd6f9b55c340d141e3a910e1c">ITEM_ENCHANTMENT_OF_IMMUNITY</a> = 18
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a0bac3df83575d56d162bb8510e8b7201">ITEM_ENCHANTMENT_OF_SANITY</a> = 19
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a95cc1ed8356f7aaad53f1ee074f0aa6b">ITEM_ENCHANTMENT_OF_FREEDOM</a> = 20
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8b1a8b3dcdda79f967770869562985e7">ITEM_ENCHANTMENT_OF_ANTIDOTES</a> = 21
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a5432cae0f3c3c4a182c55ebcf1c025fc">ITEM_ENCHANTMENT_OF_ALARMS</a> = 22
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a083d59e53595dd64b8f22d12503e89f6">ITEM_ENCHANTMENT_OF_MEDUSA</a> = 23
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a39a8cef69ad6854a846571f94b19ee1c">ITEM_ENCHANTMENT_OF_FREEDOM</a> = 20
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8bd885f5cea47e9b355e700f90c017b2">ITEM_ENCHANTMENT_OF_ANTIDOTES</a> = 21
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aac908395a3cb3ede37f1c4ee0cfa33ff">ITEM_ENCHANTMENT_OF_ALARMS</a> = 22
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a93eeb9929da61dc541a9878990ed798b">ITEM_ENCHANTMENT_OF_MEDUSA</a> = 23
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3ae9348ad13a4e6caf634955b29640e3">ITEM_ENCHANTMENT_OF_FORCE</a> = 24
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a74ceecb3a726e8cb81fcd3aa33400934">ITEM_ENCHANTMENT_OF_POWER</a> = 25
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8b1da3098cbcfb5dd4f4bafde8ac9211">ITEM_ENCHANTMENT_OF_AIR_MAGIC</a> = 26
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aa7d8748f41c497e5ecde22b55413e219">ITEM_ENCHANTMENT_OF_BODY_MAGIC</a> = 27
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a2af733ad6ea170d0ee9b92dccc7f2cde">ITEM_ENCHANTMENT_OF_FORCE</a> = 24
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8508ae39bb29839055e1f4aeb03e8f89">ITEM_ENCHANTMENT_OF_POWER</a> = 25
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a16be801eb4d59231de84894e3bd0618e">ITEM_ENCHANTMENT_OF_AIR_MAGIC</a> = 26
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ae1b86448c833b8da37ef9de2a39b9924">ITEM_ENCHANTMENT_OF_BODY_MAGIC</a> = 27
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19acf18e77f23b6b457033aaa1cecdcb3e2">ITEM_ENCHANTMENT_OF_DARK_MAGIC</a> = 28
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ac27b53354103ee26be8f7766a58d25b3">ITEM_ENCHANTMENT_OF_EARTH_MAGIC</a> = 29
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a75a563f43a744cd37b9de256bfe07098">ITEM_ENCHANTMENT_OF_FIRE_MAGIC</a> = 30
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8a4860b62473c71c8837043d39947753">ITEM_ENCHANTMENT_OF_LIGHT_MAGIC</a> = 31
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a61a50beb08775fb7a4fb19c9135c6057">ITEM_ENCHANTMENT_OF_DARK_MAGIC</a> = 28
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a95da08ea6806e55ffe984740cc8690d6">ITEM_ENCHANTMENT_OF_EARTH_MAGIC</a> = 29
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aa7d09f98f8d4f2147f462ed7ca165d1d">ITEM_ENCHANTMENT_OF_FIRE_MAGIC</a> = 30
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aa0b2384b70db477a7126dbc7f62a81bb">ITEM_ENCHANTMENT_OF_LIGHT_MAGIC</a> = 31
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a68965d8f2f4df7ab5160046d06f11227">ITEM_ENCHANTMENT_OF_MIND_MAGIC</a> = 32
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a4be8165a260b6a55020a513bf86c603c">ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC</a> = 33
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8da64a77329d05116a2e8d6942f31d6a">ITEM_ENCHANTMENT_OF_WATER_MAGIC</a> = 34
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3c8540bd4431e05231a90e7fd5f23405">ITEM_ENCHANTMENT_OF_THIEVERY</a> = 35
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a31a83fee60fd10532d79660b94706d6a">ITEM_ENCHANTMENT_OF_MIND_MAGIC</a> = 32
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a322dac1d117981b6505aa18292a07bef">ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC</a> = 33
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19acb7a9f3d57d2fb22d7df49d8d61afbb5">ITEM_ENCHANTMENT_OF_WATER_MAGIC</a> = 34
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a40b19a077528d65a84dbc2f1bc661e2b">ITEM_ENCHANTMENT_OF_THIEVERY</a> = 35
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ae5212f043f9686200aa9b05f7eea3d6e">ITEM_ENCHANTMENT_OF_SHIELDING</a> = 36
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a7687c9e17f4162e4d061ae3057e9115f">ITEM_ENCHANTMENT_OF_REGENERATION</a> = 37
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ac13db62ac39c0bfc28f79c886c1d217c">ITEM_ENCHANTMENT_OF_MANA</a> = 38
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aeb7336299d35b5000d6151c46f1d7515">ITEM_ENCHANTMENT_DEMON_SLAYING</a> = 39
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19af7f33e6ae0dd6eb50e6a24e7529f4d8a">ITEM_ENCHANTMENT_OF_SHIELDING</a> = 36
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a66150845bf5ccbb8f493654a9899d75c">ITEM_ENCHANTMENT_OF_REGENERATION</a> = 37
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3a4ca51d6abf53d2bb878fce7474123f">ITEM_ENCHANTMENT_OF_MANA</a> = 38
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a33a214ddadc2b72daf1bee3343eacffc">ITEM_ENCHANTMENT_DEMON_SLAYING</a> = 39
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a9971d160c3f630251cb1c5b001eefbfa">ITEM_ENCHANTMENT_DRAGON_SLAYING</a> = 40
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a285f460306071e15113cb43a63e1c480">ITEM_ENCHANTMENT_OF_DARKNESS</a> = 41
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a2999b6efd020bfce66635bde80b3c370">ITEM_ENCHANTMENT_OF_DOOM</a> = 42
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3c727048b414c81bb51ff6650c5ad960">ITEM_ENCHANTMENT_OF_EARTH</a> = 43
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19afcac51849e0f0589f7ee49bf5423d270">ITEM_ENCHANTMENT_DRAGON_SLAYING</a> = 40
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad24d84c5cbf8b81bf0d77b5a499e73c2">ITEM_ENCHANTMENT_OF_DARKNESS</a> = 41
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a0a30abd42476bf2c75acddfd77b14520">ITEM_ENCHANTMENT_OF_DOOM</a> = 42
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a07470ff4b20d6f656967ce2950202e03">ITEM_ENCHANTMENT_OF_EARTH</a> = 43
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a3e5e2ae5a5847bb7ea68c68893a29d4b">ITEM_ENCHANTMENT_OF_LIFE</a> = 44
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a782e0483a3d07f5155adef9003c70f54">ITEM_ENCHANTMENT_ROGUES</a> = 45
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aafeb767290f2b22f3033c38dd4e6fc9b">ITEM_ENCHANTMENT_OF_DRAGON</a> = 46
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad0744aa61c99b8a7173a595622a3c4b2">ITEM_ENCHANTMENT_OF_ECLIPSE</a> = 47
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a801ecf8b13929dd297b1d67bf6870ad5">ITEM_ENCHANTMENT_OF_LIFE</a> = 44
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a14c43551c418122ca8c04e2ecb6be917">ITEM_ENCHANTMENT_ROGUES</a> = 45
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a6d43dbe03bc1be730806b8ba314ed8dc">ITEM_ENCHANTMENT_OF_DRAGON</a> = 46
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a7f5c4b20d258ae31c33da9f19e699c60">ITEM_ENCHANTMENT_OF_ECLIPSE</a> = 47
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a0b11c2998885e559cc2a4451d71e5f94">ITEM_ENCHANTMENT_OF_GOLEM</a> = 48
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a212040736bfe1b06727ab03e87ac48f2">ITEM_ENCHANTMENT_OF_MOON</a> = 49
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a5f9751cbfefcbec32df689465caab96a">ITEM_ENCHANTMENT_OF_PHOENIX</a> = 50
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a67977499fd23bf9246f6fe32eb5df7d8">ITEM_ENCHANTMENT_OF_SKY</a> = 51
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a87261ce3e7a0690d81963b97fee26656">ITEM_ENCHANTMENT_OF_GOLEM</a> = 48
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a66b154f5659e332768cd06f6852189a0">ITEM_ENCHANTMENT_OF_MOON</a> = 49
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad2c6bc94c3baaf2ae324bd74835ea34c">ITEM_ENCHANTMENT_OF_PHOENIX</a> = 50
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a930051494cdf9f13c18bb328725156ae">ITEM_ENCHANTMENT_OF_SKY</a> = 51
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a7fa51601625b899457cd7a661f574935">ITEM_ENCHANTMENT_OF_STARS</a> = 52
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a494c6238c1086165fe91d98a959f74a1">ITEM_ENCHANTMENT_OF_SUN</a> = 53
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19acb7986c8bb1ebdd3d2b69465e4ee65a1">ITEM_ENCHANTMENT_OF_TROLL</a> = 54
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a4f722fdff56e8e4a821b3bd4aa4e8dcd">ITEM_ENCHANTMENT_OF_UNICORN</a> = 55
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ae0ed9d5a4ea25f4ee1d84b1e6c92dbf1">ITEM_ENCHANTMENT_OF_STARS</a> = 52
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a2e1f5e806048e769d2d77b3a9739086d">ITEM_ENCHANTMENT_OF_SUN</a> = 53
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aee9a7e2d8de03a168bf4d670ba9e9ba7">ITEM_ENCHANTMENT_OF_TROLL</a> = 54
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a9d02179cc078e6c708652c9f83cf66fc">ITEM_ENCHANTMENT_OF_UNICORN</a> = 55
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19af0357cddf40b3981044a5a21c06d2112">ITEM_ENCHANTMENT_WARRIORS</a> = 56
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aa7067c30f9d1483f4ad16aa8eb46bbab">ITEM_ENCHANTMENT_WIZARDS</a> = 57
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a805fe4f047083c8f665b16ac66025c4b">ITEM_ENCHANTMENT_ANTIQUE</a> = 58
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a6eff0e186590a48d07752ce426d1844f">ITEM_ENCHANTMENT_SWIFT</a> = 59
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a995ee0e98ea97aa5ffb7a1e20dfeec37">ITEM_ENCHANTMENT_WARRIORS</a> = 56
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad3445df1ba0b272c128bb2e705a3997f">ITEM_ENCHANTMENT_WIZARDS</a> = 57
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad5da2b56aabaf7ca5ad7d6e2ac446c3a">ITEM_ENCHANTMENT_ANTIQUE</a> = 58
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a947cd01386320b1e69124a091cb2936e">ITEM_ENCHANTMENT_SWIFT</a> = 59
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1e07c64aba2d2414139d1a0226d0d817">ITEM_ENCHANTMENT_MONKS</a> = 60
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ace986142c5af23bb2853c622767b0d74">ITEM_ENCHANTMENT_THIEVES</a> = 61
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a0f21b6cb9589b29bbc2ae5974ff67d4b">ITEM_ENCHANTMENT_OF_IDENTIFYING</a> = 62
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a894c2a61ca90f518a0bbd4ae365900d5">ITEM_ENCHANTMENT_ELF_SLAYING</a> = 63
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1f2b4d8974f877bb1f608d60afc0889a">ITEM_ENCHANTMENT_MONKS</a> = 60
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a7b50b4267f812d64ad840842ac61cd20">ITEM_ENCHANTMENT_THIEVES</a> = 61
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ae7c5198adac87bb61df8b8651acdb252">ITEM_ENCHANTMENT_OF_IDENTIFYING</a> = 62
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a8f715771af5e14a3dd89a21e7aa006d4">ITEM_ENCHANTMENT_ELF_SLAYING</a> = 63
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a1b6b294e2890506aca388ffb29a50c29">ITEM_ENCHANTMENT_UNDEAD_SLAYING</a> = 64
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a991218e083b51e607ca5699bc075de28">ITEM_ENCHANTMENT_TITAN_SLAYING</a> = 65
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a5fe632aa007a7ce10c97d72538f08abd">ITEM_ENCHANTMENT_OF_PLENTY</a> = 66
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a5d814f450e1ea3426b6f4267dedfc51e">ITEM_ENCHANTMENT_ASSASINS</a> = 67
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ad8cb0034bc9a83353db6b60f76308b57">ITEM_ENCHANTMENT_UNDEAD_SLAYING</a> = 64
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a27ac8e5a1e50994e1d224d7e2eecfd54">ITEM_ENCHANTMENT_TITAN_SLAYING</a> = 65
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aee0b771d4b271569690e131dfcb76220">ITEM_ENCHANTMENT_OF_PLENTY</a> = 66
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a264e1f8ca6c1d8b6bc0c2f54f93b4391">ITEM_ENCHANTMENT_ASSASINS</a> = 67
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a937f58a14e29a5a5e7db4c769914ed10">ITEM_ENCHANTMENT_BARBARIANS</a> = 68
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a81761e6ef221d42896b923c9086d686c">ITEM_ENCHANTMENT_OF_STORM</a> = 69
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ac28eb6e5c296806d6316dca64a7c4bd1">ITEM_ENCHANTMENT_OF_OCEAN</a> = 70
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a10d7128fda08f5a201c6c55611692c42">ITEM_ENCHANTMENT_OF_WATER_WALKING</a> = 71
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19ab8214c7ae55d375d53d1a21c0707263c">ITEM_ENCHANTMENT_BARBARIANS</a> = 68
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a73106129e79b7f40928402640c04a02a">ITEM_ENCHANTMENT_OF_STORM</a> = 69
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19afd6764c77ec4eeaf283fced94e9176f6">ITEM_ENCHANTMENT_OF_OCEAN</a> = 70
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a19b5283f2d0606bdddb0b3fae4d21a4c">ITEM_ENCHANTMENT_OF_WATER_WALKING</a> = 71
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19af26db9d201d6dcf7ec109a051c1c4455">ITEM_ENCHANTMENT_OF_FEATHER_FALLING</a> = 72
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a496c886d109247b22d3ee9e5008d4d78">ITEM_ENCHANTMENT_FIRST_VALID</a> = 1
-, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a9498d29c932d1f77871fece08cb633fe">ITEM_ENCHANTMENT_LAST_VALID</a> = 72
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19aa45341c5635f6b3a5689fd956671ce9c">ITEM_ENCHANTMENT_OF_FEATHER_FALLING</a> = 72
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19a86b924728af58b23fe444709389354c5">ITEM_ENCHANTMENT_FIRST_VALID</a> = 1
+, <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19af9f730eb466f261fcb243ff0643c836c">ITEM_ENCHANTMENT_LAST_VALID</a> = 72
 <br />
  }</td></tr>
 <tr class="separator:a32eb1d58cce67b93f07281e8a3464d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1280,13 +1291,16 @@ Enumerations</h2></td></tr>
 , <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0baa5e671f65a5d3ff28654f82be3e25ecf">ITEM_FIRST_SPELL_SCROLL</a> = ITEM_SCROLL_TORCH_LIGHT
 , <br />
 &#160;&#160;<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba3249047f2eec93afdde27f57fd1b7d31">ITEM_LAST_SPELL_SCROLL</a> = ITEM_SCROLL_SOULDRINKER
-, <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba37763236d9e494d2379d07104e321194">ITEM_FIRST_SPELL_BOOK</a> = ITEM_SPELLBOOK_TORCH_LIGHT
-, <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba08fc927a7a7b07163d3b83ad68e7a253">ITEM_LAST_SPELL_BOOK</a> = ITEM_SPELLBOOK_SOULDRINKER
+, <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0baf941686d869681f32503706daf5e1a36">ITEM_FIRST_SPELLBOOK</a> = ITEM_SPELLBOOK_TORCH_LIGHT
+, <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba7e901d832dbf6a98b908885fc1a6bb01">ITEM_LAST_SPELLBOOK</a> = ITEM_SPELLBOOK_SOULDRINKER
 , <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0bad627edad39a83de809e6a5e385f28c81">ITEM_FIRST_POTION</a> = ITEM_POTION_CATALYST
 , <br />
 &#160;&#160;<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0bab7e1fbc4619507ab6f24ad407655faa9">ITEM_LAST_POTION</a> = ITEM_POTION_REJUVENATION
 , <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba4babb8c6cc11aaf403ad7a4da49a3baa">ITEM_FIRST_SPAWNABLE</a> = ITEM_CRUDE_LONGSWORD
 , <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba94251c8e4681c535e363c68cb02f9450">ITEM_LAST_SPAWNABLE</a> = ITEM_499
+, <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba6cb55f39effce54720b3e87f449e0fbd">ITEM_FIRST_GOLD</a> = ITEM_GOLD_SMALL
+, <br />
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba130ee778f953d670834fdd01df0298ec">ITEM_LAST_GOLD</a> = ITEM_GOLD_LARGE
 <br />
  }</td></tr>
 <tr class="separator:a238bdd793c3bf80cc1530e03ba5eca0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1378,14 +1392,18 @@ Functions</h2></td></tr>
 <tr class="separator:ac6010d6d669676ec0fb5a60aa75f4081"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef8cc47de0fc3dcabd19168891941930"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#aef8cc47de0fc3dcabd19168891941930">isSpawnableArtifact</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> type)</td></tr>
 <tr class="separator:aef8cc47de0fc3dcabd19168891941930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c33b46d949ff835f871f57c192a5d86"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a0c33b46d949ff835f871f57c192a5d86">isGold</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> type)</td></tr>
+<tr class="separator:a0c33b46d949ff835f871f57c192a5d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4008f17faebba19d9a86afdb4327c107"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a4008f17faebba19d9a86afdb4327c107">isRandomItem</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> type)</td></tr>
 <tr class="separator:a4008f17faebba19d9a86afdb4327c107"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0b48e17c0ed32487a1b562a3c789a32"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ab0b48e17c0ed32487a1b562a3c789a32">isSpellbook</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> item)</td></tr>
+<tr class="separator:ab0b48e17c0ed32487a1b562a3c789a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6601086b96741e15e1c62a07da74f788"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a38d9b49da2474dd2a7da4ad935eb94e4">ItemTreasureLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a6601086b96741e15e1c62a07da74f788">randomItemTreasureLevel</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> type)</td></tr>
 <tr class="separator:a6601086b96741e15e1c62a07da74f788"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8466bb12236601205d9a6736990db52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ab8466bb12236601205d9a6736990db52">spellCountForMastery</a> (<a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> maxMastery)</td></tr>
 <tr class="separator:ab8466bb12236601205d9a6736990db52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79e58baecbc68a42526bcdfae9bfe535"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a79e58baecbc68a42526bcdfae9bfe535">spellbooksOfSchool</a> (<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a> damage, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> maxMastery=<a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa3bf2aa76560f36066814a5e95692838e">CHARACTER_SKILL_MASTERY_GRANDMASTER</a>)</td></tr>
-<tr class="separator:a79e58baecbc68a42526bcdfae9bfe535"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46b602529acef45208f3c81f3fb0eac5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a46b602529acef45208f3c81f3fb0eac5">spellbooksForSchool</a> (<a class="el" href="SpellEnums_8h.html#a2906cf412f4a8ce5dfc642a72e4b85f4">MagicSchool</a> school, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> maxMastery=<a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa3bf2aa76560f36066814a5e95692838e">CHARACTER_SKILL_MASTERY_GRANDMASTER</a>)</td></tr>
+<tr class="separator:a46b602529acef45208f3c81f3fb0eac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49fd5cccab019b87e57a0dd326ea12d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a49fd5cccab019b87e57a0dd326ea12d8">allRecipeScrolls</a> ()</td></tr>
 <tr class="separator:a49fd5cccab019b87e57a0dd326ea12d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a308dba2b9628b4ac47dbfb679c5e765f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a308dba2b9628b4ac47dbfb679c5e765f">allSpawnableItems</a> ()</td></tr>
@@ -1396,6 +1414,12 @@ Functions</h2></td></tr>
 <tr class="separator:ae3514fbdc1103dadb203a2cf6d35c072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75998cc72bb738cf9a91bd08afbc1b41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a75998cc72bb738cf9a91bd08afbc1b41">potionEnchantment</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> enchantingPotion)</td></tr>
 <tr class="separator:a75998cc72bb738cf9a91bd08afbc1b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ff04c000b426b3ef987149f05c701ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a2ff04c000b426b3ef987149f05c701ce">spellForSpellbook</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> spellbook)</td></tr>
+<tr class="separator:a2ff04c000b426b3ef987149f05c701ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae515f5b58b47e90c6b348615f5e334fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ae515f5b58b47e90c6b348615f5e334fa">spellForScroll</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> scroll)</td></tr>
+<tr class="separator:ae515f5b58b47e90c6b348615f5e334fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46b0285ad9a525e8681aa86d4320058d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a46b0285ad9a525e8681aa86d4320058d">spellForWand</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> wand)</td></tr>
+<tr class="separator:a46b0285ad9a525e8681aa86d4320058d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad038c8d0ef8245b29876143d04aeca50"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ad038c8d0ef8245b29876143d04aeca50">isPassiveEquipment</a> (<a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2d">ITEM_EQUIP_TYPE</a> type)</td></tr>
 <tr class="separator:ad038c8d0ef8245b29876143d04aeca50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa524ca60652dba0722f0efecc7cc41b4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#aa524ca60652dba0722f0efecc7cc41b4">isArmor</a> (<a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2d">ITEM_EQUIP_TYPE</a> type)</td></tr>
@@ -1430,17 +1454,19 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891aa9c007ed02cde831d351b9d9534528bf" name="a55231e9660ce1c5b6f7613a3f9d66891aa9c007ed02cde831d351b9d9534528bf"></a>DMGT_FIRE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a35224331d667278ee0e24ebaca3f0158" name="a55231e9660ce1c5b6f7613a3f9d66891a35224331d667278ee0e24ebaca3f0158"></a>DMGT_ELECTR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733" name="a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733"></a>DMGT_COLD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a6793f75b6f72999db447835db8874abf" name="a55231e9660ce1c5b6f7613a3f9d66891a6793f75b6f72999db447835db8874abf"></a>DMGT_EARTH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a1e98024d16ffcffe406ae542d1bf6244" name="a55231e9660ce1c5b6f7613a3f9d66891a1e98024d16ffcffe406ae542d1bf6244"></a>DMGT_PHISYCAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a21ab4299cdd61789ddab2698d5e729c4" name="a55231e9660ce1c5b6f7613a3f9d66891a21ab4299cdd61789ddab2698d5e729c4"></a>DMGT_MAGICAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555" name="a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555"></a>DMGT_SPIRIT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431" name="a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431"></a>DMGT_MIND&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98" name="a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98"></a>DMGT_BODY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a62762cad957121241f40a3a9458f3565" name="a55231e9660ce1c5b6f7613a3f9d66891a62762cad957121241f40a3a9458f3565"></a>DMGT_LIGHT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891ae0c84bd6591ead469dd6882c15d4f181" name="a55231e9660ce1c5b6f7613a3f9d66891ae0c84bd6591ead469dd6882c15d4f181"></a>DMGT_DARK&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891aa2941497e79b10b3fec0f1e524180e25" name="a55231e9660ce1c5b6f7613a3f9d66891aa2941497e79b10b3fec0f1e524180e25"></a>DAMAGE_FIRE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a6545cd2aaed648fe1dfcc453ce982613" name="a55231e9660ce1c5b6f7613a3f9d66891a6545cd2aaed648fe1dfcc453ce982613"></a>DAMAGE_AIR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a5b88adeabca29c68e4412e864cc7cef1" name="a55231e9660ce1c5b6f7613a3f9d66891a5b88adeabca29c68e4412e864cc7cef1"></a>DAMAGE_WATER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a522c454b8d8746ab716792a2282f05ae" name="a55231e9660ce1c5b6f7613a3f9d66891a522c454b8d8746ab716792a2282f05ae"></a>DAMAGE_EARTH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891ac60a23005b3016ba3ee29aa5faf78d5d" name="a55231e9660ce1c5b6f7613a3f9d66891ac60a23005b3016ba3ee29aa5faf78d5d"></a>DAMAGE_PHYSICAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891acea015b6d080f394abaaddde20e97d9f" name="a55231e9660ce1c5b6f7613a3f9d66891acea015b6d080f394abaaddde20e97d9f"></a>DAMAGE_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891ab8e1c315a1fe45508e3a47906bab0aba" name="a55231e9660ce1c5b6f7613a3f9d66891ab8e1c315a1fe45508e3a47906bab0aba"></a>DAMAGE_SPIRIT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891ac8fa5b15dd5013651493a22e797f5ecc" name="a55231e9660ce1c5b6f7613a3f9d66891ac8fa5b15dd5013651493a22e797f5ecc"></a>DAMAGE_MIND&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891afeab5b9d7e40a8164a525f63d9f87e37" name="a55231e9660ce1c5b6f7613a3f9d66891afeab5b9d7e40a8164a525f63d9f87e37"></a>DAMAGE_BODY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a0ded8ad33a52bb25c75c0c92217600e1" name="a55231e9660ce1c5b6f7613a3f9d66891a0ded8ad33a52bb25c75c0c92217600e1"></a>DAMAGE_LIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a5a40a231f1b56988725eb18a36e29b02" name="a55231e9660ce1c5b6f7613a3f9d66891a5a40a231f1b56988725eb18a36e29b02"></a>DAMAGE_DARK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891a86e609f47d5163b97e9a59c7d26fb0b6" name="a55231e9660ce1c5b6f7613a3f9d66891a86e609f47d5163b97e9a59c7d26fb0b6"></a>DAMAGE_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a55231e9660ce1c5b6f7613a3f9d66891afa020e8458a24b94aca59adb32910947" name="a55231e9660ce1c5b6f7613a3f9d66891afa020e8458a24b94aca59adb32910947"></a>DAMAGE_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -1450,88 +1476,96 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a> : unsigned int</td>
+          <td class="memname">enum class <a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a> : unsigned int</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a1b165f33de669ea48df78787334f3645" name="a32eb1d58cce67b93f07281e8a3464d19a1b165f33de669ea48df78787334f3645"></a>ITEM_ENCHANTMENT_NULL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8890f30003ec17f9463cd14613e91989" name="a32eb1d58cce67b93f07281e8a3464d19a8890f30003ec17f9463cd14613e91989"></a>ITEM_ENCHANTMENT_OF_PROTECTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8bb09fb2feb415a2ce004230d10c8bd8" name="a32eb1d58cce67b93f07281e8a3464d19a8bb09fb2feb415a2ce004230d10c8bd8"></a>ITEM_ENCHANTMENT_OF_GODS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8a087ac27f39d50e7b287410fc5ee01b" name="a32eb1d58cce67b93f07281e8a3464d19a8a087ac27f39d50e7b287410fc5ee01b"></a>ITEM_ENCHANTMENT_OF_CARNAGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ac15891c04ce67097f42f69edaef7928f" name="a32eb1d58cce67b93f07281e8a3464d19ac15891c04ce67097f42f69edaef7928f"></a>ITEM_ENCHANTMENT_OF_COLD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a4d3a2851e2953d0b6bb6ce4be16635e5" name="a32eb1d58cce67b93f07281e8a3464d19a4d3a2851e2953d0b6bb6ce4be16635e5"></a>ITEM_ENCHANTMENT_OF_FROST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a847ca2096a1ca8ecc670aca6a9148d36" name="a32eb1d58cce67b93f07281e8a3464d19a847ca2096a1ca8ecc670aca6a9148d36"></a>ITEM_ENCHANTMENT_OF_ICE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a564b75ba2248f3c877f3df1b35050d67" name="a32eb1d58cce67b93f07281e8a3464d19a564b75ba2248f3c877f3df1b35050d67"></a>ITEM_ENCHANTMENT_OF_SPARKS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a7c7715282975a444f2964a112e7d76c0" name="a32eb1d58cce67b93f07281e8a3464d19a7c7715282975a444f2964a112e7d76c0"></a>ITEM_ENCHANTMENT_OF_LIGHTNING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a48f3b946c187b4b9aefdfe9299e9279b" name="a32eb1d58cce67b93f07281e8a3464d19a48f3b946c187b4b9aefdfe9299e9279b"></a>ITEM_ENCHANTMENT_OF_THUNDERBOLTS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a68b38d33b784299430093dab41796221" name="a32eb1d58cce67b93f07281e8a3464d19a68b38d33b784299430093dab41796221"></a>ITEM_ENCHANTMENT_OF_FIRE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a697bdcfde635d9323d60b3bbaa10c120" name="a32eb1d58cce67b93f07281e8a3464d19a697bdcfde635d9323d60b3bbaa10c120"></a>ITEM_ENCHANTMENT_OF_FLAME&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad3a2e5702d5b2fe0faf3ce8422901353" name="a32eb1d58cce67b93f07281e8a3464d19ad3a2e5702d5b2fe0faf3ce8422901353"></a>ITEM_ENCHANTMENT_OF_INFERNOS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a011c27e21243e2e01466685214fe6a09" name="a32eb1d58cce67b93f07281e8a3464d19a011c27e21243e2e01466685214fe6a09"></a>ITEM_ENCHANTMENT_OF_POISON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a22400cf214475d5a73c9bb1053a37d2c" name="a32eb1d58cce67b93f07281e8a3464d19a22400cf214475d5a73c9bb1053a37d2c"></a>ITEM_ENCHANTMENT_OF_VENOM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a73b8dc0a7b214abdcc0b51a197b38e9a" name="a32eb1d58cce67b93f07281e8a3464d19a73b8dc0a7b214abdcc0b51a197b38e9a"></a>ITEM_ENCHANTMENT_OF_ACID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ab6707c6568fcec934e745c60a6caaf80" name="a32eb1d58cce67b93f07281e8a3464d19ab6707c6568fcec934e745c60a6caaf80"></a>ITEM_ENCHANTMENT_VAMPIRIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aeec84d91eb8a4c17781a536f638d3836" name="a32eb1d58cce67b93f07281e8a3464d19aeec84d91eb8a4c17781a536f638d3836"></a>ITEM_ENCHANTMENT_OF_RECOVERY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19abe5fac46d65a8fc3240f2e7af6b5a719" name="a32eb1d58cce67b93f07281e8a3464d19abe5fac46d65a8fc3240f2e7af6b5a719"></a>ITEM_ENCHANTMENT_OF_IMMUNITY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a6fe926afbcb5b4042ed3876e3f4288d0" name="a32eb1d58cce67b93f07281e8a3464d19a6fe926afbcb5b4042ed3876e3f4288d0"></a>ITEM_ENCHANTMENT_OF_SANITY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a95cc1ed8356f7aaad53f1ee074f0aa6b" name="a32eb1d58cce67b93f07281e8a3464d19a95cc1ed8356f7aaad53f1ee074f0aa6b"></a>ITEM_ENCHANTMENT_OF_FREEDOM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8b1a8b3dcdda79f967770869562985e7" name="a32eb1d58cce67b93f07281e8a3464d19a8b1a8b3dcdda79f967770869562985e7"></a>ITEM_ENCHANTMENT_OF_ANTIDOTES&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a5432cae0f3c3c4a182c55ebcf1c025fc" name="a32eb1d58cce67b93f07281e8a3464d19a5432cae0f3c3c4a182c55ebcf1c025fc"></a>ITEM_ENCHANTMENT_OF_ALARMS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a083d59e53595dd64b8f22d12503e89f6" name="a32eb1d58cce67b93f07281e8a3464d19a083d59e53595dd64b8f22d12503e89f6"></a>ITEM_ENCHANTMENT_OF_MEDUSA&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3ae9348ad13a4e6caf634955b29640e3" name="a32eb1d58cce67b93f07281e8a3464d19a3ae9348ad13a4e6caf634955b29640e3"></a>ITEM_ENCHANTMENT_OF_FORCE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a74ceecb3a726e8cb81fcd3aa33400934" name="a32eb1d58cce67b93f07281e8a3464d19a74ceecb3a726e8cb81fcd3aa33400934"></a>ITEM_ENCHANTMENT_OF_POWER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8b1da3098cbcfb5dd4f4bafde8ac9211" name="a32eb1d58cce67b93f07281e8a3464d19a8b1da3098cbcfb5dd4f4bafde8ac9211"></a>ITEM_ENCHANTMENT_OF_AIR_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aa7d8748f41c497e5ecde22b55413e219" name="a32eb1d58cce67b93f07281e8a3464d19aa7d8748f41c497e5ecde22b55413e219"></a>ITEM_ENCHANTMENT_OF_BODY_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19acf18e77f23b6b457033aaa1cecdcb3e2" name="a32eb1d58cce67b93f07281e8a3464d19acf18e77f23b6b457033aaa1cecdcb3e2"></a>ITEM_ENCHANTMENT_OF_DARK_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ac27b53354103ee26be8f7766a58d25b3" name="a32eb1d58cce67b93f07281e8a3464d19ac27b53354103ee26be8f7766a58d25b3"></a>ITEM_ENCHANTMENT_OF_EARTH_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a75a563f43a744cd37b9de256bfe07098" name="a32eb1d58cce67b93f07281e8a3464d19a75a563f43a744cd37b9de256bfe07098"></a>ITEM_ENCHANTMENT_OF_FIRE_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8a4860b62473c71c8837043d39947753" name="a32eb1d58cce67b93f07281e8a3464d19a8a4860b62473c71c8837043d39947753"></a>ITEM_ENCHANTMENT_OF_LIGHT_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a68965d8f2f4df7ab5160046d06f11227" name="a32eb1d58cce67b93f07281e8a3464d19a68965d8f2f4df7ab5160046d06f11227"></a>ITEM_ENCHANTMENT_OF_MIND_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a4be8165a260b6a55020a513bf86c603c" name="a32eb1d58cce67b93f07281e8a3464d19a4be8165a260b6a55020a513bf86c603c"></a>ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8da64a77329d05116a2e8d6942f31d6a" name="a32eb1d58cce67b93f07281e8a3464d19a8da64a77329d05116a2e8d6942f31d6a"></a>ITEM_ENCHANTMENT_OF_WATER_MAGIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3c8540bd4431e05231a90e7fd5f23405" name="a32eb1d58cce67b93f07281e8a3464d19a3c8540bd4431e05231a90e7fd5f23405"></a>ITEM_ENCHANTMENT_OF_THIEVERY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ae5212f043f9686200aa9b05f7eea3d6e" name="a32eb1d58cce67b93f07281e8a3464d19ae5212f043f9686200aa9b05f7eea3d6e"></a>ITEM_ENCHANTMENT_OF_SHIELDING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a7687c9e17f4162e4d061ae3057e9115f" name="a32eb1d58cce67b93f07281e8a3464d19a7687c9e17f4162e4d061ae3057e9115f"></a>ITEM_ENCHANTMENT_OF_REGENERATION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ac13db62ac39c0bfc28f79c886c1d217c" name="a32eb1d58cce67b93f07281e8a3464d19ac13db62ac39c0bfc28f79c886c1d217c"></a>ITEM_ENCHANTMENT_OF_MANA&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aeb7336299d35b5000d6151c46f1d7515" name="a32eb1d58cce67b93f07281e8a3464d19aeb7336299d35b5000d6151c46f1d7515"></a>ITEM_ENCHANTMENT_DEMON_SLAYING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a9971d160c3f630251cb1c5b001eefbfa" name="a32eb1d58cce67b93f07281e8a3464d19a9971d160c3f630251cb1c5b001eefbfa"></a>ITEM_ENCHANTMENT_DRAGON_SLAYING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a285f460306071e15113cb43a63e1c480" name="a32eb1d58cce67b93f07281e8a3464d19a285f460306071e15113cb43a63e1c480"></a>ITEM_ENCHANTMENT_OF_DARKNESS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a2999b6efd020bfce66635bde80b3c370" name="a32eb1d58cce67b93f07281e8a3464d19a2999b6efd020bfce66635bde80b3c370"></a>ITEM_ENCHANTMENT_OF_DOOM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3c727048b414c81bb51ff6650c5ad960" name="a32eb1d58cce67b93f07281e8a3464d19a3c727048b414c81bb51ff6650c5ad960"></a>ITEM_ENCHANTMENT_OF_EARTH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3e5e2ae5a5847bb7ea68c68893a29d4b" name="a32eb1d58cce67b93f07281e8a3464d19a3e5e2ae5a5847bb7ea68c68893a29d4b"></a>ITEM_ENCHANTMENT_OF_LIFE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a782e0483a3d07f5155adef9003c70f54" name="a32eb1d58cce67b93f07281e8a3464d19a782e0483a3d07f5155adef9003c70f54"></a>ITEM_ENCHANTMENT_ROGUES&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aafeb767290f2b22f3033c38dd4e6fc9b" name="a32eb1d58cce67b93f07281e8a3464d19aafeb767290f2b22f3033c38dd4e6fc9b"></a>ITEM_ENCHANTMENT_OF_DRAGON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad0744aa61c99b8a7173a595622a3c4b2" name="a32eb1d58cce67b93f07281e8a3464d19ad0744aa61c99b8a7173a595622a3c4b2"></a>ITEM_ENCHANTMENT_OF_ECLIPSE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a0b11c2998885e559cc2a4451d71e5f94" name="a32eb1d58cce67b93f07281e8a3464d19a0b11c2998885e559cc2a4451d71e5f94"></a>ITEM_ENCHANTMENT_OF_GOLEM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a212040736bfe1b06727ab03e87ac48f2" name="a32eb1d58cce67b93f07281e8a3464d19a212040736bfe1b06727ab03e87ac48f2"></a>ITEM_ENCHANTMENT_OF_MOON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a5f9751cbfefcbec32df689465caab96a" name="a32eb1d58cce67b93f07281e8a3464d19a5f9751cbfefcbec32df689465caab96a"></a>ITEM_ENCHANTMENT_OF_PHOENIX&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a67977499fd23bf9246f6fe32eb5df7d8" name="a32eb1d58cce67b93f07281e8a3464d19a67977499fd23bf9246f6fe32eb5df7d8"></a>ITEM_ENCHANTMENT_OF_SKY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a7fa51601625b899457cd7a661f574935" name="a32eb1d58cce67b93f07281e8a3464d19a7fa51601625b899457cd7a661f574935"></a>ITEM_ENCHANTMENT_OF_STARS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a494c6238c1086165fe91d98a959f74a1" name="a32eb1d58cce67b93f07281e8a3464d19a494c6238c1086165fe91d98a959f74a1"></a>ITEM_ENCHANTMENT_OF_SUN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19acb7986c8bb1ebdd3d2b69465e4ee65a1" name="a32eb1d58cce67b93f07281e8a3464d19acb7986c8bb1ebdd3d2b69465e4ee65a1"></a>ITEM_ENCHANTMENT_OF_TROLL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a4f722fdff56e8e4a821b3bd4aa4e8dcd" name="a32eb1d58cce67b93f07281e8a3464d19a4f722fdff56e8e4a821b3bd4aa4e8dcd"></a>ITEM_ENCHANTMENT_OF_UNICORN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19af0357cddf40b3981044a5a21c06d2112" name="a32eb1d58cce67b93f07281e8a3464d19af0357cddf40b3981044a5a21c06d2112"></a>ITEM_ENCHANTMENT_WARRIORS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aa7067c30f9d1483f4ad16aa8eb46bbab" name="a32eb1d58cce67b93f07281e8a3464d19aa7067c30f9d1483f4ad16aa8eb46bbab"></a>ITEM_ENCHANTMENT_WIZARDS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a805fe4f047083c8f665b16ac66025c4b" name="a32eb1d58cce67b93f07281e8a3464d19a805fe4f047083c8f665b16ac66025c4b"></a>ITEM_ENCHANTMENT_ANTIQUE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a6eff0e186590a48d07752ce426d1844f" name="a32eb1d58cce67b93f07281e8a3464d19a6eff0e186590a48d07752ce426d1844f"></a>ITEM_ENCHANTMENT_SWIFT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a1e07c64aba2d2414139d1a0226d0d817" name="a32eb1d58cce67b93f07281e8a3464d19a1e07c64aba2d2414139d1a0226d0d817"></a>ITEM_ENCHANTMENT_MONKS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ace986142c5af23bb2853c622767b0d74" name="a32eb1d58cce67b93f07281e8a3464d19ace986142c5af23bb2853c622767b0d74"></a>ITEM_ENCHANTMENT_THIEVES&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a0f21b6cb9589b29bbc2ae5974ff67d4b" name="a32eb1d58cce67b93f07281e8a3464d19a0f21b6cb9589b29bbc2ae5974ff67d4b"></a>ITEM_ENCHANTMENT_OF_IDENTIFYING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a894c2a61ca90f518a0bbd4ae365900d5" name="a32eb1d58cce67b93f07281e8a3464d19a894c2a61ca90f518a0bbd4ae365900d5"></a>ITEM_ENCHANTMENT_ELF_SLAYING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a1b6b294e2890506aca388ffb29a50c29" name="a32eb1d58cce67b93f07281e8a3464d19a1b6b294e2890506aca388ffb29a50c29"></a>ITEM_ENCHANTMENT_UNDEAD_SLAYING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a991218e083b51e607ca5699bc075de28" name="a32eb1d58cce67b93f07281e8a3464d19a991218e083b51e607ca5699bc075de28"></a>ITEM_ENCHANTMENT_TITAN_SLAYING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a5fe632aa007a7ce10c97d72538f08abd" name="a32eb1d58cce67b93f07281e8a3464d19a5fe632aa007a7ce10c97d72538f08abd"></a>ITEM_ENCHANTMENT_OF_PLENTY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a5d814f450e1ea3426b6f4267dedfc51e" name="a32eb1d58cce67b93f07281e8a3464d19a5d814f450e1ea3426b6f4267dedfc51e"></a>ITEM_ENCHANTMENT_ASSASINS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a937f58a14e29a5a5e7db4c769914ed10" name="a32eb1d58cce67b93f07281e8a3464d19a937f58a14e29a5a5e7db4c769914ed10"></a>ITEM_ENCHANTMENT_BARBARIANS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a81761e6ef221d42896b923c9086d686c" name="a32eb1d58cce67b93f07281e8a3464d19a81761e6ef221d42896b923c9086d686c"></a>ITEM_ENCHANTMENT_OF_STORM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ac28eb6e5c296806d6316dca64a7c4bd1" name="a32eb1d58cce67b93f07281e8a3464d19ac28eb6e5c296806d6316dca64a7c4bd1"></a>ITEM_ENCHANTMENT_OF_OCEAN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a10d7128fda08f5a201c6c55611692c42" name="a32eb1d58cce67b93f07281e8a3464d19a10d7128fda08f5a201c6c55611692c42"></a>ITEM_ENCHANTMENT_OF_WATER_WALKING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19af26db9d201d6dcf7ec109a051c1c4455" name="a32eb1d58cce67b93f07281e8a3464d19af26db9d201d6dcf7ec109a051c1c4455"></a>ITEM_ENCHANTMENT_OF_FEATHER_FALLING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a496c886d109247b22d3ee9e5008d4d78" name="a32eb1d58cce67b93f07281e8a3464d19a496c886d109247b22d3ee9e5008d4d78"></a>ITEM_ENCHANTMENT_FIRST_VALID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a9498d29c932d1f77871fece08cb633fe" name="a32eb1d58cce67b93f07281e8a3464d19a9498d29c932d1f77871fece08cb633fe"></a>ITEM_ENCHANTMENT_LAST_VALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a974325902cd74b7293862788c2ec955e" name="a32eb1d58cce67b93f07281e8a3464d19a974325902cd74b7293862788c2ec955e"></a>ITEM_ENCHANTMENT_NULL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a4963d4c1f8674bdee12012a7cb90a1ae" name="a32eb1d58cce67b93f07281e8a3464d19a4963d4c1f8674bdee12012a7cb90a1ae"></a>ITEM_ENCHANTMENT_OF_PROTECTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aaa349c989403fb0e21d68c83f38544c5" name="a32eb1d58cce67b93f07281e8a3464d19aaa349c989403fb0e21d68c83f38544c5"></a>ITEM_ENCHANTMENT_OF_GODS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a54bf0c17affee66613851a204570a82d" name="a32eb1d58cce67b93f07281e8a3464d19a54bf0c17affee66613851a204570a82d"></a>ITEM_ENCHANTMENT_OF_CARNAGE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3b1464dad7ffb4d512b8234e7fa4a7ba" name="a32eb1d58cce67b93f07281e8a3464d19a3b1464dad7ffb4d512b8234e7fa4a7ba"></a>ITEM_ENCHANTMENT_OF_COLD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad29d6ef3a20108cf551f24853c9a31e7" name="a32eb1d58cce67b93f07281e8a3464d19ad29d6ef3a20108cf551f24853c9a31e7"></a>ITEM_ENCHANTMENT_OF_FROST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a14769eed96f9360ccf141f418ceade83" name="a32eb1d58cce67b93f07281e8a3464d19a14769eed96f9360ccf141f418ceade83"></a>ITEM_ENCHANTMENT_OF_ICE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3023e8d43c30a652d66347605fe01d26" name="a32eb1d58cce67b93f07281e8a3464d19a3023e8d43c30a652d66347605fe01d26"></a>ITEM_ENCHANTMENT_OF_SPARKS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aa8461a6180cb5bbb5dbb57833e424fe4" name="a32eb1d58cce67b93f07281e8a3464d19aa8461a6180cb5bbb5dbb57833e424fe4"></a>ITEM_ENCHANTMENT_OF_LIGHTNING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a2a8adec15c6614940b7f8a6aac77a67b" name="a32eb1d58cce67b93f07281e8a3464d19a2a8adec15c6614940b7f8a6aac77a67b"></a>ITEM_ENCHANTMENT_OF_THUNDERBOLTS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a22232bedd3782b1ad48774b1bc2f27cb" name="a32eb1d58cce67b93f07281e8a3464d19a22232bedd3782b1ad48774b1bc2f27cb"></a>ITEM_ENCHANTMENT_OF_FIRE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a6259912f29239332d5e91e619d43e42b" name="a32eb1d58cce67b93f07281e8a3464d19a6259912f29239332d5e91e619d43e42b"></a>ITEM_ENCHANTMENT_OF_FLAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a2cc88b5743eb3f171609b481540cc27c" name="a32eb1d58cce67b93f07281e8a3464d19a2cc88b5743eb3f171609b481540cc27c"></a>ITEM_ENCHANTMENT_OF_INFERNOS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a2ba422bfef7a4987d69d3b143d41b085" name="a32eb1d58cce67b93f07281e8a3464d19a2ba422bfef7a4987d69d3b143d41b085"></a>ITEM_ENCHANTMENT_OF_POISON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a428a84a499a21439188d9de3d226c166" name="a32eb1d58cce67b93f07281e8a3464d19a428a84a499a21439188d9de3d226c166"></a>ITEM_ENCHANTMENT_OF_VENOM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aeacb1cd84ce160fe2dd358b527d771a7" name="a32eb1d58cce67b93f07281e8a3464d19aeacb1cd84ce160fe2dd358b527d771a7"></a>ITEM_ENCHANTMENT_OF_ACID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ab247ec5237bb0da20b2c82ba4c6e452c" name="a32eb1d58cce67b93f07281e8a3464d19ab247ec5237bb0da20b2c82ba4c6e452c"></a>ITEM_ENCHANTMENT_VAMPIRIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a4348541436cd4336bf14a17441e24b4c" name="a32eb1d58cce67b93f07281e8a3464d19a4348541436cd4336bf14a17441e24b4c"></a>ITEM_ENCHANTMENT_OF_RECOVERY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19af8f8565fd6f9b55c340d141e3a910e1c" name="a32eb1d58cce67b93f07281e8a3464d19af8f8565fd6f9b55c340d141e3a910e1c"></a>ITEM_ENCHANTMENT_OF_IMMUNITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a0bac3df83575d56d162bb8510e8b7201" name="a32eb1d58cce67b93f07281e8a3464d19a0bac3df83575d56d162bb8510e8b7201"></a>ITEM_ENCHANTMENT_OF_SANITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a39a8cef69ad6854a846571f94b19ee1c" name="a32eb1d58cce67b93f07281e8a3464d19a39a8cef69ad6854a846571f94b19ee1c"></a>ITEM_ENCHANTMENT_OF_FREEDOM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8bd885f5cea47e9b355e700f90c017b2" name="a32eb1d58cce67b93f07281e8a3464d19a8bd885f5cea47e9b355e700f90c017b2"></a>ITEM_ENCHANTMENT_OF_ANTIDOTES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aac908395a3cb3ede37f1c4ee0cfa33ff" name="a32eb1d58cce67b93f07281e8a3464d19aac908395a3cb3ede37f1c4ee0cfa33ff"></a>ITEM_ENCHANTMENT_OF_ALARMS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a93eeb9929da61dc541a9878990ed798b" name="a32eb1d58cce67b93f07281e8a3464d19a93eeb9929da61dc541a9878990ed798b"></a>ITEM_ENCHANTMENT_OF_MEDUSA&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a2af733ad6ea170d0ee9b92dccc7f2cde" name="a32eb1d58cce67b93f07281e8a3464d19a2af733ad6ea170d0ee9b92dccc7f2cde"></a>ITEM_ENCHANTMENT_OF_FORCE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8508ae39bb29839055e1f4aeb03e8f89" name="a32eb1d58cce67b93f07281e8a3464d19a8508ae39bb29839055e1f4aeb03e8f89"></a>ITEM_ENCHANTMENT_OF_POWER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a16be801eb4d59231de84894e3bd0618e" name="a32eb1d58cce67b93f07281e8a3464d19a16be801eb4d59231de84894e3bd0618e"></a>ITEM_ENCHANTMENT_OF_AIR_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ae1b86448c833b8da37ef9de2a39b9924" name="a32eb1d58cce67b93f07281e8a3464d19ae1b86448c833b8da37ef9de2a39b9924"></a>ITEM_ENCHANTMENT_OF_BODY_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a61a50beb08775fb7a4fb19c9135c6057" name="a32eb1d58cce67b93f07281e8a3464d19a61a50beb08775fb7a4fb19c9135c6057"></a>ITEM_ENCHANTMENT_OF_DARK_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a95da08ea6806e55ffe984740cc8690d6" name="a32eb1d58cce67b93f07281e8a3464d19a95da08ea6806e55ffe984740cc8690d6"></a>ITEM_ENCHANTMENT_OF_EARTH_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aa7d09f98f8d4f2147f462ed7ca165d1d" name="a32eb1d58cce67b93f07281e8a3464d19aa7d09f98f8d4f2147f462ed7ca165d1d"></a>ITEM_ENCHANTMENT_OF_FIRE_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aa0b2384b70db477a7126dbc7f62a81bb" name="a32eb1d58cce67b93f07281e8a3464d19aa0b2384b70db477a7126dbc7f62a81bb"></a>ITEM_ENCHANTMENT_OF_LIGHT_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a31a83fee60fd10532d79660b94706d6a" name="a32eb1d58cce67b93f07281e8a3464d19a31a83fee60fd10532d79660b94706d6a"></a>ITEM_ENCHANTMENT_OF_MIND_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a322dac1d117981b6505aa18292a07bef" name="a32eb1d58cce67b93f07281e8a3464d19a322dac1d117981b6505aa18292a07bef"></a>ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19acb7a9f3d57d2fb22d7df49d8d61afbb5" name="a32eb1d58cce67b93f07281e8a3464d19acb7a9f3d57d2fb22d7df49d8d61afbb5"></a>ITEM_ENCHANTMENT_OF_WATER_MAGIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a40b19a077528d65a84dbc2f1bc661e2b" name="a32eb1d58cce67b93f07281e8a3464d19a40b19a077528d65a84dbc2f1bc661e2b"></a>ITEM_ENCHANTMENT_OF_THIEVERY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19af7f33e6ae0dd6eb50e6a24e7529f4d8a" name="a32eb1d58cce67b93f07281e8a3464d19af7f33e6ae0dd6eb50e6a24e7529f4d8a"></a>ITEM_ENCHANTMENT_OF_SHIELDING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a66150845bf5ccbb8f493654a9899d75c" name="a32eb1d58cce67b93f07281e8a3464d19a66150845bf5ccbb8f493654a9899d75c"></a>ITEM_ENCHANTMENT_OF_REGENERATION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a3a4ca51d6abf53d2bb878fce7474123f" name="a32eb1d58cce67b93f07281e8a3464d19a3a4ca51d6abf53d2bb878fce7474123f"></a>ITEM_ENCHANTMENT_OF_MANA&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a33a214ddadc2b72daf1bee3343eacffc" name="a32eb1d58cce67b93f07281e8a3464d19a33a214ddadc2b72daf1bee3343eacffc"></a>ITEM_ENCHANTMENT_DEMON_SLAYING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19afcac51849e0f0589f7ee49bf5423d270" name="a32eb1d58cce67b93f07281e8a3464d19afcac51849e0f0589f7ee49bf5423d270"></a>ITEM_ENCHANTMENT_DRAGON_SLAYING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad24d84c5cbf8b81bf0d77b5a499e73c2" name="a32eb1d58cce67b93f07281e8a3464d19ad24d84c5cbf8b81bf0d77b5a499e73c2"></a>ITEM_ENCHANTMENT_OF_DARKNESS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a0a30abd42476bf2c75acddfd77b14520" name="a32eb1d58cce67b93f07281e8a3464d19a0a30abd42476bf2c75acddfd77b14520"></a>ITEM_ENCHANTMENT_OF_DOOM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a07470ff4b20d6f656967ce2950202e03" name="a32eb1d58cce67b93f07281e8a3464d19a07470ff4b20d6f656967ce2950202e03"></a>ITEM_ENCHANTMENT_OF_EARTH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a801ecf8b13929dd297b1d67bf6870ad5" name="a32eb1d58cce67b93f07281e8a3464d19a801ecf8b13929dd297b1d67bf6870ad5"></a>ITEM_ENCHANTMENT_OF_LIFE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a14c43551c418122ca8c04e2ecb6be917" name="a32eb1d58cce67b93f07281e8a3464d19a14c43551c418122ca8c04e2ecb6be917"></a>ITEM_ENCHANTMENT_ROGUES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a6d43dbe03bc1be730806b8ba314ed8dc" name="a32eb1d58cce67b93f07281e8a3464d19a6d43dbe03bc1be730806b8ba314ed8dc"></a>ITEM_ENCHANTMENT_OF_DRAGON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a7f5c4b20d258ae31c33da9f19e699c60" name="a32eb1d58cce67b93f07281e8a3464d19a7f5c4b20d258ae31c33da9f19e699c60"></a>ITEM_ENCHANTMENT_OF_ECLIPSE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a87261ce3e7a0690d81963b97fee26656" name="a32eb1d58cce67b93f07281e8a3464d19a87261ce3e7a0690d81963b97fee26656"></a>ITEM_ENCHANTMENT_OF_GOLEM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a66b154f5659e332768cd06f6852189a0" name="a32eb1d58cce67b93f07281e8a3464d19a66b154f5659e332768cd06f6852189a0"></a>ITEM_ENCHANTMENT_OF_MOON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad2c6bc94c3baaf2ae324bd74835ea34c" name="a32eb1d58cce67b93f07281e8a3464d19ad2c6bc94c3baaf2ae324bd74835ea34c"></a>ITEM_ENCHANTMENT_OF_PHOENIX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a930051494cdf9f13c18bb328725156ae" name="a32eb1d58cce67b93f07281e8a3464d19a930051494cdf9f13c18bb328725156ae"></a>ITEM_ENCHANTMENT_OF_SKY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ae0ed9d5a4ea25f4ee1d84b1e6c92dbf1" name="a32eb1d58cce67b93f07281e8a3464d19ae0ed9d5a4ea25f4ee1d84b1e6c92dbf1"></a>ITEM_ENCHANTMENT_OF_STARS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a2e1f5e806048e769d2d77b3a9739086d" name="a32eb1d58cce67b93f07281e8a3464d19a2e1f5e806048e769d2d77b3a9739086d"></a>ITEM_ENCHANTMENT_OF_SUN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aee9a7e2d8de03a168bf4d670ba9e9ba7" name="a32eb1d58cce67b93f07281e8a3464d19aee9a7e2d8de03a168bf4d670ba9e9ba7"></a>ITEM_ENCHANTMENT_OF_TROLL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a9d02179cc078e6c708652c9f83cf66fc" name="a32eb1d58cce67b93f07281e8a3464d19a9d02179cc078e6c708652c9f83cf66fc"></a>ITEM_ENCHANTMENT_OF_UNICORN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a995ee0e98ea97aa5ffb7a1e20dfeec37" name="a32eb1d58cce67b93f07281e8a3464d19a995ee0e98ea97aa5ffb7a1e20dfeec37"></a>ITEM_ENCHANTMENT_WARRIORS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad3445df1ba0b272c128bb2e705a3997f" name="a32eb1d58cce67b93f07281e8a3464d19ad3445df1ba0b272c128bb2e705a3997f"></a>ITEM_ENCHANTMENT_WIZARDS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad5da2b56aabaf7ca5ad7d6e2ac446c3a" name="a32eb1d58cce67b93f07281e8a3464d19ad5da2b56aabaf7ca5ad7d6e2ac446c3a"></a>ITEM_ENCHANTMENT_ANTIQUE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a947cd01386320b1e69124a091cb2936e" name="a32eb1d58cce67b93f07281e8a3464d19a947cd01386320b1e69124a091cb2936e"></a>ITEM_ENCHANTMENT_SWIFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a1f2b4d8974f877bb1f608d60afc0889a" name="a32eb1d58cce67b93f07281e8a3464d19a1f2b4d8974f877bb1f608d60afc0889a"></a>ITEM_ENCHANTMENT_MONKS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a7b50b4267f812d64ad840842ac61cd20" name="a32eb1d58cce67b93f07281e8a3464d19a7b50b4267f812d64ad840842ac61cd20"></a>ITEM_ENCHANTMENT_THIEVES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ae7c5198adac87bb61df8b8651acdb252" name="a32eb1d58cce67b93f07281e8a3464d19ae7c5198adac87bb61df8b8651acdb252"></a>ITEM_ENCHANTMENT_OF_IDENTIFYING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a8f715771af5e14a3dd89a21e7aa006d4" name="a32eb1d58cce67b93f07281e8a3464d19a8f715771af5e14a3dd89a21e7aa006d4"></a>ITEM_ENCHANTMENT_ELF_SLAYING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ad8cb0034bc9a83353db6b60f76308b57" name="a32eb1d58cce67b93f07281e8a3464d19ad8cb0034bc9a83353db6b60f76308b57"></a>ITEM_ENCHANTMENT_UNDEAD_SLAYING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a27ac8e5a1e50994e1d224d7e2eecfd54" name="a32eb1d58cce67b93f07281e8a3464d19a27ac8e5a1e50994e1d224d7e2eecfd54"></a>ITEM_ENCHANTMENT_TITAN_SLAYING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aee0b771d4b271569690e131dfcb76220" name="a32eb1d58cce67b93f07281e8a3464d19aee0b771d4b271569690e131dfcb76220"></a>ITEM_ENCHANTMENT_OF_PLENTY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a264e1f8ca6c1d8b6bc0c2f54f93b4391" name="a32eb1d58cce67b93f07281e8a3464d19a264e1f8ca6c1d8b6bc0c2f54f93b4391"></a>ITEM_ENCHANTMENT_ASSASINS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19ab8214c7ae55d375d53d1a21c0707263c" name="a32eb1d58cce67b93f07281e8a3464d19ab8214c7ae55d375d53d1a21c0707263c"></a>ITEM_ENCHANTMENT_BARBARIANS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a73106129e79b7f40928402640c04a02a" name="a32eb1d58cce67b93f07281e8a3464d19a73106129e79b7f40928402640c04a02a"></a>ITEM_ENCHANTMENT_OF_STORM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19afd6764c77ec4eeaf283fced94e9176f6" name="a32eb1d58cce67b93f07281e8a3464d19afd6764c77ec4eeaf283fced94e9176f6"></a>ITEM_ENCHANTMENT_OF_OCEAN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a19b5283f2d0606bdddb0b3fae4d21a4c" name="a32eb1d58cce67b93f07281e8a3464d19a19b5283f2d0606bdddb0b3fae4d21a4c"></a>ITEM_ENCHANTMENT_OF_WATER_WALKING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19aa45341c5635f6b3a5689fd956671ce9c" name="a32eb1d58cce67b93f07281e8a3464d19aa45341c5635f6b3a5689fd956671ce9c"></a>ITEM_ENCHANTMENT_OF_FEATHER_FALLING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19a86b924728af58b23fe444709389354c5" name="a32eb1d58cce67b93f07281e8a3464d19a86b924728af58b23fe444709389354c5"></a>ITEM_ENCHANTMENT_FIRST_VALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a32eb1d58cce67b93f07281e8a3464d19af9f730eb466f261fcb243ff0643c836c" name="a32eb1d58cce67b93f07281e8a3464d19af9f730eb466f261fcb243ff0643c836c"></a>ITEM_ENCHANTMENT_LAST_VALID&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -2501,12 +2535,14 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0baaa08704e5f1ed6255a3a2f225f6358cd" name="a238bdd793c3bf80cc1530e03ba5eca0baaa08704e5f1ed6255a3a2f225f6358cd"></a>ITEM_LAST_WAND&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0baa5e671f65a5d3ff28654f82be3e25ecf" name="a238bdd793c3bf80cc1530e03ba5eca0baa5e671f65a5d3ff28654f82be3e25ecf"></a>ITEM_FIRST_SPELL_SCROLL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba3249047f2eec93afdde27f57fd1b7d31" name="a238bdd793c3bf80cc1530e03ba5eca0ba3249047f2eec93afdde27f57fd1b7d31"></a>ITEM_LAST_SPELL_SCROLL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba37763236d9e494d2379d07104e321194" name="a238bdd793c3bf80cc1530e03ba5eca0ba37763236d9e494d2379d07104e321194"></a>ITEM_FIRST_SPELL_BOOK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba08fc927a7a7b07163d3b83ad68e7a253" name="a238bdd793c3bf80cc1530e03ba5eca0ba08fc927a7a7b07163d3b83ad68e7a253"></a>ITEM_LAST_SPELL_BOOK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0baf941686d869681f32503706daf5e1a36" name="a238bdd793c3bf80cc1530e03ba5eca0baf941686d869681f32503706daf5e1a36"></a>ITEM_FIRST_SPELLBOOK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba7e901d832dbf6a98b908885fc1a6bb01" name="a238bdd793c3bf80cc1530e03ba5eca0ba7e901d832dbf6a98b908885fc1a6bb01"></a>ITEM_LAST_SPELLBOOK&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0bad627edad39a83de809e6a5e385f28c81" name="a238bdd793c3bf80cc1530e03ba5eca0bad627edad39a83de809e6a5e385f28c81"></a>ITEM_FIRST_POTION&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0bab7e1fbc4619507ab6f24ad407655faa9" name="a238bdd793c3bf80cc1530e03ba5eca0bab7e1fbc4619507ab6f24ad407655faa9"></a>ITEM_LAST_POTION&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba4babb8c6cc11aaf403ad7a4da49a3baa" name="a238bdd793c3bf80cc1530e03ba5eca0ba4babb8c6cc11aaf403ad7a4da49a3baa"></a>ITEM_FIRST_SPAWNABLE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba94251c8e4681c535e363c68cb02f9450" name="a238bdd793c3bf80cc1530e03ba5eca0ba94251c8e4681c535e363c68cb02f9450"></a>ITEM_LAST_SPAWNABLE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba6cb55f39effce54720b3e87f449e0fbd" name="a238bdd793c3bf80cc1530e03ba5eca0ba6cb55f39effce54720b3e87f449e0fbd"></a>ITEM_FIRST_GOLD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a238bdd793c3bf80cc1530e03ba5eca0ba130ee778f953d670834fdd01df0298ec" name="a238bdd793c3bf80cc1530e03ba5eca0ba130ee778f953d670834fdd01df0298ec"></a>ITEM_LAST_GOLD&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -2831,6 +2867,32 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a0c33b46d949ff835f871f57c192a5d86" name="a0c33b46d949ff835f871f57c192a5d86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c33b46d949ff835f871f57c192a5d86">&#9670;&#160;</a></span>isGold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isGold </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ac11a2ac94e4677dcadae32930a74f8d7" name="ac11a2ac94e4677dcadae32930a74f8d7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac11a2ac94e4677dcadae32930a74f8d7">&#9670;&#160;</a></span>isMessageScroll()</h2>
 
@@ -3081,6 +3143,32 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ab0b48e17c0ed32487a1b562a3c789a32" name="ab0b48e17c0ed32487a1b562a3c789a32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0b48e17c0ed32487a1b562a3c789a32">&#9670;&#160;</a></span>isSpellbook()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isSpellbook </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0cce8ecd3c22b3f50542ee9f000fcf4e" name="a0cce8ecd3c22b3f50542ee9f000fcf4e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0cce8ecd3c22b3f50542ee9f000fcf4e">&#9670;&#160;</a></span>isWand()</h2>
 
@@ -3218,8 +3306,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a79e58baecbc68a42526bcdfae9bfe535" name="a79e58baecbc68a42526bcdfae9bfe535"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79e58baecbc68a42526bcdfae9bfe535">&#9670;&#160;</a></span>spellbooksOfSchool()</h2>
+<a id="a46b602529acef45208f3c81f3fb0eac5" name="a46b602529acef45208f3c81f3fb0eac5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46b602529acef45208f3c81f3fb0eac5">&#9670;&#160;</a></span>spellbooksForSchool()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3228,10 +3316,10 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> &gt; spellbooksOfSchool </td>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> &gt; spellbooksForSchool </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a>&#160;</td>
-          <td class="paramname"><em>damage</em>, </td>
+          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a2906cf412f4a8ce5dfc642a72e4b85f4">MagicSchool</a>&#160;</td>
+          <td class="paramname"><em>school</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -3268,6 +3356,84 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a>&#160;</td>
           <td class="paramname"><em>maxMastery</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae515f5b58b47e90c6b348615f5e334fa" name="ae515f5b58b47e90c6b348615f5e334fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae515f5b58b47e90c6b348615f5e334fa">&#9670;&#160;</a></span>spellForScroll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spellForScroll </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
+          <td class="paramname"><em>scroll</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2ff04c000b426b3ef987149f05c701ce" name="a2ff04c000b426b3ef987149f05c701ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ff04c000b426b3ef987149f05c701ce">&#9670;&#160;</a></span>spellForSpellbook()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spellForSpellbook </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
+          <td class="paramname"><em>spellbook</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a46b0285ad9a525e8681aa86d4320058d" name="a46b0285ad9a525e8681aa86d4320058d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46b0285ad9a525e8681aa86d4320058d">&#9670;&#160;</a></span>spellForWand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spellForWand </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
+          <td class="paramname"><em>wand</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

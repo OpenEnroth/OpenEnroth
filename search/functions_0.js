@@ -3,7 +3,7 @@ var searchData=
   ['_5f4031c1_5fupdate_5fjob_5fnever_5fgets_5fcalled_0',['_4031C1_update_job_never_gets_called',['../classActor.html#a848b69de6c4e3f7917ad4902a002d7f0',1,'Actor']]],
   ['_5f406457_1',['_406457',['../structstru262__TurnBased.html#acc5ba3b83209d0bd9fc96cbed166c415',1,'stru262_TurnBased']]],
   ['_5f4065b0_2',['_4065B0',['../structstru262__TurnBased.html#a1dde7742f9c5b02777ab10742a6e7b5e',1,'stru262_TurnBased']]],
-  ['_5f427102_5fisoktocastspell_3',['_427102_IsOkToCastSpell',['../classActor.html#ad229e838cebd1d17c1328468882a1453',1,'Actor']]],
+  ['_5f427102_5fisoktocastspell_3',['_427102_IsOkToCastSpell',['../classActor.html#aece52ce7ddcd967578e82824ab16061e',1,'Actor']]],
   ['_5f4273bb_5fdoeshitotheractor_4',['_4273BB_DoesHitOtherActor',['../classActor.html#a5318be2551916b68bee9360259fda93e',1,'Actor']]],
   ['_5f427546_5',['_427546',['../structstru319.html#a50d5e3e7c9a0c051896d5714cfe65c74',1,'stru319']]],
   ['_5f42ecb5_5fcharacterattacksactor_6',['_42ECB5_CharacterAttacksActor',['../classCharacter.html#a79b60679dd5ab0f916a32aa85530d46d',1,'Character']]],
