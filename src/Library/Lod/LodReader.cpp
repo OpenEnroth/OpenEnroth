@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <utility>
+#include <algorithm>
 
 #include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
@@ -13,20 +14,6 @@
 
 #include "LodSnapshots.h"
 #include "LodEnums.h"
-
-static size_t fileEntrySize(LodVersion version) {
-    switch (version) {
-        case LOD_VERSION_MM6:
-        case LOD_VERSION_MM6_GAME:
-        case LOD_VERSION_MM7:
-            return sizeof(LodEntry_MM6);
-        case LOD_VERSION_MM8:
-            return sizeof(LodFileEntry_MM8);
-        default:
-            assert(false);
-            return 0;
-    }
-}
 
 static LodHeader parseHeader(InputStream &stream, std::string_view path, LodVersion *version) {
     LodHeader header;
@@ -89,13 +76,17 @@ LodReader::LodReader(Blob blob, std::string_view path, LodOpenFlags openFlags) {
     open(std::move(blob), path, openFlags);
 }
 
-LodReader::~LodReader() = default;
+LodReader::~LodReader() {
+    close();
+}
 
 void LodReader::open(std::string_view path, LodOpenFlags openFlags) {
     open(Blob::fromFile(path), path, openFlags); // Blob::fromFile throws if the file doesn't exist.
 }
 
 void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
+    close();
+
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
     if (blob.size() < expectedSize)
         throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", path, expectedSize, _lod.size());
@@ -109,10 +100,10 @@ void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
     rootEntry.dataSize = blob.size() - rootEntry.dataOffset;
 
     BlobInputStream dirStream(blob.subBlob(rootEntry.dataOffset, rootEntry.dataSize));
-    std::vector<LodRegion> files;
+    std::unordered_map<std::string, LodRegion> files;
     for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
         std::string name = toLower(entry.name);
-        if (files.cend() != std::find_if(files.cbegin(), files.cend(), [&](const LodRegion& file) { return iequals(file.name, entry.name); })) {
+        if (files.contains(name)) {
             if (openFlags & LOD_ALLOW_DUPLICATES) {
                 continue; // Only the first entry is kept in this case.
             } else {
@@ -121,32 +112,32 @@ void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
         }
 
         LodRegion region;
-        region.name = entry.name;
         region.offset = rootEntry.dataOffset + entry.dataOffset;
         region.size = entry.dataSize;
-        files.push_back(region);
+        files.emplace(std::move(name), region);
     }
 
     // All good, this is a valid LOD, can update `this`.
     _lod = std::move(blob);
     _path = path;
-    _description = std::move(header.description);
-    _rootName = std::move(rootEntry.name);
+    _info.version = version;
+    _info.description = std::move(header.description);
+    _info.rootName = std::move(rootEntry.name);
     _files = std::move(files);
 }
 
 void LodReader::close() {
+    // Double-closing is OK.
     _lod = Blob();
     _path = {};
-    _description = {};
-    _rootName = {};
+    _info = {};
     _files = {};
 }
 
 bool LodReader::exists(const std::string &filename) const {
     assert(isOpen());
 
-    return _files.cend() != std::find_if(_files.cbegin(), _files.cend(), [&](const LodRegion& file) { return iequals(file.name, filename); });
+    return _files.contains(toLower(filename));
 }
 
 Blob LodReader::read(const std::string &filename) const {
@@ -162,27 +153,26 @@ Blob LodReader::read(const std::string &filename) const {
 Blob LodReader::readRaw(const std::string &filename) const {
     assert(isOpen());
 
-    const auto &file = std::find_if(_files.cbegin(), _files.cend(), [&](const LodRegion& file) { return iequals(file.name, filename); });
-    if (file == _files.cend())
+    const auto pos = _files.find(toLower(filename));
+    if (pos == _files.cend())
         throw Exception("Entry '{}' doesn't exist in LOD file '{}'", filename, _path);
 
-    return _lod.subBlob(file->offset, file->size);
+    return _lod.subBlob(pos->second.offset, pos->second.size);
 }
 
 std::vector<std::string> LodReader::ls() const {
     assert(isOpen());
 
     std::vector<std::string> result;
-    for (const auto &region : _files)
-        result.push_back(region.name);
+    for (const auto &[name, _] : _files)
+        result.push_back(name);
+    std::sort(result.begin(), result.end());
     return result;
 }
 
-const std::string &LodReader::description() const {
-    return _description;
-}
+[[nodiscard]] const LodInfo &LodReader::info() const {
+    assert(isOpen());
 
-const std::string &LodReader::rootName() const {
-    return _rootName;
+    return _info;
 }
 

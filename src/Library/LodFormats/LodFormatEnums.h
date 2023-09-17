@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Library/Serialization/SerializationFwd.h"
+
 enum class LodFileFormat {
     LOD_FILE_COMPRESSED, // Potentially compressed file, `LodCompressionHeader_MM6` for header.
     LOD_FILE_IMAGE, // Image file, `LodImageHeader_MM6` for header, ends with a palette.
@@ -9,4 +11,4 @@ enum class LodFileFormat {
     LOD_FILE_RAW, // None of the above.
 };
 using enum LodFileFormat;
-
+MM_DECLARE_SERIALIZATION_FUNCTIONS(LodFileFormat)

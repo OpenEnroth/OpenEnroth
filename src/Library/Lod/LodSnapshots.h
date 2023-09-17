@@ -6,6 +6,8 @@
 
 #include "Library/Binary/BinarySerialization.h"
 
+#include "LodEnums.h"
+
 //
 // Runtime structs.
 //
@@ -87,3 +89,5 @@ void snapshot(const LodEntry &src, LodFileEntry_MM8 *dst);
 void reconstruct(const LodFileEntry_MM8 &src, LodEntry *dst);
 
 #pragma pack(pop)
+
+size_t fileEntrySize(LodVersion version);

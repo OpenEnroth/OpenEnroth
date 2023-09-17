@@ -14,10 +14,11 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/Party.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"
+#include "Library/Lod/LodWriter.h"
+#include "Library/Lod/LodReader.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);
@@ -540,13 +541,13 @@ void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst) {
     reconstruct(src.npcGroup, &pNPCStats->pGroups_copy);
 }
 
-void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst) {
-    dst->Write("header.bin", toBlob(src.header));
-    dst->Write("party.bin", toBlob(src.party));
-    dst->Write("clock.bin", toBlob(src.eventTimer));
-    dst->Write("overlay.bin", toBlob(src.overlays));
-    dst->Write("npcdata.bin", toBlob(src.npcData));
-    dst->Write("npcgroup.bin", toBlob(src.npcGroup));
+void serialize(const SaveGame_MM7 &src, LodWriter *dst) {
+    dst->write("header.bin", toBlob(src.header));
+    dst->write("party.bin", toBlob(src.party));
+    dst->write("clock.bin", toBlob(src.eventTimer));
+    dst->write("overlay.bin", toBlob(src.overlays));
+    dst->write("npcdata.bin", toBlob(src.npcData));
+    dst->write("npcgroup.bin", toBlob(src.npcGroup));
 }
 
 void deserialize(const LodReader &src, SaveGame_MM7 *dst) {

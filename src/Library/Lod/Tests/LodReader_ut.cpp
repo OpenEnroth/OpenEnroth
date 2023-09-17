@@ -29,10 +29,20 @@ const char brokenLod[] =
 UNIT_TEST(LodReader, RussianLod) {
     // Opening a LOD with invalid directory dataSize should just work.
     LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)), "russian.lod", LOD_ALLOW_DUPLICATES);
-
+    EXPECT_TRUE(reader.isOpen());
     EXPECT_EQ(reader.ls(), std::vector<std::string>{"lolkek"});
-    EXPECT_EQ(reader.rootName(), "maps");
-    EXPECT_EQ(reader.description(), "Maps for MMVI");
+    EXPECT_EQ(reader.info().rootName, "maps");
+    EXPECT_EQ(reader.info().description, "Maps for MMVI");
+    EXPECT_EQ(reader.info().version, LOD_VERSION_MM6_GAME);
     EXPECT_TRUE(reader.exists("lolkek"));
+    EXPECT_FALSE(reader.exists("lolkek1"));
+    EXPECT_FALSE(reader.exists("lolke"));
     EXPECT_EQ(reader.readRaw("lolkek").string_view(), "datadatadatadata");
+
+    // LODs are case-insensitive.
+    EXPECT_TRUE(reader.exists("lolKEK"));
+    EXPECT_EQ(reader.readRaw("LOLkek").string_view(), "datadatadatadata");
+
+    // Check that we throw when accessing non-existent files.
+    EXPECT_THROW((void) reader.readRaw("lolke"), std::exception);
 }

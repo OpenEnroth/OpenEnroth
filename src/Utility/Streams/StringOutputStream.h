@@ -12,6 +12,8 @@ class StringOutputStream: public OutputStream {
     virtual void flush() override;
     virtual void close() override;
 
+    using OutputStream::write;
+
  private:
     std::string *_target = nullptr;
 };

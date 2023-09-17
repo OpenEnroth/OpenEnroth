@@ -381,7 +381,9 @@ GAME_TEST(Issues, Issue315) {
 GAME_TEST(Issues, Issue331_679) {
     // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects.
     auto goldTape = tapes.gold();
+    auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_331.mm7", "issue_331.json");
+    EXPECT_EQ(mapTape, tape("out04.odm", "out02.odm", "out04.odm")); // We did travel.
 
     // #679: Loading autosave after travelling by stables / boat results in gold loss.
     EXPECT_EQ(goldTape.delta(), 0);

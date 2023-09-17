@@ -7,9 +7,9 @@
 #include "Utility/Memory/Blob.h"
 
 #include "LodEnums.h"
+#include "LodInfo.h"
 
 class InputStream;
-struct LodEntry;
 
 /**
  * A single stop shop to read LOD files.
@@ -73,18 +73,13 @@ class LodReader final {
     [[nodiscard]] std::vector<std::string> ls() const;
 
     /**
-     * @return                          Description of this LOD file, as specified in the LOD header.
+     * @return                          LOD info, containing LOD version, description of this LOD file as specified in
+     *                                  the LOD header, and a name of the single folder inside this LOD file.
      */
-    [[nodiscard]] const std::string &description() const;
-
-    /**
-     * @return                          Name of the single folder inside this LOD file.
-     */
-    [[nodiscard]] const std::string &rootName() const;
+    [[nodiscard]] const LodInfo &info() const;
 
  private:
     struct LodRegion {
-        std::string name{};
         size_t offset = 0;
         size_t size = 0;
     };
@@ -92,11 +87,6 @@ class LodReader final {
  private:
     Blob _lod;
     std::string _path;
-    std::string _description;
-    std::string _rootName;
-    /**
-     * Vanilla save structure expects a certain order of the lod container. Using a vector here to maintain correct sequence.
-     * Maintain OE save backwards compatability - see #1270.
-     */
-    std::vector<LodRegion> _files{};
+    LodInfo _info;
+    std::unordered_map<std::string, LodRegion> _files;
 };

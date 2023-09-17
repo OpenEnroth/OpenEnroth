@@ -7,11 +7,13 @@ set(UTILITY_SOURCES
         Math/TrigLut.cpp
         Memory/Blob.cpp
         Streams/BlobInputStream.cpp
+        Streams/BlobOutputStream.cpp
         Streams/FileInputStream.cpp
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
+        Streams/TempFileOutputStream.cpp
         String.cpp)
 
 set(UTILITY_HEADERS
@@ -37,12 +39,14 @@ set(UTILITY_HEADERS
         ScopeGuard.h
         Segment.h
         Streams/BlobInputStream.h
+        Streams/BlobOutputStream.h
         Streams/FileInputStream.h
         Streams/FileOutputStream.h
         Streams/InputStream.h
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
         Streams/StringOutputStream.h
+        Streams/TempFileOutputStream.h
         String.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})

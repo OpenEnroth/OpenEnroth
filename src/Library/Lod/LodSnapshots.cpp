@@ -55,3 +55,17 @@ void reconstruct(const LodFileEntry_MM8 &src, LodEntry *dst) {
     dst->dataSize = src.dataSize;
     dst->numItems = 0;
 }
+
+size_t fileEntrySize(LodVersion version) {
+    switch (version) {
+    case LOD_VERSION_MM6:
+    case LOD_VERSION_MM6_GAME:
+    case LOD_VERSION_MM7:
+        return sizeof(LodEntry_MM6);
+    case LOD_VERSION_MM8:
+        return sizeof(LodFileEntry_MM8);
+    default:
+        assert(false);
+        return 0;
+    }
+}
