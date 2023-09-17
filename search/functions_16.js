@@ -34,7 +34,7 @@ var searchData=
   ['vec3_31',['Vec3',['../structVec3.html#a7f5073b69fd101041779cb63ba2feca5',1,'Vec3::Vec3(T a, T b, T c)'],['../structVec3.html#af7574de3ec9fa89f86483db70c5cbe90',1,'Vec3::Vec3()=default'],['../structVec3.html#a31f77b7e8b32cb480fcfcd1adc25bc9d',1,'Vec3::Vec3(const Vec3 &amp;other)=default']]],
   ['verbose_32',['verbose',['../classLogger.html#a115dc3828922e3d9b0bc4fd5bbb8086b',1,'Logger']]],
   ['videolist_33',['VideoList',['../classVideoList.html#a73bccff3371a9ac599720a357900a6ef',1,'VideoList']]],
-  ['view_34',['view',['../classBlob.html#a14c523d7452abe45c8d25bd7db76f41d',1,'Blob']]],
+  ['view_34',['view',['../classBlob.html#ad738cfac6bf6406c04784fd7689d24af',1,'Blob::view(std::string_view data)'],['../classBlob.html#a14c523d7452abe45c8d25bd7db76f41d',1,'Blob::view(const void *data, size_t size)']]],
   ['viewclip_35',['ViewClip',['../structCamera3D.html#aa7c2b7d9c37b4025b0f46741e947ffed',1,'Camera3D']]],
   ['viewingparams_36',['ViewingParams',['../structViewingParams.html#a3e14ff3b831e0e7a77d6113cd0090465',1,'ViewingParams']]],
   ['viewport_37',['Viewport',['../structViewport.html#a9fde8f966d9802dd42254acf0ed05386',1,'Viewport']]],

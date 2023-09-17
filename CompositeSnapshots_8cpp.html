@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;381315b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40eb27f</span>
    </div>
   </td>
  </tr>
@@ -92,9 +92,10 @@ $(function() {
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CommonSnapshots_8h.html">Library/Snapshots/CommonSnapshots.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LodWriter_8h.html">Library/Lod/LodWriter.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LodReader_8h.html">Library/Lod/LodReader.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -128,8 +129,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae97864e6e3ac92d19922dd09ddcb7b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3313b3365555c658e15a37c097a8d16a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8cpp.html#a3313b3365555c658e15a37c097a8d16a">reconstruct</a> (const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;src, <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>)</td></tr>
 <tr class="separator:a3313b3365555c658e15a37c097a8d16a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa27efcd51a0faf859e3897b921a9fe19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8cpp.html#aa27efcd51a0faf859e3897b921a9fe19">serialize</a> (const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;src, <a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a> *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>)</td></tr>
-<tr class="separator:aa27efcd51a0faf859e3897b921a9fe19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4999348bc33531d9ff27791033bd01e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8cpp.html#a4999348bc33531d9ff27791033bd01e9">serialize</a> (const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;src, <a class="el" href="classLodWriter.html">LodWriter</a> *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>)</td></tr>
+<tr class="separator:a4999348bc33531d9ff27791033bd01e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37f0d8abef4a251cc8d826ff2d06b357"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8cpp.html#a37f0d8abef4a251cc8d826ff2d06b357">deserialize</a> (const <a class="el" href="classLodReader.html">LodReader</a> &amp;src, <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>)</td></tr>
 <tr class="separator:a37f0d8abef4a251cc8d826ff2d06b357"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a790fcc96860e16ba6a7d1ed81acd9ae9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8cpp.html#a790fcc96860e16ba6a7d1ed81acd9ae9">reconstruct</a> (const <a class="el" href="structSpriteFrameTable__MM7.html">SpriteFrameTable_MM7</a> &amp;src, <a class="el" href="structSpriteFrameTable.html">SpriteFrameTable</a> *<a class="el" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>)</td></tr>
@@ -570,8 +571,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa27efcd51a0faf859e3897b921a9fe19" name="aa27efcd51a0faf859e3897b921a9fe19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa27efcd51a0faf859e3897b921a9fe19">&#9670;&#160;</a></span>serialize() <span class="overload">[3/3]</span></h2>
+<a id="a4999348bc33531d9ff27791033bd01e9" name="a4999348bc33531d9ff27791033bd01e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4999348bc33531d9ff27791033bd01e9">&#9670;&#160;</a></span>serialize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -585,7 +586,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classLodWriter.html">LodWriter</a> *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
