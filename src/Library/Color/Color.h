@@ -45,6 +45,10 @@ struct Color {
         return result;
     }
 
+    [[nodiscard]] uint16_t c16() const {
+        return (b >> (8 - 5)) | (0x7E0 & (g << (6 + 5 - 8))) | (0xF800 & (r << (6 + 5 + 5 - 8)));
+    }
+
     [[nodiscard]] uint32_t c32() const {
         uint32_t result;
         memcpy(&result, this, 4);
@@ -68,7 +72,7 @@ struct Color {
      * std::string s = fmt::format("{::}{}{::} more text", Color(255, 255, 255).tag(), "text", Color().tag());
      * ```
      *
-     * The code above will set string `s` to `"\fFFFFFtext\f00000 more text"`.
+     * The code above will set string `s` to `"\f65535text\f00000 more text"`.
      *
      * Note that the only supported format specifier for color tags is `"{::}"`. This is done intentionally so that
      * the user won't accidentally mix up color introducers with other `fmt::format` args.
@@ -101,12 +105,7 @@ struct fmt::formatter<ColorTag> {
     }
 
     auto format(const ColorTag &tag, format_context &ctx) const {
-        return fmt::format_to(ctx.out(), "\f{:05}", toC16(tag.color));
-    }
-
- private:
-    static uint16_t toC16(const Color &color) {
-        return (color.b >> (8 - 5)) | (0x7E0 & (color.g << (6 + 5 - 8))) | (0xF800 & (color.r << (6 + 5 + 5 - 8)));
+        return fmt::format_to(ctx.out(), "\f{:05}", tag.color.c16());
     }
 };
 
