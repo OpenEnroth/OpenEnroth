@@ -52,7 +52,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : _currentIdx(0), GUIWindow_Book(
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
         if (pParty->PartyTimes.HistoryEventTimes[i].Valid()) {
             if (!pStorylineText->StoreLine[i + 1].pText.empty()) {
-                std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, 0, HOUSE_INVALID, 0, &pParty->PartyTimes.HistoryEventTimes[i]);
+                std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
                 int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.uFrameWidth, 1);
                 int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                 for (int j = 0; j < pages; ++j) {
@@ -115,7 +115,7 @@ void GUIWindow_JournalBook::Update() {
 
     if (_journalIdx.size()) {
         std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText,
-                                              0, 0, HOUSE_INVALID, 0, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
+                                              0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
         std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
         journal_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage,
                                 journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);

@@ -192,16 +192,16 @@ void GUIWindow_Dialogue::Update() {
     std::string dialogue_string;
     switch (_displayedDialogue) {
         case DIALOGUE_13_hiring_related:
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, HOUSE_INVALID, 0);
+            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
             break;
 
         case DIALOGUE_PROFESSION_DETAILS: {
             if (dialogue_show_profession_details) {
-                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pBenefits, 0, 0, HOUSE_INVALID, 0);
+                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pBenefits, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
             } else if (pNPC->Hired()) {
-                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pDismissText, 0, 0, HOUSE_INVALID, 0);
+                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pDismissText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
             } else {
-                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, HOUSE_INVALID, 0);
+                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
             }
             break;
         }
@@ -237,9 +237,9 @@ void GUIWindow_Dialogue::Update() {
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
 
                 if (pNPC->Hired()) {
-                    dialogue_string = BuildDialogueString(prof->pDismissText, 0, 0, HOUSE_INVALID, 0);
+                    dialogue_string = BuildDialogueString(prof->pDismissText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
                 } else {
-                    dialogue_string = BuildDialogueString(prof->pJoinText, 0, 0, HOUSE_INVALID, 0);
+                    dialogue_string = BuildDialogueString(prof->pJoinText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
                 }
             }
             break;

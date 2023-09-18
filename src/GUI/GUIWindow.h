@@ -268,7 +268,7 @@ bool isHoldingMouseRightButton();
  * @offset 0x495461
  */
 std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
-                                struct ItemGen *a3, HOUSE_ID houseId, int shop_screen,
+                                struct ItemGen *a3, HOUSE_ID houseId, ShopScreen shop_screen,
                                 GameTime *a6 = nullptr);
 
 

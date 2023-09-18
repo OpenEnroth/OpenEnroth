@@ -7435,7 +7435,7 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
@@ -7483,19 +7483,19 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
 
     multiplier = buildingTable[houseId].fPriceMultiplier;
     switch (ShopMenuType) {
-        case 2:
+        case SHOP_SCREEN_BUY:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);
             break;
-        case 3:
+        case SHOP_SCREEN_SELL:
             // if (pItem->IsBroken())
             // price = 1;
             // else
             price = PriceCalculator::itemSellingPriceForPlayer(this, *pItem, multiplier);
             break;
-        case 4:
+        case SHOP_SCREEN_IDENTIFY:
             price = PriceCalculator::itemIdentificationPriceForPlayer(this, multiplier);
             break;
-        case 5:
+        case SHOP_SCREEN_REPAIR:
             price = PriceCalculator::itemRepairPriceForPlayer(this, itemValue, multiplier);
             break;
         default:

@@ -18,6 +18,8 @@
 #include "Engine/ErrorHandling.h"
 #include "Engine/Pid.h"
 
+#include "GUI/GUIEnums.h"
+
 #include "Library/Color/Color.h"
 
 #include "Utility/Geometry/Vec.h"
@@ -239,7 +241,7 @@ class Character {
     void resetTempBonuses();
     Color GetStatColor(CharacterAttributeType uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
-    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
     bool CanIdentify(ItemGen *pItem) const;

@@ -858,7 +858,7 @@ Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerS
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, int shop_screen, GameTime *a6) {
+std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, ShopScreen shop_screen, GameTime *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     std::string pText;     // esi@7
@@ -1008,16 +1008,16 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
             case 25:  // base prices
                 v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                 switch (shop_screen) {
-                case 3:
+                case SHOP_SCREEN_SELL:
                     v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                     break;
-                case 4:
+                case SHOP_SCREEN_IDENTIFY:
                     v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[houseId].fPriceMultiplier);
                     break;
-                case 5:
+                case SHOP_SCREEN_REPAIR:
                     v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                     break;
-                case 6:
+                case SHOP_SCREEN_SELL_FOR_CHEAP:
                     v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier) / 2;
                     break;
                 }
@@ -1027,19 +1027,19 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
 
             case 27:  // actual price
                 v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
-                if (shop_screen == 3) {
+                if (shop_screen == SHOP_SCREEN_SELL) {
                     v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[houseId].fPriceMultiplier);
                     v1 = fmt::format("{}", v29);
                     result += v1;
                     break;
                 }
-                if (shop_screen != 4) { // TODO(captainurist): enums for shop screens
-                    if (shop_screen == 5) {
+                if (shop_screen != SHOP_SCREEN_IDENTIFY) {
+                    if (shop_screen == SHOP_SCREEN_REPAIR) {
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, a3->GetValue(),
                         buildingTable[houseId].fPriceMultiplier);
                     } else {
-                        if (shop_screen == 6) {
+                        if (shop_screen == SHOP_SCREEN_SELL_FOR_CHEAP) {
                             // TODO(captainurist): encapsulate this logic in PriceCalculator
                             v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[houseId].fPriceMultiplier) / 2;
                             if (!v29)  // cannot be 0

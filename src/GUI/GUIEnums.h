@@ -373,3 +373,13 @@ enum WindowType {
 };
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(WindowType)
+
+enum class ShopScreen {
+    SHOP_SCREEN_INVALID = 0,
+    SHOP_SCREEN_BUY = 2,
+    SHOP_SCREEN_SELL = 3,
+    SHOP_SCREEN_IDENTIFY = 4,
+    SHOP_SCREEN_REPAIR = 5,
+    SHOP_SCREEN_SELL_FOR_CHEAP = 6, // Sell for half the price, doesn't seem to be used in the game. MM6 remnant?
+};
+using enum ShopScreen;

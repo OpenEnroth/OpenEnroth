@@ -490,7 +490,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
 
     if (topic == DIALOGUE_13_hiring_related) {
         current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
         NPCHireableDialogPrepare();
         dialogue_show_profession_details = false;
         BackToHouseMenu();
@@ -503,10 +503,10 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
         if (topic == DIALOGUE_PROFESSION_DETAILS) {
             if (dialogue_show_profession_details) {
                 current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
-                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
             } else {
                 current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+                                                       pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
             }
         }
         BackToHouseMenu();
@@ -515,7 +515,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
 
     if (!pCurrentNPCInfo->Hired()) {
         current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID);
         BackToHouseMenu();
         return;
     }
