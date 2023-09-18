@@ -554,7 +554,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     static Actor pMonsterInfoUI_Doll;
 
-    int Popup_Y_Offset = monster_popup_y_offsets[(pActors[uActorID].monsterInfo.uID - 1) / 3] - 40;
+    // TODO(captainurist): encapsulate enum arithmetic.
+    int Popup_Y_Offset = monster_popup_y_offsets[(std::to_underlying(pActors[uActorID].monsterInfo.uID) - 1) / 3] - 40;
 
     uint16_t actionLen = 0;
     if (pActors[uActorID].monsterInfo.uID == pMonsterInfoUI_Doll.monsterInfo.uID) {
@@ -577,10 +578,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-            if ((pMonsterInfoUI_Doll.monsterInfo.uID < 115 ||
-                 pMonsterInfoUI_Doll.monsterInfo.uID > 186) &&
-                (pMonsterInfoUI_Doll.monsterInfo.uID < 232 ||
-                 pMonsterInfoUI_Doll.monsterInfo.uID > 249) && vrng->random(30) < 100)
+            if ((pMonsterInfoUI_Doll.monsterInfo.uID < MONSTER_115 ||
+                 pMonsterInfoUI_Doll.monsterInfo.uID > MONSTER_186) &&
+                (pMonsterInfoUI_Doll.monsterInfo.uID < MONSTER_232 ||
+                 pMonsterInfoUI_Doll.monsterInfo.uID > MONSTER_PEASANT_GOBLIN_MALE_3_3) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
             pMonsterInfoUI_Doll.currentActionLength =
                 8 *

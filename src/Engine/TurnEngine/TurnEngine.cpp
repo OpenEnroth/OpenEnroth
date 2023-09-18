@@ -253,7 +253,7 @@ void stru262_TurnBased::AITurnBasedAction() {
                 pActors[i].buffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActors[i].height = pMonsterList->pMonsters[pActors[i].monsterInfo.uID - 1].uMonsterHeight;
+            pActors[i].height = pMonsterList->pMonsters[pActors[i].monsterInfo.uID].uMonsterHeight;
             pActors[i].buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
@@ -671,11 +671,8 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
                 // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
                 v10 = pFactionTable->relations
-                          [(pMonsterStats
-                                ->pInfos[pActors[v22.id()].monsterInfo.uID]
-                                .uID) /
-                               3 +
-                           1][(pActors[actor_id].monsterInfo.uID - 1) / 3 + 1];
+                          [(std::to_underlying(pMonsterStats->pInfos[pActors[v22.id()].monsterInfo.uID].uID) - 1) / 3 + 1] // Was w/o -1 here, probably was a bug.
+                          [(std::to_underlying(pActors[actor_id].monsterInfo.uID) - 1) / 3 + 1];
             else
                 v10 = 4;
             switch (v10) {

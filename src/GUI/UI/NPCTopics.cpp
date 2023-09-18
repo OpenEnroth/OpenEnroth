@@ -260,9 +260,8 @@ DIALOGUE_TYPE arenaMainDialogue() {
  * @offset 0x4BC109
  */
 void prepareArenaFight(DIALOGUE_TYPE dialogue) {
-    const int LAST_ARENA_FIGHTER_TYPE = 258;
-    std::vector<int> monsterIds;
-    std::vector<int> monsterTypes;
+    std::vector<MONSTER_TYPE> monsterIds;
+    std::vector<MONSTER_TYPE> monsterTypes;
 
     pParty->field_7B5_in_arena_quest = dialogue;
     GUIWindow window = *pDialogueWindow;
@@ -327,7 +326,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     if (monsterMaxLevel < 2)
         monsterMaxLevel = 2;
 
-    for (int i = 1; i <= LAST_ARENA_FIGHTER_TYPE; i++) {
+    for (MONSTER_TYPE i : allArenaMonsters()) {
         if (pMonsterStats->pInfos[i].uAIType != 1) {
             if (!MonsterStats::BelongsToSupertype(pMonsterStats->pInfos[i].uID, MONSTER_SUPERTYPE_8)) {
                 if (pMonsterStats->pInfos[i].uLevel >= monsterMinLevel &&

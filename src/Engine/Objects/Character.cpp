@@ -1072,7 +1072,7 @@ int Character::GetMeleeDamageMaximal() const {
 
 //----- (0048CDDB) --------------------------------------------------------
 int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                                   unsigned int uTargetActorID) {
+                                      MONSTER_TYPE uTargetActorID) {
     int mainWpnDmg = 0;
     int offHndWpnDmg = 0;
 
@@ -1124,7 +1124,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 }
 
 int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                               unsigned int uTargetActorID,
+                                               MONSTER_TYPE uTargetActorID,
                                                bool addOneDice) {
     ItemId itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
@@ -1141,7 +1141,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     int totalDmg =
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
-    if (uTargetActorID > 0) {  // if an actor has been provided
+    if (uTargetActorID > MONSTER_0) {  // if an actor has been provided
         ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
@@ -1228,7 +1228,7 @@ int Character::GetRangedDamageMax() {
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
+int Character::CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
@@ -1245,7 +1245,7 @@ int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
     damage = pItemTable->pItems[bow->uItemID].uDamageMod +
              damagefromroll;  // total damage
 
-    if (uMonsterInfoID) {  // check against bow enchantments
+    if (uMonsterInfoID != MONSTER_0) {  // check against bow enchantments
         if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
             MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
             damage *= 2;
@@ -6622,7 +6622,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): doesn't look like a proper default.
             }
             playerPtr->receiveDamage(damage, damagetype);
@@ -6766,7 +6766,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): another weird default.
             }
 

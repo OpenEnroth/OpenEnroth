@@ -402,8 +402,8 @@ LABEL_25:
                     // not sure:
                     // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
                     int radius = 0;
-                    if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
-                        radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
+                    if (pActors[actloop].word_000086_some_monster_id != MONSTER_0) {  // not always filled in from scripted monsters
+                        radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id].uToHitRadius;
                     }
                     CollideWithActor(actloop, radius);
                 }

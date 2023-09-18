@@ -1021,7 +1021,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     // Party to start position
     Actor this_;
-    this_.monsterInfo.uID = 45;
+    this_.monsterInfo.uID = MONSTER_45;
     this_.PrepareSprites(0);
     if (!bLoading) {
         pParty->_viewPitch = 0;

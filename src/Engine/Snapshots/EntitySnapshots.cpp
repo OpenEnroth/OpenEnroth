@@ -140,6 +140,14 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
     *dst = CombinedSkillValue::fromJoined(src);
 }
 
+static void snapshot(const MONSTER_TYPE &src, int16_t *dst) {
+    *dst = std::to_underlying(src);
+}
+
+static void reconstruct(int16_t src, MONSTER_TYPE *dst) {
+    *dst = static_cast<MONSTER_TYPE>(src);
+}
+
 static void snapshot(const BBoxi &src, BBoxs *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x1 = src.x1;
@@ -1179,7 +1187,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.uSpecialAbilityDamageDiceSides;
     dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.uSpecialAbilityDamageDiceBonus;
     dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.uNumCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.id = src.monsterInfo.uID;
+    dst->pMonsterInfo.id = std::to_underlying(src.monsterInfo.uID);
     dst->pMonsterInfo.bloodSplatOnDeath = src.monsterInfo.bBloodSplatOnDeath;
     snapshot(src.monsterInfo.uSpellSkillAndMastery1, &dst->pMonsterInfo.spellSkillAndMastery1);
     snapshot(src.monsterInfo.uSpellSkillAndMastery2, &dst->pMonsterInfo.spellSkillAndMastery2);
@@ -1192,7 +1200,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.recoveryTime = src.monsterInfo.uRecoveryTime;
     dst->pMonsterInfo.attackPreference = src.monsterInfo.uAttackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
+    dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->uActorRadius = src.radius;
     dst->uActorHeight = src.height;
     dst->uMovementSpeed = src.moveSpeed;
@@ -1273,7 +1281,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->monsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
     dst->monsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->monsterInfo.uID = src.pMonsterInfo.id;
+    dst->monsterInfo.uID = static_cast<MONSTER_TYPE>(src.pMonsterInfo.id);
     dst->monsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
     reconstruct(src.pMonsterInfo.spellSkillAndMastery1, &dst->monsterInfo.uSpellSkillAndMastery1);
     reconstruct(src.pMonsterInfo.spellSkillAndMastery2, &dst->monsterInfo.uSpellSkillAndMastery2);
@@ -1286,7 +1294,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uRecoveryTime = src.pMonsterInfo.recoveryTime;
     dst->monsterInfo.uAttackPreference = src.pMonsterInfo.attackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
+    dst->word_000086_some_monster_id = static_cast<MONSTER_TYPE>(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->radius = src.uActorRadius;
     dst->height = src.uActorHeight;
     dst->moveSpeed = src.uMovementSpeed;

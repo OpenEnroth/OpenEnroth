@@ -5,6 +5,7 @@
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
 #include "Engine/MapEnums.h"
 
 #include "GUI/UI/UIHouseEnums.h"
@@ -90,7 +91,7 @@ struct NPCStats {
     void InitializeNPCGreets(const Blob &npcGreets);
     void InitializeNPCGroups(const Blob &npcGroups);
     void InitializeNPCNews(const Blob &npcNews);
-    void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
+    void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_uid,
                                   HOUSE_ID uLocation2D, MapId uMapId);
     /**
      * @offset 0x476C60

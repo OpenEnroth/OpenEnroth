@@ -178,11 +178,11 @@ class Character {
     int GetMeleeDamageMinimal() const;
     int GetMeleeDamageMaximal() const;
     int CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                               unsigned int uTargetActorID);
+                               MONSTER_TYPE uTargetActorID);
     int GetRangedAttack();
     int GetRangedDamageMin();
     int GetRangedDamageMax();
-    int CalculateRangedDamageTo(int uMonsterInfoID);
+    int CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID);
     std::string GetMeleeDamageString();
     std::string GetRangedDamageString();
     bool CanTrainToNextLevel();
@@ -321,7 +321,7 @@ class Character {
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                           unsigned int uTargetActorID,
+                                           MONSTER_TYPE uTargetActorID,
                                            bool addOneDice);
     bool wearsItemAnywhere(ItemId item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float param2, float param3, float param4, float param5) const;

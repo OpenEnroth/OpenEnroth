@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
+
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
@@ -26,7 +28,7 @@ class GUIWindow_TownHall : public GUIWindow_House {
     void payFineDialogue();
 
  private:
-    int randomMonsterForHunting(HOUSE_ID townhall);
+    MONSTER_TYPE randomMonsterForHunting(HOUSE_ID townhall);
 
     /**
      * Handler for the "Bounty Hunt" dialogue option in a town hall.
@@ -37,5 +39,5 @@ class GUIWindow_TownHall : public GUIWindow_House {
     void bountyHuntingDialogueOptionClicked();
 
     std::string _bountyHuntText = "";
-    int _bountyHuntMonsterId = 0;
+    MONSTER_TYPE _bountyHuntMonsterId = MONSTER_0;
 };

@@ -1,5 +1,7 @@
 #include "TableSerialization.h"
 
+#include <vector>
+
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/TileTable.h"
@@ -66,14 +68,23 @@ void deserialize(const TriBlob &src, IconFrameTable *dst) {
 }
 
 void deserialize(const TriBlob &src, MonsterList *dst) {
-    dst->pMonsters.clear();
+    std::vector<MonsterDesc> monsters;
 
     if (src.mm6)
-        deserialize(src.mm6, &dst->pMonsters, tags::append, tags::via<MonsterDesc_MM6>);
+        deserialize(src.mm6, &monsters, tags::append, tags::via<MonsterDesc_MM6>);
     if (src.mm7)
-        deserialize(src.mm7, &dst->pMonsters, tags::append, tags::via<MonsterDesc_MM7>);
+        deserialize(src.mm7, &monsters, tags::append, tags::via<MonsterDesc_MM7>);
     if (src.mm8)
-        deserialize(src.mm8, &dst->pMonsters, tags::append, tags::via<MonsterDesc_MM7>);
+        deserialize(src.mm8, &monsters, tags::append, tags::via<MonsterDesc_MM7>);
+
+    assert(monsters.size() <= dst->pMonsters.size()); // TODO(captainurist): this shouldn't be an assertion.
+
+    dst->pMonsters.fill(MonsterDesc());
+    for (size_t i = 0; MONSTER_TYPE index : dst->pMonsters.indices()) {
+        if (i >= monsters.size())
+            break;
+        dst->pMonsters[index] = monsters[i++];
+    }
 
     assert(!dst->pMonsters.empty());
 }
