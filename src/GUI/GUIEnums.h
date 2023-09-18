@@ -308,6 +308,7 @@ enum class ScreenType {
 };
 using enum ScreenType;
 
+// TODO(captainurist): #enum class
 enum WindowType {
     WINDOW_null = 0,
     WINDOW_MainMenu = 1,
