@@ -785,8 +785,8 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_INPUT_BLV:  // click escape
-                                    if (uCurrentHouse_Animation == 153)
-                                        playHouseSound((HOUSE_ID)0x99u, HouseSoundType(3)); // TODO(Nik-RE-dev): what is this?
+                                    if (uCurrentHouse_Animation == 153) // TODO(Nik-RE-dev): what is this? Btw, 153 == HOUSE_EARTH_GUILD_STONE_CITY.
+                                        playHouseSound(HOUSE_EARTH_GUILD_STONE_CITY, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
                                     pMediaPlayer->Unload();
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
