@@ -545,7 +545,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Character) {
-            if (actor.GetActorsRelation(0)) {
+            if (actor.GetActorsRelation(0) != MonsterInfo::Hostility_Friendly) {
                 actor.speed.y = 0;
                 actor.speed.x = 0;
 
@@ -667,7 +667,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Character) {
-            if (actor.GetActorsRelation(0)) {
+            if (actor.GetActorsRelation(0) != MonsterInfo::Hostility_Friendly) {
                 actor.speed.y = 0;
                 actor.speed.x = 0;
 

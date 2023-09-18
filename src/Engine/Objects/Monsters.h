@@ -144,13 +144,15 @@ enum class SPECIAL_ATTACK_TYPE : uint8_t {
 using enum SPECIAL_ATTACK_TYPE;
 
 struct MonsterInfo {
-    enum HostilityRadius {
+    // TODO(captainurist): move into global namespace.
+    enum class HostilityRadius {
         Hostility_Friendly = 0,
         Hostility_Close = 1,
         Hostility_Short = 2,
         Hostility_Medium = 3,
         Hostility_Long = 4
     };
+    using enum HostilityRadius;
 
     std::string pName;
     std::string pPictureName;
