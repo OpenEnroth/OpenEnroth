@@ -135,7 +135,7 @@ struct MonsterInfo {
     uint8_t uTreasureDiceRolls = 0;
     uint8_t uTreasureDiceSides = 0;
     ItemTreasureLevel uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-    uint8_t uTreasureType = 0;
+    RandomItemType uTreasureType = RANDOM_ITEM_ANY;
     uint8_t uFlying = 0;
     uint8_t uMovementType = 0;
     uint8_t uAIType = 0;

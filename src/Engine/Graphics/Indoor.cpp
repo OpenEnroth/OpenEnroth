@@ -1987,7 +1987,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ItemTreasureLevel trs_level, int trs_type, Vec3i pos, uint16_t facing) {
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
@@ -2018,7 +2018,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->random(27) + 20, a2->vPosition, 0);
+            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition, 0);
             return;
         }
 

@@ -641,7 +641,8 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (uint i = 0; i < pActors.size(); ++i) {
-            pActors[i].monsterInfo.uTreasureType = 0;
+            // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
+            pActors[i].monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
             pActors[i].monsterInfo.uTreasureDiceRolls = 0;
             pActors[i].monsterInfo.uExp = 0;
         }

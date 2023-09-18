@@ -507,7 +507,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
 
         if (bDebugGiveItems) {
             Dst.Reset();
-            pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
+            pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, RANDOM_ITEM_RING, &Dst);
             pCharacter.AddItem2(-1, &Dst);
             for (CharacterSkillType skill : allVisibleSkills()) {
                 if (pCharacter.pActiveSkills[skill]) {

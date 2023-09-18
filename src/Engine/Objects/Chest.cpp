@@ -595,7 +595,7 @@ void GenerateItemsInChest() {
                             currItem->SetIdentified();
                             currItem->special_enchantment = (ITEM_ENCHANTMENT)goldAmount;
                         } else {
-                            pItemTable->generateItem(resultTreasureLevel, 0, currItem);
+                            pItemTable->generateItem(resultTreasureLevel, RANDOM_ITEM_ANY, currItem);
                         }
 
                         for (int m = 0; m < 140; m++) {

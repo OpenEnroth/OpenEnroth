@@ -1284,3 +1284,50 @@ inline ItemSlot ringSlot(int index) {
 inline Segment<ItemSlot> allItemSlots() {
     return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
 }
+
+/**
+ * Item types used in random item creation code.
+ */
+enum class RandomItemType {
+    RANDOM_ITEM_ANY = 0,
+
+    // TODO(captainurist): Values in 1-19 are ITEM_EQUIP_TYPE + 1, but those are not used in MM7?
+    //                     See code in ItemTable::generateItem.
+
+    RANDOM_ITEM_WEAPON = 20, // A single-handed weapon.
+    RANDOM_ITEM_ARMOR = 21,
+    RANDOM_ITEM_MICS = 22, // For items requiring CHARACTER_SKILL_MISC - magic shop items.
+    RANDOM_ITEM_SWORD = 23,
+    RANDOM_ITEM_DAGGER = 24,
+    RANDOM_ITEM_AXE = 25,
+    RANDOM_ITEM_SPEAR = 26,
+    RANDOM_ITEM_BOW = 27,
+    RANDOM_ITEM_MACE = 28,
+    RANDOM_ITEM_CLUB = 29, // For items requiring CHARACTER_SKILL_CLUB, which is a hidden skill.
+    RANDOM_ITEM_STAFF = 30,
+    RANDOM_ITEM_LEATHER_ARMOR = 31,
+    RANDOM_ITEM_CHAIN_ARMOR = 32,
+    RANDOM_ITEM_PLATE_ARMOR = 33,
+    RANDOM_ITEM_SHIELD = 34,
+    RANDOM_ITEM_HELMET = 35,
+    RANDOM_ITEM_BELT = 36,
+    RANDOM_ITEM_CLOAK = 37,
+    RANDOM_ITEM_GAUNTLETS = 38,
+    RANDOM_ITEM_BOOTS = 39,
+    RANDOM_ITEM_RING = 40,
+    RANDOM_ITEM_AMULET = 41,
+    RANDOM_ITEM_WAND = 42,
+    RANDOM_ITEM_SPELL_SCROLL = 43,
+    RANDOM_ITEM_POTION = 44,
+    RANDOM_ITEM_REAGENT = 45,
+    RANDOM_ITEM_GEM = 46,
+    // MMExtension also has Gems2 = 47
+
+    RANDOM_ITEM_FIRST_SPAWNABLE = RANDOM_ITEM_WEAPON,
+    RANDOM_ITEM_LAST_SPAWNABLE = RANDOM_ITEM_GEM
+};
+using enum RandomItemType;
+
+inline Segment<RandomItemType> allSpawnableRandomItemTypes() {
+    return {RANDOM_ITEM_FIRST_SPAWNABLE, RANDOM_ITEM_LAST_SPAWNABLE};
+}

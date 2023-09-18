@@ -1142,7 +1142,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.treasureDiceRolls = src.monsterInfo.uTreasureDiceRolls;
     dst->pMonsterInfo.treasureDiceSides = src.monsterInfo.uTreasureDiceSides;
     dst->pMonsterInfo.treasureLevel = std::to_underlying(src.monsterInfo.uTreasureLevel);
-    dst->pMonsterInfo.treasureType = src.monsterInfo.uTreasureType;
+    dst->pMonsterInfo.treasureType = std::to_underlying(src.monsterInfo.uTreasureType);
     dst->pMonsterInfo.flying = src.monsterInfo.uFlying;
     dst->pMonsterInfo.movementType = src.monsterInfo.uMovementType;
     dst->pMonsterInfo.aiType = src.monsterInfo.uAIType;
@@ -1236,7 +1236,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uTreasureDiceRolls = src.pMonsterInfo.treasureDiceRolls;
     dst->monsterInfo.uTreasureDiceSides = src.pMonsterInfo.treasureDiceSides;
     dst->monsterInfo.uTreasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
-    dst->monsterInfo.uTreasureType = src.pMonsterInfo.treasureType;
+    dst->monsterInfo.uTreasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
     dst->monsterInfo.uFlying = src.pMonsterInfo.flying;
     dst->monsterInfo.uMovementType = src.pMonsterInfo.movementType;
     dst->monsterInfo.uAIType = src.pMonsterInfo.aiType;

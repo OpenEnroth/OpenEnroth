@@ -1811,7 +1811,7 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->monsterInfo.uTreasureDiceRolls = 0;
     pActor->monsterInfo.uTreasureDiceSides = 0;
     pActor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-    pActor->monsterInfo.uTreasureType = 0;
+    pActor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
     pActor->ally = 9999;
     pActor->ResetAggressor();  // ~0x80000
     pActor->group = 0;
@@ -2538,7 +2538,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->radius = pMonsterList->pMonsters[v7].uMonsterRadius;
     actor->height = pMonsterList->pMonsters[v7].uMonsterHeight;
     actor->monsterInfo.uTreasureDiceRolls = 0;
-    actor->monsterInfo.uTreasureType = 0;
+    actor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.uExp = 0;
     actor->moveSpeed = pMonsterList->pMonsters[v7].uMovementSpeed;
 
@@ -3353,7 +3353,7 @@ void Actor::Arena_summon_actor(int monster_id, Vec3i pos) {
     actor->initialPosition = pos;
     actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
-    actor->monsterInfo.uTreasureType = 0;
+    actor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     actor->monsterInfo.uTreasureDiceSides = 0;
     actor->monsterInfo.uTreasureDiceRolls = 0;
@@ -4370,7 +4370,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->radius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
     actor->height = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
     actor->monsterInfo.uTreasureDiceRolls = 0;
-    actor->monsterInfo.uTreasureType = 0;
+    actor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.uExp = 0;
     actor->moveSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;

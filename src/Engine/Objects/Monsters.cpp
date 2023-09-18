@@ -546,7 +546,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         pInfos[curr_rec_num].uTreasureDropChance = 0;
                         pInfos[curr_rec_num].uTreasureDiceRolls = 0;
                         pInfos[curr_rec_num].uTreasureDiceSides = 0;
-                        pInfos[curr_rec_num].uTreasureType = 0;
+                        pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_ANY;
                         pInfos[curr_rec_num].uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
                         if (test_string[0] == '"') test_string[0] = ' ';
                         str_len = strlen(test_string);
@@ -608,55 +608,55 @@ void MonsterStats::Initialize(const Blob &monsters) {
                             item_name = &test_string[str_pos + 2];
                             if (*item_name) {
                                 if (iequals(item_name, "WEAPON"))
-                                    pInfos[curr_rec_num].uTreasureType = 20;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_WEAPON;
                                 else if (iequals(item_name, "ARMOR"))
-                                    pInfos[curr_rec_num].uTreasureType = 21;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_ARMOR;
                                 else if (iequals(item_name, "MISC"))
-                                    pInfos[curr_rec_num].uTreasureType = 22;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_MICS;
                                 else if (iequals(item_name, "SWORD"))
-                                    pInfos[curr_rec_num].uTreasureType = 23;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SWORD;
                                 else if (iequals(item_name, "DAGGER"))
-                                    pInfos[curr_rec_num].uTreasureType = 24;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_DAGGER;
                                 else if (iequals(item_name, "AXE"))
-                                    pInfos[curr_rec_num].uTreasureType = 25;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_AXE;
                                 else if (iequals(item_name, "SPEAR"))
-                                    pInfos[curr_rec_num].uTreasureType = 26;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SPEAR;
                                 else if (iequals(item_name, "BOW"))
-                                    pInfos[curr_rec_num].uTreasureType = 27;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_BOW;
                                 else if (iequals(item_name, "MACE"))
-                                    pInfos[curr_rec_num].uTreasureType = 28;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_MACE;
                                 else if (iequals(item_name, "CLUB"))
-                                    pInfos[curr_rec_num].uTreasureType = 29;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_CLUB;
                                 else if (iequals(item_name, "STAFF"))
-                                    pInfos[curr_rec_num].uTreasureType = 30;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_STAFF;
                                 else if (iequals(item_name, "LEATHER"))
-                                    pInfos[curr_rec_num].uTreasureType = 31;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_LEATHER_ARMOR;
                                 else if (iequals(item_name, "CHAIN"))
-                                    pInfos[curr_rec_num].uTreasureType = 32;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_CHAIN_ARMOR;
                                 else if (iequals(item_name, "PLATE"))
-                                    pInfos[curr_rec_num].uTreasureType = 33;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_PLATE_ARMOR;
                                 else if (iequals(item_name, "SHIELD"))
-                                    pInfos[curr_rec_num].uTreasureType = 34;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SHIELD;
                                 else if (iequals(item_name, "HELM"))
-                                    pInfos[curr_rec_num].uTreasureType = 35;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_HELMET;
                                 else if (iequals(item_name, "BELT"))
-                                    pInfos[curr_rec_num].uTreasureType = 36;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_BELT;
                                 else if (iequals(item_name, "CAPE"))
-                                    pInfos[curr_rec_num].uTreasureType = 37;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_CLOAK;
                                 else if (iequals(item_name, "GAUNTLETS"))
-                                    pInfos[curr_rec_num].uTreasureType = 38;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_GAUNTLETS;
                                 else if (iequals(item_name, "BOOTS"))
-                                    pInfos[curr_rec_num].uTreasureType = 39;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_BOOTS;
                                 else if (iequals(item_name, "RING"))
-                                    pInfos[curr_rec_num].uTreasureType = 40;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_RING;
                                 else if (iequals(item_name, "AMULET"))
-                                    pInfos[curr_rec_num].uTreasureType = 41;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_AMULET;
                                 else if (iequals(item_name, "WAND"))
-                                    pInfos[curr_rec_num].uTreasureType = 42;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_WAND;
                                 else if (iequals(item_name, "SCROLL"))
-                                    pInfos[curr_rec_num].uTreasureType = 43;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SPELL_SCROLL;
                                 else if (iequals(item_name, "GEM"))
-                                    pInfos[curr_rec_num].uTreasureType = 46;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_GEM;
                             }
                         }
                     } break;
