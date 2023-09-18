@@ -72,7 +72,7 @@ enum class MONSTER_SPECIAL_ABILITY_TYPE {
 };
 using enum MONSTER_SPECIAL_ABILITY_TYPE;
 
-enum MONSTER_MOVEMENT_TYPE {
+enum class MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_SHORT = 0x0,
     MONSTER_MOVEMENT_TYPE_MEDIUM = 0x1,
     MONSTER_MOVEMENT_TYPE_LONG = 0x2,
@@ -80,6 +80,7 @@ enum MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_FREE = 0x4,
     MONSTER_MOVEMENT_TYPE_STATIONARY = 0x5,
 };
+using enum MONSTER_MOVEMENT_TYPE;
 
 /*  336 */
 enum MONSTER_SUPERTYPE {
@@ -138,7 +139,7 @@ struct MonsterInfo {
     ItemTreasureLevel uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     RandomItemType uTreasureType = RANDOM_ITEM_ANY;
     uint8_t uFlying = 0;
-    uint8_t uMovementType = 0;
+    MONSTER_MOVEMENT_TYPE uMovementType = MONSTER_MOVEMENT_TYPE_SHORT;
     uint8_t uAIType = 0;
     HostilityRadius uHostilityType = Hostility_Friendly;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;

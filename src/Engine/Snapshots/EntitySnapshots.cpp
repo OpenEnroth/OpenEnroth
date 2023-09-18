@@ -1144,7 +1144,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.treasureLevel = std::to_underlying(src.monsterInfo.uTreasureLevel);
     dst->pMonsterInfo.treasureType = std::to_underlying(src.monsterInfo.uTreasureType);
     dst->pMonsterInfo.flying = src.monsterInfo.uFlying;
-    dst->pMonsterInfo.movementType = src.monsterInfo.uMovementType;
+    dst->pMonsterInfo.movementType = std::to_underlying(src.monsterInfo.uMovementType);
     dst->pMonsterInfo.aiType = src.monsterInfo.uAIType;
     dst->pMonsterInfo.hostilityType = std::to_underlying(src.monsterInfo.uHostilityType);
     dst->pMonsterInfo.specialAttackType = src.monsterInfo.uSpecialAttackType;
@@ -1238,7 +1238,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uTreasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
     dst->monsterInfo.uTreasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
     dst->monsterInfo.uFlying = src.pMonsterInfo.flying;
-    dst->monsterInfo.uMovementType = src.pMonsterInfo.movementType;
+    dst->monsterInfo.uMovementType = static_cast<MONSTER_MOVEMENT_TYPE>(src.pMonsterInfo.movementType);
     dst->monsterInfo.uAIType = src.pMonsterInfo.aiType;
     dst->monsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.hostilityType);
     dst->monsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
