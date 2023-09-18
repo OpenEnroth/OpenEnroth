@@ -786,6 +786,8 @@ Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLeve
         {{{2, 2}, {2, 2}, {4, 4}, {4, 5}, {5, 5}, {5, 6}, {6, 6}}},
         {{{2, 2}, {2, 2}, {7, 7}, {7, 7}, {7, 7}, {7, 7}, {7, 7}}}
     }};
+    static_assert(std::to_underlying(ITEM_TREASURE_LEVEL_1) == 1);
+    static_assert(std::to_underlying(ITEM_TREASURE_LEVEL_7) == 7); // Otherwise static_casts at the end of this function won't work.
 
     assert(itemTreasureLevel >= ITEM_TREASURE_LEVEL_1 && ITEM_TREASURE_LEVEL_1 <= ITEM_TREASURE_LEVEL_7);
     assert(mapTreasureLevel >= MAP_TREASURE_LEVEL_1 && mapTreasureLevel <= MAP_TREASURE_LEVEL_7);
@@ -793,5 +795,5 @@ Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLeve
     int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_1);
     int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_1);
     Segment<int> result = mapping[itemIdx][mapIdx];
-    return {ItemTreasureLevel(result.front()), ItemTreasureLevel(result.back())};
+    return {static_cast<ItemTreasureLevel>(result.front()), static_cast<ItemTreasureLevel>(result.back())};
 }
