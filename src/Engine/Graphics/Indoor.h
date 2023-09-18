@@ -12,7 +12,6 @@
 #include "BSPModel.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
-#include "LocationEnums.h"
 #include "LocationFunctions.h"
 
 struct IndoorLocation;

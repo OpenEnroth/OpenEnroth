@@ -4,6 +4,7 @@
 
 #include "Engine/Time.h"
 
+// TODO(captainurist): rename to smth like MapTime.
 struct LocationTime {
     GameTime last_visit;
     std::string sky_texture_name;

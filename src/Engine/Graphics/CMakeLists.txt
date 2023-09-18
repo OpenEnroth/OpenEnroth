@@ -57,7 +57,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Level/Decoration.h
         LightmapBuilder.h
         LightsStack.h
-        LocationEnums.h
         LocationFunctions.h
         LocationInfo.h
         LocationTime.h
