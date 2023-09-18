@@ -756,7 +756,7 @@ bool ItemGen::canSellRepairIdentifyAt(HOUSE_ID houseId) {
 
     if (::isMessageScroll(uItemID) && !isRecipe(uItemID))
         return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
-        
+
     switch (buildingTable[houseId].uType) {
         case BUILDING_WEAPON_SHOP:
             return this->isWeapon();
@@ -774,7 +774,8 @@ bool ItemGen::canSellRepairIdentifyAt(HOUSE_ID houseId) {
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
-    // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
+    // Mapping [item_level][map_level] -> [actual_level_min, actual_level_max];
+    // Rows are item treasure levels, columns are map treasure levels. Not using IndexedArray to keep things terse.
     // Original offset was 0x004E8168.
     static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
         {{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}},
@@ -786,9 +787,11 @@ Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLeve
         {{{2, 2}, {2, 2}, {7, 7}, {7, 7}, {7, 7}, {7, 7}, {7, 7}}}
     }};
 
-    // TODO(captainurist) : type-safe enum diff!
-    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_VALID);
-    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_FIRST);
+    assert(itemTreasureLevel >= ITEM_TREASURE_LEVEL_1 && ITEM_TREASURE_LEVEL_1 <= ITEM_TREASURE_LEVEL_7);
+    assert(mapTreasureLevel >= MAP_TREASURE_LEVEL_1 && mapTreasureLevel <= MAP_TREASURE_LEVEL_7);
+
+    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_1);
+    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_1);
     Segment<int> result = mapping[itemIdx][mapIdx];
     return {ItemTreasureLevel(result.front()), ItemTreasureLevel(result.back())};
 }

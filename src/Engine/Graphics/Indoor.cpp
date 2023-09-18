@@ -2009,7 +2009,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     int v34 = 0;
     int v5 = grng->random(100);
     ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->Treasure_prob));
-    if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
+    if (v13 != ITEM_TREASURE_LEVEL_7) {
         // [0, 20) -- nothing
         // [20, 60) -- gold
         // [60, 100) -- item
