@@ -1147,7 +1147,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.movementType = std::to_underlying(src.monsterInfo.uMovementType);
     dst->pMonsterInfo.aiType = src.monsterInfo.uAIType;
     dst->pMonsterInfo.hostilityType = std::to_underlying(src.monsterInfo.uHostilityType);
-    dst->pMonsterInfo.specialAttackType = src.monsterInfo.uSpecialAttackType;
+    dst->pMonsterInfo.specialAttackType = std::to_underlying(src.monsterInfo.uSpecialAttackType);
     dst->pMonsterInfo.specialAttackLevel = src.monsterInfo.uSpecialAttackLevel;
     dst->pMonsterInfo.attack1Type = std::to_underlying(src.monsterInfo.uAttack1Type);
     dst->pMonsterInfo.attack1DamageDiceRolls = src.monsterInfo.uAttack1DamageDiceRolls;

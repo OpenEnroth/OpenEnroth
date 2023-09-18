@@ -11,6 +11,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
 #include "Engine/Tables/BuildingTable.h"
@@ -202,7 +203,7 @@ class Character {
      * @offset 0x48DC1E
      */
     int receiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
-    int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
+    int ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor);
 
     // TODO(captainurist): move closer to Spells data.
     DAMAGE_TYPE GetSpellDamageType(SpellId uSpellID) const;

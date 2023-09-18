@@ -1648,12 +1648,7 @@ int Character::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Character::ReceiveSpecialAttackEffect(
-    int attType,
-    Actor *pActor) {  // long function - consider breaking into two??
-
-    SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE)attType;
-
+int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor) {  // long function - consider breaking into two??
     int statcheck;
     int statcheckbonus;
     int luckstat = GetActualLuck();
@@ -1663,7 +1658,7 @@ int Character::ReceiveSpecialAttackEffect(
     ItemGen *itemtobreak = nullptr;
     unsigned int itemtostealinvindex = 0;
 
-    switch (attTypeCast) {
+    switch (attType) {
         case SPECIAL_ATTACK_CURSE:
             statcheck = GetActualPersonality();
             statcheckbonus = GetParameterBonus(statcheck);
@@ -1815,7 +1810,7 @@ int Character::ReceiveSpecialAttackEffect(
         // pass this to new fucntion??
         // atttypecast - whichplayer - itemtobreak - itemtostealinvindex
 
-        switch (attTypeCast) {
+        switch (attType) {
             case SPECIAL_ATTACK_CURSE:
                 SetCondition(CONDITION_CURSED, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
@@ -6574,8 +6569,8 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         }
 
         // special attack trigger
-        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->monsterInfo.uLevel *
-                                                                                                                       actorPtr->monsterInfo.uSpecialAttackLevel) {
+        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
+            grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
             playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
         }
 
@@ -6744,8 +6739,8 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
             // special attack trigger
             if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.value() &&
-                actorPtr->monsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->monsterInfo.uLevel *
-                                                                                actorPtr->monsterInfo.uSpecialAttackLevel) {
+                actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
+                grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
                 playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
             }
 

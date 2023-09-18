@@ -95,7 +95,7 @@ enum class MONSTER_SUPERTYPE {
 };
 using enum MONSTER_SUPERTYPE;
 
-enum SPECIAL_ATTACK_TYPE : uint8_t {
+enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -121,6 +121,7 @@ enum SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_MANA_DRAIN = 22,
     SPECIAL_ATTACK_FEAR = 23,
 };
+using enum SPECIAL_ATTACK_TYPE;
 
 struct MonsterInfo {
     enum HostilityRadius {
