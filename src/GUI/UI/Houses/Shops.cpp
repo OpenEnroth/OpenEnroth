@@ -915,7 +915,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].MerchandiseTest(houseId())) {
+            if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].canSellRepairIdentifyAt(houseId())) {
                 _transactionPerformed = true;
                 pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, houseId());
                 render->ClearZBuffer();
@@ -944,7 +944,7 @@ void GUIWindow_Shop::houseScreenClick() {
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
             if (!(item.uAttributes & ITEM_IDENTIFIED)) {
-                if (item.MerchandiseTest(houseId())) {
+                if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
@@ -984,7 +984,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
             if (item.uAttributes & ITEM_BROKEN) {
-                if (item.MerchandiseTest(houseId())) {
+                if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);

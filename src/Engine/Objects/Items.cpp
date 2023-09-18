@@ -744,9 +744,7 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 }
 
 //----- (004BDAAF) --------------------------------------------------------
-bool ItemGen::MerchandiseTest(HOUSE_ID houseId) {
-    bool test;
-
+bool ItemGen::canSellRepairIdentifyAt(HOUSE_ID houseId) {
     // TODO(captainurist): move these checks into functions in ItemEnums.h?
     if ((buildingTable[houseId].uType != BUILDING_ALCHEMY_SHOP || !isRecipe(this->uItemID)) &&
         (this->uItemID >= ITEM_QUEST_HEART_OF_THE_WOOD || this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS && this->uItemID <= ITEM_599) ||
@@ -754,30 +752,19 @@ bool ItemGen::MerchandiseTest(HOUSE_ID houseId) {
         return false;
 
     switch (buildingTable[houseId].uType) {
-        case BUILDING_WEAPON_SHOP: {
-            test = this->isWeapon();
-            break;
-        }
-        case BUILDING_ARMOR_SHOP: {
-            test = this->isArmor();
-            break;
-        }
-        case BUILDING_MAGIC_SHOP: {
-            test = this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
-            break;
-        }
-        case BUILDING_ALCHEMY_SHOP: {
-            test = this->isReagent() ||
+        case BUILDING_WEAPON_SHOP:
+            return this->isWeapon();
+        case BUILDING_ARMOR_SHOP:
+            return this->isArmor();
+        case BUILDING_MAGIC_SHOP:
+            return this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
+        case BUILDING_ALCHEMY_SHOP:
+            return this->isReagent() ||
                    this->isPotion() ||
                    (this->isMessageScroll() && isRecipe(this->uItemID));
-            break;
-        }
-        default: {
-            test = false;
-            break;
-        }
+        default:
+            return false;
     }
-    return test;
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
