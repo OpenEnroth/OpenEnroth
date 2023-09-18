@@ -998,11 +998,18 @@ enum class ItemId : int32_t {
     ITEM_FIRST_RECIPE = ITEM_RECIPE_REJUVENATION,
     ITEM_LAST_RECIPE = ITEM_RECIPE_BODY_RESISTANCE,
 
+    ITEM_FIRST_QUEST = ITEM_QUEST_HEART_OF_THE_WOOD,
+    ITEM_LAST_QUEST = ITEM_699,
+
     ITEM_FIRST_REAGENT = ITEM_REAGENT_WIDOWSWEEP_BERRIES,
     ITEM_LAST_REAGENT = ITEM_REAGENT_PHILOSOPHERS_STONE,
 
     ITEM_FIRST_REAL_POTION = ITEM_POTION_CURE_WOUNDS,
     ITEM_LAST_REAL_POTION = ITEM_POTION_REJUVENATION,
+
+    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
+    ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
+    ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
     ITEM_FIRST_WAND = ITEM_WAND_OF_FIRE,
     ITEM_LAST_WAND = ITEM_MYSTIC_WAND_OF_INCINERATION,
@@ -1012,10 +1019,6 @@ enum class ItemId : int32_t {
 
     ITEM_FIRST_SPELLBOOK = ITEM_SPELLBOOK_TORCH_LIGHT,
     ITEM_LAST_SPELLBOOK = ITEM_SPELLBOOK_SOULDRINKER,
-
-    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
-    ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
-    ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
     ITEM_FIRST_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_SPAWNABLE = ITEM_499,
@@ -1085,6 +1088,10 @@ inline bool isRandomItem(ItemId type) {
 
 inline bool isSpellbook(ItemId item) {
     return item >= ITEM_FIRST_SPELLBOOK && item <= ITEM_LAST_SPELLBOOK;
+}
+
+inline bool isQuestItem(ItemId item) {
+    return item >= ITEM_FIRST_QUEST && item <= ITEM_LAST_QUEST;
 }
 
 inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {

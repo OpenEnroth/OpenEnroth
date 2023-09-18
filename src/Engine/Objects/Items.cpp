@@ -745,12 +745,18 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 
 //----- (004BDAAF) --------------------------------------------------------
 bool ItemGen::canSellRepairIdentifyAt(HOUSE_ID houseId) {
-    // TODO(captainurist): move these checks into functions in ItemEnums.h?
-    if ((buildingTable[houseId].uType != BUILDING_ALCHEMY_SHOP || !isRecipe(this->uItemID)) &&
-        (this->uItemID >= ITEM_QUEST_HEART_OF_THE_WOOD || this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS && this->uItemID <= ITEM_599) ||
-        this->IsStolen())
+    if (this->IsStolen())
         return false;
 
+    if (isQuestItem(uItemID))
+        return false; // Can't sell quest items.
+
+    if (isArtifact(uItemID) && !isSpawnableArtifact(uItemID))
+        return false; // Can't sell quest artifacts, e.g. Hermes Sandals.
+
+    if (::isMessageScroll(uItemID) && !isRecipe(uItemID))
+        return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
+        
     switch (buildingTable[houseId].uType) {
         case BUILDING_WEAPON_SHOP:
             return this->isWeapon();
