@@ -1684,7 +1684,7 @@ void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
 
     snapshot(src.last_visit, &dst->last_visit);
     snapshot(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = src.day_attrib;
+    dst->day_attrib = std::to_underlying(src.day_attrib);
     dst->day_fogrange_1 = src.day_fogrange_1;
     dst->day_fogrange_2 = src.day_fogrange_2;
 }
@@ -1692,7 +1692,7 @@ void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
 void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
     reconstruct(src.last_visit, &dst->last_visit);
     reconstruct(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = src.day_attrib;
+    dst->day_attrib = static_cast<MapWeatherFlags>(src.day_attrib);
     dst->day_fogrange_1 = src.day_fogrange_1;
     dst->day_fogrange_2 = src.day_fogrange_2;
 }

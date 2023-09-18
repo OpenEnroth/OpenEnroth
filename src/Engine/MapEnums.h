@@ -4,8 +4,19 @@
 
 #include "Library/Serialization/SerializationFwd.h"
 
-// TODO(captainurist): enum?
-#define DAY_ATTRIB_FOG 1
+#include "Utility/Flags.h"
+
+/**
+ * MM7 has only one weather flag, but apparently we have more in MM8.
+ *
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L412C8-L412C15
+ */
+enum class MapWeatherFlag {
+    MAP_WEATHER_FOGGY = 1
+};
+using enum MapWeatherFlag;
+MM_DECLARE_FLAGS(MapWeatherFlags, MapWeatherFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(MapWeatherFlags)
 
 enum class LevelType {
     LEVEL_NULL = 0,
