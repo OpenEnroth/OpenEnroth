@@ -92,3 +92,13 @@ std::string toPrintable(std::string_view s, char placeholder) {
             result[i] = s[i];
     return result;
 }
+
+std::string toHexDump(std::string_view s, size_t groupSize) {
+    std::string result;
+    for (size_t i = 0; i < s.size(); i++) {
+        if (groupSize && i && i % groupSize == 0)
+            result += " ";
+        result += fmt::format("{:02X}", static_cast<uint8_t>(s[i]));
+    }
+    return result;
+}

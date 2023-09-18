@@ -27,3 +27,8 @@ UNIT_TEST(String, iless) {
 UNIT_TEST(String, Printable) {
     EXPECT_EQ(toPrintable("123\xFF", '.'), "123.");
 }
+
+UNIT_TEST(String, HexDump) {
+    EXPECT_EQ(toHexDump("1234", 2), "3132 3334");
+    EXPECT_EQ(toHexDump("0000"), "30303030");
+}
