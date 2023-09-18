@@ -9,6 +9,8 @@
 
 #include "Engine/Components/Trace/EngineTraceEnums.h"
 
+#include "Library/Random/RandomEngineEnums.h"
+
 #include "TestTape.h"
 
 class EngineController;
@@ -25,7 +27,7 @@ class TestController {
 
     void prepareForNextTest();
 
-    void restart(int frameTimeMs); // TODO(captainurist): need a better name here.
+    void restart(int frameTimeMs, RandomEngineType rngType); // TODO(captainurist): need a better name here.
 
  private:
     friend class CharacterTapeRecorder;

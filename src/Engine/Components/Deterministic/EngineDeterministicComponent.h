@@ -4,6 +4,7 @@
 
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyOpenGLContext.h"
+#include "Library/Random/RandomEngineEnums.h"
 #include "Library/Application/PlatformApplicationAware.h"
 
 class RandomEngine;
@@ -32,8 +33,9 @@ class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLC
      * the level is loaded. Unlikely to really affect anything, but we'd rather not find out.
      *
      * @param frameTimeMs               Frame time to use inside the segment, in milliseconds.
+     * @param rngType                   Random engine type to use inside the segment.
      */
-    void restart(int frameTimeMs);
+    void restart(int frameTimeMs, RandomEngineType rngType);
 
     /**
      * Leaves deterministic mode if currently is in it, does nothing otherwise.

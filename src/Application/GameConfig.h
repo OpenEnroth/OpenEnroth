@@ -3,10 +3,14 @@
 #include <string>
 #include <algorithm>
 
-#include "Library/Config/Config.h"
 #include "Engine/Graphics/RenderEnums.h"
+
 #include "Io/Key.h"
+
 #include "Platform/PlatformEnums.h"
+
+#include "Library/Config/Config.h"
+#include "Library/Random/RandomEngineEnums.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES
@@ -18,6 +22,7 @@
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformLogLevel)
+MM_DECLARE_SERIALIZATION_FUNCTIONS(RandomEngineType)
 
 class GameConfig : public Config {
  public:
@@ -83,6 +88,9 @@ class GameConfig : public Config {
 
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
+
+        ConfigEntry<RandomEngineType> TraceRandomEngine = {this, "trace_random_engine", RANDOM_ENGINE_SEQUENTIAL,
+                                                           "Random engine to use for trace playback and recording, 'sequential' or 'mersenne_twister'."};
 
         Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
 

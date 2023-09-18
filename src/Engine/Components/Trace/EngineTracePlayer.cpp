@@ -54,12 +54,13 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
 
     EngineTraceStateAccessor::patchConfig(engine->config.get(), _trace->header.config);
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
+    RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
     game->goToMainMenu(); // This might call into a random engine.
-    deterministicComponent->restart(frameTimeMs);
+    deterministicComponent->restart(frameTimeMs, rngType);
     game->loadGame(_savePath);
     checkAfterLoadRng(_trace->header.afterLoadRandomState);
-    deterministicComponent->restart(frameTimeMs);
+    deterministicComponent->restart(frameTimeMs, rngType);
     application()->get<GameKeyboardController>()->reset(); // Reset all pressed buttons.
 
     if (postLoadCallback)

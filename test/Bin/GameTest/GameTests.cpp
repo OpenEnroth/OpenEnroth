@@ -497,14 +497,14 @@ GAME_TEST(Issues, Issue405) {
     engine->config->debug.AllMagic.setValue(true);
 
     // 100ms/frame
-    test.restart(100);
+    test.restart(100, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
     int firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     // 10ms/frame
-    test.restart(10);
+    test.restart(10, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(100);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());

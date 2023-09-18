@@ -50,13 +50,13 @@ void TestController::prepareForNextTest() {
 
     // This is frame time for tests that are implemented by manually sending events from the test code.
     // For such tests, frame time value is taken from config defaults.
-    restart(engine->config->debug.TraceFrameTimeMs.value());
+    restart(engine->config->debug.TraceFrameTimeMs.value(), engine->config->debug.TraceRandomEngine.value());
     ::application->get<GameKeyboardController>()->reset();
     _controller->goToMainMenu();
 }
 
-void TestController::restart(int frameTimeMs) {
-    ::application->get<EngineDeterministicComponent>()->restart(frameTimeMs);
+void TestController::restart(int frameTimeMs, RandomEngineType rngType) {
+    ::application->get<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 }
 
 void TestController::runTapeCallbacks() {

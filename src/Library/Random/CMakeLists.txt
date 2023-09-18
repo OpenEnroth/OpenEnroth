@@ -6,9 +6,10 @@ set(LIBRARY_RANDOM_SOURCES
 
 set(LIBRARY_RANDOM_HEADERS
         MersenneTwisterRandomEngine.h
-        NonRandomEngine.h
+        SequentialRandomEngine.h
         Random.h
-        RandomEngine.h)
+        RandomEngine.h
+        RandomEngineEnums.h)
 
 add_library(library_random STATIC ${LIBRARY_RANDOM_SOURCES} ${LIBRARY_RANDOM_HEADERS})
 target_check_style(library_random)

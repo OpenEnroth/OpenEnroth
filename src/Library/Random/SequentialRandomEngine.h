@@ -4,7 +4,7 @@
 
 #include "RandomEngine.h"
 
-class NonRandomEngine : public RandomEngine {
+class SequentialRandomEngine : public RandomEngine {
  public:
     virtual float randomFloat() override {
         return random(256) / 256.0f;
