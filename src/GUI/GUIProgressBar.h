@@ -6,11 +6,12 @@ class GraphicsImage;
 
 class GUIProgressBar {
  public:
-    enum Type {
+    enum class Type {
         TYPE_None = 0,
         TYPE_Fullscreen = 1,
         TYPE_Box = 2
     };
+    using enum Type;
 
     bool Initialize(Type type);
     void Reset(uint8_t uMaxProgress);
