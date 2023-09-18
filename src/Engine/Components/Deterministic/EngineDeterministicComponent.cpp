@@ -4,12 +4,12 @@
 #include <utility>
 
 #include "Library/Random/Random.h"
-#include "Library/Random/NonRandomEngine.h"
+#include "Library/Random/RandomEngine.h"
 
 EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 
-void EngineDeterministicComponent::restart(int frameTimeMs) {
+void EngineDeterministicComponent::restart(int frameTimeMs, RandomEngineType rngType) {
     assert(frameTimeMs >= 1 && frameTimeMs <= 1000);
 
     if (!isActive())
@@ -17,7 +17,7 @@ void EngineDeterministicComponent::restart(int frameTimeMs) {
 
     _tickCount = 0;
     _frameTimeMs = frameTimeMs;
-    grng = std::make_unique<NonRandomEngine>();
+    grng = RandomEngine::create(rngType);
     assert(isActive());
 }
 

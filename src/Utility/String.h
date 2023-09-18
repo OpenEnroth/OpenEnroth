@@ -56,3 +56,12 @@ struct ILess {
  * @return                              Passed string, with all non-printable characters replaced with `placeholder`.
  */
 std::string toPrintable(std::string_view s, char placeholder = ' ');
+
+/**
+ * `toHexDump("0123", 2)` is `"3132 3334"`.
+ *
+ * @param s                             String to convert.
+ * @param groupSize                     Size of a single group, in bytes.
+ * @return                              Hex dump of the provided string.
+ */
+std::string toHexDump(std::string_view s, size_t groupSize = 0);

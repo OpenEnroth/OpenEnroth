@@ -41,6 +41,9 @@ class CharacterTapeRecorder {
     TestTape<int> mp(int characterIndex);
     TestMultiTape<int> mps();
 
+    TestTape<int> ac(int characterIndex);
+    TestMultiTape<int> acs();
+
     TestTape<int> level(int characterIndex);
     TestMultiTape<int> levels();
 

@@ -497,14 +497,14 @@ GAME_TEST(Issues, Issue405) {
     engine->config->debug.AllMagic.setValue(true);
 
     // 100ms/frame
-    test.restart(100);
+    test.restart(100, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
     int firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     // 10ms/frame
-    test.restart(10);
+    test.restart(10, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(100);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
@@ -1671,6 +1671,13 @@ GAME_TEST(Issues, Issue1277) {
     // Crash when press enter on character skills tab
     test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
+}
+
+GAME_TEST(Issues, Issue1281) {
+    // Assert when drinking from THE WELL in Eofol.
+    auto acTape = ctapes.ac(0);
+    test.playTraceFromTestData("issue_1281.mm7", "issue_1281.json");
+    EXPECT_EQ(acTape.delta(), -50); // We've hit the -50 AC branch in the script that used to trigger the assertion.
 }
 
 GAME_TEST(Issues, Issue1282) {

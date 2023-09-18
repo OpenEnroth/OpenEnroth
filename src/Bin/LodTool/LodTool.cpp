@@ -7,16 +7,6 @@
 #include "Utility/Format.h"
 #include "Utility/String.h"
 
-std::string toHexDump(std::string_view s) {
-    std::string result;
-    for (size_t i = 0; i < s.size(); i++) {
-        result += fmt::format("{:02X}", static_cast<uint8_t>(s[i]));
-        if (i % 2 == 1)
-            result += " ";
-    }
-    return result;
-}
-
 int runDump(const LodToolOptions &options) {
     LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
 
@@ -42,7 +32,7 @@ int runDump(const LodToolOptions &options) {
         for (size_t offset = 0; offset < data.size(); offset += 16) {
             std::string_view chunk = data.string_view().substr(offset, 16);
 
-            fmt::println("    {:08X}: {: <40} {}", offset, toHexDump(chunk), toPrintable(chunk, '.'));
+            fmt::println("    {:08X}: {: <40}  {}", offset, toHexDump(chunk), toPrintable(chunk, '.'));
         }
     }
 

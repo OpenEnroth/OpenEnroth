@@ -3,7 +3,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <cassert>
+#include <memory>
 #include <initializer_list>
+
+#include "RandomEngineEnums.h"
 
 /**
  * Random number generator interface.
@@ -13,6 +16,8 @@
 class RandomEngine {
  public:
     virtual ~RandomEngine() = default;
+
+    static std::unique_ptr<RandomEngine> create(RandomEngineType type);
 
     /**
      * @return                          Random floating point number in range `[0, 1)`.

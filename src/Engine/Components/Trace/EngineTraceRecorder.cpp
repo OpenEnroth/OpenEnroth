@@ -40,6 +40,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     game->tick();
 
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
+    RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
     int traceFpsLimit = 1000 / frameTimeMs;
 
     _trace->header.config = EngineTraceStateAccessor::makeConfigPatch(engine->config.get());
@@ -51,10 +52,10 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     _trace->header.saveFileSize = std::filesystem::file_size(_savePath);
 
     game->goToMainMenu(); // This might call into a random engine.
-    _deterministicComponent->restart(frameTimeMs);
+    _deterministicComponent->restart(frameTimeMs, rngType);
     game->loadGame(savePath);
     _trace->header.afterLoadRandomState = grng->peek(1024);
-    _deterministicComponent->restart(frameTimeMs);
+    _deterministicComponent->restart(frameTimeMs, rngType);
     _keyboardController->reset(); // Reset all pressed buttons.
 
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();

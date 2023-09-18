@@ -30,6 +30,11 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformLogLevel, CASE_INSENSITIVE, {
     {LOG_CRITICAL, "critical"},
 })
 
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RandomEngineType, CASE_INSENSITIVE, {
+    {RANDOM_ENGINE_MERSENNE_TWISTER, "mersenne_twister"},
+    {RANDOM_ENGINE_SEQUENTIAL, "sequential"}
+})
+
 GameConfig::GameConfig() = default;
 GameConfig::~GameConfig() = default;
 

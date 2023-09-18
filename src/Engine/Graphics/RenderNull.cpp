@@ -13,6 +13,11 @@ bool RenderNull::Initialize() {
     return RenderBase::Initialize();
 }
 
+bool RenderNull::Reinitialize(bool firstInit) {
+    openGLContext->swapBuffers();
+    return RenderBase::Reinitialize(firstInit);
+}
+
 bool RenderNull::NuklearInitialize(struct nk_tex_font *tfont) {
     return false;
 }
