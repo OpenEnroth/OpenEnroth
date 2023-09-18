@@ -1503,9 +1503,8 @@ int Character::StealFromShop(
 }
 
 //----- (0048D88B) --------------------------------------------------------
-int Character::StealFromActor(
-    unsigned int uActorID, int _steal_perm,
-    int reputation) {  // returns not used - should luck attribute affect
+StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation) {
+    // TODO(captainurist): returns not used - should luck attribute affect?
 
     Actor *actroPtr;
     actroPtr = &pActors[uActorID];

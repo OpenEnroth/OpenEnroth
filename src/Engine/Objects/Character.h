@@ -27,6 +27,13 @@
 class Actor;
 class GraphicsImage;
 
+enum class StealResult {
+    STEAL_BUSTED = 0, // Failed to steal & was caught.
+    STEAL_NOTHING = 1, // Either failed to steal, or there was nothing to steal.
+    STEAL_SUCCESS = 2, // Stolen successfully.
+};
+using enum StealResult;
+
 struct LloydBeacon {
     ~LloydBeacon() {
         // if (image != nullptr) {
@@ -78,13 +85,6 @@ union CharacterEquipment {
 
     CharacterEquipment() : pIndices() {}
 };
-
-
-// TODO(captainurist): ENUM!
-#define STEAL_BUSTED   0
-#define STEAL_NOTHING  1
-#define STEAL_SUCCESS  2
-
 
 class CharacterConditions {
  public:
@@ -193,7 +193,7 @@ class Character {
     bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
-    int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
+    StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
 
     /**
