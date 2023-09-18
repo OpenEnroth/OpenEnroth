@@ -378,6 +378,8 @@ void Game_StartDialogue(unsigned int actor_id) {
 }
 
 void Game_StartHirelingDialogue(unsigned int hireling_id) {
+    assert(hireling_id == 0 || hireling_id == 1);
+
     if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
 
     engine->_messageQueue->clear();
@@ -482,7 +484,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_StartHireling1Dialogue:
             case UIMSG_StartHireling2Dialogue:
-                Game_StartHirelingDialogue(uMessage - UIMSG_StartHireling1Dialogue);
+                Game_StartHirelingDialogue(uMessage == UIMSG_StartHireling1Dialogue ? 0 : 1);
                 continue;
             case UIMSG_HouseScreenClick:
                 if (window_SpeakInHouse) {
