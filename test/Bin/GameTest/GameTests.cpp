@@ -1673,6 +1673,13 @@ GAME_TEST(Issues, Issue1277) {
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
 }
 
+GAME_TEST(Issues, Issue1281) {
+    // Assert when drinking from THE WELL in Eofol.
+    auto acTape = ctapes.ac(0);
+    test.playTraceFromTestData("issue_1281.mm7", "issue_1281.json");
+    EXPECT_EQ(acTape.delta(), -50); // We've hit the -50 AC branch in the script that used to trigger the assertion.
+}
+
 GAME_TEST(Issues, Issue1282) {
     // Picking up an item asserts.
     auto itemTape = tapes.hasItem(ITEM_LEATHER_ARMOR);

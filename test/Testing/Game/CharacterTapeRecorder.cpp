@@ -56,6 +56,14 @@ TestMultiTape<int> CharacterTapeRecorder::mps() {
     return custom(bind(&Character::mana));
 }
 
+TestTape<int> CharacterTapeRecorder::ac(int characterIndex) {
+    return custom(characterIndex, bind(&Character::GetActualAC));
+}
+
+TestMultiTape<int> CharacterTapeRecorder::acs() {
+    return custom(bind(&Character::GetActualAC));
+}
+
 TestTape<int> CharacterTapeRecorder::level(int characterIndex) {
     return custom(characterIndex, bind(&Character::GetActualLevel));
 }
