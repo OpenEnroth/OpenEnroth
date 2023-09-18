@@ -385,8 +385,6 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
     if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
         ITEM_EQUIP_TYPE requested_equip;
         CharacterSkillType requested_skill = CHARACTER_SKILL_INVALID;
-        // TODO(captainurist): enum!
-        //  See https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L592
         switch (uTreasureType) {
             case RANDOM_ITEM_WEAPON:
                 requested_equip = EQUIP_SINGLE_HANDED;

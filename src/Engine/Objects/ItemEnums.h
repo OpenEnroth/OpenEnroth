@@ -1294,6 +1294,8 @@ inline Segment<ItemSlot> allItemSlots() {
 
 /**
  * Item types used in random item creation code.
+ *
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L592
  */
 enum class RandomItemType {
     RANDOM_ITEM_ANY = 0,
@@ -1329,6 +1331,7 @@ enum class RandomItemType {
     RANDOM_ITEM_REAGENT = 45,
     RANDOM_ITEM_GEM = 46,
     // MMExtension also has Gems2 = 47
+    //                  and Gold_ = 50
 
     RANDOM_ITEM_FIRST_SPAWNABLE = RANDOM_ITEM_WEAPON,
     RANDOM_ITEM_LAST_SPAWNABLE = RANDOM_ITEM_GEM
