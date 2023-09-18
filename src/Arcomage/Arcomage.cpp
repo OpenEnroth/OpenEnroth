@@ -11,7 +11,6 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/AssetsManager.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 
@@ -20,6 +19,7 @@
 
 #include "Library/Random/Random.h"
 
+#include "Utility/IndexedArray.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -572,7 +572,7 @@ bool ArcomageGame::LoadSprites() {
 
 int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
                        ArcomageCard *pCard, int mastery) {
-    enum V_IND {
+    enum class V_IND {
         P_TOWER_M10,
         P_WALL_M10,
         E_TOWER,
@@ -581,23 +581,23 @@ int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
         E_QUARRY,
         E_MAGIC,
         E_ZOO,
-        E_RES,
-        V_INDEX_MAX
+        E_RES
     };
+    using enum V_IND;
 
     // mastery coeffs
     // base mastery focus on growing walls + tower
     // second level high priority on resource gen
-    const int mastery_coeff[V_INDEX_MAX][2] = {
-        {10, 5},  // P_TOWER_M10
-        {2, 1},   // P_WALL_M10
-        {1, 10},  // E_TOWER
-        {1, 3},   // E_WALL
-        {1, 7},   // E_BUILDINGS
-        {1, 5},   // E_QUARRY
-        {1, 40},  // E_MAGIC
-        {1, 40},  // E_ZOO
-        {1, 2}    // E_RES
+    static constexpr IndexedArray<std::array<int, 2>, P_TOWER_M10, E_RES> mastery_coeff = {
+        {P_TOWER_M10,   {{10, 5}}},
+        {P_WALL_M10,    {{2, 1}}},
+        {E_TOWER,       {{1, 10}}},
+        {E_WALL,        {{1, 3}}},
+        {E_BUILDINGS,   {{1, 7}}},
+        {E_QUARRY,      {{1, 5}}},
+        {E_MAGIC,       {{1, 40}}},
+        {E_ZOO,         {{1, 40}}},
+        {E_RES,         {{1, 2}}}
     };
 
     int card_power = 0;
