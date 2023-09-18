@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
    </div>
   </td>
  </tr>
@@ -110,6 +110,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae97c0d39944acb26a50e765cd746e74c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a804fd12d750831ab2f2e4abf398edecf"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a804fd12d750831ab2f2e4abf398edecf">toPrintable</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char placeholder)</td></tr>
 <tr class="separator:a804fd12d750831ab2f2e4abf398edecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a771656d291cc9aa88d9beff574dde194"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a771656d291cc9aa88d9beff574dde194">toHexDump</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, size_t groupSize)</td></tr>
+<tr class="separator:a771656d291cc9aa88d9beff574dde194"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a4ddc8ba5547805547250b2428a40b7c1" name="a4ddc8ba5547805547250b2428a40b7c1"></a>
@@ -343,6 +345,43 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a771656d291cc9aa88d9beff574dde194" name="a771656d291cc9aa88d9beff574dde194"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a771656d291cc9aa88d9beff574dde194">&#9670;&#160;</a></span>toHexDump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string toHexDump </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>groupSize</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p ><code>toHexDump("0123", 2)</code> is <code>"3132 3334"</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>String to convert. </td></tr>
+    <tr><td class="paramname">groupSize</td><td><a class="el" href="structSize.html">Size</a> of a single group, in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Hex dump of the provided string. </dd></dl>
 
 </div>
 </div>

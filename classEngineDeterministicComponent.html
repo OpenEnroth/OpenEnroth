@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
    </div>
   </td>
  </tr>
@@ -98,8 +98,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acfcd0ad13e5d85562ca37a93c2010480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10852e0704904fef89c35d4100a5b861"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a10852e0704904fef89c35d4100a5b861">~EngineDeterministicComponent</a> ()</td></tr>
 <tr class="separator:a10852e0704904fef89c35d4100a5b861"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90f05e88e12f55a7bdde1352ed7cb848"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a90f05e88e12f55a7bdde1352ed7cb848">restart</a> (int frameTimeMs)</td></tr>
-<tr class="separator:a90f05e88e12f55a7bdde1352ed7cb848"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af73c644caea59ca0a925be9ebdf447f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#af73c644caea59ca0a925be9ebdf447f3">restart</a> (int frameTimeMs, <a class="el" href="RandomEngineEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6">RandomEngineType</a> rngType)</td></tr>
+<tr class="separator:af73c644caea59ca0a925be9ebdf447f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe8828fbdd4ee0207d0d5e7a6c2d0b15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#abe8828fbdd4ee0207d0d5e7a6c2d0b15">finish</a> ()</td></tr>
 <tr class="separator:abe8828fbdd4ee0207d0d5e7a6c2d0b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22e8d6916c347d64a45dc9034ccdb38e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a22e8d6916c347d64a45dc9034ccdb38e">isActive</a> () const</td></tr>
@@ -359,8 +359,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a90f05e88e12f55a7bdde1352ed7cb848" name="a90f05e88e12f55a7bdde1352ed7cb848"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90f05e88e12f55a7bdde1352ed7cb848">&#9670;&#160;</a></span>restart()</h2>
+<a id="af73c644caea59ca0a925be9ebdf447f3" name="af73c644caea59ca0a925be9ebdf447f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af73c644caea59ca0a925be9ebdf447f3">&#9670;&#160;</a></span>restart()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -369,8 +369,18 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void EngineDeterministicComponent::restart </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>frameTimeMs</em></td><td>)</td>
+          <td class="paramname"><em>frameTimeMs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="RandomEngineEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6">RandomEngineType</a>&#160;</td>
+          <td class="paramname"><em>rngType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -379,6 +389,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">frameTimeMs</td><td>Frame time to use inside the segment, in milliseconds. </td></tr>
+    <tr><td class="paramname">rngType</td><td>Random engine type to use inside the segment. </td></tr>
   </table>
   </dd>
 </dl>

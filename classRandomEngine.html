@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e00f36</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classRandomEngine-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">RandomEngine Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
@@ -84,7 +85,7 @@ Inheritance diagram for RandomEngine:</div>
   <img src="classRandomEngine.png" usemap="#RandomEngine_map" alt=""/>
   <map id="RandomEngine_map" name="RandomEngine_map">
 <area href="classMersenneTwisterRandomEngine.html" alt="MersenneTwisterRandomEngine" shape="rect" coords="0,56,193,80"/>
-<area href="classNonRandomEngine.html" alt="NonRandomEngine" shape="rect" coords="203,56,396,80"/>
+<area href="classSequentialRandomEngine.html" alt="SequentialRandomEngine" shape="rect" coords="203,56,396,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -112,6 +113,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae015cc1f7d46a158fc90bf8f343080e4"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ae015cc1f7d46a158fc90bf8f343080e4"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#ae015cc1f7d46a158fc90bf8f343080e4">randomSample</a> (std::initializer_list&lt; T &gt; range)</td></tr>
 <tr class="separator:ae015cc1f7d46a158fc90bf8f343080e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a718a9ddeeedaefeee6ae48fe17ee45db"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a718a9ddeeedaefeee6ae48fe17ee45db">create</a> (<a class="el" href="RandomEngineEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6">RandomEngineType</a> type)</td></tr>
+<tr class="separator:a718a9ddeeedaefeee6ae48fe17ee45db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Random number generator interface.</p>
@@ -143,6 +149,32 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a718a9ddeeedaefeee6ae48fe17ee45db" name="a718a9ddeeedaefeee6ae48fe17ee45db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a718a9ddeeedaefeee6ae48fe17ee45db">&#9670;&#160;</a></span>create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt; RandomEngine::create </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="RandomEngineEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6">RandomEngineType</a>&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afabb574e571a0078bff4744677dff55d" name="afabb574e571a0078bff4744677dff55d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afabb574e571a0078bff4744677dff55d">&#9670;&#160;</a></span>peek()</h2>
 
@@ -175,7 +207,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Random number that the next call to <code>random(hi)</code> will return. </dd></dl>
 
-<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a17b4f21486d3814bf16f97f4319644df">MersenneTwisterRandomEngine</a>, and <a class="el" href="classNonRandomEngine.html#a5db7749bba16e948c4e56da8638f5d08">NonRandomEngine</a>.</p>
+<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a17b4f21486d3814bf16f97f4319644df">MersenneTwisterRandomEngine</a>, and <a class="el" href="classSequentialRandomEngine.html#a7967e9ee43df385542557a22eeaa305e">SequentialRandomEngine</a>.</p>
 
 </div>
 </div>
@@ -210,7 +242,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Random number in range <code>[0, hi)</code>. </dd></dl>
 
-<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a7da79864e8540dfe737f6d51e285fa38">MersenneTwisterRandomEngine</a>, and <a class="el" href="classNonRandomEngine.html#a95b07498efbb9db3416fcb272ef00c25">NonRandomEngine</a>.</p>
+<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a7da79864e8540dfe737f6d51e285fa38">MersenneTwisterRandomEngine</a>, and <a class="el" href="classSequentialRandomEngine.html#ac16a1cc8cf5ecebd17c620f7ca380727">SequentialRandomEngine</a>.</p>
 
 </div>
 </div>
@@ -301,7 +333,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Random floating point number in range <code>[0, 1)</code>. </dd></dl>
 
-<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a9fd6428f5d5911423a4c3c6212ddf677">MersenneTwisterRandomEngine</a>, and <a class="el" href="classNonRandomEngine.html#a33862021fdd3f29b7e9dd3d938b1205f">NonRandomEngine</a>.</p>
+<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a9fd6428f5d5911423a4c3c6212ddf677">MersenneTwisterRandomEngine</a>, and <a class="el" href="classSequentialRandomEngine.html#a9ce2ef1852ba44ef46ab57ee0d4060c1">SequentialRandomEngine</a>.</p>
 
 </div>
 </div>
@@ -435,7 +467,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a652eb0b97faec2c4d976d1b159567bb8">MersenneTwisterRandomEngine</a>, and <a class="el" href="classNonRandomEngine.html#a170afad0fc772644feab2bf73187be28">NonRandomEngine</a>.</p>
+<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a652eb0b97faec2c4d976d1b159567bb8">MersenneTwisterRandomEngine</a>, and <a class="el" href="classSequentialRandomEngine.html#a346974b4fda40c09b7fbe0c16a3f0749">SequentialRandomEngine</a>.</p>
 
 </div>
 </div>
