@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO(captainurist): #enum class + codegen
 enum SoundID {
     SOUND_Invalid = 0,
     SOUND_enter = 6,
@@ -120,12 +121,14 @@ enum SoundID {
     SOUND_quest = 20001,
 };
 
+// TODO(captainurist): #enum class
 enum MusicID {
     MUSIC_Invalid = 0,
     MUSIC_MainMenu = 14,
     MUSIC_Credits = 15
 };
 
+// TODO(captainurist): #enum class
 enum SOUND_TYPE {
     SOUND_TYPE_LEVEL = 0,
     SOUND_TYPE_SYSTEM = 1,
@@ -134,6 +137,7 @@ enum SOUND_TYPE {
     SOUND_TYPE_LOCK = 4,
 };
 
+// TODO(captainurist): #enum class
 enum SOUND_FLAG {
     SOUND_FLAG_LOCKED = 0x1,
     SOUND_FLAG_3D = 0x2,
