@@ -64,12 +64,13 @@ enum MONSTER_TYPE {
 };
 
 /*  335 */
-enum MONSTER_SPECIAL_ABILITY_TYPE {
+enum class MONSTER_SPECIAL_ABILITY_TYPE {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
     MONSTER_SPECIAL_ABILITY_SUMMON = 0x2,
     MONSTER_SPECIAL_ABILITY_EXPLODE = 0x3,
 };
+using enum MONSTER_SPECIAL_ABILITY_TYPE;
 
 enum MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_SHORT = 0x0,
@@ -167,10 +168,7 @@ struct MonsterInfo {
     uint8_t uResLight = 0;
     uint8_t uResDark = 0;
     uint8_t uResPhysical = 0;
-    uint8_t uSpecialAbilityType = 0;  // 0 SPECIAL_ABILITY_TYPE_NONE
-                                  // 1 SPECIAL_ABILITY_TYPE_SHOT
-                                  // 2 SPECIAL_ABILITY_TYPE_SUMMON
-                                  // 3 SPECIAL_ABILITY_TYPE_EXPLODE
+    MONSTER_SPECIAL_ABILITY_TYPE uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
     uint8_t uSpecialAbilityDamageDiceRolls = 0;
     uint8_t uSpecialAbilityDamageDiceSides = 0;
     uint8_t uSpecialAbilityDamageDiceBonus = 0;

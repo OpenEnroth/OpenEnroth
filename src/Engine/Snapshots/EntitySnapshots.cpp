@@ -1174,7 +1174,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.resLight = src.monsterInfo.uResLight;
     dst->pMonsterInfo.resDark = src.monsterInfo.uResDark;
     dst->pMonsterInfo.resPhysical = src.monsterInfo.uResPhysical;
-    dst->pMonsterInfo.specialAbilityType = src.monsterInfo.uSpecialAbilityType;
+    dst->pMonsterInfo.specialAbilityType = std::to_underlying(src.monsterInfo.uSpecialAbilityType);
     dst->pMonsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.uSpecialAbilityDamageDiceRolls;
     dst->pMonsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.uSpecialAbilityDamageDiceSides;
     dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.uSpecialAbilityDamageDiceBonus;
@@ -1268,7 +1268,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uResLight = src.pMonsterInfo.resLight;
     dst->monsterInfo.uResDark = src.pMonsterInfo.resDark;
     dst->monsterInfo.uResPhysical = src.pMonsterInfo.resPhysical;
-    dst->monsterInfo.uSpecialAbilityType = src.pMonsterInfo.specialAbilityType;
+    dst->monsterInfo.uSpecialAbilityType = static_cast<MONSTER_SPECIAL_ABILITY_TYPE>(src.pMonsterInfo.specialAbilityType);
     dst->monsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.specialAbilityDamageDiceRolls;
     dst->monsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->monsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;

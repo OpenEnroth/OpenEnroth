@@ -962,7 +962,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     case 38: {
                         //                    int param_num;
                         //                    char type_flag;
-                        pInfos[curr_rec_num].uSpecialAbilityType = 0;
+                        pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
                         pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus = 0;
                         strcpy(parse_str, test_string);
                         parse_str[0] = ' ';
@@ -972,15 +972,13 @@ void MonsterStats::Initialize(const Blob &monsters) {
                             //      v74 = v94.field_0;
                             if (parsed_field.uPropCount < 10) {
                                 if (iequals(parsed_field.pProperties[0], "shot")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        1;
+                                    pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_SHOT;
                                     pInfos[curr_rec_num]
                                         .uSpecialAbilityDamageDiceBonus = atoi(
                                         (char *)(parsed_field.pProperties[1] +
                                                  1));
                                 } else if (iequals(parsed_field.pProperties[0], "summon")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        2;
+                                    pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_SUMMON;
                                     if (parsed_field.uPropCount > 1) {
                                         str = parsed_field.pProperties[2];
                                         if (parsed_field.uPropCount > 2) {
@@ -1052,12 +1050,10 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                         if (pInfos[curr_rec_num]
                                                 .field_3C_some_special_attack ==
                                             -1)
-                                            pInfos[curr_rec_num]
-                                                .uSpecialAbilityType = 0;
+                                            pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
                                     }
                                 } else if (iequals(parsed_field.pProperties[0], "explode")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        3;
+                                    pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_EXPLODE;
                                     ParseDamage(
                                         (char *)parsed_field.pProperties[1],
                                         &pInfos[curr_rec_num]

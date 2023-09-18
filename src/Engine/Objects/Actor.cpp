@@ -817,7 +817,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
               pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
 
-    if (pActors[uActorID].monsterInfo.uSpecialAbilityType == 1) {
+    if (pActors[uActorID].monsterInfo.uSpecialAbilityType == MONSTER_SPECIAL_ABILITY_SHOT) {
         specAb = pActors[uActorID].monsterInfo.uSpecialAbilityDamageDiceBonus;
         if (specAb == 2) {
             a1.vPosition.z += 40;
@@ -3833,7 +3833,7 @@ bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
 
 //----- (0042704B) --------------------------------------------------------
 ABILITY_INDEX Actor::special_ability_use_check(int a2) {
-    if (this->monsterInfo.uSpecialAbilityType == 2 && this->monsterInfo.uSpecialAbilityDamageDiceBonus < 3 && grng->random(100) < 5)
+    if (this->monsterInfo.uSpecialAbilityType == MONSTER_SPECIAL_ABILITY_SUMMON && this->monsterInfo.uSpecialAbilityDamageDiceBonus < 3 && grng->random(100) < 5)
         this->SummonMinion(a2);
 
     bool okToCastSpell1 = this->_427102_IsOkToCastSpell(this->monsterInfo.uSpell1ID);
