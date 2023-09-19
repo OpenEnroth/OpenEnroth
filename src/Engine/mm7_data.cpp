@@ -2426,7 +2426,6 @@ int dword_5B65C4_cancelEventProcessing;
 int npcIdToDismissAfterDialogue;
 // std::array<char, 777> byte_5C3427;
 
-int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
 
 // std::array<char, 777> byte_5C8D1A;

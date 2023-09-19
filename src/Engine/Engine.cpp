@@ -1454,7 +1454,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                     break;
                 }
             }
-            if (!numPlayersCouldAct || _5C35C0_force_party_death)
+            if (!numPlayersCouldAct)
                 uGameState = GAME_STATE_PARTY_DIED;
         }
     }
