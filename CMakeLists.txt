@@ -28,7 +28,8 @@ set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
-set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available")
+set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
+set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that lld takes precedence.")
 
 # Find ccache / sccache.
@@ -55,8 +56,9 @@ if(OE_USE_SCCACHE AND NOT CCACHE_FOUND)
 endif()
 
 # Detect available linkers.
-check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
+check_linker_flag(CXX "-fuse-ld=mold" COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
+check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 
 # Set compiler options.
 # We do a lot of tweaks here.
@@ -73,11 +75,14 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    
-    if(USE_LD_LLD AND COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
+
+    if(OE_USE_LD_MOLD AND COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
+        message(STATUS "Using mold linker.")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=mold")
+    elseif(OE_USE_LD_LLD AND COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
         message(STATUS "Using lld linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
-    elseif(USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
+    elseif(OE_USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
         message(STATUS "Using gold linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
     else()
