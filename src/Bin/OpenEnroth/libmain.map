@@ -1,6 +1,6 @@
 /* Linker script used when linking libmain.so for Android.
  * Note that SDL_main is declared in SdlMain.cpp. */
 {
-  global: SDL_main;
-  local: *;
+    global: SDL_main;
+    local: *;
 };
