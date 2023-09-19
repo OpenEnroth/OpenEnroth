@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
+#include "Engine/Objects/MonsterEnums.h"
 
 class Blob;
 

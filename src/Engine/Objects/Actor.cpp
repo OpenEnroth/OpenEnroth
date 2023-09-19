@@ -51,8 +51,7 @@ std::vector<Actor> pActors;
 
 stru319 stru_50C198;  // idb
 
-// TODO(captainurist): HOSTILITY_FIRST, HOSTILITY_LAST
-static constexpr IndexedArray<int, HOSTILITY_FRIENDLY, HOSTILITY_LONG> _4DF380_hostilityRanges = {
+static constexpr IndexedArray<int, HOSTILITY_FIRST, HOSTILITY_LAST> _4DF380_hostilityRanges = {
     {HOSTILITY_FRIENDLY, 0},
     {HOSTILITY_CLOSE, 1024},
     {HOSTILITY_SHORT, 2560},

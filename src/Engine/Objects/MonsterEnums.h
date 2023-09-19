@@ -133,6 +133,9 @@ enum class MonsterHostility {
     HOSTILITY_CLOSE = 1,
     HOSTILITY_SHORT = 2,
     HOSTILITY_MEDIUM = 3,
-    HOSTILITY_LONG = 4
+    HOSTILITY_LONG = 4,
+
+    HOSTILITY_FIRST = HOSTILITY_FRIENDLY,
+    HOSTILITY_LAST = HOSTILITY_LONG
 };
 using enum MonsterHostility;
