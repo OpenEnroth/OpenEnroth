@@ -308,7 +308,7 @@ struct Party {
     unsigned int uNumFoodRations;
     unsigned int uNumGold;
     unsigned int uNumGoldInBank;
-    unsigned int uNumDeaths;
+    int uNumDeaths;
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
     IndexedArray<MONSTER_TYPE, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;

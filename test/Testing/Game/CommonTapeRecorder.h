@@ -49,6 +49,8 @@ class CommonTapeRecorder {
 
     TestTape<int> food();
 
+    TestTape<int> deaths();
+
     TestTape<std::string> map();
 
     TestTape<ScreenType> screen();
@@ -58,6 +60,8 @@ class CommonTapeRecorder {
     TestTape<DIALOGUE_TYPE> dialogueType();
 
     TestTape<GameTime> time();
+
+    TestTape<bool> turnBasedMode();
 
     template<class T>
     TestTape<T> config(const ConfigEntry<T> &entry) {

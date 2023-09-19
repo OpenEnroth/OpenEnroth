@@ -56,6 +56,10 @@ TestTape<int> CommonTapeRecorder::food() {
     return custom([] { return pParty->GetFood(); });
 }
 
+TestTape<int> CommonTapeRecorder::deaths() {
+    return custom([] { return pParty->uNumDeaths; });
+}
+
 TestTape<std::string> CommonTapeRecorder::map() {
     return custom([] { return toLower(pCurrentMapName); });
 }
@@ -82,4 +86,8 @@ TestTape<DIALOGUE_TYPE> CommonTapeRecorder::dialogueType() {
 
 TestTape<GameTime> CommonTapeRecorder::time() {
     return custom([] { return pParty->GetPlayingTime(); });
+}
+
+TestTape<bool> CommonTapeRecorder::turnBasedMode() {
+    return custom([] { return pParty->bTurnBasedModeOn; });
 }

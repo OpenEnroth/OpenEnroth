@@ -1166,7 +1166,7 @@ GAME_TEST(Issues, Issue735c) {
 
 GAME_TEST(Issues, Issue735d) {
     // Trace-only test: turn-based battle with ~60 monsters in a dungeon, casting poison cloud.
-    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    auto turnBasedTape = tapes.turnBasedMode();
     test.playTraceFromTestData("issue_735d.mm7", "issue_735d.json");
     EXPECT_EQ(turnBasedTape, tape(false, true, false));
 }
@@ -1634,7 +1634,7 @@ GAME_TEST(Issues, Issue1196) {
 GAME_TEST(Issues, Issue1197) {
     // Assert on party death
     auto loc = tapes.map();
-    auto deaths = tapes.custom([] { return pParty->uNumDeaths; });
+    auto deaths = tapes.deaths();
     test.playTraceFromTestData("issue_1197.mm7", "issue_1197.json");
     EXPECT_TRUE(loc.contains("out01.odm")); // make it back to emerald
     EXPECT_EQ(deaths.delta(), 1);
@@ -1693,4 +1693,18 @@ GAME_TEST(Issues, Issue1282) {
     test.playTraceFromTestData("issue_1282.mm7", "issue_1282.json");
     EXPECT_EQ(itemTape, tape(false, true));
     EXPECT_EQ(totalObjectsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue1315) {
+    // Dying in turn-based mode asserts.
+    auto deathsTape = tapes.deaths();
+    auto mapTape = tapes.map();
+    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
+    test.playTraceFromTestData("issue_1315.mm7", "issue_1315.json");
+    EXPECT_EQ(deathsTape.delta(), +1);
+    EXPECT_EQ(mapTape, tape("out12.odm", "out02.odm")); // Land of the Giants -> Harmondale.
+    EXPECT_EQ(stateTape, tape(std::tuple(false, GAME_STATE_PLAYING),
+                              std::tuple(true, GAME_STATE_PLAYING),
+                              std::tuple(false, GAME_STATE_PARTY_DIED), // Instant switch from turn-based & alive into realtime & dead,
+                              std::tuple(false, GAME_STATE_PLAYING)));  // meaning that the party died in turn-based mode.
 }
