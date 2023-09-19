@@ -22,6 +22,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
         set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT OFF)
     endif()
 endif()
+if (BUILD_PLATFORM STREQUAL "linux" AND BUILD_ARCHITECTURE STREQUAL "x86")
+    # Prebuilt ffmpeg on x86 linux is built with --enable-asm, and lld chokes when trying to link with it.
+    set(OE_USE_LD_LLD_DEFAULT OFF)
+else()
+    set(OE_USE_LD_LLD_DEFAULT ON)
+endif()
 
 # User-settable options.
 set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
@@ -29,7 +35,7 @@ set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE B
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
-set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
+set(OE_USE_LD_LLD ${OE_USE_LD_LLD_DEFAULT} CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that lld takes precedence.")
 
 # Find ccache / sccache.
