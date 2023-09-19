@@ -1222,7 +1222,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                 pActors[i].speed.z = 0;
                 pActors[i].UpdateAnimation();
                 pActors[i].monsterInfo.uHostilityType =
-                    MonsterInfo::Hostility_Friendly;
+                    MonsterInfo::HOSTILITY_FRIENDLY;
                 pActors[i].PrepareSprites(0);
             } else {
                 pActors[i].aiState = AIState::Disabled;
@@ -1246,7 +1246,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
             pActors[i].speed.z = 0;
             pActors[i].UpdateAnimation();
             pActors[i].monsterInfo.uHostilityType =
-                MonsterInfo::Hostility_Friendly;
+                MonsterInfo::HOSTILITY_FRIENDLY;
             pActors[i].PrepareSprites(0);
         } else {
             pActors[i].aiState = AIState::Disabled;

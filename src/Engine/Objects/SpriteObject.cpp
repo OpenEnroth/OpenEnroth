@@ -243,7 +243,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             // TODO: why pActors.size() - 1? Should just check for .size()
             if ((actorId >= 0) && (actorId < (pActors.size() - 1))) {
                 for (int j = 0; j < pActors.size(); ++j) {
-                    if (pActors[actorId].GetActorsRelation(&pActors[j]) != MonsterInfo::Hostility_Friendly) {
+                    if (pActors[actorId].GetActorsRelation(&pActors[j]) != MonsterInfo::HOSTILITY_FRIENDLY) {
                         CollideWithActor(j, 0);
                     }
                 }
@@ -724,7 +724,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
     if (pid.type() == OBJECT_Actor) {
-        if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == MonsterInfo::Hostility_Friendly) {
+        if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == MonsterInfo::HOSTILITY_FRIENDLY) {
             return 1;
         }
     } else {

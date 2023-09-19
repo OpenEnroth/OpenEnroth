@@ -22,14 +22,14 @@ class Blob;
 
 struct MonsterInfo {
     // TODO(captainurist): move into global namespace.
-    enum class HostilityRadius {
-        Hostility_Friendly = 0,
-        Hostility_Close = 1,
-        Hostility_Short = 2,
-        Hostility_Medium = 3,
-        Hostility_Long = 4
+    enum class MonsterHostility {
+        HOSTILITY_FRIENDLY = 0,
+        HOSTILITY_CLOSE = 1,
+        HOSTILITY_SHORT = 2,
+        HOSTILITY_MEDIUM = 3,
+        HOSTILITY_LONG = 4
     };
-    using enum HostilityRadius;
+    using enum MonsterHostility;
 
     std::string pName;
     std::string pPictureName;
@@ -42,7 +42,7 @@ struct MonsterInfo {
     uint8_t uFlying = 0;
     MONSTER_MOVEMENT_TYPE uMovementType = MONSTER_MOVEMENT_TYPE_SHORT;
     uint8_t uAIType = 0;
-    HostilityRadius uHostilityType = Hostility_Friendly;
+    MonsterHostility uHostilityType = HOSTILITY_FRIENDLY;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t uSpecialAttackLevel = 0;
     DAMAGE_TYPE uAttack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.

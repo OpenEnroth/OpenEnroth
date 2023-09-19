@@ -36,7 +36,7 @@ void FactionTable::Initialize(const Blob &factions) {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step >= 1 && decode_step < 90)
-                    relations[decode_step - 1][i] = static_cast<MonsterInfo::HostilityRadius>(atoi(test_string));
+                    relations[decode_step - 1][i] = static_cast<MonsterInfo::MonsterHostility>(atoi(test_string));
             } else {
                 break_loop = true;
             }

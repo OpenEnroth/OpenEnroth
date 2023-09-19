@@ -2033,7 +2033,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
-                        pActors[monster_id].monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+                        pActors[monster_id].monsterInfo.uHostilityType = MonsterInfo::HOSTILITY_LONG;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3i(0, 0, pActors[monster_id].height);
