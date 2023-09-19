@@ -68,7 +68,7 @@ var searchData=
   ['isspellavailable_65',['isSpellAvailable',['../structPlayerSpellbookChapter__MM7.html#a4051c69a2fb48f3314e7ab5de8f27613',1,'PlayerSpellbookChapter_MM7']]],
   ['istreamindex_66',['iStreamIndex',['../classAudioBaseDataSource.html#a975642e6b538e7407a2ce15b380e44cd',1,'AudioBaseDataSource']]],
   ['item_67',['item',['../classEventIR.html#a7c4bab72bc13044429cf61d924a61e97',1,'EventIR::item()'],['../structConditionEquipment.html#ad737dc6f05c19c5dcfe33d1c4c8e562e',1,'ConditionEquipment::item()']]],
-  ['item_5fclass_68',['item_class',['../structITEM__VARIATION.html#a2cfed17d3aa15a8674b77499391f5641',1,'ITEM_VARIATION']]],
+  ['item_5fclass_68',['item_class',['../structITEM__VARIATION.html#ad945f8bbbe8aba97157fb0966df24e01',1,'ITEM_VARIATION']]],
   ['item_5fid_69',['item_id',['../classEventIR.html#a8b5007758972fc359fb3f56333327998',1,'EventIR']]],
   ['itemamountinshop_70',['itemAmountInShop',['../UIHouses_8cpp.html#a7bccd008c0f617f9cad0bf5892d89a31',1,'itemAmountInShop():&#160;UIHouses.cpp'],['../UIHouses_8h.html#a7bccd008c0f617f9cad0bf5892d89a31',1,'itemAmountInShop():&#160;UIHouses.cpp']]],
   ['itemenchantmenttimer_71',['ItemEnchantmentTimer',['../mm7__data_8cpp.html#a8868cd466719e95d5986b048cf971dee',1,'ItemEnchantmentTimer():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a8868cd466719e95d5986b048cf971dee',1,'ItemEnchantmentTimer():&#160;mm7_data.cpp']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5afd52a</span>
    </div>
   </td>
  </tr>
@@ -155,8 +155,8 @@ Variables</h2></td></tr>
 <tr class="separator:a6fe394cffecd5254e16a215e32b31039"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e9db421e817e41cc0c9363376c4b037"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structstru319.html">stru319</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a1e9db421e817e41cc0c9363376c4b037">stru_50C198</a></td></tr>
 <tr class="separator:a1e9db421e817e41cc0c9363376c4b037"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a322cec2b652af3f7d0ed42a5b3fa2edb"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a322cec2b652af3f7d0ed42a5b3fa2edb">_4DF380_hostilityRanges</a> = {0, 1024, 2560, 5120, 10240}</td></tr>
-<tr class="separator:a322cec2b652af3f7d0ed42a5b3fa2edb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9baf3ee301d4f6bda15ee517503cb8d"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afdf3bec052825ff919b4d2bef9895f10">MonsterInfo::HostilityRadius::Hostility_Friendly</a>, <a class="el" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afefc111c61e79ef5d8df5c81572b9690">MonsterInfo::HostilityRadius::Hostility_Long</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#af9baf3ee301d4f6bda15ee517503cb8d">_4DF380_hostilityRanges</a></td></tr>
+<tr class="separator:af9baf3ee301d4f6bda15ee517503cb8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a770c130797a0a50a7ef18fdc4869a9b2"><td class="memItemLeft" align="right" valign="top">std::array&lt; int16_t, 11 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a770c130797a0a50a7ef18fdc4869a9b2">word_4E8152</a> = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}}</td></tr>
 <tr class="separator:a770c130797a0a50a7ef18fdc4869a9b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -499,18 +499,38 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a322cec2b652af3f7d0ed42a5b3fa2edb" name="a322cec2b652af3f7d0ed42a5b3fa2edb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a322cec2b652af3f7d0ed42a5b3fa2edb">&#9670;&#160;</a></span>_4DF380_hostilityRanges</h2>
+<a id="af9baf3ee301d4f6bda15ee517503cb8d" name="af9baf3ee301d4f6bda15ee517503cb8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9baf3ee301d4f6bda15ee517503cb8d">&#9670;&#160;</a></span>_4DF380_hostilityRanges</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>, 5&gt; _4DF380_hostilityRanges = {0, 1024, 2560, 5120, 10240}</td>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, <a class="el" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afdf3bec052825ff919b4d2bef9895f10">MonsterInfo::HostilityRadius::Hostility_Friendly</a>, <a class="el" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afefc111c61e79ef5d8df5c81572b9690">MonsterInfo::HostilityRadius::Hostility_Long</a>&gt; _4DF380_hostilityRanges</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {<a class="code hl_enumvalue" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afdf3bec052825ff919b4d2bef9895f10">MonsterInfo::Hostility_Friendly</a>, 0},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07af33b81fdbc0f4a39f26b89b78ffb59cb">MonsterInfo::Hostility_Close</a>, 1024},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07a416d002e91622d9778763766c2e98602">MonsterInfo::Hostility_Short</a>, 2560},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07a965aa5f1f8e53bb93521da4b13eff8a6">MonsterInfo::Hostility_Medium</a>, 5120},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afefc111c61e79ef5d8df5c81572b9690">MonsterInfo::Hostility_Long</a>, 10240}</div>
+<div class="line">}</div>
+<div class="ttc" id="astructMonsterInfo_html_a110c64aadfccebdf40039599c96cde07a416d002e91622d9778763766c2e98602"><div class="ttname"><a href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07a416d002e91622d9778763766c2e98602">MonsterInfo::HostilityRadius::Hostility_Short</a></div><div class="ttdeci">@ Hostility_Short</div></div>
+<div class="ttc" id="astructMonsterInfo_html_a110c64aadfccebdf40039599c96cde07a965aa5f1f8e53bb93521da4b13eff8a6"><div class="ttname"><a href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07a965aa5f1f8e53bb93521da4b13eff8a6">MonsterInfo::HostilityRadius::Hostility_Medium</a></div><div class="ttdeci">@ Hostility_Medium</div></div>
+<div class="ttc" id="astructMonsterInfo_html_a110c64aadfccebdf40039599c96cde07af33b81fdbc0f4a39f26b89b78ffb59cb"><div class="ttname"><a href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07af33b81fdbc0f4a39f26b89b78ffb59cb">MonsterInfo::HostilityRadius::Hostility_Close</a></div><div class="ttdeci">@ Hostility_Close</div></div>
+<div class="ttc" id="astructMonsterInfo_html_a110c64aadfccebdf40039599c96cde07afdf3bec052825ff919b4d2bef9895f10"><div class="ttname"><a href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afdf3bec052825ff919b4d2bef9895f10">MonsterInfo::HostilityRadius::Hostility_Friendly</a></div><div class="ttdeci">@ Hostility_Friendly</div></div>
+<div class="ttc" id="astructMonsterInfo_html_a110c64aadfccebdf40039599c96cde07afefc111c61e79ef5d8df5c81572b9690"><div class="ttname"><a href="structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07afefc111c61e79ef5d8df5c81572b9690">MonsterInfo::HostilityRadius::Hostility_Long</a></div><div class="ttdeci">@ Hostility_Long</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a4be5eddf8db91559b1d06e3390387cc6" name="a4be5eddf8db91559b1d06e3390387cc6"></a>

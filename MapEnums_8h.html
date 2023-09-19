@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5afd52a</span>
    </div>
   </td>
  </tr>
@@ -80,9 +80,21 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &quot;<a class="el" href="SerializationFwd_8h.html">Library/Serialization/SerializationFwd.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:a450810edd1f1a49e5537842bef92750f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapEnums_8h.html#a450810edd1f1a49e5537842bef92750f">MapWeatherFlag</a> { <a class="el" href="MapEnums_8h.html#a450810edd1f1a49e5537842bef92750faad9c13f76fa00efa36b7af4fd503627a">MAP_WEATHER_FOGGY</a> = 1
+ }</td></tr>
+<tr class="separator:a450810edd1f1a49e5537842bef92750f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acaf0fa9ae53d9ba60cd809335aa4dd9c"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapEnums_8h.html#acaf0fa9ae53d9ba60cd809335aa4dd9c">LevelType</a> { <a class="el" href="MapEnums_8h.html#acaf0fa9ae53d9ba60cd809335aa4dd9ca675badcd96ab9718a444c76bdc330c7c">LEVEL_NULL</a> = 0
+, <a class="el" href="MapEnums_8h.html#acaf0fa9ae53d9ba60cd809335aa4dd9ca7309172e3641e88aae91fa8a831979f9">LEVEL_INDOOR</a> = 0x1
+, <a class="el" href="MapEnums_8h.html#acaf0fa9ae53d9ba60cd809335aa4dd9ca9a3a3b715f0aa8e2862fccf7bd44509b">LEVEL_OUTDOOR</a> = 0x2
+ }</td></tr>
+<tr class="separator:acaf0fa9ae53d9ba60cd809335aa4dd9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4d5251432e1a9e6803c0240cc492e18"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="MapEnums_8h.html#ae4d5251432e1a9e6803c0240cc492e18a08100875ef7374b310de5c908192348e">MODEL_INDOOR</a> = -1
+ }</td></tr>
+<tr class="separator:ae4d5251432e1a9e6803c0240cc492e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a270ed629fcd100c7ea16f8c87ebb86a0"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a> : uint32_t { <br />
 &#160;&#160;<a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0a590be42408444a6cca8d82a9202da84c">MAP_INVALID</a> = 0
 , <a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0a8356b2a33e5622955482b22513ab5cf0">MAP_EMERALD_ISLAND</a> = 1
@@ -194,9 +206,6 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="MapEnums_8h.html#aa5e8f9854586648a9b0c43f8572d84d1a857cc5511d19231dc3dd45077317816c">MAP_TREASURE_LEVEL_5</a> = 4
 , <a class="el" href="MapEnums_8h.html#aa5e8f9854586648a9b0c43f8572d84d1ae93a866dda3010da63e64fe498e6554d">MAP_TREASURE_LEVEL_6</a> = 5
 , <a class="el" href="MapEnums_8h.html#aa5e8f9854586648a9b0c43f8572d84d1abedc986712f77e79d57ca2a0428218a4">MAP_TREASURE_LEVEL_7</a> = 6
-, <a class="el" href="MapEnums_8h.html#aa5e8f9854586648a9b0c43f8572d84d1a3cc0310eddf9e22cdfd355258363c8b2">MAP_TREASURE_LEVEL_FIRST</a> = MAP_TREASURE_LEVEL_1
-, <br />
-&#160;&#160;<a class="el" href="MapEnums_8h.html#aa5e8f9854586648a9b0c43f8572d84d1a33813afc86213b1ec62092f15742b5e1">MAP_TREASURE_LEVEL_LAST</a> = MAP_TREASURE_LEVEL_7
 <br />
  }</td></tr>
 <tr class="separator:aa5e8f9854586648a9b0c43f8572d84d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,6 +221,50 @@ Enumerations</h2></td></tr>
 <tr class="separator:adad43ef8fbf56e2a3bc00fd08cca312f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ae4d5251432e1a9e6803c0240cc492e18" name="ae4d5251432e1a9e6803c0240cc492e18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4d5251432e1a9e6803c0240cc492e18">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae4d5251432e1a9e6803c0240cc492e18a08100875ef7374b310de5c908192348e" name="ae4d5251432e1a9e6803c0240cc492e18a08100875ef7374b310de5c908192348e"></a>MODEL_INDOOR&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="acaf0fa9ae53d9ba60cd809335aa4dd9c" name="acaf0fa9ae53d9ba60cd809335aa4dd9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acaf0fa9ae53d9ba60cd809335aa4dd9c">&#9670;&#160;</a></span>LevelType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="MapEnums_8h.html#acaf0fa9ae53d9ba60cd809335aa4dd9c">LevelType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="acaf0fa9ae53d9ba60cd809335aa4dd9ca675badcd96ab9718a444c76bdc330c7c" name="acaf0fa9ae53d9ba60cd809335aa4dd9ca675badcd96ab9718a444c76bdc330c7c"></a>LEVEL_NULL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acaf0fa9ae53d9ba60cd809335aa4dd9ca7309172e3641e88aae91fa8a831979f9" name="acaf0fa9ae53d9ba60cd809335aa4dd9ca7309172e3641e88aae91fa8a831979f9"></a>LEVEL_INDOOR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acaf0fa9ae53d9ba60cd809335aa4dd9ca9a3a3b715f0aa8e2862fccf7bd44509b" name="acaf0fa9ae53d9ba60cd809335aa4dd9ca9a3a3b715f0aa8e2862fccf7bd44509b"></a>LEVEL_OUTDOOR&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="aa5e8f9854586648a9b0c43f8572d84d1" name="aa5e8f9854586648a9b0c43f8572d84d1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5e8f9854586648a9b0c43f8572d84d1">&#9670;&#160;</a></span>MAP_TREASURE_LEVEL</h2>
 
@@ -242,8 +295,6 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="aa5e8f9854586648a9b0c43f8572d84d1a857cc5511d19231dc3dd45077317816c" name="aa5e8f9854586648a9b0c43f8572d84d1a857cc5511d19231dc3dd45077317816c"></a>MAP_TREASURE_LEVEL_5&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aa5e8f9854586648a9b0c43f8572d84d1ae93a866dda3010da63e64fe498e6554d" name="aa5e8f9854586648a9b0c43f8572d84d1ae93a866dda3010da63e64fe498e6554d"></a>MAP_TREASURE_LEVEL_6&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aa5e8f9854586648a9b0c43f8572d84d1abedc986712f77e79d57ca2a0428218a4" name="aa5e8f9854586648a9b0c43f8572d84d1abedc986712f77e79d57ca2a0428218a4"></a>MAP_TREASURE_LEVEL_7&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa5e8f9854586648a9b0c43f8572d84d1a3cc0310eddf9e22cdfd355258363c8b2" name="aa5e8f9854586648a9b0c43f8572d84d1a3cc0310eddf9e22cdfd355258363c8b2"></a>MAP_TREASURE_LEVEL_FIRST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa5e8f9854586648a9b0c43f8572d84d1a33813afc86213b1ec62092f15742b5e1" name="aa5e8f9854586648a9b0c43f8572d84d1a33813afc86213b1ec62092f15742b5e1"></a>MAP_TREASURE_LEVEL_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -379,6 +430,33 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="adad43ef8fbf56e2a3bc00fd08cca312faabc7217b6b4e9e3aba805eee010e66c2" name="adad43ef8fbf56e2a3bc00fd08cca312faabc7217b6b4e9e3aba805eee010e66c2"></a>MAP_START_POINT_SOUTH&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="adad43ef8fbf56e2a3bc00fd08cca312fac54b41b8225cb41fad4b69563a748bad" name="adad43ef8fbf56e2a3bc00fd08cca312fac54b41b8225cb41fad4b69563a748bad"></a>MAP_START_POINT_EAST&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="adad43ef8fbf56e2a3bc00fd08cca312fa78236482fc074eb31b2acce5d6cdd826" name="adad43ef8fbf56e2a3bc00fd08cca312fa78236482fc074eb31b2acce5d6cdd826"></a>MAP_START_POINT_WEST&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a450810edd1f1a49e5537842bef92750f" name="a450810edd1f1a49e5537842bef92750f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a450810edd1f1a49e5537842bef92750f">&#9670;&#160;</a></span>MapWeatherFlag</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="MapEnums_8h.html#a450810edd1f1a49e5537842bef92750f">MapWeatherFlag</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >MM7 has only one weather flag, but apparently we have more in MM8.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L412C8-L412C15">https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L412C8-L412C15</a> </dd></dl>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a450810edd1f1a49e5537842bef92750faad9c13f76fa00efa36b7af4fd503627a" name="a450810edd1f1a49e5537842bef92750faad9c13f76fa00efa36b7af4fd503627a"></a>MAP_WEATHER_FOGGY&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

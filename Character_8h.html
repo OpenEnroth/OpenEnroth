@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5afd52a</span>
    </div>
   </td>
  </tr>
@@ -75,7 +75,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Character.h File Reference</div></div>
 </div><!--header-->
@@ -90,12 +90,14 @@ $(function() {
 <code>#include &quot;<a class="el" href="Items_8h.html">Engine/Objects/Items.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellEnums_8h.html">Engine/Spells/SpellEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellBuff_8h.html">Engine/Spells/SpellBuff.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventEnums_8h.html">Engine/Events/EventEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Pid_8h.html">Engine/Pid.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GUIEnums_8h.html">GUI/GUIEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Utility/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
@@ -116,14 +118,13 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html">Character</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a9cd39d043f698a9e73f8295c8e198139"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a9cd39d043f698a9e73f8295c8e198139">STEAL_BUSTED</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:a9cd39d043f698a9e73f8295c8e198139"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe87ae619ab973e6df3311be2b35521d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#abe87ae619ab973e6df3311be2b35521d">STEAL_NOTHING</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:abe87ae619ab973e6df3311be2b35521d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92c7cffaa8ba5ea64f301cb2b83cfb3d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a92c7cffaa8ba5ea64f301cb2b83cfb3d">STEAL_SUCCESS</a>&#160;&#160;&#160;2</td></tr>
-<tr class="separator:a92c7cffaa8ba5ea64f301cb2b83cfb3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a51f13cd67eab73d698e32f940c0ba824"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a51f13cd67eab73d698e32f940c0ba824">StealResult</a> { <a class="el" href="Character_8h.html#a51f13cd67eab73d698e32f940c0ba824a2d6211593f810e8fcdba10b72f1d41f7">STEAL_BUSTED</a> = 0
+, <a class="el" href="Character_8h.html#a51f13cd67eab73d698e32f940c0ba824ab473d375815188b046d6c7b935d0ae95">STEAL_NOTHING</a> = 1
+, <a class="el" href="Character_8h.html#a51f13cd67eab73d698e32f940c0ba824a376555fd019849945eab5ab72cff5395">STEAL_SUCCESS</a> = 2
+ }</td></tr>
+<tr class="separator:a51f13cd67eab73d698e32f940c0ba824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -140,46 +141,31 @@ Functions</h2></td></tr>
 <tr class="memitem:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8">cycleCharacter</a> (bool backwards)</td></tr>
 <tr class="separator:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a9cd39d043f698a9e73f8295c8e198139" name="a9cd39d043f698a9e73f8295c8e198139"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cd39d043f698a9e73f8295c8e198139">&#9670;&#160;</a></span>STEAL_BUSTED</h2>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a51f13cd67eab73d698e32f940c0ba824" name="a51f13cd67eab73d698e32f940c0ba824"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51f13cd67eab73d698e32f940c0ba824">&#9670;&#160;</a></span>StealResult</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">#define STEAL_BUSTED&#160;&#160;&#160;0</td>
+          <td class="memname">enum class <a class="el" href="Character_8h.html#a51f13cd67eab73d698e32f940c0ba824">StealResult</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="abe87ae619ab973e6df3311be2b35521d" name="abe87ae619ab973e6df3311be2b35521d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe87ae619ab973e6df3311be2b35521d">&#9670;&#160;</a></span>STEAL_NOTHING</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STEAL_NOTHING&#160;&#160;&#160;1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a92c7cffaa8ba5ea64f301cb2b83cfb3d" name="a92c7cffaa8ba5ea64f301cb2b83cfb3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92c7cffaa8ba5ea64f301cb2b83cfb3d">&#9670;&#160;</a></span>STEAL_SUCCESS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STEAL_SUCCESS&#160;&#160;&#160;2</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a51f13cd67eab73d698e32f940c0ba824a2d6211593f810e8fcdba10b72f1d41f7" name="a51f13cd67eab73d698e32f940c0ba824a2d6211593f810e8fcdba10b72f1d41f7"></a>STEAL_BUSTED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a51f13cd67eab73d698e32f940c0ba824ab473d375815188b046d6c7b935d0ae95" name="a51f13cd67eab73d698e32f940c0ba824ab473d375815188b046d6c7b935d0ae95"></a>STEAL_NOTHING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a51f13cd67eab73d698e32f940c0ba824a376555fd019849945eab5ab72cff5395" name="a51f13cd67eab73d698e32f940c0ba824a376555fd019849945eab5ab72cff5395"></a>STEAL_SUCCESS&#160;</td><td class="fielddoc"></td></tr>
+</table>
 
 </div>
 </div>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5afd52a</span>
    </div>
   </td>
  </tr>
@@ -82,9 +82,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a220a1995f8a01ff3556b5fb2c6ae072b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">Type</a> { <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015">TYPE_None</a> = 0
-, <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba7d7f91a7f500ac551bba7eb426d12dce">TYPE_Fullscreen</a> = 1
-, <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba9c59acc74de3663121b8fbfd9bfcd043">TYPE_Box</a> = 2
+<tr class="memitem:a220a1995f8a01ff3556b5fb2c6ae072b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">Type</a> { <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba792833a7aa327a420c561bc69f27b413">TYPE_None</a> = 0
+, <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072baf940c27e7ba6f5cc5c404f534999606c">TYPE_Fullscreen</a> = 1
+, <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072baed407b9a8ba33b67d8f81ee6c74ede2c">TYPE_Box</a> = 2
  }</td></tr>
 <tr class="separator:a220a1995f8a01ff3556b5fb2c6ae072b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -117,7 +117,7 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a8d1005b1e5dc41e822bb569f0968806b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a931a8a1b232945dfa66d55da7925e149"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIProgressBar.html#a931a8a1b232945dfa66d55da7925e149">uProgressCurrent</a> = 0</td></tr>
 <tr class="separator:a931a8a1b232945dfa66d55da7925e149"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae30b151e76bcc65ee3e6b029c739a076"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIProgressBar.html#ae30b151e76bcc65ee3e6b029c739a076">uType</a> = <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015">TYPE_None</a></td></tr>
+<tr class="memitem:ae30b151e76bcc65ee3e6b029c739a076"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIProgressBar.html#ae30b151e76bcc65ee3e6b029c739a076">uType</a> = <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba792833a7aa327a420c561bc69f27b413">TYPE_None</a></td></tr>
 <tr class="separator:ae30b151e76bcc65ee3e6b029c739a076"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e394b63de00fa9e9a3ce0fcb4a908ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIProgressBar.html#a8e394b63de00fa9e9a3ce0fcb4a908ca">progressbar_dungeon</a> = nullptr</td></tr>
 <tr class="separator:a8e394b63de00fa9e9a3ce0fcb4a908ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,16 +132,24 @@ Protected Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">GUIProgressBar::Type</a></td>
+          <td class="memname">enum class <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">GUIProgressBar::Type</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015" name="a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015"></a>TYPE_None&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a220a1995f8a01ff3556b5fb2c6ae072ba7d7f91a7f500ac551bba7eb426d12dce" name="a220a1995f8a01ff3556b5fb2c6ae072ba7d7f91a7f500ac551bba7eb426d12dce"></a>TYPE_Fullscreen&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a220a1995f8a01ff3556b5fb2c6ae072ba9c59acc74de3663121b8fbfd9bfcd043" name="a220a1995f8a01ff3556b5fb2c6ae072ba9c59acc74de3663121b8fbfd9bfcd043"></a>TYPE_Box&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a220a1995f8a01ff3556b5fb2c6ae072ba792833a7aa327a420c561bc69f27b413" name="a220a1995f8a01ff3556b5fb2c6ae072ba792833a7aa327a420c561bc69f27b413"></a>TYPE_None&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a220a1995f8a01ff3556b5fb2c6ae072baf940c27e7ba6f5cc5c404f534999606c" name="a220a1995f8a01ff3556b5fb2c6ae072baf940c27e7ba6f5cc5c404f534999606c"></a>TYPE_Fullscreen&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a220a1995f8a01ff3556b5fb2c6ae072baed407b9a8ba33b67d8f81ee6c74ede2c" name="a220a1995f8a01ff3556b5fb2c6ae072baed407b9a8ba33b67d8f81ee6c74ede2c"></a>TYPE_Box&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -394,7 +402,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">Type</a> GUIProgressBar::uType = <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015">TYPE_None</a></td>
+          <td class="memname"><a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b">Type</a> GUIProgressBar::uType = <a class="el" href="classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba792833a7aa327a420c561bc69f27b413">TYPE_None</a></td>
         </tr>
       </table>
   </td>

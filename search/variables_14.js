@@ -172,7 +172,7 @@ var searchData=
   ['trap_5fd20_169',['Trap_D20',['../structMapInfo.html#abfbedcfc752242446552c31ec3b56787',1,'MapInfo']]],
   ['treasure_5flevel_170',['treasure_level',['../structITEM__VARIATION.html#a38f52accb7357412c835aa1dc389fe50',1,'ITEM_VARIATION::treasure_level()'],['../classEventIR.html#a21d22c072e88c73d3df73ea6b33b0e5b',1,'EventIR::treasure_level()']]],
   ['treasure_5fprob_171',['Treasure_prob',['../structMapInfo.html#ab6a1628d0799f7aa74ea6b409432233c',1,'MapInfo']]],
-  ['treasure_5ftype_172',['treasure_type',['../classEventIR.html#ac18e11fb04b84cff258c210b9938195d',1,'EventIR']]],
+  ['treasure_5ftype_172',['treasure_type',['../classEventIR.html#aa06a5e9400f710fda4d1034a8e3c030f',1,'EventIR']]],
   ['treasuredicerolls_173',['treasureDiceRolls',['../structMonsterInfo__MM7.html#a240c6ae74fb709de3ee22e93b0a3d541',1,'MonsterInfo_MM7']]],
   ['treasuredicesides_174',['treasureDiceSides',['../structMonsterInfo__MM7.html#a873544396d753f2efc34177c73efbb02',1,'MonsterInfo_MM7']]],
   ['treasuredropchance_175',['treasureDropChance',['../structMonsterInfo__MM7.html#a7ffe2488487866a1afb839f9bd9f8ba1',1,'MonsterInfo_MM7']]],

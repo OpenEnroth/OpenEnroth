@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5afd52a</span>
    </div>
   </td>
  </tr>
@@ -144,8 +144,8 @@ Functions</h2></td></tr>
 <tr class="separator:a0143a0f4fd2506eacca48c9a49fa429d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ade8cf7c9c3b40262beff80284e3b05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a2ade8cf7c9c3b40262beff80284e3b05">GetSkillColor</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> uPlayerClass, <a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> uPlayerSkillType, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> skill_mastery)</td></tr>
 <tr class="separator:a2ade8cf7c9c3b40262beff80284e3b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a805b1b5ed0677d8ffc7b21bb98a47389"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a805b1b5ed0677d8ffc7b21bb98a47389">BuildDialogueString</a> (const std::string &amp;str, uint8_t uPlayerID, <a class="el" href="structItemGen.html">ItemGen</a> *a3, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> houseId, int shop_screen, <a class="el" href="structGameTime.html">GameTime</a> *a6)</td></tr>
-<tr class="separator:a805b1b5ed0677d8ffc7b21bb98a47389"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67dad30ca2d084fbbdda1e931ddda62d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a67dad30ca2d084fbbdda1e931ddda62d">BuildDialogueString</a> (const std::string &amp;str, uint8_t uPlayerID, <a class="el" href="structItemGen.html">ItemGen</a> *a3, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> houseId, <a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368">ShopScreen</a> shop_screen, <a class="el" href="structGameTime.html">GameTime</a> *a6)</td></tr>
+<tr class="separator:a67dad30ca2d084fbbdda1e931ddda62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a820ed99a03030a29e6d14ef53cfa20d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a820ed99a03030a29e6d14ef53cfa20d8">MainMenuUI_LoadFontsAndSomeStuff</a> ()</td></tr>
 <tr class="separator:a820ed99a03030a29e6d14ef53cfa20d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ee385e81873672505e1eb405756b1e7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a1ee385e81873672505e1eb405756b1e7">LoadPartyBuffIcons</a> ()</td></tr>
@@ -231,8 +231,8 @@ Variables</h2></td></tr>
 <tr class="separator:a6a3c796267cdd3f6fa9904442eb6f21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a805b1b5ed0677d8ffc7b21bb98a47389" name="a805b1b5ed0677d8ffc7b21bb98a47389"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a805b1b5ed0677d8ffc7b21bb98a47389">&#9670;&#160;</a></span>BuildDialogueString()</h2>
+<a id="a67dad30ca2d084fbbdda1e931ddda62d" name="a67dad30ca2d084fbbdda1e931ddda62d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67dad30ca2d084fbbdda1e931ddda62d">&#9670;&#160;</a></span>BuildDialogueString()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -252,20 +252,20 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">struct <a class="el" href="structItemGen.html">ItemGen</a> *&#160;</td>
-          <td class="paramname"><em>a3</em>, </td>
+          <td class="paramtype"><a class="el" href="structItemGen.html">ItemGen</a> *&#160;</td>
+          <td class="paramname"><em>a3</em> = <code>nullptr</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a>&#160;</td>
-          <td class="paramname"><em>houseId</em>, </td>
+          <td class="paramname"><em>houseId</em> = <code><a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8c0598eacfd11554d227f7f920032e75">HOUSE_INVALID</a></code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>shop_screen</em>, </td>
+          <td class="paramtype"><a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368">ShopScreen</a>&#160;</td>
+          <td class="paramname"><em>shop_screen</em> = <code><a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368a0c40644c4ede1c06d261a68abeb95edf">SHOP_SCREEN_INVALID</a></code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

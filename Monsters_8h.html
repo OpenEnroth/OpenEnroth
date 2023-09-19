@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fc1400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5afd52a</span>
    </div>
   </td>
  </tr>
@@ -76,6 +76,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Monsters.h File Reference</div></div>
 </div><!--header-->
@@ -88,6 +89,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellEnums_8h.html">Engine/Spells/SpellEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CombinedSkillValue_8h.html">Engine/Objects/CombinedSkillValue.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ActorEnums_8h.html">ActorEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">ItemEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -104,125 +106,142 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a40319983e674274211bc156688920fde"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fde">MONSTER_TYPE</a> { <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea1a32958dd0d3d36afcaaa3f9fafb9a4a">MONSTER_DEVIL_1</a> = 0x16
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea5bd24a9cba0a9ce4601096ecec0dacb6">MONSTER_DEVIL_2</a> = 0x17
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea80531d341f3a0a25c10915bca7d3622f">MONSTER_DEVIL_3</a> = 0x18
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf03a793bf85966b23e90410496f19ff1">MONSTER_DRAGON_1</a> = 0x19
+<tr class="memitem:a40319983e674274211bc156688920fde"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fde">MONSTER_TYPE</a> { <br />
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea248c0e6f3ea2122ca838d3227b430448">MONSTER_0</a> = 0
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea5e0a860054768aba7b1f22ff42345264">MONSTER_1</a> = 1
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeac4988614b25f04da3b57824c6085d35e">MONSTER_DEVIL_1</a> = 22
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea495daf67b9dc01dec0a8e8eeddfbfabc">MONSTER_DEVIL_2</a> = 23
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaff1541b0e0659c8b92f87219f1288153">MONSTER_DRAGON_2</a> = 0x1A
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9d8b8b67492608c5e6a950ce6bcac1e6">MONSTER_DRAGON_3</a> = 0x1B
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea095bde12c394ca1c67afab796fae9813">MONSTER_ELEMENTAL_WATER_1</a> = 0x2E
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeae75761cd3aa273f634c141878ed06cc2">MONSTER_ELEMENTAL_WATER_3</a> = 0x30
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeac38c703a2c7874b898c55d53e574e19c">MONSTER_DEVIL_3</a> = 24
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea235da4b401fd8e06a91bad2b2b46567c">MONSTER_DRAGON_1</a> = 25
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaab3d8dfd7523def9e48dc9b84ab81ec6">MONSTER_DRAGON_2</a> = 26
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea119dd85ebd74fae29e17b7b8304c283b">MONSTER_DRAGON_3</a> = 27
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeac1848592446f9ca2a135a65de3b32864">MONSTER_ELF_ARCHER_1</a> = 0x31
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea0807d44c3db66a3915d9d277d769cba1">MONSTER_ELF_ARCHER_3</a> = 0x33
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea171d614eeba392f2118d0d97ac9f551a">MONSTER_ELF_SPEARMAN_1</a> = 0x34
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeac6a17fa7d39871f7e3e88bc8c1e8fb16">MONSTER_ELF_SPEARMAN_3</a> = 0x36
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdead2e2d6dc1498221abb9e0ff38553e6b0">MONSTER_45</a> = 45
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea569ef6dfc21cbc10b53e27366cb1aa72">MONSTER_ELEMENTAL_WATER_1</a> = 46
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf93ea7104c29f01bfa094a7bf1c60d47">MONSTER_ELEMENTAL_WATER_3</a> = 48
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9fbcf4697fc45e8900e9c2375febe322">MONSTER_ELF_ARCHER_1</a> = 49
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea710d2dfc9919fadcc9e4de191ace9a8a">MONSTER_GHOST_1</a> = 0x46
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea287ddb483d1bdeabeb983c6a2fa377ae">MONSTER_GHOST_3</a> = 0x48
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea651384c1be10fd5b472758e0dac575db">MONSTER_HARPY_1</a> = 0x55
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea2ced1803f8a6bcac11d6f6ea159fe761">MONSTER_HARPY_2</a> = 0x56
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea0d1eb2541f82f291a7347e9e68c8e831">MONSTER_ELF_ARCHER_3</a> = 51
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeafd80627ae5cd34cacfd28886199e9c0f">MONSTER_ELF_SPEARMAN_1</a> = 52
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeacbcf7353ba72c4133d254d09466b394f">MONSTER_ELF_SPEARMAN_3</a> = 54
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea3afe803c2f7927db7af7b70f0472eb18">MONSTER_GHOST_1</a> = 70
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea835f216197d49bb102fe9ee99590e596">MONSTER_HARPY_3</a> = 0x57
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaa7eb4d8a116a2bbc3030c57153089cf1">MONSTER_LICH_1</a> = 0x5B
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf7402f28e9a2677ce96ae6a1641fc179">MONSTER_LICH_3</a> = 0x5D
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea7c438191f5b1027351eedc6229945532">MONSTER_OOZE_1</a> = 0x70
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeae81b782de7b5f7cd3c316950470dedca">MONSTER_GHOST_3</a> = 72
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea20ab987c0e17a0566e410b04dd580bf9">MONSTER_HARPY_1</a> = 85
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea86701041cfd8da681229477660c2eb7b">MONSTER_HARPY_2</a> = 86
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea6d9fe7814abaf7a74bf778b74f3c7ef4">MONSTER_HARPY_3</a> = 87
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeafa0da79531450844e8910aea8cd36cb6">MONSTER_OOZE_2</a> = 0x71
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf93272bb612e41953c2e4a058a16c7aa">MONSTER_OOZE_3</a> = 0x72
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeabd3fcb44f14793e6b196cdbecabdbcf0">MONSTER_PEASANT_ELF_FEMALE_1_1</a> = 0x85
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf9cd14e0631cb1f11078600e2ab997b1">MONSTER_PEASANT_ELF_MALE_3_3</a> = 0x96
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea084b55094876a15a664eb706f1bda300">MONSTER_LICH_1</a> = 91
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaa7b276aa34861b39da598f8a2607fc9b">MONSTER_LICH_3</a> = 93
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea14e773bf7b1e772532372e3d39bb98d4">MONSTER_OOZE_1</a> = 112
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9c35407f33b3fc65cc3aee66803e0cfa">MONSTER_OOZE_2</a> = 113
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaa35ae91f742239b875881299f8f15f0b">MONSTER_SKELETON_1</a> = 0xC7
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeacb2c62d0af17d32a3935a435fc4f85d3">MONSTER_SKELETON_3</a> = 0xC9
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeada198938fdbe5fbacdf88237fcc650aa">MONSTER_TITAN_1</a> = 0xD3
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea316e5e4ad3e7ceab585332255fa4df5b">MONSTER_TITAN_3</a> = 0xD5
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeafb17bd74038f8a254109d862ee1c6536">MONSTER_OOZE_3</a> = 114
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeadcdeac9414658b2a715c42b9a2e9d08c">MONSTER_115</a> = 115
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea920e9140e36d0169845d32522e205e1e">MONSTER_PEASANT_ELF_FEMALE_1_1</a> = 133
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdead5d27a22adc400ba211e7fa5660b9bfd">MONSTER_PEASANT_ELF_MALE_3_3</a> = 150
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea80f59d679a6a9b4eb73bfeb9bed9d72b">MONSTER_VAMPIRE_1</a> = 0xD9
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea7c305a8f8b7123dc100b1a3cf3751e1c">MONSTER_VAMPIRE_3</a> = 0xDB
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea5e402a0999ff71cd9cff0c21559bf233">MONSTER_WIGHT_1</a> = 0xDF
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf144c846b4f1beb781c94a99e8bdff99">MONSTER_WIGHT_3</a> = 0xE1
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea26a1911b439b935b57887cabaf58e4f8">MONSTER_186</a> = 186
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea7ea849622469db4632dc475aa9322b40">MONSTER_SKELETON_1</a> = 199
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea3e558391efa00f97702de40e0ce8d05a">MONSTER_SKELETON_3</a> = 201
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9ac7f35cb21b637cd14a3f2bca335f07">MONSTER_TITAN_1</a> = 211
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9659a4fe02bb96a8a7cf331556cdd3da">MONSTER_ZOMBIE_1</a> = 0xE5
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9366ebbfda04b4638f0a703cd4922bef">MONSTER_ZOMBIE_3</a> = 0xE7
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeadd0f3e256cc0c4b9fd637e900910bd0e">MONSTER_PEASANT_GOBLIN_MALE_3_3</a> = 0xF9
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeac47f35400807257f0c05efe23f6c082d">MONSTER_TROLL_1</a> = 0xFA
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeafd9a9e720a1d7ad28704acc9b9b7e25a">MONSTER_TITAN_3</a> = 213
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea5255c641dce11e2f887e71a3a25831c9">MONSTER_VAMPIRE_1</a> = 217
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea405a13d19eedd876360d788c2db141c0">MONSTER_VAMPIRE_3</a> = 219
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeabf060ddb713cc00be6a0aea46bec3701">MONSTER_WIGHT_1</a> = 223
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea7d34bd79a0c8140e7d2f8cd8433b00f4">MONSTER_TROLL_2</a> = 0xFB
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea9db8159caee33b36959a203d3a150581">MONSTER_TROLL_3</a> = 0xFC
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea40bdb2a17daeaaffadd702b77630299d">MONSTER_TREANT_1</a> = 0xFD
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea6b0592aa6786c7a4110db42a1a6f7591">MONSTER_TREANT_3</a> = 0xFF
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaec11c1931f24ac038c5d7df1f451ab6d">MONSTER_WIGHT_3</a> = 225
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea845ca59d8a12e6b90e437e44e1492e92">MONSTER_ZOMBIE_1</a> = 229
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea93382bbf71ec55024ee7ea507c67969a">MONSTER_ZOMBIE_3</a> = 231
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeade2be79dee25bd67238d7c384c1b807d">MONSTER_232</a> = 232
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeacbfdfcb9f2404aa5dd2e80786211af8a">MONSTER_GHOUL_1</a> = 0x100
-, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea4ae7408a30693c54cdb98f50e3b69d0e">MONSTER_GHOUL_3</a> = 0x102
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea928628bd0c8d7dfd37fd7a0078ab5bd3">MONSTER_PEASANT_GOBLIN_MALE_3_3</a> = 249
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaed8bc24dd35a2e9ff644c4511d5a372f">MONSTER_TROLL_1</a> = 250
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea95aa868b6fe13cabde8adb8bc797a3a4">MONSTER_TROLL_2</a> = 251
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea5b199c3a8d7ff778cbac403c8e652cb8">MONSTER_TROLL_3</a> = 252
+, <br />
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea2f8d398813e2497e5d6e8fcab76a3883">MONSTER_TREANT_1</a> = 253
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeae2f958ddae85f7e17be618c7c2a5fdee">MONSTER_TREANT_3</a> = 255
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea09bae2e9b4e8f127e3df18e51f52e69e">MONSTER_GHOUL_1</a> = 256
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaec12533c7f0320bea5b49c267b6c839b">MONSTER_GHOUL_3</a> = 258
+, <br />
+&#160;&#160;<a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea4cc005ed16ad55cc304dd275a5a18329">MONSTER_FIRST</a> = MONSTER_1
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaeba066196d7b381b8bb621e13b91b58c">MONSTER_LAST</a> = 277
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdea3dfa7ad6b5e1b862ea5500be1855e731">MONSTER_FIRST_ARENA</a> = MONSTER_1
+, <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fdeaf0e505ca8043dbf7506e6b305c81d0e8">MONSTER_LAST_ARENA</a> = MONSTER_GHOUL_3
 <br />
  }</td></tr>
 <tr class="separator:a40319983e674274211bc156688920fde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73127776c89e7acfb731224a6a6acf35"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35">MONSTER_SPECIAL_ABILITY_TYPE</a> { <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35a699c241251e056bc9653e863672cbe9e">MONSTER_SPECIAL_ABILITY_NONE</a> = 0x0
-, <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35a4ec54277d9580eef3bc853797fb519fb">MONSTER_SPECIAL_ABILITY_SHOT</a> = 0x1
-, <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35a12d6f6e2ef429ce0dc7183aaf9b9c00a">MONSTER_SPECIAL_ABILITY_SUMMON</a> = 0x2
-, <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35ad9dac11297a035db16d483e1274ff2ba">MONSTER_SPECIAL_ABILITY_EXPLODE</a> = 0x3
+<tr class="memitem:a73127776c89e7acfb731224a6a6acf35"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35">MONSTER_SPECIAL_ABILITY_TYPE</a> { <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35a9c1ee855afcf95b73c9ce4edafcb9d50">MONSTER_SPECIAL_ABILITY_NONE</a> = 0x0
+, <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35a46be1df2ae2c0af6f5b0c180afb9735e">MONSTER_SPECIAL_ABILITY_SHOT</a> = 0x1
+, <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35aa389623db6b99a7454f7916dd300fc68">MONSTER_SPECIAL_ABILITY_SUMMON</a> = 0x2
+, <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35a1210b74070324772c696471c4abef50c">MONSTER_SPECIAL_ABILITY_EXPLODE</a> = 0x3
  }</td></tr>
 <tr class="separator:a73127776c89e7acfb731224a6a6acf35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab27a6d5f6ecfc6e54c722ea094a31bd9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9">MONSTER_MOVEMENT_TYPE</a> { <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a58dae2a844530b091b0b570742334290">MONSTER_MOVEMENT_TYPE_SHORT</a> = 0x0
-, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9aa8b585d3758d4cf68e6a02582b4f8ba5">MONSTER_MOVEMENT_TYPE_MEDIUM</a> = 0x1
-, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a77b6febd5a5874863dc5ec896203809a">MONSTER_MOVEMENT_TYPE_LONG</a> = 0x2
-, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a09ae3fb649875029a4523c24ab890456">MONSTER_MOVEMENT_TYPE_GLOBAL</a> = 0x3
+<tr class="memitem:ab27a6d5f6ecfc6e54c722ea094a31bd9"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9">MONSTER_MOVEMENT_TYPE</a> { <br />
+&#160;&#160;<a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a191d095883b6e4e1429e2c00d6be7562">MONSTER_MOVEMENT_TYPE_SHORT</a> = 0x0
+, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a249b0b9a352c8af39ad964d7d63356fc">MONSTER_MOVEMENT_TYPE_MEDIUM</a> = 0x1
+, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9ac98e3fea20e49ea48df057e2bf11a497">MONSTER_MOVEMENT_TYPE_LONG</a> = 0x2
+, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a9fa2146bd30c9c381001d3d7525efa9b">MONSTER_MOVEMENT_TYPE_GLOBAL</a> = 0x3
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a614a0a51f0ecd4393d89a034ca983477">MONSTER_MOVEMENT_TYPE_FREE</a> = 0x4
-, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9ae2459dac3d6f776b9b2c9ddd63b66cd6">MONSTER_MOVEMENT_TYPE_STATIONARY</a> = 0x5
+&#160;&#160;<a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a091ab55875e74d839418a13597aca316">MONSTER_MOVEMENT_TYPE_FREE</a> = 0x4
+, <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9a51c71e65464b5d87231a2d39f8ce55cc">MONSTER_MOVEMENT_TYPE_STATIONARY</a> = 0x5
 <br />
  }</td></tr>
 <tr class="separator:ab27a6d5f6ecfc6e54c722ea094a31bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac552b73822a59b6fa1a2a38ae54ec8aa"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aa">MONSTER_SUPERTYPE</a> { <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa82fe32b64d793e60bd06df0d482cd2b7">MONSTER_SUPERTYPE_UNDEAD</a> = 0x1
-, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa3228b2101645e10c147bc1510146bc03">MONSTER_SUPERTYPE_KREEGAN</a> = 0x2
-, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaaf850334dc07c99421bb581240e37b956">MONSTER_SUPERTYPE_DRAGON</a> = 0x3
-, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa21f27f870c4cf2c6674ab1e4838c8a2f">MONSTER_SUPERTYPE_ELF</a> = 0x4
+<tr class="memitem:ac552b73822a59b6fa1a2a38ae54ec8aa"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aa">MONSTER_SUPERTYPE</a> { <br />
+&#160;&#160;<a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa86f419353a2a8a3180333dbda220923c">MONSTER_SUPERTYPE_UNDEAD</a> = 0x1
+, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaad9bc97168eb4fa6cd5637ce9ac4f28ad">MONSTER_SUPERTYPE_KREEGAN</a> = 0x2
+, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa14b290180ad8b91ad3b45c820a2fcd97">MONSTER_SUPERTYPE_DRAGON</a> = 0x3
+, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa58f181fa2cd718f34ec7553da714ae2d">MONSTER_SUPERTYPE_ELF</a> = 0x4
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa618a1c77f1bc51a2674ce97f85a7356e">MONSTER_SUPERTYPE_WATER_ELEMENTAL</a> = 0x5
-, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaabb1c978ee3f856b6997df70b97487c34">MONSTER_SUPERTYPE_TREANT</a> = 0x6
-, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa3108412401a9c71beb1d2f44ecaa19c0">MONSTER_SUPERTYPE_TITAN</a> = 0x7
-, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa65311088b89a9fd06ab1843d484c14d2">MONSTER_SUPERTYPE_8</a> = 0x8
+&#160;&#160;<a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaaf381f784faf70e78ffb89449875ba4b3">MONSTER_SUPERTYPE_WATER_ELEMENTAL</a> = 0x5
+, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaabc445b6d71db99092c2610d1edf2bd0c">MONSTER_SUPERTYPE_TREANT</a> = 0x6
+, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaae47f36d2b8c88a213dc624f06f082c99">MONSTER_SUPERTYPE_TITAN</a> = 0x7
+, <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aaa3ec28f283863a5534e3ead792eb74900">MONSTER_SUPERTYPE_8</a> = 0x8
 <br />
  }</td></tr>
 <tr class="separator:ac552b73822a59b6fa1a2a38ae54ec8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a067f95479d44d0b39da6439a62a06ba1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1">SPECIAL_ATTACK_TYPE</a> : uint8_t { <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a75fde9e9575f45be09b5fb289901aeb7">SPECIAL_ATTACK_NONE</a> = 0
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a92aaab8035f2ad5ecc89d1f110f49e7e">SPECIAL_ATTACK_CURSE</a> = 1
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a60f0271ccadbdac50f3aff175f7f376f">SPECIAL_ATTACK_WEAK</a> = 2
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1af559eae8fed74282fd5d9e2ef7549ab7">SPECIAL_ATTACK_SLEEP</a> = 3
+<tr class="memitem:a067f95479d44d0b39da6439a62a06ba1"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1">SPECIAL_ATTACK_TYPE</a> : uint8_t { <br />
+&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1adc78d8ed3e1c8f42e6a091eedb4e9570">SPECIAL_ATTACK_NONE</a> = 0
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a5317f2caf6e2da8abf4d6cb38429ed07">SPECIAL_ATTACK_CURSE</a> = 1
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1aba48b167c302dee47a32a9b9f78cbbcc">SPECIAL_ATTACK_WEAK</a> = 2
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a20713ac3a6b15d645c11c9e91c071336">SPECIAL_ATTACK_SLEEP</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a453c5f687781d9d0aacebc7caa57ffde">SPECIAL_ATTACK_DRUNK</a> = 4
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a916d088cd1d17abde81999e10527c2d7">SPECIAL_ATTACK_INSANE</a> = 5
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1aa90b5b633c23544c711d47cddd426e07">SPECIAL_ATTACK_POISON_WEAK</a> = 6
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a0556922c2a5beda56a4ddfdb960d0f44">SPECIAL_ATTACK_POISON_MEDIUM</a> = 7
+&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a01587a51b40e2232c0d00795b2252cfd">SPECIAL_ATTACK_DRUNK</a> = 4
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a1143f4bc77080303401ae99973e5c0eb">SPECIAL_ATTACK_INSANE</a> = 5
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a7a18af1087219542bcf8954f245dd652">SPECIAL_ATTACK_POISON_WEAK</a> = 6
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a39706e599da62cd2b4e2a6f6d2cdcdd3">SPECIAL_ATTACK_POISON_MEDIUM</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a6fd1babfa6f5f9f65513eb3c0ee84cdc">SPECIAL_ATTACK_POISON_SEVERE</a> = 8
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a7b9c148ebbe6b3985dce61346c2a1811">SPECIAL_ATTACK_DISEASE_WEAK</a> = 9
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a605298a7ad661ebf89629f596e4c8302">SPECIAL_ATTACK_DISEASE_MEDIUM</a> = 10
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a4eb69e888de50bf5b171af386b30051d">SPECIAL_ATTACK_DISEASE_SEVERE</a> = 11
+&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1ad4a563215324519a815806fe505adc1e">SPECIAL_ATTACK_POISON_SEVERE</a> = 8
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a67f02faac7707d28f58d46a78ede3f15">SPECIAL_ATTACK_DISEASE_WEAK</a> = 9
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a0b07fb273e3b2ded1e1d52d256fb66fd">SPECIAL_ATTACK_DISEASE_MEDIUM</a> = 10
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a7370454995480398b74e5029c1ca827d">SPECIAL_ATTACK_DISEASE_SEVERE</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a639a8880965f8141fce98604519a7c81">SPECIAL_ATTACK_PARALYZED</a> = 12
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a98e3f1bee174581bca810767f83caf9d">SPECIAL_ATTACK_UNCONSCIOUS</a> = 13
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a6cae9f8318af7a6699eb505fdebf5650">SPECIAL_ATTACK_DEAD</a> = 14
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a6a6a0174b6bd2d515e9cb0f523626a7b">SPECIAL_ATTACK_PETRIFIED</a> = 15
+&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a0beaf5c8b1b1d58439629b61b0e10581">SPECIAL_ATTACK_PARALYZED</a> = 12
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a82030081cbaa734ab3fe4b0f4e3c0092">SPECIAL_ATTACK_UNCONSCIOUS</a> = 13
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1acf72f3fa9d5b18575641df92e8249550">SPECIAL_ATTACK_DEAD</a> = 14
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a7a0755c315e9936cf3b62cc59499b63d">SPECIAL_ATTACK_PETRIFIED</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a4aa41d20f4551edbe325e518ff18e3cc">SPECIAL_ATTACK_ERADICATED</a> = 16
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1aa9dbd678b5de66e1a7610ffa535b54fa">SPECIAL_ATTACK_BREAK_ANY</a> = 17
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a55ba8bbe9993628a1a5f429ac21ffb67">SPECIAL_ATTACK_BREAK_ARMOR</a> = 18
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1ac21669f15f34ef8eb60bb4911b1d973a">SPECIAL_ATTACK_BREAK_WEAPON</a> = 19
+&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a6f1530dd80d3850fb77e3f0b11231af5">SPECIAL_ATTACK_ERADICATED</a> = 16
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a8ec2ce5827ebf3903d54ea31998526c1">SPECIAL_ATTACK_BREAK_ANY</a> = 17
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a5775b29e75867868c16d049c8efbf467">SPECIAL_ATTACK_BREAK_ARMOR</a> = 18
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1aeeab8e2f89f13fcdfdfffdeed41621bc">SPECIAL_ATTACK_BREAK_WEAPON</a> = 19
 , <br />
-&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a7ab6ba32463b783cfbd8bc9d599fda2f">SPECIAL_ATTACK_STEAL</a> = 20
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1ad1f43eca0a8aa6c907afeb8f17edff0e">SPECIAL_ATTACK_AGING</a> = 21
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1afd3c49502b46ddd52385d51c66b5ab4e">SPECIAL_ATTACK_MANA_DRAIN</a> = 22
-, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a5dc9fef4bebb358a86a23b1907e884cd">SPECIAL_ATTACK_FEAR</a> = 23
+&#160;&#160;<a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1af7546f545a828bff6efadc7449caf971">SPECIAL_ATTACK_STEAL</a> = 20
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a648f949872e11c9cdad2813f26e93bca">SPECIAL_ATTACK_AGING</a> = 21
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1aa2298f4b9c0feba216712cff2ff2ce1a">SPECIAL_ATTACK_MANA_DRAIN</a> = 22
+, <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1ab179e45ea1969793dba13c28feb7bb74">SPECIAL_ATTACK_FEAR</a> = 23
 <br />
  }</td></tr>
 <tr class="separator:a067f95479d44d0b39da6439a62a06ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:adf8b9da40a7f351963547d0c2e710efa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fde">MONSTER_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8h.html#adf8b9da40a7f351963547d0c2e710efa">allArenaMonsters</a> ()</td></tr>
+<tr class="separator:adf8b9da40a7f351963547d0c2e710efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -237,19 +256,27 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9">MONSTER_MOVEMENT_TYPE</a></td>
+          <td class="memname">enum class <a class="el" href="Monsters_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9">MONSTER_MOVEMENT_TYPE</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a58dae2a844530b091b0b570742334290" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a58dae2a844530b091b0b570742334290"></a>MONSTER_MOVEMENT_TYPE_SHORT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9aa8b585d3758d4cf68e6a02582b4f8ba5" name="ab27a6d5f6ecfc6e54c722ea094a31bd9aa8b585d3758d4cf68e6a02582b4f8ba5"></a>MONSTER_MOVEMENT_TYPE_MEDIUM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a77b6febd5a5874863dc5ec896203809a" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a77b6febd5a5874863dc5ec896203809a"></a>MONSTER_MOVEMENT_TYPE_LONG&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a09ae3fb649875029a4523c24ab890456" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a09ae3fb649875029a4523c24ab890456"></a>MONSTER_MOVEMENT_TYPE_GLOBAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a614a0a51f0ecd4393d89a034ca983477" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a614a0a51f0ecd4393d89a034ca983477"></a>MONSTER_MOVEMENT_TYPE_FREE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9ae2459dac3d6f776b9b2c9ddd63b66cd6" name="ab27a6d5f6ecfc6e54c722ea094a31bd9ae2459dac3d6f776b9b2c9ddd63b66cd6"></a>MONSTER_MOVEMENT_TYPE_STATIONARY&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a191d095883b6e4e1429e2c00d6be7562" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a191d095883b6e4e1429e2c00d6be7562"></a>MONSTER_MOVEMENT_TYPE_SHORT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a249b0b9a352c8af39ad964d7d63356fc" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a249b0b9a352c8af39ad964d7d63356fc"></a>MONSTER_MOVEMENT_TYPE_MEDIUM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9ac98e3fea20e49ea48df057e2bf11a497" name="ab27a6d5f6ecfc6e54c722ea094a31bd9ac98e3fea20e49ea48df057e2bf11a497"></a>MONSTER_MOVEMENT_TYPE_LONG&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a9fa2146bd30c9c381001d3d7525efa9b" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a9fa2146bd30c9c381001d3d7525efa9b"></a>MONSTER_MOVEMENT_TYPE_GLOBAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a091ab55875e74d839418a13597aca316" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a091ab55875e74d839418a13597aca316"></a>MONSTER_MOVEMENT_TYPE_FREE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab27a6d5f6ecfc6e54c722ea094a31bd9a51c71e65464b5d87231a2d39f8ce55cc" name="ab27a6d5f6ecfc6e54c722ea094a31bd9a51c71e65464b5d87231a2d39f8ce55cc"></a>MONSTER_MOVEMENT_TYPE_STATIONARY&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -259,17 +286,25 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35">MONSTER_SPECIAL_ABILITY_TYPE</a></td>
+          <td class="memname">enum class <a class="el" href="Monsters_8h.html#a73127776c89e7acfb731224a6a6acf35">MONSTER_SPECIAL_ABILITY_TYPE</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35a699c241251e056bc9653e863672cbe9e" name="a73127776c89e7acfb731224a6a6acf35a699c241251e056bc9653e863672cbe9e"></a>MONSTER_SPECIAL_ABILITY_NONE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35a4ec54277d9580eef3bc853797fb519fb" name="a73127776c89e7acfb731224a6a6acf35a4ec54277d9580eef3bc853797fb519fb"></a>MONSTER_SPECIAL_ABILITY_SHOT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35a12d6f6e2ef429ce0dc7183aaf9b9c00a" name="a73127776c89e7acfb731224a6a6acf35a12d6f6e2ef429ce0dc7183aaf9b9c00a"></a>MONSTER_SPECIAL_ABILITY_SUMMON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35ad9dac11297a035db16d483e1274ff2ba" name="a73127776c89e7acfb731224a6a6acf35ad9dac11297a035db16d483e1274ff2ba"></a>MONSTER_SPECIAL_ABILITY_EXPLODE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35a9c1ee855afcf95b73c9ce4edafcb9d50" name="a73127776c89e7acfb731224a6a6acf35a9c1ee855afcf95b73c9ce4edafcb9d50"></a>MONSTER_SPECIAL_ABILITY_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35a46be1df2ae2c0af6f5b0c180afb9735e" name="a73127776c89e7acfb731224a6a6acf35a46be1df2ae2c0af6f5b0c180afb9735e"></a>MONSTER_SPECIAL_ABILITY_SHOT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35aa389623db6b99a7454f7916dd300fc68" name="a73127776c89e7acfb731224a6a6acf35aa389623db6b99a7454f7916dd300fc68"></a>MONSTER_SPECIAL_ABILITY_SUMMON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a73127776c89e7acfb731224a6a6acf35a1210b74070324772c696471c4abef50c" name="a73127776c89e7acfb731224a6a6acf35a1210b74070324772c696471c4abef50c"></a>MONSTER_SPECIAL_ABILITY_EXPLODE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -279,21 +314,29 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aa">MONSTER_SUPERTYPE</a></td>
+          <td class="memname">enum class <a class="el" href="Monsters_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aa">MONSTER_SUPERTYPE</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa82fe32b64d793e60bd06df0d482cd2b7" name="ac552b73822a59b6fa1a2a38ae54ec8aaa82fe32b64d793e60bd06df0d482cd2b7"></a>MONSTER_SUPERTYPE_UNDEAD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa3228b2101645e10c147bc1510146bc03" name="ac552b73822a59b6fa1a2a38ae54ec8aaa3228b2101645e10c147bc1510146bc03"></a>MONSTER_SUPERTYPE_KREEGAN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaaf850334dc07c99421bb581240e37b956" name="ac552b73822a59b6fa1a2a38ae54ec8aaaf850334dc07c99421bb581240e37b956"></a>MONSTER_SUPERTYPE_DRAGON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa21f27f870c4cf2c6674ab1e4838c8a2f" name="ac552b73822a59b6fa1a2a38ae54ec8aaa21f27f870c4cf2c6674ab1e4838c8a2f"></a>MONSTER_SUPERTYPE_ELF&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa618a1c77f1bc51a2674ce97f85a7356e" name="ac552b73822a59b6fa1a2a38ae54ec8aaa618a1c77f1bc51a2674ce97f85a7356e"></a>MONSTER_SUPERTYPE_WATER_ELEMENTAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaabb1c978ee3f856b6997df70b97487c34" name="ac552b73822a59b6fa1a2a38ae54ec8aaabb1c978ee3f856b6997df70b97487c34"></a>MONSTER_SUPERTYPE_TREANT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa3108412401a9c71beb1d2f44ecaa19c0" name="ac552b73822a59b6fa1a2a38ae54ec8aaa3108412401a9c71beb1d2f44ecaa19c0"></a>MONSTER_SUPERTYPE_TITAN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa65311088b89a9fd06ab1843d484c14d2" name="ac552b73822a59b6fa1a2a38ae54ec8aaa65311088b89a9fd06ab1843d484c14d2"></a>MONSTER_SUPERTYPE_8&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa86f419353a2a8a3180333dbda220923c" name="ac552b73822a59b6fa1a2a38ae54ec8aaa86f419353a2a8a3180333dbda220923c"></a>MONSTER_SUPERTYPE_UNDEAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaad9bc97168eb4fa6cd5637ce9ac4f28ad" name="ac552b73822a59b6fa1a2a38ae54ec8aaad9bc97168eb4fa6cd5637ce9ac4f28ad"></a>MONSTER_SUPERTYPE_KREEGAN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa14b290180ad8b91ad3b45c820a2fcd97" name="ac552b73822a59b6fa1a2a38ae54ec8aaa14b290180ad8b91ad3b45c820a2fcd97"></a>MONSTER_SUPERTYPE_DRAGON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa58f181fa2cd718f34ec7553da714ae2d" name="ac552b73822a59b6fa1a2a38ae54ec8aaa58f181fa2cd718f34ec7553da714ae2d"></a>MONSTER_SUPERTYPE_ELF&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaaf381f784faf70e78ffb89449875ba4b3" name="ac552b73822a59b6fa1a2a38ae54ec8aaaf381f784faf70e78ffb89449875ba4b3"></a>MONSTER_SUPERTYPE_WATER_ELEMENTAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaabc445b6d71db99092c2610d1edf2bd0c" name="ac552b73822a59b6fa1a2a38ae54ec8aaabc445b6d71db99092c2610d1edf2bd0c"></a>MONSTER_SUPERTYPE_TREANT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaae47f36d2b8c88a213dc624f06f082c99" name="ac552b73822a59b6fa1a2a38ae54ec8aaae47f36d2b8c88a213dc624f06f082c99"></a>MONSTER_SUPERTYPE_TITAN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac552b73822a59b6fa1a2a38ae54ec8aaa3ec28f283863a5534e3ead792eb74900" name="ac552b73822a59b6fa1a2a38ae54ec8aaa3ec28f283863a5534e3ead792eb74900"></a>MONSTER_SUPERTYPE_8&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -303,55 +346,73 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fde">MONSTER_TYPE</a></td>
+          <td class="memname">enum class <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fde">MONSTER_TYPE</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea1a32958dd0d3d36afcaaa3f9fafb9a4a" name="a40319983e674274211bc156688920fdea1a32958dd0d3d36afcaaa3f9fafb9a4a"></a>MONSTER_DEVIL_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea5bd24a9cba0a9ce4601096ecec0dacb6" name="a40319983e674274211bc156688920fdea5bd24a9cba0a9ce4601096ecec0dacb6"></a>MONSTER_DEVIL_2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea80531d341f3a0a25c10915bca7d3622f" name="a40319983e674274211bc156688920fdea80531d341f3a0a25c10915bca7d3622f"></a>MONSTER_DEVIL_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf03a793bf85966b23e90410496f19ff1" name="a40319983e674274211bc156688920fdeaf03a793bf85966b23e90410496f19ff1"></a>MONSTER_DRAGON_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaff1541b0e0659c8b92f87219f1288153" name="a40319983e674274211bc156688920fdeaff1541b0e0659c8b92f87219f1288153"></a>MONSTER_DRAGON_2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9d8b8b67492608c5e6a950ce6bcac1e6" name="a40319983e674274211bc156688920fdea9d8b8b67492608c5e6a950ce6bcac1e6"></a>MONSTER_DRAGON_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea095bde12c394ca1c67afab796fae9813" name="a40319983e674274211bc156688920fdea095bde12c394ca1c67afab796fae9813"></a>MONSTER_ELEMENTAL_WATER_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeae75761cd3aa273f634c141878ed06cc2" name="a40319983e674274211bc156688920fdeae75761cd3aa273f634c141878ed06cc2"></a>MONSTER_ELEMENTAL_WATER_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeac1848592446f9ca2a135a65de3b32864" name="a40319983e674274211bc156688920fdeac1848592446f9ca2a135a65de3b32864"></a>MONSTER_ELF_ARCHER_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea0807d44c3db66a3915d9d277d769cba1" name="a40319983e674274211bc156688920fdea0807d44c3db66a3915d9d277d769cba1"></a>MONSTER_ELF_ARCHER_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea171d614eeba392f2118d0d97ac9f551a" name="a40319983e674274211bc156688920fdea171d614eeba392f2118d0d97ac9f551a"></a>MONSTER_ELF_SPEARMAN_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeac6a17fa7d39871f7e3e88bc8c1e8fb16" name="a40319983e674274211bc156688920fdeac6a17fa7d39871f7e3e88bc8c1e8fb16"></a>MONSTER_ELF_SPEARMAN_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea710d2dfc9919fadcc9e4de191ace9a8a" name="a40319983e674274211bc156688920fdea710d2dfc9919fadcc9e4de191ace9a8a"></a>MONSTER_GHOST_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea287ddb483d1bdeabeb983c6a2fa377ae" name="a40319983e674274211bc156688920fdea287ddb483d1bdeabeb983c6a2fa377ae"></a>MONSTER_GHOST_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea651384c1be10fd5b472758e0dac575db" name="a40319983e674274211bc156688920fdea651384c1be10fd5b472758e0dac575db"></a>MONSTER_HARPY_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea2ced1803f8a6bcac11d6f6ea159fe761" name="a40319983e674274211bc156688920fdea2ced1803f8a6bcac11d6f6ea159fe761"></a>MONSTER_HARPY_2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea835f216197d49bb102fe9ee99590e596" name="a40319983e674274211bc156688920fdea835f216197d49bb102fe9ee99590e596"></a>MONSTER_HARPY_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaa7eb4d8a116a2bbc3030c57153089cf1" name="a40319983e674274211bc156688920fdeaa7eb4d8a116a2bbc3030c57153089cf1"></a>MONSTER_LICH_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf7402f28e9a2677ce96ae6a1641fc179" name="a40319983e674274211bc156688920fdeaf7402f28e9a2677ce96ae6a1641fc179"></a>MONSTER_LICH_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea7c438191f5b1027351eedc6229945532" name="a40319983e674274211bc156688920fdea7c438191f5b1027351eedc6229945532"></a>MONSTER_OOZE_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeafa0da79531450844e8910aea8cd36cb6" name="a40319983e674274211bc156688920fdeafa0da79531450844e8910aea8cd36cb6"></a>MONSTER_OOZE_2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf93272bb612e41953c2e4a058a16c7aa" name="a40319983e674274211bc156688920fdeaf93272bb612e41953c2e4a058a16c7aa"></a>MONSTER_OOZE_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeabd3fcb44f14793e6b196cdbecabdbcf0" name="a40319983e674274211bc156688920fdeabd3fcb44f14793e6b196cdbecabdbcf0"></a>MONSTER_PEASANT_ELF_FEMALE_1_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf9cd14e0631cb1f11078600e2ab997b1" name="a40319983e674274211bc156688920fdeaf9cd14e0631cb1f11078600e2ab997b1"></a>MONSTER_PEASANT_ELF_MALE_3_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaa35ae91f742239b875881299f8f15f0b" name="a40319983e674274211bc156688920fdeaa35ae91f742239b875881299f8f15f0b"></a>MONSTER_SKELETON_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeacb2c62d0af17d32a3935a435fc4f85d3" name="a40319983e674274211bc156688920fdeacb2c62d0af17d32a3935a435fc4f85d3"></a>MONSTER_SKELETON_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeada198938fdbe5fbacdf88237fcc650aa" name="a40319983e674274211bc156688920fdeada198938fdbe5fbacdf88237fcc650aa"></a>MONSTER_TITAN_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea316e5e4ad3e7ceab585332255fa4df5b" name="a40319983e674274211bc156688920fdea316e5e4ad3e7ceab585332255fa4df5b"></a>MONSTER_TITAN_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea80f59d679a6a9b4eb73bfeb9bed9d72b" name="a40319983e674274211bc156688920fdea80f59d679a6a9b4eb73bfeb9bed9d72b"></a>MONSTER_VAMPIRE_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea7c305a8f8b7123dc100b1a3cf3751e1c" name="a40319983e674274211bc156688920fdea7c305a8f8b7123dc100b1a3cf3751e1c"></a>MONSTER_VAMPIRE_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea5e402a0999ff71cd9cff0c21559bf233" name="a40319983e674274211bc156688920fdea5e402a0999ff71cd9cff0c21559bf233"></a>MONSTER_WIGHT_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf144c846b4f1beb781c94a99e8bdff99" name="a40319983e674274211bc156688920fdeaf144c846b4f1beb781c94a99e8bdff99"></a>MONSTER_WIGHT_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9659a4fe02bb96a8a7cf331556cdd3da" name="a40319983e674274211bc156688920fdea9659a4fe02bb96a8a7cf331556cdd3da"></a>MONSTER_ZOMBIE_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9366ebbfda04b4638f0a703cd4922bef" name="a40319983e674274211bc156688920fdea9366ebbfda04b4638f0a703cd4922bef"></a>MONSTER_ZOMBIE_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeadd0f3e256cc0c4b9fd637e900910bd0e" name="a40319983e674274211bc156688920fdeadd0f3e256cc0c4b9fd637e900910bd0e"></a>MONSTER_PEASANT_GOBLIN_MALE_3_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeac47f35400807257f0c05efe23f6c082d" name="a40319983e674274211bc156688920fdeac47f35400807257f0c05efe23f6c082d"></a>MONSTER_TROLL_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea7d34bd79a0c8140e7d2f8cd8433b00f4" name="a40319983e674274211bc156688920fdea7d34bd79a0c8140e7d2f8cd8433b00f4"></a>MONSTER_TROLL_2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9db8159caee33b36959a203d3a150581" name="a40319983e674274211bc156688920fdea9db8159caee33b36959a203d3a150581"></a>MONSTER_TROLL_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea40bdb2a17daeaaffadd702b77630299d" name="a40319983e674274211bc156688920fdea40bdb2a17daeaaffadd702b77630299d"></a>MONSTER_TREANT_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea6b0592aa6786c7a4110db42a1a6f7591" name="a40319983e674274211bc156688920fdea6b0592aa6786c7a4110db42a1a6f7591"></a>MONSTER_TREANT_3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeacbfdfcb9f2404aa5dd2e80786211af8a" name="a40319983e674274211bc156688920fdeacbfdfcb9f2404aa5dd2e80786211af8a"></a>MONSTER_GHOUL_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea4ae7408a30693c54cdb98f50e3b69d0e" name="a40319983e674274211bc156688920fdea4ae7408a30693c54cdb98f50e3b69d0e"></a>MONSTER_GHOUL_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea248c0e6f3ea2122ca838d3227b430448" name="a40319983e674274211bc156688920fdea248c0e6f3ea2122ca838d3227b430448"></a>MONSTER_0&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea5e0a860054768aba7b1f22ff42345264" name="a40319983e674274211bc156688920fdea5e0a860054768aba7b1f22ff42345264"></a>MONSTER_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeac4988614b25f04da3b57824c6085d35e" name="a40319983e674274211bc156688920fdeac4988614b25f04da3b57824c6085d35e"></a>MONSTER_DEVIL_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea495daf67b9dc01dec0a8e8eeddfbfabc" name="a40319983e674274211bc156688920fdea495daf67b9dc01dec0a8e8eeddfbfabc"></a>MONSTER_DEVIL_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeac38c703a2c7874b898c55d53e574e19c" name="a40319983e674274211bc156688920fdeac38c703a2c7874b898c55d53e574e19c"></a>MONSTER_DEVIL_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea235da4b401fd8e06a91bad2b2b46567c" name="a40319983e674274211bc156688920fdea235da4b401fd8e06a91bad2b2b46567c"></a>MONSTER_DRAGON_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaab3d8dfd7523def9e48dc9b84ab81ec6" name="a40319983e674274211bc156688920fdeaab3d8dfd7523def9e48dc9b84ab81ec6"></a>MONSTER_DRAGON_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea119dd85ebd74fae29e17b7b8304c283b" name="a40319983e674274211bc156688920fdea119dd85ebd74fae29e17b7b8304c283b"></a>MONSTER_DRAGON_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdead2e2d6dc1498221abb9e0ff38553e6b0" name="a40319983e674274211bc156688920fdead2e2d6dc1498221abb9e0ff38553e6b0"></a>MONSTER_45&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea569ef6dfc21cbc10b53e27366cb1aa72" name="a40319983e674274211bc156688920fdea569ef6dfc21cbc10b53e27366cb1aa72"></a>MONSTER_ELEMENTAL_WATER_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf93ea7104c29f01bfa094a7bf1c60d47" name="a40319983e674274211bc156688920fdeaf93ea7104c29f01bfa094a7bf1c60d47"></a>MONSTER_ELEMENTAL_WATER_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9fbcf4697fc45e8900e9c2375febe322" name="a40319983e674274211bc156688920fdea9fbcf4697fc45e8900e9c2375febe322"></a>MONSTER_ELF_ARCHER_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea0d1eb2541f82f291a7347e9e68c8e831" name="a40319983e674274211bc156688920fdea0d1eb2541f82f291a7347e9e68c8e831"></a>MONSTER_ELF_ARCHER_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeafd80627ae5cd34cacfd28886199e9c0f" name="a40319983e674274211bc156688920fdeafd80627ae5cd34cacfd28886199e9c0f"></a>MONSTER_ELF_SPEARMAN_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeacbcf7353ba72c4133d254d09466b394f" name="a40319983e674274211bc156688920fdeacbcf7353ba72c4133d254d09466b394f"></a>MONSTER_ELF_SPEARMAN_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea3afe803c2f7927db7af7b70f0472eb18" name="a40319983e674274211bc156688920fdea3afe803c2f7927db7af7b70f0472eb18"></a>MONSTER_GHOST_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeae81b782de7b5f7cd3c316950470dedca" name="a40319983e674274211bc156688920fdeae81b782de7b5f7cd3c316950470dedca"></a>MONSTER_GHOST_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea20ab987c0e17a0566e410b04dd580bf9" name="a40319983e674274211bc156688920fdea20ab987c0e17a0566e410b04dd580bf9"></a>MONSTER_HARPY_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea86701041cfd8da681229477660c2eb7b" name="a40319983e674274211bc156688920fdea86701041cfd8da681229477660c2eb7b"></a>MONSTER_HARPY_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea6d9fe7814abaf7a74bf778b74f3c7ef4" name="a40319983e674274211bc156688920fdea6d9fe7814abaf7a74bf778b74f3c7ef4"></a>MONSTER_HARPY_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea084b55094876a15a664eb706f1bda300" name="a40319983e674274211bc156688920fdea084b55094876a15a664eb706f1bda300"></a>MONSTER_LICH_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaa7b276aa34861b39da598f8a2607fc9b" name="a40319983e674274211bc156688920fdeaa7b276aa34861b39da598f8a2607fc9b"></a>MONSTER_LICH_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea14e773bf7b1e772532372e3d39bb98d4" name="a40319983e674274211bc156688920fdea14e773bf7b1e772532372e3d39bb98d4"></a>MONSTER_OOZE_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9c35407f33b3fc65cc3aee66803e0cfa" name="a40319983e674274211bc156688920fdea9c35407f33b3fc65cc3aee66803e0cfa"></a>MONSTER_OOZE_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeafb17bd74038f8a254109d862ee1c6536" name="a40319983e674274211bc156688920fdeafb17bd74038f8a254109d862ee1c6536"></a>MONSTER_OOZE_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeadcdeac9414658b2a715c42b9a2e9d08c" name="a40319983e674274211bc156688920fdeadcdeac9414658b2a715c42b9a2e9d08c"></a>MONSTER_115&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea920e9140e36d0169845d32522e205e1e" name="a40319983e674274211bc156688920fdea920e9140e36d0169845d32522e205e1e"></a>MONSTER_PEASANT_ELF_FEMALE_1_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdead5d27a22adc400ba211e7fa5660b9bfd" name="a40319983e674274211bc156688920fdead5d27a22adc400ba211e7fa5660b9bfd"></a>MONSTER_PEASANT_ELF_MALE_3_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea26a1911b439b935b57887cabaf58e4f8" name="a40319983e674274211bc156688920fdea26a1911b439b935b57887cabaf58e4f8"></a>MONSTER_186&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea7ea849622469db4632dc475aa9322b40" name="a40319983e674274211bc156688920fdea7ea849622469db4632dc475aa9322b40"></a>MONSTER_SKELETON_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea3e558391efa00f97702de40e0ce8d05a" name="a40319983e674274211bc156688920fdea3e558391efa00f97702de40e0ce8d05a"></a>MONSTER_SKELETON_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea9ac7f35cb21b637cd14a3f2bca335f07" name="a40319983e674274211bc156688920fdea9ac7f35cb21b637cd14a3f2bca335f07"></a>MONSTER_TITAN_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeafd9a9e720a1d7ad28704acc9b9b7e25a" name="a40319983e674274211bc156688920fdeafd9a9e720a1d7ad28704acc9b9b7e25a"></a>MONSTER_TITAN_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea5255c641dce11e2f887e71a3a25831c9" name="a40319983e674274211bc156688920fdea5255c641dce11e2f887e71a3a25831c9"></a>MONSTER_VAMPIRE_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea405a13d19eedd876360d788c2db141c0" name="a40319983e674274211bc156688920fdea405a13d19eedd876360d788c2db141c0"></a>MONSTER_VAMPIRE_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeabf060ddb713cc00be6a0aea46bec3701" name="a40319983e674274211bc156688920fdeabf060ddb713cc00be6a0aea46bec3701"></a>MONSTER_WIGHT_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaec11c1931f24ac038c5d7df1f451ab6d" name="a40319983e674274211bc156688920fdeaec11c1931f24ac038c5d7df1f451ab6d"></a>MONSTER_WIGHT_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea845ca59d8a12e6b90e437e44e1492e92" name="a40319983e674274211bc156688920fdea845ca59d8a12e6b90e437e44e1492e92"></a>MONSTER_ZOMBIE_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea93382bbf71ec55024ee7ea507c67969a" name="a40319983e674274211bc156688920fdea93382bbf71ec55024ee7ea507c67969a"></a>MONSTER_ZOMBIE_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeade2be79dee25bd67238d7c384c1b807d" name="a40319983e674274211bc156688920fdeade2be79dee25bd67238d7c384c1b807d"></a>MONSTER_232&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea928628bd0c8d7dfd37fd7a0078ab5bd3" name="a40319983e674274211bc156688920fdea928628bd0c8d7dfd37fd7a0078ab5bd3"></a>MONSTER_PEASANT_GOBLIN_MALE_3_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaed8bc24dd35a2e9ff644c4511d5a372f" name="a40319983e674274211bc156688920fdeaed8bc24dd35a2e9ff644c4511d5a372f"></a>MONSTER_TROLL_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea95aa868b6fe13cabde8adb8bc797a3a4" name="a40319983e674274211bc156688920fdea95aa868b6fe13cabde8adb8bc797a3a4"></a>MONSTER_TROLL_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea5b199c3a8d7ff778cbac403c8e652cb8" name="a40319983e674274211bc156688920fdea5b199c3a8d7ff778cbac403c8e652cb8"></a>MONSTER_TROLL_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea2f8d398813e2497e5d6e8fcab76a3883" name="a40319983e674274211bc156688920fdea2f8d398813e2497e5d6e8fcab76a3883"></a>MONSTER_TREANT_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeae2f958ddae85f7e17be618c7c2a5fdee" name="a40319983e674274211bc156688920fdeae2f958ddae85f7e17be618c7c2a5fdee"></a>MONSTER_TREANT_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea09bae2e9b4e8f127e3df18e51f52e69e" name="a40319983e674274211bc156688920fdea09bae2e9b4e8f127e3df18e51f52e69e"></a>MONSTER_GHOUL_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaec12533c7f0320bea5b49c267b6c839b" name="a40319983e674274211bc156688920fdeaec12533c7f0320bea5b49c267b6c839b"></a>MONSTER_GHOUL_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea4cc005ed16ad55cc304dd275a5a18329" name="a40319983e674274211bc156688920fdea4cc005ed16ad55cc304dd275a5a18329"></a>MONSTER_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaeba066196d7b381b8bb621e13b91b58c" name="a40319983e674274211bc156688920fdeaeba066196d7b381b8bb621e13b91b58c"></a>MONSTER_LAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdea3dfa7ad6b5e1b862ea5500be1855e731" name="a40319983e674274211bc156688920fdea3dfa7ad6b5e1b862ea5500be1855e731"></a>MONSTER_FIRST_ARENA&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a40319983e674274211bc156688920fdeaf0e505ca8043dbf7506e6b305c81d0e8" name="a40319983e674274211bc156688920fdeaf0e505ca8043dbf7506e6b305c81d0e8"></a>MONSTER_LAST_ARENA&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -361,38 +422,72 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1">SPECIAL_ATTACK_TYPE</a> : uint8_t</td>
+          <td class="memname">enum class <a class="el" href="Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1">SPECIAL_ATTACK_TYPE</a> : uint8_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a75fde9e9575f45be09b5fb289901aeb7" name="a067f95479d44d0b39da6439a62a06ba1a75fde9e9575f45be09b5fb289901aeb7"></a>SPECIAL_ATTACK_NONE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a92aaab8035f2ad5ecc89d1f110f49e7e" name="a067f95479d44d0b39da6439a62a06ba1a92aaab8035f2ad5ecc89d1f110f49e7e"></a>SPECIAL_ATTACK_CURSE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a60f0271ccadbdac50f3aff175f7f376f" name="a067f95479d44d0b39da6439a62a06ba1a60f0271ccadbdac50f3aff175f7f376f"></a>SPECIAL_ATTACK_WEAK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1af559eae8fed74282fd5d9e2ef7549ab7" name="a067f95479d44d0b39da6439a62a06ba1af559eae8fed74282fd5d9e2ef7549ab7"></a>SPECIAL_ATTACK_SLEEP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a453c5f687781d9d0aacebc7caa57ffde" name="a067f95479d44d0b39da6439a62a06ba1a453c5f687781d9d0aacebc7caa57ffde"></a>SPECIAL_ATTACK_DRUNK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a916d088cd1d17abde81999e10527c2d7" name="a067f95479d44d0b39da6439a62a06ba1a916d088cd1d17abde81999e10527c2d7"></a>SPECIAL_ATTACK_INSANE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1aa90b5b633c23544c711d47cddd426e07" name="a067f95479d44d0b39da6439a62a06ba1aa90b5b633c23544c711d47cddd426e07"></a>SPECIAL_ATTACK_POISON_WEAK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a0556922c2a5beda56a4ddfdb960d0f44" name="a067f95479d44d0b39da6439a62a06ba1a0556922c2a5beda56a4ddfdb960d0f44"></a>SPECIAL_ATTACK_POISON_MEDIUM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a6fd1babfa6f5f9f65513eb3c0ee84cdc" name="a067f95479d44d0b39da6439a62a06ba1a6fd1babfa6f5f9f65513eb3c0ee84cdc"></a>SPECIAL_ATTACK_POISON_SEVERE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a7b9c148ebbe6b3985dce61346c2a1811" name="a067f95479d44d0b39da6439a62a06ba1a7b9c148ebbe6b3985dce61346c2a1811"></a>SPECIAL_ATTACK_DISEASE_WEAK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a605298a7ad661ebf89629f596e4c8302" name="a067f95479d44d0b39da6439a62a06ba1a605298a7ad661ebf89629f596e4c8302"></a>SPECIAL_ATTACK_DISEASE_MEDIUM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a4eb69e888de50bf5b171af386b30051d" name="a067f95479d44d0b39da6439a62a06ba1a4eb69e888de50bf5b171af386b30051d"></a>SPECIAL_ATTACK_DISEASE_SEVERE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a639a8880965f8141fce98604519a7c81" name="a067f95479d44d0b39da6439a62a06ba1a639a8880965f8141fce98604519a7c81"></a>SPECIAL_ATTACK_PARALYZED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a98e3f1bee174581bca810767f83caf9d" name="a067f95479d44d0b39da6439a62a06ba1a98e3f1bee174581bca810767f83caf9d"></a>SPECIAL_ATTACK_UNCONSCIOUS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a6cae9f8318af7a6699eb505fdebf5650" name="a067f95479d44d0b39da6439a62a06ba1a6cae9f8318af7a6699eb505fdebf5650"></a>SPECIAL_ATTACK_DEAD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a6a6a0174b6bd2d515e9cb0f523626a7b" name="a067f95479d44d0b39da6439a62a06ba1a6a6a0174b6bd2d515e9cb0f523626a7b"></a>SPECIAL_ATTACK_PETRIFIED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a4aa41d20f4551edbe325e518ff18e3cc" name="a067f95479d44d0b39da6439a62a06ba1a4aa41d20f4551edbe325e518ff18e3cc"></a>SPECIAL_ATTACK_ERADICATED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1aa9dbd678b5de66e1a7610ffa535b54fa" name="a067f95479d44d0b39da6439a62a06ba1aa9dbd678b5de66e1a7610ffa535b54fa"></a>SPECIAL_ATTACK_BREAK_ANY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a55ba8bbe9993628a1a5f429ac21ffb67" name="a067f95479d44d0b39da6439a62a06ba1a55ba8bbe9993628a1a5f429ac21ffb67"></a>SPECIAL_ATTACK_BREAK_ARMOR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1ac21669f15f34ef8eb60bb4911b1d973a" name="a067f95479d44d0b39da6439a62a06ba1ac21669f15f34ef8eb60bb4911b1d973a"></a>SPECIAL_ATTACK_BREAK_WEAPON&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a7ab6ba32463b783cfbd8bc9d599fda2f" name="a067f95479d44d0b39da6439a62a06ba1a7ab6ba32463b783cfbd8bc9d599fda2f"></a>SPECIAL_ATTACK_STEAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1ad1f43eca0a8aa6c907afeb8f17edff0e" name="a067f95479d44d0b39da6439a62a06ba1ad1f43eca0a8aa6c907afeb8f17edff0e"></a>SPECIAL_ATTACK_AGING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1afd3c49502b46ddd52385d51c66b5ab4e" name="a067f95479d44d0b39da6439a62a06ba1afd3c49502b46ddd52385d51c66b5ab4e"></a>SPECIAL_ATTACK_MANA_DRAIN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a5dc9fef4bebb358a86a23b1907e884cd" name="a067f95479d44d0b39da6439a62a06ba1a5dc9fef4bebb358a86a23b1907e884cd"></a>SPECIAL_ATTACK_FEAR&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1adc78d8ed3e1c8f42e6a091eedb4e9570" name="a067f95479d44d0b39da6439a62a06ba1adc78d8ed3e1c8f42e6a091eedb4e9570"></a>SPECIAL_ATTACK_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a5317f2caf6e2da8abf4d6cb38429ed07" name="a067f95479d44d0b39da6439a62a06ba1a5317f2caf6e2da8abf4d6cb38429ed07"></a>SPECIAL_ATTACK_CURSE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1aba48b167c302dee47a32a9b9f78cbbcc" name="a067f95479d44d0b39da6439a62a06ba1aba48b167c302dee47a32a9b9f78cbbcc"></a>SPECIAL_ATTACK_WEAK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a20713ac3a6b15d645c11c9e91c071336" name="a067f95479d44d0b39da6439a62a06ba1a20713ac3a6b15d645c11c9e91c071336"></a>SPECIAL_ATTACK_SLEEP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a01587a51b40e2232c0d00795b2252cfd" name="a067f95479d44d0b39da6439a62a06ba1a01587a51b40e2232c0d00795b2252cfd"></a>SPECIAL_ATTACK_DRUNK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a1143f4bc77080303401ae99973e5c0eb" name="a067f95479d44d0b39da6439a62a06ba1a1143f4bc77080303401ae99973e5c0eb"></a>SPECIAL_ATTACK_INSANE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a7a18af1087219542bcf8954f245dd652" name="a067f95479d44d0b39da6439a62a06ba1a7a18af1087219542bcf8954f245dd652"></a>SPECIAL_ATTACK_POISON_WEAK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a39706e599da62cd2b4e2a6f6d2cdcdd3" name="a067f95479d44d0b39da6439a62a06ba1a39706e599da62cd2b4e2a6f6d2cdcdd3"></a>SPECIAL_ATTACK_POISON_MEDIUM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1ad4a563215324519a815806fe505adc1e" name="a067f95479d44d0b39da6439a62a06ba1ad4a563215324519a815806fe505adc1e"></a>SPECIAL_ATTACK_POISON_SEVERE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a67f02faac7707d28f58d46a78ede3f15" name="a067f95479d44d0b39da6439a62a06ba1a67f02faac7707d28f58d46a78ede3f15"></a>SPECIAL_ATTACK_DISEASE_WEAK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a0b07fb273e3b2ded1e1d52d256fb66fd" name="a067f95479d44d0b39da6439a62a06ba1a0b07fb273e3b2ded1e1d52d256fb66fd"></a>SPECIAL_ATTACK_DISEASE_MEDIUM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a7370454995480398b74e5029c1ca827d" name="a067f95479d44d0b39da6439a62a06ba1a7370454995480398b74e5029c1ca827d"></a>SPECIAL_ATTACK_DISEASE_SEVERE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a0beaf5c8b1b1d58439629b61b0e10581" name="a067f95479d44d0b39da6439a62a06ba1a0beaf5c8b1b1d58439629b61b0e10581"></a>SPECIAL_ATTACK_PARALYZED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a82030081cbaa734ab3fe4b0f4e3c0092" name="a067f95479d44d0b39da6439a62a06ba1a82030081cbaa734ab3fe4b0f4e3c0092"></a>SPECIAL_ATTACK_UNCONSCIOUS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1acf72f3fa9d5b18575641df92e8249550" name="a067f95479d44d0b39da6439a62a06ba1acf72f3fa9d5b18575641df92e8249550"></a>SPECIAL_ATTACK_DEAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a7a0755c315e9936cf3b62cc59499b63d" name="a067f95479d44d0b39da6439a62a06ba1a7a0755c315e9936cf3b62cc59499b63d"></a>SPECIAL_ATTACK_PETRIFIED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a6f1530dd80d3850fb77e3f0b11231af5" name="a067f95479d44d0b39da6439a62a06ba1a6f1530dd80d3850fb77e3f0b11231af5"></a>SPECIAL_ATTACK_ERADICATED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a8ec2ce5827ebf3903d54ea31998526c1" name="a067f95479d44d0b39da6439a62a06ba1a8ec2ce5827ebf3903d54ea31998526c1"></a>SPECIAL_ATTACK_BREAK_ANY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a5775b29e75867868c16d049c8efbf467" name="a067f95479d44d0b39da6439a62a06ba1a5775b29e75867868c16d049c8efbf467"></a>SPECIAL_ATTACK_BREAK_ARMOR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1aeeab8e2f89f13fcdfdfffdeed41621bc" name="a067f95479d44d0b39da6439a62a06ba1aeeab8e2f89f13fcdfdfffdeed41621bc"></a>SPECIAL_ATTACK_BREAK_WEAPON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1af7546f545a828bff6efadc7449caf971" name="a067f95479d44d0b39da6439a62a06ba1af7546f545a828bff6efadc7449caf971"></a>SPECIAL_ATTACK_STEAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1a648f949872e11c9cdad2813f26e93bca" name="a067f95479d44d0b39da6439a62a06ba1a648f949872e11c9cdad2813f26e93bca"></a>SPECIAL_ATTACK_AGING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1aa2298f4b9c0feba216712cff2ff2ce1a" name="a067f95479d44d0b39da6439a62a06ba1aa2298f4b9c0feba216712cff2ff2ce1a"></a>SPECIAL_ATTACK_MANA_DRAIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a067f95479d44d0b39da6439a62a06ba1ab179e45ea1969793dba13c28feb7bb74" name="a067f95479d44d0b39da6439a62a06ba1ab179e45ea1969793dba13c28feb7bb74"></a>SPECIAL_ATTACK_FEAR&#160;</td><td class="fielddoc"></td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="adf8b9da40a7f351963547d0c2e710efa" name="adf8b9da40a7f351963547d0c2e710efa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf8b9da40a7f351963547d0c2e710efa">&#9670;&#160;</a></span>allArenaMonsters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="Monsters_8h.html#a40319983e674274211bc156688920fde">MONSTER_TYPE</a> &gt; allArenaMonsters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
