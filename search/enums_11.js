@@ -8,7 +8,7 @@ var searchData=
   ['soundid_5',['SoundID',['../SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61',1,'SoundEnums.h']]],
   ['soundplaybackmode_6',['SoundPlaybackMode',['../SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078',1,'SoundEnums.h']]],
   ['soundtype_7',['SoundType',['../MM7_8h.html#ad2af16bf27c1b83797f1c32686caf1a3',1,'MM7.h']]],
-  ['special_5fattack_5ftype_8',['SPECIAL_ATTACK_TYPE',['../Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1',1,'Monsters.h']]],
+  ['special_5fattack_5ftype_8',['SPECIAL_ATTACK_TYPE',['../MonsterEnums_8h.html#a067f95479d44d0b39da6439a62a06ba1',1,'MonsterEnums.h']]],
   ['spellcastflag_9',['SpellCastFlag',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022f',1,'CastSpellInfo.h']]],
   ['spellid_10',['SpellId',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90',1,'SpellEnums.h']]],
   ['sprite_5fobject_5ftype_11',['SPRITE_OBJECT_TYPE',['../SpriteObjectEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9',1,'SpriteObjectEnums.h']]],

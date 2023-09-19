@@ -81,7 +81,7 @@ var searchData=
   ['albufferlength_78',['alBufferLength',['../classOpenALSoundProvider.html#a38b3e262cf2d0df63670e3fe17397d5e',1,'OpenALSoundProvider']]],
   ['aligntext_5fcenter_79',['AlignText_Center',['../classGUIFont.html#a97a40fdc955167707622beddf15ef7aa',1,'GUIFont']]],
   ['allarcomagetaverns_80',['allArcomageTaverns',['../UIHouseEnums_8h.html#a99b52409ce2f875d61ef41934e3c7052',1,'UIHouseEnums.h']]],
-  ['allarenamonsters_81',['allArenaMonsters',['../Monsters_8h.html#adf8b9da40a7f351963547d0c2e710efa',1,'Monsters.h']]],
+  ['allarenamonsters_81',['allArenaMonsters',['../MonsterEnums_8h.html#adf8b9da40a7f351963547d0c2e710efa',1,'MonsterEnums.h']]],
   ['allarmorskills_82',['allArmorSkills',['../CharacterEnums_8h.html#a5f4803171e0fb39c7f71dc03da8192f5',1,'CharacterEnums.h']]],
   ['allgamepads_83',['allGamepads',['../classSdlPlatformSharedState.html#a8d7a1d97fceb549a238a9902365e2381',1,'SdlPlatformSharedState']]],
   ['allhouses_84',['allHouses',['../UIHouseEnums_8h.html#aa35f3b7c8559fb8327f283a9c07df373',1,'UIHouseEnums.h']]],
