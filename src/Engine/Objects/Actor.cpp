@@ -51,13 +51,12 @@ std::vector<Actor> pActors;
 
 stru319 stru_50C198;  // idb
 
-// TODO(captainurist): HOSTILITY_FIRST, HOSTILITY_LAST
-static constexpr IndexedArray<int, MonsterInfo::HostilityRadius::Hostility_Friendly, MonsterInfo::HostilityRadius::Hostility_Long> _4DF380_hostilityRanges = {
-    {MonsterInfo::Hostility_Friendly, 0},
-    {MonsterInfo::Hostility_Close, 1024},
-    {MonsterInfo::Hostility_Short, 2560},
-    {MonsterInfo::Hostility_Medium, 5120},
-    {MonsterInfo::Hostility_Long, 10240}
+static constexpr IndexedArray<int, HOSTILITY_FIRST, HOSTILITY_LAST> _4DF380_hostilityRanges = {
+    {HOSTILITY_FRIENDLY, 0},
+    {HOSTILITY_CLOSE, 1024},
+    {HOSTILITY_SHORT, 2560},
+    {HOSTILITY_MEDIUM, 5120},
+    {HOSTILITY_LONG, 10240}
 };
 
 std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
@@ -736,7 +735,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
             v6 = std::abs(actor->pos.z - victim->pos.z);
             if (int_get_vector_length(v4, v5, v6) < 4096) {
                 actor->monsterInfo.uHostilityType =
-                    MonsterInfo::Hostility_Long;
+                    HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
             }
         }
@@ -1733,9 +1732,9 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
 
     if (pActors[uActorID].aiState == Fleeing)
         pActors[uActorID].attributes |= ACTOR_FLEEING;
-    if (pActors[uActorID].monsterInfo.uHostilityType != MonsterInfo::Hostility_Long) {
+    if (pActors[uActorID].monsterInfo.uHostilityType != HOSTILITY_LONG) {
         pActors[uActorID].attributes &= ~ACTOR_UNKNOWN_4;
-        pActors[uActorID].monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+        pActors[uActorID].monsterInfo.uHostilityType = HOSTILITY_LONG;
     }
     if (pActors[uActorID].buffs[ACTOR_BUFF_CHARM].Active())
         pActors[uActorID].buffs[ACTOR_BUFF_CHARM].Reset();
@@ -1814,7 +1813,7 @@ void Actor::resurrect(unsigned int uActorID) {
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
 
-    pActor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
     // TODO(pskelton): vanilla behaviour but does it make sense to drop all carried treasure
     pActor->monsterInfo.uTreasureDropChance = 0;
     pActor->monsterInfo.uTreasureDiceRolls = 0;
@@ -2144,10 +2143,10 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
 void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
-    MonsterInfo::HostilityRadius v10;             // eax@13
+    MonsterHostility v10;             // eax@13
     uint v11;                   // ebx@16
     uint v12;                   // eax@16
-    MonsterInfo::HostilityRadius v14;             // eax@31
+    MonsterHostility v14;             // eax@31
     uint v15;                   // edi@43
     //uint v16;                   // ebx@45
     //uint v17;                   // eax@45
@@ -2174,18 +2173,18 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
 
         if (!thisActor->lastCharacterIdToHit || Pid(OBJECT_Actor, v5) != thisActor->lastCharacterIdToHit) {
             v10 = thisActor->GetActorsRelation(actor);
-            if (v10 == MonsterInfo::Hostility_Friendly) continue;
+            if (v10 == HOSTILITY_FRIENDLY) continue;
         } else if (thisActor->IsNotAlive()) {
             thisActor->lastCharacterIdToHit = Pid();
             v10 = thisActor->GetActorsRelation(actor);
-            if (v10 == MonsterInfo::Hostility_Friendly) continue;
+            if (v10 == HOSTILITY_FRIENDLY) continue;
         } else {
             if ((actor->group != 0 || thisActor->group != 0) &&
                 actor->group == thisActor->group)
                 continue;
-            v10 = MonsterInfo::Hostility_Long;
+            v10 = HOSTILITY_LONG;
         }
-        if (thisActor->monsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly)
+        if (thisActor->monsterInfo.uHostilityType != HOSTILITY_FRIENDLY)
             v10 = pMonsterStats->pInfos[thisActor->monsterInfo.uID]
                       .uHostilityType;
         v11 = _4DF380_hostilityRanges[v10];
@@ -2210,14 +2209,14 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
             !thisActor->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
             !thisActor->buffs[ACTOR_BUFF_CHARM].Active() &&
             !thisActor->buffs[ACTOR_BUFF_SUMMONED].Active())
-            v14 = MonsterInfo::Hostility_Long;
+            v14 = HOSTILITY_LONG;
         else
             v14 = thisActor->GetActorsRelation(0);
-        if (v14 != MonsterInfo::Hostility_Friendly) {
-            if (thisActor->monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly)
+        if (v14 != HOSTILITY_FRIENDLY) {
+            if (thisActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY)
                 v15 = _4DF380_hostilityRanges[v14];
             else
-                v15 = _4DF380_hostilityRanges[MonsterInfo::Hostility_Long];
+                v15 = _4DF380_hostilityRanges[HOSTILITY_LONG];
             uint v16 = std::abs(thisActor->pos.x - pParty->pos.x);
             uint v28 = std::abs(thisActor->pos.y - pParty->pos.y);
             uint v17 = std::abs(thisActor->pos.z - pParty->pos.z);
@@ -2230,7 +2229,7 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
 }
 
 //----- (0040104C) --------------------------------------------------------
-MonsterInfo::HostilityRadius Actor::GetActorsRelation(Actor *otherActPtr) {
+MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
     unsigned int thisGroup;  // ebp@19
     int otherGroup;          // eax@22
     unsigned int thisAlly;   // edx@25
@@ -2239,10 +2238,10 @@ MonsterInfo::HostilityRadius Actor::GetActorsRelation(Actor *otherActPtr) {
     if (otherActPtr) {
         if (otherActPtr->group != 0 && this->group != 0 &&
             otherActPtr->group == this->group)
-            return MonsterInfo::Hostility_Friendly;
+            return HOSTILITY_FRIENDLY;
     }
 
-    if (this->buffs[ACTOR_BUFF_BERSERK].Active()) return MonsterInfo::Hostility_Long;
+    if (this->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
     thisAlly = this->ally;
     if (this->buffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == 9999)
         thisGroup = 0;
@@ -2252,7 +2251,7 @@ MonsterInfo::HostilityRadius Actor::GetActorsRelation(Actor *otherActPtr) {
         thisGroup = (std::to_underlying(this->monsterInfo.uID) - 1) / 3 + 1; // TODO(captainurist): encapsulate enum arithmetic.
 
     if (otherActPtr) {
-        if (otherActPtr->buffs[ACTOR_BUFF_BERSERK].Active()) return MonsterInfo::Hostility_Long;
+        if (otherActPtr->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
         otherAlly = otherActPtr->ally;
         if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active() ||
             otherAlly == 9999)
@@ -2268,19 +2267,19 @@ MonsterInfo::HostilityRadius Actor::GetActorsRelation(Actor *otherActPtr) {
     if (this->buffs[ACTOR_BUFF_CHARM].Active() && !otherGroup ||
         otherActPtr && otherActPtr->buffs[ACTOR_BUFF_CHARM].Active() &&
         !thisGroup)
-        return MonsterInfo::Hostility_Friendly;
+        return HOSTILITY_FRIENDLY;
     if (!this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
         this->ActorEnemy() && !otherGroup)
-        return MonsterInfo::Hostility_Long;
-    if (thisGroup >= 89 || otherGroup >= 89) return MonsterInfo::Hostility_Friendly;
+        return HOSTILITY_LONG;
+    if (thisGroup >= 89 || otherGroup >= 89) return HOSTILITY_FRIENDLY;
 
     if (thisGroup == 0) {
         if ((!otherActPtr || this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
                              otherActPtr->ActorFriend()) &&
-            pFactionTable->relations[otherGroup][0] == MonsterInfo::Hostility_Friendly)
+            pFactionTable->relations[otherGroup][0] == HOSTILITY_FRIENDLY)
             return pFactionTable->relations[0][otherGroup];
         else
-            return MonsterInfo::Hostility_Long;
+            return HOSTILITY_LONG;
     } else {
         return pFactionTable->relations[thisGroup][otherGroup];
     }
@@ -2563,7 +2562,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->tetherDistance = 256;
     actor->sectorId = actorSector;
     actor->PrepareSprites(0);
-    actor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
     actor->ally = v19;
     actor->currentActionTime = 0;
     actor->group = this->group;
@@ -2637,7 +2636,7 @@ void Actor::UpdateActorAI() {
 
         // If Charm still active: make actor friendly
         if (pActor->buffs[ACTOR_BUFF_CHARM].Active()) {
-            pActor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+            pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
         } else if (pActor->buffs[ACTOR_BUFF_CHARM].Expired()) {
           // Else: reset hostilty
           pActor->monsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->monsterInfo.uID].uHostilityType;
@@ -2687,8 +2686,8 @@ void Actor::UpdateActorAI() {
 
         Actor::_SelectTarget(actor_id, &ai_near_actors_targets_pid[actor_id], true);
 
-        if (pActor->monsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly && !ai_near_actors_targets_pid[actor_id])
-            pActor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+        if (pActor->monsterInfo.uHostilityType != HOSTILITY_FRIENDLY && !ai_near_actors_targets_pid[actor_id])
+            pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
 
         target_pid = ai_near_actors_targets_pid[actor_id];
         target_pid_type = target_pid.type();
@@ -2713,7 +2712,7 @@ void Actor::UpdateActorAI() {
         }
 
         if (pActor->buffs[ACTOR_BUFF_CHARM].Active()) {
-            pActor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+            pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
         } else if (pActor->buffs[ACTOR_BUFF_CHARM].Expired()) {
             pActor->monsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->monsterInfo.uID].uHostilityType;
             pActor->buffs[ACTOR_BUFF_CHARM].Reset();
@@ -2744,7 +2743,7 @@ void Actor::UpdateActorAI() {
 
         // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
         // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
-        if (pActor->monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly ||
+        if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.uRecoveryTime > 0 ||
             radiusMultiplier * 307.2 < pDir->uDistance ||
             uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.uMissleAttack1Type ||
@@ -2768,24 +2767,24 @@ void Actor::UpdateActorAI() {
 
         int distanceToTarget = pDir->uDistance;
 
-        MonsterInfo::HostilityRadius relationToTarget;
-        if (pActor->monsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
+        MonsterHostility relationToTarget;
+        if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
                 // TODO(captainurist): encapsulate enum arithmetic.
                 relationToTarget = pFactionTable->relations[(std::to_underlying(pActor->monsterInfo.uID) - 1) / 3 + 1]
                                                            [(std::to_underlying(pActors[target_pid.id()].monsterInfo.uID) - 1) / 3 + 1];
             } else {
-                relationToTarget = MonsterInfo::Hostility_Long;
+                relationToTarget = HOSTILITY_LONG;
             }
             v38 = 0;
-            if (relationToTarget == MonsterInfo::Hostility_Short)
+            if (relationToTarget == HOSTILITY_SHORT)
                 v38 = 1024;
-            else if (relationToTarget == MonsterInfo::Hostility_Medium)
+            else if (relationToTarget == HOSTILITY_MEDIUM)
                 v38 = 2560;
-            else if (relationToTarget == MonsterInfo::Hostility_Long)
+            else if (relationToTarget == HOSTILITY_LONG)
                 v38 = 5120;
-            if (relationToTarget >= MonsterInfo::Hostility_Close && relationToTarget <= MonsterInfo::Hostility_Long && distanceToTarget < v38 || relationToTarget == MonsterInfo::Hostility_Close)
-                pActor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+            if (relationToTarget >= HOSTILITY_CLOSE && relationToTarget <= HOSTILITY_LONG && distanceToTarget < v38 || relationToTarget == HOSTILITY_CLOSE)
+                pActor->monsterInfo.uHostilityType = HOSTILITY_LONG;
         }
 
         // If actor afraid: flee or if out of range random move
@@ -2797,7 +2796,7 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        if (pActor->monsterInfo.uHostilityType == MonsterInfo::Hostility_Long &&
+        if (pActor->monsterInfo.uHostilityType == HOSTILITY_LONG &&
             target_pid) {
             if (pActor->monsterInfo.uAIType == 1) {
                 if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
@@ -2901,7 +2900,7 @@ void Actor::UpdateActorAI() {
             }
         }
 
-        if (pActor->monsterInfo.uHostilityType != MonsterInfo::Hostility_Long ||
+        if (pActor->monsterInfo.uHostilityType != HOSTILITY_LONG ||
             !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
             if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_SHORT) {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0);
@@ -3063,7 +3062,7 @@ void Actor::InitializeActors() {
             }
         }
 
-        actor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+        actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
 
         if (!bCelestia || good)
             if (!bPit || evil)
@@ -3374,7 +3373,7 @@ void Actor::Arena_summon_actor(MONSTER_TYPE monster_id, Vec3i pos) {
     actor->tetherDistance = 256;
     actor->sectorId = v16;
     actor->group = 1;
-    actor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+    actor->monsterInfo.uHostilityType = HOSTILITY_LONG;
     actor->PrepareSprites(0);
     //    for ( int i = 0; i < 4; i++)
     //      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id -
@@ -3674,7 +3673,7 @@ bool CheckActors_proximity() {
                     pActors[i].aiState != Disabled &&
                     pActors[i].aiState != Summoned &&
                     (pActors[i].ActorEnemy() ||
-                     pActors[i].GetActorsRelation(0) != MonsterInfo::Hostility_Friendly))
+                     pActors[i].GetActorsRelation(0) != HOSTILITY_FRIENDLY))
                     return true;
             }
         }
@@ -4076,7 +4075,7 @@ void Actor::MakeActorAIList_ODM() {
 
         if (distance < 5632) {
             actor.ResetHostile();
-            if (actor.ActorEnemy() || actor.GetActorsRelation(0) != MonsterInfo::Hostility_Friendly) {
+            if (actor.ActorEnemy() || actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
                 actor.attributes |= ACTOR_HOSTILE;
                 if (distance < 5120)
                     pParty->SetYellowAlert();
@@ -4130,7 +4129,7 @@ int Actor::MakeActorAIList_BLV() {
         // actor is in range
         if (distance < 10240) {
             actor.ResetHostile();
-            if (actor.ActorEnemy() || actor.GetActorsRelation(0) != MonsterInfo::Hostility_Friendly) {
+            if (actor.ActorEnemy() || actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
                 actor.attributes |= ACTOR_HOSTILE;
                 if (!(pParty->GetRedAlert()) && (double)distance < 307.2)
                     pParty->SetRedAlert();
@@ -4393,7 +4392,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->tetherDistance = 256;
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
-    actor->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
     actor->ally = 9999;
     actor->group = 0;
     actor->currentActionTime = 0;
@@ -4633,7 +4632,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pMonster->sectorId = pSector;
         pMonster->group = spawn->uGroup;
         pMonster->PrepareSprites(0);
-        pMonster->monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+        pMonster->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
         v32 = grng->random(2048);
         a3 = TrigLUT.cos(v32) * v52;
         pPosX = a3 + spawn->vPosition.x;
@@ -4754,7 +4753,7 @@ void evaluateAoeDamage() {
                                     Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
                                     break;
                                 case OBJECT_Actor:
-                                    if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != MonsterInfo::Hostility_Friendly) {
+                                    if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != HOSTILITY_FRIENDLY) {
                                         Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->spellCasterAbility);
                                     }
                                     break;

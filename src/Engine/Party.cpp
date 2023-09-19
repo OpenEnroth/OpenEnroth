@@ -707,7 +707,7 @@ void Party::yell() {
         for (int i = 0; i < pActors.size(); i++) {
             Actor &actor = pActors[i];
             if (actor.CanAct() &&
-                actor.monsterInfo.uHostilityType != MonsterInfo::Hostility_Long &&
+                actor.monsterInfo.uHostilityType != HOSTILITY_LONG &&
                 actor.monsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 if ((actor.pos - pParty->pos).length() < 512) {
                     Actor::AI_Flee(i, Pid::character(0), 0, 0);

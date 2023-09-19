@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
+#include "Engine/Objects/MonsterEnums.h"
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"

@@ -5,7 +5,7 @@
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
+#include "Engine/Objects/MonsterEnums.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/UI/UIHouseEnums.h"

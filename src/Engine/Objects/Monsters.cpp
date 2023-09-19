@@ -1,4 +1,4 @@
-#include "Engine/Objects/Monsters.h"
+#include "Monsters.h"
 
 #include <string>
 #include <utility>
@@ -708,7 +708,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     } break;
                     case 12:
                         pInfos[curr_rec_num].uHostilityType =
-                            (MonsterInfo::HostilityRadius)atoi(test_string);
+                            (MonsterHostility)atoi(test_string);
                         break;
                     case 13:
                         pInfos[curr_rec_num].uBaseSpeed = atoi(test_string);
