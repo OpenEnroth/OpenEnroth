@@ -23,7 +23,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")
     endif()
 endif()
 if (BUILD_PLATFORM STREQUAL "linux" AND BUILD_ARCHITECTURE STREQUAL "x86")
-    # Prebuilt ffmpeg on x86 linux is built with --enable-asm, and lld chokes when trying to link with it.
+    # TODO(captainurist): Prebuilt ffmpeg on x86 linux is built with --enable-asm, and ffmpeg x86 asm code doesn't
+    # support position-independent linking. And it looks like lld tries to link position-independent code by default,
+    # and chokes on it. On the other hand, gnu ld works like a charm. Do we need to just pass proper link options for
+    # it to work? For now, we just disable lld.
     set(OE_USE_LD_LLD_DEFAULT OFF)
 else()
     set(OE_USE_LD_LLD_DEFAULT ON)
