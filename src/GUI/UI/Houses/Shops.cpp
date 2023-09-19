@@ -39,7 +39,7 @@ struct ITEM_VARIATION {
     std::array<RandomItemType, 4> item_class;
 };
 
-static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandart = {{
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandard = {{
     {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_BOW,    RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
     {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_MACE,   RANDOM_ITEM_WEAPON } }},
     {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_AXE,    RANDOM_ITEM_WEAPON } }},
@@ -73,7 +73,7 @@ static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAS
     {HOUSE_14,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_MACE,    RANDOM_ITEM_AXE,    RANDOM_ITEM_MACE,   RANDOM_ITEM_CLUB } }}
 }};
 
-static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandart = {{
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandard = {{
     {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
     {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
     {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
@@ -90,7 +90,7 @@ static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST
     {HOUSE_28,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}
 }};
 
-static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandart = {{
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandard = {{
     {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
     {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
     {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR } }},
@@ -141,7 +141,7 @@ static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST
     {HOUSE_28,                              { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}
 }};
 
-static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandart = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandard = {{
     {HOUSE_MAGIC_SHOP_EMERALD_ISLAND,       ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGIC_SHOP_HARMONDALE,           ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGIC_SHOP_ERATHIA,              ITEM_TREASURE_LEVEL_2},
@@ -173,7 +173,7 @@ static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_L
     {HOUSE_41,                              ITEM_TREASURE_LEVEL_3}
 }};
 
-static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandart = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandard = {{
     {HOUSE_ALCHEMY_SHOP_EMERALD_ISLAND,     ITEM_TREASURE_LEVEL_1},
     {HOUSE_ALCHEMY_SHOP_HARMONDALE,         ITEM_TREASURE_LEVEL_1},
     {HOUSE_ALCHEMY_SHOP_ERATHIA,            ITEM_TREASURE_LEVEL_2},
@@ -634,7 +634,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
 void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandart[houseId()];
+    const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         RandomItemType itemClass = variation.item_class[grng->random(4)];
@@ -647,8 +647,8 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandart[houseId()];
-    const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandart[houseId()];
+    const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandard[houseId()];
+    const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         RandomItemType itemClass;
@@ -670,7 +670,7 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    ItemTreasureLevel treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
+    ItemTreasureLevel treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         pItemTable->generateItem(treasureLvl, RANDOM_ITEM_MICS, &itemArray[i]);
@@ -682,7 +682,7 @@ void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    ItemTreasureLevel treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
+    ItemTreasureLevel treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandard[houseId()];
     RandomItemType bottomRowItemClass = isSpecial ? RANDOM_ITEM_POTION : RANDOM_ITEM_REAGENT;
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
@@ -706,7 +706,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
     std::vector<RandomItemType> itemClasses;
     std::vector<DIALOGUE_TYPE> skillsOptions;
 
-    addUniqueItemClasses(weaponShopVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(weaponShopVariationStandard[houseId()], itemClasses);
     addUniqueItemClasses(weaponShopVariationSpecial[houseId()], itemClasses);
 
     for (RandomItemType itemClass : itemClasses) {
@@ -723,8 +723,8 @@ std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
     std::vector<RandomItemType> itemClasses;
     std::vector<DIALOGUE_TYPE> skillsOptions;
 
-    addUniqueItemClasses(armorShopTopRowVariationStandart[houseId()], itemClasses);
-    addUniqueItemClasses(armorShopBottomRowVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopTopRowVariationStandard[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopBottomRowVariationStandard[houseId()], itemClasses);
     addUniqueItemClasses(armorShopTopRowVariationSpecial[houseId()], itemClasses);
     addUniqueItemClasses(armorShopBottomRowVariationSpecial[houseId()], itemClasses);
 

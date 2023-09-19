@@ -1003,7 +1003,7 @@ void Engine::_461103_load_level_sub() {
             pActors[i].monsterInfo.uID <= MONSTER_PEASANT_GOBLIN_MALE_3_3)
             v17 = 1;
         // v1 = 0;
-        v4 = (std::to_underlying(pActors[i].monsterInfo.uID) - 1) % 3; // TODO(captainurist): what is this std::to_underlying doing?
+        v4 = (std::to_underlying(pActors[i].monsterInfo.uID) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
         if (2 == v4) {
             if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
         } else {

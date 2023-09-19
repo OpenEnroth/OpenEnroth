@@ -381,6 +381,6 @@ enum class ShopScreen {
     SHOP_SCREEN_SELL = 3,
     SHOP_SCREEN_IDENTIFY = 4,
     SHOP_SCREEN_REPAIR = 5,
-    SHOP_SCREEN_SELL_FOR_CHEAP = 6, // Sell for half the price, doesn't seem to be used in the game. MM6 remnant?
+    SHOP_SCREEN_SELL_FOR_CHEAP = 6, // Sell for half the price, was used in MM6 general store, not used in MM7.
 };
 using enum ShopScreen;
