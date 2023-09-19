@@ -246,7 +246,7 @@ void ItemInteraction(unsigned int item_id) {
 }
 
 bool CanInteractWithActor(unsigned int id) {
-    return pActors[id].GetActorsRelation(0) == MonsterInfo::HOSTILITY_FRIENDLY && pActors[id].ActorFriend() && pActors[id].CanAct();
+    return pActors[id].GetActorsRelation(0) == HOSTILITY_FRIENDLY && pActors[id].ActorFriend() && pActors[id].CanAct();
 }
 
 void InteractWithActor(unsigned int id) {

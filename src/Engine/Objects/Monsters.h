@@ -21,16 +21,6 @@
 class Blob;
 
 struct MonsterInfo {
-    // TODO(captainurist): move into global namespace.
-    enum class MonsterHostility {
-        HOSTILITY_FRIENDLY = 0,
-        HOSTILITY_CLOSE = 1,
-        HOSTILITY_SHORT = 2,
-        HOSTILITY_MEDIUM = 3,
-        HOSTILITY_LONG = 4
-    };
-    using enum MonsterHostility;
-
     std::string pName;
     std::string pPictureName;
     uint8_t uLevel = 0;

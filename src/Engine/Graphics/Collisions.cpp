@@ -504,7 +504,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             }
 
             if (!isAboveGround && !isFlying) {
-                if (actor.monsterInfo.uHostilityType == MonsterInfo::HOSTILITY_FRIENDLY || isInCrowd)
+                if (actor.monsterInfo.uHostilityType == HOSTILITY_FRIENDLY || isInCrowd)
                     Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
 
                 break; // Trying to walk into indoor sky, bad idea!
@@ -532,8 +532,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Actor) {
             if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
-                bool isFriendly = actor.monsterInfo.uHostilityType == MonsterInfo::HOSTILITY_FRIENDLY;
-                bool otherFriendly = pActors[id].monsterInfo.uHostilityType == MonsterInfo::HOSTILITY_FRIENDLY;
+                bool isFriendly = actor.monsterInfo.uHostilityType == HOSTILITY_FRIENDLY;
+                bool otherFriendly = pActors[id].monsterInfo.uHostilityType == HOSTILITY_FRIENDLY;
                 if (isInCrowd) {
                     Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
                 } else if (isFriendly && otherFriendly) {
@@ -545,7 +545,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Character) {
-            if (actor.GetActorsRelation(0) != MonsterInfo::HOSTILITY_FRIENDLY) {
+            if (actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
                 actor.speed.y = 0;
                 actor.speed.x = 0;
 
@@ -654,8 +654,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         if (type == OBJECT_Actor) {
             if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
-                bool isFriendly = actor.monsterInfo.uHostilityType == MonsterInfo::HOSTILITY_FRIENDLY;
-                bool otherFriendly = pActors[id].monsterInfo.uHostilityType == MonsterInfo::HOSTILITY_FRIENDLY;
+                bool isFriendly = actor.monsterInfo.uHostilityType == HOSTILITY_FRIENDLY;
+                bool otherFriendly = pActors[id].monsterInfo.uHostilityType == HOSTILITY_FRIENDLY;
                 if (isInCrowd) {
                     Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
                 } else if (isFriendly && otherFriendly) {
@@ -667,7 +667,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Character) {
-            if (actor.GetActorsRelation(0) != MonsterInfo::HOSTILITY_FRIENDLY) {
+            if (actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
                 actor.speed.y = 0;
                 actor.speed.x = 0;
 

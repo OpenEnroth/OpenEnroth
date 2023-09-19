@@ -127,3 +127,12 @@ enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_FEAR = 23,
 };
 using enum SPECIAL_ATTACK_TYPE;
+
+enum class MonsterHostility {
+    HOSTILITY_FRIENDLY = 0,
+    HOSTILITY_CLOSE = 1,
+    HOSTILITY_SHORT = 2,
+    HOSTILITY_MEDIUM = 3,
+    HOSTILITY_LONG = 4
+};
+using enum MonsterHostility;

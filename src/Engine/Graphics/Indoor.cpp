@@ -1004,7 +1004,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
         if (!v28) {
             pActors[i].PrepareSprites(0);
-            pActors[i].monsterInfo.uHostilityType = MonsterInfo::HOSTILITY_FRIENDLY;
+            pActors[i].monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
             if (pActors[i].monsterInfo.field_3E != 11 &&
                 pActors[i].monsterInfo.field_3E != 19 &&
                 (!pActors[i].currentHP || !pActors[i].monsterInfo.uHP)) {

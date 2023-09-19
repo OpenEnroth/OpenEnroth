@@ -61,7 +61,7 @@ class Actor {
     void Remove();
     void PrepareSprites(char load_sounds_if_bit1_set);
     void UpdateAnimation();
-    MonsterInfo::MonsterHostility GetActorsRelation(Actor *a2);
+    MonsterHostility GetActorsRelation(Actor *a2);
     void SetRandomGoldIfTheresNoItem();
     bool CanAct();
     bool IsNotAlive();

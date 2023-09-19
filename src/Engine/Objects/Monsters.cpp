@@ -708,7 +708,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     } break;
                     case 12:
                         pInfos[curr_rec_num].uHostilityType =
-                            (MonsterInfo::MonsterHostility)atoi(test_string);
+                            (MonsterHostility)atoi(test_string);
                         break;
                     case 13:
                         pInfos[curr_rec_num].uBaseSpeed = atoi(test_string);
