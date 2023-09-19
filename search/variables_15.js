@@ -418,7 +418,7 @@ var searchData=
   ['unumcogs_415',['uNumCogs',['../structBLVSector.html#a3df9ee103d6c7796c9eb2b67f76abc03',1,'BLVSector::uNumCogs()'],['../structBLVSector__MM7.html#a717b82426375cf8a0a6c0631b0e4d3cf',1,'BLVSector_MM7::uNumCogs()']]],
   ['unumconvexfaces_416',['uNumConvexFaces',['../structBSPModelData__MM7.html#a4bc6e11a9ecd11bc25fad88ba98b7bb9',1,'BSPModelData_MM7']]],
   ['unumcylinderfaces_417',['uNumCylinderFaces',['../structBLVSector.html#a08dcc2780cd0949d062d59df25e668cf',1,'BLVSector::uNumCylinderFaces()'],['../structBLVSector__MM7.html#ade0823335a1c06c6e9c0c30e7209a328',1,'BLVSector_MM7::uNumCylinderFaces()']]],
-  ['unumdeaths_418',['uNumDeaths',['../structParty.html#a329386ed9ce65fc3bcaa4f78b50de8ef',1,'Party']]],
+  ['unumdeaths_418',['uNumDeaths',['../structParty.html#af9c956138062b2ca47c332544e714bf8',1,'Party']]],
   ['unumdecorations_419',['uNumDecorations',['../structBLVSector.html#af545da0300d0fed194df7a17b9b0f860',1,'BLVSector::uNumDecorations()'],['../structBLVSector__MM7.html#a8633e73e58865eca9d7784c56e11b665',1,'BLVSector_MM7::uNumDecorations()'],['../structBSPModelData__MM7.html#a6e9598b93a46f658b1baa3ece998e438',1,'BSPModelData_MM7::uNumDecorations()']]],
   ['unumdecorationsdrawnthisframe_420',['uNumDecorationsDrawnThisFrame',['../RenderOpenGL_8cpp.html#af77da57a69c9069857ce9547af8c1d2a',1,'uNumDecorationsDrawnThisFrame():&#160;RenderOpenGL.cpp'],['../IRender_8h.html#af77da57a69c9069857ce9547af8c1d2a',1,'uNumDecorationsDrawnThisFrame():&#160;RenderOpenGL.cpp']]],
   ['unumdivineinterventioncaststhisday_421',['uNumDivineInterventionCastsThisDay',['../classCharacter.html#a7dee7819b2eaa953c76a6c19cd16fe3a',1,'Character']]],
