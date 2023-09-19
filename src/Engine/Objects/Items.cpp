@@ -8,7 +8,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/ItemEnchantment.h"
-#include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/OurMath.h"

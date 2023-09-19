@@ -11,7 +11,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
+#include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
 #include "Engine/Tables/BuildingTable.h"

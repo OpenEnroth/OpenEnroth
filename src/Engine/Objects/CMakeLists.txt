@@ -22,6 +22,7 @@ set(ENGINE_OBJECTS_HEADERS
         ItemEnums.h
         Items.h
         Monsters.h
+        MonsterEnums.h
         NPC.h
         NPCEnums.h
         ObjectList.h
