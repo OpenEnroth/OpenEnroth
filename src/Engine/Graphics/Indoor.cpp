@@ -1021,7 +1021,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     // Party to start position
     Actor this_;
-    this_.monsterInfo.uID = 45;
+    this_.monsterInfo.uID = MONSTER_45;
     this_.PrepareSprites(0);
     if (!bLoading) {
         pParty->_viewPitch = 0;
@@ -1987,7 +1987,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ItemTreasureLevel trs_level, int trs_type, Vec3i pos, uint16_t facing) {
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
@@ -2009,7 +2009,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     int v34 = 0;
     int v5 = grng->random(100);
     ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->Treasure_prob));
-    if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
+    if (v13 != ITEM_TREASURE_LEVEL_7) {
         // [0, 20) -- nothing
         // [20, 60) -- gold
         // [60, 100) -- item
@@ -2018,7 +2018,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->random(27) + 20, a2->vPosition, 0);
+            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition, 0);
             return;
         }
 

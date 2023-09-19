@@ -243,7 +243,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             // TODO: why pActors.size() - 1? Should just check for .size()
             if ((actorId >= 0) && (actorId < (pActors.size() - 1))) {
                 for (int j = 0; j < pActors.size(); ++j) {
-                    if (pActors[actorId].GetActorsRelation(&pActors[j])) {
+                    if (pActors[actorId].GetActorsRelation(&pActors[j]) != MonsterInfo::Hostility_Friendly) {
                         CollideWithActor(j, 0);
                     }
                 }
@@ -402,8 +402,8 @@ LABEL_25:
                     // not sure:
                     // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
                     int radius = 0;
-                    if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
-                        radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
+                    if (pActors[actloop].word_000086_some_monster_id != MONSTER_0) {  // not always filled in from scripted monsters
+                        radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id].uToHitRadius;
                     }
                     CollideWithActor(actloop, radius);
                 }
@@ -724,7 +724,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
     if (pid.type() == OBJECT_Actor) {
-        if (object->spell_caster_pid.type() == OBJECT_Actor && !pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()])) {
+        if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == MonsterInfo::Hostility_Friendly) {
             return 1;
         }
     } else {

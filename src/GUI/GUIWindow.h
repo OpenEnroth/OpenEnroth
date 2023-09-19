@@ -39,6 +39,7 @@ class Character;
 class NPCData;
 class GraphicsImage;
 class Logger;
+struct ItemGen;
 
 struct WindowData {
     WindowData() {}
@@ -268,7 +269,7 @@ bool isHoldingMouseRightButton();
  * @offset 0x495461
  */
 std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
-                                struct ItemGen *a3, HOUSE_ID houseId, int shop_screen,
+                                ItemGen *a3 = nullptr, HOUSE_ID houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 GameTime *a6 = nullptr);
 
 

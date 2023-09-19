@@ -145,10 +145,7 @@ enum class ItemTreasureLevel : int8_t {
     ITEM_TREASURE_LEVEL_4 = 4,
     ITEM_TREASURE_LEVEL_5 = 5,
     ITEM_TREASURE_LEVEL_6 = 6, // 5% chance for an artifact.
-    ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT = 7,
-
-    ITEM_TREASURE_LEVEL_FIRST_VALID = ITEM_TREASURE_LEVEL_1,
-    ITEM_TREASURE_LEVEL_LAST_VALID = ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT,
+    ITEM_TREASURE_LEVEL_7 = 7, // Guaranteed artifact.
 
     ITEM_TREASURE_LEVEL_FIRST_RANDOM = ITEM_TREASURE_LEVEL_1,
     ITEM_TREASURE_LEVEL_LAST_RANDOM = ITEM_TREASURE_LEVEL_6,
@@ -998,11 +995,18 @@ enum class ItemId : int32_t {
     ITEM_FIRST_RECIPE = ITEM_RECIPE_REJUVENATION,
     ITEM_LAST_RECIPE = ITEM_RECIPE_BODY_RESISTANCE,
 
+    ITEM_FIRST_QUEST = ITEM_QUEST_HEART_OF_THE_WOOD,
+    ITEM_LAST_QUEST = ITEM_699,
+
     ITEM_FIRST_REAGENT = ITEM_REAGENT_WIDOWSWEEP_BERRIES,
     ITEM_LAST_REAGENT = ITEM_REAGENT_PHILOSOPHERS_STONE,
 
     ITEM_FIRST_REAL_POTION = ITEM_POTION_CURE_WOUNDS,
     ITEM_LAST_REAL_POTION = ITEM_POTION_REJUVENATION,
+
+    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
+    ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
+    ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
     ITEM_FIRST_WAND = ITEM_WAND_OF_FIRE,
     ITEM_LAST_WAND = ITEM_MYSTIC_WAND_OF_INCINERATION,
@@ -1012,10 +1016,6 @@ enum class ItemId : int32_t {
 
     ITEM_FIRST_SPELLBOOK = ITEM_SPELLBOOK_TORCH_LIGHT,
     ITEM_LAST_SPELLBOOK = ITEM_SPELLBOOK_SOULDRINKER,
-
-    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
-    ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
-    ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
     ITEM_FIRST_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_SPAWNABLE = ITEM_499,
@@ -1085,6 +1085,10 @@ inline bool isRandomItem(ItemId type) {
 
 inline bool isSpellbook(ItemId item) {
     return item >= ITEM_FIRST_SPELLBOOK && item <= ITEM_LAST_SPELLBOOK;
+}
+
+inline bool isQuestItem(ItemId item) {
+    return item >= ITEM_FIRST_QUEST && item <= ITEM_LAST_QUEST;
 }
 
 inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {
@@ -1283,4 +1287,54 @@ inline ItemSlot ringSlot(int index) {
 
 inline Segment<ItemSlot> allItemSlots() {
     return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
+}
+
+/**
+ * Item types used in random item creation code.
+ *
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L592
+ */
+enum class RandomItemType {
+    RANDOM_ITEM_ANY = 0,
+
+    // TODO(captainurist): Values in 1-19 are ITEM_EQUIP_TYPE + 1, but those are not used in MM7?
+    //                     See code in ItemTable::generateItem.
+
+    RANDOM_ITEM_WEAPON = 20, // A single-handed weapon.
+    RANDOM_ITEM_ARMOR = 21,
+    RANDOM_ITEM_MICS = 22, // For items requiring CHARACTER_SKILL_MISC - magic shop items.
+    RANDOM_ITEM_SWORD = 23,
+    RANDOM_ITEM_DAGGER = 24,
+    RANDOM_ITEM_AXE = 25,
+    RANDOM_ITEM_SPEAR = 26,
+    RANDOM_ITEM_BOW = 27,
+    RANDOM_ITEM_MACE = 28,
+    RANDOM_ITEM_CLUB = 29, // For items requiring CHARACTER_SKILL_CLUB, which is a hidden skill.
+    RANDOM_ITEM_STAFF = 30,
+    RANDOM_ITEM_LEATHER_ARMOR = 31,
+    RANDOM_ITEM_CHAIN_ARMOR = 32,
+    RANDOM_ITEM_PLATE_ARMOR = 33,
+    RANDOM_ITEM_SHIELD = 34,
+    RANDOM_ITEM_HELMET = 35,
+    RANDOM_ITEM_BELT = 36,
+    RANDOM_ITEM_CLOAK = 37,
+    RANDOM_ITEM_GAUNTLETS = 38,
+    RANDOM_ITEM_BOOTS = 39,
+    RANDOM_ITEM_RING = 40,
+    RANDOM_ITEM_AMULET = 41,
+    RANDOM_ITEM_WAND = 42,
+    RANDOM_ITEM_SPELL_SCROLL = 43,
+    RANDOM_ITEM_POTION = 44,
+    RANDOM_ITEM_REAGENT = 45,
+    RANDOM_ITEM_GEM = 46,
+    // MMExtension also has Gems2 = 47
+    //                  and Gold_ = 50
+
+    RANDOM_ITEM_FIRST_SPAWNABLE = RANDOM_ITEM_WEAPON,
+    RANDOM_ITEM_LAST_SPAWNABLE = RANDOM_ITEM_GEM
+};
+using enum RandomItemType;
+
+inline Segment<RandomItemType> allSpawnableRandomItemTypes() {
+    return {RANDOM_ITEM_FIRST_SPAWNABLE, RANDOM_ITEM_LAST_SPAWNABLE};
 }

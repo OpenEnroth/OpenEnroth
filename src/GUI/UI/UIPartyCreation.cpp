@@ -773,7 +773,7 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             }
         }
-        pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &item);
+        pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, RANDOM_ITEM_RING, &item);
         pParty->pCharacters[i].AddItem2(-1, &item);
 
         pParty->pCharacters[i].health = pParty->pCharacters[i].GetMaxHealth();

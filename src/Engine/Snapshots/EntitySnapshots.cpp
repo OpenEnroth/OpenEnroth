@@ -140,6 +140,14 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
     *dst = CombinedSkillValue::fromJoined(src);
 }
 
+static void snapshot(const MONSTER_TYPE &src, int16_t *dst) {
+    *dst = std::to_underlying(src);
+}
+
+static void reconstruct(int16_t src, MONSTER_TYPE *dst) {
+    *dst = static_cast<MONSTER_TYPE>(src);
+}
+
 static void snapshot(const BBoxi &src, BBoxs *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x1 = src.x1;
@@ -1142,12 +1150,12 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.treasureDiceRolls = src.monsterInfo.uTreasureDiceRolls;
     dst->pMonsterInfo.treasureDiceSides = src.monsterInfo.uTreasureDiceSides;
     dst->pMonsterInfo.treasureLevel = std::to_underlying(src.monsterInfo.uTreasureLevel);
-    dst->pMonsterInfo.treasureType = src.monsterInfo.uTreasureType;
+    dst->pMonsterInfo.treasureType = std::to_underlying(src.monsterInfo.uTreasureType);
     dst->pMonsterInfo.flying = src.monsterInfo.uFlying;
-    dst->pMonsterInfo.movementType = src.monsterInfo.uMovementType;
+    dst->pMonsterInfo.movementType = std::to_underlying(src.monsterInfo.uMovementType);
     dst->pMonsterInfo.aiType = src.monsterInfo.uAIType;
     dst->pMonsterInfo.hostilityType = std::to_underlying(src.monsterInfo.uHostilityType);
-    dst->pMonsterInfo.specialAttackType = src.monsterInfo.uSpecialAttackType;
+    dst->pMonsterInfo.specialAttackType = std::to_underlying(src.monsterInfo.uSpecialAttackType);
     dst->pMonsterInfo.specialAttackLevel = src.monsterInfo.uSpecialAttackLevel;
     dst->pMonsterInfo.attack1Type = std::to_underlying(src.monsterInfo.uAttack1Type);
     dst->pMonsterInfo.attack1DamageDiceRolls = src.monsterInfo.uAttack1DamageDiceRolls;
@@ -1174,12 +1182,12 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.resLight = src.monsterInfo.uResLight;
     dst->pMonsterInfo.resDark = src.monsterInfo.uResDark;
     dst->pMonsterInfo.resPhysical = src.monsterInfo.uResPhysical;
-    dst->pMonsterInfo.specialAbilityType = src.monsterInfo.uSpecialAbilityType;
+    dst->pMonsterInfo.specialAbilityType = std::to_underlying(src.monsterInfo.uSpecialAbilityType);
     dst->pMonsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.uSpecialAbilityDamageDiceRolls;
     dst->pMonsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.uSpecialAbilityDamageDiceSides;
     dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.uSpecialAbilityDamageDiceBonus;
     dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.uNumCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.id = src.monsterInfo.uID;
+    dst->pMonsterInfo.id = std::to_underlying(src.monsterInfo.uID);
     dst->pMonsterInfo.bloodSplatOnDeath = src.monsterInfo.bBloodSplatOnDeath;
     snapshot(src.monsterInfo.uSpellSkillAndMastery1, &dst->pMonsterInfo.spellSkillAndMastery1);
     snapshot(src.monsterInfo.uSpellSkillAndMastery2, &dst->pMonsterInfo.spellSkillAndMastery2);
@@ -1192,7 +1200,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.recoveryTime = src.monsterInfo.uRecoveryTime;
     dst->pMonsterInfo.attackPreference = src.monsterInfo.uAttackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
+    dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->uActorRadius = src.radius;
     dst->uActorHeight = src.height;
     dst->uMovementSpeed = src.moveSpeed;
@@ -1236,9 +1244,9 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uTreasureDiceRolls = src.pMonsterInfo.treasureDiceRolls;
     dst->monsterInfo.uTreasureDiceSides = src.pMonsterInfo.treasureDiceSides;
     dst->monsterInfo.uTreasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
-    dst->monsterInfo.uTreasureType = src.pMonsterInfo.treasureType;
+    dst->monsterInfo.uTreasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
     dst->monsterInfo.uFlying = src.pMonsterInfo.flying;
-    dst->monsterInfo.uMovementType = src.pMonsterInfo.movementType;
+    dst->monsterInfo.uMovementType = static_cast<MONSTER_MOVEMENT_TYPE>(src.pMonsterInfo.movementType);
     dst->monsterInfo.uAIType = src.pMonsterInfo.aiType;
     dst->monsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.hostilityType);
     dst->monsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
@@ -1268,12 +1276,12 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uResLight = src.pMonsterInfo.resLight;
     dst->monsterInfo.uResDark = src.pMonsterInfo.resDark;
     dst->monsterInfo.uResPhysical = src.pMonsterInfo.resPhysical;
-    dst->monsterInfo.uSpecialAbilityType = src.pMonsterInfo.specialAbilityType;
+    dst->monsterInfo.uSpecialAbilityType = static_cast<MONSTER_SPECIAL_ABILITY_TYPE>(src.pMonsterInfo.specialAbilityType);
     dst->monsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.specialAbilityDamageDiceRolls;
     dst->monsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->monsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
     dst->monsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->monsterInfo.uID = src.pMonsterInfo.id;
+    dst->monsterInfo.uID = static_cast<MONSTER_TYPE>(src.pMonsterInfo.id);
     dst->monsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
     reconstruct(src.pMonsterInfo.spellSkillAndMastery1, &dst->monsterInfo.uSpellSkillAndMastery1);
     reconstruct(src.pMonsterInfo.spellSkillAndMastery2, &dst->monsterInfo.uSpellSkillAndMastery2);
@@ -1286,7 +1294,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uRecoveryTime = src.pMonsterInfo.recoveryTime;
     dst->monsterInfo.uAttackPreference = src.pMonsterInfo.attackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
+    dst->word_000086_some_monster_id = static_cast<MONSTER_TYPE>(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->radius = src.uActorRadius;
     dst->height = src.uActorHeight;
     dst->moveSpeed = src.uMovementSpeed;
@@ -1684,7 +1692,7 @@ void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
 
     snapshot(src.last_visit, &dst->last_visit);
     snapshot(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = src.day_attrib;
+    dst->day_attrib = std::to_underlying(src.day_attrib);
     dst->day_fogrange_1 = src.day_fogrange_1;
     dst->day_fogrange_2 = src.day_fogrange_2;
 }
@@ -1692,7 +1700,7 @@ void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
 void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
     reconstruct(src.last_visit, &dst->last_visit);
     reconstruct(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = src.day_attrib;
+    dst->day_attrib = static_cast<MapWeatherFlags>(src.day_attrib);
     dst->day_fogrange_1 = src.day_fogrange_1;
     dst->day_fogrange_2 = src.day_fogrange_2;
 }

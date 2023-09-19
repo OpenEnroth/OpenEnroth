@@ -12,66 +12,87 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 
+#include "Utility/Segment.h"
+
 #include "ActorEnums.h"
 #include "ItemEnums.h"
 
 class Blob;
 
-/*  334 */
-enum MONSTER_TYPE {
-    MONSTER_DEVIL_1 = 0x16,
-    MONSTER_DEVIL_2 = 0x17,
-    MONSTER_DEVIL_3 = 0x18,
-    MONSTER_DRAGON_1 = 0x19,
-    MONSTER_DRAGON_2 = 0x1A,
-    MONSTER_DRAGON_3 = 0x1B,
-    MONSTER_ELEMENTAL_WATER_1 = 0x2E,
-    MONSTER_ELEMENTAL_WATER_3 = 0x30,
-    MONSTER_ELF_ARCHER_1 = 0x31,
-    MONSTER_ELF_ARCHER_3 = 0x33,
-    MONSTER_ELF_SPEARMAN_1 = 0x34,
-    MONSTER_ELF_SPEARMAN_3 = 0x36,
-    MONSTER_GHOST_1 = 0x46,
-    MONSTER_GHOST_3 = 0x48,
-    MONSTER_HARPY_1 = 0x55,
-    MONSTER_HARPY_2 = 0x56,
-    MONSTER_HARPY_3 = 0x57,
-    MONSTER_LICH_1 = 0x5B,
-    MONSTER_LICH_3 = 0x5D,
-    MONSTER_OOZE_1 = 0x70,
-    MONSTER_OOZE_2 = 0x71,
-    MONSTER_OOZE_3 = 0x72,
-    MONSTER_PEASANT_ELF_FEMALE_1_1 = 0x85,
-    MONSTER_PEASANT_ELF_MALE_3_3 = 0x96,
-    MONSTER_SKELETON_1 = 0xC7,
-    MONSTER_SKELETON_3 = 0xC9,
-    MONSTER_TITAN_1 = 0xD3,
-    MONSTER_TITAN_3 = 0xD5,
-    MONSTER_VAMPIRE_1 = 0xD9,
-    MONSTER_VAMPIRE_3 = 0xDB,
-    MONSTER_WIGHT_1 = 0xDF,
-    MONSTER_WIGHT_3 = 0xE1,
-    MONSTER_ZOMBIE_1 = 0xE5,
-    MONSTER_ZOMBIE_3 = 0xE7,
-    MONSTER_PEASANT_GOBLIN_MALE_3_3 = 0xF9,
-    MONSTER_TROLL_1 = 0xFA,
-    MONSTER_TROLL_2 = 0xFB,
-    MONSTER_TROLL_3 = 0xFC,
-    MONSTER_TREANT_1 = 0xFD,
-    MONSTER_TREANT_3 = 0xFF,
-    MONSTER_GHOUL_1 = 0x100,
-    MONSTER_GHOUL_3 = 0x102,
+// TODO(captainurist): Rename to MonsterId?
+// TODO(captainurist): codegen enum values.
+enum class MONSTER_TYPE {
+    MONSTER_0 = 0, // TODO(captainurist): MONSTER_INVALID?
+    MONSTER_1 = 1,
+    MONSTER_DEVIL_1 = 22,
+    MONSTER_DEVIL_2 = 23,
+    MONSTER_DEVIL_3 = 24,
+    MONSTER_DRAGON_1 = 25,
+    MONSTER_DRAGON_2 = 26,
+    MONSTER_DRAGON_3 = 27,
+    MONSTER_45 = 45,
+    MONSTER_ELEMENTAL_WATER_1 = 46,
+    MONSTER_ELEMENTAL_WATER_3 = 48,
+    MONSTER_ELF_ARCHER_1 = 49,
+    MONSTER_ELF_ARCHER_3 = 51,
+    MONSTER_ELF_SPEARMAN_1 = 52,
+    MONSTER_ELF_SPEARMAN_3 = 54,
+    MONSTER_GHOST_1 = 70,
+    MONSTER_GHOST_3 = 72,
+    MONSTER_HARPY_1 = 85,
+    MONSTER_HARPY_2 = 86,
+    MONSTER_HARPY_3 = 87,
+    MONSTER_LICH_1 = 91,
+    MONSTER_LICH_3 = 93,
+    MONSTER_OOZE_1 = 112,
+    MONSTER_OOZE_2 = 113,
+    MONSTER_OOZE_3 = 114,
+    MONSTER_115 = 115,
+    MONSTER_PEASANT_ELF_FEMALE_1_1 = 133,
+    MONSTER_PEASANT_ELF_MALE_3_3 = 150,
+    MONSTER_186 = 186,
+    MONSTER_SKELETON_1 = 199,
+    MONSTER_SKELETON_3 = 201,
+    MONSTER_TITAN_1 = 211,
+    MONSTER_TITAN_3 = 213,
+    MONSTER_VAMPIRE_1 = 217,
+    MONSTER_VAMPIRE_3 = 219,
+    MONSTER_WIGHT_1 = 223,
+    MONSTER_WIGHT_3 = 225,
+    MONSTER_ZOMBIE_1 = 229,
+    MONSTER_ZOMBIE_3 = 231,
+    MONSTER_232 = 232,
+    MONSTER_PEASANT_GOBLIN_MALE_3_3 = 249,
+    MONSTER_TROLL_1 = 250,
+    MONSTER_TROLL_2 = 251,
+    MONSTER_TROLL_3 = 252,
+    MONSTER_TREANT_1 = 253,
+    MONSTER_TREANT_3 = 255,
+    MONSTER_GHOUL_1 = 256,
+    MONSTER_GHOUL_3 = 258,
+
+    MONSTER_FIRST = MONSTER_1,
+    MONSTER_LAST = 277,
+
+    MONSTER_FIRST_ARENA = MONSTER_1,
+    MONSTER_LAST_ARENA = MONSTER_GHOUL_3
 };
+using enum MONSTER_TYPE;
+
+inline Segment<MONSTER_TYPE> allArenaMonsters() {
+    return {MONSTER_FIRST_ARENA, MONSTER_LAST_ARENA};
+}
 
 /*  335 */
-enum MONSTER_SPECIAL_ABILITY_TYPE {
+enum class MONSTER_SPECIAL_ABILITY_TYPE {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
     MONSTER_SPECIAL_ABILITY_SUMMON = 0x2,
     MONSTER_SPECIAL_ABILITY_EXPLODE = 0x3,
 };
+using enum MONSTER_SPECIAL_ABILITY_TYPE;
 
-enum MONSTER_MOVEMENT_TYPE {
+enum class MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_SHORT = 0x0,
     MONSTER_MOVEMENT_TYPE_MEDIUM = 0x1,
     MONSTER_MOVEMENT_TYPE_LONG = 0x2,
@@ -79,9 +100,10 @@ enum MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_FREE = 0x4,
     MONSTER_MOVEMENT_TYPE_STATIONARY = 0x5,
 };
+using enum MONSTER_MOVEMENT_TYPE;
 
 /*  336 */
-enum MONSTER_SUPERTYPE {
+enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_UNDEAD = 0x1,
     MONSTER_SUPERTYPE_KREEGAN = 0x2,
     MONSTER_SUPERTYPE_DRAGON = 0x3,
@@ -91,8 +113,9 @@ enum MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_TITAN = 0x7,
     MONSTER_SUPERTYPE_8 = 0x8,
 };
+using enum MONSTER_SUPERTYPE;
 
-enum SPECIAL_ATTACK_TYPE : uint8_t {
+enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -118,15 +141,18 @@ enum SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_MANA_DRAIN = 22,
     SPECIAL_ATTACK_FEAR = 23,
 };
+using enum SPECIAL_ATTACK_TYPE;
 
 struct MonsterInfo {
-    enum HostilityRadius {
+    // TODO(captainurist): move into global namespace.
+    enum class HostilityRadius {
         Hostility_Friendly = 0,
         Hostility_Close = 1,
         Hostility_Short = 2,
         Hostility_Medium = 3,
         Hostility_Long = 4
     };
+    using enum HostilityRadius;
 
     std::string pName;
     std::string pPictureName;
@@ -135,9 +161,9 @@ struct MonsterInfo {
     uint8_t uTreasureDiceRolls = 0;
     uint8_t uTreasureDiceSides = 0;
     ItemTreasureLevel uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-    uint8_t uTreasureType = 0;
+    RandomItemType uTreasureType = RANDOM_ITEM_ANY;
     uint8_t uFlying = 0;
-    uint8_t uMovementType = 0;
+    MONSTER_MOVEMENT_TYPE uMovementType = MONSTER_MOVEMENT_TYPE_SHORT;
     uint8_t uAIType = 0;
     HostilityRadius uHostilityType = Hostility_Friendly;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
@@ -167,15 +193,12 @@ struct MonsterInfo {
     uint8_t uResLight = 0;
     uint8_t uResDark = 0;
     uint8_t uResPhysical = 0;
-    uint8_t uSpecialAbilityType = 0;  // 0 SPECIAL_ABILITY_TYPE_NONE
-                                  // 1 SPECIAL_ABILITY_TYPE_SHOT
-                                  // 2 SPECIAL_ABILITY_TYPE_SUMMON
-                                  // 3 SPECIAL_ABILITY_TYPE_EXPLODE
+    MONSTER_SPECIAL_ABILITY_TYPE uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
     uint8_t uSpecialAbilityDamageDiceRolls = 0;
     uint8_t uSpecialAbilityDamageDiceSides = 0;
     uint8_t uSpecialAbilityDamageDiceBonus = 0;
     uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
-    uint16_t uID = 0;
+    MONSTER_TYPE uID = MONSTER_0;
     bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
     CombinedSkillValue uSpellSkillAndMastery1;
     CombinedSkillValue uSpellSkillAndMastery2;
@@ -192,14 +215,14 @@ struct MonsterInfo {
 struct MonsterStats {
     void Initialize(const Blob &monsters);
     void InitializePlacements(const Blob &placements);
-    signed int FindMonsterByTextureName(const std::string &Str2);
+    MONSTER_TYPE FindMonsterByTextureName(const std::string &Str2);
 
-    static bool BelongsToSupertype(unsigned int uMonsterInfoID,
-                                   enum MONSTER_SUPERTYPE eSupertype);
+    static bool BelongsToSupertype(MONSTER_TYPE uMonsterInfoID,
+                                   MONSTER_SUPERTYPE eSupertype);
 
-    MonsterInfo pInfos[265];      // 0 - 5b18h
+    IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> pInfos;      // 0 - 5b18h
     std::array<std::string, 31> pPlaceStrings;      // 5B18h placement counts from 1
-    unsigned int uNumMonsters;    // 5B94h
+    unsigned int uNumMonsters;    // 5B94h // TODO(captainurist): can drop?
     unsigned int uNumPlacements;  // 5B98h
     int field_5B9C;
 };
@@ -216,10 +239,10 @@ struct MonsterDesc {
 };
 
 struct MonsterList {
-    int16_t GetMonsterIDByName(const std::string &pMonsterName);
+    MONSTER_TYPE GetMonsterIDByName(const std::string &pMonsterName);
     bool FromFileTxt(const char *Args);
 
-    std::vector<MonsterDesc> pMonsters;
+    IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> pMonsters;
 };
 
 extern struct MonsterStats *pMonsterStats;

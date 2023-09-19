@@ -378,6 +378,8 @@ void Game_StartDialogue(unsigned int actor_id) {
 }
 
 void Game_StartHirelingDialogue(unsigned int hireling_id) {
+    assert(hireling_id == 0 || hireling_id == 1);
+
     if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
 
     engine->_messageQueue->clear();
@@ -482,7 +484,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_StartHireling1Dialogue:
             case UIMSG_StartHireling2Dialogue:
-                Game_StartHirelingDialogue(uMessage - UIMSG_StartHireling1Dialogue);
+                Game_StartHirelingDialogue(uMessage == UIMSG_StartHireling1Dialogue ? 0 : 1);
                 continue;
             case UIMSG_HouseScreenClick:
                 if (window_SpeakInHouse) {
@@ -783,8 +785,8 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_INPUT_BLV:  // click escape
-                                    if (uCurrentHouse_Animation == 153)
-                                        playHouseSound((HOUSE_ID)0x99u, HouseSoundType(3)); // TODO(Nik-RE-dev): what is this?
+                                    if (uCurrentHouse_Animation == 153) // TODO(Nik-RE-dev): what is this? Btw, 153 == HOUSE_EARTH_GUILD_STONE_CITY.
+                                        playHouseSound(HOUSE_EARTH_GUILD_STONE_CITY, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
                                     pMediaPlayer->Unload();
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;

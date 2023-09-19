@@ -61,7 +61,7 @@ class Actor {
     void Remove();
     void PrepareSprites(char load_sounds_if_bit1_set);
     void UpdateAnimation();
-    signed int GetActorsRelation(Actor *a2);
+    MonsterInfo::HostilityRadius GetActorsRelation(Actor *a2);
     void SetRandomGoldIfTheresNoItem();
     bool CanAct();
     bool IsNotAlive();
@@ -159,7 +159,7 @@ class Actor {
     int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(int monster_id, Vec3i pos);
+    static void Arena_summon_actor(MONSTER_TYPE monster_id, Vec3i pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                        Vec3i *pVelocity);
     static void MakeActorAIList_ODM();
@@ -183,7 +183,7 @@ class Actor {
     /**
      * @offset 0x408A7E
      */
-    static int searchDeadActorsByMonsterID(int *pTotalActors, int monsterID);
+    static int searchDeadActorsByMonsterID(int *pTotalActors, MONSTER_TYPE monsterID);
 
     /**
      * @offset 0x408AE7
@@ -210,7 +210,7 @@ class Actor {
     int16_t currentHP = 0;
     MonsterInfo monsterInfo;
     int16_t word_000084_range_attack = 0;
-    int16_t word_000086_some_monster_id = 0;  // base monster class monsterlist id
+    MONSTER_TYPE word_000086_some_monster_id = MONSTER_0;  // base monster class monsterlist id
     uint16_t radius = 32;
     uint16_t height = 128;
     uint16_t moveSpeed = 200;
@@ -233,7 +233,7 @@ class Actor {
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
     std::array<ItemGen, 4> items;
     unsigned int group = 0;
-    unsigned int ally = 0;
+    unsigned int ally = 0; // TODO(captainurist): This is (MONSTER_TYPE - 1) / 3 + 1
     std::array<ActorJob, 8> scheduledJobs;
     Pid summonerId;
     Pid lastCharacterIdToHit;

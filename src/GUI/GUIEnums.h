@@ -308,6 +308,7 @@ enum class ScreenType {
 };
 using enum ScreenType;
 
+// TODO(captainurist): #enum class
 enum WindowType {
     WINDOW_null = 0,
     WINDOW_MainMenu = 1,
@@ -373,3 +374,13 @@ enum WindowType {
 };
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(WindowType)
+
+enum class ShopScreen {
+    SHOP_SCREEN_INVALID = 0,
+    SHOP_SCREEN_BUY = 2,
+    SHOP_SCREEN_SELL = 3,
+    SHOP_SCREEN_IDENTIFY = 4,
+    SHOP_SCREEN_REPAIR = 5,
+    SHOP_SCREEN_SELL_FOR_CHEAP = 6, // Sell for half the price, was used in MM6 general store, not used in MM7.
+};
+using enum ShopScreen;

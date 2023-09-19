@@ -36,114 +36,112 @@
 
 struct ITEM_VARIATION {
     ItemTreasureLevel treasure_level;
-    std::array<uint16_t, 4> item_class;
+    std::array<RandomItemType, 4> item_class;
 };
 
-// TODO(Nik-RE-dev): enumerate treasure types used in this file
-
-static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandart = {{
-    {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_1, { 23, 27, 20, 20 } }},
-    {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_1, { 23, 24, 28, 20 } }},
-    {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_2, { 23, 24, 25, 20 } }},
-    {HOUSE_WEAPON_SHOP_TULAREAN_FOREST,     { ITEM_TREASURE_LEVEL_2, { 27, 27, 26, 26 } }},
-    {HOUSE_WEAPON_SHOP_CELESTE,             { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } }},
-    {HOUSE_WEAPON_SHOP_PIT,                 { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } }},
-    {HOUSE_WEAPON_SHOP_MOUNT_NIGHON,        { ITEM_TREASURE_LEVEL_3, { 30, 24, 20, 20 } }},
-    {HOUSE_WEAPON_SHOP_TATALIA_1,           { ITEM_TREASURE_LEVEL_2, { 20, 20, 20, 20 } }},
-    {HOUSE_WEAPON_SHOP_AVLEE,               { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } }},
-    {HOUSE_WEAPON_SHOP_STONE_CITY,          { ITEM_TREASURE_LEVEL_3, { 28, 28, 25, 25 } }},
-    {HOUSE_WEAPON_SHOP_CASTLE_HARMONDALE,   { ITEM_TREASURE_LEVEL_2, { 23, 23, 24, 24 } }},
-    {HOUSE_WEAPON_SHOP_TATALIA_2,           { ITEM_TREASURE_LEVEL_3, { 23, 23, 26, 26 } }},
-    {HOUSE_13,                              { ITEM_TREASURE_LEVEL_2, { 30, 26, 26, 26 } }},
-    {HOUSE_14,                              { ITEM_TREASURE_LEVEL_2, { 28, 25, 28, 29 } }}
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandard = {{
+    {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_BOW,    RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_MACE,   RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_AXE,    RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_TULAREAN_FOREST,     { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_BOW,     RANDOM_ITEM_BOW,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_WEAPON_SHOP_CELESTE,             { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_DAGGER,  RANDOM_ITEM_STAFF,  RANDOM_ITEM_AXE,    RANDOM_ITEM_BOW } }},
+    {HOUSE_WEAPON_SHOP_PIT,                 { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_DAGGER,  RANDOM_ITEM_STAFF,  RANDOM_ITEM_AXE,    RANDOM_ITEM_BOW } }},
+    {HOUSE_WEAPON_SHOP_MOUNT_NIGHON,        { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_STAFF,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_TATALIA_1,           { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_AVLEE,               { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_BOW,     RANDOM_ITEM_BOW,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_WEAPON_SHOP_STONE_CITY,          { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_MACE,    RANDOM_ITEM_MACE,   RANDOM_ITEM_AXE,    RANDOM_ITEM_AXE } }},
+    {HOUSE_WEAPON_SHOP_CASTLE_HARMONDALE,   { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_SWORD,  RANDOM_ITEM_DAGGER, RANDOM_ITEM_DAGGER } }},
+    {HOUSE_WEAPON_SHOP_TATALIA_2,           { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_SWORD,  RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_13,                              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_STAFF,   RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_14,                              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_MACE,    RANDOM_ITEM_AXE,    RANDOM_ITEM_MACE,   RANDOM_ITEM_CLUB } }}
 }};
 
 static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationSpecial = {{
-    {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_2, { 25, 30, 20, 20 } }},
-    {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_2, { 23, 24, 28, 20 } }},
-    {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_3, { 23, 24, 25, 20 } }},
-    {HOUSE_WEAPON_SHOP_TULAREAN_FOREST,     { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } }},
-    {HOUSE_WEAPON_SHOP_CELESTE,             { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } }},
-    {HOUSE_WEAPON_SHOP_PIT,                 { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } }},
-    {HOUSE_WEAPON_SHOP_MOUNT_NIGHON,        { ITEM_TREASURE_LEVEL_4, { 30, 24, 20, 20 } }},
-    {HOUSE_WEAPON_SHOP_TATALIA_1,           { ITEM_TREASURE_LEVEL_3, { 20, 20, 20, 20 } }},
-    {HOUSE_WEAPON_SHOP_AVLEE,               { ITEM_TREASURE_LEVEL_4, { 27, 27, 26, 26 } }},
-    {HOUSE_WEAPON_SHOP_STONE_CITY,          { ITEM_TREASURE_LEVEL_4, { 28, 28, 25, 25 } }},
-    {HOUSE_WEAPON_SHOP_CASTLE_HARMONDALE,   { ITEM_TREASURE_LEVEL_4, { 23, 23, 24, 24 } }},
-    {HOUSE_WEAPON_SHOP_TATALIA_2,           { ITEM_TREASURE_LEVEL_4, { 24, 24, 27, 20 } }},
-    {HOUSE_13,                              { ITEM_TREASURE_LEVEL_4, { 30, 26, 26, 26 } }},
-    {HOUSE_14,                              { ITEM_TREASURE_LEVEL_4, { 28, 25, 28, 29 } }}
+    {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_AXE,     RANDOM_ITEM_STAFF,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_MACE,   RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_AXE,    RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_TULAREAN_FOREST,     { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_BOW,     RANDOM_ITEM_BOW,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_WEAPON_SHOP_CELESTE,             { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_SPEAR,  RANDOM_ITEM_MACE,   RANDOM_ITEM_BOW } }},
+    {HOUSE_WEAPON_SHOP_PIT,                 { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_SPEAR,  RANDOM_ITEM_MACE,   RANDOM_ITEM_BOW } }},
+    {HOUSE_WEAPON_SHOP_MOUNT_NIGHON,        { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_STAFF,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_TATALIA_1,           { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }},
+    {HOUSE_WEAPON_SHOP_AVLEE,               { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_BOW,     RANDOM_ITEM_BOW,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_WEAPON_SHOP_STONE_CITY,          { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_MACE,    RANDOM_ITEM_MACE,   RANDOM_ITEM_AXE,    RANDOM_ITEM_AXE } }},
+    {HOUSE_WEAPON_SHOP_CASTLE_HARMONDALE,   { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_SWORD,  RANDOM_ITEM_DAGGER, RANDOM_ITEM_DAGGER } }},
+    {HOUSE_WEAPON_SHOP_TATALIA_2,           { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_DAGGER,  RANDOM_ITEM_DAGGER, RANDOM_ITEM_BOW,    RANDOM_ITEM_WEAPON } }},
+    {HOUSE_13,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_STAFF,   RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR,  RANDOM_ITEM_SPEAR } }},
+    {HOUSE_14,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_MACE,    RANDOM_ITEM_AXE,    RANDOM_ITEM_MACE,   RANDOM_ITEM_CLUB } }}
 }};
 
-static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandart = {{
-    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }}
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandard = {{
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}
 }};
 
-static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandart = {{
-    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { 31, 31, 31, 34 } }},
-    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { 31, 31, 32, 34 } }},
-    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { 31, 32, 32, 33 } }},
-    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 32 } }},
-    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } }},
-    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } }},
-    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 31 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_2, { 31, 32, 34, 34 } }},
-    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } }},
-    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { 32, 32, 32, 33 } }},
-    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 32 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } }},
-    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } }},
-    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_4, { 33, 31, 32, 34 } }}
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandard = {{
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }}
 }};
 
 static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationSpecial = {{
-    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
-    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }}
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }},
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_HELMET, RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}
 }};
 
 static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationSpecial = {{
-    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_2, { 31, 31, 31, 34 } }},
-    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 34 } }},
-    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { 31, 32, 32, 33 } }},
-    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } }},
-    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } }},
-    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } }},
-    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 31 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_3, { 31, 32, 34, 34 } }},
-    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_4, { 31, 31, 32, 33 } }},
-    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { 32, 32, 33, 34 } }},
-    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 32 } }},
-    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_4, { 32, 32, 32, 32 } }},
-    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_4, { 34, 34, 34, 34 } }},
-    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }}
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }},
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR } }},
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_SHIELD,          RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }},
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}
 }};
 
-static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandart = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandard = {{
     {HOUSE_MAGIC_SHOP_EMERALD_ISLAND,       ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGIC_SHOP_HARMONDALE,           ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGIC_SHOP_ERATHIA,              ITEM_TREASURE_LEVEL_2},
@@ -175,7 +173,7 @@ static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_L
     {HOUSE_41,                              ITEM_TREASURE_LEVEL_3}
 }};
 
-static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandart = {{
+static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandard = {{
     {HOUSE_ALCHEMY_SHOP_EMERALD_ISLAND,     ITEM_TREASURE_LEVEL_1},
     {HOUSE_ALCHEMY_SHOP_HARMONDALE,         ITEM_TREASURE_LEVEL_1},
     {HOUSE_ALCHEMY_SHOP_ERATHIA,            ITEM_TREASURE_LEVEL_2},
@@ -214,37 +212,37 @@ bool isStealingModeActive() {
     return keyboardInputHandler->IsStealingToggled() && pParty->activeCharacter().CanSteal();
 }
 
-void addUniqueItemClasses(const ITEM_VARIATION &variation, std::vector<int> &set) {
-    for (int itemClass : variation.item_class) {
+void addUniqueItemClasses(const ITEM_VARIATION &variation, std::vector<RandomItemType> &set) {
+    for (RandomItemType itemClass : variation.item_class) {
         if (std::find(set.begin(), set.end(), itemClass) == set.end()) {
             set.push_back(itemClass);
         }
     }
 }
 
-DIALOGUE_TYPE getSkillLearnDualogueForItemClass(int itemClass) {
+DIALOGUE_TYPE getSkillLearnDualogueForItemClass(RandomItemType itemClass) {
     switch (itemClass) {
-      case 23:
+      case RANDOM_ITEM_SWORD:
         return DIALOGUE_LEARN_SWORD;
-      case 24:
+      case RANDOM_ITEM_DAGGER:
         return DIALOGUE_LEARN_DAGGER;
-      case 25:
+      case RANDOM_ITEM_AXE:
         return DIALOGUE_LEARN_AXE;
-      case 26:
+      case RANDOM_ITEM_SPEAR:
         return DIALOGUE_LEARN_SPEAR;
-      case 27:
+      case RANDOM_ITEM_BOW:
         return DIALOGUE_LEARN_BOW;
-      case 28:
+      case RANDOM_ITEM_MACE:
         return DIALOGUE_LEARN_MACE;
-      case 30:
+      case RANDOM_ITEM_STAFF:
         return DIALOGUE_LEARN_STAFF;
-      case 31:
+      case RANDOM_ITEM_LEATHER_ARMOR:
         return DIALOGUE_LEARN_LEATHER;
-      case 32:
+      case RANDOM_ITEM_CHAIN_ARMOR:
         return DIALOGUE_LEARN_CHAIN;
-      case 33:
+      case RANDOM_ITEM_PLATE_ARMOR:
         return DIALOGUE_LEARN_PLATE;
-      case 34:
+      case RANDOM_ITEM_SHIELD:
         return DIALOGUE_LEARN_SHIELD;
       default:
         return DIALOGUE_NULL;
@@ -297,8 +295,8 @@ void GUIWindow_Shop::sellDialogue() {
         int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
         if (pItemID) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 3);
-            std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), 3);
+            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_SELL);
+            std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_SELL);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
@@ -331,10 +329,10 @@ void GUIWindow_Shop::identifyDialogue() {
 
             std::string str;
             if (!item->IsIdentified()) {
-                MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 4);
-                str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), 4);
+                MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_IDENTIFY);
+                str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_IDENTIFY);
             } else {
-                str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, item, houseId(), 4);
+                str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_IDENTIFY);
             }
 
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
@@ -368,8 +366,8 @@ void GUIWindow_Shop::repairDialogue() {
 
         if (pParty->activeCharacter().pOwnItems[pItemID - 1].uAttributes & ITEM_BROKEN) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 5);
-            std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), 5);
+            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
+            std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_REPAIR);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
@@ -426,10 +424,10 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                         if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_WEAPON_SHOP, houseId(), 2);
-                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), 2);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_WEAPON_SHOP, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), 2);
+                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
@@ -513,10 +511,10 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 2);
-                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), 2);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), 2);
+                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
@@ -617,10 +615,10 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), 2);
-                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), 2);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), 2);
+                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
@@ -636,10 +634,10 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
 void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandart[houseId()];
+    const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
-        int itemClass = variation.item_class[grng->random(4)];
+        RandomItemType itemClass = variation.item_class[grng->random(4)];
         pItemTable->generateItem(variation.treasure_level, itemClass, &itemArray[i]);
         itemArray[i].SetIdentified();
     }
@@ -649,11 +647,11 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandart[houseId()];
-    const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandart[houseId()];
+    const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandard[houseId()];
+    const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
-        int itemClass;
+        RandomItemType itemClass;
         ItemTreasureLevel treasureLvl;
 
         if (i >= 4) {
@@ -672,10 +670,10 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    ItemTreasureLevel treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
+    ItemTreasureLevel treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
-        pItemTable->generateItem(treasureLvl, 22, &itemArray[i]);
+        pItemTable->generateItem(treasureLvl, RANDOM_ITEM_MICS, &itemArray[i]);
         itemArray[i].SetIdentified();
     }
 
@@ -684,8 +682,8 @@ void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    ItemTreasureLevel treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
-    int bottomRowItemClass = isSpecial ? 44 : 45;
+    ItemTreasureLevel treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandard[houseId()];
+    RandomItemType bottomRowItemClass = isSpecial ? RANDOM_ITEM_POTION : RANDOM_ITEM_REAGENT;
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         if (i < 6) {
@@ -705,13 +703,13 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
-    std::vector<int> itemClasses;
+    std::vector<RandomItemType> itemClasses;
     std::vector<DIALOGUE_TYPE> skillsOptions;
 
-    addUniqueItemClasses(weaponShopVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(weaponShopVariationStandard[houseId()], itemClasses);
     addUniqueItemClasses(weaponShopVariationSpecial[houseId()], itemClasses);
 
-    for (int itemClass : itemClasses) {
+    for (RandomItemType itemClass : itemClasses) {
         DIALOGUE_TYPE dialogue = getSkillLearnDualogueForItemClass(itemClass);
         if (dialogue != DIALOGUE_NULL) {
             skillsOptions.push_back(dialogue);
@@ -722,15 +720,15 @@ std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
-    std::vector<int> itemClasses;
+    std::vector<RandomItemType> itemClasses;
     std::vector<DIALOGUE_TYPE> skillsOptions;
 
-    addUniqueItemClasses(armorShopTopRowVariationStandart[houseId()], itemClasses);
-    addUniqueItemClasses(armorShopBottomRowVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopTopRowVariationStandard[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopBottomRowVariationStandard[houseId()], itemClasses);
     addUniqueItemClasses(armorShopTopRowVariationSpecial[houseId()], itemClasses);
     addUniqueItemClasses(armorShopBottomRowVariationSpecial[houseId()], itemClasses);
 
-    for (int itemClass : itemClasses) {
+    for (RandomItemType itemClass : itemClasses) {
         DIALOGUE_TYPE dialogue = getSkillLearnDualogueForItemClass(itemClass);
         if (dialogue != DIALOGUE_NULL) {
             skillsOptions.push_back(dialogue);
@@ -917,7 +915,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].MerchandiseTest(houseId())) {
+            if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].canSellRepairIdentifyAt(houseId())) {
                 _transactionPerformed = true;
                 pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, houseId());
                 render->ClearZBuffer();
@@ -946,7 +944,7 @@ void GUIWindow_Shop::houseScreenClick() {
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
             if (!(item.uAttributes & ITEM_IDENTIFIED)) {
-                if (item.MerchandiseTest(houseId())) {
+                if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
@@ -986,7 +984,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
             if (item.uAttributes & ITEM_BROKEN) {
-                if (item.MerchandiseTest(houseId())) {
+                if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);

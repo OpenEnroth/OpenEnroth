@@ -106,7 +106,7 @@ extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern int uDefaultTravelTime_ByFoot;
-extern int day_attrib;
+extern MapWeatherFlags day_attrib;
 extern int day_fogrange_1;
 extern int day_fogrange_2;
 extern float fWalkSpeedMultiplier;

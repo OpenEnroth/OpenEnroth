@@ -365,7 +365,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     }
 }
 
-void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
+void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uTreasureType, ItemGen *outItem) {
     assert(isRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43
@@ -382,97 +382,95 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, unsigned int uTre
     if (!outItem) outItem = (ItemGen*)malloc(sizeof(ItemGen));
     memset(outItem, 0, sizeof(*outItem));
 
-    if (uTreasureType) {  // generate known treasure type
+    if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
         ITEM_EQUIP_TYPE requested_equip;
         CharacterSkillType requested_skill = CHARACTER_SKILL_INVALID;
-        // TODO(captainurist): enum!
-        //  See https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L592
         switch (uTreasureType) {
-            case 20:
+            case RANDOM_ITEM_WEAPON:
                 requested_equip = EQUIP_SINGLE_HANDED;
                 break;
-            case 21:
+            case RANDOM_ITEM_ARMOR:
                 requested_equip = EQUIP_ARMOUR;
                 break;
-            case 22:
+            case RANDOM_ITEM_MICS:
                 requested_skill = CHARACTER_SKILL_MISC;
                 break;
-            case 23:
+            case RANDOM_ITEM_SWORD:
                 requested_skill = CHARACTER_SKILL_SWORD;
                 break;
-            case 24:
+            case RANDOM_ITEM_DAGGER:
                 requested_skill = CHARACTER_SKILL_DAGGER;
                 break;
-            case 25:
+            case RANDOM_ITEM_AXE:
                 requested_skill = CHARACTER_SKILL_AXE;
                 break;
-            case 26:
+            case RANDOM_ITEM_SPEAR:
                 requested_skill = CHARACTER_SKILL_SPEAR;
                 break;
-            case 27:
+            case RANDOM_ITEM_BOW:
                 requested_skill = CHARACTER_SKILL_BOW;
                 break;
-            case 28:
+            case RANDOM_ITEM_MACE:
                 requested_skill = CHARACTER_SKILL_MACE;
                 break;
-            case 29:
+            case RANDOM_ITEM_CLUB:
                 requested_skill = CHARACTER_SKILL_CLUB;
                 break;
-            case 30:
+            case RANDOM_ITEM_STAFF:
                 requested_skill = CHARACTER_SKILL_STAFF;
                 break;
-            case 31:
+            case RANDOM_ITEM_LEATHER_ARMOR:
                 requested_skill = CHARACTER_SKILL_LEATHER;
                 break;
-            case 32:
+            case RANDOM_ITEM_CHAIN_ARMOR:
                 requested_skill = CHARACTER_SKILL_CHAIN;
                 break;
-            case 33:
+            case RANDOM_ITEM_PLATE_ARMOR:
                 requested_skill = CHARACTER_SKILL_PLATE;
                 break;
-            case 34:
+            case RANDOM_ITEM_SHIELD:
                 requested_equip = EQUIP_SHIELD;
                 break;
-            case 35:
+            case RANDOM_ITEM_HELMET:
                 requested_equip = EQUIP_HELMET;
                 break;
-            case 36:
+            case RANDOM_ITEM_BELT:
                 requested_equip = EQUIP_BELT;
                 break;
-            case 37:
+            case RANDOM_ITEM_CLOAK:
                 requested_equip = EQUIP_CLOAK;
                 break;
-            case 38:
+            case RANDOM_ITEM_GAUNTLETS:
                 requested_equip = EQUIP_GAUNTLETS;
                 break;
-            case 39:
+            case RANDOM_ITEM_BOOTS:
                 requested_equip = EQUIP_BOOTS;
                 break;
-            case 40:
+            case RANDOM_ITEM_RING:
                 requested_equip = EQUIP_RING;
                 break;
-            case 41:
+            case RANDOM_ITEM_AMULET:
                 requested_equip = EQUIP_AMULET;
                 break;
-            case 42:
+            case RANDOM_ITEM_WAND:
                 requested_equip = EQUIP_WAND;
                 break;
-            case 43:
+            case RANDOM_ITEM_SPELL_SCROLL:
                 requested_equip = EQUIP_SPELL_SCROLL;
                 break;
-            case 44:
+            case RANDOM_ITEM_POTION:
                 requested_equip = EQUIP_POTION;
                 break;
-            case 45:
+            case RANDOM_ITEM_REAGENT:
                 requested_equip = EQUIP_REAGENT;
                 break;
-            case 46:
+            case RANDOM_ITEM_GEM:
                 requested_equip = EQUIP_GEM;
                 break;
             default:
                 __debugbreak();  // check this condition
                 // TODO(captainurist): explore
-                requested_equip = (ITEM_EQUIP_TYPE)(uTreasureType - 1);
+                requested_equip = static_cast<ITEM_EQUIP_TYPE>(std::to_underlying(uTreasureType) - 1);
                 break;
         }
         spawnableRequestedItems.fill(ITEM_NULL);

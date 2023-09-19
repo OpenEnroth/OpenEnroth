@@ -479,13 +479,13 @@ void OutdoorLocation::SetFog() {
     if (chance < fog_probability_table[map_id].small_fog_chance) {
         ::day_fogrange_1 = 4096;
         ::day_fogrange_2 = 8192;
-        ::day_attrib |= DAY_ATTRIB_FOG;
+        ::day_attrib |= MAP_WEATHER_FOGGY;
     } else if (chance <
                fog_probability_table[map_id].small_fog_chance +
                    fog_probability_table[map_id].average_fog_chance) {
         ::day_fogrange_2 = 4096;
         ::day_fogrange_1 = 0;
-        ::day_attrib |= DAY_ATTRIB_FOG;
+        ::day_attrib |= MAP_WEATHER_FOGGY;
     } else if (fog_probability_table[map_id].dense_fog_chance &&
                chance <
                    fog_probability_table[map_id].small_fog_chance +
@@ -493,9 +493,9 @@ void OutdoorLocation::SetFog() {
                        fog_probability_table[map_id].dense_fog_chance) {
         ::day_fogrange_2 = 2048;
         ::day_fogrange_1 = 0;
-        ::day_attrib |= DAY_ATTRIB_FOG;
+        ::day_attrib |= MAP_WEATHER_FOGGY;
     } else {
-        ::day_attrib &= ~DAY_ATTRIB_FOG;
+        ::day_attrib &= ~MAP_WEATHER_FOGGY;
     }
 
     if (Is_out15odm_underwater()) SetUnderwaterFog();
@@ -1430,7 +1430,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->pMonsters[pActors[i].monsterInfo.uID - 1].sTintColor;  // *((int *)&v35[v36] - 36);
+                            pMonsterList->pMonsters[pActors[i].monsterInfo.uID].sTintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                                 flags | 0x100;
@@ -2680,7 +2680,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = map_info->uRespawnIntervalDays;
     }
-    day_attrib &= ~DAY_ATTRIB_FOG;
+    day_attrib &= ~MAP_WEATHER_FOGGY;
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
     bool outdoor_was_respawned;
     pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1,
@@ -2728,7 +2728,7 @@ Color GetLevelFogColor() {
         return colorTable.OliveDrab;
     }
 
-    if (day_attrib & DAY_ATTRIB_FOG) {
+    if (day_attrib & MAP_WEATHER_FOGGY) {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
                 logger->error("decompilation can be inaccurate, please send savegame to Nomad");
@@ -2760,7 +2760,7 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
     if (engine->IsUnderwater()) isNight = false;
 
     if (pParty->armageddon_timer ||
-        !(day_attrib & DAY_ATTRIB_FOG) && !engine->IsUnderwater())
+        !(day_attrib & MAP_WEATHER_FOGGY) && !engine->IsUnderwater())
         return 0xFF000000;
     if (isNight) {
         if (screen_depth < (double)day_fogrange_1) {

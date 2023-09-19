@@ -800,7 +800,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
             return true;
 
         auto relation = pActors[object_idx].GetActorsRelation(nullptr);
-        if (relation == 0) return false;
+        if (relation == MonsterInfo::Hostility_Friendly) return false;
         return true;
     }
 

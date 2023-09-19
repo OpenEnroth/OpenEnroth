@@ -4,6 +4,31 @@
 
 #include "Library/Serialization/SerializationFwd.h"
 
+#include "Utility/Flags.h"
+
+/**
+ * MM7 has only one weather flag, but apparently we have more in MM8.
+ *
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L412C8-L412C15
+ */
+enum class MapWeatherFlag {
+    MAP_WEATHER_FOGGY = 1
+};
+using enum MapWeatherFlag;
+MM_DECLARE_FLAGS(MapWeatherFlags, MapWeatherFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(MapWeatherFlags)
+
+enum class LevelType {
+    LEVEL_NULL = 0,
+    LEVEL_INDOOR = 0x1,
+    LEVEL_OUTDOOR = 0x2,
+};
+using enum LevelType;
+
+enum {
+    MODEL_INDOOR = -1
+};
+
 /**
  * Enum of all maps in the game.
  *
@@ -110,9 +135,6 @@ enum class MAP_TREASURE_LEVEL : int8_t {
     MAP_TREASURE_LEVEL_5 = 4,
     MAP_TREASURE_LEVEL_6 = 5,
     MAP_TREASURE_LEVEL_7 = 6,
-
-    MAP_TREASURE_LEVEL_FIRST = MAP_TREASURE_LEVEL_1,
-    MAP_TREASURE_LEVEL_LAST = MAP_TREASURE_LEVEL_7
 };
 using enum MAP_TREASURE_LEVEL;
 

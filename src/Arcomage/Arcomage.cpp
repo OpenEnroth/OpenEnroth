@@ -11,7 +11,6 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/AssetsManager.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 
@@ -20,6 +19,7 @@
 
 #include "Library/Random/Random.h"
 
+#include "Utility/IndexedArray.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -72,20 +72,21 @@ struct ArcomageStartConditions {
     int mastery_lvl;
 };
 
-const ArcomageStartConditions start_conditions[13] = {
-    {30, 100, 15, 5, 2, 2, 2, 10, 10, 10, 0},
-    {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 1},
-    {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 2},
-    {75, 200, 25, 10, 3, 3, 3, 5, 5, 5, 2},
-    {75, 200, 20, 10, 3, 3, 3, 5, 5, 5, 1},
-    {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 1},
-    {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 2},
-    {150, 400, 20, 10, 5, 5, 5, 25, 25, 25, 0},
-    {200, 500, 20, 10, 1, 1, 1, 15, 15, 15, 2},
-    {100, 300, 20, 50, 1, 1, 5, 5, 5, 25, 0},
-    {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 2},
-    {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 1},
-    {100, 300, 50, 50, 5, 3, 5, 20, 10, 20, 0}};
+IndexedArray<ArcomageStartConditions, HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN> start_conditions = {
+    {HOUSE_TAVERN_HARMONDALE,       {30, 100, 15, 5, 2, 2, 2, 10, 10, 10, 0}},
+    {HOUSE_TAVERN_ERATHIA,          {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 1}},
+    {HOUSE_TAVERN_TULAREAN_FOREST,  {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 2}},
+    {HOUSE_TAVERN_DEYJA,            {75, 200, 25, 10, 3, 3, 3, 5, 5, 5, 2}},
+    {HOUSE_TAVERN_BRACADA_DESERT,   {75, 200, 20, 10, 3, 3, 3, 5, 5, 5, 1}},
+    {HOUSE_TAVERN_CELESTE,          {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 1}},
+    {HOUSE_TAVERN_PIT,              {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 2}},
+    {HOUSE_TAVERN_EVENMORN_ISLAND,  {150, 400, 20, 10, 5, 5, 5, 25, 25, 25, 0}},
+    {HOUSE_TAVERN_MOUNT_NIGHON,     {200, 500, 20, 10, 1, 1, 1, 15, 15, 15, 2}},
+    {HOUSE_TAVERN_BARROW_DOWNS,     {100, 300, 20, 50, 1, 1, 5, 5, 5, 25, 0}},
+    {HOUSE_TAVERN_TATALIA,          {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 2}},
+    {HOUSE_TAVERN_AVLEE,            {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 1}},
+    {HOUSE_TAVERN_STONE_CITY,       {100, 300, 50, 50, 5, 3, 5, 20, 10, 20, 0}}
+};
 
 constexpr auto SIG_MEMALOC = 0x67707274;  // memory allocated;
 constexpr auto SIG_MEMFREE = 0x78787878;  // memory free;
@@ -571,7 +572,7 @@ bool ArcomageGame::LoadSprites() {
 
 int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
                        ArcomageCard *pCard, int mastery) {
-    enum V_IND {
+    enum class V_IND {
         P_TOWER_M10,
         P_WALL_M10,
         E_TOWER,
@@ -580,23 +581,23 @@ int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
         E_QUARRY,
         E_MAGIC,
         E_ZOO,
-        E_RES,
-        V_INDEX_MAX
+        E_RES
     };
+    using enum V_IND;
 
     // mastery coeffs
     // base mastery focus on growing walls + tower
     // second level high priority on resource gen
-    const int mastery_coeff[V_INDEX_MAX][2] = {
-        {10, 5},  // P_TOWER_M10
-        {2, 1},   // P_WALL_M10
-        {1, 10},  // E_TOWER
-        {1, 3},   // E_WALL
-        {1, 7},   // E_BUILDINGS
-        {1, 5},   // E_QUARRY
-        {1, 40},  // E_MAGIC
-        {1, 40},  // E_ZOO
-        {1, 2}    // E_RES
+    static constexpr IndexedArray<std::array<int, 2>, P_TOWER_M10, E_RES> mastery_coeff = {
+        {P_TOWER_M10,   {{10, 5}}},
+        {P_WALL_M10,    {{2, 1}}},
+        {E_TOWER,       {{1, 10}}},
+        {E_WALL,        {{1, 3}}},
+        {E_BUILDINGS,   {{1, 7}}},
+        {E_QUARRY,      {{1, 5}}},
+        {E_MAGIC,       {{1, 40}}},
+        {E_ZOO,         {{1, 40}}},
+        {E_RES,         {{1, 2}}}
     };
 
     int card_power = 0;
@@ -2843,9 +2844,7 @@ void GameResultsApply() {
     pArcomageGame->Victory_type = victory_type;
     pArcomageGame->uGameWinner = winner;
     if (winner == 1) {
-        // 108..120 - tavern ids
-        // TODO: get rid of static cast, just place HOUSE_ID in proper place
-        HOUSE_ID houseId = static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val);
+        HOUSE_ID houseId = window_SpeakInHouse->houseId();
         if (isArcomageTavern(houseId)) {
             if (!pParty->pArcomageWins[houseId]) {
                 pParty->pArcomageWins[houseId] = 1;
@@ -2936,7 +2935,7 @@ void ArcomageGame::PrepareArcomage() {
 
 void SetStartConditions() {
     const ArcomageStartConditions *st_cond;
-    st_cond = &start_conditions[window_SpeakInHouse->wData.val - 108];
+    st_cond = &start_conditions[window_SpeakInHouse->houseId()];
 
     // set start conditions
     start_tower_height = st_cond->tower_height;

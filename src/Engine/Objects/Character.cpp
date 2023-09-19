@@ -1072,7 +1072,7 @@ int Character::GetMeleeDamageMaximal() const {
 
 //----- (0048CDDB) --------------------------------------------------------
 int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                                   unsigned int uTargetActorID) {
+                                      MONSTER_TYPE uTargetActorID) {
     int mainWpnDmg = 0;
     int offHndWpnDmg = 0;
 
@@ -1124,7 +1124,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 }
 
 int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                               unsigned int uTargetActorID,
+                                               MONSTER_TYPE uTargetActorID,
                                                bool addOneDice) {
     ItemId itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
@@ -1141,7 +1141,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     int totalDmg =
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
-    if (uTargetActorID > 0) {  // if an actor has been provided
+    if (uTargetActorID > MONSTER_0) {  // if an actor has been provided
         ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
@@ -1228,7 +1228,7 @@ int Character::GetRangedDamageMax() {
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
+int Character::CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
@@ -1245,7 +1245,7 @@ int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
     damage = pItemTable->pItems[bow->uItemID].uDamageMod +
              damagefromroll;  // total damage
 
-    if (uMonsterInfoID) {  // check against bow enchantments
+    if (uMonsterInfoID != MONSTER_0) {  // check against bow enchantments
         if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
             MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
             damage *= 2;
@@ -1503,9 +1503,8 @@ int Character::StealFromShop(
 }
 
 //----- (0048D88B) --------------------------------------------------------
-int Character::StealFromActor(
-    unsigned int uActorID, int _steal_perm,
-    int reputation) {  // returns not used - should luck attribute affect
+StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation) {
+    // TODO(captainurist): returns not used - should luck attribute affect?
 
     Actor *actroPtr;
     actroPtr = &pActors[uActorID];
@@ -1649,12 +1648,7 @@ int Character::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Character::ReceiveSpecialAttackEffect(
-    int attType,
-    Actor *pActor) {  // long function - consider breaking into two??
-
-    SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE)attType;
-
+int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor) {  // long function - consider breaking into two??
     int statcheck;
     int statcheckbonus;
     int luckstat = GetActualLuck();
@@ -1664,7 +1658,7 @@ int Character::ReceiveSpecialAttackEffect(
     ItemGen *itemtobreak = nullptr;
     unsigned int itemtostealinvindex = 0;
 
-    switch (attTypeCast) {
+    switch (attType) {
         case SPECIAL_ATTACK_CURSE:
             statcheck = GetActualPersonality();
             statcheckbonus = GetParameterBonus(statcheck);
@@ -1816,7 +1810,7 @@ int Character::ReceiveSpecialAttackEffect(
         // pass this to new fucntion??
         // atttypecast - whichplayer - itemtobreak - itemtostealinvindex
 
-        switch (attTypeCast) {
+        switch (attType) {
             case SPECIAL_ATTACK_CURSE:
                 SetCondition(CONDITION_CURSED, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
@@ -6575,8 +6569,8 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         }
 
         // special attack trigger
-        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->monsterInfo.uLevel *
-                                                                                                                       actorPtr->monsterInfo.uSpecialAttackLevel) {
+        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
+            grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
             playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
         }
 
@@ -6628,7 +6622,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): doesn't look like a proper default.
             }
             playerPtr->receiveDamage(damage, damagetype);
@@ -6745,8 +6739,8 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
             // special attack trigger
             if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.value() &&
-                actorPtr->monsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->monsterInfo.uLevel *
-                                                                                actorPtr->monsterInfo.uSpecialAttackLevel) {
+                actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
+                grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
                 playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
             }
 
@@ -6772,7 +6766,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): another weird default.
             }
 
@@ -7436,7 +7430,7 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
@@ -7484,19 +7478,19 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
 
     multiplier = buildingTable[houseId].fPriceMultiplier;
     switch (ShopMenuType) {
-        case 2:
+        case SHOP_SCREEN_BUY:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);
             break;
-        case 3:
+        case SHOP_SCREEN_SELL:
             // if (pItem->IsBroken())
             // price = 1;
             // else
             price = PriceCalculator::itemSellingPriceForPlayer(this, *pItem, multiplier);
             break;
-        case 4:
+        case SHOP_SCREEN_IDENTIFY:
             price = PriceCalculator::itemIdentificationPriceForPlayer(this, multiplier);
             break;
-        case 5:
+        case SHOP_SCREEN_REPAIR:
             price = PriceCalculator::itemRepairPriceForPlayer(this, itemValue, multiplier);
             break;
         default:

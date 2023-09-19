@@ -306,7 +306,7 @@ struct Party {
     unsigned int uNumDeaths;
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
-    IndexedArray<int16_t, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;
+    IndexedArray<MONSTER_TYPE, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;
     IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
     IndexedBitset<QBIT_FIRST, QBIT_LAST> _questBits;

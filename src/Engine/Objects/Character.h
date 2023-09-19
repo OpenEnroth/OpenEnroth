@@ -11,12 +11,15 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/Monsters.h" // TODO(captainurist): MonsterEnums.h
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventEnums.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Pid.h"
+
+#include "GUI/GUIEnums.h"
 
 #include "Library/Color/Color.h"
 
@@ -26,6 +29,13 @@
 
 class Actor;
 class GraphicsImage;
+
+enum class StealResult {
+    STEAL_BUSTED = 0, // Failed to steal & was caught.
+    STEAL_NOTHING = 1, // Either failed to steal, or there was nothing to steal.
+    STEAL_SUCCESS = 2, // Stolen successfully.
+};
+using enum StealResult;
 
 struct LloydBeacon {
     ~LloydBeacon() {
@@ -78,13 +88,6 @@ union CharacterEquipment {
 
     CharacterEquipment() : pIndices() {}
 };
-
-
-// TODO(captainurist): ENUM!
-#define STEAL_BUSTED   0
-#define STEAL_NOTHING  1
-#define STEAL_SUCCESS  2
-
 
 class CharacterConditions {
  public:
@@ -175,11 +178,11 @@ class Character {
     int GetMeleeDamageMinimal() const;
     int GetMeleeDamageMaximal() const;
     int CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                               unsigned int uTargetActorID);
+                               MONSTER_TYPE uTargetActorID);
     int GetRangedAttack();
     int GetRangedDamageMin();
     int GetRangedDamageMax();
-    int CalculateRangedDamageTo(int uMonsterInfoID);
+    int CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID);
     std::string GetMeleeDamageString();
     std::string GetRangedDamageString();
     bool CanTrainToNextLevel();
@@ -193,14 +196,14 @@ class Character {
     bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
-    int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
+    StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
 
     /**
      * @offset 0x48DC1E
      */
     int receiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
-    int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
+    int ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor);
 
     // TODO(captainurist): move closer to Spells data.
     DAMAGE_TYPE GetSpellDamageType(SpellId uSpellID) const;
@@ -239,7 +242,7 @@ class Character {
     void resetTempBonuses();
     Color GetStatColor(CharacterAttributeType uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
-    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
     bool CanIdentify(ItemGen *pItem) const;
@@ -318,7 +321,7 @@ class Character {
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                           unsigned int uTargetActorID,
+                                           MONSTER_TYPE uTargetActorID,
                                            bool addOneDice);
     bool wearsItemAnywhere(ItemId item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float param2, float param3, float param4, float param5) const;

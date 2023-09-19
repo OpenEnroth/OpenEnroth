@@ -335,15 +335,16 @@ bool MonsterList::FromFileTxt(const char *Args) {
         v4 = Argsa;
     }
 
-    this->pMonsters.clear();
     v6 = File;
     fseek(v6, 0, 0);
+    MONSTER_TYPE monsterId = MONSTER_0;
     for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
         *strchr(Buf, 10) = 0;
         memcpy(&v25, frame_table_txt_parser(Buf, &v24), sizeof(v25));
         v8 = 0;
         if (v25.uPropCount && *v25.pProperties[0] != 47) {
-            MonsterDesc &monster = this->pMonsters.emplace_back();
+            monsterId = static_cast<MONSTER_TYPE>(std::to_underlying(monsterId) + 1);
+            MonsterDesc &monster = this->pMonsters[monsterId];
 
             monster.pMonsterName = v25.pProperties[0];
 
@@ -392,12 +393,12 @@ bool MonsterList::FromFileTxt(const char *Args) {
 }
 
 //----- (004563FF) --------------------------------------------------------
-signed int MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
-    for (int i = 1; i < uNumMonsters; ++i) {
+MONSTER_TYPE MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
+    for (MONSTER_TYPE i : pInfos.indices()) {
         if (!pInfos[i].pName.empty() && iequals(pInfos[i].pPictureName, monster_textr_name))
             return i;
     }
-    return -1;
+    return MONSTER_0;
 }
 
 //----- (00454F4E) --------------------------------------------------------
@@ -450,7 +451,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     char *tmp_pos;
     int decode_step;
     //    int item_counter;
-    int curr_rec_num;
+    MONSTER_TYPE curr_rec_num;
     char parse_str[64];
     // char Src[120];
     FrameTableTxtLine parsed_field;
@@ -462,7 +463,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     uNumMonsters = 265;
-    curr_rec_num = 0;
+    curr_rec_num = MONSTER_0;
     for (i = 0; i < uNumMonsters - 1; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -480,7 +481,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
             if (temp_str_len) {
                 switch (decode_step) {
                     case 0:
-                        curr_rec_num = atoi(test_string);
+                        curr_rec_num = static_cast<MONSTER_TYPE>(atoi(test_string));
                         pInfos[curr_rec_num].uID = curr_rec_num;
                         break;
                     case 1:
@@ -546,7 +547,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         pInfos[curr_rec_num].uTreasureDropChance = 0;
                         pInfos[curr_rec_num].uTreasureDiceRolls = 0;
                         pInfos[curr_rec_num].uTreasureDiceSides = 0;
-                        pInfos[curr_rec_num].uTreasureType = 0;
+                        pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_ANY;
                         pInfos[curr_rec_num].uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
                         if (test_string[0] == '"') test_string[0] = ' ';
                         str_len = strlen(test_string);
@@ -608,55 +609,55 @@ void MonsterStats::Initialize(const Blob &monsters) {
                             item_name = &test_string[str_pos + 2];
                             if (*item_name) {
                                 if (iequals(item_name, "WEAPON"))
-                                    pInfos[curr_rec_num].uTreasureType = 20;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_WEAPON;
                                 else if (iequals(item_name, "ARMOR"))
-                                    pInfos[curr_rec_num].uTreasureType = 21;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_ARMOR;
                                 else if (iequals(item_name, "MISC"))
-                                    pInfos[curr_rec_num].uTreasureType = 22;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_MICS;
                                 else if (iequals(item_name, "SWORD"))
-                                    pInfos[curr_rec_num].uTreasureType = 23;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SWORD;
                                 else if (iequals(item_name, "DAGGER"))
-                                    pInfos[curr_rec_num].uTreasureType = 24;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_DAGGER;
                                 else if (iequals(item_name, "AXE"))
-                                    pInfos[curr_rec_num].uTreasureType = 25;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_AXE;
                                 else if (iequals(item_name, "SPEAR"))
-                                    pInfos[curr_rec_num].uTreasureType = 26;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SPEAR;
                                 else if (iequals(item_name, "BOW"))
-                                    pInfos[curr_rec_num].uTreasureType = 27;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_BOW;
                                 else if (iequals(item_name, "MACE"))
-                                    pInfos[curr_rec_num].uTreasureType = 28;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_MACE;
                                 else if (iequals(item_name, "CLUB"))
-                                    pInfos[curr_rec_num].uTreasureType = 29;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_CLUB;
                                 else if (iequals(item_name, "STAFF"))
-                                    pInfos[curr_rec_num].uTreasureType = 30;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_STAFF;
                                 else if (iequals(item_name, "LEATHER"))
-                                    pInfos[curr_rec_num].uTreasureType = 31;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_LEATHER_ARMOR;
                                 else if (iequals(item_name, "CHAIN"))
-                                    pInfos[curr_rec_num].uTreasureType = 32;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_CHAIN_ARMOR;
                                 else if (iequals(item_name, "PLATE"))
-                                    pInfos[curr_rec_num].uTreasureType = 33;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_PLATE_ARMOR;
                                 else if (iequals(item_name, "SHIELD"))
-                                    pInfos[curr_rec_num].uTreasureType = 34;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SHIELD;
                                 else if (iequals(item_name, "HELM"))
-                                    pInfos[curr_rec_num].uTreasureType = 35;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_HELMET;
                                 else if (iequals(item_name, "BELT"))
-                                    pInfos[curr_rec_num].uTreasureType = 36;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_BELT;
                                 else if (iequals(item_name, "CAPE"))
-                                    pInfos[curr_rec_num].uTreasureType = 37;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_CLOAK;
                                 else if (iequals(item_name, "GAUNTLETS"))
-                                    pInfos[curr_rec_num].uTreasureType = 38;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_GAUNTLETS;
                                 else if (iequals(item_name, "BOOTS"))
-                                    pInfos[curr_rec_num].uTreasureType = 39;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_BOOTS;
                                 else if (iequals(item_name, "RING"))
-                                    pInfos[curr_rec_num].uTreasureType = 40;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_RING;
                                 else if (iequals(item_name, "AMULET"))
-                                    pInfos[curr_rec_num].uTreasureType = 41;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_AMULET;
                                 else if (iequals(item_name, "WAND"))
-                                    pInfos[curr_rec_num].uTreasureType = 42;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_WAND;
                                 else if (iequals(item_name, "SCROLL"))
-                                    pInfos[curr_rec_num].uTreasureType = 43;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_SPELL_SCROLL;
                                 else if (iequals(item_name, "GEM"))
-                                    pInfos[curr_rec_num].uTreasureType = 46;
+                                    pInfos[curr_rec_num].uTreasureType = RANDOM_ITEM_GEM;
                             }
                         }
                     } break;
@@ -962,7 +963,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     case 38: {
                         //                    int param_num;
                         //                    char type_flag;
-                        pInfos[curr_rec_num].uSpecialAbilityType = 0;
+                        pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
                         pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus = 0;
                         strcpy(parse_str, test_string);
                         parse_str[0] = ' ';
@@ -972,15 +973,13 @@ void MonsterStats::Initialize(const Blob &monsters) {
                             //      v74 = v94.field_0;
                             if (parsed_field.uPropCount < 10) {
                                 if (iequals(parsed_field.pProperties[0], "shot")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        1;
+                                    pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_SHOT;
                                     pInfos[curr_rec_num]
                                         .uSpecialAbilityDamageDiceBonus = atoi(
                                         (char *)(parsed_field.pProperties[1] +
                                                  1));
                                 } else if (iequals(parsed_field.pProperties[0], "summon")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        2;
+                                    pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_SUMMON;
                                     if (parsed_field.uPropCount > 1) {
                                         str = parsed_field.pProperties[2];
                                         if (parsed_field.uPropCount > 2) {
@@ -1032,16 +1031,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                                 0;
                                         }
                                         if (!pMonsterList->pMonsters.empty()) {
-                                            pInfos[curr_rec_num]
-                                                .field_3C_some_special_attack =
-                                                pMonsterList
-                                                    ->GetMonsterIDByName(str) +
-                                                1;
-                                            if (pInfos[curr_rec_num]
-                                                    .field_3C_some_special_attack ==
-                                                -1) {
-                                                logger->warning("Can't create random monster: '{}'. See MapStats!", str);
-                                            }
+                                            pInfos[curr_rec_num].field_3C_some_special_attack =
+                                                std::to_underlying(pMonsterList->GetMonsterIDByName(str));
                                         }
                                         pInfos[curr_rec_num]
                                             .uSpecialAbilityDamageDiceSides = 0;
@@ -1052,12 +1043,10 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                         if (pInfos[curr_rec_num]
                                                 .field_3C_some_special_attack ==
                                             -1)
-                                            pInfos[curr_rec_num]
-                                                .uSpecialAbilityType = 0;
+                                            pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
                                     }
                                 } else if (iequals(parsed_field.pProperties[0], "explode")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        3;
+                                    pInfos[curr_rec_num].uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_EXPLODE;
                                     ParseDamage(
                                         (char *)parsed_field.pProperties[1],
                                         &pInfos[curr_rec_num]
@@ -1085,74 +1074,74 @@ void MonsterStats::Initialize(const Blob &monsters) {
 }
 
 //----- (0044FA08) --------------------------------------------------------
-int16_t MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
-    for (int16_t i = 0; i < pMonsters.size(); ++i) {
+MONSTER_TYPE MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
+    for (MONSTER_TYPE i : pMonsters.indices()) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }
     Error("Monster not found: %s", pMonsterName.c_str());
 }
 //----- (00438BDF) --------------------------------------------------------
-bool MonsterStats::BelongsToSupertype(unsigned int uMonsterInfoID,
+bool MonsterStats::BelongsToSupertype(MONSTER_TYPE uMonsterInfoID,
                                       enum MONSTER_SUPERTYPE eSupertype) {
     switch (eSupertype) {
         case MONSTER_SUPERTYPE_UNDEAD:
-            if ((signed int)uMonsterInfoID >= MONSTER_GHOST_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_GHOST_3  // 70<=id<=72
-                || (signed int)uMonsterInfoID >= MONSTER_LICH_1 &&
-                       (signed int)uMonsterInfoID <= MONSTER_LICH_3  // 91-93
+            if (uMonsterInfoID >= MONSTER_GHOST_1 &&
+                    uMonsterInfoID <= MONSTER_GHOST_3  // 70<=id<=72
+                || uMonsterInfoID >= MONSTER_LICH_1 &&
+                       uMonsterInfoID <= MONSTER_LICH_3  // 91-93
                 ||
-                (signed int)uMonsterInfoID >= MONSTER_SKELETON_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_SKELETON_3  // 199-201
+                uMonsterInfoID >= MONSTER_SKELETON_1 &&
+                    uMonsterInfoID <= MONSTER_SKELETON_3  // 199-201
                 ||
-                (signed int)uMonsterInfoID >= MONSTER_VAMPIRE_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_VAMPIRE_3  // 217-219
-                || (signed int)uMonsterInfoID >= MONSTER_WIGHT_1 &&
-                       (signed int)uMonsterInfoID <= MONSTER_WIGHT_3  // 223-225
+                uMonsterInfoID >= MONSTER_VAMPIRE_1 &&
+                    uMonsterInfoID <= MONSTER_VAMPIRE_3  // 217-219
+                || uMonsterInfoID >= MONSTER_WIGHT_1 &&
+                       uMonsterInfoID <= MONSTER_WIGHT_3  // 223-225
                 ||
-                (signed int)uMonsterInfoID >= MONSTER_ZOMBIE_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_ZOMBIE_3  // 229-231
+                uMonsterInfoID >= MONSTER_ZOMBIE_1 &&
+                    uMonsterInfoID <= MONSTER_ZOMBIE_3  // 229-231
                 ||
-                (signed int)uMonsterInfoID >= MONSTER_GHOUL_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_GHOUL_3)  // 256-258
+                uMonsterInfoID >= MONSTER_GHOUL_1 &&
+                    uMonsterInfoID <= MONSTER_GHOUL_3)  // 256-258
                 return true;
             return false;
         case MONSTER_SUPERTYPE_KREEGAN:
-            if ((signed int)uMonsterInfoID >= MONSTER_DEVIL_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_DEVIL_3)  // 22-24
+            if (uMonsterInfoID >= MONSTER_DEVIL_1 &&
+                uMonsterInfoID <= MONSTER_DEVIL_3)  // 22-24
                 return true;
             return false;
         case MONSTER_SUPERTYPE_ELF:
-            if ((signed int)uMonsterInfoID >= MONSTER_PEASANT_ELF_FEMALE_1_1 &&
-                    (signed int)uMonsterInfoID <=
+            if (uMonsterInfoID >= MONSTER_PEASANT_ELF_FEMALE_1_1 &&
+                    uMonsterInfoID <=
                         MONSTER_PEASANT_ELF_MALE_3_3  // 133 - 150
                 ||
-                (signed int)uMonsterInfoID >= MONSTER_ELF_ARCHER_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_ELF_ARCHER_3  // 49-51
-                || (signed int)uMonsterInfoID >= MONSTER_ELF_SPEARMAN_1 &&
-                       (signed int)uMonsterInfoID <=
+                uMonsterInfoID >= MONSTER_ELF_ARCHER_1 &&
+                    uMonsterInfoID <= MONSTER_ELF_ARCHER_3  // 49-51
+                || uMonsterInfoID >= MONSTER_ELF_SPEARMAN_1 &&
+                       uMonsterInfoID <=
                            MONSTER_ELF_SPEARMAN_3)  // 52-54
                 return true;
             return false;
         case MONSTER_SUPERTYPE_DRAGON:
-            if ((signed int)uMonsterInfoID >= MONSTER_DRAGON_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_DRAGON_3)  // 25-27
+            if (uMonsterInfoID >= MONSTER_DRAGON_1 &&
+                uMonsterInfoID <= MONSTER_DRAGON_3)  // 25-27
                 return true;
             return false;
         case MONSTER_SUPERTYPE_WATER_ELEMENTAL:
-            if ((signed int)uMonsterInfoID >= MONSTER_ELEMENTAL_WATER_1 &&
-                (signed int)uMonsterInfoID <=
+            if (uMonsterInfoID >= MONSTER_ELEMENTAL_WATER_1 &&
+                uMonsterInfoID <=
                     MONSTER_ELEMENTAL_WATER_3)  // 46-48
                 return true;
             return false;
         case MONSTER_SUPERTYPE_TREANT:
-            if ((signed int)uMonsterInfoID >= MONSTER_TREANT_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_TREANT_3)  // 253-255
+            if (uMonsterInfoID >= MONSTER_TREANT_1 &&
+                uMonsterInfoID <= MONSTER_TREANT_3)  // 253-255
                 return true;
             return false;
         case MONSTER_SUPERTYPE_TITAN:
-            if ((signed int)uMonsterInfoID >= MONSTER_TITAN_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_TITAN_3)  // 211-213
+            if (uMonsterInfoID >= MONSTER_TITAN_1 &&
+                uMonsterInfoID <= MONSTER_TITAN_3)  // 211-213
                 return true;
             return false;
         default:

@@ -641,7 +641,8 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (uint i = 0; i < pActors.size(); ++i) {
-            pActors[i].monsterInfo.uTreasureType = 0;
+            // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
+            pActors[i].monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
             pActors[i].monsterInfo.uTreasureDiceRolls = 0;
             pActors[i].monsterInfo.uExp = 0;
         }
@@ -996,13 +997,13 @@ void Engine::_461103_load_level_sub() {
         //{
         // v3 = pActors[i].pMonsterInfo.uID;
         v17 = 0;
-        if (pActors[i].monsterInfo.uID >= 115 &&
-            pActors[i].monsterInfo.uID <= 186 ||
-            pActors[i].monsterInfo.uID >= 232 &&
-            pActors[i].monsterInfo.uID <= 249)
+        if (pActors[i].monsterInfo.uID >= MONSTER_115 &&
+            pActors[i].monsterInfo.uID <= MONSTER_186 ||
+            pActors[i].monsterInfo.uID >= MONSTER_232 &&
+            pActors[i].monsterInfo.uID <= MONSTER_PEASANT_GOBLIN_MALE_3_3)
             v17 = 1;
         // v1 = 0;
-        v4 = (pActors[i].monsterInfo.uID - 1) % 3;
+        v4 = (std::to_underlying(pActors[i].monsterInfo.uID) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
         if (2 == v4) {
             if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
         } else {
@@ -1035,6 +1036,8 @@ void Engine::_461103_load_level_sub() {
     v20 = 0;
     // v16 = v1;
 
+    // TODO(captainurist): can drop this code?
+#if 0
     for (uint i = 0; i < pActors.size(); ++i) {
         // v7 = (char *)&pActors[0].pMonsterInfo;
         // do
@@ -1053,6 +1056,7 @@ void Engine::_461103_load_level_sub() {
         //}
         // while ( v16 < (signed int)v5 );
     }
+#endif
 
     pGameLoadingUI_ProgressBar->Progress();
 

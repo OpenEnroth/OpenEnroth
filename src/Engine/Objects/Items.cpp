@@ -744,44 +744,38 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 }
 
 //----- (004BDAAF) --------------------------------------------------------
-bool ItemGen::MerchandiseTest(HOUSE_ID houseId) {
-    bool test;
-
-    // TODO(captainurist): move these checks into functions in ItemEnums.h?
-    if ((buildingTable[houseId].uType != BUILDING_ALCHEMY_SHOP || !isRecipe(this->uItemID)) &&
-        (this->uItemID >= ITEM_QUEST_HEART_OF_THE_WOOD || this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS && this->uItemID <= ITEM_599) ||
-        this->IsStolen())
+bool ItemGen::canSellRepairIdentifyAt(HOUSE_ID houseId) {
+    if (this->IsStolen())
         return false;
 
+    if (isQuestItem(uItemID))
+        return false; // Can't sell quest items.
+
+    if (isArtifact(uItemID) && !isSpawnableArtifact(uItemID))
+        return false; // Can't sell quest artifacts, e.g. Hermes Sandals.
+
+    if (::isMessageScroll(uItemID) && !isRecipe(uItemID))
+        return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
+
     switch (buildingTable[houseId].uType) {
-        case BUILDING_WEAPON_SHOP: {
-            test = this->isWeapon();
-            break;
-        }
-        case BUILDING_ARMOR_SHOP: {
-            test = this->isArmor();
-            break;
-        }
-        case BUILDING_MAGIC_SHOP: {
-            test = this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
-            break;
-        }
-        case BUILDING_ALCHEMY_SHOP: {
-            test = this->isReagent() ||
+        case BUILDING_WEAPON_SHOP:
+            return this->isWeapon();
+        case BUILDING_ARMOR_SHOP:
+            return this->isArmor();
+        case BUILDING_MAGIC_SHOP:
+            return this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
+        case BUILDING_ALCHEMY_SHOP:
+            return this->isReagent() ||
                    this->isPotion() ||
                    (this->isMessageScroll() && isRecipe(this->uItemID));
-            break;
-        }
-        default: {
-            test = false;
-            break;
-        }
+        default:
+            return false;
     }
-    return test;
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
-    // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
+    // Mapping [item_level][map_level] -> [actual_level_min, actual_level_max];
+    // Rows are item treasure levels, columns are map treasure levels. Not using IndexedArray to keep things terse.
     // Original offset was 0x004E8168.
     static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
         {{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}},
@@ -792,10 +786,14 @@ Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLeve
         {{{2, 2}, {2, 2}, {4, 4}, {4, 5}, {5, 5}, {5, 6}, {6, 6}}},
         {{{2, 2}, {2, 2}, {7, 7}, {7, 7}, {7, 7}, {7, 7}, {7, 7}}}
     }};
+    static_assert(std::to_underlying(ITEM_TREASURE_LEVEL_1) == 1);
+    static_assert(std::to_underlying(ITEM_TREASURE_LEVEL_7) == 7); // Otherwise static_casts at the end of this function won't work.
 
-    // TODO(captainurist) : type-safe enum diff!
-    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_VALID);
-    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_FIRST);
+    assert(itemTreasureLevel >= ITEM_TREASURE_LEVEL_1 && ITEM_TREASURE_LEVEL_1 <= ITEM_TREASURE_LEVEL_7);
+    assert(mapTreasureLevel >= MAP_TREASURE_LEVEL_1 && mapTreasureLevel <= MAP_TREASURE_LEVEL_7);
+
+    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_1);
+    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_1);
     Segment<int> result = mapping[itemIdx][mapIdx];
-    return {ItemTreasureLevel(result.front()), ItemTreasureLevel(result.back())};
+    return {static_cast<ItemTreasureLevel>(result.front()), static_cast<ItemTreasureLevel>(result.back())};
 }

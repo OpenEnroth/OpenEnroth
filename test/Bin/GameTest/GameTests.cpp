@@ -1011,7 +1011,7 @@ GAME_TEST(Issues, Issue675) {
     ItemGen item;
     for (int i = 0; i < 300; i++) {
         for (ItemTreasureLevel level : levels) {
-            pItemTable->generateItem(level, 0, &item);
+            pItemTable->generateItem(level, RANDOM_ITEM_ANY, &item);
             if (isPotion(item.uItemID)) {
                 EXPECT_GE(item.potionPower, 1);
                 EXPECT_FALSE(item.attributeEnchantment);

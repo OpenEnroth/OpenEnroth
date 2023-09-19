@@ -771,7 +771,7 @@ std::string EventIR::toString() const {
         case EVENT_MoveNPC:
             return fmt::format("{}: MoveNPC({}, {})", step, data.npc_move_descr.npc_id, std::to_underlying(data.npc_move_descr.location_id));
         case EVENT_GiveItem:
-            return fmt::format("{}: GiveItem({}, {}, {})", step, std::to_underlying(data.give_item_descr.treasure_level), data.give_item_descr.treasure_type, std::to_underlying(data.give_item_descr.item_id));
+            return fmt::format("{}: GiveItem({}, {}, {})", step, std::to_underlying(data.give_item_descr.treasure_level), std::to_underlying(data.give_item_descr.treasure_type), std::to_underlying(data.give_item_descr.item_id));
         case EVENT_ChangeEvent:
             return fmt::format("{}: ChangeEvent({})", step, data.event_id);
         case EVENT_CheckSkill:
@@ -864,6 +864,8 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
         size_t length = pos == nullptr ? runway : pos - ptr;
         return std::string(reinterpret_cast<const char *>(ptr), length);
     };
+
+    // TODO(captainurist): verify enum ranges here.
 
     switch (ir.type) {
         case EVENT_Exit:
@@ -1074,8 +1076,8 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             break;
         case EVENT_GiveItem:
             requireSize(11);
-            ir.data.give_item_descr.treasure_level = (ItemTreasureLevel)evt->v5;
-            ir.data.give_item_descr.treasure_type = evt->v6;
+            ir.data.give_item_descr.treasure_level = static_cast<ItemTreasureLevel>(evt->v5);
+            ir.data.give_item_descr.treasure_type = static_cast<RandomItemType>(evt->v6);
             ir.data.give_item_descr.item_id = static_cast<ItemId>(EVT_DWORD(&evt->v7));
             break;
         case EVENT_ChangeEvent:

@@ -464,7 +464,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 }
 
 //----- (0047732C) --------------------------------------------------------
-void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
+void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_uid,
                                         HOUSE_ID uLocation2D, MapId uMapId) {
     int rep_gen;
     int uGeneratedPortret;    // ecx@23
@@ -571,7 +571,8 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
         1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0};
 
-    uint8_t seed = (uint8_t)((double)(npc_uid - 1) / 3.0);
+    // TODO(captainurist): encapsulate enum arithmetic.
+    uint8_t seed = (uint8_t)((std::to_underlying(npc_uid) - 1) / 3.0);
     CharacterSex uNPCSex = NPCSexGenTable[seed];
     uRace = NPCRaceGenTable[seed];
     pNPCDataBuff->uSex = uNPCSex;
