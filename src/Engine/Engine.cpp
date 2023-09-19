@@ -1444,20 +1444,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
     }
 
-    if (!numPlayersCouldAct) {
-        if (current_screen_type != SCREEN_REST) {
-            for (Character &character : pParty->pCharacters) {
-                // if someone is sleeping - wake them up
-                if (character.conditions.Has(CONDITION_SLEEP)) {
-                    character.conditions.Reset(CONDITION_SLEEP);
-                    numPlayersCouldAct = 1;
-                    break;
-                }
-            }
-            if (!numPlayersCouldAct)
-                uGameState = GAME_STATE_PARTY_DIED;
-        }
-    }
+    maybeWakeSoloSurvivor();
+    updatePartyDeathState();
 
     if (pParty->hasActiveCharacter()) {
         if (current_screen_type != SCREEN_REST) {
@@ -1466,6 +1454,28 @@ void _494035_timed_effects__water_walking_damage__etc() {
             }
         }
     }
+}
+
+void maybeWakeSoloSurvivor() {
+    if (current_screen_type == SCREEN_REST)
+        return;
+
+    if (pParty->canActCount() != 0)
+        return;
+
+    // Try waking up a single character.
+    for (Character &character : pParty->pCharacters) {
+        if (character.conditions.Has(CONDITION_SLEEP)) {
+            character.conditions.Reset(CONDITION_SLEEP);
+            pParty->setActiveToFirstCanAct();
+            break;
+        }
+    }
+}
+
+void updatePartyDeathState() {
+    if (current_screen_type != SCREEN_REST && pParty->canActCount() == 0)
+        uGameState = GAME_STATE_PARTY_DIED;
 }
 
 void RegeneratePartyHealthMana() {

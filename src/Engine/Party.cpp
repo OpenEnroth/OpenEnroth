@@ -219,6 +219,13 @@ bool Party::_497FC5_check_party_perception_against_level() {
     return result;
 }
 
+int Party::canActCount() const {
+    int result = 0;
+    for (const Character &character : pCharacters)
+        result += character.CanAct();
+    return result;
+}
+
 void Party::setHoldingItem(ItemGen *pItem) {
     placeHeldItemInInventoryOrDrop();
     pPickedItem = *pItem;

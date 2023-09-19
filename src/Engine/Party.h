@@ -92,6 +92,11 @@ struct Party {
     bool _497FC5_check_party_perception_against_level();
 
     /**
+     * @return                          Total number of characters who can act.
+     */
+    int canActCount() const;
+
+    /**
      * @offset 0x48C6F6
      */
     bool addItemToParty(ItemGen *pItem, bool isSilent = false);

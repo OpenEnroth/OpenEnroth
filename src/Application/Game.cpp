@@ -2000,8 +2000,13 @@ void Game::gameLoop() {
             if (!pEventTimer->bPaused && uGameState == GAME_STATE_PLAYING) {
                 onTimer();
 
-                if (!pEventTimer->bTackGameTime)
+                if (!pEventTimer->bTackGameTime) {
                     _494035_timed_effects__water_walking_damage__etc();
+                } else {
+                    // Need to process party death in turn-based mode.
+                    maybeWakeSoloSurvivor();
+                    updatePartyDeathState();
+                }
 
                 if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {
                     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_SKIP_WORLD_UPDATE;
