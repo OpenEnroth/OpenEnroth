@@ -192,6 +192,8 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on);
  */
 void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();
+void maybeWakeSoloSurvivor();
+void updatePartyDeathState();
 
 /**
  * Modify party health or mana based on party or players conditions/buffs.

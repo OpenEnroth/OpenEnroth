@@ -76,6 +76,9 @@ void stru262_TurnBased::SortTurnQueue() {
         }
     }
     this->pQueue.resize(active_actors);
+    if (pQueue.empty())
+        return; // All characters are dead & no monsters around.
+
     if (pQueue[0].uPackedID.type() == OBJECT_Character) {  // we have player at queue top
         pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
         flags |= TE_PLAYER_TURN;
@@ -542,11 +545,12 @@ void stru262_TurnBased::SetAIRecoveryTimes() {
 
 //----- (004065B0) --------------------------------------------------------
 void stru262_TurnBased::_4065B0() {
-    int i;
-
     SortTurnQueue();
+    if (pQueue.empty())
+        return; // All characters are dead & no monsters around.
+
     if (pQueue[0].actor_initiative <= 0) {
-        for (i = 0; i < this->pQueue.size(); ++i) {
+        for (int i = 0; i < this->pQueue.size(); ++i) {
             if ((pQueue[i].uPackedID.type() == OBJECT_Character) ||
                 (pQueue[i].actor_initiative > 0))
                 break;
@@ -561,7 +565,8 @@ void stru262_TurnBased::_4065B0() {
         else
             pParty->setActiveCharacterIndex(0);
     }
-    for (i = 0; i < this->pQueue.size(); ++i) AIAttacks(i);
+    for (int i = 0; i < this->pQueue.size(); ++i)
+        AIAttacks(i);
 }
 
 //----- (00406648) --------------------------------------------------------

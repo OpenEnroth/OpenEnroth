@@ -102,7 +102,6 @@ extern std::string branchless_dialogue_str;
 
 extern int dword_5B65C4_cancelEventProcessing;
 extern int npcIdToDismissAfterDialogue;
-extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern int uDefaultTravelTime_ByFoot;

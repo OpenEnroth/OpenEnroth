@@ -92,6 +92,11 @@ struct Party {
     bool _497FC5_check_party_perception_against_level();
 
     /**
+     * @return                          Total number of characters who can act.
+     */
+    int canActCount() const;
+
+    /**
      * @offset 0x48C6F6
      */
     bool addItemToParty(ItemGen *pItem, bool isSilent = false);
@@ -303,7 +308,7 @@ struct Party {
     unsigned int uNumFoodRations;
     unsigned int uNumGold;
     unsigned int uNumGoldInBank;
-    unsigned int uNumDeaths;
+    int uNumDeaths;
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
     IndexedArray<MONSTER_TYPE, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;

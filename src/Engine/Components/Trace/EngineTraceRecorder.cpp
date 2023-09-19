@@ -37,6 +37,8 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     _trace = std::make_unique<EventTrace>();
 
     game->resizeWindow(640, 480);
+    engine->config->window.MouseGrab.setValue(false); // TODO(captainurist): move all of this, including resetForTest(), into a single place.
+    engine->config->debug.NoVideo.setValue(true);
     game->tick();
 
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
