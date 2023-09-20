@@ -10,7 +10,7 @@ if(OE_BUILD_TESTS)
 
     add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
     target_fix_libcxx_assertions(OpenEnroth_GameTest)
-    target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game GTest::gtest CLI11::CLI11)
+    target_link_libraries(OpenEnroth_GameTest PUBLIC platform_main application testing_game GTest::gtest CLI11::CLI11)
 
     target_check_style(OpenEnroth_GameTest)
 

@@ -17,7 +17,6 @@ set(PLATFORM_SOURCES
         Sdl/SdlEventLoop.cpp
         Sdl/SdlGamepad.cpp
         Sdl/SdlLogger.cpp
-        Sdl/SdlMain.cpp
         Sdl/SdlOpenGLContext.cpp
         Sdl/SdlPlatform.cpp
         Sdl/SdlPlatformSharedState.cpp
@@ -63,6 +62,16 @@ if(BUILD_PLATFORM STREQUAL "windows")
 else()
     list(APPEND PLATFORM_SOURCES Posix/PosixPlatform.cpp)
 endif()
+
+set(PLATFORM_MAIN_SOURCES
+        Sdl/SdlMain.cpp)
+
+set(PLATFORM_MAIN_HEADERS)
+
+# Need to have main in an OBJECT lib so that it's properly exported from Android .so.
+add_library(platform_main OBJECT ${PLATFORM_MAIN_SOURCES} ${PLATFORM_MAIN_HEADERS})
+target_check_style(platform_main)
+target_link_libraries(platform_main PRIVATE SDL2::SDL2OE)
 
 add_library(platform STATIC ${PLATFORM_SOURCES} ${PLATFORM_HEADERS})
 target_check_style(platform)
