@@ -1695,7 +1695,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // set params before input
-    Vec3i partyInputSpeed = Vec3i(0, 0, pParty->speed.z);
+    Vec3f partyInputSpeed = Vec3f(0, 0, pParty->speed.z);
     if (pParty->bFlying) {
         partyInputSpeed.z = 0;
     }
@@ -1989,7 +1989,7 @@ void ODM_ProcessPartyActions() {
     // has a modifiction been made to party position to push it away from a slope
     bool partySlopeMod{ false };
     if (partyNotTouchingFloor && !pParty->bFlying) {  // add gravity
-        partyInputSpeed.z += (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);
+        partyInputSpeed.z += -2.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
     } else if (!partyNotTouchingFloor) {
         if (!floorFaceId) {
             // rolling down the hill
@@ -2001,10 +2001,10 @@ void ODM_ProcessPartyActions() {
                 Vec3i v98;
                 ODM_GetTerrainNormalAt(partyNewPos.x, partyNewPos.y, &v98);
                 int v35 = partyInputSpeed.z + (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
-                int dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z) >> 16;
-                partyInputSpeed.x += fixpoint_mul(dot, v98.x);
-                partyInputSpeed.y += fixpoint_mul(dot, v98.y);
-                partyInputSpeed.z = v35 + fixpoint_mul(dot, v98.z);
+                float dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z);
+                partyInputSpeed.x += dot * v98.x;
+                partyInputSpeed.y += dot * v98.y;
+                partyInputSpeed.z = v35 + dot * v98.z;
                 partySlopeMod = true;
             }
         }

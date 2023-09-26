@@ -836,7 +836,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     }
 }
 
-void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3i *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
+void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
     // --(Collisions)-------------------------------------------------------------------
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
@@ -847,7 +847,7 @@ void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3i *partyInputSpeed, bool 
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi = partyNewPos->toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
         collision_state.position_lo = partyNewPos->toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
-        collision_state.velocity = partyInputSpeed->toFloat();
+        collision_state.velocity = *partyInputSpeed;
 
         collision_state.uSectorID = 0;
 
@@ -1005,8 +1005,6 @@ void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3i *partyInputSpeed, bool 
         }
 
         // ~0.9x reduce party speed and try again
-        partyInputSpeed->x = fixpoint_mul(58500, partyInputSpeed->x);
-        partyInputSpeed->y = fixpoint_mul(58500, partyInputSpeed->y);
-        partyInputSpeed->z = fixpoint_mul(58500, partyInputSpeed->z);
+        *partyInputSpeed *= 0.89263916f; // was 58500 fp
     }
 }
