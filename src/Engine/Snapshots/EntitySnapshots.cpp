@@ -573,7 +573,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
     dst->lastEyeLevel = src.prevEyeLevel;
-    dst->speed = Vec3i(0, 0, src.fallSpeed);
+    dst->speed = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->_6FC_water_lava_timer = src.waterLavaTimer;
     dst->uFallStartZ = src.fallStartZ;

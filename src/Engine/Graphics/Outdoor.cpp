@@ -1528,6 +1528,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
 // not sure if right- or left-handed coordinate space assumed, so this could be
 // normal of inverse normal
 // for a right-handed system, that would be an inverse normal
+// out as FP
 //----- (0046DCC8) --------------------------------------------------------
 void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
     uint grid_x = WorldPosToGridCellX(pos_x);
@@ -1779,11 +1780,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_StrafeLeft:
             {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.x -= 3 * dx / 4;
 
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.y += 3 * dy / 4;
 
                 partyIsWalking = true;
@@ -1792,11 +1793,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_StrafeRight:
             {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.x += 3 * dx / 4;
 
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.y -= 3 * dy / 4;
 
                 partyIsWalking = true;
@@ -1807,8 +1808,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0),
                       cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
-                int dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
 
                 if (engine->config->debug.TurboSpeed.value()) {
                     partyInputSpeed.x += dx * 12;
@@ -1826,8 +1827,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
-                int dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                float dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {
                     if (engine->config->debug.TurboSpeed.value()) {
@@ -1858,10 +1859,10 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                float dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 partyInputSpeed.x -= dx;
 
-                int dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                float dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 partyInputSpeed.y -= dy;
                 partyIsWalking = true;
             } break;
@@ -1871,8 +1872,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                int dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                float dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                float dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {
                     partyInputSpeed.x -= 4 * dx;
@@ -1912,7 +1913,7 @@ void ODM_ProcessPartyActions() {
                     !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
                     !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
                     partyNotTouchingFloor = true;
-                    partyInputSpeed.z += pParty->jump_strength * 96;
+                    partyInputSpeed.z += pParty->jump_strength * 96.0f;
                     // boost party upwards slightly so we dont "land" straight away
                     pParty->pos.z += 1;
                 }
@@ -2000,11 +2001,11 @@ void ODM_ProcessPartyActions() {
             if (partyAtHighSlope) {
                 Vec3i v98;
                 ODM_GetTerrainNormalAt(partyNewPos.x, partyNewPos.y, &v98);
-                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
-                float dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z);
-                partyInputSpeed.x += dot * v98.x;
-                partyInputSpeed.y += dot * v98.y;
-                partyInputSpeed.z = v35 + dot * v98.z;
+                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->uTimeElapsed * (int)GetGravityStrength()));
+                float dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z) / 65536.0f;
+                partyInputSpeed.x += dot * v98.x / 65536.0f;
+                partyInputSpeed.y += dot * v98.y / 65536.0f;
+                partyInputSpeed.z = v35 + dot * v98.z / 65536.0f;
                 partySlopeMod = true;
             }
         }
@@ -2816,7 +2817,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->pos = pLevelDecorations[i].vPosition;
-                    pParty->speed = Vec3i();
+                    pParty->speed = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;
                     if (pLevelDecorations[i]._yawAngle)

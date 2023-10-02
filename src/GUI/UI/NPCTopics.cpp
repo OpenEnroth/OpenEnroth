@@ -242,7 +242,7 @@ DIALOGUE_TYPE arenaMainDialogue() {
                 return DIALOGUE_ARENA_REWARD;
             } else {
                 pParty->pos = Vec3i(3849, 5770, 1);
-                pParty->speed = Vec3i();
+                pParty->speed = Vec3f();
                 pParty->uFallStartZ = 1;
                 pParty->_viewYaw = 512;
                 pParty->_viewPitch = 0;
@@ -285,7 +285,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     render->Present();
 
     pParty->pos = Vec3i(3849, 5770, 1);
-    pParty->speed = Vec3i();
+    pParty->speed = Vec3f();
     pParty->uFallStartZ = 1;
     pParty->_viewYaw = 512;
     pParty->_viewPitch = 0;

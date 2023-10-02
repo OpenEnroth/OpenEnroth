@@ -730,7 +730,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi = pParty->pos.toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
         collision_state.position_lo = pParty->pos.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
-        collision_state.velocity = pParty->speed.toFloat();
+        collision_state.velocity = pParty->speed;
 
         collision_state.uSectorID = sectorId;
         int dt = 0; // zero means use actual dt
@@ -824,15 +824,14 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                         if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                             *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     } else {
-                        pParty->speed = Vec3i();
+                        pParty->speed = Vec3f();
                     }
                 }
             }
         }
 
-        pParty->speed.x = fixpoint_mul(58500, pParty->speed.x);  // 58500 is roughly 0.89
-        pParty->speed.y = fixpoint_mul(58500, pParty->speed.y);
-        pParty->speed.z = fixpoint_mul(58500, pParty->speed.z);
+        // ~0.9x reduce party speed and try again
+        pParty->speed *= 0.89263916f; // was 58500 fp
     }
 }
 

@@ -96,7 +96,7 @@ void Party::Zero() {
     PartyTimes.shopBanTimes.fill(GameTime(0));
     PartyTimes._s_times.fill(GameTime(0));
     pos = lastPos = Vec3i();
-    speed = Vec3i();
+    speed = Vec3f();
     _viewYaw = _viewPrevYaw = 0;
     _viewPitch = _viewPrevPitch = 0;
     lastEyeLevel = 0;
@@ -727,7 +727,7 @@ void Party::yell() {
 //----- (00491BF9) --------------------------------------------------------
 void Party::ResetPosMiscAndSpellBuffs() {
     this->pos = Vec3i();
-    this->speed = Vec3i();
+    this->speed = Vec3f();
     this->uFallStartZ = 0;
     this->_viewYaw = 0;
     this->_viewPitch = 0;
