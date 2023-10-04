@@ -87,7 +87,9 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
         # 2. Generate a bunch of relocations in the .text segment.
         # Default is #1, so we need to instruct it not to choke. Note that LLD behaves differently from GNU LD here,
         # which picks #2 by default.
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld -Wl,-z,notext")
+        if (BUILD_PLATFORM STREQUAL "linux")
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld -Wl,-z,notext")
+        endif ()
     elseif(OE_USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
         message(STATUS "Using gold linker.")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
