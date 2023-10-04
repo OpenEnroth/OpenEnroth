@@ -243,7 +243,7 @@ int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
     return travel_time;
 }
 
-bool isTravelAvailable(HOUSE_ID houseId) {
+bool isTravelAvailable(HouseId houseId) {
     for (int schedule : transportRoutes[houseId]) {
         if (transportSchedule[schedule].pSchedule[pParty->uCurrentDayOfMonth % 7]) {
             if (transportSchedule[schedule].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule].uQuestBit]) {

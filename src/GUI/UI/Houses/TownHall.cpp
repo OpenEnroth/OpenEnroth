@@ -143,7 +143,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions() {
     }
 }
 
-MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
+MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
     while (true) {
         // TODO(captainurist): I got lazy here. Use actual enum values.
         int result = grng->random(258) + 1;
@@ -249,7 +249,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
 }
 
 void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
-    HOUSE_ID house = houseId();
+    HouseId house = houseId();
 
     // Generate new bounty
     if (pParty->PartyTimes.bountyHuntNextGenTime[house] < pParty->GetPlayingTime()) {

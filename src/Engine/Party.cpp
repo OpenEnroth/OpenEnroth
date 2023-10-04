@@ -140,15 +140,15 @@ void Party::Zero() {
     pPickedItem.Reset();
     uFlags = 0;
 
-    for (HOUSE_ID i : standartItemsInShops.indices())
+    for (HouseId i : standartItemsInShops.indices())
         for (int j = 0; j < 12; ++j)
             standartItemsInShops[i][j].Reset();
 
-    for (HOUSE_ID i : specialItemsInShops.indices())
+    for (HouseId i : specialItemsInShops.indices())
         for (int j = 0; j < 12; ++j)
             specialItemsInShops[i][j].Reset();
 
-    for (HOUSE_ID i : spellBooksInGuilds.indices())
+    for (HouseId i : spellBooksInGuilds.indices())
         for (int j = 0; j < 12; ++j)
             spellBooksInGuilds[i][j].Reset();
 

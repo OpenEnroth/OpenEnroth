@@ -7,7 +7,7 @@ void MercenaryGuildDialog();
 
 class GUIWindow_MercenaryGuild : public GUIWindow_House {
  public:
-    explicit GUIWindow_MercenaryGuild(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    explicit GUIWindow_MercenaryGuild(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_MercenaryGuild() {}
 
     /**

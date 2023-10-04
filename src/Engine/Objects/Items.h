@@ -64,7 +64,7 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
     uint8_t GetDamageMod() const;
-    bool canSellRepairIdentifyAt(HOUSE_ID houseId);
+    bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
         return GetItemEquipType() == EQUIP_GOLD;

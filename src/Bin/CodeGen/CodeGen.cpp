@@ -197,7 +197,7 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
     initializeBuildings(resourceManager->getEventsFile("2dEvents.txt"));
     // ^ Initializes buildingTable.
 
-    std::unordered_map<HOUSE_ID, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
+    std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
     LodReader gamesLod(makeDataPath("data", "games.lod"));
     for (const std::string &fileName : gamesLod.ls()) {
@@ -208,14 +208,14 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
         EventMap eventMap = EventMap::load(resourceManager->getEventsFile(fileName.substr(0, fileName.size() - 4) + ".evt"));
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_SpeakInHouse)) {
-            HOUSE_ID houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.house_id;
+            HouseId houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.house_id;
             if (houseId == HOUSE_INVALID)
                 throw Exception("Invalid house id encountered in house event");
             mapNamesByHouseId[houseId].insert(mapName);
         }
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_MoveToMap)) {
-            HOUSE_ID houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.move_map_descr.house_id;
+            HouseId houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.move_map_descr.house_id;
             if (houseId != HOUSE_INVALID)
                 mapNamesByHouseId[houseId].insert(mapName);
         }
@@ -224,7 +224,7 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
     CodeGenMap map;
     map.insert(HOUSE_INVALID, "INVALID", "");
 
-    for (HOUSE_ID i : buildingTable.indices()) {
+    for (HouseId i : buildingTable.indices()) {
         const BuildingDesc &desc = buildingTable[i];
         bool hasMap = mapNamesByHouseId.contains(i);
         std::string mapName;

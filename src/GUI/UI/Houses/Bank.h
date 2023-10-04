@@ -7,7 +7,7 @@
 
 class GUIWindow_Bank : public GUIWindow_House {
  public:
-    explicit GUIWindow_Bank(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    explicit GUIWindow_Bank(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Bank() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;

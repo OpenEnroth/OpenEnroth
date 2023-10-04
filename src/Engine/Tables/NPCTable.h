@@ -42,7 +42,7 @@ struct NPCData {  // 4Ch
     NpcFlags uFlags = 0;  // 8
     int fame = 0;                  // c
     int rep = 0;                   // 10
-    HOUSE_ID Location2D = HOUSE_INVALID;   // 14  house_id
+    HouseId Location2D = HOUSE_INVALID;   // 14  house_id
     NPCProf profession = NoProfession;  // 18
     int greet = 0;                 // 1c
     int is_joinable = 0;           // 20
@@ -92,7 +92,7 @@ struct NPCStats {
     void InitializeNPCGroups(const Blob &npcGroups);
     void InitializeNPCNews(const Blob &npcNews);
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_uid,
-                                  HOUSE_ID uLocation2D, MapId uMapId);
+                                  HouseId uLocation2D, MapId uMapId);
     /**
      * @offset 0x476C60
      */

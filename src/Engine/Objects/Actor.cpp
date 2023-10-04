@@ -1844,7 +1844,7 @@ void Actor::Die(unsigned int uActorID) {
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     actor->UpdateAnimation();
 
-    for (HOUSE_ID house : allTownhallHouses())
+    for (HouseId house : allTownhallHouses())
         if (pParty->monster_id_for_hunting[house] == actor->monsterInfo.uID)
             pParty->monster_for_hunting_killed[house] = true;
 

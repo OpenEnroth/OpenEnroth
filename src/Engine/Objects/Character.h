@@ -242,7 +242,7 @@ class Character {
     void resetTempBonuses();
     Color GetStatColor(CharacterAttributeType uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
-    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, ShopScreen ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
     bool CanIdentify(ItemGen *pItem) const;
@@ -299,7 +299,7 @@ class Character {
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
-    void SalesProcess(unsigned int inventory_idnx, int item_index, HOUSE_ID houseId);  // 0x4BE2DD
+    void SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId);  // 0x4BE2DD
     bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);

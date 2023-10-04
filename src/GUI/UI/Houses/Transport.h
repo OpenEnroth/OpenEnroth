@@ -7,7 +7,7 @@
 
 class GUIWindow_Transport : public GUIWindow_House {
  public:
-    explicit GUIWindow_Transport(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    explicit GUIWindow_Transport(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Transport() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
@@ -29,4 +29,4 @@ class GUIWindow_Transport : public GUIWindow_House {
     int getTravelTimeTransportDays(int schedule_id);
 };
 
-bool isTravelAvailable(HOUSE_ID houseId);
+bool isTravelAvailable(HouseId houseId);

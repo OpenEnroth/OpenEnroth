@@ -327,7 +327,7 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HOUSE_ID houseId) {
+void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId) {
     float shop_mult = buildingTable[houseId].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
@@ -7430,7 +7430,7 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, ShopScreen ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
