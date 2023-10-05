@@ -1854,33 +1854,33 @@ void Actor::Die(unsigned int uActorID) {
     ItemGen drop;
     drop.Reset();
     switch (actor->monsterInfo.uID) {
-        case MONSTER_HARPY_1:
-        case MONSTER_HARPY_2:
-        case MONSTER_HARPY_3:
+        case MONSTER_HARPY_A:
+        case MONSTER_HARPY_B:
+        case MONSTER_HARPY_C:
             drop.uItemID = ITEM_REAGENT_HARPY_FEATHER;
             break;
 
-        case MONSTER_OOZE_1:
-        case MONSTER_OOZE_2:
-        case MONSTER_OOZE_3:
+        case MONSTER_OOZE_A:
+        case MONSTER_OOZE_B:
+        case MONSTER_OOZE_C:
             drop.uItemID = ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
             break;
 
-        case MONSTER_TROLL_1:
-        case MONSTER_TROLL_2:
-        case MONSTER_TROLL_3:
+        case MONSTER_TROLL_A:
+        case MONSTER_TROLL_B:
+        case MONSTER_TROLL_C:
             drop.uItemID = ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
             break;
 
-        case MONSTER_DEVIL_1:
-        case MONSTER_DEVIL_2:
-        case MONSTER_DEVIL_3:
+        case MONSTER_DEVIL_A:
+        case MONSTER_DEVIL_B:
+        case MONSTER_DEVIL_C:
             drop.uItemID = ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
             break;
 
-        case MONSTER_DRAGON_1:
-        case MONSTER_DRAGON_2:
-        case MONSTER_DRAGON_3:
+        case MONSTER_DRAGON_A:
+        case MONSTER_DRAGON_B:
+        case MONSTER_DRAGON_C:
             drop.uItemID = ITEM_REAGENT_DRAGONS_EYE;
             break;
     }
@@ -3168,7 +3168,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 if (character->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
                     skillLevel = character->getSkillValue(CHARACTER_SKILL_BLASTER).level();
                 attackElement = DAMAGE_PHYSICAL;
-                uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_0);
+                uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_INVALID);
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
                     return;
@@ -3176,7 +3176,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 break;
             case SPELL_101:
                 attackElement = DAMAGE_FIRE;
-                uDamageAmount = character->CalculateRangedDamageTo(MONSTER_0);
+                uDamageAmount = character->CalculateRangedDamageTo(MONSTER_INVALID);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
@@ -4609,7 +4609,8 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
 
         v27 = &pMonsterList->pMonsters[v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
-        if (v28 == MONSTER_0) v28 = MONSTER_1;
+        // TODO(captainurist): MONSTER_ANGEL_A is monster #1, why do we even need this check?
+        if (v28 == MONSTER_INVALID) v28 = MONSTER_ANGEL_A;
         Src = &pMonsterStats->pInfos[v28];
         pMonster->name = Src->pName;
         pMonster->currentHP = Src->uHP;

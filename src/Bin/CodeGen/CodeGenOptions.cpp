@@ -30,10 +30,19 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CLI::App *houses = app->add_subcommand("houses", "Generate house ids enum.")->fallthrough();
     houses->callback([&] { result.subcommand = SUBCOMMAND_HOUSE_ID; });
 
+    CLI::App *monsters = app->add_subcommand("monsters", "Generate monster ids enum")->fallthrough();
+    monsters->callback([&] { result.subcommand = SUBCOMMAND_MONSTER_ID; });
+
     try {
         app->parse(argc, argv);
     } catch (const CLI::ParseError &e) {
-        if (app->get_help_ptr()->as<bool>() || items->get_help_ptr()->as<bool>() || maps->get_help_ptr()->as<bool>() || beacons->get_help_ptr()->as<bool>()) {
+        bool isHelp =
+            app->get_help_ptr()->as<bool>() ||
+            items->get_help_ptr()->as<bool>() ||
+            maps->get_help_ptr()->as<bool>() ||
+            beacons->get_help_ptr()->as<bool>() ||
+            monsters->get_help_ptr()->as<bool>();
+        if (isHelp) {
             app->exit(e);
             result.helpPrinted = true;
         } else {

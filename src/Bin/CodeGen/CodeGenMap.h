@@ -4,6 +4,9 @@
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <utility>
+#include <vector>
+#include <algorithm>
 
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Format.h"
@@ -37,12 +40,24 @@ class CodeGenMap {
     }
 
     void dump(FILE *file, const std::string &prefix) {
+        std::vector<std::pair<std::string, std::string>> linesAndComments;
         for (const auto &[value, name] : _nameByValue) {
             std::string comment = _commentByValue[value];
             if (!comment.empty())
                 comment = " // " + comment;
 
-            fmt::println(file, "    {}{} = {},{}", prefix, name, value, comment);
+            linesAndComments.emplace_back(fmt::format("{}{} = {}", prefix, name, value), comment);
+        }
+
+        size_t maxLineLen = 0;
+        for (const auto &[line, _] : linesAndComments)
+            maxLineLen = std::max(maxLineLen, line.size());
+
+        for (const auto &[line, comment] : linesAndComments) {
+            std::string padding;
+            if (!comment.empty())
+                padding = std::string(maxLineLen - line.size(), ' ');
+            fmt::println(file, "    {},{}{}", line, padding, comment);
         }
     }
 

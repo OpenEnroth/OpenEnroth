@@ -65,7 +65,7 @@ struct MonsterInfo {
     uint8_t uSpecialAbilityDamageDiceSides = 0;
     uint8_t uSpecialAbilityDamageDiceBonus = 0;
     uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
-    MONSTER_TYPE uID = MONSTER_0;
+    MONSTER_TYPE uID = MONSTER_INVALID;
     bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
     CombinedSkillValue uSpellSkillAndMastery1;
     CombinedSkillValue uSpellSkillAndMastery2;

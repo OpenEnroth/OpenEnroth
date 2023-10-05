@@ -9,6 +9,7 @@ struct CodeGenOptions : GameStarterOptions {
         SUBCOMMAND_MAP_ID,
         SUBCOMMAND_BEACON_MAPPING,
         SUBCOMMAND_HOUSE_ID,
+        SUBCOMMAND_MONSTER_ID,
     };
     using enum Subcommand;
 

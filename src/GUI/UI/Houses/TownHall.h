@@ -39,5 +39,5 @@ class GUIWindow_TownHall : public GUIWindow_House {
     void bountyHuntingDialogueOptionClicked();
 
     std::string _bountyHuntText = "";
-    MONSTER_TYPE _bountyHuntMonsterId = MONSTER_0;
+    MONSTER_TYPE _bountyHuntMonsterId = MONSTER_INVALID;
 };

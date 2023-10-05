@@ -121,7 +121,7 @@ void Party::Zero() {
     uNumDeaths = 0;
     uNumPrisonTerms = 0;
     uNumBountiesCollected = 0;
-    monster_id_for_hunting.fill(MONSTER_0);
+    monster_id_for_hunting.fill(MONSTER_INVALID);
     monster_for_hunting_killed.fill(false);
     days_played_without_rest = 0;
     _questBits.reset();

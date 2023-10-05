@@ -337,7 +337,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
 
     v6 = File;
     fseek(v6, 0, 0);
-    MONSTER_TYPE monsterId = MONSTER_0;
+    MONSTER_TYPE monsterId = MONSTER_INVALID;
     for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
         *strchr(Buf, 10) = 0;
         memcpy(&v25, frame_table_txt_parser(Buf, &v24), sizeof(v25));
@@ -398,7 +398,7 @@ MONSTER_TYPE MonsterStats::FindMonsterByTextureName(const std::string &monster_t
         if (!pInfos[i].pName.empty() && iequals(pInfos[i].pPictureName, monster_textr_name))
             return i;
     }
-    return MONSTER_0;
+    return MONSTER_INVALID;
 }
 
 //----- (00454F4E) --------------------------------------------------------
@@ -463,7 +463,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     uNumMonsters = 265;
-    curr_rec_num = MONSTER_0;
+    curr_rec_num = MONSTER_INVALID;
     for (i = 0; i < uNumMonsters - 1; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -1086,62 +1086,62 @@ bool MonsterStats::BelongsToSupertype(MONSTER_TYPE uMonsterInfoID,
                                       enum MONSTER_SUPERTYPE eSupertype) {
     switch (eSupertype) {
         case MONSTER_SUPERTYPE_UNDEAD:
-            if (uMonsterInfoID >= MONSTER_GHOST_1 &&
-                    uMonsterInfoID <= MONSTER_GHOST_3  // 70<=id<=72
-                || uMonsterInfoID >= MONSTER_LICH_1 &&
-                       uMonsterInfoID <= MONSTER_LICH_3  // 91-93
+            if (uMonsterInfoID >= MONSTER_GHOST_A &&
+                    uMonsterInfoID <= MONSTER_GHOST_C  // 70<=id<=72
+                || uMonsterInfoID >= MONSTER_LICH_A &&
+                       uMonsterInfoID <= MONSTER_LICH_C  // 91-93
                 ||
-                uMonsterInfoID >= MONSTER_SKELETON_1 &&
-                    uMonsterInfoID <= MONSTER_SKELETON_3  // 199-201
+                uMonsterInfoID >= MONSTER_SKELETON_WARRIOR_A &&
+                    uMonsterInfoID <= MONSTER_SKELETON_WARRIOR_C  // 199-201
                 ||
-                uMonsterInfoID >= MONSTER_VAMPIRE_1 &&
-                    uMonsterInfoID <= MONSTER_VAMPIRE_3  // 217-219
-                || uMonsterInfoID >= MONSTER_WIGHT_1 &&
-                       uMonsterInfoID <= MONSTER_WIGHT_3  // 223-225
+                uMonsterInfoID >= MONSTER_VAMPIRE_A &&
+                    uMonsterInfoID <= MONSTER_VAMPIRE_C  // 217-219
+                || uMonsterInfoID >= MONSTER_WIGHT_A &&
+                       uMonsterInfoID <= MONSTER_WIGHT_C  // 223-225
                 ||
-                uMonsterInfoID >= MONSTER_ZOMBIE_1 &&
-                    uMonsterInfoID <= MONSTER_ZOMBIE_3  // 229-231
+                uMonsterInfoID >= MONSTER_ZOMBIE_A &&
+                    uMonsterInfoID <= MONSTER_ZOMBIE_C  // 229-231
                 ||
-                uMonsterInfoID >= MONSTER_GHOUL_1 &&
-                    uMonsterInfoID <= MONSTER_GHOUL_3)  // 256-258
+                uMonsterInfoID >= MONSTER_GHOUL_A &&
+                    uMonsterInfoID <= MONSTER_GHOUL_C)  // 256-258
                 return true;
             return false;
         case MONSTER_SUPERTYPE_KREEGAN:
-            if (uMonsterInfoID >= MONSTER_DEVIL_1 &&
-                uMonsterInfoID <= MONSTER_DEVIL_3)  // 22-24
+            if (uMonsterInfoID >= MONSTER_DEVIL_A &&
+                uMonsterInfoID <= MONSTER_DEVIL_C)  // 22-24
                 return true;
             return false;
         case MONSTER_SUPERTYPE_ELF:
-            if (uMonsterInfoID >= MONSTER_PEASANT_ELF_FEMALE_1_1 &&
+            if (uMonsterInfoID >= MONSTER_PEASANT_ELF_FEMALE_A_A &&
                     uMonsterInfoID <=
-                        MONSTER_PEASANT_ELF_MALE_3_3  // 133 - 150
+                        MONSTER_PEASANT_ELF_MALE_C_C  // 133 - 150
                 ||
-                uMonsterInfoID >= MONSTER_ELF_ARCHER_1 &&
-                    uMonsterInfoID <= MONSTER_ELF_ARCHER_3  // 49-51
-                || uMonsterInfoID >= MONSTER_ELF_SPEARMAN_1 &&
+                uMonsterInfoID >= MONSTER_ELF_ARCHER_A &&
+                    uMonsterInfoID <= MONSTER_ELF_ARCHER_C  // 49-51
+                || uMonsterInfoID >= MONSTER_ELF_SPEARMAN_A &&
                        uMonsterInfoID <=
-                           MONSTER_ELF_SPEARMAN_3)  // 52-54
+                           MONSTER_ELF_SPEARMAN_C)  // 52-54
                 return true;
             return false;
         case MONSTER_SUPERTYPE_DRAGON:
-            if (uMonsterInfoID >= MONSTER_DRAGON_1 &&
-                uMonsterInfoID <= MONSTER_DRAGON_3)  // 25-27
+            if (uMonsterInfoID >= MONSTER_DRAGON_A &&
+                uMonsterInfoID <= MONSTER_DRAGON_C)  // 25-27
                 return true;
             return false;
         case MONSTER_SUPERTYPE_WATER_ELEMENTAL:
-            if (uMonsterInfoID >= MONSTER_ELEMENTAL_WATER_1 &&
+            if (uMonsterInfoID >= MONSTER_ELEMENTAL_WATER_A &&
                 uMonsterInfoID <=
-                    MONSTER_ELEMENTAL_WATER_3)  // 46-48
+                    MONSTER_ELEMENTAL_WATER_C)  // 46-48
                 return true;
             return false;
         case MONSTER_SUPERTYPE_TREANT:
-            if (uMonsterInfoID >= MONSTER_TREANT_1 &&
-                uMonsterInfoID <= MONSTER_TREANT_3)  // 253-255
+            if (uMonsterInfoID >= MONSTER_TREANT_A &&
+                uMonsterInfoID <= MONSTER_TREANT_C)  // 253-255
                 return true;
             return false;
         case MONSTER_SUPERTYPE_TITAN:
-            if (uMonsterInfoID >= MONSTER_TITAN_1 &&
-                uMonsterInfoID <= MONSTER_TITAN_3)  // 211-213
+            if (uMonsterInfoID >= MONSTER_TITAN_A &&
+                uMonsterInfoID <= MONSTER_TITAN_C)  // 211-213
                 return true;
             return false;
         default:

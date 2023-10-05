@@ -1141,7 +1141,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     int totalDmg =
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
-    if (uTargetActorID > MONSTER_0) {  // if an actor has been provided
+    if (uTargetActorID > MONSTER_INVALID) {  // if an actor has been provided
         ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
@@ -1245,7 +1245,7 @@ int Character::CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID) {
     damage = pItemTable->pItems[bow->uItemID].uDamageMod +
              damagefromroll;  // total damage
 
-    if (uMonsterInfoID != MONSTER_0) {  // check against bow enchantments
+    if (uMonsterInfoID != MONSTER_INVALID) {  // check against bow enchantments
         if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
             MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
             damage *= 2;
@@ -6622,7 +6622,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_INVALID);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): doesn't look like a proper default.
             }
             playerPtr->receiveDamage(damage, damagetype);
@@ -6766,7 +6766,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_INVALID);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): another weird default.
             }
 

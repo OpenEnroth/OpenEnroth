@@ -1019,10 +1019,11 @@ void PrepareToLoadBLV(bool bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    // Party to start position
     Actor this_;
-    this_.monsterInfo.uID = MONSTER_45;
-    this_.PrepareSprites(0);
+    this_.monsterInfo.uID = MONSTER_ELEMENTAL_LIGHT_C;
+    this_.PrepareSprites(0); // TODO(captainurist): can drop this? Was loaded because light elementals can be summoned.
+
+    // Party to start position
     if (!bLoading) {
         pParty->_viewPitch = 0;
         pParty->_viewYaw = 0;

@@ -243,7 +243,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
 
         default:
             assert(false);
-            return MONSTER_0;
+            return MONSTER_INVALID;
         }
     }
 }
@@ -261,14 +261,14 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
     _bountyHuntMonsterId = pParty->monster_id_for_hunting[house];
 
     if (!pParty->monster_for_hunting_killed[house]) {
-        if (pParty->monster_id_for_hunting[house] != MONSTER_0) {
+        if (pParty->monster_id_for_hunting[house] != MONSTER_INVALID) {
             _bountyHuntText = pNPCTopics[351].pText; // "This month's bounty is on a %s..."
         } else {
             _bountyHuntText = pNPCTopics[353].pText; // "Someone has already claimed the bounty this month..."
         }
     } else {
         // Get prize
-        if (pParty->monster_id_for_hunting[house] != MONSTER_0) {
+        if (pParty->monster_id_for_hunting[house] != MONSTER_INVALID) {
             int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].uLevel;
 
             pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
@@ -276,7 +276,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
                 player.SetVariable(VAR_Award, Award_BountiesCollected);
             }
             pParty->uNumBountiesCollected += bounty;
-            pParty->monster_id_for_hunting[house] = MONSTER_0;
+            pParty->monster_id_for_hunting[house] = MONSTER_INVALID;
             pParty->monster_for_hunting_killed[house] = false;
         }
 
@@ -286,7 +286,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
 
 std::string GUIWindow_TownHall::bountyHuntingText() {
     assert(!_bountyHuntText.empty());
-    assert(_bountyHuntMonsterId != MONSTER_0);
+    assert(_bountyHuntMonsterId != MONSTER_INVALID);
 
     // TODO(captainurist): what do we do with exceptions inside fmt?
     std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->pInfos[_bountyHuntMonsterId].pName, colorTable.White.tag());
