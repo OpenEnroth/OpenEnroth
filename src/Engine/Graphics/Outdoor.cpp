@@ -1973,7 +1973,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = partyNewPos.z;
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
-        if (partyIsOnWater && partyInputSpeed.z)
+        if (partyIsOnWater && !fuzzyIsNull(partyInputSpeed.z))
             SpriteObject::createSplashObject({partyNewPos.x, partyNewPos.y, partyNewPos.z});
         partyInputSpeed.z = 0;
         pParty->uFallStartZ = currentGroundLevel;
@@ -2052,7 +2052,7 @@ void ODM_ProcessPartyActions() {
 
     // -(update party co-ords)---------------------------------------
     bool notWater{ false };
-    if (partyNewXGrid == partyCurrentXGrid && partyNewYGrid == partyCurrentYGrid && partyCurrentOnLand/*partyNewPos.xOnLand && partyNewPos.yOnLand*/)
+    if (partyNewXGrid == partyCurrentXGrid && partyNewYGrid == partyCurrentYGrid && partyCurrentOnLand/*partyNewXOnLand && partyNewYOnLand*/)
         notWater = true;
 
     if (!partyNotOnModel)
