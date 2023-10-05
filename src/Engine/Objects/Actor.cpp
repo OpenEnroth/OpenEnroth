@@ -2757,7 +2757,6 @@ void Actor::UpdateActorAI() {
         MonsterHostility relationToTarget;
         if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
-                // TODO(captainurist): encapsulate enum arithmetic.
                 relationToTarget = pFactionTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.uID)]
                                                            [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.uID)];
             } else {
