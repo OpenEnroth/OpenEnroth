@@ -233,7 +233,7 @@ class Actor {
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
     std::array<ItemGen, 4> items;
     unsigned int group = 0;
-    unsigned int ally = 0; // TODO(captainurist): This is (MONSTER_TYPE - 1) / 3 + 1
+    MonsterType ally = MONSTER_TYPE_INVALID; // TODO(captainurist): document properly, and maybe rename.
     std::array<ActorJob, 8> scheduledJobs;
     Pid summonerId;
     Pid lastCharacterIdToHit;

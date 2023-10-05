@@ -2,12 +2,14 @@
 
 #include "Engine/Objects/MonsterEnums.h"
 
+#include "Utility/IndexedArray.h"
+
 class Blob;
 
 struct FactionTable {
     void Initialize(const Blob &factions);
 
-    MonsterHostility relations[89][89]; // TODO(captainurist): index is 1 + MONSTER_TYPE / 3?
+    IndexedArray<IndexedArray<MonsterHostility, MONSTER_TYPE_INVALID, MONSTER_TYPE_LAST>, MONSTER_TYPE_INVALID, MONSTER_TYPE_LAST> relations;
 };
 
 extern FactionTable *pFactionTable;

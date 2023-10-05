@@ -407,11 +407,44 @@ enum class MonsterType {
     MONSTER_TYPE_91 = 91,
     MONSTER_TYPE_92 = 92,
     MONSTER_TYPE_93 = 93,
+
+    MONSTER_TYPE_9999 = 9999, // TODO(captainurist): eh?
+
+    MONSTER_TYPE_FIRST = MONSTER_TYPE_ANGEL,
+    MONSTER_TYPE_LAST = MONSTER_TYPE_ULTRA_DRAGON,
+
+    MONSTER_TYPE_FIRST_PEASANT_DWARF = MONSTER_TYPE_PEASANT_DWARF_FEMALE_A,
+    MONSTER_TYPE_LAST_PEASANT_DWARF = MONSTER_TYPE_PEASANT_DWARF_MALE_C,
+
+    MONSTER_TYPE_FIRST_PEASANT_ELF = MONSTER_TYPE_PEASANT_ELF_FEMALE_A,
+    MONSTER_TYPE_LAST_PEASANT_ELF = MONSTER_TYPE_PEASANT_ELF_MALE_C,
+
+    MONSTER_TYPE_FIRST_PEASANT_HUMAN = MONSTER_TYPE_PEASANT_HUMAN1_FEMALE_A,
+    MONSTER_TYPE_LAST_PEASANT_HUMAN = MONSTER_TYPE_PEASANT_HUMAN2_FEMALE_C,
+
+    MONSTER_TYPE_FIRST_PEASANT_GOBLIN = MONSTER_TYPE_PEASANT_GOBLIN_FEMALE_A,
+    MONSTER_TYPE_LAST_PEASANT_GOBLIN = MONSTER_TYPE_PEASANT_GOBLIN_MALE_C
 };
 using enum MonsterType;
 
 inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
+}
+
+inline bool isDwarfPeasant(MonsterType monsterType) {
+    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_DWARF && monsterType <= MONSTER_TYPE_LAST_PEASANT_DWARF;
+}
+
+inline bool isElfPeasant(MonsterType monsterType) {
+    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_ELF && monsterType <= MONSTER_TYPE_LAST_PEASANT_ELF;
+}
+
+inline bool isHumanPeasant(MonsterType monsterType) {
+    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_HUMAN && monsterType <= MONSTER_TYPE_LAST_PEASANT_HUMAN;
+}
+
+inline bool isGoblinPeasant(MonsterType monsterType) {
+    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN;
 }
 
 /*  335 */

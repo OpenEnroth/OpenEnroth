@@ -1224,7 +1224,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     snapshot(src.items, &dst->ActorHasItems);
 
     dst->uGroup = src.group;
-    dst->uAlly = src.ally;
+    dst->uAlly = std::to_underlying(src.ally);
 
     snapshot(src.scheduledJobs, &dst->pScheduledJobs);
 
@@ -1318,7 +1318,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     reconstruct(src.ActorHasItems, &dst->items);
 
     dst->group = src.uGroup;
-    dst->ally = src.uAlly;
+    dst->ally = static_cast<MonsterType>(src.uAlly);
 
     reconstruct(src.pScheduledJobs, &dst->scheduledJobs);
 

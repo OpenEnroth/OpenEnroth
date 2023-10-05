@@ -696,17 +696,18 @@ unsigned short Actor::GetObjDescId(SpellId spellId) {
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
-    // TODO(captainurist): encapsulate enum arithmetic.
-    unsigned int v2 = a1->ally;
-    if (!a1->ally) v2 = (std::to_underlying(a1->monsterInfo.uID) - 1) / 3 + 1;
+    MonsterType v2 = a1->ally;
+    if (a1->ally == MONSTER_TYPE_INVALID)
+        v2 = monsterTypeForMonsterId(a1->monsterInfo.uID);
 
-    unsigned int v3 = a2->ally;
-    if (!a2->ally) v3 = (std::to_underlying(a2->monsterInfo.uID) - 1) / 3 + 1;
+    MonsterType v3 = a2->ally;
+    if (a2->ally == MONSTER_TYPE_INVALID)
+        v3 = monsterTypeForMonsterId(a2->monsterInfo.uID);
 
-    if (v2 >= 39 && v2 <= 44 && v3 >= 39 && v3 <= 44 ||
-        v2 >= 45 && v2 <= 50 && v3 >= 45 && v3 <= 50 ||
-        v2 >= 51 && v2 <= 62 && v3 >= 51 && v3 <= 62 ||
-        v2 >= 78 && v2 <= 83 && v3 >= 78 && v3 <= 83 || v2 == v3)
+    if (isDwarfPeasant(v2) && isDwarfPeasant(v3) ||
+        isElfPeasant(v2) && isElfPeasant(v3) ||
+        isHumanPeasant(v2) && isHumanPeasant(v3) ||
+        isGoblinPeasant(v2) && isGoblinPeasant(v3) || v2 == v3)
         return true;
     else
         return false;
@@ -1276,19 +1277,10 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
 
 //----- (00438B9B) --------------------------------------------------------
 bool Actor::IsPeasant() {
-    unsigned int InHostile_Id;  // eax@1
-
-    InHostile_Id = this->ally;
-    // TODO(captainurist): encapsulate enum arithmetic.
-    if (!this->ally) InHostile_Id = (std::to_underlying(this->monsterInfo.uID) - 1) / 3 + 1;
-    return (signed int)InHostile_Id >= 39 &&
-               (signed int)InHostile_Id <= 44  // Dwarfs peasants
-           || (signed int)InHostile_Id >= 45 &&
-                  (signed int)InHostile_Id <= 50  // Elves peasants
-           || (signed int)InHostile_Id >= 51 &&
-                  (signed int)InHostile_Id <= 62  // Humans peasants
-           || (signed int)InHostile_Id >= 78 &&
-                  (signed int)InHostile_Id <= 83;  // Goblins peasants
+    MonsterType monsterType = this->ally;
+    if (this->ally == MONSTER_TYPE_INVALID)
+        monsterType = monsterTypeForMonsterId(this->monsterInfo.uID);
+    return isDwarfPeasant(monsterType) || isElfPeasant(monsterType) || isHumanPeasant(monsterType) || isGoblinPeasant(monsterType);
 }
 
 //----- (0042EBEE) --------------------------------------------------------
@@ -1820,7 +1812,7 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->monsterInfo.uTreasureDiceSides = 0;
     pActor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     pActor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-    pActor->ally = 9999;
+    pActor->ally = MONSTER_TYPE_9999;
     pActor->ResetAggressor();  // ~0x80000
     pActor->group = 0;
     pActor->buffs[ACTOR_BUFF_BERSERK].Reset();
@@ -2230,10 +2222,10 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
 
 //----- (0040104C) --------------------------------------------------------
 MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
-    unsigned int thisGroup;  // ebp@19
-    int otherGroup;          // eax@22
-    unsigned int thisAlly;   // edx@25
-    unsigned int otherAlly;  // edx@33
+    MonsterType thisGroup;  // ebp@19
+    MonsterType otherGroup;          // eax@22
+    MonsterType thisAlly;   // edx@25
+    MonsterType otherAlly;  // edx@33
 
     if (otherActPtr) {
         if (otherActPtr->group != 0 && this->group != 0 &&
@@ -2243,41 +2235,38 @@ MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
 
     if (this->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
     thisAlly = this->ally;
-    if (this->buffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == 9999)
-        thisGroup = 0;
-    else if (thisAlly > 0)
+    if (this->buffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == MONSTER_TYPE_9999)
+        thisGroup = MONSTER_TYPE_INVALID;
+    else if (thisAlly != MONSTER_TYPE_INVALID)
         thisGroup = thisAlly;
     else
-        thisGroup = (std::to_underlying(this->monsterInfo.uID) - 1) / 3 + 1; // TODO(captainurist): encapsulate enum arithmetic.
+        thisGroup = monsterTypeForMonsterId(this->monsterInfo.uID);
 
     if (otherActPtr) {
         if (otherActPtr->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
         otherAlly = otherActPtr->ally;
-        if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active() ||
-            otherAlly == 9999)
-            otherGroup = 0;
-        else if (otherAlly > 0)
+        if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active() || otherAlly == MONSTER_TYPE_9999)
+            otherGroup = MONSTER_TYPE_INVALID;
+        else if (otherAlly != MONSTER_TYPE_INVALID)
             otherGroup = otherAlly;
         else
-            otherGroup = (std::to_underlying(otherActPtr->monsterInfo.uID) - 1) / 3 + 1; // TODO(captainurist): encapsulate enum arithmetic.
+            otherGroup = monsterTypeForMonsterId(otherActPtr->monsterInfo.uID);
     } else {
-        otherGroup = 0;
+        otherGroup = MONSTER_TYPE_INVALID;
     }
 
-    if (this->buffs[ACTOR_BUFF_CHARM].Active() && !otherGroup ||
-        otherActPtr && otherActPtr->buffs[ACTOR_BUFF_CHARM].Active() &&
-        !thisGroup)
+    if (this->buffs[ACTOR_BUFF_CHARM].Active() && otherGroup == MONSTER_TYPE_INVALID ||
+        otherActPtr && otherActPtr->buffs[ACTOR_BUFF_CHARM].Active() && thisGroup == MONSTER_TYPE_INVALID)
         return HOSTILITY_FRIENDLY;
-    if (!this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
-        this->ActorEnemy() && !otherGroup)
+    if (!this->buffs[ACTOR_BUFF_ENSLAVED].Active() && this->ActorEnemy() && otherGroup == MONSTER_TYPE_INVALID)
         return HOSTILITY_LONG;
-    if (thisGroup >= 89 || otherGroup >= 89) return HOSTILITY_FRIENDLY;
+    if (thisGroup > MONSTER_TYPE_LAST || otherGroup > MONSTER_TYPE_LAST) return HOSTILITY_FRIENDLY;
 
-    if (thisGroup == 0) {
+    if (thisGroup == MONSTER_TYPE_INVALID) {
         if ((!otherActPtr || this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
                              otherActPtr->ActorFriend()) &&
-            pFactionTable->relations[otherGroup][0] == HOSTILITY_FRIENDLY)
-            return pFactionTable->relations[0][otherGroup];
+            pFactionTable->relations[otherGroup][MONSTER_TYPE_INVALID] == HOSTILITY_FRIENDLY)
+            return pFactionTable->relations[MONSTER_TYPE_INVALID][otherGroup];
         else
             return HOSTILITY_LONG;
     } else {
@@ -2493,8 +2482,7 @@ void Actor::SummonMinion(int summonerId) {
     int v13;                 // ebx@10
     int64_t v15;                 // edi@10
     int64_t v17;                 // ebx@10
-    unsigned int v19;        // qax@10
-    unsigned int monsterId;  // [sp+10h] [bp-18h]@8
+    MonsterType v19;        // qax@10
     int v27;                 // [sp+18h] [bp-10h]@10
     int actorSector;         // [sp+1Ch] [bp-Ch]@8
 
@@ -2503,9 +2491,8 @@ void Actor::SummonMinion(int summonerId) {
         actorSector = pIndoor->GetSector(this->pos);
 
     v19 = this->ally;
-    if (!this->ally) {
-        monsterId = std::to_underlying(this->monsterInfo.uID) - 1;
-        v19 = monsterId / 3; // TODO(captainurist): forgetting + 1 here?
+    if (this->ally == MONSTER_TYPE_INVALID) {
+        v19 = monsterTypeForMonsterId(this->monsterInfo.uID); // Original binary had an off by one here, forgetting the last +1.
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     v13 = grng->random(2048);
@@ -2771,8 +2758,8 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
                 // TODO(captainurist): encapsulate enum arithmetic.
-                relationToTarget = pFactionTable->relations[(std::to_underlying(pActor->monsterInfo.uID) - 1) / 3 + 1]
-                                                           [(std::to_underlying(pActors[target_pid.id()].monsterInfo.uID) - 1) / 3 + 1];
+                relationToTarget = pFactionTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.uID)]
+                                                           [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.uID)];
             } else {
                 relationToTarget = HOSTILITY_LONG;
             }
@@ -4393,7 +4380,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
     actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
-    actor->ally = 9999;
+    actor->ally = MONSTER_TYPE_9999;
     actor->group = 0;
     actor->currentActionTime = 0;
     actor->aiState = Summoned;
