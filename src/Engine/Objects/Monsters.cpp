@@ -337,13 +337,13 @@ bool MonsterList::FromFileTxt(const char *Args) {
 
     v6 = File;
     fseek(v6, 0, 0);
-    MONSTER_TYPE monsterId = MONSTER_INVALID;
+    MonsterId monsterId = MONSTER_INVALID;
     for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
         *strchr(Buf, 10) = 0;
         memcpy(&v25, frame_table_txt_parser(Buf, &v24), sizeof(v25));
         v8 = 0;
         if (v25.uPropCount && *v25.pProperties[0] != 47) {
-            monsterId = static_cast<MONSTER_TYPE>(std::to_underlying(monsterId) + 1);
+            monsterId = static_cast<MonsterId>(std::to_underlying(monsterId) + 1);
             MonsterDesc &monster = this->pMonsters[monsterId];
 
             monster.pMonsterName = v25.pProperties[0];
@@ -393,8 +393,8 @@ bool MonsterList::FromFileTxt(const char *Args) {
 }
 
 //----- (004563FF) --------------------------------------------------------
-MONSTER_TYPE MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
-    for (MONSTER_TYPE i : pInfos.indices()) {
+MonsterId MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
+    for (MonsterId i : pInfos.indices()) {
         if (!pInfos[i].pName.empty() && iequals(pInfos[i].pPictureName, monster_textr_name))
             return i;
     }
@@ -451,7 +451,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     char *tmp_pos;
     int decode_step;
     //    int item_counter;
-    MONSTER_TYPE curr_rec_num;
+    MonsterId curr_rec_num;
     char parse_str[64];
     // char Src[120];
     FrameTableTxtLine parsed_field;
@@ -481,7 +481,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
             if (temp_str_len) {
                 switch (decode_step) {
                     case 0:
-                        curr_rec_num = static_cast<MONSTER_TYPE>(atoi(test_string));
+                        curr_rec_num = static_cast<MonsterId>(atoi(test_string));
                         pInfos[curr_rec_num].uID = curr_rec_num;
                         break;
                     case 1:
@@ -1074,15 +1074,15 @@ void MonsterStats::Initialize(const Blob &monsters) {
 }
 
 //----- (0044FA08) --------------------------------------------------------
-MONSTER_TYPE MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
-    for (MONSTER_TYPE i : pMonsters.indices()) {
+MonsterId MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
+    for (MonsterId i : pMonsters.indices()) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }
     Error("Monster not found: %s", pMonsterName.c_str());
 }
 //----- (00438BDF) --------------------------------------------------------
-bool MonsterStats::BelongsToSupertype(MONSTER_TYPE uMonsterInfoID,
+bool MonsterStats::BelongsToSupertype(MonsterId uMonsterInfoID,
                                       enum MONSTER_SUPERTYPE eSupertype) {
     switch (eSupertype) {
         case MONSTER_SUPERTYPE_UNDEAD:

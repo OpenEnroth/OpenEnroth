@@ -159,7 +159,7 @@ class Actor {
     int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(MONSTER_TYPE monster_id, Vec3i pos);
+    static void Arena_summon_actor(MonsterId monster_id, Vec3i pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                        Vec3i *pVelocity);
     static void MakeActorAIList_ODM();
@@ -183,7 +183,7 @@ class Actor {
     /**
      * @offset 0x408A7E
      */
-    static int searchDeadActorsByMonsterID(int *pTotalActors, MONSTER_TYPE monsterID);
+    static int searchDeadActorsByMonsterID(int *pTotalActors, MonsterId monsterID);
 
     /**
      * @offset 0x408AE7
@@ -210,7 +210,7 @@ class Actor {
     int16_t currentHP = 0;
     MonsterInfo monsterInfo;
     int16_t word_000084_range_attack = 0;
-    MONSTER_TYPE word_000086_some_monster_id = MONSTER_INVALID;  // base monster class monsterlist id
+    MonsterId word_000086_some_monster_id = MONSTER_INVALID;  // base monster class monsterlist id
     uint16_t radius = 32;
     uint16_t height = 128;
     uint16_t moveSpeed = 200;

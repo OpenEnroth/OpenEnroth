@@ -91,7 +91,7 @@ struct NPCStats {
     void InitializeNPCGreets(const Blob &npcGreets);
     void InitializeNPCGroups(const Blob &npcGroups);
     void InitializeNPCNews(const Blob &npcNews);
-    void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_uid,
+    void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid,
                                   HouseId uLocation2D, MapId uMapId);
     /**
      * @offset 0x476C60

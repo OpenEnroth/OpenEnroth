@@ -269,7 +269,7 @@ int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceMan
     CodeGenMap map;
     map.insert(MONSTER_INVALID, "INVALID", "");
 
-    for (const MONSTER_TYPE i : monsterStats.pInfos.indices()) {
+    for (const MonsterId i : monsterStats.pInfos.indices()) {
         const MonsterInfo &desc = monsterStats.pInfos[i];
         std::string enumName = toUpperCaseEnum(desc.pPictureName);
 

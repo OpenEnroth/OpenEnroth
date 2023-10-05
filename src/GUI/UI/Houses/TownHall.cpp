@@ -143,7 +143,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions() {
     }
 }
 
-MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
+MonsterId GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
     while (true) {
         // TODO(captainurist): I got lazy here. Use actual enum values.
         int result = grng->random(258) + 1;
@@ -161,7 +161,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x6Du || result > 0x6Fu) &&
                 (result < 0x61u || result > 0x63u))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_ERATHIA:
@@ -180,7 +180,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0xCDu || result > 0xCFu))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_TULAREAN_FOREST:
@@ -196,7 +196,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0x1Cu || result > 0x1Eu))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_CELESTE:
@@ -215,7 +215,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0x6Au || result > 0x6Cu))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_PIT:
@@ -238,7 +238,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0x10u || result > 0x12u))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         default:

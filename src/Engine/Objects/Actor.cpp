@@ -2485,7 +2485,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
 //----- (0044FD29) --------------------------------------------------------
 void Actor::SummonMinion(int summonerId) {
     uint8_t extraSummonLevel;  // al@1
-    MONSTER_TYPE summonMonsterBaseType;         // esi@1
+    MonsterId summonMonsterBaseType;         // esi@1
     int v5;                            // edx@2
     int v7;                            // edi@10
     MonsterInfo *v9;                   // ebx@10
@@ -2522,19 +2522,19 @@ void Actor::SummonMinion(int summonerId) {
 
     extraSummonLevel = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
     // TODO(captainurist): drop the cast here, store the data properly.
-    summonMonsterBaseType = static_cast<MONSTER_TYPE>(this->monsterInfo.field_3C_some_special_attack);
+    summonMonsterBaseType = static_cast<MonsterId>(this->monsterInfo.field_3C_some_special_attack);
     if (extraSummonLevel) {
         if (extraSummonLevel >= 1 && extraSummonLevel <= 3) {
             // TODO(captainurist): encapsulate monster level arithmetic properly.
-            summonMonsterBaseType = static_cast<MONSTER_TYPE>(std::to_underlying(summonMonsterBaseType) + extraSummonLevel - 1);
+            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + extraSummonLevel - 1);
         }
     } else {
         v5 = grng->random(100);
         // TODO(captainurist): encapsulate monster level arithmetic properly.
         if (v5 >= 90)
-            summonMonsterBaseType = static_cast<MONSTER_TYPE>(std::to_underlying(summonMonsterBaseType) + 2);
+            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 2);
         else if (v5 >= 60)
-            summonMonsterBaseType = static_cast<MONSTER_TYPE>(std::to_underlying(summonMonsterBaseType) + 1);
+            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 1);
     }
     Actor *actor = AllocateActor(true);
     if (!actor)
@@ -2953,7 +2953,7 @@ bool Actor::isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count) 
         deadActors = Actor::searchDeadActorsByGroup(&totalActors, param);
         break;
       case KILL_CHECK_MONSTERID:
-        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MONSTER_TYPE>(param));
+        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MonsterId>(param));
         break;
       case KILL_CHECK_ACTORID:
         deadActors = Actor::searchDeadActorsByID(&totalActors, param);
@@ -2997,7 +2997,7 @@ int Actor::searchDeadActorsByGroup(int *pTotalActors, int group) {
     return result;
 }
 
-int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MONSTER_TYPE monsterID) {
+int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MonsterId monsterID) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
@@ -3346,7 +3346,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(MONSTER_TYPE monster_id, Vec3i pos) {
+void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
@@ -4362,7 +4362,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
         cMonsterName = "Elemental Light B";
     else
         cMonsterName = "Elemental Light A";
-    MONSTER_TYPE uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
+    MonsterId uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
 
     Actor *actor = AllocateActor(false);
     if (!actor)
@@ -4431,7 +4431,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     int v24;        // edi@36
     int v25;               // ecx@36
     MonsterDesc *v27;      // edi@48
-    MONSTER_TYPE v28;        // eax@48
+    MonsterId v28;        // eax@48
     int v32;               // eax@50
     int v37;               // eax@51
     int v38;               // eax@52
@@ -4604,7 +4604,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             }
         }
 
-        MONSTER_TYPE v50 = pMonsterList->GetMonsterIDByName(Str2);
+        MonsterId v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
 
         v27 = &pMonsterList->pMonsters[v50];

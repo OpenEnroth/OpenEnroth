@@ -140,12 +140,12 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
     *dst = CombinedSkillValue::fromJoined(src);
 }
 
-static void snapshot(const MONSTER_TYPE &src, int16_t *dst) {
+static void snapshot(const MonsterId &src, int16_t *dst) {
     *dst = std::to_underlying(src);
 }
 
-static void reconstruct(int16_t src, MONSTER_TYPE *dst) {
-    *dst = static_cast<MONSTER_TYPE>(src);
+static void reconstruct(int16_t src, MonsterId *dst) {
+    *dst = static_cast<MonsterId>(src);
 }
 
 static void snapshot(const BBoxi &src, BBoxs *dst) {
@@ -1281,7 +1281,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->monsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
     dst->monsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->monsterInfo.uID = static_cast<MONSTER_TYPE>(src.pMonsterInfo.id);
+    dst->monsterInfo.uID = static_cast<MonsterId>(src.pMonsterInfo.id);
     dst->monsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
     reconstruct(src.pMonsterInfo.spellSkillAndMastery1, &dst->monsterInfo.uSpellSkillAndMastery1);
     reconstruct(src.pMonsterInfo.spellSkillAndMastery2, &dst->monsterInfo.uSpellSkillAndMastery2);
@@ -1294,7 +1294,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uRecoveryTime = src.pMonsterInfo.recoveryTime;
     dst->monsterInfo.uAttackPreference = src.pMonsterInfo.attackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = static_cast<MONSTER_TYPE>(src.word_000086_some_monster_id);  // base monster class monsterlist id
+    dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->radius = src.uActorRadius;
     dst->height = src.uActorHeight;
     dst->moveSpeed = src.uMovementSpeed;

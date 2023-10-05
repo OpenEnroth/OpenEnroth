@@ -1072,7 +1072,7 @@ int Character::GetMeleeDamageMaximal() const {
 
 //----- (0048CDDB) --------------------------------------------------------
 int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                                      MONSTER_TYPE uTargetActorID) {
+                                      MonsterId uTargetActorID) {
     int mainWpnDmg = 0;
     int offHndWpnDmg = 0;
 
@@ -1124,8 +1124,8 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 }
 
 int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                               MONSTER_TYPE uTargetActorID,
-                                               bool addOneDice) {
+                                                  MonsterId uTargetActorID,
+                                                  bool addOneDice) {
     ItemId itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
 
@@ -1228,7 +1228,7 @@ int Character::GetRangedDamageMax() {
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Character::CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID) {
+int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 

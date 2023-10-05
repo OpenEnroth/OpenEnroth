@@ -464,7 +464,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 }
 
 //----- (0047732C) --------------------------------------------------------
-void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_uid,
+void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid,
                                         HouseId uLocation2D, MapId uMapId) {
     int rep_gen;
     int uGeneratedPortret;    // ecx@23

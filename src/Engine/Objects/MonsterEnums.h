@@ -4,7 +4,6 @@
 
 #include "Utility/Segment.h"
 
-// TODO(captainurist): Rename to MonsterId?
 /**
  * Enum of all monsters in the game.
  *
@@ -12,7 +11,7 @@
  *
  * @see runMonsterIdCodeGen
  */
-enum class MONSTER_TYPE {
+enum class MonsterId {
     MONSTER_INVALID = 0,
     MONSTER_ANGEL_A = 1,                     // "Angel".
     MONSTER_ANGEL_B = 2,                     // "Angel Lord".
@@ -298,9 +297,9 @@ enum class MONSTER_TYPE {
     MONSTER_FIRST_ARENA = MONSTER_ANGEL_A,
     MONSTER_LAST_ARENA = MONSTER_GHOUL_C
 };
-using enum MONSTER_TYPE;
+using enum MonsterId;
 
-inline Segment<MONSTER_TYPE> allArenaMonsters() {
+inline Segment<MonsterId> allArenaMonsters() {
     return {MONSTER_FIRST_ARENA, MONSTER_LAST_ARENA};
 }
 
@@ -325,6 +324,7 @@ using enum MONSTER_MOVEMENT_TYPE;
 
 /*  336 */
 enum class MONSTER_SUPERTYPE {
+    MONSTER_SUPERTYPE_NONE = 0x0, // OE addition, didn't exist in the original binary.
     MONSTER_SUPERTYPE_UNDEAD = 0x1,
     MONSTER_SUPERTYPE_KREEGAN = 0x2,
     MONSTER_SUPERTYPE_DRAGON = 0x3,
