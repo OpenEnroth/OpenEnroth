@@ -33,6 +33,9 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CLI::App *monsters = app->add_subcommand("monsters", "Generate monster ids enum")->fallthrough();
     monsters->callback([&] { result.subcommand = SUBCOMMAND_MONSTER_ID; });
 
+    CLI::App *monsterTypes = app->add_subcommand("monster_types", "Generate monster types enum")->fallthrough();
+    monsterTypes->callback([&] { result.subcommand = SUBCOMMAND_MONSTER_TYPE; });
+
     try {
         app->parse(argc, argv);
     } catch (const CLI::ParseError &e) {
@@ -41,7 +44,8 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
             items->get_help_ptr()->as<bool>() ||
             maps->get_help_ptr()->as<bool>() ||
             beacons->get_help_ptr()->as<bool>() ||
-            monsters->get_help_ptr()->as<bool>();
+            monsters->get_help_ptr()->as<bool>() ||
+            monsterTypes->get_help_ptr()->as<bool>();
         if (isHelp) {
             app->exit(e);
             result.helpPrinted = true;
