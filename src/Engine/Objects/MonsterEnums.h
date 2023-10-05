@@ -433,20 +433,12 @@ inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
 }
 
-inline bool isDwarfPeasant(MonsterType monsterType) {
-    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_DWARF && monsterType <= MONSTER_TYPE_LAST_PEASANT_DWARF;
-}
-
-inline bool isElfPeasant(MonsterType monsterType) {
-    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_ELF && monsterType <= MONSTER_TYPE_LAST_PEASANT_ELF;
-}
-
-inline bool isHumanPeasant(MonsterType monsterType) {
-    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_HUMAN && monsterType <= MONSTER_TYPE_LAST_PEASANT_HUMAN;
-}
-
-inline bool isGoblinPeasant(MonsterType monsterType) {
-    return monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN;
+inline bool isPeasant(MonsterType monsterType) {
+    return
+        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_DWARF && monsterType <= MONSTER_TYPE_LAST_PEASANT_DWARF) ||
+        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_ELF && monsterType <= MONSTER_TYPE_LAST_PEASANT_ELF) ||
+        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_HUMAN && monsterType <= MONSTER_TYPE_LAST_PEASANT_HUMAN) ||
+        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN);
 }
 
 CharacterSex sexForMonsterType(MonsterType monsterType);

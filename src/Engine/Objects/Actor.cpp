@@ -704,10 +704,7 @@ bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
     if (a2->ally == MONSTER_TYPE_INVALID)
         v3 = monsterTypeForMonsterId(a2->monsterInfo.uID);
 
-    if (isDwarfPeasant(v2) && isDwarfPeasant(v3) ||
-        isElfPeasant(v2) && isElfPeasant(v3) ||
-        isHumanPeasant(v2) && isHumanPeasant(v3) ||
-        isGoblinPeasant(v2) && isGoblinPeasant(v3) || v2 == v3)
+    if (isPeasant(v2) && isPeasant(v3) && raceForMonsterType(v2) == raceForMonsterType(v3) || v2 == v3)
         return true;
     else
         return false;
@@ -1280,7 +1277,7 @@ bool Actor::IsPeasant() {
     MonsterType monsterType = this->ally;
     if (this->ally == MONSTER_TYPE_INVALID)
         monsterType = monsterTypeForMonsterId(this->monsterInfo.uID);
-    return isDwarfPeasant(monsterType) || isElfPeasant(monsterType) || isHumanPeasant(monsterType) || isGoblinPeasant(monsterType);
+    return isPeasant(monsterType);
 }
 
 //----- (0042EBEE) --------------------------------------------------------
