@@ -3380,7 +3380,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
     int v22;               // [sp+8h] [bp-140h]@3
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
     std::optional<CharacterSex> for_sex;           // [sp+13Ch] [bp-Ch]@1
-    std::optional<CharacterRace> for_race;          // [sp+140h] [bp-8h]@1
+    std::optional<Race> for_race;          // [sp+140h] [bp-8h]@1
     std::optional<CharacterClassType> for_class;         // [sp+144h] [bp-4h]@1
 
     v2 = 0;
@@ -3423,16 +3423,16 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         for_sex = SEX_FEMALE;
                         break;
                     case 2048:
-                        for_race = CHARACTER_RACE_HUMAN;
+                        for_race = RACE_HUMAN;
                         break;
                     case 4096:
-                        for_race = CHARACTER_RACE_ELF;
+                        for_race = RACE_ELF;
                         break;
                     case 8192:
-                        for_race = CHARACTER_RACE_DWARF;
+                        for_race = RACE_DWARF;
                         break;
                     case 16384:
-                        for_race = CHARACTER_RACE_GOBLIN;
+                        for_race = RACE_GOBLIN;
                         break;
                 }
                 v2 = 0;

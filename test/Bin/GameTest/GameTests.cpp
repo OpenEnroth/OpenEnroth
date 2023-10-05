@@ -359,10 +359,10 @@ GAME_TEST(Prs, Pr314_742) {
     EXPECT_EQ(pParty->pCharacters[1].classType, CHARACTER_CLASS_THIEF);
     EXPECT_EQ(pParty->pCharacters[2].classType, CHARACTER_CLASS_RANGER);
     EXPECT_EQ(pParty->pCharacters[3].classType, CHARACTER_CLASS_CLERIC);
-    EXPECT_EQ(pParty->pCharacters[0].GetRace(), CHARACTER_RACE_ELF);
-    EXPECT_EQ(pParty->pCharacters[1].GetRace(), CHARACTER_RACE_ELF);
-    EXPECT_EQ(pParty->pCharacters[2].GetRace(), CHARACTER_RACE_GOBLIN);
-    EXPECT_EQ(pParty->pCharacters[3].GetRace(), CHARACTER_RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[0].GetRace(), RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[1].GetRace(), RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[2].GetRace(), RACE_GOBLIN);
+    EXPECT_EQ(pParty->pCharacters[3].GetRace(), RACE_ELF);
 
     // #742: Check that party qbits are set even if we press Clear when creating a party.
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));

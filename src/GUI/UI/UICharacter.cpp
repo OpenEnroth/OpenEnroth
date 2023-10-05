@@ -1003,7 +1003,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     int IsDwarf;
     int pBodyComplection;
-    if (player->GetRace() == CHARACTER_RACE_DWARF) {
+    if (player->GetRace() == RACE_DWARF) {
         IsDwarf = 1;
         pBodyComplection = player->GetSexByVoice() == SEX_MALE ? 2 : 3;
     } else {
@@ -1689,7 +1689,7 @@ void WetsuitOn(unsigned int uPlayerID) {
         Character *player = &pParty->pCharacters[playerId0];
         int texture_num;
 
-        if (player->GetRace() == CHARACTER_RACE_DWARF) {
+        if (player->GetRace() == RACE_DWARF) {
             texture_num = (player->GetSexByVoice() != SEX_MALE) + 3;
         } else {
             texture_num = (player->GetSexByVoice() != SEX_MALE) + 1;

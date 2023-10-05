@@ -230,7 +230,7 @@ class Character {
     int actualSkillLevel(CharacterSkillType skill) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skill) const;
     int GetSkillBonus(CharacterAttributeType a2) const;
-    CharacterRace GetRace() const;
+    Race GetRace() const;
     std::string GetRaceName() const;
     CharacterSex GetSexByVoice() const;
     void SetInitialStats();
@@ -370,10 +370,10 @@ class Character {
     void SetCondDeadWithBlockCheck(int blockable);
     void SetCondUnconsciousWithBlockCheck(int blockable);
 
-    inline bool IsRaceHuman() const { return GetRace() == CHARACTER_RACE_HUMAN; }
-    inline bool IsRaceDwarf() const { return GetRace() == CHARACTER_RACE_DWARF; }
-    inline bool IsRaceElf() const { return GetRace() == CHARACTER_RACE_ELF; }
-    inline bool IsRaceGoblin() const { return GetRace() == CHARACTER_RACE_GOBLIN; }
+    inline bool IsRaceHuman() const { return GetRace() == RACE_HUMAN; }
+    inline bool IsRaceDwarf() const { return GetRace() == RACE_DWARF; }
+    inline bool IsRaceElf() const { return GetRace() == RACE_ELF; }
+    inline bool IsRaceGoblin() const { return GetRace() == RACE_GOBLIN; }
 
     inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() const { return !IsMale(); }
