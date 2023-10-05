@@ -2,7 +2,7 @@ var searchData=
 [
   ['s_5fread_0',['s_read',['../classMovie.html#af8a512d11b7c2372a8ab4801e796dd1f',1,'Movie']]],
   ['s_5fseek_1',['s_seek',['../classMovie.html#a821810e7747ea2f9ddff3f850f310790',1,'Movie']]],
-  ['salesprocess_2',['SalesProcess',['../classCharacter.html#a6c3b3e7cea95e9ee9b4cc99b45a66139',1,'Character']]],
+  ['salesprocess_2',['SalesProcess',['../classCharacter.html#a2873ed6706397bd4ec958f7a56b18bc3',1,'Character']]],
   ['save_3',['save',['../classConfig.html#a92a2b4b4eed6458d07387655f4cb3c44',1,'Config']]],
   ['savegame_4',['SaveGame',['../SaveLoad_8cpp.html#a1cdc40f14abc00c32965c2c1825b29a6',1,'SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title):&#160;SaveLoad.cpp'],['../SaveLoad_8h.html#a5567a232747f355a59dcf1ccb5703142',1,'SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title={}):&#160;SaveLoad.cpp']]],
   ['savegame_5',['saveGame',['../classEngineController.html#a467c57dbccf4e431322e8df28bd25679',1,'EngineController']]],
@@ -39,7 +39,7 @@ var searchData=
   ['selecthousenpcdialogueoption_36',['selectHouseNPCDialogueOption',['../UIHouses_8h.html#a1ab0780802cc2e4149a29016c43050ea',1,'selectHouseNPCDialogueOption(DIALOGUE_TYPE topic):&#160;UIHouses.cpp'],['../UIHouses_8cpp.html#a1ab0780802cc2e4149a29016c43050ea',1,'selectHouseNPCDialogueOption(DIALOGUE_TYPE topic):&#160;UIHouses.cpp']]],
   ['selectionpointers_37',['SelectionPointers',['../structVis__SelectionList.html#a816b49111fb1209fabce16dcc033eaac',1,'Vis_SelectionList']]],
   ['selectnpcdialogueoption_38',['selectNPCDialogueOption',['../UIDialogue_8cpp.html#aeee6dc9532969af2f0397c6ce4f3ebe5',1,'selectNPCDialogueOption(DIALOGUE_TYPE option):&#160;UIDialogue.cpp'],['../UIDialogue_8h.html#aeee6dc9532969af2f0397c6ce4f3ebe5',1,'selectNPCDialogueOption(DIALOGUE_TYPE option):&#160;UIDialogue.cpp']]],
-  ['selectphrasestransaction_39',['SelectPhrasesTransaction',['../classCharacter.html#a4e90b243f6a3993390d9f555b424ce17',1,'Character']]],
+  ['selectphrasestransaction_39',['SelectPhrasesTransaction',['../classCharacter.html#ab2a605c251991c3481f0b4bd539e5a19',1,'Character']]],
   ['selectproprietordialogueoption_40',['selectProprietorDialogueOption',['../UIHouses_8cpp.html#a2aefd8af8fa5224b6a82bda2f0ae3018',1,'selectProprietorDialogueOption(DIALOGUE_TYPE option):&#160;UIHouses.cpp'],['../UIHouses_8h.html#a2aefd8af8fa5224b6a82bda2f0ae3018',1,'selectProprietorDialogueOption(DIALOGUE_TYPE option):&#160;UIHouses.cpp']]],
   ['selectspecialnpctopicselection_41',['selectSpecialNPCTopicSelection',['../NPCTopics_8h.html#aad7932073884f7010f68f806fb888f9b',1,'selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData):&#160;NPCTopics.cpp'],['../NPCTopics_8cpp.html#aad7932073884f7010f68f806fb888f9b',1,'selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData):&#160;NPCTopics.cpp']]],
   ['selldialogue_42',['sellDialogue',['../classGUIWindow__Shop.html#a9d287b2954df137c02dae9c5afde148e',1,'GUIWindow_Shop']]],
