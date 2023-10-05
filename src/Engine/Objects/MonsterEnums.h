@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Engine/Objects/CharacterEnums.h"
+
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
@@ -446,6 +448,10 @@ inline bool isHumanPeasant(MonsterType monsterType) {
 inline bool isGoblinPeasant(MonsterType monsterType) {
     return monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN;
 }
+
+CharacterSex sexForMonsterType(MonsterType monsterType);
+
+Race raceForMonsterType(MonsterType monsterType);
 
 /*  335 */
 enum class MONSTER_SPECIAL_ABILITY_TYPE {

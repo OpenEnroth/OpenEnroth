@@ -6,6 +6,7 @@ set(ENGINE_OBJECTS_SOURCES
         CombinedSkillValue.cpp
         ItemEnums.cpp
         Items.cpp
+        MonsterEnums.cpp
         Monsters.cpp
         NPC.cpp
         ObjectList.cpp
