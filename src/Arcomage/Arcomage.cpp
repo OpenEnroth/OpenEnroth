@@ -2844,7 +2844,7 @@ void GameResultsApply() {
     pArcomageGame->Victory_type = victory_type;
     pArcomageGame->uGameWinner = winner;
     if (winner == 1) {
-        HOUSE_ID houseId = window_SpeakInHouse->houseId();
+        HouseId houseId = window_SpeakInHouse->houseId();
         if (isArcomageTavern(houseId)) {
             if (!pParty->pArcomageWins[houseId]) {
                 pParty->pArcomageWins[houseId] = 1;
@@ -2854,7 +2854,7 @@ void GameResultsApply() {
 
         // arcomage quest test
         tavern_num = 0;
-        for (HOUSE_ID i : allArcomageTaverns()) {
+        for (HouseId i : allArcomageTaverns()) {
             if (!pParty->pArcomageWins[i]) break;
             tavern_num++;
         }

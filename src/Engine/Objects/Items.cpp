@@ -743,7 +743,7 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 }
 
 //----- (004BDAAF) --------------------------------------------------------
-bool ItemGen::canSellRepairIdentifyAt(HOUSE_ID houseId) {
+bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
     if (this->IsStolen())
         return false;
 

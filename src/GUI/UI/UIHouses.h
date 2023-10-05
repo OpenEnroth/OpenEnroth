@@ -30,21 +30,21 @@ void selectProprietorDialogueOption(DIALOGUE_TYPE option);
 /**
  * @offset 0x44606A
  */
-void prepareHouse(HOUSE_ID house);
+void prepareHouse(HouseId house);
 
-void createHouseUI(HOUSE_ID houseId);
+void createHouseUI(HouseId houseId);
 
 /**
  * @offset 0x44622E
  */
-bool enterHouse(HOUSE_ID uHouseID);
+bool enterHouse(HouseId uHouseID);
 
 bool houseDialogPressEscape();
 
 /**
  * @offset 0x4B1E92
  */
-void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
+void playHouseSound(HouseId houseID, HouseSoundType type);
 
 void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic);
 
@@ -74,7 +74,7 @@ struct HouseNpcDesc {
 
 class GUIWindow_House : public GUIWindow {
  public:
-    explicit GUIWindow_House(HOUSE_ID houseId);
+    explicit GUIWindow_House(HouseId houseId);
     virtual ~GUIWindow_House() {}
 
     virtual void Update() override;
@@ -84,8 +84,8 @@ class GUIWindow_House : public GUIWindow {
         return buildingTable[houseId()].uType;
     }
 
-    HOUSE_ID houseId() const {
-        return static_cast<HOUSE_ID>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
+    HouseId houseId() const {
+        return static_cast<HouseId>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
     }
 
     DIALOGUE_TYPE getCurrentDialogue() const {

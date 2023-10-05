@@ -17,7 +17,7 @@ void initializeBuildings(const Blob &buildings) {
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
-    for (HOUSE_ID houseId : allHouses()) {
+    for (HouseId houseId : allHouses()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;

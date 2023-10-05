@@ -29,7 +29,7 @@ using enum GUILD_ID;
  *
  * @see runHouseIdCodeGen
  */
-enum class HOUSE_ID {
+enum class HouseId {
     HOUSE_INVALID = 0,
     HOUSE_WEAPON_SHOP_EMERALD_ISLAND = 1, // "The Knight's Blade".
     HOUSE_WEAPON_SHOP_HARMONDALE = 2, // "Tempered Steel".
@@ -599,53 +599,53 @@ enum class HOUSE_ID {
     HOUSE_FIRST = HOUSE_WEAPON_SHOP_EMERALD_ISLAND,
     HOUSE_LAST = HOUSE_524
 };
-using enum HOUSE_ID;
+using enum HouseId;
 
-inline Segment<HOUSE_ID> allTownhallHouses() {
+inline Segment<HouseId> allTownhallHouses() {
     return {HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL};
 }
 
-inline Segment<HOUSE_ID> allHouses() {
+inline Segment<HouseId> allHouses() {
     return {HOUSE_FIRST, HOUSE_LAST};
 }
 
-inline Segment<HOUSE_ID> allArcomageTaverns() {
+inline Segment<HouseId> allArcomageTaverns() {
     return {HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN};
 }
 
-inline bool isShop(HOUSE_ID houseId) {
+inline bool isShop(HouseId houseId) {
     return houseId >= HOUSE_FIRST_SHOP && houseId <= HOUSE_LAST_SHOP;
 }
 
-inline bool isWeaponShop(HOUSE_ID houseId) {
+inline bool isWeaponShop(HouseId houseId) {
     return houseId >= HOUSE_FIRST_WEAPON_SHOP && houseId <= HOUSE_LAST_WEAPON_SHOP;
 }
 
-inline bool isArmorShop(HOUSE_ID houseId) {
+inline bool isArmorShop(HouseId houseId) {
     return houseId >= HOUSE_FIRST_ARMOR_SHOP && houseId <= HOUSE_LAST_ARMOR_SHOP;
 }
 
-inline bool isMagicShop(HOUSE_ID houseId) {
+inline bool isMagicShop(HouseId houseId) {
     return houseId >= HOUSE_FIRST_MAGIC_SHOP && houseId <= HOUSE_LAST_MAGIC_SHOP;
 }
 
-inline bool isAlchemyShop(HOUSE_ID houseId) {
+inline bool isAlchemyShop(HouseId houseId) {
     return houseId >= HOUSE_FIRST_ALCHEMY_SHOP && houseId <= HOUSE_LAST_ALCHEMY_SHOP;
 }
 
-inline bool isMagicGuild(HOUSE_ID houseId) {
+inline bool isMagicGuild(HouseId houseId) {
     return houseId >= HOUSE_FIRST_MAGIC_GUILD && houseId <= HOUSE_LAST_MAGIC_GUILD;
 }
 
-inline bool isStable(HOUSE_ID houseId) {
+inline bool isStable(HouseId houseId) {
     return houseId >= HOUSE_FIRST_STABLE && houseId <= HOUSE_LAST_STABLE;
 }
 
-inline bool isBoat(HOUSE_ID houseId) {
+inline bool isBoat(HouseId houseId) {
     return houseId >= HOUSE_FIRST_BOAT && houseId <= HOUSE_LAST_BOAT;
 }
 
-inline bool isArcomageTavern(HOUSE_ID houseId) {
+inline bool isArcomageTavern(HouseId houseId) {
     return houseId >= HOUSE_FIRST_ARCOMAGE_TAVERN && houseId <= HOUSE_LAST_ARCOMAGE_TAVERN;
 }
 

@@ -10,7 +10,7 @@
 
 class GUIWindow_TownHall : public GUIWindow_House {
  public:
-    explicit GUIWindow_TownHall(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    explicit GUIWindow_TownHall(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_TownHall() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
@@ -28,7 +28,7 @@ class GUIWindow_TownHall : public GUIWindow_House {
     void payFineDialogue();
 
  private:
-    MONSTER_TYPE randomMonsterForHunting(HOUSE_ID townhall);
+    MONSTER_TYPE randomMonsterForHunting(HouseId townhall);
 
     /**
      * Handler for the "Bounty Hunt" dialogue option in a town hall.

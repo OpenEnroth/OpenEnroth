@@ -110,7 +110,7 @@ void GUIWindow_Temple::donateDialogue() {
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
-GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
+GUIWindow_Temple::GUIWindow_Temple(HouseId houseId) : GUIWindow_House(houseId) {
     _templeSpellCounter.resize(pParty->pCharacters.size());
     std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);
 }

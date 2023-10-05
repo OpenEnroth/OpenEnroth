@@ -105,7 +105,7 @@ void GUIWindow_Training::trainDialogue() {
     return;
 }
 
-GUIWindow_Training::GUIWindow_Training(HOUSE_ID houseId) : GUIWindow_House(houseId) {
+GUIWindow_Training::GUIWindow_Training(HouseId houseId) : GUIWindow_House(houseId) {
     _charactersTrainedLevels.resize(pParty->pCharacters.size());
     std::fill(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end(), 0);
 }

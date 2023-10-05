@@ -293,7 +293,7 @@ static constexpr IndexedArray<const char *, BUILDING_WEAPON_SHOP, BUILDING_MIRRO
     {BUILDING_MIRRORED_PATH_GUILD,   "MAGSHELF"}
 }};
 
-bool enterHouse(HOUSE_ID uHouseID) {
+bool enterHouse(HouseId uHouseID) {
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
@@ -393,7 +393,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
     return true;
 }
 
-void prepareHouse(HOUSE_ID house) {
+void prepareHouse(HouseId house) {
     houseNpcs.clear();
 
     // Default proprietor of non-simple houses
@@ -621,7 +621,7 @@ bool houseDialogPressEscape() {
     return true;
 }
 
-void createHouseUI(HOUSE_ID houseId) {
+void createHouseUI(HouseId houseId) {
     switch (buildingTable[houseId].uType) {
       case BUILDING_FIRE_GUILD:
       case BUILDING_AIR_GUILD:
@@ -705,7 +705,7 @@ void BackToHouseMenu() {
 #endif
 }
 
-void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
+void playHouseSound(HouseId houseID, HouseSoundType type) {
     if (houseID != HOUSE_INVALID && pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId) {
         int roomSoundId = pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId;
         SoundID soundId = SoundID(std::to_underlying(type) + 100 * (roomSoundId + 300));
@@ -1087,7 +1087,7 @@ void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
 }
 
 // TODO(captainurist): drop std::to_underlying(houseId) here v
-GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), std::to_underlying(houseId)) {
+GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), std::to_underlying(houseId)) {
     pEventTimer->Pause();  // pause timer so not attacked
 
     current_screen_type = SCREEN_HOUSE;

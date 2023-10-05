@@ -9,7 +9,7 @@
 
 class GUIWindow_Shop : public GUIWindow_House {
  public:
-    explicit GUIWindow_Shop(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    explicit GUIWindow_Shop(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Shop() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
@@ -38,7 +38,7 @@ class GUIWindow_Shop : public GUIWindow_House {
 
 class GUIWindow_WeaponShop : public GUIWindow_Shop {
  public:
-    explicit GUIWindow_WeaponShop(HOUSE_ID houseId) : GUIWindow_Shop(houseId) {}
+    explicit GUIWindow_WeaponShop(HouseId houseId) : GUIWindow_Shop(houseId) {}
     virtual ~GUIWindow_WeaponShop() {}
 
  private:
@@ -49,7 +49,7 @@ class GUIWindow_WeaponShop : public GUIWindow_Shop {
 
 class GUIWindow_ArmorShop : public GUIWindow_Shop {
  public:
-    explicit GUIWindow_ArmorShop(HOUSE_ID houseId) : GUIWindow_Shop(houseId) {}
+    explicit GUIWindow_ArmorShop(HouseId houseId) : GUIWindow_Shop(houseId) {}
     virtual ~GUIWindow_ArmorShop() {}
 
  private:
@@ -60,7 +60,7 @@ class GUIWindow_ArmorShop : public GUIWindow_Shop {
 
 class GUIWindow_MagicAlchemyShop : public GUIWindow_Shop {
  public:
-    explicit GUIWindow_MagicAlchemyShop(HOUSE_ID houseId) : GUIWindow_Shop(houseId) {}
+    explicit GUIWindow_MagicAlchemyShop(HouseId houseId) : GUIWindow_Shop(houseId) {}
     virtual ~GUIWindow_MagicAlchemyShop() {}
 
  private:
@@ -69,7 +69,7 @@ class GUIWindow_MagicAlchemyShop : public GUIWindow_Shop {
 
 class GUIWindow_MagicShop : public GUIWindow_MagicAlchemyShop {
  public:
-    explicit GUIWindow_MagicShop(HOUSE_ID houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
+    explicit GUIWindow_MagicShop(HouseId houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_MagicShop() {}
 
  private:
@@ -79,7 +79,7 @@ class GUIWindow_MagicShop : public GUIWindow_MagicAlchemyShop {
 
 class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
  public:
-    explicit GUIWindow_AlchemyShop(HOUSE_ID houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
+    explicit GUIWindow_AlchemyShop(HouseId houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_AlchemyShop() {}
 
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;

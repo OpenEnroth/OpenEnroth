@@ -872,7 +872,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             break;
         case EVENT_SpeakInHouse:
             requireSize(6);
-            ir.data.house_id = static_cast<HOUSE_ID>(EVT_DWORD(&evt->v5));
+            ir.data.house_id = static_cast<HouseId>(EVT_DWORD(&evt->v5));
             break;
         case EVENT_PlaySound:
             requireSize(17);
@@ -896,7 +896,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             ir.data.move_map_descr.yaw = EVT_DWORD(&evt->v17);
             ir.data.move_map_descr.pitch = EVT_DWORD(&evt->v21);
             ir.data.move_map_descr.zspeed = EVT_DWORD(&evt->v25);
-            ir.data.move_map_descr.house_id = static_cast<HOUSE_ID>(evt->v29); // TODO(captainurist): Is this correct? Houses can have ids > 255.
+            ir.data.move_map_descr.house_id = static_cast<HouseId>(evt->v29); // TODO(captainurist): Is this correct? Houses can have ids > 255.
             ir.data.move_map_descr.exit_pic_id = evt->v30;
             ir.str = parseString(&evt->v31);
             break;
@@ -1072,7 +1072,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
         case EVENT_MoveNPC:
             requireSize(10);
             ir.data.npc_move_descr.npc_id = EVT_DWORD(&evt->v5);
-            ir.data.npc_move_descr.location_id = static_cast<HOUSE_ID>(EVT_DWORD(&evt->v9));
+            ir.data.npc_move_descr.location_id = static_cast<HouseId>(EVT_DWORD(&evt->v9));
             break;
         case EVENT_GiveItem:
             requireSize(11);

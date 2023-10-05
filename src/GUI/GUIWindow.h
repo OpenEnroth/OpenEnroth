@@ -269,7 +269,7 @@ bool isHoldingMouseRightButton();
  * @offset 0x495461
  */
 std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
-                                ItemGen *a3 = nullptr, HOUSE_ID houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
+                                ItemGen *a3 = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 GameTime *a6 = nullptr);
 
 

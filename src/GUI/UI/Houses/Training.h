@@ -9,7 +9,7 @@
 
 class GUIWindow_Training : public GUIWindow_House {
  public:
-    explicit GUIWindow_Training(HOUSE_ID houseId);
+    explicit GUIWindow_Training(HouseId houseId);
     virtual ~GUIWindow_Training() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;

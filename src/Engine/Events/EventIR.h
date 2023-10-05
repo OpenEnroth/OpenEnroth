@@ -27,7 +27,7 @@ class EventIR {
     CharacterChoosePolicy who;
     std::string str;
     union {
-        HOUSE_ID house_id;
+        HouseId house_id;
         int chest_id;
         CharacterExpressionID expr_id;
         CharacterSpeech speech_id;
@@ -130,7 +130,7 @@ class EventIR {
             int yaw;
             int pitch;
             int zspeed;
-            HOUSE_ID house_id;
+            HouseId house_id;
             int exit_pic_id;
         } move_map_descr;
         struct {
@@ -149,7 +149,7 @@ class EventIR {
         } summon_item_descr;
         struct {
             int npc_id;
-            HOUSE_ID location_id;
+            HouseId location_id;
         } npc_move_descr;
         struct {
             int groups_id;

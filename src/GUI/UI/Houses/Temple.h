@@ -8,7 +8,7 @@
 
 class GUIWindow_Temple : public GUIWindow_House {
  public:
-    explicit GUIWindow_Temple(HOUSE_ID houseId);
+    explicit GUIWindow_Temple(HouseId houseId);
     virtual ~GUIWindow_Temple() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
