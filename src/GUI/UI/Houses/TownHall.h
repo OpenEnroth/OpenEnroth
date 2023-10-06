@@ -28,7 +28,7 @@ class GUIWindow_TownHall : public GUIWindow_House {
     void payFineDialogue();
 
  private:
-    MONSTER_TYPE randomMonsterForHunting(HouseId townhall);
+    MonsterId randomMonsterForHunting(HouseId townhall);
 
     /**
      * Handler for the "Bounty Hunt" dialogue option in a town hall.
@@ -39,5 +39,5 @@ class GUIWindow_TownHall : public GUIWindow_House {
     void bountyHuntingDialogueOptionClicked();
 
     std::string _bountyHuntText = "";
-    MONSTER_TYPE _bountyHuntMonsterId = MONSTER_0;
+    MonsterId _bountyHuntMonsterId = MONSTER_INVALID;
 };

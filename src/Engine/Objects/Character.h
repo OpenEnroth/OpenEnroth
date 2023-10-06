@@ -178,11 +178,11 @@ class Character {
     int GetMeleeDamageMinimal() const;
     int GetMeleeDamageMaximal() const;
     int CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                               MONSTER_TYPE uTargetActorID);
+                               MonsterId uTargetActorID);
     int GetRangedAttack();
     int GetRangedDamageMin();
     int GetRangedDamageMax();
-    int CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID);
+    int CalculateRangedDamageTo(MonsterId uMonsterInfoID);
     std::string GetMeleeDamageString();
     std::string GetRangedDamageString();
     bool CanTrainToNextLevel();
@@ -230,7 +230,7 @@ class Character {
     int actualSkillLevel(CharacterSkillType skill) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skill) const;
     int GetSkillBonus(CharacterAttributeType a2) const;
-    CharacterRace GetRace() const;
+    Race GetRace() const;
     std::string GetRaceName() const;
     CharacterSex GetSexByVoice() const;
     void SetInitialStats();
@@ -321,7 +321,7 @@ class Character {
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                           MONSTER_TYPE uTargetActorID,
+                                           MonsterId uTargetActorID,
                                            bool addOneDice);
     bool wearsItemAnywhere(ItemId item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float param2, float param3, float param4, float param5) const;
@@ -370,10 +370,10 @@ class Character {
     void SetCondDeadWithBlockCheck(int blockable);
     void SetCondUnconsciousWithBlockCheck(int blockable);
 
-    inline bool IsRaceHuman() const { return GetRace() == CHARACTER_RACE_HUMAN; }
-    inline bool IsRaceDwarf() const { return GetRace() == CHARACTER_RACE_DWARF; }
-    inline bool IsRaceElf() const { return GetRace() == CHARACTER_RACE_ELF; }
-    inline bool IsRaceGoblin() const { return GetRace() == CHARACTER_RACE_GOBLIN; }
+    inline bool IsRaceHuman() const { return GetRace() == RACE_HUMAN; }
+    inline bool IsRaceDwarf() const { return GetRace() == RACE_DWARF; }
+    inline bool IsRaceElf() const { return GetRace() == RACE_ELF; }
+    inline bool IsRaceGoblin() const { return GetRace() == RACE_GOBLIN; }
 
     inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() const { return !IsMale(); }

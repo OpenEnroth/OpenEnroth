@@ -9,6 +9,8 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventMap.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Snapshots/TableSerialization.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
@@ -30,7 +32,7 @@ static auto contains = [](const std::string &haystack, const std::string &needle
 
 static std::string toUpperCaseEnum(const std::string &string) {
     std::string result;
-    for (char c : string) {
+    for (char c : trim(string)) {
         if (isalnum(c)) {
             result += static_cast<char>(toupper(c));
         } else if (isspace(c) || c == '/' || c == '-') {
@@ -254,6 +256,81 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
     return 0;
 }
 
+std::string cleanupMonsterEnumName(std::string enumName) {
+    if (enumName.starts_with("ZBLASTERGUY") || enumName.starts_with("ZULTRA_DRAGON"))
+        enumName = enumName.substr(1);
+
+    enumName = replaceAll(enumName, "MALEA", "MALE_A");
+    enumName = replaceAll(enumName, "MALEB", "MALE_B");
+    enumName = replaceAll(enumName, "MALEC", "MALE_C");
+
+    return enumName;
+}
+
+int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+    TriBlob dmonBlobs;
+    dmonBlobs.mm7 = resourceManager->getEventsFile("dmonlist.bin");
+
+    pMonsterList = new MonsterList;
+    deserialize(dmonBlobs, pMonsterList);
+
+    MonsterStats monsterStats;
+    monsterStats.Initialize(resourceManager->getEventsFile("monsters.txt"));
+
+    CodeGenMap map;
+    map.insert(MONSTER_INVALID, "INVALID", "");
+
+    for (const MonsterId i : monsterStats.pInfos.indices()) {
+        const MonsterInfo &desc = monsterStats.pInfos[i];
+        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pPictureName));
+
+        std::string comment = desc.pName;
+        if (comment == "peasant")
+            comment = "Peasant";
+        if (!comment.empty())
+            comment = fmt::format("\"{}\".", trim(comment));
+
+        map.insert(i, enumName, comment);
+    }
+
+    map.dump(stdout, "MONSTER_");
+    return 0;
+}
+
+int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+    TriBlob dmonBlobs;
+    dmonBlobs.mm7 = resourceManager->getEventsFile("dmonlist.bin");
+
+    pMonsterList = new MonsterList;
+    deserialize(dmonBlobs, pMonsterList);
+
+    MonsterStats monsterStats;
+    monsterStats.Initialize(resourceManager->getEventsFile("monsters.txt"));
+
+    CodeGenMap map;
+    map.insert(MONSTER_TYPE_INVALID, "INVALID", "");
+
+    int counter = 0;
+    for (const MonsterId i : monsterStats.pInfos.indices()) {
+        if (++counter % 3 != 1)
+            continue;
+
+        const MonsterInfo &desc = monsterStats.pInfos[i];
+        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pPictureName));
+
+        if (enumName.ends_with("_A")) {
+            enumName.resize(enumName.size() - 2);
+        } else if (!enumName.empty()) {
+            throw Exception("Invalid monster id name");
+        }
+
+        map.insert(monsterTypeForMonsterId(i), enumName, "");
+    }
+
+    map.dump(stdout, "MONSTER_TYPE_");
+    return 0;
+}
+
 int platformMain(int argc, char **argv) {
     try {
         CodeGenOptions options = CodeGenOptions::parse(argc, argv);
@@ -270,6 +347,8 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_MAP_ID: return runMapIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_BEACON_MAPPING: return runBeaconsCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_HOUSE_ID: return runHouseIdCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MONSTER_ID: return runMonsterIdCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(std::move(options), &resourceManager);
         default:
             assert(false);
             return 1;

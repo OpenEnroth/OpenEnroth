@@ -65,3 +65,5 @@ std::string toPrintable(std::string_view s, char placeholder = ' ');
  * @return                              Hex dump of the provided string.
  */
 std::string toHexDump(std::string_view s, size_t groupSize = 0);
+
+std::string replaceAll(std::string_view text, std::string_view what, std::string_view replacement);

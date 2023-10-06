@@ -32,3 +32,10 @@ UNIT_TEST(String, HexDump) {
     EXPECT_EQ(toHexDump("1234", 2), "3132 3334");
     EXPECT_EQ(toHexDump("0000"), "30303030");
 }
+
+UNIT_TEST(String, ReplaceAll) {
+    EXPECT_EQ(replaceAll("123", "1", "123"), "12323");
+    EXPECT_EQ(replaceAll("123", "10", "100"), "123");
+    EXPECT_EQ(replaceAll("ab123ab", "ab", "zz"), "zz123zz");
+    EXPECT_EQ(replaceAll("AAAA", "AA", "AAZAA"), "AAZAAAAZAA");
+}

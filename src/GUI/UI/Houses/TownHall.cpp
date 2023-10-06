@@ -143,7 +143,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions() {
     }
 }
 
-MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
+MonsterId GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
     while (true) {
         // TODO(captainurist): I got lazy here. Use actual enum values.
         int result = grng->random(258) + 1;
@@ -161,7 +161,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x6Du || result > 0x6Fu) &&
                 (result < 0x61u || result > 0x63u))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_ERATHIA:
@@ -180,7 +180,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0xCDu || result > 0xCFu))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_TULAREAN_FOREST:
@@ -196,7 +196,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0x1Cu || result > 0x1Eu))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_CELESTE:
@@ -215,7 +215,7 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0x6Au || result > 0x6Cu))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         case HOUSE_TOWN_HALL_PIT:
@@ -238,12 +238,12 @@ MONSTER_TYPE GUIWindow_TownHall::randomMonsterForHunting(HouseId townhall) {
                 (result < 0xFDu || result > 0xFFu) &&
                 (result < 0x61u || result > 0x63u) &&
                 (result < 0x10u || result > 0x12u))
-                return static_cast<MONSTER_TYPE>(result);
+                return static_cast<MonsterId>(result);
             break;
 
         default:
             assert(false);
-            return MONSTER_0;
+            return MONSTER_INVALID;
         }
     }
 }
@@ -261,14 +261,14 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
     _bountyHuntMonsterId = pParty->monster_id_for_hunting[house];
 
     if (!pParty->monster_for_hunting_killed[house]) {
-        if (pParty->monster_id_for_hunting[house] != MONSTER_0) {
+        if (pParty->monster_id_for_hunting[house] != MONSTER_INVALID) {
             _bountyHuntText = pNPCTopics[351].pText; // "This month's bounty is on a %s..."
         } else {
             _bountyHuntText = pNPCTopics[353].pText; // "Someone has already claimed the bounty this month..."
         }
     } else {
         // Get prize
-        if (pParty->monster_id_for_hunting[house] != MONSTER_0) {
+        if (pParty->monster_id_for_hunting[house] != MONSTER_INVALID) {
             int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].uLevel;
 
             pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
@@ -276,7 +276,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
                 player.SetVariable(VAR_Award, Award_BountiesCollected);
             }
             pParty->uNumBountiesCollected += bounty;
-            pParty->monster_id_for_hunting[house] = MONSTER_0;
+            pParty->monster_id_for_hunting[house] = MONSTER_INVALID;
             pParty->monster_for_hunting_killed[house] = false;
         }
 
@@ -286,7 +286,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
 
 std::string GUIWindow_TownHall::bountyHuntingText() {
     assert(!_bountyHuntText.empty());
-    assert(_bountyHuntMonsterId != MONSTER_0);
+    assert(_bountyHuntMonsterId != MONSTER_INVALID);
 
     // TODO(captainurist): what do we do with exceptions inside fmt?
     std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->pInfos[_bountyHuntMonsterId].pName, colorTable.White.tag());

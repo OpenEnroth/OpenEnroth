@@ -80,7 +80,7 @@ void deserialize(const TriBlob &src, MonsterList *dst) {
     assert(monsters.size() <= dst->pMonsters.size()); // TODO(captainurist): this shouldn't be an assertion.
 
     dst->pMonsters.fill(MonsterDesc());
-    for (size_t i = 0; MONSTER_TYPE index : dst->pMonsters.indices()) {
+    for (size_t i = 0; MonsterId index : dst->pMonsters.indices()) {
         if (i >= monsters.size())
             break;
         dst->pMonsters[index] = monsters[i++];

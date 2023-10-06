@@ -676,8 +676,8 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
                 // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
                 v10 = pFactionTable->relations
-                          [(std::to_underlying(pMonsterStats->pInfos[pActors[v22.id()].monsterInfo.uID].uID) - 1) / 3 + 1] // Was w/o -1 here, probably was a bug.
-                          [(std::to_underlying(pActors[actor_id].monsterInfo.uID) - 1) / 3 + 1];
+                          [monsterTypeForMonsterId(pActors[v22.id()].monsterInfo.uID)] // Original binary had an off by one here, was missing the first -1.
+                          [monsterTypeForMonsterId(pActors[actor_id].monsterInfo.uID)];
             else
                 v10 = HOSTILITY_LONG;
             switch (v10) {

@@ -260,9 +260,6 @@ DIALOGUE_TYPE arenaMainDialogue() {
  * @offset 0x4BC109
  */
 void prepareArenaFight(DIALOGUE_TYPE dialogue) {
-    std::vector<MONSTER_TYPE> monsterIds;
-    std::vector<MONSTER_TYPE> monsterTypes;
-
     pParty->field_7B5_in_arena_quest = dialogue;
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
@@ -326,26 +323,28 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     if (monsterMaxLevel < 2)
         monsterMaxLevel = 2;
 
-    for (MONSTER_TYPE i : allArenaMonsters()) {
+    std::vector<MonsterId> candidateIds;
+    for (MonsterId i : allArenaMonsters()) {
         if (pMonsterStats->pInfos[i].uAIType != 1) {
             if (!MonsterStats::BelongsToSupertype(pMonsterStats->pInfos[i].uID, MONSTER_SUPERTYPE_8)) {
                 if (pMonsterStats->pInfos[i].uLevel >= monsterMinLevel &&
                     pMonsterStats->pInfos[i].uLevel <= monsterMaxLevel) {
-                    monsterTypes.push_back(i);
+                    candidateIds.push_back(i);
                 }
             }
         }
     }
 
-    assert(monsterTypes.size() > 0);
+    assert(candidateIds.size() > 0);
 
     int maxIdsNum = 6;
-    if (monsterTypes.size() < 6) {
-        maxIdsNum = monsterTypes.size();
+    if (candidateIds.size() < 6) {
+        maxIdsNum = candidateIds.size();
     }
 
+    std::vector<MonsterId> monsterIds;
     for (int i = 0; i < maxIdsNum; i++) {
-        monsterIds.push_back(monsterTypes[grng->random(monsterTypes.size())]);
+        monsterIds.push_back(grng->randomSample(candidateIds));
     }
 
     int baseReward = 0, monstersNum = 0;
@@ -368,7 +367,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
 
     for (int i = 0; i < monstersNum; ++i) {
         Vec2i pos = pMonsterArenaPlacements[i];
-        Actor::Arena_summon_actor(monsterIds[grng->random(monsterIds.size())], Vec3i(pos.x, pos.y, 1));
+        Actor::Arena_summon_actor(grng->randomSample(monsterIds), Vec3i(pos.x, pos.y, 1));
     }
     pAudioPlayer->playUISound(SOUND_51heroism03);
 }

@@ -696,17 +696,15 @@ unsigned short Actor::GetObjDescId(SpellId spellId) {
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
-    // TODO(captainurist): encapsulate enum arithmetic.
-    unsigned int v2 = a1->ally;
-    if (!a1->ally) v2 = (std::to_underlying(a1->monsterInfo.uID) - 1) / 3 + 1;
+    MonsterType v2 = a1->ally;
+    if (a1->ally == MONSTER_TYPE_INVALID)
+        v2 = monsterTypeForMonsterId(a1->monsterInfo.uID);
 
-    unsigned int v3 = a2->ally;
-    if (!a2->ally) v3 = (std::to_underlying(a2->monsterInfo.uID) - 1) / 3 + 1;
+    MonsterType v3 = a2->ally;
+    if (a2->ally == MONSTER_TYPE_INVALID)
+        v3 = monsterTypeForMonsterId(a2->monsterInfo.uID);
 
-    if (v2 >= 39 && v2 <= 44 && v3 >= 39 && v3 <= 44 ||
-        v2 >= 45 && v2 <= 50 && v3 >= 45 && v3 <= 50 ||
-        v2 >= 51 && v2 <= 62 && v3 >= 51 && v3 <= 62 ||
-        v2 >= 78 && v2 <= 83 && v3 >= 78 && v3 <= 83 || v2 == v3)
+    if (isPeasant(v2) && isPeasant(v3) && raceForMonsterType(v2) == raceForMonsterType(v3) || v2 == v3)
         return true;
     else
         return false;
@@ -1276,19 +1274,10 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
 
 //----- (00438B9B) --------------------------------------------------------
 bool Actor::IsPeasant() {
-    unsigned int InHostile_Id;  // eax@1
-
-    InHostile_Id = this->ally;
-    // TODO(captainurist): encapsulate enum arithmetic.
-    if (!this->ally) InHostile_Id = (std::to_underlying(this->monsterInfo.uID) - 1) / 3 + 1;
-    return (signed int)InHostile_Id >= 39 &&
-               (signed int)InHostile_Id <= 44  // Dwarfs peasants
-           || (signed int)InHostile_Id >= 45 &&
-                  (signed int)InHostile_Id <= 50  // Elves peasants
-           || (signed int)InHostile_Id >= 51 &&
-                  (signed int)InHostile_Id <= 62  // Humans peasants
-           || (signed int)InHostile_Id >= 78 &&
-                  (signed int)InHostile_Id <= 83;  // Goblins peasants
+    MonsterType monsterType = this->ally;
+    if (this->ally == MONSTER_TYPE_INVALID)
+        monsterType = monsterTypeForMonsterId(this->monsterInfo.uID);
+    return isPeasant(monsterType);
 }
 
 //----- (0042EBEE) --------------------------------------------------------
@@ -1820,7 +1809,7 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->monsterInfo.uTreasureDiceSides = 0;
     pActor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     pActor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-    pActor->ally = 9999;
+    pActor->ally = MONSTER_TYPE_9999;
     pActor->ResetAggressor();  // ~0x80000
     pActor->group = 0;
     pActor->buffs[ACTOR_BUFF_BERSERK].Reset();
@@ -1854,33 +1843,33 @@ void Actor::Die(unsigned int uActorID) {
     ItemGen drop;
     drop.Reset();
     switch (actor->monsterInfo.uID) {
-        case MONSTER_HARPY_1:
-        case MONSTER_HARPY_2:
-        case MONSTER_HARPY_3:
+        case MONSTER_HARPY_A:
+        case MONSTER_HARPY_B:
+        case MONSTER_HARPY_C:
             drop.uItemID = ITEM_REAGENT_HARPY_FEATHER;
             break;
 
-        case MONSTER_OOZE_1:
-        case MONSTER_OOZE_2:
-        case MONSTER_OOZE_3:
+        case MONSTER_OOZE_A:
+        case MONSTER_OOZE_B:
+        case MONSTER_OOZE_C:
             drop.uItemID = ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
             break;
 
-        case MONSTER_TROLL_1:
-        case MONSTER_TROLL_2:
-        case MONSTER_TROLL_3:
+        case MONSTER_TROLL_A:
+        case MONSTER_TROLL_B:
+        case MONSTER_TROLL_C:
             drop.uItemID = ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
             break;
 
-        case MONSTER_DEVIL_1:
-        case MONSTER_DEVIL_2:
-        case MONSTER_DEVIL_3:
+        case MONSTER_DEVIL_A:
+        case MONSTER_DEVIL_B:
+        case MONSTER_DEVIL_C:
             drop.uItemID = ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
             break;
 
-        case MONSTER_DRAGON_1:
-        case MONSTER_DRAGON_2:
-        case MONSTER_DRAGON_3:
+        case MONSTER_DRAGON_A:
+        case MONSTER_DRAGON_B:
+        case MONSTER_DRAGON_C:
             drop.uItemID = ITEM_REAGENT_DRAGONS_EYE;
             break;
     }
@@ -2230,10 +2219,10 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
 
 //----- (0040104C) --------------------------------------------------------
 MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
-    unsigned int thisGroup;  // ebp@19
-    int otherGroup;          // eax@22
-    unsigned int thisAlly;   // edx@25
-    unsigned int otherAlly;  // edx@33
+    MonsterType thisGroup;  // ebp@19
+    MonsterType otherGroup;          // eax@22
+    MonsterType thisAlly;   // edx@25
+    MonsterType otherAlly;  // edx@33
 
     if (otherActPtr) {
         if (otherActPtr->group != 0 && this->group != 0 &&
@@ -2243,41 +2232,38 @@ MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
 
     if (this->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
     thisAlly = this->ally;
-    if (this->buffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == 9999)
-        thisGroup = 0;
-    else if (thisAlly > 0)
+    if (this->buffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == MONSTER_TYPE_9999)
+        thisGroup = MONSTER_TYPE_INVALID;
+    else if (thisAlly != MONSTER_TYPE_INVALID)
         thisGroup = thisAlly;
     else
-        thisGroup = (std::to_underlying(this->monsterInfo.uID) - 1) / 3 + 1; // TODO(captainurist): encapsulate enum arithmetic.
+        thisGroup = monsterTypeForMonsterId(this->monsterInfo.uID);
 
     if (otherActPtr) {
         if (otherActPtr->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
         otherAlly = otherActPtr->ally;
-        if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active() ||
-            otherAlly == 9999)
-            otherGroup = 0;
-        else if (otherAlly > 0)
+        if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active() || otherAlly == MONSTER_TYPE_9999)
+            otherGroup = MONSTER_TYPE_INVALID;
+        else if (otherAlly != MONSTER_TYPE_INVALID)
             otherGroup = otherAlly;
         else
-            otherGroup = (std::to_underlying(otherActPtr->monsterInfo.uID) - 1) / 3 + 1; // TODO(captainurist): encapsulate enum arithmetic.
+            otherGroup = monsterTypeForMonsterId(otherActPtr->monsterInfo.uID);
     } else {
-        otherGroup = 0;
+        otherGroup = MONSTER_TYPE_INVALID;
     }
 
-    if (this->buffs[ACTOR_BUFF_CHARM].Active() && !otherGroup ||
-        otherActPtr && otherActPtr->buffs[ACTOR_BUFF_CHARM].Active() &&
-        !thisGroup)
+    if (this->buffs[ACTOR_BUFF_CHARM].Active() && otherGroup == MONSTER_TYPE_INVALID ||
+        otherActPtr && otherActPtr->buffs[ACTOR_BUFF_CHARM].Active() && thisGroup == MONSTER_TYPE_INVALID)
         return HOSTILITY_FRIENDLY;
-    if (!this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
-        this->ActorEnemy() && !otherGroup)
+    if (!this->buffs[ACTOR_BUFF_ENSLAVED].Active() && this->ActorEnemy() && otherGroup == MONSTER_TYPE_INVALID)
         return HOSTILITY_LONG;
-    if (thisGroup >= 89 || otherGroup >= 89) return HOSTILITY_FRIENDLY;
+    if (thisGroup > MONSTER_TYPE_LAST || otherGroup > MONSTER_TYPE_LAST) return HOSTILITY_FRIENDLY;
 
-    if (thisGroup == 0) {
+    if (thisGroup == MONSTER_TYPE_INVALID) {
         if ((!otherActPtr || this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
                              otherActPtr->ActorFriend()) &&
-            pFactionTable->relations[otherGroup][0] == HOSTILITY_FRIENDLY)
-            return pFactionTable->relations[0][otherGroup];
+            pFactionTable->relations[otherGroup][MONSTER_TYPE_INVALID] == HOSTILITY_FRIENDLY)
+            return pFactionTable->relations[MONSTER_TYPE_INVALID][otherGroup];
         else
             return HOSTILITY_LONG;
     } else {
@@ -2485,7 +2471,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
 //----- (0044FD29) --------------------------------------------------------
 void Actor::SummonMinion(int summonerId) {
     uint8_t extraSummonLevel;  // al@1
-    MONSTER_TYPE summonMonsterBaseType;         // esi@1
+    MonsterId summonMonsterBaseType;         // esi@1
     int v5;                            // edx@2
     int v7;                            // edi@10
     MonsterInfo *v9;                   // ebx@10
@@ -2493,8 +2479,7 @@ void Actor::SummonMinion(int summonerId) {
     int v13;                 // ebx@10
     int64_t v15;                 // edi@10
     int64_t v17;                 // ebx@10
-    unsigned int v19;        // qax@10
-    unsigned int monsterId;  // [sp+10h] [bp-18h]@8
+    MonsterType v19;        // qax@10
     int v27;                 // [sp+18h] [bp-10h]@10
     int actorSector;         // [sp+1Ch] [bp-Ch]@8
 
@@ -2503,9 +2488,8 @@ void Actor::SummonMinion(int summonerId) {
         actorSector = pIndoor->GetSector(this->pos);
 
     v19 = this->ally;
-    if (!this->ally) {
-        monsterId = std::to_underlying(this->monsterInfo.uID) - 1;
-        v19 = monsterId / 3; // TODO(captainurist): forgetting + 1 here?
+    if (this->ally == MONSTER_TYPE_INVALID) {
+        v19 = monsterTypeForMonsterId(this->monsterInfo.uID); // Original binary had an off by one here, forgetting the last +1.
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     v13 = grng->random(2048);
@@ -2522,19 +2506,19 @@ void Actor::SummonMinion(int summonerId) {
 
     extraSummonLevel = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
     // TODO(captainurist): drop the cast here, store the data properly.
-    summonMonsterBaseType = static_cast<MONSTER_TYPE>(this->monsterInfo.field_3C_some_special_attack);
+    summonMonsterBaseType = static_cast<MonsterId>(this->monsterInfo.field_3C_some_special_attack);
     if (extraSummonLevel) {
         if (extraSummonLevel >= 1 && extraSummonLevel <= 3) {
             // TODO(captainurist): encapsulate monster level arithmetic properly.
-            summonMonsterBaseType = static_cast<MONSTER_TYPE>(std::to_underlying(summonMonsterBaseType) + extraSummonLevel - 1);
+            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + extraSummonLevel - 1);
         }
     } else {
         v5 = grng->random(100);
         // TODO(captainurist): encapsulate monster level arithmetic properly.
         if (v5 >= 90)
-            summonMonsterBaseType = static_cast<MONSTER_TYPE>(std::to_underlying(summonMonsterBaseType) + 2);
+            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 2);
         else if (v5 >= 60)
-            summonMonsterBaseType = static_cast<MONSTER_TYPE>(std::to_underlying(summonMonsterBaseType) + 1);
+            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 1);
     }
     Actor *actor = AllocateActor(true);
     if (!actor)
@@ -2770,9 +2754,8 @@ void Actor::UpdateActorAI() {
         MonsterHostility relationToTarget;
         if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
-                // TODO(captainurist): encapsulate enum arithmetic.
-                relationToTarget = pFactionTable->relations[(std::to_underlying(pActor->monsterInfo.uID) - 1) / 3 + 1]
-                                                           [(std::to_underlying(pActors[target_pid.id()].monsterInfo.uID) - 1) / 3 + 1];
+                relationToTarget = pFactionTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.uID)]
+                                                           [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.uID)];
             } else {
                 relationToTarget = HOSTILITY_LONG;
             }
@@ -2953,7 +2936,7 @@ bool Actor::isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count) 
         deadActors = Actor::searchDeadActorsByGroup(&totalActors, param);
         break;
       case KILL_CHECK_MONSTERID:
-        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MONSTER_TYPE>(param));
+        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MonsterId>(param));
         break;
       case KILL_CHECK_ACTORID:
         deadActors = Actor::searchDeadActorsByID(&totalActors, param);
@@ -2997,7 +2980,7 @@ int Actor::searchDeadActorsByGroup(int *pTotalActors, int group) {
     return result;
 }
 
-int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MONSTER_TYPE monsterID) {
+int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MonsterId monsterID) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
@@ -3168,7 +3151,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 if (character->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
                     skillLevel = character->getSkillValue(CHARACTER_SKILL_BLASTER).level();
                 attackElement = DAMAGE_PHYSICAL;
-                uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_0);
+                uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_INVALID);
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
                     return;
@@ -3176,7 +3159,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                 break;
             case SPELL_101:
                 attackElement = DAMAGE_FIRE;
-                uDamageAmount = character->CalculateRangedDamageTo(MONSTER_0);
+                uDamageAmount = character->CalculateRangedDamageTo(MONSTER_INVALID);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
@@ -3346,7 +3329,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(MONSTER_TYPE monster_id, Vec3i pos) {
+void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
@@ -3394,7 +3377,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
     int v22;               // [sp+8h] [bp-140h]@3
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
     std::optional<CharacterSex> for_sex;           // [sp+13Ch] [bp-Ch]@1
-    std::optional<CharacterRace> for_race;          // [sp+140h] [bp-8h]@1
+    std::optional<Race> for_race;          // [sp+140h] [bp-8h]@1
     std::optional<CharacterClassType> for_class;         // [sp+144h] [bp-4h]@1
 
     v2 = 0;
@@ -3437,16 +3420,16 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         for_sex = SEX_FEMALE;
                         break;
                     case 2048:
-                        for_race = CHARACTER_RACE_HUMAN;
+                        for_race = RACE_HUMAN;
                         break;
                     case 4096:
-                        for_race = CHARACTER_RACE_ELF;
+                        for_race = RACE_ELF;
                         break;
                     case 8192:
-                        for_race = CHARACTER_RACE_DWARF;
+                        for_race = RACE_DWARF;
                         break;
                     case 16384:
-                        for_race = CHARACTER_RACE_GOBLIN;
+                        for_race = RACE_GOBLIN;
                         break;
                 }
                 v2 = 0;
@@ -4362,7 +4345,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
         cMonsterName = "Elemental Light B";
     else
         cMonsterName = "Elemental Light A";
-    MONSTER_TYPE uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
+    MonsterId uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
 
     Actor *actor = AllocateActor(false);
     if (!actor)
@@ -4393,7 +4376,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
     actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
-    actor->ally = 9999;
+    actor->ally = MONSTER_TYPE_9999;
     actor->group = 0;
     actor->currentActionTime = 0;
     actor->aiState = Summoned;
@@ -4431,7 +4414,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     int v24;        // edi@36
     int v25;               // ecx@36
     MonsterDesc *v27;      // edi@48
-    MONSTER_TYPE v28;        // eax@48
+    MonsterId v28;        // eax@48
     int v32;               // eax@50
     int v37;               // eax@51
     int v38;               // eax@52
@@ -4604,12 +4587,13 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             }
         }
 
-        MONSTER_TYPE v50 = pMonsterList->GetMonsterIDByName(Str2);
+        MonsterId v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
 
         v27 = &pMonsterList->pMonsters[v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
-        if (v28 == MONSTER_0) v28 = MONSTER_1;
+        // TODO(captainurist): MONSTER_ANGEL_A is monster #1, why do we even need this check?
+        if (v28 == MONSTER_INVALID) v28 = MONSTER_ANGEL_A;
         Src = &pMonsterStats->pInfos[v28];
         pMonster->name = Src->pName;
         pMonster->currentHP = Src->uHP;

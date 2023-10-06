@@ -464,7 +464,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 }
 
 //----- (0047732C) --------------------------------------------------------
-void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_uid,
+void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid,
                                         HouseId uLocation2D, MapId uMapId) {
     int rep_gen;
     int uGeneratedPortret;    // ecx@23
@@ -472,109 +472,16 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_
     int gen_profession;       // eax@37
     int max_prof_cap;         // edx@37
                               // signed int result; // eax@39
-    int uRace;                // [sp+Ch] [bp-Ch]@1
+    Race uRace;                // [sp+Ch] [bp-Ch]@1
     bool break_gen;           // [sp+10h] [bp-8h]@1
     signed int gen_attempts;  // [sp+14h] [bp-4h]@1
     int uPortretMin;          // [sp+24h] [bp+Ch]@1
     int uPortretMax;
 
-    static constexpr CharacterSex NPCSexGenTable[86] = {
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_FEMALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE,
-        SEX_MALE};
-    static const uint8_t NPCRaceGenTable[86] = {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
-        1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0};
-
     // TODO(captainurist): encapsulate enum arithmetic.
-    uint8_t seed = (uint8_t)((std::to_underlying(npc_uid) - 1) / 3.0);
-    CharacterSex uNPCSex = NPCSexGenTable[seed];
-    uRace = NPCRaceGenTable[seed];
+    MonsterType monsterType = monsterTypeForMonsterId(npc_uid);
+    CharacterSex uNPCSex = sexForMonsterType(monsterType);
+    uRace = raceForMonsterType(monsterType);
     pNPCDataBuff->uSex = uNPCSex;
     pNPCDataBuff->pName = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
 
@@ -583,7 +490,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_
 
     do {
         switch (uRace) {
-            case 0:
+            case RACE_HUMAN:
                 if (uNPCSex == SEX_MALE) {
                     uPortretMin = 2;
                     uPortretMax = 100;
@@ -591,7 +498,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_
                     uPortretMin = 201;
                     uPortretMax = 250;
                 }
-            case 1:
+            case RACE_ELF:
                 if (uNPCSex == SEX_MALE) {
                     uPortretMin = 400;
                     uPortretMax = 430;
@@ -600,7 +507,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_
                     uPortretMax = 490;
                 }
                 break;
-            case 2:
+            case RACE_GOBLIN:
                 if (uNPCSex == SEX_MALE) {
                     uPortretMin = 500;
                     uPortretMax = 520;
@@ -609,7 +516,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MONSTER_TYPE npc_
                     uPortretMax = 550;
                 }
                 break;
-            case 3:
+            case RACE_DWARF:
                 if (uNPCSex == SEX_MALE) {
                     uPortretMin = 300;
                     uPortretMax = 330;

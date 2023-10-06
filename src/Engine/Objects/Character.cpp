@@ -59,8 +59,8 @@ struct CharacterCreationAttributeProps {
     unsigned char uBaseStep;
 };
 
-static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT>, CHARACTER_RACE_FIRST, CHARACTER_RACE_LAST> StatTable = {
-    {CHARACTER_RACE_HUMAN, {
+static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT>, RACE_FIRST, RACE_LAST> StatTable = {
+    {RACE_HUMAN, {
         {CHARACTER_ATTRIBUTE_MIGHT,         {11, 25, 1, 1}},
         {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {11, 25, 1, 1}},
         {CHARACTER_ATTRIBUTE_PERSONALITY,   {11, 25, 1, 1}},
@@ -69,7 +69,7 @@ static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, CHAR
         {CHARACTER_ATTRIBUTE_SPEED,         {11, 25, 1, 1}},
         {CHARACTER_ATTRIBUTE_LUCK,          {9, 25, 1, 1}},
     }},
-    {CHARACTER_RACE_ELF, {
+    {RACE_ELF, {
         {CHARACTER_ATTRIBUTE_MIGHT,         {7, 15, 2, 1}},
         {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {14, 30, 1, 2}},
         {CHARACTER_ATTRIBUTE_PERSONALITY,   {11, 25, 1, 1}},
@@ -78,7 +78,7 @@ static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, CHAR
         {CHARACTER_ATTRIBUTE_SPEED,         {11, 25, 1, 1}},
         {CHARACTER_ATTRIBUTE_LUCK,          {9, 20, 1, 1}},
     }},
-    {CHARACTER_RACE_GOBLIN, {
+    {RACE_GOBLIN, {
         {CHARACTER_ATTRIBUTE_MIGHT,         {14, 30, 1, 2}},
         {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {7, 15, 2, 1}},
         {CHARACTER_ATTRIBUTE_PERSONALITY,   {7, 15, 2, 1}},
@@ -87,7 +87,7 @@ static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, CHAR
         {CHARACTER_ATTRIBUTE_SPEED,         {14, 30, 1, 2}},
         {CHARACTER_ATTRIBUTE_LUCK,          {9, 20, 1, 1}},
     }},
-    {CHARACTER_RACE_DWARF, {
+    {RACE_DWARF, {
         {CHARACTER_ATTRIBUTE_MIGHT,         {14, 30, 1, 2}},
         {CHARACTER_ATTRIBUTE_INTELLIGENCE,  {11, 25, 1, 1}},
         {CHARACTER_ATTRIBUTE_PERSONALITY,   {11, 25, 1, 1}},
@@ -260,7 +260,7 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     int BonusMult;
 
     for (Character &character : pParty->pCharacters) {
-        CharacterRace raceId = character.GetRace();
+        Race raceId = character.GetRace();
 
         for (CharacterAttributeType statNum : statAttributes()) {
             switch (statNum) {
@@ -1072,7 +1072,7 @@ int Character::GetMeleeDamageMaximal() const {
 
 //----- (0048CDDB) --------------------------------------------------------
 int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
-                                      MONSTER_TYPE uTargetActorID) {
+                                      MonsterId uTargetActorID) {
     int mainWpnDmg = 0;
     int offHndWpnDmg = 0;
 
@@ -1124,8 +1124,8 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 }
 
 int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
-                                               MONSTER_TYPE uTargetActorID,
-                                               bool addOneDice) {
+                                                  MonsterId uTargetActorID,
+                                                  bool addOneDice) {
     ItemId itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
 
@@ -1141,7 +1141,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     int totalDmg =
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
-    if (uTargetActorID > MONSTER_0) {  // if an actor has been provided
+    if (uTargetActorID > MONSTER_INVALID) {  // if an actor has been provided
         ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
@@ -1228,7 +1228,7 @@ int Character::GetRangedDamageMax() {
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Character::CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID) {
+int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
@@ -1245,7 +1245,7 @@ int Character::CalculateRangedDamageTo(MONSTER_TYPE uMonsterInfoID) {
     damage = pItemTable->pItems[bow->uItemID].uDamageMod +
              damagefromroll;  // total damage
 
-    if (uMonsterInfoID != MONSTER_0) {  // check against bow enchantments
+    if (uMonsterInfoID != MONSTER_INVALID) {  // check against bow enchantments
         if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
             MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
             damage *= 2;
@@ -3184,26 +3184,26 @@ unsigned int Character::GetMultiplierForSkillLevel(
 //                     22   underwater suits (unused)
 //                     23   zombie male
 //                     24   zombie female
-enum CharacterRace Character::GetRace() const {
+enum Race Character::GetRace() const {
     if (uCurrentFace <= 7) {
-        return CHARACTER_RACE_HUMAN;
+        return RACE_HUMAN;
     } else if (uCurrentFace <= 11) {
-        return CHARACTER_RACE_ELF;
+        return RACE_ELF;
     } else if (uCurrentFace <= 15) {
-        return CHARACTER_RACE_DWARF;
+        return RACE_DWARF;
     } else if (uCurrentFace <= 19) {
-        return CHARACTER_RACE_GOBLIN;
+        return RACE_GOBLIN;
     } else {
-        return CHARACTER_RACE_HUMAN;
+        return RACE_HUMAN;
     }
 }
 
 std::string Character::GetRaceName() const {
     switch (GetRace()) {
-        case CHARACTER_RACE_HUMAN: return localization->GetString(LSTR_RACE_HUMAN);
-        case CHARACTER_RACE_ELF: return localization->GetString(LSTR_RACE_ELF);
-        case CHARACTER_RACE_GOBLIN: return localization->GetString(LSTR_RACE_GOBLIN);
-        case CHARACTER_RACE_DWARF: return localization->GetString(LSTR_RACE_DWARF);
+        case RACE_HUMAN: return localization->GetString(LSTR_RACE_HUMAN);
+        case RACE_ELF: return localization->GetString(LSTR_RACE_ELF);
+        case RACE_GOBLIN: return localization->GetString(LSTR_RACE_GOBLIN);
+        case RACE_DWARF: return localization->GetString(LSTR_RACE_DWARF);
         default:
             __debugbreak();
             return std::string();  // Make the compiler happy.
@@ -3247,7 +3247,7 @@ CharacterSex Character::GetSexByVoice() const {
 
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
-    CharacterRace race = GetRace();
+    Race race = GetRace();
     uMight = StatTable[race][CHARACTER_ATTRIBUTE_MIGHT].uBaseValue;
     uIntelligence = StatTable[race][CHARACTER_ATTRIBUTE_INTELLIGENCE].uBaseValue;
     uPersonality = StatTable[race][CHARACTER_ATTRIBUTE_PERSONALITY].uBaseValue;
@@ -3376,7 +3376,7 @@ void Character::DecreaseAttribute(CharacterAttributeType eAttribute) {
     int pStep;         // esi@1
     int uMinValue;     // [sp+Ch] [bp-4h]@1
 
-    CharacterRace raceId = GetRace();
+    Race raceId = GetRace();
     pBaseValue = StatTable[raceId][eAttribute].uBaseValue;
     pDroppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     uMinValue = pBaseValue - 2;
@@ -3420,7 +3420,7 @@ void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
     signed int droppedStep;  // [sp+10h] [bp-4h]@1
     unsigned short *statToChange;
 
-    CharacterRace raceId = GetRace();
+    Race raceId = GetRace();
     maxValue = StatTable[raceId][eAttribute].uMaxValue;
     baseStep = StatTable[raceId][eAttribute].uBaseStep;
     baseValue = StatTable[raceId][eAttribute].uBaseValue;
@@ -6370,7 +6370,7 @@ bool Character::hasItem(ItemId uItemID, bool checkHeldItem) {
 }
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
-    CharacterRace race;  // edi@2
+    Race race;  // edi@2
     CharacterSex sex;       // eax@2
 
     for (Character &character : pParty->pCharacters) {
@@ -6378,25 +6378,25 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
         sex = character.GetSexByVoice();
         switch (_this) {
             case 0:
-                if ((race == CHARACTER_RACE_HUMAN ||
-                     race == CHARACTER_RACE_ELF ||
-                     race == CHARACTER_RACE_GOBLIN) &&
+                if ((race == RACE_HUMAN ||
+                     race == RACE_ELF ||
+                     race == RACE_GOBLIN) &&
                     sex == SEX_MALE)
                     return true;
                 break;
             case 1:
-                if ((race == CHARACTER_RACE_HUMAN ||
-                     race == CHARACTER_RACE_ELF ||
-                     race == CHARACTER_RACE_GOBLIN) &&
+                if ((race == RACE_HUMAN ||
+                     race == RACE_ELF ||
+                     race == RACE_GOBLIN) &&
                     sex == SEX_FEMALE)
                     return true;
                 break;
             case 2:
-                if (race == CHARACTER_RACE_DWARF && sex == SEX_MALE)
+                if (race == RACE_DWARF && sex == SEX_MALE)
                     return true;
                 break;
             case 3:
-                if (race == CHARACTER_RACE_DWARF && sex == SEX_FEMALE)
+                if (race == RACE_DWARF && sex == SEX_FEMALE)
                     return true;
                 break;
         }
@@ -6407,11 +6407,11 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
 //----- (0043ED6F) --------------------------------------------------------
 bool IsDwarfPresentInParty(bool a1) {
     for (Character &character : pParty->pCharacters) {
-        CharacterRace race = character.GetRace();
+        Race race = character.GetRace();
 
-        if (race == CHARACTER_RACE_DWARF && a1)
+        if (race == RACE_DWARF && a1)
             return true;
-        else if (race != CHARACTER_RACE_DWARF && !a1)
+        else if (race != RACE_DWARF && !a1)
             return true;
     }
     return false;
@@ -6622,7 +6622,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_INVALID);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): doesn't look like a proper default.
             }
             playerPtr->receiveDamage(damage, damagetype);
@@ -6766,7 +6766,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].damageType;
             } else {
-                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(MONSTER_INVALID);
                 damagetype = DAMAGE_FIRE; // TODO(captainurist): another weird default.
             }
 

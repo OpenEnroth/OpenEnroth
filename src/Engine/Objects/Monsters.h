@@ -65,7 +65,7 @@ struct MonsterInfo {
     uint8_t uSpecialAbilityDamageDiceSides = 0;
     uint8_t uSpecialAbilityDamageDiceBonus = 0;
     uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
-    MONSTER_TYPE uID = MONSTER_0;
+    MonsterId uID = MONSTER_INVALID;
     bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
     CombinedSkillValue uSpellSkillAndMastery1;
     CombinedSkillValue uSpellSkillAndMastery2;
@@ -82,9 +82,9 @@ struct MonsterInfo {
 struct MonsterStats {
     void Initialize(const Blob &monsters);
     void InitializePlacements(const Blob &placements);
-    MONSTER_TYPE FindMonsterByTextureName(const std::string &Str2);
+    MonsterId FindMonsterByTextureName(const std::string &Str2);
 
-    static bool BelongsToSupertype(MONSTER_TYPE uMonsterInfoID,
+    static bool BelongsToSupertype(MonsterId uMonsterInfoID,
                                    MONSTER_SUPERTYPE eSupertype);
 
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> pInfos;      // 0 - 5b18h
@@ -106,7 +106,7 @@ struct MonsterDesc {
 };
 
 struct MonsterList {
-    MONSTER_TYPE GetMonsterIDByName(const std::string &pMonsterName);
+    MonsterId GetMonsterIDByName(const std::string &pMonsterName);
     bool FromFileTxt(const char *Args);
 
     IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> pMonsters;
