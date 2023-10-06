@@ -118,3 +118,5 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying);
 void ProcessActorCollisionsODM(Actor &actor, bool isFlying);
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent);
+
+void ProcessPartyCollisionsODM(Vec3i* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID, bool* partySlopeMod);

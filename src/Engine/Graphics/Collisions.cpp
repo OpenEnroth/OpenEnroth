@@ -15,6 +15,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/Engine.h"
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
@@ -729,7 +730,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi = pParty->pos.toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
         collision_state.position_lo = pParty->pos.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
-        collision_state.velocity = pParty->speed.toFloat();
+        collision_state.velocity = pParty->speed;
 
         collision_state.uSectorID = sectorId;
         int dt = 0; // zero means use actual dt
@@ -823,14 +824,186 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                         if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                             *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     } else {
-                        pParty->speed = Vec3i();
+                        pParty->speed = Vec3f();
                     }
                 }
             }
         }
 
-        pParty->speed.x = fixpoint_mul(58500, pParty->speed.x);  // 58500 is roughly 0.89
-        pParty->speed.y = fixpoint_mul(58500, pParty->speed.y);
-        pParty->speed.z = fixpoint_mul(58500, pParty->speed.z);
+        // ~0.9x reduce party speed and try again
+        pParty->speed *= 0.89263916f; // was 58500 fp
+    }
+}
+
+void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
+    // --(Collisions)-------------------------------------------------------------------
+    collision_state.ignored_face_id = -1;
+    collision_state.total_move_distance = 0;
+    collision_state.radius_lo = pParty->radius;
+    collision_state.radius_hi = pParty->radius / 2.0f;
+    collision_state.check_hi = true;
+    // make 100 attempts to satisfy collisions
+    for (uint i = 0; i < 100; i++) {
+        collision_state.position_hi = partyNewPos->toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
+        collision_state.position_lo = partyNewPos->toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
+        collision_state.velocity = *partyInputSpeed;
+
+        collision_state.uSectorID = 0;
+
+        int frame_movement_dt = 0;
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
+            frame_movement_dt = 13312;
+        if (collision_state.PrepareAndCheckIfStationary(frame_movement_dt))
+            break;
+
+        CollideOutdoorWithModels(true);
+        CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
+        _46ED8A_collide_against_sprite_objects(Pid::character(0));
+
+        for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
+            CollideWithActor(actor_id, 0);
+
+        Vec3i newPosLow = {};
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            newPosLow.x = collision_state.new_position_lo.x;
+            newPosLow.y = collision_state.new_position_lo.y;
+            newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+        } else {
+            newPosLow.x = partyNewPos->x + collision_state.adjusted_move_distance * collision_state.direction.x;
+            newPosLow.y = partyNewPos->y + collision_state.adjusted_move_distance * collision_state.direction.y;
+            newPosLow.z = partyNewPos->z + collision_state.adjusted_move_distance * collision_state.direction.z;
+        }
+
+        int allnewfloor = ODM_GetFloorLevel(newPosLow, pParty->height, partyIsOnWater, floorFaceId, 0);
+        int party_y_pid;
+        int x_advance_floor = ODM_GetFloorLevel(Vec3i(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
+        int party_x_pid;
+        int y_advance_floor = ODM_GetFloorLevel(Vec3i(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
+        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(newPosLow.x, partyNewPos->y);
+        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewPos->x, newPosLow.y);
+
+        *partyNotOnModel = false;
+        if (!party_y_pid && !party_x_pid && !*floorFaceId) *partyNotOnModel = true;
+
+        bool move_in_y = true;
+        bool move_in_x = true;
+        if (engine->IsUnderwater() || !*partyNotOnModel) {
+            partyNewPos->x = newPosLow.x;
+            partyNewPos->y = newPosLow.y;
+        } else {
+            if (terr_slope_advance_x && x_advance_floor > partyNewPos->z) move_in_x = false;
+            if (terr_slope_advance_y && y_advance_floor > partyNewPos->z) move_in_y = false;
+
+            if (move_in_x) {
+                partyNewPos->x = newPosLow.x;
+                if (move_in_y) partyNewPos->y = newPosLow.y;
+            } else if (move_in_y) {
+                partyNewPos->y = newPosLow.y;
+            } else {
+                if (IsTerrainSlopeTooHigh(newPosLow.x, newPosLow.y) && allnewfloor <= partyNewPos->z) {
+                    // move down the hill is allowed
+                    partyNewPos->x = newPosLow.x;
+                    partyNewPos->y = newPosLow.y;
+                }
+            }
+        }
+
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            if (!*partyNotOnModel) {
+                partyNewPos->x = collision_state.new_position_lo.x;
+                partyNewPos->y = collision_state.new_position_lo.y;
+            }
+            partyNewPos->z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            break;
+        }
+
+        collision_state.total_move_distance += collision_state.adjusted_move_distance;
+        *partyNewPos = newPosLow;
+
+        if (collision_state.pid.type() == OBJECT_Actor) {
+            if (pParty->Invisible())
+                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+        }
+
+        if (collision_state.pid.type() == OBJECT_Decoration) {
+            int atanDecoration = TrigLUT.atan2(
+                newPosLow.x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
+                newPosLow.y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
+            partyInputSpeed->x = TrigLUT.cos(atanDecoration) * integer_sqrt(partyInputSpeed->xy().lengthSqr());
+            partyInputSpeed->y = TrigLUT.sin(atanDecoration) * integer_sqrt(partyInputSpeed->xy().lengthSqr());
+        }
+
+        if (collision_state.pid.type() == OBJECT_Face) {
+            *partyHasHitModel = true;
+            const BSPModel* pModel = &pOutdoor->model(collision_state.pid);
+            const ODMFace* pODMFace = &pOutdoor->face(collision_state.pid);
+            int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
+            bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
+
+            if (engine->IsUnderwater())
+                bFaceSlopeTooSteep = false;
+
+            if (partyInputSpeed->xy().lengthSqr() < 400) {
+                partyInputSpeed->x = 0;
+                partyInputSpeed->y = 0;
+            }
+
+            if (pParty->floor_face_id != collision_state.pid.id() && pODMFace->Pressure_Plate()) {
+                pParty->floor_face_id = collision_state.pid.id();
+                *triggerID = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
+            }
+
+            // TODO(pskelton): these should probably be if else for polygon types
+            if (pODMFace->uPolygonType == POLYGON_Floor) {
+                pParty->bFlying = false;
+                pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                if (partyInputSpeed->z < 0) partyInputSpeed->z = 0;
+                partyNewPos->z = pModel->pVertices[pODMFace->pVertexIDs[0]].z + 1;
+            }
+
+            if (!bSmallZDelta && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || bFaceSlopeTooSteep)) {
+                *partySlopeMod = true;
+
+                // push party away from the surface
+                int dot = std::abs(partyInputSpeed->y * pODMFace->facePlane.normal.y +
+                    partyInputSpeed->z * pODMFace->facePlane.normal.z +
+                    partyInputSpeed->x * pODMFace->facePlane.normal.x);
+                if ((collision_state.speed / 8) > dot)
+                    dot = collision_state.speed / 8;
+                partyInputSpeed->x += dot * pODMFace->facePlane.normal.x;
+                partyInputSpeed->y += dot * pODMFace->facePlane.normal.y;
+                int v54 = 0;
+                if (!bFaceSlopeTooSteep)
+                    v54 = dot * pODMFace->facePlane.normal.z;
+                partyInputSpeed->z += v54;
+                int v55 = collision_state.radius_lo - pODMFace->facePlane.signedDistanceTo(newPosLow.toFloat());
+                if (v55 > 0) {
+                    partyNewPos->x = newPosLow.x + pODMFace->facePlane.normal.x * v55;
+                    partyNewPos->y = newPosLow.y + pODMFace->facePlane.normal.y * v55;
+                    if (!bFaceSlopeTooSteep)
+                        partyNewPos->z = newPosLow.z + pODMFace->facePlane.normal.z * v55;
+                }
+            }
+
+            if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
+                pParty->bFlying = false;
+                pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+
+                // this pushes party slightly up away from the surface so you can climb it
+                float dot = std::abs(partyInputSpeed->y * pODMFace->facePlane.normal.y +
+                    partyInputSpeed->z * pODMFace->facePlane.normal.z +
+                    partyInputSpeed->x * pODMFace->facePlane.normal.x);
+                if ((collision_state.speed / 8) > dot)
+                    dot = collision_state.speed / 8;
+                partyInputSpeed->z += dot * pODMFace->facePlane.normal.z;
+                partyInputSpeed->x += dot * pODMFace->facePlane.normal.x;
+                partyInputSpeed->y += dot * pODMFace->facePlane.normal.y;
+
+                *partySlopeMod = true;
+            }
+        }
+
+        // ~0.9x reduce party speed and try again
+        *partyInputSpeed *= 0.89263916f; // was 58500 fp
     }
 }

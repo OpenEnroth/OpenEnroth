@@ -1028,7 +1028,7 @@ void PrepareToLoadBLV(bool bLoading) {
         pParty->_viewPitch = 0;
         pParty->_viewYaw = 0;
         pParty->pos = Vec3i();
-        pParty->speed = Vec3i();
+        pParty->speed = Vec3f();
         pParty->uFallStartZ = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
         pBLVRenderParams->Reset();
@@ -1581,7 +1581,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int rotation =
         (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
 
-    pParty->speed = Vec3i(0, 0, pParty->speed.z);
+    pParty->speed = Vec3f(0, 0, pParty->speed.z);
 
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
@@ -1680,7 +1680,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (isAboveGround) {
-        pParty->speed.z += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();
+        pParty->speed.z += -2.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
         if (pParty->speed.z < -500) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
@@ -1691,7 +1691,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     } else {
         if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
-            pParty->speed.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+            pParty->speed.z -= 1.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
         } else {
             if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
                 pParty->speed.z = 0;

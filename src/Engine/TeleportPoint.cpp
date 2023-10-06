@@ -19,7 +19,7 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
     assert(_teleportValid);
 
     Vec3i newPos = pParty->pos;
-    Vec3i newSpeed = pParty->speed;
+    Vec3f newSpeed = pParty->speed;
     int newFallStart = pParty->uFallStartZ;
     int newPitch = pParty->_viewPitch;
 
@@ -35,14 +35,14 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
             newFallStart = _pos.z;
         }
         if (_zSpeed) {
-            newSpeed = Vec3i(0, 0, _zSpeed);
+            newSpeed = Vec3f(0, 0, _zSpeed);
         }
         if (_pitch) {
             newPitch = _pitch;
         }
     } else {
         newPos = _pos;
-        newSpeed = Vec3i(0, 0, _zSpeed);
+        newSpeed = Vec3f(0, 0, _zSpeed);
         newFallStart = _pos.z;
         newPitch = _pitch;
     }
