@@ -197,7 +197,7 @@ var searchData=
   ['specular_194',['specular',['../structRenderVertexD3D3.html#a69c89e014a52ba42c0858b1a84a9d1bc',1,'RenderVertexD3D3']]],
   ['speech_5fid_195',['speech_id',['../classEventIR.html#a842a154400bb16a87c71186db3407d1f',1,'EventIR']]],
   ['speechvariants_196',['speechVariants',['../mm7__data_8h.html#adcc1c7d1e55783c2e143c84d138d5e5a',1,'speechVariants():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#adcc1c7d1e55783c2e143c84d138d5e5a',1,'speechVariants():&#160;mm7_data.cpp']]],
-  ['speed_197',['speed',['../structCollisionState.html#afcb74955e0fc39964bb5047469573f5b',1,'CollisionState::speed()'],['../classActor.html#a66d4558bc52848e5bda1fa3911f84048',1,'Actor::speed()'],['../structParty.html#a28c5875822e26a899d949aec54bfbde9',1,'Party::speed()'],['../structPlayer__MM7.html#a6c5cc4b68e2cb3c7c640095cf247c11d',1,'Player_MM7::speed()'],['../classEventIR.html#a8a433a04be055cc08c5ebfef2aba0735',1,'EventIR::speed()']]],
+  ['speed_197',['speed',['../structCollisionState.html#afcb74955e0fc39964bb5047469573f5b',1,'CollisionState::speed()'],['../classActor.html#a66d4558bc52848e5bda1fa3911f84048',1,'Actor::speed()'],['../structParty.html#a75698338223a884c13f08ee0b8fc790f',1,'Party::speed()'],['../structPlayer__MM7.html#a6c5cc4b68e2cb3c7c640095cf247c11d',1,'Player_MM7::speed()'],['../classEventIR.html#a8a433a04be055cc08c5ebfef2aba0735',1,'EventIR::speed()']]],
   ['speedbonus_198',['speedBonus',['../structPlayer__MM7.html#a31d0ad8a055a8a3d9f482a7bb172705b',1,'Player_MM7']]],
   ['spell1id_199',['spell1Id',['../structMonsterInfo__MM7.html#a409663c7741d0aaf98d6bb7b2ced6e3e',1,'MonsterInfo_MM7']]],
   ['spell1usechance_200',['spell1UseChance',['../structMonsterInfo__MM7.html#a3b04e5f006e67aa26ef8cdb9c3ed03e1',1,'MonsterInfo_MM7']]],
