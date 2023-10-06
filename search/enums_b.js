@@ -11,7 +11,8 @@ var searchData=
   ['monster_5fmovement_5ftype_8',['MONSTER_MOVEMENT_TYPE',['../MonsterEnums_8h.html#ab27a6d5f6ecfc6e54c722ea094a31bd9',1,'MonsterEnums.h']]],
   ['monster_5fspecial_5fability_5ftype_9',['MONSTER_SPECIAL_ABILITY_TYPE',['../MonsterEnums_8h.html#a73127776c89e7acfb731224a6a6acf35',1,'MonsterEnums.h']]],
   ['monster_5fsupertype_10',['MONSTER_SUPERTYPE',['../MonsterEnums_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aa',1,'MonsterEnums.h']]],
-  ['monster_5ftype_11',['MONSTER_TYPE',['../MonsterEnums_8h.html#a40319983e674274211bc156688920fde',1,'MonsterEnums.h']]],
-  ['monsterhostility_12',['MonsterHostility',['../MonsterEnums_8h.html#afd55c26f076611124ae70d54156f45de',1,'MonsterEnums.h']]],
-  ['musicid_13',['MusicID',['../SoundEnums_8h.html#a68946471db0c45b6ce503ef14572f078',1,'SoundEnums.h']]]
+  ['monsterhostility_11',['MonsterHostility',['../MonsterEnums_8h.html#afd55c26f076611124ae70d54156f45de',1,'MonsterEnums.h']]],
+  ['monsterid_12',['MonsterId',['../MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba',1,'MonsterEnums.h']]],
+  ['monstertype_13',['MonsterType',['../MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492',1,'MonsterEnums.h']]],
+  ['musicid_14',['MusicID',['../SoundEnums_8h.html#a68946471db0c45b6ce503ef14572f078',1,'SoundEnums.h']]]
 ];

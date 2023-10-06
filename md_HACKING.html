@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbcee45</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ddb31da</span>
    </div>
   </td>
  </tr>
@@ -141,7 +141,7 @@ Coding style</h1>
 <p >Naming:</p><ul>
 <li>Use <code>MM_</code> prefix for macro naming. Macro names should be in <code>SNAKE_CASE_ALL_CAPS</code>.</li>
 <li>Use <code>SNAKE_CASE_ALL_CAPS</code> for <code>enum</code> values. E.g. <code>ITEM_CRATE_OF_ARROWHEADS</code>, <code>ITEM_SLOT_RING6</code>.</li>
-<li>For naming enum values, prefix the name with the name of the type, e.g. <code>MONSTER_TROLL_1</code> for a value of <code>enum MonsterType</code>. For values that are then used in array bounds, put the <code>_FIRST</code>, <code>_LAST</code> and <code>_COUNT</code> right after the name of the type, e.g. <code>ITEM_FIRST_MESSAGE_SCROLL</code>.</li>
+<li>For naming enum values, prefix the name with the name of the type, e.g. <code>MONSTER_TROLL_A</code> for a value of <code>enum class MonsterId</code>. For values that are then used in array bounds, put the <code>_FIRST</code>, <code>_LAST</code> and <code>_COUNT</code> right after the name of the type, e.g. <code>ITEM_FIRST_MESSAGE_SCROLL</code>.</li>
 <li>Use <code>CamelCase</code> for everything else.</li>
 <li>Type names should start with a capital letter. E.g. <code><a class="el" href="classIndexedArray.html">IndexedArray</a></code>, <code>InputAction</code>, <code>PlatformLogLevel</code>. This applies to all types, including classes, structs, enums and typedefs, with certain exceptions as listed below.</li>
 <li>Method &amp; function names should start with a lowercase letter. E.g. <code><a class="el" href="structVec3.html#a129e719058dc74a0eec615d6090f1256">Vec3::length</a></code>, <code>gridCellToWorldPosX</code>, <code>getCeilingHeight</code>.</li>

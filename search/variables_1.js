@@ -42,7 +42,7 @@ var searchData=
   ['alertstatus_39',['alertStatus',['../structLocationInfo__MM7.html#adcee26caf7729cbd6b40cb886b694450',1,'LocationInfo_MM7::alertStatus()'],['../structLocationInfo.html#a6c6c1364af09c3d905edc49e28ebd34a',1,'LocationInfo::alertStatus()']]],
   ['alignment_40',['alignment',['../structParty__MM7.html#a4ee29b014a71830b5760cb706c851124',1,'Party_MM7::alignment()'],['../structParty.html#a0333a828cb051d9f86e142230644cce3',1,'Party::alignment()']]],
   ['allmagic_41',['AllMagic',['../classGameConfig_1_1Debug.html#adefe89229ba3df692b47f1cc2101e9fd',1,'GameConfig::Debug']]],
-  ['ally_42',['ally',['../classActor.html#a0cf8ca50a0c18e91f925428aba0ced88',1,'Actor']]],
+  ['ally_42',['ally',['../classActor.html#abef5b138daca2ace964e7788a0174f44',1,'Actor']]],
   ['alt_5fhalfmin_5finterval_43',['alt_halfmin_interval',['../classEventIR.html#a840d9b7901f6e8d8885e0410654c5ad8',1,'EventIR']]],
   ['alternativeconditionpriorities_44',['AlternativeConditionPriorities',['../classGameConfig_1_1Gameplay.html#a5749525be4764f4a0091acfa9fb01e98',1,'GameConfig::Gameplay']]],
   ['altinterval_45',['altInterval',['../structMapTimer.html#a7065b2013c82729979bdd5b47b67d548',1,'MapTimer']]],
