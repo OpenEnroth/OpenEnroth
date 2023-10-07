@@ -106,7 +106,6 @@ static constexpr IndexedArray<SexAndRace, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST>
     {MONSTER_TYPE_UNUSED_CHICKEN,           {SEX_MALE,      RACE_HUMAN}},
     {MONSTER_TYPE_UNUSED_DOG,               {SEX_MALE,      RACE_HUMAN}},
     {MONSTER_TYPE_UNUSED_RAT,               {SEX_MALE,      RACE_HUMAN}},
-    {MONSTER_TYPE_93,                       {SEX_MALE,      RACE_HUMAN}},
 };
 
 CharacterSex sexForMonsterType(MonsterType monsterType) {

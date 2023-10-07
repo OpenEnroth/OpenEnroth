@@ -176,7 +176,6 @@ IndexedArray<int, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> monster_popup_y_offsets
     {MONSTER_TYPE_UNUSED_CHICKEN,           0},
     {MONSTER_TYPE_UNUSED_DOG,               0},
     {MONSTER_TYPE_UNUSED_RAT,               0},
-    {MONSTER_TYPE_93,                       0},
 };
 
 void Inventory_ItemPopupAndAlchemy();
