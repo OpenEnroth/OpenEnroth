@@ -1,6 +1,10 @@
 #include "CommonTapeRecorder.h"
 
+#include <ranges>
+
 #include "Engine/Objects/Character.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
@@ -44,8 +48,8 @@ TestTape<int> CommonTapeRecorder::totalItemCount() {
     });
 }
 
-TestTape<bool> CommonTapeRecorder::hasItem(ItemId item) {
-    return custom([item] { return pParty->hasItem(item); });
+TestTape<bool> CommonTapeRecorder::hasItem(ItemId itemId) {
+    return custom([itemId] { return pParty->hasItem(itemId); });
 }
 
 TestTape<int> CommonTapeRecorder::gold() {
@@ -90,4 +94,34 @@ TestTape<GameTime> CommonTapeRecorder::time() {
 
 TestTape<bool> CommonTapeRecorder::turnBasedMode() {
     return custom([] { return pParty->bTurnBasedModeOn; });
+}
+
+TestTape<int> CommonTapeRecorder::actorCountByState(AIState state) {
+    return custom([state] {
+        return static_cast<int>(std::ranges::count(pActors, state, &Actor::aiState));
+    });
+}
+
+TestTape<int> CommonTapeRecorder::actorCountByBuff(ACTOR_BUFF_INDEX buff) {
+    return custom([buff] {
+        return static_cast<int>(std::ranges::count_if(pActors, [buff] (const Actor &actor) {
+            return actor.buffs[buff].Active();
+        }));
+    });
+}
+
+TestTape<int> CommonTapeRecorder::mapItemCount() {
+    return custom([] {
+        return static_cast<int>(std::ranges::count_if(pSpriteObjects, [] (const SpriteObject &object) {
+            return object.containing_item.uItemID != ITEM_NULL;
+        }));
+    });
+}
+
+TestTape<int> CommonTapeRecorder::mapItemCount(ItemId itemId) {
+    return custom([itemId] {
+        return static_cast<int>(std::ranges::count_if(pSpriteObjects, [itemId] (const SpriteObject &object) {
+            return object.containing_item.uItemID == itemId;
+        }));
+    });
 }

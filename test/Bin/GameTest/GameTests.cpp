@@ -649,12 +649,7 @@ GAME_TEST(Issues, Issue488) {
 
 GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
-    auto chibisTape = tapes.custom([] {
-        return std::count_if(pActors.begin(), pActors.end(), [] (const Actor &actor) {
-            return actor.buffs[ACTOR_BUFF_SHRINK].Active();
-        });
-    });
-
+    auto chibisTape = tapes.actorCountByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
     EXPECT_EQ(chibisTape, tape(0, 21));
 }
@@ -1389,9 +1384,7 @@ GAME_TEST(Issues, Issue830) {
 
 GAME_TEST(Issues, Issue832) {
     // Death Blossom + ice blast crash
-    auto deathsTape = tapes.custom([] {
-        return std::count_if(pActors.begin(), pActors.end(), [] (auto &&actor) { return actor.aiState == AIState::Dead; });
-    });
+    auto deathsTape = tapes.actorCountByState(AIState::Dead);
     test.playTraceFromTestData("issue_832.mm7", "issue_832.json");
     EXPECT_EQ(deathsTape.firstLast(), tape(0, 3));
 }
@@ -1643,14 +1636,10 @@ GAME_TEST(Issues, Issue1197) {
 // 1200
 
 GAME_TEST(Issues, Issue1251) {
-    // Make sure charm wand doesnt assert
-    auto charmedactors = tapes.custom([] {
-        return std::count_if(pActors.begin(), pActors.end(), [](const Actor& actor) {
-            return actor.buffs[ACTOR_BUFF_CHARM].Active();
-            });
-        });
+    // Make sure charm wand doesn't assert
+    auto charmedActors = tapes.actorCountByBuff(ACTOR_BUFF_CHARM);
     test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");
-    EXPECT_EQ(charmedactors.delta(), 3);
+    EXPECT_EQ(charmedActors.delta(), 3);
 }
 
 GAME_TEST(Issues, Issue1255) {
@@ -1683,13 +1672,7 @@ GAME_TEST(Issues, Issue1281) {
 GAME_TEST(Issues, Issue1282) {
     // Picking up an item asserts.
     auto itemTape = tapes.hasItem(ITEM_LEATHER_ARMOR);
-    auto totalObjectsTape = tapes.custom([] {
-        int result = 0;
-        for (const SpriteObject &spriteObject : pSpriteObjects)
-            if (spriteObject.containing_item.uItemID != ITEM_NULL)
-                result++;
-        return result;
-    });
+    auto totalObjectsTape = tapes.mapItemCount();
     test.playTraceFromTestData("issue_1282.mm7", "issue_1282.json");
     EXPECT_EQ(itemTape, tape(false, true));
     EXPECT_EQ(totalObjectsTape.delta(), -1);

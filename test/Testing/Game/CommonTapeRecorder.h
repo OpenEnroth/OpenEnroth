@@ -6,6 +6,7 @@
 #include <type_traits>
 
 #include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/ActorEnums.h"
 #include "Engine/Time.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
@@ -43,7 +44,7 @@ class CommonTapeRecorder {
 
     TestTape<int> totalItemCount();
 
-    TestTape<bool> hasItem(ItemId item);
+    TestTape<bool> hasItem(ItemId itemId);
 
     TestTape<int> gold();
 
@@ -67,6 +68,14 @@ class CommonTapeRecorder {
     TestTape<T> config(const ConfigEntry<T> &entry) {
         return custom([&] { return entry.value(); });
     }
+
+    TestTape<int> actorCountByState(AIState state);
+
+    TestTape<int> actorCountByBuff(ACTOR_BUFF_INDEX buff);
+
+    TestTape<int> mapItemCount();
+
+    TestTape<int> mapItemCount(ItemId itemId);
 
  private:
     TestController *_controller = nullptr;
