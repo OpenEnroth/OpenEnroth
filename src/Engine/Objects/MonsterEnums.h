@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
 
 #include "Utility/Workaround/ToUnderlying.h"
@@ -453,6 +454,8 @@ CharacterSex sexForMonsterType(MonsterType monsterType);
 Race raceForMonsterType(MonsterType monsterType);
 
 bool isBountyHuntable(MonsterType monsterType, HouseId townHall);
+
+ItemId itemDropForMonsterType(MonsterType monsterType);
 
 /*  335 */
 enum class MONSTER_SPECIAL_ABILITY_TYPE {

@@ -1842,37 +1842,7 @@ void Actor::Die(unsigned int uActorID) {
 
     ItemGen drop;
     drop.Reset();
-    switch (actor->monsterInfo.uID) {
-        case MONSTER_HARPY_A:
-        case MONSTER_HARPY_B:
-        case MONSTER_HARPY_C:
-            drop.uItemID = ITEM_REAGENT_HARPY_FEATHER;
-            break;
-
-        case MONSTER_OOZE_A:
-        case MONSTER_OOZE_B:
-        case MONSTER_OOZE_C:
-            drop.uItemID = ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
-            break;
-
-        case MONSTER_TROLL_A:
-        case MONSTER_TROLL_B:
-        case MONSTER_TROLL_C:
-            drop.uItemID = ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
-            break;
-
-        case MONSTER_DEVIL_A:
-        case MONSTER_DEVIL_B:
-        case MONSTER_DEVIL_C:
-            drop.uItemID = ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
-            break;
-
-        case MONSTER_DRAGON_A:
-        case MONSTER_DRAGON_B:
-        case MONSTER_DRAGON_C:
-            drop.uItemID = ITEM_REAGENT_DRAGONS_EYE;
-            break;
-    }
+    drop.uItemID = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.uID));
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,

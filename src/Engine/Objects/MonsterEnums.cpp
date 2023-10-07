@@ -237,3 +237,14 @@ static constexpr IndexedArray<BountyHuntableMask, MONSTER_TYPE_FIRST, MONSTER_TY
 bool isBountyHuntable(MonsterType monsterType, HouseId townHall) {
     return bountyHuntableMaskByMonsterType[monsterType][townHall];
 }
+
+ItemId itemDropForMonsterType(MonsterType monsterType) {
+    switch (monsterType) {
+    case MONSTER_TYPE_HARPY: return ITEM_REAGENT_HARPY_FEATHER;
+    case MONSTER_TYPE_OOZE: return ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
+    case MONSTER_TYPE_TROLL: return ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
+    case MONSTER_TYPE_DEVIL: return ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
+    case MONSTER_TYPE_DRAGON: return ITEM_REAGENT_DRAGONS_EYE;
+    default: return ITEM_NULL;
+    }
+}
