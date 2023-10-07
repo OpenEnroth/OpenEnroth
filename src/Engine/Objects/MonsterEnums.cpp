@@ -115,3 +115,114 @@ CharacterSex sexForMonsterType(MonsterType monsterType) {
 Race raceForMonsterType(MonsterType monsterType) {
     return sexAndRaceByMonsterType[monsterType].race;
 }
+
+struct BountyHuntableMask : IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> {
+    constexpr BountyHuntableMask() {
+        fill(false);
+    }
+
+    constexpr BountyHuntableMask(std::initializer_list<HouseId> townHalls) {
+        fill(false);
+        for (const HouseId townHall : townHalls)
+            (*this)[townHall] = true;
+    }
+};
+
+static constexpr IndexedArray<BountyHuntableMask, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> bountyHuntableMaskByMonsterType = {
+    {MONSTER_TYPE_ANGEL,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ARCHER,                  {HOUSE_TOWN_HALL_HARMONDALE,                          HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_BAT,                     {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_BEHEMOTH,                {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_BEHOLDER,                {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_CLERIC_MOON,             {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_CLERIC_SUN,              {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST,                          HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_DEVIL,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_DRAGON,                  {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_DRAGONFLY,               {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA,                                  HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_DWARF,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ELEMENTAL_AIR,           {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ELEMENTAL_EARTH,         {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ELEMENTAL_FIRE,          {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ELEMENTAL_LIGHT,         {                                                                                                                                  }},
+    {MONSTER_TYPE_ELEMENTAL_WATER,         {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ELF_ARCHER,              {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA,                                  HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ELF_SPEARMAN,            {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA,                                  HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_FIGHTER_CHAIN,           {HOUSE_TOWN_HALL_HARMONDALE,                          HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_FIGHTER_LEATHER,         {HOUSE_TOWN_HALL_HARMONDALE,                          HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_FIGHTER_PLATE,           {HOUSE_TOWN_HALL_HARMONDALE,                          HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_GARGOYLE,                {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_GENIE,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST,                          HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_GHOST,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_GOBLIN,                  {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_GOG,                     {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_GOLEM,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST,                          HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_GRIFFIN,                 {HOUSE_TOWN_HALL_HARMONDALE,                          HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_HARPY,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_HYDRA,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_LICH,                    {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_MAGE,                    {                            HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST,                          HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_MANTICORE,               {                                                                                                                                  }},
+    {MONSTER_TYPE_MEDUSA,                  {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_MINOTAUR,                {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_MONK,                    {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST,                          HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_NECROMANCER,             {                            HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_OOZE,                    {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_PEASANT_DWARF_FEMALE_A,  {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_DWARF_FEMALE_B,  {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_DWARF_FEMALE_C,  {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_DWARF_MALE_A,    {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_DWARF_MALE_B,    {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_DWARF_MALE_C,    {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_ELF_FEMALE_A,    {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_ELF_FEMALE_B,    {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_ELF_FEMALE_C,    {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_ELF_MALE_A,      {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_ELF_MALE_B,      {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_ELF_MALE_C,      {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN1_FEMALE_A, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN1_FEMALE_B, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN1_FEMALE_C, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN1_MALE_A,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN1_MALE_B,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN1_MALE_C,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN2_MALE_A,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN2_MALE_B,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN2_MALE_C,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN2_FEMALE_A, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN2_FEMALE_B, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_HUMAN2_FEMALE_C, {                                                                                                                                  }},
+    {MONSTER_TYPE_RAT,                     {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ROBOT,                   {                                                                                                                                  }},
+    {MONSTER_TYPE_ROC,                     {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST,                          HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_SEA_MONSTER,             {                                                                                                                                  }},
+    {MONSTER_TYPE_SKELETON_WARRIOR,        {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_SPIDER,                  {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_SWORDSMAN,               {                                                     HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_THIEF,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_TITAN,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_TROGLODYTE,              {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_VAMPIRE,                 {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_WARLOCK,                 {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_WIGHT,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_WYVERN,                  {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_ZOMBIE,                  {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_PEASANT_GOBLIN_FEMALE_A, {HOUSE_TOWN_HALL_HARMONDALE                                                                                                        }},
+    {MONSTER_TYPE_PEASANT_GOBLIN_FEMALE_B, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_GOBLIN_FEMALE_C, {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_GOBLIN_MALE_A,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_GOBLIN_MALE_B,   {                                                                                                                                  }},
+    {MONSTER_TYPE_PEASANT_GOBLIN_MALE_C,   {                                                                                                                                  }},
+    {MONSTER_TYPE_TROLL,                   {                            HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
+    {MONSTER_TYPE_TREANT,                  {                                                                                                                                  }},
+    {MONSTER_TYPE_GHOUL,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE                     }},
+    {MONSTER_TYPE_BLASTERGUY,              {                                                                                                                                  }},
+    {MONSTER_TYPE_ULTRA_DRAGON,            {                                                                                                                                  }},
+    {MONSTER_TYPE_UNUSED_CAT,              {                                                                                                                                  }},
+    {MONSTER_TYPE_UNUSED_CHICKEN,          {                                                                                                                                  }},
+    {MONSTER_TYPE_UNUSED_DOG,              {                                                                                                                                  }},
+    {MONSTER_TYPE_UNUSED_RAT,              {                                                                                                                                  }},
+};
+
+bool isBountyHuntable(MonsterType monsterType, HouseId townHall) {
+    return bountyHuntableMaskByMonsterType[monsterType][townHall];
+}

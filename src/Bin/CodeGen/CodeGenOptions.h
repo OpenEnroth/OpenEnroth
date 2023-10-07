@@ -11,6 +11,7 @@ struct CodeGenOptions : GameStarterOptions {
         SUBCOMMAND_HOUSE_ID,
         SUBCOMMAND_MONSTER_ID,
         SUBCOMMAND_MONSTER_TYPE,
+        SUBCOMMAND_BOUNTY_HUNT,
     };
     using enum Subcommand;
 

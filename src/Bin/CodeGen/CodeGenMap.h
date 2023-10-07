@@ -11,6 +11,8 @@
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Format.h"
 
+#include "CodeGenFunctions.h"
+
 class CodeGenMap {
  public:
     template<class Enum>
@@ -40,25 +42,16 @@ class CodeGenMap {
     }
 
     void dump(FILE *file, const std::string &prefix) {
-        std::vector<std::pair<std::string, std::string>> linesAndComments;
+        std::vector<std::array<std::string, 2>> linesAndComments;
         for (const auto &[value, name] : _nameByValue) {
             std::string comment = _commentByValue[value];
             if (!comment.empty())
-                comment = " // " + comment;
+                comment = "// " + comment;
 
-            linesAndComments.emplace_back(fmt::format("{}{} = {}", prefix, name, value), comment);
+            linesAndComments.push_back({fmt::format("{}{} = {}, ", prefix, name, value), comment});
         }
 
-        size_t maxLineLen = 0;
-        for (const auto &[line, _] : linesAndComments)
-            maxLineLen = std::max(maxLineLen, line.size());
-
-        for (const auto &[line, comment] : linesAndComments) {
-            std::string padding;
-            if (!comment.empty())
-                padding = std::string(maxLineLen - line.size(), ' ');
-            fmt::println(file, "    {},{}{}", line, padding, comment);
-        }
+        dumpAligned(file, "    ", linesAndComments);
     }
 
  private:

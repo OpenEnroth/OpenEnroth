@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Engine/Objects/CharacterEnums.h"
+#include "GUI/UI/UIHouseEnums.h"
 
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
@@ -431,6 +432,10 @@ enum class MonsterType {
 };
 using enum MonsterType;
 
+inline Segment<MonsterType> allMonsterTypes() {
+    return {MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST};
+}
+
 inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
 }
@@ -446,6 +451,8 @@ inline bool isPeasant(MonsterType monsterType) {
 CharacterSex sexForMonsterType(MonsterType monsterType);
 
 Race raceForMonsterType(MonsterType monsterType);
+
+bool isBountyHuntable(MonsterType monsterType, HouseId townHall);
 
 /*  335 */
 enum class MONSTER_SPECIAL_ABILITY_TYPE {
@@ -519,3 +526,4 @@ enum class MonsterHostility {
     HOSTILITY_LAST = HOSTILITY_LONG
 };
 using enum MonsterHostility;
+
