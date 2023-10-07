@@ -1691,3 +1691,12 @@ GAME_TEST(Issues, Issue1315) {
                               std::tuple(false, GAME_STATE_PARTY_DIED), // Instant switch from turn-based & alive into realtime & dead,
                               std::tuple(false, GAME_STATE_PLAYING)));  // meaning that the party died in turn-based mode.
 }
+
+GAME_TEST(Prs, Pr1325) {
+    // Trolls drop vials of troll blood.
+    auto vialsTape = tapes.mapItemCount(ITEM_REAGENT_VIAL_OF_TROLL_BLOOD);
+    auto deadTape = tapes.actorCountByState(AIState::Dead);
+    test.playTraceFromTestData("pr_1325.mm7", "pr_1325.json");
+    EXPECT_EQ(vialsTape.delta(), +6);
+    EXPECT_EQ(deadTape.delta(), +84); // Too much armageddon...
+}
