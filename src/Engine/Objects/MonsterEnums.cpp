@@ -99,9 +99,14 @@ static constexpr IndexedArray<SexAndRace, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST>
     {MONSTER_TYPE_TREANT,                   {SEX_MALE,      RACE_HUMAN}},
     {MONSTER_TYPE_GHOUL,                    {SEX_MALE,      RACE_HUMAN}},
 
-    // These two weren't in the original data tables.
+    // OE addition, these weren't in the original data tables:
     {MONSTER_TYPE_BLASTERGUY,               {SEX_MALE,      RACE_HUMAN}},
-    {MONSTER_TYPE_ULTRA_DRAGON,             {SEX_MALE,      RACE_HUMAN}}
+    {MONSTER_TYPE_ULTRA_DRAGON,             {SEX_MALE,      RACE_HUMAN}},
+    {MONSTER_TYPE_UNUSED_CAT,               {SEX_MALE,      RACE_HUMAN}},
+    {MONSTER_TYPE_UNUSED_CHICKEN,           {SEX_MALE,      RACE_HUMAN}},
+    {MONSTER_TYPE_UNUSED_DOG,               {SEX_MALE,      RACE_HUMAN}},
+    {MONSTER_TYPE_UNUSED_RAT,               {SEX_MALE,      RACE_HUMAN}},
+    {MONSTER_TYPE_93,                       {SEX_MALE,      RACE_HUMAN}},
 };
 
 CharacterSex sexForMonsterType(MonsterType monsterType) {

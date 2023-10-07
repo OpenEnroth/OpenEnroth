@@ -257,8 +257,13 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
 }
 
 std::string cleanupMonsterEnumName(std::string enumName) {
-    if (enumName.starts_with("ZBLASTERGUY") || enumName.starts_with("ZULTRA_DRAGON"))
-        enumName = enumName.substr(1);
+    for (const char *prefix : {"ZBLASTERGUY", "ZULTRA_DRAGON", })
+        if (enumName.starts_with(prefix))
+            enumName = enumName.substr(1);
+
+    for (const char *prefix : {"ZCAT", "ZCHICKEN", "ZDOG", "ZRAT"})
+        if (enumName.starts_with(prefix))
+            enumName = "UNUSED_" + enumName.substr(1);
 
     enumName = replaceAll(enumName, "MALEA", "MALE_A");
     enumName = replaceAll(enumName, "MALEB", "MALE_B");
@@ -280,11 +285,12 @@ int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceMan
     CodeGenMap map;
     map.insert(MONSTER_INVALID, "INVALID", "");
 
-    for (const MonsterId i : monsterStats.pInfos.indices()) {
-        const MonsterInfo &desc = monsterStats.pInfos[i];
-        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pPictureName));
+    for (const MonsterId i : allMonsters()) {
+        const MonsterDesc &desc = pMonsterList->pMonsters[i];
+        const MonsterInfo &info = monsterStats.pInfos[i];
+        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pMonsterName));
 
-        std::string comment = desc.pName;
+        std::string comment = info.pName;
         if (comment == "peasant")
             comment = "Peasant";
         if (!comment.empty())
@@ -304,19 +310,16 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
     pMonsterList = new MonsterList;
     deserialize(dmonBlobs, pMonsterList);
 
-    MonsterStats monsterStats;
-    monsterStats.Initialize(resourceManager->getEventsFile("monsters.txt"));
-
     CodeGenMap map;
     map.insert(MONSTER_TYPE_INVALID, "INVALID", "");
 
     int counter = 0;
-    for (const MonsterId i : monsterStats.pInfos.indices()) {
+    for (const MonsterId i : allMonsters()) {
         if (++counter % 3 != 1)
             continue;
 
-        const MonsterInfo &desc = monsterStats.pInfos[i];
-        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pPictureName));
+        const MonsterDesc &desc = pMonsterList->pMonsters[i];
+        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pMonsterName));
 
         if (enumName.ends_with("_A")) {
             enumName.resize(enumName.size() - 2);
