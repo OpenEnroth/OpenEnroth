@@ -332,7 +332,7 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
     return 0;
 }
 
-int runBountyHuntCodegen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
     // Fill bounty hunt map.
     grng = RandomEngine::create(RANDOM_ENGINE_SEQUENTIAL);
     IndexedArray<std::unordered_set<MonsterId>, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monstersByTownHall;
@@ -401,7 +401,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_HOUSE_ID: return runHouseIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MONSTER_ID: return runMonsterIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodegen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(std::move(options), &resourceManager);
         default:
             assert(false);
             return 1;
