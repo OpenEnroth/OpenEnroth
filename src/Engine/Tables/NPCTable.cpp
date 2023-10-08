@@ -478,7 +478,6 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     int uPortretMin;          // [sp+24h] [bp+Ch]@1
     int uPortretMax;
 
-    // TODO(captainurist): encapsulate enum arithmetic.
     MonsterType monsterType = monsterTypeForMonsterId(npc_uid);
     CharacterSex uNPCSex = sexForMonsterType(monsterType);
     uRace = raceForMonsterType(monsterType);
