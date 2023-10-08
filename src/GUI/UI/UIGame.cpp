@@ -1544,14 +1544,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
-                pPoint_X =
-                    uCenterX + fixpoint_mul((pSpriteObjects[i].vPosition.x -
-                                             pParty->pos.x),
-                                            uZoom);
-                pPoint_Y =
-                    uCenterY - fixpoint_mul((pSpriteObjects[i].vPosition.y -
-                                             pParty->pos.y),
-                                            uZoom);
+                pPoint_X = uCenterX + (pSpriteObjects[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
+                pPoint_Y = uCenterY - (pSpriteObjects[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z &&
                 //     pPoint_Y >= render->raster_clip_y && pPoint_Y <=
@@ -1586,14 +1580,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             if (pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&
                 (pActors[i].aiState == Dead || pActors[i].ActorNearby())) {
-                pPoint_X =
-                    uCenterX +
-                    (fixpoint_mul(
-                        (pActors[i].pos.x - pParty->pos.x), uZoom));
-                pPoint_Y =
-                    uCenterY -
-                    (fixpoint_mul(
-                        (pActors[i].pos.y - pParty->pos.y), uZoom));
+                pPoint_X = uCenterX + (pActors[i].pos.x - pParty->pos.x) * uZoom / 65536.0f;
+                pPoint_Y = uCenterY - (pActors[i].pos.y - pParty->pos.y) * uZoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
@@ -1630,12 +1618,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
         for (uint i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
-                pPoint_X =
-                    uCenterX + (fixpoint_mul((pLevelDecorations[i].vPosition.x -
-                                              pParty->pos.x), uZoom));
-                pPoint_Y =
-                    uCenterY - (fixpoint_mul((pLevelDecorations[i].vPosition.y -
-                                              pParty->pos.y), uZoom));
+                pPoint_X = uCenterX + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
+                pPoint_Y = uCenterY - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
 
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z

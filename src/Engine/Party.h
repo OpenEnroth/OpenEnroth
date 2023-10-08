@@ -281,12 +281,12 @@ struct Party {
     GameTime playing_time;  // uint64_t uTimePlayed;
     GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
-    Vec3i pos;
+    Vec3f pos;
     Vec3f speed; // Party speed, negative z => falling, positive z => jumping.
                  // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
     int _viewYaw; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
     int _viewPitch; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.
-    Vec3i lastPos; // TODO(captainurist): drop
+    Vec3f lastPos; // TODO(captainurist): drop
     int _viewPrevYaw;
     int _viewPrevPitch;
     int lastEyeLevel; // TODO(captainurist): drop

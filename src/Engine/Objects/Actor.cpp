@@ -338,7 +338,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
                 sprite.spell_level = uSkillMastery.level();
                 sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-                sprite.vPosition = pParty->pos + Vec3i(0, 0, originHeight + 2500);
+                sprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
@@ -903,7 +903,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Character: {
-            out1 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+            out1 = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
@@ -946,7 +946,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             if (!PreferedZ)
                 PreferedZ = pParty->eyeLevel;
 
-            out2 = pParty->pos + Vec3i(0, 0, PreferedZ);
+            out2 = pParty->pos.toInt() + Vec3i(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
@@ -4171,7 +4171,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj2_sector = pIndoor->GetSector(pos2);
             break;
         case OBJECT_Character:
-            pos2 = pParty->pos + Vec3i(0, 0, pParty->eyeLevel);
+            pos2 = pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel);
             obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
@@ -4635,13 +4635,13 @@ void evaluateAoeDamage() {
 
             if (targetType != OBJECT_Actor) {
                 if (targetType == OBJECT_Character) {  // party damage from monsters
-                    int distanceSq = (pParty->pos + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
+                    int distanceSq = (pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
                     int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pParty->pos + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
+                        if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
@@ -4665,13 +4665,13 @@ void evaluateAoeDamage() {
                 }
             }
         } else {  // damage from AOE spells
-            int distanceSq = (pParty->pos + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
+            int distanceSq = (pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
             int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
             // check spell in range of party
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
-                if (Check_LineOfSight(pParty->pos + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
+                if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++) {
                         if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);

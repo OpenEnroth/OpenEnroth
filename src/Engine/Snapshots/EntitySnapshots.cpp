@@ -468,10 +468,10 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.PartyTimes.HistoryEventTimes, &dst->partyTimes.historyEventTimes);
     snapshot(src.PartyTimes._s_times, &dst->partyTimes.someOtherTimes);
 
-    dst->position = src.pos;
+    dst->position = src.pos.toInt();
     dst->viewYaw = src._viewYaw;
     dst->viewPitch = src._viewPitch;
-    dst->prevPosition = src.lastPos;
+    dst->prevPosition = src.lastPos.toInt();
     dst->viewPrevYaw = src._viewPrevYaw;
     dst->viewPrevPitch = src._viewPrevPitch;
     dst->prevEyeLevel = src.lastEyeLevel;
@@ -566,10 +566,10 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);
     reconstruct(src.partyTimes.someOtherTimes, &dst->PartyTimes._s_times);
 
-    dst->pos = src.position;
+    dst->pos = src.position.toFloat();
     dst->_viewYaw = src.viewYaw;
     dst->_viewPitch = src.viewPitch;
-    dst->lastPos = src.prevPosition;
+    dst->lastPos = src.prevPosition.toFloat();
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
     dst->lastEyeLevel = src.prevEyeLevel;

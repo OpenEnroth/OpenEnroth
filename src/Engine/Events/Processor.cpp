@@ -61,7 +61,7 @@ void checkDecorationEvents() {
         const LevelDecoration &decoration = pLevelDecorations[decorationId];
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
-            if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange) {
+            if ((decoration.vPosition - pParty->pos.toInt()).length() < decoration.uTriggerRange) {
                 eventProcessor(decoration.uEventID, Pid(OBJECT_Decoration, decorationId), 1);
             }
         }

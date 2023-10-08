@@ -120,7 +120,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
     // if in current map
     // TODO(Nik-RE-dev): need separate function for teleportation to other maps
     if (pMapStats->GetMapInfo(pCurrentMapName) == townPortalList[townId].mapInfoID) {
-        pParty->pos = townPortalList[townId].pos;
+        pParty->pos = townPortalList[townId].pos.toFloat();
         pParty->uFallStartZ = pParty->pos.z;
         pParty->_viewYaw = townPortalList[townId].viewYaw;
         pParty->_viewPitch = townPortalList[townId].viewPitch;

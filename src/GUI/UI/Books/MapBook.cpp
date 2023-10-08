@@ -140,7 +140,7 @@ void GUIWindow_MapBook::Update() {
         map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
     }
 
-    auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, pParty->pos.x, pParty->pos.y);
+    auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
 
     map_window.uFrameX = 0;
     map_window.DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
@@ -245,8 +245,8 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     }
 
     // Direction arrow drawing
-    int ArrowXPos = (fixpoint_mul((pParty->pos.x - pCenterX), viewparams->uMapBookMapZoom)) + ScreenCenterX - 3;
-    int ArrowYPos = ScreenCenterY - (fixpoint_mul((pParty->pos.y - pCenterY), viewparams->uMapBookMapZoom)) - 3;
+    int ArrowXPos = (pParty->pos.x - pCenterX) * viewparams->uMapBookMapZoom / 65536.0f + ScreenCenterX - 3;
+    int ArrowYPos = ScreenCenterY - ((pParty->pos.y - pCenterY) * viewparams->uMapBookMapZoom / 65536.0f) - 3;
     bool DrawArrow = 1;
 
     if (ArrowXPos >= (signed int)tl_x) {

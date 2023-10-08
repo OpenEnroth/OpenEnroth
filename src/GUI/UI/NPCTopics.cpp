@@ -241,7 +241,7 @@ DIALOGUE_TYPE arenaMainDialogue() {
                 pParty->field_7B5_in_arena_quest = -1;
                 return DIALOGUE_ARENA_REWARD;
             } else {
-                pParty->pos = Vec3i(3849, 5770, 1);
+                pParty->pos = Vec3f(3849, 5770, 1);
                 pParty->speed = Vec3f();
                 pParty->uFallStartZ = 1;
                 pParty->_viewYaw = 512;
@@ -281,7 +281,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
     pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
 
-    pParty->pos = Vec3i(3849, 5770, 1);
+    pParty->pos = Vec3f(3849, 5770, 1); // TODO(pskelton) :: extract this common teleport to func
     pParty->speed = Vec3f();
     pParty->uFallStartZ = 1;
     pParty->_viewYaw = 512;

@@ -18,7 +18,7 @@ void TeleportPoint::setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed)
 void TeleportPoint::doTeleport(bool keepOnZero) {
     assert(_teleportValid);
 
-    Vec3i newPos = pParty->pos;
+    Vec3f newPos = pParty->pos;
     Vec3f newSpeed = pParty->speed;
     int newFallStart = pParty->uFallStartZ;
     int newPitch = pParty->_viewPitch;
@@ -41,7 +41,7 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
             newPitch = _pitch;
         }
     } else {
-        newPos = _pos;
+        newPos = _pos.toFloat();
         newSpeed = Vec3f(0, 0, _zSpeed);
         newFallStart = _pos.z;
         newPitch = _pitch;

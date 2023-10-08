@@ -166,7 +166,7 @@ void GUIWindow_Transport::transportDialogue() {
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;
-            pParty->pos = pTravel->arrivalPos;
+            pParty->pos = pTravel->arrivalPos.toFloat();
             pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewPitch = 0;
             pParty->_viewYaw = pTravel->arrival_view_yaw;
