@@ -1145,21 +1145,20 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
         ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
-        if (MonsterStats::BelongsToSupertype(uTargetActorID,
-                                             MONSTER_SUPERTYPE_UNDEAD) &&
+        if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_UNDEAD &&
             (enchType == ITEM_ENCHANTMENT_UNDEAD_SLAYING || itemId == ITEM_ARTIFACT_GHOULSBANE ||
              itemId == ITEM_ARTIFACT_GIBBET || itemId == ITEM_RELIC_JUSTICE)) {
             totalDmg *= 2;  // double damage vs undead
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_KREEGAN) &&
+        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_KREEGAN &&
                    (enchType == ITEM_ENCHANTMENT_DEMON_SLAYING || itemId == ITEM_ARTIFACT_GIBBET)) {
             totalDmg *= 2;  // double damage vs devils
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_DRAGON) &&
+        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_DRAGON &&
                    (enchType == ITEM_ENCHANTMENT_DRAGON_SLAYING || itemId == ITEM_ARTIFACT_GIBBET)) {
             totalDmg *= 2;  // double damage vs dragons
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_ELF) &&
+        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_ELF &&
                    (enchType == ITEM_ENCHANTMENT_ELF_SLAYING || itemId == ITEM_RELIC_OLD_NICK)) {
             totalDmg *= 2;  // double damage vs elf
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_TITAN) &&
+        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_TITAN &&
                    (enchType == ITEM_ENCHANTMENT_TITAN_SLAYING)) {
             totalDmg *= 2;  // double damage vs titan
         }
@@ -1247,16 +1246,16 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
 
     if (uMonsterInfoID != MONSTER_INVALID) {  // check against bow enchantments
         if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
-            MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) {  // double damage vs undead
+            supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_UNDEAD) {  // double damage vs undead
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_DEMON_SLAYING &&
-                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_KREEGAN)) {  // double vs devils
+                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_KREEGAN) {  // double vs devils
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_DRAGON_SLAYING &&
-                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_DRAGON)) {  // double vs dragons
+                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_DRAGON) {  // double vs dragons
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_ELF_SLAYING &&
-                   MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_ELF)) {  // double vs elf
+                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_ELF) {  // double vs elf
             damage *= 2;
         }
     }

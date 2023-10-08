@@ -490,9 +490,21 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_WATER_ELEMENTAL = 0x5,
     MONSTER_SUPERTYPE_TREANT = 0x6,
     MONSTER_SUPERTYPE_TITAN = 0x7,
-    MONSTER_SUPERTYPE_8 = 0x8,
+    MONSTER_SUPERTYPE_8 = 0x8, // TODO(captainurist): not an arena monster? Drop?
 };
 using enum MONSTER_SUPERTYPE;
+
+/**
+ * @offset 0x00438BDF
+ *
+ * @param monsterType                   Monster type to check.
+ * @return                              Supertype for the provided monster type.
+ */
+MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType);
+
+inline MONSTER_SUPERTYPE supertypeForMonsterId(MonsterId monsterId) {
+    return supertypeForMonsterType(monsterTypeForMonsterId(monsterId));
+}
 
 enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,

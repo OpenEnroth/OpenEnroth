@@ -248,3 +248,42 @@ ItemId itemDropForMonsterType(MonsterType monsterType) {
     default: return ITEM_NULL;
     }
 }
+
+MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType) {
+    switch (monsterType) {
+    case MONSTER_TYPE_GHOST:
+    case MONSTER_TYPE_LICH:
+    case MONSTER_TYPE_SKELETON_WARRIOR:
+    case MONSTER_TYPE_VAMPIRE:
+    case MONSTER_TYPE_WIGHT:
+    case MONSTER_TYPE_ZOMBIE:
+    case MONSTER_TYPE_GHOUL:
+        return MONSTER_SUPERTYPE_UNDEAD;
+    case MONSTER_TYPE_DEVIL:
+        return MONSTER_SUPERTYPE_KREEGAN;
+    case MONSTER_TYPE_PEASANT_ELF_FEMALE_A:
+    case MONSTER_TYPE_PEASANT_ELF_FEMALE_B:
+    case MONSTER_TYPE_PEASANT_ELF_FEMALE_C:
+    case MONSTER_TYPE_PEASANT_ELF_MALE_A:
+    case MONSTER_TYPE_PEASANT_ELF_MALE_B:
+    case MONSTER_TYPE_PEASANT_ELF_MALE_C:
+    case MONSTER_TYPE_ELF_ARCHER:
+    case MONSTER_TYPE_ELF_SPEARMAN:
+        return MONSTER_SUPERTYPE_ELF;
+
+    // TODO(captainurist): should also include mega-dragon?
+    case MONSTER_TYPE_DRAGON:
+        return MONSTER_SUPERTYPE_DRAGON;
+
+    // TODO(captainurist): This needs some reworking it seems. Water elemental supertype is about water walking,
+    //                     treant supertype is about being a tree that can't move. The rest are about "of X slaying".
+    case MONSTER_TYPE_ELEMENTAL_WATER:
+        return MONSTER_SUPERTYPE_WATER_ELEMENTAL;
+    case MONSTER_TYPE_TREANT:
+        return MONSTER_SUPERTYPE_TREANT;
+    case MONSTER_TYPE_TITAN:
+        return MONSTER_SUPERTYPE_TITAN;
+    default:
+        return MONSTER_SUPERTYPE_NONE;
+    }
+}

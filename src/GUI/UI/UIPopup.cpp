@@ -1035,7 +1035,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 }
 
 /**
-  * @offset 0x00417BB5.
+  * @offset 0x00417BB5
   *
   * @brief Generating message for skill description popup.
   *

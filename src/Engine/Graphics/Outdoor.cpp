@@ -2317,7 +2317,7 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].aiState == Summoned || !pActors[Actor_ITR].moveSpeed)
                 continue;
 
-        bool Water_Walk = MonsterStats::BelongsToSupertype(pActors[Actor_ITR].monsterInfo.uID, MONSTER_SUPERTYPE_WATER_ELEMENTAL);
+        bool Water_Walk = supertypeForMonsterId(pActors[Actor_ITR].monsterInfo.uID) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
 
         pActors[Actor_ITR].sectorId = 0;
 
