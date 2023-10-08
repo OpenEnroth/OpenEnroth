@@ -666,10 +666,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-            if ((pMonsterInfoUI_Doll.monsterInfo.uID < MONSTER_PEASANT_DWARF_FEMALE_A_A ||
-                 pMonsterInfoUI_Doll.monsterInfo.uID > MONSTER_PEASANT_HUMAN2_FEMALE_C_C) &&
-                (pMonsterInfoUI_Doll.monsterInfo.uID < MONSTER_PEASANT_GOBLIN_FEMALE_A_A ||
-                 pMonsterInfoUI_Doll.monsterInfo.uID > MONSTER_PEASANT_GOBLIN_MALE_C_C) && vrng->random(30) < 100)
+            if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.uID) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
             pMonsterInfoUI_Doll.currentActionLength =
                 8 *
