@@ -449,6 +449,10 @@ inline bool isPeasant(MonsterType monsterType) {
         (monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN);
 }
 
+inline bool isPeasant(MonsterId monsterId) {
+    return isPeasant(monsterTypeForMonsterId(monsterId));
+}
+
 CharacterSex sexForMonsterType(MonsterType monsterType);
 
 Race raceForMonsterType(MonsterType monsterType);

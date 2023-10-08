@@ -997,10 +997,7 @@ void Engine::_461103_load_level_sub() {
         //{
         // v3 = pActors[i].pMonsterInfo.uID;
         v17 = 0;
-        if (pActors[i].monsterInfo.uID >= MONSTER_PEASANT_DWARF_FEMALE_A_A &&
-            pActors[i].monsterInfo.uID <= MONSTER_PEASANT_HUMAN2_FEMALE_C_C ||
-            pActors[i].monsterInfo.uID >= MONSTER_PEASANT_GOBLIN_FEMALE_A_A &&
-            pActors[i].monsterInfo.uID <= MONSTER_PEASANT_GOBLIN_MALE_C_C)
+        if (isPeasant(pActors[i].monsterInfo.uID))
             v17 = 1;
         // v1 = 0;
         v4 = (std::to_underlying(pActors[i].monsterInfo.uID) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
