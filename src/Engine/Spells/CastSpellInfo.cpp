@@ -1428,7 +1428,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
-                                    for (CharacterAttributeType attr : enchantableAttributes()) {
+                                    for (CharacterAttributeType attr : allEnchantableAttributes()) {
                                         const std::string &bonusStat = pItemTable->standardEnchantments[attr].pBonusStat;
                                         if (!bonusStat.empty()) {
                                             int this_to_apply = pItemTable->standardEnchantments[attr].chancesByItemType[this_equip_type];

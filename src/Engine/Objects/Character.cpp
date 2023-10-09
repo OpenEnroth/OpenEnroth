@@ -262,7 +262,7 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     for (Character &character : pParty->pCharacters) {
         Race raceId = character.GetRace();
 
-        for (CharacterAttributeType statNum : statAttributes()) {
+        for (CharacterAttributeType statNum : allStatAttributes()) {
             switch (statNum) {
                 case CHARACTER_ATTRIBUTE_MIGHT:
                     CurrentStatValue = character.uMight;

@@ -25,8 +25,8 @@ enum class MerchantPhrase {
 };
 using enum MerchantPhrase;
 
-inline Segment<MerchantPhrase> MerchantPhrases() {
-    return Segment(MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM);
+inline Segment<MerchantPhrase> allMerchantPhrases() {
+    return {MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM};
 }
 
 enum class NPCProf : int32_t {

@@ -1118,11 +1118,11 @@ inline Segment<ItemId> spellbooksForSchool(MagicSchool school, CharacterSkillMas
     int numSpells = spellCountForMastery(maxMastery);
     int firstSpellInSchool = firstSpell + 11 * spellSchoolSequential;
     int lastSpellInSchool = firstSpellInSchool + numSpells - 1;
-    return Segment(ItemId(firstSpellInSchool), ItemId(lastSpellInSchool));
+    return {static_cast<ItemId>(firstSpellInSchool), static_cast<ItemId>(lastSpellInSchool)};
 }
 
 inline Segment<ItemId> allRecipeScrolls() {
-    return Segment(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
+    return {ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE};
 }
 
 /**
@@ -1130,7 +1130,7 @@ inline Segment<ItemId> allRecipeScrolls() {
  *                                      of the entries might actually be valid.
  */
 inline Segment<ItemId> allSpawnableItems() {
-    return Segment(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
+    return {ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE};
 }
 
 /**
@@ -1140,7 +1140,7 @@ inline Segment<ItemId> allSpawnableItems() {
  *                                      Mega Dragon's corpse.
  */
 inline Segment<ItemId> allSpawnableArtifacts() {
-    return Segment(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
+    return {ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT};
 }
 
 /**
@@ -1277,7 +1277,7 @@ enum class ItemSlot : uint8_t {
 using enum ItemSlot;
 
 inline Segment<ItemSlot> allRingSlots() {
-    return Segment(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
+    return {ITEM_SLOT_RING1, ITEM_SLOT_RING6};
 }
 
 inline ItemSlot ringSlot(int index) {
@@ -1286,7 +1286,7 @@ inline ItemSlot ringSlot(int index) {
 }
 
 inline Segment<ItemSlot> allItemSlots() {
-    return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
+    return {ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID};
 }
 
 /**
