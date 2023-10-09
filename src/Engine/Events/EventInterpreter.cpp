@@ -89,7 +89,7 @@ static void spawnMonsters(int16_t typeindex, int16_t level, int count,
         for (int i = oldNumActors; i < pActors.size(); ++i) {
             pActors[i].PrepareSprites(0);
             pActors[i].yawAngle = direction.uYawAngle;
-            pActors[i].dword_000334_unique_name = uUniqueName;
+            pActors[i].uniqueNameIndex = uUniqueName;
         }
     }
 }

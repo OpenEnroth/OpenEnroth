@@ -430,7 +430,7 @@ void MonsterStats::InitializePlacements(const Blob &placements) {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pPlaceStrings[i] = removeQuotes(test_string);
+                    pUniqueNames[i] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }

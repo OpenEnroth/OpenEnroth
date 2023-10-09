@@ -237,7 +237,7 @@ class Actor {
     std::array<ActorJob, 8> scheduledJobs;
     Pid summonerId;
     Pid lastCharacterIdToHit;
-    int dword_000334_unique_name = 0; // Index into pMonsterStats->pPlaceStrings for a unique monster name.
+    int uniqueNameIndex = 0; // Index into pMonsterStats->pUniqueNames for a unique monster name. Regular name is used if this field is 0.
     bool donebloodsplat{ false };
 };
 

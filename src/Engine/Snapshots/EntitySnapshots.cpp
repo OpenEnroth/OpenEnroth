@@ -1230,7 +1230,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
 
     dst->uSummonerID = src.summonerId.packed();
     dst->uLastCharacterIDToHit = src.lastCharacterIdToHit.packed();
-    dst->dword_000334_unique_name = src.dword_000334_unique_name;
+    dst->dword_000334_unique_name = src.uniqueNameIndex;
 }
 
 void reconstruct(const Actor_MM7 &src, Actor *dst) {
@@ -1324,7 +1324,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
 
     dst->summonerId = Pid::fromPacked(src.uSummonerID);
     dst->lastCharacterIdToHit = Pid::fromPacked(src.uLastCharacterIDToHit);
-    dst->dword_000334_unique_name = src.dword_000334_unique_name;
+    dst->uniqueNameIndex = src.dword_000334_unique_name;
 }
 
 void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
