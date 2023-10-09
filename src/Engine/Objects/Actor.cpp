@@ -1611,8 +1611,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
         absx = absy + (absx / 2);
     else
         absx = absx + absy / 2;
-    if (MonsterStats::BelongsToSupertype(pActors[uActor_id].monsterInfo.uID,
-                                         MONSTER_SUPERTYPE_TREANT)) {
+    if (supertypeForMonsterId(pActors[uActor_id].monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         Actor::AI_StandOrBored(uActor_id, Pid(OBJECT_Character, 0), uActionLength,
                                &doNotInitializeBecauseShouldBeRandom);
@@ -1842,37 +1841,7 @@ void Actor::Die(unsigned int uActorID) {
 
     ItemGen drop;
     drop.Reset();
-    switch (actor->monsterInfo.uID) {
-        case MONSTER_HARPY_A:
-        case MONSTER_HARPY_B:
-        case MONSTER_HARPY_C:
-            drop.uItemID = ITEM_REAGENT_HARPY_FEATHER;
-            break;
-
-        case MONSTER_OOZE_A:
-        case MONSTER_OOZE_B:
-        case MONSTER_OOZE_C:
-            drop.uItemID = ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
-            break;
-
-        case MONSTER_TROLL_A:
-        case MONSTER_TROLL_B:
-        case MONSTER_TROLL_C:
-            drop.uItemID = ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
-            break;
-
-        case MONSTER_DEVIL_A:
-        case MONSTER_DEVIL_B:
-        case MONSTER_DEVIL_C:
-            drop.uItemID = ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
-            break;
-
-        case MONSTER_DRAGON_A:
-        case MONSTER_DRAGON_B:
-        case MONSTER_DRAGON_C:
-            drop.uItemID = ITEM_REAGENT_DRAGONS_EYE;
-            break;
-    }
+    drop.uItemID = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.uID));
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
@@ -1935,8 +1904,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     } else {
         v10 = pDir;
     }
-    if (MonsterStats::BelongsToSupertype(v7->monsterInfo.uID,
-                                         MONSTER_SUPERTYPE_TREANT)) {
+    if (supertypeForMonsterId(v7->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
@@ -1985,8 +1953,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         }
         Actor::GetDirectionInfo(v7, Pid::character(0), &v10, 0);
         v13 = &v10;
-        if (MonsterStats::BelongsToSupertype(v5->monsterInfo.uID,
-                                             MONSTER_SUPERTYPE_TREANT) ||
+        if (supertypeForMonsterId(v5->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT ||
             sTargetPid.type() == OBJECT_Actor && v13->uDistance < 307.2) {
             if (!uActionLength) uActionLength = 256;
             Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
@@ -2037,8 +2004,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
         Actor::GetDirectionInfo(v8, a2, &a3, v6);
         v10 = &a3;
     }
-    if (MonsterStats::BelongsToSupertype(v7->monsterInfo.uID,
-                                         MONSTER_SUPERTYPE_TREANT)) {
+    if (supertypeForMonsterId(v7->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
@@ -2093,8 +2059,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         Actor::GetDirectionInfo(v7, a2, &a3, v5);
         v20 = &a3;
     }
-    if (MonsterStats::BelongsToSupertype(v6->monsterInfo.uID,
-                                         MONSTER_SUPERTYPE_TREANT)) {
+    if (supertypeForMonsterId(v6->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
@@ -2442,9 +2407,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                     pushDistance =
                         20 * finalDmg / pActors[actor_id].monsterInfo.uHP;
                     if (pushDistance > 10) pushDistance = 10;
-                    if (!MonsterStats::BelongsToSupertype(
-                            pActors[actor_id].monsterInfo.uID,
-                            MONSTER_SUPERTYPE_TREANT)) {
+                    if (supertypeForMonsterId(pActors[actor_id].monsterInfo.uID) != MONSTER_SUPERTYPE_TREANT) {
                         pVelocity->x =
                             (int32_t)fixpoint_mul(pushDistance, pVelocity->x);
                         pVelocity->y =
@@ -3316,8 +3279,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         }
     }
     if (knockbackValue > 10) knockbackValue = 10;
-    if (!MonsterStats::BelongsToSupertype(pMonster->monsterInfo.uID,
-                                          MONSTER_SUPERTYPE_TREANT)) {
+    if (supertypeForMonsterId(pMonster->monsterInfo.uID) != MONSTER_SUPERTYPE_TREANT) {
         pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
         pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
         pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
@@ -4811,9 +4773,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                             (signed int)pActors[uActorID].monsterInfo.uHP >
                         10)
                         a2a = 10;
-                    if (!MonsterStats::BelongsToSupertype(
-                            pActors[uActorID].monsterInfo.uID,
-                            MONSTER_SUPERTYPE_TREANT)) {
+                    if (supertypeForMonsterId(pActors[uActorID].monsterInfo.uID) != MONSTER_SUPERTYPE_TREANT) {
                         pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
                         pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
                         pVelocity->z = fixpoint_mul(a2a, pVelocity->z);

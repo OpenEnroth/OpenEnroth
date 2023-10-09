@@ -2,6 +2,7 @@
 
 #include <set>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <utility>
 
@@ -14,7 +15,10 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
+#include "GUI/UI/Houses/TownHall.h"
+
 #include "Library/Lod/LodReader.h"
+#include "Library/Random/Random.h"
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Format.h"
@@ -29,19 +33,6 @@
 static auto contains = [](const std::string &haystack, const std::string &needle) {
     return haystack.find(needle) != std::string::npos;
 };
-
-static std::string toUpperCaseEnum(const std::string &string) {
-    std::string result;
-    for (char c : trim(string)) {
-        if (isalnum(c)) {
-            result += static_cast<char>(toupper(c));
-        } else if (isspace(c) || c == '/' || c == '-') {
-            if (!result.ends_with('_'))
-                result += '_';
-        }
-    }
-    return result;
-}
 
 int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
     ItemTable itemTable;
@@ -256,9 +247,26 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
     return 0;
 }
 
-std::string cleanupMonsterEnumName(std::string enumName) {
-    if (enumName.starts_with("ZBLASTERGUY") || enumName.starts_with("ZULTRA_DRAGON"))
-        enumName = enumName.substr(1);
+MonsterStats loadMonsterStats(GameResourceManager *resourceManager) {
+    TriBlob dmonBlobs;
+    dmonBlobs.mm7 = resourceManager->getEventsFile("dmonlist.bin");
+
+    pMonsterList = new MonsterList;
+    deserialize(dmonBlobs, pMonsterList);
+
+    MonsterStats result;
+    result.Initialize(resourceManager->getEventsFile("monsters.txt"));
+    return result;
+}
+
+std::string cleanupMonsterIdEnumName(std::string enumName) {
+    for (const char *prefix : {"ZBLASTERGUY", "ZULTRA_DRAGON", })
+        if (enumName.starts_with(prefix))
+            enumName = enumName.substr(1);
+
+    for (const char *prefix : {"ZCAT", "ZCHICKEN", "ZDOG", "ZRAT"})
+        if (enumName.starts_with(prefix))
+            enumName = "UNUSED_" + enumName.substr(1);
 
     enumName = replaceAll(enumName, "MALEA", "MALE_A");
     enumName = replaceAll(enumName, "MALEB", "MALE_B");
@@ -268,23 +276,17 @@ std::string cleanupMonsterEnumName(std::string enumName) {
 }
 
 int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
-    TriBlob dmonBlobs;
-    dmonBlobs.mm7 = resourceManager->getEventsFile("dmonlist.bin");
-
-    pMonsterList = new MonsterList;
-    deserialize(dmonBlobs, pMonsterList);
-
-    MonsterStats monsterStats;
-    monsterStats.Initialize(resourceManager->getEventsFile("monsters.txt"));
+    MonsterStats monsterStats = loadMonsterStats(resourceManager);
 
     CodeGenMap map;
     map.insert(MONSTER_INVALID, "INVALID", "");
 
-    for (const MonsterId i : monsterStats.pInfos.indices()) {
-        const MonsterInfo &desc = monsterStats.pInfos[i];
-        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pPictureName));
+    for (const MonsterId i : allMonsters()) {
+        const MonsterDesc &desc = pMonsterList->pMonsters[i];
+        const MonsterInfo &info = monsterStats.pInfos[i];
+        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.pMonsterName));
 
-        std::string comment = desc.pName;
+        std::string comment = info.pName;
         if (comment == "peasant")
             comment = "Peasant";
         if (!comment.empty())
@@ -297,37 +299,87 @@ int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceMan
     return 0;
 }
 
+std::string cleanupMonsterTypeEnumName(std::string enumName) {
+    enumName = cleanupMonsterIdEnumName(enumName);
+
+    if (enumName.ends_with("_A")) {
+        enumName.resize(enumName.size() - 2);
+    } else if (!enumName.empty()) {
+        throw Exception("Invalid monster id name");
+    }
+
+    return enumName;
+}
+
 int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
-    TriBlob dmonBlobs;
-    dmonBlobs.mm7 = resourceManager->getEventsFile("dmonlist.bin");
-
-    pMonsterList = new MonsterList;
-    deserialize(dmonBlobs, pMonsterList);
-
-    MonsterStats monsterStats;
-    monsterStats.Initialize(resourceManager->getEventsFile("monsters.txt"));
+    MonsterStats monsterStats = loadMonsterStats(resourceManager);
 
     CodeGenMap map;
     map.insert(MONSTER_TYPE_INVALID, "INVALID", "");
 
     int counter = 0;
-    for (const MonsterId i : monsterStats.pInfos.indices()) {
+    for (const MonsterId i : allMonsters()) {
         if (++counter % 3 != 1)
             continue;
 
-        const MonsterInfo &desc = monsterStats.pInfos[i];
-        std::string enumName = cleanupMonsterEnumName(toUpperCaseEnum(desc.pPictureName));
-
-        if (enumName.ends_with("_A")) {
-            enumName.resize(enumName.size() - 2);
-        } else if (!enumName.empty()) {
-            throw Exception("Invalid monster id name");
-        }
+        const MonsterDesc &desc = pMonsterList->pMonsters[i];
+        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.pMonsterName));
 
         map.insert(monsterTypeForMonsterId(i), enumName, "");
     }
 
     map.dump(stdout, "MONSTER_TYPE_");
+    return 0;
+}
+
+int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+    // Fill bounty hunt map.
+    grng = RandomEngine::create(RANDOM_ENGINE_SEQUENTIAL);
+    IndexedArray<std::unordered_set<MonsterId>, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monstersByTownHall;
+    for (const HouseId townHall : allTownhallHouses()) {
+        grng->seed(0);
+        while(true) {
+            MonsterId monsterId = GUIWindow_TownHall::randomMonsterForHunting(townHall);
+            if (!monstersByTownHall[townHall].insert(monsterId).second)
+                break;
+        }
+    }
+
+    // Invert the map.
+    std::unordered_map<MonsterId, std::unordered_set<HouseId>> townHallsByMonster;
+    for (const HouseId townHall : allTownhallHouses())
+        for (const MonsterId monsterId : monstersByTownHall[townHall])
+            townHallsByMonster[monsterId].insert(townHall);
+
+    // Reduce the map to monster types & check that it's actually reducible.
+    std::unordered_map<MonsterType, std::unordered_set<HouseId>> townHallsByMonsterType;
+    for (const MonsterId monsterId : allMonsters()) {
+        MonsterType monsterType = monsterTypeForMonsterId(monsterId);
+        if (townHallsByMonsterType.contains(monsterType) && townHallsByMonsterType[monsterType] != townHallsByMonster[monsterId])
+            throw Exception("Invalid bounty hunt record");
+
+        townHallsByMonsterType[monsterType] = townHallsByMonster[monsterId];
+    }
+
+    // Prepare output table.
+    std::vector<std::array<std::string, 8>> table;
+    for (const MonsterType monsterType : allMonsterTypes()) {
+        auto &line = table.emplace_back();
+        line[0] = fmt::format("{{{}, ", toString(monsterType));
+        line[1] = "{";
+        for (const HouseId townHall : townHallsByMonsterType[monsterType])
+            line[2 + std::to_underlying(townHall) - std::to_underlying(HOUSE_FIRST_TOWN_HALL)] = toString(townHall) + ", ";
+        for (size_t i = 6; i >= 2; i--) {
+            if (!line[i].empty()) {
+                line[i].resize(line[i].size() - 2); // Drop the last ", ".
+                break;
+            }
+        }
+        line[7] = "}},";
+    }
+
+    // Dump!
+    dumpAligned(stdout, "    ", table);
     return 0;
 }
 
@@ -349,6 +401,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_HOUSE_ID: return runHouseIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MONSTER_ID: return runMonsterIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(std::move(options), &resourceManager);
         default:
             assert(false);
             return 1;

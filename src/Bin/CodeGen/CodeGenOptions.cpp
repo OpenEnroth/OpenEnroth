@@ -36,16 +36,21 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CLI::App *monsterTypes = app->add_subcommand("monster_types", "Generate monster types enum")->fallthrough();
     monsterTypes->callback([&] { result.subcommand = SUBCOMMAND_MONSTER_TYPE; });
 
+    CLI::App *bountyHunt = app->add_subcommand("bounty_hunt", "Generate monster type / town hall table for bounty hunts")->fallthrough();
+    bountyHunt->callback([&] { result.subcommand = SUBCOMMAND_BOUNTY_HUNT; });
+
     try {
         app->parse(argc, argv);
     } catch (const CLI::ParseError &e) {
+        // TODO(captainurist): this is getting out of hand.
         bool isHelp =
             app->get_help_ptr()->as<bool>() ||
             items->get_help_ptr()->as<bool>() ||
             maps->get_help_ptr()->as<bool>() ||
             beacons->get_help_ptr()->as<bool>() ||
             monsters->get_help_ptr()->as<bool>() ||
-            monsterTypes->get_help_ptr()->as<bool>();
+            monsterTypes->get_help_ptr()->as<bool>() ||
+            bountyHunt->get_help_ptr()->as<bool>();
         if (isHelp) {
             app->exit(e);
             result.helpPrinted = true;

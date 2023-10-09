@@ -84,9 +84,6 @@ struct MonsterStats {
     void InitializePlacements(const Blob &placements);
     MonsterId FindMonsterByTextureName(const std::string &Str2);
 
-    static bool BelongsToSupertype(MonsterId uMonsterInfoID,
-                                   MONSTER_SUPERTYPE eSupertype);
-
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> pInfos;      // 0 - 5b18h
     std::array<std::string, 31> pPlaceStrings;      // 5B18h placement counts from 1
     unsigned int uNumMonsters;    // 5B94h // TODO(captainurist): can drop?

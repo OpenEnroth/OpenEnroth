@@ -170,6 +170,12 @@ IndexedArray<int, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> monster_popup_y_offsets
     {MONSTER_TYPE_GHOUL,                    0},
     {MONSTER_TYPE_BLASTERGUY,               0},
     {MONSTER_TYPE_ULTRA_DRAGON,             0},
+
+    // OE addition, original data table was smaller:
+    {MONSTER_TYPE_UNUSED_CAT,               0},
+    {MONSTER_TYPE_UNUSED_CHICKEN,           0},
+    {MONSTER_TYPE_UNUSED_DOG,               0},
+    {MONSTER_TYPE_UNUSED_RAT,               0},
 };
 
 void Inventory_ItemPopupAndAlchemy();
@@ -660,10 +666,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-            if ((pMonsterInfoUI_Doll.monsterInfo.uID < MONSTER_PEASANT_DWARF_FEMALE_A_A ||
-                 pMonsterInfoUI_Doll.monsterInfo.uID > MONSTER_PEASANT_HUMAN2_FEMALE_C_C) &&
-                (pMonsterInfoUI_Doll.monsterInfo.uID < MONSTER_PEASANT_GOBLIN_FEMALE_A_A ||
-                 pMonsterInfoUI_Doll.monsterInfo.uID > MONSTER_PEASANT_GOBLIN_MALE_C_C) && vrng->random(30) < 100)
+            if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.uID) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
             pMonsterInfoUI_Doll.currentActionLength =
                 8 *
@@ -1029,7 +1032,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 }
 
 /**
-  * @offset 0x00417BB5.
+  * @offset 0x00417BB5
   *
   * @brief Generating message for skill description popup.
   *

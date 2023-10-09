@@ -8,6 +8,7 @@ set(BIN_CODEGEN_SOURCES
 set(BIN_CODEGEN_HEADERS
         CodeGenOptions.h
         CodeGenEnums.h
+        CodeGenFunctions.h
         CodeGenMap.h)
 
 if(NOT BUILD_PLATFORM STREQUAL "android")

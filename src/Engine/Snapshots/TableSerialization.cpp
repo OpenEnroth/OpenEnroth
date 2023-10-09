@@ -15,6 +15,8 @@
 
 #include "Library/Snapshots/SnapshotSerialization.h"
 
+#include "Utility/Exception.h"
+
 #include "EntitySnapshots.h"
 #include "CompositeSnapshots.h"
 
@@ -70,23 +72,17 @@ void deserialize(const TriBlob &src, IconFrameTable *dst) {
 void deserialize(const TriBlob &src, MonsterList *dst) {
     std::vector<MonsterDesc> monsters;
 
-    if (src.mm6)
-        deserialize(src.mm6, &monsters, tags::append, tags::via<MonsterDesc_MM6>);
     if (src.mm7)
         deserialize(src.mm7, &monsters, tags::append, tags::via<MonsterDesc_MM7>);
-    if (src.mm8)
-        deserialize(src.mm8, &monsters, tags::append, tags::via<MonsterDesc_MM7>);
 
-    assert(monsters.size() <= dst->pMonsters.size()); // TODO(captainurist): this shouldn't be an assertion.
+    if (monsters.size() != 277)
+        throw Exception("Invalid monster list size, expected {}, got {}", 277, monsters.size());
+    monsters.pop_back(); // Last one is unused.
 
+    assert(monsters.size() == dst->pMonsters.size());
     dst->pMonsters.fill(MonsterDesc());
-    for (size_t i = 0; MonsterId index : dst->pMonsters.indices()) {
-        if (i >= monsters.size())
-            break;
+    for (size_t i = 0; MonsterId index : dst->pMonsters.indices())
         dst->pMonsters[index] = monsters[i++];
-    }
-
-    assert(!dst->pMonsters.empty());
 }
 
 void deserialize(const TriBlob &src, ObjectList *dst) {

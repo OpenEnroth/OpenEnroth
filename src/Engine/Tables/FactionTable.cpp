@@ -18,6 +18,9 @@ void FactionTable::Initialize(const Blob &factions) {
     int decode_step;
     //  int item_counter;
 
+    for (auto &line : relations)
+        line.fill(HOSTILITY_FRIENDLY);
+
     std::string txtRaw(factions.string_view());
     strtok(txtRaw.data(), "\r");
     for (i = 0; i < 89; ++i) {

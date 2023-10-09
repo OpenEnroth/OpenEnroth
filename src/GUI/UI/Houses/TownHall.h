@@ -22,14 +22,14 @@ class GUIWindow_TownHall : public GUIWindow_House {
      */
     std::string bountyHuntingText();
 
+    static MonsterId randomMonsterForHunting(HouseId townhall);
+
  protected:
     void mainDialogue();
     void bountyHuntDialogue();
     void payFineDialogue();
 
  private:
-    MonsterId randomMonsterForHunting(HouseId townhall);
-
     /**
      * Handler for the "Bounty Hunt" dialogue option in a town hall.
      *

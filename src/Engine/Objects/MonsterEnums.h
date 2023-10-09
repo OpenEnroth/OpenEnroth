@@ -3,6 +3,8 @@
 #include <cstdint>
 
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
+#include "GUI/UI/UIHouseEnums.h"
 
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
@@ -280,27 +282,30 @@ enum class MonsterId {
     MONSTER_ULTRA_DRAGON_A = 262,            // "Mega-Dragon".
     MONSTER_ULTRA_DRAGON_B = 263,            // "Mega-Dragon".
     MONSTER_ULTRA_DRAGON_C = 264,            // "Mega-Dragon".
-    MONSTER_265 = 265,
-    MONSTER_266 = 266,
-    MONSTER_267 = 267,
-    MONSTER_268 = 268,
-    MONSTER_269 = 269,
-    MONSTER_270 = 270,
-    MONSTER_271 = 271,
-    MONSTER_272 = 272,
-    MONSTER_273 = 273,
-    MONSTER_274 = 274,
-    MONSTER_275 = 275,
-    MONSTER_276 = 276,
-    MONSTER_277 = 277,
+    MONSTER_UNUSED_CAT_A = 265,
+    MONSTER_UNUSED_CAT_B = 266,
+    MONSTER_UNUSED_CAT_C = 267,
+    MONSTER_UNUSED_CHICKEN_A = 268,
+    MONSTER_UNUSED_CHICKEN_B = 269,
+    MONSTER_UNUSED_CHICKEN_C = 270,
+    MONSTER_UNUSED_DOG_A = 271,
+    MONSTER_UNUSED_DOG_B = 272,
+    MONSTER_UNUSED_DOG_C = 273,
+    MONSTER_UNUSED_RAT_A = 274,
+    MONSTER_UNUSED_RAT_B = 275,
+    MONSTER_UNUSED_RAT_C = 276,
 
     MONSTER_FIRST = MONSTER_ANGEL_A,
-    MONSTER_LAST = MONSTER_277,
+    MONSTER_LAST = MONSTER_UNUSED_RAT_C,
 
     MONSTER_FIRST_ARENA = MONSTER_ANGEL_A,
     MONSTER_LAST_ARENA = MONSTER_GHOUL_C
 };
 using enum MonsterId;
+
+inline Segment<MonsterId> allMonsters() {
+    return {MONSTER_FIRST, MONSTER_LAST};
+}
 
 inline Segment<MonsterId> allArenaMonsters() {
     return {MONSTER_FIRST_ARENA, MONSTER_LAST_ARENA};
@@ -404,16 +409,15 @@ enum class MonsterType {
     MONSTER_TYPE_GHOUL = 86,
     MONSTER_TYPE_BLASTERGUY = 87,
     MONSTER_TYPE_ULTRA_DRAGON = 88,
-    MONSTER_TYPE_89 = 89,
-    MONSTER_TYPE_90 = 90,
-    MONSTER_TYPE_91 = 91,
-    MONSTER_TYPE_92 = 92,
-    MONSTER_TYPE_93 = 93,
+    MONSTER_TYPE_UNUSED_CAT = 89,
+    MONSTER_TYPE_UNUSED_CHICKEN = 90,
+    MONSTER_TYPE_UNUSED_DOG = 91,
+    MONSTER_TYPE_UNUSED_RAT = 92,
 
     MONSTER_TYPE_9999 = 9999, // TODO(captainurist): eh?
 
     MONSTER_TYPE_FIRST = MONSTER_TYPE_ANGEL,
-    MONSTER_TYPE_LAST = MONSTER_TYPE_ULTRA_DRAGON,
+    MONSTER_TYPE_LAST = MONSTER_TYPE_UNUSED_RAT,
 
     MONSTER_TYPE_FIRST_PEASANT_DWARF = MONSTER_TYPE_PEASANT_DWARF_FEMALE_A,
     MONSTER_TYPE_LAST_PEASANT_DWARF = MONSTER_TYPE_PEASANT_DWARF_MALE_C,
@@ -429,6 +433,10 @@ enum class MonsterType {
 };
 using enum MonsterType;
 
+inline Segment<MonsterType> allMonsterTypes() {
+    return {MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST};
+}
+
 inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
 }
@@ -441,9 +449,17 @@ inline bool isPeasant(MonsterType monsterType) {
         (monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN);
 }
 
+inline bool isPeasant(MonsterId monsterId) {
+    return isPeasant(monsterTypeForMonsterId(monsterId));
+}
+
 CharacterSex sexForMonsterType(MonsterType monsterType);
 
 Race raceForMonsterType(MonsterType monsterType);
+
+bool isBountyHuntable(MonsterType monsterType, HouseId townHall);
+
+ItemId itemDropForMonsterType(MonsterType monsterType);
 
 /*  335 */
 enum class MONSTER_SPECIAL_ABILITY_TYPE {
@@ -474,9 +490,21 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_WATER_ELEMENTAL = 0x5,
     MONSTER_SUPERTYPE_TREANT = 0x6,
     MONSTER_SUPERTYPE_TITAN = 0x7,
-    MONSTER_SUPERTYPE_8 = 0x8,
+    MONSTER_SUPERTYPE_8 = 0x8, // TODO(captainurist): not an arena monster? Drop?
 };
 using enum MONSTER_SUPERTYPE;
+
+/**
+ * @offset 0x00438BDF
+ *
+ * @param monsterType                   Monster type to check.
+ * @return                              Supertype for the provided monster type.
+ */
+MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType);
+
+inline MONSTER_SUPERTYPE supertypeForMonsterId(MonsterId monsterId) {
+    return supertypeForMonsterType(monsterTypeForMonsterId(monsterId));
+}
 
 enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
@@ -517,3 +545,4 @@ enum class MonsterHostility {
     HOSTILITY_LAST = HOSTILITY_LONG
 };
 using enum MonsterHostility;
+

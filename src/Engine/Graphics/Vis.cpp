@@ -791,7 +791,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
             return false;
 
         auto only_target_undead = filter->select_flags & TargetUndead;
-        auto target_not_undead = MonsterStats::BelongsToSupertype(pActors[object_idx].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) == 0;
+        auto target_not_undead = supertypeForMonsterId(pActors[object_idx].monsterInfo.uID) != MONSTER_SUPERTYPE_UNDEAD;
 
         if (only_target_undead && target_not_undead)
             return false;
