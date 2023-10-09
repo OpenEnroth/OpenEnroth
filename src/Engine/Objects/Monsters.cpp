@@ -438,7 +438,6 @@ void MonsterStats::InitializePlacements(const Blob &placements) {
             test_string = tmp_pos + 1;
         } while ((decode_step < 3) && !break_loop);
     }
-    uNumPlacements = 31;
 }
 
 //----- (0045501E) --------------------------------------------------------
@@ -462,9 +461,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
-    uNumMonsters = 265;
     curr_rec_num = MONSTER_INVALID;
-    for (i = 0; i < uNumMonsters - 1; ++i) {
+    for (i = 0; i < 264; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -1070,7 +1068,6 @@ void MonsterStats::Initialize(const Blob &monsters) {
             test_string = tmp_pos + 1;
         } while ((decode_step < 39) && !break_loop);
     }
-    uNumMonsters = i;
 }
 
 //----- (0044FA08) --------------------------------------------------------
