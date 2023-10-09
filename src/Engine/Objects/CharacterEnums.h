@@ -44,8 +44,8 @@ enum class CharacterSkillMastery {
 };
 using enum CharacterSkillMastery;
 
-inline Segment<CharacterSkillMastery> SkillMasteries() {
-    return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);
+inline Segment<CharacterSkillMastery> allSkillMasteries() {
+    return {CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST};
 }
 
 enum class CharacterBuff {
@@ -268,14 +268,14 @@ enum class CharacterSkillType : int8_t {
 using enum CharacterSkillType;
 
 inline Segment<CharacterSkillType> allSkills() {
-    return Segment(CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST);
+    return {CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST};
 }
 
 /**
  * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
 inline Segment<CharacterSkillType> allVisibleSkills() {
-    return Segment(CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE);
+    return {CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE};
 }
 
 /**
@@ -433,15 +433,16 @@ inline int getClassTier(CharacterClassType classType) {
 }
 
 /**
- * Get priomotions of higher tier class relative to given one.
+ * Get promotions of higher tier class relative to given one.
  *
  * Base class is of tier 1.
  * After initial promotion class becomes tier 2.
  * Tier 2 class is promoted through light or dark path to tier 3 class.
  *
- * @param classType     Character class.
+ * @param classType                     Character class.
+ * @return                              All classes that the given class can be promoted to.
  */
-inline Segment<CharacterClassType> getClassPromotions(CharacterClassType classType) {
+inline Segment<CharacterClassType> promotionsForClass(CharacterClassType classType) {
     int tier = getClassTier(classType);
 
     if (tier == 1) {
@@ -585,10 +586,10 @@ enum class CharacterAttributeType {
 };
 using enum CharacterAttributeType;
 
-inline Segment<CharacterAttributeType> enchantableAttributes() {
-    return Segment(CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE);
+inline Segment<CharacterAttributeType> allEnchantableAttributes() {
+    return {CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE};
 }
 
-inline Segment<CharacterAttributeType> statAttributes() {
-    return Segment(CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT);
+inline Segment<CharacterAttributeType> allStatAttributes() {
+    return {CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT};
 }

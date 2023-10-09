@@ -84,7 +84,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     strtokSkipLines(3);
     // Standard Bonuses by Group
     chanceByItemTypeSums.fill(0);
-    for (CharacterAttributeType i : enchantableAttributes()) {
+    for (CharacterAttributeType i : allEnchantableAttributes()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         standardEnchantments[i].pBonusStat = removeQuotes(tokens[0]);
@@ -169,7 +169,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter]._additional_value = ITEM_ENCHANTMENT_NULL;
         pItems[item_counter]._bonus_type = {};
         if (pItems[item_counter].uMaterial == MATERIAL_SPECIAL) {
-            for (CharacterAttributeType ii : enchantableAttributes()) {
+            for (CharacterAttributeType ii : allEnchantableAttributes()) {
                 if (iequals(tokens[12], standardEnchantments[ii].pOfName)) {
                     pItems[item_counter]._bonus_type = ii;
                     break;
@@ -576,7 +576,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
             if (bonusChanceRoll < uBonusChanceStandart[treasure_level]) {
                 int enchantmentChanceSumRoll = grng->random(chanceByItemTypeSums[outItem->GetItemEquipType()]) + 1;
                 int currentEnchantmentChancesSum = 0;
-                for (CharacterAttributeType attr : enchantableAttributes()) {
+                for (CharacterAttributeType attr : allEnchantableAttributes()) {
                     if (currentEnchantmentChancesSum >= enchantmentChanceSumRoll)
                         break;
 

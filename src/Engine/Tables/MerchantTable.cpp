@@ -19,7 +19,7 @@ void initializeMerchants(const Blob &merchants) {
     std::string txtRaw(merchants.string_view());
     strtok(txtRaw.data(), "\r");
 
-    for (MerchantPhrase i : MerchantPhrases()) {
+    for (MerchantPhrase i : allMerchantPhrases()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;

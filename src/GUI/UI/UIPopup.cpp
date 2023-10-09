@@ -1056,7 +1056,7 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillT
     if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
         Description = fmt::format("{}\n\n", Description);
 
-        for (CharacterSkillMastery mastery : SkillMasteries()) {
+        for (CharacterSkillMastery mastery : allSkillMasteries()) {
             Description += fmt::format(
                 "{::}{}\t{:03}:\t{:03}{}\t000\n",
                 GetSkillColor(pParty->pCharacters[uPlayerID].classType, uPlayerSkillType, mastery).tag(),

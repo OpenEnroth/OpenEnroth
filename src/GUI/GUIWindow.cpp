@@ -850,7 +850,7 @@ Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerS
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
-    for (CharacterClassType promotionClass : getClassPromotions(uPlayerClass)) {
+    for (CharacterClassType promotionClass : promotionsForClass(uPlayerClass)) {
         if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
             return ui_character_skillinfo_can_learn_gm;
         }
