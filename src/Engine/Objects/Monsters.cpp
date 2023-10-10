@@ -462,7 +462,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     curr_rec_num = MONSTER_INVALID;
-    for (i = 0; i < 264; ++i) {
+    for (i = 0; i < 264; ++i) { // TODO(captainurist): get rid of magic numbers in txt deserialization.
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
