@@ -2677,11 +2677,7 @@ int Character::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDm
                     } else if (currEquippedItem->attributeEnchantment) {
                         if (*currEquippedItem->attributeEnchantment == attr) {
                             // if (currEquippedItem->IsRegularEnchanmentForAttribute(attr))
-                            if (attr > CHARACTER_ATTRIBUTE_RESIST_BODY &&
-                                v5 < currEquippedItem->m_enchantmentStrength)  // for skills bonuses
-                                v5 = currEquippedItem->m_enchantmentStrength;
-                            else  // for resists and attributes bonuses
-                                v5 += currEquippedItem->m_enchantmentStrength;
+                            v5 += currEquippedItem->m_enchantmentStrength;
                         }
                     } else {
                         currEquippedItem->GetItemBonusSpecialEnchantment(this, attr, &v5, &v61);
