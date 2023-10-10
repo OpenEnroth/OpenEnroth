@@ -581,14 +581,22 @@ enum class CharacterAttributeType {
     CHARACTER_ATTRIBUTE_LAST_STAT = CHARACTER_ATTRIBUTE_LUCK,
 
     CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE = CHARACTER_ATTRIBUTE_MIGHT,
-    CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE = CHARACTER_ATTRIBUTE_SKILL_UNARMED
+    CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE = CHARACTER_ATTRIBUTE_SKILL_UNARMED,
 };
 using enum CharacterAttributeType;
 
+/**
+ * @return                              All attributes that can be improved though attribute item enchantments, like
+ *                                      "of Might".
+ */
 inline Segment<CharacterAttributeType> allEnchantableAttributes() {
     return {CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE};
 }
 
+/**
+ * @return                              Segment containing the 7 basic character stats (starting with might & ending
+ *                                      with luck).
+ */
 inline Segment<CharacterAttributeType> allStatAttributes() {
     return {CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT};
 }
