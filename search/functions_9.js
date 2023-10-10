@@ -139,7 +139,7 @@ var searchData=
   ['isbuffexpiredtotime_136',['IsBuffExpiredToTime',['../structSpellBuff.html#a01a6d12114f06b996d5e57a5c8196519',1,'SpellBuff']]],
   ['iscastonclicktoggled_137',['IsCastOnClickToggled',['../classIo_1_1KeyboardInputHandler.html#af1de06a1092bee3cde740e72ee47549e',1,'Io::KeyboardInputHandler']]],
   ['ischarvalid_138',['IsCharValid',['../classGUIFont.html#adfbdd225f4c0eedcbf7e82eecd29e404',1,'GUIFont']]],
-  ['isclass_139',['isClass',['../classCharacter.html#a0891bbb94382814b928439adfbdaded4',1,'Character']]],
+  ['isclass_139',['isClass',['../classCharacter.html#a392da0ce77686b66cf953bff3a50e335',1,'Character']]],
   ['iscursed_140',['IsCursed',['../classCharacter.html#ac7eea85c7d1ba84ae34ad1c12e1bdbaa',1,'Character']]],
   ['iscursorshown_141',['isCursorShown',['../classPlatform.html#a83d0a698d370a1b7f7e4afac8a2a8436',1,'Platform::isCursorShown()'],['../classProxyPlatform.html#a2fadbb702534e0734e790232161244b1',1,'ProxyPlatform::isCursorShown()'],['../classSdlPlatform.html#a2cb45469b50a1520a0a161bf72870826',1,'SdlPlatform::isCursorShown()'],['../classNullPlatform.html#ac518b77188177d923627c41ce1da7a43',1,'NullPlatform::isCursorShown()']]],
   ['iscylinderinfrustum_142',['IsCylinderInFrustum',['../Vis_8h.html#aad634e7f4f6e46e144db7345596c9c2e',1,'IsCylinderInFrustum(Vec3f center, float radius):&#160;Vis.cpp'],['../Vis_8cpp.html#aad634e7f4f6e46e144db7345596c9c2e',1,'IsCylinderInFrustum(Vec3f center, float radius):&#160;Vis.cpp']]],
