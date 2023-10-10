@@ -546,3 +546,10 @@ enum class MonsterHostility {
 };
 using enum MonsterHostility;
 
+enum class MonsterAiType {
+    MONSTER_AI_SUICIDE = 0,     // Never runs, used for elementals and some of the stronger monsters.
+    MONSTER_AI_WIMP = 1,        // Always runs, used ONLY for peasants.
+    MONSTER_AI_NORMAL = 2,      // Runs at 20% HP.
+    MONSTER_AI_AGGRESSIVE = 3,  // Runs at 10% HP.
+};
+using enum MonsterAiType;

@@ -31,7 +31,7 @@ struct MonsterInfo {
     RandomItemType uTreasureType = RANDOM_ITEM_ANY;
     uint8_t uFlying = 0;
     MONSTER_MOVEMENT_TYPE uMovementType = MONSTER_MOVEMENT_TYPE_SHORT;
-    uint8_t uAIType = 0;
+    MonsterAiType uAIType = MONSTER_AI_SUICIDE;
     MonsterHostility uHostilityType = HOSTILITY_FRIENDLY;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t uSpecialAttackLevel = 0;

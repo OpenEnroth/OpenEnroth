@@ -692,16 +692,16 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     case 11: {
                         switch (tolower(test_string[0])) {
                             case 's':
-                                pInfos[curr_rec_num].uAIType = 0;
-                                break;  // suicide
+                                pInfos[curr_rec_num].uAIType = MONSTER_AI_SUICIDE;
+                                break;
                             case 'w':
-                                pInfos[curr_rec_num].uAIType = 1;
-                                break;  // wimp
+                                pInfos[curr_rec_num].uAIType = MONSTER_AI_WIMP;
+                                break;
                             case 'n':
-                                pInfos[curr_rec_num].uAIType = 2;
-                                break;  // normal
+                                pInfos[curr_rec_num].uAIType = MONSTER_AI_NORMAL;
+                                break;
                             default:
-                                pInfos[curr_rec_num].uAIType = 3;  // Agress
+                                pInfos[curr_rec_num].uAIType = MONSTER_AI_AGGRESSIVE;
                         }
                     } break;
                     case 12:

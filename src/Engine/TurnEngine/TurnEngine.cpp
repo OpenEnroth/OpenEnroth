@@ -910,8 +910,8 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
     if (pActors[uActorID].monsterInfo.uHostilityType ==
         HOSTILITY_LONG) {
         if (!(pActors[uActorID].attributes & ACTOR_FLEEING) ||
-            pActors[uActorID].monsterInfo.uAIType == 1) {
-            if (pActors[uActorID].monsterInfo.uAIType == 1) {
+            pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_WIMP) {
+            if (pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_WIMP) {
                 if (pActors[uActorID].monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                     Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                 else
@@ -920,7 +920,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                 pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].currentActionLength;
                 return true;
             }
-            if (pActors[uActorID].monsterInfo.uAIType == 2) {
+            if (pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_NORMAL) {
                 if (((double)pActors[uActorID].monsterInfo.uHP * 0.2) >
                     (double)pActors[uActorID].currentHP &&
                     (v11 < 10240)) {
@@ -933,7 +933,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                     return true;
                 }
             }
-            if (pActors[uActorID].monsterInfo.uAIType == 3) {
+            if (pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE) {
                 if (((double)pActors[uActorID].monsterInfo.uHP * 0.1) >
                     (double)pActors[uActorID].currentHP &&
                     (v11 < 10240)) {

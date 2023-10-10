@@ -325,7 +325,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
 
     std::vector<MonsterId> candidateIds;
     for (MonsterId i : allArenaMonsters()) {
-        if (pMonsterStats->pInfos[i].uAIType != 1) {
+        if (pMonsterStats->pInfos[i].uAIType != MONSTER_AI_WIMP) {
             if (supertypeForMonsterId(pMonsterStats->pInfos[i].uID) != MONSTER_SUPERTYPE_8) {
                 if (pMonsterStats->pInfos[i].uLevel >= monsterMinLevel &&
                     pMonsterStats->pInfos[i].uLevel <= monsterMaxLevel) {

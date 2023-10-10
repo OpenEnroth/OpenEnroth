@@ -1081,7 +1081,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
     assert(uActorID < pActors.size());
 
     if (pActors[uActorID].monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY &&
-        pActors[uActorID].monsterInfo.uAIType == 1) {
+        pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_WIMP) {
         Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
         return;
     }
@@ -2744,7 +2744,7 @@ void Actor::UpdateActorAI() {
 
         if (pActor->monsterInfo.uHostilityType == HOSTILITY_LONG &&
             target_pid) {
-            if (pActor->monsterInfo.uAIType == 1) {
+            if (pActor->monsterInfo.uAIType == MONSTER_AI_WIMP) {
                 if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3), pDir);
                 } else {
@@ -2753,10 +2753,10 @@ void Actor::UpdateActorAI() {
                 }
             }
             if (!(pActor->attributes & ACTOR_FLEEING)) {
-                if (pActor->monsterInfo.uAIType == 2 || pActor->monsterInfo.uAIType == 3) {
-                    if (pActor->monsterInfo.uAIType == 2)
+                if (pActor->monsterInfo.uAIType == MONSTER_AI_NORMAL || pActor->monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE) {
+                    if (pActor->monsterInfo.uAIType == MONSTER_AI_NORMAL)
                         v43 = pActor->monsterInfo.uHP * 0.2;
-                    if (pActor->monsterInfo.uAIType == 3)
+                    if (pActor->monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE)
                         v43 = pActor->monsterInfo.uHP * 0.1;
                     v42 = pActor->currentHP;
                     if (v43 > v42 && distanceToTarget < 10240) {
