@@ -76,7 +76,7 @@ struct MonsterInfo {
     unsigned int uExp = 0;
     unsigned int uBaseSpeed = 0;
     signed int uRecoveryTime = 0;
-    unsigned int uAttackPreference = 0;
+    MonsterAttackPreferences uAttackPreferences;
 };
 
 struct MonsterStats {

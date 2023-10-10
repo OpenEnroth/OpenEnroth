@@ -561,3 +561,28 @@ enum class MonsterAiType {
     MONSTER_AI_AGGRESSIVE = 3,  // Runs at 10% HP.
 };
 using enum MonsterAiType;
+
+enum class MonsterAttackPreference : uint16_t {
+    ATTACK_PREFERENCE_KNIGHT = 0x0001,
+    ATTACK_PREFERENCE_PALADIN = 0x0002,
+    ATTACK_PREFERENCE_ARCHER = 0x0004,
+    ATTACK_PREFERENCE_DRUID = 0x0008,
+    ATTACK_PREFERENCE_CLERIC = 0x0010,
+    ATTACK_PREFERENCE_SORCERER = 0x0020,
+    ATTACK_PREFERENCE_RANGER = 0x0040,
+    ATTACK_PREFERENCE_THIEF = 0x0080,
+    ATTACK_PREFERENCE_MONK = 0x0100,
+
+    ATTACK_PREFERENCE_MALE = 0x0200,
+    ATTACK_PREFERENCE_FEMALE = 0x0400,
+
+    ATTACK_PREFERENCE_HUMAN = 0x0800,
+    ATTACK_PREFERENCE_ELF = 0x1000,
+    ATTACK_PREFERENCE_DWARF = 0x2000,
+    ATTACK_PREFERENCE_GOBLIN = 0x4000,
+};
+using enum MonsterAttackPreference;
+MM_DECLARE_FLAGS(MonsterAttackPreferences, MonsterAttackPreference)
+MM_DECLARE_OPERATORS_FOR_FLAGS(MonsterAttackPreferences)
+
+std::span<const MonsterAttackPreference> allMonsterAttackPreferences();

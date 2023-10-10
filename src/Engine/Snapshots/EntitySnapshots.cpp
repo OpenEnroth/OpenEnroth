@@ -1198,7 +1198,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.exp = src.monsterInfo.uExp;
     dst->pMonsterInfo.baseSpeed = src.monsterInfo.uBaseSpeed;
     dst->pMonsterInfo.recoveryTime = src.monsterInfo.uRecoveryTime;
-    dst->pMonsterInfo.attackPreference = src.monsterInfo.uAttackPreference;
+    dst->pMonsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.uAttackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->uActorRadius = src.radius;
@@ -1292,7 +1292,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uExp = src.pMonsterInfo.exp;
     dst->monsterInfo.uBaseSpeed = src.pMonsterInfo.baseSpeed;
     dst->monsterInfo.uRecoveryTime = src.pMonsterInfo.recoveryTime;
-    dst->monsterInfo.uAttackPreference = src.pMonsterInfo.attackPreference;
+    dst->monsterInfo.uAttackPreferences = static_cast<MonsterAttackPreferences>(src.pMonsterInfo.attackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->radius = src.uActorRadius;

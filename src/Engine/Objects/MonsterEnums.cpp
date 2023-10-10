@@ -311,3 +311,25 @@ MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType) {
         return MONSTER_SUPERTYPE_NONE;
     }
 }
+
+std::span<const MonsterAttackPreference> allMonsterAttackPreferences() {
+    static constexpr std::initializer_list<MonsterAttackPreference> result = {
+        ATTACK_PREFERENCE_KNIGHT,
+        ATTACK_PREFERENCE_PALADIN,
+        ATTACK_PREFERENCE_ARCHER,
+        ATTACK_PREFERENCE_DRUID,
+        ATTACK_PREFERENCE_CLERIC,
+        ATTACK_PREFERENCE_SORCERER,
+        ATTACK_PREFERENCE_RANGER,
+        ATTACK_PREFERENCE_THIEF,
+        ATTACK_PREFERENCE_MONK,
+        ATTACK_PREFERENCE_MALE,
+        ATTACK_PREFERENCE_FEMALE,
+        ATTACK_PREFERENCE_HUMAN,
+        ATTACK_PREFERENCE_ELF,
+        ATTACK_PREFERENCE_DWARF,
+        ATTACK_PREFERENCE_GOBLIN
+    };
+
+    return result;
+}

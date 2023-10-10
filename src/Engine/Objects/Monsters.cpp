@@ -717,15 +717,16 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     case 15: {
                         int str_len = 0;
                         int str_pos = 0;
-                        pInfos[curr_rec_num].uAttackPreference = 0;
+                        pInfos[curr_rec_num].uAttackPreferences = 0;
                         pInfos[curr_rec_num]
                             .uNumCharactersAttackedPerSpecialAbility = 0;
                         str_len = strlen(test_string);
                         for (str_pos = 0; str_pos < str_len; ++str_pos) {
                             switch (tolower(test_string[str_pos])) {
                                 case '0':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0004;
+                                    // TODO(captainurist): '0' means archer? Why???
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_ARCHER;
                                     break;
                                 case '2':
                                     pInfos[curr_rec_num]
@@ -743,60 +744,61 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                         4;
                                     break;
                                 case 'c':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0010;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_CLERIC;
                                     break;
                                 case 'd':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0008;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_DRUID;
                                     break;
                                 case 'e':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x1000;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_ELF;
                                     break;
                                 case 'f':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0400;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_FEMALE;
                                     break;
                                 case 'h':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0800;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_HUMAN;
                                     break;
                                 case 'k':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0001;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_KNIGHT;
                                     break;
                                 case 'm':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0100;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_MONK;
                                     break;
                                 case 'o':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0400;
+                                    // TODO(captainurist): both 'f' and 'o' are ATTACK_PREFERENCE_FEMALE?
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_FEMALE;
                                     break;
                                 case 'p':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0002;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_PALADIN;
                                     break;
                                 case 'r':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0040;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_RANGER;
                                     break;
                                 case 's':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0020;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_SORCERER;
                                     break;
                                 case 't':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0080;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_THIEF;
                                     break;
                                 case 'w':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x2000;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_DWARF;
                                     break;
                                 case 'x':
-                                    pInfos[curr_rec_num].uAttackPreference |=
-                                        0x0200;
+                                    pInfos[curr_rec_num].uAttackPreferences |=
+                                        ATTACK_PREFERENCE_MALE;
                                     break;
                             }
                         }

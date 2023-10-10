@@ -7597,6 +7597,30 @@ Character::Character() {
     lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
 }
 
+bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
+    switch (preference) {
+    // TODO(captainurist): isn't it weird that promotions aren't included in comparisons here?
+    case ATTACK_PREFERENCE_KNIGHT:      return classType == CLASS_KNIGHT;
+    case ATTACK_PREFERENCE_PALADIN:     return classType == CLASS_PALADIN;
+    case ATTACK_PREFERENCE_ARCHER:      return classType == CLASS_ARCHER;
+    case ATTACK_PREFERENCE_DRUID:       return classType == CLASS_DRUID;
+    case ATTACK_PREFERENCE_CLERIC:      return classType == CLASS_CLERIC;
+    case ATTACK_PREFERENCE_SORCERER:    return classType == CLASS_SORCERER;
+    case ATTACK_PREFERENCE_RANGER:      return classType == CLASS_RANGER;
+    case ATTACK_PREFERENCE_THIEF:       return classType == CLASS_THIEF;
+    case ATTACK_PREFERENCE_MONK:        return classType == CLASS_MONK;
+    case ATTACK_PREFERENCE_MALE:        return uSex == SEX_MALE;
+    case ATTACK_PREFERENCE_FEMALE:      return uSex == SEX_FEMALE;
+    case ATTACK_PREFERENCE_HUMAN:       return GetRace() == RACE_HUMAN;
+    case ATTACK_PREFERENCE_ELF:         return GetRace() == RACE_ELF;
+    case ATTACK_PREFERENCE_DWARF:       return GetRace() == RACE_DWARF;
+    case ATTACK_PREFERENCE_GOBLIN:      return GetRace() == RACE_GOBLIN;
+    default:
+        assert(false);
+        return false;
+    }
+}
+
 void Character::cleanupBeacons() {
     struct delete_beacon {
         bool operator()(const LloydBeacon &beacon) const {

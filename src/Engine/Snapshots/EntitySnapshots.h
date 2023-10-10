@@ -666,7 +666,7 @@ struct MonsterInfo_MM7 {
     uint32_t exp;
     uint32_t baseSpeed;
     int32_t recoveryTime;
-    uint32_t attackPreference;
+    uint32_t attackPreferences;
 };
 static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterInfo_MM7)
