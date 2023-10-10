@@ -490,7 +490,7 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_WATER_ELEMENTAL = 0x5,
     MONSTER_SUPERTYPE_TREANT = 0x6,
     MONSTER_SUPERTYPE_TITAN = 0x7,
-    MONSTER_SUPERTYPE_8 = 0x8, // TODO(captainurist): not an arena monster? Drop?
+    MONSTER_SUPERTYPE_NOT_ARENA = 0x8, // Can't be spawned in Arena, no MM7 monster belongs to this supertype.
 };
 using enum MONSTER_SUPERTYPE;
 
