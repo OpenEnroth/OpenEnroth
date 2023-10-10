@@ -471,11 +471,11 @@ class Localization {
         return this->character_buff_names[index];
     }
 
-    const char *GetClassName(CharacterClassType index) const {
+    const char *GetClassName(CharacterClass index) const {
         return this->class_names[index];
     }
 
-    const char *GetClassDescription(CharacterClassType index) const {
+    const char *GetClassDescription(CharacterClass index) const {
         return this->class_desciptions[index];
     }
 
@@ -661,8 +661,8 @@ class Localization {
     IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spell_school_names = {{}};
     IndexedArray<const char *, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names = {{}};
     IndexedArray<const char *, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names = {{}};
-    IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_names = {{}};
-    IndexedArray<const char *, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> class_desciptions = {{}};
+    IndexedArray<const char *, CLASS_FIRST, CLASS_LAST> class_names = {{}};
+    IndexedArray<const char *, CLASS_FIRST, CLASS_LAST> class_desciptions = {{}};
     IndexedArray<const char *, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> attribute_names = {{}};
     IndexedArray<const char *, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> attribute_descriptions = {{}};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_names = {{}};

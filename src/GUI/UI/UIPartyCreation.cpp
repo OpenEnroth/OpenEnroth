@@ -181,7 +181,7 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationSelectClass:
             pPlayer[uPlayerCreationUI_SelectedCharacter].Reset(
-                (CharacterClassType)param);
+                (CharacterClass)param);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             break;
         case UIMSG_PlayerCreationClickOK:
@@ -266,7 +266,7 @@ void GUIWindow_PartyCreation::Update() {
     int v17;                        // eax@33
     Color pStatColor;        // eax@44
     CharacterSkillType pSkillsType;  // eax@44
-    CharacterClassType uClassType;   // edi@53
+    CharacterClass uClassType;   // edi@53
     Color pColorText;                 // eax@53
     CharacterSkillType pSkillId;     // edi@72
     size_t pLenText;                // eax@72
@@ -451,65 +451,65 @@ void GUIWindow_PartyCreation::Update() {
     pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 324, 395}, colorTable.Tacha, pText);  // Classes
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_KNIGHT)
+    if (uClassType != CLASS_KNIGHT)
         pColorText = colorTable.White;
-    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_KNIGHT));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_KNIGHT));
+    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_KNIGHT));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 417}, pColorText, localization->GetClassName(CLASS_KNIGHT));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_PALADIN)
+    if (uClassType != CLASS_PALADIN)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_PALADIN));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_PALADIN));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_PALADIN));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_PALADIN));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_RANGER)
+    if (uClassType != CLASS_RANGER)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_RANGER));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_RANGER));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_RANGER));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_RANGER));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_CLERIC)
+    if (uClassType != CLASS_CLERIC)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_CLERIC));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_CLERIC));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_CLERIC));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 417}, pColorText, localization->GetClassName(CLASS_CLERIC));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_DRUID)
+    if (uClassType != CLASS_DRUID)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_DRUID));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_DRUID));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_DRUID));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_DRUID));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_SORCERER)
+    if (uClassType != CLASS_SORCERER)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_SORCERER));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_SORCERER));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_SORCERER));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_SORCERER));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_ARCHER)
+    if (uClassType != CLASS_ARCHER)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_ARCHER));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_ARCHER));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_ARCHER));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 417}, pColorText, localization->GetClassName(CLASS_ARCHER));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_MONK)
+    if (uClassType != CLASS_MONK)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_MONK));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_MONK));
+        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_MONK));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_MONK));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != CHARACTER_CLASS_THIEF)
+    if (uClassType != CLASS_THIEF)
         pColorText = colorTable.White;
-    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CHARACTER_CLASS_THIEF));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CHARACTER_CLASS_THIEF));
+    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_THIEF));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_THIEF));
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
         236, localization->GetString(LSTR_AVAILABLE_SKILLS));
@@ -763,7 +763,7 @@ bool PartyCreationUI_LoopInternal() {
 
     item.Reset();
     for (uint i = 0; i < 4; ++i) {
-        if (pParty->pCharacters[i].classType == CHARACTER_CLASS_KNIGHT)
+        if (pParty->pCharacters[i].classType == CLASS_KNIGHT)
             pParty->pCharacters[i].sResMagicBase = 10;
         // TODO(pskelton): why just CHARACTER_BUFF_RESIST_WATER?
         pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Reset();

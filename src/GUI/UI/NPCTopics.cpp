@@ -410,7 +410,7 @@ void oracleDialogue() {
     //                   rather this code will bind jars that already present in inventory to liches that currently do not have binded jars
     if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
         for (int i = 0; i < pParty->pCharacters.size(); i++) {
-            if (pParty->pCharacters[i].classType == CHARACTER_CLASS_LICH) {
+            if (pParty->pCharacters[i].classType == CLASS_LICH) {
                 bool have_vessels_soul = false;
                 for (Character &player : pParty->pCharacters) {
                     for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
@@ -472,7 +472,7 @@ std::string masteryTeacherOptionString() {
     int teacherLevel = (topicEventId - 200) % 3;
     CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((topicEventId - 200) / 3);
     Character *activePlayer = &pParty->activeCharacter();
-    CharacterClassType pClassType = activePlayer->classType;
+    CharacterClass pClassType = activePlayer->classType;
     CharacterSkillMastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
     CharacterSkillMastery masteryLevelBeingTaught = static_cast<CharacterSkillMastery>(teacherLevel + 2);
 
@@ -546,10 +546,10 @@ std::string masteryTeacherOptionString() {
     if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
         switch (skillBeingTaught) {
           case CHARACTER_SKILL_LIGHT:
-            canLearn = activePlayer->isClass(CHARACTER_CLASS_ARCHAMGE) || activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_SUN);
+            canLearn = activePlayer->isClass(CLASS_ARCHAMGE) || activePlayer->isClass(CLASS_PRIEST_OF_SUN);
             break;
           case CHARACTER_SKILL_DARK:
-            canLearn = activePlayer->isClass(CHARACTER_CLASS_LICH) || activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_MOON);
+            canLearn = activePlayer->isClass(CLASS_LICH) || activePlayer->isClass(CLASS_PRIEST_OF_MOON);
             break;
           case CHARACTER_SKILL_DODGE:
             canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() >= 10;
