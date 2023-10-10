@@ -84,11 +84,8 @@ struct MonsterStats {
     void InitializePlacements(const Blob &placements);
     MonsterId FindMonsterByTextureName(const std::string &Str2);
 
-    IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> pInfos;      // 0 - 5b18h
-    std::array<std::string, 31> pPlaceStrings;      // 5B18h placement counts from 1
-    unsigned int uNumMonsters;    // 5B94h // TODO(captainurist): can drop?
-    unsigned int uNumPlacements;  // 5B98h
-    int field_5B9C;
+    IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> pInfos;
+    std::array<std::string, 31> pUniqueNames; // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused.
 };
 
 struct MonsterDesc {
