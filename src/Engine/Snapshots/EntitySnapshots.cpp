@@ -803,112 +803,112 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 
     switch (src.classType) {
     case 0:
-        dst->classType = CHARACTER_CLASS_KNIGHT;
+        dst->classType = CLASS_KNIGHT;
         break;
     case 1:
-        dst->classType = CHARACTER_CLASS_CAVALIER;
+        dst->classType = CLASS_CAVALIER;
         break;
     case 2:
-        dst->classType = CHARACTER_CLASS_CHAMPION;
+        dst->classType = CLASS_CHAMPION;
         break;
     case 3:
-        dst->classType = CHARACTER_CLASS_BLACK_KNIGHT;
+        dst->classType = CLASS_BLACK_KNIGHT;
         break;
     case 4:
-        dst->classType = CHARACTER_CLASS_THIEF;
+        dst->classType = CLASS_THIEF;
         break;
     case 5:
-        dst->classType = CHARACTER_CLASS_ROGUE;
+        dst->classType = CLASS_ROGUE;
         break;
     case 6:
-        dst->classType = CHARACTER_CLASS_SPY;
+        dst->classType = CLASS_SPY;
         break;
     case 7:
-        dst->classType = CHARACTER_CLASS_ASSASSIN;
+        dst->classType = CLASS_ASSASSIN;
         break;
     case 8:
-        dst->classType = CHARACTER_CLASS_MONK;
+        dst->classType = CLASS_MONK;
         break;
     case 9:
-        dst->classType = CHARACTER_CLASS_INITIATE;
+        dst->classType = CLASS_INITIATE;
         break;
     case 10:
-        dst->classType = CHARACTER_CLASS_MASTER;
+        dst->classType = CLASS_MASTER;
         break;
     case 11:
-        dst->classType = CHARACTER_CLASS_NINJA;
+        dst->classType = CLASS_NINJA;
         break;
     case 12:
-        dst->classType = CHARACTER_CLASS_PALADIN;
+        dst->classType = CLASS_PALADIN;
         break;
     case 13:
-        dst->classType = CHARACTER_CLASS_CRUSADER;
+        dst->classType = CLASS_CRUSADER;
         break;
     case 14:
-        dst->classType = CHARACTER_CLASS_HERO;
+        dst->classType = CLASS_HERO;
         break;
     case 15:
-        dst->classType = CHARACTER_CLASS_VILLIAN;
+        dst->classType = CLASS_VILLIAN;
         break;
     case 16:
-        dst->classType = CHARACTER_CLASS_ARCHER;
+        dst->classType = CLASS_ARCHER;
         break;
     case 17:
-        dst->classType = CHARACTER_CLASS_WARRIOR_MAGE;
+        dst->classType = CLASS_WARRIOR_MAGE;
         break;
     case 18:
-        dst->classType = CHARACTER_CLASS_MASTER_ARCHER;
+        dst->classType = CLASS_MASTER_ARCHER;
         break;
     case 19:
-        dst->classType = CHARACTER_CLASS_SNIPER;
+        dst->classType = CLASS_SNIPER;
         break;
     case 20:
-        dst->classType = CHARACTER_CLASS_RANGER;
+        dst->classType = CLASS_RANGER;
         break;
     case 21:
-        dst->classType = CHARACTER_CLASS_HUNTER;
+        dst->classType = CLASS_HUNTER;
         break;
     case 22:
-        dst->classType = CHARACTER_CLASS_RANGER_LORD;
+        dst->classType = CLASS_RANGER_LORD;
         break;
     case 23:
-        dst->classType = CHARACTER_CLASS_BOUNTY_HUNTER;
+        dst->classType = CLASS_BOUNTY_HUNTER;
         break;
     case 24:
-        dst->classType = CHARACTER_CLASS_CLERIC;
+        dst->classType = CLASS_CLERIC;
         break;
     case 25:
-        dst->classType = CHARACTER_CLASS_PRIEST;
+        dst->classType = CLASS_PRIEST;
         break;
     case 26:
-        dst->classType = CHARACTER_CLASS_PRIEST_OF_SUN;
+        dst->classType = CLASS_PRIEST_OF_SUN;
         break;
     case 27:
-        dst->classType = CHARACTER_CLASS_PRIEST_OF_MOON;
+        dst->classType = CLASS_PRIEST_OF_MOON;
         break;
     case 28:
-        dst->classType = CHARACTER_CLASS_DRUID;
+        dst->classType = CLASS_DRUID;
         break;
     case 29:
-        dst->classType = CHARACTER_CLASS_GREAT_DRUID;
+        dst->classType = CLASS_GREAT_DRUID;
         break;
     case 30:
-        dst->classType = CHARACTER_CLASS_ARCH_DRUID;
+        dst->classType = CLASS_ARCH_DRUID;
         break;
     case 31:
-        dst->classType = CHARACTER_CLASS_WARLOCK;
+        dst->classType = CLASS_WARLOCK;
         break;
     case 32:
-        dst->classType = CHARACTER_CLASS_SORCERER;
+        dst->classType = CLASS_SORCERER;
         break;
     case 33:
-        dst->classType = CHARACTER_CLASS_WIZARD;
+        dst->classType = CLASS_WIZARD;
         break;
     case 34:
-        dst->classType = CHARACTER_CLASS_ARCHAMGE;
+        dst->classType = CLASS_ARCHAMGE;
         break;
     case 35:
-        dst->classType = CHARACTER_CLASS_LICH;
+        dst->classType = CLASS_LICH;
         break;
     default:
         assert(false);

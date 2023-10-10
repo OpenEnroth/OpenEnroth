@@ -3340,7 +3340,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
     std::optional<CharacterSex> for_sex;           // [sp+13Ch] [bp-Ch]@1
     std::optional<Race> for_race;          // [sp+140h] [bp-8h]@1
-    std::optional<CharacterClassType> for_class;         // [sp+144h] [bp-4h]@1
+    std::optional<CharacterClass> for_class;         // [sp+144h] [bp-4h]@1
 
     v2 = 0;
     if (pActor->monsterInfo.uAttackPreference) {
@@ -3349,31 +3349,31 @@ int stru319::which_player_to_attack(Actor *pActor) {
             if (v22) {
                 switch (v22) {
                     case 1:
-                        for_class = CHARACTER_CLASS_KNIGHT;
+                        for_class = CLASS_KNIGHT;
                         break;
                     case 2:
-                        for_class = CHARACTER_CLASS_PALADIN;
+                        for_class = CLASS_PALADIN;
                         break;
                     case 4:
-                        for_class = CHARACTER_CLASS_ARCHER;
+                        for_class = CLASS_ARCHER;
                         break;
                     case 8:
-                        for_class = CHARACTER_CLASS_DRUID;
+                        for_class = CLASS_DRUID;
                         break;
                     case 16:
-                        for_class = CHARACTER_CLASS_CLERIC;
+                        for_class = CLASS_CLERIC;
                         break;
                     case 32:
-                        for_class = CHARACTER_CLASS_SORCERER;
+                        for_class = CLASS_SORCERER;
                         break;
                     case 64:
-                        for_class = CHARACTER_CLASS_RANGER;
+                        for_class = CLASS_RANGER;
                         break;
                     case 128:
-                        for_class = CHARACTER_CLASS_THIEF;
+                        for_class = CLASS_THIEF;
                         break;
                     case 256:
-                        for_class = CHARACTER_CLASS_MONK;
+                        for_class = CLASS_MONK;
                         break;
                     case 512:
                         for_sex = SEX_MALE;

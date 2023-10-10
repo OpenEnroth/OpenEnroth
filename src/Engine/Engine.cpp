@@ -1687,14 +1687,14 @@ void RegeneratePartyHealthMana() {
                 }
 
                 // for warlock
-                if (PartyHasDragon() && character.classType == CHARACTER_CLASS_WARLOCK) {
+                if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
                     if (character.mana < character.GetMaxMana()) {
                         character.mana++;
                     }
                 }
 
                 // for lich
-                if (character.classType == CHARACTER_CLASS_LICH) {
+                if (character.classType == CLASS_LICH) {
                     bool lich_has_jar = false;
                     for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; ++idx) {
                         if (character.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)

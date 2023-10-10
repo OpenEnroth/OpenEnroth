@@ -367,67 +367,66 @@ inline CharacterSkillType skillForSpell(SpellId spell) {
     }
 }
 
-// TODO(pskelton): drop CHARACTER_ at start?
-enum class CharacterClassType : uint8_t {
-    CHARACTER_CLASS_KNIGHT = 0,
-    CHARACTER_CLASS_CAVALIER = 1,
-    CHARACTER_CLASS_CHAMPION = 2,
-    CHARACTER_CLASS_BLACK_KNIGHT = 3,
-    CHARACTER_CLASS_THIEF = 4,
-    CHARACTER_CLASS_ROGUE = 5,
-    CHARACTER_CLASS_SPY = 6,
-    CHARACTER_CLASS_ASSASSIN = 7,
-    CHARACTER_CLASS_MONK = 8,
-    CHARACTER_CLASS_INITIATE = 9,
-    CHARACTER_CLASS_MASTER = 10,
-    CHARACTER_CLASS_NINJA = 11,
-    CHARACTER_CLASS_PALADIN = 12,
-    CHARACTER_CLASS_CRUSADER = 13,
-    CHARACTER_CLASS_HERO = 14,
-    CHARACTER_CLASS_VILLIAN = 15,
-    CHARACTER_CLASS_ARCHER = 16,
-    CHARACTER_CLASS_WARRIOR_MAGE = 17,
-    CHARACTER_CLASS_MASTER_ARCHER = 18,
-    CHARACTER_CLASS_SNIPER = 19,
-    CHARACTER_CLASS_RANGER = 20,
-    CHARACTER_CLASS_HUNTER = 21,
-    CHARACTER_CLASS_RANGER_LORD = 22,
-    CHARACTER_CLASS_BOUNTY_HUNTER = 23,
-    CHARACTER_CLASS_CLERIC = 24,
-    CHARACTER_CLASS_PRIEST = 25,
-    CHARACTER_CLASS_PRIEST_OF_SUN = 26,
-    CHARACTER_CLASS_PRIEST_OF_MOON = 27,
-    CHARACTER_CLASS_DRUID = 28,
-    CHARACTER_CLASS_GREAT_DRUID = 29,
-    CHARACTER_CLASS_ARCH_DRUID = 30,
-    CHARACTER_CLASS_WARLOCK = 31,
-    CHARACTER_CLASS_SORCERER = 32,
-    CHARACTER_CLASS_WIZARD = 33,
-    CHARACTER_CLASS_ARCHAMGE = 34,
-    CHARACTER_CLASS_LICH = 35,
+enum class CharacterClass : uint8_t {
+    CLASS_KNIGHT = 0,
+    CLASS_CAVALIER = 1,
+    CLASS_CHAMPION = 2,
+    CLASS_BLACK_KNIGHT = 3,
+    CLASS_THIEF = 4,
+    CLASS_ROGUE = 5,
+    CLASS_SPY = 6,
+    CLASS_ASSASSIN = 7,
+    CLASS_MONK = 8,
+    CLASS_INITIATE = 9,
+    CLASS_MASTER = 10,
+    CLASS_NINJA = 11,
+    CLASS_PALADIN = 12,
+    CLASS_CRUSADER = 13,
+    CLASS_HERO = 14,
+    CLASS_VILLIAN = 15,
+    CLASS_ARCHER = 16,
+    CLASS_WARRIOR_MAGE = 17,
+    CLASS_MASTER_ARCHER = 18,
+    CLASS_SNIPER = 19,
+    CLASS_RANGER = 20,
+    CLASS_HUNTER = 21,
+    CLASS_RANGER_LORD = 22,
+    CLASS_BOUNTY_HUNTER = 23,
+    CLASS_CLERIC = 24,
+    CLASS_PRIEST = 25,
+    CLASS_PRIEST_OF_SUN = 26,
+    CLASS_PRIEST_OF_MOON = 27,
+    CLASS_DRUID = 28,
+    CLASS_GREAT_DRUID = 29,
+    CLASS_ARCH_DRUID = 30,
+    CLASS_WARLOCK = 31,
+    CLASS_SORCERER = 32,
+    CLASS_WIZARD = 33,
+    CLASS_ARCHAMGE = 34,
+    CLASS_LICH = 35,
 
-    CHARACTER_CLASS_FIRST = CHARACTER_CLASS_KNIGHT,
-    CHARACTER_CLASS_LAST = CHARACTER_CLASS_LICH
+    CLASS_FIRST = CLASS_KNIGHT,
+    CLASS_LAST = CLASS_LICH
 };
-using enum CharacterClassType;
+using enum CharacterClass;
 
-inline CharacterClassType getTier1Class(CharacterClassType classType) {
-    return static_cast<CharacterClassType>(std::to_underlying(classType) & ~3);
+inline CharacterClass getTier1Class(CharacterClass classType) {
+    return static_cast<CharacterClass>(std::to_underlying(classType) & ~3);
 }
 
-inline CharacterClassType getTier2Class(CharacterClassType classType) {
-    return static_cast<CharacterClassType>((std::to_underlying(classType) & ~3) + 1);
+inline CharacterClass getTier2Class(CharacterClass classType) {
+    return static_cast<CharacterClass>((std::to_underlying(classType) & ~3) + 1);
 }
 
-inline CharacterClassType getTier3LightClass(CharacterClassType classType) {
-    return static_cast<CharacterClassType>((std::to_underlying(classType) & ~3) + 2);
+inline CharacterClass getTier3LightClass(CharacterClass classType) {
+    return static_cast<CharacterClass>((std::to_underlying(classType) & ~3) + 2);
 }
 
-inline CharacterClassType getTier3DarkClass(CharacterClassType classType) {
-    return static_cast<CharacterClassType>((std::to_underlying(classType) & ~3) + 3);
+inline CharacterClass getTier3DarkClass(CharacterClass classType) {
+    return static_cast<CharacterClass>((std::to_underlying(classType) & ~3) + 3);
 }
 
-inline int getClassTier(CharacterClassType classType) {
+inline int getClassTier(CharacterClass classType) {
     int index = (std::to_underlying(classType) & 3);
     return index == 3 ? 3 : index + 1;
 }
@@ -442,7 +441,7 @@ inline int getClassTier(CharacterClassType classType) {
  * @param classType                     Character class.
  * @return                              All classes that the given class can be promoted to.
  */
-inline Segment<CharacterClassType> promotionsForClass(CharacterClassType classType) {
+inline Segment<CharacterClass> promotionsForClass(CharacterClass classType) {
     int tier = getClassTier(classType);
 
     if (tier == 1) {
@@ -582,14 +581,22 @@ enum class CharacterAttributeType {
     CHARACTER_ATTRIBUTE_LAST_STAT = CHARACTER_ATTRIBUTE_LUCK,
 
     CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE = CHARACTER_ATTRIBUTE_MIGHT,
-    CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE = CHARACTER_ATTRIBUTE_SKILL_UNARMED
+    CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE = CHARACTER_ATTRIBUTE_SKILL_UNARMED,
 };
 using enum CharacterAttributeType;
 
+/**
+ * @return                              All attributes that can be improved though attribute item enchantments, like
+ *                                      "of Might".
+ */
 inline Segment<CharacterAttributeType> allEnchantableAttributes() {
     return {CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE};
 }
 
+/**
+ * @return                              Segment containing the 7 basic character stats (starting with might & ending
+ *                                      with luck).
+ */
 inline Segment<CharacterAttributeType> allStatAttributes() {
     return {CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT};
 }

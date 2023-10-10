@@ -242,7 +242,7 @@ void CharacterUI_ReleaseButtons();
 /**
  * @offset 0x417AD4
  */
-Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
+Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
 
 void UI_OnMouseRightClick(int mouse_x, int mouse_y);
 
@@ -274,7 +274,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
 
 
 std::string NameAndTitle(const std::string &name, const std::string &title);
-std::string NameAndTitle(const std::string &name, CharacterClassType class_type);
+std::string NameAndTitle(const std::string &name, CharacterClass class_type);
 std::string NameAndTitle(const std::string &name, NPCProf profession);
 std::string NameAndTitle(NPCData *npc);
 

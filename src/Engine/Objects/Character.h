@@ -235,7 +235,7 @@ class Character {
     CharacterSex GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
-    void Reset(CharacterClassType classType);
+    void Reset(CharacterClass classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(CharacterAttributeType eAttribute);
     void IncreaseAttribute(CharacterAttributeType eAttribute);
@@ -282,7 +282,7 @@ class Character {
     /**
      * @offset 0x49327B
      */
-    bool isClass(CharacterClassType class_type, bool check_honorary = true) const;
+    bool isClass(CharacterClass class_type, bool check_honorary = true) const;
 
     /**
      * @offset 0x4948B1
@@ -422,7 +422,7 @@ class Character {
     uint64_t experience;
     std::string name;
     CharacterSex uSex;
-    CharacterClassType classType;
+    CharacterClass classType;
     uint8_t uCurrentFace;
     uint16_t uMight;
     uint16_t uMightBonus;

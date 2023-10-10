@@ -355,10 +355,10 @@ GAME_TEST(Prs, Pr314_742) {
     for (int i = 0; i < 4; i++)
         EXPECT_EQ(pParty->pCharacters[i].uLuck, 20);
 
-    EXPECT_EQ(pParty->pCharacters[0].classType, CHARACTER_CLASS_MONK);
-    EXPECT_EQ(pParty->pCharacters[1].classType, CHARACTER_CLASS_THIEF);
-    EXPECT_EQ(pParty->pCharacters[2].classType, CHARACTER_CLASS_RANGER);
-    EXPECT_EQ(pParty->pCharacters[3].classType, CHARACTER_CLASS_CLERIC);
+    EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_MONK);
+    EXPECT_EQ(pParty->pCharacters[1].classType, CLASS_THIEF);
+    EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_RANGER);
+    EXPECT_EQ(pParty->pCharacters[3].classType, CLASS_CLERIC);
     EXPECT_EQ(pParty->pCharacters[0].GetRace(), RACE_ELF);
     EXPECT_EQ(pParty->pCharacters[1].GetRace(), RACE_ELF);
     EXPECT_EQ(pParty->pCharacters[2].GetRace(), RACE_GOBLIN);

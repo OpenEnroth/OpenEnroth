@@ -145,81 +145,81 @@ static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
                                         25, 20, 20, 0,  0,  0};
 static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
 
-static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> pBaseHealthPerLevelByClass = {
-    {CHARACTER_CLASS_KNIGHT,            5},
-    {CHARACTER_CLASS_CAVALIER,          7},
-    {CHARACTER_CLASS_CHAMPION,          9},
-    {CHARACTER_CLASS_BLACK_KNIGHT,      9},
-    {CHARACTER_CLASS_THIEF,             4},
-    {CHARACTER_CLASS_ROGUE,             6},
-    {CHARACTER_CLASS_SPY,               8},
-    {CHARACTER_CLASS_ASSASSIN,          8},
-    {CHARACTER_CLASS_MONK,              5},
-    {CHARACTER_CLASS_INITIATE,          6},
-    {CHARACTER_CLASS_MASTER,            8},
-    {CHARACTER_CLASS_NINJA,             8},
-    {CHARACTER_CLASS_PALADIN,           4},
-    {CHARACTER_CLASS_CRUSADER,          5},
-    {CHARACTER_CLASS_HERO,              6},
-    {CHARACTER_CLASS_VILLIAN,           6},
-    {CHARACTER_CLASS_ARCHER,            3},
-    {CHARACTER_CLASS_WARRIOR_MAGE,      4},
-    {CHARACTER_CLASS_MASTER_ARCHER,     6},
-    {CHARACTER_CLASS_SNIPER,            6},
-    {CHARACTER_CLASS_RANGER,            4},
-    {CHARACTER_CLASS_HUNTER,            5},
-    {CHARACTER_CLASS_RANGER_LORD,       6},
-    {CHARACTER_CLASS_BOUNTY_HUNTER,     6},
-    {CHARACTER_CLASS_CLERIC,            2},
-    {CHARACTER_CLASS_PRIEST,            3},
-    {CHARACTER_CLASS_PRIEST_OF_SUN,     4},
-    {CHARACTER_CLASS_PRIEST_OF_MOON,    4},
-    {CHARACTER_CLASS_DRUID,             2},
-    {CHARACTER_CLASS_GREAT_DRUID,       3},
-    {CHARACTER_CLASS_ARCH_DRUID,        4},
-    {CHARACTER_CLASS_WARLOCK,           4},
-    {CHARACTER_CLASS_SORCERER,          2},
-    {CHARACTER_CLASS_WIZARD,            3},
-    {CHARACTER_CLASS_ARCHAMGE,          3},
-    {CHARACTER_CLASS_LICH,              3}
+static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseHealthPerLevelByClass = {
+    {CLASS_KNIGHT,            5},
+    {CLASS_CAVALIER,          7},
+    {CLASS_CHAMPION,          9},
+    {CLASS_BLACK_KNIGHT,      9},
+    {CLASS_THIEF,             4},
+    {CLASS_ROGUE,             6},
+    {CLASS_SPY,               8},
+    {CLASS_ASSASSIN,          8},
+    {CLASS_MONK,              5},
+    {CLASS_INITIATE,          6},
+    {CLASS_MASTER,            8},
+    {CLASS_NINJA,             8},
+    {CLASS_PALADIN,           4},
+    {CLASS_CRUSADER,          5},
+    {CLASS_HERO,              6},
+    {CLASS_VILLIAN,           6},
+    {CLASS_ARCHER,            3},
+    {CLASS_WARRIOR_MAGE,      4},
+    {CLASS_MASTER_ARCHER,     6},
+    {CLASS_SNIPER,            6},
+    {CLASS_RANGER,            4},
+    {CLASS_HUNTER,            5},
+    {CLASS_RANGER_LORD,       6},
+    {CLASS_BOUNTY_HUNTER,     6},
+    {CLASS_CLERIC,            2},
+    {CLASS_PRIEST,            3},
+    {CLASS_PRIEST_OF_SUN,     4},
+    {CLASS_PRIEST_OF_MOON,    4},
+    {CLASS_DRUID,             2},
+    {CLASS_GREAT_DRUID,       3},
+    {CLASS_ARCH_DRUID,        4},
+    {CLASS_WARLOCK,           4},
+    {CLASS_SORCERER,          2},
+    {CLASS_WIZARD,            3},
+    {CLASS_ARCHAMGE,          3},
+    {CLASS_LICH,              3}
 };
-static constexpr IndexedArray<int, CHARACTER_CLASS_FIRST, CHARACTER_CLASS_LAST> pBaseManaPerLevelByClass = {
-    {CHARACTER_CLASS_KNIGHT,            0},
-    {CHARACTER_CLASS_CAVALIER,          0},
-    {CHARACTER_CLASS_CHAMPION,          0},
-    {CHARACTER_CLASS_BLACK_KNIGHT,      0},
-    {CHARACTER_CLASS_THIEF,             0},
-    {CHARACTER_CLASS_ROGUE,             1},
-    {CHARACTER_CLASS_SPY,               1},
-    {CHARACTER_CLASS_ASSASSIN,          1},
-    {CHARACTER_CLASS_MONK,              0},
-    {CHARACTER_CLASS_INITIATE,          1},
-    {CHARACTER_CLASS_MASTER,            1},
-    {CHARACTER_CLASS_NINJA,             1},
-    {CHARACTER_CLASS_PALADIN,           1},
-    {CHARACTER_CLASS_CRUSADER,          2},
-    {CHARACTER_CLASS_HERO,              3},
-    {CHARACTER_CLASS_VILLIAN,           3},
-    {CHARACTER_CLASS_ARCHER,            1},
-    {CHARACTER_CLASS_WARRIOR_MAGE,      2},
-    {CHARACTER_CLASS_MASTER_ARCHER,     3},
-    {CHARACTER_CLASS_SNIPER,            3},
-    {CHARACTER_CLASS_RANGER,            0},
-    {CHARACTER_CLASS_HUNTER,            2},
-    {CHARACTER_CLASS_RANGER_LORD,       3},
-    {CHARACTER_CLASS_BOUNTY_HUNTER,     3},
-    {CHARACTER_CLASS_CLERIC,            3},
-    {CHARACTER_CLASS_PRIEST,            4},
-    {CHARACTER_CLASS_PRIEST_OF_SUN,     5},
-    {CHARACTER_CLASS_PRIEST_OF_MOON,    5},
-    {CHARACTER_CLASS_DRUID,             3},
-    {CHARACTER_CLASS_GREAT_DRUID,       4},
-    {CHARACTER_CLASS_ARCH_DRUID,        5},
-    {CHARACTER_CLASS_WARLOCK,           5},
-    {CHARACTER_CLASS_SORCERER,          3},
-    {CHARACTER_CLASS_WIZARD,            4},
-    {CHARACTER_CLASS_ARCHAMGE,          6},
-    {CHARACTER_CLASS_LICH,              6}
+static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseManaPerLevelByClass = {
+    {CLASS_KNIGHT,            0},
+    {CLASS_CAVALIER,          0},
+    {CLASS_CHAMPION,          0},
+    {CLASS_BLACK_KNIGHT,      0},
+    {CLASS_THIEF,             0},
+    {CLASS_ROGUE,             1},
+    {CLASS_SPY,               1},
+    {CLASS_ASSASSIN,          1},
+    {CLASS_MONK,              0},
+    {CLASS_INITIATE,          1},
+    {CLASS_MASTER,            1},
+    {CLASS_NINJA,             1},
+    {CLASS_PALADIN,           1},
+    {CLASS_CRUSADER,          2},
+    {CLASS_HERO,              3},
+    {CLASS_VILLIAN,           3},
+    {CLASS_ARCHER,            1},
+    {CLASS_WARRIOR_MAGE,      2},
+    {CLASS_MASTER_ARCHER,     3},
+    {CLASS_SNIPER,            3},
+    {CLASS_RANGER,            0},
+    {CLASS_HUNTER,            2},
+    {CLASS_RANGER_LORD,       3},
+    {CLASS_BOUNTY_HUNTER,     3},
+    {CLASS_CLERIC,            3},
+    {CLASS_PRIEST,            4},
+    {CLASS_PRIEST_OF_SUN,     5},
+    {CLASS_PRIEST_OF_MOON,    5},
+    {CLASS_DRUID,             3},
+    {CLASS_GREAT_DRUID,       4},
+    {CLASS_ARCH_DRUID,        5},
+    {CLASS_WARLOCK,           5},
+    {CLASS_SORCERER,          3},
+    {CLASS_WIZARD,            4},
+    {CLASS_ARCHAMGE,          6},
+    {CLASS_LICH,              6}
 };
 
 static constexpr IndexedArray<std::array<int, 19>, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> pConditionAttributeModifier = {
@@ -576,7 +576,7 @@ void Character::SetCondition(Condition condition, int blockable) {
             break;
 
         case CONDITION_ZOMBIE:
-            if (classType == CHARACTER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
+            if (classType == CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
                 return;
             }
 
@@ -1338,7 +1338,7 @@ Color Character::GetExperienceDisplayColor() {
 //----- (0048D4B3) --------------------------------------------------------
 int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
     // TODO(captainurist): these are some weird casts to CharacterAttributeType
-    if (classType == CHARACTER_CLASS_LICH &&
+    if (classType == CLASS_LICH &&
         ((CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
          (CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
          (CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
@@ -2155,45 +2155,45 @@ int Character::GetMaxMana() const {
     int addmanastat;
 
     switch (classType) {
-        case CHARACTER_CLASS_ROGUE:
-        case CHARACTER_CLASS_SPY:
-        case CHARACTER_CLASS_ASSASSIN:
-        case CHARACTER_CLASS_ARCHER:
-        case CHARACTER_CLASS_WARRIOR_MAGE:
-        case CHARACTER_CLASS_MASTER_ARCHER:
-        case CHARACTER_CLASS_SNIPER:
-        case CHARACTER_CLASS_SORCERER:
-        case CHARACTER_CLASS_WIZARD:
-        case CHARACTER_CLASS_ARCHAMGE:
-        case CHARACTER_CLASS_LICH:
+        case CLASS_ROGUE:
+        case CLASS_SPY:
+        case CLASS_ASSASSIN:
+        case CLASS_ARCHER:
+        case CLASS_WARRIOR_MAGE:
+        case CLASS_MASTER_ARCHER:
+        case CLASS_SNIPER:
+        case CLASS_SORCERER:
+        case CLASS_WIZARD:
+        case CLASS_ARCHAMGE:
+        case CLASS_LICH:
             // intelligence based mana
             mainmanastat = GetActualIntelligence();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
-        case CHARACTER_CLASS_INITIATE:
-        case CHARACTER_CLASS_MASTER:
-        case CHARACTER_CLASS_NINJA:
-        case CHARACTER_CLASS_PALADIN:
-        case CHARACTER_CLASS_CRUSADER:
-        case CHARACTER_CLASS_HERO:
-        case CHARACTER_CLASS_VILLIAN:
-        case CHARACTER_CLASS_CLERIC:
-        case CHARACTER_CLASS_PRIEST:
-        case CHARACTER_CLASS_PRIEST_OF_SUN:
-        case CHARACTER_CLASS_PRIEST_OF_MOON:
+        case CLASS_INITIATE:
+        case CLASS_MASTER:
+        case CLASS_NINJA:
+        case CLASS_PALADIN:
+        case CLASS_CRUSADER:
+        case CLASS_HERO:
+        case CLASS_VILLIAN:
+        case CLASS_CLERIC:
+        case CLASS_PRIEST:
+        case CLASS_PRIEST_OF_SUN:
+        case CLASS_PRIEST_OF_MOON:
             // personality based mana
             mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
-        case CHARACTER_CLASS_HUNTER:
-        case CHARACTER_CLASS_RANGER_LORD:
-        case CHARACTER_CLASS_BOUNTY_HUNTER:
-        case CHARACTER_CLASS_DRUID:
-        case CHARACTER_CLASS_GREAT_DRUID:
-        case CHARACTER_CLASS_ARCH_DRUID:
-        case CHARACTER_CLASS_WARLOCK:
+        case CLASS_HUNTER:
+        case CLASS_RANGER_LORD:
+        case CLASS_BOUNTY_HUNTER:
+        case CLASS_DRUID:
+        case CLASS_GREAT_DRUID:
+        case CLASS_ARCH_DRUID:
+        case CLASS_WARLOCK:
             // mixed base mana
             mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
@@ -2294,7 +2294,7 @@ int Character::GetBaseResistance(CharacterAttributeType a2) const {
     }
     v7 = GetItemsBonus(a2) + racialBonus;
     result = v7 + *resStat;
-    if (classType == CHARACTER_CLASS_LICH) {
+    if (classType == CLASS_LICH) {
         if (result > 200) result = 200;
     }
     return result;
@@ -2344,7 +2344,7 @@ int Character::GetActualResistance(CharacterAttributeType resistance) const {
     }
     baseRes = GetBaseResistance(resistance);
     result = v10 + GetMagicalBonus(resistance) + baseRes + *(resStat);
-    if (classType == CHARACTER_CLASS_LICH) {
+    if (classType == CLASS_LICH) {
         if (result > 200) result = 200;
     }
     return result;
@@ -2835,7 +2835,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_EARTH);
             break;
@@ -2843,7 +2843,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_FIRE);
             break;
@@ -2851,7 +2851,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR);
             break;
@@ -2859,7 +2859,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_WATER);
             break;
@@ -2867,7 +2867,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_SPIRIT);
             break;
@@ -2875,7 +2875,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MIND);
             break;
@@ -2883,7 +2883,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
-            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_BODY);
             break;
@@ -3294,7 +3294,7 @@ void Character::SetSexByVoice() {
 }
 
 //----- (0049024A) --------------------------------------------------------
-void Character::Reset(CharacterClassType cls) {
+void Character::Reset(CharacterClass cls) {
     sLevelModifier = 0;
     sAgeModifier = 0;
 
@@ -4562,8 +4562,8 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_Class:
-            this->classType = (CharacterClassType)var_value;
-            if ((CharacterClassType)var_value == CHARACTER_CLASS_LICH) {
+            this->classType = (CharacterClass)var_value;
+            if ((CharacterClass)var_value == CLASS_LICH) {
                 for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
                     if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
@@ -5197,7 +5197,7 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_Class:
-            this->classType = (CharacterClassType)val;
+            this->classType = (CharacterClass)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_CurrentHP:
@@ -7402,7 +7402,7 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
     expression = new_expression;
 }
 
-bool Character::isClass(CharacterClassType class_type, bool check_honorary) const {
+bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
     if (classType == class_type) {
         return true;
     }
@@ -7412,13 +7412,13 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
     }
 
     switch (class_type) {
-    case CHARACTER_CLASS_PRIEST_OF_SUN:
+    case CLASS_PRIEST_OF_SUN:
         return _achievedAwardsBits[Award_Promotion_PriestOfLight_Honorary];
-    case CHARACTER_CLASS_PRIEST_OF_MOON:
+    case CLASS_PRIEST_OF_MOON:
         return _achievedAwardsBits[Award_Promotion_PriestOfDark_Honorary];
-    case CHARACTER_CLASS_ARCHAMGE:
+    case CLASS_ARCHAMGE:
         return _achievedAwardsBits[Award_Promotion_Archmage_Honorary];
-    case CHARACTER_CLASS_LICH:
+    case CLASS_LICH:
         return _achievedAwardsBits[Award_Promotion_Lich_Honorary];
         break;
     default:
