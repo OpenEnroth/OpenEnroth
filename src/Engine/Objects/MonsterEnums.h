@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <span> // NOLINT
 
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
@@ -307,9 +308,10 @@ inline Segment<MonsterId> allMonsters() {
     return {MONSTER_FIRST, MONSTER_LAST};
 }
 
-inline Segment<MonsterId> allArenaMonsters() {
-    return {MONSTER_FIRST_ARENA, MONSTER_LAST_ARENA};
-}
+/**
+ * @return                              A span of all monsters that can appear in Arena.
+ */
+std::span<const MonsterId> allArenaMonsters();
 
 /**
  * Enum of all monster types in the game. Each monster type has three tiers of monsters belonging to it, e.g.
@@ -439,6 +441,12 @@ inline Segment<MonsterType> allMonsterTypes() {
 
 inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
+}
+
+inline Segment<MonsterId> monsterIdsForMonsterType(MonsterType monsterType) {
+    MonsterId first = static_cast<MonsterId>((std::to_underlying(monsterType) - 1) * 3 + 1);
+    MonsterId last = static_cast<MonsterId>(std::to_underlying(first) + 2);
+    return {first, last};
 }
 
 inline bool isPeasant(MonsterType monsterType) {
