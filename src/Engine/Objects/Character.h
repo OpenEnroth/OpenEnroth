@@ -140,6 +140,8 @@ class Character {
 
     Character();
 
+    bool matchesAttackPreference(MonsterAttackPreference preference) const;
+
     void SetVariable(VariableType var, signed int a3);
     void AddVariable(VariableType var, signed int val);
     void SubtractVariable(VariableType VarNum, signed int pValue);

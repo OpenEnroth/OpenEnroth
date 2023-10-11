@@ -1081,7 +1081,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
     assert(uActorID < pActors.size());
 
     if (pActors[uActorID].monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY &&
-        pActors[uActorID].monsterInfo.uAIType == 1) {
+        pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_WIMP) {
         Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
         return;
     }
@@ -2744,7 +2744,7 @@ void Actor::UpdateActorAI() {
 
         if (pActor->monsterInfo.uHostilityType == HOSTILITY_LONG &&
             target_pid) {
-            if (pActor->monsterInfo.uAIType == 1) {
+            if (pActor->monsterInfo.uAIType == MONSTER_AI_WIMP) {
                 if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3), pDir);
                 } else {
@@ -2753,10 +2753,10 @@ void Actor::UpdateActorAI() {
                 }
             }
             if (!(pActor->attributes & ACTOR_FLEEING)) {
-                if (pActor->monsterInfo.uAIType == 2 || pActor->monsterInfo.uAIType == 3) {
-                    if (pActor->monsterInfo.uAIType == 2)
+                if (pActor->monsterInfo.uAIType == MONSTER_AI_NORMAL || pActor->monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE) {
+                    if (pActor->monsterInfo.uAIType == MONSTER_AI_NORMAL)
                         v43 = pActor->monsterInfo.uHP * 0.2;
-                    if (pActor->monsterInfo.uAIType == 3)
+                    if (pActor->monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE)
                         v43 = pActor->monsterInfo.uHP * 0.1;
                     v42 = pActor->currentHP;
                     if (v43 > v42 && distanceToTarget < 10240) {
@@ -3335,96 +3335,31 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
 
 //----- (00426E10) --------------------------------------------------------
 int stru319::which_player_to_attack(Actor *pActor) {
-    signed int v2;         // ebx@1
-    int v22;               // [sp+8h] [bp-140h]@3
-    int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
-    std::optional<CharacterSex> for_sex;           // [sp+13Ch] [bp-Ch]@1
-    std::optional<Race> for_race;          // [sp+140h] [bp-8h]@1
-    std::optional<CharacterClass> for_class;         // [sp+144h] [bp-4h]@1
+    std::array<int, 60> victims;
+    signed int victimCount = 0;
+    if (pActor->monsterInfo.uAttackPreferences) {
+        for (MonsterAttackPreference preference : allMonsterAttackPreferences()) {
+            if (pActor->monsterInfo.uAttackPreferences & preference) {
+                for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+                    if (!pParty->pCharacters[i].matchesAttackPreference(preference))
+                        continue;
 
-    v2 = 0;
-    if (pActor->monsterInfo.uAttackPreference) {
-        for (uint i = 0; i < 16; i++) {
-            v22 = pActor->monsterInfo.uAttackPreference & (1 << i);
-            if (v22) {
-                switch (v22) {
-                    case 1:
-                        for_class = CLASS_KNIGHT;
-                        break;
-                    case 2:
-                        for_class = CLASS_PALADIN;
-                        break;
-                    case 4:
-                        for_class = CLASS_ARCHER;
-                        break;
-                    case 8:
-                        for_class = CLASS_DRUID;
-                        break;
-                    case 16:
-                        for_class = CLASS_CLERIC;
-                        break;
-                    case 32:
-                        for_class = CLASS_SORCERER;
-                        break;
-                    case 64:
-                        for_class = CLASS_RANGER;
-                        break;
-                    case 128:
-                        for_class = CLASS_THIEF;
-                        break;
-                    case 256:
-                        for_class = CLASS_MONK;
-                        break;
-                    case 512:
-                        for_sex = SEX_MALE;
-                        break;
-                    case 1024:
-                        for_sex = SEX_FEMALE;
-                        break;
-                    case 2048:
-                        for_race = RACE_HUMAN;
-                        break;
-                    case 4096:
-                        for_race = RACE_ELF;
-                        break;
-                    case 8192:
-                        for_race = RACE_DWARF;
-                        break;
-                    case 16384:
-                        for_race = RACE_GOBLIN;
-                        break;
-                }
-                v2 = 0;
-                for (int j = 0; j < pParty->pCharacters.size(); ++j) {
-                    bool flag = 0;
-                    // TODO(captainurist): this doesn't work for promoted classes. Need to wrap in getTier1Class?
-                    if (for_class && *for_class == pParty->pCharacters[j].classType) {
-                        flag = true;
-                    }
-                    if (for_sex && for_sex == pParty->pCharacters[j].uSex) {
-                        flag = true;
-                    }
-                    if (for_race && for_race == pParty->pCharacters[j].GetRace()) {
-                        flag = true;
-                    }
-                    if (flag == true) {
-                        if (pParty->pCharacters[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
-                                                                       CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                            Victims_list[v2++] = j;
-                        }
-                    }
+                    if (pParty->pCharacters[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+                                                                   CONDITION_PETRIFIED, CONDITION_ERADICATED}))
+                        victims[victimCount++] = i;
                 }
             }
         }
-        if (v2) return Victims_list[grng->random(v2)];
+        if (victimCount)
+            return victims[grng->random(victimCount)];
     }
     for (int i = 0; i < pParty->pCharacters.size(); ++i) {
         if (pParty->pCharacters[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
-                                                    CONDITION_PETRIFIED, CONDITION_ERADICATED}))
-            Victims_list[v2++] = i;
+                                                       CONDITION_PETRIFIED, CONDITION_ERADICATED}))
+            victims[victimCount++] = i;
     }
-    if (v2)
-        return Victims_list[grng->random(v2)];
+    if (victimCount)
+        return victims[grng->random(victimCount)];
     else
         return 0;
 }

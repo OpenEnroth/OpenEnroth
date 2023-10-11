@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <span> // NOLINT
 
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
@@ -307,9 +308,10 @@ inline Segment<MonsterId> allMonsters() {
     return {MONSTER_FIRST, MONSTER_LAST};
 }
 
-inline Segment<MonsterId> allArenaMonsters() {
-    return {MONSTER_FIRST_ARENA, MONSTER_LAST_ARENA};
-}
+/**
+ * @return                              A span of all monsters that can appear in Arena.
+ */
+std::span<const MonsterId> allArenaMonsters();
 
 /**
  * Enum of all monster types in the game. Each monster type has three tiers of monsters belonging to it, e.g.
@@ -441,6 +443,12 @@ inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
 }
 
+inline Segment<MonsterId> monsterIdsForMonsterType(MonsterType monsterType) {
+    MonsterId first = static_cast<MonsterId>((std::to_underlying(monsterType) - 1) * 3 + 1);
+    MonsterId last = static_cast<MonsterId>(std::to_underlying(first) + 2);
+    return {first, last};
+}
+
 inline bool isPeasant(MonsterType monsterType) {
     return
         (monsterType >= MONSTER_TYPE_FIRST_PEASANT_DWARF && monsterType <= MONSTER_TYPE_LAST_PEASANT_DWARF) ||
@@ -490,7 +498,7 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_WATER_ELEMENTAL = 0x5,
     MONSTER_SUPERTYPE_TREANT = 0x6,
     MONSTER_SUPERTYPE_TITAN = 0x7,
-    MONSTER_SUPERTYPE_8 = 0x8, // TODO(captainurist): not an arena monster? Drop?
+    MONSTER_SUPERTYPE_NOT_ARENA = 0x8, // Can't be spawned in Arena, no MM7 monster belongs to this supertype.
 };
 using enum MONSTER_SUPERTYPE;
 
@@ -546,3 +554,35 @@ enum class MonsterHostility {
 };
 using enum MonsterHostility;
 
+enum class MonsterAiType {
+    MONSTER_AI_SUICIDE = 0,     // Never runs, used for elementals and some of the stronger monsters.
+    MONSTER_AI_WIMP = 1,        // Always runs, used ONLY for peasants.
+    MONSTER_AI_NORMAL = 2,      // Runs at 20% HP.
+    MONSTER_AI_AGGRESSIVE = 3,  // Runs at 10% HP.
+};
+using enum MonsterAiType;
+
+enum class MonsterAttackPreference : uint16_t {
+    ATTACK_PREFERENCE_KNIGHT = 0x0001,
+    ATTACK_PREFERENCE_PALADIN = 0x0002,
+    ATTACK_PREFERENCE_ARCHER = 0x0004,
+    ATTACK_PREFERENCE_DRUID = 0x0008,
+    ATTACK_PREFERENCE_CLERIC = 0x0010,
+    ATTACK_PREFERENCE_SORCERER = 0x0020,
+    ATTACK_PREFERENCE_RANGER = 0x0040,
+    ATTACK_PREFERENCE_THIEF = 0x0080,
+    ATTACK_PREFERENCE_MONK = 0x0100,
+
+    ATTACK_PREFERENCE_MALE = 0x0200,
+    ATTACK_PREFERENCE_FEMALE = 0x0400,
+
+    ATTACK_PREFERENCE_HUMAN = 0x0800,
+    ATTACK_PREFERENCE_ELF = 0x1000,
+    ATTACK_PREFERENCE_DWARF = 0x2000,
+    ATTACK_PREFERENCE_GOBLIN = 0x4000,
+};
+using enum MonsterAttackPreference;
+MM_DECLARE_FLAGS(MonsterAttackPreferences, MonsterAttackPreference)
+MM_DECLARE_OPERATORS_FOR_FLAGS(MonsterAttackPreferences)
+
+std::span<const MonsterAttackPreference> allMonsterAttackPreferences();

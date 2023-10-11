@@ -1258,6 +1258,7 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
                    supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_ELF) {  // double vs elf
             damage *= 2;
         }
+        // TODO(captainurist): Do bows of titan slaying exist? If they do, then they don't do x2 damage against titans.
     }
 
     return damage + this->GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS);
@@ -2677,11 +2678,7 @@ int Character::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDm
                     } else if (currEquippedItem->attributeEnchantment) {
                         if (*currEquippedItem->attributeEnchantment == attr) {
                             // if (currEquippedItem->IsRegularEnchanmentForAttribute(attr))
-                            if (attr > CHARACTER_ATTRIBUTE_RESIST_BODY &&
-                                v5 < currEquippedItem->m_enchantmentStrength)  // for skills bonuses
-                                v5 = currEquippedItem->m_enchantmentStrength;
-                            else  // for resists and attributes bonuses
-                                v5 += currEquippedItem->m_enchantmentStrength;
+                            v5 += currEquippedItem->m_enchantmentStrength;
                         }
                     } else {
                         currEquippedItem->GetItemBonusSpecialEnchantment(this, attr, &v5, &v61);
@@ -7598,6 +7595,30 @@ Character::Character() {
     _expression21_frameset = 0;
 
     lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
+}
+
+bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
+    switch (preference) {
+    // TODO(captainurist): isn't it weird that promotions aren't included in comparisons here?
+    case ATTACK_PREFERENCE_KNIGHT:      return classType == CLASS_KNIGHT;
+    case ATTACK_PREFERENCE_PALADIN:     return classType == CLASS_PALADIN;
+    case ATTACK_PREFERENCE_ARCHER:      return classType == CLASS_ARCHER;
+    case ATTACK_PREFERENCE_DRUID:       return classType == CLASS_DRUID;
+    case ATTACK_PREFERENCE_CLERIC:      return classType == CLASS_CLERIC;
+    case ATTACK_PREFERENCE_SORCERER:    return classType == CLASS_SORCERER;
+    case ATTACK_PREFERENCE_RANGER:      return classType == CLASS_RANGER;
+    case ATTACK_PREFERENCE_THIEF:       return classType == CLASS_THIEF;
+    case ATTACK_PREFERENCE_MONK:        return classType == CLASS_MONK;
+    case ATTACK_PREFERENCE_MALE:        return uSex == SEX_MALE;
+    case ATTACK_PREFERENCE_FEMALE:      return uSex == SEX_FEMALE;
+    case ATTACK_PREFERENCE_HUMAN:       return GetRace() == RACE_HUMAN;
+    case ATTACK_PREFERENCE_ELF:         return GetRace() == RACE_ELF;
+    case ATTACK_PREFERENCE_DWARF:       return GetRace() == RACE_DWARF;
+    case ATTACK_PREFERENCE_GOBLIN:      return GetRace() == RACE_GOBLIN;
+    default:
+        assert(false);
+        return false;
+    }
 }
 
 void Character::cleanupBeacons() {

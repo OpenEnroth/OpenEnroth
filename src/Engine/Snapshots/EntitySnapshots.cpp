@@ -1153,7 +1153,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.treasureType = std::to_underlying(src.monsterInfo.uTreasureType);
     dst->pMonsterInfo.flying = src.monsterInfo.uFlying;
     dst->pMonsterInfo.movementType = std::to_underlying(src.monsterInfo.uMovementType);
-    dst->pMonsterInfo.aiType = src.monsterInfo.uAIType;
+    dst->pMonsterInfo.aiType = std::to_underlying(src.monsterInfo.uAIType);
     dst->pMonsterInfo.hostilityType = std::to_underlying(src.monsterInfo.uHostilityType);
     dst->pMonsterInfo.specialAttackType = std::to_underlying(src.monsterInfo.uSpecialAttackType);
     dst->pMonsterInfo.specialAttackLevel = src.monsterInfo.uSpecialAttackLevel;
@@ -1198,7 +1198,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.exp = src.monsterInfo.uExp;
     dst->pMonsterInfo.baseSpeed = src.monsterInfo.uBaseSpeed;
     dst->pMonsterInfo.recoveryTime = src.monsterInfo.uRecoveryTime;
-    dst->pMonsterInfo.attackPreference = src.monsterInfo.uAttackPreference;
+    dst->pMonsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.uAttackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->uActorRadius = src.radius;
@@ -1247,7 +1247,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uTreasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
     dst->monsterInfo.uFlying = src.pMonsterInfo.flying;
     dst->monsterInfo.uMovementType = static_cast<MONSTER_MOVEMENT_TYPE>(src.pMonsterInfo.movementType);
-    dst->monsterInfo.uAIType = src.pMonsterInfo.aiType;
+    dst->monsterInfo.uAIType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
     dst->monsterInfo.uHostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
     dst->monsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.uSpecialAttackLevel = src.pMonsterInfo.specialAttackLevel;
@@ -1292,7 +1292,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uExp = src.pMonsterInfo.exp;
     dst->monsterInfo.uBaseSpeed = src.pMonsterInfo.baseSpeed;
     dst->monsterInfo.uRecoveryTime = src.pMonsterInfo.recoveryTime;
-    dst->monsterInfo.uAttackPreference = src.pMonsterInfo.attackPreference;
+    dst->monsterInfo.uAttackPreferences = static_cast<MonsterAttackPreferences>(src.pMonsterInfo.attackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id
     dst->radius = src.uActorRadius;
