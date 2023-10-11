@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8254668</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;061f66d</span>
    </div>
   </td>
  </tr>
@@ -81,17 +81,20 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="MonsterEnums_8h.html">MonsterEnums.h</a>&quot;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSexAndRace.html">SexAndRace</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterData.html">MonsterData</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBountyHuntableMask.html">BountyHuntableMask</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:af5af6c86f86cd48228827710f221828d"><td class="memItemLeft" align="right" valign="top">std::span&lt; const <a class="el" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#af5af6c86f86cd48228827710f221828d">allArenaMonsters</a> ()</td></tr>
+<tr class="separator:af5af6c86f86cd48228827710f221828d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d76ae5db6f9e1371f9ff1378db5cabc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#af94989509cee39bae2fca4abd6280802">CharacterSex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#a8d76ae5db6f9e1371f9ff1378db5cabc">sexForMonsterType</a> (<a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a> monsterType)</td></tr>
 <tr class="separator:a8d76ae5db6f9e1371f9ff1378db5cabc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acef19e3faf8c64eca86716c7513bac49"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#aa2df4028f474807638d438104900b003">Race</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#acef19e3faf8c64eca86716c7513bac49">raceForMonsterType</a> (<a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a> monsterType)</td></tr>
@@ -102,15 +105,54 @@ Functions</h2></td></tr>
 <tr class="separator:a9f3c35b5fa492fc06dbff2c8e686a570"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59cef0cf192166c0ca7e40e0077c4d00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MonsterEnums_8h.html#ac552b73822a59b6fa1a2a38ae54ec8aa">MONSTER_SUPERTYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#a59cef0cf192166c0ca7e40e0077c4d00">supertypeForMonsterType</a> (<a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a> monsterType)</td></tr>
 <tr class="separator:a59cef0cf192166c0ca7e40e0077c4d00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7a2eaeb4e2f87592290e53b9228e101"><td class="memItemLeft" align="right" valign="top">std::span&lt; const <a class="el" href="MonsterEnums_8h.html#a0b5fd7097e027577e35297679af06a1d">MonsterAttackPreference</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#ac7a2eaeb4e2f87592290e53b9228e101">allMonsterAttackPreferences</a> ()</td></tr>
+<tr class="separator:ac7a2eaeb4e2f87592290e53b9228e101"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a4dc6e4fcc418033eaeabee679ffe4bfb"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structSexAndRace.html">SexAndRace</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492ae54e2826c95f933757729f0caacb3fe3">MONSTER_TYPE_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492a6907e7b994b395eb5dd5960289731699">MONSTER_TYPE_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#a4dc6e4fcc418033eaeabee679ffe4bfb">sexAndRaceByMonsterType</a></td></tr>
-<tr class="separator:a4dc6e4fcc418033eaeabee679ffe4bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23872774032f1f07e5418106a1ebf9fc"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structMonsterData.html">MonsterData</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492ae54e2826c95f933757729f0caacb3fe3">MONSTER_TYPE_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492a6907e7b994b395eb5dd5960289731699">MONSTER_TYPE_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#a23872774032f1f07e5418106a1ebf9fc">dataByMonsterType</a></td></tr>
+<tr class="separator:a23872774032f1f07e5418106a1ebf9fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24cf95d62e42779dca2559bcef167894"><td class="memItemLeft" align="right" valign="top">static const std::vector&lt; <a class="el" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#a24cf95d62e42779dca2559bcef167894">arenaMonsters</a></td></tr>
+<tr class="separator:a24cf95d62e42779dca2559bcef167894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29546ce943eaf85c10e054ad95a7cc4b"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structBountyHuntableMask.html">BountyHuntableMask</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492ae54e2826c95f933757729f0caacb3fe3">MONSTER_TYPE_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492a6907e7b994b395eb5dd5960289731699">MONSTER_TYPE_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MonsterEnums_8cpp.html#a29546ce943eaf85c10e054ad95a7cc4b">bountyHuntableMaskByMonsterType</a></td></tr>
 <tr class="separator:a29546ce943eaf85c10e054ad95a7cc4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="af5af6c86f86cd48228827710f221828d" name="af5af6c86f86cd48228827710f221828d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5af6c86f86cd48228827710f221828d">&#9670;&#160;</a></span>allArenaMonsters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::span&lt; const <a class="el" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a> &gt; allArenaMonsters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>A span of all monsters that can appear in Arena. </dd></dl>
+
+</div>
+</div>
+<a id="ac7a2eaeb4e2f87592290e53b9228e101" name="ac7a2eaeb4e2f87592290e53b9228e101"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7a2eaeb4e2f87592290e53b9228e101">&#9670;&#160;</a></span>allMonsterAttackPreferences()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::span&lt; const <a class="el" href="MonsterEnums_8h.html#a0b5fd7097e027577e35297679af06a1d">MonsterAttackPreference</a> &gt; allMonsterAttackPreferences </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa257d3c50808ecca2d0e0c6028283e4f" name="aa257d3c50808ecca2d0e0c6028283e4f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa257d3c50808ecca2d0e0c6028283e4f">&#9670;&#160;</a></span>isBountyHuntable()</h2>
 
@@ -220,6 +262,47 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a24cf95d62e42779dca2559bcef167894" name="a24cf95d62e42779dca2559bcef167894"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24cf95d62e42779dca2559bcef167894">&#9670;&#160;</a></span>arenaMonsters</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt;<a class="el" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a>&gt; arenaMonsters</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= [] {</div>
+<div class="line">    </div>
+<div class="line">    </div>
+<div class="line">    </div>
+<div class="line">    </div>
+<div class="line">    </div>
+<div class="line">    </div>
+<div class="line">    </div>
+<div class="line">    std::vector&lt;MonsterId&gt; result;</div>
+<div class="line">    <span class="keywordflow">for</span> (<a class="code hl_enumeration" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a> monsterType : <a class="code hl_variable" href="MonsterEnums_8cpp.html#a23872774032f1f07e5418106a1ebf9fc">dataByMonsterType</a>.indices())</div>
+<div class="line">        <span class="keywordflow">if</span> (<a class="code hl_variable" href="MonsterEnums_8cpp.html#a23872774032f1f07e5418106a1ebf9fc">dataByMonsterType</a>[monsterType].appearsInArena)</div>
+<div class="line">            <span class="keywordflow">for</span> (<a class="code hl_enumeration" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a> monsterId : <a class="code hl_function" href="MonsterEnums_8h.html#a01ea0bd2c0c21dcc7e8fb0942dea1a18">monsterIdsForMonsterType</a>(monsterType))</div>
+<div class="line">                result.push_back(monsterId);</div>
+<div class="line">    <span class="keywordflow">return</span> result;</div>
+<div class="line">}()</div>
+<div class="ttc" id="aMonsterEnums_8cpp_html_a23872774032f1f07e5418106a1ebf9fc"><div class="ttname"><a href="MonsterEnums_8cpp.html#a23872774032f1f07e5418106a1ebf9fc">dataByMonsterType</a></div><div class="ttdeci">static constexpr IndexedArray&lt; MonsterData, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST &gt; dataByMonsterType</div><div class="ttdef"><b>Definition:</b> MonsterEnums.cpp:17</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a01ea0bd2c0c21dcc7e8fb0942dea1a18"><div class="ttname"><a href="MonsterEnums_8h.html#a01ea0bd2c0c21dcc7e8fb0942dea1a18">monsterIdsForMonsterType</a></div><div class="ttdeci">Segment&lt; MonsterId &gt; monsterIdsForMonsterType(MonsterType monsterType)</div><div class="ttdef"><b>Definition:</b> MonsterEnums.h:446</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a9c8dbe33f930c23cbaddd4e0afad01ba"><div class="ttname"><a href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a></div><div class="ttdeci">MonsterId</div><div class="ttdef"><b>Definition:</b> MonsterEnums.h:20</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_abd758b4216b3fc46a32b2f1a359b3492"><div class="ttname"><a href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a></div><div class="ttdeci">MonsterType</div><div class="ttdef"><b>Definition:</b> MonsterEnums.h:324</div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="a29546ce943eaf85c10e054ad95a7cc4b" name="a29546ce943eaf85c10e054ad95a7cc4b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a29546ce943eaf85c10e054ad95a7cc4b">&#9670;&#160;</a></span>bountyHuntableMaskByMonsterType</h2>
 
@@ -245,8 +328,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a4dc6e4fcc418033eaeabee679ffe4bfb" name="a4dc6e4fcc418033eaeabee679ffe4bfb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dc6e4fcc418033eaeabee679ffe4bfb">&#9670;&#160;</a></span>sexAndRaceByMonsterType</h2>
+<a id="a23872774032f1f07e5418106a1ebf9fc" name="a23872774032f1f07e5418106a1ebf9fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23872774032f1f07e5418106a1ebf9fc">&#9670;&#160;</a></span>dataByMonsterType</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -255,7 +338,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structSexAndRace.html">SexAndRace</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492ae54e2826c95f933757729f0caacb3fe3">MONSTER_TYPE_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492a6907e7b994b395eb5dd5960289731699">MONSTER_TYPE_LAST</a>&gt; sexAndRaceByMonsterType</td>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structMonsterData.html">MonsterData</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492ae54e2826c95f933757729f0caacb3fe3">MONSTER_TYPE_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492a6907e7b994b395eb5dd5960289731699">MONSTER_TYPE_LAST</a>&gt; dataByMonsterType</td>
         </tr>
       </table>
   </td>
