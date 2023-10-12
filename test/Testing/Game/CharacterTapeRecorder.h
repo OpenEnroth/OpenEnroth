@@ -13,9 +13,9 @@ class CharacterTapeRecorder {
     explicit CharacterTapeRecorder(TestController *controller);
 
     template<class Callback, class T = std::invoke_result_t<Callback, const Character &>>
-    TestTape<TestVector<T>> custom(Callback callback) {
+    TestMultiTape<T> custom(Callback callback) {
         return _controller->recordTape([callback = std::move(callback)] {
-            TestVector<T> result;
+            AccessibleVector<T> result;
             for (const Character &character : characters())
                 result.push_back(callback(character));
             return result;

@@ -6,8 +6,9 @@
 #include <ostream>
 #include <memory>
 #include <utility>
+#include <vector>
 
-#include "TestVector.h"
+#include "AccessibleVector.h"
 
 namespace testing {} // Forward-declare gtest namespace.
 
@@ -25,67 +26,31 @@ class TestTapeState {
             _values.push_back(std::move(value));
     }
 
-    const TestVector<T> &values() const {
+    const std::vector<T> &values() const {
         return _values;
     }
 
  private:
     std::function<T()> _callback;
-    TestVector<T> _values;
+    std::vector<T> _values;
 };
-} // namespace detail
-
 
 template<class T>
-class TestTape {
+class TestTapeBase {
  public:
-    explicit TestTape(std::shared_ptr<detail::TestTapeState<T>> state) : _state(std::move(state)) {
+    explicit TestTapeBase(std::shared_ptr<detail::TestTapeState<T>> state) : _state(std::move(state)) {
         assert(_state);
     }
 
-    const TestVector<T> &values() const {
-        return _state->values();
+    auto begin() const {
+        return _state->values().begin();
     }
 
-    TestVector<T> firstLast() const {
-        assert(!values().empty());
-        TestVector<T> result;
-        result.push_back(values().front());
-        result.push_back(values().back());
-        return result;
+    auto end() const {
+        return _state->values().end();
     }
 
-    int size() const {
-        return values().size();
-    }
-
-    T delta() {
-        assert(!values().empty());
-        return values().back() - values().front();
-    }
-
-    T min() const {
-        assert(!values().empty());
-        return *std::min_element(values().begin(), values().end());
-    }
-
-    T max() const {
-        assert(!values().empty());
-        return *std::max_element(values().begin(), values().end());
-    }
-
-    bool contains(T value) {
-        return std::find(values().begin(), values().end(), value) != values().end();
-    }
-
-    template<class Y>
-    friend bool operator==(const TestTape &l, const TestVector<Y> &r) {
-        return l.values() == r;
-    }
-
-    // operator!= and operators with switched arguments are auto-generated.
-
-    friend void PrintTo(const TestTape &tape, std::ostream* stream) { // gtest printers support.
+    friend void PrintTo(const TestTapeBase &tape, std::ostream* stream) { // gtest printers support.
         using namespace testing; // NOLINT
         *stream << PrintToString(tape.values());
     }
@@ -94,8 +59,14 @@ class TestTape {
     std::shared_ptr<detail::TestTapeState<T>> _state;
 };
 
+} // namespace detail
+
+
 template<class T>
-using TestMultiTape = TestTape<TestVector<T>>;
+using TestTape = Accessible<detail::TestTapeBase<T>>;
+
+template<class T>
+using TestMultiTape = TestTape<AccessibleVector<T>>;
 
 /**
  * Shortcut function to create vectors that can then be compared with `TestTape` objects inside
@@ -107,7 +78,7 @@ using TestMultiTape = TestTape<TestVector<T>>;
  * ```
  */
 template<class T, class... Tail>
-TestVector<T> tape(T first, Tail... tail) {
+AccessibleVector<T> tape(T first, Tail... tail) {
     return std::initializer_list<T>{std::move(first), std::move(tail)...};
 }
 
@@ -116,10 +87,10 @@ TestVector<T> tape(T first, Tail... tail) {
  *
  * Example code:
  * ```
- * EXPECT_EQ(expTape.firstLast(), tape({100, 100, 100, 100}, {254, 250, 254, 254}));
+ * EXPECT_EQ(expTape.frontBack(), tape({100, 100, 100, 100}, {254, 250, 254, 254}));
  * ```
  */
 template<class T, class... Tail>
-TestVector<TestVector<T>> tape(std::initializer_list<T> first, std::initializer_list<Tail>... tail) {
-    return std::initializer_list<TestVector<T>>{first, tail...};
+AccessibleVector<AccessibleVector<T>> tape(std::initializer_list<T> first, std::initializer_list<Tail>... tail) {
+    return std::initializer_list<AccessibleVector<T>>{first, tail...};
 }
