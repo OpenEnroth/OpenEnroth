@@ -228,6 +228,17 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
         move_distance = 0;
 
     if (move_distance < collision_state.adjusted_move_distance) {
+        // TODO(pskelton): Not checked above math. Consider behaviour change when dropping from above?
+        Vec3f newpos = collision_state.position_lo + dir * move_distance;
+        Vec3f dir = center_lo - newpos;
+        dir.normalize();
+        Vec3f colpos = newpos + dir * collision_state.radius_lo;
+        collision_state.collisionPos = colpos;
+        // Drop any z component - for now we only consider colliding with side of cylinder
+        Vec3f colnorm = Vec3f(-dir.x, -dir.y, 0);
+        colnorm.normalize();
+        collision_state.collisionNorm = colnorm;
+
         collision_state.adjusted_move_distance = move_distance;
         collision_state.pid = pid;
     }
