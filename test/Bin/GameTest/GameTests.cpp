@@ -1027,7 +1027,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos, Vec3i(11943, 11586, 857));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12040, 11734, 898));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -1635,7 +1635,7 @@ GAME_TEST(Issues, Issue1197) {
 
 // 1200
 
-GAME_TEST(Issues, Issue1251) {
+GAME_TEST(Issues, Issue1251b) {
     // Make sure charm wand doesn't assert
     auto charmedActors = tapes.actorCountByBuff(ACTOR_BUFF_CHARM);
     test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");

@@ -7214,7 +7214,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3i a3 = actor->pos - pParty->pos;
+        Vec3i a3 = actor->pos - pParty->pos.toInt();
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
         Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
@@ -7644,7 +7644,7 @@ bool Character::setBeacon(int index, GameTime duration) {
 
     beacon.image = render->TakeScreenshot(92, 68);
     beacon.uBeaconTime = pParty->GetPlayingTime() + duration;
-    beacon._partyPos = pParty->pos;
+    beacon._partyPos = pParty->pos.toInt();
     beacon._partyViewYaw = pParty->_viewYaw;
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.mapId = file_index;

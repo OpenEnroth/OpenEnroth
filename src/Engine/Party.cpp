@@ -95,7 +95,7 @@ void Party::Zero() {
     PartyTimes.guildNextRefreshTime.fill(GameTime(0));
     PartyTimes.shopBanTimes.fill(GameTime(0));
     PartyTimes._s_times.fill(GameTime(0));
-    pos = lastPos = Vec3i();
+    pos = lastPos = Vec3f();
     speed = Vec3f();
     _viewYaw = _viewPrevYaw = 0;
     _viewPitch = _viewPrevPitch = 0;
@@ -716,7 +716,7 @@ void Party::yell() {
             if (actor.CanAct() &&
                 actor.monsterInfo.uHostilityType != HOSTILITY_LONG &&
                 actor.monsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                if ((actor.pos - pParty->pos).length() < 512) {
+                if ((actor.pos - pParty->pos.toInt()).length() < 512) {
                     Actor::AI_Flee(i, Pid::character(0), 0, 0);
                 }
             }
@@ -726,7 +726,7 @@ void Party::yell() {
 
 //----- (00491BF9) --------------------------------------------------------
 void Party::ResetPosMiscAndSpellBuffs() {
-    this->pos = Vec3i();
+    this->pos = Vec3f();
     this->speed = Vec3f();
     this->uFallStartZ = 0;
     this->_viewYaw = 0;
@@ -1067,7 +1067,7 @@ void Party::dropHeldItem() {
     sprite.uType = pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
-    sprite.vPosition = pos + Vec3i(0, 0, eyeLevel);
+    sprite.vPosition = pos.toInt() + Vec3i(0, 0, eyeLevel);
     sprite.uSoundID = 0;
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;

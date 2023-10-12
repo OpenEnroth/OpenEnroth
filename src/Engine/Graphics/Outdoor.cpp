@@ -1642,7 +1642,7 @@ void ODM_ProcessPartyActions() {
     int floorFaceId = 0;
     bool partyIsOnWater = false;
 
-    int floorZ = ODM_GetFloorLevel(pParty->pos, pParty->height,
+    int floorZ = ODM_GetFloorLevel(pParty->pos.toInt(), pParty->height,
                                    &partyIsOnWater, &floorFaceId, waterWalkActive);
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
@@ -1957,7 +1957,7 @@ void ODM_ProcessPartyActions() {
     pParty->_viewYaw = partyViewNewYaw;
     pParty->_viewPitch = partyViewNewPitch;
 
-    Vec3i partyNewPos = pParty->pos;
+    Vec3f partyNewPos = pParty->pos;
 
     //-------------------------------------------
     if (pParty->bFlying) {
@@ -1974,7 +1974,7 @@ void ODM_ProcessPartyActions() {
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
         if (partyIsOnWater && !fuzzyIsNull(partyInputSpeed.z))
-            SpriteObject::createSplashObject({partyNewPos.x, partyNewPos.y, partyNewPos.z});
+            SpriteObject::createSplashObject(partyNewPos.toInt());
         partyInputSpeed.z = 0;
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewPos.z;
@@ -2039,7 +2039,7 @@ void ODM_ProcessPartyActions() {
     else
         pParty->setAirborne(true);
 
-    Vec3i partyOldPosition = pParty->pos;
+    Vec3f partyOldPosition = pParty->pos;
     int partyCurrentXGrid = WorldPosToGridCellX(pParty->pos.x);
     int partyCurrentYGrid = WorldPosToGridCellY(pParty->pos.y);
     int partyNewXGrid = WorldPosToGridCellX(partyNewPos.x);
@@ -2816,7 +2816,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
         if (!pLevelDecorations.empty()) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
-                    pParty->pos = pLevelDecorations[i].vPosition;
+                    pParty->pos = pLevelDecorations[i].vPosition.toFloat();
                     pParty->speed = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;

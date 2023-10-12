@@ -58,6 +58,6 @@ void EngineTraceStateAccessor::patchConfig(GameConfig *config, const std::vector
 EventTraceGameState EngineTraceStateAccessor::makeGameState() {
     EventTraceGameState result;
     result.locationName = toLower(pCurrentMapName);
-    result.partyPosition = pParty->pos;
+    result.partyPosition = pParty->pos.toInt();
     return result;
 }

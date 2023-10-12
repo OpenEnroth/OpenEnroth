@@ -1346,7 +1346,7 @@ void UpdateObjects() {
                     if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) { // TODO(captainurist): wtf is this (pSpriteObjects[i].uSectorID & 4) ???
                         continue;
                     }
-                    if ((pParty->pos - pSpriteObjects[i].vPosition).length() <= 5120) {
+                    if ((pParty->pos.toInt() - pSpriteObjects[i].vPosition).length() <= 5120) {
                         continue;
                     }
                     SpriteObject::OnInteraction(i);

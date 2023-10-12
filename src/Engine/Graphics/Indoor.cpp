@@ -177,8 +177,8 @@ void PrepareDrawLists_BLV() {
 
 //----- (004407D9) --------------------------------------------------------
 void BLVRenderParams::Reset() {
-    this->uPartySectorID = pIndoor->GetSector(pParty->pos);
-    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos + Vec3i(0, 0, pParty->eyeLevel));
+    this->uPartySectorID = pIndoor->GetSector(pParty->pos.toInt());
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel));
 
     if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -1027,7 +1027,7 @@ void PrepareToLoadBLV(bool bLoading) {
     if (!bLoading) {
         pParty->_viewPitch = 0;
         pParty->_viewYaw = 0;
-        pParty->pos = Vec3i();
+        pParty->pos = Vec3f();
         pParty->speed = Vec3f();
         pParty->uFallStartZ = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
@@ -1515,13 +1515,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    int floorZ = GetIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
+    int floorZ = GetIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, 40), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floorZ == -30000 || faceId == -1) {
-        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, 40), &sectorId, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             __debugbreak();  // level built with errors
             return;
@@ -1710,7 +1710,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->speed.y = 0;
     }
 
-    Vec3i oldPos = pParty->pos;
+    Vec3f oldPos = pParty->pos;
 
     ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
 

@@ -244,7 +244,7 @@ void CastSpellInfoHelpers::castSpell() {
             if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW)) {
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
             }
-            pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+            pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -268,7 +268,7 @@ void CastSpellInfoHelpers::castSpell() {
         } else if (pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             // TODO(pskelton): was pParty->uPartyHeight / 2
-            pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+            pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -369,7 +369,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -471,7 +471,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_DRAGON_BREATH:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -497,7 +497,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // TODO(pskelton): was pParty->uPartyHeight / 2
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -523,7 +523,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -659,7 +659,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // Spell level was multiplied by 300 (which number of seconds in 5 minutes)
                     // This calculation was moved to spell impact processing function
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -878,7 +878,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    float dist = (pActors[monster_id].pos - pParty->pos).toFloat().length();
+                    float dist = (pActors[monster_id].pos.toFloat() - pParty->pos).length();
                     if (dist <= 307.2) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -978,7 +978,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[spell_targeted_at.id()].pos;
                     } else {
-                        dist = pParty->pos + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
+                        dist = pParty->pos.toInt() + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;
@@ -1083,7 +1083,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -1182,7 +1182,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[spell_targeted_at.id()].pos;
                     } else {
-                        dist = pParty->pos + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
+                        dist = pParty->pos.toInt() + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;
@@ -1271,7 +1271,7 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -1563,7 +1563,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_EARTH_ROCK_BLAST:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -1588,7 +1588,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     pSpellSprite.uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.uFacing = (short)pParty->_viewYaw;
                     if (pParty->bTurnBasedModeOn) {
@@ -2691,7 +2691,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // TODO(pskelton): was pParty->uPartyHeight / 2
-                    pSpellSprite.vPosition = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+                    pSpellSprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -2899,7 +2899,7 @@ void CastSpellInfoHelpers::castSpell() {
                         bool bOnWater = false;
                         int terr_height = GetTerrainHeightsAroundParty2(rand_x + pParty->pos.x, rand_y + pParty->pos.y, &bOnWater, 0);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand_x + pParty->pos.x, rand_y + pParty->pos.y, terr_height + 16}, grng->random(500) + 500);
+                                                 {rand_x + static_cast<int>(pParty->pos.x), rand_y + static_cast<int>(pParty->pos.y), terr_height + 16}, grng->random(500) + 500);
                     }
                     break;
                 }

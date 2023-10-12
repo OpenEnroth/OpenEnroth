@@ -459,7 +459,7 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
 }
 
 void CollideWithParty(bool jagged_top) {
-    CollideWithCylinder(pParty->pos.toFloat(), 2 * pParty->radius, pParty->height, Pid::character(0), jagged_top);
+    CollideWithCylinder(pParty->pos, 2 * pParty->radius, pParty->height, Pid::character(0), jagged_top);
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
@@ -728,8 +728,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = true;
     for (uint i = 0; i < 100; i++) {
-        collision_state.position_hi = pParty->pos.toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
-        collision_state.position_lo = pParty->pos.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
+        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - 32 + 1);
+        collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo + 1);
         collision_state.velocity = pParty->speed;
 
         collision_state.uSectorID = sectorId;
@@ -749,13 +749,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 break; // No portal collisions => can break.
         }
 
-        Vec3i adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance * collision_state.direction).toInt();
-        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, faceId);
+        Vec3f adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance * collision_state.direction);
+        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos.toInt() + Vec3i(0, 0, 40), &collision_state.uSectorID, faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128)
             return; // TODO: whaaa?
 
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            pParty->pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toIntTrunc();
+            pParty->pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1));
             break; // And we're done with collisions.
         }
 
@@ -835,7 +835,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     }
 }
 
-void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
+void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
     // --(Collisions)-------------------------------------------------------------------
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
@@ -844,8 +844,8 @@ void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool 
     collision_state.check_hi = true;
     // make 100 attempts to satisfy collisions
     for (uint i = 0; i < 100; i++) {
-        collision_state.position_hi = partyNewPos->toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
-        collision_state.position_lo = partyNewPos->toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
+        collision_state.position_hi = *partyNewPos + Vec3f(0, 0, pParty->height - 32 + 1);
+        collision_state.position_lo = *partyNewPos + Vec3f(0, 0, collision_state.radius_lo + 1);
         collision_state.velocity = *partyInputSpeed;
 
         collision_state.uSectorID = 0;
@@ -863,7 +863,7 @@ void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool 
         for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
             CollideWithActor(actor_id, 0);
 
-        Vec3i newPosLow = {};
+        Vec3f newPosLow = {};
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             newPosLow.x = collision_state.new_position_lo.x;
             newPosLow.y = collision_state.new_position_lo.y;
@@ -874,7 +874,7 @@ void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool 
             newPosLow.z = partyNewPos->z + collision_state.adjusted_move_distance * collision_state.direction.z;
         }
 
-        int allnewfloor = ODM_GetFloorLevel(newPosLow, pParty->height, partyIsOnWater, floorFaceId, 0);
+        int allnewfloor = ODM_GetFloorLevel(newPosLow.toInt(), pParty->height, partyIsOnWater, floorFaceId, 0);
         int party_y_pid;
         int x_advance_floor = ODM_GetFloorLevel(Vec3i(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
@@ -976,7 +976,7 @@ void ProcessPartyCollisionsODM(Vec3i *partyNewPos, Vec3f *partyInputSpeed, bool 
                 if (!bFaceSlopeTooSteep)
                     v54 = dot * pODMFace->facePlane.normal.z;
                 partyInputSpeed->z += v54;
-                int v55 = collision_state.radius_lo - pODMFace->facePlane.signedDistanceTo(newPosLow.toFloat());
+                int v55 = collision_state.radius_lo - pODMFace->facePlane.signedDistanceTo(newPosLow);
                 if (v55 > 0) {
                     partyNewPos->x = newPosLow.x + pODMFace->facePlane.normal.x * v55;
                     partyNewPos->y = newPosLow.y + pODMFace->facePlane.normal.y * v55;

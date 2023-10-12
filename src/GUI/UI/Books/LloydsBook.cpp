@@ -205,7 +205,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             uGameState = GAME_STATE_CHANGE_LOCATION;
             engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos, character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
         } else {
-            pParty->pos = character.vBeacons[beaconId]._partyPos;
+            pParty->pos = character.vBeacons[beaconId]._partyPos.toFloat();
             pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewYaw = character.vBeacons[beaconId]._partyViewYaw;
             pParty->_viewPitch = character.vBeacons[beaconId]._partyViewPitch;

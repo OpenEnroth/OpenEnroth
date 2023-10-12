@@ -525,7 +525,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
     if (tox || toy || toz) {
         coord_delta = to - from;
     } else {
-        coord_delta = pParty->pos - from + Vec3i(0, 0, pParty->eyeLevel);
+        coord_delta = pParty->pos.toInt() - from + Vec3i(0, 0, pParty->eyeLevel);
     }
 
     int yaw = 0;
