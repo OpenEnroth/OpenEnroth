@@ -733,10 +733,12 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 }
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
+    constexpr float closestdist = 1.5f; // Closest allowed approach to collision surface - needs adjusting
+
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
-    collision_state.radius_hi = pParty->radius / 2;
+    collision_state.radius_hi = pParty->radius - 1.0f; /* / 2*/;
     collision_state.check_hi = true;
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - 32 + 1);
@@ -760,10 +762,19 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 break; // No portal collisions => can break.
         }
 
-        Vec3f adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance * collision_state.direction);
-        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos.toInt() + Vec3i(0, 0, 40), &collision_state.uSectorID, faceId);
-        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128)
+        Vec3f adjusted_pos; //= pParty->pos + ((collision_state.adjusted_move_distance - closestdist) * collision_state.direction).toInt();
+        adjusted_pos.x = pParty->pos.x + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.x;
+        adjusted_pos.y = pParty->pos.y + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.y;
+        adjusted_pos.z = pParty->pos.z + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.z;
+        collision_state.collisionPos -= closestdist * collision_state.direction;
+
+        int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, 40)).toInt(), &collision_state.uSectorID, faceId);
+        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
+            // intended world position isnt valid so dont move there
+            int testadjusted_floor_z = GetIndoorFloorZ(pParty->pos.toInt(), &collision_state.uSectorID, faceId);
+            if (*faceId == -1) __debugbreak();
             return; // TODO: whaaa?
+        }
 
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             pParty->pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1));
@@ -772,10 +783,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
-        pParty->pos.x += collision_state.adjusted_move_distance * collision_state.direction.x;
-        pParty->pos.y += collision_state.adjusted_move_distance * collision_state.direction.y;
-        int new_party_z_tmp = pParty->pos.z +
-                              collision_state.adjusted_move_distance * collision_state.direction.z;
+        pParty->pos.x = adjusted_pos.x; //+= collision_state.adjusted_move_distance * collision_state.direction.x;
+        pParty->pos.y = adjusted_pos.y; //+= collision_state.adjusted_move_distance * collision_state.direction.y;
+        float new_party_z_tmp = adjusted_pos.z; //pParty->pos.z + collision_state.adjusted_move_distance * collision_state.direction.z;
+
 
         if (collision_state.pid.type() == OBJECT_Actor) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
@@ -783,13 +794,20 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // Bounce back from a decoration & do another round of collision checks.
-            // This way the party can "slide" along & past a decoration.
-            int angle = TrigLUT.atan2(pParty->pos.x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
-                                      pParty->pos.y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
-            int len = integer_sqrt(pParty->speed.xy().lengthSqr());
-            pParty->speed.x = TrigLUT.cos(angle) * len;
-            pParty->speed.y = TrigLUT.sin(angle) * len;
+            // new sliding plane
+            Vec3f slideplaneorigin = collision_state.collisionPos;
+            Vec3f slideplanenormal = collision_state.collisionNorm;
+            float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
+
+            // form a sliding vector that is parallel to sliding movement
+            float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
+            Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
+            Vec3f newdirection = newdestination - collision_state.collisionPos;
+            newdirection.z = 0;
+            newdirection.normalize();
+
+            // set party to move along this new sliding vector
+            pParty->speed = newdirection * dot(newdirection, pParty->speed);
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
@@ -847,7 +865,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 }
 
 void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
-    constexpr float closestdist = 1.5f;  // needs adjusting
+    constexpr float closestdist = 1.5f;  // Closest allowed approach to collision surface - needs adjusting
 
     // --(Collisions)-------------------------------------------------------------------
     collision_state.ignored_face_id = -1;
