@@ -847,11 +847,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 }
 
 void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
+    constexpr float closestdist = 1.5f;  // needs adjusting
+
     // --(Collisions)-------------------------------------------------------------------
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
-    collision_state.radius_hi = pParty->radius / 2.0f;
+    collision_state.radius_hi = pParty->radius - 1.0f; /// 2.0f;
     collision_state.check_hi = true;
     // make 100 attempts to satisfy collisions
     for (uint i = 0; i < 100; i++) {
@@ -880,9 +882,10 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             newPosLow.y = collision_state.new_position_lo.y;
             newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            newPosLow.x = partyNewPos->x + collision_state.adjusted_move_distance * collision_state.direction.x;
-            newPosLow.y = partyNewPos->y + collision_state.adjusted_move_distance * collision_state.direction.y;
-            newPosLow.z = partyNewPos->z + collision_state.adjusted_move_distance * collision_state.direction.z;
+            newPosLow.x = partyNewPos->x + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.x;
+            newPosLow.y = partyNewPos->y + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.y;
+            newPosLow.z = partyNewPos->z + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.z;
+            collision_state.collisionPos -= closestdist * collision_state.direction;
         }
 
         int allnewfloor = ODM_GetFloorLevel(newPosLow.toInt(), pParty->height, partyIsOnWater, floorFaceId, 0);
@@ -937,11 +940,20 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            int atanDecoration = TrigLUT.atan2(
-                newPosLow.x - pLevelDecorations[collision_state.pid.id()].vPosition.x,
-                newPosLow.y - pLevelDecorations[collision_state.pid.id()].vPosition.y);
-            partyInputSpeed->x = TrigLUT.cos(atanDecoration) * integer_sqrt(partyInputSpeed->xy().lengthSqr());
-            partyInputSpeed->y = TrigLUT.sin(atanDecoration) * integer_sqrt(partyInputSpeed->xy().lengthSqr());
+            // new sliding plane
+            Vec3f slideplaneorigin = collision_state.collisionPos;
+            Vec3f slideplanenormal = collision_state.collisionNorm;
+            float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
+
+            // form a sliding vector that is parallel to sliding movement
+            float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
+            Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
+            Vec3f newdirection = newdestination - collision_state.collisionPos;
+            newdirection.z = 0;
+            newdirection.normalize();
+
+            // set party to move along this new sliding vector
+            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
