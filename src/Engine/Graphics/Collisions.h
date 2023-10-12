@@ -39,6 +39,9 @@ struct CollisionState {
     Pid pid;  // Pid of the object that we're collided with.
     int ignored_face_id;  // Don't check collisions with this face.
     BBoxf bbox;
+
+    Vec3f collisionPos;  // Point at which nearest collision occurs (touching radii)
+    Vec3f collisionNorm;  // Normal vector outwards of collision if known
 };
 
 extern CollisionState collision_state;
