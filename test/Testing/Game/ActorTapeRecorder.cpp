@@ -27,12 +27,30 @@ TestTape<int> ActorTapeRecorder::countByBuff(ACTOR_BUFF_INDEX buff) {
     });
 }
 
+TestMultiTape<int> ActorTapeRecorder::indicesByState(AIState state) {
+    return _controller->recordTape([state] {
+        AccessibleVector<int> result;
+        for (size_t i = 0; i < actors().size(); i++)
+            if (actors()[i].aiState == state)
+                result.push_back(i);
+        return result;
+    });
+}
+
 TestTape<int> ActorTapeRecorder::hp(int actorIndex) {
     return custom(actorIndex, std::bind<int>(&Actor::currentHP, _1));
 }
 
+TestMultiTape<int> ActorTapeRecorder::hps(std::initializer_list<int> actorIndices) {
+    return custom(actorIndices, std::bind<int>(&Actor::currentHP, _1));
+}
+
 TestTape<AIState> ActorTapeRecorder::aiState(int actorIndex) {
     return custom(actorIndex, std::bind(&Actor::aiState, _1));
+}
+
+TestMultiTape<AIState> ActorTapeRecorder::aiStates(std::initializer_list<int> actorIndices) {
+    return custom(actorIndices, std::bind(&Actor::aiState, _1));
 }
 
 TestTape<bool> ActorTapeRecorder::hasBuff(int actorIndex, ACTOR_BUFF_INDEX buff) {

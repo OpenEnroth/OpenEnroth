@@ -1685,3 +1685,23 @@ GAME_TEST(Prs, Pr1325) {
     EXPECT_EQ(vialsTape.delta(), +6);
     EXPECT_EQ(deadTape.delta(), +84); // Too much armageddon...
 }
+
+GAME_TEST(Issues, Issue1331) {
+    // "of David" enchanted bows should do double damage against Titans.
+    auto hpsTape = actorTapes.hps({31, 33});
+    auto deadTape = actorTapes.indicesByState(AIState::Dead);
+    test.playTraceFromTestData("issue_1331.mm7", "issue_1331.json");
+    EXPECT_EQ(deadTape.frontBack(), tape(std::initializer_list<int>{}, {31, 33})); // Check that titans are dead.
+
+    // Damage as stated in the character sheet is 41-45. Crossbow is 4d2+7. Because of how non-random engine works,
+    // 4d2+7 will always roll 13, and thus the 41-45 range is effectively compressed into 43-43.
+    //
+    // With the "of David" enchantment, the 4d2+7 part of the damage is doubled, so max damage is now 43+13=56.
+    //
+    // Min damage is so low because titans have physical resistance. And then we also have to multiply the damage by
+    // two because the character shoots two arrows at a time.
+    EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->special_enchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
+    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
+    auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
+    EXPECT_EQ(damageRange, tape(1 * 2, (43 + 13) * 2));
+}
