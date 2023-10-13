@@ -241,6 +241,7 @@ var menudata={children:[
 {text:"w",url:"globals_vars_w.html#index_w"},
 {text:"z",url:"globals_vars_z.html#index_z"}]},
 {text:"Typedefs",url:"globals_type.html",children:[
+{text:"a",url:"globals_type.html#index_a"},
 {text:"b",url:"globals_type.html#index_b"},
 {text:"c",url:"globals_type.html#index_c"},
 {text:"e",url:"globals_type.html#index_e"},
