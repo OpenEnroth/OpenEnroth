@@ -1,20 +1,10 @@
 #include "CharacterTapeRecorder.h"
 
+#include <functional>
+
 #include "Engine/Party.h"
 
-template<class Member, class... Args>
-static auto bind(Member member, Args... args) {
-    return [member, ...args = std::move(args)] (const Character &character) {
-        return std::invoke(member, character, args...);
-    };
-}
-
-template<class T, class Member, class... Args>
-static auto bindAs(Member member, Args... args) {
-    return [base = bind(member, std::move(args)...)] (const Character &character) {
-        return static_cast<T>(base(character));
-    };
-}
+using namespace std::placeholders; // NOLINT
 
 CharacterTapeRecorder::CharacterTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);
@@ -25,61 +15,61 @@ std::span<Character> CharacterTapeRecorder::characters() {
 }
 
 TestTape<int64_t> CharacterTapeRecorder::experience(int characterIndex) {
-    return custom(characterIndex, bindAs<int64_t>(&Character::experience));
+    return custom(characterIndex, std::bind<int64_t>(&Character::experience, _1));
 }
 
 TestMultiTape<int64_t> CharacterTapeRecorder::experiences() {
-    return custom(bindAs<int64_t>(&Character::experience));
+    return custom(std::bind<int64_t>(&Character::experience, _1));
 }
 
 TestTape<CharacterExpressionID> CharacterTapeRecorder::expression(int characterIndex) {
-    return custom(characterIndex, bind(&Character::expression));
+    return custom(characterIndex, std::bind(&Character::expression, _1));
 }
 
 TestMultiTape<CharacterExpressionID> CharacterTapeRecorder::expressions() {
-    return custom(bind(&Character::expression));
+    return custom(std::bind(&Character::expression, _1));
 }
 
 TestTape<int> CharacterTapeRecorder::hp(int characterIndex) {
-    return custom(characterIndex, bind(&Character::health));
+    return custom(characterIndex, std::bind(&Character::health, _1));
 }
 
 TestMultiTape<int> CharacterTapeRecorder::hps() {
-    return custom(bind(&Character::health));
+    return custom(std::bind(&Character::health, _1));
 }
 
 TestTape<int> CharacterTapeRecorder::mp(int characterIndex) {
-    return custom(characterIndex, bind(&Character::mana));
+    return custom(characterIndex, std::bind(&Character::mana, _1));
 }
 
 TestMultiTape<int> CharacterTapeRecorder::mps() {
-    return custom(bind(&Character::mana));
+    return custom(std::bind(&Character::mana, _1));
 }
 
 TestTape<int> CharacterTapeRecorder::ac(int characterIndex) {
-    return custom(characterIndex, bind(&Character::GetActualAC));
+    return custom(characterIndex, std::bind(&Character::GetActualAC, _1));
 }
 
 TestMultiTape<int> CharacterTapeRecorder::acs() {
-    return custom(bind(&Character::GetActualAC));
+    return custom(std::bind(&Character::GetActualAC, _1));
 }
 
 TestTape<int> CharacterTapeRecorder::level(int characterIndex) {
-    return custom(characterIndex, bind(&Character::GetActualLevel));
+    return custom(characterIndex, std::bind(&Character::GetActualLevel, _1));
 }
 
 TestMultiTape<int> CharacterTapeRecorder::levels() {
-    return custom(bind(&Character::GetActualLevel));
+    return custom(std::bind(&Character::GetActualLevel, _1));
 }
 
 TestMultiTape<int> CharacterTapeRecorder::skillLevels(CharacterSkillType skill) {
-    return custom(bind(&Character::actualSkillLevel, skill));
+    return custom(std::bind(&Character::actualSkillLevel, _1, skill));
 }
 
 TestMultiTape<Condition> CharacterTapeRecorder::conditions() {
-    return custom(bind(&Character::GetMajorConditionIdx));
+    return custom(std::bind(&Character::GetMajorConditionIdx, _1));
 }
 
 TestMultiTape<int> CharacterTapeRecorder::resistances(CharacterAttributeType resistance) {
-    return custom(bind(&Character::GetActualResistance, resistance));
+    return custom(std::bind(&Character::GetActualResistance, _1, resistance));
 }
