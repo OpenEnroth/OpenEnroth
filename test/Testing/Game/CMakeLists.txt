@@ -12,7 +12,7 @@ if(OE_BUILD_TESTS)
             GameTest.h
             TestTape.h
             TestController.h
-            TestVector.h)
+            AccessibleVector.h)
 
     add_library(testing_game ${TESTING_GAME_SOURCES} ${TESTING_GAME_HEADERS})
     target_link_libraries(testing_game PUBLIC application testing_extensions GTest::gtest)

@@ -177,8 +177,8 @@ GAME_TEST(Issues, Issue223) {
     auto airTape = ctapes.resistances(CHARACTER_ATTRIBUTE_RESIST_AIR);
     test.playTraceFromTestData("issue_223.mm7", "issue_223.json");
     // expect normal resistances after restart 55-00-00-00.
-    EXPECT_EQ(fireTape.firstLast(), tape({280, 262, 390, 241}, {5, 0, 0, 0}));
-    EXPECT_EQ(airTape.firstLast(), tape({389, 385, 385, 381}, {5, 0, 0, 0}));
+    EXPECT_EQ(fireTape.frontBack(), tape({280, 262, 390, 241}, {5, 0, 0, 0}));
+    EXPECT_EQ(airTape.frontBack(), tape({389, 385, 385, 381}, {5, 0, 0, 0}));
 }
 
 GAME_TEST(Issues, Issue238) {
@@ -300,7 +300,7 @@ GAME_TEST(Issues, Issue293a) {
     });
 
     EXPECT_EQ(totalItemsTape.delta(), +1);
-    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
+    EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
                                                {CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK}));
     EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
     EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
@@ -387,7 +387,7 @@ GAME_TEST(Issues, Issue331_679) {
 
     // #679: Loading autosave after travelling by stables / boat results in gold loss.
     EXPECT_EQ(goldTape.delta(), 0);
-    EXPECT_LT(goldTape.min(), goldTape.values().front()); // We did spend money.
+    EXPECT_LT(goldTape.min(), goldTape.front()); // We did spend money.
 }
 
 GAME_TEST(Prs, Pr347) {
@@ -404,24 +404,9 @@ GAME_TEST(Issues, Issue355) {
     // GOG: 6-2. OpenEnroth: 9-5.
     auto healthTape = ctapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
-
-    std::vector<int> damageRolls;
-    const auto &values = healthTape.values();
-    for (size_t i = 0; i < values.size() - 1; i++) {
-        const auto &prev = values[i];
-        const auto &next = values[i + 1];
-
-        for (size_t j = 0; j < prev.size(); j++) {
-            int damage = prev[j] - next[j];
-            if (damage != 0)
-                damageRolls.push_back(damage);
-        }
-    }
-    std::sort(damageRolls.begin(), damageRolls.end());
-
+    auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a non-random engine can't roll 2 or 6, so all values should be in [3, 5].
-    EXPECT_EQ(damageRolls.front(), 3);
-    EXPECT_EQ(damageRolls.back(), 5);
+    EXPECT_EQ(damageRange, tape(3, 5));
 }
 
 GAME_TEST(Issues, Issue388) {
@@ -445,7 +430,7 @@ GAME_TEST(Issues, Issue395) {
     auto expTape = ctapes.experiences();
     auto learningTape = ctapes.skillLevels(CHARACTER_SKILL_LEARNING);
     test.playTraceFromTestData("issue_395.mm7", "issue_395.json");
-    EXPECT_EQ(expTape.firstLast(), tape({100, 100, 100, 100}, {214, 228, 237, 258}));
+    EXPECT_EQ(expTape.frontBack(), tape({100, 100, 100, 100}, {214, 228, 237, 258}));
     EXPECT_EQ(learningTape, tape({0, 4, 6, 10}));
 }
 
@@ -672,7 +657,7 @@ GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work.
     auto experienceTape = ctapes.experiences();
     test.playTraceFromTestData("issue_492.mm7", "issue_492.json");
-    EXPECT_EQ(experienceTape.firstLast(), tape({279, 311, 266, 260}, {287, 319, 274, 268}));
+    EXPECT_EQ(experienceTape.frontBack(), tape({279, 311, 266, 260}, {287, 319, 274, 268}));
 }
 
 // 500
@@ -805,9 +790,9 @@ GAME_TEST(Issues, Issue601) {
     auto conditionsTape = ctapes.conditions();
     auto hpTape = ctapes.hps();
     test.playTraceFromTestData("issue_601.mm7", "issue_601.json");
-    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_SLEEP, CONDITION_CURSED, CONDITION_FEAR, CONDITION_DEAD},
+    EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_SLEEP, CONDITION_CURSED, CONDITION_FEAR, CONDITION_DEAD},
                                                {CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD}));
-    EXPECT_EQ(hpTape.firstLast(), tape({66, 128, 86, 70}, {126, 190, 96, 80}));
+    EXPECT_EQ(hpTape.frontBack(), tape({66, 128, 86, 70}, {126, 190, 96, 80}));
 }
 
 GAME_TEST(Issues, Issue608) {
@@ -930,7 +915,7 @@ GAME_TEST(Issues, Issue645) {
     // Characters does not enter unconscious state
     auto conditionsTape = ctapes.conditions();
     test.playTraceFromTestData("issue_645.mm7", "issue_645.json");
-    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
+    EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
                                                {CONDITION_UNCONSCIOUS, CONDITION_GOOD, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
 }
 
@@ -1196,7 +1181,7 @@ GAME_TEST(Issues, Issue755) {
 }
 
 GAME_TEST(Issues, Issue760) {
-    // Check that mixing potions when character inventory is full does not discards empty bottle
+    // Check that mixing potions when character inventory is full does not discard empty bottle
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_760.mm7", "issue_760.json");
     EXPECT_EQ(itemsTape.delta(), 0);
@@ -1386,7 +1371,7 @@ GAME_TEST(Issues, Issue832) {
     // Death Blossom + ice blast crash
     auto deathsTape = tapes.actorCountByState(AIState::Dead);
     test.playTraceFromTestData("issue_832.mm7", "issue_832.json");
-    EXPECT_EQ(deathsTape.firstLast(), tape(0, 3));
+    EXPECT_EQ(deathsTape.frontBack(), tape(0, 3));
 }
 
 GAME_TEST(Issues, Issue833) {
@@ -1474,7 +1459,7 @@ GAME_TEST(Prs, Pr1005) {
     // Testing collisions - stairs should work. In this test case the party is walking onto a wooden paving in Tatalia.
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("pr_1005.mm7", "pr_1005.json");
-    EXPECT_EQ(zTape.firstLast(), tape(154, 193)); // Paving is at z=192, party z should be this value +1.
+    EXPECT_EQ(zTape.frontBack(), tape(154, 193)); // Paving is at z=192, party z should be this value +1.
 }
 
 GAME_TEST(Issues, Issue1020) {
@@ -1500,7 +1485,7 @@ GAME_TEST(Issues, Issue1038) {
     // Crash while fighting Eyes in Nighon Tunnels
     auto conditionsTape = ctapes.conditions();
     test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
-    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
+    EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
                                                {CONDITION_INSANE, CONDITION_INSANE, CONDITION_SLEEP, CONDITION_UNCONSCIOUS}));
 }
 
@@ -1523,7 +1508,7 @@ GAME_TEST(Issues, Issue1068) {
     // Kills assert if characters don't have learning skill, but party has an npc that gives learning boost.
     auto expTape = ctapes.experiences();
     test.playTraceFromTestData("issue_1068.mm7", "issue_1068.json");
-    EXPECT_EQ(expTape.firstLast(), tape({158039, 156727, 157646, 157417}, {158518, 157206, 158125, 157896}));
+    EXPECT_EQ(expTape.frontBack(), tape({158039, 156727, 157646, 157417}, {158518, 157206, 158125, 157896}));
 }
 
 GAME_TEST(Issues, Issue1093) {
@@ -1573,9 +1558,9 @@ GAME_TEST(Issues, Issue1164) {
     EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo at other frame rates.
 
     auto isNo = [] (const auto &pair) { return pair.first == CHARACTER_EXPRESSION_NO; };
-    auto begin = std::find_if(expressionTape.values().begin(), expressionTape.values().end(), isNo);
-    auto end = std::find_if_not(begin, expressionTape.values().end(), isNo);
-    ASSERT_NE(end, expressionTape.values().end());
+    auto begin = std::find_if(expressionTape.begin(), expressionTape.end(), isNo);
+    auto end = std::find_if_not(begin, expressionTape.end(), isNo);
+    ASSERT_NE(end, expressionTape.end());
 
     // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
     // shouldn't really be there, but for now we test it the way it actually works.
