@@ -12,11 +12,34 @@ class Accessible;
 template<class T>
 using AccessibleVector = Accessible<std::vector<T>>;
 
+/**
+ * Extension point for `delta` and `pairwiseDelta` methods of the `Accessible` classes. Effectively computes a delta
+ * between `l` and 'r', i.e. `r - l`.
+ *
+ * This function is overloaded for `Accessible` classes, and it can also be overloaded for `std::tuple` / `std::pair`
+ * if there comes a need to compute per-element deltas for them.
+ *
+ * @param l                             First value.
+ * @param r                             Second value.
+ * @return                              Delta between the first and the second value.
+ */
 template<class T>
 T calculateDelta(const T &l, const T &r) {
     return r - l;
 }
 
+/**
+ * Extension class that adds a couple methods to a container that makes writing tests easier.
+ *
+ * The methods themselves might remind you of what's available in Java 8 Stream API, or in `std::ranges`, but the
+ * underlying implementation here is very dumb and doesn't even try to be fast. Every method allocates, so this class
+ * isn't suitable for runtime usage - use `std::ranges` instead.
+ *
+ * Aside from the useful methods, `Accessible` also provides an `operator==` that makes it possible to compare
+ * any two `Accessible` classes as long as their elements are comparable.
+ *
+ * @see AccessibleVector
+ */
 template<class Base>
 class Accessible : public Base {
  public:
@@ -46,17 +69,17 @@ class Accessible : public Base {
 
     const value_type &back() const {
         assert(begin() != end());
-        return *end();
+        return *std::prev(end());
     }
 
     AccessibleVector<value_type> frontBack() const {
         assert(begin() != end());
-        return {*begin(), *std::prev(end())};
+        return {front(), back()};
     }
 
     value_type delta() const {
         assert(begin() != end());
-        return calculateDelta(*begin(), *std::prev(end()));
+        return calculateDelta(front(), back());
     }
 
     AccessibleVector<value_type> adjacentDeltas() const {
