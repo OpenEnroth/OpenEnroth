@@ -69,10 +69,6 @@ class CommonTapeRecorder {
         return custom([&] { return entry.value(); });
     }
 
-    TestTape<int> actorCountByState(AIState state);
-
-    TestTape<int> actorCountByBuff(ACTOR_BUFF_INDEX buff);
-
     TestTape<int> mapItemCount();
 
     TestTape<int> mapItemCount(ItemId itemId);

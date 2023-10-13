@@ -1,6 +1,7 @@
 #include "CommonTapeRecorder.h"
 
-#include <ranges>
+#include <cassert>
+#include <ranges> // NOLINT: not a C header
 
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/Actor.h"
@@ -94,20 +95,6 @@ TestTape<GameTime> CommonTapeRecorder::time() {
 
 TestTape<bool> CommonTapeRecorder::turnBasedMode() {
     return custom([] { return pParty->bTurnBasedModeOn; });
-}
-
-TestTape<int> CommonTapeRecorder::actorCountByState(AIState state) {
-    return custom([state] {
-        return static_cast<int>(std::ranges::count(pActors, state, &Actor::aiState));
-    });
-}
-
-TestTape<int> CommonTapeRecorder::actorCountByBuff(ACTOR_BUFF_INDEX buff) {
-    return custom([buff] {
-        return static_cast<int>(std::ranges::count_if(pActors, [buff] (const Actor &actor) {
-            return actor.buffs[buff].Active();
-        }));
-    });
 }
 
 TestTape<int> CommonTapeRecorder::mapItemCount() {

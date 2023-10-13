@@ -52,8 +52,9 @@ void GameTest::runTestBody(TestBodyFunction testBody) {
 
     try {
         CommonTapeRecorder tapes(test);
-        CharacterTapeRecorder ctapes(test);
-        testBody(*game, *test, tapes, ctapes);
+        CharacterTapeRecorder charTapes(test);
+        ActorTapeRecorder actorTapes(test);
+        testBody(*game, *test, tapes, charTapes, actorTapes);
     } catch (EngineControlState::TerminationException) {
         failCurrentTest("Game test routine was terminated, all tests cancelled");
         globalTerminating = true;

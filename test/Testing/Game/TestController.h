@@ -32,6 +32,7 @@ class TestController {
  private:
     friend class CharacterTapeRecorder;
     friend class CommonTapeRecorder;
+    friend class ActorTapeRecorder;
 
     // Accessed by tape recorders.
     template<class Callback, class T = std::invoke_result_t<Callback>>

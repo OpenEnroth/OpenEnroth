@@ -1,5 +1,6 @@
 #include "CharacterTapeRecorder.h"
 
+#include <cassert>
 #include <functional>
 
 #include "Engine/Party.h"
