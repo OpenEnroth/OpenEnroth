@@ -627,7 +627,7 @@ GAME_TEST(Prs, Pr469) {
 
 GAME_TEST(Issues, Issue488) {
     // Test that Mass Distortion spell works.
-    auto actorHpTape = tapes.custom([] { return pActors[24].currentHP; });
+    auto actorHpTape = actorTapes.hp(24);
     test.playTraceFromTestData("issue_488.mm7", "issue_488.json");
     EXPECT_EQ(actorHpTape, tape(3, 2));
 }
@@ -1171,8 +1171,8 @@ GAME_TEST(Issues, Issue742) {
 
 GAME_TEST(Issues, Issue755) {
     // Resurrection doesn't crash. Crashes were actually quite random because the code was reading pointer parts as ints.
-    auto actor2Tape = tapes.custom([] { return pActors[2].aiState; });
-    auto actor37Tape = tapes.custom([] { return pActors[37].aiState; });
+    auto actor2Tape = actorTapes.aiState(2);
+    auto actor37Tape = actorTapes.aiState(37);
     test.playTraceFromTestData("issue_755.mm7", "issue_755.json");
     EXPECT_TRUE(actor2Tape.contains(Dead));
     EXPECT_TRUE(actor2Tape.contains(Resurrected));
@@ -1437,8 +1437,8 @@ GAME_TEST(Issues, Issue895) {
 GAME_TEST(Issues, Issue906_773) {
     // Issue with some use of Spellbuff Expired() - check actors cast buffs.
     // #773: AI_SpellAttack using wrong actor buff for bless.
-    auto blessTape = tapes.custom([] { return pActors[2].buffs[ACTOR_BUFF_BLESS].Active(); });
-    auto heroismTape = tapes.custom([] { return pActors[2].buffs[ACTOR_BUFF_HEROISM].Active(); });
+    auto blessTape = actorTapes.hasBuff(2, ACTOR_BUFF_BLESS);
+    auto heroismTape = actorTapes.hasBuff(2, ACTOR_BUFF_HEROISM);
     test.playTraceFromTestData("issue_906.mm7", "issue_906.json");
     EXPECT_EQ(blessTape, tape(true, false, true));
     EXPECT_EQ(heroismTape, tape(true, false, true));

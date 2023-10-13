@@ -30,3 +30,14 @@ TestTape<int> ActorTapeRecorder::countByBuff(ACTOR_BUFF_INDEX buff) {
 TestTape<int> ActorTapeRecorder::hp(int actorIndex) {
     return custom(actorIndex, std::bind<int>(&Actor::currentHP, _1));
 }
+
+TestTape<AIState> ActorTapeRecorder::aiState(int actorIndex) {
+    return custom(actorIndex, std::bind(&Actor::aiState, _1));
+}
+
+TestTape<bool> ActorTapeRecorder::hasBuff(int actorIndex, ACTOR_BUFF_INDEX buff) {
+    return custom(actorIndex, [buff] (const Actor &actor) {
+        return actor.buffs[buff].Active();
+    });
+}
+

@@ -25,6 +25,10 @@ class ActorTapeRecorder {
 
     TestTape<int> hp(int actorIndex);
 
+    TestTape<AIState> aiState(int actorIndex);
+
+    TestTape<bool> hasBuff(int actorIndex, ACTOR_BUFF_INDEX buff);
+
  private:
     static std::span<Actor> actors();
 
