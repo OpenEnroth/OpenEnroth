@@ -33,7 +33,7 @@ class CommonTapeRecorder {
      * @param callback                  Callback that will calculate the values to store on a tape.
      * @return                          Tape object.
      */
-    template<class Callback, class T = std::invoke_result_t<Callback>>
+    template<class Callback, class T = std::decay_t<std::invoke_result_t<Callback>>>
     TestTape<T> custom(Callback callback) {
         return _controller->recordTape(std::move(callback));
     }
@@ -68,10 +68,6 @@ class CommonTapeRecorder {
     TestTape<T> config(const ConfigEntry<T> &entry) {
         return custom([&] { return entry.value(); });
     }
-
-    TestTape<int> actorCountByState(AIState state);
-
-    TestTape<int> actorCountByBuff(ACTOR_BUFF_INDEX buff);
 
     TestTape<int> mapItemCount();
 

@@ -173,8 +173,8 @@ GAME_TEST(Issues, Issue211) {
 
 GAME_TEST(Issues, Issue223) {
     // Fire and air resistance not resetting between games
-    auto fireTape = ctapes.resistances(CHARACTER_ATTRIBUTE_RESIST_FIRE);
-    auto airTape = ctapes.resistances(CHARACTER_ATTRIBUTE_RESIST_AIR);
+    auto fireTape = charTapes.resistances(CHARACTER_ATTRIBUTE_RESIST_FIRE);
+    auto airTape = charTapes.resistances(CHARACTER_ATTRIBUTE_RESIST_AIR);
     test.playTraceFromTestData("issue_223.mm7", "issue_223.json");
     // expect normal resistances after restart 55-00-00-00.
     EXPECT_EQ(fireTape.frontBack(), tape({280, 262, 390, 241}, {5, 0, 0, 0}));
@@ -252,7 +252,7 @@ GAME_TEST(Issues, Issue268_939) {
 
 GAME_TEST(Issues, Issue271) {
     // Party shouldn't yell when landing from flight.
-    auto expressionTape = ctapes.expression(1);
+    auto expressionTape = charTapes.expression(1);
     auto landingTape = tapes.custom([] { return !!(pParty->uFlags & PARTY_FLAGS_1_LANDING); });
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("issue_271.mm7", "issue_271.json");
@@ -288,7 +288,7 @@ GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
     auto totalItemsTape = tapes.totalItemCount();
-    auto conditionsTape = ctapes.conditions();
+    auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
         EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
         EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 5);
@@ -402,7 +402,7 @@ GAME_TEST(Prs, Pr347) {
 GAME_TEST(Issues, Issue355) {
     // EVENT_CastSpell damage to characters (fire bolts in temple of the moon for example) doesnt match GOG.
     // GOG: 6-2. OpenEnroth: 9-5.
-    auto healthTape = ctapes.hps();
+    auto healthTape = charTapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a non-random engine can't roll 2 or 6, so all values should be in [3, 5].
@@ -427,8 +427,8 @@ GAME_TEST(Issues, Issue388) {
 
 GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended.
-    auto expTape = ctapes.experiences();
-    auto learningTape = ctapes.skillLevels(CHARACTER_SKILL_LEARNING);
+    auto expTape = charTapes.experiences();
+    auto learningTape = charTapes.skillLevels(CHARACTER_SKILL_LEARNING);
     test.playTraceFromTestData("issue_395.mm7", "issue_395.json");
     EXPECT_EQ(expTape.frontBack(), tape({100, 100, 100, 100}, {214, 228, 237, 258}));
     EXPECT_EQ(learningTape, tape({0, 4, 6, 10}));
@@ -600,7 +600,7 @@ GAME_TEST(Issues, Issue427a) {
 GAME_TEST(Issues, Issue427b_528) {
     // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
     // In this test mastery is enough for the whole party.
-    auto manaTape = ctapes.mp(2);
+    auto manaTape = charTapes.mp(2);
     test.playTraceFromTestData("issue_427b.mm7", "issue_427b.json");
 
     // Check that all character have buffs.
@@ -627,21 +627,21 @@ GAME_TEST(Prs, Pr469) {
 
 GAME_TEST(Issues, Issue488) {
     // Test that Mass Distortion spell works.
-    auto actorHpTape = tapes.custom([] { return pActors[24].currentHP; });
+    auto actorHpTape = actorTapes.hp(24);
     test.playTraceFromTestData("issue_488.mm7", "issue_488.json");
     EXPECT_EQ(actorHpTape, tape(3, 2));
 }
 
 GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
-    auto chibisTape = tapes.actorCountByBuff(ACTOR_BUFF_SHRINK);
+    auto chibisTape = actorTapes.countByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
     EXPECT_EQ(chibisTape, tape(0, 21));
 }
 
 GAME_TEST(Issues, Issue490) {
     // Check that Poison Spray sprites are moving and doing damage.
-    auto experienceTape = ctapes.experience(0);
+    auto experienceTape = charTapes.experience(0);
     test.playTraceFromTestData("issue_490.mm7", "issue_490.json");
     EXPECT_EQ(experienceTape, tape(279, 285));
 }
@@ -655,7 +655,7 @@ GAME_TEST(Issues, Issue491) {
 
 GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work.
-    auto experienceTape = ctapes.experiences();
+    auto experienceTape = charTapes.experiences();
     test.playTraceFromTestData("issue_492.mm7", "issue_492.json");
     EXPECT_EQ(experienceTape.frontBack(), tape({279, 311, 266, 260}, {287, 319, 274, 268}));
 }
@@ -664,7 +664,7 @@ GAME_TEST(Issues, Issue492) {
 
 GAME_TEST(Issues, Issue502) {
     // Check that script face animation and voice indexes right characters.
-    auto expressionTape = ctapes.expression(3);
+    auto expressionTape = charTapes.expression(3);
     test.playTraceFromTestData("issue_502.mm7", "issue_502.json");
     EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_NO));
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
@@ -672,7 +672,7 @@ GAME_TEST(Issues, Issue502) {
 
 GAME_TEST(Issues, Issue503) {
     // Check that town portal book actually pauses game.
-    auto hpTape = ctapes.hps();
+    auto hpTape = charTapes.hps();
     auto noDamageTape = tapes.config(engine->config->debug.NoDamage);
     auto screenTape = tapes.screen();
     auto mapTape = tapes.map();
@@ -787,8 +787,8 @@ GAME_TEST(Issues, Issue598) {
 
 GAME_TEST(Issues, Issue601) {
     // Check that Master Healer NPC skill work and does not assert
-    auto conditionsTape = ctapes.conditions();
-    auto hpTape = ctapes.hps();
+    auto conditionsTape = charTapes.conditions();
+    auto hpTape = charTapes.hps();
     test.playTraceFromTestData("issue_601.mm7", "issue_601.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_SLEEP, CONDITION_CURSED, CONDITION_FEAR, CONDITION_DEAD},
                                                {CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD}));
@@ -797,7 +797,7 @@ GAME_TEST(Issues, Issue601) {
 
 GAME_TEST(Issues, Issue608) {
     // Check that using Gate Master ability does not deplete mana of character
-    auto manaTape = ctapes.mp(0);
+    auto manaTape = charTapes.mp(0);
     test.playTraceFromTestData("issue_608.mm7", "issue_608.json");
     EXPECT_EQ(manaTape.delta(), 0);
 }
@@ -913,7 +913,7 @@ GAME_TEST(Issues, Issue626) {
 
 GAME_TEST(Issues, Issue645) {
     // Characters does not enter unconscious state
-    auto conditionsTape = ctapes.conditions();
+    auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_645.mm7", "issue_645.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
                                                {CONDITION_UNCONSCIOUS, CONDITION_GOOD, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
@@ -934,8 +934,8 @@ GAME_TEST(Issues, Issue651) {
 
 GAME_TEST(Issues, Issue661) {
     // HP/SP regen from items is too high.
-    auto healthTape = ctapes.hp(0);
-    auto manaTape = ctapes.mp(0);
+    auto healthTape = charTapes.hp(0);
+    auto manaTape = charTapes.mp(0);
     test.playTraceFromTestData("issue_661.mm7", "issue_661.json");
     // two hour wait period is 24 blocks of 5 mins
     // one item that heals hp, three items heal mana
@@ -973,7 +973,7 @@ GAME_TEST(Issues, Issue664) {
 
 GAME_TEST(Issues, Issue674) {
     // Check that map timers are working
-    auto healthTape = ctapes.hp(0);
+    auto healthTape = charTapes.hp(0);
     test.playTraceFromTestData("issue_674.mm7", "issue_674.json");
     EXPECT_EQ(healthTape.delta(), +5);
 }
@@ -1018,7 +1018,7 @@ GAME_TEST(Issues, Issue676) {
 GAME_TEST(Issues, Issue677) {
     // Haste doesn't impose weakness after it ends
     auto hasteTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active(); });
-    auto conditionsTape = ctapes.conditions();
+    auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_677.mm7", "issue_677.json");
     EXPECT_EQ(hasteTape, tape(true, false));
     EXPECT_EQ(conditionsTape, tape({CONDITION_GOOD, CONDITION_CURSED, CONDITION_GOOD, CONDITION_GOOD},
@@ -1171,8 +1171,8 @@ GAME_TEST(Issues, Issue742) {
 
 GAME_TEST(Issues, Issue755) {
     // Resurrection doesn't crash. Crashes were actually quite random because the code was reading pointer parts as ints.
-    auto actor2Tape = tapes.custom([] { return pActors[2].aiState; });
-    auto actor37Tape = tapes.custom([] { return pActors[37].aiState; });
+    auto actor2Tape = actorTapes.aiState(2);
+    auto actor37Tape = actorTapes.aiState(37);
     test.playTraceFromTestData("issue_755.mm7", "issue_755.json");
     EXPECT_TRUE(actor2Tape.contains(Dead));
     EXPECT_TRUE(actor2Tape.contains(Resurrected));
@@ -1369,15 +1369,15 @@ GAME_TEST(Issues, Issue830) {
 
 GAME_TEST(Issues, Issue832) {
     // Death Blossom + ice blast crash
-    auto deathsTape = tapes.actorCountByState(AIState::Dead);
+    auto deathsTape = actorTapes.countByState(AIState::Dead);
     test.playTraceFromTestData("issue_832.mm7", "issue_832.json");
     EXPECT_EQ(deathsTape.frontBack(), tape(0, 3));
 }
 
 GAME_TEST(Issues, Issue833) {
     // Test that quick spell castable on Shift and no crash with Shift+Click when quick spell is not set
-    auto mana0Tape = ctapes.mp(0);
-    auto mana1Tape = ctapes.mp(1);
+    auto mana0Tape = charTapes.mp(0);
+    auto mana1Tape = charTapes.mp(1);
     test.playTraceFromTestData("issue_833.mm7", "issue_833.json");
     EXPECT_EQ(mana0Tape.delta(), -2);
     EXPECT_EQ(mana1Tape.delta(), 0);
@@ -1437,8 +1437,8 @@ GAME_TEST(Issues, Issue895) {
 GAME_TEST(Issues, Issue906_773) {
     // Issue with some use of Spellbuff Expired() - check actors cast buffs.
     // #773: AI_SpellAttack using wrong actor buff for bless.
-    auto blessTape = tapes.custom([] { return pActors[2].buffs[ACTOR_BUFF_BLESS].Active(); });
-    auto heroismTape = tapes.custom([] { return pActors[2].buffs[ACTOR_BUFF_HEROISM].Active(); });
+    auto blessTape = actorTapes.hasBuff(2, ACTOR_BUFF_BLESS);
+    auto heroismTape = actorTapes.hasBuff(2, ACTOR_BUFF_HEROISM);
     test.playTraceFromTestData("issue_906.mm7", "issue_906.json");
     EXPECT_EQ(blessTape, tape(true, false, true));
     EXPECT_EQ(heroismTape, tape(true, false, true));
@@ -1483,7 +1483,7 @@ GAME_TEST(Issues, Issue1036) {
 
 GAME_TEST(Issues, Issue1038) {
     // Crash while fighting Eyes in Nighon Tunnels
-    auto conditionsTape = ctapes.conditions();
+    auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
                                                {CONDITION_INSANE, CONDITION_INSANE, CONDITION_SLEEP, CONDITION_UNCONSCIOUS}));
@@ -1506,7 +1506,7 @@ GAME_TEST(Issues, Issue1051) {
 
 GAME_TEST(Issues, Issue1068) {
     // Kills assert if characters don't have learning skill, but party has an npc that gives learning boost.
-    auto expTape = ctapes.experiences();
+    auto expTape = charTapes.experiences();
     test.playTraceFromTestData("issue_1068.mm7", "issue_1068.json");
     EXPECT_EQ(expTape.frontBack(), tape({158039, 156727, 157646, 157417}, {158518, 157206, 158125, 157896}));
 }
@@ -1514,7 +1514,7 @@ GAME_TEST(Issues, Issue1068) {
 GAME_TEST(Issues, Issue1093) {
     // Town Portal on master can be cast near enemies
     auto screenTape = tapes.screen();
-    auto manaTape = ctapes.mp(3);
+    auto manaTape = charTapes.mp(3);
     auto statusTape = tapes.statusBar();
     test.playTraceFromTestData("issue_1093.mm7", "issue_1093.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME));
@@ -1529,7 +1529,7 @@ GAME_TEST(Issues, Issue1115) {
     // Entering Arena on level 21 should not crash the game
     auto mapTape = tapes.map();
     auto dialogueTape = tapes.dialogueType();
-    auto levelTape = ctapes.levels();
+    auto levelTape = charTapes.levels();
     test.playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
     EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
     EXPECT_TRUE(dialogueTape.contains(DIALOGUE_ARENA_SELECT_CHAMPION));
@@ -1622,7 +1622,7 @@ GAME_TEST(Issues, Issue1197) {
 
 GAME_TEST(Issues, Issue1251b) {
     // Make sure charm wand doesn't assert
-    auto charmedActors = tapes.actorCountByBuff(ACTOR_BUFF_CHARM);
+    auto charmedActors = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
     test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");
     EXPECT_EQ(charmedActors.delta(), 3);
 }
@@ -1649,7 +1649,7 @@ GAME_TEST(Issues, Issue1277) {
 
 GAME_TEST(Issues, Issue1281) {
     // Assert when drinking from THE WELL in Eofol.
-    auto acTape = ctapes.ac(0);
+    auto acTape = charTapes.ac(0);
     test.playTraceFromTestData("issue_1281.mm7", "issue_1281.json");
     EXPECT_EQ(acTape.delta(), -50); // We've hit the -50 AC branch in the script that used to trigger the assertion.
 }
@@ -1680,8 +1680,28 @@ GAME_TEST(Issues, Issue1315) {
 GAME_TEST(Prs, Pr1325) {
     // Trolls drop vials of troll blood.
     auto vialsTape = tapes.mapItemCount(ITEM_REAGENT_VIAL_OF_TROLL_BLOOD);
-    auto deadTape = tapes.actorCountByState(AIState::Dead);
+    auto deadTape = actorTapes.countByState(AIState::Dead);
     test.playTraceFromTestData("pr_1325.mm7", "pr_1325.json");
     EXPECT_EQ(vialsTape.delta(), +6);
     EXPECT_EQ(deadTape.delta(), +84); // Too much armageddon...
+}
+
+GAME_TEST(Issues, Issue1331) {
+    // "of David" enchanted bows should do double damage against Titans.
+    auto hpsTape = actorTapes.hps({31, 33});
+    auto deadTape = actorTapes.indicesByState(AIState::Dead);
+    test.playTraceFromTestData("issue_1331.mm7", "issue_1331.json");
+    EXPECT_EQ(deadTape.frontBack(), tape(std::initializer_list<int>{}, {31, 33})); // Check that titans are dead.
+
+    // Damage as stated in the character sheet is 41-45. Crossbow is 4d2+7. Because of how non-random engine works,
+    // 4d2+7 will always roll 13, and thus the 41-45 range is effectively compressed into 43-43.
+    //
+    // With the "of David" enchantment, the 4d2+7 part of the damage is doubled, so max damage is now 43+13=56.
+    //
+    // Min damage is so low because titans have physical resistance. And then we also have to multiply the damage by
+    // two because the character shoots two arrows at a time.
+    EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->special_enchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
+    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
+    auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
+    EXPECT_EQ(damageRange, tape(1 * 2, (43 + 13) * 2));
 }

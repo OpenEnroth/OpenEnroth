@@ -12,7 +12,7 @@ class CharacterTapeRecorder {
  public:
     explicit CharacterTapeRecorder(TestController *controller);
 
-    template<class Callback, class T = std::invoke_result_t<Callback, const Character &>>
+    template<class Callback, class T = std::decay_t<std::invoke_result_t<Callback, const Character &>>>
     TestMultiTape<T> custom(Callback callback) {
         return _controller->recordTape([callback = std::move(callback)] {
             AccessibleVector<T> result;
@@ -22,7 +22,7 @@ class CharacterTapeRecorder {
         });
     }
 
-    template<class Callback, class T = std::invoke_result_t<Callback, const Character &>>
+    template<class Callback, class T = std::decay_t<std::invoke_result_t<Callback, const Character &>>>
     TestTape<T> custom(int characterIndex, Callback callback) {
         return _controller->recordTape([characterIndex, callback = std::move(callback)] {
             return callback(characters()[characterIndex]);

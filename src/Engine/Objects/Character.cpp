@@ -1257,8 +1257,10 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
         } else if (itemenchant == ITEM_ENCHANTMENT_ELF_SLAYING &&
                    supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_ELF) {  // double vs elf
             damage *= 2;
+        } else if (itemenchant == ITEM_ENCHANTMENT_TITAN_SLAYING &&
+                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_TITAN) { // double vs titans
+            damage *= 2;
         }
-        // TODO(captainurist): Do bows of titan slaying exist? If they do, then they don't do x2 damage against titans.
     }
 
     return damage + this->GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS);
