@@ -35,13 +35,13 @@ struct MonsterInfo {
     MonsterHostility uHostilityType = HOSTILITY_FRIENDLY;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t uSpecialAttackLevel = 0;
-    DAMAGE_TYPE uAttack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
+    DamageType uAttack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
     uint8_t uAttack1DamageDiceRolls = 0;
     uint8_t uAttack1DamageDiceSides = 0;
     uint8_t uAttack1DamageBonus = 0;
     uint8_t uMissleAttack1Type = 0;
     uint8_t uAttack2Chance = 0;
-    DAMAGE_TYPE uAttack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
+    DamageType uAttack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
     uint8_t uAttack2DamageDiceRolls = 0;
     uint8_t uAttack2DamageDiceSides = 0;
     uint8_t uAttack2DamageBonus = 0;

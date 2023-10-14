@@ -1389,7 +1389,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int rnd = grng->random(100);
                     pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
                     ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
-                    ITEM_EQUIP_TYPE this_equip_type = pItemTable->pItems[spell_item_to_enchant->uItemID].uEquipType;
+                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->uItemID].uEquipType;
 
                     // refs
                     // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
@@ -1471,11 +1471,11 @@ void CastSpellInfoHelpers::castSpell() {
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    ITEM_ENCHANTMENT ench_array[100] = {};
+                                    ItemEnchantment ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     if (pItemTable->pSpecialEnchantments_count > 0) {
-                                        for (ITEM_ENCHANTMENT spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
+                                        for (ItemEnchantment spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
                                             const std::string &bonusStatement = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
                                             if (!bonusStatement.empty()) {
                                                 if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
@@ -1502,14 +1502,14 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[(ITEM_ENCHANTMENT)ench_array[step]].to_item_apply[this_equip_type];
+                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[(ItemEnchantment)ench_array[step]].to_item_apply[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
                                     }
 
                                     // set item ench
-                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)ench_array[step];
+                                    spell_item_to_enchant->special_enchantment = (ItemEnchantment)ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Timer::Second * 2;
                                     spell_failed = false;

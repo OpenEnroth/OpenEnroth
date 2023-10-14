@@ -27,7 +27,7 @@ static void strtokSkipLines(int n) {
 
 //----- (00456D84) --------------------------------------------------------
 void ItemTable::Initialize(GameResourceManager *resourceManager) {
-    std::map<std::string, ITEM_EQUIP_TYPE, ILess> equipStatMap;
+    std::map<std::string, ItemType, ILess> equipStatMap;
     equipStatMap["weapon"] = EQUIP_SINGLE_HANDED;
     equipStatMap["weapon2"] = EQUIP_TWO_HANDED;
     equipStatMap["weapon1or2"] = EQUIP_SINGLE_HANDED;
@@ -67,7 +67,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     equipSkillMap["plate"] = CHARACTER_SKILL_PLATE;
     equipSkillMap["club"] = CHARACTER_SKILL_CLUB;
 
-    std::map<std::string, ITEM_MATERIAL, ILess> materialMap;
+    std::map<std::string, ItemRarity, ILess> materialMap;
     materialMap["artifact"] = MATERIAL_ARTIFACT;
     materialMap["relic"] = MATERIAL_RELIC;
     materialMap["special"] = MATERIAL_SPECIAL;
@@ -91,7 +91,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         standardEnchantments[i].pOfName = removeQuotes(tokens[1]);
 
         int k = 2;
-        for (ITEM_EQUIP_TYPE equipType : standardEnchantments[i].chancesByItemType.indices()) {
+        for (ItemType equipType : standardEnchantments[i].chancesByItemType.indices()) {
             standardEnchantments[i].chancesByItemType[equipType] = atoi(tokens[k++]);
             chanceByItemTypeSums[equipType] += standardEnchantments[i].chancesByItemType[equipType];
         }
@@ -110,7 +110,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     txtRaw = resourceManager->getEventsFile("spcitems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
-    for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
+    for (ItemEnchantment i : pSpecialEnchantments.indices()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() >= 17 && "Invalid number of tokens");
@@ -118,7 +118,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pSpecialEnchantments[i].pNameAdd = removeQuotes(tokens[1]);
 
         int k = 2;
-        for (ITEM_EQUIP_TYPE j : pSpecialEnchantments[i].to_item_apply.indices())
+        for (ItemType j : pSpecialEnchantments[i].to_item_apply.indices())
             pSpecialEnchantments[i].to_item_apply[j] = atoi(tokens[k++]);
 
         int res = atoi(tokens[14]);
@@ -176,7 +176,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
                 }
             }
             if (!pItems[item_counter]._bonus_type) {
-                for (ITEM_ENCHANTMENT ii : pSpecialEnchantments.indices()) {
+                for (ItemEnchantment ii : pSpecialEnchantments.indices()) {
                     if (iequals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) {
                         pItems[item_counter]._additional_value = ii;
                     }
@@ -265,7 +265,7 @@ void ItemTable::SetSpecialBonus(ItemGen *pItem) {
     if (pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL) {
         pItem->attributeEnchantment = pItems[pItem->uItemID]._bonus_type;
         pItem->special_enchantment =
-                (ITEM_ENCHANTMENT)pItems[pItem->uItemID]._additional_value;
+                (ItemEnchantment)pItems[pItem->uItemID]._additional_value;
         pItem->m_enchantmentStrength = pItems[pItem->uItemID]._bonus_strength;
     }
 }
@@ -375,7 +375,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
     //    unsigned int v34; // eax@97
     int j;              // eax@121
     std::array<ItemId, 800> spawnableRequestedItems;  // [sp+Ch] [bp-C88h]@33
-    std::array<ITEM_ENCHANTMENT, 800> possibleSpecialIds;
+    std::array<ItemEnchantment, 800> possibleSpecialIds;
     int total_chance;   // [sp+C8Ch] [bp-8h]@33
     int v57;            // [sp+CA0h] [bp+Ch]@62
 
@@ -383,7 +383,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
     memset(outItem, 0, sizeof(*outItem));
 
     if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
-        ITEM_EQUIP_TYPE requested_equip;
+        ItemType requested_equip;
         CharacterSkillType requested_skill = CHARACTER_SKILL_INVALID;
         switch (uTreasureType) {
             case RANDOM_ITEM_WEAPON:
@@ -470,7 +470,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
             default:
                 __debugbreak();  // check this condition
                 // TODO(captainurist): explore
-                requested_equip = static_cast<ITEM_EQUIP_TYPE>(std::to_underlying(uTreasureType) - 1);
+                requested_equip = static_cast<ItemType>(std::to_underlying(uTreasureType) - 1);
                 break;
         }
         spawnableRequestedItems.fill(ITEM_NULL);
@@ -616,7 +616,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
     int spc_sum = 0;
     int spc;
     possibleSpecialIds.fill(ITEM_ENCHANTMENT_NULL);
-    for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
+    for (ItemEnchantment i : pSpecialEnchantments.indices()) {
         int tr_lv = (pSpecialEnchantments[i].iTreasureLevel) & 3;
 
         // tr_lv  0 = treasure level 3/4

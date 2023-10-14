@@ -1142,7 +1142,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
     if (uTargetActorID > MONSTER_INVALID) {  // if an actor has been provided
-        ITEM_ENCHANTMENT enchType =
+        ItemEnchantment enchType =
             weapon->special_enchantment;  // check against enchantments
 
         if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_UNDEAD &&
@@ -1233,7 +1233,7 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
 
     ItemGen *bow =
         (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
-    ITEM_ENCHANTMENT itemenchant = bow->special_enchantment;
+    ItemEnchantment itemenchant = bow->special_enchantment;
 
     signed int dmgperroll = pItemTable->pItems[bow->uItemID].uDamageRoll;
     int damagefromroll = 0;
@@ -1339,7 +1339,7 @@ Color Character::GetExperienceDisplayColor() {
 }
 
 //----- (0048D4B3) --------------------------------------------------------
-int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
+int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
     // TODO(captainurist): these are some weird casts to CharacterAttributeType
     if (classType == CLASS_LICH &&
         ((CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
@@ -1413,7 +1413,7 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
+ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
@@ -1439,7 +1439,7 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const {
+bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
     for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
@@ -1615,7 +1615,7 @@ void Character::Heal(int amount) {
     }
 }
 
-int Character::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
+int Character::receiveDamage(signed int amount, DamageType dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
@@ -1990,7 +1990,7 @@ int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pA
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-DAMAGE_TYPE Character::GetSpellDamageType(SpellId uSpellID) const {
+DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
     return pSpellStats->pInfos[uSpellID].damageType;
 }
 
@@ -2410,7 +2410,7 @@ int Character::GetParameterBonus(int player_parameter) const {
 }
 
 //----- (0048EA46) --------------------------------------------------------
-int Character::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
+int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
     for (ItemSlot i : allItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
@@ -6283,7 +6283,7 @@ void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkill
 }
 
 //----- (00467E7F) --------------------------------------------------------
-void Character::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
+void Character::EquipBody(ItemType uEquipType) {
     ItemSlot itemAnchor;          // ebx@1
     int itemInvLocation;     // edx@1
     int freeSlot;            // eax@3
@@ -6508,7 +6508,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 dmgToReceive /= spellPower;
         }
 
-        DAMAGE_TYPE damageType;
+        DamageType damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
                 damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6525,7 +6525,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPECIAL:
-                damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
+                damageType = static_cast<DamageType>(actorPtr->monsterInfo.field_3C_some_special_attack);
                 break;
             default:
                 damageType = DAMAGE_PHYSICAL;
@@ -6612,7 +6612,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             }
 
             int damage;
-            DAMAGE_TYPE damagetype;
+            DamageType damagetype;
             if (uActorType != OBJECT_Character ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
@@ -6682,7 +6682,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 if (spellPower > 0) dmgToReceive /= spellPower;
             }
 
-            DAMAGE_TYPE damageType;
+            DamageType damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
                     damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6699,7 +6699,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                     damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPECIAL:
-                    damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
+                    damageType = static_cast<DamageType>(actorPtr->monsterInfo.field_3C_some_special_attack);
                     break;
                 default:
                     damageType = DAMAGE_PHYSICAL;
@@ -6755,7 +6755,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             // party hits self
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
-            DAMAGE_TYPE damagetype;
+            DamageType damagetype;
             if (uActorType != OBJECT_Character ||
                 spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
@@ -7431,7 +7431,7 @@ bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
 MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
-    ITEM_EQUIP_TYPE equipType;  // esi@1
+    ItemType equipType;  // esi@1
     float multiplier;      // ST04_4@26
     int price;             // edi@26
     int merchantLevel;     // [sp+10h] [bp-8h]@1

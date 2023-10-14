@@ -911,7 +911,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);
-            ir.data.damage_descr.damage_type = static_cast<DAMAGE_TYPE>(evt->v6);
+            ir.data.damage_descr.damage_type = static_cast<DamageType>(evt->v6);
             ir.data.damage_descr.damage = EVT_DWORD(&evt->v7);
             break;
         case EVENT_SetSnow:

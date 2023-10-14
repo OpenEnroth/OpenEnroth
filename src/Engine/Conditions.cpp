@@ -20,12 +20,12 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ConditionFlags)
 
 struct ConditionTableEntry {
     ConditionFlags flags;
-    ITEM_ENCHANTMENT enchantment = ITEM_ENCHANTMENT_NULL;
+    ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL;
     std::array<ConditionEquipment, 3> equipment = {{}};
 
     constexpr ConditionTableEntry() = default;
     constexpr ConditionTableEntry(ConditionFlags flags,
-                                  ITEM_ENCHANTMENT enchantment = ITEM_ENCHANTMENT_NULL,
+                                  ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL,
                                   ItemId item1 = ITEM_NULL,
                                   ItemSlot slot1 = ITEM_SLOT_INVALID,
                                   ItemId item2 = ITEM_NULL,

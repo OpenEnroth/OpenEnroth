@@ -22,7 +22,7 @@ struct SpellInfo {
     std::string pExpertSkillDesc;
     std::string pMasterSkillDesc;
     std::string pGrandmasterSkillDesc;
-    DAMAGE_TYPE damageType;
+    DamageType damageType;
     int field_20;
 };
 

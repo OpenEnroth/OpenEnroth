@@ -23,7 +23,7 @@ ItemGen *ptr_50C9A4_ItemToEnchant;
 struct ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
-static std::map<ITEM_ENCHANTMENT, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
+static std::map<ItemEnchantment, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
 static std::map<ItemId, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
 static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
@@ -47,7 +47,7 @@ static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
 };
 
 //----- (00439DF3) --------------------------------------------------------
-int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE *damage_type,
+int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
                                            bool *draintargetHP) {
     *draintargetHP = false;
     *damage_type = DAMAGE_FIRE;
@@ -186,7 +186,7 @@ std::string ItemGen::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string ItemGen::GetIdentifiedName() {
-    ITEM_EQUIP_TYPE equip_type = GetItemEquipType();
+    ItemType equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
         (equip_type == EQUIP_GOLD)) {
         return pItemTable->pItems[uItemID].name;
@@ -685,7 +685,7 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet) 
     return false;
 }
 
-ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() const {
+ItemType ItemGen::GetItemEquipType() const {
     // to avoid nzi - is this safe??
     if (this->uItemID == ITEM_NULL)
         return EQUIP_NONE;

@@ -548,7 +548,7 @@ void SpriteObject::explosionTraps() {
         if (pMapInfo->Trap_D20) {
             trapDamage += grng->randomDice(pMapInfo->Trap_D20, 20);
         }
-        DAMAGE_TYPE pDamageType;
+        DamageType pDamageType;
         switch (this->uType) {
             case SPRITE_TRAP_FIRE:
                 pDamageType = DAMAGE_FIRE;
@@ -1109,7 +1109,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             // Calculation was moved from initial sprite creation processing
             GameTime duration = GameTime::FromMinutes(object->spell_level * 5);
             CharacterSkillMastery skillMastery = object->spell_skill;
-            DAMAGE_TYPE dmgType;
+            DamageType dmgType;
             ACTOR_BUFF_INDEX buffIdx;
             switch (object->uType) {
                 case SPRITE_SPELL_MIND_CHARM:

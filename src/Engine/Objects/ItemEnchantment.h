@@ -18,14 +18,14 @@ struct CEnchantment {
     int statBonus = 0;
 };
 
-struct ItemEnchantment {  // Bonus|Sta|Of
+struct ItemEnchantmentTable {  // Bonus|Sta|Of
                           // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
     std::string pBonusStat;
     std::string pOfName;
     IndexedArray<unsigned char, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> chancesByItemType;
 };
 
-struct ItemSpecialEnchantment {  // 1Ch
+struct ItemSpecialEnchantmentTable {  // 1Ch
                                  // Bonus Stat|Name
     // Add|W1|W2|Miss|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul|Value|Lvl|Description
     // fo special Bonuses and values

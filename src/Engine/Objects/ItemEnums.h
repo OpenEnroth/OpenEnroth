@@ -12,7 +12,7 @@
 #include "Utility/Segment.h"
 #include "Utility/IndexedArray.h"
 
-enum class DAMAGE_TYPE : unsigned int {
+enum class DamageType : unsigned int {
     DAMAGE_FIRE = 0,
     DAMAGE_AIR = 1,
     DAMAGE_WATER = 2,
@@ -28,7 +28,7 @@ enum class DAMAGE_TYPE : unsigned int {
     DAMAGE_FIRST = DAMAGE_FIRE,
     DAMAGE_LAST = DAMAGE_DARK
 };
-using enum DAMAGE_TYPE;
+using enum DamageType;
 
 /*  338 */
 enum class ItemFlag : uint32_t {
@@ -47,7 +47,7 @@ using enum ItemFlag;
 MM_DECLARE_FLAGS(ItemFlags, ItemFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ItemFlags)
 
-enum class ITEM_ENCHANTMENT : unsigned int {
+enum class ItemEnchantment : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
     ITEM_ENCHANTMENT_OF_PROTECTION = 1,    // Adds +10 to all Resistances
@@ -126,16 +126,15 @@ enum class ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_FIRST_VALID = 1,
     ITEM_ENCHANTMENT_LAST_VALID = 72
 };
-using enum ITEM_ENCHANTMENT;
+using enum ItemEnchantment;
 
-// TODO(captainurist): Actually ITEM_RARITY
-enum class ITEM_MATERIAL : uint8_t {
+enum class ItemRarity : uint8_t {
     MATERIAL_COMMON = 0,
     MATERIAL_ARTIFACT = 1,
     MATERIAL_RELIC = 2,
     MATERIAL_SPECIAL = 3 // TODO(captainurist): RARE
 };
-using enum ITEM_MATERIAL;
+using enum ItemRarity;
 
 enum class ItemTreasureLevel : int8_t {
     ITEM_TREASURE_LEVEL_INVALID = 0,
@@ -1155,7 +1154,7 @@ inline std::initializer_list<ItemId> allLevel1Reagents() {
     return result;
 }
 
-inline ITEM_ENCHANTMENT potionEnchantment(ItemId enchantingPotion) {
+inline ItemEnchantment potionEnchantment(ItemId enchantingPotion) {
     assert(isEnchantingPotion(enchantingPotion));
 
     switch (enchantingPotion) {
@@ -1183,9 +1182,7 @@ inline SpellId spellForWand(ItemId wand) {
     return detail::spellForWand[wand];
 }
 
-
-// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS
-enum class ITEM_EQUIP_TYPE : uint8_t {
+enum class ItemType : uint8_t {
     EQUIP_SINGLE_HANDED = 0,
     EQUIP_TWO_HANDED = 1,
     EQUIP_BOW = 2,
@@ -1217,14 +1214,14 @@ enum class ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_FIRST_NORMAL_ENCHANTABLE = EQUIP_ARMOUR,
     EQUIP_LAST_NORMAL_ENCHANTABLE = EQUIP_AMULET,
 };
-using enum ITEM_EQUIP_TYPE;
+using enum ItemType;
 
 /**
  * @param type                          Type to check.
  * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
  *                                      armor, rings, amulets, etc.
  */
-inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
+inline bool isPassiveEquipment(ItemType type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
 }
 
@@ -1233,7 +1230,7 @@ inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
  * @return                              Whether the provided type represents wearable armor, e.g. any passive
  *                                      equipment except amulets and rings.
  */
-inline bool isArmor(ITEM_EQUIP_TYPE type) {
+inline bool isArmor(ItemType type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_BOOTS;
 }
 
@@ -1242,7 +1239,7 @@ inline bool isArmor(ITEM_EQUIP_TYPE type) {
  * @return                              Whether the provided type represents a weapon. Note that wands are not
  *                                      considered weapons.
  */
-inline bool isWeapon(ITEM_EQUIP_TYPE type) {
+inline bool isWeapon(ItemType type) {
     return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
 }
 

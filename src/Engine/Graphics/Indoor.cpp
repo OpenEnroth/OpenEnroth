@@ -2045,7 +2045,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
         a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.containing_item.SetIdentified();
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
+        a1a.containing_item.special_enchantment = (ItemEnchantment)v34;
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;

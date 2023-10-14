@@ -1762,7 +1762,7 @@ void OnPaperdollLeftClick() {
     ItemId v50;  // [sp+38h] [bp-14h]@50
     // int v51; // [sp+3Ch] [bp-10h]@1
     int freeslot;  // [sp+40h] [bp-Ch]@5
-    ITEM_EQUIP_TYPE pEquipType = EQUIP_NONE;
+    ItemType pEquipType = EQUIP_NONE;
     CastSpellInfo *pSpellInfo;
 
     int twohandedequip = 0;

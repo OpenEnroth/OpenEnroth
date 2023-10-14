@@ -202,7 +202,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
             if (v2) {
                 this->items[3].uItemID = ITEM_GOLD_SMALL;
                 this->items[3].special_enchantment =
-                    (ITEM_ENCHANTMENT)v2;  // actual gold amount
+                    (ItemEnchantment)v2;  // actual gold amount
             }
         }
     }
@@ -2341,7 +2341,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
-    DAMAGE_TYPE v12;    // ecx@20
+    DamageType v12;    // ecx@20
     int finalDmg;      // edi@30
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 
@@ -2391,7 +2391,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                         ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell2ID]
                         .damageType;
                 } else if (a4 == ABILITY_SPECIAL) {
-                    v12 = static_cast<DAMAGE_TYPE>(pActors[attacker_id.id()].monsterInfo.field_3C_some_special_attack);
+                    v12 = static_cast<DamageType>(pActors[attacker_id.id()].monsterInfo.field_3C_some_special_attack);
                 } else {
                     v12 = DAMAGE_PHYSICAL;
                 }
@@ -3034,7 +3034,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     int v61;                          // [sp+58h] [bp-14h]@1
     bool isLifeStealing;              // [sp+5Ch] [bp-10h]@1
     int uDamageAmount;                // [sp+60h] [bp-Ch]@1
-    DAMAGE_TYPE attackElement;        // [sp+64h] [bp-8h]@27
+    DamageType attackElement;        // [sp+64h] [bp-8h]@27
 
     projectileSprite = 0;
     uDamageAmount = 0;
@@ -3792,7 +3792,7 @@ bool Actor::ActorHitOrMiss(Character *pPlayer) {
 }
 
 //----- (0042756B) --------------------------------------------------------
-int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
+int Actor::CalcMagicalDamageToActor(DamageType dmgType,
                                     signed int incomingDmg) {
     int v4;             // edx@1
     int v5;             // ecx@1
@@ -3859,7 +3859,7 @@ int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
 }
 
 //----- (00427662) --------------------------------------------------------
-bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
+bool Actor::DoesDmgTypeDoDamage(DamageType uType) {
     signed int resist;  // esi@2
 
     switch (uType) {
