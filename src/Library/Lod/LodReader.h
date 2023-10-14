@@ -56,16 +56,12 @@ class LodReader final {
      */
     [[nodiscard]] bool exists(const std::string &filename) const;
 
-    // TODO(captainurist): compression should be handled at the next layer, we should only have read() here, and it
-    //                     should do what readRaw does now.
     /**
      * @param filename                  Name of the LOD file entry.
      * @return                          Contents of the file inside the LOD as a `Blob`.
      * @throws Exception                If file doesn't exist inside the LOD.
      */
     [[nodiscard]] Blob read(const std::string &filename) const;
-
-    [[nodiscard]] Blob readRaw(const std::string &filename) const;
 
     /**
      * @return                          List of all files in a LOD.

@@ -37,12 +37,12 @@ UNIT_TEST(LodReader, RussianLod) {
     EXPECT_TRUE(reader.exists("lolkek"));
     EXPECT_FALSE(reader.exists("lolkek1"));
     EXPECT_FALSE(reader.exists("lolke"));
-    EXPECT_EQ(reader.readRaw("lolkek").string_view(), "datadatadatadata");
+    EXPECT_EQ(reader.read("lolkek").string_view(), "datadatadatadata");
 
     // LODs are case-insensitive.
     EXPECT_TRUE(reader.exists("lolKEK"));
-    EXPECT_EQ(reader.readRaw("LOLkek").string_view(), "datadatadatadata");
+    EXPECT_EQ(reader.read("LOLkek").string_view(), "datadatadatadata");
 
     // Check that we throw when accessing non-existent files.
-    EXPECT_THROW((void) reader.readRaw("lolke"), std::exception);
+    EXPECT_THROW((void) reader.read("lolke"), std::exception);
 }

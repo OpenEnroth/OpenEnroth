@@ -16,7 +16,7 @@ int runDump(const LodToolOptions &options) {
     fmt::println("Root folder: {}", reader.info().rootName);
 
     for (const std::string &name : reader.ls()) {
-        Blob data = reader.readRaw(name);
+        Blob data = reader.read(name);
         LodFileFormat format = lod::magic(data, name);
         bool isCompressed = format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE;
         if (isCompressed)

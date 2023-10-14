@@ -44,6 +44,7 @@
 
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
+#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
@@ -317,7 +318,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    deserialize(pGames_LOD->read(blv_filename), &location);
+    deserialize(lod::decodeCompressed(pGames_LOD->read(blv_filename)), &location);
     reconstruct(location, this);
 
     std::string dlv_filename = filename;
@@ -326,7 +327,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     IndoorDelta_MM7 delta;
-    if (Blob blob = pSave_LOD->read(dlv_filename)) {
+    if (Blob blob = lod::decodeCompressed(pSave_LOD->read(dlv_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 
@@ -353,12 +354,12 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(pGames_LOD->read(dlv_filename), &delta, tags::context(location));
+        deserialize(lod::decodeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto visibleOutlines = delta.visibleOutlines;
-        deserialize(pGames_LOD->read(dlv_filename), &delta, tags::context(location));
+        deserialize(lod::decodeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
         delta.header = header;
         delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;

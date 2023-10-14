@@ -6,7 +6,6 @@
 
 #include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
-#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Exception.h"
@@ -141,16 +140,6 @@ bool LodReader::exists(const std::string &filename) const {
 }
 
 Blob LodReader::read(const std::string &filename) const {
-    assert(isOpen());
-
-    Blob result = readRaw(filename);
-    LodFileFormat format = lod::magic(result, filename);
-    if (format == LOD_FILE_COMPRESSED)
-        result = lod::decodeCompressed(result); // TODO(captainurist): doesn't belong here.
-    return result;
-}
-
-Blob LodReader::readRaw(const std::string &filename) const {
     assert(isOpen());
 
     const auto pos = _files.find(toLower(filename));
