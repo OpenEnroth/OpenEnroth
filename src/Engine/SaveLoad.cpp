@@ -197,7 +197,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
 
     LodReader lodReader(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
     for (const std::string &name : lodReader.ls())
-        lodWriter.write(name, lodReader.readRaw(name));
+        lodWriter.write(name, lodReader.read(name));
     lodReader.close();
 
     lodWriter.write("image.pcx", render->PackScreenshot(150, 112));
@@ -346,7 +346,7 @@ void SaveNewGame() {
     // Copy ddm & dlv files.
     for (const std::string &name : pGames_LOD->ls())
         if (name.ends_with(".ddm") || name.ends_with(".dlv"))
-            lodWriter.write(name, pGames_LOD->readRaw(name));
+            lodWriter.write(name, pGames_LOD->read(name));
 
     pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
 
