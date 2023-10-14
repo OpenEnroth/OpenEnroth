@@ -447,8 +447,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
 
     switch (inspect_item->GetItemEquipType()) {
-        case EQUIP_SINGLE_HANDED:
-        case EQUIP_TWO_HANDED: {
+        case ITEM_TYPE_SINGLE_HANDED:
+        case ITEM_TYPE_TWO_HANDED: {
             text[1] = fmt::format("{}: +{}   {}: {}d{}",
                                   localization->GetString(LSTR_ATTACK),
                                   inspect_item->GetDamageMod(),
@@ -460,7 +460,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             break;
         }
 
-        case EQUIP_BOW:
+        case ITEM_TYPE_BOW:
             text[1] = fmt::format("{}: +{}   {}: {}d{}",
                                   localization->GetString(LSTR_SHOOT),
                                   inspect_item->GetDamageMod(),
@@ -471,15 +471,15 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 text[1] += fmt::format("+{}", inspect_item->GetDamageMod());
             break;
 
-        case EQUIP_ARMOUR:
-        case EQUIP_SHIELD:
-        case EQUIP_HELMET:
-        case EQUIP_BELT:
-        case EQUIP_CLOAK:
-        case EQUIP_GAUNTLETS:
-        case EQUIP_BOOTS:
-        case EQUIP_RING:
-        case EQUIP_AMULET:
+        case ITEM_TYPE_ARMOUR:
+        case ITEM_TYPE_SHIELD:
+        case ITEM_TYPE_HELMET:
+        case ITEM_TYPE_BELT:
+        case ITEM_TYPE_CLOAK:
+        case ITEM_TYPE_GAUNTLETS:
+        case ITEM_TYPE_BOOTS:
+        case ITEM_TYPE_RING:
+        case ITEM_TYPE_AMULET:
             if (inspect_item->GetDamageDice())
                 text[1] = fmt::format("{}: +{}",
                                       localization->GetString(LSTR_ARMOR),

@@ -28,29 +28,29 @@ static void strtokSkipLines(int n) {
 //----- (00456D84) --------------------------------------------------------
 void ItemTable::Initialize(GameResourceManager *resourceManager) {
     std::map<std::string, ItemType, ILess> equipStatMap;
-    equipStatMap["weapon"] = EQUIP_SINGLE_HANDED;
-    equipStatMap["weapon2"] = EQUIP_TWO_HANDED;
-    equipStatMap["weapon1or2"] = EQUIP_SINGLE_HANDED;
-    equipStatMap["missile"] = EQUIP_BOW;
-    equipStatMap["bow"] = EQUIP_BOW;
-    equipStatMap["armor"] = EQUIP_ARMOUR;
-    equipStatMap["shield"] = EQUIP_SHIELD;
-    equipStatMap["helm"] = EQUIP_HELMET;
-    equipStatMap["belt"] = EQUIP_BELT;
-    equipStatMap["cloak"] = EQUIP_CLOAK;
-    equipStatMap["gauntlets"] = EQUIP_GAUNTLETS;
-    equipStatMap["boots"] = EQUIP_BOOTS;
-    equipStatMap["ring"] = EQUIP_RING;
-    equipStatMap["amulet"] = EQUIP_AMULET;
-    equipStatMap["weaponw"] = EQUIP_WAND;
-    equipStatMap["herb"] = EQUIP_REAGENT;
-    equipStatMap["reagent"] = EQUIP_REAGENT;
-    equipStatMap["bottle"] = EQUIP_POTION;
-    equipStatMap["sscroll"] = EQUIP_SPELL_SCROLL;
-    equipStatMap["book"] = EQUIP_BOOK;
-    equipStatMap["mscroll"] = EQUIP_MESSAGE_SCROLL;
-    equipStatMap["gold"] = EQUIP_GOLD;
-    equipStatMap["gem"] = EQUIP_GEM;
+    equipStatMap["weapon"] = ITEM_TYPE_SINGLE_HANDED;
+    equipStatMap["weapon2"] = ITEM_TYPE_TWO_HANDED;
+    equipStatMap["weapon1or2"] = ITEM_TYPE_SINGLE_HANDED;
+    equipStatMap["missile"] = ITEM_TYPE_BOW;
+    equipStatMap["bow"] = ITEM_TYPE_BOW;
+    equipStatMap["armor"] = ITEM_TYPE_ARMOUR;
+    equipStatMap["shield"] = ITEM_TYPE_SHIELD;
+    equipStatMap["helm"] = ITEM_TYPE_HELMET;
+    equipStatMap["belt"] = ITEM_TYPE_BELT;
+    equipStatMap["cloak"] = ITEM_TYPE_CLOAK;
+    equipStatMap["gauntlets"] = ITEM_TYPE_GAUNTLETS;
+    equipStatMap["boots"] = ITEM_TYPE_BOOTS;
+    equipStatMap["ring"] = ITEM_TYPE_RING;
+    equipStatMap["amulet"] = ITEM_TYPE_AMULET;
+    equipStatMap["weaponw"] = ITEM_TYPE_WAND;
+    equipStatMap["herb"] = ITEM_TYPE_REAGENT;
+    equipStatMap["reagent"] = ITEM_TYPE_REAGENT;
+    equipStatMap["bottle"] = ITEM_TYPE_POTION;
+    equipStatMap["sscroll"] = ITEM_TYPE_SPELL_SCROLL;
+    equipStatMap["book"] = ITEM_TYPE_BOOK;
+    equipStatMap["mscroll"] = ITEM_TYPE_MESSAGE_SCROLL;
+    equipStatMap["gold"] = ITEM_TYPE_GOLD;
+    equipStatMap["gem"] = ITEM_TYPE_GEM;
 
     std::map<std::string, CharacterSkillType, ILess> equipSkillMap;
     equipSkillMap["staff"] = CHARACTER_SKILL_STAFF;
@@ -147,7 +147,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter].iconName = removeQuotes(tokens[1]);
         pItems[item_counter].name = removeQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
-        pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], EQUIP_NONE);
+        pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
         pItems[item_counter].uSkillType = valueOr(equipSkillMap, tokens[5], CHARACTER_SKILL_MISC);
         auto diceRollTokens = tokenize(tokens[6], 'd');
         if (diceRollTokens.size() == 2) {
@@ -387,10 +387,10 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
         CharacterSkillType requested_skill = CHARACTER_SKILL_INVALID;
         switch (uTreasureType) {
             case RANDOM_ITEM_WEAPON:
-                requested_equip = EQUIP_SINGLE_HANDED;
+                requested_equip = ITEM_TYPE_SINGLE_HANDED;
                 break;
             case RANDOM_ITEM_ARMOR:
-                requested_equip = EQUIP_ARMOUR;
+                requested_equip = ITEM_TYPE_ARMOUR;
                 break;
             case RANDOM_ITEM_MICS:
                 requested_skill = CHARACTER_SKILL_MISC;
@@ -429,43 +429,43 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
                 requested_skill = CHARACTER_SKILL_PLATE;
                 break;
             case RANDOM_ITEM_SHIELD:
-                requested_equip = EQUIP_SHIELD;
+                requested_equip = ITEM_TYPE_SHIELD;
                 break;
             case RANDOM_ITEM_HELMET:
-                requested_equip = EQUIP_HELMET;
+                requested_equip = ITEM_TYPE_HELMET;
                 break;
             case RANDOM_ITEM_BELT:
-                requested_equip = EQUIP_BELT;
+                requested_equip = ITEM_TYPE_BELT;
                 break;
             case RANDOM_ITEM_CLOAK:
-                requested_equip = EQUIP_CLOAK;
+                requested_equip = ITEM_TYPE_CLOAK;
                 break;
             case RANDOM_ITEM_GAUNTLETS:
-                requested_equip = EQUIP_GAUNTLETS;
+                requested_equip = ITEM_TYPE_GAUNTLETS;
                 break;
             case RANDOM_ITEM_BOOTS:
-                requested_equip = EQUIP_BOOTS;
+                requested_equip = ITEM_TYPE_BOOTS;
                 break;
             case RANDOM_ITEM_RING:
-                requested_equip = EQUIP_RING;
+                requested_equip = ITEM_TYPE_RING;
                 break;
             case RANDOM_ITEM_AMULET:
-                requested_equip = EQUIP_AMULET;
+                requested_equip = ITEM_TYPE_AMULET;
                 break;
             case RANDOM_ITEM_WAND:
-                requested_equip = EQUIP_WAND;
+                requested_equip = ITEM_TYPE_WAND;
                 break;
             case RANDOM_ITEM_SPELL_SCROLL:
-                requested_equip = EQUIP_SPELL_SCROLL;
+                requested_equip = ITEM_TYPE_SPELL_SCROLL;
                 break;
             case RANDOM_ITEM_POTION:
-                requested_equip = EQUIP_POTION;
+                requested_equip = ITEM_TYPE_POTION;
                 break;
             case RANDOM_ITEM_REAGENT:
-                requested_equip = EQUIP_REAGENT;
+                requested_equip = ITEM_TYPE_REAGENT;
                 break;
             case RANDOM_ITEM_GEM:
-                requested_equip = EQUIP_GEM;
+                requested_equip = ITEM_TYPE_GEM;
                 break;
             default:
                 __debugbreak();  // check this condition
@@ -556,21 +556,21 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
     }
     // try get special enhansment
     switch (outItem->GetItemEquipType()) {
-        case EQUIP_SINGLE_HANDED:
-        case EQUIP_TWO_HANDED:
-        case EQUIP_BOW:
+        case ITEM_TYPE_SINGLE_HANDED:
+        case ITEM_TYPE_TWO_HANDED:
+        case ITEM_TYPE_BOW:
             if (!uBonusChanceWpSpecial[treasure_level]) return;
             if (grng->random(100) >= uBonusChanceWpSpecial[treasure_level])
                 return;
             break;
-        case EQUIP_ARMOUR:
-        case EQUIP_SHIELD:
-        case EQUIP_HELMET:
-        case EQUIP_BELT:
-        case EQUIP_CLOAK:
-        case EQUIP_GAUNTLETS:
-        case EQUIP_BOOTS:
-        case EQUIP_RING: {
+        case ITEM_TYPE_ARMOUR:
+        case ITEM_TYPE_SHIELD:
+        case ITEM_TYPE_HELMET:
+        case ITEM_TYPE_BELT:
+        case ITEM_TYPE_CLOAK:
+        case ITEM_TYPE_GAUNTLETS:
+        case ITEM_TYPE_BOOTS:
+        case ITEM_TYPE_RING: {
             if (!uBonusChanceStandart[treasure_level]) return;
             int bonusChanceRoll = grng->random(100);  // edx@86
             if (bonusChanceRoll < uBonusChanceStandart[treasure_level]) {
@@ -604,7 +604,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
             }
         }
             break;
-        case EQUIP_WAND:
+        case ITEM_TYPE_WAND:
             outItem->uNumCharges = grng->random(6) + outItem->GetDamageMod() + 1;
             outItem->uMaxCharges = outItem->uNumCharges;
             return;

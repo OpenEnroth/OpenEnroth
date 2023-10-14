@@ -86,24 +86,24 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
             if (!contains(description, "off-balance"))
                 enumName += "_FIXED";
 
-        if (desc.uEquipType == EQUIP_REAGENT) {
+        if (desc.uEquipType == ITEM_TYPE_REAGENT) {
             enumName = "REAGENT_" + enumName;
-        } else if (desc.uEquipType == EQUIP_POTION) {
+        } else if (desc.uEquipType == ITEM_TYPE_POTION) {
             if (!enumName.starts_with("POTION_"))
                 enumName = "POTION_" + enumName;
             if (enumName.ends_with("_POTION"))
                 enumName = enumName.substr(0, enumName.size() - 7);
-        } else if (desc.uEquipType == EQUIP_SPELL_SCROLL) {
+        } else if (desc.uEquipType == ITEM_TYPE_SPELL_SCROLL) {
             enumName = "SCROLL_" + enumName;
-        } else if (desc.uEquipType == EQUIP_BOOK) {
+        } else if (desc.uEquipType == ITEM_TYPE_BOOK) {
             enumName = "SPELLBOOK_" + enumName;
-        } else if (desc.uEquipType == EQUIP_MESSAGE_SCROLL) {
+        } else if (desc.uEquipType == ITEM_TYPE_MESSAGE_SCROLL) {
             if (enumName.ends_with("_RECIPE")) {
                 enumName = "RECIPE_" + enumName.substr(0, enumName.size() - 7);
             } else if (!enumName.starts_with("MESSAGE_")) {
                 enumName = "MESSAGE_" + enumName;
             }
-        } else if (desc.uEquipType == EQUIP_GOLD) {
+        } else if (desc.uEquipType == ITEM_TYPE_GOLD) {
             if (description == "A small pile of gold coins.") {
                 enumName = "GOLD_SMALL";
             } else if (description == "A pile of gold coins.") {
@@ -113,7 +113,7 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
             } else {
                 throw Exception("Unrecognized gold pile description '{}'", description);
             }
-        } else if (desc.uEquipType == EQUIP_GEM) {
+        } else if (desc.uEquipType == ITEM_TYPE_GEM) {
             enumName = "GEM_" + enumName;
         }
 

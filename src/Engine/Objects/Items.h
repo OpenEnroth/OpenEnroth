@@ -67,32 +67,32 @@ struct ItemGen {  // 0x24
     bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
-        return GetItemEquipType() == EQUIP_GOLD;
+        return GetItemEquipType() == ITEM_TYPE_GOLD;
     }
     bool isShield() const {
-        return GetItemEquipType() == EQUIP_SHIELD;
+        return GetItemEquipType() == ITEM_TYPE_SHIELD;
     }
     bool isWand() const {
-        return GetItemEquipType() == EQUIP_WAND;
+        return GetItemEquipType() == ITEM_TYPE_WAND;
     }
     bool isPotion() const {
-        return GetItemEquipType() == EQUIP_POTION;
+        return GetItemEquipType() == ITEM_TYPE_POTION;
     }
     bool isBook() const {
-        return GetItemEquipType() == EQUIP_BOOK;
+        return GetItemEquipType() == ITEM_TYPE_BOOK;
     }
     bool isReagent() const {
-        return GetItemEquipType() == EQUIP_REAGENT;
+        return GetItemEquipType() == ITEM_TYPE_REAGENT;
     }
     bool isSpellScroll() const {
-        return GetItemEquipType() == EQUIP_SPELL_SCROLL;
+        return GetItemEquipType() == ITEM_TYPE_SPELL_SCROLL;
     }
     bool isMessageScroll() const {
-        return GetItemEquipType() == EQUIP_MESSAGE_SCROLL;
+        return GetItemEquipType() == ITEM_TYPE_MESSAGE_SCROLL;
     }
 
     bool isMeleeWeapon() const {
-        return GetItemEquipType() == EQUIP_SINGLE_HANDED || GetItemEquipType() == EQUIP_TWO_HANDED;
+        return GetItemEquipType() == ITEM_TYPE_SINGLE_HANDED || GetItemEquipType() == ITEM_TYPE_TWO_HANDED;
     }
     bool isWeapon() const {
         return ::isWeapon(GetItemEquipType());
@@ -132,7 +132,7 @@ struct ItemDesc {  // 30h
     int16_t field_1A = 0;             // 16
     int16_t uEquipX = 0;       // 18  1c
     int16_t uEquipY = 0;       // 1a  1e
-    ItemType uEquipType = EQUIP_NONE;   // 1c 20
+    ItemType uEquipType = ITEM_TYPE_NONE;   // 1c 20
     CharacterSkillType uSkillType = CHARACTER_SKILL_MISC;   // 1d 21
     uint8_t uDamageDice = 0;  // 1e 22
     uint8_t uDamageRoll = 0;  // 1f 23

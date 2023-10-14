@@ -117,28 +117,28 @@ static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKIL
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
-static constexpr IndexedArray<ItemSlot, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
-    {EQUIP_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
-    {EQUIP_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
-    {EQUIP_BOW,            ITEM_SLOT_BOW},
-    {EQUIP_ARMOUR,         ITEM_SLOT_ARMOUR},
-    {EQUIP_SHIELD,         ITEM_SLOT_OFF_HAND},
-    {EQUIP_HELMET,         ITEM_SLOT_HELMET},
-    {EQUIP_BELT,           ITEM_SLOT_BELT},
-    {EQUIP_CLOAK,          ITEM_SLOT_CLOAK},
-    {EQUIP_GAUNTLETS,      ITEM_SLOT_GAUTNLETS},
-    {EQUIP_BOOTS,          ITEM_SLOT_BOOTS},
-    {EQUIP_RING,           ITEM_SLOT_RING1},
-    {EQUIP_AMULET,         ITEM_SLOT_AMULET},
-    {EQUIP_WAND,           ITEM_SLOT_MAIN_HAND},
-    {EQUIP_REAGENT,        ITEM_SLOT_INVALID},
-    {EQUIP_POTION,         ITEM_SLOT_INVALID},
-    {EQUIP_SPELL_SCROLL,   ITEM_SLOT_INVALID},
-    {EQUIP_BOOK,           ITEM_SLOT_INVALID},
-    {EQUIP_MESSAGE_SCROLL, ITEM_SLOT_INVALID},
-    {EQUIP_GOLD,           ITEM_SLOT_INVALID},
-    {EQUIP_GEM,            ITEM_SLOT_INVALID},
-    {EQUIP_NONE,           ITEM_SLOT_INVALID}
+static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
+    {ITEM_TYPE_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
+    {ITEM_TYPE_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
+    {ITEM_TYPE_BOW,            ITEM_SLOT_BOW},
+    {ITEM_TYPE_ARMOUR,         ITEM_SLOT_ARMOUR},
+    {ITEM_TYPE_SHIELD,         ITEM_SLOT_OFF_HAND},
+    {ITEM_TYPE_HELMET,         ITEM_SLOT_HELMET},
+    {ITEM_TYPE_BELT,           ITEM_SLOT_BELT},
+    {ITEM_TYPE_CLOAK,          ITEM_SLOT_CLOAK},
+    {ITEM_TYPE_GAUNTLETS,      ITEM_SLOT_GAUTNLETS},
+    {ITEM_TYPE_BOOTS,          ITEM_SLOT_BOOTS},
+    {ITEM_TYPE_RING,           ITEM_SLOT_RING1},
+    {ITEM_TYPE_AMULET,         ITEM_SLOT_AMULET},
+    {ITEM_TYPE_WAND,           ITEM_SLOT_MAIN_HAND},
+    {ITEM_TYPE_REAGENT,        ITEM_SLOT_INVALID},
+    {ITEM_TYPE_POTION,         ITEM_SLOT_INVALID},
+    {ITEM_TYPE_SPELL_SCROLL,   ITEM_SLOT_INVALID},
+    {ITEM_TYPE_BOOK,           ITEM_SLOT_INVALID},
+    {ITEM_TYPE_MESSAGE_SCROLL, ITEM_SLOT_INVALID},
+    {ITEM_TYPE_GOLD,           ITEM_SLOT_INVALID},
+    {ITEM_TYPE_GEM,            ITEM_SLOT_INVALID},
+    {ITEM_TYPE_NONE,           ITEM_SLOT_INVALID}
 };
 
 static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
@@ -848,7 +848,7 @@ bool Character::CanRepair(ItemGen *pItem) const {
     // TODO(Nik-RE-dev): is check for boots correct?
     if (CheckHiredNPCSpeciality(Smith) && pItem->isWeapon() ||
         CheckHiredNPCSpeciality(Armorer) && pItem->isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= EQUIP_BOOTS)
+        CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
@@ -1569,10 +1569,10 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->carriedItemId = ITEM_NULL;
                     tempItem.uItemID = carriedItemId;
-                    if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
+                    if (pItemTable->pItems[carriedItemId].uEquipType == ITEM_TYPE_WAND) {
                         tempItem.uNumCharges = grng->random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
                         tempItem.uMaxCharges = tempItem.uNumCharges;
-                    } else if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
+                    } else if (pItemTable->pItems[carriedItemId].uEquipType == ITEM_TYPE_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
                         tempItem.potionPower = 2 * grng->random(4) + 2;
                     }
                 } else {
@@ -1735,7 +1735,7 @@ int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pA
                             this->pEquipment.uArmor - 1;
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
-                        GetEquippedItemEquipType(i) == EQUIP_SHIELD)
+                        GetEquippedItemEquipType(i) == ITEM_TYPE_SHIELD)
                         itemstobreaklist[itemstobreakcounter++] =
                             this->pEquipment.pIndices[i] - 1;
                 }
@@ -1759,9 +1759,9 @@ int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pA
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
                         (GetEquippedItemEquipType(i) ==
-                             EQUIP_SINGLE_HANDED ||
+                             ITEM_TYPE_SINGLE_HANDED ||
                          GetEquippedItemEquipType(i) ==
-                             EQUIP_TWO_HANDED))
+                             ITEM_TYPE_TWO_HANDED))
                         itemstobreaklist[itemstobreakcounter++] =
                             this->pEquipment.pIndices[i] - 1;
                 }
@@ -2017,7 +2017,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
 
     uint shield_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-        if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == EQUIP_SHIELD) {
+        if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
             CharacterSkillType skill_type = GetOffHandItem()->GetPlayerSkillType();
             uint shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
@@ -7464,7 +7464,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
         case BUILDING_ALCHEMY_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !isRecipe(idemId))
                 return MERCHANT_PHRASE_INVALID_ACTION;
-            if (equipType != EQUIP_REAGENT && equipType != EQUIP_POTION && equipType != EQUIP_MESSAGE_SCROLL)
+            if (equipType != ITEM_TYPE_REAGENT && equipType != ITEM_TYPE_POTION && equipType != ITEM_TYPE_MESSAGE_SCROLL)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         default:

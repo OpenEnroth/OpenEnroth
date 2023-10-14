@@ -1968,7 +1968,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             for (const ItemGen &actorItem : pActors[monster_id].items) {
                                 if (actorItem.uItemID != ITEM_NULL &&
-                                        pItemTable->pItems[actorItem.uItemID].uEquipType != EQUIP_GOLD) {
+                                        pItemTable->pItems[actorItem.uItemID].uEquipType != ITEM_TYPE_GOLD) {
                                     item = actorItem;
                                 }
                             }

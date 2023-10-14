@@ -187,8 +187,8 @@ std::string ItemGen::GetDisplayName() {
 //----- (004564B3) --------------------------------------------------------
 std::string ItemGen::GetIdentifiedName() {
     ItemType equip_type = GetItemEquipType();
-    if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
-        (equip_type == EQUIP_GOLD)) {
+    if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
+        (equip_type == ITEM_TYPE_GOLD)) {
         return pItemTable->pItems[uItemID].name;
     }
 
@@ -688,7 +688,7 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet) 
 ItemType ItemGen::GetItemEquipType() const {
     // to avoid nzi - is this safe??
     if (this->uItemID == ITEM_NULL)
-        return EQUIP_NONE;
+        return ITEM_TYPE_NONE;
     else
         return pItemTable->pItems[this->uItemID].uEquipType;
 }
@@ -725,14 +725,14 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
     switch (pItemTable->pItems[item_id].uEquipType) {
-        case EQUIP_ARMOUR:
+        case ITEM_TYPE_ARMOUR:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
             else if (shoulder == 1)
                 return fmt::format("item{:03}v{}a1", texture_id, index);
             else // shoulder == 2
                 return fmt::format("item{:03}v{}a2", texture_id, index);
-        case EQUIP_CLOAK:
+        case ITEM_TYPE_CLOAK:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
             else // shoulder == 1

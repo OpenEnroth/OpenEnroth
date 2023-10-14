@@ -1018,7 +1018,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     ItemGen *itemMainHand = player->GetMainHandItem();
     ItemGen *itemOffHand = player->GetOffHandItem();
-    bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == EQUIP_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
+    bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == ITEM_TYPE_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
@@ -1762,7 +1762,7 @@ void OnPaperdollLeftClick() {
     ItemId v50;  // [sp+38h] [bp-14h]@50
     // int v51; // [sp+3Ch] [bp-10h]@1
     int freeslot;  // [sp+40h] [bp-Ch]@5
-    ItemType pEquipType = EQUIP_NONE;
+    ItemType pEquipType = ITEM_TYPE_NONE;
     CastSpellInfo *pSpellInfo;
 
     int twohandedequip = 0;
@@ -1771,7 +1771,7 @@ void OnPaperdollLeftClick() {
     int mainhandequip = pParty->activeCharacter().pEquipment.uMainHand;
     unsigned int shieldequip = pParty->activeCharacter().pEquipment.uOffHand;
 
-    if (mainhandequip && pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetItemEquipType() == EQUIP_TWO_HANDED) {
+    if (mainhandequip && pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetItemEquipType() == ITEM_TYPE_TWO_HANDED) {
         twohandedequip = mainhandequip;
     }
 
@@ -1809,20 +1809,20 @@ void OnPaperdollLeftClick() {
         }
 
         if (pParty->pPickedItem.uItemID == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
-            pParty->activeCharacter().EquipBody(EQUIP_ARMOUR);
+            pParty->activeCharacter().EquipBody(ITEM_TYPE_ARMOUR);
             WetsuitOn(pParty->activeCharacterIndex());
             return;
         }
 
         switch (pEquipType) {
-            case EQUIP_BOW:
-            case EQUIP_ARMOUR:
-            case EQUIP_HELMET:
-            case EQUIP_BELT:
-            case EQUIP_CLOAK:
-            case EQUIP_GAUNTLETS:
-            case EQUIP_BOOTS:
-            case EQUIP_AMULET:
+            case ITEM_TYPE_BOW:
+            case ITEM_TYPE_ARMOUR:
+            case ITEM_TYPE_HELMET:
+            case ITEM_TYPE_BELT:
+            case ITEM_TYPE_CLOAK:
+            case ITEM_TYPE_GAUNTLETS:
+            case ITEM_TYPE_BOOTS:
+            case ITEM_TYPE_AMULET:
 
                 if (!pParty->activeCharacter().HasSkill(pSkillType)) {  // hasnt got the skill to use that
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
@@ -1830,7 +1830,7 @@ void OnPaperdollLeftClick() {
                 }
 
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
-                    (pEquipType != EQUIP_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
+                    (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
@@ -1843,7 +1843,7 @@ void OnPaperdollLeftClick() {
                 return;
 
                 // ------------------------dress rings(одевание колец)----------------------------------
-            case EQUIP_RING:
+            case ITEM_TYPE_RING:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // cant put anything
                                                                                         // on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
@@ -1918,7 +1918,7 @@ void OnPaperdollLeftClick() {
                 }
 
                 // ------------------dress shield(одеть щит)------------------------------------------------------
-            case EQUIP_SHIELD:  //Щит
+            case ITEM_TYPE_SHIELD:  //Щит
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // в акваланге
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
@@ -1963,8 +1963,8 @@ void OnPaperdollLeftClick() {
                 pParty->activeCharacter().pEquipment.uMainHand = 0;
                 return;
                 // -------------------------taken in hand(взять в руку)-------------------------------------------
-            case EQUIP_SINGLE_HANDED:
-            case EQUIP_WAND:
+            case ITEM_TYPE_SINGLE_HANDED:
+            case ITEM_TYPE_WAND:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
                     pParty->pPickedItem.uItemID != ITEM_BLASTER &&
                     pParty->pPickedItem.uItemID != ITEM_BLASTER_RIFLE) {
@@ -1990,7 +1990,7 @@ void OnPaperdollLeftClick() {
                                 _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                                 pParty->activeCharacter().pInventoryItemList[shieldequip] = _this;
                                 pParty->activeCharacter().pEquipment.uOffHand = shieldequip + 1;
-                                if (pEquipType != EQUIP_WAND) {
+                                if (pEquipType != ITEM_TYPE_WAND) {
                                     return;
                                 }
                                 v50 = _this.uItemID;
@@ -2002,7 +2002,7 @@ void OnPaperdollLeftClick() {
                             pParty->activeCharacter().pInventoryItemList[v23] = pParty->pPickedItem;
                             pParty->activeCharacter().pEquipment.uOffHand = v23 + 1;
                             mouse->RemoveHoldingItem();
-                            if (pEquipType != EQUIP_WAND) return;
+                            if (pEquipType != ITEM_TYPE_WAND) return;
                             v50 = pParty->activeCharacter().pInventoryItemList[v23].uItemID;
                             break;
                         }
@@ -2015,7 +2015,7 @@ void OnPaperdollLeftClick() {
                     pParty->activeCharacter().pInventoryItemList[v26] = pParty->pPickedItem;
                     pParty->activeCharacter().pEquipment.uMainHand = v26 + 1;
                     mouse->RemoveHoldingItem();
-                    if (pEquipType != EQUIP_WAND) return;
+                    if (pEquipType != ITEM_TYPE_WAND) return;
                     break;
                 }
                 --mainhandequip;
@@ -2026,14 +2026,14 @@ void OnPaperdollLeftClick() {
                 _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                 pParty->activeCharacter().pInventoryItemList[mainhandequip] = _this;
                 pParty->activeCharacter().pEquipment.uMainHand = mainhandequip + 1;
-                if (pEquipType == EQUIP_WAND) v50 = _this.uItemID;
+                if (pEquipType == ITEM_TYPE_WAND) v50 = _this.uItemID;
                 if (twohandedequip) {
                     pParty->activeCharacter().pEquipment.uOffHand = 0;
                 }
                 break;
                 // ---------------------------take two hands(взять двумя
                 // руками)---------------------------------
-            case EQUIP_TWO_HANDED:
+            case ITEM_TYPE_TWO_HANDED:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;

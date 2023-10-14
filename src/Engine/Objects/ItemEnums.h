@@ -1003,7 +1003,7 @@ enum class ItemId : int32_t {
     ITEM_FIRST_REAL_POTION = ITEM_POTION_CURE_WOUNDS,
     ITEM_LAST_REAL_POTION = ITEM_POTION_REJUVENATION,
 
-    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
+    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is ITEM_TYPE_POTION, but we don't have an empty bottle in the range below. Not good.
     ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
     ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
@@ -1183,36 +1183,36 @@ inline SpellId spellForWand(ItemId wand) {
 }
 
 enum class ItemType : uint8_t {
-    EQUIP_SINGLE_HANDED = 0,
-    EQUIP_TWO_HANDED = 1,
-    EQUIP_BOW = 2,
-    EQUIP_ARMOUR = 3,
-    EQUIP_SHIELD = 4,
-    EQUIP_HELMET = 5,
-    EQUIP_BELT = 6,
-    EQUIP_CLOAK = 7,
-    EQUIP_GAUNTLETS = 8,
-    EQUIP_BOOTS = 9,
-    EQUIP_RING = 10,
-    EQUIP_AMULET = 11,
-    EQUIP_WAND = 12,
-    EQUIP_REAGENT = 13,
-    EQUIP_POTION = 14,
-    EQUIP_SPELL_SCROLL = 15,
-    EQUIP_BOOK = 16,
-    EQUIP_MESSAGE_SCROLL = 17,
-    EQUIP_GOLD = 18,
-    EQUIP_GEM = 19,
-    EQUIP_NONE = 20, // Ores, quest items.
+    ITEM_TYPE_SINGLE_HANDED = 0,
+    ITEM_TYPE_TWO_HANDED = 1,
+    ITEM_TYPE_BOW = 2,
+    ITEM_TYPE_ARMOUR = 3,
+    ITEM_TYPE_SHIELD = 4,
+    ITEM_TYPE_HELMET = 5,
+    ITEM_TYPE_BELT = 6,
+    ITEM_TYPE_CLOAK = 7,
+    ITEM_TYPE_GAUNTLETS = 8,
+    ITEM_TYPE_BOOTS = 9,
+    ITEM_TYPE_RING = 10,
+    ITEM_TYPE_AMULET = 11,
+    ITEM_TYPE_WAND = 12,
+    ITEM_TYPE_REAGENT = 13,
+    ITEM_TYPE_POTION = 14,
+    ITEM_TYPE_SPELL_SCROLL = 15,
+    ITEM_TYPE_BOOK = 16,
+    ITEM_TYPE_MESSAGE_SCROLL = 17,
+    ITEM_TYPE_GOLD = 18,
+    ITEM_TYPE_GEM = 19,
+    ITEM_TYPE_NONE = 20, // Ores, quest items.
 
-    EQUIP_FIRST = EQUIP_SINGLE_HANDED,
-    EQUIP_LAST = EQUIP_NONE,
+    ITEM_TYPE_FIRST = ITEM_TYPE_SINGLE_HANDED,
+    ITEM_TYPE_LAST = ITEM_TYPE_NONE,
 
-    EQUIP_FIRST_SPECIAL_ENCHANTABLE = EQUIP_SINGLE_HANDED,
-    EQUIP_LAST_SPECIAL_ENCHANTABLE = EQUIP_AMULET,
+    ITEM_TYPE_FIRST_SPECIAL_ENCHANTABLE = ITEM_TYPE_SINGLE_HANDED,
+    ITEM_TYPE_LAST_SPECIAL_ENCHANTABLE = ITEM_TYPE_AMULET,
 
-    EQUIP_FIRST_NORMAL_ENCHANTABLE = EQUIP_ARMOUR,
-    EQUIP_LAST_NORMAL_ENCHANTABLE = EQUIP_AMULET,
+    ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE = ITEM_TYPE_ARMOUR,
+    ITEM_TYPE_LAST_NORMAL_ENCHANTABLE = ITEM_TYPE_AMULET,
 };
 using enum ItemType;
 
@@ -1222,7 +1222,7 @@ using enum ItemType;
  *                                      armor, rings, amulets, etc.
  */
 inline bool isPassiveEquipment(ItemType type) {
-    return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
+    return type >= ITEM_TYPE_ARMOUR && type <= ITEM_TYPE_AMULET;
 }
 
 /**
@@ -1231,7 +1231,7 @@ inline bool isPassiveEquipment(ItemType type) {
  *                                      equipment except amulets and rings.
  */
 inline bool isArmor(ItemType type) {
-    return type >= EQUIP_ARMOUR && type <= EQUIP_BOOTS;
+    return type >= ITEM_TYPE_ARMOUR && type <= ITEM_TYPE_BOOTS;
 }
 
 /**
@@ -1240,7 +1240,7 @@ inline bool isArmor(ItemType type) {
  *                                      considered weapons.
  */
 inline bool isWeapon(ItemType type) {
-    return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
+    return type >= ITEM_TYPE_SINGLE_HANDED && type <= ITEM_TYPE_BOW;
 }
 
 /**
