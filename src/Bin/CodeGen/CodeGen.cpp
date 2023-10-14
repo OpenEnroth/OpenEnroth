@@ -117,11 +117,11 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
             enumName = "GEM_" + enumName;
         }
 
-        if (desc.uMaterial == MATERIAL_ARTIFACT) {
+        if (desc.uMaterial == RARITY_ARTIFACT) {
             enumName = "ARTIFACT_" + enumName;
-        } else if (desc.uMaterial == MATERIAL_RELIC) {
+        } else if (desc.uMaterial == RARITY_RELIC) {
             enumName = "RELIC_" + enumName;
-        } else if (desc.uMaterial == MATERIAL_SPECIAL) {
+        } else if (desc.uMaterial == RARITY_SPECIAL) {
             enumName = "RARE_" + enumName;
         } else if (description.starts_with("Quest")) {
             enumName = "QUEST_" + enumName;

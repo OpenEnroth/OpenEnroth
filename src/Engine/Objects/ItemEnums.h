@@ -129,10 +129,11 @@ enum class ItemEnchantment : unsigned int {
 using enum ItemEnchantment;
 
 enum class ItemRarity : uint8_t {
-    MATERIAL_COMMON = 0,
-    MATERIAL_ARTIFACT = 1,
-    MATERIAL_RELIC = 2,
-    MATERIAL_SPECIAL = 3 // TODO(captainurist): RARE
+    RARITY_COMMON = 0,
+    RARITY_ARTIFACT = 1, // Artifacts always give positive bonuses.
+    RARITY_RELIC = 2,    // Relics can be more powerful than artifacts but carry a penalty (have a negative bonus).
+    RARITY_SPECIAL = 3,  // Pretty much just weak artifacts, and often quest items. Not in the loot table, so can
+                         // only be found where the level designers have put them.
 };
 using enum ItemRarity;
 
@@ -700,7 +701,7 @@ enum class ItemId : int32_t {
     ITEM_ARTIFACT_FORGE_GAUNTLETS = 534,
     ITEM_ARTIFACT_HEROS_BELT = 535,
     ITEM_ARTIFACT_LADYS_ESCORT = 536,
-    ITEM_RARE_CLANKERS_AMULET = 537,
+    ITEM_RARE_CLANKERS_AMULET = 537, // TODO(captainurist): RARE -> SPECIAL
     ITEM_RARE_LIEUTENANTS_CUTLASS = 538,
     ITEM_RARE_MEDUSAS_MIRROR = 539,
     ITEM_RARE_LADY_CARMINES_DAGGER = 540,

@@ -68,9 +68,9 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     equipSkillMap["club"] = CHARACTER_SKILL_CLUB;
 
     std::map<std::string, ItemRarity, ILess> materialMap;
-    materialMap["artifact"] = MATERIAL_ARTIFACT;
-    materialMap["relic"] = MATERIAL_RELIC;
-    materialMap["special"] = MATERIAL_SPECIAL;
+    materialMap["artifact"] = RARITY_ARTIFACT;
+    materialMap["relic"] = RARITY_RELIC;
+    materialMap["special"] = RARITY_SPECIAL;
 
     char *lineContent;
 
@@ -161,14 +161,14 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
             pItems[item_counter].uDamageRoll = 0;
         }
         pItems[item_counter].uDamageMod = atoi(tokens[7]);
-        pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], MATERIAL_COMMON);
+        pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], RARITY_COMMON);
         pItems[item_counter].uItemID_Rep_St = atoi(tokens[9]);
         pItems[item_counter].pUnidentifiedName = removeQuotes(tokens[10]);
         pItems[item_counter].uSpriteID = static_cast<SPRITE_OBJECT_TYPE>(atoi(tokens[11]));
 
         pItems[item_counter]._additional_value = ITEM_ENCHANTMENT_NULL;
         pItems[item_counter]._bonus_type = {};
-        if (pItems[item_counter].uMaterial == MATERIAL_SPECIAL) {
+        if (pItems[item_counter].uMaterial == RARITY_SPECIAL) {
             for (CharacterAttributeType ii : allEnchantableAttributes()) {
                 if (iequals(tokens[12], standardEnchantments[ii].pOfName)) {
                     pItems[item_counter]._bonus_type = ii;
@@ -184,7 +184,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
             }
         }
 
-        if ((pItems[item_counter].uMaterial == MATERIAL_SPECIAL) &&
+        if ((pItems[item_counter].uMaterial == RARITY_SPECIAL) &&
             (pItems[item_counter]._bonus_type)) {
             char b_s = atoi(tokens[13]);
             if (b_s)
@@ -262,7 +262,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
 //----- (00456D17) --------------------------------------------------------
 void ItemTable::SetSpecialBonus(ItemGen *pItem) {
-    if (pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL) {
+    if (pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL) {
         pItem->attributeEnchantment = pItems[pItem->uItemID]._bonus_type;
         pItem->special_enchantment =
                 (ItemEnchantment)pItems[pItem->uItemID]._additional_value;
@@ -272,14 +272,14 @@ void ItemTable::SetSpecialBonus(ItemGen *pItem) {
 
 //----- (00456D43) --------------------------------------------------------
 bool ItemTable::IsMaterialSpecial(const ItemGen *pItem) {
-    return this->pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL;
+    return this->pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
 bool ItemTable::IsMaterialNonCommon(const ItemGen *pItem) {
-    return pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL ||
-           pItems[pItem->uItemID].uMaterial == MATERIAL_RELIC ||
-           pItems[pItem->uItemID].uMaterial == MATERIAL_ARTIFACT;
+    return pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL ||
+           pItems[pItem->uItemID].uMaterial == RARITY_RELIC ||
+           pItems[pItem->uItemID].uMaterial == RARITY_ARTIFACT;
 }
 
 //----- (00453B3C) --------------------------------------------------------

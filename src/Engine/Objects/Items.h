@@ -137,7 +137,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageDice = 0;  // 1e 22
     uint8_t uDamageRoll = 0;  // 1f 23
     uint8_t uDamageMod = 0;   // 20 24
-    ItemRarity uMaterial = MATERIAL_COMMON;    // 21 25
+    ItemRarity uMaterial = RARITY_COMMON;    // 21 25
     ItemEnchantment _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
     std::optional<CharacterAttributeType> _bonus_type;
     char _bonus_strength = 0;         // 24 28
