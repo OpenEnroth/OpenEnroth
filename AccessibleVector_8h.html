@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;407bc87</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bda3adb</span>
    </div>
   </td>
  </tr>
@@ -151,6 +151,16 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Extension point for <code>delta</code> and <code>pairwiseDelta</code> methods of the <code><a class="el" href="classAccessible.html">Accessible</a></code> classes. Effectively computes a delta between <code>l</code> and 'r', i.e. <code>r - l</code>.</p>
+<p >This function is overloaded for <code><a class="el" href="classAccessible.html">Accessible</a></code> classes, and it can also be overloaded for <code>std::tuple</code> / <code>std::pair</code> if there comes a need to compute per-element deltas for them.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">l</td><td>First value. </td></tr>
+    <tr><td class="paramname">r</td><td>Second value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Delta between the first and the second value. </dd></dl>
 
 </div>
 </div>

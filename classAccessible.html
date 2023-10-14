@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;407bc87</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bda3adb</span>
    </div>
   </td>
  </tr>
@@ -126,7 +126,13 @@ Friends</h2></td></tr>
 <tr class="memitem:a0caaaf324c363247d211521f81b3389b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a0caaaf324c363247d211521f81b3389b">calculateDelta</a> (const <a class="el" href="classAccessible.html">Accessible</a> &amp;l, const <a class="el" href="classAccessible.html">Accessible</a> &amp;r)</td></tr>
 <tr class="separator:a0caaaf324c363247d211521f81b3389b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class Base&gt;<br />
+class Accessible&lt; Base &gt;</div><p >Extension class that adds a couple methods to a container that makes writing tests easier.</p>
+<p >The methods themselves might remind you of what's available in Java 8 Stream API, or in <code>std::ranges</code>, but the underlying implementation here is very dumb and doesn't even try to be fast. Every method allocates, so this class isn't suitable for runtime usage - use <code>std::ranges</code> instead.</p>
+<p >Aside from the useful methods, <code><a class="el" href="classAccessible.html">Accessible</a></code> also provides an <code>operator==</code> that makes it possible to compare any two <code><a class="el" href="classAccessible.html">Accessible</a></code> classes as long as their elements are comparable.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a> </dd></dl>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a4b1fb4ac86d16921bbda3a73f46a313c" name="a4b1fb4ac86d16921bbda3a73f46a313c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4b1fb4ac86d16921bbda3a73f46a313c">&#9670;&#160;</a></span>value_type</h2>
 
