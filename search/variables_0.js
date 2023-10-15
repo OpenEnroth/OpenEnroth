@@ -14,7 +14,7 @@ var searchData=
   ['_5factivecharacter_11',['_activeCharacter',['../structParty.html#a78fea2b48de462e2bccea3d33e5ebf78',1,'Party']]],
   ['_5factivenotesidx_12',['_activeNotesIdx',['../structGUIWindow__AutonotesBook.html#a5152416efe838140206e0bfc3420a2d6',1,'GUIWindow_AutonotesBook']]],
   ['_5factivequestsidx_13',['_activeQuestsIdx',['../structGUIWindow__QuestBook.html#a8fa84823d6680161f47c21bee799164e',1,'GUIWindow_QuestBook']]],
-  ['_5fadditional_5fvalue_14',['_additional_value',['../structItemDesc.html#a5bbdc7cadf7da1e8ddd5a7964029088b',1,'ItemDesc']]],
+  ['_5fadditional_5fvalue_14',['_additional_value',['../structItemDesc.html#afa6a898d990450ad0e853fa2e1e7e787',1,'ItemDesc']]],
   ['_5falert_5fdays_15',['_alert_days',['../structMapInfo.html#a7d0d5eba58a28e66d3367140ba7fad94',1,'MapInfo']]],
   ['_5fapplication_16',['_application',['../classPlatformApplicationAware.html#aa791830ffc3047bd97b28108e2a9df45',1,'PlatformApplicationAware::_application()'],['../classGameStarter.html#a0d9aee55e10d1b476bee78456dff793f',1,'GameStarter::_application()'],['../classGame.html#ae78f456077a521afaf449ba0f80b5a1e',1,'Game::_application()']]],
   ['_5fautonotebits_17',['_autonoteBits',['../structParty.html#abc8c4df983fff66a162f2e54e027a922',1,'Party']]],

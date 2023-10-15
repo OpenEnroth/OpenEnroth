@@ -75,6 +75,6 @@ var searchData=
   ['itemid_72',['itemID',['../structItemGen__MM7.html#abeca2de5e9cfc76dec327a4baf9f65f9',1,'ItemGen_MM7']]],
   ['items_73',['items',['../classActor.html#a6a64ad0653320d4e0d03fbcad280297d',1,'Actor']]],
   ['itemtextureidbyitemid_74',['itemTextureIdByItemId',['../Items_8cpp.html#a119fceb33c76e0232e193eb0c2836da5',1,'Items.cpp']]],
-  ['itreasurelevel_75',['iTreasureLevel',['../structItemSpecialEnchantment.html#a22bf7d65df3d20738fdf7019411462e3',1,'ItemSpecialEnchantment']]],
-  ['ivalue_76',['iValue',['../structItemSpecialEnchantment.html#a05f8d0012274d6807e5402e3680b9f33',1,'ItemSpecialEnchantment']]]
+  ['itreasurelevel_75',['iTreasureLevel',['../structItemSpecialEnchantmentTable.html#a68f1cdd9689a88dc2101ac5db7a18482',1,'ItemSpecialEnchantmentTable']]],
+  ['ivalue_76',['iValue',['../structItemSpecialEnchantmentTable.html#a1e6e723c6d7e31d82abc358241821c2d',1,'ItemSpecialEnchantmentTable']]]
 ];

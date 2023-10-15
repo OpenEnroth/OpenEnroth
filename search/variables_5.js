@@ -16,7 +16,7 @@ var searchData=
   ['eframes_13',['eframes',['../structSpriteFrameTable__MM7.html#a5580d884fb35ee336bbc9f536d5b3221',1,'SpriteFrameTable_MM7']]],
   ['emptybottomlines_14',['emptyBottomLines',['../structLodSpriteHeader__MM6.html#a30c78a8e2fc3bdefa87d32d624ba6790',1,'LodSpriteHeader_MM6']]],
   ['enchantingactivecharacter_15',['enchantingActiveCharacter',['../mm7__data_8cpp.html#a990db2695e35fb639ce799c7190a73fe',1,'enchantingActiveCharacter():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a990db2695e35fb639ce799c7190a73fe',1,'enchantingActiveCharacter():&#160;mm7_data.cpp']]],
-  ['enchantment_16',['enchantment',['../structConditionTableEntry.html#a7330dc36933b63d3d949f82fc2713b36',1,'ConditionTableEntry']]],
+  ['enchantment_16',['enchantment',['../structConditionTableEntry.html#a5573ebbdbc7202d329b0d4edc48c84bf',1,'ConditionTableEntry']]],
   ['enchantmentstrength_17',['enchantmentStrength',['../structItemGen__MM7.html#ab3be5df7d05e14e78eaf1e65113df15f',1,'ItemGen_MM7']]],
   ['encm1percent_18',['EncM1percent',['../structMapInfo.html#a1cf62baec1c257d09da5f489f2757429',1,'MapInfo']]],
   ['encm2percent_19',['EncM2percent',['../structMapInfo.html#a7a19c2e9ae28c01d998b49be630a28e8',1,'MapInfo']]],

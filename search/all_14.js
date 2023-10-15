@@ -285,7 +285,7 @@ var searchData=
   ['to_5fenemy_5fwall2_282',['to_enemy_wall2',['../structArcomageCard.html#aa9dcacddaab832f1e024df3dbf909ad0',1,'ArcomageCard']]],
   ['to_5fenemy_5fzoo_5flvl_283',['to_enemy_zoo_lvl',['../structArcomageCard.html#a196560ce7a432d3df3b86fa6e93d8df5',1,'ArcomageCard']]],
   ['to_5fenemy_5fzoo_5flvl2_284',['to_enemy_zoo_lvl2',['../structArcomageCard.html#a0e8fb703c98cd10bb127610faf458b9a',1,'ArcomageCard']]],
-  ['to_5fitem_5fapply_285',['to_item_apply',['../structItemSpecialEnchantment.html#ada8dddf0fd83c11deb890f12029f4a82',1,'ItemSpecialEnchantment']]],
+  ['to_5fitem_5fapply_285',['to_item_apply',['../structItemSpecialEnchantmentTable.html#afb3b304f2559137d3b40f612f42c46cd',1,'ItemSpecialEnchantmentTable']]],
   ['to_5fpl_5fenm_5fbeasts_286',['to_pl_enm_beasts',['../structArcomageCard.html#aeb7922466bfc64ebea4e20047c9a9316',1,'ArcomageCard']]],
   ['to_5fpl_5fenm_5fbeasts2_287',['to_pl_enm_beasts2',['../structArcomageCard.html#ac2710f2ab99b813abbdda299728d6e71',1,'ArcomageCard']]],
   ['to_5fpl_5fenm_5fbricks_288',['to_pl_enm_bricks',['../structArcomageCard.html#a0a8532fa1752dd11ca883d890662a024',1,'ArcomageCard']]],

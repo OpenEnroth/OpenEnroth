@@ -67,7 +67,7 @@ var searchData=
   ['doaddprojectile_64',['DoAddProjectile',['../structSpellFxRenderer.html#a812ef70aca162156649b6b016c39ae94',1,'SpellFxRenderer']]],
   ['doalloccursormem_65',['DoAllocCursorMem',['../classIo_1_1Mouse.html#a1442378befa62180520ea506e7f584be',1,'Io::Mouse']]],
   ['dodecalvertsneedclipping_66',['DoDecalVertsNeedClipping',['../structClippingFunctions.html#a981993d074d203d0b15adf34627576e8',1,'ClippingFunctions']]],
-  ['doesdmgtypedodamage_67',['DoesDmgTypeDoDamage',['../classActor.html#a14d2bb380e87e988ebfb926307638cbe',1,'Actor']]],
+  ['doesdmgtypedodamage_67',['DoesDmgTypeDoDamage',['../classActor.html#ad58fcc2206c9acaa68698f6e8222feb4',1,'Actor']]],
   ['doesrayintersectbillboard_68',['DoesRayIntersectBillboard',['../classVis.html#ad4af37acceccfd227b3221caa6381385',1,'Vis']]],
   ['doforchosenplayer_69',['doForChosenPlayer',['../EventInterpreter_8cpp.html#a8081bf7f7f86de19bba0e18c7a2cdfd0',1,'EventInterpreter.cpp']]],
   ['dogetheightonterrain_70',['DoGetHeightOnTerrain',['../structOutdoorLocation.html#abe2aa540a3d2933e7c1ced447be3f180',1,'OutdoorLocation']]],
