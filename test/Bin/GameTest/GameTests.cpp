@@ -1705,3 +1705,16 @@ GAME_TEST(Issues, Issue1331) {
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(1 * 2, (43 + 13) * 2));
 }
+
+GAME_TEST(Issues, Issue1338) {
+    auto deadTape = actorTapes.indicesByState(AIState::Dead);
+    auto statusTape = tapes.statusBar();
+    auto goldTape = tapes.gold();
+    auto peasantGoldTape = tapes.custom([] { return pActors[18].items[3].goldAmount; });
+    test.playTraceFromTestData("issue_1338.mm7", "issue_1338.json");
+    EXPECT_EQ(deadTape, tape(std::initializer_list<int>{}, {18}, std::initializer_list<int>{})); // Alive -> Dead -> corpse picked up.
+    EXPECT_GT(peasantGoldTape.max(), 0); // Peasant should have had gold generated.
+    EXPECT_EQ(goldTape.delta(), peasantGoldTape.max());
+    EXPECT_TRUE(statusTape.contains(fmt::format("{} gold", peasantGoldTape.max()))); // Telepathy status message.
+    EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", peasantGoldTape.max()))); // Corpse pickup message.
+}

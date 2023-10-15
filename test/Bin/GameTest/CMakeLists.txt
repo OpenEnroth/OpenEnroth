@@ -19,7 +19,7 @@ if(OE_BUILD_TESTS)
     ExternalProject_Add(OpenEnroth_TestData
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}/test_data_tmp
             GIT_REPOSITORY https://github.com/OpenEnroth/OpenEnroth_TestData.git
-            GIT_TAG 94bdd06f36eabe78f51e7582fda7ea6d1a717c52
+            GIT_TAG 00fd069134db2f7a85643a6c46de4733b0bfbd21
             SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/test_data
             CONFIGURE_COMMAND ""
             BUILD_COMMAND ""
