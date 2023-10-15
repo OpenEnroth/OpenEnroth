@@ -1623,7 +1623,7 @@ void RegeneratePartyHealthMana() {
                                 recovery_HP = true;
                             }
                         } else {
-                            ITEM_ENCHANTMENT special_enchantment = equppedItem.special_enchantment;
+                            ItemEnchantment special_enchantment = equppedItem.special_enchantment;
                             if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
                                 || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                                 || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX

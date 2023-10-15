@@ -980,7 +980,7 @@ void PrepareToLoadBLV(bool bLoading) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
-                    pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
+                    pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == ITEM_TYPE_POTION &&
                     !pSpriteObjects[i].containing_item.potionPower)
                     pSpriteObjects[i].containing_item.potionPower = grng->random(15) + 5;
                 pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
@@ -2046,7 +2046,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
         a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.containing_item.SetIdentified();
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
+        a1a.containing_item.special_enchantment = (ItemEnchantment)v34;
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;

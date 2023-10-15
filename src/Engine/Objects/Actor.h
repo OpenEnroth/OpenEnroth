@@ -200,8 +200,8 @@ class Actor {
     ABILITY_INDEX special_ability_use_check(int a2);
     bool _4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4);
     bool ActorHitOrMiss(Character *pPlayer);
-    int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, int incomingDmg);
-    bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
+    int CalcMagicalDamageToActor(DamageType dmgType, int incomingDmg);
+    bool DoesDmgTypeDoDamage(DamageType uType);
 
     int id = -1; // Actor index in pActors array.
     std::string name;

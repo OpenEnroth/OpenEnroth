@@ -56,9 +56,9 @@ struct ItemGen {  // 0x24
     std::string GetIdentifiedName();
     void UpdateTempBonus(GameTime time);
     void Reset();
-    int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
+    int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
 
-    ITEM_EQUIP_TYPE GetItemEquipType() const;
+    ItemType GetItemEquipType() const;
     CharacterSkillType GetPlayerSkillType() const;
     const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
@@ -67,32 +67,32 @@ struct ItemGen {  // 0x24
     bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
-        return GetItemEquipType() == EQUIP_GOLD;
+        return GetItemEquipType() == ITEM_TYPE_GOLD;
     }
     bool isShield() const {
-        return GetItemEquipType() == EQUIP_SHIELD;
+        return GetItemEquipType() == ITEM_TYPE_SHIELD;
     }
     bool isWand() const {
-        return GetItemEquipType() == EQUIP_WAND;
+        return GetItemEquipType() == ITEM_TYPE_WAND;
     }
     bool isPotion() const {
-        return GetItemEquipType() == EQUIP_POTION;
+        return GetItemEquipType() == ITEM_TYPE_POTION;
     }
     bool isBook() const {
-        return GetItemEquipType() == EQUIP_BOOK;
+        return GetItemEquipType() == ITEM_TYPE_BOOK;
     }
     bool isReagent() const {
-        return GetItemEquipType() == EQUIP_REAGENT;
+        return GetItemEquipType() == ITEM_TYPE_REAGENT;
     }
     bool isSpellScroll() const {
-        return GetItemEquipType() == EQUIP_SPELL_SCROLL;
+        return GetItemEquipType() == ITEM_TYPE_SPELL_SCROLL;
     }
     bool isMessageScroll() const {
-        return GetItemEquipType() == EQUIP_MESSAGE_SCROLL;
+        return GetItemEquipType() == ITEM_TYPE_MESSAGE_SCROLL;
     }
 
     bool isMeleeWeapon() const {
-        return GetItemEquipType() == EQUIP_SINGLE_HANDED || GetItemEquipType() == EQUIP_TWO_HANDED;
+        return GetItemEquipType() == ITEM_TYPE_SINGLE_HANDED || GetItemEquipType() == ITEM_TYPE_TWO_HANDED;
     }
     bool isWeapon() const {
         return ::isWeapon(GetItemEquipType());
@@ -109,7 +109,7 @@ struct ItemGen {  // 0x24
     int goldAmount = 0; // Only for gold.
     std::optional<CharacterAttributeType> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
     int32_t m_enchantmentStrength = 0;  // 8
-    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;
+    ItemEnchantment special_enchantment = ITEM_ENCHANTMENT_NULL;
     int32_t uNumCharges = 0;           // 10
     ItemFlags uAttributes = 0;          // 14
     ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // 18
@@ -132,13 +132,13 @@ struct ItemDesc {  // 30h
     int16_t field_1A = 0;             // 16
     int16_t uEquipX = 0;       // 18  1c
     int16_t uEquipY = 0;       // 1a  1e
-    ITEM_EQUIP_TYPE uEquipType = EQUIP_NONE;   // 1c 20
+    ItemType uEquipType = ITEM_TYPE_NONE;   // 1c 20
     CharacterSkillType uSkillType = CHARACTER_SKILL_MISC;   // 1d 21
     uint8_t uDamageDice = 0;  // 1e 22
     uint8_t uDamageRoll = 0;  // 1f 23
     uint8_t uDamageMod = 0;   // 20 24
-    ITEM_MATERIAL uMaterial = MATERIAL_COMMON;    // 21 25
-    ITEM_ENCHANTMENT _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
+    ItemRarity uMaterial = RARITY_COMMON;    // 21 25
+    ItemEnchantment _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
     std::optional<CharacterAttributeType> _bonus_type;
     char _bonus_strength = 0;         // 24 28
     char field_25 = 0;                // 25  29

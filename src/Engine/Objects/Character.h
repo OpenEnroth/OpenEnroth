@@ -189,12 +189,12 @@ class Character {
     std::string GetRangedDamageString();
     bool CanTrainToNextLevel();
     Color GetExperienceDisplayColor();
-    int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
-    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ItemSlot uEquipSlot) const;
+    int CalculateIncommingDamage(DamageType dmg_type, int amount);
+    ItemType GetEquippedItemEquipType(ItemSlot uEquipSlot) const;
     CharacterSkillType GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
-    bool HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const;
+    bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
     bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
@@ -204,11 +204,11 @@ class Character {
     /**
      * @offset 0x48DC1E
      */
-    int receiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
+    int receiveDamage(signed int amount, DamageType dmg_type);
     int ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor);
 
     // TODO(captainurist): move closer to Spells data.
-    DAMAGE_TYPE GetSpellDamageType(SpellId uSpellID) const;
+    DamageType GetSpellDamageType(SpellId uSpellID) const;
     int GetAttackRecoveryTime(bool bRangedAttack) const;
 
     int GetHealth() const { return this->health; }
@@ -226,7 +226,7 @@ class Character {
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int character_parameter) const;
-    int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
+    int GetSpecialItemBonus(ItemEnchantment enchantment) const;
     int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CharacterAttributeType a2) const;
     int actualSkillLevel(CharacterSkillType skill) const;
@@ -306,7 +306,7 @@ class Character {
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
-    void EquipBody(ITEM_EQUIP_TYPE uEquipType);
+    void EquipBody(ItemType uEquipType);
 
     /**
      * @offset 0x43EE77

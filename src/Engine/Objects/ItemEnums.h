@@ -12,7 +12,7 @@
 #include "Utility/Segment.h"
 #include "Utility/IndexedArray.h"
 
-enum class DAMAGE_TYPE : unsigned int {
+enum class DamageType : unsigned int {
     DAMAGE_FIRE = 0,
     DAMAGE_AIR = 1,
     DAMAGE_WATER = 2,
@@ -28,7 +28,7 @@ enum class DAMAGE_TYPE : unsigned int {
     DAMAGE_FIRST = DAMAGE_FIRE,
     DAMAGE_LAST = DAMAGE_DARK
 };
-using enum DAMAGE_TYPE;
+using enum DamageType;
 
 /*  338 */
 enum class ItemFlag : uint32_t {
@@ -47,7 +47,7 @@ using enum ItemFlag;
 MM_DECLARE_FLAGS(ItemFlags, ItemFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ItemFlags)
 
-enum class ITEM_ENCHANTMENT : unsigned int {
+enum class ItemEnchantment : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
     ITEM_ENCHANTMENT_OF_PROTECTION = 1,    // Adds +10 to all Resistances
@@ -126,16 +126,16 @@ enum class ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_FIRST_VALID = 1,
     ITEM_ENCHANTMENT_LAST_VALID = 72
 };
-using enum ITEM_ENCHANTMENT;
+using enum ItemEnchantment;
 
-// TODO(captainurist): Actually ITEM_RARITY
-enum class ITEM_MATERIAL : uint8_t {
-    MATERIAL_COMMON = 0,
-    MATERIAL_ARTIFACT = 1,
-    MATERIAL_RELIC = 2,
-    MATERIAL_SPECIAL = 3 // TODO(captainurist): RARE
+enum class ItemRarity : uint8_t {
+    RARITY_COMMON = 0,
+    RARITY_ARTIFACT = 1, // Artifacts always give positive bonuses.
+    RARITY_RELIC = 2,    // Relics can be more powerful than artifacts but carry a penalty (have a negative bonus).
+    RARITY_SPECIAL = 3,  // Pretty much just weak artifacts, and often quest items. Not in the loot table, so can
+                         // only be found where the level designers have put them.
 };
-using enum ITEM_MATERIAL;
+using enum ItemRarity;
 
 enum class ItemTreasureLevel : int8_t {
     ITEM_TREASURE_LEVEL_INVALID = 0,
@@ -324,32 +324,32 @@ enum class ItemId : int32_t {
     ITEM_MYSTIC_WAND_OF_SHRAPMETAL = 157,
     ITEM_MYSTIC_WAND_OF_SHRINKING = 158,
     ITEM_MYSTIC_WAND_OF_INCINERATION = 159,
-    ITEM_160 = 160, // Unused.
-    ITEM_161 = 161, // Unused.
-    ITEM_162 = 162, // Unused.
-    ITEM_163 = 163, // Unused.
-    ITEM_164 = 164, // Unused.
-    ITEM_165 = 165, // Unused.
-    ITEM_166 = 166, // Unused.
-    ITEM_167 = 167, // Unused.
-    ITEM_168 = 168, // Unused.
-    ITEM_169 = 169, // Unused.
-    ITEM_170 = 170, // Unused.
-    ITEM_171 = 171, // Unused.
-    ITEM_172 = 172, // Unused.
-    ITEM_173 = 173, // Unused.
-    ITEM_174 = 174, // Unused.
-    ITEM_175 = 175, // Unused.
-    ITEM_176 = 176, // Unused.
-    ITEM_177 = 177, // Unused.
-    ITEM_178 = 178, // Unused.
-    ITEM_179 = 179, // Unused.
-    ITEM_180 = 180, // Unused.
-    ITEM_181 = 181, // Unused.
-    ITEM_182 = 182, // Unused.
-    ITEM_183 = 183, // Unused.
-    ITEM_184 = 184, // Unused.
-    ITEM_185 = 185, // Unused.
+    ITEM_160 = 160,                                  // Unused.
+    ITEM_161 = 161,                                  // Unused.
+    ITEM_162 = 162,                                  // Unused.
+    ITEM_163 = 163,                                  // Unused.
+    ITEM_164 = 164,                                  // Unused.
+    ITEM_165 = 165,                                  // Unused.
+    ITEM_166 = 166,                                  // Unused.
+    ITEM_167 = 167,                                  // Unused.
+    ITEM_168 = 168,                                  // Unused.
+    ITEM_169 = 169,                                  // Unused.
+    ITEM_170 = 170,                                  // Unused.
+    ITEM_171 = 171,                                  // Unused.
+    ITEM_172 = 172,                                  // Unused.
+    ITEM_173 = 173,                                  // Unused.
+    ITEM_174 = 174,                                  // Unused.
+    ITEM_175 = 175,                                  // Unused.
+    ITEM_176 = 176,                                  // Unused.
+    ITEM_177 = 177,                                  // Unused.
+    ITEM_178 = 178,                                  // Unused.
+    ITEM_179 = 179,                                  // Unused.
+    ITEM_180 = 180,                                  // Unused.
+    ITEM_181 = 181,                                  // Unused.
+    ITEM_182 = 182,                                  // Unused.
+    ITEM_183 = 183,                                  // Unused.
+    ITEM_184 = 184,                                  // Unused.
+    ITEM_185 = 185,                                  // Unused.
     ITEM_GEM_BLUE_QUARTZ = 186,
     ITEM_GEM_TOPAZ = 187,
     ITEM_GEM_EMERALD = 188,
@@ -436,34 +436,34 @@ enum class ItemId : int32_t {
     ITEM_POTION_PURE_ACCURACY = 269,
     ITEM_POTION_PURE_MIGHT = 270,
     ITEM_POTION_REJUVENATION = 271,
-    ITEM_272 = 272, // Unused.
-    ITEM_273 = 273, // Unused.
-    ITEM_274 = 274, // Unused.
-    ITEM_275 = 275, // Unused.
-    ITEM_276 = 276, // Unused.
-    ITEM_277 = 277, // Unused.
-    ITEM_278 = 278, // Unused.
-    ITEM_279 = 279, // Unused.
-    ITEM_280 = 280, // Unused.
-    ITEM_281 = 281, // Unused.
-    ITEM_282 = 282, // Unused.
-    ITEM_283 = 283, // Unused.
-    ITEM_284 = 284, // Unused.
-    ITEM_285 = 285, // Unused.
-    ITEM_286 = 286, // Unused.
-    ITEM_287 = 287, // Unused.
-    ITEM_288 = 288, // Unused.
-    ITEM_289 = 289, // Unused.
-    ITEM_290 = 290, // Unused.
-    ITEM_291 = 291, // Unused.
-    ITEM_292 = 292, // Unused.
-    ITEM_293 = 293, // Unused.
-    ITEM_294 = 294, // Unused.
-    ITEM_295 = 295, // Unused.
-    ITEM_296 = 296, // Unused.
-    ITEM_297 = 297, // Unused.
-    ITEM_298 = 298, // Unused.
-    ITEM_299 = 299, // Unused.
+    ITEM_272 = 272,                                  // Unused.
+    ITEM_273 = 273,                                  // Unused.
+    ITEM_274 = 274,                                  // Unused.
+    ITEM_275 = 275,                                  // Unused.
+    ITEM_276 = 276,                                  // Unused.
+    ITEM_277 = 277,                                  // Unused.
+    ITEM_278 = 278,                                  // Unused.
+    ITEM_279 = 279,                                  // Unused.
+    ITEM_280 = 280,                                  // Unused.
+    ITEM_281 = 281,                                  // Unused.
+    ITEM_282 = 282,                                  // Unused.
+    ITEM_283 = 283,                                  // Unused.
+    ITEM_284 = 284,                                  // Unused.
+    ITEM_285 = 285,                                  // Unused.
+    ITEM_286 = 286,                                  // Unused.
+    ITEM_287 = 287,                                  // Unused.
+    ITEM_288 = 288,                                  // Unused.
+    ITEM_289 = 289,                                  // Unused.
+    ITEM_290 = 290,                                  // Unused.
+    ITEM_291 = 291,                                  // Unused.
+    ITEM_292 = 292,                                  // Unused.
+    ITEM_293 = 293,                                  // Unused.
+    ITEM_294 = 294,                                  // Unused.
+    ITEM_295 = 295,                                  // Unused.
+    ITEM_296 = 296,                                  // Unused.
+    ITEM_297 = 297,                                  // Unused.
+    ITEM_298 = 298,                                  // Unused.
+    ITEM_299 = 299,                                  // Unused.
     ITEM_SCROLL_TORCH_LIGHT = 300,
     ITEM_SCROLL_FIRE_BOLT = 301,
     ITEM_SCROLL_FIRE_RESISTANCE = 302,
@@ -563,7 +563,7 @@ enum class ItemId : int32_t {
     ITEM_SCROLL_DRAGON_BREATH = 396,
     ITEM_SCROLL_ARMAGEDDON = 397,
     ITEM_SCROLL_SOULDRINKER = 398,
-    ITEM_399 = 399, // Unused.
+    ITEM_399 = 399,                                  // Unused.
     ITEM_SPELLBOOK_TORCH_LIGHT = 400,
     ITEM_SPELLBOOK_FIRE_BOLT = 401,
     ITEM_SPELLBOOK_FIRE_RESISTANCE = 402,
@@ -663,7 +663,7 @@ enum class ItemId : int32_t {
     ITEM_SPELLBOOK_DRAGON_BREATH = 496,
     ITEM_SPELLBOOK_ARMAGEDDON = 497,
     ITEM_SPELLBOOK_SOULDRINKER = 498,
-    ITEM_499 = 499, // Unused.
+    ITEM_499 = 499,                                  // Unused.
     ITEM_ARTIFACT_PUCK = 500,
     ITEM_ARTIFACT_IRON_FEATHER = 501,
     ITEM_ARTIFACT_WALLACE = 502,
@@ -701,69 +701,69 @@ enum class ItemId : int32_t {
     ITEM_ARTIFACT_FORGE_GAUNTLETS = 534,
     ITEM_ARTIFACT_HEROS_BELT = 535,
     ITEM_ARTIFACT_LADYS_ESCORT = 536,
-    ITEM_RARE_CLANKERS_AMULET = 537,
-    ITEM_RARE_LIEUTENANTS_CUTLASS = 538,
-    ITEM_RARE_MEDUSAS_MIRROR = 539,
-    ITEM_RARE_LADY_CARMINES_DAGGER = 540,
-    ITEM_RARE_VILLAINS_BLADE = 541,
-    ITEM_RARE_THE_PERFECT_BOW = 542,
-    ITEM_RARE_THE_PERFECT_BOW_FIXED = 543,
-    ITEM_RARE_SHADOWS_MASK = 544,
-    ITEM_RARE_GHOST_RING = 545,
-    ITEM_RARE_FAERIE_RING = 546,
-    ITEM_RARE_SUN_CLOAK = 547,
-    ITEM_RARE_MOON_CLOAK = 548,
-    ITEM_RARE_ZOKARRS_AXE = 549,
-    ITEM_RARE_VAMPIRES_CAPE = 550,
-    ITEM_RARE_MINOTAURS_AXE = 551,
-    ITEM_RARE_GROGNARDS_CUTLASS = 552,
-    ITEM_553 = 553, // Unused.
-    ITEM_554 = 554, // Unused.
-    ITEM_555 = 555, // Unused.
-    ITEM_556 = 556, // Unused.
-    ITEM_557 = 557, // Unused.
-    ITEM_558 = 558, // Unused.
-    ITEM_559 = 559, // Unused.
-    ITEM_560 = 560, // Unused.
-    ITEM_561 = 561, // Unused.
-    ITEM_562 = 562, // Unused.
-    ITEM_563 = 563, // Unused.
-    ITEM_564 = 564, // Unused.
-    ITEM_565 = 565, // Unused.
-    ITEM_566 = 566, // Unused.
-    ITEM_567 = 567, // Unused.
-    ITEM_568 = 568, // Unused.
-    ITEM_569 = 569, // Unused.
-    ITEM_RARE_THE_DEATHBLADE = 570,
-    ITEM_571 = 571, // Unused.
-    ITEM_572 = 572, // Unused.
-    ITEM_573 = 573, // Unused.
-    ITEM_574 = 574, // Unused.
-    ITEM_575 = 575, // Unused.
-    ITEM_576 = 576, // Unused.
-    ITEM_577 = 577, // Unused.
-    ITEM_578 = 578, // Unused.
-    ITEM_579 = 579, // Unused.
-    ITEM_580 = 580, // Unused.
-    ITEM_581 = 581, // Unused.
-    ITEM_582 = 582, // Unused.
-    ITEM_583 = 583, // Unused.
-    ITEM_584 = 584, // Unused.
-    ITEM_585 = 585, // Unused.
-    ITEM_586 = 586, // Unused.
-    ITEM_587 = 587, // Unused.
-    ITEM_588 = 588, // Unused.
-    ITEM_589 = 589, // Unused.
-    ITEM_590 = 590, // Unused.
-    ITEM_591 = 591, // Unused.
-    ITEM_592 = 592, // Unused.
-    ITEM_593 = 593, // Unused.
-    ITEM_594 = 594, // Unused.
-    ITEM_595 = 595, // Unused.
-    ITEM_596 = 596, // Unused.
-    ITEM_597 = 597, // Unused.
-    ITEM_598 = 598, // Unused.
-    ITEM_599 = 599, // Unused.
+    ITEM_SPECIAL_CLANKERS_AMULET = 537,
+    ITEM_SPECIAL_LIEUTENANTS_CUTLASS = 538,
+    ITEM_SPECIAL_MEDUSAS_MIRROR = 539,
+    ITEM_SPECIAL_LADY_CARMINES_DAGGER = 540,
+    ITEM_SPECIAL_VILLAINS_BLADE = 541,
+    ITEM_SPECIAL_THE_PERFECT_BOW = 542,
+    ITEM_SPECIAL_THE_PERFECT_BOW_FIXED = 543,
+    ITEM_SPECIAL_SHADOWS_MASK = 544,
+    ITEM_SPECIAL_GHOST_RING = 545,
+    ITEM_SPECIAL_FAERIE_RING = 546,
+    ITEM_SPECIAL_SUN_CLOAK = 547,
+    ITEM_SPECIAL_MOON_CLOAK = 548,
+    ITEM_SPECIAL_ZOKARRS_AXE = 549,
+    ITEM_SPECIAL_VAMPIRES_CAPE = 550,
+    ITEM_SPECIAL_MINOTAURS_AXE = 551,
+    ITEM_SPECIAL_GROGNARDS_CUTLASS = 552,
+    ITEM_553 = 553,                                  // Unused.
+    ITEM_554 = 554,                                  // Unused.
+    ITEM_555 = 555,                                  // Unused.
+    ITEM_556 = 556,                                  // Unused.
+    ITEM_557 = 557,                                  // Unused.
+    ITEM_558 = 558,                                  // Unused.
+    ITEM_559 = 559,                                  // Unused.
+    ITEM_560 = 560,                                  // Unused.
+    ITEM_561 = 561,                                  // Unused.
+    ITEM_562 = 562,                                  // Unused.
+    ITEM_563 = 563,                                  // Unused.
+    ITEM_564 = 564,                                  // Unused.
+    ITEM_565 = 565,                                  // Unused.
+    ITEM_566 = 566,                                  // Unused.
+    ITEM_567 = 567,                                  // Unused.
+    ITEM_568 = 568,                                  // Unused.
+    ITEM_569 = 569,                                  // Unused.
+    ITEM_SPECIAL_THE_DEATHBLADE = 570,
+    ITEM_571 = 571,                                  // Unused.
+    ITEM_572 = 572,                                  // Unused.
+    ITEM_573 = 573,                                  // Unused.
+    ITEM_574 = 574,                                  // Unused.
+    ITEM_575 = 575,                                  // Unused.
+    ITEM_576 = 576,                                  // Unused.
+    ITEM_577 = 577,                                  // Unused.
+    ITEM_578 = 578,                                  // Unused.
+    ITEM_579 = 579,                                  // Unused.
+    ITEM_580 = 580,                                  // Unused.
+    ITEM_581 = 581,                                  // Unused.
+    ITEM_582 = 582,                                  // Unused.
+    ITEM_583 = 583,                                  // Unused.
+    ITEM_584 = 584,                                  // Unused.
+    ITEM_585 = 585,                                  // Unused.
+    ITEM_586 = 586,                                  // Unused.
+    ITEM_587 = 587,                                  // Unused.
+    ITEM_588 = 588,                                  // Unused.
+    ITEM_589 = 589,                                  // Unused.
+    ITEM_590 = 590,                                  // Unused.
+    ITEM_591 = 591,                                  // Unused.
+    ITEM_592 = 592,                                  // Unused.
+    ITEM_593 = 593,                                  // Unused.
+    ITEM_594 = 594,                                  // Unused.
+    ITEM_595 = 595,                                  // Unused.
+    ITEM_596 = 596,                                  // Unused.
+    ITEM_597 = 597,                                  // Unused.
+    ITEM_598 = 598,                                  // Unused.
+    ITEM_599 = 599,                                  // Unused.
     ITEM_QUEST_HEART_OF_THE_WOOD = 600,
     ITEM_QUEST_LICH_JAR_FULL = 601,
     ITEM_QUEST_CASE_OF_SOUL_JARS = 602,
@@ -771,14 +771,14 @@ enum class ItemId : int32_t {
     ITEM_QUEST_WETSUIT = 604,
     ITEM_QUEST_OSCILLATION_OVERTHRUSTER = 605,
     ITEM_QUEST_SIGNET_RING = 606,
-    ITEM_QUEST_LETTER_FROM_JOHANN_KERRID_TO_THE_FAERIE_KING = 607,
-    ITEM_608 = 608, // Sealed Letter 2, unused.
-    ITEM_609 = 609, // Sealed Letter 3, unused.
-    ITEM_610 = 610, // Sealed Letter 4, unused.
-    ITEM_611 = 611, // Sealed Letter 5, unused.
-    ITEM_612 = 612, // Sealed Letter 6, unused.
-    ITEM_613 = 613, // Sealed Letter 7, unused.
-    ITEM_QUEST_LETTER_FROM_NORBERT_THRUSH_TO_LORD_MARKHAM = 614,
+    ITEM_QUEST_LETTER_FROM_JOHANN_KERRID = 607,
+    ITEM_608 = 608,                                  // Sealed Letter 2, unused.
+    ITEM_609 = 609,                                  // Sealed Letter 3, unused.
+    ITEM_610 = 610,                                  // Sealed Letter 4, unused.
+    ITEM_611 = 611,                                  // Sealed Letter 5, unused.
+    ITEM_612 = 612,                                  // Sealed Letter 6, unused.
+    ITEM_613 = 613,                                  // Sealed Letter 7, unused.
+    ITEM_QUEST_LETTER_FROM_NORBERT_THRUSH = 614,
     ITEM_QUEST_LICH_JAR_EMPTY = 615,
     ITEM_GENIE_LAMP = 616,
     ITEM_QUEST_KNIGHT_STATUETTE = 617,
@@ -828,28 +828,28 @@ enum class ItemId : int32_t {
     ITEM_COLONY_ZOD_KEY = 661,
     ITEM_FAERIE_KEY = 662,
     ITEM_SEWER_KEY = 663,
-    ITEM_664 = 664, // Key placeholder, unused.
-    ITEM_665 = 665, // Key placeholder, unused.
-    ITEM_666 = 666, // Key placeholder, unused.
-    ITEM_667 = 667, // Key placeholder, unused.
-    ITEM_668 = 668, // Key placeholder, unused.
-    ITEM_669 = 669, // Key placeholder, unused.
-    ITEM_670 = 670, // Key placeholder, unused.
+    ITEM_664 = 664,                                  // Key placeholder, unused.
+    ITEM_665 = 665,                                  // Key placeholder, unused.
+    ITEM_666 = 666,                                  // Key placeholder, unused.
+    ITEM_667 = 667,                                  // Key placeholder, unused.
+    ITEM_668 = 668,                                  // Key placeholder, unused.
+    ITEM_669 = 669,                                  // Key placeholder, unused.
+    ITEM_670 = 670,                                  // Key placeholder, unused.
     ITEM_QUEST_SNERGLES_AXE = 671,
     ITEM_QUEST_LORD_KILBURNS_SHIELD = 672,
-    ITEM_673 = 673, // Lich Jar Placeholder, unused.
-    ITEM_674 = 674, // Elixir Placeholder, unused.
+    ITEM_673 = 673,                                  // Lich Jar Placeholder, unused.
+    ITEM_674 = 674,                                  // Elixir Placeholder, unused.
     ITEM_QUEST_CONTROL_CUBE = 675,
     ITEM_QUEST_ALTAR_PIECE_1 = 676,
     ITEM_QUEST_ALTAR_PIECE_2 = 677,
-    ITEM_678 = 678, // Final Part Placeholder, unused.
-    ITEM_679 = 679, // Level Design Placeholder, unused.
-    ITEM_680 = 680, // Artifact Placeholder (Elf vs. Human), unused.
-    ITEM_681 = 681, // Riverstride Plans Placeholder, unused.
-    ITEM_682 = 682, // False Plans Placeholder, unused.
+    ITEM_678 = 678,                                  // Final Part Placeholder, unused.
+    ITEM_679 = 679,                                  // Level Design Placeholder, unused.
+    ITEM_680 = 680,                                  // Artifact Placeholder (Elf vs. Human), unused.
+    ITEM_681 = 681,                                  // Riverstride Plans Placeholder, unused.
+    ITEM_682 = 682,                                  // False Plans Placeholder, unused.
     ITEM_MESSAGE_MAP_TO_EVENMORN_ISLAND = 683,
-    ITEM_684 = 684, // Neutral Bow Placeholder, unused.
-    ITEM_685 = 685, // Elf/Human Artifact Placeholder, unused.
+    ITEM_684 = 684,                                  // Neutral Bow Placeholder, unused.
+    ITEM_685 = 685,                                  // Elf/Human Artifact Placeholder, unused.
     ITEM_IRON_LACED_ORE = 686,
     ITEM_SIERTAL_LACED_ORE = 687,
     ITEM_PHYLT_LACED_ORE = 688,
@@ -862,8 +862,8 @@ enum class ItemId : int32_t {
     ITEM_CRATE_OF_SAND = 695,
     ITEM_CRATE_OF_GLASS_BOTTLES = 696,
     ITEM_CRATE_OF_ENROTHIAN_WINE = 697,
-    ITEM_698 = 698, // Orders from Snergle, unused remnant from MM6.
-    ITEM_699 = 699, // Empty scroll placeholder, unused.
+    ITEM_698 = 698,                                  // Orders from Snergle, unused remnant from MM6.
+    ITEM_699 = 699,                                  // Empty scroll placeholder, unused.
     ITEM_MESSAGE_FROM_ERATHIA = 700,
     ITEM_MESSAGE_CIPHER = 701,
     ITEM_MESSAGE_SCROLL_OF_WAVES = 702,
@@ -891,19 +891,19 @@ enum class ItemId : int32_t {
     ITEM_MESSAGE_JOURNAL_ENTRY_2ND_JANUARY = 724,
     ITEM_MESSAGE_JOURNAL_ENTRY_19TH_SEPTEMBER = 725,
     ITEM_MESSAGE_JOURNAL_ENTRY = 726,
-    ITEM_727 = 727, // Empty scroll placeholder, unused.
+    ITEM_727 = 727,                                  // Empty scroll placeholder, unused.
     ITEM_MESSAGE_BILL_OF_SALE = 728,
-    ITEM_729 = 729, // Empty scroll placeholder, unused.
-    ITEM_730 = 730, // Empty scroll placeholder, unused.
-    ITEM_731 = 731, // Empty scroll placeholder, unused.
-    ITEM_732 = 732, // Empty scroll placeholder, unused.
-    ITEM_733 = 733, // Empty scroll placeholder, unused.
+    ITEM_729 = 729,                                  // Empty scroll placeholder, unused.
+    ITEM_730 = 730,                                  // Empty scroll placeholder, unused.
+    ITEM_731 = 731,                                  // Empty scroll placeholder, unused.
+    ITEM_732 = 732,                                  // Empty scroll placeholder, unused.
+    ITEM_733 = 733,                                  // Empty scroll placeholder, unused.
     ITEM_MESSAGE_LETTER_FROM_XENOFEX = 734,
-    ITEM_735 = 735, // Empty scroll placeholder, unused.
-    ITEM_736 = 736, // Empty scroll placeholder, unused.
-    ITEM_737 = 737, // Empty scroll placeholder, unused.
-    ITEM_738 = 738, // Empty scroll placeholder, unused.
-    ITEM_739 = 739, // Empty scroll placeholder, unused.
+    ITEM_735 = 735,                                  // Empty scroll placeholder, unused.
+    ITEM_736 = 736,                                  // Empty scroll placeholder, unused.
+    ITEM_737 = 737,                                  // Empty scroll placeholder, unused.
+    ITEM_738 = 738,                                  // Empty scroll placeholder, unused.
+    ITEM_739 = 739,                                  // Empty scroll placeholder, unused.
     ITEM_RECIPE_REJUVENATION = 740,
     ITEM_RECIPE_PURE_MIGHT = 741,
     ITEM_RECIPE_PURE_ACCURACY = 742,
@@ -936,34 +936,34 @@ enum class ItemId : int32_t {
     ITEM_RECIPE_EARTH_RESISTANCE = 769,
     ITEM_RECIPE_MIND_RESISTANCE = 770,
     ITEM_RECIPE_BODY_RESISTANCE = 771,
-    ITEM_772 = 772, // Empty scroll placeholder, unused.
-    ITEM_773 = 773, // Empty scroll placeholder, unused.
-    ITEM_774 = 774, // Empty scroll placeholder, unused.
-    ITEM_775 = 775, // Empty scroll placeholder, unused.
-    ITEM_776 = 776, // Empty scroll placeholder, unused.
-    ITEM_777 = 777, // Empty scroll placeholder, unused.
-    ITEM_778 = 778, // Empty scroll placeholder, unused.
-    ITEM_779 = 779, // Empty scroll placeholder, unused.
-    ITEM_780 = 780, // Empty scroll placeholder, unused.
-    ITEM_781 = 781, // Unused.
-    ITEM_782 = 782, // Unused.
-    ITEM_783 = 783, // Unused.
-    ITEM_784 = 784, // Unused.
-    ITEM_785 = 785, // Unused.
-    ITEM_786 = 786, // Unused.
-    ITEM_787 = 787, // Unused.
-    ITEM_788 = 788, // Unused.
-    ITEM_789 = 789, // Unused.
-    ITEM_790 = 790, // Unused.
-    ITEM_791 = 791, // Unused.
-    ITEM_792 = 792, // Unused.
-    ITEM_793 = 793, // Unused.
-    ITEM_794 = 794, // Unused.
-    ITEM_795 = 795, // Unused.
-    ITEM_796 = 796, // Unused.
-    ITEM_797 = 797, // Unused.
-    ITEM_798 = 798, // Unused.
-    ITEM_799 = 799, // Unused.
+    ITEM_772 = 772,                                  // Empty scroll placeholder, unused.
+    ITEM_773 = 773,                                  // Empty scroll placeholder, unused.
+    ITEM_774 = 774,                                  // Empty scroll placeholder, unused.
+    ITEM_775 = 775,                                  // Empty scroll placeholder, unused.
+    ITEM_776 = 776,                                  // Empty scroll placeholder, unused.
+    ITEM_777 = 777,                                  // Empty scroll placeholder, unused.
+    ITEM_778 = 778,                                  // Empty scroll placeholder, unused.
+    ITEM_779 = 779,                                  // Empty scroll placeholder, unused.
+    ITEM_780 = 780,                                  // Empty scroll placeholder, unused.
+    ITEM_781 = 781,                                  // Unused.
+    ITEM_782 = 782,                                  // Unused.
+    ITEM_783 = 783,                                  // Unused.
+    ITEM_784 = 784,                                  // Unused.
+    ITEM_785 = 785,                                  // Unused.
+    ITEM_786 = 786,                                  // Unused.
+    ITEM_787 = 787,                                  // Unused.
+    ITEM_788 = 788,                                  // Unused.
+    ITEM_789 = 789,                                  // Unused.
+    ITEM_790 = 790,                                  // Unused.
+    ITEM_791 = 791,                                  // Unused.
+    ITEM_792 = 792,                                  // Unused.
+    ITEM_793 = 793,                                  // Unused.
+    ITEM_794 = 794,                                  // Unused.
+    ITEM_795 = 795,                                  // Unused.
+    ITEM_796 = 796,                                  // Unused.
+    ITEM_797 = 797,                                  // Unused.
+    ITEM_798 = 798,                                  // Unused.
+    ITEM_799 = 799,                                  // Unused.
 
     // These are used in chests and are replaced with normal random-generated items in GenerateItemsInChest().
     ITEM_RANDOM_LEVEL_1 = -1,
@@ -984,7 +984,7 @@ enum class ItemId : int32_t {
     ITEM_LAST_REGULAR = ITEM_SUN_AMULET,
 
     ITEM_FIRST_ARTIFACT = ITEM_ARTIFACT_PUCK,
-    ITEM_LAST_ARTIFACT = ITEM_RARE_GROGNARDS_CUTLASS,
+    ITEM_LAST_ARTIFACT = ITEM_SPECIAL_GROGNARDS_CUTLASS,
 
     ITEM_FIRST_SPAWNABLE_ARTIFACT = ITEM_ARTIFACT_PUCK,
     ITEM_LAST_SPAWNABLE_ARTIFACT = ITEM_RELIC_MEKORIGS_HAMMER,
@@ -1004,7 +1004,7 @@ enum class ItemId : int32_t {
     ITEM_FIRST_REAL_POTION = ITEM_POTION_CURE_WOUNDS,
     ITEM_LAST_REAL_POTION = ITEM_POTION_REJUVENATION,
 
-    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
+    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is ITEM_TYPE_POTION, but we don't have an empty bottle in the range below. Not good.
     ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
     ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
@@ -1155,7 +1155,7 @@ inline std::initializer_list<ItemId> allLevel1Reagents() {
     return result;
 }
 
-inline ITEM_ENCHANTMENT potionEnchantment(ItemId enchantingPotion) {
+inline ItemEnchantment potionEnchantment(ItemId enchantingPotion) {
     assert(isEnchantingPotion(enchantingPotion));
 
     switch (enchantingPotion) {
@@ -1183,49 +1183,47 @@ inline SpellId spellForWand(ItemId wand) {
     return detail::spellForWand[wand];
 }
 
+enum class ItemType : uint8_t {
+    ITEM_TYPE_SINGLE_HANDED = 0,
+    ITEM_TYPE_TWO_HANDED = 1,
+    ITEM_TYPE_BOW = 2,
+    ITEM_TYPE_ARMOUR = 3,
+    ITEM_TYPE_SHIELD = 4,
+    ITEM_TYPE_HELMET = 5,
+    ITEM_TYPE_BELT = 6,
+    ITEM_TYPE_CLOAK = 7,
+    ITEM_TYPE_GAUNTLETS = 8,
+    ITEM_TYPE_BOOTS = 9,
+    ITEM_TYPE_RING = 10,
+    ITEM_TYPE_AMULET = 11,
+    ITEM_TYPE_WAND = 12,
+    ITEM_TYPE_REAGENT = 13,
+    ITEM_TYPE_POTION = 14,
+    ITEM_TYPE_SPELL_SCROLL = 15,
+    ITEM_TYPE_BOOK = 16,
+    ITEM_TYPE_MESSAGE_SCROLL = 17,
+    ITEM_TYPE_GOLD = 18,
+    ITEM_TYPE_GEM = 19,
+    ITEM_TYPE_NONE = 20, // Ores, quest items.
 
-// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS
-enum class ITEM_EQUIP_TYPE : uint8_t {
-    EQUIP_SINGLE_HANDED = 0,
-    EQUIP_TWO_HANDED = 1,
-    EQUIP_BOW = 2,
-    EQUIP_ARMOUR = 3,
-    EQUIP_SHIELD = 4,
-    EQUIP_HELMET = 5,
-    EQUIP_BELT = 6,
-    EQUIP_CLOAK = 7,
-    EQUIP_GAUNTLETS = 8,
-    EQUIP_BOOTS = 9,
-    EQUIP_RING = 10,
-    EQUIP_AMULET = 11,
-    EQUIP_WAND = 12,
-    EQUIP_REAGENT = 13,
-    EQUIP_POTION = 14,
-    EQUIP_SPELL_SCROLL = 15,
-    EQUIP_BOOK = 16,
-    EQUIP_MESSAGE_SCROLL = 17,
-    EQUIP_GOLD = 18,
-    EQUIP_GEM = 19,
-    EQUIP_NONE = 20, // Ores, quest items.
+    ITEM_TYPE_FIRST = ITEM_TYPE_SINGLE_HANDED,
+    ITEM_TYPE_LAST = ITEM_TYPE_NONE,
 
-    EQUIP_FIRST = EQUIP_SINGLE_HANDED,
-    EQUIP_LAST = EQUIP_NONE,
+    ITEM_TYPE_FIRST_SPECIAL_ENCHANTABLE = ITEM_TYPE_SINGLE_HANDED,
+    ITEM_TYPE_LAST_SPECIAL_ENCHANTABLE = ITEM_TYPE_AMULET,
 
-    EQUIP_FIRST_SPECIAL_ENCHANTABLE = EQUIP_SINGLE_HANDED,
-    EQUIP_LAST_SPECIAL_ENCHANTABLE = EQUIP_AMULET,
-
-    EQUIP_FIRST_NORMAL_ENCHANTABLE = EQUIP_ARMOUR,
-    EQUIP_LAST_NORMAL_ENCHANTABLE = EQUIP_AMULET,
+    ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE = ITEM_TYPE_ARMOUR,
+    ITEM_TYPE_LAST_NORMAL_ENCHANTABLE = ITEM_TYPE_AMULET,
 };
-using enum ITEM_EQUIP_TYPE;
+using enum ItemType;
 
 /**
  * @param type                          Type to check.
  * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
  *                                      armor, rings, amulets, etc.
  */
-inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
-    return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
+inline bool isPassiveEquipment(ItemType type) {
+    return type >= ITEM_TYPE_ARMOUR && type <= ITEM_TYPE_AMULET;
 }
 
 /**
@@ -1233,8 +1231,8 @@ inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
  * @return                              Whether the provided type represents wearable armor, e.g. any passive
  *                                      equipment except amulets and rings.
  */
-inline bool isArmor(ITEM_EQUIP_TYPE type) {
-    return type >= EQUIP_ARMOUR && type <= EQUIP_BOOTS;
+inline bool isArmor(ItemType type) {
+    return type >= ITEM_TYPE_ARMOUR && type <= ITEM_TYPE_BOOTS;
 }
 
 /**
@@ -1242,8 +1240,8 @@ inline bool isArmor(ITEM_EQUIP_TYPE type) {
  * @return                              Whether the provided type represents a weapon. Note that wands are not
  *                                      considered weapons.
  */
-inline bool isWeapon(ITEM_EQUIP_TYPE type) {
-    return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
+inline bool isWeapon(ItemType type) {
+    return type >= ITEM_TYPE_SINGLE_HANDED && type <= ITEM_TYPE_BOW;
 }
 
 /**

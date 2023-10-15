@@ -117,28 +117,28 @@ static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKIL
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
-static constexpr IndexedArray<ItemSlot, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
-    {EQUIP_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
-    {EQUIP_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
-    {EQUIP_BOW,            ITEM_SLOT_BOW},
-    {EQUIP_ARMOUR,         ITEM_SLOT_ARMOUR},
-    {EQUIP_SHIELD,         ITEM_SLOT_OFF_HAND},
-    {EQUIP_HELMET,         ITEM_SLOT_HELMET},
-    {EQUIP_BELT,           ITEM_SLOT_BELT},
-    {EQUIP_CLOAK,          ITEM_SLOT_CLOAK},
-    {EQUIP_GAUNTLETS,      ITEM_SLOT_GAUTNLETS},
-    {EQUIP_BOOTS,          ITEM_SLOT_BOOTS},
-    {EQUIP_RING,           ITEM_SLOT_RING1},
-    {EQUIP_AMULET,         ITEM_SLOT_AMULET},
-    {EQUIP_WAND,           ITEM_SLOT_MAIN_HAND},
-    {EQUIP_REAGENT,        ITEM_SLOT_INVALID},
-    {EQUIP_POTION,         ITEM_SLOT_INVALID},
-    {EQUIP_SPELL_SCROLL,   ITEM_SLOT_INVALID},
-    {EQUIP_BOOK,           ITEM_SLOT_INVALID},
-    {EQUIP_MESSAGE_SCROLL, ITEM_SLOT_INVALID},
-    {EQUIP_GOLD,           ITEM_SLOT_INVALID},
-    {EQUIP_GEM,            ITEM_SLOT_INVALID},
-    {EQUIP_NONE,           ITEM_SLOT_INVALID}
+static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
+    {ITEM_TYPE_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
+    {ITEM_TYPE_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
+    {ITEM_TYPE_BOW,            ITEM_SLOT_BOW},
+    {ITEM_TYPE_ARMOUR,         ITEM_SLOT_ARMOUR},
+    {ITEM_TYPE_SHIELD,         ITEM_SLOT_OFF_HAND},
+    {ITEM_TYPE_HELMET,         ITEM_SLOT_HELMET},
+    {ITEM_TYPE_BELT,           ITEM_SLOT_BELT},
+    {ITEM_TYPE_CLOAK,          ITEM_SLOT_CLOAK},
+    {ITEM_TYPE_GAUNTLETS,      ITEM_SLOT_GAUTNLETS},
+    {ITEM_TYPE_BOOTS,          ITEM_SLOT_BOOTS},
+    {ITEM_TYPE_RING,           ITEM_SLOT_RING1},
+    {ITEM_TYPE_AMULET,         ITEM_SLOT_AMULET},
+    {ITEM_TYPE_WAND,           ITEM_SLOT_MAIN_HAND},
+    {ITEM_TYPE_REAGENT,        ITEM_SLOT_INVALID},
+    {ITEM_TYPE_POTION,         ITEM_SLOT_INVALID},
+    {ITEM_TYPE_SPELL_SCROLL,   ITEM_SLOT_INVALID},
+    {ITEM_TYPE_BOOK,           ITEM_SLOT_INVALID},
+    {ITEM_TYPE_MESSAGE_SCROLL, ITEM_SLOT_INVALID},
+    {ITEM_TYPE_GOLD,           ITEM_SLOT_INVALID},
+    {ITEM_TYPE_GEM,            ITEM_SLOT_INVALID},
+    {ITEM_TYPE_NONE,           ITEM_SLOT_INVALID}
 };
 
 static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
@@ -848,7 +848,7 @@ bool Character::CanRepair(ItemGen *pItem) const {
     // TODO(Nik-RE-dev): is check for boots correct?
     if (CheckHiredNPCSpeciality(Smith) && pItem->isWeapon() ||
         CheckHiredNPCSpeciality(Armorer) && pItem->isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= EQUIP_BOOTS)
+        CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
@@ -1142,7 +1142,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
     if (uTargetActorID > MONSTER_INVALID) {  // if an actor has been provided
-        ITEM_ENCHANTMENT enchType =
+        ItemEnchantment enchType =
             weapon->special_enchantment;  // check against enchantments
 
         if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_UNDEAD &&
@@ -1233,7 +1233,7 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
 
     ItemGen *bow =
         (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
-    ITEM_ENCHANTMENT itemenchant = bow->special_enchantment;
+    ItemEnchantment itemenchant = bow->special_enchantment;
 
     signed int dmgperroll = pItemTable->pItems[bow->uItemID].uDamageRoll;
     int damagefromroll = 0;
@@ -1339,7 +1339,7 @@ Color Character::GetExperienceDisplayColor() {
 }
 
 //----- (0048D4B3) --------------------------------------------------------
-int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
+int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
     // TODO(captainurist): these are some weird casts to CharacterAttributeType
     if (classType == CLASS_LICH &&
         ((CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
@@ -1413,7 +1413,7 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
+ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
@@ -1439,7 +1439,7 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT uEnchantment) const {
+bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
     for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
@@ -1569,10 +1569,10 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->carriedItemId = ITEM_NULL;
                     tempItem.uItemID = carriedItemId;
-                    if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
+                    if (pItemTable->pItems[carriedItemId].uEquipType == ITEM_TYPE_WAND) {
                         tempItem.uNumCharges = grng->random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
                         tempItem.uMaxCharges = tempItem.uNumCharges;
-                    } else if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
+                    } else if (pItemTable->pItems[carriedItemId].uEquipType == ITEM_TYPE_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
                         tempItem.potionPower = 2 * grng->random(4) + 2;
                     }
                 } else {
@@ -1615,7 +1615,7 @@ void Character::Heal(int amount) {
     }
 }
 
-int Character::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
+int Character::receiveDamage(signed int amount, DamageType dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
@@ -1735,7 +1735,7 @@ int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pA
                             this->pEquipment.uArmor - 1;
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
-                        GetEquippedItemEquipType(i) == EQUIP_SHIELD)
+                        GetEquippedItemEquipType(i) == ITEM_TYPE_SHIELD)
                         itemstobreaklist[itemstobreakcounter++] =
                             this->pEquipment.pIndices[i] - 1;
                 }
@@ -1759,9 +1759,9 @@ int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pA
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
                         (GetEquippedItemEquipType(i) ==
-                             EQUIP_SINGLE_HANDED ||
+                             ITEM_TYPE_SINGLE_HANDED ||
                          GetEquippedItemEquipType(i) ==
-                             EQUIP_TWO_HANDED))
+                             ITEM_TYPE_TWO_HANDED))
                         itemstobreaklist[itemstobreakcounter++] =
                             this->pEquipment.pIndices[i] - 1;
                 }
@@ -1990,7 +1990,7 @@ int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pA
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-DAMAGE_TYPE Character::GetSpellDamageType(SpellId uSpellID) const {
+DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
     return pSpellStats->pInfos[uSpellID].damageType;
 }
 
@@ -2017,7 +2017,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
 
     uint shield_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-        if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == EQUIP_SHIELD) {
+        if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
             CharacterSkillType skill_type = GetOffHandItem()->GetPlayerSkillType();
             uint shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
@@ -2410,7 +2410,7 @@ int Character::GetParameterBonus(int player_parameter) const {
 }
 
 //----- (0048EA46) --------------------------------------------------------
-int Character::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
+int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
     for (ItemSlot i : allItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
@@ -6283,7 +6283,7 @@ void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkill
 }
 
 //----- (00467E7F) --------------------------------------------------------
-void Character::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
+void Character::EquipBody(ItemType uEquipType) {
     ItemSlot itemAnchor;          // ebx@1
     int itemInvLocation;     // edx@1
     int freeSlot;            // eax@3
@@ -6508,7 +6508,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 dmgToReceive /= spellPower;
         }
 
-        DAMAGE_TYPE damageType;
+        DamageType damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
                 damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6525,7 +6525,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPECIAL:
-                damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
+                damageType = static_cast<DamageType>(actorPtr->monsterInfo.field_3C_some_special_attack);
                 break;
             default:
                 damageType = DAMAGE_PHYSICAL;
@@ -6612,7 +6612,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             }
 
             int damage;
-            DAMAGE_TYPE damagetype;
+            DamageType damagetype;
             if (uActorType != OBJECT_Character ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
@@ -6682,7 +6682,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                 if (spellPower > 0) dmgToReceive /= spellPower;
             }
 
-            DAMAGE_TYPE damageType;
+            DamageType damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
                     damageType = actorPtr->monsterInfo.uAttack1Type;
@@ -6699,7 +6699,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                     damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPECIAL:
-                    damageType = static_cast<DAMAGE_TYPE>(actorPtr->monsterInfo.field_3C_some_special_attack);
+                    damageType = static_cast<DamageType>(actorPtr->monsterInfo.field_3C_some_special_attack);
                     break;
                 default:
                     damageType = DAMAGE_PHYSICAL;
@@ -6755,7 +6755,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             // party hits self
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
-            DAMAGE_TYPE damagetype;
+            DamageType damagetype;
             if (uActorType != OBJECT_Character ||
                 spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
@@ -7431,7 +7431,7 @@ bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
 MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
-    ITEM_EQUIP_TYPE equipType;  // esi@1
+    ItemType equipType;  // esi@1
     float multiplier;      // ST04_4@26
     int price;             // edi@26
     int merchantLevel;     // [sp+10h] [bp-8h]@1
@@ -7464,7 +7464,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
         case BUILDING_ALCHEMY_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !isRecipe(idemId))
                 return MERCHANT_PHRASE_INVALID_ACTION;
-            if (equipType != EQUIP_REAGENT && equipType != EQUIP_POTION && equipType != EQUIP_MESSAGE_SCROLL)
+            if (equipType != ITEM_TYPE_REAGENT && equipType != ITEM_TYPE_POTION && equipType != ITEM_TYPE_MESSAGE_SCROLL)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         default:

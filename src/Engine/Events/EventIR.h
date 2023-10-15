@@ -59,7 +59,7 @@ class EventIR {
             int y;
         } sound_descr;
         struct {
-            DAMAGE_TYPE damage_type;
+            DamageType damage_type;
             int damage;
         } damage_descr;
         struct {

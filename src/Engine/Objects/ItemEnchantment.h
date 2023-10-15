@@ -18,21 +18,21 @@ struct CEnchantment {
     int statBonus = 0;
 };
 
-struct ItemEnchantment {  // Bonus|Sta|Of
+struct ItemEnchantmentTable {  // Bonus|Sta|Of
                           // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
     std::string pBonusStat;
     std::string pOfName;
-    IndexedArray<unsigned char, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> chancesByItemType;
+    IndexedArray<unsigned char, ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE, ITEM_TYPE_LAST_NORMAL_ENCHANTABLE> chancesByItemType;
 };
 
-struct ItemSpecialEnchantment {  // 1Ch
+struct ItemSpecialEnchantmentTable {  // 1Ch
                                  // Bonus Stat|Name
     // Add|W1|W2|Miss|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul|Value|Lvl|Description
     // fo special Bonuses and values
 
     std::string pBonusStatement;   // 0
     std::string pNameAdd;          // 4
-    IndexedArray<char, EQUIP_FIRST_SPECIAL_ENCHANTABLE, EQUIP_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
+    IndexedArray<char, ITEM_TYPE_FIRST_SPECIAL_ENCHANTABLE, ITEM_TYPE_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
     int iValue;              // 14
     int iTreasureLevel;      // 18
 };

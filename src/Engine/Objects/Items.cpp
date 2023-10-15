@@ -23,7 +23,7 @@ ItemGen *ptr_50C9A4_ItemToEnchant;
 struct ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
-static std::map<ITEM_ENCHANTMENT, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
+static std::map<ItemEnchantment, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
 static std::map<ItemId, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
 static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
@@ -36,18 +36,18 @@ static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
     { ITEM_RELIC_SCHOLARS_CAP,          ITEM_POTION_MIGHT_BOOST },
     { ITEM_RELIC_PHYNAXIAN_CROWN,       ITEM_POTION_INTELLECT_BOOST },
     { ITEM_ARTIFACT_MINDS_EYE,          ITEM_MOGRED_HELM },
-    { ITEM_RARE_SHADOWS_MASK,           ITEM_SCROLL_DETECT_LIFE },
+    { ITEM_SPECIAL_SHADOWS_MASK,        ITEM_SCROLL_DETECT_LIFE },
     { ITEM_RELIC_TITANS_BELT,           ITEM_SCROLL_WATER_RESISTANCE },
     { ITEM_ARTIFACT_HEROS_BELT,         ITEM_GILDED_BELT },
     { ITEM_RELIC_TWILIGHT,              ITEM_SCROLL_ICE_BOLT },
     { ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SCROLL_TOWN_PORTAL },
-    { ITEM_RARE_SUN_CLOAK,              ITEM_SCROLL_TURN_UNDEAD },
-    { ITEM_RARE_MOON_CLOAK,             ITEM_SCROLL_REMOVE_CURSE },
-    { ITEM_RARE_VAMPIRES_CAPE,          ITEM_SCROLL_HEROISM }
+    { ITEM_SPECIAL_SUN_CLOAK,           ITEM_SCROLL_TURN_UNDEAD },
+    { ITEM_SPECIAL_MOON_CLOAK,          ITEM_SCROLL_REMOVE_CURSE },
+    { ITEM_SPECIAL_VAMPIRES_CAPE,       ITEM_SCROLL_HEROISM }
 };
 
 //----- (00439DF3) --------------------------------------------------------
-int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE *damage_type,
+int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
                                            bool *draintargetHP) {
     *draintargetHP = false;
     *damage_type = DAMAGE_FIRE;
@@ -186,9 +186,9 @@ std::string ItemGen::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string ItemGen::GetIdentifiedName() {
-    ITEM_EQUIP_TYPE equip_type = GetItemEquipType();
-    if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
-        (equip_type == EQUIP_GOLD)) {
+    ItemType equip_type = GetItemEquipType();
+    if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
+        (equip_type == ITEM_TYPE_GOLD)) {
         return pItemTable->pItems[uItemID].name;
     }
 
@@ -685,10 +685,10 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet) 
     return false;
 }
 
-ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() const {
+ItemType ItemGen::GetItemEquipType() const {
     // to avoid nzi - is this safe??
     if (this->uItemID == ITEM_NULL)
-        return EQUIP_NONE;
+        return ITEM_TYPE_NONE;
     else
         return pItemTable->pItems[this->uItemID].uEquipType;
 }
@@ -725,14 +725,14 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
     switch (pItemTable->pItems[item_id].uEquipType) {
-        case EQUIP_ARMOUR:
+        case ITEM_TYPE_ARMOUR:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
             else if (shoulder == 1)
                 return fmt::format("item{:03}v{}a1", texture_id, index);
             else // shoulder == 2
                 return fmt::format("item{:03}v{}a2", texture_id, index);
-        case EQUIP_CLOAK:
+        case ITEM_TYPE_CLOAK:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
             else // shoulder == 1

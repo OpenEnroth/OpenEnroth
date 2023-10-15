@@ -148,7 +148,7 @@ CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_vie
 }
 
 //----- (00454CB4) --------------------------------------------------------
-static DAMAGE_TYPE ParseAttackType(const char *damage_type_str) {
+static DamageType ParseAttackType(const char *damage_type_str) {
     switch (tolower(*damage_type_str)) {
         case 'f':
             return DAMAGE_FIRE;  // fire

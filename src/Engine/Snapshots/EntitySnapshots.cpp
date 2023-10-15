@@ -426,7 +426,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
         dst->special_enchantment = ITEM_ENCHANTMENT_NULL;
     } else {
         dst->goldAmount = 0;
-        dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantmentOrGoldAmount);
+        dst->special_enchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
     }
     dst->uNumCharges = src.numCharges;
     dst->uAttributes = ItemFlags(src.attributes);
@@ -1251,13 +1251,13 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uHostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
     dst->monsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.uSpecialAttackLevel = src.pMonsterInfo.specialAttackLevel;
-    dst->monsterInfo.uAttack1Type = static_cast<DAMAGE_TYPE>(src.pMonsterInfo.attack1Type);
+    dst->monsterInfo.uAttack1Type = static_cast<DamageType>(src.pMonsterInfo.attack1Type);
     dst->monsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
     dst->monsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.attack1DamageDiceSides;
     dst->monsterInfo.uAttack1DamageBonus = src.pMonsterInfo.attack1DamageBonus;
     dst->monsterInfo.uMissleAttack1Type = src.pMonsterInfo.missileAttack1Type;
     dst->monsterInfo.uAttack2Chance = src.pMonsterInfo.attack2Chance;
-    dst->monsterInfo.uAttack2Type = static_cast<DAMAGE_TYPE>(src.pMonsterInfo.attack2Type);
+    dst->monsterInfo.uAttack2Type = static_cast<DamageType>(src.pMonsterInfo.attack2Type);
     dst->monsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.attack2DamageDiceRolls;
     dst->monsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.attack2DamageDiceSides;
     dst->monsterInfo.uAttack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;

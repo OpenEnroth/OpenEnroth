@@ -107,7 +107,7 @@ void LoadGame(unsigned int uSlot) {
                 int pItemID = pParty->pCharacters[i]
                                   .pInventoryItemList[uEquipIdx - 1]
                                   .uItemID;
-                if (pItemTable->pItems[pItemID].uEquipType == EQUIP_WAND &&
+                if (pItemTable->pItems[pItemID].uEquipType == ITEM_TYPE_WAND &&
                     pItemID) {       // жезл
                     __debugbreak();  // looks like offset in player's inventory
                                      // and wand_lut much like case in 0042ECB5
