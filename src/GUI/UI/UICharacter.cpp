@@ -321,9 +321,9 @@ const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
     {ITEM_GLORIOUS_CLOAK, 4},
     {ITEM_RELIC_TWILIGHT, 5},
     {ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, 6},
-    {ITEM_RARE_SUN_CLOAK, 7},
-    {ITEM_RARE_MOON_CLOAK, 8},
-    {ITEM_RARE_VAMPIRES_CAPE, 9}
+    {ITEM_SPECIAL_SUN_CLOAK, 7},
+    {ITEM_SPECIAL_MOON_CLOAK, 8},
+    {ITEM_SPECIAL_VAMPIRES_CAPE, 9}
 };
 const std::unordered_map<int, ItemId> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
@@ -398,7 +398,7 @@ const std::unordered_map<ItemId, int> paperdoll_helm_indexByType = {
     {ITEM_RELIC_SCHOLARS_CAP, 12},
     {ITEM_RELIC_PHYNAXIAN_CROWN, 13},
     {ITEM_ARTIFACT_MINDS_EYE, 14},
-    {ITEM_RARE_SHADOWS_MASK, 15}
+    {ITEM_SPECIAL_SHADOWS_MASK, 15}
 };
 const std::unordered_map<int, ItemId> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
 

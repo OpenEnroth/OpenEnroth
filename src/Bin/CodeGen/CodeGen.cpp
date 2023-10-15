@@ -86,6 +86,10 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
             if (!contains(description, "off-balance"))
                 enumName += "_FIXED";
 
+        // Shorten enum names for letters.
+        if (enumName.starts_with("LETTER_FROM") && contains(enumName, "_TO_"))
+            enumName = enumName.substr(0, enumName.find("_TO_"));
+
         if (desc.uEquipType == ITEM_TYPE_REAGENT) {
             enumName = "REAGENT_" + enumName;
         } else if (desc.uEquipType == ITEM_TYPE_POTION) {
@@ -122,7 +126,7 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
         } else if (desc.uMaterial == RARITY_RELIC) {
             enumName = "RELIC_" + enumName;
         } else if (desc.uMaterial == RARITY_SPECIAL) {
-            enumName = "RARE_" + enumName;
+            enumName = "SPECIAL_" + enumName;
         } else if (description.starts_with("Quest")) {
             enumName = "QUEST_" + enumName;
         }
