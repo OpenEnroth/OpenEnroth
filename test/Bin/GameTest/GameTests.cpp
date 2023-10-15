@@ -1595,7 +1595,7 @@ GAME_TEST(Issues, Issue1191) {
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
 
-    // Uncomment when food issues (1226) resolved
+    // TODO(captainurist): Uncomment when food issues (1226) resolved
     // EXPECT_EQ(foodTape.delta(), -3);
     // EXPECT_EQ(pParty->GetFood(), 7);
 }
