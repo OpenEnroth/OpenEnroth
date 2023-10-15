@@ -100,7 +100,7 @@ TestTape<bool> CommonTapeRecorder::turnBasedMode() {
 TestTape<int> CommonTapeRecorder::mapItemCount() {
     return custom([] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [] (const SpriteObject &object) {
-            return object.containing_item.uItemID != ITEM_NULL;
+            return object.uObjectDescID != 0 && object.containing_item.uItemID != ITEM_NULL;
         }));
     });
 }
@@ -108,7 +108,7 @@ TestTape<int> CommonTapeRecorder::mapItemCount() {
 TestTape<int> CommonTapeRecorder::mapItemCount(ItemId itemId) {
     return custom([itemId] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [itemId] (const SpriteObject &object) {
-            return object.containing_item.uItemID == itemId;
+            return object.uObjectDescID != 0 && object.containing_item.uItemID == itemId;
         }));
     });
 }
