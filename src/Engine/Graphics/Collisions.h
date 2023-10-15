@@ -123,3 +123,5 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying);
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent);
 
 void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID, bool* partySlopeMod);
+
+bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln);

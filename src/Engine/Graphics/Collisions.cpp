@@ -194,7 +194,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
-    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
+    // TODO(pskelton): adding collision radius below to make this behave more like cylinder/cylinder collision - testing
+    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height + collision_state.radius_lo);
     if (!collision_state.bbox.intersects(bbox))
         return false;
 
@@ -807,7 +808,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             newdirection.normalize();
 
             // set party to move along this new sliding vector
-            pParty->speed = newdirection * dot(newdirection, pParty->speed);
+            pParty->speed = newdirection * dot(newdirection, pParty->speed) + Vec3f(0, 0, pParty->speed.z);
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
@@ -971,7 +972,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             newdirection.normalize();
 
             // set party to move along this new sliding vector
-            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
+            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed) + Vec3f(0, 0, pParty->speed.z);
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
@@ -1047,4 +1048,32 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         // ~0.9x reduce party speed and try again
         *partyInputSpeed *= 0.89263916f; // was 58500 fp
     }
+}
+
+// TODO(pskelton): proper docs
+// Finds solutions to quadratics and if it is lower than the current solution
+bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln) {
+    float d = b * b - 4.0f * a * c;
+    if (d < 0.0f) {
+        return false;  // no real solutions - No intersection points.
+    }
+
+    d = sqrt(d);
+    float alpha1 = (-b - d) / (2 * a);
+    float alpha2 = (-b + d) / (2 * a);
+
+    if (alpha1 > alpha2) {
+        std::swap(alpha1, alpha2);
+    }
+    if (alpha1 > 0.0f && alpha1 < curSoln) {
+        *outNewSoln = alpha1;
+        return true;  // this new collision is shorter than old
+    }
+    if (alpha2 > 0.0f && alpha2 < curSoln) {
+        *outNewSoln = alpha2;
+        return true;  // this new collision is shorter than old
+    }
+
+    // No valid or better solutions
+    return false;
 }
