@@ -1537,16 +1537,16 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                 return STEAL_NOTHING;
             }
 
-            unsigned int enchBonusSum = grng->randomDice(stealingSkill.level(), StealingEnchantmentBonusForSkill[stealingSkill.mastery()]);
+            int enchBonusSum = grng->randomDice(stealingSkill.level(), StealingEnchantmentBonusForSkill[stealingSkill.mastery()]);
 
-            int *enchTypePtr = (int*)&actroPtr->items[3].special_enchantment;  // actor has this amount of gold
+            int *goldPtr = &actroPtr->items[3].goldAmount;  // actor has this amount of gold
 
-            if ((int)enchBonusSum >= *enchTypePtr) {  // steal all the gold
-                enchBonusSum = *enchTypePtr;
+            if (enchBonusSum >= *goldPtr) {  // steal all the gold
+                enchBonusSum = *goldPtr;
                 actroPtr->items[3].uItemID = ITEM_NULL;
-                *enchTypePtr = 0;
+                *goldPtr = 0;
             } else {
-                *enchTypePtr -= enchBonusSum;  // steal some of the gold
+                *goldPtr -= enchBonusSum;  // steal some of the gold
             }
 
             if (enchBonusSum) {
