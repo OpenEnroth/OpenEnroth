@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
 include(Detection)
-include(AppleLibcxxAssertions)
 include(ExternalProject)
 include(CppLint)
 include(Dependencies)
@@ -120,7 +119,7 @@ elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=inconsistent-missing-override) # 'override' only used on some of the overridden functions.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
-    enable_libcxx_assertions(FALSE)
+    add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_ENABLE_ASSERTIONS=1>) # Enable assertions in libcxx.
 elseif(BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
