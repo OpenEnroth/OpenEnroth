@@ -1468,10 +1468,12 @@ GAME_TEST(Issues, Issue1020) {
 }
 
 GAME_TEST(Issues, Issue1034) {
-    // Crash when casting telekinesis outdoors
+    // Crash when casting telekinesis outdoors.
+    auto houseTape = tapes.house();
+    auto statusTape = tapes.statusBar();
     test.playTraceFromTestData("issue_1034.mm7", "issue_1034.json");
-    // check we have entered into the shop
-    EXPECT_EQ(window_SpeakInHouse->houseId(), HOUSE_WEAPON_SHOP_EMERALD_ISLAND);
+    EXPECT_TRUE(statusTape.contains("Select Target")); // Telekinesis message.
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND)); // We have entered into the shop.
 }
 
 GAME_TEST(Issues, Issue1036) {

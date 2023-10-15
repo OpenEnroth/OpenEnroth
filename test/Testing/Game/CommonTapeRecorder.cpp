@@ -112,3 +112,9 @@ TestTape<int> CommonTapeRecorder::mapItemCount(ItemId itemId) {
         }));
     });
 }
+
+TestTape<HouseId> CommonTapeRecorder::house() {
+    return custom([] {
+        return window_SpeakInHouse ? window_SpeakInHouse->houseId() : HOUSE_INVALID;
+    });
+}
