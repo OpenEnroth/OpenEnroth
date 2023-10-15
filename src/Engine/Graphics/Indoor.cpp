@@ -2024,29 +2024,9 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
         }
 
-        if (a2->uItemIndex == ITEM_TREASURE_LEVEL_1) {
-            a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = grng->random(51) + 50;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_2) {
-            a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = grng->random(101) + 100;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_3) {
-            a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = grng->random(301) + 200;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_4) {
-            a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = grng->random(501) + 500;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_5) {
-            a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = grng->random(1001) + 1000;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_6) {
-            a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = grng->random(3001) + 2000;
-        }
+        a1a.containing_item.generateGold(a2->uItemIndex);
         a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.containing_item.SetIdentified();
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.special_enchantment = (ItemEnchantment)v34;
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;

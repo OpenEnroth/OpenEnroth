@@ -108,14 +108,16 @@ static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKIL
            // helps avoid -1 indexing, originally 4 element array off by one
 static constexpr std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100, 200 };  // dword_4EDEB4
 
-static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
-    // {CHARACTER_SKILL_MASTERY_NONE, 0},
+/**
+ * The amount of gold that a character can steal in one go is determined as `[skill_level]d[mastery_die]`, where
+ * `skill_level` is the level of stealing skill, and `mastery_die` is picked from the table below.
+ */
+static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> goldStealingDieSidesByMastery = {
     {CHARACTER_SKILL_MASTERY_NOVICE, 2},
     {CHARACTER_SKILL_MASTERY_EXPERT, 4},
     {CHARACTER_SKILL_MASTERY_MASTER, 6},
     {CHARACTER_SKILL_MASTERY_GRANDMASTER, 10}
-};  // dword_4EDEC4      //the zeroth element isn't accessed, it just
-          // helps avoid -1 indexing, originally 4 element array off by one
+};
 
 static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
     {ITEM_TYPE_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
@@ -1537,21 +1539,21 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                 return STEAL_NOTHING;
             }
 
-            unsigned int enchBonusSum = grng->randomDice(stealingSkill.level(), StealingEnchantmentBonusForSkill[stealingSkill.mastery()]);
+            int stolenGold = grng->randomDice(stealingSkill.level(), goldStealingDieSidesByMastery[stealingSkill.mastery()]);
 
-            int *enchTypePtr = (int*)&actroPtr->items[3].special_enchantment;  // actor has this amount of gold
+            int *goldPtr = &actroPtr->items[3].goldAmount;  // actor has this amount of gold
 
-            if ((int)enchBonusSum >= *enchTypePtr) {  // steal all the gold
-                enchBonusSum = *enchTypePtr;
+            if (stolenGold >= *goldPtr) {  // steal all the gold
+                stolenGold = *goldPtr;
                 actroPtr->items[3].uItemID = ITEM_NULL;
-                *enchTypePtr = 0;
+                *goldPtr = 0;
             } else {
-                *enchTypePtr -= enchBonusSum;  // steal some of the gold
+                *goldPtr -= stolenGold;  // steal some of the gold
             }
 
-            if (enchBonusSum) {
-                pParty->partyFindsGold(enchBonusSum, GOLD_RECEIVE_NOSHARE_SILENT);
-                engine->_statusBar->setEvent(LSTR_FMT_S_STOLE_D_GOLD, this->name, enchBonusSum);
+            if (stolenGold) {
+                pParty->partyFindsGold(stolenGold, GOLD_RECEIVE_NOSHARE_SILENT);
+                engine->_statusBar->setEvent(LSTR_FMT_S_STOLE_D_GOLD, this->name, stolenGold);
             } else {
                 engine->_statusBar->setEvent(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
             }

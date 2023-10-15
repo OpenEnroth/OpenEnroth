@@ -201,8 +201,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
             v2 = grng->randomDice(this->monsterInfo.uTreasureDiceRolls, this->monsterInfo.uTreasureDiceSides);
             if (v2) {
                 this->items[3].uItemID = ITEM_GOLD_SMALL;
-                this->items[3].special_enchantment =
-                    (ItemEnchantment)v2;  // actual gold amount
+                this->items[3].goldAmount = v2;
             }
         }
     }

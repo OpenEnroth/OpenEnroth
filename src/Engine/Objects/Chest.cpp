@@ -560,40 +560,7 @@ void GenerateItemsInChest() {
                         if (whatToGenerateProb < 20) {
                             currItem->Reset();
                         } else if (whatToGenerateProb < 60) {  // generate gold
-                            int goldAmount = 0;
-                            currItem->Reset();
-                            // TODO(captainurist): merge with the other implementation?
-                            switch (resultTreasureLevel) {
-                            case ITEM_TREASURE_LEVEL_1:
-                                goldAmount = grng->random(51) + 50;
-                                currItem->uItemID = ITEM_GOLD_SMALL;
-                                break;
-                            case ITEM_TREASURE_LEVEL_2:
-                                goldAmount = grng->random(101) + 100;
-                                currItem->uItemID = ITEM_GOLD_SMALL;
-                                break;
-                            case ITEM_TREASURE_LEVEL_3:
-                                goldAmount = grng->random(301) + 200;
-                                currItem->uItemID = ITEM_GOLD_MEDIUM;
-                                break;
-                            case ITEM_TREASURE_LEVEL_4:
-                                goldAmount = grng->random(501) + 500;
-                                currItem->uItemID = ITEM_GOLD_MEDIUM;
-                                break;
-                            case ITEM_TREASURE_LEVEL_5:
-                                goldAmount = grng->random(1001) + 1000;
-                                currItem->uItemID = ITEM_GOLD_LARGE;
-                                break;
-                            case ITEM_TREASURE_LEVEL_6:
-                                goldAmount = grng->random(3001) + 2000;
-                                currItem->uItemID = ITEM_GOLD_LARGE;
-                                break;
-                            default:
-                                assert(false);
-                                break;
-                            }
-                            currItem->SetIdentified();
-                            currItem->special_enchantment = (ItemEnchantment)goldAmount;
+                            currItem->generateGold(resultTreasureLevel);
                         } else {
                             pItemTable->generateItem(resultTreasureLevel, RANDOM_ITEM_ANY, currItem);
                         }

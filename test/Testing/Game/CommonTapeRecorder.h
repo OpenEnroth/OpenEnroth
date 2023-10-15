@@ -10,6 +10,7 @@
 #include "Engine/Time.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
+#include "GUI/UI/UIHouseEnums.h"
 
 #include "Library/Config/ConfigEntry.h"
 
@@ -72,6 +73,8 @@ class CommonTapeRecorder {
     TestTape<int> mapItemCount();
 
     TestTape<int> mapItemCount(ItemId itemId);
+
+    TestTape<HouseId> house();
 
  private:
     TestController *_controller = nullptr;

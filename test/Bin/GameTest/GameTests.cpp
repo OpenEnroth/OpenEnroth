@@ -1468,10 +1468,12 @@ GAME_TEST(Issues, Issue1020) {
 }
 
 GAME_TEST(Issues, Issue1034) {
-    // Crash when casting telekinesis outdoors
+    // Crash when casting telekinesis outdoors.
+    auto houseTape = tapes.house();
+    auto statusTape = tapes.statusBar();
     test.playTraceFromTestData("issue_1034.mm7", "issue_1034.json");
-    // check we have entered into the shop
-    EXPECT_EQ(window_SpeakInHouse->houseId(), HOUSE_WEAPON_SHOP_EMERALD_ISLAND);
+    EXPECT_TRUE(statusTape.contains("Select Target")); // Telekinesis message.
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND)); // We have entered into the shop.
 }
 
 GAME_TEST(Issues, Issue1036) {
@@ -1595,7 +1597,7 @@ GAME_TEST(Issues, Issue1191) {
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
 
-    // Uncomment when food issues (1226) resolved
+    // TODO(captainurist): Uncomment when food issues (1226) resolved
     // EXPECT_EQ(foodTape.delta(), -3);
     // EXPECT_EQ(pParty->GetFood(), 7);
 }
@@ -1704,4 +1706,64 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(1 * 2, (43 + 13) * 2));
+}
+
+GAME_TEST(Issues, Issue1338) {
+    // Casting telepathy on an actor and then killing it results in the actor not dropping any gold.
+    auto deadTape = actorTapes.indicesByState(AIState::Dead);
+    auto statusTape = tapes.statusBar();
+    auto goldTape = tapes.gold();
+    auto peasantGoldTape = tapes.custom([] { return pActors[18].items[3].goldAmount; });
+    test.playTraceFromTestData("issue_1338.mm7", "issue_1338.json");
+    EXPECT_EQ(deadTape, tape(std::initializer_list<int>{}, {18}, std::initializer_list<int>{})); // Alive -> Dead -> corpse picked up.
+    EXPECT_GT(peasantGoldTape.max(), 0); // Peasant should have had gold generated.
+    EXPECT_EQ(goldTape.delta(), peasantGoldTape.max());
+    EXPECT_TRUE(statusTape.contains(fmt::format("{} gold", peasantGoldTape.max()))); // Telepathy status message.
+    EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", peasantGoldTape.max()))); // Corpse pickup message.
+}
+
+GAME_TEST(Issues, Issue1340) {
+    // Gold piles in chests are generated with 0 gold.
+    auto goldTape = tapes.gold();
+    auto mapTape = tapes.map();
+    auto statusTape = tapes.statusBar();
+    auto screenTape = tapes.screen();
+    test.playTraceFromTestData("issue_1340.mm7", "issue_1340.json");
+    EXPECT_EQ(mapTape, tape("out01.odm", "d29.blv")); // Emerald Isle -> Castle Harmondale. Map change is important because
+                                                      // we want to trigger map respawn on first visit.
+    EXPECT_TRUE(screenTape.contains(SCREEN_CHEST));
+    EXPECT_GT(goldTape.delta(), 0); // Party should have picked some gold from the chest.
+    EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
+    for (int gold : goldTape.adjacentDeltas())
+        EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
+}
+
+GAME_TEST(Issues, Issue1341) {
+    // Can't steal gold from peasants.
+    auto goldTape = tapes.gold();
+    auto peasantGoldTape = tapes.custom([] { return pActors[6].items[3].goldAmount; });
+    auto statusTape = tapes.statusBar();
+    auto deadTape = actorTapes.countByState(AIState::Dead);
+    test.playTraceFromTestData("issue_1341.mm7", "issue_1341.json");
+    EXPECT_GT(goldTape.delta(), 0); // We did steal some gold.
+    EXPECT_EQ(peasantGoldTape.max(), goldTape.delta()); // And we did steal it from this peasant.
+    EXPECT_TRUE(statusTape.contains("Roderick failed to steal anything!")); // We have tried many times.
+    EXPECT_TRUE(statusTape.contains(fmt::format("Roderick stole {} gold!", peasantGoldTape.max()))); // And succeeded.
+    EXPECT_EQ(deadTape, tape(0)); // No one died in the process.
+}
+
+GAME_TEST(Issues, Issue1342) {
+    // Gold piles are generated with 0 gold.
+    auto goldTape = tapes.gold();
+    auto pilesTape = tapes.mapItemCount(ITEM_GOLD_SMALL);
+    auto statusTape = tapes.statusBar();
+    auto mapTape = tapes.map();
+    test.playTraceFromTestData("issue_1342.mm7", "issue_1342.json");
+    EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv")); // Emerald Isle -> Dragon Cave. Map change is important here
+                                                      // because we need to trigger map respawn on first visit.
+    EXPECT_GT(goldTape.delta(), 0); // We picked up some gold.
+    EXPECT_EQ(pilesTape, tape(0, 6, 5, 4)); // Minus two small gold piles.
+    EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
+    for (int gold : goldTape.adjacentDeltas())
+        EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
 }
