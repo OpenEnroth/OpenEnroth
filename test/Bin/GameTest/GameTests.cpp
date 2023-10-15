@@ -1707,6 +1707,7 @@ GAME_TEST(Issues, Issue1331) {
 }
 
 GAME_TEST(Issues, Issue1338) {
+    // Casting telepathy on an actor and then killing it results in the actor not dropping any gold.
     auto deadTape = actorTapes.indicesByState(AIState::Dead);
     auto statusTape = tapes.statusBar();
     auto goldTape = tapes.gold();
@@ -1717,4 +1718,19 @@ GAME_TEST(Issues, Issue1338) {
     EXPECT_EQ(goldTape.delta(), peasantGoldTape.max());
     EXPECT_TRUE(statusTape.contains(fmt::format("{} gold", peasantGoldTape.max()))); // Telepathy status message.
     EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", peasantGoldTape.max()))); // Corpse pickup message.
+}
+
+GAME_TEST(Issues, Issue1340) {
+    // Gold piles in chests are generated with 0 gold.
+    auto goldTape = tapes.gold();
+    auto mapTape = tapes.map();
+    auto statusTape = tapes.statusBar();
+    auto screenTape = tapes.screen();
+    test.playTraceFromTestData("issue_1340.mm7", "issue_1340.json");
+    EXPECT_EQ(mapTape, tape("out01.odm", "d29.blv")); // Emerald Isle -> Castle Harmondale.
+    EXPECT_TRUE(screenTape.contains(SCREEN_CHEST));
+    EXPECT_GT(goldTape.delta(), 0); // Party should have picked some gold from the chest.
+    EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
+    for (int gold : goldTape.adjacentDeltas())
+        EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
 }
