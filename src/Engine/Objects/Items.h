@@ -51,6 +51,7 @@ struct ItemGen {  // 0x24
     inline void SetStolen() { uAttributes |= ITEM_STOLEN; }
 
     bool GenerateArtifact();
+    void generateGold(ItemTreasureLevel treasureLevel);
     unsigned int GetValue() const;
     std::string GetDisplayName();
     std::string GetIdentifiedName();

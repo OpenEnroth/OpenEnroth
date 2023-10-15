@@ -261,6 +261,43 @@ bool ItemGen::GenerateArtifact() {
     }
 }
 
+void ItemGen::generateGold(ItemTreasureLevel treasureLevel) {
+    assert(isRandomTreasureLevel(treasureLevel));
+
+    Reset();
+    SetIdentified();
+
+    switch (treasureLevel) {
+    case ITEM_TREASURE_LEVEL_1:
+        goldAmount = grng->random(51) + 50;
+        uItemID = ITEM_GOLD_SMALL;
+        break;
+    case ITEM_TREASURE_LEVEL_2:
+        goldAmount = grng->random(101) + 100;
+        uItemID = ITEM_GOLD_SMALL;
+        break;
+    case ITEM_TREASURE_LEVEL_3:
+        goldAmount = grng->random(301) + 200;
+        uItemID = ITEM_GOLD_MEDIUM;
+        break;
+    case ITEM_TREASURE_LEVEL_4:
+        goldAmount = grng->random(501) + 500;
+        uItemID = ITEM_GOLD_MEDIUM;
+        break;
+    case ITEM_TREASURE_LEVEL_5:
+        goldAmount = grng->random(1001) + 1000;
+        uItemID = ITEM_GOLD_LARGE;
+        break;
+    case ITEM_TREASURE_LEVEL_6:
+        goldAmount = grng->random(3001) + 2000;
+        uItemID = ITEM_GOLD_LARGE;
+        break;
+    default:
+        assert(false);
+        break;
+    }
+}
+
 template<class Key, class ActualKey>
 static void AddToMap(std::map<Key, std::map<CharacterAttributeType, CEnchantment>> &map,
                      ActualKey key, CharacterAttributeType subkey, int bonusValue = 0, CharacterSkillType skill = CHARACTER_SKILL_INVALID) {
