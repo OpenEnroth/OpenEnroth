@@ -1502,14 +1502,14 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[(ItemEnchantment)ench_array[step]].to_item_apply[this_equip_type];
+                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
                                     }
 
                                     // set item ench
-                                    spell_item_to_enchant->special_enchantment = (ItemEnchantment)ench_array[step];
+                                    spell_item_to_enchant->special_enchantment = ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Timer::Second * 2;
                                     spell_failed = false;
