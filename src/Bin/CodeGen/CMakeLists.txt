@@ -13,7 +13,6 @@ set(BIN_CODEGEN_HEADERS
 
 if(NOT BUILD_PLATFORM STREQUAL "android")
     add_executable(CodeGen ${BIN_CODEGEN_SOURCES} ${BIN_CODEGEN_HEADERS})
-    target_fix_libcxx_assertions(CodeGen)
     target_link_libraries(CodeGen PUBLIC platform_main application CLI11::CLI11)
     target_check_style(CodeGen)
 endif()

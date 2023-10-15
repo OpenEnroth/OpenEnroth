@@ -17,7 +17,6 @@ else()
     add_executable(OpenEnroth MACOSX_BUNDLE)
     target_sources(OpenEnroth PUBLIC ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
     target_check_style(OpenEnroth)
-    target_fix_libcxx_assertions(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC platform_main application CLI11::CLI11)
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
