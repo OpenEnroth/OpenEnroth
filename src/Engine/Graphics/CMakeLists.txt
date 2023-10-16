@@ -9,7 +9,6 @@ set(ENGINE_GRAPHICS_SOURCES
         DecalBuilder.cpp
         DecorationList.cpp
         FrameLimiter.cpp
-        HWLContainer.cpp
         IRenderFactory.cpp
         Image.cpp
         ImageLoader.cpp
@@ -48,7 +47,6 @@ set(ENGINE_GRAPHICS_HEADERS
         DecorationList.h
         FaceEnums.h
         FrameLimiter.h
-        HWLContainer.h
         IRender.h
         IRenderFactory.h
         Image.h

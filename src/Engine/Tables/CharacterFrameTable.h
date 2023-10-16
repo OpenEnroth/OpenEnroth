@@ -19,7 +19,6 @@ struct PlayerFrameTable {
     int GetDurationByExpression(CharacterExpressionID expression);
     PlayerFrame *GetFrameBy_x(int uFramesetID, int gameTime);
     PlayerFrame *GetFrameBy_y(int *a2, int *a3, int a4);
-    int FromFileTxt(const char *Args);
 
     std::vector<PlayerFrame> pFrames;
 };

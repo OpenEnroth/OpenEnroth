@@ -38,7 +38,6 @@ struct TileTable {
     void InitializeTileset(Tileset tileset);
     int GetTileForTerrainType(Tileset a1, bool a2);
     unsigned int GetTileId(Tileset uTerrainType, TILE_SECT uSection);
-    int FromFileTxt(const char *pFilename);
 
     std::vector<TileDesc> tiles;
 };
