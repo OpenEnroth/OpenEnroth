@@ -40,7 +40,6 @@ struct OverlayDesc {
 };
 
 struct OverlayList {
-    bool FromFileTxt(const char *Args);
     void InitializeSprites();
 
     std::vector<OverlayDesc> pOverlays;

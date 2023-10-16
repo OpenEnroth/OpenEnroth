@@ -101,7 +101,6 @@ struct MonsterDesc {
 
 struct MonsterList {
     MonsterId GetMonsterIDByName(const std::string &pMonsterName);
-    bool FromFileTxt(const char *Args);
 
     IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> pMonsters;
 };

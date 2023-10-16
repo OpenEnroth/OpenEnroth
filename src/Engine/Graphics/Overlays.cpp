@@ -94,59 +94,6 @@ void OverlayList::InitializeSprites() {
         pSpriteFrameTable->InitializeSprite(pOverlays[i].uSpriteFramesetID);
 }
 
-//----- (00458E4F) --------------------------------------------------------
-bool OverlayList::FromFileTxt(const char *Args) {
-    FILE *v4;         // eax@1
-    unsigned int v5;  // esi@3
-    void *v7;         // eax@9
-    // FILE *v8; // ST0C_4@11
-    char *i;                // eax@11
-    char Buf[490];               // [sp+10h] [bp-2F0h]@3
-    FrameTableTxtLine v18;  // [sp+204h] [bp-FCh]@4
-    FrameTableTxtLine v19;  // [sp+280h] [bp-80h]@4
-    FILE *File;             // [sp+2FCh] [bp-4h]@1
-    unsigned int Argsa;     // [sp+308h] [bp+8h]@3
-
-    pOverlays.clear();
-    v4 = fopen(Args, "r");
-    File = v4;
-    if (!v4) Error("ObjectDescriptionList::load - Unable to open file: %s.");
-
-    v5 = 0;
-    Argsa = 0;
-    if (fgets(Buf, sizeof(Buf), v4)) {
-        do {
-            *strchr(Buf, 10) = 0;
-            memcpy(&v19, txt_file_frametable_parser(Buf, &v18), sizeof(v19));
-            if (v19.uPropCount && *v19.pProperties[0] != 47) ++Argsa;
-        } while (fgets(Buf, sizeof(Buf), File));
-        v5 = Argsa;
-    }
-    pOverlays.reserve(v5);
-
-    fseek(File, 0, 0);
-    for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
-        *strchr(Buf, 10) = 0;
-        memcpy(&v19, txt_file_frametable_parser(Buf, &v18), sizeof(v19));
-        if (v19.uPropCount && *v19.pProperties[0] != 47) {
-            OverlayDesc &overlay = pOverlays.emplace_back();
-
-            overlay.uOverlayID = atoi(v19.pProperties[0]);
-            if (!iequals(v19.pProperties[1], "center")) {
-                if (iequals(v19.pProperties[1], "transparent"))
-                    overlay.uOverlayType = 2;
-                else
-                    overlay.uOverlayType = 1;
-            } else {
-                overlay.uOverlayType = 0;
-            }
-            overlay.uSpriteFramesetID = pSpriteFrameTable->FastFindSprite(v19.pProperties[2]);
-        }
-    }
-    fclose(File);
-    return 1;
-}
-
 //----- (0045855F) --------------------------------------------------------
 void ActiveOverlay::Reset() {
     this->indexToOverlayList = 0;
