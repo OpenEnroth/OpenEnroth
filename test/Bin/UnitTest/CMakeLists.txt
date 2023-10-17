@@ -5,7 +5,7 @@ if(OE_BUILD_TESTS)
             UnitTestMain.cpp)
 
     add_executable(OpenEnroth_UnitTest ${UNIT_TEST_MAIN_SOURCES})
-    target_link_libraries(OpenEnroth_UnitTest PUBLIC testing_unit CLI11::CLI11)
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC testing_unit)
 
     add_custom_target(UnitTest OpenEnroth_UnitTest
             DEPENDS OpenEnroth_UnitTest

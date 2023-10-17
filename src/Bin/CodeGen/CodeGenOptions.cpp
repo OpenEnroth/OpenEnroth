@@ -2,62 +2,28 @@
 
 #include <memory>
 
-#include <CLI/CLI.hpp>
-
-#include "Utility/Format.h"
+#include "Library/Cli/Cli.h"
 
 CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CodeGenOptions result;
     result.useConfig = false; // CodeGen doesn't use external config.
     result.logLevel = LOG_CRITICAL; // CodeGen doesn't need logging.
 
-    std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
+    std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
 
     app->add_option("--data-path", result.dataPath,
                     "Path to game data dir")->check(CLI::ExistingDirectory)->option_text("PATH");
     app->set_help_flag("-h,--help", "Print help and exit.");
     app->require_subcommand();
 
-    CLI::App *items = app->add_subcommand("items", "Generate item ids enum.")->fallthrough();
-    items->callback([&] { result.subcommand = SUBCOMMAND_ITEM_ID; });
+    app->add_subcommand("items", "Generate item ids enum.", result.subcommand, SUBCOMMAND_ITEM_ID)->fallthrough();
+    app->add_subcommand("maps", "Generate map ids enum.", result.subcommand, SUBCOMMAND_MAP_ID)->fallthrough();
+    app->add_subcommand("beacons", "Generate beacons mapping.", result.subcommand, SUBCOMMAND_BEACON_MAPPING)->fallthrough();
+    app->add_subcommand("houses", "Generate house ids enum.", result.subcommand, SUBCOMMAND_HOUSE_ID)->fallthrough();
+    app->add_subcommand("monsters", "Generate monster ids enum.", result.subcommand, SUBCOMMAND_MONSTER_ID)->fallthrough();
+    app->add_subcommand("monster_types", "Generate monster types enum.", result.subcommand, SUBCOMMAND_MONSTER_TYPE)->fallthrough();
+    app->add_subcommand("bounty_hunt", "Generate monster type / town hall table for bounty hunts.", result.subcommand, SUBCOMMAND_BOUNTY_HUNT)->fallthrough();
 
-    CLI::App *maps = app->add_subcommand("maps", "Generate map ids enum.")->fallthrough();
-    maps->callback([&] { result.subcommand = SUBCOMMAND_MAP_ID; });
-
-    CLI::App *beacons = app->add_subcommand("beacons", "Generate beacons mapping.")->fallthrough();
-    beacons->callback([&] { result.subcommand = SUBCOMMAND_BEACON_MAPPING; });
-
-    CLI::App *houses = app->add_subcommand("houses", "Generate house ids enum.")->fallthrough();
-    houses->callback([&] { result.subcommand = SUBCOMMAND_HOUSE_ID; });
-
-    CLI::App *monsters = app->add_subcommand("monsters", "Generate monster ids enum")->fallthrough();
-    monsters->callback([&] { result.subcommand = SUBCOMMAND_MONSTER_ID; });
-
-    CLI::App *monsterTypes = app->add_subcommand("monster_types", "Generate monster types enum")->fallthrough();
-    monsterTypes->callback([&] { result.subcommand = SUBCOMMAND_MONSTER_TYPE; });
-
-    CLI::App *bountyHunt = app->add_subcommand("bounty_hunt", "Generate monster type / town hall table for bounty hunts")->fallthrough();
-    bountyHunt->callback([&] { result.subcommand = SUBCOMMAND_BOUNTY_HUNT; });
-
-    try {
-        app->parse(argc, argv);
-    } catch (const CLI::ParseError &e) {
-        // TODO(captainurist): this is getting out of hand.
-        bool isHelp =
-            app->get_help_ptr()->as<bool>() ||
-            items->get_help_ptr()->as<bool>() ||
-            maps->get_help_ptr()->as<bool>() ||
-            beacons->get_help_ptr()->as<bool>() ||
-            monsters->get_help_ptr()->as<bool>() ||
-            monsterTypes->get_help_ptr()->as<bool>() ||
-            bountyHunt->get_help_ptr()->as<bool>();
-        if (isHelp) {
-            app->exit(e);
-            result.helpPrinted = true;
-        } else {
-            throw; // Genuine parse error => propagate.
-        }
-    }
-
+    app->parse(argc, argv, result.helpPrinted);
     return result;
 }

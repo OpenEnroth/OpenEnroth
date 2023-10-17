@@ -9,6 +9,6 @@ set(BIN_LODTOOL_HEADERS
 
 if(NOT BUILD_PLATFORM STREQUAL "android")
     add_executable(LodTool ${BIN_LODTOOL_SOURCES} ${BIN_LODTOOL_HEADERS})
-    target_link_libraries(LodTool PUBLIC library_lod library_lodformats CLI11::CLI11)
+    target_link_libraries(LodTool PUBLIC library_lod library_lodformats library_cli)
     target_check_style(LodTool)
 endif()
