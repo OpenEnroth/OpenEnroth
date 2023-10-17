@@ -5,7 +5,7 @@
 #include "Application/GamePathResolver.h"
 #include "Application/GameConfig.h" // For PlatformLogLevel serialization.
 
-#include "Library/Cli/Cli.h"
+#include "Library/Cli/CliApp.h"
 
 #include "Utility/Format.h"
 

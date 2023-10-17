@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Library/Cli/Cli.h"
+#include "Library/Cli/CliApp.h"
 
 LodToolOptions LodToolOptions::parse(int argc, char **argv) {
     LodToolOptions result;
