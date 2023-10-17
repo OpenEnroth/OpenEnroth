@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ba457aa</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6d0d34d</span>
    </div>
   </td>
  </tr>
@@ -153,8 +153,9 @@ Static Public Member Functions</h2></td></tr>
 <li>The points above mean that platform API handles shouldn't expose non-virtual methods.</li>
 <li><a class="el" href="classPlatform.html">Platform</a> API should be getter/setter symmetric as long as the underlying OS API is symmetric. E.g. in the example above there is no <code>SetFrameMargins</code> method because this is not how window frames work.</li>
 <li><a class="el" href="classPlatform.html">Platform</a> API handles shouldn't hold state. Don't expose APIs that take ownership of user-allocated data, and don't cache values returned by the OS (if needed, caching should be implemented at the next abstraction layer). Again, you can think about this in terms of information content, "platform API handle doesn't expose any bits of state
-  through its API that cannot be accessed through the underlying OS API". </li>
+  through its API that cannot be accessed through the underlying OS API".</li>
 </ul>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="CodeGen_8cpp.html#ac514b18d4266e4a2f5a39f9d19a88f77">platformMain</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa9150653d3b9bc34117ba383972184ce" name="aa9150653d3b9bc34117ba383972184ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9150653d3b9bc34117ba383972184ce">&#9670;&#160;</a></span>~Platform()</h2>
