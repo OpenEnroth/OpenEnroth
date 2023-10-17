@@ -30,6 +30,33 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
 // Helper functions.
 //
 
+// TODO(pskelton): docs here
+static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection) {
+    Vec3f pos = collision_state.position_lo;
+    Vec3f dir = collision_state.direction;
+    Vec3f edge = p2 - p1;
+    Vec3f spherepostovertex = p1 - pos;
+    float edgelengthsqr = edge.lengthSqr();
+    float edgedotdir = dot(edge, dir);
+    float edgedotspherepostovertex = dot(edge, spherepostovertex);
+    float spherepostovertexlengthsqr = spherepostovertex.lengthSqr();
+
+    float a = edgelengthsqr * -dir.lengthSqr() + (edgedotdir * edgedotdir);
+    float b = edgelengthsqr * (2.0f * dot(dir, spherepostovertex)) - (2.0f * edgedotdir * edgedotspherepostovertex);
+    float c = edgelengthsqr * (radius * radius - spherepostovertexlengthsqr) + (edgedotspherepostovertex * edgedotspherepostovertex);
+
+    if (hasShorterSolution(a, b, c, currentmovedist, newmovedist)) {
+        float f = (edgedotdir * *newmovedist - edgedotspherepostovertex) / edgelengthsqr;
+        // is the collision within the points of the line
+        if (f >= 0.0f && f <= 1.0f) {
+            *intersection = f;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /**
  * @offset 0x0047531C, 0x004754BF.
  *
