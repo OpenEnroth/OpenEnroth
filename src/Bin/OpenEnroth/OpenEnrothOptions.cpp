@@ -2,16 +2,16 @@
 
 #include <memory>
 
-#include <CLI/CLI.hpp>
-
-#include "Utility/Format.h"
-
 #include "Application/GamePathResolver.h"
 #include "Application/GameConfig.h" // For PlatformLogLevel serialization.
 
+#include "Library/Cli/CliApp.h"
+
+#include "Utility/Format.h"
+
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     OpenEnrothOptions result;
-    std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
+    std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
 
     app->add_option(
         "--data-path", result.dataPath,
@@ -30,24 +30,14 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Set log level to 'verbose'.");
     app->set_help_flag("-h,--help", "Print help and exit.");
 
-    CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.")->fallthrough();
+    CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();
     retrace->add_option("TRACE", result.retrace.traces,
                         "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");
-    retrace->callback([&] {
-        result.useConfig = false; // Don't use external config if retracing.
-        result.subcommand = SUBCOMMAND_RETRACE;
-    });
 
-    try {
-        app->parse(argc, argv);
-    } catch (const CLI::ParseError &e) {
-        if (app->get_help_ptr()->as<bool>() || retrace->get_help_ptr()->as<bool>()) {
-            app->exit(e);
-            result.helpPrinted = true;
-        } else {
-            throw; // Genuine parse error => propagate.
-        }
-    }
+    app->parse(argc, argv, result.helpPrinted);
+
+    if (result.subcommand == SUBCOMMAND_RETRACE)
+        result.useConfig = false; // Don't use external config if retracing.
 
     return result;
 }

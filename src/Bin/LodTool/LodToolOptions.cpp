@@ -2,30 +2,18 @@
 
 #include <memory>
 
-#include <CLI/CLI.hpp>
+#include "Library/Cli/CliApp.h"
 
 LodToolOptions LodToolOptions::parse(int argc, char **argv) {
     LodToolOptions result;
-    std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
+    std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
 
     app->set_help_flag("-h,--help", "Print help and exit.");
+    app->require_subcommand();
 
-    CLI::App *dump = app->add_subcommand("dump", "Dump a lod file.")->fallthrough();
+    CLI::App *dump = app->add_subcommand("dump", "Dump a lod file.", result.subcommand, SUBCOMMAND_DUMP)->fallthrough();
     dump->add_option("LOD", result.lodPath, "Path to lod file.")->check(CLI::ExistingFile)->required()->option_text(" ");
-    dump->callback([&] {
-        result.subcommand = SUBCOMMAND_DUMP;
-    });
 
-    try {
-        app->parse(argc, argv);
-    } catch (const CLI::ParseError &e) {
-        if (app->get_help_ptr()->as<bool>() || dump->get_help_ptr()->as<bool>()) {
-            app->exit(e);
-            result.helpPrinted = true;
-        } else {
-            throw; // Genuine parse error => propagate.
-        }
-    }
-
+    app->parse(argc, argv, result.helpPrinted);
     return result;
 }

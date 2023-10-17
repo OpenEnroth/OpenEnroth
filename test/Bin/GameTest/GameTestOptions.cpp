@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <CLI/CLI.hpp>
+#include "Library/Cli/CliApp.h"
 
 #include "Application/GamePathResolver.h"
 
@@ -12,7 +12,7 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     result.useConfig = false; // Tests don't need an external config.
     std::optional<std::string> testPath;
 
-    std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
+    std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
 
     std::string requiredOptions = "Required Options";
     std::string otherOptions = "Other Options";
@@ -28,20 +28,11 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     app->set_help_flag("-h,--help", "Print help and exit.")->group(otherOptions);
     app->allow_extras();
 
-    try {
-        app->parse(argc, argv);
-    } catch (const CLI::ParseError &e) {
-        if (app->get_help_ptr()->as<bool>()) {
-            app->exit(e);
-            result.helpPrinted = true;
-        } else {
-            throw; // Genuine parse error => propagate.
-        }
-    }
+    app->parse(argc, argv, result.helpPrinted);
 
     if (!result.listRequested && !result.helpPrinted && !testPath)
         throw CLI::RequiredError(testPathOption->get_name());
-
     result.testPath = testPath.value_or("");
+
     return result;
 }

@@ -61,6 +61,8 @@ class PlatformGamepad;
  *   cache values returned by the OS (if needed, caching should be implemented at the next abstraction layer). Again,
  *   you can think about this in terms of information content, "platform API handle doesn't expose any bits of state
  *   through its API that cannot be accessed through the underlying OS API".
+ *
+ * @see platformMain
  */
 class Platform {
  public:
@@ -147,3 +149,13 @@ class Platform {
      */
     virtual std::string storagePath(const PlatformStorage type) const = 0;
 };
+
+/**
+ * Entrypoint for the program that uses the platform lib. Function definition should be provided in user code.
+ *
+ * @param argc                          Total number of arguments passed.
+ * @param argv                          UTF8-encoded program arguments. Note that you're getting UTF8 on ALL platforms,
+ *                                      including Windows.
+ * @return                              Program return code.
+ */
+int platformMain(int argc, char **argv);
