@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <utility>
 
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -221,56 +222,45 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
-    // TODO(pskelton): adding collision radius below to make this behave more like cylinder/cylinder collision - testing
-    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height + collision_state.radius_lo);
+    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
     if (!collision_state.bbox.intersects(bbox))
         return false;
 
-    // dist vector points from position center into cylinder center.
     float dist_x = center_lo.x - collision_state.position_lo.x;
     float dist_y = center_lo.y - collision_state.position_lo.y;
-    float sum_radius = collision_state.radius_lo + radius;
-
-    // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
-    // thus this actually is length(dist) * sin(dist, collision_state.direction).
-    // This in turn is the distance from cylinder center to the line of actor's movement.
     Vec3f dir = collision_state.direction;
-    float closest_dist = dist_x * dir.y - dist_y * dir.x;
-    if (std::abs(closest_dist) > sum_radius)
-        return false; // No chance to collide.
 
-    // Length of dist vector projected onto collision_state.direction.
+    //// Length of dist vector projected onto collision_state.direction.
     float dist_dot_dir = dist_x * dir.x + dist_y * dir.y;
-    if (dist_dot_dir <= 0)
+    if (dist_dot_dir <= 0.0f) {
         return false; // We're moving away from the cylinder.
+    }
 
-    // Z-coordinate of the actor at the point closest to the cylinder in XY plane.
-    float closest_z = collision_state.position_lo.z + dir.z * dist_dot_dir;
-    if (closest_z < bbox.z1 || (closest_z > bbox.z2 && !jagged_top))
-        return false;
+    Vec3f pos = collision_state.position_lo;
+    radius += collision_state.radius_lo;
+    // add radius to treat bottom of collison state as flat
+    Vec3f vert1 = center_lo, vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
 
-    // That's how far can we go along the collision_state.direction axis until the actor touches the cylinder,
-    // i.e. distance between them goes below sum_radius.
-    float move_distance = dist_dot_dir - std::sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
-    if (move_distance < 0)
-        move_distance = 0;
-
-    if (move_distance < collision_state.adjusted_move_distance) {
-        // TODO(pskelton): Not checked above math. Consider behaviour change when dropping from above?
-        Vec3f newpos = collision_state.position_lo + dir * move_distance;
+    float newdist, intersection;
+    if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection)) {
+        // form a normal on the cylinder for use later
+        Vec3f newpos = collision_state.position_lo + dir * newdist;
         Vec3f dir = center_lo - newpos;
         dir.normalize();
         Vec3f colpos = newpos + dir * collision_state.radius_lo;
         collision_state.collisionPos = colpos;
-        // Drop any z component - for now we only consider colliding with side of cylinder
         Vec3f colnorm = Vec3f(-dir.x, -dir.y, 0);
         colnorm.normalize();
         collision_state.collisionNorm = colnorm;
 
-        collision_state.adjusted_move_distance = move_distance;
+        // set collision paramas
+        collision_state.adjusted_move_distance = newdist;
         collision_state.pid = pid;
+
+        return true;
     }
-    return true;
+
+    return false;
 }
 
 static void CollideWithDecoration(int id) {
@@ -836,6 +826,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             // set party to move along this new sliding vector
             pParty->speed = newdirection * dot(newdirection, pParty->speed) + Vec3f(0, 0, pParty->speed.z);
+            continue;
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
@@ -999,7 +990,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             newdirection.normalize();
 
             // set party to move along this new sliding vector
-            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed) + Vec3f(0, 0, pParty->speed.z);
+            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed) + Vec3f(0, 0, partyInputSpeed->z);
+            continue;
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
