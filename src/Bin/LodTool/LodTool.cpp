@@ -1,5 +1,6 @@
 #include "LodToolOptions.h"
 
+#include "Library/Cli/CliUtf8fy.h"
 #include "Library/Lod/LodReader.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Serialization/Serialization.h"
@@ -41,6 +42,7 @@ int runDump(const LodToolOptions &options) {
 
 int main(int argc, char **argv) {
     try {
+        CliUtf8fy _(argc, argv);
         LodToolOptions options = LodToolOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;
