@@ -20,7 +20,8 @@ set(PLATFORM_SOURCES
         Sdl/SdlOpenGLContext.cpp
         Sdl/SdlPlatform.cpp
         Sdl/SdlPlatformSharedState.cpp
-        Sdl/SdlWindow.cpp)
+        Sdl/SdlWindow.cpp
+        Posix/PosixPlatform.cpp)
 
 set(PLATFORM_HEADERS
         Filters/FilteringEventHandler.h
@@ -55,13 +56,6 @@ set(PLATFORM_HEADERS
         Sdl/SdlPlatform.h
         Sdl/SdlPlatformSharedState.h
         Sdl/SdlWindow.h)
-
-if(BUILD_PLATFORM STREQUAL "windows")
-    list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)
-    list(APPEND PLATFORM_HEADERS Win/WinPlatform.h)
-else()
-    list(APPEND PLATFORM_SOURCES Posix/PosixPlatform.cpp)
-endif()
 
 set(PLATFORM_MAIN_SOURCES
         Sdl/SdlMain.cpp)

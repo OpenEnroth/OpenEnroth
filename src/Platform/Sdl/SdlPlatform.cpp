@@ -124,10 +124,6 @@ int64_t SdlPlatform::tickCount() const {
     return SDL_GetTicks64();
 }
 
-std::string SdlPlatform::winQueryRegistry(const std::wstring &) const {
-    return {};
-}
-
 std::string SdlPlatform::storagePath(const PlatformStorage type) const {
     std::string result{};
     const char *path = NULL;

@@ -14,6 +14,14 @@
 void winUseUtf8Crt();
 
 /**
+ * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
+ *
+ * @param path                      Registry path to query.
+ * @return                          Value at the given path, or an empty string in case of an error.
+ */
+std::string winQueryRegistry(const std::string &path);
+
+/**
  * Same as `std::getenv`, but accepts & returns UTF-8 strings.
  *
  * This function is needed because on Windows even after switching to UTF-8 with a call to `winUseUtf8Crt`, CRT-supplied
