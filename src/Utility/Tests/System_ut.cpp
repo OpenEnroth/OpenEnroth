@@ -129,7 +129,7 @@ UNIT_TEST(System, getenv) {
     const wchar_t *wname = L"_SOME_VAR_12345";
     const wchar_t *wvalue = reinterpret_cast<const wchar_t *>(u16prefix);
 
-    int status = _wputenv((std::wstring(wname) + L"=" + wvalue).c_str());
+    errno_t status = _wputenv_s(wname, wvalue);
     EXPECT_EQ(status, 0);
 
     std::string result = u8getenv(name);
