@@ -133,7 +133,10 @@ std::string winQueryRegistry(const std::string &path) {
 
 std::string u8getenv(const std::string &key) {
 #ifdef _WINDOWS
-    return toUtf8(_wgetenv(toUtf16(key).c_str()));
+    const wchar_t *result = _wgetenv(toUtf16(key).c_str());
+    if (result)
+        return toUtf8(result);
+    return {};
 #else
     return std::getenv(key.c_str());
 #endif
