@@ -23,7 +23,6 @@ std::string toUtf8(std::wstring_view wstr) {
 
     result.resize(len);
     WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.size(), result.data(), len, nullptr, nullptr);
-    result.pop_back();
     return result;
 }
 
@@ -36,7 +35,6 @@ std::wstring toUtf16(std::string_view str) {
 
     result.resize(len);
     MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), result.data(), len);
-    result.pop_back();
     return result;
 }
 
