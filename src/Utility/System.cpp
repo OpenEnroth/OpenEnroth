@@ -138,6 +138,9 @@ std::string u8getenv(const std::string &key) {
         return toUtf8(result);
     return {};
 #else
-    return std::getenv(key.c_str());
+    const char *result = std::getenv(key.c_str());
+    if (result)
+        return result;
+    return {};
 #endif
 }
