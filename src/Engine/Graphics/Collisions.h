@@ -124,4 +124,16 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
 void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID, bool* partySlopeMod);
 
+/**
+ * Finds whether this quadratic (of the form AX^2 + BX + C = 0) can be solved and if the solution is smaller
+ * than out current solution.
+ * 
+ * @param a                             A component of quadratic.
+ * @param b                             B component of quadratic.
+ * @param c                             C component of quadratic.
+ * @param curSoln                       Current movement distance along the `dir` axis.
+ * @param[out] outNewSoln               New movement distance along the 'dir' axis on true. This value is not set if the function
+ *                                      returns false.
+ * @return                              True if the quadratic has a valid solution that is smaller than the input curSoln.
+ */
 bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln);

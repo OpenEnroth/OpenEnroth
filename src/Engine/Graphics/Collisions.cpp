@@ -31,7 +31,20 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
 // Helper functions.
 //
 
-// TODO(pskelton): docs here
+/**
+ * @param p1                            Starting point of line.
+ * @param p2                            End point of line.
+ * @param radius                        Radius to use.
+ * @param currentmovedist               Current largest movement distance before a collision.
+ * @param[out] newmovedist              Move distance along the `dir` axis required to touch the provided line with provided radius.
+ *                                      Always non-negative. This parameter is not set if the function returns false.
+ * @param[out] intersection             How far along the line p1->p2 the collision will occur in the range [0 - 1]. Not set if the function
+ *                                      returns false.
+ *
+ * @return                              Whether the sphere of radius at position of collision state 'lo', can collide with the
+ *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
+ *                                      collision is less than the current distance.
+ */
 static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection) {
     Vec3f pos = collision_state.position_lo;
     Vec3f dir = collision_state.direction;
@@ -42,11 +55,19 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
     float edgedotspherepostovertex = dot(edge, spherepostovertex);
     float spherepostovertexlengthsqr = spherepostovertex.lengthSqr();
 
+    // distance from pos to line p1->p2 = ||(p1 - pos) X (p2 - p1)|| / ||(p2 - p1)||
+    // but our pos is moving  pos = startpos + direction * distance
+    // at collision, distance from pos to line will be radius
+    // square for simplicty - expand with vector quadruple product
+    // rearrange with respect to distance to form Ax^2 + Bx + C = 0
+
     float a = edgelengthsqr * -dir.lengthSqr() + (edgedotdir * edgedotdir);
     float b = edgelengthsqr * (2.0f * dot(dir, spherepostovertex)) - (2.0f * edgedotdir * edgedotspherepostovertex);
     float c = edgelengthsqr * (radius * radius - spherepostovertexlengthsqr) + (edgedotspherepostovertex * edgedotspherepostovertex);
 
     if (hasShorterSolution(a, b, c, currentmovedist, newmovedist)) {
+        // Collision point will be perpendicular to edge
+        // Project the position at point of collision onto the edge
         float f = (edgedotdir * *newmovedist - edgedotspherepostovertex) / edgelengthsqr;
         // is the collision within the points of the line
         if (f >= 0.0f && f <= 1.0f) {
@@ -488,7 +509,8 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
 }
 
 void CollideWithParty(bool jagged_top) {
-    CollideWithCylinder(pParty->pos, 2 * pParty->radius, pParty->height, Pid::character(0), jagged_top);
+    // Why x2? on radius??
+    CollideWithCylinder(pParty->pos, /*2 * */pParty->radius, pParty->height, Pid::character(0), jagged_top);
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
@@ -780,10 +802,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 break; // No portal collisions => can break.
         }
 
-        Vec3f adjusted_pos; //= pParty->pos + ((collision_state.adjusted_move_distance - closestdist) * collision_state.direction).toInt();
-        adjusted_pos.x = pParty->pos.x + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.x;
-        adjusted_pos.y = pParty->pos.y + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.y;
-        adjusted_pos.z = pParty->pos.z + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.z;
+        Vec3f adjusted_pos;
+        // Set new position but moved back slightly so we never touch the face
+        adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+        // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
         int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, 40)).toInt(), &collision_state.uSectorID, faceId);
@@ -812,20 +834,25 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // new sliding plane
+            // Create new sliding plane from collision
             Vec3f slideplaneorigin = collision_state.collisionPos;
             Vec3f slideplanenormal = collision_state.collisionNorm;
             float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
 
-            // form a sliding vector that is parallel to sliding movement
+            // Form a sliding vector that is parallel to sliding movement
+            // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
+            // Start point to new destination is a vector along the slide plane
             float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
             Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
             Vec3f newdirection = newdestination - collision_state.collisionPos;
+            // For cylinder collision we dont want any z effects
             newdirection.z = 0;
             newdirection.normalize();
 
-            // set party to move along this new sliding vector
+            // Set party to move along this new sliding vector
+            // Re add party z speed because it would get zeroed in dot product
             pParty->speed = newdirection * dot(newdirection, pParty->speed) + Vec3f(0, 0, pParty->speed.z);
+            // Skip reducing party speed
             continue;
         }
 
@@ -915,13 +942,14 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
 
         Vec3f newPosLow = {};
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            // Moved far enough so reset foot position for exit
             newPosLow.x = collision_state.new_position_lo.x;
             newPosLow.y = collision_state.new_position_lo.y;
             newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            newPosLow.x = partyNewPos->x + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.x;
-            newPosLow.y = partyNewPos->y + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.y;
-            newPosLow.z = partyNewPos->z + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction.z;
+            // Set new position but moved back slightly so we never touch the face
+            newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+            // Adjust the collision position with the same offset
             collision_state.collisionPos -= closestdist * collision_state.direction;
         }
 
@@ -977,20 +1005,24 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // new sliding plane
+            // Create new sliding plane from collisio
             Vec3f slideplaneorigin = collision_state.collisionPos;
             Vec3f slideplanenormal = collision_state.collisionNorm;
             float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
 
-            // form a sliding vector that is parallel to sliding movement
+            // Form a sliding vector that is parallel to sliding movement
+            // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
+            // Start point to new destination is a vector along the slide plane
             float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
             Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
             Vec3f newdirection = newdestination - collision_state.collisionPos;
             newdirection.z = 0;
             newdirection.normalize();
 
-            // set party to move along this new sliding vector
+            // Set party to move along this new sliding vector
+            // Re add party z speed because it would get zeroed in dot product
             *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed) + Vec3f(0, 0, partyInputSpeed->z);
+            // Skip reducing party speed
             continue;
         }
 
@@ -1069,8 +1101,6 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
     }
 }
 
-// TODO(pskelton): proper docs
-// Finds solutions to quadratics and if it is lower than the current solution
 bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln) {
     float d = b * b - 4.0f * a * c;
     if (d < 0.0f) {
@@ -1081,9 +1111,11 @@ bool hasShorterSolution(const float a, const float b, const float c, const float
     float alpha1 = (-b - d) / (2 * a);
     float alpha2 = (-b + d) / (2 * a);
 
+    // Deal with smaller solution first
     if (alpha1 > alpha2) {
         std::swap(alpha1, alpha2);
     }
+    // May be negative if the collision point was behind us - so ignore
     if (alpha1 > 0.0f && alpha1 < curSoln) {
         *outNewSoln = alpha1;
         return true;  // this new collision is shorter than old
