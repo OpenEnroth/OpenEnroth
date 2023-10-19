@@ -119,8 +119,14 @@ UNIT_TEST(System, fstreams) {
     EXPECT_FALSE(std::filesystem::exists(u8path));
 }
 
-#ifdef _WINDOWS
-UNIT_TEST(System, getenv) {
+UNIT_TEST(System, u8getenv_empty) {
+    winUseUtf8Crt();
+
+    std::string result = u8getenv("_ABCDEFG_123456_"); // Getting a non-existent var should work.
+    EXPECT_TRUE(result.empty());
+}
+
+UNIT_TEST(System, u8getenv) {
     winUseUtf8Crt();
 
     const char *name = "_SOME_VAR_12345";
@@ -129,10 +135,24 @@ UNIT_TEST(System, getenv) {
     const wchar_t *wname = L"_SOME_VAR_12345";
     const wchar_t *wvalue = reinterpret_cast<const wchar_t *>(u16prefix);
 
+#ifdef _WINDOWS
     errno_t status = _wputenv_s(wname, wvalue);
     EXPECT_EQ(status, 0);
+#else
+    int status = setenv(name, value, 1);
+    EXPECT_EQ(status, 0);
+#endif
 
     std::string result = u8getenv(name);
     EXPECT_EQ(std::string_view(result), std::string_view(value));
-}
+
+    const char *result2Ptr = std::getenv(name);
+    std::string result2 = result2Ptr ? result2Ptr : "";
+    EXPECT_NE(result2Ptr, nullptr);
+
+#ifdef _WINDOWS
+    EXPECT_EQ(result2, "????"); // Unfortunately, this is how it works. We just pin it in place with a test.
+#else
+    EXPECT_EQ(result2, value);
 #endif
+}
