@@ -42,7 +42,6 @@ void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color co
 }
 
 DecalBuilder::DecalBuilder() {
-    this->log = EngineIocContainer::ResolveLogger();
     this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
     this->DecalsCount = 0;
 }
@@ -86,7 +85,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                 buildsplat->color,
                 buildsplat->faceDist,
                 &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
-                log->warning("Error: Failed to build decal geometry");
+                logger->warning("Error: Failed to build decal geometry");
         }
     }
     return 1;

@@ -181,7 +181,7 @@ void GUIWindow::Release() {
     if (this->eWindowType == WINDOW_GameUI)
         nuklear->Release(WINDOW_GameUI);
 
-    log->verbose("Release window: {}", toString(eWindowType));
+    logger->verbose("Release window: {}", toString(eWindowType));
 }
 
 void GUIWindow::DeleteButtons() {
@@ -404,14 +404,12 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
 
 GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->log = EngineIocContainer::ResolveLogger();
 }
 
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->log = EngineIocContainer::ResolveLogger();
 
-    log->verbose("New window: {}", toString(windowType));
+    logger->verbose("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = dimensions.w;
     this->uFrameHeight = dimensions.h;

@@ -21,8 +21,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
                 EngineIocContainer::ResolveDecalBuilder(),
                 EngineIocContainer::ResolveSpellFxRenderer(),
                 EngineIocContainer::ResolveParticleEngine(),
-                EngineIocContainer::ResolveVis(),
-                EngineIocContainer::ResolveLogger()
+                EngineIocContainer::ResolveVis()
             );
 
         case RENDERER_OPENGL_ES:
@@ -32,8 +31,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
                 EngineIocContainer::ResolveDecalBuilder(),
                 EngineIocContainer::ResolveSpellFxRenderer(),
                 EngineIocContainer::ResolveParticleEngine(),
-                EngineIocContainer::ResolveVis(),
-                EngineIocContainer::ResolveLogger()
+                EngineIocContainer::ResolveVis()
             );
 
         case RENDERER_NULL:
@@ -43,8 +41,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
                 EngineIocContainer::ResolveDecalBuilder(),
                 EngineIocContainer::ResolveSpellFxRenderer(),
                 EngineIocContainer::ResolveParticleEngine(),
-                EngineIocContainer::ResolveVis(),
-                EngineIocContainer::ResolveLogger()
+                EngineIocContainer::ResolveVis()
             );
 
         default:

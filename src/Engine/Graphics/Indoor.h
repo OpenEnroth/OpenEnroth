@@ -200,7 +200,6 @@ struct BLVSector {  // 0x74
 struct IndoorLocation {
     //----- (00462592) --------------------------------------------------------
     inline IndoorLocation() {
-        this->log = EngineIocContainer::ResolveLogger();
         this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
         this->spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
         this->particle_engine = EngineIocContainer::ResolveParticleEngine();
@@ -253,7 +252,6 @@ struct IndoorLocation {
     std::array<char, 875> _visible_outlines;
     char padding;
 
-    Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;

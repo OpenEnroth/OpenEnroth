@@ -17,13 +17,6 @@ using Io::Mouse;
 
 Logger *logger = nullptr;
 
-Logger *EngineIocContainer::ResolveLogger() {
-    if (!logger) {
-        logger = new Logger();
-    }
-    return logger;
-}
-
 DecalBuilder *EngineIocContainer::ResolveDecalBuilder() {
     if (!decal_builder) {
         decal_builder = new DecalBuilder();

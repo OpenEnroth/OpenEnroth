@@ -1,22 +1,11 @@
 #include "Logger.h"
 
-#include <cstdio>
-#include <string>
+#include <cassert>
 
-PlatformLogger *Logger::baseLogger() const {
-    return _baseLogger;
-}
-
-void Logger::setBaseLogger(PlatformLogger *baseLogger) {
-    _baseLogger = baseLogger;
+Logger::Logger(PlatformLogger *baseLogger): _baseLogger(baseLogger) {
+    assert(baseLogger);
 }
 
 void Logger::logV(PlatformLogLevel logLevel, fmt::string_view fmt, fmt::format_args args) {
-    std::string message = fmt::vformat(fmt, args);
-
-    if (_baseLogger) {
-        _baseLogger->log(APPLICATION_LOG, logLevel, message.c_str());
-    } else {
-        fprintf(stderr, "UNINITIALIZED LOGGER: %s\n", message.c_str());
-    }
+    _baseLogger->log(APPLICATION_LOG, logLevel, fmt::vformat(fmt, args).c_str());
 }

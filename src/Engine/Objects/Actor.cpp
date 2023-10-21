@@ -44,7 +44,6 @@
 #include "Utility/Math/FixPoint.h"
 
 // should be injected into Actor but struct size cant be changed
-static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
 std::vector<Actor> pActors;
@@ -60,10 +59,6 @@ static constexpr IndexedArray<int, HOSTILITY_FIRST, HOSTILITY_LAST> _4DF380_host
 };
 
 std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
-
-stru319::stru319() {
-    this->vis = EngineIocContainer::ResolveVis();
-}
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
@@ -3416,7 +3411,7 @@ Pid stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
     {
         select_flags = (a3 != 0) ? VisSelectFlags_1 : None;
         if (target_undead) select_flags |= TargetUndead;
-        return vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
+        return EngineIocContainer::ResolveVis()->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
     }
     /*else // software impl
     {

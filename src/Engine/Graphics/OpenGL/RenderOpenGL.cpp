@@ -59,7 +59,6 @@ static constexpr int DEFAULT_AMBIENT_LIGHT_LEVEL = 0;
 
 // globals
 //TODO(pskelton): Combine and contain
-std::shared_ptr<IRender> render;
 int uNumDecorationsDrawnThisFrame;
 RenderBillboard pBillboardRenderList[500];
 unsigned int uNumBillboardsToDraw;
@@ -212,9 +211,8 @@ RenderOpenGL::RenderOpenGL(
     DecalBuilder *decal_builder,
     SpellFxRenderer *spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
-    Vis *vis,
-    Logger *logger
-) : RenderBase(config, decal_builder, spellfx, particle_engine, vis, logger) {
+    Vis *vis
+) : RenderBase(config, decal_builder, spellfx, particle_engine, vis) {
     nk = std::make_unique<nk_state>();
     clip_w = 0;
     clip_x = 0;
@@ -1179,7 +1177,7 @@ void RenderOpenGL::EndDecals() {
 
 void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     if (pDecal->uNumVertices < 3) {
-        log->warning("Decal has < 3 vertices");
+        logger->warning("Decal has < 3 vertices");
         return;
     }
 
@@ -4626,12 +4624,12 @@ bool RenderOpenGL::Initialize() {
             version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
 
         if (!version)
-            log->warning("GLAD: Failed to initialize the OpenGL loader");
+            logger->warning("GLAD: Failed to initialize the OpenGL loader");
 
         if (version) {
-            log->info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-            log->info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
-            log->info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+            logger->info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+            logger->info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
+            logger->info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
         }
 
         gladSetGLPostCallback(GL_Check_Errors);
@@ -5218,12 +5216,12 @@ void RenderOpenGL::DrawTwodVerts() {
 bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_context *nk_ctx = nuklear->ctx;
     if (!nk_ctx) {
-        log->warning("Nuklear context is not available");
+        logger->warning("Nuklear context is not available");
         return false;
     }
 
     if (!NuklearCreateDevice()) {
-        log->warning("Nuklear device creation failed");
+        logger->warning("Nuklear device creation failed");
         NuklearRelease();
         return false;
     }
@@ -5232,7 +5230,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_tex_font *font = NuklearFontLoad(NULL, 13);
     nk->dev.atlas.default_font = font->font;
     if (!nk->dev.atlas.default_font) {
-        log->warning("Nuklear default font loading failed");
+        logger->warning("Nuklear default font loading failed");
         NuklearRelease();
         return false;
     }
@@ -5240,7 +5238,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     memcpy(tfont, font, sizeof(struct nk_tex_font));
 
     if (!nk_init_default(nk_ctx, &nk->dev.atlas.default_font->handle)) {
-        log->warning("Nuklear initialization failed");
+        logger->warning("Nuklear initialization failed");
         NuklearRelease();
         return false;
     }

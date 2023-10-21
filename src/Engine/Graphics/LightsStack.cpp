@@ -4,19 +4,17 @@
 #include "Engine/EngineIocContainer.h"
 
 LightsStack_StationaryLight_::LightsStack_StationaryLight_() {
-    this->log = EngineIocContainer::ResolveLogger();
     this->uNumLightsActive = 0;
 }
 
 LightsStack_MobileLight_::LightsStack_MobileLight_() {
-    this->log = EngineIocContainer::ResolveLogger();
     this->uNumLightsActive = 0;
 }
 
 //----- (00467D88) --------------------------------------------------------
 bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int uSectorID, int uRadius, Color color, char uLightType) {
     if (uNumLightsActive >= 400) {
-        log->warning("Too many mobile lights!");
+        logger->warning("Too many mobile lights!");
         return false;
     }
 
@@ -33,7 +31,7 @@ bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int uSectorID, int uRa
 
 bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType) {
     if (uNumLightsActive >= 400) {
-        log->warning("Too many stationary lights!");
+        logger->warning("Too many stationary lights!");
         return false;
     }
 

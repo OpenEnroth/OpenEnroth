@@ -114,7 +114,7 @@ void initDataPath(const std::string &dataPath) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", dataPath);
+        logger->info("Using MM7 directory: {}", dataPath);
     } else {
         std::string message = fmt::format(
             "Required file {} not found.\n"
@@ -125,7 +125,7 @@ void initDataPath(const std::string &dataPath) {
             !dataPath.empty() ? dataPath : std::filesystem::current_path().string(),
             !dataPath.empty() ? "" :      " (current directory)"
         );
-        EngineIocContainer::ResolveLogger()->critical("{}", message);
+        logger->critical("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
         throw Exception("Data folder '{}' validation failed", dataPath);
     }
@@ -134,7 +134,6 @@ void initDataPath(const std::string &dataPath) {
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;
     _config = config;
-    _log = EngineIocContainer::ResolveLogger();
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
     _vis = EngineIocContainer::ResolveVis();
     _menu = GameIocContainer::ResolveGameMenu();
@@ -167,21 +166,21 @@ Game::~Game() {
 
 int Game::run() {
     _render = IRenderFactory().Create(_config);
-    ::render = _render;
+    ::render = _render.get();
 
     if (!_render) {
-        _log->error("Render creation failed");
+        logger->error("Render creation failed");
         return -1;
     }
 
     if (!_render->Initialize()) {
-        _log->error("Render failed to initialize");
+        logger->error("Render failed to initialize");
         return -1;
     }
 
     _nuklear = Nuklear::Initialize();
     if (!_nuklear) {
-        _log->error("Nuklear failed to initialize");
+        logger->error("Nuklear failed to initialize");
     }
     ::nuklear = _nuklear;
     if (_nuklear) {
@@ -204,7 +203,7 @@ int Game::run() {
     ::engine = _engine.get();
 
     if (!_engine) {
-        _log->error("Engine creation failed");
+        logger->error("Engine creation failed");
         return -1;
     }
 

@@ -15,7 +15,6 @@ class Vis;
 
 class EngineIocContainer {
  public:
-    static Logger *ResolveLogger();
     static DecalBuilder *ResolveDecalBuilder();
     static BloodsplatContainer *ResolveBloodsplatContainer();
     static SpellFxRenderer *ResolveSpellFxRenderer();
@@ -33,6 +32,5 @@ class EngineIocContainer {
      static std::shared_ptr<ParticleEngine> particle_engine;
      static Vis *vis;
 };
-
 
 extern Logger *logger;
