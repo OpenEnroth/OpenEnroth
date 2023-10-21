@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6d0d34d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e36b9f2</span>
    </div>
   </td>
  </tr>
@@ -82,10 +82,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a21f6ea6302cd78f6369383e000323d90"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a21f6ea6302cd78f6369383e000323d90">baseLogger</a> () const</td></tr>
-<tr class="separator:a21f6ea6302cd78f6369383e000323d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fdaf7405828fe794da0bc5d756089fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a7fdaf7405828fe794da0bc5d756089fb">setBaseLogger</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *<a class="el" href="classLogger.html#a21f6ea6302cd78f6369383e000323d90">baseLogger</a>)</td></tr>
-<tr class="separator:a7fdaf7405828fe794da0bc5d756089fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3">Logger</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *baseLogger)</td></tr>
+<tr class="separator:a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cf29637aaeff5017a39092424612936"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a9cf29637aaeff5017a39092424612936">shouldLog</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel) const</td></tr>
 <tr class="separator:a9cf29637aaeff5017a39092424612936"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab565ee4e0807a3820708ded34a61ae80"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
@@ -120,24 +118,34 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a9e7bc6c4a180495730a8d5381e898643"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a9e7bc6c4a180495730a8d5381e898643">_baseLogger</a> = nullptr</td></tr>
 <tr class="separator:a9e7bc6c4a180495730a8d5381e898643"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a21f6ea6302cd78f6369383e000323d90" name="a21f6ea6302cd78f6369383e000323d90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21f6ea6302cd78f6369383e000323d90">&#9670;&#160;</a></span>baseLogger()</h2>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3" name="a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3">&#9670;&#160;</a></span>Logger()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> * Logger::baseLogger </td>
+          <td class="memname">Logger::Logger </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td>
+          <td class="paramname"><em>baseLogger</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a78e817b5f2ceff71d7efd72142dc4cf0" name="a78e817b5f2ceff71d7efd72142dc4cf0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a78e817b5f2ceff71d7efd72142dc4cf0">&#9670;&#160;</a></span>critical()</h2>
 
@@ -372,24 +380,6 @@ template&lt;class... Args&gt; </div>
 <span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7fdaf7405828fe794da0bc5d756089fb" name="a7fdaf7405828fe794da0bc5d756089fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fdaf7405828fe794da0bc5d756089fb">&#9670;&#160;</a></span>setBaseLogger()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Logger::setBaseLogger </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td>
-          <td class="paramname"><em>baseLogger</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
 </div><div class="memdoc">
 
 </div>

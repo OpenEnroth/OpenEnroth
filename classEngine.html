@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6d0d34d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e36b9f2</span>
    </div>
   </td>
  </tr>
@@ -162,8 +162,6 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae81fcbcda8a9849b42e64339546081bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09530268c7d0dc2bd637a1249405d93e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structstru10.html">stru10</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#a09530268c7d0dc2bd637a1249405d93e">pStru10Instance</a></td></tr>
 <tr class="separator:a09530268c7d0dc2bd637a1249405d93e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa6bcde7addd3082f0f6dd55b09a08f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogger.html">Logger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#afa6bcde7addd3082f0f6dd55b09a08f7">log</a> = nullptr</td></tr>
-<tr class="separator:afa6bcde7addd3082f0f6dd55b09a08f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0ac7d9d66c93225625dd6d2fd1db357"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBloodsplatContainer.html">BloodsplatContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#af0ac7d9d66c93225625dd6d2fd1db357">bloodsplat_container</a> = nullptr</td></tr>
 <tr class="separator:af0ac7d9d66c93225625dd6d2fd1db357"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2fc611aac4ede564f2f6bad4ed907ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDecalBuilder.html">DecalBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#ad2fc611aac4ede564f2f6bad4ed907ac">decal_builder</a> = nullptr</td></tr>
@@ -198,6 +196,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a4513fb7eee376e25ebe2e23ad03eadc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e50bb3181a95835aa5ba5e2d146e672"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classStatusBar.html">StatusBar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#a2e50bb3181a95835aa5ba5e2d146e672">_statusBar</a></td></tr>
 <tr class="separator:a2e50bb3181a95835aa5ba5e2d146e672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a283e25609b0d41fb2f50e09f388c1002"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structIndoorLocation.html">IndoorLocation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#a283e25609b0d41fb2f50e09f388c1002">_indoor</a></td></tr>
+<tr class="separator:a283e25609b0d41fb2f50e09f388c1002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13cde915fac0bbf8528626a444685f79"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structOutdoorLocation.html">OutdoorLocation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#a13cde915fac0bbf8528626a444685f79">_outdoor</a></td></tr>
+<tr class="separator:a13cde915fac0bbf8528626a444685f79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0255bedaffe5eb965ca67b6e1535d072"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structLightsStack__StationaryLight__.html">LightsStack_StationaryLight_</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#a0255bedaffe5eb965ca67b6e1535d072">_stationaryLights</a></td></tr>
+<tr class="separator:a0255bedaffe5eb965ca67b6e1535d072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92dd1dbfa201d31489c64f884f5fddcd"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structLightsStack__MobileLight__.html">LightsStack_MobileLight_</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngine.html#a92dd1dbfa201d31489c64f884f5fddcd">_mobileLights</a></td></tr>
+<tr class="separator:a92dd1dbfa201d31489c64f884f5fddcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0c667e93ed67fa18b43535f1fc027f7f" name="a0c667e93ed67fa18b43535f1fc027f7f"></a>
@@ -897,6 +903,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a283e25609b0d41fb2f50e09f388c1002" name="a283e25609b0d41fb2f50e09f388c1002"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a283e25609b0d41fb2f50e09f388c1002">&#9670;&#160;</a></span>_indoor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structIndoorLocation.html">IndoorLocation</a>&gt; Engine::_indoor</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a17633f8ba730a25c08f82328ef969838" name="a17633f8ba730a25c08f82328ef969838"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a17633f8ba730a25c08f82328ef969838">&#9670;&#160;</a></span>_levelStrings</h2>
 
@@ -939,6 +959,34 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a92dd1dbfa201d31489c64f884f5fddcd" name="a92dd1dbfa201d31489c64f884f5fddcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92dd1dbfa201d31489c64f884f5fddcd">&#9670;&#160;</a></span>_mobileLights</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structLightsStack__MobileLight__.html">LightsStack_MobileLight_</a>&gt; Engine::_mobileLights</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a13cde915fac0bbf8528626a444685f79" name="a13cde915fac0bbf8528626a444685f79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13cde915fac0bbf8528626a444685f79">&#9670;&#160;</a></span>_outdoor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structOutdoorLocation.html">OutdoorLocation</a>&gt; Engine::_outdoor</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa34e7ed0bde6a46d00676562747a1ded" name="aa34e7ed0bde6a46d00676562747a1ded"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa34e7ed0bde6a46d00676562747a1ded">&#9670;&#160;</a></span>_persistentVariables</h2>
 
@@ -947,6 +995,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structPersistentVariables.html">PersistentVariables</a> Engine::_persistentVariables</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0255bedaffe5eb965ca67b6e1535d072" name="a0255bedaffe5eb965ca67b6e1535d072"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0255bedaffe5eb965ca67b6e1535d072">&#9670;&#160;</a></span>_stationaryLights</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structLightsStack__StationaryLight__.html">LightsStack_StationaryLight_</a>&gt; Engine::_stationaryLights</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1101,20 +1163,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;<a class="el" href="classIo_1_1KeyboardInputHandler.html">Io::KeyboardInputHandler</a>&gt; Engine::keyboardInputHandler</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afa6bcde7addd3082f0f6dd55b09a08f7" name="afa6bcde7addd3082f0f6dd55b09a08f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa6bcde7addd3082f0f6dd55b09a08f7">&#9670;&#160;</a></span>log</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLogger.html">Logger</a>* Engine::log = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
