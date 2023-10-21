@@ -19,15 +19,9 @@ class Vis;
 struct SpawnPoint;
 
 struct stru319 {
-    stru319();
-
     int which_player_to_attack(Actor *pActor);
     int _427546(int a2);
     Pid FindClosestActor(int pick_depth, int a3, int target_undead);
-
-    char field_0 = 0;
-
-    Vis *vis = nullptr;
 };
 
 extern stru319 stru_50C198;  // idb

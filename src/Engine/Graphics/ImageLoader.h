@@ -10,11 +10,9 @@
 class LodSpriteCache;
 class LodTextureCache;
 class LodReader;
-class Logger;
 
 class ImageLoader {
  public:
-    ImageLoader();
     virtual ~ImageLoader() = default;
     virtual std::string GetResourceName() const { return this->resource_name; }
     virtual std::string *GetResourceNamePtr() { return &this->resource_name; }
@@ -23,7 +21,6 @@ class ImageLoader {
 
  protected:
     std::string resource_name;
-    Logger *log;
 };
 
 class Paletted_Img_Loader : public ImageLoader {

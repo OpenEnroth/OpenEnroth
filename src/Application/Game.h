@@ -43,8 +43,7 @@ class Game {
     std::unique_ptr<NuklearEventHandler> _nuklearHandler;
     std::unique_ptr<Engine> _engine;
     std::shared_ptr<IRender> _render;
-    std::shared_ptr<Mouse> _mouse = nullptr;
-    Logger *_log = nullptr;
+    std::shared_ptr<Mouse> _mouse;
     DecalBuilder *_decalBuilder = nullptr;
     Vis *_vis = nullptr;
     Menu *_menu = nullptr;

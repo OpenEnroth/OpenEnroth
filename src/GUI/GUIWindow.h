@@ -38,7 +38,6 @@ class GUIWindow_MessageScroll;
 class Character;
 class NPCData;
 class GraphicsImage;
-class Logger;
 struct ItemGen;
 
 struct WindowData {
@@ -108,7 +107,6 @@ class GUIWindow {
     std::vector<GUIButton*> vButtons;
 
     std::shared_ptr<Io::Mouse> mouse = nullptr;
-    Logger *log = nullptr;
 };
 
 class OnButtonClick : public GUIWindow {

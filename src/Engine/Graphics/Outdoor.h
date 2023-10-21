@@ -17,7 +17,6 @@
 #include "LocationTime.h"
 #include "LocationFunctions.h"
 
-class Logger;
 class DecalBuilder;
 class SpellFxRenderer;
 class TileDesc;
@@ -196,7 +195,6 @@ struct OutdoorLocation {
     float fFogDensity;
     int uLastSunlightUpdateMinute;
 
-    Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
 };

@@ -25,8 +25,7 @@ class RenderOpenGL : public RenderBase {
         DecalBuilder *decal_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
-        Vis *vis,
-        Logger *logger
+        Vis *vis
     );
     virtual ~RenderOpenGL();
 

@@ -53,13 +53,10 @@
 #include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
 
-// TODO(pskelton): make this neater
-static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
-
 MapStartPoint uLevel_StartingPointType;
 
-OutdoorLocation *pOutdoor = new OutdoorLocation;
-ODMRenderParams *pODMRenderParams;
+OutdoorLocation *pOutdoor = nullptr;
+ODMRenderParams *pODMRenderParams = nullptr;
 
 SkyBillboardStruct SkyBillboard;  // skybox planes
 std::array<struct Polygon, 2000 + 18000> array_77EC08;
@@ -1615,7 +1612,6 @@ void OutdoorLocation::LoadActualSkyFrame() {
 }
 
 OutdoorLocation::OutdoorLocation() {
-    this->log = EngineIocContainer::ResolveLogger();
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
     this->spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
@@ -2341,7 +2337,7 @@ void UpdateActors_ODM() {
                     if (pMonsterStats->pInfos[pActors[Actor_ITR].monsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = pActors[Actor_ITR].radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
+                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
                         }
                         pActors[Actor_ITR].donebloodsplat = true;
                     }

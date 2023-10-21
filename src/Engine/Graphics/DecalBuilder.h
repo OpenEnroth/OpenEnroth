@@ -9,7 +9,6 @@
 
 struct ODMFace;
 struct Planef;
-class Logger;
 
 enum class DecalFlag : int {
     DecalFlagsNone = 0x0,
@@ -124,7 +123,5 @@ struct DecalBuilder {
     float field_30C02C = 0;
     float flt_30C030 = 0;
     float field_30C034 = 0;
-
-    Logger *log;
     BloodsplatContainer *bloodsplat_container;
 };

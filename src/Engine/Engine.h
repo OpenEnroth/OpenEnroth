@@ -34,12 +34,14 @@ class Vis;
 class ParticleEngine;
 struct ClippingFunctions;
 struct stru10;
-class Logger;
 class GUIMessageQueue;
 class GameResourceManager;
 class StatusBar;
+struct IndoorLocation;
+struct OutdoorLocation;
+struct LightsStack_StationaryLight_;
+struct LightsStack_MobileLight_;
 
-/*  320 */
 enum class GameState {
     GAME_STATE_PLAYING = 0,
     GAME_FINISHED = 1,
@@ -135,7 +137,6 @@ class Engine {
     int uNumStationaryLights_in_pStationaryLightsStack;
     float fSaturation;
     stru10 *pStru10Instance;
-    Logger *log = nullptr;
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
@@ -154,6 +155,10 @@ class Engine {
     std::unique_ptr<GUIMessageQueue> _messageQueue;
     std::unique_ptr<GameResourceManager> _gameResourceManager;
     std::unique_ptr<StatusBar> _statusBar;
+    std::unique_ptr<IndoorLocation> _indoor;
+    std::unique_ptr<OutdoorLocation> _outdoor;
+    std::unique_ptr<LightsStack_StationaryLight_> _stationaryLights;
+    std::unique_ptr<LightsStack_MobileLight_> _mobileLights;
 };
 
 extern Engine *engine;

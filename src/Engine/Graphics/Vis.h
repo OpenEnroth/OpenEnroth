@@ -8,7 +8,6 @@
 #include "Engine/Pid.h"
 
 class BSPModel;
-class Logger;
 struct ODMFace;
 struct BLVFace;
 struct RenderVertexD3D3;
@@ -80,8 +79,6 @@ struct Vis_SelectionList {
 
 class Vis {
  public:
-    Vis();
-
     Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
     Vis_PIDAndDepth PickMouse(float fDepth, float fMouseX, float fMouseY,
                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
@@ -141,7 +138,6 @@ class Vis {
 
  private:
     Vis_SelectionList _selectionList;
-    Logger *_log = nullptr;
 };
 
 

@@ -50,10 +50,6 @@ static Palette MakePaletteColorKey(const Palette &palette, Color key) {
     return result;
 }
 
-ImageLoader::ImageLoader() {
-    this->log = EngineIocContainer::ResolveLogger();
-}
-
 bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
@@ -131,7 +127,7 @@ bool PCX_File_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, P
 bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Blob data = lod->read(resource_name);
     if (!data) {
-        log->warning("Unable to load {}", this->resource_name);
+        logger->warning("Unable to load {}", this->resource_name);
         return false;
     }
 
@@ -141,7 +137,7 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Blob pcx_data = blob_func();
     if (!pcx_data) {
-        log->warning("Unable to load {}", resource_name);
+        logger->warning("Unable to load {}", resource_name);
         return false;
     }
 

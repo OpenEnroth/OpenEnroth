@@ -13,9 +13,8 @@ class RenderBase : public IRender {
         DecalBuilder *decal_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
-        Vis *vis,
-        Logger *logger
-    ) : IRender(config, decal_builder, spellfx, particle_engine, vis, logger) {
+        Vis *vis
+    ) : IRender(config, decal_builder, spellfx, particle_engine, vis) {
     }
 
     virtual bool Initialize() override;

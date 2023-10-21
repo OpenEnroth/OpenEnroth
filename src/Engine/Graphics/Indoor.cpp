@@ -51,10 +51,7 @@
 #include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
 
-// TODO(pskelton): make this neater
-static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
-
-IndoorLocation *pIndoor = new IndoorLocation;
+IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
 static constexpr IndexedArray<uint16_t, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocationID = {
@@ -790,7 +787,7 @@ void UpdateActors_BLV() {
                     if (pMonsterStats->pInfos[actor.monsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
+                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }

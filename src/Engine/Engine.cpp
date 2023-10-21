@@ -483,7 +483,6 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 //----- (0044E4B7) --------------------------------------------------------
 Engine::Engine(std::shared_ptr<GameConfig> config) {
     this->config = config;
-    this->log = EngineIocContainer::ResolveLogger();
     this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
     this->spell_fx_renedrer = EngineIocContainer::ResolveSpellFxRenderer();
@@ -849,6 +848,16 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
+    _indoor = std::make_unique<IndoorLocation>();
+    _outdoor = std::make_unique<OutdoorLocation>();
+    _stationaryLights = std::make_unique<LightsStack_StationaryLight_>();
+    _mobileLights = std::make_unique<LightsStack_MobileLight_>();
+
+    ::pIndoor = _indoor.get();
+    ::pOutdoor = _outdoor.get();
+    ::pStationaryLightsStack = _stationaryLights.get();
+    ::pMobileLightsStack = _mobileLights.get();
+
     MM7_Initialize();
 
     pEventTimer->Pause();

@@ -8,10 +8,7 @@
 
 class Logger {
  public:
-    // TODO(captainurist): this should go to ctor, but that's not doable right now because of a shitload of static
-    // variables that call EngineIoc::ResolveLogger.
-    PlatformLogger *baseLogger() const;
-    void setBaseLogger(PlatformLogger *baseLogger);
+    explicit Logger(PlatformLogger *baseLogger);
 
     bool shouldLog(PlatformLogLevel logLevel) const {
         return _baseLogger == nullptr || _baseLogger->logLevel(APPLICATION_LOG) <= logLevel;

@@ -6,8 +6,6 @@
 
 #include "Utility/Geometry/Vec.h"
 
-class Logger;
-
 struct StationaryLight {
     Vec3f vPosition {};
     int16_t uRadius = 0;
@@ -50,8 +48,6 @@ struct LightsStack_StationaryLight_ {
 
     std::array<StationaryLight, 400> pLights;
     unsigned int uNumLightsActive;
-
-    Logger *log;
 };
 
 struct LightsStack_MobileLight_ {
@@ -65,5 +61,4 @@ struct LightsStack_MobileLight_ {
 
     std::array<MobileLight, 400> pLights;
     unsigned int uNumLightsActive;
-    Logger *log;
 };

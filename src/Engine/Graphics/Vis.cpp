@@ -439,7 +439,7 @@ Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
         }
 
         default:
-            _log->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
+            logger->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
             return Vis_PIDAndDepth();
     }
 }
@@ -671,11 +671,6 @@ void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
     std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }
 
-//----- (004C04AF) --------------------------------------------------------
-Vis::Vis() {
-    this->_log = EngineIocContainer::ResolveLogger();
-}
-
 //----- (004C05CC) --------------------------------------------------------
 Vis_PIDAndDepth Vis::PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
     _selectionList.uSize = 0;
@@ -715,7 +710,7 @@ Vis_PIDAndDepth Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_selectionList, face_filter, false);
     } else {
-        _log->warning("Picking mouse in undefined level");  // picking in main menu is
+        logger->warning("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
                                                   // behaviour. should've
                                                   // returned false in
@@ -768,7 +763,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
     if (filter->select_flags & ExclusionIfNoEvent) {
         if (object_type != filter->object_type) return true;
         if (filter->object_type != OBJECT_Decoration) {
-            _log->warning("Unsupported \"exclusion if no event\" type in CVis::isBillboardPartOfSelection");
+            logger->warning("Unsupported \"exclusion if no event\" type in CVis::isBillboardPartOfSelection");
             return true;
         }
         if (pLevelDecorations[object_idx].uCog ||
@@ -778,7 +773,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
     }
     if (object_type == filter->object_type) {
         if (object_type != OBJECT_Actor) {
-            _log->warning("Default case reached in VIS");
+            logger->warning("Default case reached in VIS");
             return true;
         }
 

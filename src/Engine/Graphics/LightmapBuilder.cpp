@@ -14,8 +14,8 @@
 
 #include "Library/Color/ColorTable.h"
 
-LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
-LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
+LightsStack_StationaryLight_ *pStationaryLightsStack = nullptr;
+LightsStack_MobileLight_ *pMobileLightsStack = nullptr;
 
 
 // TODO(pskelton): this needs reworking if we want lights to be outlined

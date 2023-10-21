@@ -25,7 +25,6 @@ struct DecalBuilder;
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
-class Logger;
 
 namespace LOD {
 class File;
@@ -40,8 +39,7 @@ class IRender {
         DecalBuilder *decal_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
-        Vis *vis,
-        Logger *logger
+        Vis *vis
     );
     virtual ~IRender();
 
@@ -207,14 +205,13 @@ class IRender {
 
     int drawcalls;
 
-    Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
 };
 
-extern std::shared_ptr<IRender> render;
+extern IRender *render;
 
 extern int uNumDecorationsDrawnThisFrame;
 extern RenderBillboard pBillboardRenderList[500];

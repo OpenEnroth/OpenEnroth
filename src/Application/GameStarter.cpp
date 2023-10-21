@@ -28,7 +28,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     };
     if (_options.logLevel)
         setLogLevel(*_options.logLevel);
-    EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
+    _globalLogger = std::make_unique<Logger>(_logger.get());
+    ::logger = _globalLogger.get();
 
     // Create platform & init data paths.
     if (_options.headless) {
@@ -71,9 +72,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _game = std::make_unique<Game>(_application.get(), _config);
 }
 
-GameStarter::~GameStarter() {
-    EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr);
-}
+GameStarter::~GameStarter() = default;
 
 void GameStarter::resolveDefaults(Platform *platform, GameStarterOptions* options) {
     if (options->dataPath.empty())
