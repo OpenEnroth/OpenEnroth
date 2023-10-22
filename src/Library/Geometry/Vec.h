@@ -85,7 +85,10 @@ struct Vec3 {
     }
 
     void normalize() requires std::is_floating_point_v<T> {
-        T denom = static_cast<T>(1.0) / this->length();
+        T length = this->length();
+        T denom = 0;
+        if (length > 0)
+            denom = static_cast<T>(1.0) / length;
         x *= denom;
         y *= denom;
         z *= denom;
