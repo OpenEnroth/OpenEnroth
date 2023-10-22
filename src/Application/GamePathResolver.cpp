@@ -16,6 +16,9 @@ std::string resolveMm6Path(Platform *platform) {
             L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207661253/PATH",
             L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM6/PATH",
             L"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic\x00AE VI/1.0/AppPath",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207661253/PATH",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM6/PATH",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic\x00AE VI/1.0/AppPath",
         }
     );
 }
@@ -29,6 +32,9 @@ std::string resolveMm7Path(Platform *platform) {
             L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207658916/Path",
             L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
             L"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM7/PATH",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic VII/1.0/AppPath",
         }
     );
 }
@@ -41,6 +47,8 @@ std::string resolveMm8Path(Platform *platform) {
         {
             L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM8/PATH",
             L"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic Day of the Destroyer/1.0/AppPath",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM8/PATH",
+            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic Day of the Destroyer/1.0/AppPath",
         }
     );
 }
