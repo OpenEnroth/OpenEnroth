@@ -39,10 +39,10 @@ ChestDescList *pChestList;
 std::vector<Chest> vChests;
 
 void initChest(Chest& chest);
-bool canPlaceItemAt(int test_cell_position, ItemId item_id, Chest &chest);
-void placeItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, Chest &chest);
+bool canPlaceItemAt(int position, ItemId item_id, Chest &chest);
+void placeItemAt(int position, int uItemIdx, Chest &chest);
+int fitItemAt(int position, struct ItemGen* a2, Chest& chest);
 
-int fitItemInChest(int a1, struct ItemGen* a2, Chest &chest);
 int countChestItems(const Chest &chest);
 void rearrangeItemsRandomly(Chest &chest);
 
@@ -260,7 +260,7 @@ bool Chest::chestUI_WritePointedObjectStatusString() {
     return 0;
 }
 
-static bool canPlaceItemAt(int test_cell_position, ItemId item_id, Chest &chest) {
+static bool canPlaceItemAt(int position, ItemId item_id, Chest &chest) {
     int chest_cell_heght = pChestHeightsByType[chest.uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[chest.uChestBitmapID];
 
@@ -269,11 +269,11 @@ static bool canPlaceItemAt(int test_cell_position, ItemId item_id, Chest &chest)
     unsigned int slot_height = GetSizeInInventorySlots(img->height());
 
     assert(slot_height > 0 && slot_width > 0 && "Items should have nonzero dimensions");
-    if ((slot_width + test_cell_position % chest_cell_width <= chest_cell_width) &&
-        (slot_height + test_cell_position / chest_cell_width <= chest_cell_heght)) {
+    if ((slot_width + position % chest_cell_width <= chest_cell_width) &&
+        (slot_height + position / chest_cell_width <= chest_cell_heght)) {
         for (unsigned int x = 0; x < slot_width; x++) {
             for (unsigned int y = 0; y < slot_height; y++) {
-                if (chest.pInventoryIndices[y * chest_cell_width + x + test_cell_position] != 0) {
+                if (chest.pInventoryIndices[y * chest_cell_width + x + position] != 0) {
                     return false;
                 }
             }
@@ -303,8 +303,8 @@ static int countChestItems(const Chest &chest) {
 }
 
 
-// player drops item into the chest
-static int fitItemInChest(int position, ItemGen *put_item, Chest &chest) {
+// attemps to fit an item at position e.g when player drops an item into the chest
+static int fitItemAt(int position, ItemGen *put_item, Chest &chest) {
     int item_in_chest_count = countChestItems(chest);
     if (item_in_chest_count == -1) return 0;
 
@@ -355,7 +355,7 @@ static int fitItemInChest(int position, ItemGen *put_item, Chest &chest) {
     return (test_pos + 1);
 }
 
-void placeItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, Chest &chest) {
+void placeItemAt(int put_cell_pos, int item_at_cell, Chest &chest) {
     ItemId uItemID = chest.igChestItems[item_at_cell].uItemID;
     pItemTable->SetSpecialBonus(&chest.igChestItems[item_at_cell]);
     if (isWand(uItemID) && !chest.igChestItems[item_at_cell].uNumCharges) {
@@ -483,7 +483,7 @@ void Chest::onChestLeftClick() {
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
         if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // item held
-            if (fitItemInChest(invMatrixIndex, &pParty->pPickedItem, chest)) {
+            if (fitItemAt(invMatrixIndex, &pParty->pPickedItem, chest)) {
                 mouse->RemoveHoldingItem();
             }
         } else {
