@@ -40,7 +40,7 @@ struct DecorationDesc {
     Color uColoredLight;
 
     inline bool CanMoveThrough() const {
-        return uFlags & DECORATION_DESC_MOVE_THROUGH;
+        return uFlags & (DECORATION_DESC_MOVE_THROUGH | DECORATION_DESC_DONT_DRAW);
     }
     inline bool DontDraw() const { return uFlags & DECORATION_DESC_DONT_DRAW; }
     inline bool SoundOnDawn() const {
