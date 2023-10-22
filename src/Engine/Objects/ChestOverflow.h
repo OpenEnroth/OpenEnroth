@@ -4,7 +4,7 @@
 
 // note the values are important because they are read from the config
 enum class ChestOverflowMode {
-    // Vanilla behaviour wher items that don't fit are be lost
+    // Vanilla behaviour where items that don't fit are lost
     VANILLA = 0,
     // OE will try to place items that didn't fit every time the chest is opened again.
     OE_RETAIN_ON_NEXT_OPEN = 1,
