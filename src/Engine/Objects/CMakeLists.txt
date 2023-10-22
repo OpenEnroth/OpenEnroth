@@ -17,7 +17,7 @@ set(ENGINE_OBJECTS_HEADERS
         Actor.h
         ActorEnums.h
         Chest.h
-        ChestEnums.h
+        ChestOverflow.h
         CombinedSkillValue.h
         ItemEnchantment.h
         ItemEnums.h
@@ -31,7 +31,7 @@ set(ENGINE_OBJECTS_HEADERS
         CharacterEnums.h
         SpriteObject.h)
 
-add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})
+add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS} "ChestOverflow.h")
 target_check_style(engine_objects)
 
 target_link_libraries(engine_objects PUBLIC engine gui library_random library_color utility)

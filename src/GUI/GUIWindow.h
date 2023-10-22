@@ -279,7 +279,6 @@ std::string NameAndTitle(NPCData *npc);
 std::string GetDisplayName(Actor *actor);
 
 extern GUIWindow *pPrimaryWindow;
-//extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
 extern GUIWindow_House *window_SpeakInHouse;
 extern GUIWindow_MessageScroll *pGUIWindow_ScrollWindow;

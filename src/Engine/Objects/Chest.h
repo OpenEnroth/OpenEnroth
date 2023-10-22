@@ -25,30 +25,22 @@ class ChestDescList {
 };
 
 struct Chest {
-    inline bool Initialized() const {
-        return uFlags & CHEST_ITEMS_PLACED;
-    }
-    inline void SetInitialized(bool b) {
+    inline bool initialized() const { return flags & CHEST_ITEMS_PLACED;}
+    inline void setInitialized(bool b) {
         if (b)
-            uFlags |= CHEST_ITEMS_PLACED;
+            flags |= CHEST_ITEMS_PLACED;
         else
-            uFlags &= ~CHEST_ITEMS_PLACED;
+            flags &= ~CHEST_ITEMS_PLACED;
     }
-    inline bool Trapped() const { return uFlags & CHEST_TRAPPED; }
+    inline bool trapped() const { return flags & CHEST_TRAPPED; }
 
-    static bool CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID);
-    static int CountChestItems(int uChestID);
-    static int PutItemInChest(int a1, struct ItemGen *a2, int uChestID);
-    static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
-    static void PlaceItems(int uChestID);
     static bool open(int uChestID, Pid objectPid);
-    static void toggleFlag(int uChestID, ChestFlag uFlag, bool bValue);
-    static bool ChestUI_WritePointedObjectStatusString();
-    static void OnChestLeftClick();
-    static void GrabItem(bool all = false);
+    static bool chestUI_WritePointedObjectStatusString();
+    static void onChestLeftClick();
+    static void grabItem(bool all = false);
 
     uint16_t uChestBitmapID = 0;
-    ChestFlags uFlags;
+    ChestFlags flags;
     std::array<ItemGen, 140> igChestItems;
     std::array<int16_t, 140> pInventoryIndices = {{}};  // 0x13b4 why is this a short?
 
@@ -57,7 +49,7 @@ struct Chest {
     std::optional<Vec3i> position;
 };
 
-void RemoveItemAtChestIndex(int index);
+void setChestFlag(int chestId, ChestFlag flag, bool value);
 void GenerateItemsInChest();
 void UpdateChestPositions();
 

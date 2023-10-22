@@ -985,7 +985,7 @@ void GameUI_WritePointedObjectStatusString() {
     } else if (current_screen_type == SCREEN_CHEST) {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {  // if in chest area
-            if (Chest::ChestUI_WritePointedObjectStatusString()) {
+            if (Chest::chestUI_WritePointedObjectStatusString()) {
                 return;
             } else if (uLastPointedObjectID) {  // not found so reset
                 engine->_statusBar->clearPermanent();

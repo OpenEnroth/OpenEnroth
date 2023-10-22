@@ -1665,7 +1665,7 @@ void Game::processQueuedMessages() {
                     pParty->activeCharacter().OnInventoryLeftClick();
                     continue;
                 }
-                Chest::OnChestLeftClick();
+                Chest::onChestLeftClick();
                 continue;
             case UIMSG_InventoryLeftClick:
                 pParty->activeCharacter().OnInventoryLeftClick();
@@ -1694,7 +1694,7 @@ void Game::processQueuedMessages() {
                 engine->_messageQueue->clear();
                 // if currently in a chest
                 if (current_screen_type == SCREEN_CHEST) {
-                    Chest::GrabItem(keyboardInputHandler->IsTakeAllToggled());
+                    Chest::grabItem(keyboardInputHandler->IsTakeAllToggled());
                 } else {
                     onPressSpace();
                 }

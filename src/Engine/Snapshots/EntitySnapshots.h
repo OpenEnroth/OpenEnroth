@@ -1018,7 +1018,7 @@ void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst);
 
 struct Chest_MM7 {
     uint16_t uChestBitmapID;
-    uint16_t uFlags;
+    uint16_t flags;
     std::array<ItemGen_MM7, 140> igChestItems;
     std::array<int16_t, 140> pInventoryIndices;
 };

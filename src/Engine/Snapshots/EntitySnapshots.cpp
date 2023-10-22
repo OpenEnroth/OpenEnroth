@@ -1572,14 +1572,14 @@ void snapshot(const Chest &src, Chest_MM7 *dst) {
     memzero(dst);
 
     dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = std::to_underlying(src.uFlags);
+    dst->flags = std::to_underlying(src.flags);
     snapshot(src.igChestItems, &dst->igChestItems);
     snapshot(src.pInventoryIndices, &dst->pInventoryIndices);
 }
 
 void reconstruct(const Chest_MM7 &src, Chest *dst) {
     dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = ChestFlags(src.uFlags);
+    dst->flags = ChestFlags(src.flags);
     reconstruct(src.igChestItems, &dst->igChestItems);
     reconstruct(src.pInventoryIndices, &dst->pInventoryIndices);
 

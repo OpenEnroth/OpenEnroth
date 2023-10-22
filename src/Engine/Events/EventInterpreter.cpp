@@ -536,7 +536,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             toggleActorGroupFlag(ir.data.actor_flag_descr.id, ir.data.actor_flag_descr.attr, ir.data.actor_flag_descr.is_set);
             break;
         case EVENT_ToggleChestFlag:
-            Chest::toggleFlag(ir.data.chest_flag_descr.chest_id, ir.data.chest_flag_descr.flag, ir.data.chest_flag_descr.is_set);
+            setChestFlag(ir.data.chest_flag_descr.chest_id, ir.data.chest_flag_descr.flag, ir.data.chest_flag_descr.is_set);
             break;
         case EVENT_CharacterAnimation:
             doForChosenPlayer(ir.who, vrng.get(), [&] (Character &player) { player.playReaction(ir.data.speech_id); return false; });
