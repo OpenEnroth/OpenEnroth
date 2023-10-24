@@ -509,8 +509,8 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
 }
 
 void CollideWithParty(bool jagged_top) {
-    // Why x2? on radius??
-    CollideWithCylinder(pParty->pos, /*2 * */pParty->radius, pParty->height, Pid::character(0), jagged_top);
+    // Why x2? on radius?? - vanilla behaviour
+    CollideWithCylinder(pParty->pos, 2 * pParty->radius, pParty->height, Pid::character(0), jagged_top);
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
@@ -834,20 +834,23 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // Create new sliding plane from collision
-            Vec3f slideplaneorigin = collision_state.collisionPos;
-            Vec3f slideplanenormal = collision_state.collisionNorm;
-            float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
+            // TODO(pskelton): common to odm/blv so extract
+            Vec3f newdirection;
+            if (collision_state.adjusted_move_distance > 0.0f) {
+                // Create new sliding plane from collisio
+                Vec3f slideplaneorigin = collision_state.collisionPos;
+                Vec3f slideplanenormal = collision_state.collisionNorm;
+                float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
 
-            // Form a sliding vector that is parallel to sliding movement
-            // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
-            // Start point to new destination is a vector along the slide plane
-            float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
-            Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
-            Vec3f newdirection = newdestination - collision_state.collisionPos;
-            // For cylinder collision we dont want any z effects
-            newdirection.z = 0;
-            newdirection.normalize();
+                // Form a sliding vector that is parallel to sliding movement
+                // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
+                // Start point to new destination is a vector along the slide plane
+                float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
+                Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
+                newdirection = newdestination - collision_state.collisionPos;
+                newdirection.z = 0;
+                newdirection.normalize();
+            }
 
             // Set party to move along this new sliding vector
             // Re add party z speed because it would get zeroed in dot product
@@ -947,10 +950,16 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             newPosLow.y = collision_state.new_position_lo.y;
             newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            // Set new position but moved back slightly so we never touch the face
-            newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
-            // Adjust the collision position with the same offset
-            collision_state.collisionPos -= closestdist * collision_state.direction;
+            if (collision_state.adjusted_move_distance > closestdist) {
+                // Set new position but moved back slightly so we never touch the face
+                newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+                // Adjust the collision position with the same offset
+                collision_state.collisionPos -= closestdist * collision_state.direction;
+            }
+            else {
+                // TODO(pskelton): handle this better
+                newPosLow = *partyNewPos;
+            }
         }
 
         int allnewfloor = ODM_GetFloorLevel(newPosLow.toInt(), pParty->height, partyIsOnWater, floorFaceId, 0);
@@ -1005,19 +1014,23 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // Create new sliding plane from collisio
-            Vec3f slideplaneorigin = collision_state.collisionPos;
-            Vec3f slideplanenormal = collision_state.collisionNorm;
-            float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
+            // TODO(pskelton): common to odm/blv so extract
+            Vec3f newdirection;
+            if (collision_state.adjusted_move_distance > 0.0f) {
+                // Create new sliding plane from collisio
+                Vec3f slideplaneorigin = collision_state.collisionPos;
+                Vec3f slideplanenormal = collision_state.collisionNorm;
+                float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
 
-            // Form a sliding vector that is parallel to sliding movement
-            // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
-            // Start point to new destination is a vector along the slide plane
-            float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
-            Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
-            Vec3f newdirection = newdestination - collision_state.collisionPos;
-            newdirection.z = 0;
-            newdirection.normalize();
+                // Form a sliding vector that is parallel to sliding movement
+                // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
+                // Start point to new destination is a vector along the slide plane
+                float destplanedist = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
+                Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
+                newdirection = newdestination - collision_state.collisionPos;
+                newdirection.z = 0;
+                newdirection.normalize();
+            }
 
             // Set party to move along this new sliding vector
             // Re add party z speed because it would get zeroed in dot product
@@ -1120,6 +1133,14 @@ bool hasShorterSolution(const float a, const float b, const float c, const float
         *outNewSoln = alpha1;
         return true;  // this new collision is shorter than old
     }
+
+    // TODO(pskelton): might want a block around this so its only used for decorations / party
+    // We are inside and colliding - for cylinder
+    if (alpha1 < 0.0f && alpha2 >= 0.0f) {
+        *outNewSoln = 0.0f;
+        return true;
+    }
+
     if (alpha2 > 0.0f && alpha2 < curSoln) {
         *outNewSoln = alpha2;
         return true;  // this new collision is shorter than old

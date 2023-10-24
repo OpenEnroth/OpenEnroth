@@ -272,7 +272,7 @@ void Engine::DrawGUI() {
 
         int debug_info_offset = 16;
         pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
-                                 fmt::format("Party position:         {} {} {}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
+                                 fmt::format("Party position:         {:.2f} {:.2f} {:.2f}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
         debug_info_offset += 16;
 
         pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
