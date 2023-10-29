@@ -5,7 +5,6 @@
 
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineIocContainer.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -115,12 +114,12 @@ std::string EventMap::hint(int eventId) const {
 void EventMap::dump(int eventId) const {
     const auto *events = valuePtr(_eventsById, eventId);
     if (events) {
-        logger->verbose("Event: {}", eventId);
+        logger->trace("Event: {}", eventId);
         for (const EventIR &ir : *events) {
-            logger->verbose("{}", ir.toString());
+            logger->trace("{}", ir.toString());
         }
     } else {
-        logger->verbose("Event {} not found", eventId);
+        logger->trace("Event {} not found", eventId);
     }
 }
 

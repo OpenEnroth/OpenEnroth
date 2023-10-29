@@ -9,13 +9,9 @@
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Library/Logger/Logger.h"
-
 #include "Io/Mouse.h"
 
 using Io::Mouse;
-
-Logger *logger = nullptr;
 
 DecalBuilder *EngineIocContainer::ResolveDecalBuilder() {
     if (!decal_builder) {

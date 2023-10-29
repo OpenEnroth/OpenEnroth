@@ -13,8 +13,10 @@ class PlatformEvent;
 class PlatformWindow;
 class PlatformEventLoop;
 class PlatformEventHandler;
-class PlatformLogger;
 class PlatformGamepad;
+class Logger;
+
+// TODO(captainurist): just move Platform as another lib in Library.
 
 /**
  * Platform abstraction layer.
@@ -71,10 +73,12 @@ class Platform {
     /**
      * Creates a standard platform.
      *
-     * @param logger                    Logger to use. Must not be null.
+     * @param logger                    Logger to use. Must not be null. Note that `Logger` is a singleton, so we don't
+     *                                  really need to pass it in. But we want to be explicit in stating that the
+     *                                  `Platform` will use a `Logger` instance, and thus the instance should exist.
      * @return                          A newly created `Platform`. This method is guaranteed to succeed.
      */
-    static std::unique_ptr<Platform> createStandardPlatform(PlatformLogger *logger);
+    static std::unique_ptr<Platform> createStandardPlatform(Logger *logger);
 
     /**
      * Creates a new platform window.

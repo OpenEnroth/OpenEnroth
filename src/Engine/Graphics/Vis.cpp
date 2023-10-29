@@ -6,7 +6,6 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Level/Decoration.h"

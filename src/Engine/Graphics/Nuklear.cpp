@@ -9,7 +9,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/GameResourceManager.h"
 
 #include "Engine/Graphics/Nuklear.h"
@@ -797,7 +796,7 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
             if ((*it)->asset) {
                 render->NuklearImageFree((*it)->asset);
                 (*it)->asset->Release();
-                logger->verbose("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
+                logger->trace("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
                 delete *it;
             }
         }
@@ -822,7 +821,7 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
         if (!is_reload && (wins[winType].state == WINDOW_INITIALIZED || wins[winType].state == WINDOW_TEMPLATE_ERROR))
             wins[winType].state = WINDOW_NOT_LOADED;
 
-        logger->verbose("Nuklear: [{}] template unloaded", wins[winType].tmpl);
+        logger->trace("Nuklear: [{}] template unloaded", wins[winType].tmpl);
     } else {
         logger->warning("Nuklear: [{}] template is not loaded", wins[winType].tmpl);
     }

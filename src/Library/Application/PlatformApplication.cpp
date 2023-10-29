@@ -8,7 +8,6 @@
 #include "Platform/Proxy/ProxyWindow.h"
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/FilteringEventHandler.h"
-#include "Platform/PlatformLogger.h"
 
 #include "Utility/MapAccess.h"
 

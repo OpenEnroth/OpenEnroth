@@ -7,10 +7,9 @@
 
 #include "Io/Key.h"
 
-#include "Platform/PlatformEnums.h"
-
 #include "Library/Config/Config.h"
 #include "Library/Random/RandomEngineEnums.h"
+#include "Library/Logger/LogEnums.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES
@@ -21,8 +20,9 @@
 #endif
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
-MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformLogLevel)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(RandomEngineType)
+
+// TODO(captainurist): apply codestyle here.
 
 class GameConfig : public Config {
  public:
@@ -83,8 +83,8 @@ class GameConfig : public Config {
 
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
-        ConfigEntry<PlatformLogLevel> LogLevel = {this, "log_level", LOG_ERROR,
-                                                  "Default log level. One of 'verbose', 'debug', 'info', 'warning', 'error' and 'critical'."};
+        ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_ERROR,
+                                            "Default log level. One of 'verbose', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};

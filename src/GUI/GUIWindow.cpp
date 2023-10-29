@@ -181,7 +181,7 @@ void GUIWindow::Release() {
     if (this->eWindowType == WINDOW_GameUI)
         nuklear->Release(WINDOW_GameUI);
 
-    logger->verbose("Release window: {}", toString(eWindowType));
+    logger->trace("Release window: {}", toString(eWindowType));
 }
 
 void GUIWindow::DeleteButtons() {
@@ -409,7 +409,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
 
-    logger->verbose("New window: {}", toString(windowType));
+    logger->trace("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = dimensions.w;
     this->uFrameHeight = dimensions.h;

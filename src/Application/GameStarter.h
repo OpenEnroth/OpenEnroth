@@ -7,6 +7,8 @@
 class Platform;
 class PlatformLogger;
 class Logger;
+class BufferLogSink;
+class LogSink;
 class PlatformApplication;
 class GameConfig;
 class Game;
@@ -31,8 +33,9 @@ class GameStarter {
 
  private:
     GameStarterOptions _options;
-    std::unique_ptr<PlatformLogger> _logger;
-    std::unique_ptr<Logger> _globalLogger;
+    std::unique_ptr<BufferLogSink> _bufferSink;
+    std::unique_ptr<LogSink> _defaultSink;
+    std::unique_ptr<Logger> _logger;
     std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
     std::shared_ptr<GameConfig> _config;

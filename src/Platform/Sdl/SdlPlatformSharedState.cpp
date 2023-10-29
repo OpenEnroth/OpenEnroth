@@ -2,14 +2,16 @@
 
 #include <cassert>
 
+#include "Library/Logger/Logger.h"
+
 #include "Utility/MapAccess.h"
 
 #include "SdlWindow.h"
 #include "SdlPlatform.h"
-#include "SdlLogger.h"
+#include "SdlLogSource.h"
 #include "SdlGamepad.h"
 
-SdlPlatformSharedState::SdlPlatformSharedState(PlatformLogger *logger): _logger(logger) {
+SdlPlatformSharedState::SdlPlatformSharedState(Logger *logger): _logger(logger), _logCategory("sdl", &_logSource) {
     assert(logger);
 }
 
@@ -18,11 +20,15 @@ SdlPlatformSharedState::~SdlPlatformSharedState() {
 }
 
 void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
-    // Note that we cannot use `SDL_Log` here because we have no guarantees on the actual type of the logger
-    // that was passed in constructor.
-    char buffer[1024];
-    snprintf(buffer, sizeof(buffer), "SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
-    _logger->log(PLATFORM_LOG, LOG_ERROR, buffer);
+    _logger->error(_logCategory, "SDL error in {}: {}", sdlFunctionName, SDL_GetError());
+}
+
+const LogCategory &SdlPlatformSharedState::logCategory() const {
+    return _logCategory;
+}
+
+Logger *SdlPlatformSharedState::logger() const {
+    return _logger;
 }
 
 void SdlPlatformSharedState::registerWindow(SdlWindow *window) {

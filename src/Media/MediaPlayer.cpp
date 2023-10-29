@@ -25,7 +25,6 @@ extern "C" {
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/ErrorHandling.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 
@@ -33,12 +32,11 @@ extern "C" {
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
-#include "Media/MediaLogger.h"
+#include "Media/FFmpegLogProxy.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/DataPath.h"
 
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 
 using namespace std::chrono_literals; // NOLINT
@@ -76,7 +74,7 @@ class AVStreamWrapper {
         if (dec_ctx != nullptr) {
             // Close the codec
             avcodec_close(dec_ctx);
-            logger->verbose("ffmpeg: close decoder context file");
+            logger->trace("ffmpeg: close decoder context file");
             dec_ctx = nullptr;
         }
     }
@@ -339,7 +337,7 @@ class Movie : public IMovie {
         if (format_ctx) {
             // Close the video file
             avformat_close_input(&format_ctx);
-            logger->verbose("close video format context file\n");
+            logger->trace("close video format context file\n");
             format_ctx = nullptr;
         }
         if (avioContext) {
@@ -499,7 +497,7 @@ class Movie : public IMovie {
                 if (buffer) buffq.push(buffer);
             }
         }
-        logger->verbose("Audio Packets Queued");
+        logger->trace("Audio Packets Queued");
 
         // reset video to start
         int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
@@ -510,7 +508,7 @@ class Movie : public IMovie {
             return;
         }
         start_time = std::chrono::system_clock::now();
-        logger->verbose("Video stream reset");
+        logger->trace("Video stream reset");
 
         int lastvideopts = -1;
         int desired_frame_number;
@@ -874,7 +872,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     GraphicsImage *tex = GraphicsImage::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
     if (pMovie->GetFormat() == "bink") {
-        logger->verbose("bink file");
+        logger->trace("bink file");
         pMovie->PlayBink();
     } else {
         while (true) {
@@ -974,11 +972,9 @@ void MPlayer::Unload() {
 MPlayer::MPlayer() {
     static int libavcodec_initialized = false;
 
-    mediaLogger = std::make_unique<MediaLogger>(logger);
-    MediaLogger::setGlobalMediaLogger(mediaLogger.get());
+    logProxy = std::make_unique<FFmpegLogProxy>(logger);
 
     if (!libavcodec_initialized) {
-        // av_log_set_level(AV_LOG_TRACE);
         // Register all available file formats and codecs
 #ifndef FF_API_NEXT
         avcodec_register_all();
@@ -1010,8 +1006,6 @@ MPlayer::~MPlayer() {
     }
 
     delete provider;
-
-    MediaLogger::setGlobalMediaLogger(nullptr);
 }
 
 // AudioBaseDataSource

@@ -16,7 +16,7 @@ set(PLATFORM_SOURCES
         Sdl/SdlEnumTranslation.cpp
         Sdl/SdlEventLoop.cpp
         Sdl/SdlGamepad.cpp
-        Sdl/SdlLogger.cpp
+        Sdl/SdlLogSource.cpp
         Sdl/SdlOpenGLContext.cpp
         Sdl/SdlPlatform.cpp
         Sdl/SdlPlatformSharedState.cpp
@@ -37,7 +37,6 @@ set(PLATFORM_HEADERS
         PlatformEventLoop.h
         PlatformEvents.h
         PlatformGamepad.h
-        PlatformLogger.h
         PlatformOpenGLContext.h
         PlatformOpenGLOptions.h
         PlatformWindow.h
@@ -50,7 +49,7 @@ set(PLATFORM_HEADERS
         Sdl/SdlEnumTranslation.h
         Sdl/SdlEventLoop.h
         Sdl/SdlGamepad.h
-        Sdl/SdlLogger.h
+        Sdl/SdlLogSource.h
         Sdl/SdlOpenGLContext.h
         Sdl/SdlPlatform.h
         Sdl/SdlPlatformSharedState.h
@@ -75,4 +74,4 @@ target_link_libraries(platform_main PRIVATE SDL2::SDL2OE)
 
 add_library(platform STATIC ${PLATFORM_SOURCES} ${PLATFORM_HEADERS})
 target_check_style(platform)
-target_link_libraries(platform PRIVATE SDL2::SDL2OE)
+target_link_libraries(platform PUBLIC utility library_logger PRIVATE SDL2::SDL2OE)

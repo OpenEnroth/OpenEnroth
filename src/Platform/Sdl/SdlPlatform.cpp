@@ -8,16 +8,29 @@
 
 #include "Platform/PlatformEventHandler.h"
 
+#include "Library/Logger/Logger.h"
+
 #include "SdlPlatformSharedState.h"
 #include "SdlEventLoop.h"
 #include "SdlWindow.h"
-#include "SdlLogger.h"
 #include "SdlGamepad.h"
+#include "SdlEnumTranslation.h"
 
-SdlPlatform::SdlPlatform(PlatformLogger *logger) {
+static void SDLCALL sdlLogCallback(void *userdata, int category, SDL_LogPriority priority, const char *message) {
+    LogLevel level = translateSdlLogLevel(priority);
+    if (category == SDL_LOG_CATEGORY_ASSERT)
+        level = LOG_CRITICAL; // This is an assertion, damn it! But SDL issues these at SDL_LOG_PRIORITY_WARN.
+
+    SdlPlatformSharedState *state = static_cast<SdlPlatformSharedState *>(userdata);
+    state->logger()->log(state->logCategory(), level, "{}", message);
+}
+
+SdlPlatform::SdlPlatform(Logger *logger) {
     assert(logger);
 
     _state = std::make_unique<SdlPlatformSharedState>(logger);
+
+    SDL_LogSetOutputFunction(&sdlLogCallback, _state.get());
 
     _initialized = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) == 0;
     if (!_initialized) {

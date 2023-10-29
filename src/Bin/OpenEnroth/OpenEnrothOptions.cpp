@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "Application/GamePathResolver.h"
-#include "Application/GameConfig.h" // For PlatformLogLevel serialization.
 
 #include "Library/Cli/CliApp.h"
 
@@ -24,10 +23,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Path to OpenEnroth config file, default is 'openenroth.ini' in data folder.")->option_text("PATH");
     app->add_option(
         "--log-level", result.logLevel,
-        "Log level, one of 'verbose', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
+        "Log level, one of 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
     app->add_flag_callback(
-        "-v,--verbose", [&] { result.logLevel = LOG_VERBOSE; },
-        "Set log level to 'verbose'.");
+        "-v,--verbose", [&] { result.logLevel = LOG_TRACE; },
+        "Set log level to 'trace'.");
     app->set_help_flag("-h,--help", "Print help and exit.");
 
     CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();

@@ -75,31 +75,6 @@ enum class PlatformStorage {
 };
 using enum PlatformStorage;
 
-/**
- * Platform log level as used by `PlatformLogger`.
- */
-enum class PlatformLogLevel {
-    LOG_VERBOSE,
-    LOG_DEBUG,
-    LOG_INFO,
-    LOG_WARNING,
-    LOG_ERROR,
-    LOG_CRITICAL
-};
-using enum PlatformLogLevel;
-
-// TODO(captainurist): this will be dropped
-/**
- * Platform log category as used by `PlatformLogger`.
- *
- * Note that platform doesn't have an API to define custom log categories, this should be done in user code if needed.
- */
-enum class PlatformLogCategory {
-    PLATFORM_LOG,
-    APPLICATION_LOG
-};
-using enum PlatformLogCategory;
-
 enum class PlatformKey : int {
     // usual text input
     KEY_CHAR, // TODO(captainurist): this doesn't belong here

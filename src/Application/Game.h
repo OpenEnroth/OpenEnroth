@@ -8,7 +8,6 @@
 #include "GameIocContainer.h"
 
 #include "Engine/Engine.h"
-#include "Engine/EngineIocContainer.h"
 
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"

@@ -1313,9 +1313,9 @@ void Game::processQueuedMessages() {
                     continue;
                 } else {
                     if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
-                        logger->verbose("Party is airborne");
+                        logger->trace("Party is airborne");
                     if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
-                        logger->verbose("Party on water");
+                        logger->trace("Party on water");
                 }
 
                 if (pParty->bTurnBasedModeOn) {

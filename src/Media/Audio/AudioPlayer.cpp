@@ -363,9 +363,9 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
         }
     } else {
         if (si.sName.empty()) {
-            logger->verbose("AudioPlayer: playing sound {}", eSoundID);
+            logger->trace("AudioPlayer: playing sound {}", eSoundID);
         } else {
-            logger->verbose("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
+            logger->trace("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
         }
     }
 }

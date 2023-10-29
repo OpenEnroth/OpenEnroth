@@ -3,7 +3,6 @@
 #include "Engine/ErrorHandling.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/EngineIocContainer.h"
 
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
