@@ -25,7 +25,5 @@ class FFmpegLogProxy {
 
  private:
     Logger *_logger = nullptr;
-    FFmpegLogSource _source;
-    LogCategory _category;
     std::unordered_map<std::thread::id, LogState> _stateByThreadId;
 };

@@ -11,7 +11,11 @@
 #include "SdlLogSource.h"
 #include "SdlGamepad.h"
 
-SdlPlatformSharedState::SdlPlatformSharedState(Logger *logger): _logger(logger), _logCategory("sdl", &_logSource) {
+// Log category should be a global so that it's registered at program startup.
+static constinit SdlLogSource globalSdlLogSource;
+static LogCategory globalSdlLogCategory("sdl", &globalSdlLogSource);
+
+SdlPlatformSharedState::SdlPlatformSharedState(Logger *logger): _logger(logger) {
     assert(logger);
 }
 
@@ -20,11 +24,11 @@ SdlPlatformSharedState::~SdlPlatformSharedState() {
 }
 
 void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
-    _logger->error(_logCategory, "SDL error in {}: {}", sdlFunctionName, SDL_GetError());
+    _logger->error(globalSdlLogCategory, "SDL error in {}: {}", sdlFunctionName, SDL_GetError());
 }
 
 const LogCategory &SdlPlatformSharedState::logCategory() const {
-    return _logCategory;
+    return globalSdlLogCategory;
 }
 
 Logger *SdlPlatformSharedState::logger() const {

@@ -9,7 +9,12 @@ extern "C" {
 
 #include "FFmpegLogSource.h"
 
-static std::mutex globalFFmpegLogMutex; // Access to global logger ptr must be serialized, so we need a global mutex.
+// Category should be a global so that it's registered at program startup.
+static constinit FFmpegLogSource globalFFmpegLogSource;
+static LogCategory globalFFmpegLogCategory("ffmpeg", &globalFFmpegLogSource);
+
+// Access to global logger ptr must be serialized, so we need a global mutex.
+static std::mutex globalFFmpegLogMutex;
 static FFmpegLogProxy *globalFFmpegLogger = nullptr;
 
 static void ffmpegLogCallback(void *ptr, int level, const char *format, va_list args) {
@@ -19,7 +24,7 @@ static void ffmpegLogCallback(void *ptr, int level, const char *format, va_list 
     globalFFmpegLogger->log(ptr, level, format, args);
 }
 
-FFmpegLogProxy::FFmpegLogProxy(Logger *logger): _logger(logger), _category("ffmpeg", &_source) {
+FFmpegLogProxy::FFmpegLogProxy(Logger *logger): _logger(logger) {
     assert(logger);
     assert(globalFFmpegLogger == nullptr);
     globalFFmpegLogger = this;
@@ -41,11 +46,11 @@ void FFmpegLogProxy::log(void *ptr, int level, const char *format, va_list args)
     char buffer[4096];
     int status = av_log_format_line2(ptr, level, format, args, buffer, sizeof(buffer), &state.prefixFlag);
     if (status < 0) {
-        _logger->trace(_category, "av_log_format_line2 failed with error code {}", status);
+        _logger->trace(globalFFmpegLogCategory, "av_log_format_line2 failed with error code {}", status);
     } else {
         state.message += buffer;
         if (state.message.ends_with('\n')) {
-            _logger->log(_category, FFmpegLogSource::translateFFmpegLogLevel(level), "{}", state.message);
+            _logger->log(globalFFmpegLogCategory, FFmpegLogSource::translateFFmpegLogLevel(level), "{}", state.message);
             state.message.clear();
         }
     }

@@ -41,8 +41,6 @@ class SdlPlatformSharedState {
 
  private:
     Logger *_logger = nullptr;
-    SdlLogSource _logSource;
-    LogCategory _logCategory;
     std::unordered_map<uint32_t, SdlWindow *> _windowById;
     std::unordered_map<SDL_JoystickID, std::unique_ptr<SdlGamepad>> _gamepadById;
 };
