@@ -2026,6 +2026,12 @@ void ODM_ProcessPartyActions() {
     // has the party collided with a outdoor model
     bool partyHasHitModel{ false };
 
+    float savedZ = partyInputSpeed.z;
+    // horizontal
+    partyInputSpeed.z = 0;
+    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID, &partySlopeMod);
+    // vertical
+    partyInputSpeed = Vec3f(0, 0, savedZ);
     ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID, &partySlopeMod);
 
     if (!partyNotTouchingFloor || partyCloseToGround)
@@ -2056,11 +2062,7 @@ void ODM_ProcessPartyActions() {
         pParty->pos.x = partyNewPos.x;
         pParty->pos.y = partyNewPos.y;
 
-        if (partySlopeMod) {
-            pParty->speed.z = partyNewPos.z - pParty->pos.z;
-        } else {
-            pParty->speed.z = partyInputSpeed.z;
-        }
+        pParty->speed.z = partyInputSpeed.z;
 
         pParty->pos.z = partyNewPos.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;

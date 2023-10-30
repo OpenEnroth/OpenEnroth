@@ -955,8 +955,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
                 newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
                 // Adjust the collision position with the same offset
                 collision_state.collisionPos -= closestdist * collision_state.direction;
-            }
-            else {
+            } else {
                 // TODO(pskelton): handle this better
                 newPosLow = *partyNewPos;
             }
