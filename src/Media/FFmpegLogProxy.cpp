@@ -50,6 +50,7 @@ void FFmpegLogProxy::log(void *ptr, int level, const char *format, va_list args)
     } else {
         state.message += buffer;
         if (state.message.ends_with('\n')) {
+            state.message.pop_back(); // Drop the '\n'.
             _logger->log(globalFFmpegLogCategory, FFmpegLogSource::translateFFmpegLogLevel(level), "{}", state.message);
             state.message.clear();
         }
