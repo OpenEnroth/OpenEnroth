@@ -90,51 +90,117 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
  *                                      Always non-negative. This parameter is not set if the function returns false.
  *                                      Note that "touching" in this context means that the distance from the actor's
  *                                      center to the polygon equals actor's radius.
+ * @param[out] out_collision_point      Point at which collision between sphere and face occurs.
  * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
  * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
  *                                      polygon if moving along the `dir` axis.
  */
-static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius, const Vec3f &dir,
-                                  float *out_move_distance, bool ignore_ethereal, int model_idx) {
+static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius, const Vec3f& dir,
+    float* out_move_distance, Vec3f* out_collision_point, bool ignore_ethereal, int model_idx) {
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    float dir_normal_projection = dot(dir, face->facePlane.normal);
+    if (face->uNumVertices < 3)
+        return false; // Apparently this happens.
 
+    float dir_normal_projection = dot(dir, face->facePlane.normal);
     // This is checked by the caller, we should be moving into the face or sideways, so projection of dir onto the
-    // face normal should either be negative or close to zero.
+    // face normal should either be negative or close to zero. IE never collide with rear of face
     assert(dir_normal_projection < COLLISIONS_EPS);
 
+    if (dir_normal_projection > 0.0f) {
+        // hitting backface
+        return false;
+    }
+
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
-    assert(center_face_distance > 0); // Checked by the caller, we should be in front of the face, not behind it.
-
-    float move_distance;
+    float move_distance = 0.0f;
     Vec3f projected_pos = pos;
-
-    if (center_face_distance < radius) {
-        // Already colliding.
-        move_distance = 0;
-        projected_pos += center_face_distance * -face->facePlane.normal;
+    bool sphereinplane = false;
+    if (fuzzyIsNull(dir_normal_projection, COLLISIONS_EPS)) {
+        if (fabs(center_face_distance) >= radius) {
+            return false; // can never hit face
+        } else {
+            sphereinplane = true; // Sphere is already touching the infinite plane
+        }
     } else {
-        // Moving sideways & not already colliding? No collision.
-        if (fuzzyIsNull(dir_normal_projection, COLLISIONS_EPS))
-            return false;
-
-        // Otherwise can move along the dir vector until the sphere touches the face.
+        // how far do we need to move the sphere to touch infinite plane
         move_distance = (center_face_distance - radius) / -dir_normal_projection;
-        assert(move_distance >= 0);
-
+        if (move_distance < -100.0f) {
+            // this can happen when we are already closer than the radius
+            return false;
+        }
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
-    assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
+    if (!sphereinplane) {
+        // projected pos of collsion should now be on the faceplace
+        assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
-    if (!face->Contains(projected_pos.toInt(), model_idx))
-        return false; // We've just managed to slide past the face, no collision happened.
+        // collision point is in face so can return
+        if (face->Contains(projected_pos.toInt(), model_idx)) {
+            *out_move_distance = move_distance;
+            *out_collision_point = projected_pos;
+            //logger->warning("Error: collide with face md: {}", move_distance);
+            return true;
+        }
+    }
 
-    *out_move_distance = move_distance;
-    return true;
+    // We may not be colliding with the surface of the face but could still be hitting its vertices or edges
+    float a, b, c;
+    float startingDist = *out_move_distance, newDist = 0.0f;
+    Vec3f new_collision_pos;
+    bool collidingwithface = false;
+
+    // now collide with vertices - point sphere collision
+    a = dir.lengthSqr();
+    for (int i = 0; i < face->uNumVertices; ++i) {
+        Vec3f vertpos;
+        if (model_idx == MODEL_INDOOR) {
+            vertpos = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
+        } else {
+            vertpos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
+        }
+
+        b = 2.0f * (dot(dir, pos - vertpos));
+        c = (vertpos - pos).lengthSqr() - radius * radius;
+
+        if (hasShorterSolution(a, b, c, startingDist, &newDist)) {
+            startingDist = newDist;
+            collidingwithface = true;
+            new_collision_pos = vertpos;
+        }
+    }
+
+    // now collide with edges
+    for (int i = 0; i < face->uNumVertices; ++i) {
+        Vec3f vert1, vert2;
+        int i2 = (i + 1) % face->uNumVertices;
+        if (model_idx == MODEL_INDOOR) {
+            vert1 = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
+            vert2 = pIndoor->pVertices[face->pVertexIDs[i2]].toFloat();
+        } else {
+            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
+            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]].toFloat();
+        }
+
+        // collide with line between the two verts
+        float intersectiondist;
+        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectiondist)) {
+            startingDist = newDist;
+            collidingwithface = true;
+            new_collision_pos = vert1 + intersectiondist * (vert2 - vert1);
+        }
+    }
+
+    if (collidingwithface) {
+        *out_move_distance = startingDist;
+        *out_collision_point = new_collision_pos;
+        return true;
+    }
+
+    return false; // No collision happened.
 }
 
 /**
@@ -207,7 +273,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
             bool have_collision = false;
             float move_distance = collision_state.move_distance;
-            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, ignore_ethereal, model_idx)) {
+            Vec3f col_pos;
+            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, &col_pos, ignore_ethereal, model_idx)) {
                 have_collision = true;
             } else {
                 move_distance = collision_state.move_distance + radius;
@@ -219,6 +286,7 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
                 collision_state.adjusted_move_distance = move_distance;
+                collision_state.collisionPos = col_pos;
                 collision_state.pid = face_pid;
             }
         }
