@@ -2,8 +2,6 @@
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 
-#include "Engine/EngineIocContainer.h"
-
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
 

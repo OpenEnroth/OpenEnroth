@@ -7,20 +7,26 @@
 #include <unordered_map>
 #include <memory>
 
+#include "Library/Logger/LogCategory.h"
+
+#include "SdlLogSource.h"
+
 class SdlWindow;
 class SdlPlatform;
 class SdlGamepad;
 class PlatformEvent;
 class PlatformEventHandler;
-class PlatformLogger;
 class PlatformGamepad;
+class Logger;
 
 class SdlPlatformSharedState {
  public:
-    explicit SdlPlatformSharedState(PlatformLogger *logger);
+    explicit SdlPlatformSharedState(Logger *logger);
     ~SdlPlatformSharedState();
 
     void logSdlError(const char *sdlFunctionName);
+    const LogCategory &logCategory() const;
+    Logger *logger() const;
 
     void registerWindow(SdlWindow *window);
     void unregisterWindow(SdlWindow *window);
@@ -34,7 +40,7 @@ class SdlPlatformSharedState {
     SdlGamepad *gamepad(SDL_JoystickID id) const;
 
  private:
-    PlatformLogger *_logger = nullptr;
+    Logger *_logger = nullptr;
     std::unordered_map<uint32_t, SdlWindow *> _windowById;
     std::unordered_map<SDL_JoystickID, std::unique_ptr<SdlGamepad>> _gamepadById;
 };

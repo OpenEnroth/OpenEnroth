@@ -1114,7 +1114,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
 
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
-        logger->verbose("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
+        logger->trace("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
 
         if (pFaceID)
             *pFaceID = -1;

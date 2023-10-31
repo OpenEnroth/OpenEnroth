@@ -271,7 +271,7 @@ int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
     if (linevertscnt)
-        logger->verbose("BeginLines with points still stored in buffer");
+        logger->trace("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
 
@@ -637,7 +637,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint paletteid, Color uColor32) {
     if (!img) {
-        logger->verbose("Null img passed to DrawImage");
+        logger->trace("Null img passed to DrawImage");
         return;
     }
 
@@ -1243,7 +1243,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     GraphicsImage *texture = pArcomageGame->pSprites;
 
     if (!texture) {
-        logger->verbose("Missing Arcomage Sprite Sheet");
+        logger->trace("Missing Arcomage Sprite Sheet");
         return;
     }
 
@@ -2439,7 +2439,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_modelview();
 
     if (billbstorecnt)
-        logger->verbose("Billboard shader store isnt empty!");
+        logger->trace("Billboard shader store isnt empty!");
 
     // track loaded tex
     float gltexid{ 0 };
@@ -2752,7 +2752,7 @@ void RenderOpenGL::BeginScene2D() {
 // TODO(pskelton): use alpha from mask too
 void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
     if (!tex) {
-        logger->verbose("Null texture passed to DrawTextureNew");
+        logger->trace("Null texture passed to DrawTextureNew");
         return;
     }
 
@@ -2859,7 +2859,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
 // TODO(pskelton): add optional colour32
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage *img, int custom_height) {
     if (!img) {
-        logger->verbose("Null texture passed to DrawTextureCustomHeight");
+        logger->trace("Null texture passed to DrawTextureCustomHeight");
         return;
     }
 

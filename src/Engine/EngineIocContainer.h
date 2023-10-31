@@ -4,7 +4,6 @@
 
 struct BloodsplatContainer;
 struct DecalBuilder;
-class Logger;
 namespace Io {
 class Mouse;
 }
@@ -32,5 +31,3 @@ class EngineIocContainer {
      static std::shared_ptr<ParticleEngine> particle_engine;
      static Vis *vis;
 };
-
-extern Logger *logger;

@@ -2,7 +2,6 @@
 
 #include "Application/GamePathResolver.h"
 
-#include "Engine/EngineIocContainer.h"
 #include "Library/Logger/Logger.h"
 #include "Platform/Platform.h"
 

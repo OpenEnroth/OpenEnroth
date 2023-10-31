@@ -1,8 +1,6 @@
 #include <vector>
-#include <algorithm>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/LocationFunctions.h"
@@ -158,7 +156,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
 
     EventInterpreter interpreter;
     bool mapExitTriggered = false;
-    logger->verbose("Executing regular event starting from step {}", startStep);
+    logger->trace("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
         interpreter.prepare(engine->_globalEventMap, eventId, targetObj, canShowMessages);
@@ -179,7 +177,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
 
     EventInterpreter interpreter;
 
-    logger->verbose("Executing NPC dialogue event starting from step {}", startStep);
+    logger->trace("Executing NPC dialogue event starting from step {}", startStep);
     LevelDecoration *oldDecoration = activeLevelDecoration;
     activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
     engine->_globalEventMap.dump(eventId);

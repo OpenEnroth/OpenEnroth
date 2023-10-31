@@ -20,7 +20,6 @@
 #include <cstring>
 
 #include "Engine/ErrorHandling.h"
-#include "Engine/EngineIocContainer.h"
 #include "Library/Logger/Logger.h"
 #include "Media/MediaPlayer.h"
 

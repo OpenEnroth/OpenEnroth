@@ -8,7 +8,6 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/GameResourceManager.h"
 
 #include "GUI/UI/UIHouses.h"

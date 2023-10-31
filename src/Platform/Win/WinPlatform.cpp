@@ -5,7 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#include "Platform/Sdl/SdlLogger.h"
+#include "Platform/Sdl/SdlLogSource.h"
 
 #include "Utility/String.h"
 
@@ -99,10 +99,6 @@ std::string WinPlatform::winQueryRegistry(const std::wstring &path) const {
     return {};
 }
 
-std::unique_ptr<Platform> Platform::createStandardPlatform(PlatformLogger *logger) {
+std::unique_ptr<Platform> Platform::createStandardPlatform(Logger *logger) {
     return std::make_unique<WinPlatform>(logger);
-}
-
-std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger() {
-    return std::make_unique<SdlLogger>();
 }

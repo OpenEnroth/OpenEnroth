@@ -1,9 +1,5 @@
 #include "GameConfig.h"
 
-#include <filesystem>
-
-#include "Engine/EngineIocContainer.h"
-
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
 
@@ -19,15 +15,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_BORDERLESS, "1"},
     {WINDOW_MODE_FULLSCREEN, "2"},
     {WINDOW_MODE_FULLSCREEN_BORDERLESS, "3"}
-})
-
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformLogLevel, CASE_INSENSITIVE, {
-    {LOG_VERBOSE, "verbose"},
-    {LOG_DEBUG, "debug"},
-    {LOG_INFO, "info"},
-    {LOG_WARNING, "warning"},
-    {LOG_ERROR, "error"},
-    {LOG_CRITICAL, "critical"},
 })
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RandomEngineType, CASE_INSENSITIVE, {

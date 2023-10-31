@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(LIBRARY_LOGGER_SOURCES
-        Logger.cpp)
+        LogCategory.cpp
+        LogEnums.cpp
+        Logger.cpp
+        LogSink.cpp)
 
 set(LIBRARY_LOGGER_HEADERS
-        Logger.h)
+        BufferLogSink.h
+        LogCategory.h
+        LogEnums.h
+        Logger.h
+        LogSink.h
+        LogSource.h)
 
 add_library(library_logger STATIC ${LIBRARY_LOGGER_SOURCES} ${LIBRARY_LOGGER_HEADERS})
-target_link_libraries(library_logger PUBLIC platform utility)
+target_link_libraries(library_logger PUBLIC library_serialization utility PRIVATE spdlog::spdlog)
 target_check_style(library_logger)

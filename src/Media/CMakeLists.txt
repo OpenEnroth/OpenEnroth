@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(MEDIA_SOURCES
         Media.cpp
-        MediaLogger.cpp
-        MediaPlayer.cpp)
+        FFmpegLogProxy.cpp
+        MediaPlayer.cpp
+        FFmpegLogSource.cpp)
 
 set(MEDIA_HEADERS
         Media.h
-        MediaLogger.h
-        MediaPlayer.h)
+        FFmpegLogProxy.h
+        MediaPlayer.h
+        FFmpegLogSource.h)
 
 add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
 target_link_libraries(media PUBLIC media_audio library_logger utility application)

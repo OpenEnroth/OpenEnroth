@@ -143,7 +143,7 @@ void RenderBase::DrawSpriteObjects() {
              (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
-                logger->verbose("Trying to draw sprite with null frame");
+                logger->trace("Trying to draw sprite with null frame");
                 continue;
             }
 
@@ -154,7 +154,7 @@ void RenderBase::DrawSpriteObjects() {
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
             // error catching
             if (frame->hw_sprites[octant]->texture->height() == 0 || frame->hw_sprites[octant]->texture->width() == 0) {
-                logger->verbose("Trying to draw sprite with empty octant texture");
+                logger->trace("Trying to draw sprite with empty octant texture");
                 continue;
             }
 
@@ -409,7 +409,7 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
 
             TransformBillboard(&billboard, p);
         } else {
-            logger->verbose("Billboard with no sprite!");
+            logger->trace("Billboard with no sprite!");
         }
     }
 }

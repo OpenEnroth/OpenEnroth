@@ -14,7 +14,7 @@
 // MOVIE_Outro    "end_seq1"
 
 class VideoList;
-class MediaLogger;
+class FFmpegLogProxy;
 
 class MPlayer {
  public:
@@ -33,7 +33,7 @@ class MPlayer {
     bool StopMovie();
 
  protected:
-    std::unique_ptr<MediaLogger> mediaLogger;
+    std::unique_ptr<FFmpegLogProxy> logProxy;
     VideoList *might_list;
     VideoList *magic_list;
     std::string sInHouseMovie;

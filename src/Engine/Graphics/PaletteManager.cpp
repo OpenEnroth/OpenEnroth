@@ -4,7 +4,6 @@
 #include <string>
 
 #include "Engine/Graphics/Texture_MM7.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/LodTextureCache.h"
 
 #include "Library/Color/Color.h"

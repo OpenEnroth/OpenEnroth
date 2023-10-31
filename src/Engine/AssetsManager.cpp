@@ -4,7 +4,6 @@
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
 
@@ -17,7 +16,7 @@
 AssetsManager *assets = new AssetsManager();
 
 void AssetsManager::releaseAllTextures() {
-    logger->verbose("Render - Releasing Textures.");
+    logger->trace("Render - Releasing Textures.");
     // clears any textures from gpu
     for (auto img : images) {
         img.second->releaseRenderId();

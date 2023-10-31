@@ -35,3 +35,6 @@
 [submodule "thirdparty/openal_soft"]
 	path = thirdparty/openal_soft
 	url = https://github.com/kcat/openal-soft.git
+[submodule "thirdparty/spdlog"]
+	path = thirdparty/spdlog
+	url = https://github.com/gabime/spdlog.git

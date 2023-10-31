@@ -8,7 +8,6 @@
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
 
 #include "Engine/Engine.h"
-#include "Engine/EngineIocContainer.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 

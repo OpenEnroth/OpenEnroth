@@ -220,9 +220,9 @@ SDL_GLprofile translatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     return SDL_GL_CONTEXT_PROFILE_CORE; // Make the compiler happy.
 }
 
-SDL_LogPriority translatePlatformLogLevel(PlatformLogLevel logLevel) {
+SDL_LogPriority translatePlatformLogLevel(LogLevel logLevel) {
     switch (logLevel) {
-    case LOG_VERBOSE:   return SDL_LOG_PRIORITY_VERBOSE;
+    case LOG_TRACE:     return SDL_LOG_PRIORITY_VERBOSE;
     case LOG_DEBUG:     return SDL_LOG_PRIORITY_DEBUG;
     case LOG_INFO:      return SDL_LOG_PRIORITY_INFO;
     case LOG_WARNING:   return SDL_LOG_PRIORITY_WARN;
@@ -234,9 +234,9 @@ SDL_LogPriority translatePlatformLogLevel(PlatformLogLevel logLevel) {
     }
 }
 
-PlatformLogLevel translateSdlLogLevel(SDL_LogPriority logLevel) {
+LogLevel translateSdlLogLevel(SDL_LogPriority logLevel) {
     switch (logLevel) {
-    case SDL_LOG_PRIORITY_VERBOSE:  return LOG_VERBOSE;
+    case SDL_LOG_PRIORITY_VERBOSE:  return LOG_TRACE;
     case SDL_LOG_PRIORITY_DEBUG:    return LOG_DEBUG;
     case SDL_LOG_PRIORITY_INFO:     return LOG_INFO;
     case SDL_LOG_PRIORITY_WARN:     return LOG_WARNING;
@@ -244,6 +244,6 @@ PlatformLogLevel translateSdlLogLevel(SDL_LogPriority logLevel) {
     case SDL_LOG_PRIORITY_CRITICAL: return LOG_CRITICAL;
     default:
         assert(false);
-        return LOG_VERBOSE;
+        return LOG_TRACE;
     }
 }

@@ -1,7 +1,6 @@
 #include "Library/Logger/Logger.h"
 
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/EngineIocContainer.h"
 
 LightsStack_StationaryLight_::LightsStack_StationaryLight_() {
     this->uNumLightsActive = 0;

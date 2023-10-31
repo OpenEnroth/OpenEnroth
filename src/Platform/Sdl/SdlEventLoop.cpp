@@ -16,7 +16,7 @@
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
-#include "SdlLogger.h"
+#include "SdlLogSource.h"
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
 
