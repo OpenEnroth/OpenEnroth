@@ -36,6 +36,13 @@ var searchData=
   ['lodwriter_2ecpp_33',['LodWriter.cpp',['../LodWriter_8cpp.html',1,'']]],
   ['lodwriter_2eh_34',['LodWriter.h',['../LodWriter_8h.html',1,'']]],
   ['lodwriter_5fut_2ecpp_35',['LodWriter_ut.cpp',['../LodWriter__ut_8cpp.html',1,'']]],
-  ['logger_2ecpp_36',['Logger.cpp',['../Logger_8cpp.html',1,'']]],
-  ['logger_2eh_37',['Logger.h',['../Logger_8h.html',1,'']]]
+  ['logcategory_2ecpp_36',['LogCategory.cpp',['../LogCategory_8cpp.html',1,'']]],
+  ['logcategory_2eh_37',['LogCategory.h',['../LogCategory_8h.html',1,'']]],
+  ['logenums_2ecpp_38',['LogEnums.cpp',['../LogEnums_8cpp.html',1,'']]],
+  ['logenums_2eh_39',['LogEnums.h',['../LogEnums_8h.html',1,'']]],
+  ['logger_2ecpp_40',['Logger.cpp',['../Logger_8cpp.html',1,'']]],
+  ['logger_2eh_41',['Logger.h',['../Logger_8h.html',1,'']]],
+  ['logsink_2ecpp_42',['LogSink.cpp',['../LogSink_8cpp.html',1,'']]],
+  ['logsink_2eh_43',['LogSink.h',['../LogSink_8h.html',1,'']]],
+  ['logsource_2eh_44',['LogSource.h',['../LogSource_8h.html',1,'']]]
 ];

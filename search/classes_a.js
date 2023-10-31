@@ -33,8 +33,12 @@ var searchData=
   ['lodtexturecache_30',['LodTextureCache',['../classLodTextureCache.html',1,'']]],
   ['lodtooloptions_31',['LodToolOptions',['../structLodToolOptions.html',1,'']]],
   ['lodwriter_32',['LodWriter',['../classLodWriter.html',1,'']]],
-  ['logger_33',['Logger',['../classLogger.html',1,'']]],
-  ['logstate_34',['LogState',['../structMediaLogger_1_1LogState.html',1,'MediaLogger']]],
-  ['lua_5fnk_5fproperty_35',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
-  ['lua_5fnk_5fstyle_36',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
+  ['logcategory_33',['LogCategory',['../classLogCategory.html',1,'']]],
+  ['logger_34',['Logger',['../classLogger.html',1,'']]],
+  ['logmessage_35',['LogMessage',['../structBufferLogSink_1_1LogMessage.html',1,'BufferLogSink']]],
+  ['logsink_36',['LogSink',['../classLogSink.html',1,'']]],
+  ['logsource_37',['LogSource',['../classLogSource.html',1,'']]],
+  ['logstate_38',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
+  ['lua_5fnk_5fproperty_39',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
+  ['lua_5fnk_5fstyle_40',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
 ];

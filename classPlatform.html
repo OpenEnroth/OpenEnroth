@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad479c1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b437a00</span>
    </div>
   </td>
  </tr>
@@ -121,8 +121,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a0d717a2134ddee8cd84d37d40afd4711"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a0d717a2134ddee8cd84d37d40afd4711">createStandardPlatform</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *<a class="el" href="EngineIocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
-<tr class="separator:a0d717a2134ddee8cd84d37d40afd4711"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37da49e3b57d296cda0edcb1291ed5ea"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a37da49e3b57d296cda0edcb1291ed5ea">createStandardPlatform</a> (<a class="el" href="classLogger.html">Logger</a> *<a class="el" href="Logger_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
+<tr class="separator:a37da49e3b57d296cda0edcb1291ed5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classPlatform.html">Platform</a> abstraction layer.</p>
@@ -212,8 +212,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0d717a2134ddee8cd84d37d40afd4711" name="a0d717a2134ddee8cd84d37d40afd4711"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d717a2134ddee8cd84d37d40afd4711">&#9670;&#160;</a></span>createStandardPlatform()</h2>
+<a id="a37da49e3b57d296cda0edcb1291ed5ea" name="a37da49e3b57d296cda0edcb1291ed5ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37da49e3b57d296cda0edcb1291ed5ea">&#9670;&#160;</a></span>createStandardPlatform()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -224,7 +224,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt; Platform::createStandardPlatform </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classLogger.html">Logger</a> *&#160;</td>
           <td class="paramname"><em>logger</em></td><td>)</td>
           <td></td>
         </tr>
@@ -238,7 +238,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Creates a standard platform.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">logger</td><td><a class="el" href="classLogger.html">Logger</a> to use. Must not be null. </td></tr>
+    <tr><td class="paramname">logger</td><td><a class="el" href="classLogger.html">Logger</a> to use. Must not be null. Note that <code><a class="el" href="classLogger.html">Logger</a></code> is a singleton, so we don't really need to pass it in. But we want to be explicit in stating that the <code><a class="el" href="classPlatform.html">Platform</a></code> will use a <code><a class="el" href="classLogger.html">Logger</a></code> instance, and thus the instance should exist. </td></tr>
   </table>
   </dd>
 </dl>

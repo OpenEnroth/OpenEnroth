@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad479c1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b437a00</span>
    </div>
   </td>
  </tr>
@@ -82,16 +82,41 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3">Logger</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *baseLogger)</td></tr>
-<tr class="separator:a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cf29637aaeff5017a39092424612936"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a9cf29637aaeff5017a39092424612936">shouldLog</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel) const</td></tr>
-<tr class="separator:a9cf29637aaeff5017a39092424612936"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab565ee4e0807a3820708ded34a61ae80"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
-<tr class="memitem:ab565ee4e0807a3820708ded34a61ae80"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#ab565ee4e0807a3820708ded34a61ae80">log</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
-<tr class="separator:ab565ee4e0807a3820708ded34a61ae80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a115dc3828922e3d9b0bc4fd5bbb8086b"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
-<tr class="memitem:a115dc3828922e3d9b0bc4fd5bbb8086b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a115dc3828922e3d9b0bc4fd5bbb8086b">verbose</a> (fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
-<tr class="separator:a115dc3828922e3d9b0bc4fd5bbb8086b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a338d3ab3882f8c40e3430d1e7ff0b9f3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a338d3ab3882f8c40e3430d1e7ff0b9f3">Logger</a> (<a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>, <a class="el" href="classLogSink.html">LogSink</a> *<a class="el" href="classLogger.html#a58de6d4e784395481459d8411496cc23">sink</a>)</td></tr>
+<tr class="separator:a338d3ab3882f8c40e3430d1e7ff0b9f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb668a9e186a25fbaad2e4af6d1ed00a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#acb668a9e186a25fbaad2e4af6d1ed00a">~Logger</a> ()</td></tr>
+<tr class="separator:acb668a9e186a25fbaad2e4af6d1ed00a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90b24dd2966313fa401ac84ebf4958f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ae90b24dd2966313fa401ac84ebf4958f">shouldLog</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>) const</td></tr>
+<tr class="separator:ae90b24dd2966313fa401ac84ebf4958f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98e38cb1995da0ef940d11d86edbb93e"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a98e38cb1995da0ef940d11d86edbb93e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a98e38cb1995da0ef940d11d86edbb93e">log</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a98e38cb1995da0ef940d11d86edbb93e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae08a5fbbeef3c1e71a470c36f47ec3a2"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:ae08a5fbbeef3c1e71a470c36f47ec3a2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#ae08a5fbbeef3c1e71a470c36f47ec3a2">trace</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:ae08a5fbbeef3c1e71a470c36f47ec3a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8639d96f335b852abb83b13431ecd0d"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:ad8639d96f335b852abb83b13431ecd0d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#ad8639d96f335b852abb83b13431ecd0d">debug</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:ad8639d96f335b852abb83b13431ecd0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab69b404165355a1b7107bcd02adf62ba"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:ab69b404165355a1b7107bcd02adf62ba"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#ab69b404165355a1b7107bcd02adf62ba">info</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:ab69b404165355a1b7107bcd02adf62ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a715a684673834a3837b26fb1980a328e"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a715a684673834a3837b26fb1980a328e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a715a684673834a3837b26fb1980a328e">warning</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a715a684673834a3837b26fb1980a328e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae019e05acc9dd62cdfb1ac05f6afbcb1"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:ae019e05acc9dd62cdfb1ac05f6afbcb1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#ae019e05acc9dd62cdfb1ac05f6afbcb1">error</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:ae019e05acc9dd62cdfb1ac05f6afbcb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb0a34a39ec81137dc9bc8bc3c60587e"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:abb0a34a39ec81137dc9bc8bc3c60587e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#abb0a34a39ec81137dc9bc8bc3c60587e">critical</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:abb0a34a39ec81137dc9bc8bc3c60587e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a3a153c15a479cc234849078ae2b9ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a9a3a153c15a479cc234849078ae2b9ef">shouldLog</a> (<a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>) const</td></tr>
+<tr class="separator:a9a3a153c15a479cc234849078ae2b9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ff532d05d697e507602376d09509c5a"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a6ff532d05d697e507602376d09509c5a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a6ff532d05d697e507602376d09509c5a">log</a> (<a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a6ff532d05d697e507602376d09509c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af43e6111bacc2b73b0643d966dd3bc70"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:af43e6111bacc2b73b0643d966dd3bc70"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#af43e6111bacc2b73b0643d966dd3bc70">trace</a> (fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:af43e6111bacc2b73b0643d966dd3bc70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cd4a1bbd35cc36306361c195afc992a"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:a9cd4a1bbd35cc36306361c195afc992a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a9cd4a1bbd35cc36306361c195afc992a">debug</a> (fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a9cd4a1bbd35cc36306361c195afc992a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -107,20 +132,43 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a78e817b5f2ceff71d7efd72142dc4cf0"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:a78e817b5f2ceff71d7efd72142dc4cf0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a78e817b5f2ceff71d7efd72142dc4cf0">critical</a> (fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a78e817b5f2ceff71d7efd72142dc4cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca44f78906af01b9e08cac7f713f1e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a> () const</td></tr>
+<tr class="separator:aca44f78906af01b9e08cac7f713f1e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8a7575ce3865917922563c88ab4f876"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ab8a7575ce3865917922563c88ab4f876">setLevel</a> (<a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>)</td></tr>
+<tr class="separator:ab8a7575ce3865917922563c88ab4f876"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07c74a16ed3f070d95fe519b3db5c63c"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a07c74a16ed3f070d95fe519b3db5c63c">level</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category) const</td></tr>
+<tr class="separator:a07c74a16ed3f070d95fe519b3db5c63c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0ca55c0d58dcab9b0dc536d439a6780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#af0ca55c0d58dcab9b0dc536d439a6780">setLevel</a> (<a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, std::optional&lt; <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> &gt; <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>)</td></tr>
+<tr class="separator:af0ca55c0d58dcab9b0dc536d439a6780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58de6d4e784395481459d8411496cc23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogSink.html">LogSink</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a58de6d4e784395481459d8411496cc23">sink</a> () const</td></tr>
+<tr class="separator:a58de6d4e784395481459d8411496cc23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac35f33ded4c7365c4cf2fbd7def1b73d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ac35f33ded4c7365c4cf2fbd7def1b73d">setSink</a> (<a class="el" href="classLogSink.html">LogSink</a> *<a class="el" href="classLogger.html#a58de6d4e784395481459d8411496cc23">sink</a>)</td></tr>
+<tr class="separator:ac35f33ded4c7365c4cf2fbd7def1b73d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a5d841304c0ceaf6ddb3eb8ee50682ff8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a5d841304c0ceaf6ddb3eb8ee50682ff8">logV</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel, fmt::string_view fmt, fmt::format_args args)</td></tr>
-<tr class="separator:a5d841304c0ceaf6ddb3eb8ee50682ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad69ae0b96811ae6abe4530ccc78c7e0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ad69ae0b96811ae6abe4530ccc78c7e0b">logV</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> <a class="el" href="classLogger.html#aca44f78906af01b9e08cac7f713f1e64">level</a>, fmt::string_view fmt, fmt::format_args args)</td></tr>
+<tr class="separator:ad69ae0b96811ae6abe4530ccc78c7e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a9e7bc6c4a180495730a8d5381e898643"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a9e7bc6c4a180495730a8d5381e898643">_baseLogger</a> = nullptr</td></tr>
-<tr class="separator:a9e7bc6c4a180495730a8d5381e898643"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac004f44d6939d9be44f862d01dbc21a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogCategory.html">LogCategory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ac004f44d6939d9be44f862d01dbc21a1">_defaultCategory</a></td></tr>
+<tr class="separator:ac004f44d6939d9be44f862d01dbc21a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af353d55dbc6376cb2288953fa6d52a17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogSink.html">LogSink</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#af353d55dbc6376cb2288953fa6d52a17">_sink</a></td></tr>
+<tr class="separator:af353d55dbc6376cb2288953fa6d52a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3" name="a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a4ac3fbd062c4e0fbe1e66d4ebdeaa3">&#9670;&#160;</a></span>Logger()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Main logging class.</p>
+<p ><code><a class="el" href="classLogger.html">Logger</a></code> is a singleton, but the user is supposed to create a <code><a class="el" href="classLogger.html">Logger</a></code> instance himself before using it. This would usually be done in the first few lines of <code>main</code>.</p>
+<p >Some notes on design decisions:</p><ol type="1">
+<li><code><a class="el" href="classLogger.html">Logger</a></code> supports hooking into other logging frameworks, translating the log levels appropriately. Thus, it's possible to create separate <code><a class="el" href="classLogCategory.html">LogCategory</a></code> instances for SDL and FFmpeg logs, and manage log levels through the <code><a class="el" href="classLogger.html">Logger</a></code> interface. Setting global log level to <code>LOG_CRITICAL</code> will then prevent both SDL and FFmpeg from emitting any non-critical log messages - the important point being that they will be filtered out at SDL/FFmpeg level, and not in the <code><a class="el" href="classLogger.html">Logger</a></code> code.</li>
+<li>Point (1) above led to settling on making <code><a class="el" href="classLogger.html">Logger</a></code> a singleton. This is what pretty much all other logging libraries do, and thus supporting both multiple <code><a class="el" href="classLogger.html">Logger</a></code> instances AND being able to hook into external logging frameworks made very little sense.</li>
+<li>This also made it possible to implement log categories efficiently by storing per-category log levels inside the <code><a class="el" href="classLogCategory.html">LogCategory</a></code> objects.</li>
+<li>Different logging targets are implemented with the <code><a class="el" href="classLogSink.html">LogSink</a></code> interface. <code><a class="el" href="classLogSink.html">LogSink</a></code> also makes it possible to implement complex logging logic, i.e. writing all logs starting with <code>LOG_DEBUG</code> into a file, but printing only errors to the console. It's up to the user to properly implement the log level handling in this case. </li>
+</ol>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a338d3ab3882f8c40e3430d1e7ff0b9f3" name="a338d3ab3882f8c40e3430d1e7ff0b9f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a338d3ab3882f8c40e3430d1e7ff0b9f3">&#9670;&#160;</a></span>Logger()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -131,9 +179,19 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">Logger::Logger </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td>
-          <td class="paramname"><em>baseLogger</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classLogSink.html">LogSink</a> *&#160;</td>
+          <td class="paramname"><em>sink</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -145,9 +203,70 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="acb668a9e186a25fbaad2e4af6d1ed00a" name="acb668a9e186a25fbaad2e4af6d1ed00a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb668a9e186a25fbaad2e4af6d1ed00a">&#9670;&#160;</a></span>~Logger()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Logger::~Logger </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="abb0a34a39ec81137dc9bc8bc3c60587e" name="abb0a34a39ec81137dc9bc8bc3c60587e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb0a34a39ec81137dc9bc8bc3c60587e">&#9670;&#160;</a></span>critical() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::critical </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a78e817b5f2ceff71d7efd72142dc4cf0" name="a78e817b5f2ceff71d7efd72142dc4cf0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78e817b5f2ceff71d7efd72142dc4cf0">&#9670;&#160;</a></span>critical()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a78e817b5f2ceff71d7efd72142dc4cf0">&#9670;&#160;</a></span>critical() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,8 +303,52 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="ad8639d96f335b852abb83b13431ecd0d" name="ad8639d96f335b852abb83b13431ecd0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8639d96f335b852abb83b13431ecd0d">&#9670;&#160;</a></span>debug() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::debug </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a9cd4a1bbd35cc36306361c195afc992a" name="a9cd4a1bbd35cc36306361c195afc992a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cd4a1bbd35cc36306361c195afc992a">&#9670;&#160;</a></span>debug()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cd4a1bbd35cc36306361c195afc992a">&#9670;&#160;</a></span>debug() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,8 +385,52 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="ae019e05acc9dd62cdfb1ac05f6afbcb1" name="ae019e05acc9dd62cdfb1ac05f6afbcb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae019e05acc9dd62cdfb1ac05f6afbcb1">&#9670;&#160;</a></span>error() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::error </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af1ee2181cd0fae1950266f8eb96d4f33" name="af1ee2181cd0fae1950266f8eb96d4f33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af1ee2181cd0fae1950266f8eb96d4f33">&#9670;&#160;</a></span>error()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af1ee2181cd0fae1950266f8eb96d4f33">&#9670;&#160;</a></span>error() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,8 +467,52 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="ab69b404165355a1b7107bcd02adf62ba" name="ab69b404165355a1b7107bcd02adf62ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab69b404165355a1b7107bcd02adf62ba">&#9670;&#160;</a></span>info() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::info </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a6619e58d9328928f27107d849c467b9f" name="a6619e58d9328928f27107d849c467b9f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6619e58d9328928f27107d849c467b9f">&#9670;&#160;</a></span>info()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6619e58d9328928f27107d849c467b9f">&#9670;&#160;</a></span>info() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -298,8 +549,43 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="ab565ee4e0807a3820708ded34a61ae80" name="ab565ee4e0807a3820708ded34a61ae80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab565ee4e0807a3820708ded34a61ae80">&#9670;&#160;</a></span>log()</h2>
+<a id="aca44f78906af01b9e08cac7f713f1e64" name="aca44f78906af01b9e08cac7f713f1e64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca44f78906af01b9e08cac7f713f1e64">&#9670;&#160;</a></span>level() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> Logger::level </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a07c74a16ed3f070d95fe519b3db5c63c" name="a07c74a16ed3f070d95fe519b3db5c63c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07c74a16ed3f070d95fe519b3db5c63c">&#9670;&#160;</a></span>level() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> &gt; Logger::level </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a98e38cb1995da0ef940d11d86edbb93e" name="a98e38cb1995da0ef940d11d86edbb93e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98e38cb1995da0ef940d11d86edbb93e">&#9670;&#160;</a></span>log() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -312,8 +598,14 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">void Logger::log </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a>&#160;</td>
-          <td class="paramname"><em>logLevel</em>, </td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -342,8 +634,52 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="a5d841304c0ceaf6ddb3eb8ee50682ff8" name="a5d841304c0ceaf6ddb3eb8ee50682ff8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d841304c0ceaf6ddb3eb8ee50682ff8">&#9670;&#160;</a></span>logV()</h2>
+<a id="a6ff532d05d697e507602376d09509c5a" name="a6ff532d05d697e507602376d09509c5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ff532d05d697e507602376d09509c5a">&#9670;&#160;</a></span>log() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::log </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad69ae0b96811ae6abe4530ccc78c7e0b" name="ad69ae0b96811ae6abe4530ccc78c7e0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad69ae0b96811ae6abe4530ccc78c7e0b">&#9670;&#160;</a></span>logV()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -354,8 +690,14 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">void Logger::logV </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a>&#160;</td>
-          <td class="paramname"><em>logLevel</em>, </td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -384,8 +726,72 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="a9cf29637aaeff5017a39092424612936" name="a9cf29637aaeff5017a39092424612936"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cf29637aaeff5017a39092424612936">&#9670;&#160;</a></span>shouldLog()</h2>
+<a id="af0ca55c0d58dcab9b0dc536d439a6780" name="af0ca55c0d58dcab9b0dc536d439a6780"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0ca55c0d58dcab9b0dc536d439a6780">&#9670;&#160;</a></span>setLevel() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::setLevel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> &gt;&#160;</td>
+          <td class="paramname"><em>level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab8a7575ce3865917922563c88ab4f876" name="ab8a7575ce3865917922563c88ab4f876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a7575ce3865917922563c88ab4f876">&#9670;&#160;</a></span>setLevel() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::setLevel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac35f33ded4c7365c4cf2fbd7def1b73d" name="ac35f33ded4c7365c4cf2fbd7def1b73d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac35f33ded4c7365c4cf2fbd7def1b73d">&#9670;&#160;</a></span>setSink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::setSink </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLogSink.html">LogSink</a> *&#160;</td>
+          <td class="paramname"><em>sink</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae90b24dd2966313fa401ac84ebf4958f" name="ae90b24dd2966313fa401ac84ebf4958f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae90b24dd2966313fa401ac84ebf4958f">&#9670;&#160;</a></span>shouldLog() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -396,8 +802,44 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">bool Logger::shouldLog </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a>&#160;</td>
-          <td class="paramname"><em>logLevel</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a3a153c15a479cc234849078ae2b9ef" name="a9a3a153c15a479cc234849078ae2b9ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a3a153c15a479cc234849078ae2b9ef">&#9670;&#160;</a></span>shouldLog() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Logger::shouldLog </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -410,8 +852,25 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="a115dc3828922e3d9b0bc4fd5bbb8086b" name="a115dc3828922e3d9b0bc4fd5bbb8086b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a115dc3828922e3d9b0bc4fd5bbb8086b">&#9670;&#160;</a></span>verbose()</h2>
+<a id="a58de6d4e784395481459d8411496cc23" name="a58de6d4e784395481459d8411496cc23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58de6d4e784395481459d8411496cc23">&#9670;&#160;</a></span>sink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogSink.html">LogSink</a> * Logger::sink </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae08a5fbbeef3c1e71a470c36f47ec3a2" name="ae08a5fbbeef3c1e71a470c36f47ec3a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae08a5fbbeef3c1e71a470c36f47ec3a2">&#9670;&#160;</a></span>trace() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -422,7 +881,51 @@ template&lt;class... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Logger::verbose </td>
+          <td class="memname">void Logger::trace </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af43e6111bacc2b73b0643d966dd3bc70" name="af43e6111bacc2b73b0643d966dd3bc70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af43e6111bacc2b73b0643d966dd3bc70">&#9670;&#160;</a></span>trace() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::trace </td>
           <td>(</td>
           <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
           <td class="paramname"><em>fmt</em>, </td>
@@ -448,8 +951,52 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
+<a id="a715a684673834a3837b26fb1980a328e" name="a715a684673834a3837b26fb1980a328e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a715a684673834a3837b26fb1980a328e">&#9670;&#160;</a></span>warning() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Logger::warning </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
+          <td class="paramname"><em>category</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae6e545f2d02dd6e58053372a4c8fb531" name="ae6e545f2d02dd6e58053372a4c8fb531"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6e545f2d02dd6e58053372a4c8fb531">&#9670;&#160;</a></span>warning()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6e545f2d02dd6e58053372a4c8fb531">&#9670;&#160;</a></span>warning() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -487,8 +1034,8 @@ template&lt;class... Args&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a9e7bc6c4a180495730a8d5381e898643" name="a9e7bc6c4a180495730a8d5381e898643"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e7bc6c4a180495730a8d5381e898643">&#9670;&#160;</a></span>_baseLogger</h2>
+<a id="ac004f44d6939d9be44f862d01dbc21a1" name="ac004f44d6939d9be44f862d01dbc21a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac004f44d6939d9be44f862d01dbc21a1">&#9670;&#160;</a></span>_defaultCategory</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -497,7 +1044,29 @@ template&lt;class... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classPlatformLogger.html">PlatformLogger</a>* Logger::_baseLogger = nullptr</td>
+          <td class="memname"><a class="el" href="classLogCategory.html">LogCategory</a> Logger::_defaultCategory</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af353d55dbc6376cb2288953fa6d52a17" name="af353d55dbc6376cb2288953fa6d52a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af353d55dbc6376cb2288953fa6d52a17">&#9670;&#160;</a></span>_sink</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogSink.html">LogSink</a>* Logger::_sink</td>
         </tr>
       </table>
   </td>

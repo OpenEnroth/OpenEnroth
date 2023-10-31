@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad479c1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b437a00</span>
    </div>
   </td>
  </tr>
@@ -102,10 +102,12 @@ Static Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a409dd64a320faa9388fa4777243537ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGameStarterOptions.html">GameStarterOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a409dd64a320faa9388fa4777243537ac">_options</a></td></tr>
 <tr class="separator:a409dd64a320faa9388fa4777243537ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5d38459a3927d9480255b3b2880eb66"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformLogger.html">PlatformLogger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ae5d38459a3927d9480255b3b2880eb66">_logger</a></td></tr>
-<tr class="separator:ae5d38459a3927d9480255b3b2880eb66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c61d5930a93ef56cdecafa7934cddbe"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogger.html">Logger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a9c61d5930a93ef56cdecafa7934cddbe">_globalLogger</a></td></tr>
-<tr class="separator:a9c61d5930a93ef56cdecafa7934cddbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf36c82146e43185654ba27409a3c5d7"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classBufferLogSink.html">BufferLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#adf36c82146e43185654ba27409a3c5d7">_bufferSink</a></td></tr>
+<tr class="separator:adf36c82146e43185654ba27409a3c5d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f9dcb5448fdb85cccceaf5bfaa9d582"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a7f9dcb5448fdb85cccceaf5bfaa9d582">_defaultSink</a></td></tr>
+<tr class="separator:a7f9dcb5448fdb85cccceaf5bfaa9d582"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeee9d98b4e95fb2a5c2b9882c26c676b"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogger.html">Logger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aeee9d98b4e95fb2a5c2b9882c26c676b">_logger</a></td></tr>
+<tr class="separator:aeee9d98b4e95fb2a5c2b9882c26c676b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac68a518d94fa40a198407c8c63edefa0"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ac68a518d94fa40a198407c8c63edefa0">_platform</a></td></tr>
 <tr class="separator:ac68a518d94fa40a198407c8c63edefa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d9aee55e10d1b476bee78456dff793f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformApplication.html">PlatformApplication</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a0d9aee55e10d1b476bee78456dff793f">_application</a></td></tr>
@@ -294,6 +296,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="adf36c82146e43185654ba27409a3c5d7" name="adf36c82146e43185654ba27409a3c5d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf36c82146e43185654ba27409a3c5d7">&#9670;&#160;</a></span>_bufferSink</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classBufferLogSink.html">BufferLogSink</a>&gt; GameStarter::_bufferSink</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af0f9c715453fdc136f60ca4f4e6fcd60" name="af0f9c715453fdc136f60ca4f4e6fcd60"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0f9c715453fdc136f60ca4f4e6fcd60">&#9670;&#160;</a></span>_config</h2>
 
@@ -305,6 +329,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;<a class="el" href="classGameConfig.html">GameConfig</a>&gt; GameStarter::_config</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7f9dcb5448fdb85cccceaf5bfaa9d582" name="a7f9dcb5448fdb85cccceaf5bfaa9d582"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f9dcb5448fdb85cccceaf5bfaa9d582">&#9670;&#160;</a></span>_defaultSink</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogSink.html">LogSink</a>&gt; GameStarter::_defaultSink</td>
         </tr>
       </table>
   </td>
@@ -338,8 +384,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a9c61d5930a93ef56cdecafa7934cddbe" name="a9c61d5930a93ef56cdecafa7934cddbe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c61d5930a93ef56cdecafa7934cddbe">&#9670;&#160;</a></span>_globalLogger</h2>
+<a id="aeee9d98b4e95fb2a5c2b9882c26c676b" name="aeee9d98b4e95fb2a5c2b9882c26c676b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeee9d98b4e95fb2a5c2b9882c26c676b">&#9670;&#160;</a></span>_logger</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -348,29 +394,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogger.html">Logger</a>&gt; GameStarter::_globalLogger</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae5d38459a3927d9480255b3b2880eb66" name="ae5d38459a3927d9480255b3b2880eb66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5d38459a3927d9480255b3b2880eb66">&#9670;&#160;</a></span>_logger</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classPlatformLogger.html">PlatformLogger</a>&gt; GameStarter::_logger</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogger.html">Logger</a>&gt; GameStarter::_logger</td>
         </tr>
       </table>
   </td>

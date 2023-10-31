@@ -39,5 +39,6 @@ var searchData=
   ['bsprenderer_36',['BspRenderer',['../structBspRenderer.html',1,'']]],
   ['bsprenderer_5fviewportnode_37',['BspRenderer_ViewportNode',['../structBspRenderer__ViewportNode.html',1,'']]],
   ['bstreamer_38',['bstreamer',['../structbstreamer.html',1,'']]],
-  ['buildingdesc_39',['BuildingDesc',['../structBuildingDesc.html',1,'']]]
+  ['bufferlogsink_39',['BufferLogSink',['../classBufferLogSink.html',1,'']]],
+  ['buildingdesc_40',['BuildingDesc',['../structBuildingDesc.html',1,'']]]
 ];

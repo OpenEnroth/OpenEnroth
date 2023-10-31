@@ -20,8 +20,9 @@ var searchData=
   ['bspmodel_2eh_17',['BSPModel.h',['../BSPModel_8h.html',1,'']]],
   ['bsprenderer_2ecpp_18',['BspRenderer.cpp',['../BspRenderer_8cpp.html',1,'']]],
   ['bsprenderer_2eh_19',['BspRenderer.h',['../BspRenderer_8h.html',1,'']]],
-  ['buildinfo_2ecpp_20',['BuildInfo.cpp',['../BuildInfo_8cpp.html',1,'']]],
-  ['buildinfo_2eh_21',['BuildInfo.h',['../BuildInfo_8h.html',1,'']]],
-  ['buildingtable_2ecpp_22',['BuildingTable.cpp',['../BuildingTable_8cpp.html',1,'']]],
-  ['buildingtable_2eh_23',['BuildingTable.h',['../BuildingTable_8h.html',1,'']]]
+  ['bufferlogsink_2eh_20',['BufferLogSink.h',['../BufferLogSink_8h.html',1,'']]],
+  ['buildinfo_2ecpp_21',['BuildInfo.cpp',['../BuildInfo_8cpp.html',1,'']]],
+  ['buildinfo_2eh_22',['BuildInfo.h',['../BuildInfo_8h.html',1,'']]],
+  ['buildingtable_2ecpp_23',['BuildingTable.cpp',['../BuildingTable_8cpp.html',1,'']]],
+  ['buildingtable_2eh_24',['BuildingTable.h',['../BuildingTable_8h.html',1,'']]]
 ];
