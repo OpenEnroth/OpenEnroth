@@ -711,7 +711,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     item->special_enchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
                                     break;
                                 default:
-                                    __debugbreak();
+                                    assert(false);
                             }
 
                             item->uAttributes |= ITEM_AURA_EFFECT_RED;
@@ -721,7 +721,7 @@ void CastSpellInfoHelpers::castSpell() {
                             item->uAttributes |= ITEM_AURA_EFFECT_PURPLE;
                             break;
                         default:
-                            __debugbreak();
+                            assert(false);
                     }
 
                     if (spell_mastery < CHARACTER_SKILL_MASTERY_GRANDMASTER) {
@@ -1397,7 +1397,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
                     if ((spell_mastery == CHARACTER_SKILL_MASTERY_NOVICE || spell_mastery == CHARACTER_SKILL_MASTERY_EXPERT)) {
-                        __debugbreak(); // SPELL_WATER_ENCHANT_ITEM is a master level spell
+                        assert(false); // SPELL_WATER_ENCHANT_ITEM is a master level spell
                     }
 
                     if ((spell_mastery == CHARACTER_SKILL_MASTERY_MASTER || spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) &&

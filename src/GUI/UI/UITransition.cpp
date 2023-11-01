@@ -24,6 +24,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Library/Logger/Logger.h"
+
 GraphicsImage *transition_ui_icon = nullptr;
 
 std::string transition_button_label;
@@ -224,6 +226,6 @@ void GUIWindow_Transition::Update() {
         unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, str, 3);
     } else {
-        Error("Troubles in da house");
+        logger->error("Troubles in da house");
     }
 }

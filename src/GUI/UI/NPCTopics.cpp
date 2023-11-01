@@ -673,7 +673,7 @@ DIALOGUE_TYPE handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcD
     if (eventId == 311) {
         // Original code also listed this event which presumably opened bounty dialogue but MM7
         // use event 311 for some teleport in Bracada
-        __debugbreak();
+        assert(false);
         return DIALOGUE_MAIN;
     }
 

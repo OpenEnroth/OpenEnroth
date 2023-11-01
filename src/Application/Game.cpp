@@ -309,7 +309,7 @@ bool Game::loop() {
             pParty->Reset();
             pParty->createDefaultParty(true);
 
-            __debugbreak();
+            assert(false);
             /*extern void CreateDefaultBLVLevel();
             CreateDefaultBLVLevel();
 
@@ -508,13 +508,13 @@ void Game::processQueuedMessages() {
                 // Game_OpenLoadGameDialog(); continue; case UIMSG_Quit:
                 // Game_QuitGameWhilePlaying(uMessageParam); continue;
             case UIMSG_80:
-                __debugbreak();
+                assert(false);
                 pGUIWindow_CurrentMenu->Release();
                 current_screen_type = SCREEN_OPTIONS;
-                __debugbreak();  // pGUIWindow_CurrentMenu =
-                                 // GUIWindow::Create(0, 0,
-                                 // window->GetWidth(), window->GetHeight(),
-                                 // WINDOW_8, 0, 0);
+                // pGUIWindow_CurrentMenu =
+                // GUIWindow::Create(0, 0,
+                // window->GetWidth(), window->GetHeight(),
+                // WINDOW_8, 0, 0);
                 continue;
             case UIMSG_Cancel:
                 new OnCancel({350, 302}, {106, 42}, pBtnCancel);
@@ -734,7 +734,7 @@ void Game::processQueuedMessages() {
                                     pEventTimer->Resume();
                                     continue;
                                 case SCREEN_19:
-                                    __debugbreak();
+                                    assert(false);
                                     pWindow2 = ptr_507BC8;
                                     pWindow2->Release();
                                     current_screen_type = SCREEN_GAME;
@@ -840,20 +840,19 @@ void Game::processQueuedMessages() {
                                     continue;
 
                                 default:
-                                    __debugbreak();  // which GAME_MENU is
-                                                     // this?
+                                    assert(false);  // which GAME_MENU is this?
                                     onEscape();
                                     continue;
                             }
-                            __debugbreak();  // which GAME_MENU is this?
+                            assert(false);  // which GAME_MENU is this?
                             onEscape();
                             continue;
                         }
-                        __debugbreak();  // which GAME_MENU is this?
+                        assert(false);  // which GAME_MENU is this?
                         CharacterUI_ReleaseButtons();
                         //ReleaseAwardsScrollBar();
                     }
-                    // __debugbreak();  // which GAME_MENU is this? debug / fallback
+                    // assert(false);  // which GAME_MENU is this? debug / fallback
                     onEscape();
                     continue;
                 }
@@ -1052,7 +1051,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_HouseTransitionConfirmation:
-                __debugbreak();
+                assert(false);
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 SaveGame(1, 0);
@@ -1129,11 +1128,11 @@ void Game::processQueuedMessages() {
                 }
 
                 // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
-                // __debugbreak();  // missed break/continue?
+                // assert(false);  // missed break/continue?
                 continue;
 
             case UIMSG_DD: {
-                __debugbreak();
+                assert(false);
                 // sprintf(tmp_str.data(), "%s",
                 // pKeyActionMap->pPressedKeysBuffer);
                 FrameTableTxtLine frameTableTxtLine;
@@ -1198,12 +1197,12 @@ void Game::processQueuedMessages() {
                 continue;
             }
             case UIMSG_1C:
-                __debugbreak();
+                assert(false);
                 if (!pParty->hasActiveCharacter() || current_screen_type != SCREEN_GAME)
                     continue;
-                __debugbreak();  // ptr_507BC8 = GUIWindow::Create(0, 0,
-                                 // window->GetWidth(), window->GetHeight(),
-                                 // WINDOW_68, uMessageParam, 0);
+                assert(false);  // ptr_507BC8 = GUIWindow::Create(0, 0,
+                                // window->GetWidth(), window->GetHeight(),
+                                // WINDOW_68, uMessageParam, 0);
                 current_screen_type = SCREEN_19;
                 pEventTimer->Pause();
                 continue;
@@ -1681,14 +1680,14 @@ void Game::processQueuedMessages() {
                 _engine->onGameViewportClick();
                 continue;
             case UIMSG_F:  // what event?
-                __debugbreak();
+                assert(false);
                 //pButton2 = (GUIButton *)(uint16_t)vis->get_picked_object_zbuf_val().object_pid;
-                __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
+                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                 continue;
             case UIMSG_54:  // what event?
-                __debugbreak();
+                assert(false);
                 //pButton2 = (GUIButton *)uMessageParam;
-                __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
+                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
                 continue;
             case UIMSG_Game_Action:
                 engine->_messageQueue->clear();

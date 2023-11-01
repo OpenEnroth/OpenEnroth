@@ -2,7 +2,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/OurMath.h"
-#include "Engine/ErrorHandling.h"
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
@@ -345,7 +344,7 @@ bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
         return true;
     }
 
-    __debugbreak();
+    assert(false);
 
     return false;
 }
@@ -384,7 +383,7 @@ bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft *a1, unsigned int *pOut
         return true;
     }
 
-    __debugbreak();
+    assert(false);
 
     return false;
 }

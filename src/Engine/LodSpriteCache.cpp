@@ -53,7 +53,7 @@ Sprite *LodSpriteCache::loadSprite(const std::string &pContainerName) {
     if (!LoadSpriteFromFile(header.get(), pContainerName))
         return nullptr;
 
-    // if (uNumLoadedSprites == 879) __debugbreak();
+    // if (uNumLoadedSprites == 879) assert(false);
 
     Sprite &sprite = _sprites.emplace_back();
     sprite.pName = pContainerName;

@@ -12,6 +12,7 @@ void GameResourceManager::openGameResources() {
     // TODO(captainurist):
     //  on exception:
     //      Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+    // but we can't use localization object here cause it's not yet initialized.
 }
 
 Blob GameResourceManager::getEventsFile(const std::string &filename) {

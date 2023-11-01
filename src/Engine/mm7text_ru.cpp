@@ -1,8 +1,7 @@
+#include <cassert>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-
-#include "Engine/ErrorHandling.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -758,7 +757,7 @@ int sprintfex_internal(char *str) {
                     actual_ending = ending3;
                     actual_ending_len = src - ending3 - 1;
                 } else {
-                    Error("Invalid gender token");
+                    logger->error("Invalid gender token");
                 }
 
                 strncpy(dst, actual_ending, actual_ending_len);
@@ -841,7 +840,7 @@ int sprintfex_internal(char *str) {
                 strncpy(token, token_begin, token_len);
                 token[token_len] = 0;
 
-                Error("Invalid format token: %s", token);
+                logger->error("Invalid format token: {}", token);
             } break;
         }
 

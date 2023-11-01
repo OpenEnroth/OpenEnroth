@@ -5,7 +5,6 @@
 
 #include "Arcomage/Arcomage.h"
 
-#include "Engine/ErrorHandling.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
@@ -335,11 +334,11 @@ void GameWindowHandler::OnKey(PlatformKey key) {
 }
 
 void GameWindowHandler::OnFocus() {
-    __debugbreak();
+    assert(false);
 }
 
 void GameWindowHandler::OnFocusLost() {
-    __debugbreak();
+    assert(false);
 }
 
 void GameWindowHandler::OnPaint() {

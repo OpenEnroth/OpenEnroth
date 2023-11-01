@@ -68,7 +68,7 @@ void LoadGame(unsigned int uSlot) {
 
     std::error_code ec;
     if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
-        Error("Failed to copy: %s", filename.c_str());
+        logger->error("Failed to copy: {}", filename);
 
     pSave_LOD->open(to_file_path, LOD_ALLOW_DUPLICATES);
 
@@ -109,7 +109,7 @@ void LoadGame(unsigned int uSlot) {
                                   .uItemID;
                 if (pItemTable->pItems[pItemID].uEquipType == ITEM_TYPE_WAND &&
                     pItemID) {       // жезл
-                    __debugbreak();  // looks like offset in player's inventory
+                    assert(false);  // looks like offset in player's inventory
                                      // and wand_lut much like case in 0042ECB5
                     stru_A750F8[i].AddPartySpellSound(
                         wand_spell_ids[pItemID], i + 9);
@@ -126,7 +126,7 @@ void LoadGame(unsigned int uSlot) {
     pEventTimer->StopGameTime();
 
     if (!pGames_LOD->exists(header.locationName)) {
-        Error("Unable to find: %s!", header.locationName.c_str());
+        logger->error("Unable to find: {}!", header.locationName);
     }
 
     pCurrentMapName = header.locationName;
@@ -279,7 +279,7 @@ void DoSavegame(unsigned int uSlot) {
         std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
-            Error("Failed to copy: %s", src.c_str());
+            logger->error("Failed to copy: {}", src);
     }
     pSavegameList->selectedSlot = uSlot;
 

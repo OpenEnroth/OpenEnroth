@@ -216,7 +216,7 @@ GameTime timeUntilDawn();
 /**
  * @offset 0x443E31
  */
-void initLevelStrings(Blob &blob);
+void initLevelStrings(const Blob &blob);
 void Level_LoadEvtAndStr(const std::string &pLevelName);
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const std::string &pMapName, MapStartPoint point);  // sub_44987B idb

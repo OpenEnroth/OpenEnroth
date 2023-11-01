@@ -24,7 +24,6 @@ extern "C" {
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 
@@ -371,7 +370,7 @@ class Movie : public IMovie {
         audio.open(format_ctx);
 
         if (!video.open(format_ctx)) {
-            Error("Cannot open video stream: %s", filename);
+            logger->error("Cannot open video stream: {}", filename);
             Close();
             return false;
         }
@@ -1085,7 +1084,7 @@ bool AudioBaseDataSource::Open() {
                 pCodecContext->channel_layout = AV_CH_LAYOUT_STEREO;
                 break;
             default:
-                __debugbreak();
+                assert(false);
                 break;
         }
     }

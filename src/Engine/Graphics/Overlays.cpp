@@ -73,7 +73,7 @@ void ActiveOverlayList::DrawTurnBasedIcon() {
         frame = pIconsFrameTable->GetFrame(uIconID_TurnStop,
             pEventTimer->uStartTime);
     } else {
-        __debugbreak();
+        assert(false);
         return;
     }
     // if ( render->pRenderD3D )

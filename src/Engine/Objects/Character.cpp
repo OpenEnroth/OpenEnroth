@@ -43,6 +43,7 @@
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 #include "Utility/Memory/MemSet.h"
 #include "Utility/Math/FixPoint.h"
@@ -2119,22 +2120,16 @@ float Character::GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType arm
     switch (skillMastery) {
         case CHARACTER_SKILL_MASTERY_NOVICE:
             return mult1;
-            break;
         case CHARACTER_SKILL_MASTERY_EXPERT:
             return mult2;
-            break;
         case CHARACTER_SKILL_MASTERY_MASTER:
             return mult3;
-            break;
         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             return mult4;
-            break;
         default:
-            break;
+            assert(false);
+            return 0;
     }
-
-    Error("Unexpected input value: %d", armour_skill_type);
-    return 0;
 }
 
 //----- (0048E4F8) --------------------------------------------------------
@@ -2294,7 +2289,8 @@ int Character::GetBaseResistance(CharacterAttributeType a2) const {
             if (IsRaceHuman()) racialBonus = 5;
             break;
         default:
-            Error("Unknown attribute");
+            assert(false);
+            return 0;
     }
     v7 = GetItemsBonus(a2) + racialBonus;
     result = v7 + *resStat;
@@ -2344,7 +2340,8 @@ int Character::GetActualResistance(CharacterAttributeType resistance) const {
             resStat = &sResBodyBonus;
             break;
         default:
-            Error("Unexpected attribute");
+            assert(false);
+            return 0;
     }
     baseRes = GetBaseResistance(resistance);
     result = v10 + GetMagicalBonus(resistance) + baseRes + *(resStat);
@@ -3154,8 +3151,6 @@ unsigned int Character::GetMultiplierForSkillLevel(
     int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
     CharacterSkillMastery masteryLvl = getActualSkillValue(uSkillType).mastery();
     switch (masteryLvl) {
-        case CHARACTER_SKILL_MASTERY_NONE:
-            return 0;
         case CHARACTER_SKILL_MASTERY_NOVICE:
             return mult1;
         case CHARACTER_SKILL_MASTERY_EXPERT:
@@ -3164,9 +3159,9 @@ unsigned int Character::GetMultiplierForSkillLevel(
             return mult3;
         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             return mult4;
+        default:
+            return 0;
     }
-    Error("(%u)", masteryLvl);
-    return 0;
 }
 
 //----- (00490109) --------------------------------------------------------
@@ -3204,7 +3199,7 @@ std::string Character::GetRaceName() const {
         case RACE_GOBLIN: return localization->GetString(LSTR_RACE_GOBLIN);
         case RACE_DWARF: return localization->GetString(LSTR_RACE_DWARF);
         default:
-            __debugbreak();
+            assert(false);
             return std::string();  // Make the compiler happy.
     }
 }
@@ -3239,9 +3234,11 @@ CharacterSex Character::GetSexByVoice() const {
         case 0x15u:
         case 0x18u:
             return SEX_FEMALE;
+
+        default:
+            assert(false);
+            return SEX_MALE;
     }
-    Error("(%u)", this->uVoiceID);
-    return SEX_MALE;
 }
 
 //----- (00490188) --------------------------------------------------------
@@ -3288,7 +3285,7 @@ void Character::SetSexByVoice() {
             this->uSex = SEX_FEMALE;
             break;
         default:
-            Error("(%u)", this->uVoiceID);
+            assert(false);
             break;
     }
 }
@@ -3448,8 +3445,8 @@ void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
             statToChange = &this->uLuck;
             break;
         default:
-            Error("(%u)", eAttribute);
-            break;
+            assert(false);
+            return;
     }
     if (*statToChange < baseValue) {
         tmp = baseStep;
@@ -3533,7 +3530,8 @@ Color Character::GetStatColor(CharacterAttributeType uStat) const {
             attribute_value = uLuck;
             break;
         default:
-            Error("Unexpected attribute");
+            assert(false);
+            return Color();
     }
 
     if (attribute_value == base_attribute_value)
@@ -4249,7 +4247,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_DarkResistance:
             return this->sResDarkBase >= pValue;
         case VAR_PhysicalResistance:
-            Error("Physical resistance isn't used in events");
+            logger->error("Physical resistance isn't used in events");
             return false;
         case VAR_MagicResistance:
             return this->sResMagicBase >= pValue;
@@ -4330,9 +4328,9 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_DiplomacySkill:
             return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DIPLOMACY]);
         case VAR_ThieverySkill:
-            //Error("Thievery isn't used in events");
-            //return false;
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_THIEVERY]);  // wasn't in the original
+            // Original binary had this:
+            // Error("Thievery isn't used in events");
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_THIEVERY]);
         case VAR_DisarmTrapSkill:  // wasn't in the original
             return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_TRAP_DISARM]);
         case VAR_DodgeSkill:  // wasn't in the original
@@ -4809,7 +4807,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PhysicalResistanceBonus:
-            Error("Physical res. bonus not used");
+            logger->error("Physical res. bonus not used");
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus = (uint8_t)var_value;
@@ -5066,7 +5064,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             SetSkillReaction();
             return;
         case VAR_ThieverySkill:
-            Error("Thieving unsupported");
+            logger->error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::fromJoined(var_value);
@@ -5651,7 +5649,7 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_ThieverySkill:
-            Error("Thieving unsupported");
+            logger->error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             AddSkillByEvent(CHARACTER_SKILL_TRAP_DISARM, val);
@@ -6074,7 +6072,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_ThieverySkill:
-            Error("Thieving unsupported");
+            logger->error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             SubtractSkillByEvent(CHARACTER_SKILL_TRAP_DISARM, pValue);
@@ -6436,9 +6434,9 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
     if (pidtype != OBJECT_Item) {  // not an item
         // hit by monster
-        if (pidtype != OBJECT_Actor) __debugbreak();
+        if (pidtype != OBJECT_Actor) assert(false);
 
-        if (targetchar == -1) __debugbreak();
+        if (targetchar == -1) assert(false);
 
         unsigned int uActorID = uObjID.id();
 
@@ -6462,41 +6460,9 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         if (!equippedArmor || equippedArmor->IsBroken() ||
             (equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_CHAIN &&
              equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_PLATE)) {
-            int randVal = vrng->random(4);
-            switch (randVal) {
-                case 0:
-                    soundToPlay = SOUND_dull_armor_strike1;
-                    break;
-                case 1:
-                    soundToPlay = SOUND_dull_armor_strike2;
-                    break;
-                case 2:
-                    soundToPlay = SOUND_dull_armor_strike3;
-                    break;
-                case 3:
-                    soundToPlay = SOUND_dull_strike;
-                    break;
-                default:
-                    Error("Unexpected sound value");
-            }
+            soundToPlay = vrng->randomSample({SOUND_dull_armor_strike1, SOUND_dull_armor_strike2, SOUND_dull_armor_strike3, SOUND_dull_strike});
         } else {
-            int randVal = vrng->random(4);
-            switch (randVal) {
-                case 0:
-                    soundToPlay = SOUND_metal_armor_strike1;
-                    break;
-                case 1:
-                    soundToPlay = SOUND_metal_armor_strike2;
-                    break;
-                case 2:
-                    soundToPlay = SOUND_metal_armor_strike3;
-                    break;
-                case 3:
-                    soundToPlay = SOUND_metal_vs_metal01h;
-                    break;
-                default:
-                    Error("Unexpected sound value");
-            }
+            soundToPlay = vrng->randomSample({SOUND_metal_armor_strike1, SOUND_metal_armor_strike2, SOUND_metal_armor_strike3, SOUND_metal_vs_metal01h});
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
         pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, Pid(OBJECT_Character, targetchar));
@@ -7420,12 +7386,10 @@ bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
         return _achievedAwardsBits[Award_Promotion_Archmage_Honorary];
     case CLASS_LICH:
         return _achievedAwardsBits[Award_Promotion_Lich_Honorary];
-        break;
     default:
-        Error("Should not be able to get here (%u)", class_type);
-        break;
+        assert(false); // TODO(captainurist): just implement properly?
+        return false;
     }
-    return false;
 }
 
 //----- (00490EEE) --------------------------------------------------------
@@ -7469,7 +7433,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         default:
-            Error("(%u)", building_type);
+            assert(false);
             break;
     }
     if (pItem->IsStolen())
@@ -7493,7 +7457,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
             price = PriceCalculator::itemRepairPriceForPlayer(this, itemValue, multiplier);
             break;
         default:
-            Error("(%u)", ShopMenuType);
+            assert(false);
             break;
     }
     if (merchantLevel) {

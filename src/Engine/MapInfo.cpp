@@ -3,8 +3,6 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "Engine/ErrorHandling.h"
-
 #include "Utility/Memory/Blob.h"
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/String.h"
@@ -213,6 +211,6 @@ MapId MapStats::GetMapInfo(const std::string &Str2) {
         }
     }
 
-    Error("Map not found!");
+    assert(false);
     return MAP_INVALID;
 }

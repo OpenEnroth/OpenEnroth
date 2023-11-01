@@ -240,9 +240,6 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
 
 explosion_effect_struct *explosion_effect_struct::New() {
     explosion_effect_struct *v2 = (explosion_effect_struct *)malloc(sizeof(explosion_effect_struct));
-    if (v2 == nullptr) {
-        Error("Malloc - explosion_effect_struct::New()");
-    }
     v2->mem_signature = SIG_MEMALOC;
     v2->remaining_sparks_to_init = 0;
     v2->prev_init_overflow = 0;
@@ -793,7 +790,7 @@ int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
 }
 
 bool OpponentsAITurn(int player_num) {
-    if (player_num == 0) __debugbreak();
+    assert(player_num != 0);
 
     int ai_player_cards_count = GetPlayerHandCardCount(player_num);
     if (ai_player_cards_count == 0) return true;

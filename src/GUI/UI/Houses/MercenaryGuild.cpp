@@ -46,14 +46,14 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     }
 
     if (checkIfPlayerCanInteract()) {
-        __debugbreak();  // what type of house that even is?
+        assert(false);  // what type of house that even is?
         // pSkillAvailabilityPerClass[8 + v58->uClass][4 + v23]
         // or
         // skillMaxMasteryPerClass[v58->uClass][v23 - 36]
         // or
         // skillMaxMasteryPerClass[v58->uClass - 1][v23 +
         // 1]
-        __debugbreak();  // whacky condition - fix
+        assert(false);  // whacky condition - fix
         short *v6;
         if (false
             // if ( !*(&byte_4ED94C[37 * v1->uClass / 3] + dword_F8B19C)

@@ -380,7 +380,7 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_SetGraphicsMode:
-                __debugbreak();  // Nomad: graphicsmode as it was now removed
+                assert(false);  // Nomad: graphicsmode as it was now removed
                 continue;
 
             case UIMSG_GameMenu_ReturnToGame:
