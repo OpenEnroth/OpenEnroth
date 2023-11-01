@@ -1981,8 +1981,6 @@ void ODM_ProcessPartyActions() {
     }
     //------------------------------------------
 
-    // has a modifiction been made to party position to push it away from a slope
-    bool partySlopeMod{ false };
     if (partyNotTouchingFloor && !pParty->bFlying) {  // add gravity
         partyInputSpeed.z += -2.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
     } else if (!partyNotTouchingFloor) {
@@ -2000,7 +1998,6 @@ void ODM_ProcessPartyActions() {
                 partyInputSpeed.x += dot * v98.x / 65536.0f;
                 partyInputSpeed.y += dot * v98.y / 65536.0f;
                 partyInputSpeed.z = v35 + dot * v98.z / 65536.0f;
-                partySlopeMod = true;
             }
         }
     }
@@ -2029,10 +2026,10 @@ void ODM_ProcessPartyActions() {
     float savedZ = partyInputSpeed.z;
     // horizontal
     partyInputSpeed.z = 0;
-    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID, &partySlopeMod);
+    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
     // vertical
     partyInputSpeed = Vec3f(0, 0, savedZ);
-    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID, &partySlopeMod);
+    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
 
     if (!partyNotTouchingFloor || partyCloseToGround)
         pParty->setAirborne(false);
@@ -2157,9 +2154,6 @@ void ODM_ProcessPartyActions() {
             pParty->sPartySavedFlightZ = pParty->pos.z;
         }
     }
-
-    if (partySlopeMod)
-        pParty->uFallStartZ = partyNewPos.z;
 
     // walking / running sounds ------------------------
     if (engine->config->settings.WalkSound.value()) {
