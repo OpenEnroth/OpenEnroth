@@ -23,9 +23,8 @@ LodTextureCache::~LodTextureCache() {
     }
 }
 
-bool LodTextureCache::open(const std::string &pFilename, const std::string &pFolderName) {
+void LodTextureCache::open(const std::string &pFilename, const std::string &pFolderName) {
     _reader.open(pFilename);
-    return true;
 }
 
 void LodTextureCache::reserveLoadedTextures() {

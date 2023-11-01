@@ -670,31 +670,26 @@ void FinalInitialization() {
     pIcons_LOD->reserveLoadedTextures();
 }
 
-bool MM7_LoadLods() {
+void MM7_LoadLods() {
     engine->_gameResourceManager = std::make_unique<GameResourceManager>();
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LodTextureCache;
-    if (!pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
-        return false;
-    }
+    pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons");
 
     pBitmaps_LOD = new LodTextureCache;
-    if (!pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
-        return false;
-    }
+    pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps");
 
     pSprites_LOD = new LodSpriteCache;
-    if (!pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
-        return false;
-    }
+    pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08");
+
+    // TODO(captainurist):
+    // on error in `open` we had this:
+    // Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+    // however, at this point localization isn't initialized yet, so this was a guaranteed crash.
+    // Implement proper user-facing error reporting!
 
     pPaletteManager->load(pBitmaps_LOD);
-
-    return true;
 }
 
 //----- (004651F4) --------------------------------------------------------
