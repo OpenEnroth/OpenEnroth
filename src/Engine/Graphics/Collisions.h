@@ -122,7 +122,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying);
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent);
 
-void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID, bool* partySlopeMod);
+void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID);
 
 /**
  * Finds whether this quadratic (of the form AX^2 + BX + C = 0) can be solved and if the solution is smaller

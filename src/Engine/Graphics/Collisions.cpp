@@ -981,33 +981,33 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     }
 }
 
-void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID, bool *partySlopeMod) {
-    constexpr float closestdist = 1.5f;  // Closest allowed approach to collision surface - needs adjusting
+void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID) {
+    constexpr float closestdist = 0.5f;  // Closest allowed approach to collision surface - needs adjusting
 
     // --(Collisions)-------------------------------------------------------------------
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
-    collision_state.radius_hi = pParty->radius - 1.0f; /// 2.0f;
+    collision_state.radius_hi = pParty->radius;
     collision_state.check_hi = true;
-    // make 100 attempts to satisfy collisions
-    for (uint i = 0; i < 100; i++) {
-        collision_state.position_hi = *partyNewPos + Vec3f(0, 0, pParty->height - 32 + 1);
-        collision_state.position_lo = *partyNewPos + Vec3f(0, 0, collision_state.radius_lo + 1);
-        collision_state.velocity = *partyInputSpeed;
 
+    // make 5 attempts to satisfy collisions
+    for (uint i = 0; i < 5; i++) {
+        collision_state.position_hi = *partyNewPos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
+        collision_state.position_lo = *partyNewPos + Vec3f(0, 0, collision_state.radius_lo);
+        collision_state.velocity = *partyInputSpeed;
         collision_state.uSectorID = 0;
 
         int frame_movement_dt = 0;
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             frame_movement_dt = 13312;
-        if (collision_state.PrepareAndCheckIfStationary(frame_movement_dt))
+        if (collision_state.PrepareAndCheckIfStationary(frame_movement_dt)) {
             break;
+        }
 
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
         _46ED8A_collide_against_sprite_objects(Pid::character(0));
-
         for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
             CollideWithActor(actor_id, 0);
 
@@ -1016,13 +1016,18 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             // Moved far enough so reset foot position for exit
             newPosLow.x = collision_state.new_position_lo.x;
             newPosLow.y = collision_state.new_position_lo.y;
-            newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo;
         } else {
             if (collision_state.adjusted_move_distance > closestdist) {
                 // Set new position but moved back slightly so we never touch the face
                 newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
                 // Adjust the collision position with the same offset
                 collision_state.collisionPos -= closestdist * collision_state.direction;
+            } else if (collision_state.adjusted_move_distance < -closestdist) {
+                // Set new position but moved back slightly so we never touch the face
+                newPosLow = *partyNewPos + (collision_state.adjusted_move_distance + closestdist) * collision_state.direction;
+                // Adjust the collision position with the same offset
+                collision_state.collisionPos += closestdist * collision_state.direction;
             } else {
                 // TODO(pskelton): handle this better
                 newPosLow = *partyNewPos;
@@ -1068,7 +1073,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
                 partyNewPos->x = collision_state.new_position_lo.x;
                 partyNewPos->y = collision_state.new_position_lo.y;
             }
-            partyNewPos->z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            partyNewPos->z = collision_state.new_position_lo.z - collision_state.radius_lo;
             break;
         }
 
@@ -1101,85 +1106,58 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
 
             // Set party to move along this new sliding vector
             // Re add party z speed because it would get zeroed in dot product
-            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed) + Vec3f(0, 0, partyInputSpeed->z);
+            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
             // Skip reducing party speed
             continue;
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
-            *partyHasHitModel = true;
-            const BSPModel* pModel = &pOutdoor->model(collision_state.pid);
             const ODMFace* pODMFace = &pOutdoor->face(collision_state.pid);
-            int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
-            bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
+            bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z > 0.0f && pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
+
+            if (pODMFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
+                *partyHasHitModel = true;
 
             if (engine->IsUnderwater())
                 bFaceSlopeTooSteep = false;
-
-            if (partyInputSpeed->xy().lengthSqr() < 400) {
-                partyInputSpeed->x = 0;
-                partyInputSpeed->y = 0;
-            }
 
             if (pParty->floor_face_id != collision_state.pid.id() && pODMFace->Pressure_Plate()) {
                 pParty->floor_face_id = collision_state.pid.id();
                 *triggerID = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
             }
 
+            // new sliding plane
+            Vec3f slideplaneorigin = collision_state.collisionPos;
+            Vec3f slideplanenormal = newPosLow + Vec3f(0, 0, collision_state.radius_lo) - slideplaneorigin;
+            slideplanenormal.normalize();
+            float slideplanedist = -(dot(slideplaneorigin, slideplanenormal));
+            float distfromdestpointtoplane = dot(collision_state.new_position_lo, slideplanenormal) + slideplanedist;
+            Vec3f newdestination = collision_state.new_position_lo - distfromdestpointtoplane * slideplanenormal;
+            Vec3f newdirection = newdestination - collision_state.collisionPos;
+
+            // Cant push uphill on steep faces
+            if (bFaceSlopeTooSteep && newdirection.z > 0)
+                newdirection.z = 0;
+
+            newdirection.normalize();
+
+            // set movement speed along sliding plane
+            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
+
             // TODO(pskelton): these should probably be if else for polygon types
-            if (pODMFace->uPolygonType == POLYGON_Floor) {
+            if (pODMFace->uPolygonType == POLYGON_Floor || pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
                 pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
-                if (partyInputSpeed->z < 0) partyInputSpeed->z = 0;
-                partyNewPos->z = pModel->pVertices[pODMFace->pVertexIDs[0]].z + 1;
             }
 
-            if (!bSmallZDelta && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || bFaceSlopeTooSteep)) {
-                *partySlopeMod = true;
-
-                // push party away from the surface
-                int dot = std::abs(partyInputSpeed->y * pODMFace->facePlane.normal.y +
-                    partyInputSpeed->z * pODMFace->facePlane.normal.z +
-                    partyInputSpeed->x * pODMFace->facePlane.normal.x);
-                if ((collision_state.speed / 8) > dot)
-                    dot = collision_state.speed / 8;
-                partyInputSpeed->x += dot * pODMFace->facePlane.normal.x;
-                partyInputSpeed->y += dot * pODMFace->facePlane.normal.y;
-                int v54 = 0;
-                if (!bFaceSlopeTooSteep)
-                    v54 = dot * pODMFace->facePlane.normal.z;
-                partyInputSpeed->z += v54;
-                int v55 = collision_state.radius_lo - pODMFace->facePlane.signedDistanceTo(newPosLow);
-                if (v55 > 0) {
-                    partyNewPos->x = newPosLow.x + pODMFace->facePlane.normal.x * v55;
-                    partyNewPos->y = newPosLow.y + pODMFace->facePlane.normal.y * v55;
-                    if (!bFaceSlopeTooSteep)
-                        partyNewPos->z = newPosLow.z + pODMFace->facePlane.normal.z * v55;
-                }
-            }
-
-            if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                pParty->bFlying = false;
-                pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
-
-                // this pushes party slightly up away from the surface so you can climb it
-                float dot = std::abs(partyInputSpeed->y * pODMFace->facePlane.normal.y +
-                    partyInputSpeed->z * pODMFace->facePlane.normal.z +
-                    partyInputSpeed->x * pODMFace->facePlane.normal.x);
-                if ((collision_state.speed / 8) > dot)
-                    dot = collision_state.speed / 8;
-                partyInputSpeed->z += dot * pODMFace->facePlane.normal.z;
-                partyInputSpeed->x += dot * pODMFace->facePlane.normal.x;
-                partyInputSpeed->y += dot * pODMFace->facePlane.normal.y;
-
-                *partySlopeMod = true;
-            }
+            continue;
         }
 
         // ~0.9x reduce party speed and try again
         *partyInputSpeed *= 0.89263916f; // was 58500 fp
     }
 }
+
 
 bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln) {
     float d = b * b - 4.0f * a * c;
