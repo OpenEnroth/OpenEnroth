@@ -18,7 +18,7 @@
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 
 #include "Library/Color/ColorTable.h"
 

@@ -13,4 +13,10 @@ set(ENGINE_COMPONENTS_CONTROL_HEADERS
 add_library(engine_components_control STATIC ${ENGINE_COMPONENTS_CONTROL_SOURCES} ${ENGINE_COMPONENTS_CONTROL_HEADERS})
 target_check_style(engine_components_control)
 
-target_link_libraries(engine_components_control PUBLIC engine gui arcomage platform utility library_application)
+target_link_libraries(engine_components_control PUBLIC
+        utility
+        engine
+        gui
+        arcomage
+        library_platform_interface
+        library_platform_application)

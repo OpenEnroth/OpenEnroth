@@ -6,7 +6,7 @@
 
 #include "Engine/EngineGlobals.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 
 bool RenderNull::Initialize() {
     application->initializeOpenGLContext(PlatformOpenGLOptions());

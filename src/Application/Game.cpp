@@ -90,7 +90,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 

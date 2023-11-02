@@ -19,7 +19,7 @@
 #include "Engine/Party.h"
 
 #include "GUI/GUIWindow.h"
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 
 #include "Library/Serialization/Serialization.h"
 #include "Library/Logger/Logger.h"

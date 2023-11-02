@@ -27,9 +27,9 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 
-#include "Platform/PlatformGamepad.h"
+#include "Library/Platform/Interface/PlatformGamepad.h"
 
 using Io::InputAction;
 

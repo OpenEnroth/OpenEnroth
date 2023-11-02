@@ -7,7 +7,7 @@
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Rect.h"
 
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 
 class GraphicsImage;
 

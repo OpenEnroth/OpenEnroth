@@ -2,10 +2,10 @@
 
 #include <memory>
 
-#include "Platform/Proxy/ProxyPlatform.h"
-#include "Platform/Proxy/ProxyOpenGLContext.h"
+#include "Library/Platform/Proxy/ProxyPlatform.h"
+#include "Library/Platform/Proxy/ProxyOpenGLContext.h"
 #include "Library/Random/RandomEngineEnums.h"
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 
 class RandomEngine;
 

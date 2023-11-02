@@ -4,9 +4,9 @@
 #include <functional>
 #include <memory>
 
-#include "Platform/Proxy/ProxyOpenGLContext.h"
-#include "Platform/Proxy/ProxyEventLoop.h"
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Proxy/ProxyOpenGLContext.h"
+#include "Library/Platform/Proxy/ProxyEventLoop.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "EngineControlStateHandle.h"
 

@@ -3,7 +3,7 @@
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 
 GameTraceHandler::GameTraceHandler() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}

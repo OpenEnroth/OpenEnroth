@@ -40,5 +40,6 @@ target_link_libraries(application
         library_config
         library_lod
         media
-        platform
+        library_platform_null
+        library_platform_implementation
         utility)

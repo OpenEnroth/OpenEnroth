@@ -16,7 +16,7 @@
 #include "Engine/Time.h"
 #include "Engine/EngineIocContainer.h"
 
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Platform/Platform.h"
-#include "Platform/PlatformWindow.h"
-#include "Platform/PlatformOpenGLContext.h"
-#include "Platform/PlatformEventLoop.h"
+#include "Library/Platform/Interface/Platform.h"
+#include "Library/Platform/Interface/PlatformWindow.h"
+#include "Library/Platform/Interface/PlatformOpenGLContext.h"
+#include "Library/Platform/Interface/PlatformEventLoop.h"
 
 class PlatformApplication;
 

@@ -4,7 +4,7 @@
 #include <functional>
 #include <memory>
 
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "EngineTraceEnums.h"
 

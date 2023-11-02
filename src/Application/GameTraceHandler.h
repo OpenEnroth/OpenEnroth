@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Platform/Filters/PlatformEventFilter.h"
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Filters/PlatformEventFilter.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 
 // TODO(captainurist): tbh we just need a hotkey system instead of this monstrosity.
 /**

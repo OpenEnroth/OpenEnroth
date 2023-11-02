@@ -3,9 +3,9 @@
 #include <memory>
 #include <tuple>
 
-#include "Platform/PlatformEnums.h"
-#include "Platform/Filters/PlatformEventFilter.h"
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
+#include "Library/Platform/Filters/PlatformEventFilter.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 #include "Utility/Geometry/Size.h"
 
 namespace Io {
