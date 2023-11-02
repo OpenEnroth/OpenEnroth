@@ -6,7 +6,6 @@ set(ENGINE_SOURCES
         Conditions.cpp
         Engine.cpp
         EngineGlobals.cpp
-        ErrorHandling.cpp
         EngineIocContainer.cpp
         GpuHints.cpp
         LOD.cpp
@@ -32,7 +31,6 @@ set(ENGINE_HEADERS
         Conditions.h
         Engine.h
         EngineGlobals.h
-        ErrorHandling.h
         EngineIocContainer.h
         LOD.h
         LodTextureCache.h

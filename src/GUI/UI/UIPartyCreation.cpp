@@ -24,6 +24,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 using Io::TextInputType;
 
@@ -305,7 +306,9 @@ void GUIWindow_PartyCreation::Update() {
             pX = 488;
             break;
         default:
-            Error("Invalid selected character");
+            assert(false);
+            pX = 0;
+            break;
     }
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
@@ -804,7 +807,8 @@ bool PartyCreationUI_LoopInternal() {
                 pParty->pCharacters[i].AddItem(-1, ITEM_MACE);
                 break;
             case CHARACTER_SKILL_BLASTER:
-                Error("No blasters at startup :p");
+                logger->error("No blasters at startup :p");
+                break;
             case CHARACTER_SKILL_SHIELD:
                 pParty->pCharacters[i].AddItem(-1, ITEM_WOODEN_BUCKLER);
                 break;
@@ -847,8 +851,10 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             case CHARACTER_SKILL_LIGHT:
             case CHARACTER_SKILL_DARK:
+                logger->error("No light/dark magic at startup");
+                break;
             case CHARACTER_SKILL_DIPLOMACY:
-                Error("No dimoplacy in mm7 (yet)");
+                logger->error("No diplomacy in mm7 (yet)");
                 break;
             case CHARACTER_SKILL_ITEM_ID:
             case CHARACTER_SKILL_REPAIR:

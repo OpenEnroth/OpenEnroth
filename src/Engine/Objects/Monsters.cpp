@@ -3,8 +3,6 @@
 #include <string>
 #include <utility>
 
-#include "Engine/ErrorHandling.h"
-
 #include "../Tables/FrameTableInc.h"
 
 #include "Library/Logger/Logger.h"
@@ -976,5 +974,6 @@ MonsterId MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }
-    Error("Monster not found: %s", pMonsterName.c_str());
+    logger->error("Monster not found: {}", pMonsterName);
+    return MONSTER_INVALID;
 }

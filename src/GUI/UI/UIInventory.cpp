@@ -21,7 +21,7 @@ void GUIWindow_Inventory::Update() {
 
     // a hack to capture end of user input (enter) while avoiding listening to UI message handler
     // redo this in a more clean way
-    __debugbreak();
+    assert(false);
 
     // if (userInputHandler->inputType == TextInputType::None) {
     //    ItemGen ItemGen2;

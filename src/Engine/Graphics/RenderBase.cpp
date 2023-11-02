@@ -426,7 +426,7 @@ void RenderBase::TransformBillboard(const SoftwareBillboard *pSoftBillboard, con
     Sprite *pSprite = pBillboard->hwsprite;
     // error catching
     if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
-        __debugbreak();
+        assert(false);
 
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(pSoftBillboard->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
@@ -778,7 +778,7 @@ void RenderBase::CreateZBuffer() {
 
     pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
     if (!pActiveZBuffer)
-        Error("Failed to create zbuffer");
+        logger->error("Failed to create zbuffer");
 
     ClearZBuffer();
 }

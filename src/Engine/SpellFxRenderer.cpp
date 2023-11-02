@@ -660,7 +660,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     //  int v19; // eax@141
     //  int v20; // eax@151
 
-    // __debugbreak(); // need to refactor carefully & collect data
+    // assert(false); // need to refactor carefully & collect data
     // v2 = this;
     result = a2->uType;
 
@@ -741,7 +741,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return false;
 
         case SPRITE_OBJECT_EXPLODE_IMPACT:
-            // __debugbreak();  // what kind of effect is this?
+            // assert(false);  // what kind of effect is this?
             AddMobileLight(a2, colorTable.OrangeyRed, 256);
             return true;
 
@@ -1381,7 +1381,7 @@ int SpellFX_Billboard::SpellFXNearClipAdjust(float NearClip) {  // near clip adj
 //----- (00477927) --------------------------------------------------------
 int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust - needs diffuse sorting properly??
     // refactored but not tested
-    // __debugbreak();
+    // assert(false);
 
     if (!uNumVertices) return 0;
 

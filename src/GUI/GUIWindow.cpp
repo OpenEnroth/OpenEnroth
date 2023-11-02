@@ -553,7 +553,7 @@ void GUI_UpdateWindows() {
     }
 
     // should never activte this - gameui window should always be open
-    if (lWindowList.size() < 1) __debugbreak();
+    if (lWindowList.size() < 1) assert(false);
 
     std::list<GUIWindow *> tmpWindowList(lWindowList);
     tmpWindowList.reverse();  // new windows are push front - but front should be drawn last?? testing
@@ -832,7 +832,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
         uGameUIFontMain = colorTable.MediumBlue;
         uGameUIFontShadow = colorTable.White;
     } else {
-        Error("Invalid alignment type: %u", align);
+        assert(false);
     }
 }
 
@@ -1066,7 +1066,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
             case 30:
                 if (!a6) {
                     // result += eventId;
-                    __debugbreak(); // should never get here?
+                    assert(false); // should never get here?
                     break;
                 }
                 v56.Initialize(*a6);
@@ -1092,7 +1092,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 }
                 if (mask - 51 >= 20) {
                     // result += eventId;
-                    __debugbreak(); // should never get here?
+                    assert(false); // should never get here?
                     break;
                 }
 

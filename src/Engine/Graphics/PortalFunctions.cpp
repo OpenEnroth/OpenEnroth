@@ -1,7 +1,6 @@
 #include "Engine/Graphics/PortalFunctions.h"
 
 #include "Engine/Engine.h"
-#include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/Camera.h"
 #include "Indoor.h"
 
@@ -190,7 +189,8 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
             break;
 
         default:
-            Error("Invalid polygon type (%u)", pFace->uPolygonType);
+            assert(false);
+            return false;
     }
 
     float face_center_x = 0;

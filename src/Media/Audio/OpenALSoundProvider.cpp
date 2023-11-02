@@ -19,7 +19,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "Engine/ErrorHandling.h"
 #include "Library/Logger/Logger.h"
 #include "Media/MediaPlayer.h"
 
@@ -217,7 +216,7 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
                         break;
                 }
             }
-            Error("Unsupported number of audio channels: %u", num_channels);
+            logger->error("Unsupported number of audio channels: {}", num_channels);
     }
 
     unsigned int al_source = -1;
@@ -307,7 +306,7 @@ OpenALSoundProvider::TrackBuffer *OpenALSoundProvider::CreateTrack16(
                         break;
                 }
             }
-            Error("Unsupported number of audio channels: %u", num_channels);
+            logger->error("Unsupported number of audio channels: {}", num_channels);
         }
     }
 
@@ -724,7 +723,7 @@ bool OpenALAudioDataSource::Open() {
                         break;
                 }
             }
-            Error("Unsupported number of audio channels: %u", num_channels);
+            logger->error("Unsupported number of audio channels: {}", num_channels);
     }
 
     while (true) {

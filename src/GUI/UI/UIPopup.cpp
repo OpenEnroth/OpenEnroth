@@ -2438,7 +2438,7 @@ Color GetSpellColor(signed int a1) {
     if (a1 < 100)
         return colorTable.MoonRaker;
     else
-        __debugbreak();
+        assert(false);
 
     logger->warning("No color returned - GetSpellColor!");
     return colorTable.White;

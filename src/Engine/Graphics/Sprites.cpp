@@ -37,7 +37,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     if (uSpriteID <= pSpriteSFrames.size()) {
         if (uSpriteID >= 0) {
             uint iter_uSpriteID = uSpriteID;
-            //if (iter_uSpriteID == 603) __debugbreak();
+            //if (iter_uSpriteID == 603) assert(false);
 
             int uFlags = pSpriteSFrames[iter_uSpriteID].uFlags;
 
@@ -140,7 +140,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = fmt::format("{}{}", pSpriteSFrames[iter_uSpriteID].texture_name, i);
                                 } else {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name;
-                                    // __debugbreak();
+                                    // assert(false);
                                 }
                             }
 
@@ -187,7 +187,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, int uTime) {
     // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
     // quick fix so it doesnt return empty sprite
     while (v4->hw_sprites[0] == NULL) {
-        //__debugbreak();
+        //assert(false);
         --v4;
     }
 

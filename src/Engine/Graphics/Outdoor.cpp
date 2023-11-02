@@ -715,7 +715,7 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
     result = 0;
     /*else
     {
-      __debugbreak();
+      assert(false);
       v5 = PaletteManager::Get_Dark_or_Red_LUT(a2, 0, 1);
       v6 = 0.0;
       v22 = 0.0;
@@ -845,9 +845,6 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     //    }
     //}
 
-    if (!pGames_LOD->exists(filename))
-        Error("Unable to find %s in Games.LOD", filename.c_str());
-
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
     if (viewparams->location_minimap)
         viewparams->location_minimap->Release();
@@ -857,7 +854,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
     OutdoorLocation_MM7 location;
-    deserialize(lod::decodeCompressed(pGames_LOD->read(odm_filename)), &location);
+    deserialize(lod::decodeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
     reconstruct(location, this);
 
     // ****************.ddm file*********************//
@@ -1363,7 +1360,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         // no sprite frame to draw
         if (frame->icon_name == "null") continue;
         if (frame->hw_sprites[Sprite_Octant]->texture->height() == 0 || frame->hw_sprites[Sprite_Octant]->texture->width() == 0)
-            __debugbreak();
+            assert(false);
 
         int flags = 0;
         // v16 = (int *)frame->uFlags;
@@ -2543,7 +2540,7 @@ Color GetLevelFogColor() {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
                 logger->error("decompilation can be inaccurate, please send savegame to Nomad");
-                __debugbreak();
+                assert(false);
             }
             if (pWeather->bNight) {
                 return colorTable.DarkGray;

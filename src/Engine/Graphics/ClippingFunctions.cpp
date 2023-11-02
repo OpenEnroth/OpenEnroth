@@ -21,7 +21,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
     RenderVertexSoft *v19 = nullptr;  // [sp+14h] [bp-14h]@0
     int v21;         // [sp+1Ch] [bp-Ch]@7
 
-    // __debugbreak();
+    // assert(false);
     // thisa = this;
 
 
@@ -281,7 +281,7 @@ bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexS
     char v15;              // c3@24
     float a1a;             // [sp+10h] [bp+8h]@5
 
-    // __debugbreak();
+    // assert(false);
 
     static Vec3f static_AE3388;
     static Vec3f static_AE3378;

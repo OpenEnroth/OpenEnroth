@@ -30,18 +30,9 @@ bool GUIProgressBar::Initialize(Type type) {
 
     Release();
 
-    switch (type) {
-        case TYPE_None:
-            return true;
-
-        case TYPE_Box:
-        case TYPE_Fullscreen:
-            break;
-
-        default:
-            Error("Invalid GUIProgressBar type: %u", type);
-    }
-
+    if (type == TYPE_None)
+        return true;
+    assert(type == TYPE_Box || type == TYPE_Fullscreen);
     uType = type;
 
     if (uType == TYPE_Fullscreen) {

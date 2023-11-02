@@ -467,7 +467,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
                 requested_equip = ITEM_TYPE_GEM;
                 break;
             default:
-                __debugbreak();  // check this condition
+                assert(false);  // check this condition
                 // TODO(captainurist): explore
                 requested_equip = static_cast<ItemType>(std::to_underlying(uTreasureType) - 1);
                 break;

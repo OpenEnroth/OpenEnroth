@@ -168,11 +168,10 @@ void Engine::drawWorld() {
 
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
-            } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+            } else {
+                assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
                 render->uFogColor = GetLevelFogColor();
                 pOutdoor->Draw();
-            } else {
-                Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
             }
 
             decal_builder->DrawBloodsplats();
@@ -1748,7 +1747,7 @@ GameTime timeUntilDawn() {
     return GameTime::FromDays(1) + dawnHour - currentTimeInDay;
 }
 
-void initLevelStrings(Blob &blob) {
+void initLevelStrings(const Blob &blob) {
     engine->_levelStrings.clear();
 
     int offs = 0;
@@ -1761,12 +1760,7 @@ void initLevelStrings(Blob &blob) {
 }
 
 void Level_LoadEvtAndStr(const std::string &pLevelName) {
-    Blob blob = engine->_gameResourceManager->getEventsFile(pLevelName + ".str");
-    if (!blob || (blob.size() > 9216)) {
-        Error("File %s Size %lu - Buffer size %lu", (pLevelName + ".str").c_str(), blob.size(), 9216);
-    }
-
-    initLevelStrings(blob);
+    initLevelStrings(engine->_gameResourceManager->getEventsFile(pLevelName + ".str"));
 
     engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(pLevelName + ".evt"));
 }

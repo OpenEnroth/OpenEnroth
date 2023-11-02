@@ -6,6 +6,7 @@
 #include "../../Party.h"
 #include "Engine/Engine.h"
 
+#include "Library/Logger/Logger.h"
 #include "Library/Random/Random.h"
 
 std::vector<LevelDecoration> pLevelDecorations;
@@ -306,7 +307,8 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         default:
-            Error("Invalid DecorationDescID: %u", uDecorationDescID);
+            logger->error("Invalid DecorationDescID: {}", uDecorationDescID);
+            return 0;
     }
 }
 

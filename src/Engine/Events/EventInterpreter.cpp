@@ -61,10 +61,9 @@ static bool checkSeason(Season season) {
                     monthPlusOne == 6 && daysPlusOne <= 20);
 
         default:
-            Error("Unknown season");
+            assert(false);
+            return false;
     }
-
-    return false;
 }
 
 /**
@@ -154,7 +153,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 break;
             case EVENT_CanShowTopic_IsActorKilled:
                 // TODO: enconunter and process
-                __debugbreak();
+                assert(false);
 #if 0
                 if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
                     return ir.target_step;
@@ -351,7 +350,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             //
             // TODO(Nik-RE-dev): this event is not used in MM7. In GrayFace's data it's called "Question" and must have additional arguments
             // that control where events executions must be continued on correct/incorrect input.
-            __debugbreak();
+            assert(false);
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
@@ -479,7 +478,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_SetActorGroup:
             // TODO: enconunter and process
-            __debugbreak();
+            assert(false);
 #if 0
             *(&pActors[0].uGroup + 0x11000000 * _evt->v8 +
               209 * (_evt->v5 +
@@ -505,7 +504,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             return -1;
         case EVENT_ChangeGroup:
             // TODO: enconunter and process
-            __debugbreak();
+            assert(false);
 #if 0
             v38 = EVT_DWORD(_evt->v5);
             v39 = EVT_DWORD(_evt->v9);
@@ -517,7 +516,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_ChangeGroupAlly:
             // TODO: enconunter and process
-            __debugbreak();
+            assert(false);
 #if 0
             v42 = EVT_DWORD(_evt->v5);
             v43 = EVT_DWORD(_evt->v9);

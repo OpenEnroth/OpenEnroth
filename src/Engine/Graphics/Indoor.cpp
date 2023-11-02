@@ -179,7 +179,7 @@ void BLVRenderParams::Reset() {
     this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel));
 
     if (!this->uPartySectorID) {
-        __debugbreak();  // shouldnt happen, please provide savegame
+        assert(false);  // shouldnt happen, please provide savegame
     }
 
 
@@ -300,22 +300,19 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 void IndoorLocation::Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
     decal_builder->Reset(0);
 
-    if (bLoaded)
-        Error("BLV is already loaded");
+    assert(!bLoaded); // BLV is already loaded!
 
     auto blv_filename = std::string(filename);
     blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
 
     this->filename = std::string(filename);
-    if (!pGames_LOD->exists(blv_filename))
-        Error("Unable to find %s in Games.LOD", blv_filename.c_str());
 
     Release();
 
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    deserialize(lod::decodeCompressed(pGames_LOD->read(blv_filename)), &location);
+    deserialize(lod::decodeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
     reconstruct(location, this);
 
     std::string dlv_filename = filename;
@@ -378,7 +375,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
         return 0;
 
     if (pSectors.size() < 2) {
-        // __debugbreak();
+        // assert(false);
         return 0;
     }
 
@@ -463,7 +460,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         // doesnt choose - so default to first - SHOULDNT GET HERE
         if (pSectorID == 0) {
-            __debugbreak();
+            assert(false);
             pSectorID = this->pFaces[FoundFaceStore[0]].uSectorID;
         }
     }
@@ -1107,7 +1104,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
         if (pFaceID)
             *pFaceID = blv_floor_id[0];
         if (blv_floor_z[0] <= -29000) {
-            /*__debugbreak();*/
+            /*assert(false);*/
         }
         return blv_floor_z[0];
     }
@@ -1129,12 +1126,12 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
 
         if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
             result = blv_floor_z[i];
-            if (blv_floor_z[i] <= -29000) __debugbreak();
+            if (blv_floor_z[i] <= -29000) assert(false);
             faceId = blv_floor_id[i];
         }
     }
 
-    if (result <= -29000) __debugbreak();
+    if (result <= -29000) assert(false);
 
     if (pFaceID)
         *pFaceID = faceId;
@@ -1187,7 +1184,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + v10);
 
     // error catching
-    if (v11->icon_name == "null") __debugbreak();
+    if (v11->icon_name == "null") assert(false);
 
     v30 = 0;
     if (v11->uFlags & 2) v30 = 2;
@@ -1226,7 +1223,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                         v11->hw_sprites[v9];
 
                     if (v11->hw_sprites[v9]->texture->height() == 0 || v11->hw_sprites[v9]->texture->width() == 0)
-                        __debugbreak();
+                        assert(false);
 
                     pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = v11->GetPaletteIndex();
                     pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
@@ -1521,7 +1518,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (floorZ == -30000 || faceId == -1) {
         floorZ = GetApproximateIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, 40), &sectorId, &faceId);
         if (floorZ == -30000 || faceId == -1) {
-            __debugbreak();  // level built with errors
+            assert(false);  // level built with errors
             return;
         }
     }
@@ -1796,7 +1793,7 @@ void switchDoorAnimation(unsigned int uDoorID, int a2) {
         if (pIndoor->pDoors[door_id].uDoorID == uDoorID) break;
     }
     if (door_id >= 200) {
-        Error("Unable to find Door ID: %i!", uDoorID);
+        logger->error("Unable to find Door ID: {}!", uDoorID);
     }
     old_state = pIndoor->pDoors[door_id].uState;
     // old_state: 0 - в нижнем положении/закрыто

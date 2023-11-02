@@ -675,7 +675,7 @@ void GUIWindow_CharacterRecord::Update() {
             break;
         }
         default:
-            __debugbreak();
+            assert(false);
             break;
     }
 
@@ -1227,17 +1227,17 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     case ITEM_SPELLBOOK_TORCH_LIGHT: // Mordred
                         item_X = 596;
                         item_Y = 86;
-                        __debugbreak();
+                        assert(false);
                         break;
                     case ITEM_SPELLBOOK_FIRE_AURA: // Excalibur
                         item_X = 596;
                         item_Y = 28;
-                        __debugbreak();
+                        assert(false);
                         break;
                     case ITEM_SPELLBOOK_JUMP: // Hades
                         item_X = 595;
                         item_Y = 33;
-                        __debugbreak();
+                        assert(false);
                         break;
                     default:
                         break;
@@ -1314,7 +1314,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsIm
         else if (item->AuraEffectPurple())
             enchantment_texture = assets->getImage_ColorKey("sp91a");
         else
-            __debugbreak();
+            assert(false);
 
         ItemEnchantmentTimer -= pEventTimer->uTimeElapsed;
         if (ItemEnchantmentTimer <= 0) {

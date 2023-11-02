@@ -1194,7 +1194,7 @@ void GameUI_WritePointedObjectStatusString() {
                         break;
                     case 3:
                         // is this one needed?
-                        __debugbreak();  // how does this work?
+                        assert(false);  // how does this work?
                              /*                if (pX >= pButton->uX && pX <=
                              pButton->uZ
                              && pY >= pButton->uY && pY <= pButton->uW)
@@ -1779,8 +1779,10 @@ Color GetConditionDrawColor(Condition uConditionIdx) {
         case CONDITION_PETRIFIED:
         case CONDITION_ERADICATED:
             return ui_character_condition_severe_color;
+        default:
+            assert(false);
+            return Color();
     }
-    Error("Invalid condition (%u)", uConditionIdx);
 }
 
 //----- (00495430) --------------------------------------------------------

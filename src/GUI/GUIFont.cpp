@@ -5,7 +5,6 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/ErrorHandling.h"
 #include "Engine/LodTextureCache.h"
 
 #include "Engine/Graphics/IRender.h"
@@ -14,6 +13,8 @@
 #include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "GUI/GUIWindow.h"
+
+#include "Library/Logger/Logger.h"
 
 void ReloadFonts() {
     if (assets->pFontBookOnlyShadow)
@@ -62,7 +63,7 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(const std::string &pFontFile, const s
 
     Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
     if (!pallete_texture) {
-        Error("Unable to open %s", pFontPalette.c_str());
+        logger->error("Unable to open {}", pFontPalette);
     }
 
     pFont->pData->pFontPalettes[0] = pallete_texture->palette;
