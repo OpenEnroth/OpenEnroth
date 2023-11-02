@@ -87,7 +87,7 @@ var searchData=
   ['initializetileset_84',['InitializeTileset',['../structTileTable.html#aca827d3697a4e5c632797cf4d8dd5e3c',1,'TileTable']]],
   ['initializetransitions_85',['initializeTransitions',['../TransitionTable_8h.html#a37af2f7ba0c439a9425ac6dd6952d36e',1,'initializeTransitions(const Blob &amp;transitions):&#160;TransitionTable.cpp'],['../TransitionTable_8cpp.html#a37af2f7ba0c439a9425ac6dd6952d36e',1,'initializeTransitions(const Blob &amp;transitions):&#160;TransitionTable.cpp']]],
   ['initializeturnbasedanimations_86',['InitializeTurnBasedAnimations',['../Engine_8h.html#aa1f4434418fd12293a414d2a1e59fb8f',1,'InitializeTurnBasedAnimations(void *):&#160;Engine.cpp'],['../Engine_8cpp.html#a44e79e29a4ea6c303e979e18ac3dcb40',1,'InitializeTurnBasedAnimations(void *_this):&#160;Engine.cpp']]],
-  ['initlevelstrings_87',['initLevelStrings',['../Engine_8h.html#aaf682cc15410630fec7db62b970f087c',1,'initLevelStrings(Blob &amp;blob):&#160;Engine.cpp'],['../Engine_8cpp.html#aaf682cc15410630fec7db62b970f087c',1,'initLevelStrings(Blob &amp;blob):&#160;Engine.cpp']]],
+  ['initlevelstrings_87',['initLevelStrings',['../Engine_8h.html#abcdc2a70992101807c27947c797e599d',1,'initLevelStrings(const Blob &amp;blob):&#160;Engine.cpp'],['../Engine_8cpp.html#abcdc2a70992101807c27947c797e599d',1,'initLevelStrings(const Blob &amp;blob):&#160;Engine.cpp']]],
   ['initproxyleaf_88',['initProxyLeaf',['../PlatformApplication_8cpp.html#acb714184fc08655b6c38a2a639f3a19d',1,'PlatformApplication.cpp']]],
   ['initshaders_89',['InitShaders',['../classRenderOpenGL.html#ad7e3951ac0976c611db323a346972fe9',1,'RenderOpenGL']]],
   ['initspellsprite_90',['initSpellSprite',['../CastSpellInfo_8cpp.html#ab5fadbcc3239b59c41e7fee991449c0a',1,'CastSpellInfo.cpp']]],

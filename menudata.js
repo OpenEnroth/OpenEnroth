@@ -246,7 +246,6 @@ var menudata={children:[
 {text:"a",url:"globals_type.html#index_a"},
 {text:"b",url:"globals_type.html#index_b"},
 {text:"c",url:"globals_type.html#index_c"},
-{text:"e",url:"globals_type.html#index_e"},
 {text:"g",url:"globals_type.html#index_g"},
 {text:"j",url:"globals_type.html#index_j"},
 {text:"m",url:"globals_type.html#index_m"},

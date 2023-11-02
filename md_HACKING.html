@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e788eb1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0792926</span>
    </div>
   </td>
  </tr>
@@ -76,25 +76,21 @@ $(function() {
 <h1><a class="anchor" id="autotoc_md1"></a>
 Dependencies</h1>
 <p >Main dependencies:</p><ul>
-<li><a href="https://www.libsdl.org/download-2.0.php">SDL2</a> — crossplatform media framework;</li>
-<li><a href="https://ffmpeg.zeranoe.com/builds/">FFmpeg</a> — video support;</li>
-<li><a href="https://www.openal.org/downloads/OpenAL11CoreSDK.zip">OpenAL</a> — audio support;</li>
-<li><a href="http://gnuwin32.sourceforge.net/packages/zlib.htm">Zlib</a> — compression.</li>
+<li><a href="https://github.com/libsdl-org/SDL/tree/SDL2">SDL2</a> — cross-platform media framework;</li>
+<li><a href="https://github.com/FFmpeg/FFmpeg">FFmpeg</a> — video support;</li>
+<li><a href="https://github.com/kcat/openal-soft">OpenAL Soft</a> — audio support;</li>
+<li><a href="https://github.com/madler/zlib">Zlib</a> — compression.</li>
 </ul>
-<p >On Windows, the above dependencies are resolved automatically during the cmake phase.</p>
-<p >On Linux they are usually part of distribution and you only need to install the development versions of SDL2, ffmpeg, openal and zlib libraries. E.g. on Ubuntu: </p><div class="fragment"><div class="line">sudo apt-get install ffmpeg ffmpeg-devel</div>
-<div class="line">sudo apt-get install openal openal-devel</div>
-<div class="line">sudo apt-get install zlib zlib-devel</div>
-<div class="line">sudo apt-get install SDL2 SDL2-devel</div>
-</div><!-- fragment --><p >On Mac you can install the dependencies from homebrew.</p>
-<p >Additional dependencies:</p><ul>
+<p >By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.</p>
+<p >The only exception is Linux, where we're using SDL2 from the distribution, so you will need to install a development versions of SDL2 before building OpenEnroth. E.g. on Ubuntu: </p><div class="fragment"><div class="line">sudo apt-get install SDL2 SDL2-devel</div>
+</div><!-- fragment --><p >Additional dependencies:</p><ul>
 <li>CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work);</li>
 <li>Python 3.x (optional, for style checks).</li>
 </ul>
 <p >Minimum required compiler versions are as follows:</p><ul>
 <li>Visual Studio 2022;</li>
-<li>GCC 11;</li>
-<li>Clang 13.</li>
+<li>GCC 13;</li>
+<li>AppleClang 15 or Clang 15.</li>
 </ul>
 <p >The following IDEs have been tested and should work fine:</p><ul>
 <li>Visual Studio (2022 or later);</li>
@@ -103,12 +99,12 @@ Dependencies</h1>
 </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Building on *nix platforms</h1>
-<p >This project uses the <a href="https://cmake.org">CMake</a> build system. Use the following commands to clone repository and build (it is recommended to build in a separate directory as shown here):</p>
+<p >This project uses the <a href="https://cmake.org">CMake</a> build system. Use the following commands to clone the repository and build OpenEnroth:</p>
 <div class="fragment"><div class="line">$ git clone https://github.com/OpenEnroth/OpenEnroth.git</div>
 <div class="line">$ cd OpenEnroth</div>
 <div class="line">$ cmake -B build -S .</div>
 <div class="line">$ cmake --build build</div>
-</div><!-- fragment --><p >To compile x86 build on x86_64 platform you can pass <code>-m32</code> via compiler flags to cmake. For example instead of just <code>cmake ..</code> above execute <code>CFLAGS="-m32" CXXFLAGS="-m32" cmake ..</code></p>
+</div><!-- fragment --><p >To cross-compile for 32-bit x86, you can pass <code>-m32</code> via compiler flags to cmake. In the snipped above that would mean running <code>export CFLAGS="-m32" CXXFLAGS="-m32"</code> first.</p>
 <p >You can also select platform dependent <a href="https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html">generator</a> for your favorite IDE.</p>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Building on Windows</h1>
@@ -126,12 +122,12 @@ Building on Windows</h1>
 <li>Select startup item as <code>OpenEnroth.exe</code>.</li>
 <li>Run!</li>
 </ul>
-<p >If you wish you can also disable autoresolving main dependencies by turning off <code>OE_USE_PREBUILT_DEPENDENCIES</code> cmake option and pass your own dependencies source, e.g. via <a href="https://github.com/microsoft/vcpkg">vcpkg</a> integration.</p>
+<p >If you wish you can also disable prebuilt dependencies by turning off <code>OE_USE_PREBUILT_DEPENDENCIES</code> cmake option and pass your own dependencies source, e.g. via <a href="https://github.com/microsoft/vcpkg">vcpkg</a> integration.</p>
 <p ><b>Be aware</b> that Visual Studio has a bug with git submodules not syncing between branches. So when checking out the branch or switching to different branch you may need to run the following command manually: <code>git submodule update --init</code></p>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Coding style</h1>
-<p >For the C++ code we are following the <a href="http://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>.\ Source code is automatically checked against it and Pull Request will fail if you don't follow it.</p>
-<p >To perform style check before pushing anything you can build <code>check_style</code> target. In Visual Studio you can do that by going to <em><b>Solution Explorer → Change Views → CMake targets</b></em>. Right click and build <code>check_style</code>, errors will be listed in output.</p>
+<p >For the C++ code we are following the <a href="http://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>. Source code is automatically checked against it and pull request will fail if you don't follow it.</p>
+<p >To perform a style check before pushing anything you can build <code>check_style</code> target. In Visual Studio you can do that by going to <em><b>Solution Explorer → Change Views → CMake targets</b></em>. Right click and build <code>check_style</code>, errors will be listed in output.</p>
 <p >We also follow some additional style preferences, as listed below.</p>
 <p >Documentation:</p><ul>
 <li>Documentation should be in doxydoc format with <code>@</code> used for tags, and starting with <code>/**</code> comment introducer.</li>
@@ -143,8 +139,8 @@ Coding style</h1>
 <li>Use <code>SNAKE_CASE_ALL_CAPS</code> for <code>enum</code> values. E.g. <code>ITEM_CRATE_OF_ARROWHEADS</code>, <code>ITEM_SLOT_RING6</code>.</li>
 <li>For naming enum values, prefix the name with the name of the type, e.g. <code>MONSTER_TROLL_A</code> for a value of <code>enum class MonsterId</code>. For values that are then used in array bounds, put the <code>_FIRST</code>, <code>_LAST</code> and <code>_COUNT</code> right after the name of the type, e.g. <code>ITEM_FIRST_MESSAGE_SCROLL</code>.</li>
 <li>Use <code>CamelCase</code> for everything else.</li>
-<li>Type names should start with a capital letter. E.g. <code><a class="el" href="classIndexedArray.html">IndexedArray</a></code>, <code>InputAction</code>, <code>PlatformLogLevel</code>. This applies to all types, including classes, structs, enums and typedefs, with certain exceptions as listed below.</li>
-<li>Method &amp; function names should start with a lowercase letter. E.g. <code><a class="el" href="structVec3.html#a129e719058dc74a0eec615d6090f1256">Vec3::length</a></code>, <code>gridCellToWorldPosX</code>, <code>getCeilingHeight</code>.</li>
+<li>Type names should start with a capital letter. E.g. <code><a class="el" href="classIndexedArray.html">IndexedArray</a></code>, <code>InputAction</code>, <code>LogLevel</code>. This applies to all types, including classes, structs, enums and typedefs, with certain exceptions as listed below.</li>
+<li>Method &amp; function names should start with a lowercase letter. E.g. <code><a class="el" href="structVec3.html#a129e719058dc74a0eec615d6090f1256">Vec3::length</a></code>, <code>gridCellToWorldPosX</code>, <code>ceilingHeight</code>.</li>
 <li>Variable names should start with a lowercase letter. E.g. <code>int monsterCount = level-&gt;monsterCount()</code>.</li>
 <li>Names of private members should start with an underscore to visually distinguish them from variables without having to spell out <code>this-&gt;</code> every single time. E.g. <code>_initialized = true</code>, where <code>_initialized</code> is a member field.</li>
 <li>Note that the above doesn't apply to POD-like types as for such types all members are public and are named just like ordinary variables.</li>
@@ -159,6 +155,12 @@ Coding style</h1>
 <li>Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take <code>std::unique_ptr</code> by value. If it allocates its result and passes ownership to the caller, then it should return <code>std::unique_ptr</code>.</li>
 <li>Use an <code>int</code> unless you need something else. Don’t try to avoid negative values by using <code>unsigned</code>, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic">core guidelines</a> for more info. However, don't overdo it, use <code>size_t</code> for indexing into STL containers.</li>
 <li>We generally refrain from using namespaces, and we consider the approach where namespace hierarchy follows the directory structure an antipattern that might make sense in other languages (e.g. Java), but not in C++. Besides, OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. <a class="el" href="classException.html">Exception</a> to this rule is <code>namespace detail</code> that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.</li>
+</ul>
+<p >Error handling:</p><ul>
+<li>Use <code>assert</code>s to check for coding errors and conditions that must never be false, no matter how the program is run.</li>
+<li>Use exceptions for non-recoverable errors. It's usually OK to just throw an instance of <code>class <a class="el" href="classException.html">Exception</a></code>.</li>
+<li>Use <code><a class="el" href="classLogger.html">Logger</a></code> for warnings and recoverable errors.</li>
+<li>We don't yet have a mechanism for displaying errors to the user through the UI. This document will be updated once this is implemented.</li>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
 <h1><a class="anchor" id="autotoc_md5"></a>
@@ -176,11 +178,10 @@ Code Organization</h1>
 </ul>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Testing</h1>
-<p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.</p>
-<p >Tests are not built by default, and you will need to set <code>OE_BUILD_TESTS</code> cmake variable to be able to build them. You can either use your IDE for that, or just run <code>cmake</code> with <code>-DOE_BUILD_TESTS=ON</code> from the command line.</p>
+<p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infrastructure to test game logic and small isolated classes.</p>
 <p >Tests in OpenEnroth fall into two categories:</p><ul>
 <li>Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in <code>src/Utility/Tests</code>.</li>
-<li><a class="el" href="classGame.html">Game</a> tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. <a class="el" href="classGame.html">Game</a> tests need game assets to run, and are currently <b>not</b> run in github actions.</li>
+<li><a class="el" href="classGame.html">Game</a> tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. <a class="el" href="classGame.html">Game</a> tests need game assets to run.</li>
 </ul>
 <p ><a class="el" href="classGame.html">Game</a> tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.</p>
 <p >As typing out all the events to send inside the test code can be pretty tedious, we also have an event recording functionality, so that the test creation workflow usually looks as follows:</p><ul>
@@ -189,14 +190,14 @@ Testing</h1>
 <li>Perform the steps that used to reproduce the bug.</li>
 <li>Press <code>Ctrl+Shift+R</code> again to stop trace recording. You will get two files generated in the current folder – <code>trace.json</code> and <code>trace.mm7</code>.</li>
 <li>Rename them into something more suiting (e.g. <code>issue_XXX.json</code> and <code>issue_XXX.mm7</code>) and create a PR to the <a href="https://github.com/OpenEnroth/OpenEnroth_TestData">OpenEnroth_TestData</a> repo.</li>
-<li>Once it's merged update the reference tag in the corresponding <a href="https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt#L21">CMakeLists.txt</a> in the main repo.</li>
-<li>Create a new test case in one of the game test files in <a href="https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Tests">the game tests folder</a>.</li>
+<li>Once it's merged update the reference tag in the corresponding <a href="https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt">CMakeLists.txt</a> in the main repo.</li>
+<li>Create a new test case in one of the game test files in <a href="https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest">the game tests folder</a>.</li>
 <li>Use <code><a class="el" href="classTestController.html#aa95b8bebe6e4b34a470d20c3ef0688bb">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it.</li>
 </ul>
 <p >If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set <code>debug.trace_frame_time_ms</code> config value before starting OpenEnroth for recording.</p>
+<p >By default, traces are recorded with a random number generator that's just returning a sequence of natural numbers. If you want to record a trace using the default Mersenne Twister random number generator, set <code>debug.trace_random_engine</code> config value to <code>mersenne_twister</code> before starting OpenEnroth for recording.</p>
 <p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
-<p >Note that if you can't find either <code>UnitTest</code> or <code><a class="el" href="classGameTest.html">GameTest</a></code> target in the target list of your IDE, this likely means that you haven't set the <code>OE_BUILD_TESTS</code> cmake variable as described above.</p>
 <p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Additional Resources</h1>

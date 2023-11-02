@@ -196,7 +196,7 @@ var searchData=
   ['initializeturnbasedanimations_193',['InitializeTurnBasedAnimations',['../Engine_8h.html#aa1f4434418fd12293a414d2a1e59fb8f',1,'InitializeTurnBasedAnimations(void *):&#160;Engine.cpp'],['../Engine_8cpp.html#a44e79e29a4ea6c303e979e18ac3dcb40',1,'InitializeTurnBasedAnimations(void *_this):&#160;Engine.cpp']]],
   ['initialposition_194',['initialPosition',['../classActor.html#ad1f2f112bda57eaba654d3a453b6cd62',1,'Actor::initialPosition()'],['../structSpriteObject.html#a2c0d69210cbb9089e3d8f8827619d2b5',1,'SpriteObject::initialPosition()'],['../structSpriteObject__MM7.html#a589fe7a151a668b421e6423b8da4bae8',1,'SpriteObject_MM7::initialPosition()']]],
   ['initiate_195',['Initiate',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a88167bfb453911e2256aa20e7b231d69',1,'NPCEnums.h']]],
-  ['initlevelstrings_196',['initLevelStrings',['../Engine_8h.html#aaf682cc15410630fec7db62b970f087c',1,'initLevelStrings(Blob &amp;blob):&#160;Engine.cpp'],['../Engine_8cpp.html#aaf682cc15410630fec7db62b970f087c',1,'initLevelStrings(Blob &amp;blob):&#160;Engine.cpp']]],
+  ['initlevelstrings_196',['initLevelStrings',['../Engine_8h.html#abcdc2a70992101807c27947c797e599d',1,'initLevelStrings(const Blob &amp;blob):&#160;Engine.cpp'],['../Engine_8cpp.html#abcdc2a70992101807c27947c797e599d',1,'initLevelStrings(const Blob &amp;blob):&#160;Engine.cpp']]],
   ['initproxyleaf_197',['initProxyLeaf',['../PlatformApplication_8cpp.html#acb714184fc08655b6c38a2a639f3a19d',1,'PlatformApplication.cpp']]],
   ['initshaders_198',['InitShaders',['../classRenderOpenGL.html#ad7e3951ac0976c611db323a346972fe9',1,'RenderOpenGL']]],
   ['initspellsprite_199',['initSpellSprite',['../CastSpellInfo_8cpp.html#ab5fadbcc3239b59c41e7fee991449c0a',1,'CastSpellInfo.cpp']]],
