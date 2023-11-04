@@ -846,11 +846,11 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
-    collision_state.radius_hi = pParty->radius - 1.0f; /* / 2*/;
+    collision_state.radius_hi = pParty->radius;
     collision_state.check_hi = true;
-    for (uint i = 0; i < 100; i++) {
-        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - 32 + 1);
-        collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo + 1);
+    for (uint i = 0; i < 5; i++) {
+        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
+        collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
         collision_state.velocity = pParty->speed;
 
         collision_state.uSectorID = sectorId;

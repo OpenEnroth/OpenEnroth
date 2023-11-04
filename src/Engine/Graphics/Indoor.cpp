@@ -1705,8 +1705,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->speed.y = 0;
     }
 
-    Vec3f oldPos = pParty->pos;
+    Vec3f oldPos = pParty->pos;    
+    Vec3f savedspeed = pParty->speed;
 
+    // horizontal
+    pParty->speed.z = 0;
+    ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
+    // vertical
+    pParty->speed = Vec3f(0, 0, savedspeed.z);
     ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
 
     // walking / running sounds ------------------------
