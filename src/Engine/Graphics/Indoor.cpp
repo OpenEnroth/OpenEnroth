@@ -1705,7 +1705,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->speed.y = 0;
     }
 
-    Vec3f oldPos = pParty->pos;    
+    Vec3f oldPos = pParty->pos;
     Vec3f savedspeed = pParty->speed;
 
     // horizontal
