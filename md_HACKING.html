@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e7d83ee</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e2233e7</span>
    </div>
   </td>
  </tr>
@@ -168,8 +168,8 @@ Code Organization</h1>
 <p >OpenEnroth code is broken up as follows:</p><ul>
 <li><code>thirdparty</code> – this is where all external libraries go.</li>
 <li><code>Utility</code> – generic utility classes and functions go here. Utility classes should be domain-independent (e.g. should make sense in a context of some other project) and should depend only on <code>thirdparty</code> libraries.</li>
-<li><code><a class="el" href="classPlatform.html">Platform</a></code> – our platform abstraction layer on top of SDL. <a class="el" href="classPlatform.html">Platform</a> classes should also be reasonably domain-independent and should depend only on <code>Utility</code>.</li>
-<li><code>Library</code> – collection of independent libraries that the engine is built on top of. Code here can depend on <code>Utility</code>, <code><a class="el" href="classPlatform.html">Platform</a></code>, and other libraries in <code>Library</code>.</li>
+<li><code>Library</code> – collection of independent libraries that the engine is built on top of. Code here can depend on <code>Utility</code> and other libraries in <code>Library</code>. However, there should be no cyclical dependencies between libraries here.</li>
+<li><code>Library/Platform</code> is our platform abstraction layer on top of SDL.</li>
 <li>The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.</li>
 </ul>
 <p >Our basic guidelines for code organization are:</p><ul>

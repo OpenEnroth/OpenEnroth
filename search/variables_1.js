@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_0',['a',['../structColorf.html#a4a8372e6fa691b4c5fc1e0864248b535',1,'Colorf::a()'],['../structColor.html#a12022d435709c08f47937a7361fe8441',1,'Color::a()'],['../structPlaneZCalcf.html#a2082baffd8c41e8eb152fd714aadb8eb',1,'PlaneZCalcf::a()'],['../structHsvColorf.html#a466980a45ade508925a8a772713ccf0e',1,'HsvColorf::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()']]],
+  ['a_0',['a',['../structColorf.html#a4a8372e6fa691b4c5fc1e0864248b535',1,'Colorf::a()'],['../structColor.html#a12022d435709c08f47937a7361fe8441',1,'Color::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()'],['../structHsvColorf.html#a466980a45ade508925a8a772713ccf0e',1,'HsvColorf::a()'],['../structPlaneZCalcf.html#a2082baffd8c41e8eb152fd714aadb8eb',1,'PlaneZCalcf::a()']]],
   ['ac_1',['ac',['../structMonsterInfo__MM7.html#a71c3ac27f4c27738852c90bbf09d495e',1,'MonsterInfo_MM7']]],
   ['accuracy_2',['accuracy',['../structPlayer__MM7.html#a6cb285de0a761e3f0fb9a089f7dca642',1,'Player_MM7']]],
   ['accuracybonus_3',['accuracyBonus',['../structPlayer__MM7.html#a9e331c310f01a711cbce620e2d43274d',1,'Player_MM7']]],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_0',['a',['../structColor.html#a12022d435709c08f47937a7361fe8441',1,'Color::a()'],['../structColorf.html#a4a8372e6fa691b4c5fc1e0864248b535',1,'Colorf::a()'],['../structHsvColorf.html#a466980a45ade508925a8a772713ccf0e',1,'HsvColorf::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()'],['../structPlaneZCalcf.html#a2082baffd8c41e8eb152fd714aadb8eb',1,'PlaneZCalcf::a()']]],
+  ['a_0',['a',['../structColor.html#a12022d435709c08f47937a7361fe8441',1,'Color::a()'],['../structColorf.html#a4a8372e6fa691b4c5fc1e0864248b535',1,'Colorf::a()'],['../structHsvColorf.html#a466980a45ade508925a8a772713ccf0e',1,'HsvColorf::a()'],['../structPlaneZCalcf.html#a2082baffd8c41e8eb152fd714aadb8eb',1,'PlaneZCalcf::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()']]],
   ['ability_5fattack1_1',['ABILITY_ATTACK1',['../ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a9bbcd860d4efbd784d66379a6b00e659',1,'ActorEnums.h']]],
   ['ability_5fattack2_2',['ABILITY_ATTACK2',['../ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a3fbb036d21464fbf2fb2a4905123eb04',1,'ActorEnums.h']]],
   ['ability_5findex_3',['ABILITY_INDEX',['../ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2',1,'ActorEnums.h']]],
@@ -114,8 +114,8 @@ var searchData=
   ['actortaperecorder_2ecpp_111',['ActorTapeRecorder.cpp',['../ActorTapeRecorder_8cpp.html',1,'']]],
   ['actortaperecorder_2eh_112',['ActorTapeRecorder.h',['../ActorTapeRecorder_8h.html',1,'']]],
   ['actualskilllevel_113',['actualSkillLevel',['../classCharacter.html#a6387fa632805c6696f2094a37fd85ba1',1,'Character']]],
-  ['add_114',['add',['../classEventMap.html#a192947eeff4207f927603b161b9f92b6',1,'EventMap']]],
-  ['add_115',['Add',['../structActionQueue.html#ac1854056bcd6a6e093d9b4e6ee425aec',1,'ActionQueue']]],
+  ['add_114',['Add',['../structActionQueue.html#ac1854056bcd6a6e093d9b4e6ee425aec',1,'ActionQueue']]],
+  ['add_115',['add',['../classEventMap.html#a192947eeff4207f927603b161b9f92b6',1,'EventMap']]],
   ['add_5fnpc_5fscripted_5fdialogue_116',['ADD_NPC_SCRIPTED_DIALOGUE',['../NPCTopics_8cpp.html#a2517cd77451937536e693a426e63e943',1,'NPCTopics.cpp']]],
   ['add_5fsubcommand_117',['add_subcommand',['../classCliApp.html#a6fc12e1e2a53d6e8304e6072139e0b8e',1,'CliApp']]],
   ['addbankgold_118',['AddBankGold',['../structParty.html#a2d849b9f0b9d8dfd28fb22a242a88beb',1,'Party']]],

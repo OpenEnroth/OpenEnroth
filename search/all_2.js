@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['b_0',['b',['../structPlaneZCalcf.html#a83295d1c05ce64d3b7fc2ce3d7d367b5',1,'PlaneZCalcf::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structColorf.html#a1b36e45d68f97229da79a61c390e3e52',1,'Colorf::b()'],['../structColor.html#a78ede410fb277ade36fbb157f0235d6f',1,'Color::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()']]],
+  ['b_0',['b',['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structPlaneZCalcf.html#a83295d1c05ce64d3b7fc2ce3d7d367b5',1,'PlaneZCalcf::b()'],['../structColorf.html#a1b36e45d68f97229da79a61c390e3e52',1,'Colorf::b()'],['../structColor.html#a78ede410fb277ade36fbb157f0235d6f',1,'Color::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()']]],
   ['b1_1',['b1',['../Serialization__ut_8cpp.html#a25c5f1363dc910523e52c6a75cdc3622',1,'Serialization_ut.cpp']]],
   ['b2_2',['b2',['../Serialization__ut_8cpp.html#a38d9188c556da9e87e3e1089352d6787',1,'Serialization_ut.cpp']]],
   ['back_3',['back',['../classSegment.html#a4916adbc30989e41361fd5df7bd9c9e9',1,'Segment::back()'],['../classAccessible.html#a42bd8d597c6f2f8cfb9202f988cff84a',1,'Accessible::back()']]],
@@ -85,7 +85,7 @@ var searchData=
   ['blendcolors_82',['BlendColors',['../RenderBase_8cpp.html#a3b6aa605fa2454b6e22807d58cf0c494',1,'RenderBase.cpp']]],
   ['blendtextures_83',['BlendTextures',['../classIRender.html#a0938c52ff291e7f6c60b9eaabdd0428d',1,'IRender::BlendTextures()'],['../classRenderOpenGL.html#ab6273b2f9d3b35dd6876cdd03f8f03b1',1,'RenderOpenGL::BlendTextures()'],['../classRenderNull.html#a10b751427ad08955159dea2e008244bc',1,'RenderNull::BlendTextures()']]],
   ['bloaded_84',['bLoaded',['../structIndoorLocation.html#a8bdd7bc28b11d2aef068f1cdd342fab4',1,'IndoorLocation']]],
-  ['blob_85',['Blob',['../classBlob.html#ac6aa6cc91070d2b633247f2db4a75981',1,'Blob::Blob(const Blob &amp;)=delete'],['../classBlob.html#ad22686b374be22a9e5651c726fc683c9',1,'Blob::Blob(Blob &amp;&amp;other)'],['../classBlob.html',1,'Blob'],['../classBlob.html#a6a0d29e3183e1458d1b9e6a5ca584826',1,'Blob::Blob()']]],
+  ['blob_85',['Blob',['../classBlob.html#ac6aa6cc91070d2b633247f2db4a75981',1,'Blob::Blob(const Blob &amp;)=delete'],['../classBlob.html#ad22686b374be22a9e5651c726fc683c9',1,'Blob::Blob(Blob &amp;&amp;other)'],['../classBlob.html#a6a0d29e3183e1458d1b9e6a5ca584826',1,'Blob::Blob()'],['../classBlob.html',1,'Blob']]],
   ['blob_2ecpp_86',['Blob.cpp',['../Blob_8cpp.html',1,'']]],
   ['blob_2eh_87',['Blob.h',['../Blob_8h.html',1,'']]],
   ['blob_5ffunc_88',['blob_func',['../classPCX__LOD__Compressed__Loader.html#abe839c49f46b3ecf737be641b2fd520d',1,'PCX_LOD_Compressed_Loader']]],
@@ -112,8 +112,8 @@ var searchData=
   ['bloodsplatsfade_109',['BloodSplatsFade',['../classGameConfig_1_1Graphics.html#ae3d440cabbb5e593bf6b0aa171d5d5e9',1,'GameConfig::Graphics']]],
   ['bloodsplatsmultiplier_110',['BloodSplatsMultiplier',['../classGameConfig_1_1Graphics.html#a3e8dabc2a2623b04fce2eba19ebb1ef3',1,'GameConfig::Graphics']]],
   ['bltbacktofontfast_111',['BltBackToFontFast',['../classIRender.html#ae57c17f98f9c2cf317edf43b3f3bb58d',1,'IRender::BltBackToFontFast()'],['../classRenderOpenGL.html#a743421a7bc6ad2e98875128dfe271512',1,'RenderOpenGL::BltBackToFontFast()'],['../classRenderNull.html#a3db3ae973fdaba76434a2c49fb43f3e6',1,'RenderNull::BltBackToFontFast()']]],
-  ['blue_112',['Blue',['../classColorTable.html#a1399fdcdfcc83df0fd1e1afbe99d383c',1,'ColorTable']]],
-  ['blue_113',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
+  ['blue_112',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
+  ['blue_113',['Blue',['../classColorTable.html#a1399fdcdfcc83df0fd1e1afbe99d383c',1,'ColorTable']]],
   ['blv_5ffov_5fdeg_114',['blv_fov_deg',['../structCamera3D.html#a57e7849c374219e4955b362616bac748',1,'Camera3D']]],
   ['blv_5ffov_5frad_115',['blv_fov_rad',['../structCamera3D.html#a3c012ad7bcda3d3ed3cb58a290e7a0a9',1,'Camera3D']]],
   ['blv_5fgetfloorlevel_116',['BLV_GetFloorLevel',['../Indoor_8h.html#a53cacf2dc3ed7507b4135cebb1256630',1,'BLV_GetFloorLevel(const Vec3i &amp;pos, int uSectorID, int *pFaceID=nullptr):&#160;Indoor.cpp'],['../Indoor_8cpp.html#ac33633df0ff257ec7412058698059ecf',1,'BLV_GetFloorLevel(const Vec3i &amp;pos, int uSectorID, int *pFaceID):&#160;Indoor.cpp']]],

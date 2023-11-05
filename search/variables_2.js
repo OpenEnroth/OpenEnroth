@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['b_0',['b',['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structColor.html#a78ede410fb277ade36fbb157f0235d6f',1,'Color::b()'],['../structColorf.html#a1b36e45d68f97229da79a61c390e3e52',1,'Colorf::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structPlaneZCalcf.html#a83295d1c05ce64d3b7fc2ce3d7d367b5',1,'PlaneZCalcf::b()'],['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()']]],
+  ['b_0',['b',['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structColor.html#a78ede410fb277ade36fbb157f0235d6f',1,'Color::b()'],['../structColorf.html#a1b36e45d68f97229da79a61c390e3e52',1,'Colorf::b()'],['../structPlaneZCalcf.html#a83295d1c05ce64d3b7fc2ce3d7d367b5',1,'PlaneZCalcf::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()']]],
   ['b1_1',['b1',['../Serialization__ut_8cpp.html#a25c5f1363dc910523e52c6a75cdc3622',1,'Serialization_ut.cpp']]],
   ['b2_2',['b2',['../Serialization__ut_8cpp.html#a38d9188c556da9e87e3e1089352d6787',1,'Serialization_ut.cpp']]],
   ['backsectorid_3',['backSectorId',['../structBLVFace__MM7.html#a88e3634fe2739596cad493cac67673a8',1,'BLVFace_MM7']]],
@@ -50,8 +50,8 @@ var searchData=
   ['bloodsplats_47',['BloodSplats',['../classGameConfig_1_1Graphics.html#ad6049b997c6e381ba9fba7deb1f06d74',1,'GameConfig::Graphics']]],
   ['bloodsplatsfade_48',['BloodSplatsFade',['../classGameConfig_1_1Graphics.html#ae3d440cabbb5e593bf6b0aa171d5d5e9',1,'GameConfig::Graphics']]],
   ['bloodsplatsmultiplier_49',['BloodSplatsMultiplier',['../classGameConfig_1_1Graphics.html#a3e8dabc2a2623b04fce2eba19ebb1ef3',1,'GameConfig::Graphics']]],
-  ['blue_50',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
-  ['blue_51',['Blue',['../classColorTable.html#a1399fdcdfcc83df0fd1e1afbe99d383c',1,'ColorTable']]],
+  ['blue_50',['Blue',['../classColorTable.html#a1399fdcdfcc83df0fd1e1afbe99d383c',1,'ColorTable']]],
+  ['blue_51',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
   ['blv_5ffov_5fdeg_52',['blv_fov_deg',['../structCamera3D.html#a57e7849c374219e4955b362616bac748',1,'Camera3D']]],
   ['blv_5ffov_5frad_53',['blv_fov_rad',['../structCamera3D.html#a3c012ad7bcda3d3ed3cb58a290e7a0a9',1,'Camera3D']]],
   ['bmodelcount_54',['bmodelCount',['../structLocationHeader__MM7.html#a9e4572dae6a4c23f059638729774ace6',1,'LocationHeader_MM7']]],
