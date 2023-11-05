@@ -7,8 +7,7 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Image/Palette.h"
-
-#include "Utility/Geometry/Point.h"
+#include "Library/Geometry/Point.h"
 
 struct GUICharMetric {
     int32_t uLeftSpacing;

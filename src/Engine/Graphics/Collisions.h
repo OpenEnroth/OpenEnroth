@@ -2,8 +2,8 @@
 
 #include "Engine/Pid.h"
 
-#include "Utility/Geometry/Vec.h"
-#include "Utility/Geometry/BBox.h"
+#include "Library/Geometry/Vec.h"
+#include "Library/Geometry/BBox.h"
 
 struct BLVFace;
 class Actor;

@@ -4,12 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "Utility/Geometry/Vec.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "GUI/GUIDialogues.h"
 #include "GUI/UI/UIHouseEnums.h"
+
+#include "Library/Geometry/Vec.h"
 
 std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData);
 

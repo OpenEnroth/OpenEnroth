@@ -3,10 +3,11 @@
 #include <string>
 #include <memory>
 
+#include "Library/Geometry/Size.h"
+#include "Library/Geometry/Point.h"
+#include "Library/Geometry/Margins.h"
+
 #include "Utility/Flags.h"
-#include "Utility/Geometry/Size.h"
-#include "Utility/Geometry/Point.h"
-#include "Utility/Geometry/Margins.h"
 
 #include "PlatformOpenGLOptions.h"
 #include "PlatformEnums.h"

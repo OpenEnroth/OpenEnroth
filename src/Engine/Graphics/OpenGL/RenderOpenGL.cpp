@@ -46,8 +46,8 @@
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Geometry/Size.h"
 
-#include "Utility/Geometry/Size.h"
 #include "Utility/Format.h"
 #include "Utility/Memory/MemSet.h"
 

@@ -3,11 +3,11 @@
 #include <string>
 #include <memory>
 
-#include "Utility/Geometry/Size.h"
-#include "Utility/Types.h"
-
+#include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
+
+#include "Utility/Types.h"
 
 #include "TextureRenderId.h"
 

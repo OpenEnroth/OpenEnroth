@@ -19,11 +19,10 @@
 #include "Io/KeyboardInputHandler.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"
-
 #include "Library/Color/ColorTable.h"
+#include "Library/Geometry/Size.h"
+#include "Library/Geometry/Point.h"
 
-#include "Utility/Geometry/Size.h"
-#include "Utility/Geometry/Point.h"
 #include "Utility/IndexedArray.h"
 
 namespace Io {

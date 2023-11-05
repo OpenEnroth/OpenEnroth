@@ -6,7 +6,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Pid.h"
 
-#include "Utility/Geometry/Point.h"
+#include "Library/Geometry/Point.h"
 
 class GraphicsImage;
 

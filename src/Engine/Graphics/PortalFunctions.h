@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Utility/Geometry/Vec.h"
-#include "Utility/Geometry/Plane.h"
+#include "Library/Geometry/Vec.h"
+#include "Library/Geometry/Plane.h"
 
 struct stru10 {
     stru10();

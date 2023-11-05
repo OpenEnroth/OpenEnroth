@@ -17,9 +17,9 @@
 #include "GUI/GUIDialogues.h"
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Vec.h"
 
 #include "Utility/IndexedArray.h"
-#include "Utility/Geometry/Vec.h"
 
 class GUIButton;
 class Actor;

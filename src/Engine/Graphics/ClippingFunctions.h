@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Utility/Geometry/Plane.h"
-
 #include "Engine/Graphics/RenderEntities.h"
+
+#include "Library/Geometry/Plane.h"
+#include "Library/Geometry/Vec.h"
 
 struct VertexBuffer {
     std::array<RenderVertexSoft, 64> pVertices = {{}};

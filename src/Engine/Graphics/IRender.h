@@ -9,8 +9,7 @@
 #include "Library/Image/Image.h"
 #include "Library/Color/Color.h"
 #include "Library/Color/ColorTable.h"
-
-#include "Utility/Geometry/Rect.h"
+#include "Library/Geometry/Rect.h"
 
 #include "TextureRenderId.h"
 #include "RenderEntities.h"
