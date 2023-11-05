@@ -2,8 +2,11 @@
 
 #include <string>
 #include <type_traits>
+#include <filesystem>
 
-void setDataPath(const std::string &data_path);
+// TODO(captainurist): this doesn't belong in Utility
+
+void setDataPath(const std::filesystem::path &dataPath);
 
 std::string makeDataPath(std::initializer_list<std::string_view> paths);
 

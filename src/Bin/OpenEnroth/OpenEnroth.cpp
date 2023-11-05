@@ -15,6 +15,7 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Format.h"
+#include "Utility/UnicodeCrt.h"
 
 #include "OpenEnrothOptions.h"
 
@@ -55,6 +56,7 @@ int runOpenEnroth(OpenEnrothOptions options) {
 
 int openEnrothMain(int argc, char **argv) {
     try {
+        UnicodeCrt _(argc, argv);
         OpenEnrothOptions options = OpenEnrothOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;

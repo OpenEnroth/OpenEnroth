@@ -16,10 +16,11 @@
 using Io::Mouse;
 
 class IRender;
-class Platform;
 class PlatformApplication;
 class GameTraceHandler;
 class NuklearEventHandler;
+class Platform;
+class Environment;
 
 class Game {
  public:
@@ -49,6 +50,6 @@ class Game {
     std::shared_ptr<Nuklear> _nuklear = nullptr;
 };
 
-void initDataPath(const std::string &dataPath);
+void initDataPath(Environment *environment, Platform *platform, const std::string &dataPath);
 
 extern class GraphicsImage *gamma_preview_image;  // 506E40

@@ -1,37 +1,12 @@
-#include "WinPlatform.h"
-
-#include <memory>
+#include "WinEnvironment.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#include "Library/Platform/Sdl/SdlLogSource.h"
+#include <cstdlib>
+#include <array>
 
-#include "Utility/String.h"
-
-static std::string toUtf8(std::wstring_view wstr) {
-    std::string result;
-
-    int len = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.size(), nullptr, 0, nullptr, nullptr);
-    if (len == 0)
-        return result;
-
-    result.resize(len);
-    WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.size(), result.data(), len, nullptr, nullptr);
-    return result;
-}
-
-static std::wstring toUtf16(std::string_view str) {
-    std::wstring result;
-
-    int len = MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), nullptr, 0);
-    if (len == 0)
-        return result;
-
-    result.resize(len);
-    MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), result.data(), len);
-    return result;
-}
+#include "Utility/Win/Unicode.h"
 
 // TODO(captainurist): revisit this code once I'm on a win machine.
 static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, int flags) {
@@ -101,10 +76,25 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
     }
 }
 
-std::string WinPlatform::winQueryRegistry(const std::string &path) const {
-    return toUtf8(OS_GetAppStringRecursive(NULL, toUtf16(path).c_str(), 0));
+std::string WinEnvironment::queryRegistry(const std::string &path) const {
+    return win::toUtf8(OS_GetAppStringRecursive(NULL, win::toUtf16(path).c_str(), 0));
 }
 
-std::unique_ptr<Platform> Platform::createStandardPlatform(Logger *logger) {
-    return std::make_unique<WinPlatform>(logger);
+std::string WinEnvironment::path(EnvironmentPath path) const {
+    if (path == PATH_HOME) {
+        return getenv("USERPROFILE");
+    } else {
+        return {};
+    }
+}
+
+std::string WinEnvironment::getenv(const std::string &key) const {
+    const wchar_t *result = _wgetenv(win::toUtf16(key).c_str());
+    if (result)
+        return win::toUtf8(result);
+    return {};
+}
+
+std::unique_ptr<Environment> Environment::createStandardEnvironment() {
+    return std::make_unique<WinEnvironment>();
 }

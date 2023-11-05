@@ -14,7 +14,8 @@ set(UTILITY_SOURCES
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
         Streams/TempFileOutputStream.cpp
-        String.cpp)
+        String.cpp
+        UnicodeCrt.cpp)
 
 set(UTILITY_HEADERS
         DataPath.h
@@ -41,8 +42,15 @@ set(UTILITY_HEADERS
         Streams/OutputStream.h
         Streams/StringOutputStream.h
         Streams/TempFileOutputStream.h
+        Win/Unicode.h
+        Workaround/ToUnderlying.h
         String.h
-        Unaligned.h)
+        Unaligned.h
+        UnicodeCrt.h)
+
+if(BUILD_PLATFORM STREQUAL "windows")
+    list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
+endif()
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
@@ -60,7 +68,8 @@ if(OE_BUILD_TESTS)
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp
-            Tests/String_ut.cpp)
+            Tests/String_ut.cpp
+            Tests/UnicodeCrt_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)

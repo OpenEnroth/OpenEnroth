@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "Utility/Exception.h"
+#include "Utility/UnicodeCrt.h"
 
 FileOutputStream::FileOutputStream(std::string_view path) {
     open(path);
@@ -13,6 +14,8 @@ FileOutputStream::~FileOutputStream() {
 }
 
 void FileOutputStream::open(std::string_view path) {
+    assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
+
     close();
 
     _path = std::string(path);

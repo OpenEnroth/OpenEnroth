@@ -6,6 +6,7 @@
 
 #include "Utility/Format.h"
 #include "Utility/String.h"
+#include "Utility/UnicodeCrt.h"
 
 int runDump(const LodToolOptions &options) {
     LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
@@ -41,6 +42,7 @@ int runDump(const LodToolOptions &options) {
 
 int main(int argc, char **argv) {
     try {
+        UnicodeCrt _(argc, argv);
         LodToolOptions options = LodToolOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;

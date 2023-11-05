@@ -2,22 +2,9 @@
 
 #include "String.h"
 
-static std::string homePath() {
-    const char *result = getenv("HOME");
-    if (result)
-        return result;
-
-    // TODO(captainurist): this will break with unicode usernames on Windows
-    result = getenv("USERPROFILE");
-    if (result)
-        return result;
-
-    return std::string();
-}
-
-std::filesystem::path expandUserPath(std::string path) {
+std::filesystem::path expandUserPath(const std::string &path, const std::string &home) {
     if (path.starts_with("~/"))
-        return std::filesystem::path(homePath()) / path.substr(2);
+        return std::filesystem::path(home) / path.substr(2);
     return path;
 }
 

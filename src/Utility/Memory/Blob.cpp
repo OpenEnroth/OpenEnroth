@@ -36,7 +36,8 @@ Blob Blob::fromMalloc(std::unique_ptr<void, FreeDeleter> data, size_t size) {
 }
 
 Blob Blob::fromFile(std::string_view path) {
-    std::shared_ptr<mio::mmap_source> mmap = std::make_shared<mio::mmap_source>(std::string(path)); // Throws std::system_error.
+    // On Windows mio::mmap_source expects UTF8-encoded paths. If the file doesn't exist, std::system_error is thrown.
+    std::shared_ptr<mio::mmap_source> mmap = std::make_shared<mio::mmap_source>(std::string(path));
     if (mmap->size() == 0)
         return Blob();
 

@@ -91,23 +91,24 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/Environment/Interface/Environment.h"
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
+#include "Utility/FileSystem.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
 using Graphics::IRenderFactory;
 
-
-void initDataPath(const std::string &dataPath) {
+void initDataPath(Environment *environment, Platform *platform, const std::string &dataPath) {
     std::string missing_file;
 
     if (validateDataPath(dataPath, missing_file)) {
-        setDataPath(dataPath);
+        setDataPath(expandUserPath(dataPath, environment->path(PATH_HOME)));
 
         std::string savesPath = makeDataPath("saves");
         if (!std::filesystem::exists(savesPath)) {

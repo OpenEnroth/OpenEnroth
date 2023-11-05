@@ -5,7 +5,7 @@
 #include "GameStarterOptions.h"
 
 class Platform;
-class PlatformLogger;
+class Environment;
 class Logger;
 class BufferLogSink;
 class LogSink;
@@ -29,10 +29,11 @@ class GameStarter {
     void run();
 
  private:
-    static void resolveDefaults(Platform *platform, GameStarterOptions* options);
+    static void resolveDefaults(Environment *environment, GameStarterOptions* options);
 
  private:
     GameStarterOptions _options;
+    std::unique_ptr<Environment> _environment;
     std::unique_ptr<BufferLogSink> _bufferSink;
     std::unique_ptr<LogSink> _defaultSink;
     std::unique_ptr<Logger> _logger;

@@ -42,4 +42,5 @@ target_link_libraries(application
         media
         library_platform_null
         library_platform_implementation
+        library_environment_implementation
         utility)

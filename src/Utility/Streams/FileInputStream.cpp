@@ -4,6 +4,7 @@
 #include <algorithm> // For std::min.
 
 #include "Utility/Exception.h"
+#include "Utility/UnicodeCrt.h"
 
 #ifdef _WINDOWS
 #   define ftello _ftelli64
@@ -19,6 +20,8 @@ FileInputStream::~FileInputStream() {
 }
 
 void FileInputStream::open(std::string_view path) {
+    assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
+
     _path = std::string(path);
     _file = fopen(_path.c_str(), "rb");
     if (!_file)

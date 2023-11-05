@@ -5,8 +5,8 @@
 #include <string>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 
+#include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
@@ -20,19 +20,24 @@
 #include "Game.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
+    // Init environment.
+    _environment = Environment::createStandardEnvironment();
+
     // Init logger.
     _bufferSink = std::make_unique<BufferLogSink>();
     _defaultSink = LogSink::createDefaultSink();
     _logger = std::make_unique<Logger>(LOG_TRACE, _bufferSink.get());
     Engine::LogEngineBuildInfo();
 
-    // Create platform & init data paths.
+    // Create platform.
     if (_options.headless) {
         _platform = std::make_unique<NullPlatform>(NullPlatformOptions());
     } else {
         _platform = Platform::createStandardPlatform(_logger.get());
     }
-    resolveDefaults(_platform.get(), &_options);
+
+    // Init paths.
+    resolveDefaults(_environment.get(), &_options);
 
     // Init config - needs data paths initialized.
     _config = std::make_shared<GameConfig>();
@@ -58,8 +63,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _bufferSink->flush(_logger.get());
 
     // Validate data paths.
-    ::platform = _platform.get(); // TODO(captainurist): a hack to make validateDataPath work.
-    initDataPath(_options.dataPath);
+    initDataPath(_environment.get(), _platform.get(), _options.dataPath);
 
     // Create application & game.
     _application = std::make_unique<PlatformApplication>(_platform.get());
@@ -68,9 +72,9 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
 GameStarter::~GameStarter() = default;
 
-void GameStarter::resolveDefaults(Platform *platform, GameStarterOptions* options) {
+void GameStarter::resolveDefaults(Environment *environment, GameStarterOptions* options) {
     if (options->dataPath.empty())
-        options->dataPath = resolveMm7Path(platform);
+        options->dataPath = resolveMm7Path(environment);
 
     if (options->useConfig && options->configPath.empty()) {
         options->configPath = "openenroth.ini";

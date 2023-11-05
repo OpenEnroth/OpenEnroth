@@ -25,6 +25,7 @@
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/String.h"
+#include "Utility/UnicodeCrt.h"
 
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"
@@ -389,6 +390,7 @@ int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceMa
 
 int platformMain(int argc, char **argv) {
     try {
+        UnicodeCrt _(argc, argv);
         CodeGenOptions options = CodeGenOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;

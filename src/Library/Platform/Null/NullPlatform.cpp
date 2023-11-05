@@ -43,12 +43,3 @@ void NullPlatform::showMessageBox(const std::string &title, const std::string &m
 int64_t NullPlatform::tickCount() const {
     return 0; // Time's not flowing in null platform.
 }
-
-std::string NullPlatform::winQueryRegistry(const std::string &path) const {
-    return {};
-}
-
-std::string NullPlatform::storagePath(const PlatformStorage type) const {
-    return {};
-}
-
