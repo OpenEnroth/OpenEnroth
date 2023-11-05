@@ -7,13 +7,13 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
 #include "Library/Logger/BufferLogSink.h"
 
-#include "Platform/Platform.h"
-#include "Platform/Null/NullPlatform.h"
+#include "Library/Platform/Interface/Platform.h"
+#include "Library/Platform/Null/NullPlatform.h"
 
 #include "GamePathResolver.h"
 #include "GameConfig.h"

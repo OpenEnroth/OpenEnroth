@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-#include "Platform/Proxy/ProxyOpenGLContext.h"
-#include "Platform/Filters/PlatformEventFilter.h"
+#include "Library/Platform/Proxy/ProxyOpenGLContext.h"
+#include "Library/Platform/Filters/PlatformEventFilter.h"
 
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 
 /**
  * Component that can be used to record events.

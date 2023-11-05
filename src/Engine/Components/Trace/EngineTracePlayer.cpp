@@ -13,7 +13,7 @@
 
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Trace/EventTrace.h"
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 
 #include "Utility/ScopeGuard.h"

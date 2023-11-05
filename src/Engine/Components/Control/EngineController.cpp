@@ -15,9 +15,9 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 
-#include "Platform/PlatformEvents.h"
+#include "Library/Platform/Interface/PlatformEvents.h"
 
 #include "Utility/Exception.h"
 #include "Utility/DataPath.h"

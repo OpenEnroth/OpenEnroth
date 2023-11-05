@@ -9,7 +9,7 @@ if(OE_BUILD_TESTS)
             GameTestOptions.h)
 
     add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
-    target_link_libraries(OpenEnroth_GameTest PUBLIC platform_main application testing_game library_cli GTest::gtest)
+    target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game library_cli library_platform_main GTest::gtest)
 
     target_check_style(OpenEnroth_GameTest)
 

@@ -41,7 +41,7 @@
 #include "Arcomage/Arcomage.h"
 #include "Engine/AssetsManager.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Color/Colorf.h"

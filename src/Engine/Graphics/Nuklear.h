@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 
 #include "GUI/GUIEnums.h"
 

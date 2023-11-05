@@ -1,6 +1,6 @@
 #include "GameKeyboardController.h"
 
-#include "Platform/PlatformEvents.h"
+#include "Library/Platform/Interface/PlatformEvents.h"
 
 GameKeyboardController::GameKeyboardController() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
 

@@ -23,8 +23,8 @@ target_link_libraries(engine_components_trace
         engine
         engine_components_control
         engine_components_deterministic
-        library_application
+        library_platform_application
+        library_platform_interface
         library_random
         library_trace
-        platform
         utility)

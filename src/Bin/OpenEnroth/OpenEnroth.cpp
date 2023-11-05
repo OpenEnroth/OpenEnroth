@@ -11,7 +11,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Format.h"

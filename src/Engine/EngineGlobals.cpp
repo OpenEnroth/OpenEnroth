@@ -1,6 +1,6 @@
 #include "EngineGlobals.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 
 Platform *platform = nullptr;
 PlatformWindow *window = nullptr;

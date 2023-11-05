@@ -3,7 +3,7 @@
 #include "Application/GamePathResolver.h"
 
 #include "Library/Logger/Logger.h"
-#include "Platform/Platform.h"
+#include "Library/Platform/Interface/Platform.h"
 
 static std::string _resolvePath(Platform *platform, const char *envVarOverride, const std::vector<const wchar_t *> &registryKeys);
 

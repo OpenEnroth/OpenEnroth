@@ -9,7 +9,7 @@
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestController.h"
 
-#include "Library/Application/PlatformApplication.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 
 #include "Utility/Format.h"
 

@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "EngineTraceEnums.h"
 

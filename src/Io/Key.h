@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 
 #include "Library/Serialization/SerializationFwd.h"
 

@@ -2,7 +2,7 @@
 
 #include "Utility/IndexedArray.h"
 
-#include "Platform/Filters/PlatformEventFilter.h"
+#include "Library/Platform/Filters/PlatformEventFilter.h"
 
 #include "Io/IKeyboardController.h"
 

@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "Platform/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 #include "Engine/Time.h"

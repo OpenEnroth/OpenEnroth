@@ -3,8 +3,8 @@
 #include <string>
 #include <memory>
 
-#include "Platform/PlatformEnums.h"
-#include "Platform/PlatformEvents.h"
+#include "Library/Platform/Interface/PlatformEnums.h"
+#include "Library/Platform/Interface/PlatformEvents.h"
 
 #include "EngineControlStateHandle.h"
 
