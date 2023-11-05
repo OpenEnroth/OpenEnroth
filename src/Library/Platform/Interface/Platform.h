@@ -143,7 +143,7 @@ class Platform {
      * @param path                      Registry path to query.
      * @return                          Value at the given path, or an empty string in case of an error.
      */
-    virtual std::string winQueryRegistry(const std::wstring &path) const = 0;
+    virtual std::string winQueryRegistry(const std::string &path) const = 0;
 
     /**
      * Get various application filesystem paths.

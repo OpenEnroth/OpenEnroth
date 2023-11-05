@@ -9,7 +9,32 @@
 
 #include "Utility/String.h"
 
-static bool OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, char *out_string, int out_string_size, int flags) {
+static std::string toUtf8(std::wstring_view wstr) {
+    std::string result;
+
+    int len = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.size(), nullptr, 0, nullptr, nullptr);
+    if (len == 0)
+        return result;
+
+    result.resize(len);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.size(), result.data(), len, nullptr, nullptr);
+    return result;
+}
+
+static std::wstring toUtf16(std::string_view str) {
+    std::wstring result;
+
+    int len = MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), nullptr, 0);
+    if (len == 0)
+        return result;
+
+    result.resize(len);
+    MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), result.data(), len);
+    return result;
+}
+
+// TODO(captainurist): revisit this code once I'm on a win machine.
+static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, int flags) {
     wchar_t current_key[256];
     wchar_t path_tail[4096];
 
@@ -32,7 +57,7 @@ static bool OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, char 
             else if (!wcsicmp(current_key, L"HKEY_USERS"))
                 parent_key = HKEY_USERS;
             else
-                return false;
+                return {};
 
             delimiter = wcsstr(path_tail, L"/");
             if (delimiter) {
@@ -41,62 +66,43 @@ static bool OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, char 
 
                 wcscpy(path_tail, delimiter + 1);
             } else {
-                return false;
+                return {};
             }
         }
 
         if (!wcscmp(current_key, L"WOW6432Node")) {
-            return OS_GetAppStringRecursive(parent_key, path_tail, out_string, out_string_size, KEY_WOW64_32KEY);
+            return OS_GetAppStringRecursive(parent_key, path_tail, KEY_WOW64_32KEY);
         }
 
-        bool result = false;
         HKEY key;
         if (!RegOpenKeyExW(parent_key, current_key, 0, KEY_READ | flags, &key)) {
-            result = OS_GetAppStringRecursive(key, path_tail, out_string, out_string_size, 0);
+            std::wstring result = OS_GetAppStringRecursive(key, path_tail, 0);
             RegCloseKey(key);
+            return result;
         }
 
-        return result;
+        return {};
     } else {
-        auto regValue = std::make_unique<wchar_t[]>(out_string_size + 1);
-        for (int i = 0; i < out_string_size; ++i) {
-            regValue.get()[i] = L'x';
-            out_string[i] = 'x';
-        }
-        DWORD regNumBytesRead = sizeof(wchar_t) * (out_string_size + 1);
+        std::array<wchar_t, 8192> buffer = {{}};
+        DWORD regNumBytesRead = sizeof(buffer);
         LSTATUS status = RegGetValueW(
             parent_key,
             nullptr,
             path,
             RRF_RT_REG_SZ | RRF_RT_REG_EXPAND_SZ,
             nullptr,
-            regValue.get(),
+            buffer.data(),
             &regNumBytesRead
         );
-        if (status == ERROR_SUCCESS) {
-            if (regNumBytesRead > 0) {
-                int numBytesConverted = WideCharToMultiByte(CP_ACP, 0, regValue.get(), -1, out_string, out_string_size, nullptr, nullptr);
-                if (0 == numBytesConverted) {
-                    status = ERROR_PATH_NOT_FOUND;
-                }
-            } else {
-                status = ERROR_PATH_NOT_FOUND;
-            }
-        }
+        if (status == ERROR_SUCCESS)
+            return buffer.data();
 
-        if (status != ERROR_SUCCESS) {
-            strcpy(out_string, "");
-        }
-
-        return status == ERROR_SUCCESS;
+        return {};
     }
 }
 
-std::string WinPlatform::winQueryRegistry(const std::wstring &path) const {
-    char buffer[8192];
-    if (OS_GetAppStringRecursive(nullptr, path.c_str(), buffer, sizeof(buffer), 0))
-        return std::string(buffer);
-    return {};
+std::string WinPlatform::winQueryRegistry(const std::string &path) const {
+    return toUtf8(OS_GetAppStringRecursive(NULL, toUtf16(path).c_str(), 0));
 }
 
 std::unique_ptr<Platform> Platform::createStandardPlatform(Logger *logger) {

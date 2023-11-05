@@ -37,7 +37,7 @@ int64_t ProxyPlatform::tickCount() const {
     return nonNullBase()->tickCount();
 }
 
-std::string ProxyPlatform::winQueryRegistry(const std::wstring &path) const {
+std::string ProxyPlatform::winQueryRegistry(const std::string &path) const {
     return nonNullBase()->winQueryRegistry(path);
 }
 

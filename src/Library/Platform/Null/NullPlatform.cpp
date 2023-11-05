@@ -44,7 +44,7 @@ int64_t NullPlatform::tickCount() const {
     return 0; // Time's not flowing in null platform.
 }
 
-std::string NullPlatform::winQueryRegistry(const std::wstring &path) const {
+std::string NullPlatform::winQueryRegistry(const std::string &path) const {
     return {};
 }
 
