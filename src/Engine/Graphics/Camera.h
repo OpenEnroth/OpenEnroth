@@ -6,7 +6,7 @@
 
 #include "Engine/Graphics/RenderEntities.h"
 
-#include "Utility/Geometry/Plane.h"
+#include "Library/Geometry/Plane.h"
 
 struct Camera3D {
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);

@@ -6,8 +6,7 @@
 #include <string>
 
 #include "Library/Platform/Interface/PlatformEvents.h"
-
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
 
 // TODO(captainurist): this should go to Core/, not Library/,
 

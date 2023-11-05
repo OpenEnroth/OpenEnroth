@@ -4,8 +4,8 @@
 
 #include "Engine/Graphics/FrameLimiter.h"
 
-#include "Utility/Geometry/Point.h"
-#include "Utility/Geometry/Rect.h"
+#include "Library/Geometry/Point.h"
+#include "Library/Geometry/Rect.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 

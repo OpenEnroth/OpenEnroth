@@ -5,22 +5,19 @@
 
 #include <atomic>
 #include <memory>
-#include <queue>
 #include <string>
 #include <thread>
-#include <functional>
-#include <utility>
 #include <vector>
+#include <functional>
 
 #include <cassert>
 #include <cmath>
-#include <cstdarg>
-#include <cstddef>
-#include <cstdio>
 #include <cstring>
 
-#include "Library/Logger/Logger.h"
 #include "Media/MediaPlayer.h"
+
+#include "Library/Geometry/Vec.h"
+#include "Library/Logger/Logger.h"
 
 bool CheckError() {
     ALenum code1 = alGetError();

@@ -2,10 +2,10 @@
 
 #include <vector>
 
-#include "Utility/Geometry/Point.h"
-#include "Utility/Geometry/Size.h"
-#include "Utility/Geometry/Margins.h"
-#include "Utility/Geometry/Rect.h"
+#include "Library/Geometry/Point.h"
+#include "Library/Geometry/Size.h"
+#include "Library/Geometry/Margins.h"
+#include "Library/Geometry/Rect.h"
 
 struct NullPlatformOptions {
     Pointi defaultWindowPosition = Pointi(0, 0);

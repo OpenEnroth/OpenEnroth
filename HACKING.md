@@ -122,8 +122,8 @@ Code Organization
 OpenEnroth code is broken up as follows:
 * `thirdparty` – this is where all external libraries go.
 * `Utility` – generic utility classes and functions go here. Utility classes should be domain-independent (e.g. should make sense in a context of some other project) and should depend only on `thirdparty` libraries.
-* `Platform` – our platform abstraction layer on top of SDL. Platform classes should also be reasonably domain-independent and should depend only on `Utility`.
-* `Library` – collection of independent libraries that the engine is built on top of. Code here can depend on `Utility`, `Platform`, and other libraries in `Library`.
+* `Library` – collection of independent libraries that the engine is built on top of. Code here can depend on `Utility` and other libraries in `Library`. However, there should be no cyclical dependencies between libraries here.
+* `Library/Platform` is our platform abstraction layer on top of SDL.
 * The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.
 
 Our basic guidelines for code organization are:

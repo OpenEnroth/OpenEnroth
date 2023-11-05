@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-#include "Utility/Geometry/Point.h"
-#include "Utility/Geometry/Size.h"
+#include "Library/Geometry/Point.h"
+#include "Library/Geometry/Size.h"
 
 #include "PlatformEnums.h"
 

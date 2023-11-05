@@ -11,7 +11,6 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
@@ -20,7 +19,7 @@
 
 #include "Io/Mouse.h"
 
-#include "Utility/Geometry/Rect.h"
+#include "Library/Geometry/Rect.h"
 
 struct TownPortalData {
     Vec3i pos;

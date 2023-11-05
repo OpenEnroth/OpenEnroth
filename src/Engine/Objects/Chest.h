@@ -7,7 +7,8 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Pid.h"
 
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
+
 #include "Utility/Memory/Blob.h"
 
 #include "ChestEnums.h"

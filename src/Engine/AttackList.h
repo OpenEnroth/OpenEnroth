@@ -6,7 +6,7 @@
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Pid.h"
 
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
 
 struct AttackDescription {
     Pid pid;

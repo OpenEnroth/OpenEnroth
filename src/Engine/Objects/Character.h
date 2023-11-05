@@ -21,8 +21,8 @@
 #include "GUI/GUIEnums.h"
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Vec.h"
 
-#include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
 

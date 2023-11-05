@@ -2,9 +2,9 @@
 
 #include <array>
 
-#include "Utility/Geometry/Plane.h"
-
 #include "Engine/Graphics/Camera.h"
+
+#include "Library/Geometry/Plane.h"
 
 struct BspRenderer_ViewportNode {
     int uSectorID = 0;  // sector that this node shows

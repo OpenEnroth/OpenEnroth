@@ -24,12 +24,6 @@ set(UTILITY_HEADERS
         Flags.h
         Format.h
         Types.h
-        Geometry/BBox.h
-        Geometry/Margins.h
-        Geometry/Plane.h
-        Geometry/Point.h
-        Geometry/Size.h
-        Geometry/Vec.h
         IndexedArray.h
         Math/Float.h
         Math/TrigLut.h

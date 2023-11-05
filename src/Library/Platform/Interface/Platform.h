@@ -4,7 +4,8 @@
 #include <vector>
 #include <string>
 
-#include "Utility/Geometry/Rect.h"
+#include "Library/Geometry/Rect.h"
+
 #include "Utility/Flags.h"
 
 #include "PlatformEnums.h"

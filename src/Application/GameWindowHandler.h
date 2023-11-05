@@ -6,7 +6,7 @@
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Filters/PlatformEventFilter.h"
 #include "Library/Platform/Application/PlatformApplicationAware.h"
-#include "Utility/Geometry/Size.h"
+#include "Library/Geometry/Size.h"
 
 namespace Io {
 class Mouse;

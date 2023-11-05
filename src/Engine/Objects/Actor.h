@@ -9,7 +9,8 @@
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
 
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
+
 #include "Utility/IndexedArray.h"
 
 #include "ActorEnums.h"

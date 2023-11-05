@@ -8,7 +8,8 @@
 #include <utility>
 
 #include "Library/Color/Color.h"
-#include "Utility/Geometry/Size.h"
+#include "Library/Geometry/Size.h"
+
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Types.h"
 

@@ -9,8 +9,7 @@
 #include "Engine/Pid.h"
 
 #include "Library/Color/Color.h"
-
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
 
 class SpriteFrame;
 

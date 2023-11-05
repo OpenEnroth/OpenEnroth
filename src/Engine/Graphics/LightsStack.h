@@ -3,8 +3,7 @@
 #include <array>
 
 #include "Library/Color/Color.h"
-
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
 
 struct StationaryLight {
     Vec3f vPosition {};

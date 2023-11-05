@@ -3,7 +3,8 @@
 #include <vector>
 #include <cstdint>
 
-#include "Utility/Geometry/Vec.h"
+#include "Library/Geometry/Vec.h"
+
 #include "Utility/Flags.h"
 
 enum class LevelDecorationFlag : uint16_t {
