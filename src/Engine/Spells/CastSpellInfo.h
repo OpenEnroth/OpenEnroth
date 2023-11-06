@@ -9,6 +9,8 @@
 
 #include "SpellEnums.h"
 
+class TargetedSpellUI;
+
 namespace CastSpellInfoHelpers {
     /**
      * Cast spell processing.
@@ -60,7 +62,7 @@ static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
 
 /*  271 */
 struct CastSpellInfo {
-    GUIWindow *GetCastSpellInInventoryWindow();
+    TargetedSpellUI *GetCastSpellInInventoryWindow();
 
     SpellId uSpellID = SPELL_NONE; // Spell being cast.
     int casterCharacterIndex = -1; // 0-based index of the character who cast the spell.

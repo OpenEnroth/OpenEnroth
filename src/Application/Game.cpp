@@ -83,6 +83,7 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UISpell.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"

@@ -20,6 +20,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
+#include "GUI/UI/UISpell.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

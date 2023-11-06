@@ -38,10 +38,8 @@ void GUIWindow_Inventory::Update() {
 
 
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, const std::string &hint) :
-    GUIWindow(WINDOW_CastSpell_InInventory, position, dimensions, spellInfo, hint) {
-    mouse->SetCursorImage("MICON2");
+    TargetedSpellUI(WINDOW_CastSpell_InInventory, position, dimensions, spellInfo, hint) {
     pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-    engine->_statusBar->setEvent(LSTR_CHOOSE_TARGET);
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = SCREEN_CASTING;
 }
