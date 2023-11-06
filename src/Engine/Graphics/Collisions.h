@@ -134,6 +134,7 @@ void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool*
  * @param curSoln                       Current movement distance along the `dir` axis.
  * @param[out] outNewSoln               New movement distance along the 'dir' axis on true. This value is not set if the function
  *                                      returns false.
+ * @param inside                        If you want collision with any point inside radius - for cylinder decorations/party
  * @return                              True if the quadratic has a valid solution that is smaller than the input curSoln.
  */
-bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln);
+bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln, bool inside = false);

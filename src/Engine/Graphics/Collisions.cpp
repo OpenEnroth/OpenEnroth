@@ -40,12 +40,13 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
  *                                      Always non-negative. This parameter is not set if the function returns false.
  * @param[out] intersection             How far along the line p1->p2 the collision will occur in the range [0 - 1]. Not set if the function
  *                                      returns false.
+ * param inside                         Whether collisions should happen when inside radius
  *
  * @return                              Whether the sphere of radius at position of collision state 'lo', can collide with the
  *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
  *                                      collision is less than the current distance.
  */
-static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection) {
+static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
     Vec3f pos = collision_state.position_lo;
     Vec3f dir = collision_state.direction;
     Vec3f edge = p2 - p1;
@@ -65,7 +66,7 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
     float b = edgelengthsqr * (2.0f * dot(dir, spherepostovertex)) - (2.0f * edgedotdir * edgedotspherepostovertex);
     float c = edgelengthsqr * (radius * radius - spherepostovertexlengthsqr) + (edgedotspherepostovertex * edgedotspherepostovertex);
 
-    if (hasShorterSolution(a, b, c, currentmovedist, newmovedist)) {
+    if (hasShorterSolution(a, b, c, currentmovedist, newmovedist, inside)) {
         // Collision point will be perpendicular to edge
         // Project the position at point of collision onto the edge
         float f = (edgedotdir * *newmovedist - edgedotspherepostovertex) / edgelengthsqr;
@@ -187,7 +188,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
 
         // collide with line between the two verts
         float intersectiondist;
-        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectiondist)) {
+        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectiondist, false)) {
             startingDist = newDist;
             collidingwithface = true;
             new_collision_pos = vert1 + intersectiondist * (vert2 - vert1);
@@ -332,7 +333,7 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
     Vec3f vert1 = center_lo, vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
 
     float newdist, intersection;
-    if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection)) {
+    if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
         // form a normal on the cylinder for use later
         Vec3f newpos = collision_state.position_lo + dir * newdist;
         Vec3f dir = center_lo - newpos;
@@ -921,8 +922,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             }
 
             // Set party to move along this new sliding vector
-            // Re add party z speed because it would get zeroed in dot product
-            pParty->speed = newdirection * dot(newdirection, pParty->speed) + Vec3f(0, 0, pParty->speed.z);
+            pParty->speed = newdirection * dot(newdirection, pParty->speed);
             // Skip reducing party speed
             continue;
         }
@@ -1079,7 +1079,6 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             }
 
             // Set party to move along this new sliding vector
-            // Re add party z speed because it would get zeroed in dot product
             *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
             // Skip reducing party speed
             continue;
@@ -1118,7 +1117,6 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             // set movement speed along sliding plane
             *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
 
-            // TODO(pskelton): these should probably be if else for polygon types
             if (pODMFace->uPolygonType == POLYGON_Floor || pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
                 pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
@@ -1133,7 +1131,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
 }
 
 
-bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln) {
+bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln, bool inside) {
     float d = b * b - 4.0f * a * c;
     if (d < 0.0f) {
         return false;  // no real solutions - No intersection points.
@@ -1153,11 +1151,12 @@ bool hasShorterSolution(const float a, const float b, const float c, const float
         return true;  // this new collision is shorter than old
     }
 
-    // TODO(pskelton): might want a block around this so its only used for decorations / party
-    // We are inside and colliding - for cylinder
-    if (alpha1 < 0.0f && alpha2 >= 0.0f) {
-        *outNewSoln = 0.0f;
-        return true;
+    if (inside) {
+        // We are inside and colliding - for cylinder
+        if (alpha1 < 0.0f && alpha2 >= 0.0f) {
+            *outNewSoln = 0.0f;
+            return true;
+        }
     }
 
     if (alpha2 > 0.0f && alpha2 < curSoln) {
