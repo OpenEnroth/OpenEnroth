@@ -48,6 +48,7 @@
 GUIWindow *pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
+GUIWindow_Chest *pGUIWindow_CurrentChest;
 GUIWindow *pDialogueWindow;
 GUIWindow_House *window_SpeakInHouse;
 GUIWindow_MessageScroll *pGUIWindow_ScrollWindow; // reading a message scroll

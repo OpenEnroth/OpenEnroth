@@ -690,7 +690,7 @@ void BackToHouseMenu() {
     pMouse->ClearPickedItem();
     // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
-    if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
+    if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
         bGameoverLoop = true;
         houseDialogPressEscape();

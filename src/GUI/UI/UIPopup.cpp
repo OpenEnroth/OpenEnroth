@@ -26,13 +26,12 @@
 #include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIChest.h"
 #include "GUI/UI/Houses/Shops.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -1835,16 +1834,16 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
                 if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
                     inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = vChests[pGUIWindow_CurrentMenu->wData.val].pInventoryIndices[invMatrixIndex];
+                    int chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
                     if (chestindex < 0) {
                         invMatrixIndex = (-(chestindex + 1));
-                        chestindex = vChests[pGUIWindow_CurrentMenu->wData.val].pInventoryIndices[invMatrixIndex];
+                        chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
                     }
 
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentMenu->wData.val].igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentChest->chestId()].igChestItems[itemindex]);
                     }
                 }
             }
