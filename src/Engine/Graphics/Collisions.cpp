@@ -40,7 +40,7 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
  *                                      Always non-negative. This parameter is not set if the function returns false.
  * @param[out] intersection             How far along the line p1->p2 the collision will occur in the range [0 - 1]. Not set if the function
  *                                      returns false.
- * param inside                         Whether collisions should happen when inside radius
+ * @param inside                        Whether collisions should happen when inside radius
  *
  * @return                              Whether the sphere of radius at position of collision state 'lo', can collide with the
  *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
@@ -946,6 +946,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             newdirection.normalize();
 
+            // Push away from the surface and add a touch down for better slide
+            if (bFaceSlopeTooSteep)
+                pParty->speed += Vec3f(pFace->facePlane.normal.x, pFace->facePlane.normal.y, -2) * 10;
+
             // set movement speed along sliding plane
             pParty->speed = newdirection * dot(newdirection, pParty->speed);
 
@@ -1113,6 +1117,10 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
                 newdirection.z = 0;
 
             newdirection.normalize();
+
+            // Push away from the surface and add a touch down for better slide
+            if (bFaceSlopeTooSteep)
+                *partyInputSpeed += Vec3f(pODMFace->facePlane.normal.x, pODMFace->facePlane.normal.y, -2) * 10;
 
             // set movement speed along sliding plane
             *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
