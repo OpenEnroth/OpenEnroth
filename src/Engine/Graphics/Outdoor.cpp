@@ -2027,9 +2027,11 @@ void ODM_ProcessPartyActions() {
     // horizontal
     partyInputSpeed.z = 0;
     ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
-    // vertical
-    partyInputSpeed = Vec3f(0, 0, savedZ);
-    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
+    // vertical - only when horizonal motion hasnt caused height gain
+    if (partyNewPos.z <= pParty->pos.z) {
+        partyInputSpeed = Vec3f(0, 0, savedZ);
+        ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
+    }
 
     if (!partyNotTouchingFloor || partyCloseToGround)
         pParty->setAirborne(false);
