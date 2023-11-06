@@ -3182,7 +3182,7 @@ void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {
     assert((targetPid != Pid()) ^ (targetCharacterIndex != -1)); // Only one should be valid.
     assert(targetCharacterIndex == -1 || (targetCharacterIndex >= 0 && targetCharacterIndex <= 4));
 
-    CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+    CastSpellInfo *pCastSpell = pGUIWindow_CastTargetedSpell->spellInfo();
     pCastSpell->flags &= ~ON_CAST_CastingInProgress;
     pCastSpell->targetPid = targetPid;
     // TODO(Nik-RE-dev): need to get rid of uPlayerID_2 and use pid with OBJECT_Character and something else for hirelings.

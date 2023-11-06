@@ -3,6 +3,7 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UISpell.h"
 
 struct CastSpellInfo;
 
@@ -15,10 +16,9 @@ class GUIWindow_Inventory : public GUIWindow {
     virtual void Update() override;
 };
 
-class GUIWindow_Inventory_CastSpell : public GUIWindow {
+class GUIWindow_Inventory_CastSpell : public TargetedSpellUI {
  public:
     GUIWindow_Inventory_CastSpell(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, const std::string &hint = std::string());
-    virtual ~GUIWindow_Inventory_CastSpell() {}
 
     virtual void Update() override;
 };

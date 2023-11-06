@@ -742,12 +742,12 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
     pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton({476, 0}, {164, 345}, 1, 0, UIMSG_ClickPaperdoll, 0);
 }
 
-GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
+TargetedSpellUI *CastSpellInfo::GetCastSpellInInventoryWindow() {
     pEventTimer->Pause();
     bRingsShownInCharScreen = 0;
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = SCREEN_CASTING;
-    GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell({0, 0}, render->GetRenderDimensions(), this, "");
+    TargetedSpellUI *CS_inventory_window = new GUIWindow_Inventory_CastSpell({0, 0}, render->GetRenderDimensions(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, 1, 0,
         UIMSG_ClickExitCharacterWindowBtn, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
@@ -2134,7 +2134,7 @@ void OnPaperdollLeftClick() {
              *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
              *pEquipType;*/
-            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+            pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
             pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
             pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
             pSpellInfo->targetInventoryIndex = pParty->activeCharacter().pEquipment.pIndices[pos];
@@ -2205,7 +2205,7 @@ void OnPaperdollLeftClick() {
                  *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                  *pEquipType;*/
-                pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+                pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
                 pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
                 pSpellInfo->targetInventoryIndex = v34 - 1;

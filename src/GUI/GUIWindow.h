@@ -37,6 +37,7 @@ class GUIWindow_MessageScroll;
 class Character;
 class NPCData;
 class GraphicsImage;
+class TargetedSpellUI;
 struct ItemGen;
 
 struct WindowData {
@@ -52,7 +53,7 @@ class GUIWindow {
  public:
     GUIWindow();
     GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint = std::string());
-    virtual ~GUIWindow() {}
+    virtual ~GUIWindow() = default;
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, const std::string &label = {},
@@ -285,7 +286,7 @@ extern GUIWindow_MessageScroll *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;
-extern GUIWindow *pGUIWindow_CastTargetedSpell;
+extern TargetedSpellUI *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pGameOverWindow;
 extern bool bGameOverWindowCheckExit;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;

@@ -52,7 +52,7 @@ GUIWindow *pDialogueWindow;
 GUIWindow_House *window_SpeakInHouse;
 GUIWindow_MessageScroll *pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
-GUIWindow *pGUIWindow_CastTargetedSpell;
+TargetedSpellUI *pGUIWindow_CastTargetedSpell;
 GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 bool bGameOverWindowCheckExit{ false }; // TODO(pskelton): contain
 GUIWindow *pGUIWindow_BranchlessDialogue; // branchless dialougue

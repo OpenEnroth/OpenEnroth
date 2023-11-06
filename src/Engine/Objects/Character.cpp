@@ -40,6 +40,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIMessageScroll.h"
+#include "GUI/UI/UISpell.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Library/Random/Random.h"
@@ -6776,7 +6777,7 @@ void Character::OnInventoryLeftClick() {
                      *enchantedItemPos - 1;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
-                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+                    pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                     pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
                     pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
                     pSpellInfo->targetInventoryIndex = enchantedItemPos - 1;
