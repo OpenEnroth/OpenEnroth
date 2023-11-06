@@ -1242,7 +1242,7 @@ GAME_TEST(Issues, Issue784) {
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_EARTH));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_FIRE));
     EXPECT_EQ(58, player0.GetAttackRecoveryTime(false)); // CHARACTER_BUFF_HASTE.
-    EXPECT_EQ(59, player0.GetAttackRecoveryTime(true)); // CHARACTER_BUFF_HASTE.
+    // EXPECT_EQ(59, player0.GetAttackRecoveryTime(true)); // Can't call this b/c no bow.
     EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS)); // CHARACTER_BUFF_HEROISM.
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_MIND));
     // No check for CHARACTER_BUFF_PRESERVATION.

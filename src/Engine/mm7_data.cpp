@@ -502,16 +502,28 @@ IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level 
 };
 
 IndexedArray<uint, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type = {
-    {CHARACTER_SKILL_STAFF, 100},       {CHARACTER_SKILL_SWORD, 90},      {CHARACTER_SKILL_DAGGER, 60},
-    {CHARACTER_SKILL_AXE, 100},         {CHARACTER_SKILL_SPEAR, 80},      {CHARACTER_SKILL_BOW, 100},
-    {CHARACTER_SKILL_MACE, 80},         {CHARACTER_SKILL_BLASTER, 30},    {CHARACTER_SKILL_SHIELD, 10},
-    {CHARACTER_SKILL_LEATHER, 10},      {CHARACTER_SKILL_CHAIN, 20},      {CHARACTER_SKILL_PLATE, 30},
+    /* Base recovery value for staffs, and for unarmed combat w/o the unarmed skill. */
+    {CHARACTER_SKILL_STAFF, 100},
+
+    /* Base recovery for unarmed combat when the character has unarmed skill. Original binary was reading this value
+     * from an entry for CHARACTER_SKILL_DAGGER, in OE we have a separate table entry. */
+    {CHARACTER_SKILL_UNARMED, 60},
+
+    /* Base recovery values for different weapon types. */
+    {CHARACTER_SKILL_SWORD, 90},        {CHARACTER_SKILL_DAGGER, 60},     {CHARACTER_SKILL_AXE, 100},
+    {CHARACTER_SKILL_SPEAR, 80},        {CHARACTER_SKILL_BOW, 100},       {CHARACTER_SKILL_MACE, 80},
+    {CHARACTER_SKILL_BLASTER, 30},
+
+    /* Base recovery penalties for different armor types. */
+    {CHARACTER_SKILL_SHIELD, 10},       {CHARACTER_SKILL_LEATHER, 10},    {CHARACTER_SKILL_CHAIN, 20},
+    {CHARACTER_SKILL_PLATE, 30},
 
     /* Recovery penalty for wetsuits. */
     {CHARACTER_SKILL_MISC, 0},
 
-    /* In MM6 clubs had 100 base recovery, in MM7/MM8 they doesn't have base recovery and so they always capped by minimal recovery for melee weapons (30)
-     * Is that change was intentional to make them more viable or they were just forgotten? */
+    /* In MM6 clubs had 100 base recovery, in MM7/MM8 they don't have base recovery, and so they were always capped by
+     * minimal recovery for melee weapons (30). Was this change was intentional to make them more viable, or they were
+     * just forgotten? */
     {CHARACTER_SKILL_CLUB, 100},
 
     /* Skills below aren't accessed, they are here just to make IndexedArray's assert happy. */
@@ -521,9 +533,8 @@ IndexedArray<uint, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_ti
     {CHARACTER_SKILL_ITEM_ID, 0},       {CHARACTER_SKILL_MERCHANT, 0},    {CHARACTER_SKILL_REPAIR, 0},
     {CHARACTER_SKILL_BODYBUILDING, 0},  {CHARACTER_SKILL_MEDITATION, 0},  {CHARACTER_SKILL_PERCEPTION, 0},
     {CHARACTER_SKILL_DIPLOMACY, 0},     {CHARACTER_SKILL_THIEVERY, 0},    {CHARACTER_SKILL_TRAP_DISARM, 0},
-    {CHARACTER_SKILL_DODGE, 0},         {CHARACTER_SKILL_UNARMED, 0},     {CHARACTER_SKILL_MONSTER_ID, 0},
-    {CHARACTER_SKILL_ARMSMASTER, 0},    {CHARACTER_SKILL_STEALING, 0},    {CHARACTER_SKILL_ALCHEMY, 0},
-    {CHARACTER_SKILL_LEARNING, 0}
+    {CHARACTER_SKILL_DODGE, 0},         {CHARACTER_SKILL_MONSTER_ID, 0},  {CHARACTER_SKILL_ARMSMASTER, 0},
+    {CHARACTER_SKILL_STEALING, 0},      {CHARACTER_SKILL_ALCHEMY, 0},     {CHARACTER_SKILL_LEARNING, 0}
 };
 
 // byte[] @ MM7.exe::004ED820, some of these are started at 4ED94C, but needs to be here

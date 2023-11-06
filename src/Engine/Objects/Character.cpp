@@ -2002,13 +2002,11 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     const ItemGen *weapon = nullptr;
     uint weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
     if (bRangedAttack) {
-        if (HasItemEquipped(ITEM_SLOT_BOW)) {
-            weapon = GetBowItem();
-            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
-        }
+        assert(HasItemEquipped(ITEM_SLOT_BOW));
+        weapon = GetBowItem();
+        weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
     } else if (IsUnarmed() && getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
-        // TODO(captainurist): just set unarmed recovery properly in the table.
-        weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_DAGGER];
+        weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_UNARMED];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->isWand()) {
