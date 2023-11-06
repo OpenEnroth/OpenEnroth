@@ -14,7 +14,7 @@ std::string AndroidEnvironment::path(EnvironmentPath path) const {
         result = SDL_AndroidGetExternalStoragePath();
     }
 
-    // TODO(captainurist): No PATH_HOME on Android? Verify & write a comment here.
+    // Each application on Android is executed under dedicated user so PATH_HOME is useless.
 
     if (result)
         return result;
