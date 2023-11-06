@@ -17,6 +17,18 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     case SDL_SCANCODE_F10:              return PlatformKey::KEY_F10;
     case SDL_SCANCODE_F11:              return PlatformKey::KEY_F11;
     case SDL_SCANCODE_F12:              return PlatformKey::KEY_F12;
+    case SDL_SCANCODE_F13:              return PlatformKey::KEY_F13;
+    case SDL_SCANCODE_F14:              return PlatformKey::KEY_F14;
+    case SDL_SCANCODE_F15:              return PlatformKey::KEY_F15;
+    case SDL_SCANCODE_F16:              return PlatformKey::KEY_F16;
+    case SDL_SCANCODE_F17:              return PlatformKey::KEY_F17;
+    case SDL_SCANCODE_F18:              return PlatformKey::KEY_F18;
+    case SDL_SCANCODE_F19:              return PlatformKey::KEY_F19;
+    case SDL_SCANCODE_F20:              return PlatformKey::KEY_F20;
+    case SDL_SCANCODE_F21:              return PlatformKey::KEY_F21;
+    case SDL_SCANCODE_F22:              return PlatformKey::KEY_F22;
+    case SDL_SCANCODE_F23:              return PlatformKey::KEY_F23;
+    case SDL_SCANCODE_F24:              return PlatformKey::KEY_F24;
 
     case SDL_SCANCODE_1:                return PlatformKey::KEY_DIGIT_1;
     case SDL_SCANCODE_2:                return PlatformKey::KEY_DIGIT_2;
