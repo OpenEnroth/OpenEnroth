@@ -882,7 +882,6 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
             // intended world position isnt valid so dont move there
             int testadjusted_floor_z = GetIndoorFloorZ(pParty->pos.toInt(), &collision_state.uSectorID, faceId);
-            if (*faceId == -1) __debugbreak();
             return; // TODO: whaaa?
         }
 
