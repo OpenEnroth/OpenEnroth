@@ -1002,20 +1002,10 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             newPosLow.y = collision_state.new_position_lo.y;
             newPosLow.z = collision_state.new_position_lo.z - collision_state.radius_lo;
         } else {
-            if (collision_state.adjusted_move_distance > closestdist) {
-                // Set new position but moved back slightly so we never touch the face
-                newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
-                // Adjust the collision position with the same offset
-                collision_state.collisionPos -= closestdist * collision_state.direction;
-            } else if (collision_state.adjusted_move_distance < -closestdist) {
-                // Set new position but moved back slightly so we never touch the face
-                newPosLow = *partyNewPos + (collision_state.adjusted_move_distance + closestdist) * collision_state.direction;
-                // Adjust the collision position with the same offset
-                collision_state.collisionPos += closestdist * collision_state.direction;
-            } else {
-                // TODO(pskelton): handle this better
-                newPosLow = *partyNewPos;
-            }
+            // Set new position but moved back slightly so we never touch the face
+            newPosLow = *partyNewPos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+            // Adjust the collision position with the same offset
+            collision_state.collisionPos -= closestdist * collision_state.direction;
         }
 
         int allnewfloor = ODM_GetFloorLevel(newPosLow.toInt(), pParty->height, partyIsOnWater, floorFaceId, 0);
