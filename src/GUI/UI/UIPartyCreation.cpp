@@ -587,7 +587,7 @@ void GUIWindow_PartyCreation::Update() {
 
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
-    GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions(), 0) {
+    GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions()) {
     engine->_messageQueue->clear();
 
     main_menu_background = assets->getImage_PCXFromIconsLOD("makeme.pcx");
@@ -626,7 +626,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ui_partycreation_arrow_r[i] = assets->getImage_Alpha(fmt::format("arrowr{}", i + 1));
     }
 
-    // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
+    // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight());
     int uX = 8;
     for (int characterIndex = 0; characterIndex < 4; characterIndex++) {
         CreateButton({uX, 120}, {145, 25}, 1, 0, UIMSG_PlayerCreationChangeName, characterIndex);

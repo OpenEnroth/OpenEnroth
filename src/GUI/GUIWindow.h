@@ -42,19 +42,10 @@ class GraphicsImage;
 class TargetedSpellUI;
 struct ItemGen;
 
-struct WindowData {
-    WindowData() {}
-    WindowData(int value): val(value) {} // NOLINT: constructor is intentionally implicit
-    WindowData(void *value): ptr(value) {} // NOLINT: constructor is intentionally implicit
-
-    int val = 0;
-    void *ptr = nullptr;
-};
-
 class GUIWindow {
  public:
     GUIWindow();
-    GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint = std::string());
+    GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, const std::string &hint = std::string());
     virtual ~GUIWindow() = default;
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
@@ -96,7 +87,6 @@ class GUIWindow {
     int uFrameZ = 0;
     int uFrameW = 0;
     WindowType eWindowType = WINDOW_null;
-    WindowData wData; // Window-specific
     int field_24 = 0;
     int pNumPresenceButton = 0;
     int pCurrentPosActiveItem = 0;
@@ -114,7 +104,7 @@ class GUIWindow {
 class OnButtonClick : public GUIWindow {
  public:
     OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string(), bool playSound = true) :
-        GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, hint),
         _playSound(playSound),
         _button(button)
     {}
@@ -129,7 +119,7 @@ class OnButtonClick : public GUIWindow {
 class OnButtonClick2 : public GUIWindow {
  public:
     OnButtonClick2(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_PressedButton2, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_PressedButton2, position, dimensions, hint),
         _playSound(play_sound),
         _button(button)
     {}
@@ -144,7 +134,7 @@ class OnButtonClick2 : public GUIWindow {
 class OnButtonClick3 : public GUIWindow {
  public:
     OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(windowType, position, dimensions, WindowData(), hint),
+        GUIWindow(windowType, position, dimensions, hint),
         _button(button)
     {}
 
@@ -158,7 +148,7 @@ class OnButtonClick3 : public GUIWindow {
 class OnButtonClick4 : public GUIWindow {
  public:
     OnButtonClick4(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_59, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_59, position, dimensions, hint),
         _button(button)
     {}
 
@@ -171,7 +161,7 @@ class OnButtonClick4 : public GUIWindow {
 class OnSaveLoad : public GUIWindow {
  public:
     OnSaveLoad(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_SaveLoadBtn, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_SaveLoadBtn, position, dimensions, hint),
         _button(button)
     {}
 
@@ -184,7 +174,7 @@ class OnSaveLoad : public GUIWindow {
 class OnCancel : public GUIWindow {
  public:
     OnCancel(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_GenericCancel, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_GenericCancel, position, dimensions, hint),
         _button(button)
     {}
 
@@ -197,7 +187,7 @@ class OnCancel : public GUIWindow {
 class OnCancel2 : public GUIWindow {
  public:
     OnCancel2(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_ExitCharacterWindow, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_ExitCharacterWindow, position, dimensions, hint),
         _button(button)
     {}
 
@@ -210,7 +200,7 @@ class OnCancel2 : public GUIWindow {
 class OnCancel3 : public GUIWindow {
  public:
     OnCancel3(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_LoadGame_CancelBtn, position, dimensions, WindowData(), hint),
+        GUIWindow(WINDOW_LoadGame_CancelBtn, position, dimensions, hint),
         _button(button)
     {}
 

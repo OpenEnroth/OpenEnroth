@@ -78,7 +78,7 @@ void GUIWindow_Book::Release() {
     GUIWindow::Release();
 }
 
-GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {
+GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {
     initializeFonts();
     CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = SCREEN_BOOKS;
@@ -106,7 +106,7 @@ void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
 }
 
 GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint) :
-    GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, WindowData(), hint),
+    GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, hint),
     _button(button)
 {}
 

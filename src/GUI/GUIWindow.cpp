@@ -407,7 +407,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
     this->mouse = EngineIocContainer::ResolveMouse();
 }
 
-GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint): eWindowType(windowType) {
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, const std::string &hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
 
     logger->trace("New window: {}", toString(windowType));
@@ -420,7 +420,6 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
     this->uFrameZ = position.x + dimensions.w - 1;
     this->uFrameW = position.y + dimensions.h - 1;
 
-    this->wData = wData;
     this->sHint = hint;
 
     this->receives_keyboard_input = false;
@@ -1192,7 +1191,7 @@ void UI_Create() {
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
 
     nuklear->Create(WINDOW_GameUI);
-    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions(), 0);
+    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
     pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1);  // buttons for portraits

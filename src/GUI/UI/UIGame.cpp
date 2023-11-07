@@ -174,7 +174,7 @@ extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 extern std::map<InputAction, PlatformKey> curr_key_map;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
-    : GUIWindow(WINDOW_GameMenu, {0, 0}, render->GetRenderDimensions(), 0) {
+    : GUIWindow(WINDOW_GameMenu, {0, 0}, render->GetRenderDimensions()) {
     game_ui_menu_options = assets->getImage_ColorKey("options");
     game_ui_menu_new = assets->getImage_ColorKey("new1");
     game_ui_menu_load = assets->getImage_ColorKey("load1");
@@ -266,7 +266,7 @@ static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
 }
 
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
-    : GUIWindow(WINDOW_KeyMappingOptions, {0, 0}, render->GetPresentDimensions(), 0) {
+    : GUIWindow(WINDOW_KeyMappingOptions, {0, 0}, render->GetPresentDimensions()) {
     game_ui_options_controls[0] = assets->getImage_ColorKey("optkb");
     game_ui_options_controls[1] = assets->getImage_ColorKey("optkb_h");
     game_ui_options_controls[2] = assets->getImage_ColorKey("resume1");
@@ -362,7 +362,7 @@ void GUIWindow_GameKeyBindings::Update() {
 }
 
 GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
-    : GUIWindow(WINDOW_VideoOptions, {0, 0}, render->GetRenderDimensions(), 0) {
+    : GUIWindow(WINDOW_VideoOptions, {0, 0}, render->GetRenderDimensions()) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
     game_ui_menu_options_video_background = assets->getImage_ColorKey("optvid");
@@ -491,7 +491,7 @@ void OptionsMenuSkin::Release() {
 }
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
-    : GUIWindow(WINDOW_GameOptions, {0, 0}, render->GetRenderDimensions(), 0) {
+    : GUIWindow(WINDOW_GameOptions, {0, 0}, render->GetRenderDimensions()) {
     options_menu_skin.uTextureID_Background = assets->getImage_ColorKey("ControlBG");
     options_menu_skin.uTextureID_TurnSpeed[2] = assets->getImage_ColorKey("con_16x");
     options_menu_skin.uTextureID_TurnSpeed[1] = assets->getImage_ColorKey("con_32x");
@@ -1800,7 +1800,7 @@ std::string GetReputationString(int reputation) {
 }
 
 GUIWindow_DebugMenu::GUIWindow_DebugMenu()
-    : GUIWindow(WINDOW_DebugMenu, {0, 0}, render->GetRenderDimensions(), 0) {
+    : GUIWindow(WINDOW_DebugMenu, {0, 0}, render->GetRenderDimensions()) {
 
     pEventTimer->Pause();
     int width = 108;
