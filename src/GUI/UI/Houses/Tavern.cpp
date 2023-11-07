@@ -125,7 +125,7 @@ void GUIWindow_Tavern::restDialogue() {
         playHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
 
-        engine->_messageQueue->addMessageCurrentFrame(UIMSG_RentRoom, wData.val, 1);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_RentRoom, std::to_underlying(houseId()), 1);
         Release();
         window_SpeakInHouse = 0;
         return;

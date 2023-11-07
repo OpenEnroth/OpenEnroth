@@ -595,6 +595,9 @@ enum class HouseId {
     HOUSE_FIRST_TOWN_HALL = HOUSE_TOWN_HALL_HARMONDALE,
     HOUSE_LAST_TOWN_HALL = HOUSE_TOWN_HALL_PIT,
 
+    HOUSE_FIRST_TAVERN = HOUSE_TAVERN_EMERALD_ISLAND,
+    HOUSE_LAST_TAVERN = HOUSE_TAVERN_STONE_CITY,
+
     HOUSE_FIRST_ARCOMAGE_TAVERN = HOUSE_TAVERN_HARMONDALE,
     HOUSE_LAST_ARCOMAGE_TAVERN = HOUSE_TAVERN_STONE_CITY,
 
@@ -645,6 +648,10 @@ inline bool isStable(HouseId houseId) {
 
 inline bool isBoat(HouseId houseId) {
     return houseId >= HOUSE_FIRST_BOAT && houseId <= HOUSE_LAST_BOAT;
+}
+
+inline bool isTavern(HouseId houseId) {
+    return houseId >= HOUSE_FIRST_TAVERN && houseId <= HOUSE_LAST_TAVERN;
 }
 
 inline bool isArcomageTavern(HouseId houseId) {

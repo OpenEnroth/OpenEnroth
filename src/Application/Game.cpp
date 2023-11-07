@@ -1264,11 +1264,14 @@ void Game::processQueuedMessages() {
                 currentRestType = REST_WAIT;
                 remainingRestTime = GameTime::FromHours(1);
                 continue;
-            case UIMSG_RentRoom:
+            case UIMSG_RentRoom: {
+                HouseId tavern = static_cast<HouseId>(uMessageParam);
+                assert(isTavern(tavern));
+
                 pGUIWindow_CurrentMenu = new GUIWindow_Rest();
 
                 remainingRestTime = timeUntilDawn().AddHours(1);
-                if (uMessageParam == 111 || uMessageParam == 114 || uMessageParam == 116) { // 107 = Emerald Isle tavern
+                if (tavern == HOUSE_TAVERN_DEYJA || tavern == HOUSE_TAVERN_PIT || tavern == HOUSE_TAVERN_MOUNT_NIGHON) {
                     remainingRestTime = remainingRestTime + GameTime::FromHours(12);
                 }
                 currentRestType = REST_HEAL;
@@ -1278,6 +1281,7 @@ void Game::processQueuedMessages() {
                     character.SetAsleep(GameTime(1));
                 }
                 continue;
+            }
             case UIMSG_RestWindow:
                 engine->_messageQueue->clear();
                 // toggle
