@@ -28,7 +28,6 @@ std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
 
 GUIWindow_LloydsBook::GUIWindow_LloydsBook(int casterId, int spellLevel) : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_LloydsBeacon;
-    this->wData.val = WINDOW_LloydsBeacon;
 
     _recallingBeacon = false;
     _casterId = casterId;
