@@ -152,7 +152,8 @@ extern char bNoNPCHiring;
 extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
-extern unsigned int uPlayerCreationUI_SelectedCharacter;
+extern int uPlayerCreationUI_SelectedCharacter;
+extern int uPlayerCreationUI_NameEditCharacter;
 extern int currentAddressingAwardBit;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
