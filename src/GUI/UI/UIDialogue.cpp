@@ -94,7 +94,7 @@ void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
     if (sDialogue_SpeakingActorNPC_ID < 0) v9 = 4;
 #endif
 
-    pDialogueWindow = new GUIWindow_Dialogue(3);
+    pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_FULL);
 
     if (bPlayerSaysHello && pParty->hasActiveCharacter() && !pNPCInfo->Hired()) {
         if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21) {
@@ -105,7 +105,7 @@ void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
     }
 }
 
-GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions(), data) {
+GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions(), WindowData()) {
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
@@ -115,7 +115,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialo
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     std::vector<DIALOGUE_TYPE> optionList;
 
-    if (wData.val != 1) {
+    if (type == DIALOG_WINDOW_FULL) {
         if (getNPCType(sDialogue_SpeakingActorNPC_ID) == NPC_TYPE_QUEST) {
             optionList = prepareScriptedNPCDialogueTopics(speakingNPC);
         } else if (speakingNPC->is_joinable) {
@@ -135,7 +135,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(WindowData data) : GUIWindow(WINDOW_Dialo
             }
         }
     } else {
-        assert(wData.val == 3);
+        assert(type == DIALOG_WINDOW_HIRE_FIRE_SHORT);
         if (!pNPCStats->pProfessions[speakingNPC->profession].pBenefits.empty()) {
             optionList.push_back(DIALOGUE_PROFESSION_DETAILS);
         }
@@ -339,7 +339,7 @@ void GUIWindow_Dialogue::Update() {
 void BuildHireableNpcDialogue() {
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow_Dialogue(1);
+    pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_HIRE_FIRE_SHORT);
 }
 
 void selectNPCDialogueOption(DIALOGUE_TYPE option) {
