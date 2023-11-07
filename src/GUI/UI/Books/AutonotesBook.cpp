@@ -32,7 +32,6 @@ void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
 }
 
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
-    this->wData.val = WINDOW_AutonotesBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_AutonotesBook;
 
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);

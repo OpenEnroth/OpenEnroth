@@ -26,13 +26,12 @@
 #include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIChest.h"
 #include "GUI/UI/Houses/Shops.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -1633,13 +1632,14 @@ void ShowPopupShopItem() {
 }
 
 //----- (0041D3B7) --------------------------------------------------------
-void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
+void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     GraphicsImage *v13;              // eax@6
     PlayerFrame *v15;        // eax@12
     std::string spellName;   // eax@16
     int v36;                 // esi@22
     signed int uFramesetID;  // [sp+20h] [bp-8h]@9
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
+    Character *player = &pParty->pCharacters[characterIndex];
 
     uint numActivePlayerBuffs = 0;
     for (const SpellBuff &buff : player->pCharacterBuffs)
@@ -1664,7 +1664,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
         else
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->Time());
         player->uExpressionImageIndex = v15->uTextureID - 1;
-        v13 = game_ui_player_faces[window->wData.val][v15->uTextureID - 1];
+        v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
     }
 
     render->DrawTextureNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
@@ -1835,16 +1835,16 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
                 if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
                     inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = vChests[pGUIWindow_CurrentMenu->wData.val].pInventoryIndices[invMatrixIndex];
+                    int chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
                     if (chestindex < 0) {
                         invMatrixIndex = (-(chestindex + 1));
-                        chestindex = vChests[pGUIWindow_CurrentMenu->wData.val].pInventoryIndices[invMatrixIndex];
+                        chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
                     }
 
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentMenu->wData.val].igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentChest->chestId()].igChestItems[itemindex]);
                     }
                 }
             }
@@ -1856,15 +1856,14 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         {
             if (GetCurrentMenuID() > MENU_MAIN) break;
             if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
-                popup_window.wData.val = pX / 118;
-                if ((signed int)pX / 118 < 4) {  // portaits zone
+                int characterIndex = pX / 118;
+                if (characterIndex < 4) { // portaits zone
                     popup_window.sHint.clear();
                     popup_window.uFrameWidth = 400;
                     popup_window.uFrameHeight = 200;
                     popup_window.uFrameX = 38;
                     popup_window.uFrameY = 60;
-                    GameUI_CharacterQuickRecord_Draw(
-                        &popup_window, &pParty->pCharacters[popup_window.wData.val]);
+                    GameUI_CharacterQuickRecord_Draw(&popup_window, characterIndex);
                 }
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {

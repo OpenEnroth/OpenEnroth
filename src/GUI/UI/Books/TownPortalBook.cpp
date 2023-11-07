@@ -55,7 +55,6 @@ GraphicsImage *ui_book_townportal_background = nullptr;
 
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid) : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_TownPortal;
-    this->wData.val = WINDOW_TownPortal;
 
     _casterPid = casterPid;
 

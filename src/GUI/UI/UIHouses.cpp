@@ -456,7 +456,7 @@ void NPCHireableDialogPrepare() {
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350});
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
         UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
@@ -530,7 +530,7 @@ void updateHouseNPCTopics(int npc) {
     currentHouseNpc = npc;
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         pDialogueWindow->Release();
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions(), 0);
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions());
         transition_button_label = houseNpcs[npc].label;
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label, {ui_buttyes2});
@@ -690,7 +690,7 @@ void BackToHouseMenu() {
     pMouse->ClearPickedItem();
     // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
-    if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
+    if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
         bGameoverLoop = true;
         houseDialogPressEscape();
@@ -807,7 +807,7 @@ void GUIWindow_House::reinitDialogueWindow() {
         pDialogueWindow->Release();
     }
 
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345}, 0);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345});
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
         localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
     pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
@@ -1086,8 +1086,7 @@ void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     }
 }
 
-// TODO(captainurist): drop std::to_underlying(houseId) here v
-GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), std::to_underlying(houseId)) {
+GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions()), _houseId(houseId) {
     pEventTimer->Pause();  // pause timer so not attacked
 
     current_screen_type = SCREEN_HOUSE;

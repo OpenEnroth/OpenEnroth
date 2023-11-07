@@ -48,6 +48,7 @@
 GUIWindow *pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
+GUIWindow_Chest *pGUIWindow_CurrentChest;
 GUIWindow *pDialogueWindow;
 GUIWindow_House *window_SpeakInHouse;
 GUIWindow_MessageScroll *pGUIWindow_ScrollWindow; // reading a message scroll
@@ -55,7 +56,7 @@ GUIWindow *ptr_507BC8;  // screen 19 - not used?
 TargetedSpellUI *pGUIWindow_CastTargetedSpell;
 GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 bool bGameOverWindowCheckExit{ false }; // TODO(pskelton): contain
-GUIWindow *pGUIWindow_BranchlessDialogue; // branchless dialougue
+GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue; // branchless dialougue
 
 enum WindowType current_character_screen_window;
 std::list<GUIWindow*> lWindowList;
@@ -406,7 +407,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
     this->mouse = EngineIocContainer::ResolveMouse();
 }
 
-GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint): eWindowType(windowType) {
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, const std::string &hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
 
     logger->trace("New window: {}", toString(windowType));
@@ -419,7 +420,6 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
     this->uFrameZ = position.x + dimensions.w - 1;
     this->uFrameW = position.y + dimensions.h - 1;
 
-    this->wData = wData;
     this->sHint = hint;
 
     this->receives_keyboard_input = false;
@@ -436,30 +436,28 @@ void DialogueEnding() {
 }
 
 void OnButtonClick::Update() {
-    if (bPlaySound) {
+    if (_playSound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 }
 
 void OnButtonClick2::Update() {
-    if (bPlaySound) {
+    if (_playSound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     Sizei renDims = render->GetRenderDimensions();
-    if (pButton->uX >= 0 && pButton->uX <= renDims.w) {
-        if (pButton->uY >= 0 && pButton->uY <= renDims.h) {
-            render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    if (_button->uX >= 0 && _button->uX <= renDims.w) {
+        if (_button->uY >= 0 && _button->uY <= renDims.h) {
+            render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[0]);
         }
     }
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 }
@@ -467,10 +465,9 @@ void OnButtonClick2::Update() {
 void OnButtonClick3::Update() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 }
@@ -479,8 +476,7 @@ void OnButtonClick4::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[1]);
 
     Release();
 }
@@ -489,10 +485,9 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -507,10 +502,9 @@ void OnCancel::Update() {
     if (sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[0]);
     if (!sHint.empty()) {
-        pGUIButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -521,10 +515,9 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -536,10 +529,9 @@ void OnCancel3::Update() {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
+        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
 
@@ -1199,7 +1191,7 @@ void UI_Create() {
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
 
     nuklear->Create(WINDOW_GameUI);
-    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions(), 0);
+    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
     pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1);  // buttons for portraits

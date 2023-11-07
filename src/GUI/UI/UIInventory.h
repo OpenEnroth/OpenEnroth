@@ -9,8 +9,8 @@ struct CastSpellInfo;
 
 class GUIWindow_Inventory : public GUIWindow {
  public:
-    GUIWindow_Inventory(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_CharacterWindow_Inventory, position, dimensions, data, hint) {}
+    GUIWindow_Inventory(Pointi position, Sizei dimensions, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_CharacterWindow_Inventory, position, dimensions, hint) {}
     virtual ~GUIWindow_Inventory() {}
 
     virtual void Update() override;

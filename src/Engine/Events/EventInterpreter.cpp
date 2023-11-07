@@ -428,7 +428,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
             if (window_SpeakInHouse) {
-                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
+                if (window_SpeakInHouse->houseId() == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
                     houseDialogPressEscape();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();

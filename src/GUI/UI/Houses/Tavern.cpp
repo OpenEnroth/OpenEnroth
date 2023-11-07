@@ -78,7 +78,7 @@ void GUIWindow_Tavern::arcomageVictoryCondDialogue() {
     dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    std::string label = pNPCTopics[wData.val + 247].pText;
+    std::string label = pNPCTopics[arcomageTopicForTavern(houseId())].pText;
     dialog_window.uFrameWidth = game_viewport_width;
     dialog_window.uFrameZ = 452;
     int pTextHeight = assets->pFontArrus->CalcTextHeight(label, dialog_window.uFrameWidth, 12) + 7;
@@ -125,7 +125,7 @@ void GUIWindow_Tavern::restDialogue() {
         playHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
 
-        engine->_messageQueue->addMessageCurrentFrame(UIMSG_RentRoom, wData.val, 1);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_RentRoom, std::to_underlying(houseId()), 1);
         Release();
         window_SpeakInHouse = 0;
         return;

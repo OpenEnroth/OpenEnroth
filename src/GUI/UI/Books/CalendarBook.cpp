@@ -36,7 +36,6 @@ static std::array<int, 28> pDayMoonPhase = {
 
 
 GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
-    this->wData.val = WINDOW_CalendarBook;
     this->eWindowType = WindowType::WINDOW_CalendarBook;
 
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({570, 354}, {0, 0}, pBtn_Calendar);

@@ -2465,7 +2465,8 @@ char bNoNPCHiring = false;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
-unsigned int uPlayerCreationUI_SelectedCharacter;
+int uPlayerCreationUI_SelectedCharacter;
+int uPlayerCreationUI_NameEditCharacter;
 int currentAddressingAwardBit;
 // int dword_F8B144; // nexindex [-1] to the following
 std::string current_npc_text;                        // F8B1E8

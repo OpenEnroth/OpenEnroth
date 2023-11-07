@@ -72,7 +72,7 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, uint exit_pi
                                            Vec3i pos, int yaw,
                                            int pitch, int zspeed,
                                            const std::string &locationName)
-    : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions(), 0) {
+    : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions()) {
     engine->_teleportPoint.setTeleportTarget(pos, yaw, pitch, zspeed);
     engine->_teleportPoint.setTeleportMap(locationName);
     uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
@@ -141,7 +141,7 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, uint exit_pi
     CreateButton({8, 8}, {0x1CCu, 0x158u}, 1, 0, UIMSG_TransitionUI_Confirm, 1u, Io::InputAction::Invalid, hint);
 }
 
-GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
+GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions()) {
     pEventTimer->Pause();
 
     game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);

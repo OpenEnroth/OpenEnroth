@@ -217,9 +217,8 @@ void CreateParty_EventLoop() {
         } break;
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->playUISound(SOUND_ClickSkill);
-            uPlayerCreationUI_SelectedCharacter = param;
+            uPlayerCreationUI_NameEditCharacter = param;
             keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
-            pGUIWindow_CurrentMenu->wData.val = param;
             break;
         case UIMSG_Escape:
             if (pGameOverWindow) {
@@ -345,13 +344,12 @@ void GUIWindow_PartyCreation::Update() {
             localization->GetClassName(pParty->pCharacters[i].classType));
         render->DrawTextureNew((pIntervalX + 77) / oldDims.w, 50 / oldDims.h, ui_partycreation_class_icons[std::to_underlying(pParty->pCharacters[i].classType) / 4]);
 
-        if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_NONE &&
-            pGUIWindow_CurrentMenu->wData.val == i) {
+        if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_NONE && uPlayerCreationUI_NameEditCharacter == i) {
             switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
             case WINDOW_INPUT_IN_PROGRESS:  // press name panel
-                v17 = pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontCreate.get(), {159 * pGUIWindow_CurrentMenu->wData.val + 18, 124}, colorTable.White,
+                v17 = pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontCreate.get(), {159 * uPlayerCreationUI_NameEditCharacter + 18, 124}, colorTable.White,
                     keyboardInputHandler->GetTextInput(), 120, 1);
-                pGUIWindow_CurrentMenu->DrawFlashingInputCursor(159 * pGUIWindow_CurrentMenu->wData.val + v17 + 20, 124, assets->pFontCreate.get());
+                pGUIWindow_CurrentMenu->DrawFlashingInputCursor(159 * uPlayerCreationUI_NameEditCharacter + v17 + 20, 124, assets->pFontCreate.get());
                 break;
             case WINDOW_INPUT_CONFIRMED:  // press enter
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
@@ -589,7 +587,7 @@ void GUIWindow_PartyCreation::Update() {
 
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
-    GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions(), 0) {
+    GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions()) {
     engine->_messageQueue->clear();
 
     main_menu_background = assets->getImage_PCXFromIconsLOD("makeme.pcx");
@@ -628,14 +626,11 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ui_partycreation_arrow_r[i] = assets->getImage_Alpha(fmt::format("arrowr{}", i + 1));
     }
 
-    // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
-    int uControlParam = 0;
-    uControlParam = 0;
+    // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight());
     int uX = 8;
-    for (int i = 0; i < 4; i++) {
-        CreateButton({uX, 120}, {145, 25}, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam);
+    for (int characterIndex = 0; characterIndex < 4; characterIndex++) {
+        CreateButton({uX, 120}, {145, 25}, 1, 0, UIMSG_PlayerCreationChangeName, characterIndex);
         uX += 158;
-        ++uControlParam;
     }
 
     pCreationUI_BtnPressLeft[0] = CreateButton({10, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, Io::InputAction::Invalid, "", {ui_partycreation_left});
@@ -658,16 +653,13 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     pCreationUI_BtnPressRight2[2] = CreateButton({391, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, Io::InputAction::Invalid, "", {ui_partycreation_right});
     pCreationUI_BtnPressRight2[3] = CreateButton({549, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, Io::InputAction::Invalid, "", {ui_partycreation_right});
 
-    uControlParam = 0;
     uX = 8;
-    for (int i = 0 ; i < 4; i++) {
-        CreateButton({uX, 308}, {150, v0}, 1, 0, UIMSG_48, uControlParam);
-        CreateButton({uX, v0 + 308}, {150, v0}, 1, 0, UIMSG_49, uControlParam);
-        CreateButton({uX, 2 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam);
-        CreateButton({uX, 3 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, uControlParam);
-
+    for (int characterIndex = 0 ; characterIndex < 4; characterIndex++) {
+        CreateButton({uX, 308}, {150, v0}, 1, 0, UIMSG_48, characterIndex);
+        CreateButton({uX, v0 + 308}, {150, v0}, 1, 0, UIMSG_49, characterIndex);
+        CreateButton({uX, 2 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, characterIndex);
+        CreateButton({uX, 3 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, characterIndex);
         uX += 158;
-        ++uControlParam;
     }
 
     CreateButton({5, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, Io::InputAction::SelectChar1);
@@ -676,7 +668,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     CreateButton({479, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, Io::InputAction::SelectChar4);
 
     uX = 23;
-    uControlParam = 2;
+    int uControlParam = 2;
     do {
         CreateButton({uX, 169}, {120, 20}, 1, 0, UIMSG_0, uControlParam - 2);
         CreateButton({uX, v0 + 169}, {120, 20}, 1, 0, UIMSG_0, uControlParam - 1);

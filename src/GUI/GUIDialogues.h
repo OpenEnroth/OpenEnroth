@@ -8,6 +8,7 @@
 
 #define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  36 + std::to_underlying(skill)
 
+// TODO(captainurist): #enum
 enum DIALOGUE_TYPE : int32_t {
     DIALOGUE_NULL = 0,
     DIALOGUE_MAIN = 1,

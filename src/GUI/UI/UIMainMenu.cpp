@@ -19,7 +19,7 @@
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
-    GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions(), 0) {
+    GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
     nuklear->Create(WINDOW_MainMenu);
     if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
         return;

@@ -10,7 +10,7 @@
 #include "UIStatusBar.h"
 
 TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, const std::string &hint)
-    : GUIWindow(windowType, position, dimensions, WindowData(), hint), _spellInfo(spellInfo) {
+    : GUIWindow(windowType, position, dimensions, hint), _spellInfo(spellInfo) {
     assert(spellInfo);
 
     pEventTimer->Pause();

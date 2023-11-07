@@ -6,9 +6,18 @@
 
 #include "Utility/IndexedArray.h"
 
+enum class DialogWindowType {
+    /** This one doesn't seem to be used on MM7, only creates the profession details & hire/fire topics. */
+    DIALOG_WINDOW_HIRE_FIRE_SHORT = 1,
+
+    /** Creates all appropriate dialog options, including scripted ones. */
+    DIALOG_WINDOW_FULL = 3,
+};
+using enum DialogWindowType;
+
 class GUIWindow_Dialogue : public GUIWindow {
  public:
-    explicit GUIWindow_Dialogue(WindowData data);
+    explicit GUIWindow_Dialogue(DialogWindowType type);
     virtual ~GUIWindow_Dialogue() {}
 
     void setDisplayedDialogueType(DIALOGUE_TYPE type) {

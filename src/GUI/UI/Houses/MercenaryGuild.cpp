@@ -34,7 +34,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[window_SpeakInHouse->houseId()]);
 
     if (_currentDialogue == DIALOGUE_MAIN) {
-        if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * window_SpeakInHouse->wData.val]]) {
+        if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * std::to_underlying(window_SpeakInHouse->houseId())]]) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             int pTextHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[171].pText, 3);

@@ -84,7 +84,7 @@ static constexpr IndexedArray<std::array<int, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHO
 
 SpellId spellbookSelectedSpell;
 
-GUIWindow_Spellbook::GUIWindow_Spellbook() : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions(), 0) {
+GUIWindow_Spellbook::GUIWindow_Spellbook() : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions()) {
     current_screen_type = SCREEN_SPELL_BOOK;
     pEventTimer->Pause();
 

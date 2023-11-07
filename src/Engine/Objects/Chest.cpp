@@ -148,7 +148,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
         }
     }
     OpenedTelekinesis = false;
-    /*pChestWindow =*/ pGUIWindow_CurrentMenu = new GUIWindow_Chest(uChestID);
+    pGUIWindow_CurrentMenu = pGUIWindow_CurrentChest = new GUIWindow_Chest(uChestID);
     return true;
 }
 
@@ -157,7 +157,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
     unsigned int pX = pt.x;
     unsigned int pY = pt.y;
 
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
+    Chest *chest = &vChests[pGUIWindow_CurrentChest->chestId()];
 
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
@@ -305,7 +305,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
     if (position == -1) {  // no position specified
         for (int _i = 0; _i < max_size; _i++) {
-            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pGUIWindow_CurrentMenu->wData.val)) {
+            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pGUIWindow_CurrentChest->chestId())) {
                 test_pos = _i;  // found somewhere to place item
                 break;
             }
@@ -421,7 +421,7 @@ void Chest::toggleFlag(int uChestID, ChestFlag uFlag, bool bValue) {
 }
 
 void RemoveItemAtChestIndex(int index) {
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
+    Chest *chest = &vChests[pGUIWindow_CurrentChest->chestId()];
 
     int chestindex = chest->pInventoryIndices[index];
     ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
@@ -445,7 +445,7 @@ void RemoveItemAtChestIndex(int index) {
 }
 
 void Chest::OnChestLeftClick() {
-    int uChestID = pGUIWindow_CurrentMenu->wData.val;
+    int uChestID = pGUIWindow_CurrentChest->chestId();
     Chest *chest = &vChests[uChestID];
 
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
@@ -499,7 +499,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
     int goldcount = 0;
     int goldamount = 0;
 
-    int chestId = pGUIWindow_CurrentMenu->wData.val;
+    int chestId = pGUIWindow_CurrentChest->chestId();
     Chest *chest = &vChests[chestId];
 
     // loop through chest pInvetoryIndices
