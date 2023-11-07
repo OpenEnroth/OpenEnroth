@@ -5,7 +5,6 @@
 #include "Arcomage/Arcomage.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIProgressBar.h"
 
@@ -1766,4 +1765,17 @@ GAME_TEST(Issues, Issue1342) {
     EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
     for (int gold : goldTape.adjacentDeltas())
         EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
+}
+
+GAME_TEST(Issues, Issue1364) {
+    // Saving in Arena should display an appropriate status message.
+    auto mapTape = tapes.map();
+    auto statusTape = tapes.statusBar();
+    auto screenTape = tapes.screen();
+    test.playTraceFromTestData("issue_1364.mm7", "issue_1364.json");
+    EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
+    EXPECT_TRUE(statusTape.contains("No saving in the Arena")); // Clicking the save button didn't work.
+    EXPECT_TRUE(screenTape.contains(SCREEN_HOUSE)); // We have visited the stables.
+    EXPECT_TRUE(screenTape.contains(SCREEN_MENU)); // Opened the game menu while in the Arena.
+    EXPECT_FALSE(screenTape.contains(SCREEN_SAVEGAME)); // But save menu didn't open on click.
 }

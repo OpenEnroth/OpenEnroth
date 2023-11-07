@@ -158,6 +158,7 @@ void LoadGame(unsigned int uSlot) {
 
 SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &title) {
     assert(IsAutoSAve || !title.empty());
+    assert(pCurrentMapName != "d05.blv" || IsAutoSAve); // No manual saves in Arena.
 
     s_SavedMapName = pCurrentMapName;
     if (pCurrentMapName == "d05.blv") { // arena
@@ -272,15 +273,16 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
 }
 
 void DoSavegame(unsigned int uSlot) {
-    if (pCurrentMapName != "d05.blv") {  // Not Arena
-        pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
+    assert(pCurrentMapName != "d05.blv"); // Not Arena.
 
-        std::string src = makeDataPath("data", "new.lod");
-        std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
-        std::error_code ec;
-        if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
-            logger->error("Failed to copy: {}", src);
-    }
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
+
+    std::string src = makeDataPath("data", "new.lod");
+    std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
+    std::error_code ec;
+    if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
+        logger->error("Failed to copy: {}", src);
+
     pSavegameList->selectedSlot = uSlot;
 
     GUI_UpdateWindows();
@@ -293,11 +295,6 @@ void DoSavegame(unsigned int uSlot) {
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
     }
-
-    if (pCurrentMapName == "d05.blv")
-        engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
-
-    // TODO(captainurist): This ^v doesn't seem right, need an else block?
 
     pEventTimer->Resume();
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);

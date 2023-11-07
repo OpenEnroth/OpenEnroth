@@ -172,12 +172,17 @@ void Menu::EventLoop() {
                 DoSavegame(pSavegameList->selectedSlot);
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
-                pGUIWindow_CurrentMenu->Release();
-                // delete pGUIWindow_CurrentMenu;
-                engine->_statusBar->clearEvent();
-                current_screen_type = SCREEN_SAVEGAME;
-                pGUIWindow_CurrentMenu = new GUIWindow_Save();
-                // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
+                if (pCurrentMapName == "d05.blv") {
+                    engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
+                    pAudioPlayer->playUISound(SOUND_error);
+                } else {
+                    pGUIWindow_CurrentMenu->Release();
+                    // delete pGUIWindow_CurrentMenu;
+                    engine->_statusBar->clearEvent();
+                    current_screen_type = SCREEN_SAVEGAME;
+                    pGUIWindow_CurrentMenu = new GUIWindow_Save();
+                    // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
+                }
                 continue;
             }
             case UIMSG_SaveLoadScroll: {
