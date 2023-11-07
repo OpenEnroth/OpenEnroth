@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a374341</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9e632ee</span>
    </div>
   </td>
  </tr>
@@ -83,14 +83,14 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7e68a23e1363b7d121346ad50a062e66"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8h.html#a7e68a23e1363b7d121346ad50a062e66">expandUserPath</a> (std::string path)</td></tr>
-<tr class="separator:a7e68a23e1363b7d121346ad50a062e66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac261a6caf7b962033e08123deacd0033"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8h.html#ac261a6caf7b962033e08123deacd0033">expandUserPath</a> (const std::string &amp;path, const std::string &amp;home)</td></tr>
+<tr class="separator:ac261a6caf7b962033e08123deacd0033"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa40c48ec8b25943a761f2bc49adeda9f"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8h.html#aa40c48ec8b25943a761f2bc49adeda9f">makeCaseInsensitivePath</a> (std::filesystem::path path)</td></tr>
 <tr class="separator:aa40c48ec8b25943a761f2bc49adeda9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a7e68a23e1363b7d121346ad50a062e66" name="a7e68a23e1363b7d121346ad50a062e66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e68a23e1363b7d121346ad50a062e66">&#9670;&#160;</a></span>expandUserPath()</h2>
+<a id="ac261a6caf7b962033e08123deacd0033" name="ac261a6caf7b962033e08123deacd0033"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac261a6caf7b962033e08123deacd0033">&#9670;&#160;</a></span>expandUserPath()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -98,9 +98,19 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">std::filesystem::path expandUserPath </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>home</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -108,6 +118,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Path as a string. </td></tr>
+    <tr><td class="paramname">home</td><td>Home path as a string. </td></tr>
   </table>
   </dd>
 </dl>

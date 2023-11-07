@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a374341</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9e632ee</span>
    </div>
   </td>
  </tr>
@@ -165,18 +165,20 @@ $(function() {
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MediaPlayer_8h.html">Media/MediaPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformApplication_8h.html">Library/Platform/Application/PlatformApplication.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Environment_8h.html">Library/Environment/Interface/Environment.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/Format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DataPath_8h.html">Utility/DataPath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileSystem_8h.html">Utility/FileSystem.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a3b2a3dfce0ae301f0295d8e60b49ecc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Game_8cpp.html#a3b2a3dfce0ae301f0295d8e60b49ecc7">ShowMM7IntroVideo_and_LoadingScreen</a> ()</td></tr>
 <tr class="separator:a3b2a3dfce0ae301f0295d8e60b49ecc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc68ff18e2dc1476dfcd63cce4ae9309"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Game_8cpp.html#acc68ff18e2dc1476dfcd63cce4ae9309">initDataPath</a> (const std::string &amp;dataPath)</td></tr>
-<tr class="separator:acc68ff18e2dc1476dfcd63cce4ae9309"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03fb375f71cf9285d9e0ea19f59a408a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Game_8cpp.html#a03fb375f71cf9285d9e0ea19f59a408a">initDataPath</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment, <a class="el" href="classPlatform.html">Platform</a> *<a class="el" href="EngineGlobals_8cpp.html#a75b48f1787959a4617f2a599d7c09aab">platform</a>, const std::string &amp;dataPath)</td></tr>
+<tr class="separator:a03fb375f71cf9285d9e0ea19f59a408a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a480ccd388ff39633114ddbce6135b37b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Game_8cpp.html#a480ccd388ff39633114ddbce6135b37b">Game_StartDialogue</a> (unsigned int actor_id)</td></tr>
 <tr class="separator:a480ccd388ff39633114ddbce6135b37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95614f5e9785cacc471e7aa69ac9e2d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Game_8cpp.html#a95614f5e9785cacc471e7aa69ac9e2d8">Game_StartHirelingDialogue</a> (unsigned int hireling_id)</td></tr>
@@ -226,8 +228,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="acc68ff18e2dc1476dfcd63cce4ae9309" name="acc68ff18e2dc1476dfcd63cce4ae9309"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc68ff18e2dc1476dfcd63cce4ae9309">&#9670;&#160;</a></span>initDataPath()</h2>
+<a id="a03fb375f71cf9285d9e0ea19f59a408a" name="a03fb375f71cf9285d9e0ea19f59a408a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03fb375f71cf9285d9e0ea19f59a408a">&#9670;&#160;</a></span>initDataPath()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -235,9 +237,25 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void initDataPath </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>dataPath</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classEnvironment.html">Environment</a> *&#160;</td>
+          <td class="paramname"><em>environment</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classPlatform.html">Platform</a> *&#160;</td>
+          <td class="paramname"><em>platform</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>dataPath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

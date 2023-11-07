@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a374341</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9e632ee</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
+<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -791,11 +793,13 @@ Enumerations</h2></td></tr>
 , <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cafb68c7972136b8b991a9c97cb2af5b15">HOUSE_FIRST_TOWN_HALL</a> = HOUSE_TOWN_HALL_HARMONDALE
 , <br />
 &#160;&#160;<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca96b8c346a173dde5b4665e0580a64283">HOUSE_LAST_TOWN_HALL</a> = HOUSE_TOWN_HALL_PIT
+, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca8cd36d75c4dbe93a906320a72fe92177">HOUSE_FIRST_TAVERN</a> = HOUSE_TAVERN_EMERALD_ISLAND
+, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17caed8a84434d22598961a2bc5c40996e54">HOUSE_LAST_TAVERN</a> = HOUSE_TAVERN_STONE_CITY
 , <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca54ff0b91d901e6e9f1b6706f20a743ea">HOUSE_FIRST_ARCOMAGE_TAVERN</a> = HOUSE_TAVERN_HARMONDALE
-, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca2c753b633488faefadd303fd1ee0bafc">HOUSE_LAST_ARCOMAGE_TAVERN</a> = HOUSE_TAVERN_STONE_CITY
-, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b">HOUSE_FIRST</a> = HOUSE_WEAPON_SHOP_EMERALD_ISLAND
 , <br />
-&#160;&#160;<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cae197250a5b60254ffb5ac948b573cd9a">HOUSE_LAST</a> = HOUSE_524
+&#160;&#160;<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca2c753b633488faefadd303fd1ee0bafc">HOUSE_LAST_ARCOMAGE_TAVERN</a> = HOUSE_TAVERN_STONE_CITY
+, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b">HOUSE_FIRST</a> = HOUSE_WEAPON_SHOP_EMERALD_ISLAND
+, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cae197250a5b60254ffb5ac948b573cd9a">HOUSE_LAST</a> = HOUSE_524
 <br />
  }</td></tr>
 <tr class="separator:a5ea2a2987049a04401b3ec8a45cbf17c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -849,8 +853,12 @@ Functions</h2></td></tr>
 <tr class="separator:ad5045a6e2a75dcbed91d8a311361f5a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5f3788eacb8a19e07f8630a4d1cfd50"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouseEnums_8h.html#af5f3788eacb8a19e07f8630a4d1cfd50">isBoat</a> (<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> houseId)</td></tr>
 <tr class="separator:af5f3788eacb8a19e07f8630a4d1cfd50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99688ed1485e7de3c145429dff7f5e94"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouseEnums_8h.html#a99688ed1485e7de3c145429dff7f5e94">isTavern</a> (<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> houseId)</td></tr>
+<tr class="separator:a99688ed1485e7de3c145429dff7f5e94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e77d179f9ede31fd5b249623547c1d2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouseEnums_8h.html#a6e77d179f9ede31fd5b249623547c1d2">isArcomageTavern</a> (<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> houseId)</td></tr>
 <tr class="separator:a6e77d179f9ede31fd5b249623547c1d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6053987341be8ed2595f7a7ff9c9892"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouseEnums_8h.html#ac6053987341be8ed2595f7a7ff9c9892">arcomageTopicForTavern</a> (<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> houseId)</td></tr>
+<tr class="separator:ac6053987341be8ed2595f7a7ff9c9892"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ad5b17819485bfe6ede8299978e6f0c34" name="ad5b17819485bfe6ede8299978e6f0c34"></a>
@@ -1462,6 +1470,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17caefa91e5abb73cd48972679fac979476a" name="a5ea2a2987049a04401b3ec8a45cbf17caefa91e5abb73cd48972679fac979476a"></a>HOUSE_LAST_TRAINING_HALL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17cafb68c7972136b8b991a9c97cb2af5b15" name="a5ea2a2987049a04401b3ec8a45cbf17cafb68c7972136b8b991a9c97cb2af5b15"></a>HOUSE_FIRST_TOWN_HALL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17ca96b8c346a173dde5b4665e0580a64283" name="a5ea2a2987049a04401b3ec8a45cbf17ca96b8c346a173dde5b4665e0580a64283"></a>HOUSE_LAST_TOWN_HALL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17ca8cd36d75c4dbe93a906320a72fe92177" name="a5ea2a2987049a04401b3ec8a45cbf17ca8cd36d75c4dbe93a906320a72fe92177"></a>HOUSE_FIRST_TAVERN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17caed8a84434d22598961a2bc5c40996e54" name="a5ea2a2987049a04401b3ec8a45cbf17caed8a84434d22598961a2bc5c40996e54"></a>HOUSE_LAST_TAVERN&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17ca54ff0b91d901e6e9f1b6706f20a743ea" name="a5ea2a2987049a04401b3ec8a45cbf17ca54ff0b91d901e6e9f1b6706f20a743ea"></a>HOUSE_FIRST_ARCOMAGE_TAVERN&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17ca2c753b633488faefadd303fd1ee0bafc" name="a5ea2a2987049a04401b3ec8a45cbf17ca2c753b633488faefadd303fd1ee0bafc"></a>HOUSE_LAST_ARCOMAGE_TAVERN&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b" name="a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b"></a>HOUSE_FIRST&#160;</td><td class="fielddoc"></td></tr>
@@ -1575,6 +1585,32 @@ Functions</h2></td></tr>
           <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> &gt; allTownhallHouses </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac6053987341be8ed2595f7a7ff9c9892" name="ac6053987341be8ed2595f7a7ff9c9892"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6053987341be8ed2595f7a7ff9c9892">&#9670;&#160;</a></span>arcomageTopicForTavern()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int arcomageTopicForTavern </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a>&#160;</td>
+          <td class="paramname"><em>houseId</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1780,6 +1816,32 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool isStable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a>&#160;</td>
+          <td class="paramname"><em>houseId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a99688ed1485e7de3c145429dff7f5e94" name="a99688ed1485e7de3c145429dff7f5e94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99688ed1485e7de3c145429dff7f5e94">&#9670;&#160;</a></span>isTavern()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isTavern </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a>&#160;</td>
           <td class="paramname"><em>houseId</em></td><td>)</td>

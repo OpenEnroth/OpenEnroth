@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a374341</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9e632ee</span>
    </div>
   </td>
  </tr>
@@ -88,7 +88,6 @@ Inheritance diagram for Platform:</div>
 <area href="classNullPlatform.html" alt="NullPlatform" shape="rect" coords="294,56,480,80"/>
 <area href="classSdlPlatform.html" alt="SdlPlatform" shape="rect" coords="490,56,676,80"/>
 <area href="classProxyPlatform.html" alt="ProxyPlatform" shape="rect" coords="98,112,284,136"/>
-<area href="classWinPlatform.html" alt="WinPlatform" shape="rect" coords="490,112,676,136"/>
 <area href="classApplicationProxy.html" alt="ApplicationProxy" shape="rect" coords="0,168,186,192"/>
 <area href="classEngineDeterministicComponent.html" alt="EngineDeterministicComponent" shape="rect" coords="196,168,382,192"/>
   </map>
@@ -114,10 +113,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae58aa82a21e9c175726d344d2251306e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a398f5ca2b40ec44f63652dfa2cb1d1a0"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a398f5ca2b40ec44f63652dfa2cb1d1a0">tickCount</a> () const =0</td></tr>
 <tr class="separator:a398f5ca2b40ec44f63652dfa2cb1d1a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdfbc0c9e3d47458f994a82b6b32be15"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#acdfbc0c9e3d47458f994a82b6b32be15">winQueryRegistry</a> (const std::wstring &amp;path) const =0</td></tr>
-<tr class="separator:acdfbc0c9e3d47458f994a82b6b32be15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2eb07022d567b49ea2cdca3bede8353"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#ab2eb07022d567b49ea2cdca3bede8353">storagePath</a> (const <a class="el" href="PlatformEnums_8h.html#ad1a37be21e3488f1aa41a63528e65960">PlatformStorage</a> type) const =0</td></tr>
-<tr class="separator:ab2eb07022d567b49ea2cdca3bede8353"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -442,41 +437,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab2eb07022d567b49ea2cdca3bede8353" name="ab2eb07022d567b49ea2cdca3bede8353"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2eb07022d567b49ea2cdca3bede8353">&#9670;&#160;</a></span>storagePath()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::string Platform::storagePath </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="PlatformEnums_8h.html#ad1a37be21e3488f1aa41a63528e65960">PlatformStorage</a>&#160;</td>
-          <td class="paramname"><em>type</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Get various application filesystem paths.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">type</td><td>Storage type. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implemented in <a class="el" href="classNullPlatform.html#afd3e0a31282562ad7b7fab2b3963b719">NullPlatform</a>, <a class="el" href="classProxyPlatform.html#a28e2844d959bd51c13640edf27858037">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#afe92e1090619b6c66ad4f79ad7f77efd">SdlPlatform</a>.</p>
-
-</div>
-</div>
 <a id="a398f5ca2b40ec44f63652dfa2cb1d1a0" name="a398f5ca2b40ec44f63652dfa2cb1d1a0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a398f5ca2b40ec44f63652dfa2cb1d1a0">&#9670;&#160;</a></span>tickCount()</h2>
 
@@ -505,46 +465,9 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="acdfbc0c9e3d47458f994a82b6b32be15" name="acdfbc0c9e3d47458f994a82b6b32be15"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acdfbc0c9e3d47458f994a82b6b32be15">&#9670;&#160;</a></span>winQueryRegistry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::string Platform::winQueryRegistry </td>
-          <td>(</td>
-          <td class="paramtype">const std::wstring &amp;&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Registry path to query. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Value at the given path, or an empty string in case of an error. </dd></dl>
-
-<p>Implemented in <a class="el" href="classNullPlatform.html#a509836301865b000bff2fbad9129f7f5">NullPlatform</a>, <a class="el" href="classProxyPlatform.html#ae61f25f602b5e8e4143cd7d3ea1d803d">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#a10934ab7426ceae5f5bfeb77e3a94071">SdlPlatform</a>, and <a class="el" href="classWinPlatform.html#abcb3860ccf83067d3f1abc69c7a67fac">WinPlatform</a>.</p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/Library/Platform/Interface/<a class="el" href="Platform_8h.html">Platform.h</a></li>
-<li>src/Library/Platform/Posix/<a class="el" href="PosixPlatform_8cpp.html">PosixPlatform.cpp</a></li>
-<li>src/Library/Platform/Win/<a class="el" href="WinPlatform_8cpp.html">WinPlatform.cpp</a></li>
+<li>src/Library/Platform/Sdl/<a class="el" href="SdlPlatform_8cpp.html">SdlPlatform.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

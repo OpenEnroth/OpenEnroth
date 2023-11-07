@@ -12,10 +12,9 @@ var searchData=
   ['platformmodifier_9',['PlatformModifier',['../PlatformEnums_8h.html#aaf0638d2a3414c9cae377d29330c70b3',1,'PlatformEnums.h']]],
   ['platformmousebutton_10',['PlatformMouseButton',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558',1,'PlatformEnums.h']]],
   ['platformopenglprofile_11',['PlatformOpenGLProfile',['../PlatformOpenGLOptions_8h.html#a29c31fe51525a30eadb91c8581c14447',1,'PlatformOpenGLOptions.h']]],
-  ['platformstorage_12',['PlatformStorage',['../PlatformEnums_8h.html#ad1a37be21e3488f1aa41a63528e65960',1,'PlatformEnums.h']]],
-  ['platformvsyncmode_13',['PlatformVSyncMode',['../PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbf',1,'PlatformOpenGLOptions.h']]],
-  ['platformwindowmode_14',['PlatformWindowMode',['../PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14',1,'PlatformEnums.h']]],
-  ['platformwindoworientation_15',['PlatformWindowOrientation',['../PlatformEnums_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc',1,'PlatformEnums.h']]],
-  ['pointercreationtype_16',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
-  ['polygontype_17',['PolygonType',['../FaceEnums_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'FaceEnums.h']]]
+  ['platformvsyncmode_12',['PlatformVSyncMode',['../PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbf',1,'PlatformOpenGLOptions.h']]],
+  ['platformwindowmode_13',['PlatformWindowMode',['../PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14',1,'PlatformEnums.h']]],
+  ['platformwindoworientation_14',['PlatformWindowOrientation',['../PlatformEnums_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc',1,'PlatformEnums.h']]],
+  ['pointercreationtype_15',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
+  ['polygontype_16',['PolygonType',['../FaceEnums_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'FaceEnums.h']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Library/Platform/Win/WinPlatform.cpp File Reference</title>
+<title>OpenEnroth: src/Library/Environment/Win/WinEnvironment.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a374341</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9e632ee</span>
    </div>
   </td>
  </tr>
@@ -69,31 +69,31 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_25027ba02c8792d1a429072f307f55f7.html">Platform</a></li><li class="navelem"><a class="el" href="dir_314d09fdb23a1f6f33eadaab1ca5d637.html">Win</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_7c437c59f0e721672b5ecdf58c3120dd.html">Environment</a></li><li class="navelem"><a class="el" href="dir_37e370baedfdca0f8d2a1deb2d04b92e.html">Win</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">WinPlatform.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">WinEnvironment.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="WinPlatform_8h.html">WinPlatform.h</a>&quot;</code><br />
-<code>#include &lt;memory&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="WinEnvironment_8h.html">WinEnvironment.h</a>&quot;</code><br />
 <code>#include &lt;Windows.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="SdlLogSource_8h.html">Library/Platform/Sdl/SdlLogSource.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &lt;cstdlib&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &quot;<a class="el" href="Unicode_8h.html">Utility/Win/Unicode.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ac7bef5d85e3dcd73eef56ad39ffc84a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="WinPlatform_8cpp.html#ac7bef5d85e3dcd73eef56ad39ffc84a9">WIN32_LEAN_AND_MEAN</a></td></tr>
+<tr class="memitem:ac7bef5d85e3dcd73eef56ad39ffc84a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="WinEnvironment_8cpp.html#ac7bef5d85e3dcd73eef56ad39ffc84a9">WIN32_LEAN_AND_MEAN</a></td></tr>
 <tr class="separator:ac7bef5d85e3dcd73eef56ad39ffc84a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:accc93512f07d76ba8fd42baf6e3bc552"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="WinPlatform_8cpp.html#accc93512f07d76ba8fd42baf6e3bc552">OS_GetAppStringRecursive</a> (HKEY parent_key, const wchar_t *path, char *out_string, int out_string_size, int flags)</td></tr>
-<tr class="separator:accc93512f07d76ba8fd42baf6e3bc552"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16b8fce23046a5003edeeecc40844d94"><td class="memItemLeft" align="right" valign="top">static std::wstring&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="WinEnvironment_8cpp.html#a16b8fce23046a5003edeeecc40844d94">OS_GetAppStringRecursive</a> (HKEY parent_key, const wchar_t *path, int flags)</td></tr>
+<tr class="separator:a16b8fce23046a5003edeeecc40844d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ac7bef5d85e3dcd73eef56ad39ffc84a9" name="ac7bef5d85e3dcd73eef56ad39ffc84a9"></a>
@@ -111,8 +111,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="accc93512f07d76ba8fd42baf6e3bc552" name="accc93512f07d76ba8fd42baf6e3bc552"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#accc93512f07d76ba8fd42baf6e3bc552">&#9670;&#160;</a></span>OS_GetAppStringRecursive()</h2>
+<a id="a16b8fce23046a5003edeeecc40844d94" name="a16b8fce23046a5003edeeecc40844d94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16b8fce23046a5003edeeecc40844d94">&#9670;&#160;</a></span>OS_GetAppStringRecursive()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -121,7 +121,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool OS_GetAppStringRecursive </td>
+          <td class="memname">static std::wstring OS_GetAppStringRecursive </td>
           <td>(</td>
           <td class="paramtype">HKEY&#160;</td>
           <td class="paramname"><em>parent_key</em>, </td>
@@ -131,18 +131,6 @@ Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">const wchar_t *&#160;</td>
           <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>out_string</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>out_string_size</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
