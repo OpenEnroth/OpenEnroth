@@ -12,6 +12,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 
 #include "Utility/Format.h"
+#include "Utility/UnicodeCrt.h"
 
 #include "GameTestOptions.h"
 
@@ -24,6 +25,7 @@ void printGoogleTestHelp(char *app) {
 
 int platformMain(int argc, char **argv) {
     try {
+        UnicodeCrt _(argc, argv);
         GameTestOptions opts = GameTestOptions::parse(argc, argv);
         if (opts.helpPrinted) {
             fmt::print(stdout, "\n");

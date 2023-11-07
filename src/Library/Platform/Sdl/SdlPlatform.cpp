@@ -137,30 +137,6 @@ int64_t SdlPlatform::tickCount() const {
     return SDL_GetTicks64();
 }
 
-std::string SdlPlatform::winQueryRegistry(const std::wstring &) const {
-    return {};
-}
-
-std::string SdlPlatform::storagePath(const PlatformStorage type) const {
-    std::string result{};
-    const char *path = NULL;
-
-    switch (type) {
-#if __ANDROID__
-    case (ANDROID_STORAGE_INTERNAL):
-        path = SDL_AndroidGetInternalStoragePath();
-        if (path)
-            result = path;
-        break;
-    case (ANDROID_STORAGE_EXTERNAL):
-        path = SDL_AndroidGetExternalStoragePath();
-        if (path)
-            result = path;
-        break;
-#endif
-    default:
-        break;
-    }
-
-    return result;
+std::unique_ptr<Platform> Platform::createStandardPlatform(Logger *logger) {
+    return std::make_unique<SdlPlatform>(logger);
 }

@@ -69,12 +69,6 @@ enum class PlatformEventType {
 };
 using enum PlatformEventType;
 
-enum class PlatformStorage {
-    ANDROID_STORAGE_INTERNAL,
-    ANDROID_STORAGE_EXTERNAL
-};
-using enum PlatformStorage;
-
 enum class PlatformKey : int {
     // usual text input
     KEY_CHAR, // TODO(captainurist): this doesn't belong here

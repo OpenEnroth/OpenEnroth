@@ -3,88 +3,74 @@
 #include "Application/GamePathResolver.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Platform/Interface/Platform.h"
+#include "Library/Environment/Interface/Environment.h"
 
-static std::string _resolvePath(Platform *platform, const char *envVarOverride, const std::vector<const wchar_t *> &registryKeys);
+static std::string _resolvePath(Environment *environment, const char *envVarOverride, const std::vector<const char *> &registryKeys);
 
-std::string resolveMm6Path(Platform *platform) {
+std::string resolveMm6Path(Environment *environment) {
     return _resolvePath(
-        platform,
+        environment,
         mm6PathOverrideKey,
         {
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207661253/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM6/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic\x00AE VI/1.0/AppPath",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207661253/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM6/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic\x00AE VI/1.0/AppPath",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207661253/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM6/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic\x00AE VI/1.0/AppPath",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207661253/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM6/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic\x00AE VI/1.0/AppPath",
         }
     );
 }
 
 
-std::string resolveMm7Path(Platform *platform) {
+std::string resolveMm7Path(Environment *environment) {
     return _resolvePath(
-        platform,
+        environment,
         mm7PathOverrideKey,
         {
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207658916/Path",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM7/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic VII/1.0/AppPath",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207658916/Path",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM7/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic VII/1.0/AppPath",
         }
     );
 }
 
 
-std::string resolveMm8Path(Platform *platform) {
+std::string resolveMm8Path(Environment *environment) {
     return _resolvePath(
-        platform,
+        environment,
         mm8PathOverrideKey,
         {
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM8/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic Day of the Destroyer/1.0/AppPath",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM8/PATH",
-            L"HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic Day of the Destroyer/1.0/AppPath",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM8/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic Day of the Destroyer/1.0/AppPath",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/GOGMM8/PATH",
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/New World Computing/Might and Magic Day of the Destroyer/1.0/AppPath",
         }
     );
 }
 
-
-static std::string _resolvePath(
-    Platform *platform,
-    const char *envVarOverride,
-    const std::vector<const wchar_t *> &registryKeys
-) {
+static std::string _resolvePath(Environment *environment, const char *envVarOverride, const std::vector<const char *> &registryKeys) {
 #ifdef __ANDROID__
     // TODO: find a better way to deal with paths and remove this android specific block.
-    std::string result = platform->storagePath(ANDROID_STORAGE_EXTERNAL);
+    std::string result = environment->path(PATH_ANDROID_STORAGE_EXTERNAL);
     if (result.empty())
-        result = platform->storagePath(ANDROID_STORAGE_INTERNAL);
-    if (result.empty())
-        platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
+        result = environment->path(PATH_ANDROID_STORAGE_INTERNAL);
+    // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
+    //if (result.empty())
+    //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
     return result;
 #else
-    // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
-    // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
-    // it is later on passed to std::filesystem that should be ascii on windows as well
-    // this means we will can't handle win32 unicode paths at the time
-    const char *envPathStr = std::getenv(envVarOverride);
-
-    std::string envPath{};
-    if (envPathStr) {
-        envPath = envPathStr;
-    }
-
+    std::string envPath = environment->getenv(envVarOverride);
     if (!envPath.empty()) {
-        logger->info("Path override provided: {}={}", envVarOverride, envPathStr);
+        logger->info("Path override provided: {}={}", envVarOverride, envPath);
         return envPath;
     }
 
     for (auto key : registryKeys) {
-        envPath = platform->winQueryRegistry(key);
+        envPath = environment->queryRegistry(key);
         if (!envPath.empty()) {
             return envPath;
         }

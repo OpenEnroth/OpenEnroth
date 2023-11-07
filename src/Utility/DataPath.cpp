@@ -39,8 +39,8 @@ static const std::vector<std::vector<std::string_view>> globalValidateList = {
     {"shaders", "gltwodshader.vert"}
 };
 
-void setDataPath(const std::string &data_path) {
-    globalDataPath = expandUserPath(data_path);
+void setDataPath(const std::filesystem::path &dataPath) {
+    globalDataPath = dataPath;
 }
 
 std::string makeDataPath(std::initializer_list<std::string_view> paths) {

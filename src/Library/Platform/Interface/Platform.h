@@ -136,21 +136,6 @@ class Platform {
      * @return                          Current value of a monotonic clock in milliseconds.
      */
     virtual int64_t tickCount() const = 0;
-
-    /**
-     * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
-     *
-     * @param path                      Registry path to query.
-     * @return                          Value at the given path, or an empty string in case of an error.
-     */
-    virtual std::string winQueryRegistry(const std::wstring &path) const = 0;
-
-    /**
-     * Get various application filesystem paths.
-     *
-     * @param type                      Storage type.
-     */
-    virtual std::string storagePath(const PlatformStorage type) const = 0;
 };
 
 /**
