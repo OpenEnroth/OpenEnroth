@@ -78,7 +78,7 @@ void GUIWindow_Tavern::arcomageVictoryCondDialogue() {
     dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    std::string label = pNPCTopics[wData.val + 247].pText;
+    std::string label = pNPCTopics[arcomageTopicForTavern(houseId())].pText;
     dialog_window.uFrameWidth = game_viewport_width;
     dialog_window.uFrameZ = 452;
     int pTextHeight = assets->pFontArrus->CalcTextHeight(label, dialog_window.uFrameWidth, 12) + 7;

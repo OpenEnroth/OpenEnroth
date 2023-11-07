@@ -1,7 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 
+#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 enum class GUILD_ID : int32_t {
@@ -647,6 +649,11 @@ inline bool isBoat(HouseId houseId) {
 
 inline bool isArcomageTavern(HouseId houseId) {
     return houseId >= HOUSE_FIRST_ARCOMAGE_TAVERN && houseId <= HOUSE_LAST_ARCOMAGE_TAVERN;
+}
+
+inline int arcomageTopicForTavern(HouseId houseId) {
+    assert(isArcomageTavern(houseId));
+    return std::to_underlying(houseId) - std::to_underlying(HOUSE_FIRST_ARCOMAGE_TAVERN) + 355;
 }
 
 enum class HouseSoundType : uint32_t {
