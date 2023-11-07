@@ -13,7 +13,7 @@
 
 #include "Io/KeyboardInputHandler.h"
 
-GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(WindowData data) : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions(), data) {
+GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EventType event) : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions(), WindowData()), _event(event) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(Io::TextInputType::Text, 15, this);
     current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
@@ -71,7 +71,7 @@ void GUIWindow_BranchlessDialogue::Update() {
         return;
     }
 
-    if (pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_InputString) {
+    if (pGUIWindow_BranchlessDialogue->event() == EVENT_InputString) {
         auto str = fmt::format("{} {}", GameUI_StatusBar_GetInput(), keyboardInputHandler->GetTextInput());
         pGUIWindow_BranchlessDialogue->DrawText(pFontLucida, {13, 357}, colorTable.White, str);
         pGUIWindow_BranchlessDialogue->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
@@ -100,7 +100,7 @@ void startBranchlessDialogue(int eventid, int entryline, EventType type) {
         savedEventID = eventid;
         savedEventStep = entryline;
         savedDecoration = activeLevelDecoration;
-        pGUIWindow_BranchlessDialogue = new GUIWindow_BranchlessDialogue((int)type);
+        pGUIWindow_BranchlessDialogue = new GUIWindow_BranchlessDialogue(type);
     }
 }
 

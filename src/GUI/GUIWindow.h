@@ -35,6 +35,7 @@ class GUIButton;
 class GUIWindow_House;
 class GUIWindow_Chest;
 class GUIWindow_MessageScroll;
+class GUIWindow_BranchlessDialogue;
 class Character;
 class NPCData;
 class GraphicsImage;
@@ -312,7 +313,7 @@ extern TargetedSpellUI *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pGameOverWindow;
 extern bool bGameOverWindowCheckExit;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
-extern GUIWindow *pGUIWindow_BranchlessDialogue;
+extern GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue;
 
 extern Color ui_mainmenu_copyright_color;
 extern Color ui_character_tooltip_header_default_color;

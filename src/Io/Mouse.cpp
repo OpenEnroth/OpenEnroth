@@ -261,7 +261,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
     if (current_screen_type == SCREEN_VIDEO || isHoldingMouseRightButton())
         return;
 
-    if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_PressAnyKey) {
+    if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->event() == EVENT_PressAnyKey) {
         releaseBranchlessDialogue();
         return;
     }

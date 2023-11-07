@@ -56,7 +56,7 @@ GUIWindow *ptr_507BC8;  // screen 19 - not used?
 TargetedSpellUI *pGUIWindow_CastTargetedSpell;
 GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 bool bGameOverWindowCheckExit{ false }; // TODO(pskelton): contain
-GUIWindow *pGUIWindow_BranchlessDialogue; // branchless dialougue
+GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue; // branchless dialougue
 
 enum WindowType current_character_screen_window;
 std::list<GUIWindow*> lWindowList;
