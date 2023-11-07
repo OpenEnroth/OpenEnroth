@@ -21,7 +21,7 @@
 
 int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
-    starter.config()->resetForTest();
+    EngineTraceStateAccessor::prepareForPlayback(starter.config()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
 
     starter.application()->get<EngineControlComponent>()->runControlRoutine([options, application = starter.application()] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.

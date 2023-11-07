@@ -3,6 +3,7 @@
 #include "Application/GameStarter.h"
 #include "Application/GameConfig.h"
 
+#include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 
@@ -38,7 +39,7 @@ int platformMain(int argc, char **argv) {
             return RUN_ALL_TESTS();
 
         GameStarter starter(opts);
-        starter.config()->resetForTest();
+        EngineTraceStateAccessor::prepareForPlayback(starter.config());
 
         int exitCode = 0;
         starter.application()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {

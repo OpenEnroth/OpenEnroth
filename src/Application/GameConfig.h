@@ -29,8 +29,6 @@ class GameConfig : public Config {
     GameConfig();
     ~GameConfig();
 
-    void resetForTest();
-
     using Bool = ConfigEntry<bool>;
     using Int = ConfigEntry<int>;
     using Float = ConfigEntry<float>;
