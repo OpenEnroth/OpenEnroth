@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3e59f3f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c921e5</span>
    </div>
   </td>
  </tr>
@@ -75,6 +75,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">UIDialogue.h File Reference</div></div>
@@ -89,6 +90,13 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__Dialogue.html">GUIWindow_Dialogue</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a7913c760eef3a9a5e8f39db31e1c1bc2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#a7913c760eef3a9a5e8f39db31e1c1bc2">DialogWindowType</a> { <a class="el" href="UIDialogue_8h.html#a7913c760eef3a9a5e8f39db31e1c1bc2ab1a45f67d50a75cf6d7877702e018892">DIALOG_WINDOW_HIRE_FIRE_SHORT</a> = 1
+, <a class="el" href="UIDialogue_8h.html#a7913c760eef3a9a5e8f39db31e1c1bc2ab96010ddb9513445a71d83f3a5f782b1">DIALOG_WINDOW_FULL</a> = 3
+ }</td></tr>
+<tr class="separator:a7913c760eef3a9a5e8f39db31e1c1bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ae4a1d939d9c971bf794d285125276b13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#ae4a1d939d9c971bf794d285125276b13">initializeNPCDialogue</a> (<a class="el" href="classActor.html">Actor</a> *actor, int bPlayerSaysHello)</td></tr>
@@ -101,6 +109,35 @@ Variables</h2></td></tr>
 <tr class="memitem:ae97887ee351409b4df1326cbd1ecc3f1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::string, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a138a01d401a68aab61b07b596bb532a7">PartyAlignment_Good</a>, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a5a3e1b0ba1793049451900a1e065630d">PartyAlignment_Evil</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#ae97887ee351409b4df1326cbd1ecc3f1">dialogueBackgroundResourceByAlignment</a></td></tr>
 <tr class="separator:ae97887ee351409b4df1326cbd1ecc3f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a7913c760eef3a9a5e8f39db31e1c1bc2" name="a7913c760eef3a9a5e8f39db31e1c1bc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7913c760eef3a9a5e8f39db31e1c1bc2">&#9670;&#160;</a></span>DialogWindowType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="UIDialogue_8h.html#a7913c760eef3a9a5e8f39db31e1c1bc2">DialogWindowType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7913c760eef3a9a5e8f39db31e1c1bc2ab1a45f67d50a75cf6d7877702e018892" name="a7913c760eef3a9a5e8f39db31e1c1bc2ab1a45f67d50a75cf6d7877702e018892"></a>DIALOG_WINDOW_HIRE_FIRE_SHORT&#160;</td><td class="fielddoc"><p >This one doesn't seem to be used on MM7, only creates the profession details &amp; hire/fire topics. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7913c760eef3a9a5e8f39db31e1c1bc2ab96010ddb9513445a71d83f3a5f782b1" name="a7913c760eef3a9a5e8f39db31e1c1bc2ab96010ddb9513445a71d83f3a5f782b1"></a>DIALOG_WINDOW_FULL&#160;</td><td class="fielddoc"><p >Creates all appropriate dialog options, including scripted ones. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ae4a1d939d9c971bf794d285125276b13" name="ae4a1d939d9c971bf794d285125276b13"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae4a1d939d9c971bf794d285125276b13">&#9670;&#160;</a></span>initializeNPCDialogue()</h2>
