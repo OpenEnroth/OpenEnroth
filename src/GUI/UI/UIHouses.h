@@ -85,7 +85,7 @@ class GUIWindow_House : public GUIWindow {
     }
 
     HouseId houseId() const {
-        return static_cast<HouseId>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
+        return _houseId;
     }
 
     DIALOGUE_TYPE getCurrentDialogue() const {
@@ -118,6 +118,7 @@ class GUIWindow_House : public GUIWindow {
  protected:
     void learnSkillsDialogue(Color selectColor);
 
+    HouseId _houseId = HOUSE_INVALID;
     DIALOGUE_TYPE _currentDialogue = DIALOGUE_NULL;
     int _savedButtonsNum{};
     bool _transactionPerformed = false;
