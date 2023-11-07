@@ -105,7 +105,11 @@ void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
     _bookButtonAction = action;
 }
 
+GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint) :
+    GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, WindowData(), hint),
+    _button(button)
+{}
+
 void GUIWindow_BooksButtonOverlay::Update() {
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameY / 640.0f, uFrameX / 480.0f, _button->vTextures[0]);
 }

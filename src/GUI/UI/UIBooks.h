@@ -72,10 +72,10 @@ class GUIWindow_Book : public GUIWindow {
 
 class GUIWindow_BooksButtonOverlay : public GUIWindow {
  public:
-    GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, button, hint)
-    {}
-    virtual ~GUIWindow_BooksButtonOverlay() {}
+    GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string());
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };

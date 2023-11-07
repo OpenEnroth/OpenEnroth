@@ -112,90 +112,111 @@ class GUIWindow {
 
 class OnButtonClick : public GUIWindow {
  public:
-    OnButtonClick(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, data, hint),
-        bPlaySound(play_sound)
+    OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string(), bool playSound = true) :
+        GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, WindowData(), hint),
+        _playSound(playSound),
+        _button(button)
     {}
-    virtual ~OnButtonClick() {}
 
     virtual void Update() override;
 
-    bool bPlaySound;
+ private:
+    bool _playSound = false;
+    GUIButton *_button = nullptr;
 };
 
 class OnButtonClick2 : public GUIWindow {
  public:
-    OnButtonClick2(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_PressedButton2, position, dimensions, data, hint),
-        bPlaySound(play_sound)
+    OnButtonClick2(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
+        GUIWindow(WINDOW_PressedButton2, position, dimensions, WindowData(), hint),
+        _playSound(play_sound),
+        _button(button)
     {}
-    virtual ~OnButtonClick2() {}
 
     virtual void Update() override;
 
-    bool bPlaySound;
+ private:
+    bool _playSound = false;
+    GUIButton *_button = nullptr;
 };
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string())
-        : GUIWindow(windowType, position, dimensions, data, hint) {
-    }
-
-    virtual ~OnButtonClick3() {}
+    OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(windowType, position, dimensions, WindowData(), hint),
+        _button(button)
+    {}
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };
 
 // something debug? not really sure, unused
 class OnButtonClick4 : public GUIWindow {
  public:
-    OnButtonClick4(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_59, position, dimensions, data, hint)
+    OnButtonClick4(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_59, position, dimensions, WindowData(), hint),
+        _button(button)
     {}
-    virtual ~OnButtonClick4() {}
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };
 
 class OnSaveLoad : public GUIWindow {
  public:
-    OnSaveLoad(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_SaveLoadBtn, position, dimensions, data, hint)
+    OnSaveLoad(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_SaveLoadBtn, position, dimensions, WindowData(), hint),
+        _button(button)
     {}
-    virtual ~OnSaveLoad() {}
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };
 
 class OnCancel : public GUIWindow {
  public:
-    OnCancel(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_GenericCancel, position, dimensions, data, hint)
+    OnCancel(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_GenericCancel, position, dimensions, WindowData(), hint),
+        _button(button)
     {}
-    virtual ~OnCancel() {}
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };
 
 class OnCancel2 : public GUIWindow {
  public:
-    OnCancel2(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_ExitCharacterWindow, position, dimensions, data, hint)
+    OnCancel2(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_ExitCharacterWindow, position, dimensions, WindowData(), hint),
+        _button(button)
     {}
-    virtual ~OnCancel2() {}
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };
 
 class OnCancel3 : public GUIWindow {
  public:
-    OnCancel3(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_LoadGame_CancelBtn, position, dimensions, data, hint)
+    OnCancel3(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_LoadGame_CancelBtn, position, dimensions, WindowData(), hint),
+        _button(button)
     {}
-    virtual ~OnCancel3() {}
 
     virtual void Update() override;
+
+ private:
+    GUIButton *_button = nullptr;
 };
 
 extern enum WindowType current_character_screen_window;
