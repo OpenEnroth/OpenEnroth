@@ -11,8 +11,6 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
-#include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 
@@ -22,12 +20,10 @@
 
 int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
+    EngineTraceStateAccessor::prepareForPlayback(starter.config()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
 
     starter.application()->get<EngineControlComponent>()->runControlRoutine([options, application = starter.application()] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.
-
-        EngineTraceStateAccessor::prepareForPlayback(engine->config.get()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
-        pAudioPlayer->UpdateVolumeFromConfig();
 
         EngineTraceSimplePlayer *player = application->get<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->get<EngineTraceRecorder>();
