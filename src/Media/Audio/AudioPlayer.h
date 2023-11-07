@@ -61,6 +61,7 @@ class AudioPlayer {
     virtual ~AudioPlayer();
 
     void Initialize();
+    void UpdateVolumeFromConfig();
 
     void LoadAudioSnd();
     bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);

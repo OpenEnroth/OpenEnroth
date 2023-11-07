@@ -561,13 +561,16 @@ void AudioPlayer::Initialize() {
     currentMusicTrack = MUSIC_Invalid;
     uMasterVolume = 127;
 
-    SetMasterVolume(engine->config->settings.SoundLevel.value());
-    SetVoiceVolume(engine->config->settings.VoiceLevel.value());
-    SetMusicVolume(engine->config->settings.MusicLevel.value());
-
+    UpdateVolumeFromConfig();
     LoadAudioSnd();
 
     bPlayerReady = true;
+}
+
+void AudioPlayer::UpdateVolumeFromConfig() {
+    SetMasterVolume(engine->config->settings.SoundLevel.value());
+    SetVoiceVolume(engine->config->settings.VoiceLevel.value());
+    SetMusicVolume(engine->config->settings.MusicLevel.value());
 }
 
 void PlayLevelMusic() {

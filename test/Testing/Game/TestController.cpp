@@ -2,15 +2,18 @@
 
 #include <utility>
 
-#include "Library/Platform/Application/PlatformApplication.h"
+#include "Application/GameKeyboardController.h"
 
 #include "Engine/Components/Trace/EngineTracePlayer.h"
+#include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 
-#include "Application/GameKeyboardController.h"
+#include "Media/Audio/AudioPlayer.h"
+
+#include "Library/Platform/Application/PlatformApplication.h"
 
 TestController::TestController(EngineController *controller, const std::string &testDataPath):
     _controller(controller),
@@ -45,13 +48,19 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 }
 
 void TestController::prepareForNextTest() {
-    engine->config->resetForTest();
     _tapeCallbacks.clear();
+    ::application->get<GameKeyboardController>()->reset();
 
-    // This is frame time for tests that are implemented by manually sending events from the test code.
+    // These two lines bring the game config into the same state as if a trace playback was started with an empty
+    // config patch. Mainly needed for tests that don't play back any traces.
+    EngineTraceStateAccessor::prepareForPlayback(engine->config.get());
+    EngineTraceStateAccessor::patchConfig(engine->config.get(), {});
+    pAudioPlayer->UpdateVolumeFromConfig();
+
+    // This is frame time for tests that don't play any traces and use TestController methods to control the game.
     // For such tests, frame time value is taken from config defaults.
     restart(engine->config->debug.TraceFrameTimeMs.value(), engine->config->debug.TraceRandomEngine.value());
-    ::application->get<GameKeyboardController>()->reset();
+
     _controller->goToMainMenu();
 }
 

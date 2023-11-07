@@ -24,16 +24,3 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RandomEngineType, CASE_INSENSITIVE, {
 
 GameConfig::GameConfig() = default;
 GameConfig::~GameConfig() = default;
-
-void GameConfig::resetForTest() {
-    RendererType rendererType = graphics.Renderer.value();
-    reset();
-    graphics.Renderer.setValue(rendererType); // TODO(captainurist): this is so questionable... Why not keep all other graphics settings then?
-
-    settings.MusicLevel.setValue(1);
-    settings.VoiceLevel.setValue(1);
-    settings.SoundLevel.setValue(1);
-    debug.NoVideo.setValue(true);
-    window.MouseGrab.setValue(false);
-    graphics.FPSLimit.setValue(0); // Unlimited
-}

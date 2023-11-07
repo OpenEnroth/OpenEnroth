@@ -36,7 +36,6 @@ int platformMain(int argc, char **argv) {
             return RUN_ALL_TESTS();
 
         GameStarter starter(opts);
-        starter.config()->resetForTest();
 
         int exitCode = 0;
         starter.application()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
