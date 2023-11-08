@@ -43,22 +43,26 @@ static constexpr PathResolutionConfig mm8Config = {
 };
 
 static std::vector<std::string> resolvePaths(Environment *environment, const PathResolutionConfig &config) {
+    // If we have a path override then it'll be the only path we'll check.
     std::string envPath = environment->getenv(config.overrideEnvKey);
     if (!envPath.empty()) {
         logger->info("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
-        return {envPath}; // Have path override => this is the only one we'll try.
+        return {envPath};
     }
 
     std::vector<std::string> result;
 
-    // Windows-specific.
+    // Otherwise we check PWD first.
+    result.push_back(".");
+
+    // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {
         std::string registryPath = environment->queryRegistry(registryKey);
         if (!registryPath.empty())
             result.push_back(registryPath);
     }
 
-    // Android-specific.
+    // ...Android storage paths on Android,...
     std::string externalPath = environment->path(PATH_ANDROID_STORAGE_EXTERNAL);
     if (!externalPath.empty())
         result.push_back(externalPath);
@@ -69,15 +73,12 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
 
-    // Mac-specific.
+    // ...or Library/Application Support in home on macOS.
 #ifdef __APPLE__
     std::string home = environment->path(PATH_HOME);
     if (!home.empty())
         result.push_back(home + "/Library/Application Support/OpenEnroth");
 #endif
-
-    // PWD.
-    result.push_back(".");
 
     return result;
 }
