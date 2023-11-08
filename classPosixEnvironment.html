@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c921e5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
    </div>
   </td>
  </tr>
@@ -136,6 +136,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Same as <code>std::getenv</code>, but takes &amp; returns UTF8-encoded keys and values on all platforms.</p>
+<p >Note that on Windows <code>std::getenv</code> doesn't switch to UTF8 even if <code><a class="el" href="classUnicodeCrt.html">UnicodeCrt</a></code> is used (aka <code>std::setlocale(LC_ALL, ".UTF-8")</code>).</p>
 <p >Returns an empty string for non-existent environment variables, and thus doesn't distinguish between empty and non-existent values (and you shouldn't, either).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -179,6 +180,7 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>UTF8-encoded path, or an empty string in case of an error. </dd></dl>
 
 <p>Implements <a class="el" href="classEnvironment.html#aa3c2af7add7e77bf12e6fdc3591ffb50">Environment</a>.</p>
 
@@ -210,11 +212,11 @@ Additional Inherited Members</h2></td></tr>
 <p >Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Registry path to query. </td></tr>
+    <tr><td class="paramname">path</td><td>UTF8-encoded registry path to query. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Value at the given path, or an empty string in case of an error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>UTF8-encoded value at the given path, or an empty string in case of an error. </dd></dl>
 
 <p>Implements <a class="el" href="classEnvironment.html#a0811fcfdd1d8af4062182e7a6eb4a79d">Environment</a>.</p>
 

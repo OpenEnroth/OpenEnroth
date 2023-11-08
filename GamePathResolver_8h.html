@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c921e5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
    </div>
   </td>
  </tr>
@@ -80,15 +80,16 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1f10500a08d4e1a1c8fe5df4b8bbdafa"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GamePathResolver_8h.html#a1f10500a08d4e1a1c8fe5df4b8bbdafa">resolveMm6Path</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment)</td></tr>
-<tr class="separator:a1f10500a08d4e1a1c8fe5df4b8bbdafa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fc864c5599b9b5e2a1daa0d6a6dd5fb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GamePathResolver_8h.html#a2fc864c5599b9b5e2a1daa0d6a6dd5fb">resolveMm7Path</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment)</td></tr>
-<tr class="separator:a2fc864c5599b9b5e2a1daa0d6a6dd5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76ca6c69f0aebf463239c6f154ee347e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GamePathResolver_8h.html#a76ca6c69f0aebf463239c6f154ee347e">resolveMm8Path</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment)</td></tr>
-<tr class="separator:a76ca6c69f0aebf463239c6f154ee347e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b4519d23cca15b078f4c61e4f2abb20"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GamePathResolver_8h.html#a0b4519d23cca15b078f4c61e4f2abb20">resolveMm6Paths</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment)</td></tr>
+<tr class="separator:a0b4519d23cca15b078f4c61e4f2abb20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace5d528f3a3778d3d994ae5a1f1eb6b5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GamePathResolver_8h.html#ace5d528f3a3778d3d994ae5a1f1eb6b5">resolveMm7Paths</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment)</td></tr>
+<tr class="separator:ace5d528f3a3778d3d994ae5a1f1eb6b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09aea2b6900e42019d53ca5426d885c2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GamePathResolver_8h.html#a09aea2b6900e42019d53ca5426d885c2">resolveMm8Paths</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment)</td></tr>
+<tr class="separator:a09aea2b6900e42019d53ca5426d885c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -100,14 +101,14 @@ Variables</h2></td></tr>
 <tr class="separator:a100ad5d6ef52b91dbcab6d0f659cf66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a1f10500a08d4e1a1c8fe5df4b8bbdafa" name="a1f10500a08d4e1a1c8fe5df4b8bbdafa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f10500a08d4e1a1c8fe5df4b8bbdafa">&#9670;&#160;</a></span>resolveMm6Path()</h2>
+<a id="a0b4519d23cca15b078f4c61e4f2abb20" name="a0b4519d23cca15b078f4c61e4f2abb20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b4519d23cca15b078f4c61e4f2abb20">&#9670;&#160;</a></span>resolveMm6Paths()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string resolveMm6Path </td>
+          <td class="memname">std::vector&lt; std::string &gt; resolveMm6Paths </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classEnvironment.html">Environment</a> *&#160;</td>
           <td class="paramname"><em>environment</em></td><td>)</td>
@@ -118,14 +119,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a2fc864c5599b9b5e2a1daa0d6a6dd5fb" name="a2fc864c5599b9b5e2a1daa0d6a6dd5fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2fc864c5599b9b5e2a1daa0d6a6dd5fb">&#9670;&#160;</a></span>resolveMm7Path()</h2>
+<a id="ace5d528f3a3778d3d994ae5a1f1eb6b5" name="ace5d528f3a3778d3d994ae5a1f1eb6b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace5d528f3a3778d3d994ae5a1f1eb6b5">&#9670;&#160;</a></span>resolveMm7Paths()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string resolveMm7Path </td>
+          <td class="memname">std::vector&lt; std::string &gt; resolveMm7Paths </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classEnvironment.html">Environment</a> *&#160;</td>
           <td class="paramname"><em>environment</em></td><td>)</td>
@@ -136,14 +137,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a76ca6c69f0aebf463239c6f154ee347e" name="a76ca6c69f0aebf463239c6f154ee347e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76ca6c69f0aebf463239c6f154ee347e">&#9670;&#160;</a></span>resolveMm8Path()</h2>
+<a id="a09aea2b6900e42019d53ca5426d885c2" name="a09aea2b6900e42019d53ca5426d885c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09aea2b6900e42019d53ca5426d885c2">&#9670;&#160;</a></span>resolveMm8Paths()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string resolveMm8Path </td>
+          <td class="memname">std::vector&lt; std::string &gt; resolveMm8Paths </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classEnvironment.html">Environment</a> *&#160;</td>
           <td class="paramname"><em>environment</em></td><td>)</td>

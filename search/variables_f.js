@@ -18,8 +18,8 @@ var searchData=
   ['opengles_15',['OpenGLES',['../RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef',1,'RenderOpenGL.cpp']]],
   ['opponent_5fmastery_16',['opponent_mastery',['../Arcomage_8cpp.html#a99f9dd8e7c666013c89a5dfc2adc6db0',1,'Arcomage.cpp']]],
   ['opponents_5fturn_17',['opponents_turn',['../Arcomage_8cpp.html#a0baedb8d9f104c2b021dfea21fc2ee8e',1,'Arcomage.cpp']]],
-  ['options_18',['options',['../classNullPlatformSharedState.html#a5dda0f5c1bbf5464166cae066965f700',1,'NullPlatformSharedState']]],
-  ['options_19',['Options',['../classGameConfig_1_1Gamepad.html#a2b168dd69901fbac93342c5eb53bccbe',1,'GameConfig::Gamepad::Options()'],['../classGameConfig_1_1Keybindings.html#a99c8c0f2bcd3fa18732ddc4e3c264761',1,'GameConfig::Keybindings::Options()']]],
+  ['options_18',['Options',['../classGameConfig_1_1Gamepad.html#a2b168dd69901fbac93342c5eb53bccbe',1,'GameConfig::Gamepad::Options()'],['../classGameConfig_1_1Keybindings.html#a99c8c0f2bcd3fa18732ddc4e3c264761',1,'GameConfig::Keybindings::Options()']]],
+  ['options_19',['options',['../classNullPlatformSharedState.html#a5dda0f5c1bbf5464166cae066965f700',1,'NullPlatformSharedState']]],
   ['options_5fmenu_5fskin_20',['options_menu_skin',['../UIGame_8h.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp'],['../UIGame_8cpp.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp']]],
   ['orangeyred_21',['OrangeyRed',['../classColorTable.html#ad3310ee3bf23f12ff7f0d711b3a7e0d1',1,'ColorTable']]],
   ['outbuildshader_22',['outbuildshader',['../classRenderOpenGL.html#a34f0647b67bd25cdcf85b4434cbbc72d',1,'RenderOpenGL']]],
@@ -34,10 +34,11 @@ var searchData=
   ['outdoor_5fno_5fwavy_5fwater_31',['outdoor_no_wavy_water',['../structODMRenderParams.html#a6827cf3b9a8b9bd0c1fad130b639280e',1,'ODMRenderParams']]],
   ['outputpresent_32',['outputPresent',['../RenderOpenGL_8cpp.html#afff3b3efd76e25649c87a86515ba4508',1,'outputPresent():&#160;RenderOpenGL.cpp'],['../RenderBase_8cpp.html#afff3b3efd76e25649c87a86515ba4508',1,'outputPresent():&#160;RenderBase.cpp']]],
   ['outputrender_33',['outputRender',['../RenderOpenGL_8cpp.html#af1f1163a9c8376b96a86751db3256db9',1,'outputRender():&#160;RenderOpenGL.cpp'],['../RenderBase_8cpp.html#af1f1163a9c8376b96a86751db3256db9',1,'outputRender():&#160;RenderBase.cpp']]],
-  ['overlayid_34',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
-  ['overlayid_35',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
+  ['overlayid_34',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
+  ['overlayid_35',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
   ['overlays_36',['overlays',['../structActiveOverlayList__MM7.html#a0adcd441f7eec0513d8d911cd19059d8',1,'ActiveOverlayList_MM7::overlays()'],['../structSaveGame__MM7.html#a7554f18d1fb01cec9dfdb1c2f37db998',1,'SaveGame_MM7::overlays()']]],
-  ['overrideskillvalue_37',['overrideSkillValue',['../structCastSpellInfo.html#aa690b1cd149dbb9b4d7135a51ecf895b',1,'CastSpellInfo']]],
-  ['overridesoundid_38',['overrideSoundId',['../structCastSpellInfo.html#a3d3ba4ed05ebcc46ae146d9dc17742e4',1,'CastSpellInfo']]],
-  ['ownitems_39',['ownItems',['../structPlayer__MM7.html#ae9d0dd7b371e0cc07448636882f11b92',1,'Player_MM7']]]
+  ['overrideenvkey_37',['overrideEnvKey',['../structPathResolutionConfig.html#a45e92dd17af160a1d30e491d9040b694',1,'PathResolutionConfig']]],
+  ['overrideskillvalue_38',['overrideSkillValue',['../structCastSpellInfo.html#aa690b1cd149dbb9b4d7135a51ecf895b',1,'CastSpellInfo']]],
+  ['overridesoundid_39',['overrideSoundId',['../structCastSpellInfo.html#a3d3ba4ed05ebcc46ae146d9dc17742e4',1,'CastSpellInfo']]],
+  ['ownitems_40',['ownItems',['../structPlayer__MM7.html#ae9d0dd7b371e0cc07448636882f11b92',1,'Player_MM7']]]
 ];

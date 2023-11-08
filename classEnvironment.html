@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c921e5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
    </div>
   </td>
  </tr>
@@ -106,7 +106,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a9ae706c0706a47452284c99594918ed6"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classEnvironment.html">Environment</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEnvironment.html#a9ae706c0706a47452284c99594918ed6">createStandardEnvironment</a> ()</td></tr>
 <tr class="separator:a9ae706c0706a47452284c99594918ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Base class akin to <code><a class="el" href="classPlatform.html">Platform</a></code> that provides an abstraction for the process's environment.</p>
+<p >All strings accepted by and returned from methods of this class are UTF8-encoded. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a16aa6c8ad5c6d60acd39ca9b1f7eee19" name="a16aa6c8ad5c6d60acd39ca9b1f7eee19"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16aa6c8ad5c6d60acd39ca9b1f7eee19">&#9670;&#160;</a></span>~Environment()</h2>
 
@@ -183,6 +186,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Same as <code>std::getenv</code>, but takes &amp; returns UTF8-encoded keys and values on all platforms.</p>
+<p >Note that on Windows <code>std::getenv</code> doesn't switch to UTF8 even if <code><a class="el" href="classUnicodeCrt.html">UnicodeCrt</a></code> is used (aka <code>std::setlocale(LC_ALL, ".UTF-8")</code>).</p>
 <p >Returns an empty string for non-existent environment variables, and thus doesn't distinguish between empty and non-existent values (and you shouldn't, either).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -226,6 +230,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>UTF8-encoded path, or an empty string in case of an error. </dd></dl>
 
 <p>Implemented in <a class="el" href="classAndroidEnvironment.html#a4ae63fb06a95fbba2a51d4385cc2f76a">AndroidEnvironment</a>, <a class="el" href="classPosixEnvironment.html#a0fe09a35eaf6ff1f1f4ec8c93fbb7cc7">PosixEnvironment</a>, and <a class="el" href="classWinEnvironment.html#a6daa360c4db4ed52e38ea0147646467c">WinEnvironment</a>.</p>
 
@@ -257,11 +262,11 @@ Static Public Member Functions</h2></td></tr>
 <p >Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Registry path to query. </td></tr>
+    <tr><td class="paramname">path</td><td>UTF8-encoded registry path to query. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Value at the given path, or an empty string in case of an error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>UTF8-encoded value at the given path, or an empty string in case of an error. </dd></dl>
 
 <p>Implemented in <a class="el" href="classAndroidEnvironment.html#a91593072ba23c3ab3c34c3f2abab45b9">AndroidEnvironment</a>, <a class="el" href="classPosixEnvironment.html#aa83d7bf780c03ce0b647eac609451df5">PosixEnvironment</a>, and <a class="el" href="classWinEnvironment.html#aa57af65555300ca3ea813f7d038595ea">WinEnvironment</a>.</p>
 
