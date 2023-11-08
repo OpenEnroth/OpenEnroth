@@ -29,7 +29,7 @@ class GameStarter {
     void run();
 
  private:
-    static void resolveDefaults(Environment *environment, GameStarterOptions* options);
+    static void resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger);
 
  private:
     GameStarterOptions _options;

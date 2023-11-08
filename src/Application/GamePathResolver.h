@@ -1,4 +1,7 @@
+#pragma once
+
 #include <string>
+#include <vector>
 
 class Environment;
 
@@ -6,6 +9,6 @@ constexpr char mm6PathOverrideKey[] = "OPENENROTH_MM6_PATH";
 constexpr char mm7PathOverrideKey[] = "OPENENROTH_MM7_PATH";
 constexpr char mm8PathOverrideKey[] = "OPENENROTH_MM8_PATH";
 
-std::string resolveMm6Path(Environment *environment);
-std::string resolveMm7Path(Environment *environment);
-std::string resolveMm8Path(Environment *environment);
+std::vector<std::string> resolveMm6Paths(Environment *environment);
+std::vector<std::string> resolveMm7Paths(Environment *environment);
+std::vector<std::string> resolveMm8Paths(Environment *environment);

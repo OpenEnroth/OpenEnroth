@@ -53,8 +53,7 @@ std::string makeDataPath(std::initializer_list<std::string_view> paths) {
     return makeCaseInsensitivePath(result).string();
 }
 
-bool validateDataPath(const std::string &data_path, std::string& missing_file) {
-    bool isGood = true;
+bool validateDataPath(const std::string &data_path, std::string *missing_file) {
     for (auto v : globalValidateList) {
         std::filesystem::path path = data_path;
         for (auto p : v) {
@@ -63,11 +62,10 @@ bool validateDataPath(const std::string &data_path, std::string& missing_file) {
         }
 
         if (!std::filesystem::exists(makeCaseInsensitivePath(path))) {
-            isGood = false;
-            missing_file = std::filesystem::absolute(path).string();
-            break;
+            *missing_file = std::filesystem::absolute(path).string();
+            return false;
         }
     }
 
-    return isGood;
+    return true;
 }

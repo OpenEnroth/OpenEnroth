@@ -3,6 +3,7 @@
 #include <utility>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 
@@ -14,6 +15,8 @@
 
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
+
+#include "Utility/DataPath.h"
 
 #include "GamePathResolver.h"
 #include "GameConfig.h"
@@ -37,7 +40,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     }
 
     // Init paths.
-    resolveDefaults(_environment.get(), &_options);
+    resolvePaths(_environment.get(), &_options, _logger.get());
 
     // Init config - needs data paths initialized.
     _config = std::make_shared<GameConfig>();
@@ -62,8 +65,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _logger->setSink(_defaultSink.get());
     _bufferSink->flush(_logger.get());
 
-    // Validate data paths.
-    initDataPath(_environment.get(), _platform.get(), _options.dataPath);
+    // Init global data path.
+    initDataPath(_platform.get(), _options.dataPath);
 
     // Create application & game.
     _application = std::make_unique<PlatformApplication>(_platform.get());
@@ -72,15 +75,35 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
 GameStarter::~GameStarter() = default;
 
-void GameStarter::resolveDefaults(Environment *environment, GameStarterOptions* options) {
-    if (options->dataPath.empty())
-        options->dataPath = resolveMm7Path(environment);
+void GameStarter::resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger) {
+    if (options->dataPath.empty()) {
+        std::vector<std::string> candidates = resolveMm7Paths(environment);
+        assert(!candidates.empty());
 
-    if (options->useConfig && options->configPath.empty()) {
-        options->configPath = "openenroth.ini";
-        if (!options->dataPath.empty())
-            options->configPath = options->dataPath + "/" + options->configPath;
+        if (candidates.size() > 1) {
+            for (int i = 0; i < candidates.size(); i++) {
+                std::string missingFile;
+                if (!std::filesystem::exists(candidates[i])) {
+                    logger->info("Data path candidate #{} ('{}') doesn't exist.", i + 1, candidates[i]);
+                } else if (!validateDataPath(candidates[i], &missingFile)) {
+                    logger->info("Data path candidate #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
+                } else {
+                    logger->info("Data path candidate #{} ('{}') is OK!", i + 1, candidates[i]);
+                    options->dataPath = candidates[i];
+                    break;
+                }
+            }
+        }
+
+        if (options->dataPath.empty()) // Only one candidate, or no valid candidates? Use the last one & re-check it later.
+            options->dataPath = candidates.back();
     }
+
+    assert(!options->dataPath.empty());
+    logger->info("Using data path '{}'.", options->dataPath);
+
+    if (options->useConfig && options->configPath.empty())
+        options->configPath = options->dataPath + "/openenroth.ini";
 }
 
 void GameStarter::run() {
