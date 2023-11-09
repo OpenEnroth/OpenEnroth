@@ -2,9 +2,10 @@
 
 #include <AL/al.h>
 
-#include "Library/Geometry/Vec.h"
+#include "Media/AudioDataSource.h"
+#include "Media/AudioSample.h"
 
-#include "Media/Media.h"
+#include "Library/Geometry/Vec.h"
 
 class AudioSample16 : public IAudioSample {
  public:

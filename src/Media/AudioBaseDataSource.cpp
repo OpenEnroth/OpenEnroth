@@ -1,0 +1,173 @@
+#include "AudioBaseDataSource.h"
+
+#include <utility>
+
+extern "C" {
+#include <libavcodec/avcodec.h> // NOLINT: not a C system header.
+#include <libavformat/avformat.h> // NOLINT: not a C system header.
+#include <libswresample/swresample.h> // NOLINT: not a C system header.
+}
+
+#include "Library/Logger/Logger.h"
+
+AudioBaseDataSource::AudioBaseDataSource() {
+    pFormatContext = nullptr;
+    iStreamIndex = -1;
+    pCodecContext = nullptr;
+    pConverter = nullptr;
+    bOpened = false;
+}
+
+bool AudioBaseDataSource::Open() {
+    // Retrieve stream information
+    if (avformat_find_stream_info(pFormatContext, nullptr) < 0) {
+        Close();
+        logger->warning("ffmpeg: Unable to find stream info");
+        return false;
+    }
+
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+    const AVCodec *codec = nullptr;
+#else
+    AVCodec *codec = nullptr;
+#endif
+    iStreamIndex = av_find_best_stream(pFormatContext, AVMEDIA_TYPE_AUDIO, -1,
+                                       -1, &codec, 0);
+    if (iStreamIndex < 0) {
+        Close();
+        logger->warning("ffmpeg: Unable to find audio stream");
+        return false;
+    }
+
+    AVStream *stream = pFormatContext->streams[iStreamIndex];
+    pCodecContext = avcodec_alloc_context3(codec);
+    if (pCodecContext == nullptr) {
+        Close();
+        return false;
+    }
+
+    if (avcodec_parameters_to_context(pCodecContext, stream->codecpar) < 0) {
+        Close();
+        return false;
+    }
+    if (avcodec_open2(pCodecContext, codec, nullptr) < 0) {
+        Close();
+        return false;
+    }
+
+    if (!pCodecContext->channel_layout) {
+        switch (pCodecContext->channels) {
+            case(1):
+                pCodecContext->channel_layout = AV_CH_LAYOUT_MONO;
+                break;
+            case(2):
+                pCodecContext->channel_layout = AV_CH_LAYOUT_STEREO;
+                break;
+            default:
+                assert(false);
+                break;
+        }
+    }
+
+    pConverter = swr_alloc_set_opts(
+        pConverter,
+        pCodecContext->channel_layout,
+        AV_SAMPLE_FMT_S16, pCodecContext->sample_rate,
+        pCodecContext->channel_layout,
+        pCodecContext->sample_fmt, pCodecContext->sample_rate, 0, nullptr);
+    if (swr_init(pConverter) < 0) {
+        Close();
+        logger->warning("ffmpeg: Failed to create converter");
+        return false;
+    }
+
+    bOpened = true;
+
+    return true;
+}
+
+void AudioBaseDataSource::Close() {
+    if (pConverter != nullptr) {
+        swr_free(&pConverter);
+        pConverter = nullptr;
+    }
+
+    if (pCodecContext) {
+        avcodec_close(pCodecContext);
+        pCodecContext = nullptr;
+    }
+
+    iStreamIndex = -1;
+
+    if (pFormatContext != nullptr) {
+        avformat_close_input(&pFormatContext);
+        pFormatContext = nullptr;
+    }
+
+    bOpened = false;
+}
+
+size_t AudioBaseDataSource::GetSampleRate() {
+    if (pCodecContext == nullptr) {
+        return 0;
+    }
+
+    return pCodecContext->sample_rate;
+}
+
+size_t AudioBaseDataSource::GetChannelCount() {
+    if (pCodecContext == nullptr) {
+        return 0;
+    }
+
+    return pCodecContext->channels;
+}
+
+std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
+    std::shared_ptr<Blob> buffer;
+
+    if (!queue.empty()) {
+        buffer = queue.front();
+        queue.pop();
+    }
+
+    AVPacket *packet = av_packet_alloc();
+
+    if (av_read_frame(pFormatContext, packet) >= 0) {
+        if (avcodec_send_packet(pCodecContext, packet) >= 0) {
+            std::shared_ptr<Blob> result;
+            AVFrame *frame = av_frame_alloc();
+            int res = 0;
+            while (res >= 0) {
+                res = avcodec_receive_frame(pCodecContext, frame);
+                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF) {
+                    break;
+                }
+                if (res < 0) {
+                    return buffer;
+                }
+                size_t tmp_size = frame->nb_samples * pCodecContext->channels * 2;
+                std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(tmp_size));
+                uint8_t *dst_channels[8] = { static_cast<uint8_t *>(tmp_buf.get()) };
+                int got_samples = swr_convert(
+                    pConverter, dst_channels, frame->nb_samples,
+                    (const uint8_t **)frame->data, frame->nb_samples);
+
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(std::move(tmp_buf), tmp_size));
+
+                if (got_samples > 0) {
+                    if (!buffer) {
+                        buffer = tmp_blob;
+                    } else {
+                        queue.push(tmp_blob);
+                    }
+                }
+            }
+            av_frame_free(&frame);
+        }
+    }
+
+    av_packet_free(&packet);
+
+    return buffer;
+}

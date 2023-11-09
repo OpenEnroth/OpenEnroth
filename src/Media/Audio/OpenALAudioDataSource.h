@@ -5,7 +5,7 @@
 
 #include <AL/al.h> // NOLINT: not a system C header.
 
-#include "Media/Media.h"
+#include "Media/AudioDataSource.h"
 
 // TODO(Nik-RE-dev): this middleware class is temporary because Media API is not fully
 // ready to properly support current use cases

@@ -4,7 +4,7 @@
 
 #include "Engine/Pid.h"
 
-#include "Media/Media.h"
+#include "Media/AudioSample.h"
 
 #include "SoundEnums.h"
 

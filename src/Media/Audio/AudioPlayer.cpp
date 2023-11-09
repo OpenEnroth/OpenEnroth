@@ -16,9 +16,9 @@
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
 
-#include "Media/Audio/OpenALSoundProvider.h"
-
 #include "GUI/GUIWindow.h"
+
+#include "Media/AudioBufferDataSource.h"
 
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
@@ -29,6 +29,7 @@
 #include "OpenALTrack16.h"
 #include "OpenALSample16.h"
 #include "OpenALAudioDataSource.h"
+#include "OpenALSoundProvider.h"
 
 std::unique_ptr<AudioPlayer> pAudioPlayer;
 

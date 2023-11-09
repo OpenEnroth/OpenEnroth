@@ -4,7 +4,7 @@
 
 #include <AL/al.h> // NOLINT: not a C system header.
 
-#include "Media/Media.h"
+#include "Media/AudioTrack.h"
 
 #include "OpenALUpdateThread.h"
 

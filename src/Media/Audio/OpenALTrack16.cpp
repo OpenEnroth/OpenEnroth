@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "Media/AudioFileDataSource.h"
+
 #include "Library/Logger/Logger.h"
 
 #include "OpenALSoundProvider.h"
