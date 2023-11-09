@@ -6,7 +6,6 @@
 #endif
 
 #include <cassert>
-#include <utility>
 
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 

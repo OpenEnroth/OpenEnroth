@@ -7,7 +7,6 @@
 #include "Utility/MapAccess.h"
 
 #include "SdlWindow.h"
-#include "SdlPlatform.h"
 #include "SdlLogSource.h"
 #include "SdlGamepad.h"
 
@@ -21,6 +20,7 @@ SdlPlatformSharedState::SdlPlatformSharedState(Logger *logger): _logger(logger) 
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
     assert(_windowById.empty()); // Platform should be destroyed after all windows.
+    assert(_eventLoopCount == 0); // And all event loops!
 }
 
 void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
@@ -55,6 +55,14 @@ std::vector<uint32_t> SdlPlatformSharedState::allWindowIds() const {
 SdlWindow *SdlPlatformSharedState::window(uint32_t id) const {
     assert(_windowById.contains(id));
     return valueOr(_windowById, id, nullptr);
+}
+
+void SdlPlatformSharedState::registerEventLoop(SdlEventLoop *) {
+    _eventLoopCount++;
+}
+
+void SdlPlatformSharedState::unregisterEventLoop(SdlEventLoop *) {
+    _eventLoopCount--;
 }
 
 void SdlPlatformSharedState::initializeGamepads() {
