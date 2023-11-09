@@ -30,7 +30,6 @@
 
 #include "SoundInfo.h"
 
-int sLastTrackLengthMS;
 std::unique_ptr<AudioPlayer> pAudioPlayer;
 SoundList *pSoundList;
 

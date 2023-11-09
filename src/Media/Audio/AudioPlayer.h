@@ -190,7 +190,6 @@ class SoundList {
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
 };
 
-extern int sLastTrackLengthMS;
 extern std::unique_ptr<AudioPlayer> pAudioPlayer;
 extern SoundList *pSoundList;
 

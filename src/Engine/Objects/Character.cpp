@@ -7324,7 +7324,9 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
         int expressionDuration = 0;
         if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
-                expressionDuration = (sLastTrackLengthMS << 7) / 1000;
+                // TODO(captainurist): #sound sLastTrackLengthMS wasn't set, so was dropped. Implement properly, right now
+                //                     this doesn't work.
+                expressionDuration = 1000; // Was (sLastTrackLengthMS << 7) / 1000;
             }
         }
         playEmotion(expression, expressionDuration);
