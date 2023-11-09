@@ -33,9 +33,10 @@
 std::unique_ptr<AudioPlayer> pAudioPlayer;
 SoundList *pSoundList;
 
-std::array<float, 10> pSoundVolumeLevels = {
-    {0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f, 0.5500000f,
-     0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
+static constexpr std::array<float, 10> pSoundVolumeLevels = {{
+    0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f,
+    0.5500000f, 0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f
+}};
 
 std::map<uint32_t, SoundInfo> mapSounds;
 

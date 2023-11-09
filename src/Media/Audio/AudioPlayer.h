@@ -193,6 +193,4 @@ class SoundList {
 extern std::unique_ptr<AudioPlayer> pAudioPlayer;
 extern SoundList *pSoundList;
 
-extern std::array<float, 10> pSoundVolumeLevels;
-
 void PlayLevelMusic();
