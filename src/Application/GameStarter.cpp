@@ -12,7 +12,6 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
 #include "Library/Logger/BufferLogSink.h"
-
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 
@@ -27,17 +26,10 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _environment = Environment::createStandardEnvironment();
 
     // Init logger.
-    _bufferSink = std::make_unique<BufferLogSink>();
-    _defaultSink = LogSink::createDefaultSink();
-    _logger = std::make_unique<Logger>(LOG_TRACE, _bufferSink.get());
+    _bufferLogSink = std::make_unique<BufferLogSink>();
+    _defaultLogSink = LogSink::createDefaultSink();
+    _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
-
-    // Create platform.
-    if (_options.headless) {
-        _platform = std::make_unique<NullPlatform>(NullPlatformOptions());
-    } else {
-        _platform = Platform::createStandardPlatform(_logger.get());
-    }
 
     // Init paths.
     resolvePaths(_environment.get(), &_options, _logger.get());
@@ -62,8 +54,15 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     } else {
         _logger->setLevel(_config->debug.LogLevel.value());
     }
-    _logger->setSink(_defaultSink.get());
-    _bufferSink->flush(_logger.get());
+    _logger->setSink(_defaultLogSink.get());
+    _bufferLogSink->flush(_logger.get());
+
+    // Create platform.
+    if (_options.headless) {
+        _platform = std::make_unique<NullPlatform>(NullPlatformOptions());
+    } else {
+        _platform = Platform::createStandardPlatform(_logger.get());
+    }
 
     // Init global data path.
     initDataPath(_platform.get(), _options.dataPath);
