@@ -21,7 +21,6 @@ typedef std::shared_ptr<IAudioDataSource> PAudioDataSource;
 
 PAudioDataSource CreateAudioFileDataSource(const std::string &file_name);
 PAudioDataSource CreateAudioBufferDataSource(Blob buffer);
-PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource);
 
 class IAudioTrack {
  public:
@@ -40,8 +39,6 @@ class IAudioTrack {
 };
 typedef std::shared_ptr<IAudioTrack> PAudioTrack;
 
-PAudioTrack CreateAudioTrack(const std::string &file_path);
-
 class IAudioSample {
  public:
     IAudioSample() {}
@@ -59,8 +56,6 @@ class IAudioSample {
     virtual bool SetPosition(float x, float y, float z, float max_dist) = 0;
 };
 typedef std::shared_ptr<IAudioSample> PAudioSample;
-
-PAudioSample CreateAudioSample();
 
 class IVideoDataSource {
  public:

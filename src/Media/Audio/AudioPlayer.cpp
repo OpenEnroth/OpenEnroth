@@ -26,6 +26,9 @@
 #include "Utility/DataPath.h"
 
 #include "SoundList.h"
+#include "OpenALTrack16.h"
+#include "OpenALSample16.h"
+#include "OpenALAudioDataSource.h"
 
 std::unique_ptr<AudioPlayer> pAudioPlayer;
 

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <al.h>
-#include <alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 
-#include <memory>
-#include <string>
+#include <cstdlib>
 
 // Sound attenuation factors
 constexpr float MAX_SOUND_DIST = 60000.0f;
@@ -53,3 +52,4 @@ class OpenALSoundProvider {
 
 // TODO(pskelton): contain?
 void setSourceDefaults(ALuint al_source);
+bool checkOpenALError();
