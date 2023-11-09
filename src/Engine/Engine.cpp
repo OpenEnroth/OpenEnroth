@@ -70,6 +70,7 @@
 #include "GUI/GUIMessageQueue.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/SoundList.h"
 #include "Media/MediaPlayer.h"
 
 #include "Io/Mouse.h"
@@ -758,6 +759,7 @@ void Engine::MM7_Initialize() {
     Blob sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : Blob();
     Blob sounds_mm8;
     Blob sounds_mm7 = engine->_gameResourceManager->getEventsFile("dsounds.bin");
+
     pSoundList = new SoundList;
     pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
 

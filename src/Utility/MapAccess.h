@@ -27,8 +27,8 @@ Value valueOr(const Map &map, const Key &key, const std::type_identity_t<Value> 
  * @return                              Pointer to the value for the provided key, or `nullptr` if the key was not
  *                                      found in the map.
  */
-template<class Map, class Key, class Value = typename Map::mapped_type>
-const Value *valuePtr(const Map &map, const Key &key) {
+template<class Map, class Key>
+auto *valuePtr(Map &&map, const Key &key) {
     auto pos = map.find(key);
     return pos == map.end() ? nullptr : &pos->second;
 }

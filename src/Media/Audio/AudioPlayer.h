@@ -1,20 +1,19 @@
 #pragma once
 
 #include <map>
-#include <unordered_set>
 #include <string>
 #include <memory>
 #include <list>
 
-#include "Utility/Workaround/ToUnderlying.h"
+#include "Engine/Pid.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+
+#include "Media/Media.h"
 
 #include "Utility/String.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
-#include "Media/Media.h"
-#include "Engine/Pid.h"
-#include "Engine/Spells/SpellEnums.h"
-#include "Engine/Objects/ActorEnums.h"
 
 #include "SoundEnums.h"
 
@@ -183,14 +182,6 @@ class AudioPlayer {
     PAudioSample _currentWalkingSample;
 };
 
-class SoundList {
- public:
-    inline SoundList() {}
-
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
-};
-
 extern std::unique_ptr<AudioPlayer> pAudioPlayer;
-extern SoundList *pSoundList;
 
 void PlayLevelMusic();
