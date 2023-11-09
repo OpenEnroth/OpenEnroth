@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(MEDIA_AUDIO_SOURCES
         AudioPlayer.cpp
+        AudioSamplePool.cpp
         OpenALSoundProvider.cpp
         SoundList.cpp)
 
 set(MEDIA_AUDIO_HEADERS
         AudioPlayer.h
+        AudioSamplePool.h
         OpenALSoundProvider.h
         SoundEnums.h
         SoundInfo.h
