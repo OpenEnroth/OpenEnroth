@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
    </div>
   </td>
  </tr>
@@ -108,7 +108,11 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Base class akin to <code><a class="el" href="classPlatform.html">Platform</a></code> that provides an abstraction for the process's environment.</p>
-<p >All strings accepted by and returned from methods of this class are UTF8-encoded. </p>
+<p >All strings accepted by and returned from methods of this class are UTF8-encoded.</p>
+<p >Why is this class not a part of <code><a class="el" href="classPlatform.html">Platform</a></code>? Mainly for the following reasons:</p><ul>
+<li><code><a class="el" href="classPlatform.html">Platform</a></code> handles an unrelated domain (UI and window management). Using a <code><a class="el" href="classNullPlatform.html">NullPlatform</a></code> while still relying on <code><a class="el" href="classEnvironment.html">Environment</a></code> working as usual looks like a perfectly valid use case.</li>
+<li>Posix and Windows <code><a class="el" href="classEnvironment.html">Environment</a></code> implementations don't depend on SDL, but if <code><a class="el" href="classEnvironment.html">Environment</a></code> was a part of <code><a class="el" href="classPlatform.html">Platform</a></code> then we'd still drag SDL with it (and into our unit tests). </li>
+</ul>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a16aa6c8ad5c6d60acd39ca9b1f7eee19" name="a16aa6c8ad5c6d60acd39ca9b1f7eee19"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16aa6c8ad5c6d60acd39ca9b1f7eee19">&#9670;&#160;</a></span>~Environment()</h2>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
    </div>
   </td>
  </tr>
@@ -74,115 +74,33 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">OpenALSoundProvider.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="OpenALSoundProvider_8h.html">Media/Audio/OpenALSoundProvider.h</a>&quot;</code><br />
-<code>#include &lt;AL/al.h&gt;</code><br />
-<code>#include &lt;AL/alc.h&gt;</code><br />
-<code>#include &lt;atomic&gt;</code><br />
-<code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;thread&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;functional&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="OpenALSoundProvider_8h.html">OpenALSoundProvider.h</a>&quot;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
-<code>#include &quot;<a class="el" href="MediaPlayer_8h.html">Media/MediaPlayer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Vec_8h.html">Library/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCallBackTimer.html">CallBackTimer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioTrackS16.html">AudioTrackS16</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenALAudioDataSource.html">OpenALAudioDataSource</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioSample16.html">AudioSample16</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aece65ae279d5009406167c5949cdf6e1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#aece65ae279d5009406167c5949cdf6e1">CheckError</a> ()</td></tr>
-<tr class="separator:aece65ae279d5009406167c5949cdf6e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca8a4cc48c0efbe5099cf0794ac6fcf1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#aca8a4cc48c0efbe5099cf0794ac6fcf1">checkOpenALError</a> ()</td></tr>
+<tr class="separator:aca8a4cc48c0efbe5099cf0794ac6fcf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7094ca22c2edbc29d5df2a7299a23d4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#a7094ca22c2edbc29d5df2a7299a23d4f">setSourceDefaults</a> (ALuint al_source)</td></tr>
 <tr class="separator:a7094ca22c2edbc29d5df2a7299a23d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ddf1ec6f0d8b6a95f35e17ae192b4d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#ae0744a89d3eaa9875de4dfc82c051b0b">PAudioTrack</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#a9ddf1ec6f0d8b6a95f35e17ae192b4d8">CreateAudioTrack</a> (const std::string &amp;file_path)</td></tr>
-<tr class="separator:a9ddf1ec6f0d8b6a95f35e17ae192b4d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea3dc662b7b3f044f09b61de32f6fd60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#aea3dc662b7b3f044f09b61de32f6fd60">PlatformDataSourceInitialize</a> (<a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a> baseDataSource)</td></tr>
-<tr class="separator:aea3dc662b7b3f044f09b61de32f6fd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1b3efcc069d60285e2142e60d15a1fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aec9137d201f9fdc6dc340ae7b19f86f8">PAudioSample</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#aa1b3efcc069d60285e2142e60d15a1fb">CreateAudioSample</a> ()</td></tr>
-<tr class="separator:aa1b3efcc069d60285e2142e60d15a1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aece65ae279d5009406167c5949cdf6e1" name="aece65ae279d5009406167c5949cdf6e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aece65ae279d5009406167c5949cdf6e1">&#9670;&#160;</a></span>CheckError()</h2>
+<a id="aca8a4cc48c0efbe5099cf0794ac6fcf1" name="aca8a4cc48c0efbe5099cf0794ac6fcf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca8a4cc48c0efbe5099cf0794ac6fcf1">&#9670;&#160;</a></span>checkOpenALError()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool CheckError </td>
+          <td class="memname">bool checkOpenALError </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa1b3efcc069d60285e2142e60d15a1fb" name="aa1b3efcc069d60285e2142e60d15a1fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1b3efcc069d60285e2142e60d15a1fb">&#9670;&#160;</a></span>CreateAudioSample()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Media_8h.html#aec9137d201f9fdc6dc340ae7b19f86f8">PAudioSample</a> CreateAudioSample </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9ddf1ec6f0d8b6a95f35e17ae192b4d8" name="a9ddf1ec6f0d8b6a95f35e17ae192b4d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ddf1ec6f0d8b6a95f35e17ae192b4d8">&#9670;&#160;</a></span>CreateAudioTrack()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Media_8h.html#ae0744a89d3eaa9875de4dfc82c051b0b">PAudioTrack</a> CreateAudioTrack </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>file_path</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aea3dc662b7b3f044f09b61de32f6fd60" name="aea3dc662b7b3f044f09b61de32f6fd60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea3dc662b7b3f044f09b61de32f6fd60">&#9670;&#160;</a></span>PlatformDataSourceInitialize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a> PlatformDataSourceInitialize </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a>&#160;</td>
-          <td class="paramname"><em>baseDataSource</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

@@ -83,7 +83,7 @@ var searchData=
   ['bringsshownincharscreen_80',['bRingsShownInCharScreen',['../UICharacter_8cpp.html#a4a292241ee4b93c3c47b7d2638b8ecf1',1,'UICharacter.cpp']]],
   ['brokenflags_81',['BrokenFlags',['../Serialization__ut_8cpp.html#afce6ca6a11d6b50ac877f10d07e10b1b',1,'Serialization_ut.cpp']]],
   ['brokenlod_82',['brokenLod',['../LodReader__ut_8cpp.html#a1fd14321ce0112d9fd8299d54e00fc47',1,'LodReader_ut.cpp']]],
-  ['brunning_83',['bRunning',['../classCallBackTimer.html#a4107bff9acb04cbe54be6cb944508faf',1,'CallBackTimer']]],
+  ['brunning_83',['bRunning',['../classOpenALUpdateThread.html#a02b99b2ddadaa7bed3691f8319a549ed',1,'OpenALUpdateThread']]],
   ['bspnodes_84',['bspNodes',['../structIndoorLocation__MM7.html#a8ddd0f1614f84247cbb4899ce19c001a',1,'IndoorLocation_MM7::bspNodes()'],['../structBSPModelExtras__MM7.html#a6a7d53ca6b734cd9057b99735533e926',1,'BSPModelExtras_MM7::bspNodes()']]],
   ['bspshader_85',['bspshader',['../classRenderOpenGL.html#a20578117043b8ef59c4aad4b6028f4db',1,'RenderOpenGL']]],
   ['bspshaderstore_86',['BSPshaderstore',['../RenderOpenGL_8cpp.html#adca9525e8e7d7b2a8cb410ce3a0aa019',1,'RenderOpenGL.cpp']]],

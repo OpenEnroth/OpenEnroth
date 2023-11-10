@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
    </div>
   </td>
  </tr>
@@ -81,31 +81,24 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;map&gt;</code><br />
-<code>#include &lt;unordered_set&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;list&gt;</code><br />
-<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="FileInputStream_8h.html">Utility/Streams/FileInputStream.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Media_8h.html">Media/Media.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Pid_8h.html">Engine/Pid.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellEnums_8h.html">Engine/Spells/SpellEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ActorEnums_8h.html">Engine/Objects/ActorEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AudioTrack_8h.html">Media/AudioTrack.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileInputStream_8h.html">Utility/Streams/FileInputStream.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SoundEnums_8h.html">SoundEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AudioSamplePool_8h.html">AudioSamplePool.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAudioSamplePoolEntry.html">AudioSamplePoolEntry</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html">AudioPlayer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAudioPlayer_1_1SoundHeader.html">AudioPlayer::SoundHeader</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSoundList.html">SoundList</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -115,14 +108,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:aae14636771c7eaca9a52b212649494ec"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AudioPlayer_8h.html#aae14636771c7eaca9a52b212649494ec">sLastTrackLengthMS</a></td></tr>
-<tr class="separator:aae14636771c7eaca9a52b212649494ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a075954d2d33c81e818dbe69e48ff75aa"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classAudioPlayer.html">AudioPlayer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AudioPlayer_8h.html#a075954d2d33c81e818dbe69e48ff75aa">pAudioPlayer</a></td></tr>
 <tr class="separator:a075954d2d33c81e818dbe69e48ff75aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad69469921c052e5df1d760da80a0139e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSoundList.html">SoundList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AudioPlayer_8h.html#ad69469921c052e5df1d760da80a0139e">pSoundList</a></td></tr>
-<tr class="separator:ad69469921c052e5df1d760da80a0139e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7511d5bb243d68d6e9216c71d021b7d3"><td class="memItemLeft" align="right" valign="top">std::array&lt; float, 10 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AudioPlayer_8h.html#a7511d5bb243d68d6e9216c71d021b7d3">pSoundVolumeLevels</a></td></tr>
-<tr class="separator:a7511d5bb243d68d6e9216c71d021b7d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a399a2dbccaebe8b1df3b23880a593470" name="a399a2dbccaebe8b1df3b23880a593470"></a>
@@ -154,72 +141,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classAudioPlayer.html">AudioPlayer</a>&gt; pAudioPlayer</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad69469921c052e5df1d760da80a0139e" name="ad69469921c052e5df1d760da80a0139e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad69469921c052e5df1d760da80a0139e">&#9670;&#160;</a></span>pSoundList</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classSoundList.html">SoundList</a>* pSoundList</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7511d5bb243d68d6e9216c71d021b7d3" name="a7511d5bb243d68d6e9216c71d021b7d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7511d5bb243d68d6e9216c71d021b7d3">&#9670;&#160;</a></span>pSoundVolumeLevels</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;float, 10&gt; pSoundVolumeLevels</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aae14636771c7eaca9a52b212649494ec" name="aae14636771c7eaca9a52b212649494ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae14636771c7eaca9a52b212649494ec">&#9670;&#160;</a></span>sLastTrackLengthMS</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int sLastTrackLengthMS</td>
         </tr>
       </table>
   </td>

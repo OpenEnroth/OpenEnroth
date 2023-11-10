@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
    </div>
   </td>
  </tr>
@@ -87,9 +87,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a36aac4b6e69a318e2dfd9d440fbeb95a"><td class="memTemplParams" colspan="2">template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </td></tr>
 <tr class="memitem:a36aac4b6e69a318e2dfd9d440fbeb95a"><td class="memTemplItemLeft" align="right" valign="top">Value&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a36aac4b6e69a318e2dfd9d440fbeb95a">valueOr</a> (const Map &amp;map, const Key &amp;key, const std::type_identity_t&lt; Value &gt; &amp;def=Value())</td></tr>
 <tr class="separator:a36aac4b6e69a318e2dfd9d440fbeb95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97091bc461ab7fd9e0c93b33c6c3b31f"><td class="memTemplParams" colspan="2">template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </td></tr>
-<tr class="memitem:a97091bc461ab7fd9e0c93b33c6c3b31f"><td class="memTemplItemLeft" align="right" valign="top">const Value *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a97091bc461ab7fd9e0c93b33c6c3b31f">valuePtr</a> (const Map &amp;map, const Key &amp;key)</td></tr>
-<tr class="separator:a97091bc461ab7fd9e0c93b33c6c3b31f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad016f215ef0c0b70b0c3c3c23a385cd6"><td class="memTemplParams" colspan="2">template&lt;class Map , class Key &gt; </td></tr>
+<tr class="memitem:ad016f215ef0c0b70b0c3c3c23a385cd6"><td class="memTemplItemLeft" align="right" valign="top">auto *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#ad016f215ef0c0b70b0c3c3c23a385cd6">valuePtr</a> (Map &amp;&amp;map, const Key &amp;key)</td></tr>
+<tr class="separator:ad016f215ef0c0b70b0c3c3c23a385cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2aed0bc8463ae11d4e4926066c245f8d"><td class="memTemplParams" colspan="2">template&lt;class Key , class Value &gt; </td></tr>
 <tr class="memitem:a2aed0bc8463ae11d4e4926066c245f8d"><td class="memTemplItemLeft" align="right" valign="top">std::unordered_map&lt; Value, Key &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a2aed0bc8463ae11d4e4926066c245f8d">inverted</a> (const std::unordered_map&lt; Key, Value &gt; &amp;map)</td></tr>
 <tr class="separator:a2aed0bc8463ae11d4e4926066c245f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -170,18 +170,18 @@ template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt;
 
 </div>
 </div>
-<a id="a97091bc461ab7fd9e0c93b33c6c3b31f" name="a97091bc461ab7fd9e0c93b33c6c3b31f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97091bc461ab7fd9e0c93b33c6c3b31f">&#9670;&#160;</a></span>valuePtr()</h2>
+<a id="ad016f215ef0c0b70b0c3c3c23a385cd6" name="ad016f215ef0c0b70b0c3c3c23a385cd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad016f215ef0c0b70b0c3c3c23a385cd6">&#9670;&#160;</a></span>valuePtr()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </div>
+template&lt;class Map , class Key &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const Value * valuePtr </td>
+          <td class="memname">auto * valuePtr </td>
           <td>(</td>
-          <td class="paramtype">const Map &amp;&#160;</td>
+          <td class="paramtype">Map &amp;&amp;&#160;</td>
           <td class="paramname"><em>map</em>, </td>
         </tr>
         <tr>

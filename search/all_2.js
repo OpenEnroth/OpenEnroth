@@ -190,7 +190,7 @@ var searchData=
   ['brokenflag0_187',['BrokenFlag0',['../Serialization__ut_8cpp.html#a7987e7e08e4d6b79c4ca1f1f0a8a18dc',1,'Serialization_ut.cpp']]],
   ['brokenflags_188',['BrokenFlags',['../Serialization__ut_8cpp.html#afce6ca6a11d6b50ac877f10d07e10b1b',1,'Serialization_ut.cpp']]],
   ['brokenlod_189',['brokenLod',['../LodReader__ut_8cpp.html#a1fd14321ce0112d9fd8299d54e00fc47',1,'LodReader_ut.cpp']]],
-  ['brunning_190',['bRunning',['../classCallBackTimer.html#a4107bff9acb04cbe54be6cb944508faf',1,'CallBackTimer']]],
+  ['brunning_190',['bRunning',['../classOpenALUpdateThread.html#a02b99b2ddadaa7bed3691f8319a549ed',1,'OpenALUpdateThread']]],
   ['bs_5fget_5fbuffer_191',['bs_get_buffer',['../PCX_8cpp.html#a84332e8cfe678afb584536b1ba120146',1,'PCX.cpp']]],
   ['bs_5fget_5fbyte_192',['bs_get_byte',['../PCX_8cpp.html#aa395c0fc990a9d8298139a3ffe4a3eef',1,'PCX.cpp']]],
   ['bs_5fget_5fbytes_5fleft_193',['bs_get_bytes_left',['../PCX_8cpp.html#a76bcefa1c68c148388913330ed505ce7',1,'PCX.cpp']]],

@@ -38,10 +38,9 @@ var searchData=
   ['audiosample16_35',['AudioSample16',['../classAudioSample16.html',1,'']]],
   ['audiosamplepool_36',['AudioSamplePool',['../classAudioSamplePool.html',1,'']]],
   ['audiosamplepoolentry_37',['AudioSamplePoolEntry',['../structAudioSamplePoolEntry.html',1,'']]],
-  ['audiotracks16_38',['AudioTrackS16',['../classAudioTrackS16.html',1,'']]],
-  ['autonote_39',['Autonote',['../structAutonote.html',1,'']]],
-  ['avaudiostream_40',['AVAudioStream',['../classAVAudioStream.html',1,'']]],
-  ['avstreamwrapper_41',['AVStreamWrapper',['../classAVStreamWrapper.html',1,'']]],
-  ['avvideostream_42',['AVVideoStream',['../classAVVideoStream.html',1,'']]],
-  ['award_43',['Award',['../structAward.html',1,'']]]
+  ['autonote_38',['Autonote',['../structAutonote.html',1,'']]],
+  ['avaudiostream_39',['AVAudioStream',['../classAVAudioStream.html',1,'']]],
+  ['avstreamwrapper_40',['AVStreamWrapper',['../classAVStreamWrapper.html',1,'']]],
+  ['avvideostream_41',['AVVideoStream',['../classAVVideoStream.html',1,'']]],
+  ['award_42',['Award',['../structAward.html',1,'']]]
 ];

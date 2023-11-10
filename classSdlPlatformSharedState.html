@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;663b6d6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
    </div>
   </td>
  </tr>
@@ -99,6 +99,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ada922bb90deaa9811dea1a98fc7715f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f975d2b8f08e301486d2162304318eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSdlWindow.html">SdlWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a5f975d2b8f08e301486d2162304318eb">window</a> (uint32_t id) const</td></tr>
 <tr class="separator:a5f975d2b8f08e301486d2162304318eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4616375a47712b673090d009fee2cb29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a4616375a47712b673090d009fee2cb29">registerEventLoop</a> (<a class="el" href="classSdlEventLoop.html">SdlEventLoop</a> *<a class="el" href="EngineGlobals_8cpp.html#ad986580fda05376f9e6d9f24448f333a">eventLoop</a>)</td></tr>
+<tr class="separator:a4616375a47712b673090d009fee2cb29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69013dbccb7518989a47764f443b5fb8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a69013dbccb7518989a47764f443b5fb8">unregisterEventLoop</a> (<a class="el" href="classSdlEventLoop.html">SdlEventLoop</a> *<a class="el" href="EngineGlobals_8cpp.html#ad986580fda05376f9e6d9f24448f333a">eventLoop</a>)</td></tr>
+<tr class="separator:a69013dbccb7518989a47764f443b5fb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96e0865302658f0db75df2590ee43680"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a96e0865302658f0db75df2590ee43680">initializeGamepads</a> ()</td></tr>
 <tr class="separator:a96e0865302658f0db75df2590ee43680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a2d920819bea31687ca2c97a4ff2bd4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSdlGamepad.html">SdlGamepad</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a7a2d920819bea31687ca2c97a4ff2bd4">initializeGamepad</a> (int gamepadId)</td></tr>
@@ -118,6 +122,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a1b4897ab03bfb25e0d09e7dd48ce7072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46433640c377101c631d15e91a57b4cb"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; SDL_JoystickID, std::unique_ptr&lt; <a class="el" href="classSdlGamepad.html">SdlGamepad</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a46433640c377101c631d15e91a57b4cb">_gamepadById</a></td></tr>
 <tr class="separator:a46433640c377101c631d15e91a57b4cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa92688fdb1f5f0a821e57d6cd6964c47"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#aa92688fdb1f5f0a821e57d6cd6964c47">_eventLoopCount</a> = 0</td></tr>
+<tr class="separator:aa92688fdb1f5f0a821e57d6cd6964c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a36f08e479df66e30b767042ea82a3773" name="a36f08e479df66e30b767042ea82a3773"></a>
@@ -321,6 +327,24 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a4616375a47712b673090d009fee2cb29" name="a4616375a47712b673090d009fee2cb29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4616375a47712b673090d009fee2cb29">&#9670;&#160;</a></span>registerEventLoop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlPlatformSharedState::registerEventLoop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSdlEventLoop.html">SdlEventLoop</a> *&#160;</td>
+          <td class="paramname"><em>eventLoop</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a793dc108d1f2c553fbc269cc7f872816" name="a793dc108d1f2c553fbc269cc7f872816"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a793dc108d1f2c553fbc269cc7f872816">&#9670;&#160;</a></span>registerWindow()</h2>
 
@@ -332,6 +356,24 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classSdlWindow.html">SdlWindow</a> *&#160;</td>
           <td class="paramname"><em>window</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a69013dbccb7518989a47764f443b5fb8" name="a69013dbccb7518989a47764f443b5fb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69013dbccb7518989a47764f443b5fb8">&#9670;&#160;</a></span>unregisterEventLoop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlPlatformSharedState::unregisterEventLoop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSdlEventLoop.html">SdlEventLoop</a> *&#160;</td>
+          <td class="paramname"><em>eventLoop</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -376,6 +418,28 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="aa92688fdb1f5f0a821e57d6cd6964c47" name="aa92688fdb1f5f0a821e57d6cd6964c47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa92688fdb1f5f0a821e57d6cd6964c47">&#9670;&#160;</a></span>_eventLoopCount</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t SdlPlatformSharedState::_eventLoopCount = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a46433640c377101c631d15e91a57b4cb" name="a46433640c377101c631d15e91a57b4cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a46433640c377101c631d15e91a57b4cb">&#9670;&#160;</a></span>_gamepadById</h2>
 
