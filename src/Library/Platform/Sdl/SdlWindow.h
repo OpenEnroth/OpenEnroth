@@ -54,5 +54,5 @@ class SdlWindow : public PlatformWindow {
  private:
     SdlPlatformSharedState *_state = nullptr;
     SDL_Window *_window = nullptr;
-    uint32_t _id = 0;
+    uint32_t _id = 0; // SDL window id, see SDL_GetWindowID.
 };

@@ -4,9 +4,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include <utility>
 #include <vector>
-#include <unordered_map>
 
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 #include "Library/Platform/Interface/PlatformEnums.h"
@@ -16,15 +14,17 @@
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
-#include "SdlLogSource.h"
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
 
 SdlEventLoop::SdlEventLoop(SdlPlatformSharedState *state): _state(state) {
     assert(state);
+    _state->registerEventLoop(this);
 }
 
-SdlEventLoop::~SdlEventLoop() {}
+SdlEventLoop::~SdlEventLoop() {
+    _state->unregisterEventLoop(this);
+}
 
 void SdlEventLoop::exec(PlatformEventHandler *eventHandler) {
     assert(eventHandler);

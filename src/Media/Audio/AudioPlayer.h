@@ -1,51 +1,22 @@
 #pragma once
 
 #include <map>
-#include <unordered_set>
 #include <string>
 #include <memory>
 #include <list>
 
-#include "Utility/Workaround/ToUnderlying.h"
-
-#include "Utility/String.h"
-#include "Utility/Memory/Blob.h"
-#include "Utility/Streams/FileInputStream.h"
-#include "Media/Media.h"
 #include "Engine/Pid.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 
+#include "Media/AudioTrack.h"
+
+#include "Utility/String.h"
+#include "Utility/Memory/Blob.h"
+#include "Utility/Streams/FileInputStream.h"
+
 #include "SoundEnums.h"
-
-struct AudioSamplePoolEntry {
-    AudioSamplePoolEntry(PAudioSample samplePtr, SoundID id, Pid pid) : samplePtr(samplePtr), id(id), pid(pid) {}
-
-    PAudioSample samplePtr;
-    SoundID id;
-    Pid pid;
-};
-
-class AudioSamplePool {
- public:
-    explicit AudioSamplePool(bool looping):_looping(looping) {}
-
-    bool playNew(PAudioSample sample, PAudioDataSource source, bool positional = false);
-    bool playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundID id, bool positional = false);
-    bool playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional = false);
-    void pause();
-    void resume();
-    void stop();
-    void stopSoundId(SoundID soundId);
-    void stopPid(Pid pid);
-    void update();
-    void setVolume(float value);
-    bool hasPlaying();
- private:
-    std::list<AudioSamplePoolEntry> _samplePool;
-    bool _looping;
-};
-
+#include "AudioSamplePool.h"
 
 class AudioPlayer {
  protected:
@@ -183,17 +154,6 @@ class AudioPlayer {
     PAudioSample _currentWalkingSample;
 };
 
-class SoundList {
- public:
-    inline SoundList() {}
-
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
-};
-
-extern int sLastTrackLengthMS;
 extern std::unique_ptr<AudioPlayer> pAudioPlayer;
-extern SoundList *pSoundList;
-
-extern std::array<float, 10> pSoundVolumeLevels;
 
 void PlayLevelMusic();

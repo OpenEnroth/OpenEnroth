@@ -7,7 +7,6 @@
 #include "Utility/MapAccess.h"
 
 #include "SdlWindow.h"
-#include "SdlPlatform.h"
 #include "SdlLogSource.h"
 #include "SdlGamepad.h"
 
@@ -21,10 +20,14 @@ SdlPlatformSharedState::SdlPlatformSharedState(Logger *logger): _logger(logger) 
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
     assert(_windowById.empty()); // Platform should be destroyed after all windows.
+    assert(_eventLoopCount == 0); // And all event loops!
 }
 
 void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
-    _logger->error(globalSdlLogCategory, "SDL error in {}: {}", sdlFunctionName, SDL_GetError());
+    const char *errorMessage = SDL_GetError();
+    if (!errorMessage || *errorMessage == '\0') // Not sure if SDL_GetError can return nullptr, but it definitely can return an empty string.
+        errorMessage = "No error";
+    _logger->error(globalSdlLogCategory, "SDL error in {}: {}", sdlFunctionName, errorMessage);
 }
 
 const LogCategory &SdlPlatformSharedState::logCategory() const {
@@ -55,6 +58,14 @@ std::vector<uint32_t> SdlPlatformSharedState::allWindowIds() const {
 SdlWindow *SdlPlatformSharedState::window(uint32_t id) const {
     assert(_windowById.contains(id));
     return valueOr(_windowById, id, nullptr);
+}
+
+void SdlPlatformSharedState::registerEventLoop(SdlEventLoop *) {
+    _eventLoopCount++;
+}
+
+void SdlPlatformSharedState::unregisterEventLoop(SdlEventLoop *) {
+    _eventLoopCount--;
 }
 
 void SdlPlatformSharedState::initializeGamepads() {

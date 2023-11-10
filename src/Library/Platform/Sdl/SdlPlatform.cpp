@@ -4,7 +4,6 @@
 
 #include <cassert>
 #include <memory>
-#include <utility>
 
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 
@@ -43,6 +42,7 @@ SdlPlatform::SdlPlatform(Logger *logger) {
 
 SdlPlatform::~SdlPlatform() {
     SDL_Quit(); // Safe to call even if there were errors in initialization.
+    _state.reset(); // Shared state destructor asserts that all windows & event loops are destroyed.
 }
 
 std::unique_ptr<PlatformWindow> SdlPlatform::createWindow() {
@@ -130,10 +130,14 @@ std::vector<Recti> SdlPlatform::displayGeometries() const {
 }
 
 void SdlPlatform::showMessageBox(const std::string &title, const std::string &message) const {
+    // No need to check _initialized here. From SDL docs:
+    //     This function may be called at any time, even before SDL_Init()
     SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
 }
 
 int64_t SdlPlatform::tickCount() const {
+    // No need to check _initialized here either.
+    // Looking at implementation in SDL, this function works even w/o a call to SDL_Init.
     return SDL_GetTicks64();
 }
 

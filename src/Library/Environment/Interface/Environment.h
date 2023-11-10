@@ -9,6 +9,12 @@
  * Base class akin to `Platform` that provides an abstraction for the process's environment.
  *
  * All strings accepted by and returned from methods of this class are UTF8-encoded.
+ *
+ * Why is this class not a part of `Platform`? Mainly for the following reasons:
+ * - `Platform` handles an unrelated domain (UI and window management). Using a `NullPlatform` while still relying on
+ *   `Environment` working as usual looks like a perfectly valid use case.
+ * - Posix and Windows `Environment` implementations don't depend on SDL, but if `Environment` was a part of `Platform`
+ *   then we'd still drag SDL with it (and into our unit tests).
  */
 class Environment {
  public:

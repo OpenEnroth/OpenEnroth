@@ -5,7 +5,6 @@
 #include <string>
 #include <filesystem>
 #include <utility>
-#include <vector>
 #include <thread>
 
 #include "Engine/Graphics/Indoor.h"
@@ -14,57 +13,47 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
 
-#include "Media/Audio/OpenALSoundProvider.h"
-
 #include "GUI/GUIWindow.h"
 
-#include "Library/Snapshots/SnapshotSerialization.h"
+#include "Media/AudioBufferDataSource.h"
+
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/DataPath.h"
 
-#include "SoundInfo.h"
+#include "SoundList.h"
+#include "OpenALTrack16.h"
+#include "OpenALSample16.h"
+#include "OpenALAudioDataSource.h"
+#include "OpenALSoundProvider.h"
 
-int sLastTrackLengthMS;
 std::unique_ptr<AudioPlayer> pAudioPlayer;
-SoundList *pSoundList;
 
-std::array<float, 10> pSoundVolumeLevels = {
-    {0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f, 0.5500000f,
-     0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
-
-std::map<uint32_t, SoundInfo> mapSounds;
+static constexpr std::array<float, 10> pSoundVolumeLevels = {{
+    0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f,
+    0.5500000f, 0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f
+}};
 
 constexpr Pid FAKE_HOUSE_DOOR_PID = Pid::fromPacked(-7);
 constexpr Pid FAKE_HOUSE_SPEECH_PID = Pid::fromPacked(-6);
 
-void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    std::vector<SoundInfo> sounds;
-
-    if (data_mm6)
-        deserialize(data_mm6, &sounds, tags::append, tags::via<SoundInfo_MM6>);
-    if (data_mm7)
-        deserialize(data_mm7, &sounds, tags::append, tags::via<SoundInfo_MM7>);
-    if (data_mm8)
-        deserialize(data_mm8, &sounds, tags::append, tags::via<SoundInfo_MM7>);
-
-    assert(!sounds.empty());
-
-    for (const SoundInfo &sound : sounds)
-        mapSounds[sound.uSoundID] = sound;
-}
-
 extern OpenALSoundProvider *provider;
 
-AudioPlayer::~AudioPlayer() {
-    // TODO(captainurist): actually get rid of this global
-    mapSounds.clear();
-}
+// TODO(captainurist): doesn't belong here
+#pragma pack(push, 1)
+struct SoundHeader_mm7 {
+    char pSoundName[40];
+    uint32_t uFileOffset;
+    uint32_t uCompressedSize;
+    uint32_t uDecompressedSize;
+};
+#pragma pack(pop)
+
+AudioPlayer::~AudioPlayer() = default;
 
 void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
     if (currentMusicTrack == eTrack) {
@@ -217,36 +206,36 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
         return;
     }
 
-    if (mapSounds.find(eSoundID) == mapSounds.end()) {
+    SoundInfo *si = pSoundList->soundInfo(eSoundID);
+    if (!si) {
         logger->warning("AudioPlayer: sound id {} not found", eSoundID);
         return;
     }
 
-    SoundInfo &si = mapSounds[eSoundID];
     //logger->Info("AudioPlayer: sound id {} found as '{}'", eSoundID, si.sName);
 
-    if (!si.dataSource) {
+    if (!si->dataSource) {
         Blob buffer;
 
-        if (si.sName == "") {  // enable this for bonus sound effects
+        if (si->sName == "") {  // enable this for bonus sound effects
             //logger->Info("AudioPlayer: trying to load bonus sound {}", eSoundID);
             //buffer = LoadSound(int(eSoundID));
         } else {
-            buffer = LoadSound(si.sName);
+            buffer = LoadSound(si->sName);
         }
 
         if (!buffer) {
-            logger->warning("AudioPlayer: failed to load sound {} ({})", eSoundID, si.sName);
+            logger->warning("AudioPlayer: failed to load sound {} ({})", eSoundID, si->sName);
             return;
         }
 
-        si.dataSource = CreateAudioBufferDataSource(std::move(buffer));
-        if (!si.dataSource) {
-            logger->warning("AudioPlayer: failed to create sound data source {} ({})", eSoundID, si.sName);
+        si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
+        if (!si->dataSource) {
+            logger->warning("AudioPlayer: failed to create sound data source {} ({})", eSoundID, si->sName);
             return;
         }
 
-        si.dataSource = PlatformDataSourceInitialize(si.dataSource);
+        si->dataSource = PlatformDataSourceInitialize(si->dataSource);
     }
 
     PAudioSample sample = CreateAudioSample();
@@ -255,31 +244,31 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
     sample->SetVolume(uMasterVolume);
 
     if (mode == SOUND_MODE_UI) {
-        result = _regularSoundPool.playNew(sample, si.dataSource);
+        result = _regularSoundPool.playNew(sample, si->dataSource);
     } else if (mode == SOUND_MODE_EXCLUSIVE) {
         _regularSoundPool.stopSoundId(eSoundID);
-        result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
+        result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID);
     } else if (mode == SOUND_MODE_NON_RESETTABLE) {
-        result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
+        result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID);
     } else if (mode == SOUND_MODE_WALKING) {
         if (_currentWalkingSample) {
             _currentWalkingSample->Stop();
         }
         _currentWalkingSample = sample;
-        _currentWalkingSample->Open(si.dataSource);
+        _currentWalkingSample->Open(si->dataSource);
         _currentWalkingSample->Play();
     } else if (mode == SOUND_MODE_MUSIC) {
         sample->SetVolume(uMusicVolume);
         _regularSoundPool.stopSoundId(eSoundID);
-        result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
+        result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID);
     } else if (mode == SOUND_MODE_SPEECH) {
         sample->SetVolume(uVoiceVolume);
         _regularSoundPool.stopSoundId(eSoundID);
-        result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
+        result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID);
     } else if (mode == SOUND_MODE_HOUSE_DOOR || mode == SOUND_MODE_HOUSE_SPEECH) {
         pid = mode == SOUND_MODE_HOUSE_DOOR ? FAKE_HOUSE_DOOR_PID : FAKE_HOUSE_SPEECH_PID;
         _regularSoundPool.stopPid(pid);
-        _regularSoundPool.playUniquePid(sample, si.dataSource, pid);
+        _regularSoundPool.playUniquePid(sample, si->dataSource, pid);
     } else {
         assert(pid);
 
@@ -294,14 +283,14 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pIndoor->pDoors[object_id].pYOffsets[0],
                                     pIndoor->pDoors[object_id].pZOffsets[0], MAX_SOUND_DIST);
 
-                result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
+                result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
 
                 break;
             }
 
             case OBJECT_Character: {
                 sample->SetVolume(uVoiceVolume);
-                result = _voiceSoundPool.playUniquePid(sample, si.dataSource, pid);
+                result = _voiceSoundPool.playUniquePid(sample, si->dataSource, pid);
 
                 break;
             }
@@ -313,7 +302,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pActors[object_id].pos.y,
                                     pActors[object_id].pos.z, MAX_SOUND_DIST);
 
-                result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
+                result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
 
                 break;
             }
@@ -325,7 +314,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pLevelDecorations[object_id].vPosition.y,
                                     pLevelDecorations[object_id].vPosition.z, MAX_SOUND_DIST);
 
-                result = _loopingSoundPool.playNew(sample, si.dataSource, true);
+                result = _loopingSoundPool.playNew(sample, si->dataSource, true);
 
                 break;
             }
@@ -337,18 +326,18 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pSpriteObjects[object_id].vPosition.y,
                                     pSpriteObjects[object_id].vPosition.z, MAX_SOUND_DIST);
 
-                result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
+                result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
                 break;
             }
 
             case OBJECT_Face: {
-                result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid);
+                result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid);
 
                 break;
             }
 
             default: {
-                result = _regularSoundPool.playNew(sample, si.dataSource);
+                result = _regularSoundPool.playNew(sample, si->dataSource);
                 logger->warning("Unexpected object type from Pid in playSound");
                 break;
             }
@@ -356,16 +345,16 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
     }
 
     if (!result) {
-        if (si.sName.empty()) {
-            logger->warning("AudioPlayer: failed to play audio {} with name '{}'", eSoundID, si.sName);
+        if (si->sName.empty()) {
+            logger->warning("AudioPlayer: failed to play audio {} with name '{}'", eSoundID, si->sName);
         } else {
             logger->warning("AudioPlayer: failed to play audio {}", eSoundID);
         }
     } else {
-        if (si.sName.empty()) {
+        if (si->sName.empty()) {
             logger->trace("AudioPlayer: playing sound {}", eSoundID);
         } else {
-            logger->trace("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
+            logger->trace("AudioPlayer: playing sound {} with name '{}'", eSoundID, si->sName);
         }
     }
 }
@@ -419,124 +408,6 @@ bool AudioPlayer::isWalkingSoundPlays() {
     }
     return false;
 }
-
-bool AudioSamplePool::playNew(PAudioSample sample, PAudioDataSource source, bool positional) {
-    update();
-    if (!sample->Open(source)) {
-        return false;
-    }
-    sample->Play(_looping, positional);
-    _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, Pid()));
-    return true;
-}
-
-bool AudioSamplePool::playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundID id, bool positional) {
-    update();
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        if (entry.id == id) {
-            return true;
-        }
-    }
-    if (!sample->Open(source)) {
-        return false;
-    }
-    sample->Play(_looping, positional);
-    _samplePool.push_back(AudioSamplePoolEntry(sample, id, Pid()));
-    return true;
-}
-
-bool AudioSamplePool::playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional) {
-    update();
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        if (entry.pid == pid) {
-            return true;
-        }
-    }
-    if (!sample->Open(source)) {
-        return false;
-    }
-    sample->Play(_looping, positional);
-    _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, pid));
-    return true;
-}
-
-void AudioSamplePool::pause() {
-    update();
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        entry.samplePtr->Pause();
-    }
-}
-
-void AudioSamplePool::resume() {
-    update();
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        entry.samplePtr->Resume();
-    }
-}
-
-void AudioSamplePool::stop() {
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        entry.samplePtr->Stop();
-    }
-    _samplePool.clear();
-}
-
-void AudioSamplePool::stopSoundId(SoundID soundId) {
-    assert(soundId != SOUND_Invalid);
-
-    auto it = _samplePool.begin();
-    while (it != _samplePool.end()) {
-        if ((*it).id == soundId) {
-            (*it).samplePtr->Stop();
-            it = _samplePool.erase(it);
-        } else {
-            it++;
-        }
-    }
-}
-
-void AudioSamplePool::stopPid(Pid pid) {
-    assert(pid != Pid());
-
-    auto it = _samplePool.begin();
-    while (it != _samplePool.end()) {
-        if ((*it).pid == pid) {
-            (*it).samplePtr->Stop();
-            it = _samplePool.erase(it);
-        } else {
-            it++;
-        }
-    }
-}
-
-void AudioSamplePool::update() {
-    auto it = _samplePool.begin();
-    std::erase_if(_samplePool, [](const AudioSamplePoolEntry& entry) { return entry.samplePtr->IsStopped(); });
-}
-
-void AudioSamplePool::setVolume(float value) {
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        entry.samplePtr->SetVolume(value);
-    }
-}
-
-bool AudioSamplePool::hasPlaying() {
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        if (!entry.samplePtr->IsStopped()) {
-            return true;
-        }
-    }
-    return false;
-}
-
-#pragma pack(push, 1)
-struct SoundHeader_mm7 {
-    char pSoundName[40];
-    uint32_t uFileOffset;
-    uint32_t uCompressedSize;
-    uint32_t uDecompressedSize;
-};
-#pragma pack(pop)
 
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");

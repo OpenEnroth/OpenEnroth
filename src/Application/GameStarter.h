@@ -34,11 +34,11 @@ class GameStarter {
  private:
     GameStarterOptions _options;
     std::unique_ptr<Environment> _environment;
-    std::unique_ptr<BufferLogSink> _bufferSink;
-    std::unique_ptr<LogSink> _defaultSink;
+    std::unique_ptr<BufferLogSink> _bufferLogSink;
+    std::unique_ptr<LogSink> _defaultLogSink;
     std::unique_ptr<Logger> _logger;
+    std::shared_ptr<GameConfig> _config;
     std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
-    std::shared_ptr<GameConfig> _config;
     std::shared_ptr<Game> _game;
 };
