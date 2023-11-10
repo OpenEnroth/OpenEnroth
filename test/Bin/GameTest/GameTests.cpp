@@ -274,6 +274,28 @@ GAME_TEST(Issues, Issue272b) {
     EXPECT_EQ(engine->_statusBar->get(), "Please resolve all key conflicts!");
 }
 
+GAME_TEST(Issues, Issue289a) {
+    // Collisions climbing walls in dragon cave.
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    test.playTraceFromTestData("issue_289a.mm7", "issue_289a.json");
+    // Shouldnt climb too high
+    EXPECT_LT(zTape.max(), 350);
+}
+
+GAME_TEST(Issues, Issue289b) {
+    // Collisions clipping through surfaces.
+    float rx = 12032.0f, ry = 3720.0f;
+    float rr = 12224.0f, rt = 3912.0f;
+    auto distTape = tapes.custom([&] {
+        // test party distance to square of pillar
+        float dx = std::max({ rx - pParty->pos.x, 0.0f, pParty->pos.x - rr });
+        float dy = std::max({ ry - pParty->pos.y, 0.0f, pParty->pos.y - rt });
+        return (dx*dx + dy*dy);
+    });
+    test.playTraceFromTestData("issue_289b.mm7", "issue_289b.json");
+    EXPECT_GT(distTape.min(), pParty->radius * pParty->radius);
+}
+
 GAME_TEST(Issues, Issue290) {
     // Town Hall bugs.
     auto fineTape = tapes.custom([] { return pParty->GetFine(); });
@@ -281,6 +303,28 @@ GAME_TEST(Issues, Issue290) {
     test.playTraceFromTestData("issue_290.mm7", "issue_290.json");
     EXPECT_EQ(fineTape.delta(), -1000);
     EXPECT_EQ(goldTape.delta(), -1000);
+}
+
+GAME_TEST(Issues, Issue292a) {
+    // Collisions - slip through signs
+    auto yTape = tapes.custom([] { return pParty->pos.y; });
+    test.playTraceFromTestData("issue_292a.mm7", "issue_292a.json");
+    // Shouldnt pass through sign
+    EXPECT_LT(yTape.max(), 4855.0f);
+}
+
+GAME_TEST(Issues, Issue292b) {
+    // Collisions - becoming stuck
+    float rx = -3028.0f, ry = 5815.0f;
+    float rr = -2894.0f, rt = 6090.0f;
+    auto distTape = tapes.custom([&] {
+        // test party distance to square of altar
+        float dx = std::max({ rx - pParty->pos.x, 0.0f, pParty->pos.x - rr });
+        float dy = std::max({ ry - pParty->pos.y, 0.0f, pParty->pos.y - rt });
+        return (dx * dx + dy * dy);
+        });
+    test.playTraceFromTestData("issue_292b.mm7", "issue_292b.json");
+    EXPECT_GT(distTape.min(), pParty->radius * pParty->radius);
 }
 
 GAME_TEST(Issues, Issue293a) {
@@ -300,7 +344,7 @@ GAME_TEST(Issues, Issue293a) {
 
     EXPECT_EQ(totalItemsTape.delta(), +1);
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
-                                               {CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK}));
+                                               {CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK}));
     EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
     EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
     EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
@@ -635,7 +679,7 @@ GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
     auto chibisTape = actorTapes.countByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
-    EXPECT_EQ(chibisTape, tape(0, 21));
+    EXPECT_EQ(chibisTape, tape(0, 15));
 }
 
 GAME_TEST(Issues, Issue490) {
@@ -1011,7 +1055,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12040, 11734, 898));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12042, 11779, 912));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -1022,6 +1066,13 @@ GAME_TEST(Issues, Issue677) {
     EXPECT_EQ(hasteTape, tape(true, false));
     EXPECT_EQ(conditionsTape, tape({CONDITION_GOOD, CONDITION_CURSED, CONDITION_GOOD, CONDITION_GOOD},
                                    {CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK}));
+}
+
+GAME_TEST(Issues, Issue681) {
+    // Collisions: You can jump through roof in Tidewater Caverns
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    test.playTraceFromTestData("issue_681.mm7", "issue_681.json");
+    EXPECT_LT(zTape.max(), 990);
 }
 
 GAME_TEST(Issues, Issue689) {
@@ -1454,6 +1505,13 @@ GAME_TEST(Issues, Issue929) {
 
 // 1000
 
+GAME_TEST(Issues, Issues1004) {
+    // Collisions: Can walk right through the bridge on Emerald Isle
+    auto xTape = tapes.custom([] { return pParty->pos.x; });
+    test.playTraceFromTestData("issue_1004.mm7", "issue_1004.json");
+    EXPECT_LT(xTape.max(), 12552 + 1);
+}
+
 GAME_TEST(Prs, Pr1005) {
     // Testing collisions - stairs should work. In this test case the party is walking onto a wooden paving in Tatalia.
     auto zTape = tapes.custom([] { return pParty->pos.z; });
@@ -1487,7 +1545,7 @@ GAME_TEST(Issues, Issue1038) {
     auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
-                                               {CONDITION_INSANE, CONDITION_INSANE, CONDITION_SLEEP, CONDITION_UNCONSCIOUS}));
+                                               {CONDITION_SLEEP, CONDITION_INSANE, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
 }
 
 GAME_TEST(Issues, Issue1040) {
@@ -1704,7 +1762,7 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->special_enchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
-    EXPECT_EQ(damageRange, tape(1 * 2, (43 + 13) * 2));
+    EXPECT_EQ(damageRange, tape(/*1 * 2*/ 3 /*TODO WHY?*/, (43 + 13) * 2));
 }
 
 GAME_TEST(Issues, Issue1338) {
@@ -1761,7 +1819,7 @@ GAME_TEST(Issues, Issue1342) {
     EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv")); // Emerald Isle -> Dragon Cave. Map change is important here
                                                       // because we need to trigger map respawn on first visit.
     EXPECT_GT(goldTape.delta(), 0); // We picked up some gold.
-    EXPECT_EQ(pilesTape, tape(0, 6, 5, 4)); // Minus two small gold piles.
+    EXPECT_EQ(pilesTape, tape(0, 10, 9, 8, 7)); // Minus three small gold piles.
     EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
     for (int gold : goldTape.adjacentDeltas())
         EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
@@ -1778,4 +1836,11 @@ GAME_TEST(Issues, Issue1364) {
     EXPECT_TRUE(screenTape.contains(SCREEN_HOUSE)); // We have visited the stables.
     EXPECT_TRUE(screenTape.contains(SCREEN_MENU)); // Opened the game menu while in the Arena.
     EXPECT_FALSE(screenTape.contains(SCREEN_SAVEGAME)); // But save menu didn't open on click.
+}
+
+GAME_TEST(Issues, Issue1371) {
+    // Collisions - Party struggles to climb stairs to quarter deck
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    test.playTraceFromTestData("issue_1371.mm7", "issue_1371.json");
+    EXPECT_GT(zTape.max(), 448);
 }

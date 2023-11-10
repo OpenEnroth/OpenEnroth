@@ -1718,7 +1718,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pParty->speed.xy().lengthSqr() < min_party_move_delta_sqr) {
         pParty->speed.x = 0;
         pParty->speed.y = 0;
-    } 
+    }
 
     Vec3f oldPos = pParty->pos;
     Vec3f savedspeed = pParty->speed;
