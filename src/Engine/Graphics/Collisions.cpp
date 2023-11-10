@@ -843,7 +843,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 }
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
-    constexpr float closestdist = 1.5f; // Closest allowed approach to collision surface - needs adjusting
+    constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
 
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
@@ -878,7 +878,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
-        int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, 40)).toInt(), &collision_state.uSectorID, faceId);
+        int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, collision_state.radius_lo)).toInt(), &collision_state.uSectorID, faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
             // intended world position isnt valid so dont move there
             int testadjusted_floor_z = GetIndoorFloorZ(pParty->pos.toInt(), &collision_state.uSectorID, faceId);
@@ -891,10 +891,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
-
-        pParty->pos.x = adjusted_pos.x;
-        pParty->pos.y = adjusted_pos.y;
-        float new_party_z_tmp = adjusted_pos.z;
+        pParty->pos = adjusted_pos;
 
         if (collision_state.pid.type() == OBJECT_Actor) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
@@ -930,6 +927,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
             bool bFaceSlopeTooSteep = pFace->facePlane.normal.z > 0.0f && pFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
+            // TODO(pskelton): Better way to do this?
+            // Special case for steep staircase in tidewater
+            if (pCurrentMapName == "D17.blv") {
+                if (collision_state.pid.id() == 650)
+                    bFaceSlopeTooSteep = false;
+            }
+
             // new sliding plane
             Vec3f slideplaneorigin = collision_state.collisionPos;
             Vec3f slideplanenormal = adjusted_pos + Vec3f(0, 0, collision_state.radius_lo) - slideplaneorigin;
@@ -956,7 +960,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
 
             if (pFace->uPolygonType == POLYGON_Floor) {
-                new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
+                float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
                     pParty->uFallStartZ = new_party_z_tmp;
             }
