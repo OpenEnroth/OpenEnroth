@@ -383,6 +383,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     int FoundFaceStore[5] = { 0 };
     int NumFoundFaceStore = 0;
     int backupboundingsector{ 0 };
+    std::vector<int> foundSectors;
 
     // loop through sectors
     for (uint i = 1; i < pSectors.size(); ++i) {
@@ -397,9 +398,12 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
 
-        // nothing in secotr to check against so skip
+        // nothing in sector to check against so skip
         if (!FloorsAndPortals) continue;
         if (!pSector->pFloors) continue;
+
+        if (std::find(foundSectors.begin(), foundSectors.end(), i) == foundSectors.end())
+            foundSectors.push_back(i);
 
         // loop over check faces
         for (uint z = 0; z < FloorsAndPortals; ++z) {
@@ -425,6 +429,10 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     if (NumFoundFaceStore == 1)
         return this->pFaces[FoundFaceStore[0]].uSectorID;
 
+    // only one sector found
+    if (foundSectors.size() == 1)
+        return foundSectors[0];
+
     // No face found - outside of level
     if (!NumFoundFaceStore) {
         if (!backupboundingsector) {
@@ -437,31 +445,38 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     }
 
     // when multiple possibilities are found - cycle through and use the closer one to party
-    int pSectorID = 0;
-    int MinZDist = 0xFFFFFFu;
+    int pSectorID = 0, backupID = 0;
+    int MinZDist = 0xFFFFFFu, backupDist = 0xFFFFFFu;
     if (NumFoundFaceStore > 0) {
         int CalcZDist = MinZDist;
         for (int s = 0; s < NumFoundFaceStore; ++s) {
             // calc distance between this face and party
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
-                CalcZDist = std::abs(sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z);
+                CalcZDist = sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z;
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = std::abs(sZ - this->pFaces[FoundFaceStore[s]].zCalc.calculate(sX, sY));
+                CalcZDist = sZ - this->pFaces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
             }
 
-            // use this face if its smaller than the current min
-            // if (CalcZDist >= 0) {
-                if (CalcZDist < MinZDist) {
+            // use this face if its smaller than the current min - prefer faces below party
+            if (CalcZDist < MinZDist) {
+                if (CalcZDist >= 0) {
                     pSectorID = this->pFaces[FoundFaceStore[s]].uSectorID;
                     MinZDist = CalcZDist;
+                } else {
+                    backupID = this->pFaces[FoundFaceStore[s]].uSectorID;
+                    backupDist = std::abs(CalcZDist);
                 }
-           // }
+            }
         }
 
-        // doesnt choose - so default to first - SHOULDNT GET HERE
         if (pSectorID == 0) {
-            assert(false);
-            pSectorID = this->pFaces[FoundFaceStore[0]].uSectorID;
+            if (backupID == 0) {
+                assert(false); // doesnt choose - so default to first - SHOULDNT GET HERE
+                pSectorID = this->pFaces[FoundFaceStore[0]].uSectorID;
+            } else {
+                // there is a face above the party to use
+                pSectorID = backupID;
+            }
         }
     }
 
@@ -1510,13 +1525,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    int floorZ = GetIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, 40), &sectorId, &faceId);
+    int floorZ = GetIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, pParty->radius), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floorZ == -30000 || faceId == -1) {
-        floorZ = GetApproximateIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, 40), &sectorId, &faceId);
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, pParty->radius), &sectorId, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             assert(false);  // level built with errors
             return;
@@ -1703,7 +1718,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pParty->speed.xy().lengthSqr() < min_party_move_delta_sqr) {
         pParty->speed.x = 0;
         pParty->speed.y = 0;
-    }
+    } 
 
     Vec3f oldPos = pParty->pos;
     Vec3f savedspeed = pParty->speed;
