@@ -960,7 +960,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
 
             if (pFace->uPolygonType == POLYGON_Floor) {
-                float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
+                float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
                     pParty->uFallStartZ = new_party_z_tmp;
             }
