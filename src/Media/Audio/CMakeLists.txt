@@ -26,6 +26,7 @@ target_check_style(media_audio)
 target_link_libraries(media_audio
         PUBLIC
         utility
+        library_snd
         application
         # PRIVATE # TODO(captainurist): should be private
         OpenAL::OpenAL)

@@ -42,7 +42,7 @@ class LodReader final {
     void open(Blob blob, std::string_view path, LodOpenFlags openFlags = 0);
 
     /**
-     * Closes this blob reader & frees all associated resources.
+     * Closes this LOD reader & frees all associated resources.
      */
     void close();
 

@@ -43,16 +43,6 @@ constexpr Pid FAKE_HOUSE_SPEECH_PID = Pid::fromPacked(-6);
 
 extern OpenALSoundProvider *provider;
 
-// TODO(captainurist): doesn't belong here
-#pragma pack(push, 1)
-struct SoundHeader_mm7 {
-    char pSoundName[40];
-    uint32_t uFileOffset;
-    uint32_t uCompressedSize;
-    uint32_t uDecompressedSize;
-};
-#pragma pack(pop)
-
 AudioPlayer::~AudioPlayer() = default;
 
 void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
@@ -409,31 +399,12 @@ bool AudioPlayer::isWalkingSoundPlays() {
     return false;
 }
 
-void AudioPlayer::LoadAudioSnd() {
-    static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
-
-    std::string file_path = makeDataPath("sounds", "audio.snd");
-    fAudioSnd.open(makeDataPath("sounds", "audio.snd"));
-
-    uint32_t uNumSoundHeaders {};
-    fAudioSnd.readOrFail(&uNumSoundHeaders, sizeof(uNumSoundHeaders));
-    for (uint32_t i = 0; i < uNumSoundHeaders; i++) {
-        SoundHeader_mm7 header_mm7;
-        fAudioSnd.readOrFail(&header_mm7, sizeof(header_mm7));
-        SoundHeader header;
-        header.uFileOffset = header_mm7.uFileOffset;
-        header.uCompressedSize = header_mm7.uCompressedSize;
-        header.uDecompressedSize = header_mm7.uDecompressedSize;
-        mSoundHeaders[toLower(header_mm7.pSoundName)] = header;
-    }
-}
-
 void AudioPlayer::Initialize() {
     currentMusicTrack = MUSIC_Invalid;
     uMasterVolume = 127;
 
     UpdateVolumeFromConfig();
-    LoadAudioSnd();
+    _sndReader.open(makeDataPath("sounds", "audio.snd"));
 
     bPlayerReady = true;
 }
@@ -451,72 +422,13 @@ void PlayLevelMusic() {
     }
 }
 
-
-bool AudioPlayer::FindSound(const std::string &pName, AudioPlayer::SoundHeader *header) {
-    if (header == nullptr) {
-        return false;
-    }
-
-    std::map<std::string, SoundHeader>::iterator it = mSoundHeaders.find(toLower(pName));
-    if (it == mSoundHeaders.end()) {
-        return false;
-    }
-
-    *header = it->second;
-
-    return true;
-}
-
-
-Blob AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by ID index) - plays some interesting files
-    SoundHeader header = { 0 };
-
-    if (uSoundID < 0 || uSoundID > mSoundHeaders.size())
-        return {};
-
-    // iterate through to get sound by int ID
-    std::map<std::string, SoundHeader>::iterator it = mSoundHeaders.begin();
-    std::advance(it, uSoundID);
-
-    if (it == mSoundHeaders.end())
-        return {};
-
-    header = it->second;
-
-    fAudioSnd.seek(header.uFileOffset);
-    if (header.uCompressedSize >= header.uDecompressedSize) {
-        header.uCompressedSize = header.uDecompressedSize;
-        if (header.uDecompressedSize) {
-            return Blob::read(fAudioSnd, header.uDecompressedSize);
-        } else {
-            logger->warning("Can't load sound file!");
-            return Blob();
-        }
-    } else {
-        return zlib::uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
-    }
-}
-
-
 Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
-    SoundHeader header = { 0 };
-    if (!FindSound(pSoundName, &header)) {
+    if (!_sndReader.exists(pSoundName)) {
         logger->warning("AudioPlayer: {} can't load sound header!", pSoundName);
         return Blob();
     }
 
-    fAudioSnd.seek(header.uFileOffset);
-    if (header.uCompressedSize >= header.uDecompressedSize) {
-        header.uCompressedSize = header.uDecompressedSize;
-        if (header.uDecompressedSize) {
-            return Blob::read(fAudioSnd, header.uDecompressedSize);
-        } else {
-            logger->warning("AudioPlayer: {} can't load sound file!", pSoundName);
-            return Blob();
-        }
-    } else {
-        return zlib::uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
-    }
+    return _sndReader.read(pSoundName);
 }
 
 void AudioPlayer::playSpellSound(SpellId spell, bool is_impact, SoundPlaybackMode mode, Pid pid) {
