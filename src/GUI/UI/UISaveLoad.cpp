@@ -48,8 +48,7 @@ static GraphicsImage *scrollstop = nullptr;
 // TODO(Nik-RE-dev): drop variable and load game only on double click
 static bool isLoadSlotClicked = false;
 
-GUIWindow_Save::GUIWindow_Save() :
-    GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
+GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
     pSavegameList->pSavegameUsedSlots.fill(false);
     pSavegameList->pSavegameThumbnails.fill(nullptr);
 
@@ -130,8 +129,7 @@ void GUIWindow_Save::Update() {
     UI_DrawSaveLoad(true);
 }
 
-GUIWindow_Load::GUIWindow_Load(bool ingame) :
-    GUIWindow(WINDOW_Load, {0, 0}, {0, 0}) {
+GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0, 0}) {
     current_screen_type = SCREEN_LOADGAME;
 
     pSavegameList->pSavegameUsedSlots.fill(false);

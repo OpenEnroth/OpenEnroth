@@ -20,7 +20,7 @@
 
 GraphicsImage *ui_book_journal_background = nullptr;
 
-GUIWindow_JournalBook::GUIWindow_JournalBook() : _currentIdx(0), GUIWindow_Book() {
+GUIWindow_JournalBook::GUIWindow_JournalBook() {
     eWindowType = WINDOW_JournalBook;
 
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);

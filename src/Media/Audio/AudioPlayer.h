@@ -27,8 +27,7 @@ class AudioPlayer {
     } SoundHeader;
 
  public:
-    AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uMusicVolume(0), uVoiceVolume(0),
-                    _voiceSoundPool(false), _regularSoundPool(false), _loopingSoundPool(true) {}
+    AudioPlayer() = default;
     virtual ~AudioPlayer();
 
     void Initialize();
@@ -139,18 +138,18 @@ class AudioPlayer {
     }
 
  protected:
-    bool bPlayerReady;
-    MusicID currentMusicTrack;
-    float uMasterVolume;
-    float uMusicVolume;
-    float uVoiceVolume;
+    bool bPlayerReady = false;
+    MusicID currentMusicTrack = MUSIC_Invalid;
+    float uMasterVolume = 0;
+    float uMusicVolume = 0;
+    float uVoiceVolume = 0;
     PAudioTrack pCurrentMusicTrack;
     FileInputStream fAudioSnd;
     std::map<std::string, SoundHeader> mSoundHeaders;
 
-    AudioSamplePool _voiceSoundPool;
-    AudioSamplePool _regularSoundPool;
-    AudioSamplePool _loopingSoundPool;
+    AudioSamplePool _voiceSoundPool = AudioSamplePool(false);
+    AudioSamplePool _regularSoundPool = AudioSamplePool(false);
+    AudioSamplePool _loopingSoundPool = AudioSamplePool(true);
     PAudioSample _currentWalkingSample;
 };
 

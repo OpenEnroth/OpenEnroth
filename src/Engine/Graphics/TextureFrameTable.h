@@ -19,8 +19,6 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(TextureFrameFlags)
 
 class TextureFrame {
  public:
-    inline TextureFrame() : tex(nullptr) {}
-
     std::string name = "null";
     int16_t animTime = 0; // Frame time, in 1/16ths of a real-time second.
     int16_t animLength = 0; // Total animation length, in 1/16ths of a real-time second. Set only for the first frame in a sequence.
@@ -29,7 +27,7 @@ class TextureFrame {
     GraphicsImage *GetTexture();
 
  protected:
-    GraphicsImage *tex;
+    GraphicsImage *tex = nullptr;
 };
 
 struct TextureFrameTable {

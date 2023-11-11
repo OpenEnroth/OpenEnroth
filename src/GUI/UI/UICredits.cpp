@@ -15,8 +15,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-GUICredits::GUICredits() :
-    GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions()) {
+GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions()) {
     pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
     pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 

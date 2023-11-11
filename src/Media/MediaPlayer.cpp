@@ -121,8 +121,6 @@ class AVStreamWrapper {
 
 class AVAudioStream : public AVStreamWrapper {
  public:
-    AVAudioStream() : AVStreamWrapper() { converter = nullptr; }
-
     virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO)) {
             return false;
@@ -185,19 +183,11 @@ class AVAudioStream : public AVStreamWrapper {
     }
 
  protected:
-    SwrContext *converter;
+    SwrContext *converter = nullptr;
 };
 
 class AVVideoStream : public AVStreamWrapper {
  public:
-    AVVideoStream() : AVStreamWrapper() {
-        frame_len = 0.;
-        frames_per_second = 0.;
-        converter = nullptr;
-        height = 0;
-        width = 0;
-    }
-
     virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
             return false;
@@ -266,11 +256,11 @@ class AVVideoStream : public AVStreamWrapper {
     }
 
     std::shared_ptr<Blob> last_frame;
-    double frames_per_second;
-    double frame_len;
-    SwsContext *converter;
-    int width;
-    int height;
+    double frames_per_second = 0;
+    double frame_len = 0;
+    SwsContext *converter = nullptr;
+    int width = 0;
+    int height = 0;
 };
 
 static Recti calculateVideoRectangle(const PMovie &pMovie_Track) {

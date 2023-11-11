@@ -11,8 +11,6 @@ class GraphicsImage;
 
 class TileDesc {
  public:
-    inline TileDesc() : texture(nullptr) {}
-
     std::string name;
     uint16_t uTileID = 0;
     Tileset tileset = Tileset_NULL;
@@ -30,7 +28,7 @@ class TileDesc {
     }
 
  protected:
-    GraphicsImage *texture;
+    GraphicsImage *texture = nullptr;
 };
 
 struct TileTable {

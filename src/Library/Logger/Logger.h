@@ -136,8 +136,8 @@ class Logger {
     void logV(const LogCategory &category, LogLevel level, fmt::string_view fmt, fmt::format_args args);
 
  private:
-    LogCategory _defaultCategory;
-    LogSink *_sink;
+    LogCategory _defaultCategory = LogCategory({});
+    LogSink *_sink = nullptr;
 };
 
 extern Logger *logger; // Singleton logger instance.
