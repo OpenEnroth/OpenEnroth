@@ -190,7 +190,7 @@ void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {
 
 void GUIWindow_MainMenu::loop() {
     pAudioPlayer->stopSounds();
-    pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
+    pAudioPlayer->MusicPlayTrack(MUSIC_MAIN_MENU);
 
     current_screen_type = SCREEN_GAME;
 

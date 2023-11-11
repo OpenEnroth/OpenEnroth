@@ -45,7 +45,7 @@ extern OpenALSoundProvider *provider;
 
 AudioPlayer::~AudioPlayer() = default;
 
-void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
+void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
     if (currentMusicTrack == eTrack) {
         return;
     }
@@ -54,9 +54,9 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         if (pCurrentMusicTrack) {
             pCurrentMusicTrack->Stop();
         }
-        currentMusicTrack = MUSIC_Invalid;
+        currentMusicTrack = MUSIC_INVALID;
 
-        std::string file_path = fmt::format("{}.mp3", eTrack);
+        std::string file_path = fmt::format("{}.mp3", std::to_underlying(eTrack));
         file_path = makeDataPath("music", file_path);
         if (!std::filesystem::exists(file_path)) {
             logger->warning("AudioPlayer: {} not found", file_path);
@@ -85,7 +85,7 @@ void AudioPlayer::MusicStop() {
 
     pCurrentMusicTrack->Stop();
     pCurrentMusicTrack = nullptr;
-    currentMusicTrack = MUSIC_Invalid;
+    currentMusicTrack = MUSIC_INVALID;
 }
 
 void AudioPlayer::MusicPause() {
@@ -102,10 +102,10 @@ void AudioPlayer::MusicResume() {
     }
 
     if (!pCurrentMusicTrack->Resume()) {
-        int playedMusicTrack = currentMusicTrack;
-        if (currentMusicTrack != MUSIC_Invalid) {
+        MusicId playedMusicTrack = currentMusicTrack;
+        if (currentMusicTrack != MUSIC_INVALID) {
             MusicStop();
-            MusicPlayTrack((MusicID)playedMusicTrack);
+            MusicPlayTrack(playedMusicTrack);
         }
     }
 }
@@ -400,7 +400,7 @@ bool AudioPlayer::isWalkingSoundPlays() {
 }
 
 void AudioPlayer::Initialize() {
-    currentMusicTrack = MUSIC_Invalid;
+    currentMusicTrack = MUSIC_INVALID;
     uMasterVolume = 127;
 
     UpdateVolumeFromConfig();
@@ -418,7 +418,7 @@ void AudioPlayer::UpdateVolumeFromConfig() {
 void PlayLevelMusic() {
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
-        pAudioPlayer->MusicPlayTrack((MusicID)pMapStats->pInfos[map_id].uRedbookTrackID);
+        pAudioPlayer->MusicPlayTrack(pMapStats->pInfos[map_id].uRedbookTrackID);
     }
 }
 
