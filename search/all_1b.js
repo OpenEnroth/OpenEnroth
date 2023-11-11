@@ -134,12 +134,13 @@ var searchData=
   ['_7esdlplatformsharedstate_131',['~SdlPlatformSharedState',['../classSdlPlatformSharedState.html#ab2f39c3327cf8a22083a3cd96a7dfd53',1,'SdlPlatformSharedState']]],
   ['_7esdlwindow_132',['~SdlWindow',['../classSdlWindow.html#a1d165b038a44aa75acf09c042d49253d',1,'SdlWindow']]],
   ['_7eshareddata_133',['~SharedData',['../structEngineControlStateHandle_1_1SharedData.html#ab37ec0580131862fcb7afb364aa17f59',1,'EngineControlStateHandle::SharedData']]],
-  ['_7espellfx_5fbillboard_134',['~SpellFX_Billboard',['../structSpellFX__Billboard.html#a1ff2ae71b6135aeaeb4679968165fc1e',1,'SpellFX_Billboard']]],
-  ['_7espellfxrenderer_135',['~SpellFxRenderer',['../structSpellFxRenderer.html#a8eb173b7c558b19dbd77d9181d110181',1,'SpellFxRenderer']]],
-  ['_7estringoutputstream_136',['~StringOutputStream',['../classStringOutputStream.html#a14fe71f694b3c145543b258775aec973',1,'StringOutputStream']]],
-  ['_7estru10_137',['~stru10',['../structstru10.html#afbbbedb5c6f95ffe0fdb4d1a8580f468',1,'stru10']]],
-  ['_7estru314_138',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
-  ['_7etempfileoutputstream_139',['~TempFileOutputStream',['../classTempFileOutputStream.html#a1e2b6f8642b1355a6609b238a8cd28c6',1,'TempFileOutputStream']]],
-  ['_7evideolist_140',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
-  ['_7ewindowmanager_141',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7esndreader_134',['~SndReader',['../classSndReader.html#ac65c3e89a0c4743a829db993b81c4f93',1,'SndReader']]],
+  ['_7espellfx_5fbillboard_135',['~SpellFX_Billboard',['../structSpellFX__Billboard.html#a1ff2ae71b6135aeaeb4679968165fc1e',1,'SpellFX_Billboard']]],
+  ['_7espellfxrenderer_136',['~SpellFxRenderer',['../structSpellFxRenderer.html#a8eb173b7c558b19dbd77d9181d110181',1,'SpellFxRenderer']]],
+  ['_7estringoutputstream_137',['~StringOutputStream',['../classStringOutputStream.html#a14fe71f694b3c145543b258775aec973',1,'StringOutputStream']]],
+  ['_7estru10_138',['~stru10',['../structstru10.html#afbbbedb5c6f95ffe0fdb4d1a8580f468',1,'stru10']]],
+  ['_7estru314_139',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
+  ['_7etempfileoutputstream_140',['~TempFileOutputStream',['../classTempFileOutputStream.html#a1e2b6f8642b1355a6609b238a8cd28c6',1,'TempFileOutputStream']]],
+  ['_7evideolist_141',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
+  ['_7ewindowmanager_142',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];

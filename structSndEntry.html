@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: SoundHeader_mm7 Struct Reference</title>
+<title>OpenEnroth: SndEntry Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;611127b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e55c565</span>
    </div>
   </td>
  </tr>
@@ -71,73 +71,75 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structSoundHeader__mm7-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">SoundHeader_mm7 Struct Reference</div></div>
+<a href="structSndEntry-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">SndEntry Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;SndSnapshots.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a24791de9708453705873a264189cb460"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSoundHeader__mm7.html#a24791de9708453705873a264189cb460">pSoundName</a> [40]</td></tr>
-<tr class="separator:a24791de9708453705873a264189cb460"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55bf4b34e51e5b11f79d4fc5abc22911"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSoundHeader__mm7.html#a55bf4b34e51e5b11f79d4fc5abc22911">uFileOffset</a></td></tr>
-<tr class="separator:a55bf4b34e51e5b11f79d4fc5abc22911"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa230c861843c9a1e16824de303153b88"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSoundHeader__mm7.html#aa230c861843c9a1e16824de303153b88">uCompressedSize</a></td></tr>
-<tr class="separator:aa230c861843c9a1e16824de303153b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac331bdfe1e63e8de7c523197a0929d81"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSoundHeader__mm7.html#ac331bdfe1e63e8de7c523197a0929d81">uDecompressedSize</a></td></tr>
-<tr class="separator:ac331bdfe1e63e8de7c523197a0929d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab40d44582bf0e898e90c6676dc609dfb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSndEntry.html#ab40d44582bf0e898e90c6676dc609dfb">name</a></td></tr>
+<tr class="separator:ab40d44582bf0e898e90c6676dc609dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a874505f8ef3f8865d1e4e0e8f7661d4d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSndEntry.html#a874505f8ef3f8865d1e4e0e8f7661d4d">offset</a></td></tr>
+<tr class="separator:a874505f8ef3f8865d1e4e0e8f7661d4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee95d0f7240d465dfb97e4f4ec88dd03"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSndEntry.html#aee95d0f7240d465dfb97e4f4ec88dd03">size</a></td></tr>
+<tr class="separator:aee95d0f7240d465dfb97e4f4ec88dd03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a614e6abf69a18072523767809ff5f250"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSndEntry.html#a614e6abf69a18072523767809ff5f250">decompressedSize</a></td></tr>
+<tr class="separator:a614e6abf69a18072523767809ff5f250"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a24791de9708453705873a264189cb460" name="a24791de9708453705873a264189cb460"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24791de9708453705873a264189cb460">&#9670;&#160;</a></span>pSoundName</h2>
+<a id="a614e6abf69a18072523767809ff5f250" name="a614e6abf69a18072523767809ff5f250"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a614e6abf69a18072523767809ff5f250">&#9670;&#160;</a></span>decompressedSize</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char SoundHeader_mm7::pSoundName[40]</td>
+          <td class="memname">size_t SndEntry::decompressedSize</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="aa230c861843c9a1e16824de303153b88" name="aa230c861843c9a1e16824de303153b88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa230c861843c9a1e16824de303153b88">&#9670;&#160;</a></span>uCompressedSize</h2>
+<a id="ab40d44582bf0e898e90c6676dc609dfb" name="ab40d44582bf0e898e90c6676dc609dfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab40d44582bf0e898e90c6676dc609dfb">&#9670;&#160;</a></span>name</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t SoundHeader_mm7::uCompressedSize</td>
+          <td class="memname">std::string SndEntry::name</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ac331bdfe1e63e8de7c523197a0929d81" name="ac331bdfe1e63e8de7c523197a0929d81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac331bdfe1e63e8de7c523197a0929d81">&#9670;&#160;</a></span>uDecompressedSize</h2>
+<a id="a874505f8ef3f8865d1e4e0e8f7661d4d" name="a874505f8ef3f8865d1e4e0e8f7661d4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a874505f8ef3f8865d1e4e0e8f7661d4d">&#9670;&#160;</a></span>offset</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t SoundHeader_mm7::uDecompressedSize</td>
+          <td class="memname">size_t SndEntry::offset</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a55bf4b34e51e5b11f79d4fc5abc22911" name="a55bf4b34e51e5b11f79d4fc5abc22911"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55bf4b34e51e5b11f79d4fc5abc22911">&#9670;&#160;</a></span>uFileOffset</h2>
+<a id="aee95d0f7240d465dfb97e4f4ec88dd03" name="aee95d0f7240d465dfb97e4f4ec88dd03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee95d0f7240d465dfb97e4f4ec88dd03">&#9670;&#160;</a></span>size</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t SoundHeader_mm7::uFileOffset</td>
+          <td class="memname">size_t SndEntry::size</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -145,7 +147,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/Media/Audio/<a class="el" href="AudioPlayer_8cpp.html">AudioPlayer.cpp</a></li>
+<li>src/Library/Snd/<a class="el" href="SndSnapshots_8h.html">SndSnapshots.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
