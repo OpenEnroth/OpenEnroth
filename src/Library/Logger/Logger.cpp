@@ -7,7 +7,7 @@
 
 Logger *logger = nullptr;
 
-Logger::Logger(LogLevel level, LogSink *sink): _defaultCategory({}) {
+Logger::Logger(LogLevel level, LogSink *sink) {
     assert(sink);
 
     _defaultCategory._level = level;

@@ -10,7 +10,7 @@ struct GUIWindow_JournalBook : public GUIWindow_Book {
     virtual void Update() override;
 
  private:
-    int _currentIdx;
+    int _currentIdx = 0;
     std::vector<int> _journalIdx;
     std::vector<int> _journalEntryPage;
 };

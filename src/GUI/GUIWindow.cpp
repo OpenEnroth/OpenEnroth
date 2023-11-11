@@ -403,7 +403,7 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
     }
 }
 
-GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
+GUIWindow::GUIWindow() {
     this->mouse = EngineIocContainer::ResolveMouse();
 }
 

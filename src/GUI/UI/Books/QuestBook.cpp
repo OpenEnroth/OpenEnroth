@@ -19,7 +19,7 @@
 
 GraphicsImage *ui_book_quests_background = nullptr;
 
-GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(0), _currentPageQuests(0), GUIWindow_Book() {
+GUIWindow_QuestBook::GUIWindow_QuestBook() {
     this->eWindowType = WindowType::WINDOW_QuestBook;
 
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({493, 355}, {0, 0}, pBtn_Quests);

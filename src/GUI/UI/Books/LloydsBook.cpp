@@ -26,7 +26,7 @@ std::array<int, 5> lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 GraphicsImage *ui_book_lloyds_border = nullptr;
 std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
 
-GUIWindow_LloydsBook::GUIWindow_LloydsBook(int casterId, int spellLevel) : GUIWindow_Book() {
+GUIWindow_LloydsBook::GUIWindow_LloydsBook(int casterId, int spellLevel) {
     this->eWindowType = WindowType::WINDOW_LloydsBeacon;
 
     _recallingBeacon = false;

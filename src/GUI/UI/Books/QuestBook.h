@@ -11,9 +11,9 @@ struct GUIWindow_QuestBook : public GUIWindow_Book {
     virtual void Update() override;
 
  private:
-    int _startingQuestIdx;
-    int _currentPage;
-    int _currentPageQuests;
+    int _startingQuestIdx = 0;
+    int _currentPage = 0;
+    int _currentPageQuests = 0;
     std::vector<QuestBit> _activeQuestsIdx;
     std::unordered_map<int, int> _questsPerPage;
 };

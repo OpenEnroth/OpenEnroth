@@ -13,7 +13,7 @@ const int game_starting_year = 1168;
 #define SECONDS_TO_GAME_TIME(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_QUANT) / TIME_SECONDS_PER_QUANT)
 
 struct GameTime {
-    GameTime() : value(0) {}
+    GameTime() = default;
     explicit GameTime(uint64_t val) : value(val) {}
     GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
         this->value = SECONDS_TO_GAME_TIME(
@@ -120,21 +120,13 @@ struct GameTime {
         return GameTime(0, 0, 0, 0, 0, 0, years);
     }
 
-    int64_t value;
+    int64_t value = 0;
 };
 
 struct Timer {
     static Timer *Create() { return new Timer; }
 
-    Timer() : bReady(false), bPaused(false) {
-        bTackGameTime = 0;
-        uStartTime = 0;
-        uStopTime = 0;
-        uGameTimeStart = 0;
-        uTimeElapsed = 0;
-        dt_fixpoint = 0;
-        uTotalTimeElapsed = 0;
-    }
+    Timer() = default;
 
     void Initialize();
 
@@ -150,15 +142,15 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bReady; // Unused.
-    unsigned int bPaused;
-    int bTackGameTime;
-    unsigned int uStartTime; // Last frame time, in real time ticks (128 ticks is 1 real time second).
-    unsigned int uStopTime;
-    int uGameTimeStart;
-    int uTimeElapsed; // dt since last frame in real time ticks (128 ticks is 1 real time second).
-    int dt_fixpoint; // dt since last frame in real time seconds in fixpoint format.
-    unsigned int uTotalTimeElapsed; // Total time elapsed since the last Initialize() call, in real time ticks (128 ticks is 1 real time second).
+    unsigned int bReady = false; // Unused.
+    unsigned int bPaused = false;
+    int bTackGameTime = 0;
+    unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).
+    unsigned int uStopTime = 0;
+    int uGameTimeStart = 0;
+    int uTimeElapsed = 0; // dt since last frame in real time ticks (128 ticks is 1 real time second).
+    int dt_fixpoint = 0; // dt since last frame in real time seconds in fixpoint format.
+    unsigned int uTotalTimeElapsed = 0; // Total time elapsed since the last Initialize() call, in real time ticks (128 ticks is 1 real time second).
 
     // Real time intervals in timer ticks.
     static const unsigned int Second = 128;
