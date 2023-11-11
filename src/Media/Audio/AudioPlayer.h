@@ -11,6 +11,8 @@
 
 #include "Media/AudioTrack.h"
 
+#include "Library/Snd/SndReader.h"
+
 #include "Utility/String.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
@@ -19,13 +21,6 @@
 #include "AudioSamplePool.h"
 
 class AudioPlayer {
- protected:
-    typedef struct SoundHeader {
-        size_t uFileOffset;
-        size_t uCompressedSize;
-        size_t uDecompressedSize;
-    } SoundHeader;
-
  public:
     AudioPlayer() = default;
     virtual ~AudioPlayer();
@@ -33,10 +28,7 @@ class AudioPlayer {
     void Initialize();
     void UpdateVolumeFromConfig();
 
-    void LoadAudioSnd();
-    bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
     Blob LoadSound(const std::string &pSoundName);
-    Blob LoadSound(int uSoundID);
 
     void SetMasterVolume(int level);
     void SetVoiceVolume(int level);
@@ -144,13 +136,12 @@ class AudioPlayer {
     float uMusicVolume = 0;
     float uVoiceVolume = 0;
     PAudioTrack pCurrentMusicTrack;
-    FileInputStream fAudioSnd;
-    std::map<std::string, SoundHeader> mSoundHeaders;
 
     AudioSamplePool _voiceSoundPool = AudioSamplePool(false);
     AudioSamplePool _regularSoundPool = AudioSamplePool(false);
     AudioSamplePool _loopingSoundPool = AudioSamplePool(true);
     PAudioSample _currentWalkingSample;
+    SndReader _sndReader;
 };
 
 extern std::unique_ptr<AudioPlayer> pAudioPlayer;

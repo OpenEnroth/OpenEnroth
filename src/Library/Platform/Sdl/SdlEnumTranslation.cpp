@@ -121,8 +121,7 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     case SDL_SCANCODE_KP_9:             return PlatformKey::KEY_NUMPAD_9;
     case SDL_SCANCODE_KP_ENTER:         return PlatformKey::KEY_RETURN;
 
-    default:
-        return PlatformKey::KEY_NONE;
+    default:                            return PlatformKey::KEY_NONE;
     }
 }
 
@@ -151,8 +150,7 @@ PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button) {
     // on DS4 touchpad is working like mouse by default and this event treated as left mouse click, so not expose
     // case SDL_CONTROLLER_BUTTON_TOUCHPAD:        return PlatformKey::KEY_GAMEPAD_TOUCHPAD;
 
-    default:
-        return PlatformKey::KEY_NONE;
+    default:                                    return PlatformKey::KEY_NONE;
     }
 }
 
@@ -164,8 +162,7 @@ PlatformKey translateSdlGamepadAxis(SDL_GameControllerAxis axis) {
     case SDL_CONTROLLER_AXIS_RIGHTY:        return PlatformKey::KEY_GAMEPAD_RIGHTSTICK_DOWN;
     case SDL_CONTROLLER_AXIS_TRIGGERLEFT:   return PlatformKey::KEY_GAMEPAD_L2;
     case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:  return PlatformKey::KEY_GAMEPAD_R2;
-    default:
-        return PlatformKey::KEY_NONE;
+    default:                                return PlatformKey::KEY_NONE;
     }
 }
 
@@ -206,56 +203,42 @@ PlatformMouseButtons translateSdlMouseButtons(uint32_t mouseButtons) {
 
 int translatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
     switch (vsyncMode) {
-    case GL_VSYNC_NONE:
-        return 0;
-    case GL_VSYNC_ADAPTIVE:
-        return -1;
-    case GL_VSYNC_NORMAL:
-        return 1;
+    default:                assert(false); [[fallthrough]];
+    case GL_VSYNC_NONE:     return 0;
+    case GL_VSYNC_ADAPTIVE: return -1;
+    case GL_VSYNC_NORMAL:   return 1;
     }
-
-    assert(false);
-    return 0; // Make the compiler happy.
 }
 
 SDL_GLprofile translatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     switch (profile) {
-    case GL_PROFILE_CORE:
-        return SDL_GL_CONTEXT_PROFILE_CORE;
-    case GL_PROFILE_COMPATIBILITY:
-        return SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
-    case GL_PROFILE_ES:
-        return SDL_GL_CONTEXT_PROFILE_ES;
+    default:                        assert(false); [[fallthrough]];
+    case GL_PROFILE_CORE:           return SDL_GL_CONTEXT_PROFILE_CORE;
+    case GL_PROFILE_COMPATIBILITY:  return SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+    case GL_PROFILE_ES:             return SDL_GL_CONTEXT_PROFILE_ES;
     }
-
-    assert(false);
-    return SDL_GL_CONTEXT_PROFILE_CORE; // Make the compiler happy.
 }
 
 SDL_LogPriority translatePlatformLogLevel(LogLevel logLevel) {
     switch (logLevel) {
+    default:            assert(false); [[fallthrough]];
     case LOG_TRACE:     return SDL_LOG_PRIORITY_VERBOSE;
     case LOG_DEBUG:     return SDL_LOG_PRIORITY_DEBUG;
     case LOG_INFO:      return SDL_LOG_PRIORITY_INFO;
     case LOG_WARNING:   return SDL_LOG_PRIORITY_WARN;
     case LOG_ERROR:     return SDL_LOG_PRIORITY_ERROR;
     case LOG_CRITICAL:  return SDL_LOG_PRIORITY_CRITICAL;
-    default:
-        assert(false);
-        return SDL_LOG_PRIORITY_VERBOSE;
     }
 }
 
 LogLevel translateSdlLogLevel(SDL_LogPriority logLevel) {
     switch (logLevel) {
+    default:                        assert(false); [[fallthrough]];
     case SDL_LOG_PRIORITY_VERBOSE:  return LOG_TRACE;
     case SDL_LOG_PRIORITY_DEBUG:    return LOG_DEBUG;
     case SDL_LOG_PRIORITY_INFO:     return LOG_INFO;
     case SDL_LOG_PRIORITY_WARN:     return LOG_WARNING;
     case SDL_LOG_PRIORITY_ERROR:    return LOG_ERROR;
     case SDL_LOG_PRIORITY_CRITICAL: return LOG_CRITICAL;
-    default:
-        assert(false);
-        return LOG_TRACE;
     }
 }
