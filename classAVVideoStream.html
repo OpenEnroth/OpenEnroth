@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;611127b</span>
    </div>
   </td>
  </tr>
@@ -88,8 +88,6 @@ Inheritance diagram for AVVideoStream:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3d9d5e9fba1737f796394dde1218a3ac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#a3d9d5e9fba1737f796394dde1218a3ac">AVVideoStream</a> ()</td></tr>
-<tr class="separator:a3d9d5e9fba1737f796394dde1218a3ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acde764709a3637895ebbc8bbd3e2ea6a"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#acde764709a3637895ebbc8bbd3e2ea6a">open</a> (AVFormatContext *format_ctx) override</td></tr>
 <tr class="separator:acde764709a3637895ebbc8bbd3e2ea6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a660f4e5ff566f7d9c1655dfc2a8f06f7"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#a660f4e5ff566f7d9c1655dfc2a8f06f7">decode_frame</a> (AVPacket *avpacket)</td></tr>
@@ -112,15 +110,15 @@ Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a2eebd67461e327c51667b0c06bc1fa1b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#a2eebd67461e327c51667b0c06bc1fa1b">last_frame</a></td></tr>
 <tr class="separator:a2eebd67461e327c51667b0c06bc1fa1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8bea843d69afc425faab4a90edb14ae"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#ae8bea843d69afc425faab4a90edb14ae">frames_per_second</a></td></tr>
+<tr class="memitem:ae8bea843d69afc425faab4a90edb14ae"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#ae8bea843d69afc425faab4a90edb14ae">frames_per_second</a> = 0</td></tr>
 <tr class="separator:ae8bea843d69afc425faab4a90edb14ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef75a5a42441b9e0aab7ab63ad3a251b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#aef75a5a42441b9e0aab7ab63ad3a251b">frame_len</a></td></tr>
+<tr class="memitem:aef75a5a42441b9e0aab7ab63ad3a251b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#aef75a5a42441b9e0aab7ab63ad3a251b">frame_len</a> = 0</td></tr>
 <tr class="separator:aef75a5a42441b9e0aab7ab63ad3a251b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a4658d12b7f666308465944a909bd78"><td class="memItemLeft" align="right" valign="top">SwsContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#a0a4658d12b7f666308465944a909bd78">converter</a></td></tr>
+<tr class="memitem:a0a4658d12b7f666308465944a909bd78"><td class="memItemLeft" align="right" valign="top">SwsContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#a0a4658d12b7f666308465944a909bd78">converter</a> = nullptr</td></tr>
 <tr class="separator:a0a4658d12b7f666308465944a909bd78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6da5b243af338a89d4962e79d910543"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#ad6da5b243af338a89d4962e79d910543">width</a></td></tr>
+<tr class="memitem:ad6da5b243af338a89d4962e79d910543"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#ad6da5b243af338a89d4962e79d910543">width</a> = 0</td></tr>
 <tr class="separator:ad6da5b243af338a89d4962e79d910543"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3a0bc76b91fefd43f84f6f67b12fa6f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#ac3a0bc76b91fefd43f84f6f67b12fa6f">height</a></td></tr>
+<tr class="memitem:ac3a0bc76b91fefd43f84f6f67b12fa6f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVVideoStream.html#ac3a0bc76b91fefd43f84f6f67b12fa6f">height</a> = 0</td></tr>
 <tr class="separator:ac3a0bc76b91fefd43f84f6f67b12fa6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classAVStreamWrapper"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classAVStreamWrapper')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classAVStreamWrapper.html">AVStreamWrapper</a></td></tr>
 <tr class="memitem:a679e7c64d493a1f58994b1703a2ef823 inherit pub_attribs_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">AVMediaType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#a679e7c64d493a1f58994b1703a2ef823">type</a></td></tr>
@@ -136,32 +134,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:af9d5d3c4fd13d03aa706aebc202bda05 inherit pub_attribs_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">std::queue&lt; std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#af9d5d3c4fd13d03aa706aebc202bda05">queue</a></td></tr>
 <tr class="separator:af9d5d3c4fd13d03aa706aebc202bda05 inherit pub_attribs_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a3d9d5e9fba1737f796394dde1218a3ac" name="a3d9d5e9fba1737f796394dde1218a3ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d9d5e9fba1737f796394dde1218a3ac">&#9670;&#160;</a></span>AVVideoStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">AVVideoStream::AVVideoStream </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a660f4e5ff566f7d9c1655dfc2a8f06f7" name="a660f4e5ff566f7d9c1655dfc2a8f06f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a660f4e5ff566f7d9c1655dfc2a8f06f7">&#9670;&#160;</a></span>decode_frame()</h2>
@@ -225,7 +197,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">SwsContext* AVVideoStream::converter</td>
+          <td class="memname">SwsContext* AVVideoStream::converter = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -239,7 +211,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double AVVideoStream::frame_len</td>
+          <td class="memname">double AVVideoStream::frame_len = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -253,7 +225,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double AVVideoStream::frames_per_second</td>
+          <td class="memname">double AVVideoStream::frames_per_second = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -267,7 +239,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int AVVideoStream::height</td>
+          <td class="memname">int AVVideoStream::height = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -295,7 +267,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int AVVideoStream::width</td>
+          <td class="memname">int AVVideoStream::width = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3bf460</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;611127b</span>
    </div>
   </td>
  </tr>
@@ -88,8 +88,6 @@ Inheritance diagram for AVAudioStream:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ade0557e68d44c98c395a4b40b78e5728"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#ade0557e68d44c98c395a4b40b78e5728">AVAudioStream</a> ()</td></tr>
-<tr class="separator:ade0557e68d44c98c395a4b40b78e5728"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa2cc69539bb1c9d81b43b505d63bb7d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#afa2cc69539bb1c9d81b43b505d63bb7d">open</a> (AVFormatContext *format_ctx) override</td></tr>
 <tr class="separator:afa2cc69539bb1c9d81b43b505d63bb7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5ba0df28f905b51eb097cc42efe9955"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#ae5ba0df28f905b51eb097cc42efe9955">decode_frame</a> (AVPacket *avpacket)</td></tr>
@@ -110,7 +108,7 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:ab8bce71cf01032ee907285a000942e59"><td class="memItemLeft" align="right" valign="top">SwrContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#ab8bce71cf01032ee907285a000942e59">converter</a></td></tr>
+<tr class="memitem:ab8bce71cf01032ee907285a000942e59"><td class="memItemLeft" align="right" valign="top">SwrContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#ab8bce71cf01032ee907285a000942e59">converter</a> = nullptr</td></tr>
 <tr class="separator:ab8bce71cf01032ee907285a000942e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -129,32 +127,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:af9d5d3c4fd13d03aa706aebc202bda05 inherit pub_attribs_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">std::queue&lt; std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#af9d5d3c4fd13d03aa706aebc202bda05">queue</a></td></tr>
 <tr class="separator:af9d5d3c4fd13d03aa706aebc202bda05 inherit pub_attribs_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ade0557e68d44c98c395a4b40b78e5728" name="ade0557e68d44c98c395a4b40b78e5728"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade0557e68d44c98c395a4b40b78e5728">&#9670;&#160;</a></span>AVAudioStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">AVAudioStream::AVAudioStream </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="ae5ba0df28f905b51eb097cc42efe9955" name="ae5ba0df28f905b51eb097cc42efe9955"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae5ba0df28f905b51eb097cc42efe9955">&#9670;&#160;</a></span>decode_frame()</h2>
@@ -221,7 +193,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">SwrContext* AVAudioStream::converter</td>
+          <td class="memname">SwrContext* AVAudioStream::converter = nullptr</td>
         </tr>
       </table>
   </td>
