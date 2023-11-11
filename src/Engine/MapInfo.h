@@ -4,6 +4,8 @@
 #include <array>
 #include <string>
 
+#include "Media/Audio/SoundEnums.h"
+
 #include "Utility/IndexedArray.h"
 
 #include "MapEnums.h"
@@ -42,7 +44,7 @@ struct MapInfo {
     char field_3D;
     char field_3E;
     char field_3F;
-    uint8_t uRedbookTrackID;
+    MusicId uRedbookTrackID;
     uint8_t uEAXEnv;
     char field_42;
     char field_43;

@@ -88,7 +88,7 @@ void GUICredits::EventLoop() {
 void GUICredits::ExecuteCredits() {
     engine->_messageQueue->clear();
 
-    pAudioPlayer->MusicPlayTrack(MUSIC_Credits);
+    pAudioPlayer->MusicPlayTrack(MUSIC_CREDITS);
 
     GUICredits *pWindow_Credits = new GUICredits();
     current_screen_type = SCREEN_CREATORS;

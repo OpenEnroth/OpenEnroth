@@ -121,12 +121,35 @@ enum SoundID {
     SOUND_quest = 20001,
 };
 
-// TODO(captainurist): #enum class
-enum MusicID {
-    MUSIC_Invalid = 0,
-    MUSIC_MainMenu = 14,
-    MUSIC_Credits = 15
+/**
+ * Enum value is used to load mp3 files, which are named `2.mp3`-`20.mp3`.
+ */
+enum class MusicId {
+    MUSIC_INVALID = 0,
+    MUSIC_DEYJA_BRACADA_DESERT = 2,
+    MUSIC_DUNGEON = 3,                           // Most of the game dungeons.
+    MUSIC_HARMONDALE_TATALIA_AVLEE = 4,
+    MUSIC_BARROWS = 5,                           // Barrows I-XV & Zokarr's Tomb.
+    MUSIC_EVENMORN_ISLAND = 6,
+    MUSIC_PIT_CASTLE_GLOAMING = 7,
+    MUSIC_LINCOLN_ARENA = 8,
+    MUSIC_SHOALS = 9,
+    MUSIC_CELESTE = 10,
+    MUSIC_MOUNT_NIGHON = 11,
+    MUSIC_BARROW_DOWNS_LAND_OF_THE_GIANTS = 12,
+    MUSIC_TEMPLES = 13,                          // The Temple of the Moon, Temple of the Light, Temple of the Dark, Grand Temple of the Moon, Grand Temple of the Sun, The Temple of Baa.
+    MUSIC_CASTLE_GRYPHONHEART_CASTLE_NAVAN = 14,
+    MUSIC_CASTLE_LAMBENT = 15,
+    MUSIC_ENDGAME_DUNGEON = 16,                  // The Dragon Caves, Thunderfist Mountain, The Titans' Stronghold, Tunnels to Eeofol.
+    MUSIC_ERATHIA = 17,
+    MUSIC_TULAREAN_FOREST = 18,
+    MUSIC_CASTLE_HARMONDALE = 19,                // Lord Markham's Manor, The Bandit Caves, Castle Harmondale, Fort Riverstride, The School of Sorcery, Stone City, The Mercenary Guild, William Setag's Tower, The Strange Temple, The Small House.
+    MUSIC_EMERALD_ISLAND = 20,
+
+    MUSIC_MAIN_MENU = MUSIC_CASTLE_GRYPHONHEART_CASTLE_NAVAN,
+    MUSIC_CREDITS = MUSIC_CASTLE_LAMBENT,
 };
+using enum MusicId;
 
 // TODO(captainurist): #enum class
 enum SOUND_TYPE {

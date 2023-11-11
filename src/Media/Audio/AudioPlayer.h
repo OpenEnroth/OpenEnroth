@@ -34,7 +34,7 @@ class AudioPlayer {
     void SetVoiceVolume(int level);
     void SetMusicVolume(int level);
 
-    void MusicPlayTrack(MusicID eTrack);
+    void MusicPlayTrack(MusicId eTrack);
     void MusicStart();
     void MusicStop();
     void MusicPause();
@@ -131,7 +131,7 @@ class AudioPlayer {
 
  protected:
     bool bPlayerReady = false;
-    MusicID currentMusicTrack = MUSIC_Invalid;
+    MusicId currentMusicTrack = MUSIC_INVALID;
     float uMasterVolume = 0;
     float uMusicVolume = 0;
     float uVoiceVolume = 0;

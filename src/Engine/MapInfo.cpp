@@ -181,7 +181,7 @@ void MapStats::Initialize(const Blob &mapStats) {
                     }
                     break;
                 case 28:
-                    pInfos[i].uRedbookTrackID = atoi(test_string);
+                    pInfos[i].uRedbookTrackID = static_cast<MusicId>(atoi(test_string));
                     break;
                 case 29: {
                     pInfos[i].uEAXEnv = 0xff;

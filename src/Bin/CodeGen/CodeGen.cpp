@@ -388,6 +388,45 @@ int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceMa
     return 0;
 }
 
+int runMusicCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+    MapStats mapStats;
+    mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
+
+    std::map<MusicId, std::vector<std::string>> mapNamesByMusicId, mapEnumNamesByMusicId;
+    for (const MapInfo &info : mapStats.pInfos) {
+        mapNamesByMusicId[info.uRedbookTrackID].push_back(info.pName);
+        mapEnumNamesByMusicId[info.uRedbookTrackID].push_back(mapIdEnumName(info));
+    }
+
+    CodeGenMap map;
+    map.insert(MUSIC_INVALID, "INVALID", "");
+
+    for (const auto &[musicId, mapEnumNames] : mapEnumNamesByMusicId) {
+        if (mapEnumNames.size() <= 3) {
+            map.insert(musicId, fmt::format("{}", fmt::join(mapEnumNames, "_")), "");
+        } else if (musicId == MUSIC_DUNGEON) {
+            map.insert(musicId, "DUNGEON", "Most of the game dungeons.");
+        } else if (musicId == MUSIC_BARROWS) {
+            map.insert(musicId, "BARROWS", "Barrows I-XV & Zokarr's Tomb.");
+        } else {
+            std::string comment = fmt::format("{}.", fmt::join(mapNamesByMusicId[musicId], ", "));
+
+            if (musicId == MUSIC_CASTLE_HARMONDALE) {
+                map.insert(musicId, "CASTLE_HARMONDALE", comment);
+            } else if (musicId == MUSIC_TEMPLES) {
+                map.insert(musicId, "TEMPLES", comment);
+            } else if (musicId == MUSIC_ENDGAME_DUNGEON) {
+                map.insert(musicId, "ENDGAME_DUNGEON", comment);
+            } else {
+                throw Exception("Unhandled music id value.");
+            }
+        }
+    }
+
+    map.dump(stdout, "MUSIC_");
+    return 0;
+}
+
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
@@ -408,6 +447,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_MONSTER_ID: return runMonsterIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(std::move(options), &resourceManager);
         default:
             assert(false);
             return 1;
