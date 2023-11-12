@@ -1,5 +1,6 @@
 #include "EventIR.h"
 
+#include <span>
 #include <string>
 
 #include "Engine/Events/EventEnums.h"
@@ -717,17 +718,8 @@ std::string EventIR::toString() const {
         case EVENT_ToggleActorFlag:
             return fmt::format("{}: ToggleActorFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
         case EVENT_RandomGoTo:
-            {
-                std::string jmps;
-                for (int i = 0 ; i < data.random_goto_descr.random_goto_len ; i++) {
-                    if (i) {
-                        jmps += fmt::format(", {}", data.random_goto_descr.random_goto[i]);
-                    } else {
-                        jmps += fmt::format("{}", data.random_goto_descr.random_goto[i]);
-                    }
-                }
-                return fmt::format("{}: RandomJmp -> ({})", step, jmps);
-            }
+            return fmt::format("{}: RandomJmp -> ({})", step,
+                               fmt::join(std::span(data.random_goto_descr.random_goto).subspan(0, data.random_goto_descr.random_goto_len), ", "));
         case EVENT_InputString:
             if (data.text_id < engine->_levelStrings.size()) {
                  return fmt::format("{}: InputString(\"{}\")", step, engine->_levelStrings[data.text_id]);
