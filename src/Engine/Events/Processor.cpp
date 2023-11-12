@@ -253,7 +253,13 @@ void onTimer() {
 
     timerGuard = pParty->GetPlayingTime();
 
+    fmt::println(stderr, "onTimer:pParty->GetPlayingTime() = {}", pParty->GetPlayingTime().value);
+
+    int i = 0;
     for (MapTimer &timer : onTimerTriggers) {
+        fmt::println(stderr, "onTimer:onTimerTriggers[{}] = Timer({}, {}, {}, {}, {}, {})",
+                   i++, timer.interval.value, timer.timeInsideDay.value, timer.altInterval.value, timer.alarmTime.value, timer.eventId, timer.eventStep);
+
         checkTimer(timer);
     }
 
