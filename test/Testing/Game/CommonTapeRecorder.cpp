@@ -1,7 +1,7 @@
 #include "CommonTapeRecorder.h"
 
 #include <cassert>
-#include <ranges> // NOLINT: not a C header
+#include <ranges>
 
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/Actor.h"

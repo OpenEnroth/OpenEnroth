@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include <compare> // NOLINT
+#include <compare>
 #include <cstddef>
 #include <iterator>
 

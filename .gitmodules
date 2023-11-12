@@ -38,3 +38,6 @@
 [submodule "thirdparty/spdlog"]
 	path = thirdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "thirdparty/cpplint"]
+	path = thirdparty/cpplint
+	url = https://github.com/cpplint/cpplint.git

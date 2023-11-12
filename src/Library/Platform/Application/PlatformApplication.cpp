@@ -1,7 +1,7 @@
 #include "PlatformApplication.h"
 
 #include <cassert>
-#include <ranges> // NOLINT
+#include <ranges>
 
 #include "Library/Platform/Proxy/ProxyPlatform.h"
 #include "Library/Platform/Proxy/ProxyEventLoop.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include <span> // NOLINT: linter chokes on this one.
+#include <span>
 #include <memory>
 #include <algorithm>
 #include <type_traits>

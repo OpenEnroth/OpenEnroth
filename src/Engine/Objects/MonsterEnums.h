@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <span> // NOLINT
+#include <span>
 
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"

@@ -2,11 +2,8 @@ find_package(PythonInterp)
 
 set(CPPLINT_VERSION "1.6.1")
 
-if(PYTHONINTERP_FOUND AND NOT CPPLINT_FOUND)
-  file(DOWNLOAD "https://github.com/cpplint/cpplint/archive/refs/tags/${CPPLINT_VERSION}.tar.gz" "${CMAKE_CURRENT_BINARY_DIR}/cpplint.tar.gz")
-  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xz cpplint.tar.gz
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  set(CPPLINT_COMMAND "${CMAKE_CURRENT_BINARY_DIR}/cpplint-${CPPLINT_VERSION}/cpplint.py" CACHE FILEPATH "CppLint command")
+if(PYTHONINTERP_FOUND)
+  set(CPPLINT_COMMAND "${PROJECT_SOURCE_DIR}/thirdparty/cpplint/cpplint.py" CACHE FILEPATH "CppLint command")
   set(CPPLINT_FOUND ON CACHE BOOL "CppLint found")
 endif()
 
