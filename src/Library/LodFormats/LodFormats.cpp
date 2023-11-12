@@ -1,7 +1,7 @@
 #include "LodFormats.h"
 
 #include <optional>
-#include <span> // NOLINT: not a C header.
+#include <span>
 #include <vector>
 
 #include "LodFormatSnapshots.h"

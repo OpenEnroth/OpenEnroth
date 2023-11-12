@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <string>
-#include <span> // NOLINT
+#include <span>
 #include <type_traits>
 
 #include "Library/Binary/BinaryConcepts.h"

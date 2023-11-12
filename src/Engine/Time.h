@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <compare> // NOLINT: linter chokes on this one for no reason.
+#include <compare>
 
 const int game_starting_year = 1168;
 

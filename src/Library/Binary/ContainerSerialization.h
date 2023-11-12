@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include <span> // NOLINT
+#include <span>
 #include <array>
 
 #include "MemCopySerialization.h"
