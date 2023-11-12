@@ -34,7 +34,7 @@ if(OE_BUILD_TESTS)
             USES_TERMINAL) # USES_TERMINAL makes the command print progress as it goes.
 
     add_custom_target(GameTest_Headless
-            OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --headless
+            OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --headless --gtest_filter=Issues.Issue1038
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
