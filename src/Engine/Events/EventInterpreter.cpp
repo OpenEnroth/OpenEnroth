@@ -1,6 +1,7 @@
 #include <string>
 #include <utility>
 #include <functional>
+#include <ranges>
 
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/EventIR.h"
@@ -117,20 +118,10 @@ static bool doForChosenPlayer(CharacterChoosePolicy who, RandomEngine *rng, std:
 }
 
 int EventInterpreter::executeOneEvent(int step, bool isNpc) {
-    EventIR ir;
-    bool stepFound = false;
-
-    for (const EventIR &irTmp : _events) {
-        if (irTmp.step == step) {
-            ir = irTmp;
-            stepFound = true;
-            break;
-        }
-    }
-
-    if (!stepFound) {
+    auto pos = std::ranges::find(_events, step, &EventIR::step);
+    if (pos == _events.end())
         return -1;
-    }
+    const EventIR &ir = *pos;
 
     // In NPC mode must process only NPC dialogue related events plus Exit
     if (isNpc) {
