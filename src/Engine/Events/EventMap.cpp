@@ -1,5 +1,7 @@
 #include "EventMap.h"
 
+#include <ranges>
+#include <tuple>
 #include <vector>
 #include <utility>
 
@@ -59,21 +61,24 @@ const std::vector<EventIR>& EventMap::events(int eventId) const {
 }
 
 std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
-    std::vector<EventTrigger> triggers;
+    std::vector<EventTrigger> result;
 
     for (const auto &[id, events] : _eventsById) {
         for (const EventIR &event : events) {
+            // As retarded as it might look, there are scripts that have THREE EVENT_OnLongTimer instructions.
+            // Thus, we might have several event triggers for the same event id.
             if (event.type == triggerType) {
                 EventTrigger trigger;
                 trigger.eventId = id;
                 trigger.eventStep = event.step;
-
-                triggers.push_back(trigger);
+                result.push_back(trigger);
             }
         }
     }
 
-    return triggers;
+    // Need to sort the result so that the order doesn't depend on how the events were laid out in the hash map.
+    std::ranges::sort(result, std::less(), [] (const EventTrigger &value) { return std::tie(value.eventId, value.eventStep); }); // NOLINT
+    return result;
 }
 
 bool EventMap::hasHint(int eventId) const {
