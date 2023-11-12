@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <utility>
+#include <ranges>
 
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
@@ -59,21 +60,26 @@ const std::vector<EventIR>& EventMap::events(int eventId) const {
 }
 
 std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
-    std::vector<EventTrigger> triggers;
+    assert(triggerType == EVENT_OnTimer || triggerType == EVENT_OnLongTimer || triggerType == EVENT_OnMapLeave || triggerType == EVENT_OnMapReload);
+
+    std::vector<EventTrigger> result;
 
     for (const auto &[id, events] : _eventsById) {
-        for (const EventIR &event : events) {
-            if (event.type == triggerType) {
-                EventTrigger trigger;
-                trigger.eventId = id;
-                trigger.eventStep = event.step;
+        assert(std::ranges::count(events, triggerType, &EventIR::type) <= 1); // TODO(captainurist): actually check this on script load & throw!
 
-                triggers.push_back(trigger);
-            }
-        }
+        auto pos = std::ranges::find(events, triggerType, &EventIR::type);
+        if (pos == events.end())
+            continue;
+        const EventIR &event = *pos;
+
+        EventTrigger trigger;
+        trigger.eventId = id;
+        trigger.eventStep = event.step;
+        result.push_back(trigger);
     }
 
-    return triggers;
+    std::ranges::sort(result, std::less(), &EventTrigger::eventId);
+    return result;
 }
 
 bool EventMap::hasHint(int eventId) const {
