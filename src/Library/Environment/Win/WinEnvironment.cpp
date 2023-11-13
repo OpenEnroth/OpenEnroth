@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <array>
+#include <memory>
 
 #include "Utility/Win/Unicode.h"
 

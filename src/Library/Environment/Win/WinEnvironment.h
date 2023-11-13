@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Library/Environment/Interface/Environment.h"
-
 #include <string>
+
+#include "Library/Environment/Interface/Environment.h"
 
 class WinEnvironment : public Environment {
  public:
