@@ -256,7 +256,7 @@ var searchData=
   ['iswindowswitchable_253',['IsWindowSwitchable',['../Game_8cpp.html#aa1d1c6a07a8b91c9d92ccca610eac803',1,'Game.cpp']]],
   ['iszombie_254',['IsZombie',['../classCharacter.html#a56201818b529417bd68fe46431682be4',1,'Character']]],
   ['item_255',['item',['../classPid.html#ae5386e261f7a2a926fbe68825de7c990',1,'Pid']]],
-  ['itembuyingpriceforplayer_256',['itemBuyingPriceForPlayer',['../classPriceCalculator.html#a3ce92d18fd294562b2b0dd648ad33227',1,'PriceCalculator']]],
+  ['itembuyingpriceforplayer_256',['itemBuyingPriceForPlayer',['../classPriceCalculator.html#a596e06bac456a7882d27a909edebaf6b',1,'PriceCalculator']]],
   ['itemdamagefromactor_257',['ItemDamageFromActor',['../Actor_8cpp.html#ae7a3499483c420189193183f9bb46a4a',1,'ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3i *pVelocity):&#160;Actor.cpp'],['../Actor_8h.html#ae7a3499483c420189193183f9bb46a4a',1,'ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3i *pVelocity):&#160;Actor.cpp']]],
   ['itemdropformonstertype_258',['itemDropForMonsterType',['../MonsterEnums_8cpp.html#a9f3c35b5fa492fc06dbff2c8e686a570',1,'itemDropForMonsterType(MonsterType monsterType):&#160;MonsterEnums.cpp'],['../MonsterEnums_8h.html#a9f3c35b5fa492fc06dbff2c8e686a570',1,'itemDropForMonsterType(MonsterType monsterType):&#160;MonsterEnums.cpp']]],
   ['itemenchanted_259',['ItemEnchanted',['../structItemGen.html#a8902a3ecb1021c2e644ad79a1d8988ae',1,'ItemGen']]],

@@ -1422,7 +1422,7 @@ var searchData=
   ['item_5fwooden_5fshield_1419',['ITEM_WOODEN_SHIELD',['../ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0bac9f3cb728e66490e1e00cdf01a61dbe7',1,'ItemEnums.h']]],
   ['item_5fzealot_5fmace_1420',['ITEM_ZEALOT_MACE',['../ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0ba9036ebaf51fad659c052ae1a3cb4cf7f',1,'ItemEnums.h']]],
   ['itemamountinshop_1421',['itemAmountInShop',['../UIHouses_8cpp.html#a7bccd008c0f617f9cad0bf5892d89a31',1,'itemAmountInShop():&#160;UIHouses.cpp'],['../UIHouses_8h.html#a7bccd008c0f617f9cad0bf5892d89a31',1,'itemAmountInShop():&#160;UIHouses.cpp']]],
-  ['itembuyingpriceforplayer_1422',['itemBuyingPriceForPlayer',['../classPriceCalculator.html#a3ce92d18fd294562b2b0dd648ad33227',1,'PriceCalculator']]],
+  ['itembuyingpriceforplayer_1422',['itemBuyingPriceForPlayer',['../classPriceCalculator.html#a596e06bac456a7882d27a909edebaf6b',1,'PriceCalculator']]],
   ['itemdamagefromactor_1423',['ItemDamageFromActor',['../Actor_8h.html#ae7a3499483c420189193183f9bb46a4a',1,'ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3i *pVelocity):&#160;Actor.cpp'],['../Actor_8cpp.html#ae7a3499483c420189193183f9bb46a4a',1,'ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3i *pVelocity):&#160;Actor.cpp']]],
   ['itemdesc_1424',['ItemDesc',['../structItemDesc.html',1,'']]],
   ['itemdropformonstertype_1425',['itemDropForMonsterType',['../MonsterEnums_8h.html#a9f3c35b5fa492fc06dbff2c8e686a570',1,'itemDropForMonsterType(MonsterType monsterType):&#160;MonsterEnums.cpp'],['../MonsterEnums_8cpp.html#a9f3c35b5fa492fc06dbff2c8e686a570',1,'itemDropForMonsterType(MonsterType monsterType):&#160;MonsterEnums.cpp']]],
