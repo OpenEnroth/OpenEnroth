@@ -69,7 +69,7 @@ int PriceCalculator::itemIdentificationPriceForPlayer(const Character *player, f
     return std::max(1, actualCost);
 }
 
-int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, unsigned int uRealValue, float priceMultiplier) {
+int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier) {
     int price = applyMerchantDiscount(player, uRealValue * priceMultiplier);
 
     if (price < uRealValue) {  // price should always be at least item value

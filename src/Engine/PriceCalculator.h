@@ -76,7 +76,7 @@ class PriceCalculator {
      *
      * Note: originally method of Character class.
      */
-    static int itemBuyingPriceForPlayer(const Character *player, unsigned int uRealValue, float priceMultiplier);
+    static int itemBuyingPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier);
 
     /**
      * @offset 0x4B8102
