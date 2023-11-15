@@ -737,20 +737,16 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                     default:
                         assert(false && "Unreachable");
                 }
-                // if (!pQueue[queue_index].AI_action_type)
+
                 if ((double)v9 < 307.2) {
                     Actor::AI_MeleeAttack(actor_id, v22, &v18);
                     pQueue[queue_index].AI_action_type = TE_AI_MELEE_ATTACK;
-                    pQueue[queue_index].uActionLength =
-                        pActors[actor_id].currentActionLength;
-                    return;
-                } else {
+                } else if (pQueue[queue_index].AI_action_type == TE_AI_STAND) {
                     Actor::AI_Stand(actor_id, v22, 64, &v18);
-                    pQueue[queue_index].AI_action_type = TE_AI_STAND;
-                    pQueue[queue_index].uActionLength =
-                        pActors[actor_id].currentActionLength;
-                    return;
                 }
+
+                pQueue[queue_index].uActionLength = pActors[actor_id].currentActionLength;
+                return;
             } else {
                 Actor::AI_Stand(actor_id, v22, 64, &v18);
                 pQueue[queue_index].AI_action_type = TE_AI_STAND;
