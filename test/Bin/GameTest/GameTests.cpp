@@ -1762,7 +1762,8 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->special_enchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
-    EXPECT_EQ(damageRange, tape(/*1 * 2*/ 3 /*TODO WHY?*/, (43 + 13) * 2));
+    // 2 -> 3 change here can happen. This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two times in a row.
+    EXPECT_EQ(damageRange, tape(/*1 * 2*/ 3, (43 + 13) * 2));
 }
 
 GAME_TEST(Issues, Issue1338) {

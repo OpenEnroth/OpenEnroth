@@ -383,7 +383,8 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     int FoundFaceStore[5] = { 0 };
     int NumFoundFaceStore = 0;
     int backupboundingsector{ 0 };
-    std::vector<int> foundSectors;
+    std::optional<int> foundSector;
+    bool singleSectorFound = false;
 
     // loop through sectors
     for (uint i = 1; i < pSectors.size(); ++i) {
@@ -402,8 +403,12 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
         if (!FloorsAndPortals) continue;
         if (!pSector->pFloors) continue;
 
-        if (std::find(foundSectors.begin(), foundSectors.end(), i) == foundSectors.end())
-            foundSectors.push_back(i);
+        if (!foundSector) {
+            foundSector = i;
+            singleSectorFound = true;
+        } else if (*foundSector != i) {
+            singleSectorFound = false;
+        }
 
         // loop over check faces
         for (uint z = 0; z < FloorsAndPortals; ++z) {
@@ -430,8 +435,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
         return this->pFaces[FoundFaceStore[0]].uSectorID;
 
     // only one sector found
-    if (foundSectors.size() == 1)
-        return foundSectors[0];
+    if (singleSectorFound) return *foundSector;
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
@@ -446,7 +450,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // when multiple possibilities are found - cycle through and use the closer one to party
     int pSectorID = 0, backupID = 0;
-    int MinZDist = 0xFFFFFFu, backupDist = 0xFFFFFFu;
+    int MinZDist = INT32_MAX, backupDist = INT32_MAX;
     if (NumFoundFaceStore > 0) {
         int CalcZDist = MinZDist;
         for (int s = 0; s < NumFoundFaceStore; ++s) {

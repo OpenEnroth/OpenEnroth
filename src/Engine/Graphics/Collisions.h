@@ -41,7 +41,6 @@ struct CollisionState {
     BBoxf bbox;
 
     Vec3f collisionPos;  // Point at which nearest collision occurs (touching radii)
-    Vec3f collisionNorm;  // Normal vector outwards of collision if known
 };
 
 extern CollisionState collision_state;
@@ -126,13 +125,13 @@ void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool*
 
 /**
  * Finds whether this quadratic (of the form AX^2 + BX + C = 0) can be solved and if the solution is smaller
- * than out current solution.
+ * than out current solution. Returns true if a smaller non negative solution is found.
  * 
  * @param a                             A component of quadratic.
  * @param b                             B component of quadratic.
  * @param c                             C component of quadratic.
- * @param curSoln                       Current movement distance along the `dir` axis.
- * @param[out] outNewSoln               New movement distance along the 'dir' axis on true. This value is not set if the function
+ * @param curSoln                       Current input smallest solution to test against.
+ * @param[out] outNewSoln               New smallest non negative solution. This value is not set if the function
  *                                      returns false.
  * @param inside                        If you want collision with any point inside radius - for cylinder decorations/party
  * @return                              True if the quadratic has a valid solution that is smaller than the input curSoln.
