@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 
+#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Flags.h"
 
 /**
@@ -138,6 +140,14 @@ enum class SoundId : int16_t {
     SOUND_quest = 20001,
 };
 using enum SoundId;
+
+inline SoundId doorClosedSound(SoundId doorSound) {
+    assert(doorSound == SOUND_wood_door0101 || doorSound == SOUND_wood_door0201 || doorSound == SOUND_wood_door0301 ||
+           doorSound == SOUND_wood_door0401 || doorSound == SOUND_wood_door0501 || doorSound == SOUND_stone_door0101 ||
+           doorSound == SOUND_stone_door0201 || doorSound == SOUND_stone_door0301 || doorSound == SOUND_stone_door0401 ||
+           doorSound == SOUND_stone_door0501);
+    return static_cast<SoundId>(std::to_underlying(doorSound) + 1);
+}
 
 /**
  * Enum value is used to load mp3 files, which are named `2.mp3`-`20.mp3`.

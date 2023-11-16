@@ -7305,6 +7305,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
             }
         }
         if (speechCount) {
+            // TODO(captainurist): encapsulate the logic here.
             int pickedVariant = speechVariants[speech][vrng->random(speechCount)];
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {

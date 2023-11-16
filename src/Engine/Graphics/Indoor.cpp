@@ -54,6 +54,7 @@
 IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
+// TODO(captainurist): move to SoundEnums.h?
 static constexpr IndexedArray<SoundId, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocationID = {
     {MAP_EMERALD_ISLAND,            SOUND_wood_door0101},
     {MAP_HARMONDALE,                SOUND_wood_door0101},
@@ -692,7 +693,7 @@ void BLV_UpdateDoors() {
                 openDistance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundId)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
+                    pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
@@ -704,7 +705,7 @@ void BLV_UpdateDoors() {
                 openDistance = 0;
                 door->uState = BLVDoor::Closed;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundId)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
+                    pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
                 openDistance = door->uMoveLength - closeDistance;
                 if (shouldPlaySound)
