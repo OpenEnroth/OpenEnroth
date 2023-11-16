@@ -28,6 +28,6 @@ void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
         _mapSounds[sound.uSoundID] = sound;
 }
 
-SoundInfo *SoundList::soundInfo(int soundId) {
+SoundInfo *SoundList::soundInfo(SoundID soundId) {
     return valuePtr(_mapSounds, soundId);
 }

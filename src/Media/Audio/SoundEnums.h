@@ -2,8 +2,8 @@
 
 #include "Utility/Flags.h"
 
-// TODO(captainurist): #enum class + codegen
-enum SoundID {
+// TODO(captainurist): codegen?
+enum class SoundID {
     SOUND_Invalid = 0,
     SOUND_enter = 6,
     SOUND_WoodDoorClosing = 7,
@@ -122,6 +122,7 @@ enum SoundID {
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
 };
+using enum SoundID;
 
 /**
  * Enum value is used to load mp3 files, which are named `2.mp3`-`20.mp3`.

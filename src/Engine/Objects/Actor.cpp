@@ -1849,7 +1849,7 @@ void Actor::Die(unsigned int uActorID) {
 
 void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
     SoundID sound_sample_id = (SoundID)pActors[uActorID].soundSampleIds[std::to_underlying(uSoundID)];
-    if (sound_sample_id) {
+    if (sound_sample_id != SOUND_Invalid) {
         if (!pActors[uActorID].buffs[ACTOR_BUFF_SHRINK].Active()) {
             pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
         } else {
