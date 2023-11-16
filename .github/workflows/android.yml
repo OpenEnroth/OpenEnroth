@@ -128,8 +128,8 @@ jobs:
           tag_name: '${{inputs.releaseTag}}'
           files: |
             android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
-            android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
-            android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
+            # android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
+            # android/openenroth/build/outputs/apk/release/openenroth-release-signed.apk
 
       - name: Cleanup ccache
         run: |
