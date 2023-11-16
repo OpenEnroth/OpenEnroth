@@ -31,25 +31,25 @@ void reconstruct(const T &src, T *dst) {
 
 
 //
-// Standard conversions support.
+// static_cast support.
 //
 
 template<class From, class To>
-struct ConvertTag {};
+struct CastTag {};
 
 namespace tags {
 template<class From, class To>
-constexpr ConvertTag<From, To> convert;
+constexpr CastTag<From, To> cast;
 } // namespace tags
 
 template<class T1, class T2>
-void snapshot(const T1 &src, T2 *dst, ConvertTag<T1, T2>) {
-    *dst = src;
+void snapshot(const T1 &src, T2 *dst, CastTag<T1, T2>) {
+    *dst = static_cast<T2>(src);
 }
 
 template<class T1, class T2>
-void reconstruct(const T1 &src, T2 *dst, ConvertTag<T1, T2>) {
-    *dst = src;
+void reconstruct(const T1 &src, T2 *dst, CastTag<T1, T2>) {
+    *dst = static_cast<T2>(src);
 }
 
 

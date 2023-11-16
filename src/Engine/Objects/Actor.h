@@ -9,6 +9,8 @@
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
 
+#include "Media/Audio/SoundEnums.h"
+
 #include "Library/Geometry/Vec.h"
 
 #include "Utility/IndexedArray.h"
@@ -97,7 +99,7 @@ class Actor {
     /**
      * @offset 0x402CED
      */
-    static void playSound(unsigned int uActorID, ActorSounds uSoundID);
+    static void playSound(unsigned int uActorID, ActorSound uSoundID);
     static void Die(unsigned int uActorID);
     static void resurrect(unsigned int uActorID);
     static void AI_Bored(unsigned int uActorID, Pid uObjID,
@@ -224,7 +226,7 @@ class Actor {
                                          // ncp carries (ie lute from bard)
     unsigned int currentActionTime = 0;
     IndexedArray<uint16_t, ANIM_First, ANIM_Last> spriteIds = {{}};
-    std::array<uint16_t, 4> soundSampleIds = {{}};  // 1 die     3 bored
+    IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds = {{}};
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
     std::array<ItemGen, 4> items;
     unsigned int group = 0;

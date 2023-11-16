@@ -1847,8 +1847,8 @@ void Actor::Die(unsigned int uActorID) {
     }
 }
 
-void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
-    SoundId sound_sample_id = (SoundId)pActors[uActorID].soundSampleIds[std::to_underlying(uSoundID)];
+void Actor::playSound(unsigned int uActorID, ActorSound uSoundID) {
+    SoundId sound_sample_id = pActors[uActorID].soundSampleIds[uSoundID];
     if (sound_sample_id != SOUND_Invalid) {
         if (!pActors[uActorID].buffs[ACTOR_BUFF_SHRINK].Active()) {
             pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
@@ -2322,7 +2322,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     radius = v3->uMonsterRadius;
     moveSpeed = v9->uBaseSpeed;
     if (!(load_sounds_if_bit1_set & 1)) {
-        for (int i = 0; i < 4; ++i) soundSampleIds[i] = v3->pSoundSampleIDs[i];
+        soundSampleIds = v3->pSoundSampleIDs;
     }
 }
 

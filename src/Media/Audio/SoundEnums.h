@@ -1,12 +1,14 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Utility/Flags.h"
 
 /**
  * There's 2000+ sounds in MM7, and there is little point in adding all of them here via codegen. Only the ids that are
  * actually used in the codebase should be kept in this enum.
  */
-enum class SoundId : int {
+enum class SoundId : int16_t {
     SOUND_Invalid = 0,
     SOUND_enter = 6,
     SOUND_WoodDoorClosing = 7,
