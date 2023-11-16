@@ -24,6 +24,7 @@ void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
 
     assert(!sounds.empty());
 
+    // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
     for (const SoundInfo &sound : sounds)
         _mapSounds[sound.uSoundID] = sound;
 }
