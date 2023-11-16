@@ -767,7 +767,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 // }
                 //            v125 =
                 //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-                //            - 1] + 1; pAudioPlayer->playSound((SoundID)v125,
+                //            - 1] + 1; pAudioPlayer->playSound(v125,
                 //            v124, 0, -1, 0, v97, 0, 0);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
                 return 0;
@@ -820,7 +820,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 //            v124 |= 2;
                 //            v125 =
                 //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id]
-                //            + 1; pAudioPlayer->playSound((SoundID)v125, v124,
+                //            + 1; pAudioPlayer->playSound(v125, v124,
                 //            0, -1, 0, v16, 0, 0);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
                 return 0;
@@ -891,7 +891,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        v124 |= v124 | 2;
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
+            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v97, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             return 0;
@@ -930,7 +930,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        v124 |= v124 | 2;
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
+            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v16, 0, 0);
             pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             return 0;
@@ -952,7 +952,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        v124 |= v124 | 2;
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
+            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v16, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             return 0;
@@ -975,7 +975,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             // }
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125,
+            //        - 1] + 1; pAudioPlayer->playSound(v125,
             //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
             //        0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
@@ -1006,7 +1006,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        v124 |= 2;
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
+            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v16, 0, 0);
             pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             return 0;
@@ -1027,7 +1027,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             // }
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125,
+            //        - 1] + 1; pAudioPlayer->playSound(v125,
             //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
             //        0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
@@ -1053,7 +1053,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        v124 |= 2;
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
+            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v97, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             return 0;
@@ -1097,7 +1097,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                     //                v115 = 8 * uLayingItemID;
                     //                v115 |= Pid(OBJECT_Item, uLayingItemID);
                     //                v125 = v143 + 1;
-                    //                pAudioPlayer->playSound((SoundID)v125,
+                    //                pAudioPlayer->playSound(v125,
                     //                v115, 0, -1, 0, v114, 0, 0);
                     pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
                 } else {
@@ -1176,7 +1176,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 //            v115 = 8 * uLayingItemID;
                 //            v115 |= Pid(OBJECT_Item, uLayingItemID);
                 //            v125 = v143 + 1;
-                //            pAudioPlayer->playSound((SoundID)v125, v115, 0,
+                //            pAudioPlayer->playSound(v125, v115, 0,
                 //            -1, 0, v114, 0, 0);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             } else {
@@ -1221,7 +1221,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             (!pSpriteObjects[uLayingItemID].uSoundID) v47 = 0; else v47 =
             (int16_t)pSpriteObjects[uLayingItemID].uSoundID + 4; v125 =
             word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] +
-            1; pAudioPlayer->playSound((SoundID)v125, v102, 0, -1, 0, v47, 0,
+            1; pAudioPlayer->playSound(v125, v102, 0, -1, 0, v47, 0,
             0); return 0;
             }
             return 1;
@@ -1255,7 +1255,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             // }
             //        v125 =
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v102, 0,
+            //        - 1] + 1; pAudioPlayer->playSound(v125, v102, 0,
             //        -1, 0, v47, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
             return 0;
