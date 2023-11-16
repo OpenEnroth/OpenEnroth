@@ -961,7 +961,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
         const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
 
-        if (decoration->uSoundID) {
+        if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
         }
 

@@ -1149,7 +1149,7 @@ bool OutdoorLocation::PrepareDecorations() {
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
         const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
 
-        if (decoration->uSoundID) {
+        if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
         }
 

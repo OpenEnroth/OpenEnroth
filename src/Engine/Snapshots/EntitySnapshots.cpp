@@ -1551,7 +1551,7 @@ void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uLightRadius = src.uLightRadius;
     dst->uSpriteID = src.uSpriteID;
     dst->uFlags = DecorationDescFlags(src.uFlags);
-    dst->uSoundID = src.uSoundID;
+    dst->uSoundID = static_cast<SoundId>(src.uSoundID);
 
     dst->uColoredLight.r = 255;
     dst->uColoredLight.g = 255;

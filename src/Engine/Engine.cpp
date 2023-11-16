@@ -936,7 +936,7 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
     //  level decoration sound
     for (int decorIdx : decorationsWithSound) {
         const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
-        pAudioPlayer->playSound(SoundId(decoration->uSoundID), SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
+        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
     }
 }
 
