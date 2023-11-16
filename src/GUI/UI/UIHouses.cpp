@@ -707,6 +707,7 @@ void BackToHouseMenu() {
 
 void playHouseSound(HouseId houseID, HouseSoundType type) {
     if (houseID != HOUSE_INVALID && pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId) {
+        // TODO(captainurist): encapsulate
         int roomSoundId = pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId;
         SoundId soundId = SoundId(std::to_underlying(type) + 100 * (roomSoundId + 300));
         pAudioPlayer->playHouseSound(soundId, true);
