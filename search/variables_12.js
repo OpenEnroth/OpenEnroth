@@ -94,14 +94,13 @@ var searchData=
   ['returntogame_91',['ReturnToGame',['../classGameConfig_1_1Keybindings.html#a3c0b4f19f99896ac5fbf29556ba6675a',1,'GameConfig::Keybindings::ReturnToGame()'],['../classGameConfig_1_1Gamepad.html#ae8b3d4244a53ff98bb37b0b8870eaab8',1,'GameConfig::Gamepad::ReturnToGame()']]],
   ['reversebits_92',['reverseBits',['../namespacetags.html#ad9e7ac13c05fddd8f86f19d2b2ace2a4',1,'tags']]],
   ['rhw_93',['rhw',['../structRenderVertexD3D3.html#a20896950efa27111b72e1f8f1ab8faab',1,'RenderVertexD3D3']]],
-  ['right_94',['Right',['../classGameConfig_1_1Gamepad.html#a337e2749f5267e8c193d01630e156b4a',1,'GameConfig::Gamepad']]],
-  ['right_95',['right',['../structMargins.html#ae968561a502e7a0d35a1a2cd29e0a83d',1,'Margins']]],
-  ['right_96',['Right',['../classGameConfig_1_1Keybindings.html#aadb44b250dd1f51a368522dc1a98de1f',1,'GameConfig::Keybindings']]],
-  ['rightclickitemactionperformed_97',['rightClickItemActionPerformed',['../UIPopup_8cpp.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp'],['../UIPopup_8h.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp']]],
-  ['rightclickportraitxmax_98',['RightClickPortraitXmax',['../UIPopup_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'UIPopup.cpp']]],
-  ['rightclickportraitxmin_99',['RightClickPortraitXmin',['../UIPopup_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'UIPopup.cpp']]],
-  ['riogrande_100',['RioGrande',['../classColorTable.html#aa58f8586ab105fa9a9283df783386377',1,'ColorTable']]],
-  ['rolloff_5ffactor_101',['ROLLOFF_FACTOR',['../OpenALSoundProvider_8h.html#a88fd92062e5dcf8537a2aed776458487',1,'OpenALSoundProvider.h']]],
-  ['rootname_102',['rootName',['../structLodInfo.html#aafc0bb6295459050733f38f2675a4427',1,'LodInfo']]],
-  ['rotation_5fspeed_103',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
+  ['right_94',['right',['../structMargins.html#ae968561a502e7a0d35a1a2cd29e0a83d',1,'Margins']]],
+  ['right_95',['Right',['../classGameConfig_1_1Keybindings.html#aadb44b250dd1f51a368522dc1a98de1f',1,'GameConfig::Keybindings::Right()'],['../classGameConfig_1_1Gamepad.html#a337e2749f5267e8c193d01630e156b4a',1,'GameConfig::Gamepad::Right()']]],
+  ['rightclickitemactionperformed_96',['rightClickItemActionPerformed',['../UIPopup_8cpp.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp'],['../UIPopup_8h.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp']]],
+  ['rightclickportraitxmax_97',['RightClickPortraitXmax',['../UIPopup_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'UIPopup.cpp']]],
+  ['rightclickportraitxmin_98',['RightClickPortraitXmin',['../UIPopup_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'UIPopup.cpp']]],
+  ['riogrande_99',['RioGrande',['../classColorTable.html#aa58f8586ab105fa9a9283df783386377',1,'ColorTable']]],
+  ['rolloff_5ffactor_100',['ROLLOFF_FACTOR',['../OpenALSoundProvider_8h.html#a88fd92062e5dcf8537a2aed776458487',1,'OpenALSoundProvider.h']]],
+  ['rootname_101',['rootName',['../structLodInfo.html#aafc0bb6295459050733f38f2675a4427',1,'LodInfo']]],
+  ['rotation_5fspeed_102',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];
