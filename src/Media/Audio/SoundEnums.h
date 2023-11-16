@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utility/Flags.h"
+
 // TODO(captainurist): #enum class + codegen
 enum SoundID {
     SOUND_Invalid = 0,
@@ -160,11 +162,13 @@ enum class SOUND_TYPE {
 };
 using enum SOUND_TYPE;
 
-// TODO(captainurist): #enum class
-enum SOUND_FLAG {
+enum class SOUND_FLAG {
     SOUND_FLAG_LOCKED = 0x1,
     SOUND_FLAG_3D = 0x2,
 };
+using enum SOUND_FLAG;
+MM_DECLARE_FLAGS(SOUND_FLAGS, SOUND_FLAG)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SOUND_FLAGS)
 
 enum class SoundPlaybackMode {
     /** Normal sound, requires a pid. */

@@ -1709,7 +1709,7 @@ void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
     reconstruct(src.pSoundName, &dst->sName);
     dst->uSoundID = src.uSoundID;
     dst->eType = static_cast<SOUND_TYPE>(src.eType);
-    dst->uFlags = src.uFlags;
+    dst->uFlags = static_cast<SOUND_FLAGS>(src.uFlags);
 }
 
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {
