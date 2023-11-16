@@ -39,6 +39,8 @@ struct CollisionState {
     Pid pid;  // Pid of the object that we're collided with.
     int ignored_face_id;  // Don't check collisions with this face.
     BBoxf bbox;
+
+    Vec3f collisionPos;  // Point at which nearest collision occurs (touching radii)
 };
 
 extern CollisionState collision_state;
@@ -119,4 +121,19 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying);
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent);
 
-void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID, bool* partySlopeMod);
+void ProcessPartyCollisionsODM(Vec3f* partyNewPos, Vec3f* partyInputSpeed, bool* partyIsOnWater, int* floorFaceId, bool* partyNotOnModel, bool* partyHasHitModel, int* triggerID);
+
+/**
+ * Finds whether this quadratic (of the form AX^2 + BX + C = 0) can be solved and if the solution is smaller
+ * than out current solution. Returns true if a smaller non negative solution is found.
+ * 
+ * @param a                             A component of quadratic.
+ * @param b                             B component of quadratic.
+ * @param c                             C component of quadratic.
+ * @param curSoln                       Current input smallest solution to test against.
+ * @param[out] outNewSoln               New smallest non negative solution. This value is not set if the function
+ *                                      returns false.
+ * @param inside                        If you want collision with any point inside radius - for cylinder decorations/party
+ * @return                              True if the quadratic has a valid solution that is smaller than the input curSoln.
+ */
+bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln, bool inside = false);
