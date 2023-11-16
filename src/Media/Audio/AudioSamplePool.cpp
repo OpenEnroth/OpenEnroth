@@ -10,7 +10,7 @@ bool AudioSamplePool::playNew(PAudioSample sample, PAudioDataSource source, bool
     return true;
 }
 
-bool AudioSamplePool::playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundID id, bool positional) {
+bool AudioSamplePool::playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundId id, bool positional) {
     update();
     for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.id == id) {
@@ -61,7 +61,7 @@ void AudioSamplePool::stop() {
     _samplePool.clear();
 }
 
-void AudioSamplePool::stopSoundId(SoundID soundId) {
+void AudioSamplePool::stopSoundId(SoundId soundId) {
     assert(soundId != SOUND_Invalid);
 
     auto it = _samplePool.begin();

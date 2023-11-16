@@ -11,10 +11,10 @@ class SoundList {
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
 
     // TODO(captainurist): should be const
-    SoundInfo *soundInfo(SoundID soundId);
+    SoundInfo *soundInfo(SoundId soundId);
 
  private:
-    std::unordered_map<SoundID, SoundInfo> _mapSounds;
+    std::unordered_map<SoundId, SoundInfo> _mapSounds;
 };
 
 extern SoundList *pSoundList;

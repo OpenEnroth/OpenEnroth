@@ -57,7 +57,7 @@ class AudioPlayer {
      * @param mode                      Playback mode.
      * @param pid                       `Pid` of sound source.
      */
-    void playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid = Pid());
+    void playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid = Pid());
 
     /**
      * Play sound of spell casting or spell sprite impact.
@@ -77,7 +77,7 @@ class AudioPlayer {
      *
      * @param id                        ID of sound.
      */
-    void playUISound(SoundID id) {
+    void playUISound(SoundId id) {
         playSound(id, SOUND_MODE_UI);
     }
 
@@ -88,7 +88,7 @@ class AudioPlayer {
      *
      * @param id                        ID of sound.
      */
-    void playExclusiveSound(SoundID id) {
+    void playExclusiveSound(SoundId id) {
         playSound(id, SOUND_MODE_EXCLUSIVE);
     }
 
@@ -99,7 +99,7 @@ class AudioPlayer {
      *
      * @param id                        ID of sound.
      */
-    void playNonResetableSound(SoundID id) {
+    void playNonResetableSound(SoundId id) {
         playSound(id, SOUND_MODE_NON_RESETTABLE);
     }
 
@@ -110,7 +110,7 @@ class AudioPlayer {
      *
      * @param id                        ID of sound.
      */
-    void playWalkSound(SoundID id) {
+    void playWalkSound(SoundId id) {
         // All walk sounds originally used Pid 804 which is Pid(OBJECT_Character, 100)
         playSound(id, SOUND_MODE_WALKING);
     }
@@ -123,7 +123,7 @@ class AudioPlayer {
      * @param isSpeech                  true if this is house greet/goodbye speech.
      *                                  false if this is entering/cloosing UI sound.
      */
-    void playHouseSound(SoundID id, bool isSpeech) {
+    void playHouseSound(SoundId id, bool isSpeech) {
         // Speech sounds originally used Pid 806 which is Pid(OBJECT_Face, 100)
         // Opening/closing sounds originally used Pid 814 which is Pid(OBJECT_Face, 101)
         playSound(id, isSpeech ? SOUND_MODE_HOUSE_SPEECH : SOUND_MODE_HOUSE_DOOR);

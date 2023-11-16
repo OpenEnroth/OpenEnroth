@@ -6,7 +6,7 @@
  * There's 2000+ sounds in MM7, and there is little point in adding all of them here via codegen. Only the ids that are
  * actually used in the codebase should be kept in this enum.
  */
-enum class SoundID : int {
+enum class SoundId : int {
     SOUND_Invalid = 0,
     SOUND_enter = 6,
     SOUND_WoodDoorClosing = 7,
@@ -125,7 +125,7 @@ enum class SoundID : int {
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
 };
-using enum SoundID;
+using enum SoundId;
 
 /**
  * Enum value is used to load mp3 files, which are named `2.mp3`-`20.mp3`.

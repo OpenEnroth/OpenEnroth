@@ -667,9 +667,9 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    SoundID eDoorSoundID = (SoundID)300;
+    SoundId eDoorSoundID = (SoundId)300;
     if (dword_6BE13C_uCurrentlyLoadedLocationID != MAP_INVALID)
-        eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+        eDoorSoundID = (SoundId)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
     for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
@@ -692,7 +692,7 @@ void BLV_UpdateDoors() {
                 openDistance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
+                    pAudioPlayer->playSound((SoundId)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
@@ -704,7 +704,7 @@ void BLV_UpdateDoors() {
                 openDistance = 0;
                 door->uState = BLVDoor::Closed;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
+                    pAudioPlayer->playSound((SoundId)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
                 openDistance = door->uMoveLength - closeDistance;
                 if (shouldPlaySound)
@@ -1754,7 +1754,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 // - for walk limit was >= 8
                 // - stop sound if delta < 8
                 if (!isAboveGround || not_high_fall) {
-                    SoundID sound = SOUND_Invalid;
+                    SoundId sound = SOUND_Invalid;
                     if (party_running_flag) {
                         if (walkDelta >= 4) {
                             if (on_water) {

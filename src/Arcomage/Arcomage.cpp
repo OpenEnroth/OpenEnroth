@@ -468,7 +468,7 @@ void DrawSparks() {
 }
 
 void ArcomageGame::playSound(unsigned int event_id) {
-    SoundID play_sound_id;
+    SoundId play_sound_id;
 
     switch (event_id) {
         case 40:

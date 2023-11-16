@@ -6455,7 +6455,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
         // play hit sound
         ItemGen *equippedArmor = playerPtr->GetArmorItem();
-        SoundID soundToPlay;
+        SoundId soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
             (equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_CHAIN &&
              equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_PLATE)) {
@@ -7309,7 +7309,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundID)pickedSoundID, SOUND_MODE_PID, Pid(OBJECT_Character, getCharacterIndex()));
+                pAudioPlayer->playSound((SoundId)pickedSoundID, SOUND_MODE_PID, Pid(OBJECT_Character, getCharacterIndex()));
             }
         }
     }
