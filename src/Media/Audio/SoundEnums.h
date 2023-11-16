@@ -151,14 +151,14 @@ enum class MusicId {
 };
 using enum MusicId;
 
-// TODO(captainurist): #enum class
-enum SOUND_TYPE {
+enum class SOUND_TYPE {
     SOUND_TYPE_LEVEL = 0,
     SOUND_TYPE_SYSTEM = 1,
     SOUND_TYPE_SWAP = 2,
     SOUND_TYPE_UNKNOWN = 3,
     SOUND_TYPE_LOCK = 4,
 };
+using enum SOUND_TYPE;
 
 // TODO(captainurist): #enum class
 enum SOUND_FLAG {
