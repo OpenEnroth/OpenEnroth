@@ -27,6 +27,7 @@
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"

@@ -8,6 +8,7 @@ set(ENGINE_SPELLS_HEADERS
         CastSpellInfo.h
         SpellBuff.h
         SpellEnums.h
+        SpellEnumFunctions.h
         Spells.h)
 
 add_library(engine_spells STATIC ${ENGINE_SPELLS_SOURCES} ${ENGINE_SPELLS_HEADERS})

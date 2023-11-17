@@ -12,6 +12,7 @@
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"

@@ -11,6 +11,7 @@ set(ENGINE_OBJECTS_SOURCES
         NPC.cpp
         ObjectList.cpp
         Character.cpp
+        CharacterEnumFunctions.cpp
         SpriteObject.cpp)
 
 set(ENGINE_OBJECTS_HEADERS

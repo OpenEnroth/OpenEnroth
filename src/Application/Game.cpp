@@ -51,6 +51,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Time.h"
