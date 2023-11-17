@@ -63,13 +63,13 @@ target_link_libraries(engine
         engine_serialization
         engine_spells
         engine_tables
-        engine_turnengine
+        engine_turn_engine
         engine_events
         library_compression
         library_logger
         library_serialization
         library_color
-        library_lodformats
+        library_lod_formats
         library_buildinfo
         utility)
 
