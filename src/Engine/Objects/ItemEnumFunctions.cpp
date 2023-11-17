@@ -1,8 +1,8 @@
-#include "ItemEnums.h"
+#include "ItemEnumFunctions.h"
 
-namespace detail {
+#include "Utility/IndexedArray.h"
 
-constinit const IndexedArray<SpellId, ITEM_FIRST_WAND, ITEM_LAST_WAND> spellForWand = {
+static constexpr IndexedArray<SpellId, ITEM_FIRST_WAND, ITEM_LAST_WAND> spellByWand = {
     {ITEM_WAND_OF_FIRE,                SPELL_FIRE_FIRE_BOLT},
     {ITEM_WAND_OF_SPARKS,              SPELL_AIR_SPARKS},
     {ITEM_WAND_OF_POISON,              SPELL_WATER_POISON_SPRAY},
@@ -34,7 +34,7 @@ constinit const IndexedArray<SpellId, ITEM_FIRST_WAND, ITEM_LAST_WAND> spellForW
     {ITEM_MYSTIC_WAND_OF_INCINERATION, SPELL_FIRE_INCINERATE}
 };
 
-constinit const IndexedArray<SpellId, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> spellForScroll = {
+static constexpr IndexedArray<SpellId, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> spellByScroll = {
     {ITEM_SCROLL_TORCH_LIGHT,           SPELL_FIRE_TORCH_LIGHT},
     {ITEM_SCROLL_FIRE_BOLT,             SPELL_FIRE_FIRE_BOLT},
     {ITEM_SCROLL_FIRE_RESISTANCE,       SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -144,7 +144,7 @@ constinit const IndexedArray<SpellId, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_S
     {ITEM_SCROLL_SOULDRINKER,           SPELL_DARK_SOULDRINKER}
 };
 
-constinit const IndexedArray<SpellId, ITEM_FIRST_SPELLBOOK, ITEM_LAST_SPELLBOOK> spellForSpellbook = {
+static constexpr IndexedArray<SpellId, ITEM_FIRST_SPELLBOOK, ITEM_LAST_SPELLBOOK> spellBySpellbook = {
     {ITEM_SPELLBOOK_TORCH_LIGHT,           SPELL_FIRE_TORCH_LIGHT},
     {ITEM_SPELLBOOK_FIRE_BOLT,             SPELL_FIRE_FIRE_BOLT},
     {ITEM_SPELLBOOK_FIRE_RESISTANCE,       SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -254,4 +254,14 @@ constinit const IndexedArray<SpellId, ITEM_FIRST_SPELLBOOK, ITEM_LAST_SPELLBOOK>
     {ITEM_SPELLBOOK_SOULDRINKER,           SPELL_DARK_SOULDRINKER}
 };
 
-} // namespace detail
+SpellId spellForSpellbook(ItemId spellbook) {
+    return spellBySpellbook[spellbook];
+}
+
+SpellId spellForScroll(ItemId scroll) {
+    return spellByScroll[scroll];
+}
+
+SpellId spellForWand(ItemId wand) {
+    return spellByWand[wand];
+}

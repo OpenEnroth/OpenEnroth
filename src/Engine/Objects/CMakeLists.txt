@@ -4,7 +4,7 @@ set(ENGINE_OBJECTS_SOURCES
         Actor.cpp
         Chest.cpp
         CombinedSkillValue.cpp
-        ItemEnums.cpp
+        ItemEnumFunctions.cpp
         Items.cpp
         MonsterEnums.cpp
         Monsters.cpp
@@ -21,6 +21,7 @@ set(ENGINE_OBJECTS_HEADERS
         CombinedSkillValue.h
         ItemEnchantment.h
         ItemEnums.h
+        ItemEnumFunctions.h
         Items.h
         Monsters.h
         MonsterEnums.h

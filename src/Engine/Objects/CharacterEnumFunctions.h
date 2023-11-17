@@ -17,6 +17,22 @@ inline Segment<CharacterSkillMastery> allSkillMasteries() {
     return {CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST};
 }
 
+inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
+    switch(maxMastery) {
+    case CHARACTER_SKILL_MASTERY_NOVICE:
+        return 4;
+    case CHARACTER_SKILL_MASTERY_EXPERT:
+        return 7;
+    case CHARACTER_SKILL_MASTERY_MASTER:
+        return 10;
+    case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+        return 11;
+    default:
+        assert(false);
+        return 0;
+    }
+}
+
 
 //
 // CharacterSkillType
