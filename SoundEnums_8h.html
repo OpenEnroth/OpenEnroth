@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1ca86c4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;310a402</span>
    </div>
   </td>
  </tr>
@@ -74,163 +74,180 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">SoundEnums.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<table class="memberdecls">
+<div class="textblock"><code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:aa4689ee7c9a692044aebd36cb0915e61"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> { <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a957af16b1cf261c6e64516f563b3ef61">SOUND_Invalid</a> = 0
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a587c0c496cd8c945f392551239c9469b">SOUND_enter</a> = 6
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aad80e5893e38e47e1012060cf3841833">SOUND_WoodDoorClosing</a> = 7
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a4a84f5e32dbc3b168efc37591e200d3f">SOUND_fireBall</a> = 8
+<tr class="memitem:ac4c17c8b309b1f9d7dc69286c18b871e"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> : int16_t { <br />
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea93e1c7f4501c1937d5a3514f97c6caf6">SOUND_Invalid</a> = 0
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea98445820e4bc7d700e8eb382cacd28f2">SOUND_enter</a> = 6
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea0bf8aa32b1ae031a8e9d10d49e509f20">SOUND_WoodDoorClosing</a> = 7
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea452c947f113d02feaef6427811bc52b4">SOUND_fireBall</a> = 8
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad33fa832c0bb2bed9c0cf6c0276d5d8f">SOUND_BoatCreaking</a> = 18
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a402dd2ff4e2da7f5a6ba63a4dbf41eec">SOUND_ClickMinus</a> = 20
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a5612c2c8eb93f59313924c12dcab35c5">SOUND_ClickMovingSelector</a> = 21
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a2495502b052acad65fd5a45d10666342">SOUND_ClickPlus</a> = 23
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea50f10954969fcde33b8969ba945b57c7">SOUND_BoatCreaking</a> = 18
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea791e7f3f1dd5d5714bb65eb93a8d9112">SOUND_ClickMinus</a> = 20
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae293a8bc789172c2c9666bb4ecaa015a">SOUND_ClickMovingSelector</a> = 21
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea58de81001ed23ea51ac05ae9c60f4aec">SOUND_ClickPlus</a> = 23
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61acace095de5eeec3b2f877027f8760b8f">SOUND_ClickSkill</a> = 24
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a123c1f950456a478ca87f718b9f8d30d">SOUND_error</a> = 27
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a31e8c8a2f9ceb518339e4d07f3085b75">SOUND_dull_strike</a> = 44
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a0c198e131c4e86c20ff737693f48607b">SOUND_metal_vs_metal01h</a> = 45
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae37b7af1f6ffc3a48facd188a9179342">SOUND_ClickSkill</a> = 24
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead1739fd8e5b7198def7cb89df6efbb36">SOUND_error</a> = 27
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaebad17100823c4a58e046628729cea8e">SOUND_dull_strike</a> = 44
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae6a72ac9a7001060c57beb3c86a1dc25">SOUND_metal_vs_metal01h</a> = 45
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aa2c6ea7d20db90bc41ea2d4aec3c3485">SOUND_metal_vs_metal03h</a> = 47
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a41461b28d014d14c94c063650b936c38">SOUND_48</a> = 48
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a4a62329846737ca5d1bb5793277cb09e">SOUND_RunBadlands</a> = 49
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad10bd00063f539e4a99b46ac50965cd0">SOUND_RunCarpet</a> = 50
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea24c37d12997071ceae667e6f9dcdbc81">SOUND_metal_vs_metal03h</a> = 47
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea59ea8b623bfb357b6a1f38787db40de5">SOUND_48</a> = 48
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea68e53eaf012dae835bf13a0dd19bcd1f">SOUND_RunBadlands</a> = 49
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab0125cc7206fe94b598270c46b8e64a7">SOUND_RunCarpet</a> = 50
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61af2794790c7592da5894ce4b75448fe3e">SOUND_RunCooledLava</a> = 51
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ac4562b03c9699789f8ce08c8696afb03">SOUND_RunDesert</a> = 52
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a41579285540aa933b7a35bb3fde8cc2f">SOUND_RunDirt</a> = 53
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a82bba4848fe87dfc14acdff16814200c">SOUND_RunGrass</a> = 54
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead3337e1e38596e5df01ca247294accd2">SOUND_RunCooledLava</a> = 51
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea0ccda426f7ab5e011ea9c4c32b4073db">SOUND_RunDesert</a> = 52
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae1dd801c40043b02244daa68d571ab20">SOUND_RunDirt</a> = 53
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaae58d807332fe7c4080e9c9c881335e4">SOUND_RunGrass</a> = 54
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a92ab57e2114ce085bc6676071e9e189d">SOUND_Run55_94</a> = 55
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a6e7affdc42dd18e92ba53e401a293505">SOUND_RunGround</a> = 56
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aae71d43f18d542b3523e6d8b67fb1e71">SOUND_RunRoad</a> = 57
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a55a1129d82bb831a5d2f7f85d8368d45">SOUND_RunSnow</a> = 58
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea379d5d132e8469c54092fd9fe8b616bb">SOUND_Run55_94</a> = 55
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea04be13759054092cec48635f823f08a9">SOUND_RunGround</a> = 56
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea9b5787bb9c49b3e664cbab15e22eaf3a">SOUND_RunRoad</a> = 57
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab62e37d7ff13fc0804cfd7fbd91cbc08">SOUND_RunSnow</a> = 58
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a4ac48ac71cb696032182e36167a506c2">SOUND_Run59_98</a> = 59
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a6bf0425334359458606c83d1989a8cb1">SOUND_Run60_99</a> = 60
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a531356dd034b11b734b7655f3e2b7cc5">SOUND_RunSwamp</a> = 61
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a24e5bb89da7e8f92f5724c803caf6adf">SOUND_RunWater</a> = 62
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead20d418b5a79dbc1fa3ae5b79c967873">SOUND_Run59_98</a> = 59
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea472debed782e98beb4b90ebd54d8421c">SOUND_Run60_99</a> = 60
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eadbed781042d6ed44592563db7e0d825c">SOUND_RunSwamp</a> = 61
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eafa7aa9724834a16df026259c610d33ff">SOUND_RunWater</a> = 62
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a992650571cce50b2e67375dac9e8d989">SOUND_RunWaterIndoor</a> = 63
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ac871b127019dcdefedc743b126fbc158">SOUND_RunWood</a> = 64
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a9790534806f12181dfbaa0db08c392ed">SOUND_Run65_104</a> = 65
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a89f017851d34127302dcfc2c3faca7e7">SOUND_SelectingANewCharacter</a> = 66
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea0f44b61df05d8946ad52229ffc2426b4">SOUND_RunWaterIndoor</a> = 63
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea962b8f9b812d4fbfabb95e51e424a8b3">SOUND_RunWood</a> = 64
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eada8b5445a6b770c3d0fd40bfb61b0e22">SOUND_Run65_104</a> = 65
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eac312af226bba121b588d20c9d28a4776">SOUND_SelectingANewCharacter</a> = 66
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61abd9a51c95cf4afb7eec4dc6d6c7d6173">SOUND_shoot_blaster01</a> = 67
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aa8e0b07c2448de74cf1d4201c8ada051">SOUND_shoot_bow01</a> = 71
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a74f8ece2a8e0b10581ede7fde7acc2fa">SOUND_StartMainChoice02</a> = 75
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61adc55c8b506168f6ba0de42bf69fb9690">SOUND_swing_with_axe01</a> = 78
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaab87f46f5ae81648550f2ee10446e2d2">SOUND_shoot_blaster01</a> = 67
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea187e91510d7db5c9f7ece938e86280e8">SOUND_shoot_bow01</a> = 71
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea25f99d110a0c62663712ffc15110872f">SOUND_StartMainChoice02</a> = 75
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead899da7e83a9dcab1543ca3eaa1535b0">SOUND_swing_with_axe01</a> = 78
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a26c03892e38b9a8ee4e33d18179f8abc">SOUND_swing_with_axe03</a> = 80
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61af5a3e3904e60ec3114b8ea096681997b">SOUND_swing_with_blunt_weapon01</a> = 81
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a58d039c1e801b9111d3a0ae423aa9cf4">SOUND_swing_with_blunt_weapon03</a> = 83
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a75478e2f5e092b8dab7a111be5c4dd69">SOUND_swing_with_sword01</a> = 84
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae537540c4d857599dff5e727f8696cac">SOUND_swing_with_axe03</a> = 80
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea4d5e10b3783546f48403894b897be15d">SOUND_swing_with_blunt_weapon01</a> = 81
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea2677c56562d420297809d40d9df146b9">SOUND_swing_with_blunt_weapon03</a> = 83
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaf5b0c2c0038aeb8d6300d1ceb64962ea">SOUND_swing_with_sword01</a> = 84
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61adfbecab53fa1da3a41668a7fed478622">SOUND_swing_with_sword02</a> = 85
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a11a8f73a06597e9ad035a06062562c7c">SOUND_WalkBadlands</a> = 88
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ac8d9433db1f3366f5b02835c3a5b95b7">SOUND_WalkCarpet</a> = 89
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a575c8944f3e23deb7cbe2c38dfa4571e">SOUND_WalkCooledLava</a> = 90
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea29ff98c7b674cfac694ea0a0eda787e4">SOUND_swing_with_sword02</a> = 85
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea4e60aeb2f39bdd0a10499a4644c2f716">SOUND_WalkBadlands</a> = 88
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea735063fb53d27425105b819fb6bf88f3">SOUND_WalkCarpet</a> = 89
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea30e499c72d77d5cf7676accdd52b7fab">SOUND_WalkCooledLava</a> = 90
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a76ff1aaa3d279049cc00dd1c63901e1b">SOUND_WalkDesert</a> = 91
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad8ddac7f0c4847f75376164bafd530ea">SOUND_WalkDirt</a> = 92
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a6f43483b354b831ac1be4c8ff8886cd5">SOUND_WalkGrass</a> = 93
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a6e9625fd26b7386f7ac3ca450fc11853">SOUND_Walk55_94</a> = 94
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eabc9f489f7fa9a82a1f2b3ad67be87753">SOUND_WalkDesert</a> = 91
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eafaffef0f6cc2d00d93b2eca7dc6c6de8">SOUND_WalkDirt</a> = 92
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaa7863c9041e2fcaa425e8027fc8344f9">SOUND_WalkGrass</a> = 93
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea297e38dfc947a68cecf843af39a323df">SOUND_Walk55_94</a> = 94
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a2e69b49ec396a3dae6f1026f95b9404c">SOUND_WalkGround</a> = 95
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a2daa8d6f4e95550b2511629c721d8300">SOUND_WalkRoad</a> = 96
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a9dae0a472f74534e1235bcdcaff7f664">SOUND_WalkSnow</a> = 97
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a773f82383315ad558e79ea7cf73f62bf">SOUND_Walk59_98</a> = 98
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea1af002586f7a8a64267a1dfbdb6f6717">SOUND_WalkGround</a> = 95
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea0370ccf40a118c32eb3ab540f49ad814">SOUND_WalkRoad</a> = 96
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea015ee010db7d8bb6b8ae4ea4b354a99b">SOUND_WalkSnow</a> = 97
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea3fb7da348f253565b7bba57bfdb43b90">SOUND_Walk59_98</a> = 98
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ae914a3c6607a1acd31a650b56ef10485">SOUND_Walk60_99</a> = 99
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a16ae763a7a3cdac6155543997d12ed63">SOUND_WalkSwamp</a> = 100
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a7fd1ea293ca5ef5e7b86f7233dd3a6a6">SOUND_WalkWater</a> = 101
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aa2579bf884c7010517a2d2f449fddfe4">SOUND_WalkWaterIndoor</a> = 102
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea60fcf1e45e6b3ffa8e4082f13e6ce832">SOUND_Walk60_99</a> = 99
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea5f784eadae8d43183a68176f45737907">SOUND_WalkSwamp</a> = 100
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea1a36dc14383eb42b2ea23aed84f4dda0">SOUND_WalkWater</a> = 101
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea2a2949cc549be6ebe3b89462a16f0fdb">SOUND_WalkWaterIndoor</a> = 102
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad90ba2dee9dbf6f92233f02b7ef7a3ad">SOUND_WalkWood</a> = 103
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61afb2d2a005819ecd93ed8f6f6dc8f6eb1">SOUND_Walk65_104</a> = 104
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a50141ec066cb6d7aed3bbe363af5da5a">SOUND_metal_armor_strike1</a> = 105
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a3e5356582cf137da9554acc792222e5a">SOUND_metal_armor_strike2</a> = 106
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab465b398d7e1c6b48a6041a921d6b423">SOUND_WalkWood</a> = 103
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaac44c82d0f3192130da1a0758064b5ba">SOUND_Walk65_104</a> = 104
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea03fbee0f6d097a23f4fbe75a4e4c63a0">SOUND_metal_armor_strike1</a> = 105
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaa41815477ba2cf9e45647f69becf5b6e">SOUND_metal_armor_strike2</a> = 106
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a74ad07e221744410d81a18c8c5ca7d7a">SOUND_metal_armor_strike3</a> = 107
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a53e72875436f6a199b04d17500cdb2dc">SOUND_dull_armor_strike1</a> = 108
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a4c77dc01d3e377766af99f1c9266f5b6">SOUND_dull_armor_strike2</a> = 109
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a8fa0465473ee7e3eb346711185d03392">SOUND_dull_armor_strike3</a> = 110
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaf0c1a199c3d42fcab59cc1411797e26e">SOUND_metal_armor_strike3</a> = 107
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea22edea78d5d4f5393bbd1b9409be516e">SOUND_dull_armor_strike1</a> = 108
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaaeac246f79577e795a584744792e4f01">SOUND_dull_armor_strike2</a> = 109
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea02326ba4b9637f74de780f2e8ae3bfb8">SOUND_dull_armor_strike3</a> = 110
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a9404ebedad4fa750c7bfd34520aa7d7f">SOUND_bricks_down</a> = 120
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61af96c2287fed72f19388d4db4d1e8494c">SOUND_bricks_up</a> = 121
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61afa5c057c247c192336cc9bd9625fe281">SOUND_damage</a> = 122
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a1f555599e1b7f5cd6101b918f8e2980e">SOUND_deal</a> = 123
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea2071e4c4f717fcccbd6b8a630b512d80">SOUND_bricks_down</a> = 120
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaff24fff095be79c8629156edd99eed9a">SOUND_bricks_up</a> = 121
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eac68b2c7b70e952751c76d359e020d26b">SOUND_damage</a> = 122
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaceefa2e6a63bc09ca8c4b6c146a354ad">SOUND_deal</a> = 123
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61adc9147375fe6f74d40f6f0af8f475674">SOUND_defeat</a> = 124
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a968eff04d0df5acf3def573afb02241c">SOUND_querry_up</a> = 125
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61afdf923afe44db5b2a9df90898b11d7be">SOUND_querry_down</a> = 126
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a53a67ea7e705e50c736c3448c0247d40">SOUND_shuffle</a> = 127
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea25ef89f9422a2ff8a4d2e995b44b8ae0">SOUND_defeat</a> = 124
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea6047ce2741c892f77f261e4f89d4331b">SOUND_querry_up</a> = 125
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea81dfb62e48045aae4b1583a9719f0f21">SOUND_querry_down</a> = 126
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea0a9438a274eda219417c2a29bb6a0c09">SOUND_shuffle</a> = 127
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a493767c719accd7b86613c039120c14e">SOUND_title</a> = 128
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ac6df391733420d74a5654152e0041ab4">SOUND_tower_up</a> = 129
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ac0defd5b904ae1014d2a2a9274fcf377">SOUND_typing</a> = 130
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a654955769b2a68408fa6ecc4a12f7497">SOUND_victory</a> = 131
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea3f3df72eb6309fb4442f8a3bf6cdb1d4">SOUND_title</a> = 128
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaa6c49440cdd9f5d3cc8b7569fb5c7c71">SOUND_tower_up</a> = 129
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea8ce7af553ae4b594ff06655b7d981635">SOUND_typing</a> = 130
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea2335e3e2a2513d977d2eba44fb666beb">SOUND_victory</a> = 131
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a30b30a9669b68b7c8efa9b13edcac9d6">SOUND_wall_up</a> = 132
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61abc7d482b5d3c265ee4833b0636c3f474">SOUND_luteguitar</a> = 133
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a9453b32244eeaad818c06de370f7d9ef">SOUND_panflute</a> = 134
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aab9c72de7c2a8ab7cf162ff5b7621e58">SOUND_trumpet</a> = 135
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea10f1becf684fc41e0908d51f6e890842">SOUND_wall_up</a> = 132
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea2e9cb571507e3b5080abfb1bc92a3a1d">SOUND_luteguitar</a> = 133
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea406d8eab67b8899e004b589c8ae44b95">SOUND_panflute</a> = 134
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea06d84678371566685c0151f64989fc5a">SOUND_trumpet</a> = 135
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a1a82833cbeebfed9a1be0487ddcaa6a3">SOUND_gold01</a> = 200
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a4f6aedfd41128d694ca579262d7fc2a6">SOUND_heal</a> = 202
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61af07db3cc2cc59ddaee0a06e28145b0be">SOUND_fizzle</a> = 203
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a1be8cd550a4c68f3372e526d4d9f08ad">SOUND_TurnPage1</a> = 204
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead1c689b7af197e41630ba18f01a9e8b4">SOUND_gold01</a> = 200
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea1498c94a3fc6d714baa6e788f5446bfa">SOUND_heal</a> = 202
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea473fdb746c06098c9b4cff9645dd5120">SOUND_fizzle</a> = 203
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab82272e6a23ecdd4e806d3992c81f6a3">SOUND_TurnPage1</a> = 204
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a8c50e71aa9ed9a2db321fd8e02ea72cb">SOUND_TurnPage2</a> = 205
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aab8a4100649a4e9efd792ee3b7afe789">SOUND_batlleen</a> = 206
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a66d768e26028fe797c882e031c753b32">SOUND_batllest</a> = 207
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61adfc8d8c56f7f73bd3b8860a0b17bddef">SOUND_openchest0101</a> = 208
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea9cb1ff323fd953e74eedcbf2790b32be">SOUND_TurnPage2</a> = 205
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea409246886267d221d207353ef87f22b9">SOUND_EndTurnBasedMode</a> = 206
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea6c088e82acc753ca8b5b68b5a8a4e979">SOUND_StartTurnBasedMode</a> = 207
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea981bc3af2ae6e3b293ffb421c39c5b8d">SOUND_openchest0101</a> = 208
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a99fa7c601a457e134532993d524498bb">SOUND_spellfail0201</a> = 209
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a4478731636cef490e43a25cda86fb7e0">SOUND_drink</a> = 210
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a1d3fd9e6a7380cb50a4bc5a9ee79f2b7">SOUND_eat</a> = 211
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a89abb52f1a6d757c82922d3eba5168ee">SOUND_gong</a> = 215
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaa33f78f36376ae12bbd77e58a2e21efc">SOUND_spellfail0201</a> = 209
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eabbf3b3eae3dc557cbd57963a57cc7820">SOUND_drink</a> = 210
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae9497d4cdf16895c1c6c3e26e011f128">SOUND_eat</a> = 211
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eac13faf5a68cc2aab0edee1354f38c0b2">SOUND_gong</a> = 215
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61afd391370a69192496e230efc58151577">SOUND_hurp</a> = 217
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a2e6eb54a49e49b31e59044f4324605ca">SOUND_church</a> = 218
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a1a94e0270cf634e04c76f6e47e10b59a">SOUND_chimes</a> = 219
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad519ce6fe934b75aeef17c574d1bf67d">SOUND_splash</a> = 220
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea96002942607cedbb76f219061bf819e1">SOUND_hurp</a> = 217
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea6be645c830cc3c6bb560375a0105e0ca">SOUND_church</a> = 218
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eadd437166a8bb137961a4516cf72a6a8a">SOUND_chimes</a> = 219
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea94b1c0db39de49addbec2cb74ff1acbf">SOUND_splash</a> = 220
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a45810b08f693d5ae1fdfd05b0a4a6639">SOUND_star1</a> = 221
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad4c7c20c3cf479e338fc0075d232c391">SOUND_star2</a> = 222
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a3b10c618764b7d0a22bc00735296462f">SOUND_star4</a> = 224
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ac17804d22431009fd88d401c5a24fd56">SOUND_eradicate</a> = 225
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab4227a5690cd910ab6cc58c9b792d14f">SOUND_star1</a> = 221
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea45c84bd3df7e8f49a3bb7efa765a3ec6">SOUND_star2</a> = 222
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea7fb898b402ffbf323f7ddce17c9f7a86">SOUND_star4</a> = 224
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaa3e4d17c81438686ae34d7b3b08b027e">SOUND_eradicate</a> = 225
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61af70edaceb158975558b1f67ec057e61c">SOUND_eleccircle</a> = 226
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aa9f9f7d846f351669013857134a63f97">SOUND_encounter</a> = 227
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a60ac9b7e329660b3b285d456eef27872">SOUND_openbook</a> = 230
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61acf4f776cd5f8ee48a0183672f0d0d71d">SOUND_closebook</a> = 231
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea5a9d3f97e6fdfe24bf9b8d1e039b247d">SOUND_eleccircle</a> = 226
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea5ce789a2798abb93ba67b74452b4d190">SOUND_encounter</a> = 227
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab77ff8d332f6a3cc78f321b956d4e798">SOUND_openbook</a> = 230
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaf486c72009ba28278a30d734617f5fb8">SOUND_closebook</a> = 231
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a61b087c51401dcb2abc2bc82b1161bb9">SOUND_teleport</a> = 232
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aa6ca61d062d98ef188f6b68de03294b7">SOUND_hf445a</a> = 5788
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61aae0fbc479a1d64501c562f5c8e4c41c0">SOUND_Haste</a> = 10040
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61af80b8c2e4eb1e6db50b0624efa08f1ed">SOUND_21fly03</a> = 11090
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab97f00b995409559fdf3db48a9f1f976">SOUND_teleport</a> = 232
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eadab96039453cc4aa3f34109c1279b139">SOUND_wood_door0101</a> = 300
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab60ce47b546582429ce24c263438492e">SOUND_wood_door0201</a> = 302
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea105a547bb5868ff2fe9fcaca7d1797b9">SOUND_wood_door0301</a> = 304
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a775c37c64972e6c7e91e053a586b7024">SOUND_WaterWalk</a> = 12040
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a75131ad7c5ee7eba7a12bddafa83b4e1">SOUND_Stoneskin</a> = 13040
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ad9d5c64043dc2800a5f607bab9b2e32a">SOUND_Bless</a> = 14010
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a1a0381dcd7c89311d944f86c951b0399">SOUND_Fate</a> = 14020
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eac1cdd3676017b6317709c44461f1c42c">SOUND_wood_door0401</a> = 306
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead61df6b4ba93e79f509e9bf6d9132ab7">SOUND_wood_door0501</a> = 308
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eaa774ae9b8377ca151e325c0c9737ee4f">SOUND_stone_door0101</a> = 400
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea5d92e6e821d8fd462e8326d74ab7e5b8">SOUND_stone_door0201</a> = 402
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a5f6bf49070f31220e0dea58b50397e19">SOUND_51heroism03</a> = 14060
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ae854961444bd7c9f5a45da54fb0a2c18">SOUND_94dayofprotection03</a> = 17070
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a368b05f98e26a7997410f3db51dccd08">SOUND_9armageddon01</a> = 17080
-, <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61ada29734e0f89ebd9509cb7a5b173ce18">SOUND_Sacrifice2</a> = 18060
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea2b65993f268a62e26d038f8406c1698d">SOUND_stone_door0301</a> = 404
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea07339eaa4f1b49b6b25bd000fdebfdb5">SOUND_stone_door0401</a> = 406
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae991184d973fca86c5ff789add0d20bf">SOUND_stone_door0501</a> = 408
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea44a37ea9ca47a73ab1ff653ec7921bc6">SOUND_hf445a</a> = 5788
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61a85dd506da7a5743cb2a950d577648822">SOUND_quest</a> = 20001
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea1c34d5ffd916e5a3ce3c27548617eac3">SOUND_Haste</a> = 10040
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eab876b1cd13dbb07a9fba72cab5980b58">SOUND_21fly03</a> = 11090
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea91a8de2b7cfa31e856d5ea9c0ee19ac8">SOUND_WaterWalk</a> = 12040
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea500d89e5fb7beedb3ca54f1d32b4fc86">SOUND_Stoneskin</a> = 13040
+, <br />
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead0a0add479bda15161fe2904556314ca">SOUND_Bless</a> = 14010
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eae618c05285403cde8140afc9116d123c">SOUND_Fate</a> = 14020
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea033cd838d71537674a02016c8cc80935">SOUND_51heroism03</a> = 14060
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea45ae132b289596f8ec1ee56069deea26">SOUND_94dayofprotection03</a> = 17070
+, <br />
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ea9cce9337a522b6ef5ae238b83a2120fa">SOUND_9armageddon01</a> = 17080
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871ead055f0e97148971b8aabf8d50c92edf7">SOUND_Sacrifice2</a> = 18060
+, <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871eac0d247436ba5187e46af5fb238886be1">SOUND_quest</a> = 20001
 <br />
  }</td></tr>
-<tr class="separator:aa4689ee7c9a692044aebd36cb0915e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ac4c17c8b309b1f9d7dc69286c18b871e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa639cf25629d8107eff53fe3b15460b8"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#aa639cf25629d8107eff53fe3b15460b8">MusicId</a> { <br />
 &#160;&#160;<a class="el" href="SoundEnums_8h.html#aa639cf25629d8107eff53fe3b15460b8a0805291af5747029645344430ecc745e">MUSIC_INVALID</a> = 0
 , <a class="el" href="SoundEnums_8h.html#aa639cf25629d8107eff53fe3b15460b8a75566f54412285141cd773c26a549037">MUSIC_DEYJA_BRACADA_DESERT</a> = 2
@@ -262,18 +279,18 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:aa639cf25629d8107eff53fe3b15460b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85ccde89440fe75ac7e973366d31f80b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80b">SOUND_TYPE</a> { <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80ba91c0a008beca44edafa90c5a4ad95baf">SOUND_TYPE_LEVEL</a> = 0
-, <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80ba4799e742d0f14dcf6cd51dc961b9400d">SOUND_TYPE_SYSTEM</a> = 1
-, <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80ba0239902a960e2fc96d41c90fb2adac48">SOUND_TYPE_SWAP</a> = 2
-, <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80baedf0fa2c4e48ed3d20a710713ada0af7">SOUND_TYPE_UNKNOWN</a> = 3
+<tr class="memitem:a85ccde89440fe75ac7e973366d31f80b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80b">SOUND_TYPE</a> { <br />
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80ba31ad6d49b84e901aed75964ced89226e">SOUND_TYPE_LEVEL</a> = 0
+, <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80bacdb6b8534a83fa6d8c826125d30adbbb">SOUND_TYPE_SYSTEM</a> = 1
+, <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80baf407cf616de0f6e8b5bfd2bc999eb34d">SOUND_TYPE_SWAP</a> = 2
+, <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80bac7b14df59dd881e662a48135fbaec866">SOUND_TYPE_UNKNOWN</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80ba0f8e1a8cd2678ea7ec3d5389c11297fa">SOUND_TYPE_LOCK</a> = 4
+&#160;&#160;<a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80ba7f63e182a385176ba43b9ef5e1dfc6e2">SOUND_TYPE_LOCK</a> = 4
 <br />
  }</td></tr>
 <tr class="separator:a85ccde89440fe75ac7e973366d31f80b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a882bd68b4373a777048a7f5e3c3a568d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568d">SOUND_FLAG</a> { <a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568da48f34b39f807ffe9a8e93c6b8c4b2c33">SOUND_FLAG_LOCKED</a> = 0x1
-, <a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568daf22db4ee6480d32caa5255a36b0ba599">SOUND_FLAG_3D</a> = 0x2
+<tr class="memitem:a882bd68b4373a777048a7f5e3c3a568d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568d">SOUND_FLAG</a> { <a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568da3032ab2bba336e31f6df497383d9879c">SOUND_FLAG_LOCKED</a> = 0x1
+, <a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568da999036dd069ccd86ffebd7f2d08b69c7">SOUND_FLAG_3D</a> = 0x2
  }</td></tr>
 <tr class="separator:a882bd68b4373a777048a7f5e3c3a568d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb698a37a56e41cc9cbec7d90375d078"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a> { <br />
@@ -291,6 +308,11 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:abb698a37a56e41cc9cbec7d90375d078"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a2701200967095caa637ed07cb1b0a7bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SoundEnums_8h.html#a2701200967095caa637ed07cb1b0a7bc">doorClosedSound</a> (<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> doorSound)</td></tr>
+<tr class="separator:a2701200967095caa637ed07cb1b0a7bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="aa639cf25629d8107eff53fe3b15460b8" name="aa639cf25629d8107eff53fe3b15460b8"></a>
@@ -345,15 +367,23 @@ Enumerations</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568d">SOUND_FLAG</a></td>
+          <td class="memname">enum class <a class="el" href="SoundEnums_8h.html#a882bd68b4373a777048a7f5e3c3a568d">SOUND_FLAG</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a882bd68b4373a777048a7f5e3c3a568da48f34b39f807ffe9a8e93c6b8c4b2c33" name="a882bd68b4373a777048a7f5e3c3a568da48f34b39f807ffe9a8e93c6b8c4b2c33"></a>SOUND_FLAG_LOCKED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882bd68b4373a777048a7f5e3c3a568daf22db4ee6480d32caa5255a36b0ba599" name="a882bd68b4373a777048a7f5e3c3a568daf22db4ee6480d32caa5255a36b0ba599"></a>SOUND_FLAG_3D&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a882bd68b4373a777048a7f5e3c3a568da3032ab2bba336e31f6df497383d9879c" name="a882bd68b4373a777048a7f5e3c3a568da3032ab2bba336e31f6df497383d9879c"></a>SOUND_FLAG_LOCKED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882bd68b4373a777048a7f5e3c3a568da999036dd069ccd86ffebd7f2d08b69c7" name="a882bd68b4373a777048a7f5e3c3a568da999036dd069ccd86ffebd7f2d08b69c7"></a>SOUND_FLAG_3D&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -363,151 +393,178 @@ Enumerations</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80b">SOUND_TYPE</a></td>
+          <td class="memname">enum class <a class="el" href="SoundEnums_8h.html#a85ccde89440fe75ac7e973366d31f80b">SOUND_TYPE</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80ba91c0a008beca44edafa90c5a4ad95baf" name="a85ccde89440fe75ac7e973366d31f80ba91c0a008beca44edafa90c5a4ad95baf"></a>SOUND_TYPE_LEVEL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80ba4799e742d0f14dcf6cd51dc961b9400d" name="a85ccde89440fe75ac7e973366d31f80ba4799e742d0f14dcf6cd51dc961b9400d"></a>SOUND_TYPE_SYSTEM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80ba0239902a960e2fc96d41c90fb2adac48" name="a85ccde89440fe75ac7e973366d31f80ba0239902a960e2fc96d41c90fb2adac48"></a>SOUND_TYPE_SWAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80baedf0fa2c4e48ed3d20a710713ada0af7" name="a85ccde89440fe75ac7e973366d31f80baedf0fa2c4e48ed3d20a710713ada0af7"></a>SOUND_TYPE_UNKNOWN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80ba0f8e1a8cd2678ea7ec3d5389c11297fa" name="a85ccde89440fe75ac7e973366d31f80ba0f8e1a8cd2678ea7ec3d5389c11297fa"></a>SOUND_TYPE_LOCK&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80ba31ad6d49b84e901aed75964ced89226e" name="a85ccde89440fe75ac7e973366d31f80ba31ad6d49b84e901aed75964ced89226e"></a>SOUND_TYPE_LEVEL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80bacdb6b8534a83fa6d8c826125d30adbbb" name="a85ccde89440fe75ac7e973366d31f80bacdb6b8534a83fa6d8c826125d30adbbb"></a>SOUND_TYPE_SYSTEM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80baf407cf616de0f6e8b5bfd2bc999eb34d" name="a85ccde89440fe75ac7e973366d31f80baf407cf616de0f6e8b5bfd2bc999eb34d"></a>SOUND_TYPE_SWAP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80bac7b14df59dd881e662a48135fbaec866" name="a85ccde89440fe75ac7e973366d31f80bac7b14df59dd881e662a48135fbaec866"></a>SOUND_TYPE_UNKNOWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a85ccde89440fe75ac7e973366d31f80ba7f63e182a385176ba43b9ef5e1dfc6e2" name="a85ccde89440fe75ac7e973366d31f80ba7f63e182a385176ba43b9ef5e1dfc6e2"></a>SOUND_TYPE_LOCK&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="aa4689ee7c9a692044aebd36cb0915e61" name="aa4689ee7c9a692044aebd36cb0915e61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4689ee7c9a692044aebd36cb0915e61">&#9670;&#160;</a></span>SoundID</h2>
+<a id="ac4c17c8b309b1f9d7dc69286c18b871e" name="ac4c17c8b309b1f9d7dc69286c18b871e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4c17c8b309b1f9d7dc69286c18b871e">&#9670;&#160;</a></span>SoundId</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="SoundEnums_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a></td>
+          <td class="memname">enum class <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> : int16_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+<p >There's 2000+ sounds in MM7, and there is little point in adding all of them here via codegen. Only the ids that are actually used in the codebase should be kept in this enum. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a957af16b1cf261c6e64516f563b3ef61" name="aa4689ee7c9a692044aebd36cb0915e61a957af16b1cf261c6e64516f563b3ef61"></a>SOUND_Invalid&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a587c0c496cd8c945f392551239c9469b" name="aa4689ee7c9a692044aebd36cb0915e61a587c0c496cd8c945f392551239c9469b"></a>SOUND_enter&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aad80e5893e38e47e1012060cf3841833" name="aa4689ee7c9a692044aebd36cb0915e61aad80e5893e38e47e1012060cf3841833"></a>SOUND_WoodDoorClosing&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a4a84f5e32dbc3b168efc37591e200d3f" name="aa4689ee7c9a692044aebd36cb0915e61a4a84f5e32dbc3b168efc37591e200d3f"></a>SOUND_fireBall&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad33fa832c0bb2bed9c0cf6c0276d5d8f" name="aa4689ee7c9a692044aebd36cb0915e61ad33fa832c0bb2bed9c0cf6c0276d5d8f"></a>SOUND_BoatCreaking&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a402dd2ff4e2da7f5a6ba63a4dbf41eec" name="aa4689ee7c9a692044aebd36cb0915e61a402dd2ff4e2da7f5a6ba63a4dbf41eec"></a>SOUND_ClickMinus&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a5612c2c8eb93f59313924c12dcab35c5" name="aa4689ee7c9a692044aebd36cb0915e61a5612c2c8eb93f59313924c12dcab35c5"></a>SOUND_ClickMovingSelector&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a2495502b052acad65fd5a45d10666342" name="aa4689ee7c9a692044aebd36cb0915e61a2495502b052acad65fd5a45d10666342"></a>SOUND_ClickPlus&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61acace095de5eeec3b2f877027f8760b8f" name="aa4689ee7c9a692044aebd36cb0915e61acace095de5eeec3b2f877027f8760b8f"></a>SOUND_ClickSkill&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a123c1f950456a478ca87f718b9f8d30d" name="aa4689ee7c9a692044aebd36cb0915e61a123c1f950456a478ca87f718b9f8d30d"></a>SOUND_error&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a31e8c8a2f9ceb518339e4d07f3085b75" name="aa4689ee7c9a692044aebd36cb0915e61a31e8c8a2f9ceb518339e4d07f3085b75"></a>SOUND_dull_strike&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a0c198e131c4e86c20ff737693f48607b" name="aa4689ee7c9a692044aebd36cb0915e61a0c198e131c4e86c20ff737693f48607b"></a>SOUND_metal_vs_metal01h&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aa2c6ea7d20db90bc41ea2d4aec3c3485" name="aa4689ee7c9a692044aebd36cb0915e61aa2c6ea7d20db90bc41ea2d4aec3c3485"></a>SOUND_metal_vs_metal03h&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a41461b28d014d14c94c063650b936c38" name="aa4689ee7c9a692044aebd36cb0915e61a41461b28d014d14c94c063650b936c38"></a>SOUND_48&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a4a62329846737ca5d1bb5793277cb09e" name="aa4689ee7c9a692044aebd36cb0915e61a4a62329846737ca5d1bb5793277cb09e"></a>SOUND_RunBadlands&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad10bd00063f539e4a99b46ac50965cd0" name="aa4689ee7c9a692044aebd36cb0915e61ad10bd00063f539e4a99b46ac50965cd0"></a>SOUND_RunCarpet&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61af2794790c7592da5894ce4b75448fe3e" name="aa4689ee7c9a692044aebd36cb0915e61af2794790c7592da5894ce4b75448fe3e"></a>SOUND_RunCooledLava&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ac4562b03c9699789f8ce08c8696afb03" name="aa4689ee7c9a692044aebd36cb0915e61ac4562b03c9699789f8ce08c8696afb03"></a>SOUND_RunDesert&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a41579285540aa933b7a35bb3fde8cc2f" name="aa4689ee7c9a692044aebd36cb0915e61a41579285540aa933b7a35bb3fde8cc2f"></a>SOUND_RunDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a82bba4848fe87dfc14acdff16814200c" name="aa4689ee7c9a692044aebd36cb0915e61a82bba4848fe87dfc14acdff16814200c"></a>SOUND_RunGrass&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a92ab57e2114ce085bc6676071e9e189d" name="aa4689ee7c9a692044aebd36cb0915e61a92ab57e2114ce085bc6676071e9e189d"></a>SOUND_Run55_94&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a6e7affdc42dd18e92ba53e401a293505" name="aa4689ee7c9a692044aebd36cb0915e61a6e7affdc42dd18e92ba53e401a293505"></a>SOUND_RunGround&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aae71d43f18d542b3523e6d8b67fb1e71" name="aa4689ee7c9a692044aebd36cb0915e61aae71d43f18d542b3523e6d8b67fb1e71"></a>SOUND_RunRoad&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a55a1129d82bb831a5d2f7f85d8368d45" name="aa4689ee7c9a692044aebd36cb0915e61a55a1129d82bb831a5d2f7f85d8368d45"></a>SOUND_RunSnow&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a4ac48ac71cb696032182e36167a506c2" name="aa4689ee7c9a692044aebd36cb0915e61a4ac48ac71cb696032182e36167a506c2"></a>SOUND_Run59_98&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a6bf0425334359458606c83d1989a8cb1" name="aa4689ee7c9a692044aebd36cb0915e61a6bf0425334359458606c83d1989a8cb1"></a>SOUND_Run60_99&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a531356dd034b11b734b7655f3e2b7cc5" name="aa4689ee7c9a692044aebd36cb0915e61a531356dd034b11b734b7655f3e2b7cc5"></a>SOUND_RunSwamp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a24e5bb89da7e8f92f5724c803caf6adf" name="aa4689ee7c9a692044aebd36cb0915e61a24e5bb89da7e8f92f5724c803caf6adf"></a>SOUND_RunWater&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a992650571cce50b2e67375dac9e8d989" name="aa4689ee7c9a692044aebd36cb0915e61a992650571cce50b2e67375dac9e8d989"></a>SOUND_RunWaterIndoor&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ac871b127019dcdefedc743b126fbc158" name="aa4689ee7c9a692044aebd36cb0915e61ac871b127019dcdefedc743b126fbc158"></a>SOUND_RunWood&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a9790534806f12181dfbaa0db08c392ed" name="aa4689ee7c9a692044aebd36cb0915e61a9790534806f12181dfbaa0db08c392ed"></a>SOUND_Run65_104&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a89f017851d34127302dcfc2c3faca7e7" name="aa4689ee7c9a692044aebd36cb0915e61a89f017851d34127302dcfc2c3faca7e7"></a>SOUND_SelectingANewCharacter&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61abd9a51c95cf4afb7eec4dc6d6c7d6173" name="aa4689ee7c9a692044aebd36cb0915e61abd9a51c95cf4afb7eec4dc6d6c7d6173"></a>SOUND_shoot_blaster01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aa8e0b07c2448de74cf1d4201c8ada051" name="aa4689ee7c9a692044aebd36cb0915e61aa8e0b07c2448de74cf1d4201c8ada051"></a>SOUND_shoot_bow01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a74f8ece2a8e0b10581ede7fde7acc2fa" name="aa4689ee7c9a692044aebd36cb0915e61a74f8ece2a8e0b10581ede7fde7acc2fa"></a>SOUND_StartMainChoice02&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61adc55c8b506168f6ba0de42bf69fb9690" name="aa4689ee7c9a692044aebd36cb0915e61adc55c8b506168f6ba0de42bf69fb9690"></a>SOUND_swing_with_axe01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a26c03892e38b9a8ee4e33d18179f8abc" name="aa4689ee7c9a692044aebd36cb0915e61a26c03892e38b9a8ee4e33d18179f8abc"></a>SOUND_swing_with_axe03&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61af5a3e3904e60ec3114b8ea096681997b" name="aa4689ee7c9a692044aebd36cb0915e61af5a3e3904e60ec3114b8ea096681997b"></a>SOUND_swing_with_blunt_weapon01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a58d039c1e801b9111d3a0ae423aa9cf4" name="aa4689ee7c9a692044aebd36cb0915e61a58d039c1e801b9111d3a0ae423aa9cf4"></a>SOUND_swing_with_blunt_weapon03&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a75478e2f5e092b8dab7a111be5c4dd69" name="aa4689ee7c9a692044aebd36cb0915e61a75478e2f5e092b8dab7a111be5c4dd69"></a>SOUND_swing_with_sword01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61adfbecab53fa1da3a41668a7fed478622" name="aa4689ee7c9a692044aebd36cb0915e61adfbecab53fa1da3a41668a7fed478622"></a>SOUND_swing_with_sword02&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a11a8f73a06597e9ad035a06062562c7c" name="aa4689ee7c9a692044aebd36cb0915e61a11a8f73a06597e9ad035a06062562c7c"></a>SOUND_WalkBadlands&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ac8d9433db1f3366f5b02835c3a5b95b7" name="aa4689ee7c9a692044aebd36cb0915e61ac8d9433db1f3366f5b02835c3a5b95b7"></a>SOUND_WalkCarpet&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a575c8944f3e23deb7cbe2c38dfa4571e" name="aa4689ee7c9a692044aebd36cb0915e61a575c8944f3e23deb7cbe2c38dfa4571e"></a>SOUND_WalkCooledLava&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a76ff1aaa3d279049cc00dd1c63901e1b" name="aa4689ee7c9a692044aebd36cb0915e61a76ff1aaa3d279049cc00dd1c63901e1b"></a>SOUND_WalkDesert&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad8ddac7f0c4847f75376164bafd530ea" name="aa4689ee7c9a692044aebd36cb0915e61ad8ddac7f0c4847f75376164bafd530ea"></a>SOUND_WalkDirt&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a6f43483b354b831ac1be4c8ff8886cd5" name="aa4689ee7c9a692044aebd36cb0915e61a6f43483b354b831ac1be4c8ff8886cd5"></a>SOUND_WalkGrass&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a6e9625fd26b7386f7ac3ca450fc11853" name="aa4689ee7c9a692044aebd36cb0915e61a6e9625fd26b7386f7ac3ca450fc11853"></a>SOUND_Walk55_94&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a2e69b49ec396a3dae6f1026f95b9404c" name="aa4689ee7c9a692044aebd36cb0915e61a2e69b49ec396a3dae6f1026f95b9404c"></a>SOUND_WalkGround&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a2daa8d6f4e95550b2511629c721d8300" name="aa4689ee7c9a692044aebd36cb0915e61a2daa8d6f4e95550b2511629c721d8300"></a>SOUND_WalkRoad&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a9dae0a472f74534e1235bcdcaff7f664" name="aa4689ee7c9a692044aebd36cb0915e61a9dae0a472f74534e1235bcdcaff7f664"></a>SOUND_WalkSnow&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a773f82383315ad558e79ea7cf73f62bf" name="aa4689ee7c9a692044aebd36cb0915e61a773f82383315ad558e79ea7cf73f62bf"></a>SOUND_Walk59_98&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ae914a3c6607a1acd31a650b56ef10485" name="aa4689ee7c9a692044aebd36cb0915e61ae914a3c6607a1acd31a650b56ef10485"></a>SOUND_Walk60_99&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a16ae763a7a3cdac6155543997d12ed63" name="aa4689ee7c9a692044aebd36cb0915e61a16ae763a7a3cdac6155543997d12ed63"></a>SOUND_WalkSwamp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a7fd1ea293ca5ef5e7b86f7233dd3a6a6" name="aa4689ee7c9a692044aebd36cb0915e61a7fd1ea293ca5ef5e7b86f7233dd3a6a6"></a>SOUND_WalkWater&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aa2579bf884c7010517a2d2f449fddfe4" name="aa4689ee7c9a692044aebd36cb0915e61aa2579bf884c7010517a2d2f449fddfe4"></a>SOUND_WalkWaterIndoor&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad90ba2dee9dbf6f92233f02b7ef7a3ad" name="aa4689ee7c9a692044aebd36cb0915e61ad90ba2dee9dbf6f92233f02b7ef7a3ad"></a>SOUND_WalkWood&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61afb2d2a005819ecd93ed8f6f6dc8f6eb1" name="aa4689ee7c9a692044aebd36cb0915e61afb2d2a005819ecd93ed8f6f6dc8f6eb1"></a>SOUND_Walk65_104&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a50141ec066cb6d7aed3bbe363af5da5a" name="aa4689ee7c9a692044aebd36cb0915e61a50141ec066cb6d7aed3bbe363af5da5a"></a>SOUND_metal_armor_strike1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a3e5356582cf137da9554acc792222e5a" name="aa4689ee7c9a692044aebd36cb0915e61a3e5356582cf137da9554acc792222e5a"></a>SOUND_metal_armor_strike2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a74ad07e221744410d81a18c8c5ca7d7a" name="aa4689ee7c9a692044aebd36cb0915e61a74ad07e221744410d81a18c8c5ca7d7a"></a>SOUND_metal_armor_strike3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a53e72875436f6a199b04d17500cdb2dc" name="aa4689ee7c9a692044aebd36cb0915e61a53e72875436f6a199b04d17500cdb2dc"></a>SOUND_dull_armor_strike1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a4c77dc01d3e377766af99f1c9266f5b6" name="aa4689ee7c9a692044aebd36cb0915e61a4c77dc01d3e377766af99f1c9266f5b6"></a>SOUND_dull_armor_strike2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a8fa0465473ee7e3eb346711185d03392" name="aa4689ee7c9a692044aebd36cb0915e61a8fa0465473ee7e3eb346711185d03392"></a>SOUND_dull_armor_strike3&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a9404ebedad4fa750c7bfd34520aa7d7f" name="aa4689ee7c9a692044aebd36cb0915e61a9404ebedad4fa750c7bfd34520aa7d7f"></a>SOUND_bricks_down&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61af96c2287fed72f19388d4db4d1e8494c" name="aa4689ee7c9a692044aebd36cb0915e61af96c2287fed72f19388d4db4d1e8494c"></a>SOUND_bricks_up&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61afa5c057c247c192336cc9bd9625fe281" name="aa4689ee7c9a692044aebd36cb0915e61afa5c057c247c192336cc9bd9625fe281"></a>SOUND_damage&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a1f555599e1b7f5cd6101b918f8e2980e" name="aa4689ee7c9a692044aebd36cb0915e61a1f555599e1b7f5cd6101b918f8e2980e"></a>SOUND_deal&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61adc9147375fe6f74d40f6f0af8f475674" name="aa4689ee7c9a692044aebd36cb0915e61adc9147375fe6f74d40f6f0af8f475674"></a>SOUND_defeat&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a968eff04d0df5acf3def573afb02241c" name="aa4689ee7c9a692044aebd36cb0915e61a968eff04d0df5acf3def573afb02241c"></a>SOUND_querry_up&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61afdf923afe44db5b2a9df90898b11d7be" name="aa4689ee7c9a692044aebd36cb0915e61afdf923afe44db5b2a9df90898b11d7be"></a>SOUND_querry_down&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a53a67ea7e705e50c736c3448c0247d40" name="aa4689ee7c9a692044aebd36cb0915e61a53a67ea7e705e50c736c3448c0247d40"></a>SOUND_shuffle&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a493767c719accd7b86613c039120c14e" name="aa4689ee7c9a692044aebd36cb0915e61a493767c719accd7b86613c039120c14e"></a>SOUND_title&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ac6df391733420d74a5654152e0041ab4" name="aa4689ee7c9a692044aebd36cb0915e61ac6df391733420d74a5654152e0041ab4"></a>SOUND_tower_up&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ac0defd5b904ae1014d2a2a9274fcf377" name="aa4689ee7c9a692044aebd36cb0915e61ac0defd5b904ae1014d2a2a9274fcf377"></a>SOUND_typing&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a654955769b2a68408fa6ecc4a12f7497" name="aa4689ee7c9a692044aebd36cb0915e61a654955769b2a68408fa6ecc4a12f7497"></a>SOUND_victory&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a30b30a9669b68b7c8efa9b13edcac9d6" name="aa4689ee7c9a692044aebd36cb0915e61a30b30a9669b68b7c8efa9b13edcac9d6"></a>SOUND_wall_up&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61abc7d482b5d3c265ee4833b0636c3f474" name="aa4689ee7c9a692044aebd36cb0915e61abc7d482b5d3c265ee4833b0636c3f474"></a>SOUND_luteguitar&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a9453b32244eeaad818c06de370f7d9ef" name="aa4689ee7c9a692044aebd36cb0915e61a9453b32244eeaad818c06de370f7d9ef"></a>SOUND_panflute&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aab9c72de7c2a8ab7cf162ff5b7621e58" name="aa4689ee7c9a692044aebd36cb0915e61aab9c72de7c2a8ab7cf162ff5b7621e58"></a>SOUND_trumpet&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a1a82833cbeebfed9a1be0487ddcaa6a3" name="aa4689ee7c9a692044aebd36cb0915e61a1a82833cbeebfed9a1be0487ddcaa6a3"></a>SOUND_gold01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a4f6aedfd41128d694ca579262d7fc2a6" name="aa4689ee7c9a692044aebd36cb0915e61a4f6aedfd41128d694ca579262d7fc2a6"></a>SOUND_heal&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61af07db3cc2cc59ddaee0a06e28145b0be" name="aa4689ee7c9a692044aebd36cb0915e61af07db3cc2cc59ddaee0a06e28145b0be"></a>SOUND_fizzle&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a1be8cd550a4c68f3372e526d4d9f08ad" name="aa4689ee7c9a692044aebd36cb0915e61a1be8cd550a4c68f3372e526d4d9f08ad"></a>SOUND_TurnPage1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a8c50e71aa9ed9a2db321fd8e02ea72cb" name="aa4689ee7c9a692044aebd36cb0915e61a8c50e71aa9ed9a2db321fd8e02ea72cb"></a>SOUND_TurnPage2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aab8a4100649a4e9efd792ee3b7afe789" name="aa4689ee7c9a692044aebd36cb0915e61aab8a4100649a4e9efd792ee3b7afe789"></a>SOUND_batlleen&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a66d768e26028fe797c882e031c753b32" name="aa4689ee7c9a692044aebd36cb0915e61a66d768e26028fe797c882e031c753b32"></a>SOUND_batllest&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61adfc8d8c56f7f73bd3b8860a0b17bddef" name="aa4689ee7c9a692044aebd36cb0915e61adfc8d8c56f7f73bd3b8860a0b17bddef"></a>SOUND_openchest0101&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a99fa7c601a457e134532993d524498bb" name="aa4689ee7c9a692044aebd36cb0915e61a99fa7c601a457e134532993d524498bb"></a>SOUND_spellfail0201&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a4478731636cef490e43a25cda86fb7e0" name="aa4689ee7c9a692044aebd36cb0915e61a4478731636cef490e43a25cda86fb7e0"></a>SOUND_drink&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a1d3fd9e6a7380cb50a4bc5a9ee79f2b7" name="aa4689ee7c9a692044aebd36cb0915e61a1d3fd9e6a7380cb50a4bc5a9ee79f2b7"></a>SOUND_eat&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a89abb52f1a6d757c82922d3eba5168ee" name="aa4689ee7c9a692044aebd36cb0915e61a89abb52f1a6d757c82922d3eba5168ee"></a>SOUND_gong&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61afd391370a69192496e230efc58151577" name="aa4689ee7c9a692044aebd36cb0915e61afd391370a69192496e230efc58151577"></a>SOUND_hurp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a2e6eb54a49e49b31e59044f4324605ca" name="aa4689ee7c9a692044aebd36cb0915e61a2e6eb54a49e49b31e59044f4324605ca"></a>SOUND_church&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a1a94e0270cf634e04c76f6e47e10b59a" name="aa4689ee7c9a692044aebd36cb0915e61a1a94e0270cf634e04c76f6e47e10b59a"></a>SOUND_chimes&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad519ce6fe934b75aeef17c574d1bf67d" name="aa4689ee7c9a692044aebd36cb0915e61ad519ce6fe934b75aeef17c574d1bf67d"></a>SOUND_splash&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a45810b08f693d5ae1fdfd05b0a4a6639" name="aa4689ee7c9a692044aebd36cb0915e61a45810b08f693d5ae1fdfd05b0a4a6639"></a>SOUND_star1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad4c7c20c3cf479e338fc0075d232c391" name="aa4689ee7c9a692044aebd36cb0915e61ad4c7c20c3cf479e338fc0075d232c391"></a>SOUND_star2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a3b10c618764b7d0a22bc00735296462f" name="aa4689ee7c9a692044aebd36cb0915e61a3b10c618764b7d0a22bc00735296462f"></a>SOUND_star4&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ac17804d22431009fd88d401c5a24fd56" name="aa4689ee7c9a692044aebd36cb0915e61ac17804d22431009fd88d401c5a24fd56"></a>SOUND_eradicate&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61af70edaceb158975558b1f67ec057e61c" name="aa4689ee7c9a692044aebd36cb0915e61af70edaceb158975558b1f67ec057e61c"></a>SOUND_eleccircle&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aa9f9f7d846f351669013857134a63f97" name="aa4689ee7c9a692044aebd36cb0915e61aa9f9f7d846f351669013857134a63f97"></a>SOUND_encounter&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a60ac9b7e329660b3b285d456eef27872" name="aa4689ee7c9a692044aebd36cb0915e61a60ac9b7e329660b3b285d456eef27872"></a>SOUND_openbook&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61acf4f776cd5f8ee48a0183672f0d0d71d" name="aa4689ee7c9a692044aebd36cb0915e61acf4f776cd5f8ee48a0183672f0d0d71d"></a>SOUND_closebook&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a61b087c51401dcb2abc2bc82b1161bb9" name="aa4689ee7c9a692044aebd36cb0915e61a61b087c51401dcb2abc2bc82b1161bb9"></a>SOUND_teleport&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aa6ca61d062d98ef188f6b68de03294b7" name="aa4689ee7c9a692044aebd36cb0915e61aa6ca61d062d98ef188f6b68de03294b7"></a>SOUND_hf445a&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61aae0fbc479a1d64501c562f5c8e4c41c0" name="aa4689ee7c9a692044aebd36cb0915e61aae0fbc479a1d64501c562f5c8e4c41c0"></a>SOUND_Haste&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61af80b8c2e4eb1e6db50b0624efa08f1ed" name="aa4689ee7c9a692044aebd36cb0915e61af80b8c2e4eb1e6db50b0624efa08f1ed"></a>SOUND_21fly03&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a775c37c64972e6c7e91e053a586b7024" name="aa4689ee7c9a692044aebd36cb0915e61a775c37c64972e6c7e91e053a586b7024"></a>SOUND_WaterWalk&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a75131ad7c5ee7eba7a12bddafa83b4e1" name="aa4689ee7c9a692044aebd36cb0915e61a75131ad7c5ee7eba7a12bddafa83b4e1"></a>SOUND_Stoneskin&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ad9d5c64043dc2800a5f607bab9b2e32a" name="aa4689ee7c9a692044aebd36cb0915e61ad9d5c64043dc2800a5f607bab9b2e32a"></a>SOUND_Bless&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a1a0381dcd7c89311d944f86c951b0399" name="aa4689ee7c9a692044aebd36cb0915e61a1a0381dcd7c89311d944f86c951b0399"></a>SOUND_Fate&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a5f6bf49070f31220e0dea58b50397e19" name="aa4689ee7c9a692044aebd36cb0915e61a5f6bf49070f31220e0dea58b50397e19"></a>SOUND_51heroism03&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ae854961444bd7c9f5a45da54fb0a2c18" name="aa4689ee7c9a692044aebd36cb0915e61ae854961444bd7c9f5a45da54fb0a2c18"></a>SOUND_94dayofprotection03&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a368b05f98e26a7997410f3db51dccd08" name="aa4689ee7c9a692044aebd36cb0915e61a368b05f98e26a7997410f3db51dccd08"></a>SOUND_9armageddon01&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61ada29734e0f89ebd9509cb7a5b173ce18" name="aa4689ee7c9a692044aebd36cb0915e61ada29734e0f89ebd9509cb7a5b173ce18"></a>SOUND_Sacrifice2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa4689ee7c9a692044aebd36cb0915e61a85dd506da7a5743cb2a950d577648822" name="aa4689ee7c9a692044aebd36cb0915e61a85dd506da7a5743cb2a950d577648822"></a>SOUND_quest&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea93e1c7f4501c1937d5a3514f97c6caf6" name="ac4c17c8b309b1f9d7dc69286c18b871ea93e1c7f4501c1937d5a3514f97c6caf6"></a>SOUND_Invalid&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea98445820e4bc7d700e8eb382cacd28f2" name="ac4c17c8b309b1f9d7dc69286c18b871ea98445820e4bc7d700e8eb382cacd28f2"></a>SOUND_enter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea0bf8aa32b1ae031a8e9d10d49e509f20" name="ac4c17c8b309b1f9d7dc69286c18b871ea0bf8aa32b1ae031a8e9d10d49e509f20"></a>SOUND_WoodDoorClosing&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea452c947f113d02feaef6427811bc52b4" name="ac4c17c8b309b1f9d7dc69286c18b871ea452c947f113d02feaef6427811bc52b4"></a>SOUND_fireBall&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea50f10954969fcde33b8969ba945b57c7" name="ac4c17c8b309b1f9d7dc69286c18b871ea50f10954969fcde33b8969ba945b57c7"></a>SOUND_BoatCreaking&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea791e7f3f1dd5d5714bb65eb93a8d9112" name="ac4c17c8b309b1f9d7dc69286c18b871ea791e7f3f1dd5d5714bb65eb93a8d9112"></a>SOUND_ClickMinus&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae293a8bc789172c2c9666bb4ecaa015a" name="ac4c17c8b309b1f9d7dc69286c18b871eae293a8bc789172c2c9666bb4ecaa015a"></a>SOUND_ClickMovingSelector&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea58de81001ed23ea51ac05ae9c60f4aec" name="ac4c17c8b309b1f9d7dc69286c18b871ea58de81001ed23ea51ac05ae9c60f4aec"></a>SOUND_ClickPlus&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae37b7af1f6ffc3a48facd188a9179342" name="ac4c17c8b309b1f9d7dc69286c18b871eae37b7af1f6ffc3a48facd188a9179342"></a>SOUND_ClickSkill&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead1739fd8e5b7198def7cb89df6efbb36" name="ac4c17c8b309b1f9d7dc69286c18b871ead1739fd8e5b7198def7cb89df6efbb36"></a>SOUND_error&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaebad17100823c4a58e046628729cea8e" name="ac4c17c8b309b1f9d7dc69286c18b871eaebad17100823c4a58e046628729cea8e"></a>SOUND_dull_strike&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae6a72ac9a7001060c57beb3c86a1dc25" name="ac4c17c8b309b1f9d7dc69286c18b871eae6a72ac9a7001060c57beb3c86a1dc25"></a>SOUND_metal_vs_metal01h&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea24c37d12997071ceae667e6f9dcdbc81" name="ac4c17c8b309b1f9d7dc69286c18b871ea24c37d12997071ceae667e6f9dcdbc81"></a>SOUND_metal_vs_metal03h&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea59ea8b623bfb357b6a1f38787db40de5" name="ac4c17c8b309b1f9d7dc69286c18b871ea59ea8b623bfb357b6a1f38787db40de5"></a>SOUND_48&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea68e53eaf012dae835bf13a0dd19bcd1f" name="ac4c17c8b309b1f9d7dc69286c18b871ea68e53eaf012dae835bf13a0dd19bcd1f"></a>SOUND_RunBadlands&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab0125cc7206fe94b598270c46b8e64a7" name="ac4c17c8b309b1f9d7dc69286c18b871eab0125cc7206fe94b598270c46b8e64a7"></a>SOUND_RunCarpet&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead3337e1e38596e5df01ca247294accd2" name="ac4c17c8b309b1f9d7dc69286c18b871ead3337e1e38596e5df01ca247294accd2"></a>SOUND_RunCooledLava&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea0ccda426f7ab5e011ea9c4c32b4073db" name="ac4c17c8b309b1f9d7dc69286c18b871ea0ccda426f7ab5e011ea9c4c32b4073db"></a>SOUND_RunDesert&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae1dd801c40043b02244daa68d571ab20" name="ac4c17c8b309b1f9d7dc69286c18b871eae1dd801c40043b02244daa68d571ab20"></a>SOUND_RunDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaae58d807332fe7c4080e9c9c881335e4" name="ac4c17c8b309b1f9d7dc69286c18b871eaae58d807332fe7c4080e9c9c881335e4"></a>SOUND_RunGrass&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea379d5d132e8469c54092fd9fe8b616bb" name="ac4c17c8b309b1f9d7dc69286c18b871ea379d5d132e8469c54092fd9fe8b616bb"></a>SOUND_Run55_94&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea04be13759054092cec48635f823f08a9" name="ac4c17c8b309b1f9d7dc69286c18b871ea04be13759054092cec48635f823f08a9"></a>SOUND_RunGround&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea9b5787bb9c49b3e664cbab15e22eaf3a" name="ac4c17c8b309b1f9d7dc69286c18b871ea9b5787bb9c49b3e664cbab15e22eaf3a"></a>SOUND_RunRoad&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab62e37d7ff13fc0804cfd7fbd91cbc08" name="ac4c17c8b309b1f9d7dc69286c18b871eab62e37d7ff13fc0804cfd7fbd91cbc08"></a>SOUND_RunSnow&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead20d418b5a79dbc1fa3ae5b79c967873" name="ac4c17c8b309b1f9d7dc69286c18b871ead20d418b5a79dbc1fa3ae5b79c967873"></a>SOUND_Run59_98&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea472debed782e98beb4b90ebd54d8421c" name="ac4c17c8b309b1f9d7dc69286c18b871ea472debed782e98beb4b90ebd54d8421c"></a>SOUND_Run60_99&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eadbed781042d6ed44592563db7e0d825c" name="ac4c17c8b309b1f9d7dc69286c18b871eadbed781042d6ed44592563db7e0d825c"></a>SOUND_RunSwamp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eafa7aa9724834a16df026259c610d33ff" name="ac4c17c8b309b1f9d7dc69286c18b871eafa7aa9724834a16df026259c610d33ff"></a>SOUND_RunWater&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea0f44b61df05d8946ad52229ffc2426b4" name="ac4c17c8b309b1f9d7dc69286c18b871ea0f44b61df05d8946ad52229ffc2426b4"></a>SOUND_RunWaterIndoor&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea962b8f9b812d4fbfabb95e51e424a8b3" name="ac4c17c8b309b1f9d7dc69286c18b871ea962b8f9b812d4fbfabb95e51e424a8b3"></a>SOUND_RunWood&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eada8b5445a6b770c3d0fd40bfb61b0e22" name="ac4c17c8b309b1f9d7dc69286c18b871eada8b5445a6b770c3d0fd40bfb61b0e22"></a>SOUND_Run65_104&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eac312af226bba121b588d20c9d28a4776" name="ac4c17c8b309b1f9d7dc69286c18b871eac312af226bba121b588d20c9d28a4776"></a>SOUND_SelectingANewCharacter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaab87f46f5ae81648550f2ee10446e2d2" name="ac4c17c8b309b1f9d7dc69286c18b871eaab87f46f5ae81648550f2ee10446e2d2"></a>SOUND_shoot_blaster01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea187e91510d7db5c9f7ece938e86280e8" name="ac4c17c8b309b1f9d7dc69286c18b871ea187e91510d7db5c9f7ece938e86280e8"></a>SOUND_shoot_bow01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea25f99d110a0c62663712ffc15110872f" name="ac4c17c8b309b1f9d7dc69286c18b871ea25f99d110a0c62663712ffc15110872f"></a>SOUND_StartMainChoice02&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead899da7e83a9dcab1543ca3eaa1535b0" name="ac4c17c8b309b1f9d7dc69286c18b871ead899da7e83a9dcab1543ca3eaa1535b0"></a>SOUND_swing_with_axe01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae537540c4d857599dff5e727f8696cac" name="ac4c17c8b309b1f9d7dc69286c18b871eae537540c4d857599dff5e727f8696cac"></a>SOUND_swing_with_axe03&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea4d5e10b3783546f48403894b897be15d" name="ac4c17c8b309b1f9d7dc69286c18b871ea4d5e10b3783546f48403894b897be15d"></a>SOUND_swing_with_blunt_weapon01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea2677c56562d420297809d40d9df146b9" name="ac4c17c8b309b1f9d7dc69286c18b871ea2677c56562d420297809d40d9df146b9"></a>SOUND_swing_with_blunt_weapon03&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaf5b0c2c0038aeb8d6300d1ceb64962ea" name="ac4c17c8b309b1f9d7dc69286c18b871eaf5b0c2c0038aeb8d6300d1ceb64962ea"></a>SOUND_swing_with_sword01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea29ff98c7b674cfac694ea0a0eda787e4" name="ac4c17c8b309b1f9d7dc69286c18b871ea29ff98c7b674cfac694ea0a0eda787e4"></a>SOUND_swing_with_sword02&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea4e60aeb2f39bdd0a10499a4644c2f716" name="ac4c17c8b309b1f9d7dc69286c18b871ea4e60aeb2f39bdd0a10499a4644c2f716"></a>SOUND_WalkBadlands&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea735063fb53d27425105b819fb6bf88f3" name="ac4c17c8b309b1f9d7dc69286c18b871ea735063fb53d27425105b819fb6bf88f3"></a>SOUND_WalkCarpet&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea30e499c72d77d5cf7676accdd52b7fab" name="ac4c17c8b309b1f9d7dc69286c18b871ea30e499c72d77d5cf7676accdd52b7fab"></a>SOUND_WalkCooledLava&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eabc9f489f7fa9a82a1f2b3ad67be87753" name="ac4c17c8b309b1f9d7dc69286c18b871eabc9f489f7fa9a82a1f2b3ad67be87753"></a>SOUND_WalkDesert&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eafaffef0f6cc2d00d93b2eca7dc6c6de8" name="ac4c17c8b309b1f9d7dc69286c18b871eafaffef0f6cc2d00d93b2eca7dc6c6de8"></a>SOUND_WalkDirt&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaa7863c9041e2fcaa425e8027fc8344f9" name="ac4c17c8b309b1f9d7dc69286c18b871eaa7863c9041e2fcaa425e8027fc8344f9"></a>SOUND_WalkGrass&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea297e38dfc947a68cecf843af39a323df" name="ac4c17c8b309b1f9d7dc69286c18b871ea297e38dfc947a68cecf843af39a323df"></a>SOUND_Walk55_94&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea1af002586f7a8a64267a1dfbdb6f6717" name="ac4c17c8b309b1f9d7dc69286c18b871ea1af002586f7a8a64267a1dfbdb6f6717"></a>SOUND_WalkGround&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea0370ccf40a118c32eb3ab540f49ad814" name="ac4c17c8b309b1f9d7dc69286c18b871ea0370ccf40a118c32eb3ab540f49ad814"></a>SOUND_WalkRoad&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea015ee010db7d8bb6b8ae4ea4b354a99b" name="ac4c17c8b309b1f9d7dc69286c18b871ea015ee010db7d8bb6b8ae4ea4b354a99b"></a>SOUND_WalkSnow&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea3fb7da348f253565b7bba57bfdb43b90" name="ac4c17c8b309b1f9d7dc69286c18b871ea3fb7da348f253565b7bba57bfdb43b90"></a>SOUND_Walk59_98&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea60fcf1e45e6b3ffa8e4082f13e6ce832" name="ac4c17c8b309b1f9d7dc69286c18b871ea60fcf1e45e6b3ffa8e4082f13e6ce832"></a>SOUND_Walk60_99&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea5f784eadae8d43183a68176f45737907" name="ac4c17c8b309b1f9d7dc69286c18b871ea5f784eadae8d43183a68176f45737907"></a>SOUND_WalkSwamp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea1a36dc14383eb42b2ea23aed84f4dda0" name="ac4c17c8b309b1f9d7dc69286c18b871ea1a36dc14383eb42b2ea23aed84f4dda0"></a>SOUND_WalkWater&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea2a2949cc549be6ebe3b89462a16f0fdb" name="ac4c17c8b309b1f9d7dc69286c18b871ea2a2949cc549be6ebe3b89462a16f0fdb"></a>SOUND_WalkWaterIndoor&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab465b398d7e1c6b48a6041a921d6b423" name="ac4c17c8b309b1f9d7dc69286c18b871eab465b398d7e1c6b48a6041a921d6b423"></a>SOUND_WalkWood&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaac44c82d0f3192130da1a0758064b5ba" name="ac4c17c8b309b1f9d7dc69286c18b871eaac44c82d0f3192130da1a0758064b5ba"></a>SOUND_Walk65_104&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea03fbee0f6d097a23f4fbe75a4e4c63a0" name="ac4c17c8b309b1f9d7dc69286c18b871ea03fbee0f6d097a23f4fbe75a4e4c63a0"></a>SOUND_metal_armor_strike1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaa41815477ba2cf9e45647f69becf5b6e" name="ac4c17c8b309b1f9d7dc69286c18b871eaa41815477ba2cf9e45647f69becf5b6e"></a>SOUND_metal_armor_strike2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaf0c1a199c3d42fcab59cc1411797e26e" name="ac4c17c8b309b1f9d7dc69286c18b871eaf0c1a199c3d42fcab59cc1411797e26e"></a>SOUND_metal_armor_strike3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea22edea78d5d4f5393bbd1b9409be516e" name="ac4c17c8b309b1f9d7dc69286c18b871ea22edea78d5d4f5393bbd1b9409be516e"></a>SOUND_dull_armor_strike1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaaeac246f79577e795a584744792e4f01" name="ac4c17c8b309b1f9d7dc69286c18b871eaaeac246f79577e795a584744792e4f01"></a>SOUND_dull_armor_strike2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea02326ba4b9637f74de780f2e8ae3bfb8" name="ac4c17c8b309b1f9d7dc69286c18b871ea02326ba4b9637f74de780f2e8ae3bfb8"></a>SOUND_dull_armor_strike3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea2071e4c4f717fcccbd6b8a630b512d80" name="ac4c17c8b309b1f9d7dc69286c18b871ea2071e4c4f717fcccbd6b8a630b512d80"></a>SOUND_bricks_down&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaff24fff095be79c8629156edd99eed9a" name="ac4c17c8b309b1f9d7dc69286c18b871eaff24fff095be79c8629156edd99eed9a"></a>SOUND_bricks_up&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eac68b2c7b70e952751c76d359e020d26b" name="ac4c17c8b309b1f9d7dc69286c18b871eac68b2c7b70e952751c76d359e020d26b"></a>SOUND_damage&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaceefa2e6a63bc09ca8c4b6c146a354ad" name="ac4c17c8b309b1f9d7dc69286c18b871eaceefa2e6a63bc09ca8c4b6c146a354ad"></a>SOUND_deal&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea25ef89f9422a2ff8a4d2e995b44b8ae0" name="ac4c17c8b309b1f9d7dc69286c18b871ea25ef89f9422a2ff8a4d2e995b44b8ae0"></a>SOUND_defeat&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea6047ce2741c892f77f261e4f89d4331b" name="ac4c17c8b309b1f9d7dc69286c18b871ea6047ce2741c892f77f261e4f89d4331b"></a>SOUND_querry_up&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea81dfb62e48045aae4b1583a9719f0f21" name="ac4c17c8b309b1f9d7dc69286c18b871ea81dfb62e48045aae4b1583a9719f0f21"></a>SOUND_querry_down&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea0a9438a274eda219417c2a29bb6a0c09" name="ac4c17c8b309b1f9d7dc69286c18b871ea0a9438a274eda219417c2a29bb6a0c09"></a>SOUND_shuffle&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea3f3df72eb6309fb4442f8a3bf6cdb1d4" name="ac4c17c8b309b1f9d7dc69286c18b871ea3f3df72eb6309fb4442f8a3bf6cdb1d4"></a>SOUND_title&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaa6c49440cdd9f5d3cc8b7569fb5c7c71" name="ac4c17c8b309b1f9d7dc69286c18b871eaa6c49440cdd9f5d3cc8b7569fb5c7c71"></a>SOUND_tower_up&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea8ce7af553ae4b594ff06655b7d981635" name="ac4c17c8b309b1f9d7dc69286c18b871ea8ce7af553ae4b594ff06655b7d981635"></a>SOUND_typing&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea2335e3e2a2513d977d2eba44fb666beb" name="ac4c17c8b309b1f9d7dc69286c18b871ea2335e3e2a2513d977d2eba44fb666beb"></a>SOUND_victory&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea10f1becf684fc41e0908d51f6e890842" name="ac4c17c8b309b1f9d7dc69286c18b871ea10f1becf684fc41e0908d51f6e890842"></a>SOUND_wall_up&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea2e9cb571507e3b5080abfb1bc92a3a1d" name="ac4c17c8b309b1f9d7dc69286c18b871ea2e9cb571507e3b5080abfb1bc92a3a1d"></a>SOUND_luteguitar&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea406d8eab67b8899e004b589c8ae44b95" name="ac4c17c8b309b1f9d7dc69286c18b871ea406d8eab67b8899e004b589c8ae44b95"></a>SOUND_panflute&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea06d84678371566685c0151f64989fc5a" name="ac4c17c8b309b1f9d7dc69286c18b871ea06d84678371566685c0151f64989fc5a"></a>SOUND_trumpet&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead1c689b7af197e41630ba18f01a9e8b4" name="ac4c17c8b309b1f9d7dc69286c18b871ead1c689b7af197e41630ba18f01a9e8b4"></a>SOUND_gold01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea1498c94a3fc6d714baa6e788f5446bfa" name="ac4c17c8b309b1f9d7dc69286c18b871ea1498c94a3fc6d714baa6e788f5446bfa"></a>SOUND_heal&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea473fdb746c06098c9b4cff9645dd5120" name="ac4c17c8b309b1f9d7dc69286c18b871ea473fdb746c06098c9b4cff9645dd5120"></a>SOUND_fizzle&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab82272e6a23ecdd4e806d3992c81f6a3" name="ac4c17c8b309b1f9d7dc69286c18b871eab82272e6a23ecdd4e806d3992c81f6a3"></a>SOUND_TurnPage1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea9cb1ff323fd953e74eedcbf2790b32be" name="ac4c17c8b309b1f9d7dc69286c18b871ea9cb1ff323fd953e74eedcbf2790b32be"></a>SOUND_TurnPage2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea409246886267d221d207353ef87f22b9" name="ac4c17c8b309b1f9d7dc69286c18b871ea409246886267d221d207353ef87f22b9"></a>SOUND_EndTurnBasedMode&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea6c088e82acc753ca8b5b68b5a8a4e979" name="ac4c17c8b309b1f9d7dc69286c18b871ea6c088e82acc753ca8b5b68b5a8a4e979"></a>SOUND_StartTurnBasedMode&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea981bc3af2ae6e3b293ffb421c39c5b8d" name="ac4c17c8b309b1f9d7dc69286c18b871ea981bc3af2ae6e3b293ffb421c39c5b8d"></a>SOUND_openchest0101&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaa33f78f36376ae12bbd77e58a2e21efc" name="ac4c17c8b309b1f9d7dc69286c18b871eaa33f78f36376ae12bbd77e58a2e21efc"></a>SOUND_spellfail0201&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eabbf3b3eae3dc557cbd57963a57cc7820" name="ac4c17c8b309b1f9d7dc69286c18b871eabbf3b3eae3dc557cbd57963a57cc7820"></a>SOUND_drink&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae9497d4cdf16895c1c6c3e26e011f128" name="ac4c17c8b309b1f9d7dc69286c18b871eae9497d4cdf16895c1c6c3e26e011f128"></a>SOUND_eat&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eac13faf5a68cc2aab0edee1354f38c0b2" name="ac4c17c8b309b1f9d7dc69286c18b871eac13faf5a68cc2aab0edee1354f38c0b2"></a>SOUND_gong&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea96002942607cedbb76f219061bf819e1" name="ac4c17c8b309b1f9d7dc69286c18b871ea96002942607cedbb76f219061bf819e1"></a>SOUND_hurp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea6be645c830cc3c6bb560375a0105e0ca" name="ac4c17c8b309b1f9d7dc69286c18b871ea6be645c830cc3c6bb560375a0105e0ca"></a>SOUND_church&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eadd437166a8bb137961a4516cf72a6a8a" name="ac4c17c8b309b1f9d7dc69286c18b871eadd437166a8bb137961a4516cf72a6a8a"></a>SOUND_chimes&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea94b1c0db39de49addbec2cb74ff1acbf" name="ac4c17c8b309b1f9d7dc69286c18b871ea94b1c0db39de49addbec2cb74ff1acbf"></a>SOUND_splash&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab4227a5690cd910ab6cc58c9b792d14f" name="ac4c17c8b309b1f9d7dc69286c18b871eab4227a5690cd910ab6cc58c9b792d14f"></a>SOUND_star1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea45c84bd3df7e8f49a3bb7efa765a3ec6" name="ac4c17c8b309b1f9d7dc69286c18b871ea45c84bd3df7e8f49a3bb7efa765a3ec6"></a>SOUND_star2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea7fb898b402ffbf323f7ddce17c9f7a86" name="ac4c17c8b309b1f9d7dc69286c18b871ea7fb898b402ffbf323f7ddce17c9f7a86"></a>SOUND_star4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaa3e4d17c81438686ae34d7b3b08b027e" name="ac4c17c8b309b1f9d7dc69286c18b871eaa3e4d17c81438686ae34d7b3b08b027e"></a>SOUND_eradicate&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea5a9d3f97e6fdfe24bf9b8d1e039b247d" name="ac4c17c8b309b1f9d7dc69286c18b871ea5a9d3f97e6fdfe24bf9b8d1e039b247d"></a>SOUND_eleccircle&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea5ce789a2798abb93ba67b74452b4d190" name="ac4c17c8b309b1f9d7dc69286c18b871ea5ce789a2798abb93ba67b74452b4d190"></a>SOUND_encounter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab77ff8d332f6a3cc78f321b956d4e798" name="ac4c17c8b309b1f9d7dc69286c18b871eab77ff8d332f6a3cc78f321b956d4e798"></a>SOUND_openbook&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaf486c72009ba28278a30d734617f5fb8" name="ac4c17c8b309b1f9d7dc69286c18b871eaf486c72009ba28278a30d734617f5fb8"></a>SOUND_closebook&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab97f00b995409559fdf3db48a9f1f976" name="ac4c17c8b309b1f9d7dc69286c18b871eab97f00b995409559fdf3db48a9f1f976"></a>SOUND_teleport&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eadab96039453cc4aa3f34109c1279b139" name="ac4c17c8b309b1f9d7dc69286c18b871eadab96039453cc4aa3f34109c1279b139"></a>SOUND_wood_door0101&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab60ce47b546582429ce24c263438492e" name="ac4c17c8b309b1f9d7dc69286c18b871eab60ce47b546582429ce24c263438492e"></a>SOUND_wood_door0201&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea105a547bb5868ff2fe9fcaca7d1797b9" name="ac4c17c8b309b1f9d7dc69286c18b871ea105a547bb5868ff2fe9fcaca7d1797b9"></a>SOUND_wood_door0301&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eac1cdd3676017b6317709c44461f1c42c" name="ac4c17c8b309b1f9d7dc69286c18b871eac1cdd3676017b6317709c44461f1c42c"></a>SOUND_wood_door0401&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead61df6b4ba93e79f509e9bf6d9132ab7" name="ac4c17c8b309b1f9d7dc69286c18b871ead61df6b4ba93e79f509e9bf6d9132ab7"></a>SOUND_wood_door0501&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eaa774ae9b8377ca151e325c0c9737ee4f" name="ac4c17c8b309b1f9d7dc69286c18b871eaa774ae9b8377ca151e325c0c9737ee4f"></a>SOUND_stone_door0101&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea5d92e6e821d8fd462e8326d74ab7e5b8" name="ac4c17c8b309b1f9d7dc69286c18b871ea5d92e6e821d8fd462e8326d74ab7e5b8"></a>SOUND_stone_door0201&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea2b65993f268a62e26d038f8406c1698d" name="ac4c17c8b309b1f9d7dc69286c18b871ea2b65993f268a62e26d038f8406c1698d"></a>SOUND_stone_door0301&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea07339eaa4f1b49b6b25bd000fdebfdb5" name="ac4c17c8b309b1f9d7dc69286c18b871ea07339eaa4f1b49b6b25bd000fdebfdb5"></a>SOUND_stone_door0401&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae991184d973fca86c5ff789add0d20bf" name="ac4c17c8b309b1f9d7dc69286c18b871eae991184d973fca86c5ff789add0d20bf"></a>SOUND_stone_door0501&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea44a37ea9ca47a73ab1ff653ec7921bc6" name="ac4c17c8b309b1f9d7dc69286c18b871ea44a37ea9ca47a73ab1ff653ec7921bc6"></a>SOUND_hf445a&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea1c34d5ffd916e5a3ce3c27548617eac3" name="ac4c17c8b309b1f9d7dc69286c18b871ea1c34d5ffd916e5a3ce3c27548617eac3"></a>SOUND_Haste&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eab876b1cd13dbb07a9fba72cab5980b58" name="ac4c17c8b309b1f9d7dc69286c18b871eab876b1cd13dbb07a9fba72cab5980b58"></a>SOUND_21fly03&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea91a8de2b7cfa31e856d5ea9c0ee19ac8" name="ac4c17c8b309b1f9d7dc69286c18b871ea91a8de2b7cfa31e856d5ea9c0ee19ac8"></a>SOUND_WaterWalk&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea500d89e5fb7beedb3ca54f1d32b4fc86" name="ac4c17c8b309b1f9d7dc69286c18b871ea500d89e5fb7beedb3ca54f1d32b4fc86"></a>SOUND_Stoneskin&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead0a0add479bda15161fe2904556314ca" name="ac4c17c8b309b1f9d7dc69286c18b871ead0a0add479bda15161fe2904556314ca"></a>SOUND_Bless&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eae618c05285403cde8140afc9116d123c" name="ac4c17c8b309b1f9d7dc69286c18b871eae618c05285403cde8140afc9116d123c"></a>SOUND_Fate&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea033cd838d71537674a02016c8cc80935" name="ac4c17c8b309b1f9d7dc69286c18b871ea033cd838d71537674a02016c8cc80935"></a>SOUND_51heroism03&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea45ae132b289596f8ec1ee56069deea26" name="ac4c17c8b309b1f9d7dc69286c18b871ea45ae132b289596f8ec1ee56069deea26"></a>SOUND_94dayofprotection03&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ea9cce9337a522b6ef5ae238b83a2120fa" name="ac4c17c8b309b1f9d7dc69286c18b871ea9cce9337a522b6ef5ae238b83a2120fa"></a>SOUND_9armageddon01&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871ead055f0e97148971b8aabf8d50c92edf7" name="ac4c17c8b309b1f9d7dc69286c18b871ead055f0e97148971b8aabf8d50c92edf7"></a>SOUND_Sacrifice2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac4c17c8b309b1f9d7dc69286c18b871eac0d247436ba5187e46af5fb238886be1" name="ac4c17c8b309b1f9d7dc69286c18b871eac0d247436ba5187e46af5fb238886be1"></a>SOUND_quest&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -551,6 +608,33 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="abb698a37a56e41cc9cbec7d90375d078aa99a7aa93bedf336e774eab31b56a0bd" name="abb698a37a56e41cc9cbec7d90375d078aa99a7aa93bedf336e774eab31b56a0bd"></a>SOUND_MODE_HOUSE_SPEECH&#160;</td><td class="fielddoc"><p >House speech, only one sound can be active at a time. </p>
 </td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a2701200967095caa637ed07cb1b0a7bc" name="a2701200967095caa637ed07cb1b0a7bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2701200967095caa637ed07cb1b0a7bc">&#9670;&#160;</a></span>doorClosedSound()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> doorClosedSound </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>&#160;</td>
+          <td class="paramname"><em>doorSound</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

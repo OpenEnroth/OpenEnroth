@@ -284,7 +284,6 @@ var menudata={children:[
 {text:"l",url:"globals_eval_l.html#index_l"},
 {text:"m",url:"globals_eval_m.html#index_m"},
 {text:"p",url:"globals_eval_p.html#index_p"},
-{text:"s",url:"globals_eval_s.html#index_s"},
 {text:"u",url:"globals_eval_u.html#index_u"},
 {text:"w",url:"globals_eval_w.html#index_w"}]},
 {text:"Macros",url:"globals_defs.html",children:[

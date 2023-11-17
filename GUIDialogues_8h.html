@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1ca86c4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;310a402</span>
    </div>
   </td>
  </tr>
@@ -86,7 +86,7 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a0e0a2fa14fb92490ed6695b55d7e55ef"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIDialogues_8h.html#a0e0a2fa14fb92490ed6695b55d7e55ef">SKILL_TO_LEARNING_DIALOGUE_ID</a>(skill)&#160;&#160;&#160;36 + <a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(skill)</td></tr>
+<tr class="memitem:a0e0a2fa14fb92490ed6695b55d7e55ef"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIDialogues_8h.html#a0e0a2fa14fb92490ed6695b55d7e55ef">SKILL_TO_LEARNING_DIALOGUE_ID</a>(skill)&#160;&#160;&#160;(36 + <a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(skill))</td></tr>
 <tr class="separator:a0e0a2fa14fb92490ed6695b55d7e55ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -215,6 +215,9 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a939f1e609f7670b2137543cbe4f01fda">DIALOGUE_TRANSPORT_SCHEDULE_3</a> = 107
 , <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a10ecefc1862537a8ff2dd29fddd58ee9">DIALOGUE_TRANSPORT_SCHEDULE_4</a> = 108
 , <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a41653d0a00ca2dc22759b4764f4ba196">DIALOGUE_OTHER</a> = -1
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a20ae1fbf64e64190aae7b981749885db">DIALOGUE_LEARN_FIRST</a> = DIALOGUE_LEARN_STAFF
+, <br />
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a128fa6841b3698079372357f86ee5045">DIALOGUE_LEARN_LAST</a> = DIALOGUE_LEARN_CLUB
 <br />
  }</td></tr>
 <tr class="separator:afcd7885d9ec6583fa04d9e8f0f641d00"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -238,7 +241,7 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">skill</td><td>)</td>
-          <td>&#160;&#160;&#160;36 + <a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(skill)</td>
+          <td>&#160;&#160;&#160;(36 + <a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(skill))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -357,6 +360,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="afcd7885d9ec6583fa04d9e8f0f641d00a939f1e609f7670b2137543cbe4f01fda" name="afcd7885d9ec6583fa04d9e8f0f641d00a939f1e609f7670b2137543cbe4f01fda"></a>DIALOGUE_TRANSPORT_SCHEDULE_3&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="afcd7885d9ec6583fa04d9e8f0f641d00a10ecefc1862537a8ff2dd29fddd58ee9" name="afcd7885d9ec6583fa04d9e8f0f641d00a10ecefc1862537a8ff2dd29fddd58ee9"></a>DIALOGUE_TRANSPORT_SCHEDULE_4&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="afcd7885d9ec6583fa04d9e8f0f641d00a41653d0a00ca2dc22759b4764f4ba196" name="afcd7885d9ec6583fa04d9e8f0f641d00a41653d0a00ca2dc22759b4764f4ba196"></a>DIALOGUE_OTHER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afcd7885d9ec6583fa04d9e8f0f641d00a20ae1fbf64e64190aae7b981749885db" name="afcd7885d9ec6583fa04d9e8f0f641d00a20ae1fbf64e64190aae7b981749885db"></a>DIALOGUE_LEARN_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afcd7885d9ec6583fa04d9e8f0f641d00a128fa6841b3698079372357f86ee5045" name="afcd7885d9ec6583fa04d9e8f0f641d00a128fa6841b3698079372357f86ee5045"></a>DIALOGUE_LEARN_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

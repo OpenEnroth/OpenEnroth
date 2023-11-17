@@ -161,7 +161,7 @@ var searchData=
   ['audioplayer_158',['AudioPlayer',['../classAudioPlayer.html#a613734aa93436f1058a9804e1467ad3c',1,'AudioPlayer']]],
   ['audiosample16_159',['AudioSample16',['../classAudioSample16.html#aeca3399ca9475f1fe67130fe1b61e4c7',1,'AudioSample16']]],
   ['audiosamplepool_160',['AudioSamplePool',['../classAudioSamplePool.html#ac72ccaf44e7210034d71c46652f7c2ec',1,'AudioSamplePool']]],
-  ['audiosamplepoolentry_161',['AudioSamplePoolEntry',['../structAudioSamplePoolEntry.html#aaa6999dbe40ff0076e4da4151a88a9fd',1,'AudioSamplePoolEntry']]],
+  ['audiosamplepoolentry_161',['AudioSamplePoolEntry',['../structAudioSamplePoolEntry.html#a35095359561d6c50db6ca4f4e1038db1',1,'AudioSamplePoolEntry']]],
   ['auraeffectblue_162',['AuraEffectBlue',['../structItemGen.html#adbb07de3c4ea0d220fe1b7e9b8f62768',1,'ItemGen']]],
   ['auraeffectgreen_163',['AuraEffectGreen',['../structItemGen.html#a01993a32aa349ea11fe9f1c69ea7e925',1,'ItemGen']]],
   ['auraeffectpurple_164',['AuraEffectPurple',['../structItemGen.html#ab8df6976055ead2e23e59a4f74e15a48',1,'ItemGen']]],
