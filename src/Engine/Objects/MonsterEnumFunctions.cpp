@@ -1,4 +1,4 @@
-#include "MonsterEnums.h"
+#include "MonsterEnumFunctions.h"
 
 #include <vector>
 

@@ -6,7 +6,7 @@ set(ENGINE_OBJECTS_SOURCES
         CombinedSkillValue.cpp
         ItemEnumFunctions.cpp
         Items.cpp
-        MonsterEnums.cpp
+        MonsterEnumFunctions.cpp
         Monsters.cpp
         NPC.cpp
         ObjectList.cpp
@@ -25,6 +25,7 @@ set(ENGINE_OBJECTS_HEADERS
         Items.h
         Monsters.h
         MonsterEnums.h
+        MonsterEnumFunctions.h
         NPC.h
         NPCEnums.h
         ObjectList.h

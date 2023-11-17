@@ -11,6 +11,7 @@
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"

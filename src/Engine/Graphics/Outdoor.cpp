@@ -24,6 +24,7 @@
 #include "Engine/Graphics/Polygon.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"

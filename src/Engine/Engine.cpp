@@ -36,6 +36,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
@@ -61,7 +62,6 @@
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"

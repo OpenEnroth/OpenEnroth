@@ -18,6 +18,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 
 #include "Library/Logger/Logger.h"
 
