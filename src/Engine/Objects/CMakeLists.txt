@@ -28,11 +28,14 @@ set(ENGINE_OBJECTS_HEADERS
         MonsterEnumFunctions.h
         NPC.h
         NPCEnums.h
+        NPCEnumFunctions.h
         ObjectList.h
         Character.h
         CharacterEnums.h
         CharacterEnumFunctions.h
-        SpriteObject.h)
+        SpriteObject.h
+        SpriteEnums.h
+        SpriteEnumFunctions.h)
 
 add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})
 target_check_style(engine_objects)

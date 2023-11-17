@@ -6,7 +6,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ItemEnumFunctions.h"
 #include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time.h"
 #include "Engine/MapEnums.h"
 
