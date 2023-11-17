@@ -17,6 +17,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
@@ -27,7 +28,6 @@
 #include "Engine/Spells/Spells.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"

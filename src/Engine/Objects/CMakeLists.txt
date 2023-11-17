@@ -29,6 +29,7 @@ set(ENGINE_OBJECTS_HEADERS
         ObjectList.h
         Character.h
         CharacterEnums.h
+        CharacterEnumFunctions.h
         SpriteObject.h)
 
 add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})

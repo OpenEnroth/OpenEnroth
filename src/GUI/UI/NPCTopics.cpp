@@ -13,14 +13,13 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Events/Processor.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 

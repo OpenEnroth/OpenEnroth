@@ -5,6 +5,7 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineIocContainer.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
