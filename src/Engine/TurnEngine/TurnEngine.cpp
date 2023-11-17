@@ -114,7 +114,7 @@ void stru262_TurnBased::Start() {
 
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
-    pAudioPlayer->playUISound(SOUND_batllest);
+    pAudioPlayer->playUISound(SOUND_StartTurnBasedMode);
     // pPlayer = pParty->pCharacters.data();
     dword_50C998_turnbased_icon_1A =
         pIconsFrameTable->GetIcon(uIconID_TurnStart)->GetAnimLength();
@@ -228,7 +228,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
             pActors[objID].monsterInfo.uRecoveryTime = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
     }
     if (bPlaySound != 0)
-        pAudioPlayer->playUISound(SOUND_batlleen);
+        pAudioPlayer->playUISound(SOUND_EndTurnBasedMode);
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->StopGameTime();
     dword_50C994 = 0;

@@ -54,7 +54,7 @@ class EventIR {
             int value;
         } variable_descr;
         struct {
-            SoundID sound_id;
+            SoundId sound_id;
             int x;
             int y;
         } sound_descr;

@@ -117,10 +117,13 @@ using enum ActorAttribute;
 MM_DECLARE_FLAGS(ActorAttributes, ActorAttribute)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ActorAttributes)
 
-enum class ActorSounds {
+enum class ActorSound {
     ACTOR_ATTACK_SOUND = 0,
     ACTOR_DEATH_SOUND = 1,
     ACTOR_STUNNED_SOUND = 2,
-    ACTOR_BORED_SOUND = 3
+    ACTOR_BORED_SOUND = 3,
+
+    ACTOR_SOUND_FIRST = ACTOR_ATTACK_SOUND,
+    ACTOR_SOUND_LAST = ACTOR_BORED_SOUND,
 };
-using enum ActorSounds;
+using enum ActorSound;

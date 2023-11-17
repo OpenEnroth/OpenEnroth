@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "Media/Audio/SoundEnums.h"
+
 #include "Library/Color/Color.h"
 
 #include "Utility/Flags.h"
@@ -36,7 +38,7 @@ struct DecorationDesc {
     int16_t uLightRadius;
     uint16_t uSpriteID;
     DecorationDescFlags uFlags;
-    int16_t uSoundID;
+    SoundId uSoundID;
     Color uColoredLight;
 
     inline bool CanMoveThrough() const {

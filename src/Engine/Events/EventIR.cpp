@@ -868,7 +868,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             break;
         case EVENT_PlaySound:
             requireSize(17);
-            ir.data.sound_descr.sound_id = static_cast<SoundID>(EVT_DWORD(&evt->v5));
+            ir.data.sound_descr.sound_id = static_cast<SoundId>(EVT_DWORD(&evt->v5));
             ir.data.sound_descr.x = EVT_DWORD(&evt->v9);
             ir.data.sound_descr.y = EVT_DWORD(&evt->v13);
             break;

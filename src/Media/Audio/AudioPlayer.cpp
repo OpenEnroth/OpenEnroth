@@ -186,7 +186,7 @@ void AudioPlayer::resumeSounds() {
     }
 }
 
-void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
+void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     if (!bPlayerReady)
         return;
 
@@ -198,7 +198,7 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     SoundInfo *si = pSoundList->soundInfo(eSoundID);
     if (!si) {
-        logger->warning("AudioPlayer: sound id {} not found", eSoundID);
+        logger->warning("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
         return;
     }
 
@@ -215,13 +215,13 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
         }
 
         if (!buffer) {
-            logger->warning("AudioPlayer: failed to load sound {} ({})", eSoundID, si->sName);
+            logger->warning("AudioPlayer: failed to load sound {} ({})", std::to_underlying(eSoundID), si->sName);
             return;
         }
 
         si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
         if (!si->dataSource) {
-            logger->warning("AudioPlayer: failed to create sound data source {} ({})", eSoundID, si->sName);
+            logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(eSoundID), si->sName);
             return;
         }
 
@@ -336,15 +336,15 @@ void AudioPlayer::playSound(SoundID eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     if (!result) {
         if (si->sName.empty()) {
-            logger->warning("AudioPlayer: failed to play audio {} with name '{}'", eSoundID, si->sName);
+            logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->sName);
         } else {
-            logger->warning("AudioPlayer: failed to play audio {}", eSoundID);
+            logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
         }
     } else {
         if (si->sName.empty()) {
-            logger->trace("AudioPlayer: playing sound {}", eSoundID);
+            logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
         } else {
-            logger->trace("AudioPlayer: playing sound {} with name '{}'", eSoundID, si->sName);
+            logger->trace("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
         }
     }
 }
@@ -433,6 +433,6 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
 
 void AudioPlayer::playSpellSound(SpellId spell, bool is_impact, SoundPlaybackMode mode, Pid pid) {
     if (spell != SPELL_NONE)
-        playSound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), mode, pid);
+        playSound(static_cast<SoundId>(SpellSoundIds[spell] + is_impact), mode, pid);
 }
 

@@ -598,7 +598,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             spell_sprites.uSoundID = 0;
             launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
@@ -617,7 +617,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
                     spriteid = spell_sprites.Create(i + yaw, pitch, pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
                 }
             }
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
@@ -630,7 +630,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
                 spell_sprites.uFacing = i + yaw;
                 spriteid = spell_sprites.Create(i + yaw, pitch, pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
             }
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
@@ -642,7 +642,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             launch_speed = pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed;
             launch_angle = TrigLUT.uIntegerHalfPi / 2;
             spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteid));
             break;
@@ -664,7 +664,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             }
             pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, 0, 0, 0);
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
             //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
@@ -700,7 +700,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
@@ -713,7 +713,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, skillLevel, 0, 0);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
@@ -744,7 +744,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
 
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
@@ -770,7 +770,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
 
             pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, 0);
-            //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
+            //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);

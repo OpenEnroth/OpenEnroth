@@ -54,83 +54,84 @@
 IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
-static constexpr IndexedArray<uint16_t, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocationID = {
-    {MAP_EMERALD_ISLAND, 300},
-    {MAP_HARMONDALE, 300},
-    {MAP_ERATHIA, 300},
-    {MAP_TULAREAN_FOREST, 300},
-    {MAP_DEYJA, 300},
-    {MAP_BRACADA_DESERT, 300},
-    {MAP_CELESTE, 300},
-    {MAP_PIT, 300},
-    {MAP_EVENMORN_ISLAND, 300},
-    {MAP_MOUNT_NIGHON, 300},
-    {MAP_BARROW_DOWNS, 300},
-    {MAP_LAND_OF_THE_GIANTS, 300},
-    {MAP_TATALIA, 300},
-    {MAP_AVLEE, 300},
-    {MAP_SHOALS, 300},
-    {MAP_DRAGON_CAVES, 404},
-    {MAP_LORD_MARKHAMS_MANOR, 302},
-    {MAP_BANDIT_CAVES, 306},
-    {MAP_HAUNTED_MANSION, 308},
-    {MAP_TEMPLE_OF_THE_MOON, 304},
-    {MAP_CASTLE_HARMONDALE, 308},
-    {MAP_WHITE_CLIFF_CAVE, 302},
-    {MAP_ERATHIAN_SEWERS, 400},
-    {MAP_FORT_RIVERSTRIDE, 302},
-    {MAP_TULAREAN_CAVES, 300},
-    {MAP_CLANKERS_LABORATORY, 308},
-    {MAP_HALL_OF_THE_PIT, 308},
-    {MAP_WATCHTOWER_6, 306},
-    {MAP_SCHOOL_OF_SORCERY, 308},
-    {MAP_RED_DWARF_MINES, 308},
-    {MAP_WALLS_OF_MIST, 304},
-    {MAP_TEMPLE_OF_THE_LIGHT, 300},
-    {MAP_BREEDING_ZONE, 404},
-    {MAP_TEMPLE_OF_THE_DARK, 406},
-    {MAP_GRAND_TEMPLE_OF_THE_MOON, 300},
-    {MAP_GRAND_TEMPLE_OF_THE_SUN, 400},
-    {MAP_THUNDERFIST_MOUNTAIN, 406},
-    {MAP_MAZE, 404},
-    {MAP_STONE_CITY, 306},
-    {MAP_COLONY_ZOD, 302},
-    {MAP_MERCENARY_GUILD, 408},
-    {MAP_TIDEWATER_CAVERNS, 304},
-    {MAP_WINE_CELLAR, 300},
-    {MAP_TITANS_STRONGHOLD, 300},
-    {MAP_TEMPLE_OF_BAA, 300},
-    {MAP_HALL_UNDER_THE_HILL, 300},
-    {MAP_LINCOLN, 300},
-    {MAP_CASTLE_GRYPHONHEART, 300},
-    {MAP_CASTLE_NAVAN, 300},
-    {MAP_CASTLE_LAMBENT, 300},
-    {MAP_CASTLE_GLOAMING, 300},
-    {MAP_DRAGONS_LAIR, 300},
-    {MAP_BARROW_VII, 300},
-    {MAP_BARROW_IV, 300},
-    {MAP_BARROW_II, 300},
-    {MAP_BARROW_XIV, 300},
-    {MAP_BARROW_III, 300},
-    {MAP_BARROW_IX, 300},
-    {MAP_BARROW_VI, 300},
-    {MAP_BARROW_I, 300},
-    {MAP_BARROW_VIII, 300},
-    {MAP_BARROW_XIII, 300},
-    {MAP_BARROW_X, 404},
-    {MAP_BARROW_XII, 304},
-    {MAP_BARROW_V, 400},
-    {MAP_BARROW_XI, 300},
-    {MAP_BARROW_XV, 300},
-    {MAP_ZOKARRS_TOMB, 404},
-    {MAP_NIGHON_TUNNELS, 304},
-    {MAP_TUNNELS_TO_EEOFOL, 400},
-    {MAP_WILLIAM_SETAGS_TOWER, 300},
-    {MAP_WROMTHRAXS_CAVE, 300},
-    {MAP_HIDDEN_TOMB, 404},
-    {MAP_STRANGE_TEMPLE, 304},
-    {MAP_SMALL_HOUSE, 400},
-    {MAP_ARENA, 300}
+// TODO(captainurist): move to SoundEnums.h?
+static constexpr IndexedArray<SoundId, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocationID = {
+    {MAP_EMERALD_ISLAND,            SOUND_wood_door0101},
+    {MAP_HARMONDALE,                SOUND_wood_door0101},
+    {MAP_ERATHIA,                   SOUND_wood_door0101},
+    {MAP_TULAREAN_FOREST,           SOUND_wood_door0101},
+    {MAP_DEYJA,                     SOUND_wood_door0101},
+    {MAP_BRACADA_DESERT,            SOUND_wood_door0101},
+    {MAP_CELESTE,                   SOUND_wood_door0101},
+    {MAP_PIT,                       SOUND_wood_door0101},
+    {MAP_EVENMORN_ISLAND,           SOUND_wood_door0101},
+    {MAP_MOUNT_NIGHON,              SOUND_wood_door0101},
+    {MAP_BARROW_DOWNS,              SOUND_wood_door0101},
+    {MAP_LAND_OF_THE_GIANTS,        SOUND_wood_door0101},
+    {MAP_TATALIA,                   SOUND_wood_door0101},
+    {MAP_AVLEE,                     SOUND_wood_door0101},
+    {MAP_SHOALS,                    SOUND_wood_door0101},
+    {MAP_DRAGON_CAVES,              SOUND_stone_door0301},
+    {MAP_LORD_MARKHAMS_MANOR,       SOUND_wood_door0201},
+    {MAP_BANDIT_CAVES,              SOUND_wood_door0401},
+    {MAP_HAUNTED_MANSION,           SOUND_wood_door0501},
+    {MAP_TEMPLE_OF_THE_MOON,        SOUND_wood_door0301},
+    {MAP_CASTLE_HARMONDALE,         SOUND_wood_door0501},
+    {MAP_WHITE_CLIFF_CAVE,          SOUND_wood_door0201},
+    {MAP_ERATHIAN_SEWERS,           SOUND_stone_door0101},
+    {MAP_FORT_RIVERSTRIDE,          SOUND_wood_door0201},
+    {MAP_TULAREAN_CAVES,            SOUND_wood_door0101},
+    {MAP_CLANKERS_LABORATORY,       SOUND_wood_door0501},
+    {MAP_HALL_OF_THE_PIT,           SOUND_wood_door0501},
+    {MAP_WATCHTOWER_6,              SOUND_wood_door0401},
+    {MAP_SCHOOL_OF_SORCERY,         SOUND_wood_door0501},
+    {MAP_RED_DWARF_MINES,           SOUND_wood_door0501},
+    {MAP_WALLS_OF_MIST,             SOUND_wood_door0301},
+    {MAP_TEMPLE_OF_THE_LIGHT,       SOUND_wood_door0101},
+    {MAP_BREEDING_ZONE,             SOUND_stone_door0301},
+    {MAP_TEMPLE_OF_THE_DARK,        SOUND_stone_door0401},
+    {MAP_GRAND_TEMPLE_OF_THE_MOON,  SOUND_wood_door0101},
+    {MAP_GRAND_TEMPLE_OF_THE_SUN,   SOUND_stone_door0101},
+    {MAP_THUNDERFIST_MOUNTAIN,      SOUND_stone_door0401},
+    {MAP_MAZE,                      SOUND_stone_door0301},
+    {MAP_STONE_CITY,                SOUND_wood_door0401},
+    {MAP_COLONY_ZOD,                SOUND_wood_door0201},
+    {MAP_MERCENARY_GUILD,           SOUND_stone_door0501},
+    {MAP_TIDEWATER_CAVERNS,         SOUND_wood_door0301},
+    {MAP_WINE_CELLAR,               SOUND_wood_door0101},
+    {MAP_TITANS_STRONGHOLD,         SOUND_wood_door0101},
+    {MAP_TEMPLE_OF_BAA,             SOUND_wood_door0101},
+    {MAP_HALL_UNDER_THE_HILL,       SOUND_wood_door0101},
+    {MAP_LINCOLN,                   SOUND_wood_door0101},
+    {MAP_CASTLE_GRYPHONHEART,       SOUND_wood_door0101},
+    {MAP_CASTLE_NAVAN,              SOUND_wood_door0101},
+    {MAP_CASTLE_LAMBENT,            SOUND_wood_door0101},
+    {MAP_CASTLE_GLOAMING,           SOUND_wood_door0101},
+    {MAP_DRAGONS_LAIR,              SOUND_wood_door0101},
+    {MAP_BARROW_VII,                SOUND_wood_door0101},
+    {MAP_BARROW_IV,                 SOUND_wood_door0101},
+    {MAP_BARROW_II,                 SOUND_wood_door0101},
+    {MAP_BARROW_XIV,                SOUND_wood_door0101},
+    {MAP_BARROW_III,                SOUND_wood_door0101},
+    {MAP_BARROW_IX,                 SOUND_wood_door0101},
+    {MAP_BARROW_VI,                 SOUND_wood_door0101},
+    {MAP_BARROW_I,                  SOUND_wood_door0101},
+    {MAP_BARROW_VIII,               SOUND_wood_door0101},
+    {MAP_BARROW_XIII,               SOUND_wood_door0101},
+    {MAP_BARROW_X,                  SOUND_stone_door0301},
+    {MAP_BARROW_XII,                SOUND_wood_door0301},
+    {MAP_BARROW_V,                  SOUND_stone_door0101},
+    {MAP_BARROW_XI,                 SOUND_wood_door0101},
+    {MAP_BARROW_XV,                 SOUND_wood_door0101},
+    {MAP_ZOKARRS_TOMB,              SOUND_stone_door0301},
+    {MAP_NIGHON_TUNNELS,            SOUND_wood_door0301},
+    {MAP_TUNNELS_TO_EEOFOL,         SOUND_stone_door0101},
+    {MAP_WILLIAM_SETAGS_TOWER,      SOUND_wood_door0101},
+    {MAP_WROMTHRAXS_CAVE,           SOUND_wood_door0101},
+    {MAP_HIDDEN_TOMB,               SOUND_stone_door0301},
+    {MAP_STRANGE_TEMPLE,            SOUND_wood_door0301},
+    {MAP_SMALL_HOUSE,               SOUND_stone_door0101},
+    {MAP_ARENA,                     SOUND_wood_door0101}
 };
 
 // all locations which should have special tranfer message
@@ -667,9 +668,9 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    SoundID eDoorSoundID = (SoundID)300;
+    SoundId eDoorSoundID = SOUND_wood_door0101;
     if (dword_6BE13C_uCurrentlyLoadedLocationID != MAP_INVALID)
-        eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+        eDoorSoundID = pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
     for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
@@ -692,7 +693,7 @@ void BLV_UpdateDoors() {
                 openDistance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
+                    pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
@@ -704,7 +705,7 @@ void BLV_UpdateDoors() {
                 openDistance = 0;
                 door->uState = BLVDoor::Closed;
                 if (shouldPlaySound)
-                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), SOUND_MODE_PID, Pid(OBJECT_Door, i));
+                    pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
                 openDistance = door->uMoveLength - closeDistance;
                 if (shouldPlaySound)
@@ -960,7 +961,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
         const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
 
-        if (decoration->uSoundID) {
+        if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
         }
 
@@ -1754,7 +1755,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 // - for walk limit was >= 8
                 // - stop sound if delta < 8
                 if (!isAboveGround || not_high_fall) {
-                    SoundID sound = SOUND_Invalid;
+                    SoundId sound = SOUND_Invalid;
                     if (party_running_flag) {
                         if (walkDelta >= 4) {
                             if (on_water) {

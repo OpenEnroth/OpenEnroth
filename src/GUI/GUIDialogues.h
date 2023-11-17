@@ -6,7 +6,7 @@
 
 #include "Utility/Workaround/ToUnderlying.h"
 
-#define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  36 + std::to_underlying(skill)
+#define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  (36 + std::to_underlying(skill))
 
 // TODO(captainurist): #enum
 enum DIALOGUE_TYPE : int32_t {
@@ -110,17 +110,19 @@ enum DIALOGUE_TYPE : int32_t {
     DIALOGUE_TRANSPORT_SCHEDULE_3 = 107,
     DIALOGUE_TRANSPORT_SCHEDULE_4 = 108,
 
-    DIALOGUE_OTHER = -1
+    DIALOGUE_OTHER = -1,
+
+    DIALOGUE_LEARN_FIRST = DIALOGUE_LEARN_STAFF,
+    DIALOGUE_LEARN_LAST = DIALOGUE_LEARN_CLUB, // Doesn't include DIALOGUE_LEARN_MISC, which makes sense, but is a bit weird.
 };
 
 #undef SKILL_TO_LEARNING_DIALOGUE_ID
 
-
 inline bool IsSkillLearningDialogue(DIALOGUE_TYPE type) {
-    return type >= DIALOGUE_LEARN_STAFF && type <= DIALOGUE_LEARN_CLUB;
+    return type >= DIALOGUE_LEARN_FIRST && type <= DIALOGUE_LEARN_LAST;
 }
 
 inline CharacterSkillType GetLearningDialogueSkill(DIALOGUE_TYPE type) {
     assert(IsSkillLearningDialogue(type));
-    return static_cast<CharacterSkillType>(type - DIALOGUE_LEARN_STAFF);
+    return static_cast<CharacterSkillType>(std::to_underlying(type) - std::to_underlying(DIALOGUE_LEARN_STAFF) + std::to_underlying(CHARACTER_SKILL_STAFF));
 }

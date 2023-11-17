@@ -498,7 +498,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->numBountiesCollected = src.uNumBountiesCollected;
 
     snapshot(src.monster_id_for_hunting, &dst->monsterIdForHunting);
-    snapshot(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, tags::convert<bool, int16_t>);
+    snapshot(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, tags::cast<bool, int16_t>);
 
     dst->daysPlayedWithoutRest = src.days_played_without_rest;
 
@@ -595,7 +595,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uNumBountiesCollected = src.numBountiesCollected;
 
     reconstruct(src.monsterIdForHunting, &dst->monster_id_for_hunting);
-    reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, tags::convert<int16_t, bool>);
+    reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, tags::cast<int16_t, bool>);
 
     dst->days_played_without_rest = src.daysPlayedWithoutRest;
 
@@ -1085,7 +1085,7 @@ void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->uMovementSpeed = src.movementSpeed;
     dst->uToHitRadius = src.toHitRadius;
     dst->sTintColor = colorTable.White;
-    dst->pSoundSampleIDs = src.soundSampleIds;
+    reconstruct(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<uint16_t, SoundId>);
     reconstruct(src.monsterName, &dst->pMonsterName);
     reconstruct(src.spriteNames, &dst->pSpriteNames);
 }
@@ -1098,7 +1098,7 @@ void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->movementSpeed = src.uMovementSpeed;
     dst->toHitRadius = src.uToHitRadius;
     dst->tintColor = src.sTintColor.c32();
-    dst->soundSampleIds = src.pSoundSampleIDs;
+    snapshot(src.pSoundSampleIDs, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
     snapshot(src.pMonsterName, &dst->monsterName);
     snapshot(src.pSpriteNames, &dst->spriteNames);
     dst->spriteNamesUnused[0].fill('\0');
@@ -1111,7 +1111,7 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->uMovementSpeed = src.movementSpeed;
     dst->uToHitRadius = src.toHitRadius;
     dst->sTintColor = Color::fromC32(src.tintColor);
-    dst->pSoundSampleIDs = src.soundSampleIds;
+    reconstruct(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<uint16_t, SoundId>);
     reconstruct(src.monsterName, &dst->pMonsterName);
     reconstruct(src.spriteNames, &dst->pSpriteNames);
 }
@@ -1219,7 +1219,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uCurrentActionTime = src.currentActionTime;
 
     snapshot(src.spriteIds, &dst->pSpriteIDs);
-    snapshot(src.soundSampleIds, &dst->pSoundSampleIDs);
+    snapshot(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<SoundId, uint16_t>);
     snapshot(src.buffs, &dst->pActorBuffs);
     snapshot(src.items, &dst->ActorHasItems);
 
@@ -1313,7 +1313,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->currentActionTime = src.uCurrentActionTime;
 
     reconstruct(src.pSpriteIDs, &dst->spriteIds);
-    reconstruct(src.pSoundSampleIDs, &dst->soundSampleIds);
+    reconstruct(src.pSoundSampleIDs, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
     reconstruct(src.pActorBuffs, &dst->buffs);
     reconstruct(src.ActorHasItems, &dst->items);
 
@@ -1551,7 +1551,7 @@ void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uLightRadius = src.uLightRadius;
     dst->uSpriteID = src.uSpriteID;
     dst->uFlags = DecorationDescFlags(src.uFlags);
-    dst->uSoundID = src.uSoundID;
+    dst->uSoundID = static_cast<SoundId>(src.uSoundID);
 
     dst->uColoredLight.r = 255;
     dst->uColoredLight.g = 255;
@@ -1707,9 +1707,9 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
     reconstruct(src.pSoundName, &dst->sName);
-    dst->uSoundID = src.uSoundID;
+    dst->uSoundID = static_cast<SoundId>(src.uSoundID);
     dst->eType = static_cast<SOUND_TYPE>(src.eType);
-    dst->uFlags = src.uFlags;
+    dst->uFlags = static_cast<SOUND_FLAGS>(src.uFlags);
 }
 
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {

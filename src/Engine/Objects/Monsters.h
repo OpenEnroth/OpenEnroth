@@ -12,6 +12,8 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 
+#include "Media/Audio/SoundEnums.h"
+
 #include "Utility/Segment.h"
 
 #include "ActorEnums.h"
@@ -94,7 +96,7 @@ struct MonsterDesc {
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
     Color sTintColor;
-    std::array<uint16_t, 4> pSoundSampleIDs; // TODO(captainurist): actually this one should also be an IndexedArray
+    IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> pSoundSampleIDs;
     std::string pMonsterName;
     IndexedArray<std::string, ANIM_First, ANIM_Last> pSpriteNames;
 };

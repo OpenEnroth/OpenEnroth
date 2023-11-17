@@ -1,7 +1,16 @@
 #pragma once
 
-// TODO(captainurist): #enum class + codegen
-enum SoundID {
+#include <cassert>
+#include <cstdint>
+
+#include "Utility/Workaround/ToUnderlying.h"
+#include "Utility/Flags.h"
+
+/**
+ * There's 2000+ sounds in MM7, and there is little point in adding all of them here via codegen. Only the ids that are
+ * actually used in the codebase should be kept in this enum.
+ */
+enum class SoundId : int16_t {
     SOUND_Invalid = 0,
     SOUND_enter = 6,
     SOUND_WoodDoorClosing = 7,
@@ -87,8 +96,8 @@ enum SoundID {
     SOUND_fizzle = 203,
     SOUND_TurnPage1 = 204,
     SOUND_TurnPage2 = 205,
-    SOUND_batlleen = 206,
-    SOUND_batllest = 207,
+    SOUND_EndTurnBasedMode = 206,
+    SOUND_StartTurnBasedMode = 207,
     SOUND_openchest0101 = 208,
     SOUND_spellfail0201 = 209,
     SOUND_drink = 210,
@@ -107,6 +116,16 @@ enum SoundID {
     SOUND_openbook = 230,
     SOUND_closebook = 231,
     SOUND_teleport = 232,
+    SOUND_wood_door0101 = 300,
+    SOUND_wood_door0201 = 302,
+    SOUND_wood_door0301 = 304,
+    SOUND_wood_door0401 = 306,
+    SOUND_wood_door0501 = 308,
+    SOUND_stone_door0101 = 400,
+    SOUND_stone_door0201 = 402,
+    SOUND_stone_door0301 = 404,
+    SOUND_stone_door0401 = 406,
+    SOUND_stone_door0501 = 408,
     SOUND_hf445a = 5788,
     SOUND_Haste = 10040,
     SOUND_21fly03 = 11090,
@@ -120,6 +139,15 @@ enum SoundID {
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
 };
+using enum SoundId;
+
+inline SoundId doorClosedSound(SoundId doorSound) {
+    assert(doorSound == SOUND_wood_door0101 || doorSound == SOUND_wood_door0201 || doorSound == SOUND_wood_door0301 ||
+           doorSound == SOUND_wood_door0401 || doorSound == SOUND_wood_door0501 || doorSound == SOUND_stone_door0101 ||
+           doorSound == SOUND_stone_door0201 || doorSound == SOUND_stone_door0301 || doorSound == SOUND_stone_door0401 ||
+           doorSound == SOUND_stone_door0501);
+    return static_cast<SoundId>(std::to_underlying(doorSound) + 1);
+}
 
 /**
  * Enum value is used to load mp3 files, which are named `2.mp3`-`20.mp3`.
@@ -151,20 +179,22 @@ enum class MusicId {
 };
 using enum MusicId;
 
-// TODO(captainurist): #enum class
-enum SOUND_TYPE {
+enum class SOUND_TYPE {
     SOUND_TYPE_LEVEL = 0,
     SOUND_TYPE_SYSTEM = 1,
     SOUND_TYPE_SWAP = 2,
     SOUND_TYPE_UNKNOWN = 3,
     SOUND_TYPE_LOCK = 4,
 };
+using enum SOUND_TYPE;
 
-// TODO(captainurist): #enum class
-enum SOUND_FLAG {
+enum class SOUND_FLAG {
     SOUND_FLAG_LOCKED = 0x1,
     SOUND_FLAG_3D = 0x2,
 };
+using enum SOUND_FLAG;
+MM_DECLARE_FLAGS(SOUND_FLAGS, SOUND_FLAG)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SOUND_FLAGS)
 
 enum class SoundPlaybackMode {
     /** Normal sound, requires a pid. */

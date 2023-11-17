@@ -1050,7 +1050,7 @@ int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
 }
 
-SoundID OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
+SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
     if (!getTileIdByTileMapId(getTileMapIdByGrid(X_pos, Y_pos))) {
         return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
     }
@@ -1149,7 +1149,7 @@ bool OutdoorLocation::PrepareDecorations() {
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
         const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
 
-        if (decoration->uSoundID) {
+        if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
         }
 
@@ -2178,7 +2178,7 @@ void ODM_ProcessPartyActions() {
                     int modelId = pParty->floor_face_id >> 6;
                     int faceId = pParty->floor_face_id & 0x3F;
                     bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
-                    SoundID sound = SOUND_Invalid;
+                    SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
                         if (walkDelta >= 4 ) {
                             if (isModelWalk) {
