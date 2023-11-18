@@ -1733,6 +1733,8 @@ GAME_TEST(Issues, Issue1282) {
     EXPECT_EQ(totalObjectsTape.delta(), -1);
 }
 
+// 1300
+
 GAME_TEST(Issues, Issue1315) {
     // Dying in turn-based mode asserts.
     auto deathsTape = tapes.deaths();
@@ -1848,6 +1850,19 @@ GAME_TEST(Issues, Issue1364) {
     EXPECT_TRUE(screenTape.contains(SCREEN_HOUSE)); // We have visited the stables.
     EXPECT_TRUE(screenTape.contains(SCREEN_MENU)); // Opened the game menu while in the Arena.
     EXPECT_FALSE(screenTape.contains(SCREEN_SAVEGAME)); // But save menu didn't open on click.
+}
+
+GAME_TEST(Issues, Issue1368) {
+    // maybeWakeSoloSurvivor() error
+    auto canActTape = tapes.custom([] { return pParty->canActCount(); });
+    auto sleepTape = tapes.custom([] { return pParty->pCharacters[0].conditions.Has(CONDITION_SLEEP); });
+    test.playTraceFromTestData("issue_1368.mm7", "issue_1368.json");
+    // No one can act - try waking
+    EXPECT_EQ(canActTape.min(), 0);
+    // Shouldve been asleep
+    EXPECT_TRUE(sleepTape.contains(true));
+    // But awake at the end
+    EXPECT_EQ(sleepTape.back(), false);
 }
 
 GAME_TEST(Issues, Issue1371) {

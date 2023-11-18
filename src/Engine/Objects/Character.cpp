@@ -448,7 +448,7 @@ void Character::ItemsPotionDmgBreak(int enchant_count) {
 //----- (00492C0B) --------------------------------------------------------
 bool Character::CanAct() const {
     if (this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious() ||
-        this->IsDead() || this->IsPertified() || this->IsEradicated())
+        this->IsDead() || this->IsPetrified() || this->IsEradicated())
 
         return false;
     else
@@ -6876,7 +6876,7 @@ bool Character::IsCursed() const {
     return this->conditions.Has(CONDITION_CURSED);
 }
 
-bool Character::IsPertified() const {
+bool Character::IsPetrified() const {
     return this->conditions.Has(CONDITION_PETRIFIED);
 }
 
@@ -6956,7 +6956,7 @@ void Character::SetDead(GameTime time) {
     this->conditions.Set(CONDITION_DEAD, time);
 }
 
-void Character::SetPertified(GameTime time) {
+void Character::SetPetrified(GameTime time) {
     this->conditions.Set(CONDITION_PETRIFIED, time);
 }
 

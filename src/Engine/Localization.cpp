@@ -223,7 +223,7 @@ void Localization::InitializeCharacterConditionNames() {
         this->localization_strings[231];  // Unconcious
     this->character_conditions[14] = this->localization_strings[58];  // Dead
     this->character_conditions[15] =
-        this->localization_strings[220];  // Pertified
+        this->localization_strings[220];  // Petrified
     this->character_conditions[16] =
         this->localization_strings[76];  // Eradicated
     this->character_conditions[17] = this->localization_strings[601];  // Zombie
