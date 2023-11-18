@@ -7,20 +7,22 @@
  * for flags defined in enumerations.
  *
  * Example usage:
- *      class MonsterType {
- *      public:
- *          enum class Ability {
- *              FlyingAbility = 0x1,
- *              RunningAbility = 0x2,
- *              ShootingAbility = 0x4
- *          };
- *          using enum Ability;
- *          DECLARE_FLAGS(Abilities, Ability)
+ * ```cpp
+ * class MonsterType {
+ * public:
+ *     enum class Ability {
+ *         ABILITY_FLYING = 0x1,
+ *         ABILITY_RUNNING = 0x2,
+ *         ABILITY_SHOOTING = 0x4
+ *     };
+ *     using enum Ability;
+ *     MM_DECLARE_FLAGS(Abilities, Ability)
  *
- *          // ...
- *      };
+ *     // ...
+ * };
  *
- *      DECLARE_OPERATORS_FOR_FLAGS(MonsterType::Abilities)
+ * MM_DECLARE_OPERATORS_FOR_FLAGS(MonsterType::Abilities)
+ * ```
  */
 template <class Enum>
 class Flags {

@@ -11,6 +11,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

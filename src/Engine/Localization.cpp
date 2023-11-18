@@ -1,8 +1,7 @@
-#include <stdarg.h>
-#include <vector>
+#include "Localization.h"
 
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
-#include "Engine/Localization.h"
 #include "Engine/GameResourceManager.h"
 
 #include "Utility/String.h"

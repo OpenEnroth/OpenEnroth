@@ -54,12 +54,12 @@ class ImageBase {
         return Sizei(_width, _height); // Narrowing ssize_t -> int, but we're not expecting images 2B pixels wide.
     }
 
-    std::span<T> operator[](ssize_t y) {
+    [[nodiscard]] std::span<T> operator[](ssize_t y) {
         assert(y >= 0 && y < _height);
         return {_pixels.get() + y * _width, _pixels.get() + (y + 1) * _width};
     }
 
-    std::span<const T> operator[](ssize_t y) const {
+    [[nodiscard]] std::span<const T> operator[](ssize_t y) const {
         return const_cast<ImageBase &>(*this)[y];
     }
 

@@ -16,6 +16,8 @@
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/SpriteEnumFunctions.h"
 
 #include "Engine/Tables/ItemTable.h"
 

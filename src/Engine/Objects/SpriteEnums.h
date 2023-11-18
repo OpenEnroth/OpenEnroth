@@ -1,9 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <cassert>
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Flags.h"
 
 enum class SPRITE_OBJECT_TYPE : uint16_t {
@@ -246,11 +244,6 @@ enum class SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_10000 = 10000,
 };
 using enum SPRITE_OBJECT_TYPE;
-
-inline SPRITE_OBJECT_TYPE impactSprite(SPRITE_OBJECT_TYPE projectile) {
-    assert(std::to_underlying(projectile) % 5 == 0);
-    return static_cast<SPRITE_OBJECT_TYPE>(std::to_underlying(projectile) + 1);
-}
 
 /**
  * Sprite attributes, values taken from MMExtension, see MMExtension code,

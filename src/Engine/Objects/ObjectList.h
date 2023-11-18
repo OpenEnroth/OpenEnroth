@@ -10,7 +10,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Flags.h"
 
-#include "SpriteObjectEnums.h"
+#include "SpriteEnums.h"
 
 enum class ObjectDescFlag : int16_t {
     OBJECT_DESC_NO_SPRITE = 0x1,

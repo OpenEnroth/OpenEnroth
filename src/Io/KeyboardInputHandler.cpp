@@ -3,6 +3,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"

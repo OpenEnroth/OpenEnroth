@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 
 #include "Engine/Objects/CharacterEnums.h"
 

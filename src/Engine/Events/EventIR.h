@@ -8,7 +8,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ChestEnums.h"
-#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Graphics/FaceEnums.h"
 #include "Engine/Spells/SpellEnums.h"

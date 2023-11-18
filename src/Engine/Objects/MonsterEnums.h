@@ -1,14 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <span>
 
-#include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Objects/ItemEnums.h"
-#include "GUI/UI/UIHouseEnums.h"
-
-#include "Utility/Workaround/ToUnderlying.h"
-#include "Utility/Segment.h"
+#include "Utility/Flags.h"
 
 /**
  * Enum of all monsters in the game.
@@ -301,15 +295,6 @@ enum class MonsterId {
 };
 using enum MonsterId;
 
-inline Segment<MonsterId> allMonsters() {
-    return {MONSTER_FIRST, MONSTER_LAST};
-}
-
-/**
- * @return                              A span of all monsters that can appear in Arena.
- */
-std::span<const MonsterId> allArenaMonsters();
-
 /**
  * Enum of all monster types in the game. Each monster type has three tiers of monsters belonging to it, e.g.
  * Angel, Angel Lord and Archangel all belong to `MONSTER_TYPE_ANGEL`.
@@ -432,40 +417,6 @@ enum class MonsterType {
 };
 using enum MonsterType;
 
-inline Segment<MonsterType> allMonsterTypes() {
-    return {MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST};
-}
-
-inline MonsterType monsterTypeForMonsterId(MonsterId monsterId) {
-    return static_cast<MonsterType>((std::to_underlying(monsterId) - 1) / 3 + 1);
-}
-
-inline Segment<MonsterId> monsterIdsForMonsterType(MonsterType monsterType) {
-    MonsterId first = static_cast<MonsterId>((std::to_underlying(monsterType) - 1) * 3 + 1);
-    MonsterId last = static_cast<MonsterId>(std::to_underlying(first) + 2);
-    return {first, last};
-}
-
-inline bool isPeasant(MonsterType monsterType) {
-    return
-        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_DWARF && monsterType <= MONSTER_TYPE_LAST_PEASANT_DWARF) ||
-        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_ELF && monsterType <= MONSTER_TYPE_LAST_PEASANT_ELF) ||
-        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_HUMAN && monsterType <= MONSTER_TYPE_LAST_PEASANT_HUMAN) ||
-        (monsterType >= MONSTER_TYPE_FIRST_PEASANT_GOBLIN && monsterType <= MONSTER_TYPE_LAST_PEASANT_GOBLIN);
-}
-
-inline bool isPeasant(MonsterId monsterId) {
-    return isPeasant(monsterTypeForMonsterId(monsterId));
-}
-
-CharacterSex sexForMonsterType(MonsterType monsterType);
-
-Race raceForMonsterType(MonsterType monsterType);
-
-bool isBountyHuntable(MonsterType monsterType, HouseId townHall);
-
-ItemId itemDropForMonsterType(MonsterType monsterType);
-
 /*  335 */
 enum class MONSTER_SPECIAL_ABILITY_TYPE {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
@@ -498,18 +449,6 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_NOT_ARENA = 0x8, // Can't be spawned in Arena, no MM7 monster belongs to this supertype.
 };
 using enum MONSTER_SUPERTYPE;
-
-/**
- * @offset 0x00438BDF
- *
- * @param monsterType                   Monster type to check.
- * @return                              Supertype for the provided monster type.
- */
-MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType);
-
-inline MONSTER_SUPERTYPE supertypeForMonsterId(MonsterId monsterId) {
-    return supertypeForMonsterType(monsterTypeForMonsterId(monsterId));
-}
 
 enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
@@ -581,5 +520,3 @@ enum class MonsterAttackPreference : uint16_t {
 using enum MonsterAttackPreference;
 MM_DECLARE_FLAGS(MonsterAttackPreferences, MonsterAttackPreference)
 MM_DECLARE_OPERATORS_FOR_FLAGS(MonsterAttackPreferences)
-
-std::span<const MonsterAttackPreference> allMonsterAttackPreferences();

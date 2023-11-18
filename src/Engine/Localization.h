@@ -5,6 +5,7 @@
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Spells/SpellEnums.h"
 #include "Engine/PartyEnums.h"
 
 #include "Utility/Workaround/ToUnderlying.h"

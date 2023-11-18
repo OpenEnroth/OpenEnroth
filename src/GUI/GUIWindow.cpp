@@ -14,6 +14,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"

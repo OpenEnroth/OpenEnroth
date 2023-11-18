@@ -2,8 +2,6 @@
 
 #include <cstdint>
 
-#include "Utility/Segment.h"
-
 /**
  * Phrase IDs for phrases displayed in shops when hovering over items.
  *
@@ -24,10 +22,6 @@ enum class MerchantPhrase {
     MERCHANT_PHRASE_LAST = MERCAHNT_PHRASE_STOLEN_ITEM
 };
 using enum MerchantPhrase;
-
-inline Segment<MerchantPhrase> allMerchantPhrases() {
-    return {MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM};
-}
 
 enum class NPCProf : int32_t {
     NoProfession = 0,

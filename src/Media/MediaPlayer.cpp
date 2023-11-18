@@ -959,19 +959,7 @@ void MPlayer::Unload() {
 // for video//////////////////////////////////////////////////////////////////
 
 MPlayer::MPlayer() {
-    static int libavcodec_initialized = false;
-
     logProxy = std::make_unique<FFmpegLogProxy>(logger);
-
-    if (!libavcodec_initialized) {
-        // Register all available file formats and codecs
-#ifndef FF_API_NEXT
-        avcodec_register_all();
-        av_register_all();
-#endif
-        libavcodec_initialized = true;
-    }
-
     pMovie_Track = nullptr;
     might_list = nullptr;
     magic_list = nullptr;

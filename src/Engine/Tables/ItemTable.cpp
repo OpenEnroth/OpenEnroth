@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "Engine/Spells/Spells.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/GameResourceManager.h"

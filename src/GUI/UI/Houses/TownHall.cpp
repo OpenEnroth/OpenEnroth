@@ -3,6 +3,7 @@
 #include "GUI/UI/Houses/TownHall.h"
 
 #include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
 #include "Engine/Tables/AwardTable.h"

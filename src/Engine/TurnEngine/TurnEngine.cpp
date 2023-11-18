@@ -10,8 +10,7 @@
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
-
-#include "Engine/Graphics/Viewport.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/IconFrameTable.h"
