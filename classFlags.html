@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;310a402</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8ec7943</span>
    </div>
   </td>
  </tr>
@@ -158,10 +158,24 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf22e868d091">Enum</a>&gt;<br />
 class Flags&lt; Enum &gt;</div><p ><code><a class="el" href="classFlags.html">Flags</a></code> is basically an analog of <code>QFlags</code> from Qt, a type-safe wrapper for flags defined in enumerations.</p>
-<p >Example usage: class MonsterType { public: enum class Ability { FlyingAbility = 0x1, RunningAbility = 0x2, ShootingAbility = 0x4 }; using enum Ability; DECLARE_FLAGS(Abilities, Ability)</p>
-<p >// ... };</p>
-<p >DECLARE_OPERATORS_FOR_FLAGS(MonsterType::Abilities) </p>
-</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<p >Example usage: </p><div class="fragment"><div class="line"><span class="keyword">class </span><a class="code hl_enumeration" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a> {</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">    <span class="keyword">enum class</span> Ability {</div>
+<div class="line">        ABILITY_FLYING = 0x1,</div>
+<div class="line">        ABILITY_RUNNING = 0x2,</div>
+<div class="line">        ABILITY_SHOOTING = 0x4</div>
+<div class="line">    };</div>
+<div class="line">    <span class="keyword">using </span>enum Ability;</div>
+<div class="line">    <a class="code hl_define" href="Flags_8h.html#a86dd1aa352680a813d6d8a5c13770153">MM_DECLARE_FLAGS</a>(Abilities, Ability)</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// ...</span></div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_define" href="Flags_8h.html#a496ab93f59bfb70aaad00f3afe7608df">MM_DECLARE_OPERATORS_FOR_FLAGS</a>(MonsterType::Abilities)</div>
+<div class="ttc" id="aFlags_8h_html_a496ab93f59bfb70aaad00f3afe7608df"><div class="ttname"><a href="Flags_8h.html#a496ab93f59bfb70aaad00f3afe7608df">MM_DECLARE_OPERATORS_FOR_FLAGS</a></div><div class="ttdeci">#define MM_DECLARE_OPERATORS_FOR_FLAGS(FLAGS)</div><div class="ttdef"><b>Definition:</b> Flags.h:142</div></div>
+<div class="ttc" id="aFlags_8h_html_a86dd1aa352680a813d6d8a5c13770153"><div class="ttname"><a href="Flags_8h.html#a86dd1aa352680a813d6d8a5c13770153">MM_DECLARE_FLAGS</a></div><div class="ttdeci">#define MM_DECLARE_FLAGS(FLAGS, ENUM)</div><div class="ttdef"><b>Definition:</b> Flags.h:138</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_abd758b4216b3fc46a32b2f1a359b3492"><div class="ttname"><a href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a></div><div class="ttdeci">MonsterType</div><div class="ttdef"><b>Definition:</b> MonsterEnums.h:306</div></div>
+</div><!-- fragment --> </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a9d5d5877e991d0c2a331568dac527f54" name="a9d5d5877e991d0c2a331568dac527f54"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9d5d5877e991d0c2a331568dac527f54">&#9670;&#160;</a></span>enumeration_type</h2>
 

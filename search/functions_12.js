@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['raceformonstertype_0',['raceForMonsterType',['../MonsterEnums_8h.html#acef19e3faf8c64eca86716c7513bac49',1,'raceForMonsterType(MonsterType monsterType):&#160;MonsterEnums.cpp'],['../MonsterEnums_8cpp.html#acef19e3faf8c64eca86716c7513bac49',1,'raceForMonsterType(MonsterType monsterType):&#160;MonsterEnums.cpp']]],
+  ['raceformonstertype_0',['raceForMonsterType',['../MonsterEnumFunctions_8h.html#acef19e3faf8c64eca86716c7513bac49',1,'raceForMonsterType(MonsterType monsterType):&#160;MonsterEnumFunctions.cpp'],['../MonsterEnumFunctions_8cpp.html#acef19e3faf8c64eca86716c7513bac49',1,'raceForMonsterType(MonsterType monsterType):&#160;MonsterEnumFunctions.cpp']]],
   ['random_1',['random',['../classRandomEngine.html#a90f4ddcf5e8efb5c1b8d833cd7aa6067',1,'RandomEngine::random()'],['../classMersenneTwisterRandomEngine.html#a7da79864e8540dfe737f6d51e285fa38',1,'MersenneTwisterRandomEngine::random()'],['../classSequentialRandomEngine.html#ac16a1cc8cf5ecebd17c620f7ca380727',1,'SequentialRandomEngine::random()']]],
   ['randombool_2',['randomBool',['../classRandomEngine.html#afa570cf1a99cd1be969152c22dd2c373',1,'RandomEngine']]],
   ['randomdice_3',['randomDice',['../classRandomEngine.html#a71441c79a0c7bbc10d22784de63253a1',1,'RandomEngine']]],
   ['randomfloat_4',['randomFloat',['../classMersenneTwisterRandomEngine.html#a9fd6428f5d5911423a4c3c6212ddf677',1,'MersenneTwisterRandomEngine::randomFloat()'],['../classRandomEngine.html#a7af43e5f4ba8d23071672004084491df',1,'RandomEngine::randomFloat()'],['../classSequentialRandomEngine.html#a9ce2ef1852ba44ef46ab57ee0d4060c1',1,'SequentialRandomEngine::randomFloat()']]],
   ['randominsegment_5',['randomInSegment',['../classRandomEngine.html#a1f55fe0e2b786c5b3f6278a479d7bac9',1,'RandomEngine']]],
-  ['randomitemtreasurelevel_6',['randomItemTreasureLevel',['../ItemEnums_8h.html#a6601086b96741e15e1c62a07da74f788',1,'ItemEnums.h']]],
+  ['randomitemtreasurelevel_6',['randomItemTreasureLevel',['../ItemEnumFunctions_8h.html#a6601086b96741e15e1c62a07da74f788',1,'ItemEnumFunctions.h']]],
   ['randomizename_7',['RandomizeName',['../classCharacter.html#a064befa35424a462829ec5a667c5ce1d',1,'Character']]],
   ['randommonsterforhunting_8',['randomMonsterForHunting',['../classGUIWindow__TownHall.html#ad063c85c89aa7f051b82392c180beab2',1,'GUIWindow_TownHall']]],
   ['randomsample_9',['randomSample',['../classRandomEngine.html#a2116dc85336f6158133fb09ea2ea34e8',1,'RandomEngine::randomSample(const Range &amp;range)'],['../classRandomEngine.html#ae015cc1f7d46a158fc90bf8f343080e4',1,'RandomEngine::randomSample(std::initializer_list&lt; T &gt; range)']]],
@@ -136,7 +136,7 @@ var searchData=
   ['reversed_133',['reversed',['../classAccessible.html#abe60b2906c07b0b4e58f7848931ec48c',1,'Accessible']]],
   ['rgba_134',['rgba',['../classGraphicsImage.html#a9cb51b13757e85edfd9c5d2e27a2c871',1,'GraphicsImage']]],
   ['ringscreenactive_135',['ringscreenactive',['../UICharacter_8cpp.html#a87572e537eb2ef7888bc4362e535d58b',1,'ringscreenactive():&#160;UICharacter.cpp'],['../UICharacter_8h.html#a87572e537eb2ef7888bc4362e535d58b',1,'ringscreenactive():&#160;UICharacter.cpp']]],
-  ['ringslot_136',['ringSlot',['../ItemEnums_8h.html#a62b30cb74b6286344c5d9918ccd2ec8b',1,'ItemEnums.h']]],
+  ['ringslot_136',['ringSlot',['../ItemEnumFunctions_8h.html#a62b30cb74b6286344c5d9918ccd2ec8b',1,'ItemEnumFunctions.h']]],
   ['round_5fto_5fint_137',['round_to_int',['../OurMath_8h.html#a50ee4d4946888926bdf5a920129a322a',1,'OurMath.h']]],
   ['roundintdowntobase_138',['roundIntDownToBase',['../ItemGrid_8cpp.html#a5584f7df9d072b238f90f4312442ac7f',1,'ItemGrid.cpp']]],
   ['run_139',['run',['../classGame.html#a99fb161fbbe87d25a8b73265a0611e58',1,'Game::run()'],['../classGameStarter.html#a44317299c07aea79edfe3933d8507783',1,'GameStarter::run()']]],

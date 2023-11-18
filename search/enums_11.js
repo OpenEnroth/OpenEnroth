@@ -10,8 +10,8 @@ var searchData=
   ['special_5fattack_5ftype_7',['SPECIAL_ATTACK_TYPE',['../MonsterEnums_8h.html#a067f95479d44d0b39da6439a62a06ba1',1,'MonsterEnums.h']]],
   ['spellcastflag_8',['SpellCastFlag',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022f',1,'CastSpellInfo.h']]],
   ['spellid_9',['SpellId',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90',1,'SpellEnums.h']]],
-  ['sprite_5fobject_5ftype_10',['SPRITE_OBJECT_TYPE',['../SpriteObjectEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9',1,'SpriteObjectEnums.h']]],
-  ['spriteattribute_11',['SpriteAttribute',['../SpriteObjectEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteObjectEnums.h']]],
+  ['sprite_5fobject_5ftype_10',['SPRITE_OBJECT_TYPE',['../SpriteEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9',1,'SpriteEnums.h']]],
+  ['spriteattribute_11',['SpriteAttribute',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteEnums.h']]],
   ['state_12',['State',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832',1,'BLVDoor']]],
   ['stealresult_13',['StealResult',['../Character_8h.html#a51f13cd67eab73d698e32f940c0ba824',1,'Character.h']]],
   ['subcommand_14',['Subcommand',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions::Subcommand()'],['../structLodToolOptions.html#abcc21db1b7bbfbf2f3e735e81958863b',1,'LodToolOptions::Subcommand()'],['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226',1,'CodeGenOptions::Subcommand()']]]

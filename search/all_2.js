@@ -170,7 +170,7 @@ var searchData=
   ['bottomright_167',['bottomRight',['../structRect.html#ad2524c389fb660c3a21541171bfa8cea',1,'Rect']]],
   ['bounding_168',['bounding',['../structBLVFace__MM7.html#a3c2f538d42034be3ca2df216ab87f28b',1,'BLVFace_MM7']]],
   ['bountyhuntablemask_169',['BountyHuntableMask',['../structBountyHuntableMask.html',1,'BountyHuntableMask'],['../structBountyHuntableMask.html#ab458aa562ee9bff53b4377208c82b42b',1,'BountyHuntableMask::BountyHuntableMask(std::initializer_list&lt; HouseId &gt; townHalls)'],['../structBountyHuntableMask.html#a8bfb91940f604c67b3f02340a6643998',1,'BountyHuntableMask::BountyHuntableMask()']]],
-  ['bountyhuntablemaskbymonstertype_170',['bountyHuntableMaskByMonsterType',['../MonsterEnums_8cpp.html#a29546ce943eaf85c10e054ad95a7cc4b',1,'MonsterEnums.cpp']]],
+  ['bountyhuntablemaskbymonstertype_170',['bountyHuntableMaskByMonsterType',['../MonsterEnumFunctions_8cpp.html#a29546ce943eaf85c10e054ad95a7cc4b',1,'MonsterEnumFunctions.cpp']]],
   ['bountyhuntdialogue_171',['bountyHuntDialogue',['../classGUIWindow__TownHall.html#a62c505ce33d1a7d15c5adb542c1cea72',1,'GUIWindow_TownHall']]],
   ['bountyhuntingdialogueoptionclicked_172',['bountyHuntingDialogueOptionClicked',['../classGUIWindow__TownHall.html#afb679530ba81debaeec906ca34606932',1,'GUIWindow_TownHall']]],
   ['bountyhuntingnextgenerationtime_173',['bountyHuntingNextGenerationTime',['../structPartyTimeStruct__MM7.html#a16e01db696ed0ffa251f1aa95829ad57',1,'PartyTimeStruct_MM7']]],

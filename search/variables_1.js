@@ -72,7 +72,7 @@ var searchData=
   ['aqua_69',['Aqua',['../classColorTable.html#aebf84fa0e4ba15d2966ca967acff71df',1,'ColorTable']]],
   ['arcomagewins_70',['arcomageWins',['../structParty__MM7.html#ad042f90355c1089956eb3915ca22ab4c',1,'Party_MM7']]],
   ['arcomagewinsunused_71',['arcomageWinsUnused',['../structParty__MM7.html#ade5ee719695fa58dd691971fc7d1d5e1',1,'Party_MM7']]],
-  ['arenamonsters_72',['arenaMonsters',['../MonsterEnums_8cpp.html#a24cf95d62e42779dca2559bcef167894',1,'MonsterEnums.cpp']]],
+  ['arenamonsters_72',['arenaMonsters',['../MonsterEnumFunctions_8cpp.html#a24cf95d62e42779dca2559bcef167894',1,'MonsterEnumFunctions.cpp']]],
   ['armageddon_5ftimer_73',['armageddon_timer',['../structParty.html#a3414d7dcd28e0bcc501f5306171a6ef7',1,'Party']]],
   ['armageddondamage_74',['armageddonDamage',['../structParty.html#a0709924b2ebc11e156deabba7daf792f',1,'Party::armageddonDamage()'],['../structParty__MM7.html#a1effe17a25515442e61db0a4a25eda3a',1,'Party_MM7::armageddonDamage()']]],
   ['armageddonforcecount_75',['armageddonForceCount',['../structParty.html#a20089302dc977b3e0d75ceb592e86e21',1,'Party']]],

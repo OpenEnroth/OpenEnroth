@@ -68,7 +68,7 @@ var searchData=
   ['bopened_65',['bOpened',['../classAudioBaseDataSource.html#aa6300c7739d5d86ebb0867df5dd7d840',1,'AudioBaseDataSource']]],
   ['bottom_66',['bottom',['../structMargins.html#a46534118e9dca596379eb16a2a42c8f9',1,'Margins']]],
   ['bounding_67',['bounding',['../structBLVFace__MM7.html#a3c2f538d42034be3ca2df216ab87f28b',1,'BLVFace_MM7']]],
-  ['bountyhuntablemaskbymonstertype_68',['bountyHuntableMaskByMonsterType',['../MonsterEnums_8cpp.html#a29546ce943eaf85c10e054ad95a7cc4b',1,'MonsterEnums.cpp']]],
+  ['bountyhuntablemaskbymonstertype_68',['bountyHuntableMaskByMonsterType',['../MonsterEnumFunctions_8cpp.html#a29546ce943eaf85c10e054ad95a7cc4b',1,'MonsterEnumFunctions.cpp']]],
   ['bountyhuntingnextgenerationtime_69',['bountyHuntingNextGenerationTime',['../structPartyTimeStruct__MM7.html#a16e01db696ed0ffa251f1aa95829ad57',1,'PartyTimeStruct_MM7']]],
   ['bountyhuntingnextgenerationtimeunused_70',['bountyHuntingNextGenerationTimeUnused',['../structPartyTimeStruct__MM7.html#adb646deccf60b3a5de1e99001c7946e1',1,'PartyTimeStruct_MM7']]],
   ['bountyhuntnextgentime_71',['bountyHuntNextGenTime',['../structPartyTimeStruct.html#a6a36770138a043d7ced446a159c98a72',1,'PartyTimeStruct']]],
