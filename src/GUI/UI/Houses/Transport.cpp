@@ -156,9 +156,9 @@ void GUIWindow_Transport::transportDialogue() {
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
+        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].fileName) {
             SaveGame(1, 0);
-            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
+            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].fileName;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;

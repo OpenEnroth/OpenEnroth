@@ -1144,7 +1144,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if ((uLevelMapStatsID == MAP_DEYJA || uLevelMapStatsID == MAP_PIT) && pParty->isPartyGood())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID]._steal_perm +
+    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
     if (pParty->uFine < 0) pParty->uFine = 0;
@@ -1288,7 +1288,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
-        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5]._steal_perm;
+        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -4346,78 +4346,78 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             // v10 = rand();
             // v11 = pMapInfo->uEncounterMonster1AtMost;
             // pTexture = pMapInfo->pEncounterMonster1Texture;
-            v12 = grng->random(pMapInfo->uEncounterMonster1AtMost - pMapInfo->uEncounterMonster1AtLeast + 1);
+            v12 = grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
-            NumToSpawn = pMapInfo->uEncounterMonster1AtLeast + v12;
-            Source = pMapInfo->pEncounterMonster1Texture;
+            NumToSpawn = pMapInfo->encounter1MinCount + v12;
+            Source = pMapInfo->encounter1MonsterTexture;
             break;
         case 3:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s A";
-            Source = pMapInfo->pEncounterMonster1Texture + " A";
+            Source = pMapInfo->encounter1MonsterTexture + " A";
             break;
         case 4:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s A";
-            Source = pMapInfo->pEncounterMonster2Texture + " A";
+            Source = pMapInfo->encounter2MonsterTexture + " A";
             break;
         case 5:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s A";
-            Source = pMapInfo->pEncounterMonster3Texture + " A";
+            Source = pMapInfo->encounter3MonsterTexture + " A";
             break;
         case 1:
             // v9 = pMapInfo->uEncounterMonster2AtLeast;
             // v14 = rand();
             // v15 = pMapInfo->uEncounterMonster2AtMost;
             // pTexture = pMapInfo->pEncounterMonster2Texture;
-            v12 = grng->random(pMapInfo->uEncounterMonster2AtMost - pMapInfo->uEncounterMonster2AtLeast + 1);
+            v12 = grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
-            NumToSpawn = pMapInfo->uEncounterMonster2AtLeast + v12;
-            Source = pMapInfo->pEncounterMonster2Texture;
+            NumToSpawn = pMapInfo->encounter2MinCount + v12;
+            Source = pMapInfo->encounter2MonsterTexture;
             break;
         case 6:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s B";
-            Source = pMapInfo->pEncounterMonster1Texture + " B";
+            Source = pMapInfo->encounter1MonsterTexture + " B";
             break;
         case 7:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s B";
-            Source = pMapInfo->pEncounterMonster2Texture + " B";
+            Source = pMapInfo->encounter2MonsterTexture + " B";
             break;
         case 8:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s B";
-            Source = pMapInfo->pEncounterMonster3Texture + " B";
+            Source = pMapInfo->encounter3MonsterTexture + " B";
             break;
         case 2:
             // v9 = pMapInfo->uEncounterMonster3AtLeast;
             // v16 = rand();
             // v17 = pMapInfo->uEncounterMonster3AtMost;
             // pTexture = pMapInfo->pEncounterMonster3Texture;
-            v12 = grng->random(pMapInfo->uEncounterMonster3AtMost - pMapInfo->uEncounterMonster3AtLeast + 1);
+            v12 = grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
-            NumToSpawn = pMapInfo->uEncounterMonster3AtLeast + v12;
-            Source = pMapInfo->pEncounterMonster3Texture;
+            NumToSpawn = pMapInfo->encounter3MinCount + v12;
+            Source = pMapInfo->encounter3MonsterTexture;
             break;
         case 9:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s C";
-            Source = pMapInfo->pEncounterMonster1Texture + " C";
+            Source = pMapInfo->encounter1MonsterTexture + " C";
             break;
         case 10:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s C";
-            Source = pMapInfo->pEncounterMonster2Texture + " C";
+            Source = pMapInfo->encounter2MonsterTexture + " C";
             break;
         case 11:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s C";
-            Source = pMapInfo->pEncounterMonster3Texture + " C";
+            Source = pMapInfo->encounter3MonsterTexture + " C";
             break;
         default:
             return;

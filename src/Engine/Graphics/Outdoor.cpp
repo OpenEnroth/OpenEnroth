@@ -370,7 +370,7 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
 
     uDefaultTravelTime_ByFoot = foot_travel_times[mapNumberAsInt][direction - 1];
     uLevel_StartingPointType = foot_travel_arrival_points[mapNumberAsInt][direction - 1];
-    *pOut = pMapStats->pInfos[destinationMap].pFilename;
+    *pOut = pMapStats->pInfos[destinationMap].fileName;
     return true;
 }
 
@@ -2485,7 +2485,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
-        respawn_interval = map_info->uRespawnIntervalDays;
+        respawn_interval = map_info->respawnIntervalDays;
     }
     day_attrib &= ~MAP_WEATHER_FOGGY;
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;

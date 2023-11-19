@@ -164,7 +164,7 @@ int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
 
 const MapInfo &mapInfoByFileName(const MapStats &mapStats, const std::string &fileName) {
     auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-        return toLower(mapInfo.pFilename) == toLower(fileName);
+        return toLower(mapInfo.fileName) == toLower(fileName);
     });
     if (pos == mapStats.pInfos.end())
         throw Exception("Unrecognized map '{}'", fileName);
@@ -395,8 +395,8 @@ int runMusicCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
 
     std::map<MusicId, std::vector<std::string>> mapNamesByMusicId, mapEnumNamesByMusicId;
     for (const MapInfo &info : mapStats.pInfos) {
-        mapNamesByMusicId[info.uRedbookTrackID].push_back(info.name);
-        mapEnumNamesByMusicId[info.uRedbookTrackID].push_back(mapIdEnumName(info));
+        mapNamesByMusicId[info.musicId].push_back(info.name);
+        mapEnumNamesByMusicId[info.musicId].push_back(mapIdEnumName(info));
     }
 
     CodeGenMap map;

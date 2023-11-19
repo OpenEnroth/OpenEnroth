@@ -215,7 +215,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
         }
     }
     if (uLevelMapStatsID >= MAP_FIRST && uLevelMapStatsID <= MAP_LAST)
-        result = uMaxPerception >= 2 * pMapStats->pInfos[uLevelMapStatsID]._per;
+        result = uMaxPerception >= 2 * pMapStats->pInfos[uLevelMapStatsID].perceptionDifficulty;
     else
         result = 0;
     return result;

@@ -899,7 +899,7 @@ void PrepareToLoadBLV(bool bLoading) {
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
-        respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
+        respawn_interval = pMapStats->pInfos[map_id].respawnIntervalDays;
         alertStatus = GetAlertStatus();
     } else {
         map_info = nullptr;
@@ -2032,7 +2032,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 
     int v34 = 0;
     int v5 = grng->random(100);
-    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->Treasure_prob));
+    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->mapTreasureLevel));
     if (v13 != ITEM_TREASURE_LEVEL_7) {
         // [0, 20) -- nothing
         // [20, 60) -- gold

@@ -195,11 +195,11 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, false, SOUND_MODE_UI);
     if (_recallingBeacon) {
-        if (toLower(pCurrentMapName) != toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].pFilename)) {
+        if (toLower(pCurrentMapName) != toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName)) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             SaveGame(1, 0);
             onMapLeave();
-            pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].pFilename;
+            pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
             engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos, character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);

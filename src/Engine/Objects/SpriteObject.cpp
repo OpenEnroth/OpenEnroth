@@ -547,8 +547,8 @@ void SpriteObject::explosionTraps() {
     unsigned int v10 = ((unsigned int)(11 * dir_y) >> 5) + (dir_z / 4) + dir_x;
     if (v10 <= 768) {
         int trapDamage = 5;
-        if (pMapInfo->Trap_D20) {
-            trapDamage += grng->randomDice(pMapInfo->Trap_D20, 20);
+        if (pMapInfo->trapDamageD20DiceCount) {
+            trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);
         }
         DamageType pDamageType;
         switch (this->uType) {
