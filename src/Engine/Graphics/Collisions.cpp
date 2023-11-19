@@ -50,11 +50,11 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
     Vec3f pos = collision_state.position_lo;
     Vec3f dir = collision_state.direction;
     Vec3f edge = p2 - p1;
-    Vec3f spherepostovertex = p1 - pos;
-    float edgelengthsqr = edge.lengthSqr();
-    float edgedotdir = dot(edge, dir);
-    float edgedotspherepostovertex = dot(edge, spherepostovertex);
-    float spherepostovertexlengthsqr = spherepostovertex.lengthSqr();
+    Vec3f sphereToVertex = p1 - pos;
+    float edgeLengthSqr = edge.lengthSqr();
+    float edgeDotDir = dot(edge, dir);
+    float edgeDotSphereToVertex = dot(edge, sphereToVertex);
+    float sphereToVertexlengthsqr = sphereToVertex.lengthSqr();
 
     // distance from pos to line p1->p2 = ||(p1 - pos) X (p2 - p1)|| / ||(p2 - p1)||
     // but our pos is moving  pos = startpos + direction * distance
@@ -62,14 +62,14 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
     // square for simplicty - expand with vector quadruple product
     // rearrange with respect to distance to form Ax^2 + Bx + C = 0
 
-    float a = edgelengthsqr * -dir.lengthSqr() + (edgedotdir * edgedotdir);
-    float b = edgelengthsqr * (2.0f * dot(dir, spherepostovertex)) - (2.0f * edgedotdir * edgedotspherepostovertex);
-    float c = edgelengthsqr * (radius * radius - spherepostovertexlengthsqr) + (edgedotspherepostovertex * edgedotspherepostovertex);
+    float a = edgeLengthSqr * -dir.lengthSqr() + (edgeDotDir * edgeDotDir);
+    float b = edgeLengthSqr * (2.0f * dot(dir, sphereToVertex)) - (2.0f * edgeDotDir * edgeDotSphereToVertex);
+    float c = edgeLengthSqr * (radius * radius - sphereToVertexlengthsqr) + (edgeDotSphereToVertex * edgeDotSphereToVertex);
 
     if (hasShorterSolution(a, b, c, currentmovedist, newmovedist, inside)) {
         // Collision point will be perpendicular to edge
         // Project the position at point of collision onto the edge
-        float f = (edgedotdir * *newmovedist - edgedotspherepostovertex) / edgelengthsqr;
+        float f = (edgeDotDir * *newmovedist - edgeDotSphereToVertex) / edgeLengthSqr;
         // is the collision within the points of the line
         if (f >= 0.0f && f <= 1.0f) {
             *intersection = f;
@@ -118,12 +118,12 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     float move_distance = 0.0f;
     Vec3f projected_pos = pos;
-    bool sphereinplane = false;
+    bool sphereInPlane = false;
     if (fuzzyIsNull(dir_normal_projection, COLLISIONS_EPS)) {
         if (fabs(center_face_distance) >= radius) {
             return false; // can never hit face
         } else {
-            sphereinplane = true; // Sphere is already touching the infinite plane
+            sphereInPlane = true; // Sphere is already touching the infinite plane
         }
     } else {
         // how far do we need to move the sphere to touch infinite plane
@@ -135,7 +135,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
-    if (!sphereinplane) {
+    if (!sphereInPlane) {
         // projected pos of collsion should now be on the faceplace
         assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
@@ -152,25 +152,25 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     float a, b, c;
     float startingDist = *out_move_distance, newDist = 0.0f;
     Vec3f new_collision_pos;
-    bool collidingwithface = false;
+    bool collidingWithFace = false;
 
     // now collide with vertices - point sphere collision
     a = dir.lengthSqr();
     for (int i = 0; i < face->uNumVertices; ++i) {
-        Vec3f vertpos;
+        Vec3f vertPos;
         if (model_idx == MODEL_INDOOR) {
-            vertpos = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
         } else {
-            vertpos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
         }
 
-        b = 2.0f * (dot(dir, pos - vertpos));
-        c = (vertpos - pos).lengthSqr() - radius * radius;
+        b = 2.0f * (dot(dir, pos - vertPos));
+        c = (vertPos - pos).lengthSqr() - radius * radius;
 
         if (hasShorterSolution(a, b, c, startingDist, &newDist)) {
             startingDist = newDist;
-            collidingwithface = true;
-            new_collision_pos = vertpos;
+            collidingWithFace = true;
+            new_collision_pos = vertPos;
         }
     }
 
@@ -187,15 +187,15 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         }
 
         // collide with line between the two verts
-        float intersectiondist;
-        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectiondist, false)) {
+        float intersectionDist;
+        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectionDist, false)) {
             startingDist = newDist;
-            collidingwithface = true;
-            new_collision_pos = vert1 + intersectiondist * (vert2 - vert1);
+            collidingWithFace = true;
+            new_collision_pos = vert1 + intersectionDist * (vert2 - vert1);
         }
     }
 
-    if (collidingwithface) {
+    if (collidingWithFace) {
         *out_move_distance = startingDist;
         *out_collision_point = new_collision_pos;
         return true;
@@ -334,11 +334,11 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
 
     float newdist, intersection;
     if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
-        Vec3f newpos = collision_state.position_lo + dir * newdist;
-        Vec3f dirc = center_lo - newpos;
-        dirc.normalize();
-        Vec3f colpos = newpos + dirc * collision_state.radius_lo;
-        collision_state.collisionPos = colpos;
+        Vec3f newPos = collision_state.position_lo + dir * newdist;
+        Vec3f dirC = center_lo - newPos;
+        dirC.normalize();
+        Vec3f colPos = newPos + dirC * collision_state.radius_lo;
+        collision_state.collisionPos = colPos;
 
         // set collision paramas
         collision_state.adjusted_move_distance = newdist;
@@ -895,26 +895,26 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
             // TODO(pskelton): common to odm/blv so extract
-            Vec3f newdirection;
+            Vec3f newDirection;
             if (collision_state.adjusted_move_distance > 0.0f) {
                 // Create new sliding plane from collision
-                Vec3f slideplaneorigin = collision_state.collisionPos;
-                Vec3f dirc = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slideplaneorigin;
-                Vec3f slideplanenormal = Vec3f(-dirc.x, -dirc.y, 0);
-                slideplanenormal.normalize();
+                Vec3f slidePlaneOrigin = collision_state.collisionPos;
+                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slidePlaneOrigin;
+                Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
+                slidePlaneNormal.normalize();
 
                 // Form a sliding vector that is parallel to sliding movement
                 // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
                 // Start point to new destination is a vector along the slide plane
-                float destplanedist = dot(collision_state.new_position_lo - slideplaneorigin, slideplanenormal);
-                Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
-                newdirection = newdestination - collision_state.collisionPos;
-                newdirection.z = 0;
-                newdirection.normalize();
+                float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+                Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+                newDirection = newDestination - collision_state.collisionPos;
+                newDirection.z = 0;
+                newDirection.normalize();
             }
 
             // Set party to move along this new sliding vector
-            pParty->speed = newdirection * dot(newdirection, pParty->speed);
+            pParty->speed = newDirection * dot(newDirection, pParty->speed);
             // Skip reducing party speed
             continue;
         }
@@ -931,25 +931,25 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             }
 
             // new sliding plane
-            Vec3f slideplaneorigin = collision_state.collisionPos;
-            Vec3f slideplanenormal = adjusted_pos + Vec3f(0, 0, collision_state.radius_lo) - slideplaneorigin;
-            slideplanenormal.normalize();
-            float distfromdestpointtoplane = dot(collision_state.new_position_lo - slideplaneorigin, slideplanenormal);
-            Vec3f newdestination = collision_state.new_position_lo - distfromdestpointtoplane * slideplanenormal;
-            Vec3f newdirection = newdestination - collision_state.collisionPos;
+            Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            Vec3f slidePlaneNormal = adjusted_pos + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
+            slidePlaneNormal.normalize();
+            float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+            Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+            Vec3f newDirection = newDestination - collision_state.collisionPos;
 
             // Cant push uphill on steep faces
-            if (bFaceSlopeTooSteep && newdirection.z > 0)
-                newdirection.z = 0;
+            if (bFaceSlopeTooSteep && newDirection.z > 0)
+                newDirection.z = 0;
 
-            newdirection.normalize();
+            newDirection.normalize();
 
             // Push away from the surface and add a touch down for better slide
             if (bFaceSlopeTooSteep)
                 pParty->speed += Vec3f(pFace->facePlane.normal.x, pFace->facePlane.normal.y, -2) * 10;
 
             // set movement speed along sliding plane
-            pParty->speed = newdirection * dot(newdirection, pParty->speed);
+            pParty->speed = newDirection * dot(newDirection, pParty->speed);
 
             if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                 *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
@@ -1063,26 +1063,26 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
             // TODO(pskelton): common to odm/blv so extract
-            Vec3f newdirection;
+            Vec3f newDirection;
             if (collision_state.adjusted_move_distance > 0.0f) {
                 // Create new sliding plane from collision
-                Vec3f slideplaneorigin = collision_state.collisionPos;
-                Vec3f dirc = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slideplaneorigin;
-                Vec3f slideplanenormal = Vec3f(-dirc.x, -dirc.y, 0);
-                slideplanenormal.normalize();
+                Vec3f slidePlaneOrigin = collision_state.collisionPos;
+                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slidePlaneOrigin;
+                Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
+                slidePlaneNormal.normalize();
 
                 // Form a sliding vector that is parallel to sliding movement
                 // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
                 // Start point to new destination is a vector along the slide plane
-                float destplanedist = dot(collision_state.new_position_lo - slideplaneorigin, slideplanenormal);
-                Vec3f newdestination = collision_state.new_position_lo - destplanedist * slideplanenormal;
-                newdirection = newdestination - collision_state.collisionPos;
-                newdirection.z = 0;
-                newdirection.normalize();
+                float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+                Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+                newDirection = newDestination - collision_state.collisionPos;
+                newDirection.z = 0;
+                newDirection.normalize();
             }
 
             // Set party to move along this new sliding vector
-            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
+            *partyInputSpeed = newDirection * dot(newDirection, *partyInputSpeed);
             // Skip reducing party speed
             continue;
         }
@@ -1103,25 +1103,25 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             }
 
             // new sliding plane
-            Vec3f slideplaneorigin = collision_state.collisionPos;
-            Vec3f slideplanenormal = newPosLow + Vec3f(0, 0, collision_state.radius_lo) - slideplaneorigin;
-            slideplanenormal.normalize();
-            float distfromdestpointtoplane = dot(collision_state.new_position_lo - slideplaneorigin, slideplanenormal);
-            Vec3f newdestination = collision_state.new_position_lo - distfromdestpointtoplane * slideplanenormal;
-            Vec3f newdirection = newdestination - collision_state.collisionPos;
+            Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            Vec3f slidePlaneNormal = newPosLow + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
+            slidePlaneNormal.normalize();
+            float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+            Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+            Vec3f newDirection = newDestination - collision_state.collisionPos;
 
             // Cant push uphill on steep faces
-            if (bFaceSlopeTooSteep && newdirection.z > 0)
-                newdirection.z = 0;
+            if (bFaceSlopeTooSteep && newDirection.z > 0)
+                newDirection.z = 0;
 
-            newdirection.normalize();
+            newDirection.normalize();
 
             // Push away from the surface and add a touch down for better slide
             if (bFaceSlopeTooSteep)
                 *partyInputSpeed += Vec3f(pODMFace->facePlane.normal.x, pODMFace->facePlane.normal.y, -2) * 10;
 
             // set movement speed along sliding plane
-            *partyInputSpeed = newdirection * dot(newdirection, *partyInputSpeed);
+            *partyInputSpeed = newDirection * dot(newDirection, *partyInputSpeed);
 
             if (pODMFace->uPolygonType == POLYGON_Floor || pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
