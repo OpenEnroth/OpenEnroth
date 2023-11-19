@@ -110,7 +110,7 @@ void GUIWindow_LloydsBook::Update() {
         if (beaconId < pPlayer->vBeacons.size()) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId];
             render->DrawTextureNew(lloydsBeaconsPreviewXs[beaconId] / 640.0f, lloydsBeaconsPreviewYs[beaconId] / 480.0f, beacon.image);
-            std::string Str = pMapStats->pInfos[beacon.mapId].pName;
+            std::string Str = pMapStats->pInfos[beacon.mapId].name;
             unsigned int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
             pWindow.uFrameY -= 6 + pTextHeight;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3);
@@ -151,18 +151,18 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     LloydBeacon &beacon = character.vBeacons[beaconId];
     if (_recallingBeacon) {
         if (beacon.uBeaconTime) {
-            std::string mapName = pMapStats->pInfos[beacon.mapId].pName;
+            std::string mapName = pMapStats->pInfos[beacon.mapId].name;
             engine->_statusBar->setPermanent(LSTR_FMT_RECALL_TO_S, mapName);
         }
     } else {
         MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
         std::string mapName = "Not in Map Stats";
         if (mapId != MAP_INVALID) {
-            mapName = pMapStats->pInfos[mapId].pName;
+            mapName = pMapStats->pInfos[mapId].name;
         }
 
         if (beacon.uBeaconTime) {
-            std::string mapName2 = pMapStats->pInfos[beacon.mapId].pName;
+            std::string mapName2 = pMapStats->pInfos[beacon.mapId].name;
             engine->_statusBar->setPermanent(LSTR_FMT_SET_S_OVER_S, mapName, mapName2);
         } else {
             engine->_statusBar->setPermanent(LSTR_FMT_SET_S_TO_S, mapName);

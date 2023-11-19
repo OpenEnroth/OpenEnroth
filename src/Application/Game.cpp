@@ -861,8 +861,8 @@ void Game::processQueuedMessages() {
                                         // NPCPanel
                 if (uMessageParam) {
                     new OnButtonClick2({626, 179}, {0, 0}, pBtn_NPCRight);
-                    v37 = (!pParty->pHirelings[0].pName.empty()) +
-                          (!pParty->pHirelings[1].pName.empty()) +
+                    v37 = (!pParty->pHirelings[0].name.empty()) +
+                          (!pParty->pHirelings[1].name.empty()) +
                           (uint8_t)pParty->cNonHireFollowers - 2;
                     // v37 is max scroll position
                     if (pParty->hirelingScrollPosition < v37) {

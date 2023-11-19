@@ -1466,7 +1466,7 @@ GAME_TEST(Issues, Issue872) {
     test.playTraceFromTestData("issue_872.mm7", "issue_872.json");
     FlatHirelings buf;
     buf.Prepare();
-    EXPECT_NE(buf.Get(0)->pName, "Dummy");
+    EXPECT_NE(buf.Get(0)->name, "Dummy");
 }
 
 GAME_TEST(Issues, Issue878) {

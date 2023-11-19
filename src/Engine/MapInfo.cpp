@@ -61,7 +61,7 @@ void MapStats::Initialize(const Blob &mapStats) {
             strncpy(test_string, tmpString.c_str(), sizeof(test_string) - 1);
             switch (decode_step) {
                 case 1:
-                    pInfos[i].pName = removeQuotes(test_string);  // randoms crashes here  // got 1 too
+                    pInfos[i].name = removeQuotes(test_string);  // randoms crashes here  // got 1 too
                     break;
                 case 2:
                     pInfos[i].pFilename = toLower(removeQuotes(test_string));

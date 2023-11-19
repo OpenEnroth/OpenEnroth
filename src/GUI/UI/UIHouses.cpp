@@ -413,7 +413,7 @@ void prepareHouse(HouseId house) {
             if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
-                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].pName);
+                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].name);
                 desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNewNPCData[i].uPortraitID));
                 desc.npc = &pNPCStats->pNewNPCData[i];
 
@@ -437,7 +437,7 @@ void prepareHouse(HouseId house) {
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
-            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
+            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].name);
             desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
@@ -721,12 +721,12 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;
-        house_window.DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
+        house_window.DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapStats->pInfos[id].name, 3);
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
-            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].name);
             house_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
@@ -905,13 +905,13 @@ void GUIWindow_House::houseDialogManager() {
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
         // Draw house title
-        if (!buildingTable[houseId()].pName.empty()) {
+        if (!buildingTable[houseId()].name.empty()) {
             if (current_screen_type != SCREEN_SHOP_INVENTORY) {
-                int yPos = 2 * assets->pFontCreate->GetHeight() - 6 - assets->pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
+                int yPos = 2 * assets->pFontCreate->GetHeight() - 6 - assets->pFontCreate->CalcTextHeight(buildingTable[houseId()].name, 130, 0);
                 if (yPos < 0) {
                     yPos = 0;
                 }
-                pWindow.DrawTitleText(assets->pFontCreate.get(), 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].pName, 3);
+                pWindow.DrawTitleText(assets->pFontCreate.get(), 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].name, 3);
             }
         }
     }
@@ -948,7 +948,7 @@ void GUIWindow_House::houseDialogManager() {
                 int yPos = 0;
                 switch (houseNpcs[i].type) {
                   case HOUSE_TRANSITION:
-                    pTitleText = pMapStats->pInfos[houseNpcs[i].targetMapID].pName;
+                    pTitleText = pMapStats->pInfos[houseNpcs[i].targetMapID].name;
                     yPos = 94 * i + SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_PROPRIETOR:
@@ -956,7 +956,7 @@ void GUIWindow_House::houseDialogManager() {
                     yPos = SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_NPC:
-                    pTitleText = houseNpcs[i].npc->pName;
+                    pTitleText = houseNpcs[i].npc->name;
                     yPos = pNPCPortraits_y[houseNpcs.size() - 1][i] + houseNpcs[i].icon->height() + 2;
                     break;
                 }

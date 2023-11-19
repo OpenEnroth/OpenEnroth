@@ -280,15 +280,15 @@ void FlatHirelings::Prepare() {
     count = 0;
 
     for (size_t i = 0; i < 2; ++i)
-        if (!pParty->pHirelings[i].pName.empty())
+        if (!pParty->pHirelings[i].name.empty())
             ids[count++] = i;
 
     for (size_t i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
         if (npc->Hired()) {
-            assert(!npc->pName.empty()); // Important for the checks below.
+            assert(!npc->name.empty()); // Important for the checks below.
 
-            if (npc->pName != pParty->pHirelings[0].pName && npc->pName != pParty->pHirelings[1].pName) {
+            if (npc->name != pParty->pHirelings[0].name && npc->name != pParty->pHirelings[1].name) {
                 assert(i + 2 < 256); // Won't fit into uint8_t otherwise.
                 ids[count++] = i + 2;
             }

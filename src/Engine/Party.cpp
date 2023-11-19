@@ -71,7 +71,7 @@ int Party::CountHirelings() {  // non hired followers
 
     for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
-        if (npc->Hired() && npc->pName != pHirelings[0].pName && npc->pName != pHirelings[1].pName)
+        if (npc->Hired() && npc->name != pHirelings[0].name && npc->name != pHirelings[1].name)
             ++cNonHireFollowers;
     }
 
@@ -716,8 +716,8 @@ void Party::yell() {
         for (int i = 0; i < pActors.size(); i++) {
             Actor &actor = pActors[i];
             if (actor.CanAct() &&
-                actor.monsterInfo.uHostilityType != HOSTILITY_LONG &&
-                actor.monsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                actor.monsterInfo.hostilityType != HOSTILITY_LONG &&
+                actor.monsterInfo.movementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 if ((actor.pos - pParty->pos.toInt()).length() < 512) {
                     Actor::AI_Flee(i, Pid::character(0), 0, 0);
                 }

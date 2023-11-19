@@ -396,7 +396,7 @@ LABEL_25:
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self monster type
                     if (pSpriteObject->spell_caster_pid.type() == OBJECT_Actor) {
-                        if (pActors[pSpriteObject->spell_caster_pid.id()].monsterInfo.uID == pActors[actloop].monsterInfo.uID) {
+                        if (pActors[pSpriteObject->spell_caster_pid.id()].monsterInfo.id == pActors[actloop].monsterInfo.id) {
                             continue;
                         }
                     }
@@ -1038,7 +1038,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD: {
             if (pid.type() == OBJECT_Actor &&
-                supertypeForMonsterId(pActors[pid.id()].monsterInfo.uID) == MONSTER_SUPERTYPE_UNDEAD) {
+                supertypeForMonsterId(pActors[pid.id()].monsterInfo.id) == MONSTER_SUPERTYPE_UNDEAD) {
                 applySpellSpriteDamage(uLayingItemID, pid);
             }
             updateSpriteOnImpact(object);

@@ -30,7 +30,7 @@ MM_DECLARE_FLAGS(DecorationDescFlags, DecorationDescFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DecorationDescFlags)
 
 struct DecorationDesc {
-    std::string pName;
+    std::string name;
     std::string field_20; // TODO(captainurist): actually interactionText?
     int16_t uType;
     uint16_t uDecorationHeight;

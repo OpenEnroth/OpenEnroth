@@ -641,9 +641,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
         for (uint i = 0; i < pActors.size(); ++i) {
             // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
-            pActors[i].monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-            pActors[i].monsterInfo.uTreasureDiceRolls = 0;
-            pActors[i].monsterInfo.uExp = 0;
+            pActors[i].monsterInfo.treasureType = RANDOM_ITEM_ANY;
+            pActors[i].monsterInfo.goldDiceRolls = 0;
+            pActors[i].monsterInfo.exp = 0;
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
@@ -1002,10 +1002,10 @@ void Engine::_461103_load_level_sub() {
         //{
         // v3 = pActors[i].pMonsterInfo.uID;
         v17 = 0;
-        if (isPeasant(pActors[i].monsterInfo.uID))
+        if (isPeasant(pActors[i].monsterInfo.id))
             v17 = 1;
         // v1 = 0;
-        v4 = (std::to_underlying(pActors[i].monsterInfo.uID) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
+        v4 = (std::to_underlying(pActors[i].monsterInfo.id) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
         if (2 == v4) {
             if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
         } else {
@@ -1018,7 +1018,7 @@ void Engine::_461103_load_level_sub() {
         if (v17) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.uID, HOUSE_INVALID, v19);
+                pActors[i].monsterInfo.id, HOUSE_INVALID, v19);
             v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
             ++pNPCStats->uNewlNPCBufPos;
             pActors[i].npcId = v14;

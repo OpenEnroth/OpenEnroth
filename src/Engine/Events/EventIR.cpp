@@ -666,8 +666,8 @@ std::string EventIR::toString() const {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
         case EVENT_SpeakInHouse:
-            if (buildingTable.indices().contains(data.house_id) && !buildingTable[data.house_id].pName.empty()) {
-                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, std::to_underlying(data.house_id), buildingTable[data.house_id].pName);
+            if (buildingTable.indices().contains(data.house_id) && !buildingTable[data.house_id].name.empty()) {
+                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, std::to_underlying(data.house_id), buildingTable[data.house_id].name);
             } else {
                 return fmt::format("{}: SpeakInHouse({})", step, std::to_underlying(data.house_id));
             }

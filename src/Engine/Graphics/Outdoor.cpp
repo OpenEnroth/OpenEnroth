@@ -1211,13 +1211,13 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                 if (pActors[i].aiState != AIState::Removed &&
                     pActors[i].aiState != AIState::Disabled &&
                     (pActors[i].currentHP == 0 ||
-                     pActors[i].monsterInfo.uHP == 0))
+                     pActors[i].monsterInfo.hp == 0))
                     pActors[i].aiState = AIState::Dead;
                 pActors[i].speed.x = 0;
                 pActors[i].speed.y = 0;
                 pActors[i].speed.z = 0;
                 pActors[i].UpdateAnimation();
-                pActors[i].monsterInfo.uHostilityType =
+                pActors[i].monsterInfo.hostilityType =
                     HOSTILITY_FRIENDLY;
                 pActors[i].PrepareSprites(0);
             } else {
@@ -1235,13 +1235,13 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
             if (pActors[i].aiState != AIState::Removed &&
                 pActors[i].aiState != AIState::Disabled &&
                 (pActors[i].currentHP == 0 ||
-                 pActors[i].monsterInfo.uHP == 0))
+                 pActors[i].monsterInfo.hp == 0))
                 pActors[i].aiState = AIState::Dead;
             pActors[i].speed.x = 0;
             pActors[i].speed.y = 0;
             pActors[i].speed.z = 0;
             pActors[i].UpdateAnimation();
-            pActors[i].monsterInfo.uHostilityType =
+            pActors[i].monsterInfo.hostilityType =
                 HOSTILITY_FRIENDLY;
             pActors[i].PrepareSprites(0);
         } else {
@@ -1335,7 +1335,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (pActors[i].aiState == Summoned) {
             if (pActors[i].summonerId.type() != OBJECT_Actor ||
                 pActors[pActors[i].summonerId.id()]
-                .monsterInfo.uSpecialAbilityDamageDiceSides != 1) {
+                .monsterInfo.specialAbilityDamageDiceSides != 1) {
                 z += floorf(pActors[i].height * 0.5f + 0.5f);
             } else {
                 v49 = 1;
@@ -1426,7 +1426,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->pMonsters[pActors[i].monsterInfo.uID].sTintColor;  // *((int *)&v35[v36] - 36);
+                            pMonsterList->pMonsters[pActors[i].monsterInfo.id].sTintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                                 flags | 0x100;
@@ -2310,11 +2310,11 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].aiState == Summoned || !pActors[Actor_ITR].moveSpeed)
                 continue;
 
-        bool Water_Walk = supertypeForMonsterId(pActors[Actor_ITR].monsterInfo.uID) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
+        bool Water_Walk = supertypeForMonsterId(pActors[Actor_ITR].monsterInfo.id) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
 
         pActors[Actor_ITR].sectorId = 0;
 
-        bool uIsFlying = pActors[Actor_ITR].monsterInfo.uFlying;
+        bool uIsFlying = pActors[Actor_ITR].monsterInfo.flying;
         if (!pActors[Actor_ITR].CanAct())
             uIsFlying = 0;
 
@@ -2330,7 +2330,7 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].donebloodsplat) {
             if (pActors[Actor_ITR].aiState == Dead || pActors[Actor_ITR].aiState == Dying) {
                 if (pActors[Actor_ITR].pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[pActors[Actor_ITR].monsterInfo.uID].bBloodSplatOnDeath) {
+                    if (pMonsterStats->pInfos[pActors[Actor_ITR].monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = pActors[Actor_ITR].radius * engine->config->graphics.BloodSplatsMultiplier.value();
                             EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);

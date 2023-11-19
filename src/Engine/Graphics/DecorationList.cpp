@@ -21,7 +21,7 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
 
     if (pDecorations.size() > 1) {
         for (uint uID = 1; uID < pDecorations.size(); ++uID) {
-            if (iequals(pName, pDecorations[uID].pName))
+            if (iequals(pName, pDecorations[uID].name))
                 return uID;
         }
     }

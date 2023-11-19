@@ -1526,7 +1526,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
 
     CombinedSkillValue stealingSkill = this->getActualSkillValue(CHARACTER_SKILL_STEALING);
     int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealingSkill.level() * StealingMasteryBonuses[stealingSkill.mastery()];
-    int fineIfFailed = actroPtr->monsterInfo.uLevel + 100 * (_steal_perm + reputation);
+    int fineIfFailed = actroPtr->monsterInfo.level + 100 * (_steal_perm + reputation);
 
     if (grng->random(100) < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
@@ -6480,17 +6480,17 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         DamageType damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
-                damageType = actorPtr->monsterInfo.uAttack1Type;
+                damageType = actorPtr->monsterInfo.attack1Type;
                 break;
             case ABILITY_ATTACK2:
-                damageType = actorPtr->monsterInfo.uAttack2Type;
+                damageType = actorPtr->monsterInfo.attack2Type;
                 break;
             case ABILITY_SPELL1:
-                spellId = actorPtr->monsterInfo.uSpell1ID;
+                spellId = actorPtr->monsterInfo.spell1Id;
                 damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPELL2:
-                spellId = actorPtr->monsterInfo.uSpell2ID;
+                spellId = actorPtr->monsterInfo.spell2Id;
                 damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPECIAL:
@@ -6521,13 +6521,13 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
                         Actor::AggroSurroundingPeasants(uActorID, 1);
-                        if (actorPtr->monsterInfo.uExp)
-                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.uID].uExp);
+                        if (actorPtr->monsterInfo.exp)
+                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.id].exp);
 
                         // kill speech
                         CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                         if (vrng->random(100) < 20) {
-                            speechToPlay = actorPtr->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+                            speechToPlay = actorPtr->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                         }
                         playerPtr->playReaction(speechToPlay);
                     }
@@ -6536,9 +6536,9 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         }
 
         // special attack trigger
-        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
-            grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
-            playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
+        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE &&
+            grng->random(100) < actorPtr->monsterInfo.level * actorPtr->monsterInfo.specialAttackLevel) {
+            playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.specialAttackType, actorPtr);
         }
 
         // add recovery after being hit
@@ -6654,17 +6654,17 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             DamageType damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
-                    damageType = actorPtr->monsterInfo.uAttack1Type;
+                    damageType = actorPtr->monsterInfo.attack1Type;
                     break;
                 case ABILITY_ATTACK2:
-                    damageType = actorPtr->monsterInfo.uAttack2Type;
+                    damageType = actorPtr->monsterInfo.attack2Type;
                     break;
                 case ABILITY_SPELL1:
-                    spellId = actorPtr->monsterInfo.uSpell1ID;
+                    spellId = actorPtr->monsterInfo.spell1Id;
                     damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPELL2:
-                    spellId = actorPtr->monsterInfo.uSpell2ID;
+                    spellId = actorPtr->monsterInfo.spell2Id;
                     damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPECIAL:
@@ -6691,12 +6691,12 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                             Actor::Die(uActorID);
                             Actor::ApplyFineForKillingPeasant(uActorID);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
-                            if (actorPtr->monsterInfo.uExp)
-                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.uID].uExp);
+                            if (actorPtr->monsterInfo.exp)
+                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.id].exp);
 
                             CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                             if (vrng->random(100) < 20) {
-                                speechToPlay = actorPtr->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+                                speechToPlay = actorPtr->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                             }
                             playerPtr->playReaction(speechToPlay);
                         }
@@ -6706,9 +6706,9 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
             // special attack trigger
             if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.value() &&
-                actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
-                grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
-                playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
+                actorPtr->monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE &&
+                grng->random(100) < actorPtr->monsterInfo.level * actorPtr->monsterInfo.specialAttackLevel) {
+                playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.specialAttackType, actorPtr);
             }
 
             // set recovery after hit
@@ -7048,7 +7048,7 @@ int Character::getCharacterIndex() {
 
 //----- (004272F5) --------------------------------------------------------
 bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod) {  // PS - RETURN IF ATTACK WILL HIT
-    int naturalArmor = pActor->monsterInfo.uAC;  // actor usual armour
+    int naturalArmor = pActor->monsterInfo.ac;  // actor usual armour
     int armorBuff = 0;
 
     if (pActor->buffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC]

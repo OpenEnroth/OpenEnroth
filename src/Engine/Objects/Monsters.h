@@ -23,62 +23,62 @@
 class Blob;
 
 struct MonsterInfo {
-    std::string pName;
-    std::string pPictureName;
-    uint8_t uLevel = 0;
-    uint8_t uTreasureDropChance = 0;
-    uint8_t uTreasureDiceRolls = 0;
-    uint8_t uTreasureDiceSides = 0;
-    ItemTreasureLevel uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-    RandomItemType uTreasureType = RANDOM_ITEM_ANY;
-    uint8_t uFlying = 0;
-    MONSTER_MOVEMENT_TYPE uMovementType = MONSTER_MOVEMENT_TYPE_SHORT;
-    MonsterAiType uAIType = MONSTER_AI_SUICIDE;
-    MonsterHostility uHostilityType = HOSTILITY_FRIENDLY;
-    SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
-    uint8_t uSpecialAttackLevel = 0;
-    DamageType uAttack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
-    uint8_t uAttack1DamageDiceRolls = 0;
-    uint8_t uAttack1DamageDiceSides = 0;
-    uint8_t uAttack1DamageBonus = 0;
-    uint8_t uMissleAttack1Type = 0;
-    uint8_t uAttack2Chance = 0;
-    DamageType uAttack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
-    uint8_t uAttack2DamageDiceRolls = 0;
-    uint8_t uAttack2DamageDiceSides = 0;
-    uint8_t uAttack2DamageBonus = 0;
-    uint8_t uMissleAttack2Type = 0;
-    uint8_t uSpell1UseChance = 0;
-    SpellId uSpell1ID = SPELL_NONE;
-    uint8_t uSpell2UseChance = 0;
-    SpellId uSpell2ID = SPELL_NONE;
-    uint8_t uResFire = 0;
-    uint8_t uResAir = 0;
-    uint8_t uResWater = 0;
-    uint8_t uResEarth = 0;
-    uint8_t uResMind = 0;
-    uint8_t uResSpirit = 0;
-    uint8_t uResBody = 0;
-    uint8_t uResLight = 0;
-    uint8_t uResDark = 0;
-    uint8_t uResPhysical = 0;
-    MONSTER_SPECIAL_ABILITY_TYPE uSpecialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
-    uint8_t uSpecialAbilityDamageDiceRolls = 0;
-    uint8_t uSpecialAbilityDamageDiceSides = 0;
-    uint8_t uSpecialAbilityDamageDiceBonus = 0;
-    uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
-    MonsterId uID = MONSTER_INVALID;
-    bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
-    CombinedSkillValue uSpellSkillAndMastery1;
-    CombinedSkillValue uSpellSkillAndMastery2;
+    std::string name;
+    std::string textureName;
+    uint8_t level = 0;
+    uint8_t treasureDropChance = 0; // Chance to drop an item, in [0, 100].
+    ItemTreasureLevel treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+    RandomItemType treasureType = RANDOM_ITEM_ANY;
+    uint8_t goldDiceRolls = 0;
+    uint8_t goldDiceSides = 0;
+    bool flying = false;
+    MONSTER_MOVEMENT_TYPE movementType = MONSTER_MOVEMENT_TYPE_SHORT;
+    MonsterAiType aiType = MONSTER_AI_SUICIDE;
+    MonsterHostility hostilityType = HOSTILITY_FRIENDLY;
+    SPECIAL_ATTACK_TYPE specialAttackType = SPECIAL_ATTACK_NONE;
+    uint8_t specialAttackLevel = 0;
+    DamageType attack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
+    uint8_t attack1DamageDiceRolls = 0;
+    uint8_t attack1DamageDiceSides = 0;
+    uint8_t attack1DamageBonus = 0;
+    uint8_t attack1MissileType = 0; // TODO(captainurist): #enum see Actor::AI_RangedAttack.
+    uint8_t attack2Chance = 0;
+    DamageType attack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
+    uint8_t attack2DamageDiceRolls = 0;
+    uint8_t attack2DamageDiceSides = 0;
+    uint8_t attack2DamageBonus = 0;
+    uint8_t attack2MissileType = 0;
+    uint8_t spell1UseChance = 0; // In [0, 100].
+    SpellId spell1Id = SPELL_NONE;
+    CombinedSkillValue spell1SkillMastery;
+    uint8_t spell2UseChance = 0; // In [0, 100].
+    SpellId spell2Id = SPELL_NONE;
+    CombinedSkillValue spell2SkillMastery;
+    uint8_t resFire = 0;
+    uint8_t resAir = 0;
+    uint8_t resWater = 0;
+    uint8_t resEarth = 0;
+    uint8_t resMind = 0;
+    uint8_t resSpirit = 0;
+    uint8_t resBody = 0;
+    uint8_t resLight = 0;
+    uint8_t resDark = 0;
+    uint8_t resPhysical = 0;
+    MONSTER_SPECIAL_ABILITY_TYPE specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
+    uint8_t specialAbilityDamageDiceRolls = 0;
+    uint8_t specialAbilityDamageDiceSides = 0;
+    uint8_t specialAbilityDamageDiceBonus = 0;
+    uint8_t numCharactersAttackedPerSpecialAbility = 0;
+    MonsterId id = MONSTER_INVALID;
+    bool bloodSplatOnDeath = 0;  // true for bloodsplat on death
     int16_t field_3C_some_special_attack = 0; // TODO(captainurist): what is this?
     int16_t field_3E = 0;
-    unsigned int uHP = 0;
-    unsigned int uAC = 0;
-    unsigned int uExp = 0;
-    unsigned int uBaseSpeed = 0;
-    signed int uRecoveryTime = 0;
-    MonsterAttackPreferences uAttackPreferences;
+    unsigned int hp = 0;
+    unsigned int ac = 0;
+    unsigned int exp = 0; // Amount of experience the party gains upon killing this monster.
+    unsigned int baseSpeed = 0;
+    signed int recoveryTime = 0;
+    MonsterAttackPreferences attackPreferences;
 };
 
 struct MonsterStats {

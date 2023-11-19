@@ -13,7 +13,7 @@
 class Blob;
 
 struct MapInfo {
-    std::string pName;
+    std::string name;
     std::string pFilename;
     std::string pEncounterMonster1Texture;
     std::string pEncounterMonster2Texture;

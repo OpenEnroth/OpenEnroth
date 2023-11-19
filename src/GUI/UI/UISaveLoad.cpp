@@ -265,7 +265,7 @@ static void UI_DrawSaveLoad(bool save) {
         }
         // Draw map name
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
-                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].pName, 3);
+                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].name, 3);
 
         // Draw date
         GameTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime;

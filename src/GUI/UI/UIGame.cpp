@@ -716,7 +716,7 @@ std::string GameUI_GetMinimapHintText() {
         if (pMapID == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
-            result = pMapStats->pInfos[pMapID].pName;
+            result = pMapStats->pInfos[pMapID].name;
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = int_get_vector_length(
@@ -739,7 +739,7 @@ std::string GameUI_GetMinimapHintText() {
         if (pMapID == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
-            result = pMapStats->pInfos[pMapID].pName;
+            result = pMapStats->pInfos[pMapID].name;
         return result;
     }
     return result;

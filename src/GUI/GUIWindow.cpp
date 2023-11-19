@@ -881,7 +881,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
 
             switch (mask) {
             case 1:
-                result += npc->pName;
+                result += npc->name;
                 break;
             case 2:
                 result += pPlayer->name;
@@ -986,7 +986,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 break;
             case 23:
                 if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID)
-                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName;
+                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name;
                 else
                     result += localization->GetString(LSTR_UNKNOWN);
                 break;
@@ -1298,11 +1298,11 @@ std::string NameAndTitle(const std::string &name, NPCProf profession) {
 
 
 std::string NameAndTitle(NPCData *npc) {
-    if (!npc->pName.empty()) {
+    if (!npc->name.empty()) {
         if (npc->profession != NoProfession)
-            return NameAndTitle(npc->pName, npc->profession);
+            return NameAndTitle(npc->name, npc->profession);
 
-        return npc->pName;
+        return npc->name;
     }
 
     return std::string();
@@ -1313,5 +1313,5 @@ std::string GetDisplayName(Actor *actor) {
     if (actor->uniqueNameIndex)
         return pMonsterStats->pUniqueNames[actor->uniqueNameIndex];
     else
-        return pMonsterStats->pInfos[actor->monsterInfo.uID].pName;
+        return pMonsterStats->pInfos[actor->monsterInfo.id].name;
 }

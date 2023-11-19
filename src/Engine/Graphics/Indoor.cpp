@@ -789,7 +789,7 @@ void UpdateActors_BLV() {
         if (actor.sectorId == 0 || floorZ <= -30000)
             continue;
 
-        bool isFlying = actor.monsterInfo.uFlying;
+        bool isFlying = actor.monsterInfo.flying;
         if (!actor.CanAct())
             isFlying = false;
 
@@ -801,7 +801,7 @@ void UpdateActors_BLV() {
         if (!actor.donebloodsplat) {
             if (actor.aiState == Dead || actor.aiState == Dying) {
                 if (actor.pos.z < floorZ + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[actor.monsterInfo.uID].bBloodSplatOnDeath) {
+                    if (pMonsterStats->pInfos[actor.monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
                             EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
@@ -1019,10 +1019,10 @@ void PrepareToLoadBLV(bool bLoading) {
 
         if (!v28) {
             pActors[i].PrepareSprites(0);
-            pActors[i].monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+            pActors[i].monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
             if (pActors[i].monsterInfo.field_3E != 11 &&
                 pActors[i].monsterInfo.field_3E != 19 &&
-                (!pActors[i].currentHP || !pActors[i].monsterInfo.uHP)) {
+                (!pActors[i].currentHP || !pActors[i].monsterInfo.hp)) {
                 pActors[i].monsterInfo.field_3E = 5;
                 pActors[i].UpdateAnimation();
             }
@@ -1035,7 +1035,7 @@ void PrepareToLoadBLV(bool bLoading) {
     pGameLoadingUI_ProgressBar->Progress();
 
     Actor this_;
-    this_.monsterInfo.uID = MONSTER_ELEMENTAL_LIGHT_C;
+    this_.monsterInfo.id = MONSTER_ELEMENTAL_LIGHT_C;
     this_.PrepareSprites(0); // TODO(captainurist): can drop this? Was loaded because light elementals can be summoned.
 
     // Party to start position
