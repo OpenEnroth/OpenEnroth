@@ -1967,8 +1967,6 @@ void Game::gameLoop() {
         // = 0;
         current_screen_type = SCREEN_GAME;
 
-        SaveGame(1, 0);
-
         bool game_finished = false;
         do {
             MessageLoopWithWait();
