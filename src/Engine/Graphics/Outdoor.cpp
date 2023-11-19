@@ -22,6 +22,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Polygon.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -45,7 +46,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 

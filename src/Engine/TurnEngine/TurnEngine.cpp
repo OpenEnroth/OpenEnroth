@@ -1,5 +1,4 @@
 #include <cstdlib>
-
 #include <utility>
 
 #include "Engine/Engine.h"
@@ -12,12 +11,12 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 
+#include "Engine/Random/Random.h"
+
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
-#include "Library/Random/Random.h"
 
 #include "Engine/Party.h"
 #include "Engine/AttackList.h"

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/Random/Random.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -22,6 +23,10 @@
 #include "Game.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
+    // Init random engine factory.
+    if (_options.tracingRng)
+        rngf = RandomEngineFactory::tracing();
+
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 

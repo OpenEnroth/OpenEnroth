@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -43,7 +44,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Serialization/EnumSerialization.h"
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 GUIWindow *pPrimaryWindow;

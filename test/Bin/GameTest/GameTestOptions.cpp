@@ -25,6 +25,9 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.")->group(otherOptions);
+    app->add_flag(
+        "--tracing-rng", result.tracingRng,
+        "Use random number generators that print stack trace on each call.")->group(otherOptions);
     app->add_option(
         "--log-level", result.logLevel,
         "Log level, one of 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");

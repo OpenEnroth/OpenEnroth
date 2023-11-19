@@ -65,6 +65,7 @@ target_link_libraries(engine
         engine_tables
         engine_turn_engine
         engine_events
+        engine_random
         library_compression
         library_logger
         library_serialization
@@ -87,3 +88,4 @@ add_subdirectory(Tables)
 add_subdirectory(Components)
 add_subdirectory(TurnEngine)
 add_subdirectory(Events)
+add_subdirectory(Random)

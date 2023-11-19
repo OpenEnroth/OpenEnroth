@@ -13,4 +13,5 @@ struct GameStarterOptions {
     std::string dataPath; // Path to game data, empty means use default.
     std::optional<LogLevel> logLevel; // Override log level.
     bool headless = false; // Run in headless mode.
+    bool tracingRng = false; // Use tracing random engine?
 };

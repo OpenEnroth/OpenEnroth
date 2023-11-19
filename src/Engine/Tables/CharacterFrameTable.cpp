@@ -1,6 +1,6 @@
 #include "CharacterFrameTable.h"
 
-#include "Library/Random/Random.h"
+#include "Engine/Random/Random.h"
 
 
 //----- (00494AED) --------------------------------------------------------

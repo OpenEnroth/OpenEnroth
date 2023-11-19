@@ -10,6 +10,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventMap.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
@@ -19,7 +20,6 @@
 #include "GUI/UI/Houses/TownHall.h"
 
 #include "Library/Lod/LodReader.h"
-#include "Library/Random/Random.h"
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Format.h"
@@ -340,7 +340,7 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
 
 int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
     // Fill bounty hunt map.
-    grng = RandomEngine::create(RANDOM_ENGINE_SEQUENTIAL);
+    grng = rngf->createEngine(RANDOM_ENGINE_SEQUENTIAL);
     IndexedArray<std::unordered_set<MonsterId>, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monstersByTownHall;
     for (const HouseId townHall : allTownhallHouses()) {
         grng->seed(0);

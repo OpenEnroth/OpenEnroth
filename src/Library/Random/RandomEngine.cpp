@@ -2,18 +2,6 @@
 
 #include <cassert>
 
-#include "MersenneTwisterRandomEngine.h"
-#include "SequentialRandomEngine.h"
-
-std::unique_ptr<RandomEngine> RandomEngine::create(RandomEngineType type) {
-    if (type == RANDOM_ENGINE_MERSENNE_TWISTER) {
-        return std::make_unique<MersenneTwisterRandomEngine>();
-    } else {
-        assert(type == RANDOM_ENGINE_SEQUENTIAL);
-        return std::make_unique<SequentialRandomEngine>();
-    }
-}
-
 int RandomEngine::randomInSegment(int min, int max) {
     assert(max >= min);
 

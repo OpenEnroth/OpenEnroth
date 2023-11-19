@@ -17,8 +17,6 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
 
@@ -26,7 +24,7 @@
 
 #include "Io/Mouse.h"
 
-#include "Library/Random/Random.h"
+#include "Engine/Random/Random.h"
 
 static constexpr IndexedArray<MagicSchool, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> guildSpellsSchool = {
     {BUILDING_FIRE_GUILD,   MAGIC_SCHOOL_FIRE},

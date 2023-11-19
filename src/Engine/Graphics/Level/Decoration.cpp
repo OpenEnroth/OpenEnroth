@@ -3,11 +3,10 @@
 #include <cstdlib>
 #include <algorithm>
 
-#include "../../Party.h"
-#include "Engine/Engine.h"
+#include "Engine/Party.h"
+#include "Engine/Random/Random.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Random/Random.h"
 
 std::vector<LevelDecoration> pLevelDecorations;
 std::vector<int> decorationsWithSound;
