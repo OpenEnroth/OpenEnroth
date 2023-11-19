@@ -290,7 +290,7 @@ int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceMan
     for (const MonsterId i : allMonsters()) {
         const MonsterDesc &desc = pMonsterList->pMonsters[i];
         const MonsterInfo &info = monsterStats.pInfos[i];
-        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.pMonsterName));
+        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.monsterName));
 
         std::string comment = info.name;
         if (comment == "peasant")
@@ -329,7 +329,7 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
             continue;
 
         const MonsterDesc &desc = pMonsterList->pMonsters[i];
-        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.pMonsterName));
+        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.monsterName));
 
         map.insert(monsterTypeForMonsterId(i), enumName, "");
     }

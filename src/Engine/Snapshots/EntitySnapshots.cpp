@@ -1080,40 +1080,40 @@ void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst) {
 }
 
 void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
-    dst->uMonsterHeight = src.monsterHeight;
-    dst->uMonsterRadius = src.monsterRadius;
-    dst->uMovementSpeed = src.movementSpeed;
-    dst->uToHitRadius = src.toHitRadius;
-    dst->sTintColor = colorTable.White;
-    reconstruct(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.monsterName, &dst->pMonsterName);
-    reconstruct(src.spriteNames, &dst->pSpriteNames);
+    dst->monsterHeight = src.monsterHeight;
+    dst->monsterRadius = src.monsterRadius;
+    dst->movementSpeed = src.movementSpeed;
+    dst->toHitRadius = src.toHitRadius;
+    dst->tintColor = colorTable.White;
+    reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
+    reconstruct(src.monsterName, &dst->monsterName);
+    reconstruct(src.spriteNames, &dst->spriteNames);
 }
 
 void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     memzero(dst);
 
-    dst->monsterHeight = src.uMonsterHeight;
-    dst->monsterRadius = src.uMonsterRadius;
-    dst->movementSpeed = src.uMovementSpeed;
-    dst->toHitRadius = src.uToHitRadius;
-    dst->tintColor = src.sTintColor.c32();
-    snapshot(src.pSoundSampleIDs, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
-    snapshot(src.pMonsterName, &dst->monsterName);
-    snapshot(src.pSpriteNames, &dst->spriteNames);
+    dst->monsterHeight = src.monsterHeight;
+    dst->monsterRadius = src.monsterRadius;
+    dst->movementSpeed = src.movementSpeed;
+    dst->toHitRadius = src.toHitRadius;
+    dst->tintColor = src.tintColor.c32();
+    snapshot(src.soundSampleIds, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
+    snapshot(src.monsterName, &dst->monsterName);
+    snapshot(src.spriteNames, &dst->spriteNames);
     dst->spriteNamesUnused[0].fill('\0');
     dst->spriteNamesUnused[1].fill('\0');
 }
 
 void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
-    dst->uMonsterHeight = src.monsterHeight;
-    dst->uMonsterRadius = src.monsterRadius;
-    dst->uMovementSpeed = src.movementSpeed;
-    dst->uToHitRadius = src.toHitRadius;
-    dst->sTintColor = Color::fromC32(src.tintColor);
-    reconstruct(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.monsterName, &dst->pMonsterName);
-    reconstruct(src.spriteNames, &dst->pSpriteNames);
+    dst->monsterHeight = src.monsterHeight;
+    dst->monsterRadius = src.monsterRadius;
+    dst->movementSpeed = src.movementSpeed;
+    dst->toHitRadius = src.toHitRadius;
+    dst->tintColor = Color::fromC32(src.tintColor);
+    reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
+    reconstruct(src.monsterName, &dst->monsterName);
+    reconstruct(src.spriteNames, &dst->spriteNames);
 }
 
 void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {

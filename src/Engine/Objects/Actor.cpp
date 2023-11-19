@@ -2316,14 +2316,14 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     // do
     for (ActorAnimation i : spriteIds.indices()) {
         // strcpy(pSpriteName, v3->pSpriteNames[i]);
-        spriteIds[i] = pSpriteFrameTable->FastFindSprite(v3->pSpriteNames[i]);
+        spriteIds[i] = pSpriteFrameTable->FastFindSprite(v3->spriteNames[i]);
         pSpriteFrameTable->InitializeSprite(spriteIds[i]);
     }
-    height = v3->uMonsterHeight;
-    radius = v3->uMonsterRadius;
+    height = v3->monsterHeight;
+    radius = v3->monsterRadius;
     moveSpeed = v9->baseSpeed;
     if (!(load_sounds_if_bit1_set & 1)) {
-        soundSampleIds = v3->pSoundSampleIDs;
+        soundSampleIds = v3->soundSampleIds;
     }
 }
 
@@ -2487,12 +2487,12 @@ void Actor::SummonMinion(int summonerId) {
     actor->currentHP = v9->hp;
     actor->monsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
-    actor->radius = pMonsterList->pMonsters[summonMonsterBaseType].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[summonMonsterBaseType].uMonsterHeight;
+    actor->radius = pMonsterList->pMonsters[summonMonsterBaseType].monsterRadius;
+    actor->height = pMonsterList->pMonsters[summonMonsterBaseType].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.exp = 0;
-    actor->moveSpeed = pMonsterList->pMonsters[summonMonsterBaseType].uMovementSpeed;
+    actor->moveSpeed = pMonsterList->pMonsters[summonMonsterBaseType].movementSpeed;
 
     actor->initialPosition.x = v15;
     actor->initialPosition.y = v17;
@@ -2572,7 +2572,7 @@ void Actor::UpdateActorAI() {
 
         // If shrink expired: reset height
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.id].uMonsterHeight;
+            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.id].monsterHeight;
             pActor->buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
@@ -2649,7 +2649,7 @@ void Actor::UpdateActorAI() {
                 pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.id].uMonsterHeight;
+            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.id].monsterHeight;
             pActor->buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
@@ -3299,9 +3299,9 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     actor->currentHP = (short)pMonsterStats->pInfos[monster_id].hp;
     actor->monsterInfo = pMonsterStats->pInfos[monster_id];
     actor->word_000086_some_monster_id = monster_id;
-    actor->radius = pMonsterList->pMonsters[monster_id].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[monster_id].uMonsterHeight;
-    actor->moveSpeed = pMonsterList->pMonsters[monster_id].uMovementSpeed;
+    actor->radius = pMonsterList->pMonsters[monster_id].monsterRadius;
+    actor->height = pMonsterList->pMonsters[monster_id].monsterHeight;
+    actor->moveSpeed = pMonsterList->pMonsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
     actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
@@ -4254,12 +4254,12 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->currentHP = pMonsterStats->pInfos[uMonsterID].hp;
     actor->monsterInfo = pMonsterStats->pInfos[uMonsterID];
     actor->word_000086_some_monster_id = uMonsterID;
-    actor->radius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
+    actor->radius = pMonsterList->pMonsters[uMonsterID].monsterRadius;
+    actor->height = pMonsterList->pMonsters[uMonsterID].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.exp = 0;
-    actor->moveSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
+    actor->moveSpeed = pMonsterList->pMonsters[uMonsterID].movementSpeed;
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
@@ -4495,9 +4495,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pMonster->monsterInfo = pMonsterStats->pInfos[v28];
 
         pMonster->word_000086_some_monster_id = v50;
-        pMonster->radius = v27->uMonsterRadius;
-        pMonster->height = v27->uMonsterHeight;
-        pMonster->moveSpeed = v27->uMovementSpeed;
+        pMonster->radius = v27->monsterRadius;
+        pMonster->height = v27->monsterHeight;
+        pMonster->moveSpeed = v27->movementSpeed;
         pMonster->initialPosition.x = spawn->vPosition.x;
         pMonster->pos.x = spawn->vPosition.x;
         pMonster->tetherDistance = 256;

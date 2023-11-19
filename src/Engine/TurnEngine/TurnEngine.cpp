@@ -255,7 +255,7 @@ void stru262_TurnBased::AITurnBasedAction() {
                 pActors[i].buffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActors[i].height = pMonsterList->pMonsters[pActors[i].monsterInfo.id].uMonsterHeight;
+            pActors[i].height = pMonsterList->pMonsters[pActors[i].monsterInfo.id].monsterHeight;
             pActors[i].buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 

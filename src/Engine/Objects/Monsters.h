@@ -91,14 +91,14 @@ struct MonsterStats {
 };
 
 struct MonsterDesc {
-    uint16_t uMonsterHeight;
-    uint16_t uMonsterRadius;
-    uint16_t uMovementSpeed;
-    int16_t uToHitRadius;
-    Color sTintColor;
-    IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> pSoundSampleIDs;
-    std::string pMonsterName;
-    IndexedArray<std::string, ANIM_First, ANIM_Last> pSpriteNames;
+    uint16_t monsterHeight;
+    uint16_t monsterRadius;
+    uint16_t movementSpeed;
+    int16_t toHitRadius;
+    Color tintColor;
+    IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds;
+    std::string monsterName;
+    IndexedArray<std::string, ANIM_First, ANIM_Last> spriteNames;
 };
 
 struct MonsterList {

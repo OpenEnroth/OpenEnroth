@@ -971,7 +971,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
 //----- (0044FA08) --------------------------------------------------------
 MonsterId MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
     for (MonsterId i : pMonsters.indices()) {
-        if (iequals(pMonsters[i].pMonsterName, pMonsterName))
+        if (iequals(pMonsters[i].monsterName, pMonsterName))
             return i;
     }
     logger->error("Monster not found: {}", pMonsterName);

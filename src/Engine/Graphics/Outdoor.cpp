@@ -1426,7 +1426,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->pMonsters[pActors[i].monsterInfo.id].sTintColor;  // *((int *)&v35[v36] - 36);
+                            pMonsterList->pMonsters[pActors[i].monsterInfo.id].tintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                                 flags | 0x100;
