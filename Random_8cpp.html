@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Library/Random/Random.cpp File Reference</title>
+<title>OpenEnroth: src/Engine/Random/Random.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;399b9b0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8c870df</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_0faeaf542247f4b0579cf8cb755ece75.html">Random</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_a5b0657d7c4f0da04733a48bf2e4bcad.html">Random</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -79,13 +79,14 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Random_8h.html">Random.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="MersenneTwisterRandomEngine_8h.html">MersenneTwisterRandomEngine.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ab831b6483ae52c1dfbc129a9d28bf489"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Random_8cpp.html#ab831b6483ae52c1dfbc129a9d28bf489">grng</a> = std::make_unique&lt;<a class="el" href="classMersenneTwisterRandomEngine.html">MersenneTwisterRandomEngine</a>&gt;()</td></tr>
+<tr class="memitem:a6c0edece004fe5805722529842e996b1"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngineFactory.html">RandomEngineFactory</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Random_8cpp.html#a6c0edece004fe5805722529842e996b1">rngf</a> = <a class="el" href="classRandomEngineFactory.html#a2ff9f26c5903de7372e542812ed2e5a2">RandomEngineFactory::standard</a>()</td></tr>
+<tr class="separator:a6c0edece004fe5805722529842e996b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab831b6483ae52c1dfbc129a9d28bf489"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Random_8cpp.html#ab831b6483ae52c1dfbc129a9d28bf489">grng</a> = <a class="el" href="Random_8cpp.html#a6c0edece004fe5805722529842e996b1">rngf</a>-&gt;createEngine(<a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6a13626f78f86e43da70c953fabd8bd492">RANDOM_ENGINE_MERSENNE_TWISTER</a>)</td></tr>
 <tr class="separator:ab831b6483ae52c1dfbc129a9d28bf489"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ad0bfb138641d43568560435d8e8d5c"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Random_8cpp.html#a8ad0bfb138641d43568560435d8e8d5c">vrng</a> = std::make_unique&lt;<a class="el" href="classMersenneTwisterRandomEngine.html">MersenneTwisterRandomEngine</a>&gt;()</td></tr>
+<tr class="memitem:a8ad0bfb138641d43568560435d8e8d5c"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Random_8cpp.html#a8ad0bfb138641d43568560435d8e8d5c">vrng</a> = <a class="el" href="Random_8cpp.html#a6c0edece004fe5805722529842e996b1">rngf</a>-&gt;createEngine(<a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6a13626f78f86e43da70c953fabd8bd492">RANDOM_ENGINE_MERSENNE_TWISTER</a>)</td></tr>
 <tr class="separator:a8ad0bfb138641d43568560435d8e8d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -96,11 +97,26 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRandomEngine.html">RandomEngine</a>&gt; grng = std::make_unique&lt;<a class="el" href="classMersenneTwisterRandomEngine.html">MersenneTwisterRandomEngine</a>&gt;()</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRandomEngine.html">RandomEngine</a>&gt; grng = <a class="el" href="Random_8cpp.html#a6c0edece004fe5805722529842e996b1">rngf</a>-&gt;createEngine(<a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6a13626f78f86e43da70c953fabd8bd492">RANDOM_ENGINE_MERSENNE_TWISTER</a>)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p ><code>grng</code> stands for <code>game random number generator</code>. This is the random number engine that should be used for everything that affects gameplay. </p>
+
+</div>
+</div>
+<a id="a6c0edece004fe5805722529842e996b1" name="a6c0edece004fe5805722529842e996b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c0edece004fe5805722529842e996b1">&#9670;&#160;</a></span>rngf</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRandomEngineFactory.html">RandomEngineFactory</a>&gt; rngf = <a class="el" href="classRandomEngineFactory.html#a2ff9f26c5903de7372e542812ed2e5a2">RandomEngineFactory::standard</a>()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >When game engine needs to construct a random engine, it calls into <code>rngf</code>. This is mainly used for trace recording and playback, random engines aren't reconstructed during normal gameplay. </p>
 
 </div>
 </div>
@@ -111,7 +127,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRandomEngine.html">RandomEngine</a>&gt; vrng = std::make_unique&lt;<a class="el" href="classMersenneTwisterRandomEngine.html">MersenneTwisterRandomEngine</a>&gt;()</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRandomEngine.html">RandomEngine</a>&gt; vrng = <a class="el" href="Random_8cpp.html#a6c0edece004fe5805722529842e996b1">rngf</a>-&gt;createEngine(<a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6a13626f78f86e43da70c953fabd8bd492">RANDOM_ENGINE_MERSENNE_TWISTER</a>)</td>
         </tr>
       </table>
 </div><div class="memdoc">
