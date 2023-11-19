@@ -36,7 +36,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
     if (uSpriteID <= pSpriteSFrames.size()) {
         if (uSpriteID >= 0) {
-            uint iter_uSpriteID = uSpriteID;
+            unsigned iter_uSpriteID = uSpriteID;
             //if (iter_uSpriteID == 603) assert(false);
 
             int uFlags = pSpriteSFrames[iter_uSpriteID].uFlags;
@@ -51,10 +51,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].texture_name);
                         if (sprite == nullptr)
                             logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
-                        for (uint i = 0; i < 8; ++i)
+                        for (unsigned i = 0; i < 8; ++i)
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
                     } else if (uFlags & 0x10000) {
-                        for (uint i = 0; i < 8; ++i) {
+                        for (unsigned i = 0; i < 8; ++i) {
                             switch (i) {
                                 case 3:
                                 case 4:
@@ -78,7 +78,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         }
 
                     } else if (uFlags & 0x40) {  // part of monster fidgeting seq
-                        for (uint i = 0; i < 8; ++i) {
+                        for (unsigned i = 0; i < 8; ++i) {
                             switch (i) {
                                 case 0:
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "0";
@@ -109,7 +109,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
                         }
                     } else {
-                        for (uint i = 0; i < 8; ++i) {
+                        for (unsigned i = 0; i < 8; ++i) {
                             if (((0x0100 << i) & pSpriteSFrames[iter_uSpriteID].uFlags)) {  // mirrors
                                 switch (i) {
                                     case 1:

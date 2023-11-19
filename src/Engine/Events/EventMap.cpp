@@ -107,7 +107,7 @@ std::string EventMap::hint(int eventId) const {
         }
         if (mouseOverFound && ir.type == EVENT_SpeakInHouse) {
             if (buildingTable.indices().contains(ir.data.house_id)) {
-                result = buildingTable[ir.data.house_id].pName;
+                result = buildingTable[ir.data.house_id].name;
             }
             break;
         }

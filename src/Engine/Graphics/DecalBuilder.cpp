@@ -149,7 +149,7 @@ bool DecalBuilder::Build_Decal_Geometry(
     decal->pVertices[3].v = 0.0;
 
     // adjust to plane dist
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         double dotdist = FacetNormals->Normal.x * (double)decal->pVertices[i].vWorldPosition.x +
             FacetNormals->Normal.y * (double)decal->pVertices[i].vWorldPosition.y +
             FacetNormals->Normal.z * (double)decal->pVertices[i].vWorldPosition.z + FacetNormals->dist;
@@ -190,7 +190,7 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (pFace->Indoor_sky() || pFace->isFluid()) return true;
-    for (uint i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
+    for (unsigned i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
         Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
         if (pFace->pBounding.intersectsCube(pBloodsplat->pos, pBloodsplat->radius)) {
             double dotdist = dot(pFace->facePlane.normal, pBloodsplat->pos) + pFace->facePlane.dist;
@@ -269,7 +269,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(TILE_DESC_FLAGS terrainFlags, Vec3f 
 
 //----- (0049C2CD) --------------------------------------------------------
 void DecalBuilder::DrawDecals(float z_bias) {
-    for (uint i = 0; i < DecalsCount; ++i)
+    for (unsigned i = 0; i < DecalsCount; ++i)
         render->DrawDecal(&Decals[i], z_bias);
 }
 
@@ -291,5 +291,5 @@ void DecalBuilder::DrawDecalDebugOutlines() {
 //----- (0040E4C2) --------------------------------------------------------
 void Decal::Decal_base_ctor() {
     uNumVertices = -1;
-    for (uint i = 0; i < 64; ++i) pVertices[i].flt_2C = 0.0f;
+    for (unsigned i = 0; i < 64; ++i) pVertices[i].flt_2C = 0.0f;
 }

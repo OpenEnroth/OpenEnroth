@@ -29,7 +29,7 @@ void DrawLightsDebugOutlines(
     //            this->StationaryLights[i].NumVertices, colorTable.Red.C32(), 0.0f);
     //}
     //if (bit_one_for_list1__bit_two_for_list2 & 2) {
-    //    for (uint i = 0; i < this->MobileLightsCount; ++i)
+    //    for (unsigned i = 0; i < this->MobileLightsCount; ++i)
     //        pCamera3D->debug_outline_sw(
     //            this->MobileLights[i].pVertices,
     //            this->MobileLights[i].NumVertices, colorTable.Mahogany.C32(), 0.00019999999f);
@@ -113,7 +113,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     unsigned int approx_distance;
 
     // mobile lights
-    for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
+    for (unsigned i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         MobileLight *p = &pMobileLightsStack->pLights[i];
         light_radius = p->uRadius;
 
@@ -136,7 +136,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
-        for (uint i = 0; i < pSector->uNumLights; ++i) {
+        for (unsigned i = 0; i < pSector->uNumLights; ++i) {
             BLVLight *this_light = &pIndoor->pLights[pSector->pLights[i]];
             light_radius = this_light->uRadius;
 
@@ -158,7 +158,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     }
 
     // stationary lights
-    for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+    for (unsigned i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
         StationaryLight *p = &pStationaryLightsStack->pLights[i];
         light_radius = p->uRadius;
 

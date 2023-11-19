@@ -126,7 +126,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         onMapLeave();
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
-        pCurrentMapName = pMapStats->pInfos[townPortalList[townId].mapInfoID].pFilename;
+        pCurrentMapName = pMapStats->pInfos[townPortalList[townId].mapInfoID].fileName;
         engine->_teleportPoint.setTeleportTarget(townPortalList[townId].pos, townPortalList[townId].viewYaw, townPortalList[townId].viewPitch, 0);
         Actor::InitializeActors();
     }
@@ -166,5 +166,5 @@ void GUIWindow_TownPortalBook::hintTown(int townId) {
         return;
     }
 
-    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, pMapStats->pInfos[townPortalList[townId].mapInfoID].pName);
+    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, pMapStats->pInfos[townPortalList[townId].mapInfoID].name);
 }

@@ -1010,10 +1010,10 @@ int Character::GetActualLuck() const {
 int Character::GetActualAttribute(CharacterAttributeType attrId,
                                unsigned short Character::*attrValue,
                                unsigned short Character::*attrBonus) const {
-    uint uActualAge = this->sAgeModifier + GetBaseAge();
-    uint uAgeingMultiplier = 100;
+    unsigned uActualAge = this->sAgeModifier + GetBaseAge();
+    unsigned uAgeingMultiplier = 100;
 
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         if (uActualAge >=
             pAgeingTable[i])  // is the character old enough to need attrib adjust
             uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
@@ -1021,7 +1021,7 @@ int Character::GetActualAttribute(CharacterAttributeType attrId,
             break;
     }
 
-    uchar uConditionMult = pConditionAttributeModifier
+    int uConditionMult = pConditionAttributeModifier
         [attrId][std::to_underlying(GetMajorConditionIdx())];  // weak from disease or poison ect
     int magicBonus = GetMagicalBonus(attrId);
     int itemBonus = GetItemsBonus(attrId);
@@ -1437,7 +1437,7 @@ bool Character::IsUnarmed() const {
 
 //----- (0048D6AA) --------------------------------------------------------
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
-    uint i = pEquipment.pIndices[uEquipIndex];
+    unsigned i = pEquipment.pIndices[uEquipIndex];
     if (i)
         return !pOwnItems[i - 1].IsBroken();
     else
@@ -1526,7 +1526,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
 
     CombinedSkillValue stealingSkill = this->getActualSkillValue(CHARACTER_SKILL_STEALING);
     int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealingSkill.level() * StealingMasteryBonuses[stealingSkill.mastery()];
-    int fineIfFailed = actroPtr->monsterInfo.uLevel + 100 * (_steal_perm + reputation);
+    int fineIfFailed = actroPtr->monsterInfo.level + 100 * (_steal_perm + reputation);
 
     if (grng->random(100) < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
@@ -2003,7 +2003,7 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 //----- (0048E1B5) --------------------------------------------------------
 int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     const ItemGen *weapon = nullptr;
-    uint weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
+    unsigned weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
     if (bRangedAttack) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
         weapon = GetBowItem();
@@ -2019,13 +2019,13 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         }
     }
 
-    uint shield_recovery = 0;
+    unsigned shield_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
         if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
             CharacterSkillType skill_type = GetOffHandItem()->GetPlayerSkillType();
-            uint shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
+            unsigned shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
-            shield_recovery = (uint)(shield_base_recovery * multiplier);
+            shield_recovery = (unsigned)(shield_base_recovery * multiplier);
         } else {
             if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery) {
                 weapon = GetOffHandItem();
@@ -2034,10 +2034,10 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         }
     }
 
-    uint armour_recovery = 0;
+    unsigned armour_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_ARMOUR)) {
         CharacterSkillType armour_skill_type = GetArmorItem()->GetPlayerSkillType();
-        uint base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
+        unsigned base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
         if (armour_skill_type == CHARACTER_SKILL_LEATHER) {
@@ -2051,12 +2051,12 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
-        armour_recovery = (uint)(base_armour_recovery * multiplier);
+        armour_recovery = (unsigned)(base_armour_recovery * multiplier);
     }
 
-    uint player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed());
+    unsigned player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed());
 
-    uint sword_axe_bow_recovery_reduction = 0;
+    unsigned sword_axe_bow_recovery_reduction = 0;
     if (weapon != nullptr) {
         CombinedSkillValue weaponSkill = getActualSkillValue(weapon->GetPlayerSkillType());
         if (weaponSkill.level() > 0 &&
@@ -2072,7 +2072,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     bool shooting_laser = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
     assert(!shooting_laser || !bRangedAttack); // For blasters we expect bRangedAttack == false.
 
-    uint armsmaster_recovery_reduction = 0;
+    unsigned armsmaster_recovery_reduction = 0;
     if (!bRangedAttack && !shooting_laser) {
         CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
@@ -2082,11 +2082,11 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         }
     }
 
-    uint hasteRecoveryReduction = 0;
+    unsigned hasteRecoveryReduction = 0;
     if (pCharacterBuffs[CHARACTER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
 
-    uint weapon_enchantment_recovery_reduction = 0;
+    unsigned weapon_enchantment_recovery_reduction = 0;
     if (weapon != nullptr) {
         if (weapon->special_enchantment == ITEM_ENCHANTMENT_SWIFT ||
             weapon->special_enchantment == ITEM_ENCHANTMENT_OF_DARKNESS ||
@@ -2100,7 +2100,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
-    uint minRecovery;
+    unsigned minRecovery;
     if (shooting_laser) {
         minRecovery = engine->config->gameplay.MinRecoveryBlasters.value();
     } else if (bRangedAttack) {
@@ -3325,8 +3325,8 @@ void Character::Reset(CharacterClass cls) {
 
     memset(&pEquipment, 0, sizeof(CharacterEquipment));
     pInventoryMatrix.fill(0);
-    for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-    for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
+    for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
+    for (unsigned i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     health = GetMaxHealth();
     mana = GetMaxMana();
@@ -6346,7 +6346,7 @@ bool Character::hasUnderwaterSuitEquipped() {
 
 bool Character::hasItem(ItemId uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
-        for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
+        for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
                 if (this
                         ->pInventoryItemList[this->pInventoryMatrix[i] - 1]
@@ -6480,17 +6480,17 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         DamageType damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
-                damageType = actorPtr->monsterInfo.uAttack1Type;
+                damageType = actorPtr->monsterInfo.attack1Type;
                 break;
             case ABILITY_ATTACK2:
-                damageType = actorPtr->monsterInfo.uAttack2Type;
+                damageType = actorPtr->monsterInfo.attack2Type;
                 break;
             case ABILITY_SPELL1:
-                spellId = actorPtr->monsterInfo.uSpell1ID;
+                spellId = actorPtr->monsterInfo.spell1Id;
                 damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPELL2:
-                spellId = actorPtr->monsterInfo.uSpell2ID;
+                spellId = actorPtr->monsterInfo.spell2Id;
                 damageType = pSpellStats->pInfos[spellId].damageType;
                 break;
             case ABILITY_SPECIAL:
@@ -6521,13 +6521,13 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
                         Actor::AggroSurroundingPeasants(uActorID, 1);
-                        if (actorPtr->monsterInfo.uExp)
-                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.uID].uExp);
+                        if (actorPtr->monsterInfo.exp)
+                            pParty->GivePartyExp(pMonsterStats->infos[actorPtr->monsterInfo.id].exp);
 
                         // kill speech
                         CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                         if (vrng->random(100) < 20) {
-                            speechToPlay = actorPtr->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+                            speechToPlay = actorPtr->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                         }
                         playerPtr->playReaction(speechToPlay);
                     }
@@ -6536,9 +6536,9 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
         }
 
         // special attack trigger
-        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
-            grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
-            playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
+        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE &&
+            grng->random(100) < actorPtr->monsterInfo.level * actorPtr->monsterInfo.specialAttackLevel) {
+            playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.specialAttackType, actorPtr);
         }
 
         // add recovery after being hit
@@ -6654,17 +6654,17 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             DamageType damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
-                    damageType = actorPtr->monsterInfo.uAttack1Type;
+                    damageType = actorPtr->monsterInfo.attack1Type;
                     break;
                 case ABILITY_ATTACK2:
-                    damageType = actorPtr->monsterInfo.uAttack2Type;
+                    damageType = actorPtr->monsterInfo.attack2Type;
                     break;
                 case ABILITY_SPELL1:
-                    spellId = actorPtr->monsterInfo.uSpell1ID;
+                    spellId = actorPtr->monsterInfo.spell1Id;
                     damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPELL2:
-                    spellId = actorPtr->monsterInfo.uSpell2ID;
+                    spellId = actorPtr->monsterInfo.spell2Id;
                     damageType = pSpellStats->pInfos[spellId].damageType;
                     break;
                 case ABILITY_SPECIAL:
@@ -6691,12 +6691,12 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                             Actor::Die(uActorID);
                             Actor::ApplyFineForKillingPeasant(uActorID);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
-                            if (actorPtr->monsterInfo.uExp)
-                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.uID].uExp);
+                            if (actorPtr->monsterInfo.exp)
+                                pParty->GivePartyExp(pMonsterStats->infos[actorPtr->monsterInfo.id].exp);
 
                             CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                             if (vrng->random(100) < 20) {
-                                speechToPlay = actorPtr->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+                                speechToPlay = actorPtr->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                             }
                             playerPtr->playReaction(speechToPlay);
                         }
@@ -6706,9 +6706,9 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
 
             // special attack trigger
             if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.value() &&
-                actorPtr->monsterInfo.uSpecialAttackType != SPECIAL_ATTACK_NONE &&
-                grng->random(100) < actorPtr->monsterInfo.uLevel * actorPtr->monsterInfo.uSpecialAttackLevel) {
-                playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
+                actorPtr->monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE &&
+                grng->random(100) < actorPtr->monsterInfo.level * actorPtr->monsterInfo.specialAttackLevel) {
+                playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.specialAttackType, actorPtr);
             }
 
             // set recovery after hit
@@ -7048,7 +7048,7 @@ int Character::getCharacterIndex() {
 
 //----- (004272F5) --------------------------------------------------------
 bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod) {  // PS - RETURN IF ATTACK WILL HIT
-    int naturalArmor = pActor->monsterInfo.uAC;  // actor usual armour
+    int naturalArmor = pActor->monsterInfo.ac;  // actor usual armour
     int armorBuff = 0;
 
     if (pActor->buffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC]
@@ -7480,8 +7480,8 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
 Character::Character() {
     memset(&pEquipment, 0, sizeof(CharacterEquipment));
     pInventoryMatrix.fill(0);
-    for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-    for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
+    for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
+    for (unsigned i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     for (auto &buf : pCharacterBuffs) {
         buf.Reset();

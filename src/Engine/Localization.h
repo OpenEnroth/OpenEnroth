@@ -12,6 +12,7 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Format.h"
 
+// TODO(captainurist): #enum
 #define LSTR_AC                               0   // "AC"
 #define LSTR_ACCURACY                         1   // "Accuracy"
 #define LSTR_AFRAID                           4   // "Afraid"

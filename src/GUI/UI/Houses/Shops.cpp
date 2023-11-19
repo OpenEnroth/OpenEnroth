@@ -533,7 +533,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
-    for (uint i = 0; i < 12; ++i) {
+    for (unsigned i = 0; i < 12; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
         int itemx, itemy;
 
@@ -1100,7 +1100,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int stealDifficulty = 0;
             int fine;
             if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
-                stealDifficulty = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]._steal_perm;
+                stealDifficulty = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].baseStealingFine;
             }
             int partyReputation = pParty->GetPartyReputation();
             if (isStealingModeActive()) {

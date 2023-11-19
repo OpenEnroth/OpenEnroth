@@ -855,8 +855,8 @@ void armageddonProgress() {
                 Actor::AI_Stun(actor.id, Pid::character(0), 0);
             } else {
                 Actor::Die(actor.id);
-                if (actor.monsterInfo.uExp) {
-                    pParty->GivePartyExp(pMonsterStats->pInfos[actor.monsterInfo.uID].uExp);
+                if (actor.monsterInfo.exp) {
+                    pParty->GivePartyExp(pMonsterStats->infos[actor.monsterInfo.id].exp);
                 }
             }
         }

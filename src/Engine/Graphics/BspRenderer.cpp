@@ -62,7 +62,7 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
     static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F7AA08[64];
     static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F79E08[64];
 
-    for (uint k = 0; k < pFace->uNumVertices; ++k) {
+    for (unsigned k = 0; k < pFace->uNumVertices; ++k) {
         static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
         static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
         static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
@@ -115,9 +115,9 @@ void BspRenderer::MakeVisibleSectorList() {
 
     // TODO: this is actually n^2, might make sense to rewrite properly.
 
-    for (uint i = 0; i < num_nodes; ++i) {
+    for (unsigned i = 0; i < num_nodes; ++i) {
         onlist = false;
-        for (uint j = 0; j < uNumVisibleNotEmptySectors; j++) {
+        for (unsigned j = 0; j < uNumVisibleNotEmptySectors; j++) {
             if (pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == nodes[i].uSectorID) {
                 onlist = true;
                 break;
@@ -166,7 +166,7 @@ void PrepareBspRenderList_BLV() {
 void AddBspNodeToRenderList(int node_id) {
     BLVSector *pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
 
-    for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
+    for (unsigned i = 0; i < pSector->uNumNonBSPFaces; ++i)
         pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);  // рекурсия\recursion
 
     if (pSector->field_0 & 0x10) {

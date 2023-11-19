@@ -142,7 +142,7 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
 }
 
 std::string mapIdEnumName(const MapInfo &mapInfo) {
-    std::string result = toUpperCaseEnum(mapInfo.pName);
+    std::string result = toUpperCaseEnum(mapInfo.name);
     if (result.starts_with("THE_"))
         result = result.substr(4);
     return result;
@@ -164,7 +164,7 @@ int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
 
 const MapInfo &mapInfoByFileName(const MapStats &mapStats, const std::string &fileName) {
     auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-        return toLower(mapInfo.pFilename) == toLower(fileName);
+        return toLower(mapInfo.fileName) == toLower(fileName);
     });
     if (pos == mapStats.pInfos.end())
         throw Exception("Unrecognized map '{}'", fileName);
@@ -236,16 +236,16 @@ int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
             map.insert(i, "", fmt::format("Used in MAP_{} but invalid, hmm...", mapName));
         } else if (desc.uType == BUILDING_INVALID) {
             map.insert(i, "", "Unused.");
-        } else if (!hasMap && !desc.pName.empty()) {
-            map.insert(i, "", fmt::format("Unused {} named \"{}\".", toString(desc.uType), desc.pName));
+        } else if (!hasMap && !desc.name.empty()) {
+            map.insert(i, "", fmt::format("Unused {} named \"{}\".", toString(desc.uType), desc.name));
         } else if (!hasMap) {
             map.insert(i, "", "Unused.");
-        } else if (toUpperCaseEnum(desc.pName) == fmt::format("HOUSE_{}", std::to_underlying(i))) {
-            map.insert(i, "", fmt::format("Used in MAP_{}, named \"{}\", looks totally like a placeholder...", mapName, desc.pName));
+        } else if (toUpperCaseEnum(desc.name) == fmt::format("HOUSE_{}", std::to_underlying(i))) {
+            map.insert(i, "", fmt::format("Used in MAP_{}, named \"{}\", looks totally like a placeholder...", mapName, desc.name));
         } else if (desc.uType == BUILDING_HOUSE || desc.uType == BUILDING_MERCENARY_GUILD) {
-            map.insert(i, fmt::format("{}_{}", mapName, toUpperCaseEnum(desc.pName)), "");
+            map.insert(i, fmt::format("{}_{}", mapName, toUpperCaseEnum(desc.name)), "");
         } else {
-            map.insert(i, fmt::format("{}_{}", toString(desc.uType), mapName), fmt::format("\"{}\".", trim(desc.pName)));
+            map.insert(i, fmt::format("{}_{}", toString(desc.uType), mapName), fmt::format("\"{}\".", trim(desc.name)));
         }
     }
 
@@ -288,11 +288,11 @@ int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceMan
     map.insert(MONSTER_INVALID, "INVALID", "");
 
     for (const MonsterId i : allMonsters()) {
-        const MonsterDesc &desc = pMonsterList->pMonsters[i];
-        const MonsterInfo &info = monsterStats.pInfos[i];
-        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.pMonsterName));
+        const MonsterDesc &desc = pMonsterList->monsters[i];
+        const MonsterInfo &info = monsterStats.infos[i];
+        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.monsterName));
 
-        std::string comment = info.pName;
+        std::string comment = info.name;
         if (comment == "peasant")
             comment = "Peasant";
         if (!comment.empty())
@@ -328,8 +328,8 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
         if (++counter % 3 != 1)
             continue;
 
-        const MonsterDesc &desc = pMonsterList->pMonsters[i];
-        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.pMonsterName));
+        const MonsterDesc &desc = pMonsterList->monsters[i];
+        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.monsterName));
 
         map.insert(monsterTypeForMonsterId(i), enumName, "");
     }
@@ -395,8 +395,8 @@ int runMusicCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
 
     std::map<MusicId, std::vector<std::string>> mapNamesByMusicId, mapEnumNamesByMusicId;
     for (const MapInfo &info : mapStats.pInfos) {
-        mapNamesByMusicId[info.uRedbookTrackID].push_back(info.pName);
-        mapEnumNamesByMusicId[info.uRedbookTrackID].push_back(mapIdEnumName(info));
+        mapNamesByMusicId[info.musicId].push_back(info.name);
+        mapEnumNamesByMusicId[info.musicId].push_back(mapIdEnumName(info));
     }
 
     CodeGenMap map;

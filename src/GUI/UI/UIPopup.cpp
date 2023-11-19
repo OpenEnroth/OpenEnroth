@@ -239,9 +239,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
     uNumTiles = uWidth / parchment_width;
     if (uWidth % parchment_width) ++uNumTiles;
     coord_y = uY;
-    for (uint j = 0; j <= uHeight / parchment_height; j++) {
+    for (unsigned j = 0; j <= uHeight / parchment_height; j++) {
         coord_x = uX - parchment_width;
-        for (uint i = uNumTiles + 1; i; --i) {
+        for (unsigned i = uNumTiles + 1; i; --i) {
             coord_x += parchment_width;
             render->DrawTextureNew(coord_x / renwidth, coord_y / renheight,
                                    parchment);
@@ -644,10 +644,10 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     static Actor pMonsterInfoUI_Doll;
 
-    int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(pActors[uActorID].monsterInfo.uID)] - 40;
+    int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(pActors[uActorID].monsterInfo.id)] - 40;
 
     uint16_t actionLen = 0;
-    if (pActors[uActorID].monsterInfo.uID == pMonsterInfoUI_Doll.monsterInfo.uID) {
+    if (pActors[uActorID].monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
         actionLen = pMonsterInfoUI_Doll.currentActionLength;
     } else {
         // copy actor info if different
@@ -667,7 +667,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-            if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.uID) && vrng->random(30) < 100)
+            if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
             pMonsterInfoUI_Doll.currentActionLength =
                 8 *
@@ -730,16 +730,16 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
             if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
-                if (skill_points + 10 >= pActors[uActorID].monsterInfo.uLevel) {
+                if (skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
                     normal_level = true;
                 }
             } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
-                if (2 * skill_points + 10 >= pActors[uActorID].monsterInfo.uLevel) {
+                if (2 * skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                 }
             } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
-                if (3 * skill_points + 10 >= pActors[uActorID].monsterInfo.uLevel) {
+                if (3 * skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
@@ -759,7 +759,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
             CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
-                if (pActors[uActorID].monsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
+                if (pActors[uActorID].monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
                     speech = SPEECH_ID_MONSTER_STRONG;
                 else
                     speech = SPEECH_ID_MONSTER_WEAK;
@@ -891,8 +891,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
     std::string hpStr, acStr;
     if (normal_level) {
-        hpStr = fmt::format("{}", pActors[uActorID].monsterInfo.uHP);
-        acStr = fmt::format("{}", pActors[uActorID].monsterInfo.uAC);
+        hpStr = fmt::format("{}", pActors[uActorID].monsterInfo.hp);
+        acStr = fmt::format("{}", pActors[uActorID].monsterInfo.ac);
     } else {
         hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
@@ -919,12 +919,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
     std::string attackStr, damageStr;
     if (expert_level) {
-        attackStr = attackTypes[pActors[uActorID].monsterInfo.uAttack1Type];
-        if (pActors[uActorID].monsterInfo.uAttack1DamageBonus) {
-            damageStr = fmt::format("{}d{}+{}", pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].monsterInfo.uAttack1DamageDiceSides,
-                                    pActors[uActorID].monsterInfo.uAttack1DamageBonus);
+        attackStr = attackTypes[pActors[uActorID].monsterInfo.attack1Type];
+        if (pActors[uActorID].monsterInfo.attack1DamageBonus) {
+            damageStr = fmt::format("{}d{}+{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides,
+                                    pActors[uActorID].monsterInfo.attack1DamageBonus);
         } else {
-            damageStr = fmt::format("{}d{}", pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].monsterInfo.uAttack1DamageDiceSides);
+            damageStr = fmt::format("{}d{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides);
         }
     } else {
         attackStr = damageStr = localization->GetString(LSTR_UNKNOWN_VALUE);
@@ -939,17 +939,17 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     std::string spellTitleStr = localization->GetString(LSTR_SPELL);
     std::string spell1Str, spell2Str;
     if (master_level) {
-        if (pActors[uActorID].monsterInfo.uSpell1ID == SPELL_NONE && pActors[uActorID].monsterInfo.uSpell2ID == SPELL_NONE) {
+        if (pActors[uActorID].monsterInfo.spell1Id == SPELL_NONE && pActors[uActorID].monsterInfo.spell2Id == SPELL_NONE) {
             spell1Str = localization->GetString(LSTR_NONE);
         }
-        if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE && pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE) {
+        if (pActors[uActorID].monsterInfo.spell1Id != SPELL_NONE && pActors[uActorID].monsterInfo.spell2Id != SPELL_NONE) {
             spellTitleStr = localization->GetString(LSTR_SPELLS);
         }
-        if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE) {
-            spell1Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell1ID].pShortName;
+        if (pActors[uActorID].monsterInfo.spell1Id != SPELL_NONE) {
+            spell1Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.spell1Id].pShortName;
         }
-        if (pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE) {
-            spell2Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell2ID].pShortName;
+        if (pActors[uActorID].monsterInfo.spell2Id != SPELL_NONE) {
+            spell2Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.spell2Id].pShortName;
         }
     } else {
         spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
@@ -977,16 +977,16 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     };
 
     std::array<int, 10> resValues = {
-        pActors[uActorID].monsterInfo.uResFire,
-        pActors[uActorID].monsterInfo.uResAir,
-        pActors[uActorID].monsterInfo.uResWater,
-        pActors[uActorID].monsterInfo.uResEarth,
-        pActors[uActorID].monsterInfo.uResSpirit,
-        pActors[uActorID].monsterInfo.uResMind,
-        pActors[uActorID].monsterInfo.uResBody,
-        pActors[uActorID].monsterInfo.uResLight,
-        pActors[uActorID].monsterInfo.uResDark,
-        pActors[uActorID].monsterInfo.uResPhysical, // Physical & Dark were switched, was a bug?
+        pActors[uActorID].monsterInfo.resFire,
+        pActors[uActorID].monsterInfo.resAir,
+        pActors[uActorID].monsterInfo.resWater,
+        pActors[uActorID].monsterInfo.resEarth,
+        pActors[uActorID].monsterInfo.resSpirit,
+        pActors[uActorID].monsterInfo.resMind,
+        pActors[uActorID].monsterInfo.resBody,
+        pActors[uActorID].monsterInfo.resLight,
+        pActors[uActorID].monsterInfo.resDark,
+        pActors[uActorID].monsterInfo.resPhysical, // Physical & Dark were switched, was a bug?
     };
 
     pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
@@ -1643,7 +1643,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
     Character *player = &pParty->pCharacters[characterIndex];
 
-    uint numActivePlayerBuffs = 0;
+    unsigned numActivePlayerBuffs = 0;
     for (const SpellBuff &buff : player->pCharacterBuffs)
         if (buff.Active())
             ++numActivePlayerBuffs;

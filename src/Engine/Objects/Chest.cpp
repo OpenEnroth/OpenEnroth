@@ -62,7 +62,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
     flag_shout = false;
     MapId pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (chest->Trapped() && pMapID != MAP_INVALID) {
-        if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[pMapID].LockX5) {
+        if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[pMapID].disarmDifficulty) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
             pSpriteID[2] = SPRITE_TRAP_COLD;
@@ -553,7 +553,7 @@ void GenerateItemsInChest() {
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ItemTreasureLevel resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(randomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));
+                    RemapTreasureLevel(randomItemTreasureLevel(currItem->uItemID), currMapInfo->mapTreasureLevel));
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_7) {
                     for (int k = 0; k < additionaItemCount; k++) {
                         int whatToGenerateProb = grng->random(100);

@@ -209,8 +209,8 @@ void GUIWindow_GameMenu::Update() {
 
 //----- (00491CB5) --------------------------------------------------------
 void GameUI_LoadPlayerPortraintsAndVoices() {
-    for (uint i = 0; i < 4; ++i) {
-        for (uint j = 0; j < 56; ++j) {
+    for (unsigned i = 0; i < 4; ++i) {
+        for (unsigned j = 0; j < 56; ++j) {
             game_ui_player_faces[i][j] = assets->getImage_ColorKey(
                 fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1));
         }
@@ -222,7 +222,7 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
     /*
         if (SoundSetAction[24][0])
         {
-            for (uint i = 0; i < 4; ++i)
+            for (unsigned i = 0; i < 4; ++i)
             {
                 pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 *
        pParty->pCharacters[i].uVoiceID) + 4998, 0); pSoundList->LoadSound(2 *
@@ -234,7 +234,7 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
 
 //----- (00491DE7) --------------------------------------------------------
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id) {  // the transition from the zombies to the normal state
-    for (uint i = 0; i <= 55; ++i) {
+    for (unsigned i = 0; i <= 55; ++i) {
         auto filename =
             fmt::format("{}{:02}", pPlayerPortraitsNames[face_id], i + 1);
         game_ui_player_faces[player_id][i] =
@@ -464,8 +464,8 @@ OptionsMenuSkin::OptionsMenuSkin()
       uTextureID_ShowDamage(0),
       uTextureID_TurnSpeed(),
       uTextureID_SoundLevels() {
-    for (uint i = 0; i < 3; ++i) uTextureID_TurnSpeed[i] = 0;
-    for (uint i = 0; i < 10; ++i) uTextureID_SoundLevels[i] = 0;
+    for (unsigned i = 0; i < 3; ++i) uTextureID_TurnSpeed[i] = 0;
+    for (unsigned i = 0; i < 10; ++i) uTextureID_SoundLevels[i] = 0;
 }
 
 void OptionsMenuSkin::Release() {
@@ -478,11 +478,11 @@ void OptionsMenuSkin::Release() {
     }
 
     RELEASE(uTextureID_Background);
-    for (uint i = 0; i < 3; ++i) RELEASE(uTextureID_TurnSpeed[i]);
+    for (unsigned i = 0; i < 3; ++i) RELEASE(uTextureID_TurnSpeed[i]);
     RELEASE(uTextureID_ArrowLeft);
     RELEASE(uTextureID_ArrowRight);
     RELEASE(uTextureID_FlipOnExit);
-    for (uint i = 0; i < 10; ++i) RELEASE(uTextureID_SoundLevels[i]);
+    for (unsigned i = 0; i < 10; ++i) RELEASE(uTextureID_SoundLevels[i]);
     RELEASE(uTextureID_AlwaysRun);
     RELEASE(uTextureID_WalkSound);
     RELEASE(uTextureID_ShowDamage);
@@ -716,7 +716,7 @@ std::string GameUI_GetMinimapHintText() {
         if (pMapID == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
-            result = pMapStats->pInfos[pMapID].pName;
+            result = pMapStats->pInfos[pMapID].name;
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = int_get_vector_length(
@@ -739,7 +739,7 @@ std::string GameUI_GetMinimapHintText() {
         if (pMapID == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
-            result = pMapStats->pInfos[pMapID].pName;
+            result = pMapStats->pInfos[pMapID].name;
         return result;
     }
     return result;
@@ -1063,8 +1063,8 @@ void GameUI_WritePointedObjectStatusString() {
                             break;
                         case 2:  // hovering over portraits
                             if (pButton->uWidth != 0 && pButton->uHeight != 0) {
-                                uint distW = pX - pButton->uX;
-                                uint distY = pY - pButton->uY;
+                                unsigned distW = pX - pButton->uX;
+                                unsigned distY = pY - pButton->uY;
 
                                 double ratioX =
                                     1.0 * (distW * distW) /
@@ -1173,8 +1173,8 @@ void GameUI_WritePointedObjectStatusString() {
                         break;
                     case 2:  // hovering over portraits
                         if (pButton->uWidth != 0 && pButton->uHeight != 0) {
-                            uint distW = pX - pButton->uX;
-                            uint distY = pY - pButton->uY;
+                            unsigned distW = pX - pButton->uX;
+                            unsigned distY = pY - pButton->uY;
 
                             double ratioX = 1.0 * (distW * distW) /
                                             (pButton->uWidth * pButton->uWidth);
@@ -1342,7 +1342,7 @@ void GameUI_DrawPortraits() {
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
             if (pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
-                for (uint i = 0; i < pTurnEngine->pQueue.size(); ++i) {
+                for (unsigned i = 0; i < pTurnEngine->pQueue.size(); ++i) {
                     if (pTurnEngine->pQueue[i].uPackedID.type() != OBJECT_Character)
                         break;
 
@@ -1460,7 +1460,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
                 assert(uWidth == 137 && uHeight == 117);
 
-                ushort MapImgWidth = viewparams->location_minimap->width();
+                int MapImgWidth = viewparams->location_minimap->width();
                 const Color *pMapLod0Line = viewparams->location_minimap->rgba().pixels().data();
                 Color *minitempix = minimaptemp->rgba().pixels().data();
 
@@ -1486,7 +1486,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue);
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
-        for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {
+        for (unsigned i = 0; i < (unsigned)pIndoor->pMapOutlines.size(); ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
 
             if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
@@ -1524,7 +1524,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             }
         }
 
-        for (uint i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
+        for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
             int pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x)) << 16) - uZoom * pParty->pos.x) >> 16);
             int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->pos.y) >> 16);
@@ -1540,7 +1540,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     // draw objects on the minimap
     if (bWizardEyeActive) {
         if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
-            for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+            for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
                 if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
@@ -1576,7 +1576,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
-        for (uint i = 0; i < pActors.size(); ++i) {  // draw actors(отрисовка монстров и нпс)
+        for (unsigned i = 0; i < pActors.size(); ++i) {  // draw actors(отрисовка монстров и нпс)
             if (pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&
                 (pActors[i].aiState == Dead || pActors[i].ActorNearby())) {
@@ -1616,7 +1616,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
-        for (uint i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
+        for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
                 pPoint_X = uCenterX + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
                 pPoint_Y = uCenterY - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
@@ -1641,7 +1641,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     render->EndLines2D();
 
     // draw arrow on the minimap(include. Ritor1)
-    uint arrow_idx;
+    unsigned arrow_idx;
     unsigned int rotate = pParty->_viewYaw & TrigLUT.uDoublePiMask;
     if ((signed int)rotate <= 1920) arrow_idx = 6;
     if ((signed int)rotate < 1664) arrow_idx = 5;
@@ -1967,8 +1967,8 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_ShowStatus_DateTime: {
-            uint currHour = pParty->uCurrentHour;
-            uint uNumSeconds = 1;
+            unsigned currHour = pParty->uCurrentHour;
+            unsigned uNumSeconds = 1;
             if (pParty->uCurrentHour > 12) {
                 if (pParty->uCurrentHour >= 24) uNumSeconds = 0;
                 currHour = (currHour - 12);

@@ -67,7 +67,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
     // v8 = (char *)&a3->y;
     // v18 = (char *)&a3->y;
     // do
-    for (uint j = 0; j < uNumfrust; j++) {
+    for (unsigned j = 0; j < uNumfrust; j++) {
         // v17 = result + 1;
         result = j;
         v9 = &pPortalBounding[(j + 1) % (signed int)uNumfrust];
@@ -117,7 +117,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
                         &static_AE3FA4, &static_AE3FB4))
                 AddVertex(&static_AE33A0, &static_AE3FB4);
 
-            for (uint i = 0; i < static_AE33A0.uNumVertices; ++i) {
+            for (unsigned i = 0; i < static_AE33A0.uNumVertices; ++i) {
                 pVertices2[i].vWorldPosition.x =
                     static_AE33A0.pVertices[i].vWorldPosition.x;
                 pVertices2[i].vWorldPosition.y =
@@ -408,7 +408,7 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
         return true;
     }
 
-    for (uint i = 0; i < uNumVertices; ++i) {
+    for (unsigned i = 0; i < uNumVertices; ++i) {
         v12 = &a1[(i + 1) % uNumVertices];
         if (a1[i].vWorldPosition.x != v12->vWorldPosition.x ||
             a1[i].vWorldPosition.y != v12->vWorldPosition.y ||
@@ -425,7 +425,7 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
             static_sub_4980B9_stru_AE4BEC.z = v14 * pNormalX - v13 * pNormalY;
             if (*pOutNumVertices == 0) return true;
 
-            for (uint j = 0; j < *pOutNumVertices; ++j) {
+            for (unsigned j = 0; j < *pOutNumVertices; ++j) {
                 if (j) {
                     if (DoDecalVertsNeedClipping(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
                                 &static_sub_4980B9_stru_AE4BEC) &&
@@ -449,7 +449,7 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
                         &a1[i], &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
                 AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
 
-            for (uint j = 0; j < static_sub_4980B9_stru_AE3FE8.uNumVertices;
+            for (unsigned j = 0; j < static_sub_4980B9_stru_AE3FE8.uNumVertices;
                  ++j) {
                 pOutVertices[j].vWorldPosition.x =
                     static_sub_4980B9_stru_AE3FE8.pVertices[j].vWorldPosition.x;

@@ -125,7 +125,7 @@ void GUIWindow_Transport::mainDialogue() {
 
         if (routeActive && (transportSchedule[schedule_id].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
             int travel_time = getTravelTimeTransportDays(schedule_id);
-            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].pName));
+            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
             hasActiveRoute = true;
         } else {
             optionsText.push_back("");
@@ -156,9 +156,9 @@ void GUIWindow_Transport::transportDialogue() {
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
+        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].fileName) {
             SaveGame(1, 0);
-            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
+            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].fileName;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;

@@ -59,7 +59,7 @@ void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
 
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
-    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->pName);
+    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->name);
     desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->uPortraitID));
     desc.npc = pNPCInfo;
 
@@ -380,13 +380,13 @@ void selectNPCDialogueOption(DIALOGUE_TYPE option) {
             BuildHireableNpcDialogue();
             dialogue_show_profession_details = false;
         } else {
-            for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
+            for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
+                if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNewNPCData[i].name)
                     pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
             }
-            if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
+            if (iequals(pParty->pHirelings[0].name, speakingNPC->name))
                 pParty->pHirelings[0] = NPCData();
-            else if (iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
+            else if (iequals(pParty->pHirelings[1].name, speakingNPC->name))
                 pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

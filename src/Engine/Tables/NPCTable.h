@@ -37,7 +37,7 @@ struct NPCTopic {
 struct NPCData {  // 4Ch
     inline bool Hired() { return uFlags & NPC_HIRED; }
 
-    std::string pName;               // 0
+    std::string name;               // 0
     unsigned int uPortraitID = 0;  // 4
     NpcFlags uFlags = 0;  // 8
     int fame = 0;                  // c

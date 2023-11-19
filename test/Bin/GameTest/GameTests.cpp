@@ -1172,7 +1172,7 @@ GAME_TEST(Issues, Issue728) {
 GAME_TEST(Issues, Issue730) {
     // Thrown items are throwing a party of their own
     test.playTraceFromTestData("issue_730.mm7", "issue_730.json");
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         EXPECT_EQ(pSpriteObjects[i].vVelocity, Vec3i(0, 0, 0));
     }
 }
@@ -1466,7 +1466,7 @@ GAME_TEST(Issues, Issue872) {
     test.playTraceFromTestData("issue_872.mm7", "issue_872.json");
     FlatHirelings buf;
     buf.Prepare();
-    EXPECT_NE(buf.Get(0)->pName, "Dummy");
+    EXPECT_NE(buf.Get(0)->name, "Dummy");
 }
 
 GAME_TEST(Issues, Issue878) {

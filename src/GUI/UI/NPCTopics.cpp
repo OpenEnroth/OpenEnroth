@@ -325,7 +325,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
 
     std::vector<MonsterId> candidateIds;
     for (MonsterId i : allArenaMonsters()) {
-        if (pMonsterStats->pInfos[i].uLevel >= monsterMinLevel && pMonsterStats->pInfos[i].uLevel <= monsterMaxLevel) {
+        if (pMonsterStats->infos[i].level >= monsterMinLevel && pMonsterStats->infos[i].level <= monsterMaxLevel) {
             candidateIds.push_back(i);
         }
     }
@@ -590,13 +590,13 @@ std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData) {
         return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
       case DIALOGUE_HIRE_FIRE:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->pName);
+            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
         } else {
             return localization->GetString(LSTR_HIRE);
         }
       case DIALOGUE_13_hiring_related:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->pName);
+            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
         } else {
             return localization->GetString(LSTR_JOIN);
         }
@@ -777,7 +777,7 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
         for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
-            if (iequals(pParty->pHirelings[hirelingId].pName, npcData->pName)) {
+            if (iequals(pParty->pHirelings[hirelingId].name, npcData->name)) {
                 break;
             }
         }
@@ -794,14 +794,14 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
         if (npcData->Hired()) {
             if (pNPCStats->uNumNewNPCs > 0) {
                 for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-                    if (pNPCStats->pNewNPCData[i].Hired() && npcData->pName == pNPCStats->pNewNPCData[i].pName) {
+                    if (pNPCStats->pNewNPCData[i].Hired() && npcData->name == pNPCStats->pNewNPCData[i].name) {
                         pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
                     }
                 }
             }
-            if (iequals(pParty->pHirelings[0].pName, npcData->pName)) {
+            if (iequals(pParty->pHirelings[0].name, npcData->name)) {
                 pParty->pHirelings[0] = NPCData();
-            } else if (iequals(pParty->pHirelings[1].pName, npcData->pName)) {
+            } else if (iequals(pParty->pHirelings[1].name, npcData->name)) {
                 pParty->pHirelings[1] = NPCData();
             }
             pParty->hirelingScrollPosition = 0;
@@ -809,7 +809,7 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
-        if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
+        if (!pParty->pHirelings[0].name.empty() && !pParty->pHirelings[1].name.empty()) {
             engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
         } else {
             if (npcData->profession != Burglar) {
@@ -826,12 +826,12 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
                 pParty->TakeGold(pNPCStats->pProfessions[npcData->profession].uHirePrice);
             }
             npcData->uFlags |= NPC_HIRED;
-            if (!pParty->pHirelings[0].pName.empty()) {
+            if (!pParty->pHirelings[0].name.empty()) {
                 pParty->pHirelings[1] = *npcData;
-                pParty->pHireling2Name = npcData->pName;
+                pParty->pHireling2Name = npcData->name;
             } else {
                 pParty->pHirelings[0] = *npcData;
-                pParty->pHireling1Name = npcData->pName;
+                pParty->pHireling1Name = npcData->name;
             }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

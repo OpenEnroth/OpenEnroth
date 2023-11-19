@@ -4,7 +4,6 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/MM7.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Party.h"
 #include "Engine/LodTextureCache.h"
@@ -125,7 +124,7 @@ void RenderBase::DrawSpriteObjects() {
         // view culling
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
-            for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
+            for (unsigned j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
                 if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == object->uSectorID) {
                     onlist = true;
                     break;
@@ -661,7 +660,7 @@ void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diff
     }
 
     float depth = 1000000.0;
-    for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+    for (unsigned i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
         if (a1->field_104[i].z < depth) {
             depth = a1->field_104[i].z;
         }
