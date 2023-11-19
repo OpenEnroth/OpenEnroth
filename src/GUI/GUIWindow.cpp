@@ -1311,7 +1311,7 @@ std::string NameAndTitle(NPCData *npc) {
 
 std::string GetDisplayName(Actor *actor) {
     if (actor->uniqueNameIndex)
-        return pMonsterStats->pUniqueNames[actor->uniqueNameIndex];
+        return pMonsterStats->uniqueNames[actor->uniqueNameIndex];
     else
-        return pMonsterStats->pInfos[actor->monsterInfo.id].name;
+        return pMonsterStats->infos[actor->monsterInfo.id].name;
 }

@@ -173,7 +173,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
     } else {
         // Get prize
         if (pParty->monster_id_for_hunting[house] != MONSTER_INVALID) {
-            int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].level;
+            int bounty = 100 * pMonsterStats->infos[pParty->monster_id_for_hunting[house]].level;
 
             pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
             for (Character &player : pParty->pCharacters) {
@@ -193,6 +193,6 @@ std::string GUIWindow_TownHall::bountyHuntingText() {
     assert(_bountyHuntMonsterId != MONSTER_INVALID);
 
     // TODO(captainurist): what do we do with exceptions inside fmt?
-    std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->pInfos[_bountyHuntMonsterId].name, colorTable.White.tag());
-    return fmt::sprintf(_bountyHuntText, name, 100 * pMonsterStats->pInfos[_bountyHuntMonsterId].level);
+    std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->infos[_bountyHuntMonsterId].name, colorTable.White.tag());
+    return fmt::sprintf(_bountyHuntText, name, 100 * pMonsterStats->infos[_bountyHuntMonsterId].level);
 }

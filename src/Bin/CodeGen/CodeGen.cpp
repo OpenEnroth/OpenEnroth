@@ -288,8 +288,8 @@ int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceMan
     map.insert(MONSTER_INVALID, "INVALID", "");
 
     for (const MonsterId i : allMonsters()) {
-        const MonsterDesc &desc = pMonsterList->pMonsters[i];
-        const MonsterInfo &info = monsterStats.pInfos[i];
+        const MonsterDesc &desc = pMonsterList->monsters[i];
+        const MonsterInfo &info = monsterStats.infos[i];
         std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.monsterName));
 
         std::string comment = info.name;
@@ -328,7 +328,7 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
         if (++counter % 3 != 1)
             continue;
 
-        const MonsterDesc &desc = pMonsterList->pMonsters[i];
+        const MonsterDesc &desc = pMonsterList->monsters[i];
         std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.monsterName));
 
         map.insert(monsterTypeForMonsterId(i), enumName, "");

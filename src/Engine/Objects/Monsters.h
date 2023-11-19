@@ -86,8 +86,8 @@ struct MonsterStats {
     void InitializePlacements(const Blob &placements);
     MonsterId FindMonsterByTextureName(const std::string &Str2);
 
-    IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> pInfos;
-    std::array<std::string, 31> pUniqueNames; // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused.
+    IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> infos;
+    std::array<std::string, 31> uniqueNames; // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused.
 };
 
 struct MonsterDesc {
@@ -104,7 +104,7 @@ struct MonsterDesc {
 struct MonsterList {
     MonsterId GetMonsterIDByName(const std::string &pMonsterName);
 
-    IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> pMonsters;
+    IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> monsters;
 };
 
 extern struct MonsterStats *pMonsterStats;

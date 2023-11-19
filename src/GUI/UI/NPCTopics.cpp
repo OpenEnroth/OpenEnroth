@@ -325,7 +325,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
 
     std::vector<MonsterId> candidateIds;
     for (MonsterId i : allArenaMonsters()) {
-        if (pMonsterStats->pInfos[i].level >= monsterMinLevel && pMonsterStats->pInfos[i].level <= monsterMaxLevel) {
+        if (pMonsterStats->infos[i].level >= monsterMinLevel && pMonsterStats->infos[i].level <= monsterMaxLevel) {
             candidateIds.push_back(i);
         }
     }

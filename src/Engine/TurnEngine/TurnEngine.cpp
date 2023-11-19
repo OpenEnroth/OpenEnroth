@@ -255,7 +255,7 @@ void stru262_TurnBased::AITurnBasedAction() {
                 pActors[i].buffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActors[i].height = pMonsterList->pMonsters[pActors[i].monsterInfo.id].monsterHeight;
+            pActors[i].height = pMonsterList->monsters[pActors[i].monsterInfo.id].monsterHeight;
             pActors[i].buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
@@ -500,7 +500,7 @@ void stru262_TurnBased::_406457(int a2) {
     } else {
         v6 =
             pMonsterStats
-            ->pInfos[pActors[pQueue[a2].uPackedID.id()].monsterInfo.id]
+            ->infos[pActors[pQueue[a2].uPackedID.id()].monsterInfo.id]
             .recoveryTime;
     }
 
@@ -533,7 +533,7 @@ void stru262_TurnBased::SetAIRecoveryTimes() {
             if (monster_ai_state == Standing || monster_ai_state == Fleeing ||
                 monster_ai_state == Fidgeting) {
                 pQueue[i].actor_initiative =
-                    pMonsterStats->pInfos[monster->monsterInfo.id]
+                    pMonsterStats->infos[monster->monsterInfo.id]
                         .recoveryTime;
                 if (monster->buffs[ACTOR_BUFF_SLOWED].Active())
                     pQueue[i].actor_initiative *= 2;

@@ -1426,7 +1426,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->pMonsters[pActors[i].monsterInfo.id].tintColor;  // *((int *)&v35[v36] - 36);
+                            pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                                 flags | 0x100;
@@ -2330,7 +2330,7 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].donebloodsplat) {
             if (pActors[Actor_ITR].aiState == Dead || pActors[Actor_ITR].aiState == Dying) {
                 if (pActors[Actor_ITR].pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[pActors[Actor_ITR].monsterInfo.id].bloodSplatOnDeath) {
+                    if (pMonsterStats->infos[pActors[Actor_ITR].monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = pActors[Actor_ITR].radius * engine->config->graphics.BloodSplatsMultiplier.value();
                             EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);

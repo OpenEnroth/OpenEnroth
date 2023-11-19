@@ -79,10 +79,10 @@ void deserialize(const TriBlob &src, MonsterList *dst) {
         throw Exception("Invalid monster list size, expected {}, got {}", 277, monsters.size());
     monsters.pop_back(); // Last one is unused.
 
-    assert(monsters.size() == dst->pMonsters.size());
-    dst->pMonsters.fill(MonsterDesc());
-    for (size_t i = 0; MonsterId index : dst->pMonsters.indices())
-        dst->pMonsters[index] = monsters[i++];
+    assert(monsters.size() == dst->monsters.size());
+    dst->monsters.fill(MonsterDesc());
+    for (size_t i = 0; MonsterId index : dst->monsters.indices())
+        dst->monsters[index] = monsters[i++];
 }
 
 void deserialize(const TriBlob &src, ObjectList *dst) {

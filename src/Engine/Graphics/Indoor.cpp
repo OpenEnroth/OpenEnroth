@@ -801,7 +801,7 @@ void UpdateActors_BLV() {
         if (!actor.donebloodsplat) {
             if (actor.aiState == Dead || actor.aiState == Dying) {
                 if (actor.pos.z < floorZ + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[actor.monsterInfo.id].bloodSplatOnDeath) {
+                    if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
                             EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);

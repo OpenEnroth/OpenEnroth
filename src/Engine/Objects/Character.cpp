@@ -6522,7 +6522,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                         Actor::ApplyFineForKillingPeasant(uActorID);
                         Actor::AggroSurroundingPeasants(uActorID, 1);
                         if (actorPtr->monsterInfo.exp)
-                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.id].exp);
+                            pParty->GivePartyExp(pMonsterStats->infos[actorPtr->monsterInfo.id].exp);
 
                         // kill speech
                         CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
@@ -6692,7 +6692,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
                             Actor::ApplyFineForKillingPeasant(uActorID);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                             if (actorPtr->monsterInfo.exp)
-                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.id].exp);
+                                pParty->GivePartyExp(pMonsterStats->infos[actorPtr->monsterInfo.id].exp);
 
                             CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                             if (vrng->random(100) < 20) {

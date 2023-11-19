@@ -1117,7 +1117,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         pActors[uActorID].currentActionTime = 0;
         pActors[uActorID].aiState = AttackingMelee;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        v25 = pMonsterStats->pInfos[pActors[uActorID].monsterInfo.id]
+        v25 = pMonsterStats->infos[pActors[uActorID].monsterInfo.id]
                   .recoveryTime;
         if (pActors[uActorID].buffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
         if (!pParty->bTurnBasedModeOn) {
@@ -1350,7 +1350,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged4;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.id].recoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
@@ -1424,7 +1424,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged3;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.id].recoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
@@ -1499,7 +1499,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged2;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.id].recoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
@@ -1570,7 +1570,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged1;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.id].recoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
@@ -2134,7 +2134,7 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
             v10 = HOSTILITY_LONG;
         }
         if (thisActor->monsterInfo.hostilityType != HOSTILITY_FRIENDLY)
-            v10 = pMonsterStats->pInfos[thisActor->monsterInfo.id]
+            v10 = pMonsterStats->infos[thisActor->monsterInfo.id]
                       .hostilityType;
         v11 = _4DF380_hostilityRanges[v10];
         v23 = std::abs(thisActor->pos.x - actor->pos.x);
@@ -2309,8 +2309,8 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     MonsterDesc *v3;  // esi@1
     MonsterInfo *v9;  // [sp+84h] [bp-10h]@1
 
-    v3 = &pMonsterList->pMonsters[monsterInfo.id];
-    v9 = &pMonsterStats->pInfos[monsterInfo.id /*- 1 + 1*/];
+    v3 = &pMonsterList->monsters[monsterInfo.id];
+    v9 = &pMonsterStats->infos[monsterInfo.id /*- 1 + 1*/];
     // v12 = pSpriteIDs;
     // Source = (char *)v3->pSpriteNames;
     // do
@@ -2482,17 +2482,17 @@ void Actor::SummonMinion(int summonerId) {
     if (!actor)
         return;
 
-    v9 = &pMonsterStats->pInfos[summonMonsterBaseType];
+    v9 = &pMonsterStats->infos[summonMonsterBaseType];
     actor->name = v9->name;
     actor->currentHP = v9->hp;
     actor->monsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
-    actor->radius = pMonsterList->pMonsters[summonMonsterBaseType].monsterRadius;
-    actor->height = pMonsterList->pMonsters[summonMonsterBaseType].monsterHeight;
+    actor->radius = pMonsterList->monsters[summonMonsterBaseType].monsterRadius;
+    actor->height = pMonsterList->monsters[summonMonsterBaseType].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.exp = 0;
-    actor->moveSpeed = pMonsterList->pMonsters[summonMonsterBaseType].movementSpeed;
+    actor->moveSpeed = pMonsterList->monsters[summonMonsterBaseType].movementSpeed;
 
     actor->initialPosition.x = v15;
     actor->initialPosition.y = v17;
@@ -2572,7 +2572,7 @@ void Actor::UpdateActorAI() {
 
         // If shrink expired: reset height
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.id].monsterHeight;
+            pActor->height = pMonsterList->monsters[pActor->monsterInfo.id].monsterHeight;
             pActor->buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
@@ -2581,7 +2581,7 @@ void Actor::UpdateActorAI() {
             pActor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
         } else if (pActor->buffs[ACTOR_BUFF_CHARM].Expired()) {
           // Else: reset hostilty
-          pActor->monsterInfo.hostilityType = pMonsterStats->pInfos[pActor->monsterInfo.id].hostilityType;
+          pActor->monsterInfo.hostilityType = pMonsterStats->infos[pActor->monsterInfo.id].hostilityType;
           pActor->buffs[ACTOR_BUFF_CHARM].Reset();
         }
 
@@ -2649,14 +2649,14 @@ void Actor::UpdateActorAI() {
                 pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.id].monsterHeight;
+            pActor->height = pMonsterList->monsters[pActor->monsterInfo.id].monsterHeight;
             pActor->buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
         if (pActor->buffs[ACTOR_BUFF_CHARM].Active()) {
             pActor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
         } else if (pActor->buffs[ACTOR_BUFF_CHARM].Expired()) {
-            pActor->monsterInfo.hostilityType = pMonsterStats->pInfos[pActor->monsterInfo.id].hostilityType;
+            pActor->monsterInfo.hostilityType = pMonsterStats->infos[pActor->monsterInfo.id].hostilityType;
             pActor->buffs[ACTOR_BUFF_CHARM].Reset();
         }
 
@@ -3240,7 +3240,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (pMonster->monsterInfo.exp)
             pParty->GivePartyExp(
-                pMonsterStats->pInfos[pMonster->monsterInfo.id].exp);
+                pMonsterStats->infos[pMonster->monsterInfo.id].exp);
         CharacterSpeech speech = SPEECH_ATTACK_HIT;
         if (vrng->random(100) < 20) {
             speech = pMonster->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
@@ -3295,13 +3295,13 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         v16 = pIndoor->GetSector(pos);
 
-    actor->name = pMonsterStats->pInfos[monster_id].name;
-    actor->currentHP = (short)pMonsterStats->pInfos[monster_id].hp;
-    actor->monsterInfo = pMonsterStats->pInfos[monster_id];
+    actor->name = pMonsterStats->infos[monster_id].name;
+    actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
+    actor->monsterInfo = pMonsterStats->infos[monster_id];
     actor->word_000086_some_monster_id = monster_id;
-    actor->radius = pMonsterList->pMonsters[monster_id].monsterRadius;
-    actor->height = pMonsterList->pMonsters[monster_id].monsterHeight;
-    actor->moveSpeed = pMonsterList->pMonsters[monster_id].movementSpeed;
+    actor->radius = pMonsterList->monsters[monster_id].monsterRadius;
+    actor->height = pMonsterList->monsters[monster_id].monsterHeight;
+    actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
     actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
@@ -4250,16 +4250,16 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     int radius = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     int angle = grng->random(2048);
 
-    actor->name = pMonsterStats->pInfos[uMonsterID].name;
-    actor->currentHP = pMonsterStats->pInfos[uMonsterID].hp;
-    actor->monsterInfo = pMonsterStats->pInfos[uMonsterID];
+    actor->name = pMonsterStats->infos[uMonsterID].name;
+    actor->currentHP = pMonsterStats->infos[uMonsterID].hp;
+    actor->monsterInfo = pMonsterStats->infos[uMonsterID];
     actor->word_000086_some_monster_id = uMonsterID;
-    actor->radius = pMonsterList->pMonsters[uMonsterID].monsterRadius;
-    actor->height = pMonsterList->pMonsters[uMonsterID].monsterHeight;
+    actor->radius = pMonsterList->monsters[uMonsterID].monsterRadius;
+    actor->height = pMonsterList->monsters[uMonsterID].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.exp = 0;
-    actor->moveSpeed = pMonsterList->pMonsters[uMonsterID].movementSpeed;
+    actor->moveSpeed = pMonsterList->monsters[uMonsterID].movementSpeed;
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
@@ -4482,17 +4482,17 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         MonsterId v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
 
-        v27 = &pMonsterList->pMonsters[v50];
+        v27 = &pMonsterList->monsters[v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
         // TODO(captainurist): MONSTER_ANGEL_A is monster #1, why do we even need this check?
         if (v28 == MONSTER_INVALID) v28 = MONSTER_ANGEL_A;
-        Src = &pMonsterStats->pInfos[v28];
+        Src = &pMonsterStats->infos[v28];
         pMonster->name = Src->name;
         pMonster->currentHP = Src->hp;
 
         // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access
 
-        pMonster->monsterInfo = pMonsterStats->pInfos[v28];
+        pMonster->monsterInfo = pMonsterStats->infos[v28];
 
         pMonster->word_000086_some_monster_id = v50;
         pMonster->radius = v27->monsterRadius;
