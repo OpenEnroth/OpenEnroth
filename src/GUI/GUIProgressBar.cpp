@@ -9,10 +9,10 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Random/Random.h"
 
 #include "GUI/GUIWindow.h"
 
-#include "Library/Random/Random.h"
 #include "Utility/IndexedArray.h"
 
 static constexpr IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> ProgressBarResourceByAlignment = {

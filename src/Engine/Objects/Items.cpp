@@ -2,11 +2,11 @@
 
 #include <map>
 #include <string>
-#include <vector>
 #include <unordered_map>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Tables/ItemTable.h"
@@ -16,7 +16,6 @@
 #include "GUI/GUIButton.h"
 
 #include "Utility/MapAccess.h"
-#include "Library/Random/Random.h"
 
 ItemGen *ptr_50C9A4_ItemToEnchant;
 

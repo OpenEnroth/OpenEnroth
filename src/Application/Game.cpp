@@ -49,8 +49,8 @@
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Spells/Spells.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
@@ -61,7 +61,6 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 #include "GUI/UI/Books/CalendarBook.h"
 #include "GUI/UI/Books/JournalBook.h"
@@ -93,7 +92,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Format.h"

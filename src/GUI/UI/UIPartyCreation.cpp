@@ -10,6 +10,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
@@ -25,7 +26,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 using Io::TextInputType;

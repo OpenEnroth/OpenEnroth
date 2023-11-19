@@ -14,6 +14,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -46,7 +47,6 @@
 #include "GUI/UI/UISpell.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Memory/MemSet.h"

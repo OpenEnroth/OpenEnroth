@@ -9,6 +9,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Localization.h"
@@ -20,8 +21,6 @@
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
-#include "Library/Random/Random.h"
 
 static constexpr IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spellbook_texture_filename_suffices = {
     {MAGIC_SCHOOL_FIRE,   "f"},

@@ -8,6 +8,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/AssetsManager.h"
 
@@ -17,7 +18,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Library/Random/Random.h"
 
 #include "Utility/IndexedArray.h"
 

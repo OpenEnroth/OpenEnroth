@@ -13,7 +13,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
@@ -22,9 +21,9 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Random/Random.h"
 
-#include "Library/Random/Random.h"
+#include "Engine/Tables/IconFrameTable.h"
 
 //----- (004A7063) --------------------------------------------------------
 Color ModulateColor(Color diffuse, float multiplier) {

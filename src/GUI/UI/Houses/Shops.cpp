@@ -14,14 +14,12 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
-#include "Engine/Tables/AwardTable.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/ItemTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
@@ -29,8 +27,6 @@
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
-#include "Library/Random/Random.h"
 
 #include "Utility/IndexedArray.h"
 

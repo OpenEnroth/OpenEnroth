@@ -4,7 +4,7 @@
 
 #include "Library/Platform/Proxy/ProxyPlatform.h"
 #include "Library/Platform/Proxy/ProxyOpenGLContext.h"
-#include "Library/Random/RandomEngineEnums.h"
+#include "Engine/Random/RandomEnums.h"
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
 class RandomEngine;

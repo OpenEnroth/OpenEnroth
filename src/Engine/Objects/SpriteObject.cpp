@@ -14,6 +14,8 @@
 #include "Engine/AttackList.h"
 #include "Engine/MapInfo.h"
 
+#include "Engine/Random/Random.h"
+
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -30,8 +32,6 @@
 #include "Engine/Graphics/Sprites.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
-#include "Library/Random/Random.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"

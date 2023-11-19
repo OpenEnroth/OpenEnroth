@@ -8,7 +8,7 @@
 #include "Io/Key.h"
 
 #include "Library/Config/Config.h"
-#include "Library/Random/RandomEngineEnums.h"
+#include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
 
 #ifdef __ANDROID__
@@ -20,7 +20,6 @@
 #endif
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
-MM_DECLARE_SERIALIZATION_FUNCTIONS(RandomEngineType)
 
 // TODO(captainurist): apply codestyle here.
 

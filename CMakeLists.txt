@@ -164,4 +164,3 @@ add_subdirectory(thirdparty)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/test)
 add_subdirectory(test)
 add_subdirectory(src)
-

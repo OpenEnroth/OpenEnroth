@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ObjectList.h"
@@ -29,7 +30,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"

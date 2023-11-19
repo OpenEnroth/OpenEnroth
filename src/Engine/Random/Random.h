@@ -2,9 +2,10 @@
 
 #include <memory>
 
-#include "RandomEngine.h"
+#include "Library/Random/RandomEngine.h"
 
-// TODO(captaiurist): actually these static vars belong to Engine/
+#include "RandomEnums.h"
+#include "RandomEngineFactory.h"
 
 /**
  * @file
@@ -21,10 +22,6 @@
  * If there comes a moment where we'd want to e.g. test that characters are using the right speech phrases when killing
  * a monster, the proper way to do it would be to split the `vrng` engine in two. One for speech, one for everything
  * else. This won't add much overhead, and would let us test what we want to.
- *
- * The problems might start if we were to change game logic and introduce additional random calls for `grng` in the
- * code. But the goal of OpenEnroth is to keep the vanilla behavior, so this either shouldn't happen, or should
- * happen under a config flag. Thus, already recorded traces shouldn't break.
  */
 
 /**
@@ -39,3 +36,10 @@ extern std::unique_ptr<RandomEngine> grng;
  * after a kill.
  */
 extern std::unique_ptr<RandomEngine> vrng;
+
+/**
+ * When game engine needs to construct a random engine, it calls into `rngf`. This is mainly used for trace recording
+ * and playback, random engines aren't reconstructed during normal gameplay.
+ */
+extern std::unique_ptr<RandomEngineFactory> rngf;
+

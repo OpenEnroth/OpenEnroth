@@ -6,6 +6,7 @@
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -14,8 +15,6 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
-#include "Library/Random/Random.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/MapAccess.h"

@@ -1,13 +1,7 @@
 #include "TileTable.h"
 
 #include "Engine/AssetsManager.h"
-
-#include "Library/Random/Random.h"
-#include "Library/Logger/Logger.h"
-
-#include "Utility/String.h"
-
-#include "FrameTableInc.h"
+#include "Engine/Random/Random.h"
 
 struct TileTable *pTileTable;
 

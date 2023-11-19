@@ -3,8 +3,7 @@
 #include <cassert>
 #include <utility>
 
-#include "Library/Random/Random.h"
-#include "Library/Random/RandomEngine.h"
+#include "Engine/Random/Random.h"
 
 EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;
@@ -17,7 +16,7 @@ void EngineDeterministicComponent::restart(int frameTimeMs, RandomEngineType rng
 
     _tickCount = 0;
     _frameTimeMs = frameTimeMs;
-    grng = RandomEngine::create(rngType);
+    grng = rngf->createEngine(rngType);
     assert(isActive());
 }
 

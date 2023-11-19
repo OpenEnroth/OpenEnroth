@@ -12,6 +12,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
@@ -20,11 +21,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Library/Random/Random.h"
-
 #include "Utility/Math/TrigLut.h"
 
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"

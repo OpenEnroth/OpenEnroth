@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "Engine/Random/Random.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
@@ -13,7 +14,6 @@
 
 #include "GUI/UI/UIHouses.h"
 
-#include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/String.h"

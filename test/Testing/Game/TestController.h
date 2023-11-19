@@ -9,7 +9,7 @@
 
 #include "Engine/Components/Trace/EngineTraceEnums.h"
 
-#include "Library/Random/RandomEngineEnums.h"
+#include "Engine/Random/RandomEnums.h"
 
 #include "TestTape.h"
 

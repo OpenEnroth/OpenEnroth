@@ -10,6 +10,7 @@
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestController.h"
 
+#include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 
 #include "Utility/Format.h"
@@ -26,6 +27,7 @@ void printGoogleTestHelp(char *app) {
 
 int platformMain(int argc, char **argv) {
     try {
+        StackTraceOnCrash st;
         UnicodeCrt _(argc, argv);
         GameTestOptions opts = GameTestOptions::parse(argc, argv);
         if (opts.helpPrinted) {
