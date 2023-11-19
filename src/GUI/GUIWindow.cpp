@@ -870,7 +870,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
 
     std::string result;
 
-    uint len = str.length();
+    unsigned len = str.length();
     for (int i = 0, dst = 0; i < len; ++i) {
         char c = str[i];  // skip through string till we find insertion point
         if (c != '%') {
@@ -967,7 +967,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 break;
             case 17:  // hired npc text
             {
-                uint pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
+                unsigned pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
                 if (pay_percentage == 0) pay_percentage = 1;
                 v1 = fmt::format("{}", pay_percentage);
                 result += v1;
@@ -1130,7 +1130,7 @@ void WindowManager::DeleteAllVisibleWindows() {
 }
 
 void MainMenuUI_LoadFontsAndSomeStuff() {
-    // for (uint i = 0; i < 480; ++i) {  // must be 480 - needs sorting
+    // for (unsigned i = 0; i < 480; ++i) {  // must be 480 - needs sorting
     //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
     // }
     if (!assets->pFontArrus)
@@ -1146,7 +1146,7 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
 }
 
 static void LoadPartyBuffIcons() {
-    for (uint i = 0; i < 14; ++i) {
+    for (unsigned i = 0; i < 14; ++i) {
         //auto temp = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
         //int booty = temp->GetHeight();
         //party_buff_icons[i] = assets->getImage_ColorKey(StringPrintf("isn-%02d", i + 1), colorTable.TealMask);

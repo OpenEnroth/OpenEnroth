@@ -281,7 +281,7 @@ void Party::switchToNextActiveCharacter() {
     }
 
     int v12{};
-    uint v8{};
+    unsigned v8{};
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() &&
             this->pCharacters[i].timeToRecovery == 0) {
@@ -875,7 +875,7 @@ void Party::restAndHeal() {
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
-            for (uint i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
+            for (unsigned i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
                 if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)
                     have_vessels_soul = true;
             }

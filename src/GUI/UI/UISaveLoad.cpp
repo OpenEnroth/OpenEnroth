@@ -63,7 +63,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
     pSavegameList->saveListPosition = 0;
 
     LodReader pLODFile;
-    for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
+    for (unsigned i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // std::string file_name = pSavegameList->pFileList[i];
         std::string file_name = fmt::format("save{:03}.mm7", i);
         if (file_name.empty()) {
@@ -168,7 +168,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     pSavegameList->saveListPosition = 0;
 
     LodReader pLODFile;
-    for (uint i = 0; i < pSavegameList->numSavegameFiles; ++i) {
+    for (unsigned i = 0; i < pSavegameList->numSavegameFiles; ++i) {
         std::string str = makeDataPath("saves", pSavegameList->pFileList[i]);
         if (!std::filesystem::exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;

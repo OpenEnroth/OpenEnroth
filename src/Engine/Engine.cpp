@@ -239,16 +239,16 @@ void Engine::DrawGUI() {
 
     static bool render_framerate = false;
     static float framerate = 0.0f;
-    static uint frames_this_second = 0;
-    static uint last_frame_time = platform->tickCount();
-    static uint framerate_time_elapsed = 0;
+    static unsigned frames_this_second = 0;
+    static unsigned last_frame_time = platform->tickCount();
+    static unsigned framerate_time_elapsed = 0;
 
     if (current_screen_type == SCREEN_GAME &&
         uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pWeather->Draw();  // Ritor1: my include
 
     // while(GetTickCount() - last_frame_time < 33 );//FPS control
-    uint frame_dt = platform->tickCount() - last_frame_time;
+    unsigned frame_dt = platform->tickCount() - last_frame_time;
     last_frame_time = platform->tickCount();
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000) {
@@ -639,7 +639,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
-        for (uint i = 0; i < pActors.size(); ++i) {
+        for (unsigned i = 0; i < pActors.size(); ++i) {
             // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
             pActors[i].monsterInfo.treasureType = RANDOM_ITEM_ANY;
             pActors[i].monsterInfo.goldDiceRolls = 0;
@@ -802,7 +802,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
         static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
 
@@ -820,7 +820,7 @@ void Engine::SecondaryInitialization() {
 
     spell_fx_renedrer->LoadAnimations();
 
-    for (uint i = 0; i < 7; ++i) {
+    for (unsigned i = 0; i < 7; ++i) {
         std::string container_name = fmt::format("HDWTR{:03}", i);
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
@@ -995,7 +995,7 @@ void Engine::_461103_load_level_sub() {
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
 
     // v15 = 0;
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         // Actor *pActor = &pActors[i];
         // v2 = (char *)&pActors[0].uNPC_ID;
         // do
@@ -1040,7 +1040,7 @@ void Engine::_461103_load_level_sub() {
 
     // TODO(captainurist): can drop this code?
 #if 0
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         // v7 = (char *)&pActors[0].pMonsterInfo;
         // do
         //{
@@ -1107,7 +1107,7 @@ unsigned int GetGravityStrength() {
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    const std::string &filename) {
-    for (uint i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
+    for (unsigned i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
             auto face = &pIndoor->pFaces[extra->face_id];
@@ -1147,7 +1147,7 @@ void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
+            for (unsigned i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
                 if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
                         pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
@@ -1227,7 +1227,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 
-        for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+        for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
             pNPCStats->pNewNPCData[i].bHasUsedTheAbility = false;
 
         ++pParty->days_played_without_rest;
@@ -1300,7 +1300,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     RegeneratePartyHealthMana();
 
-    uint recoveryTimeDt = pEventTimer->uTimeElapsed;
+    unsigned recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = 0;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
@@ -1308,7 +1308,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         recoveryTimeDt /= 2;
     }
 
-    uint numPlayersCouldAct = pParty->pCharacters.size();
+    unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
         if (character.timeToRecovery && recoveryTimeDt > 0)
             character.Recover(GameTime(recoveryTimeDt));
@@ -1611,7 +1611,7 @@ void RegeneratePartyHealthMana() {
                     bool decrease_HP = false;
                     bool recovery_SP = false;
                     if (character.HasItemEquipped(idx)) {
-                        uint _idx = character.pEquipment.pIndices[idx];
+                        unsigned _idx = character.pEquipment.pIndices[idx];
                         ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
                         if (!isRegular(equppedItem.uItemID)) {
                             if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {

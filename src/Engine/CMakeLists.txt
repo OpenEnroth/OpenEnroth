@@ -36,7 +36,6 @@ set(ENGINE_HEADERS
         LodTextureCache.h
         LodSpriteCache.h
         Localization.h
-        MM7.h
         MapEnums.h
         MapInfo.h
         OurMath.h

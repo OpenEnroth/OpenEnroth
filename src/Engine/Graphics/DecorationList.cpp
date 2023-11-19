@@ -20,7 +20,7 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
         return 0;
 
     if (pDecorations.size() > 1) {
-        for (uint uID = 1; uID < pDecorations.size(); ++uID) {
+        for (unsigned uID = 1; uID < pDecorations.size(); ++uID) {
             if (iequals(pName, pDecorations[uID].name))
                 return uID;
         }
@@ -32,8 +32,8 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
 void RespawnGlobalDecorations() {
     engine->_persistentVariables.decorVars.fill(0);
 
-    uint decorEventIdx = 0;
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+    unsigned decorEventIdx = 0;
+    for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         if (!decor->uEventID) {

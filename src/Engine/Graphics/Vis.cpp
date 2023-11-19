@@ -53,7 +53,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
     static RenderVertexSoft static_DetermineFacetIntersection_array_F8F200[64];
     if (!_init_flag) {
         _init_flag = true;
-        for (uint i = 0; i < 64; ++i)
+        for (unsigned i = 0; i < 64; ++i)
             static_DetermineFacetIntersection_array_F8F200[i].flt_2C = 0.0f;
     }
 
@@ -73,7 +73,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         const std::vector<Vec3i> &v = pOutdoor->model(pid).pVertices;
-        for (uint i = 0; i < face->uNumVertices; ++i)
+        for (unsigned i = 0; i < face->uNumVertices; ++i)
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].toFloat();
     } else {
         assert(false);
@@ -132,7 +132,7 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
     // v5 = 0;
 
     // v6 = render->pBillboardRenderListD3D;
-    for (uint i = 0; i < render->uNumBillboardsToDraw; ++i) {
+    for (unsigned i = 0; i < render->uNumBillboardsToDraw; ++i) {
         RenderBillboardD3D *billboard = &render->pBillboardRenderListD3D[i];
         if (IsPointInsideD3DBillboard(billboard, x, y)) {
             if (v13 == -1)
@@ -524,7 +524,7 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sM
       intersect_face_vertex_coords_list_b[v5] =
     intersect_face_vertex_coords_list_b[0]; v6 =
     intersect_face_vertex_coords_list_b[0] >= b; if (v5 <= 0) return false; for
-    ( uint i = 0; i < v5; ++i )
+    ( unsigned i = 0; i < v5; ++i )
       {
         if ( v16 >= 2 )
           break;
@@ -591,7 +591,7 @@ Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectTyp
 
     // v3 = this->uSize;
     if (this->uSize > 0) {
-        for (uint i = 0; i < this->uSize; ++i) {
+        for (unsigned i = 0; i < this->uSize; ++i) {
             if (this->object_pool[i].object_type == pVisObjectType &&
                 this->object_pool[i].object_pid == pid)
                 return &this->object_pool[i];
@@ -604,7 +604,7 @@ Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectTyp
 void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
     switch (type) {
         case All: {
-            for (uint i = 0; i < uSize; ++i)
+            for (unsigned i = 0; i < uSize; ++i)
                 object_pointers[i] = &object_pool[i];
         } break;
 
@@ -614,8 +614,8 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
         {             // but it may be decompilation error thou
             bool create = true;
 
-            for (uint i = 0; i < uSize; ++i) {
-                for (uint j = 0; j < i; ++j) {
+            for (unsigned i = 0; i < uSize; ++i) {
+                for (unsigned j = 0; j < i; ++j) {
                     if (object_pointers[j] == &object_pool[i]) {
                         create = false;
                         break;

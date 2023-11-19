@@ -143,7 +143,7 @@ void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
 }
 
 void npcSetItem(int npc, ItemId item, int a3) {
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (pActors[i].npcId == npc) {
             Actor::giveItem(i, item, a3);
         }
@@ -718,7 +718,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
     Actor *victim = &pActors[uActorID];
     if (a2 == 1) victim->attributes |= ACTOR_AGGRESSOR;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
         if (!actor->CanAct() || i == uActorID) continue;
 
@@ -978,8 +978,8 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         pOut->vDirection.x = (int32_t)(1.0 / v33 * v31 * 65536.0);
         pOut->vDirection.y = (int32_t)(1.0 / v33 * v32 * 65536.0);
         pOut->vDirection.z = (int32_t)(1.0 / v33 * a4a * 65536.0);
-        pOut->uDistance = (uint)v33;
-        pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
+        pOut->uDistance = (unsigned)v33;
+        pOut->uDistanceXZ = (unsigned)sqrt(outy2 + outx2);
         pOut->uYawAngle = TrigLUT.atan2(v31, v32);
         pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, a4a);
     }
@@ -2093,17 +2093,17 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
     MonsterHostility v10;             // eax@13
-    uint v11;                   // ebx@16
-    uint v12;                   // eax@16
+    unsigned v11;                   // ebx@16
+    unsigned v12;                   // eax@16
     MonsterHostility v14;             // eax@31
-    uint v15;                   // edi@43
-    //uint v16;                   // ebx@45
-    //uint v17;                   // eax@45
+    unsigned v15;                   // edi@43
+    //unsigned v16;                   // ebx@45
+    //unsigned v17;                   // eax@45
     signed int closestId;       // [sp+14h] [bp-1Ch]@1
-    uint v23;                   // [sp+1Ch] [bp-14h]@16
+    unsigned v23;                   // [sp+1Ch] [bp-14h]@16
     unsigned int lowestRadius;  // [sp+24h] [bp-Ch]@1
-    uint v27;                   // [sp+2Ch] [bp-4h]@16
-    //uint v28;                   // [sp+2Ch] [bp-4h]@45
+    unsigned v27;                   // [sp+2Ch] [bp-4h]@16
+    //unsigned v28;                   // [sp+2Ch] [bp-4h]@45
 
     lowestRadius = UINT_MAX;
     v5 = 0;
@@ -2113,7 +2113,7 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
         if (actor->aiState == Dead || actor->aiState == Dying ||
             actor->aiState == Removed || actor->aiState == Summoned ||
@@ -2166,9 +2166,9 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                 v15 = _4DF380_hostilityRanges[v14];
             else
                 v15 = _4DF380_hostilityRanges[HOSTILITY_LONG];
-            uint v16 = std::abs(thisActor->pos.x - pParty->pos.x);
-            uint v28 = std::abs(thisActor->pos.y - pParty->pos.y);
-            uint v17 = std::abs(thisActor->pos.z - pParty->pos.z);
+            unsigned v16 = std::abs(thisActor->pos.x - pParty->pos.x);
+            unsigned v28 = std::abs(thisActor->pos.y - pParty->pos.y);
+            unsigned v17 = std::abs(thisActor->pos.z - pParty->pos.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
                 *OutTargetPID = Pid(OBJECT_Character, 0);
@@ -2525,7 +2525,7 @@ void Actor::UpdateActorAI() {
     ABILITY_INDEX v45;                 // eax@192
     SpellId v46;     // cl@197
     signed int v47;          // st7@206
-    uint v58;                // st7@246
+    unsigned v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
@@ -2533,7 +2533,7 @@ void Actor::UpdateActorAI() {
     AIDirection *pDir;       // [sp+7Ch] [bp-34h]@129
     int v81;                 // [sp+9Ch] [bp-14h]@100
     Pid target_pid;   // [sp+ACh] [bp-4h]@83
-    uint v38;
+    unsigned v38;
 
     // Build AI array
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
@@ -2552,7 +2552,7 @@ void Actor::UpdateActorAI() {
     }
 
     // this loops over all actors in background ai state
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *pActor = &pActors[i];
         ai_near_actors_targets_pid[i] = Pid(OBJECT_Character, 0);
 
@@ -2618,7 +2618,7 @@ void Actor::UpdateActorAI() {
 
     // loops over for the actors in "full" ai state
     for (int v78 = 0; v78 < ai_arrays_size; ++v78) {
-        uint actor_id = ai_near_actors_ids[v78];
+        unsigned actor_id = ai_near_actors_ids[v78];
         assert(actor_id < pActors.size());
         Pid actorPid = Pid(OBJECT_Actor, actor_id);
 
@@ -2925,7 +2925,7 @@ int Actor::searchDeadActorsByGroup(int *pTotalActors, int group) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].group == group) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -2942,7 +2942,7 @@ int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MonsterId monsterID) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].monsterInfo.id == monsterID) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -2959,7 +2959,7 @@ int Actor::searchDeadActors(int *pTotalActors) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -2989,7 +2989,7 @@ void Actor::InitializeActors() {
 
     ai_near_actors_targets_pid.fill(Pid());
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
 
         if (actor->CanAct() || actor->aiState == Disabled) {
@@ -3537,7 +3537,7 @@ bool CheckActors_proximity() {
     distance = 5120;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         for_x = std::abs(pActors[i].pos.x - pParty->pos.x);
         for_y = std::abs(pActors[i].pos.y - pParty->pos.y);
         for_z = std::abs(pActors[i].pos.z - pParty->pos.z);
@@ -3901,7 +3901,7 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                           bool bValue) {
     if (uGroupID) {
         if (bValue) {
-            for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
+            for (unsigned i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].group == uGroupID) {
                     pActors[i].attributes |= uFlag;
                     if (uFlag == ACTOR_UNKNOW11) {
@@ -3911,7 +3911,7 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                 }
             }
         } else {
-            for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
+            for (unsigned i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].group == uGroupID) {
                     if (uFlag == ACTOR_UNKNOW11) {
                         if (pActors[i].aiState != Dead) {

@@ -1295,7 +1295,7 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
 }
 
 void UpdateObjects() {
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
             pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {

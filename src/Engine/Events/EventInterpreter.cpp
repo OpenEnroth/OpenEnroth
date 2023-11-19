@@ -482,7 +482,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
 #if 0
             *(&pActors[0].uGroup + 0x11000000 * _evt->v8 +
               209 * (_evt->v5 +
-                     ((_evt->v6 + ((uint)_evt->v7 << 8)) << 8))) =
+                     ((_evt->v6 + ((unsigned)_evt->v7 << 8)) << 8))) =
                 EVT_DWORD(_evt->v9);
 #endif
             break;
@@ -508,7 +508,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
 #if 0
             v38 = EVT_DWORD(_evt->v5);
             v39 = EVT_DWORD(_evt->v9);
-            for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
+            for (unsigned actor_id = 0; actor_id < pActors.size(); actor_id++) {
                 if (pActors[actor_id].uGroup == v38)
                     pActors[actor_id].uGroup = v39;
             }
@@ -520,7 +520,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
 #if 0
             v42 = EVT_DWORD(_evt->v5);
             v43 = EVT_DWORD(_evt->v9);
-            for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
+            for (unsigned actor_id = 0; actor_id < pActors.size(); actor_id++) {
                 if (pActors[actor_id].uGroup == v42)
                     pActors[actor_id].uAlly = v43;
             }

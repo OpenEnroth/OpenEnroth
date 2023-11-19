@@ -1283,7 +1283,7 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
         render->DrawTextureNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
     }
 
-    for (uint i = 0; i < 126; ++i) {
+    for (unsigned i = 0; i < 126; ++i) {
         if (player->pInventoryMatrix[i] <= 0) continue;
         if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID == ITEM_NULL)
             continue;
@@ -1346,7 +1346,7 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
                                 pCharacterScreen_DetalizBtn->uY / 480.0f,
                                 ui_exit_cancel_button_background);
 
-    for (uint i = 0; i < 6; ++i) {
+    for (unsigned i = 0; i < 6; ++i) {
         if (!player->pEquipment.uRings[i]) continue;
         static int pPaperdollRingsX[6] = {0x1EA, 0x21A, 0x248,
                                           0x1EA, 0x21A, 0x248};
@@ -1395,11 +1395,11 @@ void CharacterUI_LoadPaperdollTextures() {
         return assets->getImage_Alpha(name);
     };
 
-    for (uint i = 0; i < 2; ++i) {
-        for (uint j : {0, 1, 2, 3, 4, 6}) // Belt
+    for (unsigned i = 0; i < 2; ++i) {
+        for (unsigned j : {0, 1, 2, 3, 4, 6}) // Belt
             paperdoll_belt_texture[i][j] = loadTexture(paperdoll_belt_typeByIndex, j, i, 0);
 
-        for (uint j = 0; j < 16; ++j)  // Helm
+        for (unsigned j = 0; j < 16; ++j)  // Helm
             paperdoll_helm_texture[i][j] = loadTexture(paperdoll_helm_typeByIndex, j, i, 0);
 
         if (IsDwarfPresentInParty(true))  // the phynaxian helm uses a slightly
@@ -1407,7 +1407,7 @@ void CharacterUI_LoadPaperdollTextures() {
             paperdoll_dbrds[11] = assets->getImage_Alpha("item092v3");
     }
 
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         if (ShouldLoadTexturesForRaceAndGender(i)) {
             paperdoll_belt_texture[i][5] = loadTexture(paperdoll_belt_typeByIndex, 5, i, 0);  // Titans belt
 
@@ -1458,7 +1458,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             ++first_rows;
-            uint skill_id = std::to_underlying(skill);
+            unsigned skill_id = std::to_underlying(skill);
             pGUIWindow_CurrentMenu->CreateButton({24, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
@@ -1468,7 +1468,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
         if (curr_player->getSkillValue(skill).level() /*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
-            uint skill_id = std::to_underlying(skill);
+            unsigned skill_id = std::to_underlying(skill);
             pGUIWindow_CurrentMenu->CreateButton({24, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
@@ -1479,7 +1479,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             ++first_rows;
-            uint skill_id = std::to_underlying(skill);
+            unsigned skill_id = std::to_underlying(skill);
             pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
@@ -1489,7 +1489,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
-            uint skill_id = std::to_underlying(skill);
+            unsigned skill_id = std::to_underlying(skill);
             pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
@@ -2164,7 +2164,7 @@ void OnPaperdollLeftClick() {
             }
         }
 
-        // for (uint i = 0; i < 6; ++i)
+        // for (unsigned i = 0; i < 6; ++i)
         //{
         // if (!player->pEquipment.uRings[i])
         //  continue;

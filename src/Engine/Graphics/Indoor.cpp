@@ -162,11 +162,11 @@ void PrepareDrawLists_BLV() {
     render->DrawSpriteObjects();
     pOutdoor->PrepareActorsDrawList();
 
-     for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+     for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
          int v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
          v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (uint j = 0; j < v8->uNumDecorations; ++j)
+        for (unsigned j = 0; j < v8->uNumDecorations; ++j)
             pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
      }
 
@@ -281,7 +281,7 @@ void IndoorLocation::Release() {
 //----- (00444810) --------------------------------------------------------
 // index of special transfer message, 0 otherwise
 unsigned int IndoorLocation::GetLocationIndex(const std::string &locationName) {
-    for (uint i = 0; i < _4E6BDC_loc_names.size(); ++i)
+    for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
         if (iequals(locationName, _4E6BDC_loc_names[i]))
             return i + 1;
     return 0;
@@ -388,7 +388,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     bool singleSectorFound = false;
 
     // loop through sectors
-    for (uint i = 1; i < pSectors.size(); ++i) {
+    for (unsigned i = 1; i < pSectors.size(); ++i) {
         if (NumFoundFaceStore >= 5) break;
 
         BLVSector *pSector = &pSectors[i];
@@ -412,7 +412,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
         }
 
         // loop over check faces
-        for (uint z = 0; z < FloorsAndPortals; ++z) {
+        for (unsigned z = 0; z < FloorsAndPortals; ++z) {
             int uFaceID;
             if (z < pSector->uNumFloors)
                 uFaceID = pSector->pFloors[z];
@@ -673,7 +673,7 @@ void BLV_UpdateDoors() {
         eDoorSoundID = pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
-    for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
+    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         BLVDoor *door = &pIndoor->pDoors[i];
 
         // door not moving currently
@@ -740,7 +740,7 @@ void BLV_UpdateDoors() {
             float minV = std::numeric_limits<float>::max();
             float maxU = std::numeric_limits<float>::min();
             float maxV = std::numeric_limits<float>::min();
-            for (uint k = 0; k < face->uNumVertices; ++k) {
+            for (unsigned k = 0; k < face->uNumVertices; ++k) {
                 Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
                 float pointU = dot(point, u);
                 float pointV = dot(point, v);
@@ -917,7 +917,7 @@ void PrepareToLoadBLV(bool bLoading) {
         indoor_was_respawned = false;
 
     if (indoor_was_respawned) {
-        for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
+        for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
             if (spawn->uKind == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
@@ -927,7 +927,7 @@ void PrepareToLoadBLV(bool bLoading) {
         RespawnGlobalDecorations();
     }
 
-    for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
+    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
@@ -945,7 +945,7 @@ void PrepareToLoadBLV(bool bLoading) {
         }
     }
 
-    /*for (uint i = 0; i < pIndoor->uNumFaces; ++i)
+    /*for (unsigned i = 0; i < pIndoor->uNumFaces; ++i)
     {
         if (pIndoor->pFaces[i].uBitmapID != -1)
             pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id2 =
@@ -956,7 +956,7 @@ void PrepareToLoadBLV(bool bLoading) {
     decorationsWithSound.clear();
 
     int interactiveDecorationsNum = 0;
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+    for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
         const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
@@ -1005,7 +1005,7 @@ void PrepareToLoadBLV(bool bLoading) {
     // INDOOR initialize actors
     alertStatus = false;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         if (pActors[i].attributes & ACTOR_UNKNOW7) {
             if (map_id == MAP_INVALID) {
                 pActors[i].monsterInfo.field_3E = 19;
@@ -1071,7 +1071,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
     // loop over all floor faces
-    for (uint i = 0; i < pSector->uNumFloors; ++i) {
+    for (unsigned i = 0; i < pSector->uNumFloors; ++i) {
         if (FacesFound >= 5)
             break;
 
@@ -1103,7 +1103,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
 
     // as above but for sector portal faces
     if (pSector->field_0 & 8) {
-        for (uint i = 0; i < pSector->uNumPortals; ++i) {
+        for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
@@ -1141,7 +1141,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     // multiple faces found - pick nearest
     int result = blv_floor_z[0];
     int faceId = blv_floor_id[0];
-    for (uint i = 1; i < FacesFound; ++i) {
+    for (unsigned i = 1; i < FacesFound; ++i) {
         int v38 = blv_floor_z[i];
 
         if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
@@ -1927,7 +1927,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     float angle_from_party;
     int dist_from_party;
     SpawnPoint enc_spawn_point;
-    uint loop_cnt = 0;
+    unsigned loop_cnt = 0;
 
     //// why check this ??
     // if (!uNumActors) return 0;
@@ -2072,7 +2072,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 
 //----- (0043F515) --------------------------------------------------------
 void FindBillboardsLightLevels_BLV() {
-    for (uint i = 0; i < uNumBillboardsToDraw; ++i) {
+    for (unsigned i = 0; i < uNumBillboardsToDraw; ++i) {
         if (pBillboardRenderList[i].field_1E & 2 ||
             uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
                 !pBillboardRenderList[i].uIndoorSectorID)

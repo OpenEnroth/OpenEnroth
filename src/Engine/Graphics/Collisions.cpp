@@ -9,7 +9,6 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/MM7.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -537,7 +536,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
 }
 
 void _46ED8A_collide_against_sprite_objects(Pid pid) {
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID == 0)
             continue;
 
@@ -846,7 +845,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
     collision_state.check_hi = true;
-    for (uint i = 0; i < 5; i++) {
+    for (unsigned i = 0; i < 5; i++) {
         collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
         collision_state.velocity = pParty->speed;
@@ -859,7 +858,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         if (collision_state.PrepareAndCheckIfStationary(dt))
             break;
 
-        for (uint j = 0; j < 100; ++j) {
+        for (unsigned j = 0; j < 100; ++j) {
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
             for (int k = 0; k < pActors.size(); ++k)
@@ -978,7 +977,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
     collision_state.check_hi = true;
 
     // make 5 attempts to satisfy collisions
-    for (uint i = 0; i < 5; i++) {
+    for (unsigned i = 0; i < 5; i++) {
         collision_state.position_hi = *partyNewPos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = *partyNewPos + Vec3f(0, 0, collision_state.radius_lo);
         collision_state.velocity = *partyInputSpeed;

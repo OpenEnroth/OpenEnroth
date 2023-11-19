@@ -516,7 +516,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->turnBasedModeOn = src.bTurnBasedModeOn;
     dst->flags2 = std::to_underlying(src.uFlags2);
 
-    uint align = 0;
+    unsigned align = 0;
     if (src.alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
     if (src.alignment == PartyAlignment::PartyAlignment_Neutral) align = 1;
     dst->alignment = align;

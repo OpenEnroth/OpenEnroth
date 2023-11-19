@@ -182,10 +182,10 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         // nearest neiborhood scaling
         // if (texture8_data)
         {
-            for (uint i = 0; i < screenHeight; ++i) {
+            for (unsigned i = 0; i < screenHeight; ++i) {
                 int map_tile_Y = (scaled_posY - 80) / 4;
                 int stepX_r = stepX_r_resets;
-                for (uint j = 0; j < screenWidth; ++j) {
+                for (unsigned j = 0; j < screenWidth; ++j) {
                     int scaled_posX = stepX_r >> 16;
                     int map_tile_X = (scaled_posX - 80) / 4;
                     if (!pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y)) {
@@ -213,7 +213,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     } else {  // indoors
         if (!pIndoor->pMapOutlines.empty()) {
             render->BeginLines2D();
-            for (uint i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
+            for (unsigned i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
                 BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
 
                 if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
@@ -283,7 +283,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
     if (!pLevelDecorations.empty()) {
         render->BeginLines2D();
-        for (uint i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
+        for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
                 int DecY = pLevelDecorations[i].vPosition.y - pCenterY;
                 int DecX = pLevelDecorations[i].vPosition.x - pCenterX;

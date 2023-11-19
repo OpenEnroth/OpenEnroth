@@ -2895,7 +2895,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    for (uint i = 0; i < 50; i++) {
+                    for (unsigned i = 0; i < 50; i++) {
                         int rand_x = grng->random(4096) - 2048;
                         int rand_y = grng->random(4096) - 2048;
                         bool bOnWater = false;
@@ -3112,7 +3112,7 @@ void pushSpellOrRangedAttack(SpellId spell,
 #if 0
     // clear previous casts
     if (flags & ON_CAST_CastingInProgress) {
-        for (uint i = 0; i < CastSpellInfoCount; ++i) {
+        for (unsigned i = 0; i < CastSpellInfoCount; ++i) {
             if (pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
                 pCastSpellInfo[i].uSpellID = SPELL_NONE;
                 break;

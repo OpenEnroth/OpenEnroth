@@ -239,9 +239,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
     uNumTiles = uWidth / parchment_width;
     if (uWidth % parchment_width) ++uNumTiles;
     coord_y = uY;
-    for (uint j = 0; j <= uHeight / parchment_height; j++) {
+    for (unsigned j = 0; j <= uHeight / parchment_height; j++) {
         coord_x = uX - parchment_width;
-        for (uint i = uNumTiles + 1; i; --i) {
+        for (unsigned i = uNumTiles + 1; i; --i) {
             coord_x += parchment_width;
             render->DrawTextureNew(coord_x / renwidth, coord_y / renheight,
                                    parchment);
@@ -1643,7 +1643,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
     Character *player = &pParty->pCharacters[characterIndex];
 
-    uint numActivePlayerBuffs = 0;
+    unsigned numActivePlayerBuffs = 0;
     for (const SpellBuff &buff : player->pCharacterBuffs)
         if (buff.Active())
             ++numActivePlayerBuffs;

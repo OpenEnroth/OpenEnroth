@@ -56,7 +56,7 @@ bool PartyCreationUI_LoopInternal();
 bool PlayerCreation_Choose4Skills() {
     int skills_count;
 
-    for (uint j = 0; j < 4; ++j) {
+    for (unsigned j = 0; j < 4; ++j) {
         skills_count = 0;
         for (CharacterSkillType i : allSkills()) {
             if (pParty->pCharacters[j].pActiveSkills[i])
@@ -759,7 +759,7 @@ bool PartyCreationUI_LoopInternal() {
     pGUIWindow_CurrentMenu = nullptr;
 
     item.Reset();
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         if (pParty->pCharacters[i].classType == CLASS_KNIGHT)
             pParty->pCharacters[i].sResMagicBase = 10;
         // TODO(pskelton): why just CHARACTER_BUFF_RESIST_WATER?
@@ -872,7 +872,7 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             }
 
-            for (uint k = 0; k < 138; k++) {
+            for (unsigned k = 0; k < 138; k++) {
                 if (pParty->pCharacters[i].pOwnItems[k].uItemID != ITEM_NULL)
                     pParty->pCharacters[i].pOwnItems[k].SetIdentified();
             }

@@ -126,14 +126,14 @@ void SpellFX_Billboard::Initialize(int a2) {
     uNumVec3sInArray2 = 128;
     pArray2 = new stru160[128];
 
-    for (uint i = 0; i < uNumVec4sInArray1; ++i) {
+    for (unsigned i = 0; i < uNumVec4sInArray1; ++i) {
         pArray1[i].field_0 = array_4EB8B8[i].field_0;
         pArray1[i].field_4 = array_4EB8B8[i].field_4;
         pArray1[i].field_8 = array_4EB8B8[i].field_8;
         pArray1[i].field_C = a2;
     }
 
-    for (uint i = 0; i < uNumVec3sInArray2; ++i) {
+    for (unsigned i = 0; i < uNumVec3sInArray2; ++i) {
         pArray2[i].field_0 = array_4EBBD0_x[3 * i];
         pArray2[i].field_4 = array_4EBBD0_x[(3 * i)+1];
         pArray2[i].field_8 = array_4EBBD0_x[(3 * i)+2];
@@ -1242,7 +1242,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
 //----- (004A902A) --------------------------------------------------------
 void SpellFxRenderer::DrawPlayerBuffAnims() {
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 

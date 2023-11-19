@@ -125,7 +125,7 @@ void stru262_TurnBased::Start() {
     this->turn_stage = TE_WAIT;
     this->pQueue.resize(0);
 
-    for (uint pl_id = 0; pl_id < 4; ++pl_id) {
+    for (unsigned pl_id = 0; pl_id < 4; ++pl_id) {
         if (pParty->pCharacters[pl_id].CanAct()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Character, pl_id);
@@ -213,7 +213,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
             pActors[pQueue[i].uPackedID.id()].ResetQueue();
     }
 
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & SPRITE_HALT_TURN_BASED)
             pSpriteObjects[i].uAttributes &= ~SPRITE_HALT_TURN_BASED;
     }
@@ -247,7 +247,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     Pid target_pid;     // [sp+5Ch] [bp-10h]@6
     int j;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
 
         for (ACTOR_BUFF_INDEX j : pActors[i].buffs.indices())

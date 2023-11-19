@@ -537,7 +537,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
-    for (uint i = 0; i < 12; ++i) {
+    for (unsigned i = 0; i < 12; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
         int itemx, itemy;
 

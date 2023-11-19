@@ -91,7 +91,7 @@ bool PartyHasDragon() { return pNPCStats->pNewNPCData[57].Hired(); }
 bool CheckHiredNPCSpeciality(NPCProf prof) {
     if (bNoNPCHiring == 1) return false;
 
-    for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
+    for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNewNPCData[i].profession == prof &&
             (pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
             return true;

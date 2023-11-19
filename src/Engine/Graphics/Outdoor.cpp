@@ -408,7 +408,7 @@ void OutdoorLocation::MessWithLUN() {
     this->field_D2C = 0;
     this->uSpriteID_LUN_SUN = pSpriteFrameTable->FastFindSprite("LUN-SUN");
     this->field_D14 = -131072;
-    for (uint i = 0; i < 8; i++)
+    for (unsigned i = 0; i < 8; i++)
         pSpriteFrameTable->InitializeSprite(this->pSpriteIDs_LUN[i]);  // v2 += 2;
     pSpriteFrameTable->InitializeSprite(this->uSpriteID_LUN_SUN);
 }
@@ -473,7 +473,7 @@ void OutdoorLocation::SetFog() {
         map_id == MAP_PIT || map_id > MAP_SHOALS)
         return;
 
-    uint chance = vrng->random(100);
+    unsigned chance = vrng->random(100);
 
     if (chance < fog_probability_table[map_id].small_fog_chance) {
         ::day_fogrange_1 = 4096;
@@ -1144,7 +1144,7 @@ bool OutdoorLocation::PrepareDecorations() {
     }
 
     decorationsWithSound.clear();
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+    for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
@@ -1269,7 +1269,7 @@ bool OutdoorLocation::LoadRoadTileset() {
 
 //----- (0047F420) --------------------------------------------------------
 bool OutdoorLocation::LoadTileGroupIds() {
-    for (uint i = 0; i < 3; ++i)
+    for (unsigned i = 0; i < 3; ++i)
         pTileTypes[i].uTileID =
             pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
 
@@ -1296,7 +1296,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         // view culling
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
-            for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
+            for (unsigned j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
                 if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == pActors[i].sectorId) {
                     onlist = true;
                     break;
@@ -1496,7 +1496,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
 
     int current_floor_level = odm_floor_level[0];
     int current_idx = 0;
-    for (uint i = 1; i < surface_count; ++i) {
+    for (unsigned i = 1; i < surface_count; ++i) {
         if (current_floor_level <= pos.z + 5) {
             if (odm_floor_level[i] >= current_floor_level && odm_floor_level[i] <= pos.z + 5) {
                 current_floor_level = odm_floor_level[i];
@@ -1527,8 +1527,8 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
 // out as FP
 //----- (0046DCC8) --------------------------------------------------------
 void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
-    uint grid_x = WorldPosToGridCellX(pos_x);
-    uint grid_y = WorldPosToGridCellY(pos_y);
+    unsigned grid_x = WorldPosToGridCellX(pos_x);
+    unsigned grid_y = WorldPosToGridCellY(pos_y);
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
@@ -2500,7 +2500,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
 
     if (outdoor_was_respawned && map_id != MAP_INVALID) {
-        for (uint i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
+        for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
             if (spawn->uKind == OBJECT_Actor)
@@ -2784,7 +2784,7 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;
-    for (uint i = 0; i < unumverts; i++) {
+    for (unsigned i = 0; i < unumverts; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
             result = pVertices[i].vWorldPosition.z;
         }
@@ -2795,7 +2795,7 @@ double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int
 //----- (00436A40) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int unumverts) {
     double result = FLT_MIN;
-    for (uint i = 0; i < unumverts; i++) {
+    for (unsigned i = 0; i < unumverts; i++) {
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;
     }

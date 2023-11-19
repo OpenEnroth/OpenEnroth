@@ -345,7 +345,7 @@ void RenderOpenGL::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) 
 // used for debug protal lines
 void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     BeginLines2D();
-    for (uint i = 0; i < num_vertices - 1; ++i) {
+    for (unsigned i = 0; i < num_vertices - 1; ++i) {
         Colorf color0 = vertices[i].diffuse.toColorf();
         Colorf color1 = vertices[i + 1].diffuse.toColorf();
 
@@ -505,7 +505,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         thisvert++;
 
         // copy other two (z+1)(z+2)
-        for (uint i = 1; i < 3; ++i) {
+        for (unsigned i = 1; i < 3; ++i) {
             thisvert->x = v29[z + i].pos.x;
             thisvert->y = v29[z + i].pos.y;
             thisvert->z = v29[z + i].pos.z;
@@ -635,7 +635,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint paletteid, Color uColor32) {
+void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, unsigned paletteid, Color uColor32) {
     if (!img) {
         logger->trace("Null img passed to DrawImage");
         return;
@@ -894,7 +894,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDistPixels;
 
     // copy to buff in
-    for (uint i = 0; i < pFace->uNumVertices; ++i) {
+    for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
         array_507D30[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
         array_507D30[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
         array_507D30[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
@@ -909,7 +909,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
     pCamera3D->Project(VertexRenderList, pSkyPolygon.uNumVertices, false);
 
-    uint _507D30_idx = 0;
+    unsigned _507D30_idx = 0;
     for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
         // outbound screen x dist
         float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
@@ -970,7 +970,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
         thisvert++;
 
         // copy other two (z+1)(z+2)
-        for (uint i = 1; i < 3; ++i) {
+        for (unsigned i = 1; i < 3; ++i) {
             oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
             thisdepth = (oneoz - oneon) / (oneof - oneon);
             thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
@@ -1213,7 +1213,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         thisvert++;
 
         // copy other two (z+1)(z+2)
-        for (uint i = 1; i < 3; ++i) {
+        for (unsigned i = 1; i < 3; ++i) {
             uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[z + i].vWorldViewPosition.x, 0, nullptr).toColorf();
             uFinalR = uTint.r * color_mult * decalColorMult.r;
             uFinalG = uTint.g * color_mult * decalColorMult.g;
@@ -1548,8 +1548,8 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
-                uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
+                unsigned norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
                 assert(norm_idx < pTerrainNormals.size());
                 assert(bottnormidx < pTerrainNormals.size());
                 Vec3f *norm = &pTerrainNormals[norm_idx];
@@ -1894,7 +1894,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     unsigned int NumBloodsplats = decal_builder->bloodsplat_container->uNumBloodsplats;
 
     // loop over blood to lay
-    for (uint i = 0; i < NumBloodsplats; ++i) {
+    for (unsigned i = 0; i < NumBloodsplats; ++i) {
         // approx location of bloodsplat
         int splatx = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.x;
         int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.y;
@@ -1961,8 +1961,8 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
                 pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
-                uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
+                unsigned norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
                 assert(norm_idx < pTerrainNormals.size());
                 assert(bottnormidx < pTerrainNormals.size());
                 Vec3f *norm = &pTerrainNormals[norm_idx];
@@ -2074,7 +2074,7 @@ void RenderOpenGL::DrawOutdoorSky() {
 
         float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
-        for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
+        for (unsigned i = 0; i < pSkyPolygon.uNumVertices; ++i) {
             // outbound screen X dist
             float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
             // outbound screen y dist
@@ -2169,7 +2169,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         thisvert++;
 
         // copy other two (z+1)(z+2)
-        for (uint i = 1; i < 3; ++i) {
+        for (unsigned i = 1; i < 3; ++i) {
             thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
             thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
             thisvert->z = 1.0f;
@@ -2209,7 +2209,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert++;
 
             // copy other two (z+1)(z+2)
-            for (uint i = 1; i < 3; ++i) {
+            for (unsigned i = 1; i < 3; ++i) {
                 thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
                 thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
                 thisvert->z = 1.0f;
@@ -2248,7 +2248,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert++;
 
             // copy other two (z+1)(z+2)
-            for (uint i = 1; i < 3; ++i) {
+            for (unsigned i = 1; i < 3; ++i) {
                 thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
                 thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
                 thisvert->z = 1.0f;
@@ -3560,7 +3560,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                     thisvert++;
 
                                     // copy other two (z+1)(z+2)
-                                    for (uint i = 1; i < 3; ++i) {
+                                    for (unsigned i = 1; i < 3; ++i) {
                                         thisvert->x = model.pVertices[face.pVertexIDs[z + i]].x;
                                         thisvert->y = model.pVertices[face.pVertexIDs[z + i]].y;
                                         thisvert->z = model.pVertices[face.pVertexIDs[z + i]].z;
@@ -3812,7 +3812,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
             poly->dimming_level = 20.0 - floorf(20.0 * _f1 + 0.5f);
             poly->dimming_level = std::clamp((int)poly->dimming_level, 0, 31);
 
-            for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+            for (unsigned vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
                     model.pVertices[face.pVertexIDs[vertex_id - 1]].x;
                 array_73D150[vertex_id - 1].vWorldPosition.y =
@@ -4094,7 +4094,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
             bool drawnsky = false;
 
-            for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
+            for (unsigned i = 0; i < pBspRenderer->num_faces; ++i) {
                 int uFaceID = pBspRenderer->faces[i].uFaceID;
                 if (uFaceID >= pIndoor->pFaces.size())
                     continue;
@@ -4118,7 +4118,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                 unsigned int uNumFrustums = 4;
                 RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding.data();
 
-                // uint ColourMask;  // ebx@25
+                // unsigned ColourMask;  // ebx@25
                 unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
                 // int LightLevel;                     // [sp+34h] [bp+Ch]@25
 
@@ -4130,7 +4130,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     uNumVerticesa = face->uNumVertices;
 
                     // copy to buff in
-                    for (uint i = 0; i < face->uNumVertices; ++i) {
+                    for (unsigned i = 0; i < face->uNumVertices; ++i) {
                         static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[face->pVertexIDs[i]].x;
                         static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[face->pVertexIDs[i]].y;
                         static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[face->pVertexIDs[i]].z;
@@ -4230,7 +4230,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 thisvert++;
 
                                 // copy other two (z+1)(z+2)
-                                for (uint i = 1; i < 3; ++i) {
+                                for (unsigned i = 1; i < 3; ++i) {
                                     thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
                                     thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
                                     thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
@@ -4378,7 +4378,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
             // is this on the sector list
             bool onlist = false;
-            for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+            for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
                 int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
                 if (test.uSectorID == listsector) {
                     onlist = true;
@@ -4534,7 +4534,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
             // check if faces is visible
             bool onlist = false;
-            for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+            for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
                 int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
                 if (pface->uSectorID == listsector) {
                     onlist = true;
@@ -4548,7 +4548,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             if (!decal_builder->uNumSplatsThisFace) continue;
 
             // copy to buff in
-            for (uint i = 0; i < pface->uNumVertices; ++i) {
+            for (unsigned i = 0; i < pface->uNumVertices; ++i) {
                 static_vertices_buff_in[i].vWorldPosition.x =
                     pIndoor->pVertices[pface->pVertexIDs[i]].x;
                 static_vertices_buff_in[i].vWorldPosition.y =
@@ -5014,8 +5014,8 @@ void RenderOpenGL::ReloadShaders() {
 void RenderOpenGL::ReleaseTerrain() {
     /*GLuint terrainVBO, terrainVAO;
     GLuint terraintextures[8];
-    uint numterraintexloaded[8];
-    uint terraintexturesizes[8];
+    unsigned numterraintexloaded[8];
+    unsigned terraintexturesizes[8];
     std::map<std::string, int> terraintexmap;*/
 
     terraintexmap.clear();
@@ -5035,9 +5035,9 @@ void RenderOpenGL::ReleaseTerrain() {
 
     /*GLuint outbuildVBO, outbuildVAO;
     GLuint outbuildtextures[8];
-    uint numoutbuildtexloaded[8];
-    uint outbuildtexturewidths[8];
-    uint outbuildtextureheights[8];
+    unsigned numoutbuildtexloaded[8];
+    unsigned outbuildtexturewidths[8];
+    unsigned outbuildtextureheights[8];
     std::map<std::string, int> outbuildtexmap;*/
 
     outbuildtexmap.clear();
@@ -5062,9 +5062,9 @@ void RenderOpenGL::ReleaseTerrain() {
 void RenderOpenGL::ReleaseBSP() {
     /*GLuint bspVBO, bspVAO;
     GLuint bsptextures[16];
-    uint bsptexloaded[16];
-    uint bsptexturewidths[16];
-    uint bsptextureheights[16];
+    unsigned bsptexloaded[16];
+    unsigned bsptexturewidths[16];
+    unsigned bsptextureheights[16];
     std::map<std::string, int> bsptexmap;*/
 
     bsptexmap.clear();

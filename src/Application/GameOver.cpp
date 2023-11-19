@@ -75,7 +75,7 @@ void CreateWinnerCertificate() {
     );
     uint64_t v23 = 0ull;
     int v20 = 0;
-    for (uint i = 0; i < 4; i++) {
+    for (unsigned i = 0; i < 4; i++) {
         pWindow.DrawTitleText(
             pFont.get(), 1,
             i * ((unsigned char)pFont->GetHeight() - 2) +

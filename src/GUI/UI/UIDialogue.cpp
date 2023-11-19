@@ -380,7 +380,7 @@ void selectNPCDialogueOption(DIALOGUE_TYPE option) {
             BuildHireableNpcDialogue();
             dialogue_show_profession_details = false;
         } else {
-            for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
+            for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                 if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNewNPCData[i].name)
                     pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
             }
