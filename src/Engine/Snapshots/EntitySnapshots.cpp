@@ -1276,7 +1276,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.resLight = src.pMonsterInfo.resLight;
     dst->monsterInfo.resDark = src.pMonsterInfo.resDark;
     dst->monsterInfo.resPhysical = src.pMonsterInfo.resPhysical;
-    dst->monsterInfo.specialAbilityType = static_cast<MONSTER_SPECIAL_ABILITY_TYPE>(src.pMonsterInfo.specialAbilityType);
+    dst->monsterInfo.specialAbilityType = static_cast<MonsterSpecialAbility>(src.pMonsterInfo.specialAbilityType);
     dst->monsterInfo.specialAbilityDamageDiceRolls = src.pMonsterInfo.specialAbilityDamageDiceRolls;
     dst->monsterInfo.specialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->monsterInfo.specialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;

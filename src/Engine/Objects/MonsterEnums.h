@@ -418,13 +418,13 @@ enum class MonsterType {
 using enum MonsterType;
 
 /*  335 */
-enum class MONSTER_SPECIAL_ABILITY_TYPE {
+enum class MonsterSpecialAbility {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
     MONSTER_SPECIAL_ABILITY_SUMMON = 0x2,
     MONSTER_SPECIAL_ABILITY_EXPLODE = 0x3,
 };
-using enum MONSTER_SPECIAL_ABILITY_TYPE;
+using enum MonsterSpecialAbility;
 
 enum class MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_SHORT = 0x0,

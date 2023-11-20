@@ -64,7 +64,7 @@ struct MonsterInfo {
     uint8_t resLight = 0;
     uint8_t resDark = 0;
     uint8_t resPhysical = 0;
-    MONSTER_SPECIAL_ABILITY_TYPE specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
+    MonsterSpecialAbility specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
     uint8_t specialAbilityDamageDiceRolls = 0;
     uint8_t specialAbilityDamageDiceSides = 0;
     uint8_t specialAbilityDamageDiceBonus = 0;
