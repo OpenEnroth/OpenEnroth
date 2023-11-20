@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cc90c4f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;025ffe7</span>
    </div>
   </td>
  </tr>
@@ -88,42 +88,46 @@ Inheritance diagram for Accessible&lt; Base &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a4b1fb4ac86d16921bbda3a73f46a313c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> = std::iter_value_t&lt; decltype(std::declval&lt; const Base * &gt;() -&gt;begin())&gt;</td></tr>
-<tr class="separator:a4b1fb4ac86d16921bbda3a73f46a313c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ef5c3c27bb9e2176946ae554fb6281"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#ac6ef5c3c27bb9e2176946ae554fb6281">const_iterator</a> = decltype(std::declval&lt; const Base * &gt;() -&gt;begin())</td></tr>
+<tr class="separator:ac6ef5c3c27bb9e2176946ae554fb6281"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a357d7a8d5b7bd585cc3fcf662778919a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> = std::iter_value_t&lt; <a class="el" href="classAccessible.html#ac6ef5c3c27bb9e2176946ae554fb6281">const_iterator</a> &gt;</td></tr>
+<tr class="separator:a357d7a8d5b7bd585cc3fcf662778919a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae751b2eb268aac045188246f193ab121"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a> = std::iter_reference_t&lt; <a class="el" href="classAccessible.html#ac6ef5c3c27bb9e2176946ae554fb6281">const_iterator</a> &gt;</td></tr>
+<tr class="separator:ae751b2eb268aac045188246f193ab121"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0a8c79c56b48c04c6de5a6e784931c5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#ad0a8c79c56b48c04c6de5a6e784931c5">size</a> () const</td></tr>
 <tr class="separator:ad0a8c79c56b48c04c6de5a6e784931c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90e9b805976961bddfab5b06ef64d1b9"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a90e9b805976961bddfab5b06ef64d1b9">front</a> () const</td></tr>
-<tr class="separator:a90e9b805976961bddfab5b06ef64d1b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42bd8d597c6f2f8cfb9202f988cff84a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a42bd8d597c6f2f8cfb9202f988cff84a">back</a> () const</td></tr>
-<tr class="separator:a42bd8d597c6f2f8cfb9202f988cff84a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e7cc0c9686e2da0bfb24030ef02dca4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a3e7cc0c9686e2da0bfb24030ef02dca4">frontBack</a> () const</td></tr>
+<tr class="memitem:a9c2af2b5774c877a65cec26969f8719a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a9c2af2b5774c877a65cec26969f8719a">front</a> () const</td></tr>
+<tr class="separator:a9c2af2b5774c877a65cec26969f8719a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af41cd9b25ff8fdc70024ce5153e2b1f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#af41cd9b25ff8fdc70024ce5153e2b1f1">back</a> () const</td></tr>
+<tr class="separator:af41cd9b25ff8fdc70024ce5153e2b1f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e7cc0c9686e2da0bfb24030ef02dca4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a3e7cc0c9686e2da0bfb24030ef02dca4">frontBack</a> () const</td></tr>
 <tr class="separator:a3e7cc0c9686e2da0bfb24030ef02dca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0f5e781480c053e6a9ec92b55d48d92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#ae0f5e781480c053e6a9ec92b55d48d92">delta</a> () const</td></tr>
+<tr class="memitem:ae0f5e781480c053e6a9ec92b55d48d92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#ae0f5e781480c053e6a9ec92b55d48d92">delta</a> () const</td></tr>
 <tr class="separator:ae0f5e781480c053e6a9ec92b55d48d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3db726cae3dc888f51fde80df1d59a2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a3db726cae3dc888f51fde80df1d59a2d">adjacentDeltas</a> () const</td></tr>
+<tr class="memitem:a3db726cae3dc888f51fde80df1d59a2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a3db726cae3dc888f51fde80df1d59a2d">adjacentDeltas</a> () const</td></tr>
 <tr class="separator:a3db726cae3dc888f51fde80df1d59a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a691e8342e0e1fe09aff76a3a31f8bd9e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a691e8342e0e1fe09aff76a3a31f8bd9e">min</a> () const</td></tr>
-<tr class="separator:a691e8342e0e1fe09aff76a3a31f8bd9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9261014cc1d5a3af4eda7f7c7342955f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a9261014cc1d5a3af4eda7f7c7342955f">max</a> () const</td></tr>
-<tr class="separator:a9261014cc1d5a3af4eda7f7c7342955f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aead21420d5c80418c860dc0db6deb4e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#aead21420d5c80418c860dc0db6deb4e1">minMax</a> () const</td></tr>
+<tr class="memitem:a8f98856706ff9530cddd8c879419df59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a8f98856706ff9530cddd8c879419df59">min</a> () const</td></tr>
+<tr class="separator:a8f98856706ff9530cddd8c879419df59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af368288b8cbbfe6c1c8bd48431303db5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#af368288b8cbbfe6c1c8bd48431303db5">max</a> () const</td></tr>
+<tr class="separator:af368288b8cbbfe6c1c8bd48431303db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aead21420d5c80418c860dc0db6deb4e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#aead21420d5c80418c860dc0db6deb4e1">minMax</a> () const</td></tr>
 <tr class="separator:aead21420d5c80418c860dc0db6deb4e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a062b9c23ea4c0a3e92443c811f41ea6d"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a062b9c23ea4c0a3e92443c811f41ea6d">flattened</a> () const</td></tr>
 <tr class="separator:a062b9c23ea4c0a3e92443c811f41ea6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e4642988473db6bf26f193e4d1e7c7f"><td class="memTemplParams" colspan="2">template&lt;class Filter &gt; </td></tr>
-<tr class="memitem:a0e4642988473db6bf26f193e4d1e7c7f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAccessible.html#a0e4642988473db6bf26f193e4d1e7c7f">filtered</a> (Filter filter) const</td></tr>
+<tr class="memitem:a0e4642988473db6bf26f193e4d1e7c7f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAccessible.html#a0e4642988473db6bf26f193e4d1e7c7f">filtered</a> (Filter filter) const</td></tr>
 <tr class="separator:a0e4642988473db6bf26f193e4d1e7c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe60b2906c07b0b4e58f7848931ec48c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#abe60b2906c07b0b4e58f7848931ec48c">reversed</a> () const</td></tr>
+<tr class="memitem:abe60b2906c07b0b4e58f7848931ec48c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#abe60b2906c07b0b4e58f7848931ec48c">reversed</a> () const</td></tr>
 <tr class="separator:abe60b2906c07b0b4e58f7848931ec48c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b7e1fc15ea6fa69bc3affb106bc9bb6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a5b7e1fc15ea6fa69bc3affb106bc9bb6">contains</a> (const <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &amp;value) const</td></tr>
+<tr class="memitem:a5b7e1fc15ea6fa69bc3affb106bc9bb6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a5b7e1fc15ea6fa69bc3affb106bc9bb6">contains</a> (const <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &amp;value) const</td></tr>
 <tr class="separator:a5b7e1fc15ea6fa69bc3affb106bc9bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a0caaaf324c363247d211521f81b3389b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a0caaaf324c363247d211521f81b3389b">calculateDelta</a> (const <a class="el" href="classAccessible.html">Accessible</a> &amp;l, const <a class="el" href="classAccessible.html">Accessible</a> &amp;r)</td></tr>
+<tr class="memitem:a0caaaf324c363247d211521f81b3389b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessible.html#a0caaaf324c363247d211521f81b3389b">calculateDelta</a> (const <a class="el" href="classAccessible.html">Accessible</a> &amp;l, const <a class="el" href="classAccessible.html">Accessible</a> &amp;r)</td></tr>
 <tr class="separator:a0caaaf324c363247d211521f81b3389b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -133,8 +137,8 @@ class Accessible&lt; Base &gt;</div><p >Extension class that adds a couple metho
 <p >Aside from the useful methods, <code><a class="el" href="classAccessible.html">Accessible</a></code> also provides an <code>operator==</code> that makes it possible to compare any two <code><a class="el" href="classAccessible.html">Accessible</a></code> classes as long as their elements are comparable.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a> </dd></dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a4b1fb4ac86d16921bbda3a73f46a313c" name="a4b1fb4ac86d16921bbda3a73f46a313c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b1fb4ac86d16921bbda3a73f46a313c">&#9670;&#160;</a></span>value_type</h2>
+<a id="ac6ef5c3c27bb9e2176946ae554fb6281" name="ac6ef5c3c27bb9e2176946ae554fb6281"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6ef5c3c27bb9e2176946ae554fb6281">&#9670;&#160;</a></span>const_iterator</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -142,7 +146,39 @@ class Accessible&lt; Base &gt;</div><p >Extension class that adds a couple metho
 template&lt;class Base &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::value_type =  std::iter_value_t&lt;decltype(std::declval&lt;const Base *&gt;()-&gt;begin())&gt;</td>
+          <td class="memname">using <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::const_iterator =  decltype(std::declval&lt;const Base *&gt;()-&gt;begin())</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae751b2eb268aac045188246f193ab121" name="ae751b2eb268aac045188246f193ab121"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae751b2eb268aac045188246f193ab121">&#9670;&#160;</a></span>const_reference</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Base &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::const_reference =  std::iter_reference_t&lt;<a class="el" href="classAccessible.html#ac6ef5c3c27bb9e2176946ae554fb6281">const_iterator</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a357d7a8d5b7bd585cc3fcf662778919a" name="a357d7a8d5b7bd585cc3fcf662778919a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a357d7a8d5b7bd585cc3fcf662778919a">&#9670;&#160;</a></span>value_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Base &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::value_type =  std::iter_value_t&lt;<a class="el" href="classAccessible.html#ac6ef5c3c27bb9e2176946ae554fb6281">const_iterator</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -162,7 +198,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::adjacentDeltas </td>
+          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::adjacentDeltas </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -177,8 +213,8 @@ template&lt;class Base &gt; </div>
 
 </div>
 </div>
-<a id="a42bd8d597c6f2f8cfb9202f988cff84a" name="a42bd8d597c6f2f8cfb9202f988cff84a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42bd8d597c6f2f8cfb9202f988cff84a">&#9670;&#160;</a></span>back()</h2>
+<a id="af41cd9b25ff8fdc70024ce5153e2b1f1" name="af41cd9b25ff8fdc70024ce5153e2b1f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af41cd9b25ff8fdc70024ce5153e2b1f1">&#9670;&#160;</a></span>back()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -189,7 +225,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &amp; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::back </td>
+          <td class="memname"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::back </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -218,7 +254,7 @@ template&lt;class Base &gt; </div>
         <tr>
           <td class="memname">bool <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::contains </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &amp;&#160;</td>
           <td class="paramname"><em>value</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -244,7 +280,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::delta </td>
+          <td class="memname"><a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::delta </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -273,7 +309,7 @@ template&lt;class Filter &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::filtered </td>
+          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::filtered </td>
           <td>(</td>
           <td class="paramtype">Filter&#160;</td>
           <td class="paramname"><em>filter</em></td><td>)</td>
@@ -316,8 +352,8 @@ template&lt;class Base &gt; </div>
 
 </div>
 </div>
-<a id="a90e9b805976961bddfab5b06ef64d1b9" name="a90e9b805976961bddfab5b06ef64d1b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90e9b805976961bddfab5b06ef64d1b9">&#9670;&#160;</a></span>front()</h2>
+<a id="a9c2af2b5774c877a65cec26969f8719a" name="a9c2af2b5774c877a65cec26969f8719a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c2af2b5774c877a65cec26969f8719a">&#9670;&#160;</a></span>front()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -328,7 +364,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &amp; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::front </td>
+          <td class="memname"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::front </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -355,7 +391,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::frontBack </td>
+          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::frontBack </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -370,8 +406,8 @@ template&lt;class Base &gt; </div>
 
 </div>
 </div>
-<a id="a9261014cc1d5a3af4eda7f7c7342955f" name="a9261014cc1d5a3af4eda7f7c7342955f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9261014cc1d5a3af4eda7f7c7342955f">&#9670;&#160;</a></span>max()</h2>
+<a id="af368288b8cbbfe6c1c8bd48431303db5" name="af368288b8cbbfe6c1c8bd48431303db5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af368288b8cbbfe6c1c8bd48431303db5">&#9670;&#160;</a></span>max()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -382,7 +418,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::max </td>
+          <td class="memname"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::max </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -397,8 +433,8 @@ template&lt;class Base &gt; </div>
 
 </div>
 </div>
-<a id="a691e8342e0e1fe09aff76a3a31f8bd9e" name="a691e8342e0e1fe09aff76a3a31f8bd9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a691e8342e0e1fe09aff76a3a31f8bd9e">&#9670;&#160;</a></span>min()</h2>
+<a id="a8f98856706ff9530cddd8c879419df59" name="a8f98856706ff9530cddd8c879419df59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f98856706ff9530cddd8c879419df59">&#9670;&#160;</a></span>min()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -409,7 +445,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::min </td>
+          <td class="memname"><a class="el" href="classAccessible.html#ae751b2eb268aac045188246f193ab121">const_reference</a> <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::min </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -436,7 +472,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::minMax </td>
+          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::minMax </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -463,7 +499,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::reversed </td>
+          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt; <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::reversed </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -518,7 +554,7 @@ template&lt;class Base &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a4b1fb4ac86d16921bbda3a73f46a313c">value_type</a> &gt; calculateDelta </td>
+          <td class="memname"><a class="el" href="AccessibleVector_8h.html#a355d0d0e502617030dbe4b99ca5fb8db">AccessibleVector</a>&lt; <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a> &gt; calculateDelta </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt; &amp;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
