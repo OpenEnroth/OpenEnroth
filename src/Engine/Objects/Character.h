@@ -341,7 +341,7 @@ class Character {
     bool IsEradicated() const;
     bool IsZombie() const;
     bool IsCursed() const;
-    bool IsPertified() const;
+    bool IsPetrified() const;
     bool IsUnconcious() const;
     bool IsAsleep() const;
     bool IsParalyzed() const;
@@ -362,7 +362,7 @@ class Character {
     void SetParalyzed(GameTime time);
     void SetUnconcious(GameTime time);
     void SetDead(GameTime time);
-    void SetPertified(GameTime time);
+    void SetPetrified(GameTime time);
     void SetEradicated(GameTime time);
     void SetZombie(GameTime time);
 

@@ -1248,7 +1248,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             if (pParty->days_played_without_rest > 3) {
                 for (Character &character : pParty->pCharacters) {
                     character.resetTempBonuses();
-                    if (!character.IsPertified() && !character.IsEradicated() && !character.IsDead()) {
+                    if (!character.IsPetrified() && !character.IsEradicated() && !character.IsDead()) {
                         if (grng->random(100) < 5 * pParty->days_played_without_rest)
                             character.SetCondDeadWithBlockCheck(0);
                         if (grng->random(100) < 10 * pParty->days_played_without_rest)
@@ -1468,9 +1468,11 @@ void maybeWakeSoloSurvivor() {
     // Try waking up a single character.
     for (Character &character : pParty->pCharacters) {
         if (character.conditions.Has(CONDITION_SLEEP)) {
-            character.conditions.Reset(CONDITION_SLEEP);
-            pParty->setActiveToFirstCanAct();
-            break;
+            if (character.conditions.HasNone({ CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED })) {
+                character.conditions.Reset(CONDITION_SLEEP);
+                pParty->setActiveToFirstCanAct();
+                break;
+            }
         }
     }
 }
