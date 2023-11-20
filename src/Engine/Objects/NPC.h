@@ -22,11 +22,11 @@ using enum NpcType;
 inline bool CheckPortretAgainstSex(int a1, CharacterSex) { return true; }
 
 bool PartyHasDragon();
-bool CheckHiredNPCSpeciality(NPCProf prof);
+bool CheckHiredNPCSpeciality(NpcProfession prof);
 
-int UseNPCSkill(NPCProf profession, int id);
+int UseNPCSkill(NpcProfession profession, int id);
 
-const std::string &GetProfessionActionText(NPCProf prof);
+const std::string &GetProfessionActionText(NpcProfession prof);
 NPCData *GetNPCData(signed int npcid);
 NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
 

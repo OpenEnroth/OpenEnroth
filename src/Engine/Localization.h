@@ -549,7 +549,7 @@ class Localization {
         return this->GetString(472 + index);
     }
 
-    const char *GetNpcProfessionName(NPCProf prof) const {
+    const char *GetNpcProfessionName(NpcProfession prof) const {
         return this->npc_profession_names[prof];
     }
 

@@ -87,7 +87,7 @@ bool PartyHasDragon() { return pNPCStats->pNewNPCData[57].Hired(); }
 
 //----- (00476395) --------------------------------------------------------
 // 0x26 Wizard eye at skill level 2
-bool CheckHiredNPCSpeciality(NPCProf prof) {
+bool CheckHiredNPCSpeciality(NpcProfession prof) {
     if (bNoNPCHiring == 1) return false;
 
     for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
@@ -115,7 +115,7 @@ NpcType getNPCType(int npcId) {
 }
 
 //----- (00445308) --------------------------------------------------------
-const std::string &GetProfessionActionText(NPCProf prof) {
+const std::string &GetProfessionActionText(NpcProfession prof) {
     switch (prof) {
     case Healer:
     case ExpertHealer:
@@ -135,7 +135,7 @@ const std::string &GetProfessionActionText(NPCProf prof) {
 }
 
 //----- (004BB756) --------------------------------------------------------
-int UseNPCSkill(NPCProf profession, int id) {
+int UseNPCSkill(NpcProfession profession, int id) {
     switch (profession) {
         case Healer: {
             for (Character &player : pParty->pCharacters) {

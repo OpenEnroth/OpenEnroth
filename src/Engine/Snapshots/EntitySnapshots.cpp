@@ -310,7 +310,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = static_cast<HouseId>(src.location2d);
-    dst->profession = static_cast<NPCProf>(src.profession);
+    dst->profession = static_cast<NpcProfession>(src.profession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
     dst->field_24 = src.field_24;

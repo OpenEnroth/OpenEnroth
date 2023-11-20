@@ -1030,7 +1030,7 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
         buf.Prepare();
 
         for (int i = 0; i < buf.Size(); i++) {
-            NPCProf prof = buf.Get(i)->profession;
+            NpcProfession prof = buf.Get(i)->profession;
             if (prof != NoProfession) {
                 hirelingSalaries += pNPCStats->pProfessions[prof].uHirePrice;
             }

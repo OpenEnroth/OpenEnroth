@@ -1289,7 +1289,7 @@ std::string NameAndTitle(const std::string &name, CharacterClass class_type) {
 }
 
 
-std::string NameAndTitle(const std::string &name, NPCProf profession) {
+std::string NameAndTitle(const std::string &name, NpcProfession profession) {
     return NameAndTitle(
         name,
         localization->GetNpcProfessionName(profession)
