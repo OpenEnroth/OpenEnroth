@@ -7,13 +7,19 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 add_subdirectory(fast_float)
-add_subdirectory(fmt)
 add_subdirectory(glm)
 add_subdirectory(magic_enum)
 add_subdirectory(nuklear)
 add_subdirectory(cli11)
 add_subdirectory(nlohmann_json)
 add_subdirectory(mio)
+
+# fmt
+add_subdirectory(fmt)
+target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
+if (BUILD_COMPILER STREQUAL "msvc")
+    target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
+endif ()
 
 # glad
 add_subdirectory(glad)
