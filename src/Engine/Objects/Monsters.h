@@ -32,10 +32,10 @@ struct MonsterInfo {
     uint8_t goldDiceRolls = 0;
     uint8_t goldDiceSides = 0;
     bool flying = false;
-    MONSTER_MOVEMENT_TYPE movementType = MONSTER_MOVEMENT_TYPE_SHORT;
+    MonsterMovementType movementType = MONSTER_MOVEMENT_TYPE_SHORT;
     MonsterAiType aiType = MONSTER_AI_SUICIDE;
     MonsterHostility hostilityType = HOSTILITY_FRIENDLY;
-    SPECIAL_ATTACK_TYPE specialAttackType = SPECIAL_ATTACK_NONE;
+    SpecialAttackType specialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t specialAttackLevel = 0;
     DamageType attack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
     uint8_t attack1DamageDiceRolls = 0;
@@ -64,7 +64,7 @@ struct MonsterInfo {
     uint8_t resLight = 0;
     uint8_t resDark = 0;
     uint8_t resPhysical = 0;
-    MONSTER_SPECIAL_ABILITY_TYPE specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
+    MonsterSpecialAbility specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
     uint8_t specialAbilityDamageDiceRolls = 0;
     uint8_t specialAbilityDamageDiceSides = 0;
     uint8_t specialAbilityDamageDiceBonus = 0;

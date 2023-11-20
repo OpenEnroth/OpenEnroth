@@ -38,7 +38,7 @@ static constexpr IndexedArray<MagicSchool, BUILDING_FIRE_GUILD, BUILDING_DARK_GU
     {BUILDING_DARK_GUILD,   MAGIC_SCHOOL_DARK}
 };
 
-static constexpr IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableMagicSkillDialogue = {
+static constexpr IndexedArray<DialogueId, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableMagicSkillDialogue = {
     {BUILDING_FIRE_GUILD,   DIALOGUE_LEARN_FIRE},
     {BUILDING_AIR_GUILD,    DIALOGUE_LEARN_AIR},
     {BUILDING_WATER_GUILD,  DIALOGUE_LEARN_WATER},
@@ -50,7 +50,7 @@ static constexpr IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_
     {BUILDING_DARK_GUILD,   DIALOGUE_LEARN_DARK}
 };
 
-static constexpr IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableAdditionalSkillDialogue = {
+static constexpr IndexedArray<DialogueId, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableAdditionalSkillDialogue = {
     {BUILDING_FIRE_GUILD,   DIALOGUE_LEARN_LEARNING},
     {BUILDING_AIR_GUILD,    DIALOGUE_LEARN_LEARNING},
     {BUILDING_WATER_GUILD,  DIALOGUE_LEARN_LEARNING},
@@ -159,7 +159,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
             optionsText.push_back(localization->GetString(LSTR_BUY_SPELLS));
         } else {
-            CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+            CharacterSkillType skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
                 optionsText.push_back(localization->GetSkillName(skill));
@@ -247,7 +247,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     }
 }
 
-void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_MagicGuild::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
@@ -279,7 +279,7 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_MagicGuild::listDialogueOptions() {
     BuildingType guildType = buildingType();
 
     switch (_currentDialogue) {

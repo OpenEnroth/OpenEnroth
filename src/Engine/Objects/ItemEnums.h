@@ -22,7 +22,6 @@ enum class DamageType : unsigned int {
 };
 using enum DamageType;
 
-/*  338 */
 enum class ItemFlag : uint32_t {
     ITEM_IDENTIFIED = 0x1,
     ITEM_BROKEN = 0x2,

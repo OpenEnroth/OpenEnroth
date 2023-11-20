@@ -310,7 +310,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = static_cast<HouseId>(src.location2d);
-    dst->profession = static_cast<NPCProf>(src.profession);
+    dst->profession = static_cast<NpcProfession>(src.profession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
     dst->field_24 = src.field_24;
@@ -633,7 +633,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     reconstruct(src.pickedItem, &dst->pPickedItem);
 
-    dst->uFlags = static_cast<PARTY_FLAGS_1>(src.flags);
+    dst->uFlags = static_cast<PartyFlags>(src.flags);
 
     reconstruct(src.standartItemsInShops, &dst->standartItemsInShops);
     reconstruct(src.specialItemsInShops, &dst->specialItemsInShops);
@@ -1246,10 +1246,10 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.treasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
     dst->monsterInfo.treasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
     dst->monsterInfo.flying = src.pMonsterInfo.flying;
-    dst->monsterInfo.movementType = static_cast<MONSTER_MOVEMENT_TYPE>(src.pMonsterInfo.movementType);
+    dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.pMonsterInfo.movementType);
     dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
     dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
-    dst->monsterInfo.specialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackType = static_cast<SpecialAttackType>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.specialAttackLevel = src.pMonsterInfo.specialAttackLevel;
     dst->monsterInfo.attack1Type = static_cast<DamageType>(src.pMonsterInfo.attack1Type);
     dst->monsterInfo.attack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
@@ -1276,7 +1276,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.resLight = src.pMonsterInfo.resLight;
     dst->monsterInfo.resDark = src.pMonsterInfo.resDark;
     dst->monsterInfo.resPhysical = src.pMonsterInfo.resPhysical;
-    dst->monsterInfo.specialAbilityType = static_cast<MONSTER_SPECIAL_ABILITY_TYPE>(src.pMonsterInfo.specialAbilityType);
+    dst->monsterInfo.specialAbilityType = static_cast<MonsterSpecialAbility>(src.pMonsterInfo.specialAbilityType);
     dst->monsterInfo.specialAbilityDamageDiceRolls = src.pMonsterInfo.specialAbilityDamageDiceRolls;
     dst->monsterInfo.specialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->monsterInfo.specialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
@@ -1512,7 +1512,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
 }
 
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
-    dst->uType = static_cast<SPRITE_OBJECT_TYPE>(src.uType);
+    dst->uType = static_cast<SpriteId>(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
     reconstruct(src.vVelocity, &dst->vVelocity);
@@ -1531,7 +1531,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_caster_pid = Pid::fromPacked(src.spell_caster_pid);
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
-    dst->spellCasterAbility = static_cast<ABILITY_INDEX>(src.spellCasterAbility);
+    dst->spellCasterAbility = static_cast<ActorAbility>(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
 }
 
@@ -1663,7 +1663,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     reconstruct(src.name, &dst->name);
-    dst->uObjectID = static_cast<SPRITE_OBJECT_TYPE>(src.uObjectID);
+    dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);
@@ -1676,7 +1676,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     reconstruct(src.name, &dst->name);
-    dst->uObjectID = static_cast<SPRITE_OBJECT_TYPE>(src.uObjectID);
+    dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);
@@ -1708,8 +1708,8 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
     reconstruct(src.pSoundName, &dst->sName);
     dst->uSoundID = static_cast<SoundId>(src.uSoundID);
-    dst->eType = static_cast<SOUND_TYPE>(src.eType);
-    dst->uFlags = static_cast<SOUND_FLAGS>(src.uFlags);
+    dst->eType = static_cast<SoundType>(src.eType);
+    dst->uFlags = static_cast<SoundFlags>(src.uFlags);
 }
 
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {

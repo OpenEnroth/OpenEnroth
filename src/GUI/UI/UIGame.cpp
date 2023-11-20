@@ -84,7 +84,7 @@ std::array<std::array<int, 2>, 14> pPartySpellbuffsUI_XYs = {{
 std::array<uint8_t, 14> pPartySpellbuffsUI_smthns = {
     {14, 1, 10, 4, 7, 2, 9, 3, 6, 15, 8, 3, 12, 0}};
 
-std::array<PARTY_BUFF_INDEX, 14> spellBuffsAtRightPanel = {
+std::array<PartyBuff, 14> spellBuffsAtRightPanel = {
     {PARTY_BUFF_FEATHER_FALL, PARTY_BUFF_RESIST_FIRE, PARTY_BUFF_RESIST_AIR,
      PARTY_BUFF_RESIST_WATER, PARTY_BUFF_RESIST_MIND, PARTY_BUFF_RESIST_EARTH,
      PARTY_BUFF_RESIST_BODY, PARTY_BUFF_HEROISM, PARTY_BUFF_HASTE,
@@ -1263,7 +1263,7 @@ void GameUI_DrawPartySpells() {
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive()) {
-            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+            if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
             else
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->GetTexture();

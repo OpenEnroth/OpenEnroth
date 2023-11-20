@@ -1545,7 +1545,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
-        || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
+        || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
         fall_start = floorZ;
         bFeatherFall = true;
         pParty->uFallStartZ = floorZ;
@@ -1555,9 +1555,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (fall_start - pParty->pos.z > 512 && !bFeatherFall && pParty->pos.z <= floorZ + 1) {  // fall damage
-        if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
+        if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
-            pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+            pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
         } else {
             pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
         }
@@ -1708,7 +1708,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
             pParty->speed.z -= 1.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
         } else {
-            if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
+            if (!(pParty->uFlags & PARTY_FLAG_LANDING))
                 pParty->speed.z = 0;
         }
     }
@@ -1801,12 +1801,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     else
         pParty->setAirborne(true);
 
-    pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
+    pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
     pParty->_viewYaw = angle;
     pParty->_viewPitch = vertical_angle;
 
     if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
-        pParty->uFlags |= PARTY_FLAGS_1_BURNING;
+        pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
         eventProcessor(faceEvent, Pid(), 1);

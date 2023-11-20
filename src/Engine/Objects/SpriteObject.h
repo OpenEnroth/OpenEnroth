@@ -60,12 +60,12 @@ struct SpriteObject {
      * @param item           Containing item of sprite (may be null).
      * @offset 0x42F7EB
      */
-    static bool dropItemAt(SPRITE_OBJECT_TYPE spriteType, Vec3i pos, int speed, int count = 1,
+    static bool dropItemAt(SpriteId spriteType, Vec3i pos, int speed, int count = 1,
                            bool randomRotate = false, SpriteAttributes attributes = 0, ItemGen *item = nullptr);
     static void createSplashObject(Vec3i pos);
     static void InitializeSpriteObjects();
 
-    SPRITE_OBJECT_TYPE uType = SPRITE_NULL;
+    SpriteId uType = SPRITE_NULL;
     // unsigned __int16 uType;
     uint16_t uObjectDescID = 0; // Index into pObjectList->pObjects. Zero means free slot, can reuse.
     Vec3i vPosition;
@@ -85,7 +85,7 @@ struct SpriteObject {
     Pid spell_caster_pid;
     Pid spell_target_pid;
     char field_60_distance_related_prolly_lod = 0;
-    ABILITY_INDEX spellCasterAbility = ABILITY_ATTACK1;
+    ActorAbility spellCasterAbility = ABILITY_ATTACK1;
     Vec3i initialPosition;
     int _lastParticleTime{};
     int _ticksPerParticle{ 2 }; // how many 1/128ths between particles

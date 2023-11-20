@@ -247,7 +247,6 @@ enum UIMessageType : uint32_t {
     UIMSG_Invalid = 0xffffffff
 };
 
-/*  251 */
 enum class MenuType {
     MENU_MAIN = 0,
     MENU_NEWGAME = 1,

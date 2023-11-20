@@ -13,7 +13,7 @@ struct AttackDescription {
     Vec3i pos;
     int attackRange;
     bool isMelee; // Melee attack or magic AOE
-    ABILITY_INDEX attackSpecial; // special ability
+    ActorAbility attackSpecial; // special ability
     //Vec3i attackVector; // no point to have it inside struct
 };
 
@@ -28,7 +28,7 @@ extern std::vector<AttackDescription> attackList;  // for area of effect damage
  * @param ability                       ???
  * @offset 0x40261D
  */
-extern void pushAoeAttack(Pid pid, int aoeDistance, Vec3i pos, ABILITY_INDEX ability);
+extern void pushAoeAttack(Pid pid, int aoeDistance, Vec3i pos, ActorAbility ability);
 
 /**
  * Register melee attack performed by an actor.
@@ -37,4 +37,4 @@ extern void pushAoeAttack(Pid pid, int aoeDistance, Vec3i pos, ABILITY_INDEX abi
  * @param pos                           Position of an attacker.
  * @param ability                       ???
  */
-extern void pushMeleeAttack(Pid pid, Vec3i pos, ABILITY_INDEX ability);
+extern void pushMeleeAttack(Pid pid, Vec3i pos, ActorAbility ability);

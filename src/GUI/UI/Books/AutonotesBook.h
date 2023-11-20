@@ -22,4 +22,4 @@ struct GUIWindow_AutonotesBook : public GUIWindow_Book {
     std::unordered_map<int, int> _notesPerPage;
 };
 
-extern AUTONOTE_TYPE autonoteBookDisplayType;
+extern AutonoteType autonoteBookDisplayType;

@@ -5,6 +5,7 @@
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
 
+// TODO(captainurist): #enum rename
 enum class TILE_DESC_FLAG {
     TILE_DESC_NULL = 0,
     TILE_DESC_BURN = 0x1,
@@ -25,6 +26,7 @@ using enum TILE_DESC_FLAG;
 MM_DECLARE_FLAGS(TILE_DESC_FLAGS, TILE_DESC_FLAG)
 MM_DECLARE_OPERATORS_FOR_FLAGS(TILE_DESC_FLAGS)
 
+// TODO(captainurist): #enum rename
 enum class TILE_SECT {
     TILE_SECT_NULL = -1,
     TILE_SECT_Start = -2,

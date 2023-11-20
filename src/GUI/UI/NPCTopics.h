@@ -12,13 +12,13 @@
 
 #include "Library/Geometry/Vec.h"
 
-std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData);
+std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData);
 
-std::vector<DIALOGUE_TYPE> prepareScriptedNPCDialogueTopics(NPCData *npcData);
+std::vector<DialogueId> prepareScriptedNPCDialogueTopics(NPCData *npcData);
 
-DIALOGUE_TYPE handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData);
-std::vector<DIALOGUE_TYPE> listNPCDialogueOptions(DIALOGUE_TYPE topic);
+DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData);
+std::vector<DialogueId> listNPCDialogueOptions(DialogueId topic);
 
-void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData);
+void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData);
 
 extern int gold_transaction_amount;

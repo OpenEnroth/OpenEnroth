@@ -115,7 +115,7 @@ GUIWindow_Temple::GUIWindow_Temple(HouseId houseId) : GUIWindow_House(houseId) {
     std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);
 }
 
-void GUIWindow_Temple::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Temple::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (IsSkillLearningDialogue(option)) {
         learnSelectedSkill(GetLearningDialogueSkill(option));
@@ -147,7 +147,7 @@ void GUIWindow_Temple::houseSpecificDialogue() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Temple::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Temple::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TEMPLE_HEAL, DIALOGUE_TEMPLE_DONATE, DIALOGUE_LEARN_SKILLS};

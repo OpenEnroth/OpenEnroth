@@ -192,7 +192,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                         pNPCData[i + 1].Location2D = static_cast<HouseId>(atoi(test_string));
                         break;
                     case 7:
-                        pNPCData[i + 1].profession = static_cast<NPCProf>(atoi(test_string));
+                        pNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
                         break;
                     case 8:
                         pNPCData[i + 1].greet = atoi(test_string);
@@ -418,7 +418,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
     char *tmp_pos = nullptr;
     int decode_step;
 
-    for (NPCProf i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
+    for (NpcProfession i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -571,7 +571,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
                 .professionChancePerArea[gen_profession++];
         } while (test_prof_summ < max_prof_cap);
     }
-    pNPCDataBuff->profession = (NPCProf)(gen_profession - 1);
+    pNPCDataBuff->profession = (NpcProfession)(gen_profession - 1);
     pNPCDataBuff->Location2D = uLocation2D;
     pNPCDataBuff->field_24 = 1;
     pNPCDataBuff->is_joinable = 1;

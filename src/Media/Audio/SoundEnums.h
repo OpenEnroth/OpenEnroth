@@ -179,22 +179,22 @@ enum class MusicId {
 };
 using enum MusicId;
 
-enum class SOUND_TYPE {
+enum class SoundType {
     SOUND_TYPE_LEVEL = 0,
     SOUND_TYPE_SYSTEM = 1,
     SOUND_TYPE_SWAP = 2,
     SOUND_TYPE_UNKNOWN = 3,
     SOUND_TYPE_LOCK = 4,
 };
-using enum SOUND_TYPE;
+using enum SoundType;
 
-enum class SOUND_FLAG {
+enum class SoundFlag {
     SOUND_FLAG_LOCKED = 0x1,
     SOUND_FLAG_3D = 0x2,
 };
-using enum SOUND_FLAG;
-MM_DECLARE_FLAGS(SOUND_FLAGS, SOUND_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(SOUND_FLAGS)
+using enum SoundFlag;
+MM_DECLARE_FLAGS(SoundFlags, SoundFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SoundFlags)
 
 enum class SoundPlaybackMode {
     /** Normal sound, requires a pid. */

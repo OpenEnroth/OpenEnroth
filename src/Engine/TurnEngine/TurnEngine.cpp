@@ -249,7 +249,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     for (unsigned i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
 
-        for (ACTOR_BUFF_INDEX j : pActors[i].buffs.indices())
+        for (ActorBuff j : pActors[i].buffs.indices())
             if (j != ACTOR_BUFF_MASS_DISTORTION)
                 pActors[i].buffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
@@ -573,7 +573,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
     // int v3; // eax@1
     unsigned int actor_id;  // ebx@2
     // Actor *v5; // esi@2
-    ABILITY_INDEX v19;        // al@24
+    ActorAbility v19;        // al@24
     AIDirection a3;  // [sp+Ch] [bp-3Ch]@2
     AIDirection a4;  // [sp+28h] [bp-20h]@2
     // TurnBased_QueueElem *v28; // [sp+44h] [bp-4h]@1
@@ -645,7 +645,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     AIDirection v7;         // esi@10
     int v9;                 // ecx@10
     MonsterHostility v10;         // eax@13
-    ABILITY_INDEX v14;                // eax@29
+    ActorAbility v14;                // eax@29
     AIDirection a3;         // [sp+Ch] [bp-44h]@10
     AIDirection v18;        // [sp+28h] [bp-28h]@10
     Pid v22;         // [sp+58h] [bp+8h]@10

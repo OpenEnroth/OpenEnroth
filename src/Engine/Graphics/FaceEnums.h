@@ -56,7 +56,6 @@ using enum DoorAttribute;
 MM_DECLARE_FLAGS(DoorAttributes, DoorAttribute)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
-/*  291 */
 enum class PolygonType : uint8_t {
     POLYGON_Invalid = 0x0,
     POLYGON_VerticalWall = 0x1,

@@ -74,9 +74,9 @@ ItemId itemDropForMonsterType(MonsterType monsterType);
  * @param monsterType                   Monster type to check.
  * @return                              Supertype for the provided monster type.
  */
-MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType);
+MonsterSupertype supertypeForMonsterType(MonsterType monsterType);
 
-inline MONSTER_SUPERTYPE supertypeForMonsterId(MonsterId monsterId) {
+inline MonsterSupertype supertypeForMonsterId(MonsterId monsterId) {
     return supertypeForMonsterType(monsterTypeForMonsterId(monsterId));
 }
 

@@ -1656,7 +1656,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor) {  // long function - consider breaking into two??
+int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor) {  // long function - consider breaking into two??
     int statcheck;
     int statcheckbonus;
     int luckstat = GetActualLuck();
@@ -4429,7 +4429,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
                 return true;
             return false;
         case VAR_HiredNPCHasSpeciality:
-            return CheckHiredNPCSpeciality((NPCProf)pValue);
+            return CheckHiredNPCSpeciality((NpcProfession)pValue);
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
@@ -6198,14 +6198,14 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_HiredNPCHasSpeciality:
             for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
-                if (pNPCStats->pNewNPCData[i].profession == (NPCProf)pValue) {
+                if (pNPCStats->pNewNPCData[i].profession == (NpcProfession)pValue) {
                     pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 }
             }
-            if (pParty->pHirelings[0].profession == (NPCProf)pValue) {
+            if (pParty->pHirelings[0].profession == (NpcProfession)pValue) {
                 pParty->pHirelings[0] = NPCData();
             }
-            if (pParty->pHirelings[1].profession == (NPCProf)pValue) {
+            if (pParty->pHirelings[1].profession == (NpcProfession)pValue) {
                 pParty->pHirelings[1] = NPCData();
             }
             pParty->hirelingScrollPosition = 0;
@@ -6417,7 +6417,7 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
+void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int targetchar) {
     // target character? if any
 
     SpellId spellId;
@@ -6602,7 +6602,7 @@ void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-            SPRITE_OBJECT_TYPE spriteType = spritefrom->uType;
+            SpriteId spriteType = spritefrom->uType;
 
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point

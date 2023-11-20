@@ -113,7 +113,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    std::vector<DIALOGUE_TYPE> optionList;
+    std::vector<DialogueId> optionList;
 
     if (type == DIALOG_WINDOW_FULL) {
         if (getNPCType(sDialogue_SpeakingActorNPC_ID) == NPC_TYPE_QUEST) {
@@ -276,7 +276,7 @@ void GUIWindow_Dialogue::Update() {
             break;
         }
 
-        DIALOGUE_TYPE topic = (DIALOGUE_TYPE)pButton->msg_param;
+        DialogueId topic = (DialogueId)pButton->msg_param;
         pButton->sLabel = npcDialogueOptionString(topic, pNPC);
         if (pButton->sLabel.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
             pButton->msg_param = 0;
@@ -342,7 +342,7 @@ void BuildHireableNpcDialogue() {
     pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_HIRE_FIRE_SHORT);
 }
 
-void selectNPCDialogueOption(DIALOGUE_TYPE option) {
+void selectNPCDialogueOption(DialogueId option) {
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
 
     ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(option);
@@ -352,10 +352,10 @@ void selectNPCDialogueOption(DIALOGUE_TYPE option) {
     }
 
     if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
-        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(option, speakingNPC);
+        DialogueId newTopic = handleScriptedNPCTopicSelection(option, speakingNPC);
 
         if (newTopic != DIALOGUE_MAIN) {
-            std::vector<DIALOGUE_TYPE> topics = listNPCDialogueOptions(newTopic);
+            std::vector<DialogueId> topics = listNPCDialogueOptions(newTopic);
             ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
             pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,

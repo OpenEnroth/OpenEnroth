@@ -10,9 +10,9 @@ class GUIWindow_Tavern : public GUIWindow_House {
     explicit GUIWindow_Tavern(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Tavern() {}
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual std::vector<DialogueId> listDialogueOptions() override;
     virtual void updateDialogueOnEscape() override;
 
  protected:

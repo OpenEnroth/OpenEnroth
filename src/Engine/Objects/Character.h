@@ -204,7 +204,7 @@ class Character {
      * @offset 0x48DC1E
      */
     int receiveDamage(signed int amount, DamageType dmg_type);
-    int ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor);
+    int ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor);
 
     // TODO(captainurist): move closer to Spells data.
     DamageType GetSpellDamageType(SpellId uSpellID) const;
@@ -567,7 +567,7 @@ inline CharacterExpressionID expressionForCondition(Condition condition) {
     }
 }
 
-void DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4);
+void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int CharacterCreation_GetUnspentAttributePointCount();

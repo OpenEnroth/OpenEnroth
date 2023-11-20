@@ -15,9 +15,9 @@ class SoundInfo {
 
  public:
     std::string sName;
-    SOUND_TYPE eType;
+    SoundType eType;
     SoundId uSoundID;
-    SOUND_FLAGS uFlags;
+    SoundFlags uFlags;
     std::shared_ptr<Blob> buffer;
     PAudioDataSource dataSource;
 };

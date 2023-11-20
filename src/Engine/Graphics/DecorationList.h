@@ -11,7 +11,6 @@
 #include "Utility/Flags.h"
 #include "Utility/Memory/Blob.h"
 
-/*  321 */
 enum class DecorationDescFlag : uint16_t {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
     DECORATION_DESC_DONT_DRAW = 0x0002,

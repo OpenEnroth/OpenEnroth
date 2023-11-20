@@ -43,7 +43,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
     double length_vector;
     int pDepth;
     bool flag_shout;
-    SPRITE_OBJECT_TYPE pSpriteID[4];
+    SpriteId pSpriteID[4];
     Vec3i pOut;
     int yawAngle{};
     int pitchAngle{};
