@@ -1656,7 +1656,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Character::ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor) {  // long function - consider breaking into two??
+int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor) {  // long function - consider breaking into two??
     int statcheck;
     int statcheckbonus;
     int luckstat = GetActualLuck();

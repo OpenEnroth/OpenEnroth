@@ -448,7 +448,7 @@ enum class MonsterSupertype {
 };
 using enum MonsterSupertype;
 
-enum class SPECIAL_ATTACK_TYPE : uint8_t {
+enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -474,7 +474,7 @@ enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_MANA_DRAIN = 22,
     SPECIAL_ATTACK_FEAR = 23,
 };
-using enum SPECIAL_ATTACK_TYPE;
+using enum SpecialAttackType;
 
 enum class MonsterHostility {
     HOSTILITY_FRIENDLY = 0,

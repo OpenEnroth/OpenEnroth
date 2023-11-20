@@ -204,7 +204,7 @@ class Character {
      * @offset 0x48DC1E
      */
     int receiveDamage(signed int amount, DamageType dmg_type);
-    int ReceiveSpecialAttackEffect(SPECIAL_ATTACK_TYPE attType, Actor *pActor);
+    int ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor);
 
     // TODO(captainurist): move closer to Spells data.
     DamageType GetSpellDamageType(SpellId uSpellID) const;
