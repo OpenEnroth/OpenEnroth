@@ -127,7 +127,7 @@ using enum MapId;
  *
  * @see RemapTreasureLevel
  */
-enum class MAP_TREASURE_LEVEL : int8_t {
+enum class MapTreasureLevel : int8_t {
     MAP_TREASURE_LEVEL_1 = 0,
     MAP_TREASURE_LEVEL_2 = 1,
     MAP_TREASURE_LEVEL_3 = 2,
@@ -136,7 +136,7 @@ enum class MAP_TREASURE_LEVEL : int8_t {
     MAP_TREASURE_LEVEL_6 = 5,
     MAP_TREASURE_LEVEL_7 = 6,
 };
-using enum MAP_TREASURE_LEVEL;
+using enum MapTreasureLevel;
 
 enum class MapStartPoint : uint32_t {
     MAP_START_POINT_PARTY = 0,

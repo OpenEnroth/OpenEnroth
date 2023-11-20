@@ -174,6 +174,6 @@ struct SummonedItem {
 
 std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);
 
-Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel);
+Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel);
 
 extern ItemGen *ptr_50C9A4_ItemToEnchant;

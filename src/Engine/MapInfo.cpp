@@ -91,7 +91,7 @@ void MapStats::Initialize(const Blob &mapStats) {
                     pInfos[i].trapDamageD20DiceCount = atoi(test_string);
                     break;
                 case 11:
-                    pInfos[i].mapTreasureLevel = MAP_TREASURE_LEVEL(atoi(test_string));  // treasure levels 0-6
+                    pInfos[i].mapTreasureLevel = static_cast<MapTreasureLevel>(atoi(test_string));  // treasure levels 0-6
                     break;
                 case 12:
                     pInfos[i].encounterChance = atoi(test_string);

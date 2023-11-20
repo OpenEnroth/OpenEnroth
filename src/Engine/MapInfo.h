@@ -27,7 +27,7 @@ struct MapInfo {
     char field_2C;
     char disarmDifficulty; // Difficulty level for disarm trap checks, disarm roll should be at least 2x this number to succeed.
     char trapDamageD20DiceCount; // Traps will deal this number d20 total damage.
-    MAP_TREASURE_LEVEL mapTreasureLevel;
+    MapTreasureLevel mapTreasureLevel;
     char encounterChance; // In [0, 100], chance for an encounter when resting.
     char encounter1Chance; //
     char encounter2Chance; // These three add up to 100, or are all 0.
