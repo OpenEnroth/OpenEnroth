@@ -179,14 +179,14 @@ enum class MusicId {
 };
 using enum MusicId;
 
-enum class SOUND_TYPE {
+enum class SoundType {
     SOUND_TYPE_LEVEL = 0,
     SOUND_TYPE_SYSTEM = 1,
     SOUND_TYPE_SWAP = 2,
     SOUND_TYPE_UNKNOWN = 3,
     SOUND_TYPE_LOCK = 4,
 };
-using enum SOUND_TYPE;
+using enum SoundType;
 
 enum class SOUND_FLAG {
     SOUND_FLAG_LOCKED = 0x1,
