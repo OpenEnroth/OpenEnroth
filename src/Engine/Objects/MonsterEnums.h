@@ -435,7 +435,7 @@ enum class MonsterMovementType {
 };
 using enum MonsterMovementType;
 
-enum class MONSTER_SUPERTYPE {
+enum class MonsterSupertype {
     MONSTER_SUPERTYPE_NONE = 0x0, // OE addition, didn't exist in the original binary.
     MONSTER_SUPERTYPE_UNDEAD = 0x1,
     MONSTER_SUPERTYPE_KREEGAN = 0x2,
@@ -446,7 +446,7 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_TITAN = 0x7,
     MONSTER_SUPERTYPE_NOT_ARENA = 0x8, // Can't be spawned in Arena, no MM7 monster belongs to this supertype.
 };
-using enum MONSTER_SUPERTYPE;
+using enum MonsterSupertype;
 
 enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
