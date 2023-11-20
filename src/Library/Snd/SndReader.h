@@ -7,7 +7,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-struct SndEntry;
+#include "SndSnapshots.h"
 
 /**
  * Reader for Might&Magic SND files.
