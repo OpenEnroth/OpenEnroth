@@ -425,7 +425,7 @@ enum class MonsterSpecialAbility {
 };
 using enum MonsterSpecialAbility;
 
-enum class MONSTER_MOVEMENT_TYPE {
+enum class MonsterMovementType {
     MONSTER_MOVEMENT_TYPE_SHORT = 0x0,
     MONSTER_MOVEMENT_TYPE_MEDIUM = 0x1,
     MONSTER_MOVEMENT_TYPE_LONG = 0x2,
@@ -433,7 +433,7 @@ enum class MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_FREE = 0x4,
     MONSTER_MOVEMENT_TYPE_STATIONARY = 0x5,
 };
-using enum MONSTER_MOVEMENT_TYPE;
+using enum MonsterMovementType;
 
 enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_NONE = 0x0, // OE addition, didn't exist in the original binary.

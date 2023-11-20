@@ -1246,7 +1246,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.treasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
     dst->monsterInfo.treasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
     dst->monsterInfo.flying = src.pMonsterInfo.flying;
-    dst->monsterInfo.movementType = static_cast<MONSTER_MOVEMENT_TYPE>(src.pMonsterInfo.movementType);
+    dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.pMonsterInfo.movementType);
     dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
     dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
     dst->monsterInfo.specialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);

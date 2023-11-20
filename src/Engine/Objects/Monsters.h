@@ -32,7 +32,7 @@ struct MonsterInfo {
     uint8_t goldDiceRolls = 0;
     uint8_t goldDiceSides = 0;
     bool flying = false;
-    MONSTER_MOVEMENT_TYPE movementType = MONSTER_MOVEMENT_TYPE_SHORT;
+    MonsterMovementType movementType = MONSTER_MOVEMENT_TYPE_SHORT;
     MonsterAiType aiType = MONSTER_AI_SUICIDE;
     MonsterHostility hostilityType = HOSTILITY_FRIENDLY;
     SPECIAL_ATTACK_TYPE specialAttackType = SPECIAL_ATTACK_NONE;
