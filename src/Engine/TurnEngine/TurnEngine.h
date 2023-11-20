@@ -16,14 +16,14 @@ using enum TurnEngineFlag;
 MM_DECLARE_FLAGS(TurnEngineFlags, TurnEngineFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(TurnEngineFlags)
 
-enum class TURN_ENGINE_AI_ACTION {
+enum class TurnEngineAiAction {
     TE_AI_STAND = 0,
     TE_AI_RANGED_ATTACK = 1,
     TE_AI_PURSUE = 2,
     TE_AI_MELEE_ATTACK = 3,
     TE_AI_FLEE = 4
 };
-using enum TURN_ENGINE_AI_ACTION;
+using enum TurnEngineAiAction;
 
 enum class TurnEngineStep {
     TE_NONE = 0,
@@ -43,7 +43,7 @@ struct TurnBased_QueueElem {
     Pid uPackedID;
     int actor_initiative;  // act first who have less
     int uActionLength;
-    TURN_ENGINE_AI_ACTION AI_action_type;
+    TurnEngineAiAction AI_action_type;
 };
 
 struct stru262_TurnBased {
