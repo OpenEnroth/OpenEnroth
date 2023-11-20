@@ -50,7 +50,7 @@ enum class ActorBuff {
 };
 using enum ActorBuff;
 
-/*  264 */
+// TODO(captainurist): #enum need to do some renamings here
 enum class AIState : uint16_t {
     Standing = 0x0,
     Tethered = 0x1,

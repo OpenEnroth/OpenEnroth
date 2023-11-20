@@ -37,7 +37,7 @@ void initializeAutonotes(const Blob &autonotes) {
                         break;
                     case 2: {
                         if (iequals(test_string, "potion")) {
-                            pAutonoteTxt[i].eType = AUTONOTE_POTION_RECEPIE;
+                            pAutonoteTxt[i].eType = AUTONOTE_POTION_RECIPE;
                             break;
                         }
                         if (iequals(test_string, "stat")) {
