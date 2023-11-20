@@ -432,7 +432,7 @@ void oracleDialogue() {
  * @offset 0x4B29F2
  */
 const std::string &joinGuildOptionString() {
-    GUILD_ID guild_id = static_cast<GUILD_ID>(topicEventId - 400);
+    GuildId guild_id = static_cast<GuildId>(topicEventId - 400);
     static const int dialogue_base = 110;
     AwardType guildMembershipAwardBit = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
 
