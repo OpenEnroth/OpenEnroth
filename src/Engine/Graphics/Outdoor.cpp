@@ -352,14 +352,14 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
             uDefaultTravelTime_ByFoot = 1;
             *pOut = "out15.odm";  // Shoals
             uLevel_StartingPointType = MAP_START_POINT_EAST;
-            pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE);
+            pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
             return true;
         }
     } else if (mapNumberAsInt == MAP_SHOALS && direction == 3) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
         *pOut = "out14.odm";  // Avlee
         uLevel_StartingPointType = MAP_START_POINT_WEST;
-        pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE);
+        pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
         return true;
     }
     destinationMap = foot_travel_destinations[mapNumberAsInt][direction - 1];
@@ -1581,8 +1581,8 @@ void ODM_UpdateUserInputAndOther() {
         pParty->pos.y < -22528 || pParty->pos.y > 22528) {
         pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut);
-        if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
-                             pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
+        if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
+                             pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) ||
             !v0) {
             if (pParty->pos.x < -22528) pParty->pos.x = -22528;
             if (pParty->pos.x > 22528) pParty->pos.x = 22528;
@@ -1625,7 +1625,7 @@ OutdoorLocation::OutdoorLocation() {
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions() {
     bool waterWalkActive = false;
-    pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+    pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         waterWalkActive = true;
         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
@@ -1643,7 +1643,7 @@ void ODM_ProcessPartyActions() {
     int currentGroundLevel = floorZ + 1;
 
     bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
-                                    || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                                    || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
     if (partyHasFeatherFall)
         pParty->uFallStartZ = floorZ;
     else
@@ -1662,7 +1662,7 @@ void ODM_ProcessPartyActions() {
     if (pParty->pos.z <= currentGroundLevel) {  // landing from flight
         ceilingHeight = -1;
         pParty->bFlying = false;
-        pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+        pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
     } else {
         partyNotTouchingFloor = true;
     }
@@ -1672,7 +1672,7 @@ void ODM_ProcessPartyActions() {
     // check if we should be flying
     if (!engine->IsUnderwater() && !pParty->FlyActive()) {
         pParty->bFlying = false;
-        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+        pParty->uFlags &= ~PARTY_FLAG_LANDING;
     }
 
      // is party standing on any trigger faces
@@ -1722,7 +1722,7 @@ void ODM_ProcessPartyActions() {
                         pParty->bFlying = true;
                         pParty->speed.z = 0;
                         noFlightBob = true;
-                        pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                        pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
                         if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
                             partyInputSpeed.z = pParty->walkSpeed * 4;
                             partyOldFlightZ = pParty->pos.z;
@@ -1905,8 +1905,8 @@ void ODM_ProcessPartyActions() {
                     // to avoid jump hesitancy when moving downhill
                     (!partyNotTouchingFloor || (partyCloseToGround && partyInputSpeed.z <= 0)) &&
                     pParty->jump_strength &&
-                    !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
-                    !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
+                    !(pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) &&
+                    !(pParty->uFlags & PARTY_FLAG_BURNING)) {
                     partyNotTouchingFloor = true;
                     partyInputSpeed.z += pParty->jump_strength * 96.0f;
                     // boost party upwards slightly so we dont "land" straight away
@@ -1916,7 +1916,7 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_Land:
                 if (pParty->bFlying) {
-                    pParty->uFlags |= PARTY_FLAGS_1_LANDING;
+                    pParty->uFlags |= PARTY_FLAG_LANDING;
                 }
                 pPartyActionQueue->uNumActions = 0;
                 break;
@@ -1927,7 +1927,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // Behaviour divergence from vanilla - now treat landing process as flying down for consistency
-    if (pParty->uFlags & PARTY_FLAGS_1_LANDING || flyDown) {
+    if (pParty->uFlags & PARTY_FLAG_LANDING || flyDown) {
         if (pParty->FlyActive() || engine->IsUnderwater()) {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
@@ -1938,7 +1938,7 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = true;
                 noFlightBob = true;
                 if (flyDown)
-                    pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                    pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
             }
         }
     }
@@ -2008,7 +2008,7 @@ void ODM_ProcessPartyActions() {
             if (partyInputSpeed.z < -500 && !pParty->bFlying &&
                 pParty->pos.z - currentGroundLevel > 1000 &&
                 !pParty->FeatherFallActive() &&
-                !(pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING))) {  // falling scream
+                !(pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
                     if (!pParty->pCharacters[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pParty->pCharacters[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
@@ -2067,7 +2067,7 @@ void ODM_ProcessPartyActions() {
         pParty->pos.z = partyNewPos.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
-        pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
+        pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
     } else {
         // we are on/approaching water tile
         bool waterMoveX;
@@ -2096,11 +2096,11 @@ void ODM_ProcessPartyActions() {
 
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
-                pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+                pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
                 engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
-                        pParty->uFlags |= PARTY_FLAGS_1_STANDING_ON_WATER;
+                        pParty->uFlags |= PARTY_FLAG_STANDING_ON_WATER;
                         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] &= 0xFFFE;
                     }
                 }
@@ -2111,13 +2111,13 @@ void ODM_ProcessPartyActions() {
         pParty->speed.z = partyInputSpeed.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
-        pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
+        pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
         if (partyDrowningFlag) {
             bool onWater = false;
             int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos.x, pParty->pos.y, &onWater, 1);
             if (pParty->pos.z <= pTerrainHeight + 1) {
-                pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
+                pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
         }
     }
@@ -2144,8 +2144,8 @@ void ODM_ProcessPartyActions() {
             if (pParty->uFallStartZ - partyNewPos.z > 512 && !partyHasFeatherFall &&
                 (partyNewPos.z <= newGroundLevel || partyHasHitModel) &&
                 !engine->IsUnderwater()) {
-                if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
-                    pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
+                    pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
                 } else {
                     pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
                 }

@@ -1294,7 +1294,7 @@ void Game::processQueuedMessages() {
                         continue;
                     }
 
-                    if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER)) // airbourne or on water
+                    if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER)) // airbourne or on water
                         _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                     else
                         _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
@@ -1308,13 +1308,13 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                if (!(pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))) {
+                if (!(pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))) {
                     pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                     continue;
                 } else {
-                    if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
+                    if (pParty->uFlags & PARTY_FLAG_AIRBORNE)
                         logger->trace("Party is airborne");
-                    if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+                    if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                         logger->trace("Party on water");
                 }
 
@@ -1323,7 +1323,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))
+                if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))
                     _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                 else
                     _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
@@ -2070,7 +2070,7 @@ void Game::gameLoop() {
                 }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += GameTime::FromDays(7);  // += 2580480
-                pParty->uFlags &= ~(PARTY_FLAGS_1_WATER_DAMAGE | PARTY_FLAGS_1_BURNING);
+                pParty->uFlags &= ~(PARTY_FLAG_WATER_DAMAGE | PARTY_FLAG_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
                 pParty->pPartyBuffs.fill(SpellBuff());

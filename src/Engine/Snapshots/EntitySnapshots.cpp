@@ -633,7 +633,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     reconstruct(src.pickedItem, &dst->pPickedItem);
 
-    dst->uFlags = static_cast<PARTY_FLAGS_1>(src.flags);
+    dst->uFlags = static_cast<PartyFlags>(src.flags);
 
     reconstruct(src.standartItemsInShops, &dst->standartItemsInShops);
     reconstruct(src.specialItemsInShops, &dst->specialItemsInShops);

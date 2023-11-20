@@ -1263,7 +1263,7 @@ void GameUI_DrawPartySpells() {
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive()) {
-            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+            if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
             else
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->GetTexture();

@@ -1264,7 +1264,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // water damage
-    if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
+    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         for (Character &character : pParty->pCharacters) {
@@ -1275,7 +1275,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-                    if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
+                    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
                 } else {
@@ -1286,13 +1286,13 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // lava damage
-    if (pParty->uFlags & PARTY_FLAGS_1_BURNING &&
+    if (pParty->uFlags & PARTY_FLAG_BURNING &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-            if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
+            if (pParty->uFlags & PARTY_FLAG_BURNING) {
                 engine->_statusBar->setEventShort(LSTR_ON_FIRE);
             }
         }
@@ -1526,14 +1526,14 @@ void RegeneratePartyHealthMana() {
 #if 0
         // chance to waterwalk drowning due to a curse
             if (pParty->WaterWalkActive()) {
-                if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
+                if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
                     if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
                         int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
                         GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
                         cursed_times.value -= times_triggered;
                         if (cursed_times.value <= 0) {
                             cursed_times.value = 0;
-                            pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+                            pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
                         }
                         pParty->pCharacters[caster].conditions.Set(CONDITION_CURSED, cursed_times);
                     }
@@ -1556,7 +1556,7 @@ void RegeneratePartyHealthMana() {
             // Mana drain from water walk
             // GM does not drain
             if (pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
-                if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
+                if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
                     int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
                     int mana_drain = 1;
                     assert(caster >= 0);

@@ -3931,7 +3931,7 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
 void Actor::MakeActorAIList_ODM() {
     std::vector<std::pair<int, int>> activeActorsDistances; // pair<id, distance>
 
-    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
+    pParty->uFlags &= ~PARTY_FLAG_ALERT_RED_OR_YELLOW;
 
     for (Actor &actor : pActors) {
         actor.ResetFullAiState();
@@ -3983,7 +3983,7 @@ int Actor::MakeActorAIList_BLV() {
     std::vector<int> pickedActorIds;
 
     // reset party alert level
-    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
+    pParty->uFlags &= ~PARTY_FLAG_ALERT_RED_OR_YELLOW;
 
     // find actors that are in range and can act
     for (Actor &actor : pActors) {

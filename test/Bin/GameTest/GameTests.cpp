@@ -253,7 +253,7 @@ GAME_TEST(Issues, Issue268_939) {
 GAME_TEST(Issues, Issue271) {
     // Party shouldn't yell when landing from flight.
     auto expressionTape = charTapes.expression(1);
-    auto landingTape = tapes.custom([] { return !!(pParty->uFlags & PARTY_FLAGS_1_LANDING); });
+    auto landingTape = tapes.custom([] { return !!(pParty->uFlags & PARTY_FLAG_LANDING); });
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("issue_271.mm7", "issue_271.json");
     EXPECT_FALSE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));

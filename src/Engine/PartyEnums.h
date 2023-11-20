@@ -94,26 +94,27 @@ enum class QuestBit : uint16_t {
 using enum QuestBit;
 
 /*  355 */
-enum class PARTY_FLAG_1 : int32_t {
-    PARTY_FLAGS_1_UNUSED = 0x0002, // was force drawing
-    PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
-    PARTY_FLAGS_1_AIRBORNE = 0x0008,
-    PARTY_FLAGS_1_ALERT_RED = 0x0010,
-    PARTY_FLAGS_1_ALERT_YELLOW = 0x0020,
-    PARTY_FLAGS_1_ALERT_RED_OR_YELLOW = 0x0030,
-    PARTY_FLAGS_1_STANDING_ON_WATER = 0x0080,
+enum class PartyFlag : int32_t {
+    PARTY_FLAG_0002 = 0x0002, // was force drawing
+    PARTY_FLAG_WATER_DAMAGE = 0x0004,
+    PARTY_FLAG_AIRBORNE = 0x0008,
+    PARTY_FLAG_ALERT_RED = 0x0010,
+    PARTY_FLAG_ALERT_YELLOW = 0x0020,
+    PARTY_FLAG_ALERT_RED_OR_YELLOW = PARTY_FLAG_ALERT_RED | PARTY_FLAG_ALERT_YELLOW,
+    PARTY_FLAG_STANDING_ON_WATER = 0x0080,
     // In vanilla landing flag used to control for no damage landings
     // OE now uses this as a flag for landing from flight
-    PARTY_FLAGS_1_LANDING = 0x0100,
-    PARTY_FLAGS_1_BURNING = 0x0200,
+    PARTY_FLAG_LANDING = 0x0100,
+    PARTY_FLAG_BURNING = 0x0200,
 
     // New to OE - flag used to negate landing damage after jumping
-    PARTY_FLAGS_1_JUMPING = 0x0400
+    PARTY_FLAG_JUMPING = 0x0400
 };
-using enum PARTY_FLAG_1;
-MM_DECLARE_FLAGS(PARTY_FLAGS_1, PARTY_FLAG_1)
-MM_DECLARE_OPERATORS_FOR_FLAGS(PARTY_FLAGS_1)
+using enum PartyFlag;
+MM_DECLARE_FLAGS(PartyFlags, PartyFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(PartyFlags)
 
+// TODO(captainurist): is there other flag values? Maybe just drop this enum.
 enum class PARTY_FLAG_2 : int32_t {
     PARTY_FLAGS_2_RUNNING = 0x2,
 };

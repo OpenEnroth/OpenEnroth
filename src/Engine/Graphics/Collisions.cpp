@@ -1124,7 +1124,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
 
             if (pODMFace->uPolygonType == POLYGON_Floor || pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
-                pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
             }
 
             continue;
