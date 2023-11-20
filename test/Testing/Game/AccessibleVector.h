@@ -46,7 +46,9 @@ class Accessible : public Base {
     using Base::Base;
     using Base::begin;
     using Base::end;
-    using value_type = std::iter_value_t<decltype(std::declval<const Base *>()->begin())>;
+    using const_iterator = decltype(std::declval<const Base *>()->begin());
+    using value_type = std::iter_value_t<const_iterator>;
+    using const_reference = std::iter_reference_t<const_iterator>; // Need this typedef b/c of std::vector<bool>.
 
     friend AccessibleVector<value_type> calculateDelta(const Accessible &l, const Accessible &r) {
         AccessibleVector<value_type> result;
@@ -62,12 +64,12 @@ class Accessible : public Base {
         return end() - begin();
     }
 
-    const value_type &front() const {
+    const_reference front() const {
         assert(begin() != end());
         return *begin();
     }
 
-    const value_type &back() const {
+    const_reference back() const {
         assert(begin() != end());
         return *std::prev(end());
     }
@@ -96,12 +98,12 @@ class Accessible : public Base {
         return result;
     }
 
-    value_type min() const {
+    const_reference min() const {
         assert(begin() != end());
         return *std::min_element(begin(), end());
     }
 
-    value_type max() const {
+    const_reference max() const {
         assert(begin() != end());
         return *std::max_element(begin(), end());
     }
