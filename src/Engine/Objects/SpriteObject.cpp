@@ -664,7 +664,7 @@ bool SpriteObject::applyShrinkRayAoe() {
     return isApplied;
 }
 
-bool SpriteObject::dropItemAt(SPRITE_OBJECT_TYPE sprite, Vec3i pos, int speed, int count,
+bool SpriteObject::dropItemAt(SpriteId sprite, Vec3i pos, int speed, int count,
                               bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
     SpriteObject pSpellObject;
 

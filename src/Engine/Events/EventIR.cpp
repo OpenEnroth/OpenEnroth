@@ -1026,7 +1026,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             break;
         case EVENT_SummonItem:
             requireSize(27);
-            ir.data.summon_item_descr.sprite = static_cast<SPRITE_OBJECT_TYPE>(EVT_DWORD(&evt->v5));
+            ir.data.summon_item_descr.sprite = static_cast<SpriteId>(EVT_DWORD(&evt->v5));
             ir.data.summon_item_descr.x = EVT_DWORD(&evt->v9);
             ir.data.summon_item_descr.y = EVT_DWORD(&evt->v13);
             ir.data.summon_item_descr.z = EVT_DWORD(&evt->v17);

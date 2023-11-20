@@ -6602,7 +6602,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos,
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-            SPRITE_OBJECT_TYPE spriteType = spritefrom->uType;
+            SpriteId spriteType = spritefrom->uType;
 
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point

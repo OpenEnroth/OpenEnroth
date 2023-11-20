@@ -33,7 +33,7 @@ struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
     std::string name; // TODO(captainurist): why is this unused?
-    SPRITE_OBJECT_TYPE uObjectID;
+    SpriteId uObjectID;
     int16_t uRadius;
     int16_t uHeight;
     ObjectDescFlags uFlags;
@@ -46,7 +46,7 @@ struct ObjectDesc {
 class ObjectList {
  public:
     void InitializeSprites();
-    unsigned int ObjectIDByItemID(SPRITE_OBJECT_TYPE uItemID);
+    unsigned int ObjectIDByItemID(SpriteId uItemID);
 
  public:
     std::vector<ObjectDesc> pObjects;

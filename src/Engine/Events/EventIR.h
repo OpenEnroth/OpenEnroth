@@ -139,7 +139,7 @@ class EventIR {
             int is_on;
         } faces_bit_descr;
         struct {
-            SPRITE_OBJECT_TYPE sprite;
+            SpriteId sprite;
             int x;
             int y;
             int z;
