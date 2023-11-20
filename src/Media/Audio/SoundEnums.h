@@ -188,13 +188,13 @@ enum class SoundType {
 };
 using enum SoundType;
 
-enum class SOUND_FLAG {
+enum class SoundFlag {
     SOUND_FLAG_LOCKED = 0x1,
     SOUND_FLAG_3D = 0x2,
 };
-using enum SOUND_FLAG;
-MM_DECLARE_FLAGS(SOUND_FLAGS, SOUND_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(SOUND_FLAGS)
+using enum SoundFlag;
+MM_DECLARE_FLAGS(SoundFlags, SoundFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SoundFlags)
 
 enum class SoundPlaybackMode {
     /** Normal sound, requires a pid. */
