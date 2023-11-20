@@ -32,7 +32,7 @@ class ActorTapeRecorder {
 
     TestTape<int> countByState(AIState state);
 
-    TestTape<int> countByBuff(ACTOR_BUFF_INDEX buff);
+    TestTape<int> countByBuff(ActorBuff buff);
 
     TestMultiTape<int> indicesByState(AIState state);
 
@@ -44,7 +44,7 @@ class ActorTapeRecorder {
 
     TestMultiTape<AIState> aiStates(std::initializer_list<int> actorIndices);
 
-    TestTape<bool> hasBuff(int actorIndex, ACTOR_BUFF_INDEX buff);
+    TestTape<bool> hasBuff(int actorIndex, ActorBuff buff);
 
  private:
     static std::span<Actor> actors();

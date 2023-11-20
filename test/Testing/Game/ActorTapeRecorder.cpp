@@ -19,7 +19,7 @@ TestTape<int> ActorTapeRecorder::countByState(AIState state) {
     });
 }
 
-TestTape<int> ActorTapeRecorder::countByBuff(ACTOR_BUFF_INDEX buff) {
+TestTape<int> ActorTapeRecorder::countByBuff(ActorBuff buff) {
     return _controller->recordTape([buff] {
         return static_cast<int>(std::ranges::count_if(actors(), [buff] (const Actor &actor) {
             return actor.buffs[buff].Active();
@@ -53,7 +53,7 @@ TestMultiTape<AIState> ActorTapeRecorder::aiStates(std::initializer_list<int> ac
     return custom(actorIndices, std::bind(&Actor::aiState, _1));
 }
 
-TestTape<bool> ActorTapeRecorder::hasBuff(int actorIndex, ACTOR_BUFF_INDEX buff) {
+TestTape<bool> ActorTapeRecorder::hasBuff(int actorIndex, ActorBuff buff) {
     return custom(actorIndex, [buff] (const Actor &actor) {
         return actor.buffs[buff].Active();
     });

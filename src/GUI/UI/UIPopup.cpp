@@ -788,7 +788,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         std::string pText;
         pTextHeight = assets->pFontSmallnum->GetHeight() + 193;
-        for (ACTOR_BUFF_INDEX buff : pActors[uActorID].buffs.indices()) {
+        for (ActorBuff buff : pActors[uActorID].buffs.indices()) {
             if (pActors[uActorID].buffs[buff].Active()) {
                 switch (buff) {
                     case ACTOR_BUFF_CHARM:

@@ -21,8 +21,7 @@ enum class ActorAbility : char {
 };
 using enum ActorAbility;
 
-/*  361 */
-enum class ACTOR_BUFF_INDEX {
+enum class ActorBuff {
     ACTOR_BUFF_NONE = 0,
     ACTOR_BUFF_CHARM = 1,
     ACTOR_BUFF_SUMMONED = 2,
@@ -49,7 +48,7 @@ enum class ACTOR_BUFF_INDEX {
     ACTOR_BUFF_FIRST = ACTOR_BUFF_CHARM,
     ACTOR_BUFF_LAST = ACTOR_BUFF_HAMMERHANDS
 };
-using enum ACTOR_BUFF_INDEX;
+using enum ActorBuff;
 
 /*  264 */
 enum class AIState : uint16_t {

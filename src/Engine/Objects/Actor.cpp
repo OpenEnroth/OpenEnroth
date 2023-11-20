@@ -2566,7 +2566,7 @@ void Actor::UpdateActorAI() {
             Actor::Die(i);
 
         // Kill buffs if expired
-        for (ACTOR_BUFF_INDEX i : pActor->buffs.indices())
+        for (ActorBuff i : pActor->buffs.indices())
             if (i != ACTOR_BUFF_MASS_DISTORTION)
                 pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
@@ -2644,7 +2644,7 @@ void Actor::UpdateActorAI() {
         if (!pActor->currentHP)
             Actor::Die(actor_id);
 
-        for (ACTOR_BUFF_INDEX i : pActor->buffs.indices())
+        for (ActorBuff i : pActor->buffs.indices())
             if (i != ACTOR_BUFF_MASS_DISTORTION)
                 pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 

@@ -249,7 +249,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     for (unsigned i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
 
-        for (ACTOR_BUFF_INDEX j : pActors[i].buffs.indices())
+        for (ActorBuff j : pActors[i].buffs.indices())
             if (j != ACTOR_BUFF_MASS_DISTORTION)
                 pActors[i].buffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
 

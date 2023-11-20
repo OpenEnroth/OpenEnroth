@@ -1112,7 +1112,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             GameTime duration = GameTime::FromMinutes(object->spell_level * 5);
             CharacterSkillMastery skillMastery = object->spell_skill;
             DamageType dmgType;
-            ACTOR_BUFF_INDEX buffIdx;
+            ActorBuff buffIdx;
             switch (object->uType) {
                 case SPRITE_SPELL_MIND_CHARM:
                     dmgType = DAMAGE_MIND;
