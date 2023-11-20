@@ -286,7 +286,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
 
 std::string NameAndTitle(const std::string &name, const std::string &title);
 std::string NameAndTitle(const std::string &name, CharacterClass class_type);
-std::string NameAndTitle(const std::string &name, NPCProf profession);
+std::string NameAndTitle(const std::string &name, NpcProfession profession);
 std::string NameAndTitle(NPCData *npc);
 
 std::string GetDisplayName(Actor *actor);

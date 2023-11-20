@@ -23,7 +23,8 @@ enum class MerchantPhrase {
 };
 using enum MerchantPhrase;
 
-enum class NPCProf : int32_t {
+// TODO(captainurist): #enum renamings needed
+enum class NpcProfession : int32_t {
     NoProfession = 0,
     Smith = 1,       // GM Weapon Repair;
     Armorer = 2,     // GM Armor Repair;
@@ -90,4 +91,4 @@ enum class NPCProf : int32_t {
     NPC_PROFESSION_FIRST_VALID = Smith,
     NPC_PROFESSION_LAST_VALID = NPC_PROFESSION_LAST
 };
-using enum NPCProf;
+using enum NpcProfession;

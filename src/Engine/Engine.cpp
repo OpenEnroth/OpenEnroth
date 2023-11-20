@@ -239,16 +239,16 @@ void Engine::DrawGUI() {
 
     static bool render_framerate = false;
     static float framerate = 0.0f;
-    static uint frames_this_second = 0;
-    static uint last_frame_time = platform->tickCount();
-    static uint framerate_time_elapsed = 0;
+    static unsigned frames_this_second = 0;
+    static unsigned last_frame_time = platform->tickCount();
+    static unsigned framerate_time_elapsed = 0;
 
     if (current_screen_type == SCREEN_GAME &&
         uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pWeather->Draw();  // Ritor1: my include
 
     // while(GetTickCount() - last_frame_time < 33 );//FPS control
-    uint frame_dt = platform->tickCount() - last_frame_time;
+    unsigned frame_dt = platform->tickCount() - last_frame_time;
     last_frame_time = platform->tickCount();
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000) {
@@ -639,11 +639,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
-        for (uint i = 0; i < pActors.size(); ++i) {
+        for (unsigned i = 0; i < pActors.size(); ++i) {
             // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
-            pActors[i].monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-            pActors[i].monsterInfo.uTreasureDiceRolls = 0;
-            pActors[i].monsterInfo.uExp = 0;
+            pActors[i].monsterInfo.treasureType = RANDOM_ITEM_ANY;
+            pActors[i].monsterInfo.goldDiceRolls = 0;
+            pActors[i].monsterInfo.exp = 0;
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
@@ -802,7 +802,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
         static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
 
@@ -820,7 +820,7 @@ void Engine::SecondaryInitialization() {
 
     spell_fx_renedrer->LoadAnimations();
 
-    for (uint i = 0; i < 7; ++i) {
+    for (unsigned i = 0; i < 7; ++i) {
         std::string container_name = fmt::format("HDWTR{:03}", i);
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
@@ -995,17 +995,17 @@ void Engine::_461103_load_level_sub() {
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
 
     // v15 = 0;
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         // Actor *pActor = &pActors[i];
         // v2 = (char *)&pActors[0].uNPC_ID;
         // do
         //{
         // v3 = pActors[i].pMonsterInfo.uID;
         v17 = 0;
-        if (isPeasant(pActors[i].monsterInfo.uID))
+        if (isPeasant(pActors[i].monsterInfo.id))
             v17 = 1;
         // v1 = 0;
-        v4 = (std::to_underlying(pActors[i].monsterInfo.uID) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
+        v4 = (std::to_underlying(pActors[i].monsterInfo.id) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
         if (2 == v4) {
             if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
         } else {
@@ -1018,7 +1018,7 @@ void Engine::_461103_load_level_sub() {
         if (v17) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.uID, HOUSE_INVALID, v19);
+                pActors[i].monsterInfo.id, HOUSE_INVALID, v19);
             v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
             ++pNPCStats->uNewlNPCBufPos;
             pActors[i].npcId = v14;
@@ -1040,7 +1040,7 @@ void Engine::_461103_load_level_sub() {
 
     // TODO(captainurist): can drop this code?
 #if 0
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         // v7 = (char *)&pActors[0].pMonsterInfo;
         // do
         //{
@@ -1107,7 +1107,7 @@ unsigned int GetGravityStrength() {
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    const std::string &filename) {
-    for (uint i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
+    for (unsigned i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
             auto face = &pIndoor->pFaces[extra->face_id];
@@ -1147,7 +1147,7 @@ void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
+            for (unsigned i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
                 if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
                         pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
@@ -1227,7 +1227,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 
-        for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+        for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
             pNPCStats->pNewNPCData[i].bHasUsedTheAbility = false;
 
         ++pParty->days_played_without_rest;
@@ -1264,7 +1264,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // water damage
-    if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
+    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         for (Character &character : pParty->pCharacters) {
@@ -1275,7 +1275,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-                    if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
+                    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
                 } else {
@@ -1286,13 +1286,13 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // lava damage
-    if (pParty->uFlags & PARTY_FLAGS_1_BURNING &&
+    if (pParty->uFlags & PARTY_FLAG_BURNING &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-            if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
+            if (pParty->uFlags & PARTY_FLAG_BURNING) {
                 engine->_statusBar->setEventShort(LSTR_ON_FIRE);
             }
         }
@@ -1300,7 +1300,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     RegeneratePartyHealthMana();
 
-    uint recoveryTimeDt = pEventTimer->uTimeElapsed;
+    unsigned recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = 0;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
@@ -1308,7 +1308,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         recoveryTimeDt /= 2;
     }
 
-    uint numPlayersCouldAct = pParty->pCharacters.size();
+    unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
         if (character.timeToRecovery && recoveryTimeDt > 0)
             character.Recover(GameTime(recoveryTimeDt));
@@ -1430,7 +1430,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // Check if Fly/Water Walk caster can act
-    for (PARTY_BUFF_INDEX buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
+    for (PartyBuff buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
         SpellBuff *pBuff = &pParty->pPartyBuffs[buffIdx];
         if (pBuff->Inactive()) {
             continue;
@@ -1528,14 +1528,14 @@ void RegeneratePartyHealthMana() {
 #if 0
         // chance to waterwalk drowning due to a curse
             if (pParty->WaterWalkActive()) {
-                if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
+                if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
                     if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
                         int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
                         GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
                         cursed_times.value -= times_triggered;
                         if (cursed_times.value <= 0) {
                             cursed_times.value = 0;
-                            pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+                            pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
                         }
                         pParty->pCharacters[caster].conditions.Set(CONDITION_CURSED, cursed_times);
                     }
@@ -1558,7 +1558,7 @@ void RegeneratePartyHealthMana() {
             // Mana drain from water walk
             // GM does not drain
             if (pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
-                if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
+                if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
                     int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
                     int mana_drain = 1;
                     assert(caster >= 0);
@@ -1613,7 +1613,7 @@ void RegeneratePartyHealthMana() {
                     bool decrease_HP = false;
                     bool recovery_SP = false;
                     if (character.HasItemEquipped(idx)) {
-                        uint _idx = character.pEquipment.pIndices[idx];
+                        unsigned _idx = character.pEquipment.pIndices[idx];
                         ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
                         if (!isRegular(equppedItem.uItemID)) {
                             if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {

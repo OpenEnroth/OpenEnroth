@@ -6,20 +6,19 @@
 
 class Blob;
 
-/*  351 */
-enum class AUTONOTE_TYPE : uint32_t {
-    AUTONOTE_POTION_RECEPIE = 0,
+enum class AutonoteType : uint32_t {
+    AUTONOTE_POTION_RECIPE = 0,
     AUTONOTE_STAT_HINT = 1,
     AUTONOTE_OBELISK = 2,
     AUTONOTE_SEER = 3,
     AUTONOTE_MISC = 4,
     AUTONOTE_TEACHER = 5,
 };
-using enum AUTONOTE_TYPE;
+using enum AutonoteType;
 
 struct Autonote {
     std::string pText;
-    AUTONOTE_TYPE eType;
+    AutonoteType eType;
 };
 
 /**

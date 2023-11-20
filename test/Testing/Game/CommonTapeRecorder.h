@@ -59,7 +59,7 @@ class CommonTapeRecorder {
 
     TestTape<std::string> statusBar();
 
-    TestTape<DIALOGUE_TYPE> dialogueType();
+    TestTape<DialogueId> dialogueType();
 
     TestTape<GameTime> time();
 

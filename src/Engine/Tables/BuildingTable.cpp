@@ -139,7 +139,7 @@ void initializeBuildings(const Blob &buildings) {
                     buildingTable[houseId].uAnimationID = atoi(test_string);
                     break;
                 case 5:
-                    buildingTable[houseId].pName = removeQuotes(test_string);
+                    buildingTable[houseId].name = removeQuotes(test_string);
                     break;
                 case 6:
                     buildingTable[houseId].pProprieterName = removeQuotes(test_string);

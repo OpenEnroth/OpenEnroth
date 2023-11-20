@@ -60,7 +60,6 @@ static const CombinedSkillValue WANDS_SKILL_VALUE(8, CHARACTER_SKILL_MASTERY_NOV
 // Recovery time when spell failed because of curse
 static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
 
-/*  271 */
 struct CastSpellInfo {
     TargetedSpellUI *GetCastSpellInInventoryWindow();
 

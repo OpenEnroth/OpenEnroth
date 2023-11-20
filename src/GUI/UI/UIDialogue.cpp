@@ -59,7 +59,7 @@ void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
 
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
-    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->pName);
+    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->name);
     desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->uPortraitID));
     desc.npc = pNPCInfo;
 
@@ -113,7 +113,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    std::vector<DIALOGUE_TYPE> optionList;
+    std::vector<DialogueId> optionList;
 
     if (type == DIALOG_WINDOW_FULL) {
         if (getNPCType(sDialogue_SpeakingActorNPC_ID) == NPC_TYPE_QUEST) {
@@ -276,7 +276,7 @@ void GUIWindow_Dialogue::Update() {
             break;
         }
 
-        DIALOGUE_TYPE topic = (DIALOGUE_TYPE)pButton->msg_param;
+        DialogueId topic = (DialogueId)pButton->msg_param;
         pButton->sLabel = npcDialogueOptionString(topic, pNPC);
         if (pButton->sLabel.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
             pButton->msg_param = 0;
@@ -342,7 +342,7 @@ void BuildHireableNpcDialogue() {
     pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_HIRE_FIRE_SHORT);
 }
 
-void selectNPCDialogueOption(DIALOGUE_TYPE option) {
+void selectNPCDialogueOption(DialogueId option) {
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
 
     ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(option);
@@ -352,10 +352,10 @@ void selectNPCDialogueOption(DIALOGUE_TYPE option) {
     }
 
     if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
-        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(option, speakingNPC);
+        DialogueId newTopic = handleScriptedNPCTopicSelection(option, speakingNPC);
 
         if (newTopic != DIALOGUE_MAIN) {
-            std::vector<DIALOGUE_TYPE> topics = listNPCDialogueOptions(newTopic);
+            std::vector<DialogueId> topics = listNPCDialogueOptions(newTopic);
             ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
             pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
@@ -380,13 +380,13 @@ void selectNPCDialogueOption(DIALOGUE_TYPE option) {
             BuildHireableNpcDialogue();
             dialogue_show_profession_details = false;
         } else {
-            for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
+            for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
+                if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNewNPCData[i].name)
                     pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
             }
-            if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
+            if (iequals(pParty->pHirelings[0].name, speakingNPC->name))
                 pParty->pHirelings[0] = NPCData();
-            else if (iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
+            else if (iequals(pParty->pHirelings[1].name, speakingNPC->name))
                 pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

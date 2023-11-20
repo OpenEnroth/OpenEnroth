@@ -396,7 +396,7 @@ LABEL_25:
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self monster type
                     if (pSpriteObject->spell_caster_pid.type() == OBJECT_Actor) {
-                        if (pActors[pSpriteObject->spell_caster_pid.id()].monsterInfo.uID == pActors[actloop].monsterInfo.uID) {
+                        if (pActors[pSpriteObject->spell_caster_pid.id()].monsterInfo.id == pActors[actloop].monsterInfo.id) {
                             continue;
                         }
                     }
@@ -405,7 +405,7 @@ LABEL_25:
                     // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
                     int radius = 0;
                     if (pActors[actloop].word_000086_some_monster_id != MONSTER_INVALID) {  // not always filled in from scripted monsters
-                        radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id].uToHitRadius;
+                        radius = pMonsterList->monsters[pActors[actloop].word_000086_some_monster_id].toHitRadius;
                     }
                     CollideWithActor(actloop, radius);
                 }
@@ -547,8 +547,8 @@ void SpriteObject::explosionTraps() {
     unsigned int v10 = ((unsigned int)(11 * dir_y) >> 5) + (dir_z / 4) + dir_x;
     if (v10 <= 768) {
         int trapDamage = 5;
-        if (pMapInfo->Trap_D20) {
-            trapDamage += grng->randomDice(pMapInfo->Trap_D20, 20);
+        if (pMapInfo->trapDamageD20DiceCount) {
+            trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);
         }
         DamageType pDamageType;
         switch (this->uType) {
@@ -664,7 +664,7 @@ bool SpriteObject::applyShrinkRayAoe() {
     return isApplied;
 }
 
-bool SpriteObject::dropItemAt(SPRITE_OBJECT_TYPE sprite, Vec3i pos, int speed, int count,
+bool SpriteObject::dropItemAt(SpriteId sprite, Vec3i pos, int speed, int count,
                               bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
     SpriteObject pSpellObject;
 
@@ -1038,7 +1038,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD: {
             if (pid.type() == OBJECT_Actor &&
-                supertypeForMonsterId(pActors[pid.id()].monsterInfo.uID) == MONSTER_SUPERTYPE_UNDEAD) {
+                supertypeForMonsterId(pActors[pid.id()].monsterInfo.id) == MONSTER_SUPERTYPE_UNDEAD) {
                 applySpellSpriteDamage(uLayingItemID, pid);
             }
             updateSpriteOnImpact(object);
@@ -1112,7 +1112,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             GameTime duration = GameTime::FromMinutes(object->spell_level * 5);
             CharacterSkillMastery skillMastery = object->spell_skill;
             DamageType dmgType;
-            ACTOR_BUFF_INDEX buffIdx;
+            ActorBuff buffIdx;
             switch (object->uType) {
                 case SPRITE_SPELL_MIND_CHARM:
                     dmgType = DAMAGE_MIND;
@@ -1295,7 +1295,7 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
 }
 
 void UpdateObjects() {
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
             pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {

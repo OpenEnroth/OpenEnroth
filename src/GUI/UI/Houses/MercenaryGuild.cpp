@@ -76,6 +76,6 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
-void GUIWindow_MercenaryGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_MercenaryGuild::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
 }

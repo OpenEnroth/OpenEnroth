@@ -59,7 +59,7 @@ void Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *trans
 
 //----- (00436523) --------------------------------------------------------
 void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
-    for (uint i = 0; i < uNumVertices; ++i) {
+    for (unsigned i = 0; i < uNumVertices; ++i) {
         RenderVertexSoft *a1 = &a1a[i];
 
         double vCamToVertexX = (double)a1->vWorldPosition.x - (double)pCamera3D->vCameraPos.x;
@@ -165,7 +165,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
 
     // if ( render->pRenderD3D )
     //{
-    for (uint i = 0; i < 20; i++) pVertices[i].flt_2C = 0.0;
+    for (unsigned i = 0; i < 20; i++) pVertices[i].flt_2C = 0.0;
     if ((char)uOutNumVertices) {
         pVertices[0].vWorldViewProjX = pLineBegin->vWorldViewProjX;
         pVertices[0].vWorldViewProjY = pLineBegin->vWorldViewProjY;
@@ -193,7 +193,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         render->DrawLines(v24, 2);
         return;
     }
-    for (uint i = 0; i < 20; i++) a1[i].flt_2C = 0.0;
+    for (unsigned i = 0; i < 20; i++) a1[i].flt_2C = 0.0;
     uOutNumVertices = 2;
     a1[0].vWorldPosition.x = pLineBegin->vWorldPosition.x;
     a1[0].vWorldPosition.y = pLineBegin->vWorldPosition.y;
@@ -235,7 +235,7 @@ void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
                                        Color uDiffuse32, float a5) {
     if (!uNumVertices) return;
     if ((signed int)(uNumVertices - 1) > 0) {
-        for (uint i = 0; i < uNumVertices - 1; i++)
+        for (unsigned i = 0; i < uNumVertices - 1; i++)
             do_draw_debug_line_sw(&a2[i], uDiffuse32, &a2[i + 1], uDiffuse32, 0,
                                   a5);
     }
@@ -420,7 +420,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     // v13 = (char *)&a4->y;
 
     // while ( 1 )
-    for (uint i = 0; i < NumFrustumPlanes; ++i) {  // cycle through left,right, top, bottom planes
+    for (unsigned i = 0; i < NumFrustumPlanes; ++i) {  // cycle through left,right, top, bottom planes
         if (i % 2) {
             v14 = pInVertices;
             v15 = sr_vertices_50D9D8;
@@ -460,7 +460,7 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
     double RHW;
     double viewscalefactor;
 
-    for (uint i = 0; i < uNumVertices; ++i) {
+    for (unsigned i = 0; i < uNumVertices; ++i) {
         auto v = pVertices + i;
 
         RHW = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
@@ -536,7 +536,7 @@ void Camera3D::CalculateRotations(int cameraYaw, int cameraPitch) {
 //----- (00436A6D) --------------------------------------------------------
 float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
     float result = FLT_MAX;
-    for (uint i = 0; i < uStripType; i++) {
+    for (unsigned i = 0; i < uStripType; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
             result = pVertices[i].vWorldPosition.z;
         }
@@ -547,18 +547,18 @@ float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripT
 //----- (00436A40) --------------------------------------------------------
 float Camera3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
     float result = FLT_MIN;
-    for (uint i = 0; i < uStripType; i++) {
+    for (unsigned i = 0; i < uStripType; i++) {
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;
     }
     return result;
 }
 
-void Camera3D::CullByNearClip(RenderVertexSoft *pverts, uint *unumverts) {
+void Camera3D::CullByNearClip(RenderVertexSoft *pverts, unsigned *unumverts) {
     float near = GetNearClip();
 
     if (!unumverts) return;
-    for (uint i = 0; i < *unumverts; ++i) {
+    for (unsigned i = 0; i < *unumverts; ++i) {
         if (pverts[i].vWorldViewPosition.x > near) {
             return;
         }
@@ -568,11 +568,11 @@ void Camera3D::CullByNearClip(RenderVertexSoft *pverts, uint *unumverts) {
     return;
 }
 
-void Camera3D::CullByFarClip(RenderVertexSoft *pverts, uint *unumverts) {
+void Camera3D::CullByFarClip(RenderVertexSoft *pverts, unsigned *unumverts) {
     float far = GetFarClip();
 
     if (!unumverts) return;
-    for (uint i = 0; i < *unumverts; ++i) {
+    for (unsigned i = 0; i < *unumverts; ++i) {
         if (pverts[i].vWorldViewPosition.x < far) {
             return;
         }

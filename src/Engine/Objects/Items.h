@@ -130,7 +130,7 @@ struct ItemDesc {  // 30h
     std::string pUnidentifiedName = "";      // 8 c
     std::string pDescription = "";           // 0c 10
     uint32_t uValue = 0;          // 10 14
-    SPRITE_OBJECT_TYPE uSpriteID = SPRITE_NULL;   // 14 18
+    SpriteId uSpriteID = SPRITE_NULL;   // 14 18
     int16_t field_1A = 0;             // 16
     int16_t uEquipX = 0;       // 18  1c
     int16_t uEquipY = 0;       // 1a  1e
@@ -174,6 +174,6 @@ struct SummonedItem {
 
 std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);
 
-Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel);
+Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel);
 
 extern ItemGen *ptr_50C9A4_ItemToEnchant;

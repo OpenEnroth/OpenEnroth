@@ -96,8 +96,8 @@ void GUIFont::CreateFontTex() {
         int offset = 32 * xsq + 32 * ysq * 512;
         uint8_t *pCharPixels = &this->pData->pFontData[this->pData->font_pixels_offset[l]];
 
-        for (uint y = 0; y < this->pData->uFontHeight; ++y) {
-            for (uint x = 0; x < this->pData->pMetrics[l].uWidth; ++x) {
+        for (unsigned y = 0; y < this->pData->uFontHeight; ++y) {
+            for (unsigned x = 0; x < this->pData->pMetrics[l].uWidth; ++x) {
                 if (*pCharPixels) {
                     if (*pCharPixels != 1) {
                         // add to normal

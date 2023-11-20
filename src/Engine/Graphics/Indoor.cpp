@@ -162,11 +162,11 @@ void PrepareDrawLists_BLV() {
     render->DrawSpriteObjects();
     pOutdoor->PrepareActorsDrawList();
 
-     for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+     for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
          int v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
          v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (uint j = 0; j < v8->uNumDecorations; ++j)
+        for (unsigned j = 0; j < v8->uNumDecorations; ++j)
             pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
      }
 
@@ -281,7 +281,7 @@ void IndoorLocation::Release() {
 //----- (00444810) --------------------------------------------------------
 // index of special transfer message, 0 otherwise
 unsigned int IndoorLocation::GetLocationIndex(const std::string &locationName) {
-    for (uint i = 0; i < _4E6BDC_loc_names.size(); ++i)
+    for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
         if (iequals(locationName, _4E6BDC_loc_names[i]))
             return i + 1;
     return 0;
@@ -388,7 +388,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     bool singleSectorFound = false;
 
     // loop through sectors
-    for (uint i = 1; i < pSectors.size(); ++i) {
+    for (unsigned i = 1; i < pSectors.size(); ++i) {
         if (NumFoundFaceStore >= 5) break;
 
         BLVSector *pSector = &pSectors[i];
@@ -412,7 +412,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
         }
 
         // loop over check faces
-        for (uint z = 0; z < FloorsAndPortals; ++z) {
+        for (unsigned z = 0; z < FloorsAndPortals; ++z) {
             int uFaceID;
             if (z < pSector->uNumFloors)
                 uFaceID = pSector->pFloors[z];
@@ -673,7 +673,7 @@ void BLV_UpdateDoors() {
         eDoorSoundID = pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
-    for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
+    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         BLVDoor *door = &pIndoor->pDoors[i];
 
         // door not moving currently
@@ -740,7 +740,7 @@ void BLV_UpdateDoors() {
             float minV = std::numeric_limits<float>::max();
             float maxU = std::numeric_limits<float>::min();
             float maxV = std::numeric_limits<float>::min();
-            for (uint k = 0; k < face->uNumVertices; ++k) {
+            for (unsigned k = 0; k < face->uNumVertices; ++k) {
                 Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
                 float pointU = dot(point, u);
                 float pointV = dot(point, v);
@@ -789,7 +789,7 @@ void UpdateActors_BLV() {
         if (actor.sectorId == 0 || floorZ <= -30000)
             continue;
 
-        bool isFlying = actor.monsterInfo.uFlying;
+        bool isFlying = actor.monsterInfo.flying;
         if (!actor.CanAct())
             isFlying = false;
 
@@ -801,7 +801,7 @@ void UpdateActors_BLV() {
         if (!actor.donebloodsplat) {
             if (actor.aiState == Dead || actor.aiState == Dying) {
                 if (actor.pos.z < floorZ + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[actor.monsterInfo.uID].bBloodSplatOnDeath) {
+                    if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
                             EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
@@ -899,7 +899,7 @@ void PrepareToLoadBLV(bool bLoading) {
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
-        respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
+        respawn_interval = pMapStats->pInfos[map_id].respawnIntervalDays;
         alertStatus = GetAlertStatus();
     } else {
         map_info = nullptr;
@@ -917,7 +917,7 @@ void PrepareToLoadBLV(bool bLoading) {
         indoor_was_respawned = false;
 
     if (indoor_was_respawned) {
-        for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
+        for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
             if (spawn->uKind == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
@@ -927,7 +927,7 @@ void PrepareToLoadBLV(bool bLoading) {
         RespawnGlobalDecorations();
     }
 
-    for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
+    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
@@ -945,7 +945,7 @@ void PrepareToLoadBLV(bool bLoading) {
         }
     }
 
-    /*for (uint i = 0; i < pIndoor->uNumFaces; ++i)
+    /*for (unsigned i = 0; i < pIndoor->uNumFaces; ++i)
     {
         if (pIndoor->pFaces[i].uBitmapID != -1)
             pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id2 =
@@ -956,7 +956,7 @@ void PrepareToLoadBLV(bool bLoading) {
     decorationsWithSound.clear();
 
     int interactiveDecorationsNum = 0;
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+    for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
         const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
@@ -1005,7 +1005,7 @@ void PrepareToLoadBLV(bool bLoading) {
     // INDOOR initialize actors
     alertStatus = false;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         if (pActors[i].attributes & ACTOR_UNKNOW7) {
             if (map_id == MAP_INVALID) {
                 pActors[i].monsterInfo.field_3E = 19;
@@ -1019,10 +1019,10 @@ void PrepareToLoadBLV(bool bLoading) {
 
         if (!v28) {
             pActors[i].PrepareSprites(0);
-            pActors[i].monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+            pActors[i].monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
             if (pActors[i].monsterInfo.field_3E != 11 &&
                 pActors[i].monsterInfo.field_3E != 19 &&
-                (!pActors[i].currentHP || !pActors[i].monsterInfo.uHP)) {
+                (!pActors[i].currentHP || !pActors[i].monsterInfo.hp)) {
                 pActors[i].monsterInfo.field_3E = 5;
                 pActors[i].UpdateAnimation();
             }
@@ -1035,7 +1035,7 @@ void PrepareToLoadBLV(bool bLoading) {
     pGameLoadingUI_ProgressBar->Progress();
 
     Actor this_;
-    this_.monsterInfo.uID = MONSTER_ELEMENTAL_LIGHT_C;
+    this_.monsterInfo.id = MONSTER_ELEMENTAL_LIGHT_C;
     this_.PrepareSprites(0); // TODO(captainurist): can drop this? Was loaded because light elementals can be summoned.
 
     // Party to start position
@@ -1071,7 +1071,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
     // loop over all floor faces
-    for (uint i = 0; i < pSector->uNumFloors; ++i) {
+    for (unsigned i = 0; i < pSector->uNumFloors; ++i) {
         if (FacesFound >= 5)
             break;
 
@@ -1103,7 +1103,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
 
     // as above but for sector portal faces
     if (pSector->field_0 & 8) {
-        for (uint i = 0; i < pSector->uNumPortals; ++i) {
+        for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
@@ -1141,7 +1141,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     // multiple faces found - pick nearest
     int result = blv_floor_z[0];
     int faceId = blv_floor_id[0];
-    for (uint i = 1; i < FacesFound; ++i) {
+    for (unsigned i = 1; i < FacesFound; ++i) {
         int v38 = blv_floor_z[i];
 
         if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
@@ -1545,7 +1545,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
-        || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
+        || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
         fall_start = floorZ;
         bFeatherFall = true;
         pParty->uFallStartZ = floorZ;
@@ -1555,9 +1555,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (fall_start - pParty->pos.z > 512 && !bFeatherFall && pParty->pos.z <= floorZ + 1) {  // fall damage
-        if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
+        if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
-            pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+            pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
         } else {
             pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
         }
@@ -1708,7 +1708,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
             pParty->speed.z -= 1.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
         } else {
-            if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
+            if (!(pParty->uFlags & PARTY_FLAG_LANDING))
                 pParty->speed.z = 0;
         }
     }
@@ -1801,12 +1801,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     else
         pParty->setAirborne(true);
 
-    pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
+    pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
     pParty->_viewYaw = angle;
     pParty->_viewPitch = vertical_angle;
 
     if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
-        pParty->uFlags |= PARTY_FLAGS_1_BURNING;
+        pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
         eventProcessor(faceEvent, Pid(), 1);
@@ -1927,7 +1927,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     float angle_from_party;
     int dist_from_party;
     SpawnPoint enc_spawn_point;
-    uint loop_cnt = 0;
+    unsigned loop_cnt = 0;
 
     //// why check this ??
     // if (!uNumActors) return 0;
@@ -2032,7 +2032,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 
     int v34 = 0;
     int v5 = grng->random(100);
-    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->Treasure_prob));
+    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->mapTreasureLevel));
     if (v13 != ITEM_TREASURE_LEVEL_7) {
         // [0, 20) -- nothing
         // [20, 60) -- gold
@@ -2072,7 +2072,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 
 //----- (0043F515) --------------------------------------------------------
 void FindBillboardsLightLevels_BLV() {
-    for (uint i = 0; i < uNumBillboardsToDraw; ++i) {
+    for (unsigned i = 0; i < uNumBillboardsToDraw; ++i) {
         if (pBillboardRenderList[i].field_1E & 2 ||
             uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
                 !pBillboardRenderList[i].uIndoorSectorID)

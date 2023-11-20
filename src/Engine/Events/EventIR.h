@@ -63,7 +63,7 @@ class EventIR {
             int damage;
         } damage_descr;
         struct {
-            ACTOR_KILL_CHECK_POLICY policy;
+            ActorKillCheckPolicy policy;
             int param;
             int num;
         } actor_descr;
@@ -139,7 +139,7 @@ class EventIR {
             int is_on;
         } faces_bit_descr;
         struct {
-            SPRITE_OBJECT_TYPE sprite;
+            SpriteId sprite;
             int x;
             int y;
             int z;

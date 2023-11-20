@@ -417,16 +417,15 @@ enum class MonsterType {
 };
 using enum MonsterType;
 
-/*  335 */
-enum class MONSTER_SPECIAL_ABILITY_TYPE {
+enum class MonsterSpecialAbility {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
     MONSTER_SPECIAL_ABILITY_SUMMON = 0x2,
     MONSTER_SPECIAL_ABILITY_EXPLODE = 0x3,
 };
-using enum MONSTER_SPECIAL_ABILITY_TYPE;
+using enum MonsterSpecialAbility;
 
-enum class MONSTER_MOVEMENT_TYPE {
+enum class MonsterMovementType {
     MONSTER_MOVEMENT_TYPE_SHORT = 0x0,
     MONSTER_MOVEMENT_TYPE_MEDIUM = 0x1,
     MONSTER_MOVEMENT_TYPE_LONG = 0x2,
@@ -434,10 +433,9 @@ enum class MONSTER_MOVEMENT_TYPE {
     MONSTER_MOVEMENT_TYPE_FREE = 0x4,
     MONSTER_MOVEMENT_TYPE_STATIONARY = 0x5,
 };
-using enum MONSTER_MOVEMENT_TYPE;
+using enum MonsterMovementType;
 
-/*  336 */
-enum class MONSTER_SUPERTYPE {
+enum class MonsterSupertype {
     MONSTER_SUPERTYPE_NONE = 0x0, // OE addition, didn't exist in the original binary.
     MONSTER_SUPERTYPE_UNDEAD = 0x1,
     MONSTER_SUPERTYPE_KREEGAN = 0x2,
@@ -448,9 +446,9 @@ enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_TITAN = 0x7,
     MONSTER_SUPERTYPE_NOT_ARENA = 0x8, // Can't be spawned in Arena, no MM7 monster belongs to this supertype.
 };
-using enum MONSTER_SUPERTYPE;
+using enum MonsterSupertype;
 
-enum class SPECIAL_ATTACK_TYPE : uint8_t {
+enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -476,7 +474,7 @@ enum class SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_MANA_DRAIN = 22,
     SPECIAL_ATTACK_FEAR = 23,
 };
-using enum SPECIAL_ATTACK_TYPE;
+using enum SpecialAttackType;
 
 enum class MonsterHostility {
     HOSTILITY_FRIENDLY = 0,

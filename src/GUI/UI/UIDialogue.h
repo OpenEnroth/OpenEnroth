@@ -20,11 +20,11 @@ class GUIWindow_Dialogue : public GUIWindow {
     explicit GUIWindow_Dialogue(DialogWindowType type);
     virtual ~GUIWindow_Dialogue() {}
 
-    void setDisplayedDialogueType(DIALOGUE_TYPE type) {
+    void setDisplayedDialogueType(DialogueId type) {
         _displayedDialogue = type;
     }
 
-    DIALOGUE_TYPE getDisplayedDialogueType() {
+    DialogueId getDisplayedDialogueType() {
         return _displayedDialogue;
     }
 
@@ -32,11 +32,11 @@ class GUIWindow_Dialogue : public GUIWindow {
     virtual void Release() override;
 
  protected:
-    DIALOGUE_TYPE _displayedDialogue = DIALOGUE_MAIN;
+    DialogueId _displayedDialogue = DIALOGUE_MAIN;
 };
 
 void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello);
 
-void selectNPCDialogueOption(DIALOGUE_TYPE option);
+void selectNPCDialogueOption(DialogueId option);
 
 extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;

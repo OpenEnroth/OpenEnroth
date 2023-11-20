@@ -6,7 +6,7 @@
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
-enum class GUILD_ID : int32_t {
+enum class GuildId : int32_t {
     GUILD_OF_ELEMENTS = 0,
     GUILD_OF_SELF = 1,
     GUILD_OF_AIR = 2,
@@ -22,7 +22,7 @@ enum class GUILD_ID : int32_t {
     GUILD_FIRST = GUILD_OF_ELEMENTS,
     GUILD_LAST = GUILD_OF_DARK
 };
-using enum GUILD_ID;
+using enum GuildId;
 
 /**
  * Ids of all NPC houses & dungeon pseudo-houses in the game.

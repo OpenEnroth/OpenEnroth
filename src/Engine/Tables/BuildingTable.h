@@ -53,7 +53,7 @@ using enum BuildingType;
 struct BuildingDesc {
     BuildingType uType;
     uint16_t uAnimationID;
-    std::string pName;
+    std::string name;
     std::string pProprieterName;
     std::string pEnterText;
     std::string pProprieterTitle;

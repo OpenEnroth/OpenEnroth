@@ -4,7 +4,7 @@
 
 #include "Utility/Flags.h"
 
-enum class SPRITE_OBJECT_TYPE : uint16_t {
+enum class SpriteId : uint16_t {
     SPRITE_NULL = 0,
 
     SPRITE_REAGENT_PHIRNAROOT = 35,
@@ -243,7 +243,7 @@ enum class SPRITE_OBJECT_TYPE : uint16_t {
 
     SPRITE_10000 = 10000,
 };
-using enum SPRITE_OBJECT_TYPE;
+using enum SpriteId;
 
 /**
  * Sprite attributes, values taken from MMExtension, see MMExtension code,

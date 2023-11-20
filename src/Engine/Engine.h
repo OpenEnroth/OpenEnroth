@@ -59,29 +59,6 @@ using enum GameState;
 
 extern GameState uGameState;
 
-struct Game__StationaryLight {
-    Vec3f vPosition;
-    Vec3f vRGBColor;
-    float flt_18;
-};
-
-struct Game_stru0 {
-    int field_0;
-    uint8_t *ptr_4;
-    int field_8;
-    int field_C;
-};
-
-struct Game_Bloodsplat {
-    float x;
-    float y;
-    float z;
-    float r;
-    float g;
-    float b;
-    float radius;
-};
-
 struct PersistentVariables {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;

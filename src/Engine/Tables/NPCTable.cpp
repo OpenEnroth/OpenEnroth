@@ -143,12 +143,12 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
 // TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
 void NPCStats::setNPCNamesOnLoad() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
-        pNewNPCData[i].pName = pNPCUnicNames[i - 1];
+        pNewNPCData[i].name = pNPCUnicNames[i - 1];
 
-    if (!pParty->pHirelings[0].pName.empty())
-        pParty->pHirelings[0].pName = pParty->pHireling1Name;
-    if (!pParty->pHirelings[1].pName.empty())
-        pParty->pHirelings[1].pName = pParty->pHireling2Name;
+    if (!pParty->pHirelings[0].name.empty())
+        pParty->pHirelings[0].name = pParty->pHireling1Name;
+    if (!pParty->pHirelings[1].name.empty())
+        pParty->pHirelings[1].name = pParty->pHireling2Name;
 }
 
 //----- (00476CB5) --------------------------------------------------------
@@ -183,7 +183,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                 switch (decode_step) {
                     case 1:
                         pNPCUnicNames[i] = removeQuotes(test_string);
-                        pNPCData[i + 1].pName = pNPCUnicNames[i];
+                        pNPCData[i + 1].name = pNPCUnicNames[i];
                         break;
                     case 2:
                         pNPCData[i + 1].uPortraitID = atoi(test_string);
@@ -192,7 +192,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                         pNPCData[i + 1].Location2D = static_cast<HouseId>(atoi(test_string));
                         break;
                     case 7:
-                        pNPCData[i + 1].profession = static_cast<NPCProf>(atoi(test_string));
+                        pNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
                         break;
                     case 8:
                         pNPCData[i + 1].greet = atoi(test_string);
@@ -418,7 +418,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
     char *tmp_pos = nullptr;
     int decode_step;
 
-    for (NPCProf i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
+    for (NpcProfession i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -482,7 +482,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     CharacterSex uNPCSex = sexForMonsterType(monsterType);
     uRace = raceForMonsterType(monsterType);
     pNPCDataBuff->uSex = uNPCSex;
-    pNPCDataBuff->pName = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
+    pNPCDataBuff->name = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
 
     gen_attempts = 0;
     break_gen = false;
@@ -571,7 +571,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
                 .professionChancePerArea[gen_profession++];
         } while (test_prof_summ < max_prof_cap);
     }
-    pNPCDataBuff->profession = (NPCProf)(gen_profession - 1);
+    pNPCDataBuff->profession = (NpcProfession)(gen_profession - 1);
     pNPCDataBuff->Location2D = uLocation2D;
     pNPCDataBuff->field_24 = 1;
     pNPCDataBuff->is_joinable = 1;

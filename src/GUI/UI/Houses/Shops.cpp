@@ -216,7 +216,7 @@ void addUniqueItemClasses(const ITEM_VARIATION &variation, std::vector<RandomIte
     }
 }
 
-DIALOGUE_TYPE getSkillLearnDualogueForItemClass(RandomItemType itemClass) {
+DialogueId getSkillLearnDualogueForItemClass(RandomItemType itemClass) {
     switch (itemClass) {
       case RANDOM_ITEM_SWORD:
         return DIALOGUE_LEARN_SWORD;
@@ -533,7 +533,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
-    for (uint i = 0; i < 12; ++i) {
+    for (unsigned i = 0; i < 12; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
         int itemx, itemy;
 
@@ -698,15 +698,15 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
     pParty->InTheShopFlags[houseId()] = 0;
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
+std::vector<DialogueId> GUIWindow_WeaponShop::listShopLearnableSkills() {
     std::vector<RandomItemType> itemClasses;
-    std::vector<DIALOGUE_TYPE> skillsOptions;
+    std::vector<DialogueId> skillsOptions;
 
     addUniqueItemClasses(weaponShopVariationStandard[houseId()], itemClasses);
     addUniqueItemClasses(weaponShopVariationSpecial[houseId()], itemClasses);
 
     for (RandomItemType itemClass : itemClasses) {
-        DIALOGUE_TYPE dialogue = getSkillLearnDualogueForItemClass(itemClass);
+        DialogueId dialogue = getSkillLearnDualogueForItemClass(itemClass);
         if (dialogue != DIALOGUE_NULL) {
             skillsOptions.push_back(dialogue);
         }
@@ -715,9 +715,9 @@ std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
     return skillsOptions;
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
+std::vector<DialogueId> GUIWindow_ArmorShop::listShopLearnableSkills() {
     std::vector<RandomItemType> itemClasses;
-    std::vector<DIALOGUE_TYPE> skillsOptions;
+    std::vector<DialogueId> skillsOptions;
 
     addUniqueItemClasses(armorShopTopRowVariationStandard[houseId()], itemClasses);
     addUniqueItemClasses(armorShopBottomRowVariationStandard[houseId()], itemClasses);
@@ -725,7 +725,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
     addUniqueItemClasses(armorShopBottomRowVariationSpecial[houseId()], itemClasses);
 
     for (RandomItemType itemClass : itemClasses) {
-        DIALOGUE_TYPE dialogue = getSkillLearnDualogueForItemClass(itemClass);
+        DialogueId dialogue = getSkillLearnDualogueForItemClass(itemClass);
         if (dialogue != DIALOGUE_NULL) {
             skillsOptions.push_back(dialogue);
         }
@@ -734,11 +734,11 @@ std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
     return skillsOptions;
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_MagicShop::listShopLearnableSkills() {
+std::vector<DialogueId> GUIWindow_MagicShop::listShopLearnableSkills() {
     return {DIALOGUE_LEARN_ITEM_ID, DIALOGUE_LEARN_REPAIR};
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listShopLearnableSkills() {
+std::vector<DialogueId> GUIWindow_AlchemyShop::listShopLearnableSkills() {
     return {DIALOGUE_LEARN_ALCHEMY, DIALOGUE_LEARN_MONSTER_ID};
 }
 
@@ -774,7 +774,7 @@ void GUIWindow_Shop::houseSpecificDialogue() {
     }
 }
 
-void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_SHOP_BUY_STANDARD || option == DIALOGUE_SHOP_BUY_SPECIAL) {
         if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
@@ -806,7 +806,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Shop::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Shop::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT, DIALOGUE_LEARN_SKILLS};
@@ -819,7 +819,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Shop::listDialogueOptions() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_AlchemyShop::listDialogueOptions() {
     if (_currentDialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
         return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
     }
@@ -1100,7 +1100,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int stealDifficulty = 0;
             int fine;
             if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
-                stealDifficulty = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]._steal_perm;
+                stealDifficulty = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].baseStealingFine;
             }
             int partyReputation = pParty->GetPartyReputation();
             if (isStealingModeActive()) {

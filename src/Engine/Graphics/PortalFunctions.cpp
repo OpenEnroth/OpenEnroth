@@ -13,7 +13,7 @@ int _49CE9E_sub0_x(RenderVertexSoft *pVertices, unsigned int uNumVertices,
     int idx = -1;
 
     float temp_val;
-    for (uint i = 0; i < uNumVertices; ++i) {
+    for (unsigned i = 0; i < uNumVertices; ++i) {
         if (pVertices[i].vWorldPosition.x <= test_val)
             temp_val = test_val - pVertices[i].vWorldPosition.x;
         else
@@ -33,7 +33,7 @@ int _49CE9E_sub0_y(RenderVertexSoft *pVertices, unsigned int uNumVertices,
     int idx = -1;
 
     float temp_val;
-    for (uint i = 0; i < uNumVertices; ++i) {
+    for (unsigned i = 0; i < uNumVertices; ++i) {
         if (pVertices[i].vWorldPosition.y <= test_val)
             temp_val = test_val - pVertices[i].vWorldPosition.y;
         else
@@ -53,7 +53,7 @@ int _49CE9E_sub0_z(RenderVertexSoft *pVertices, unsigned int uNumVertices,
     int idx = -1;
 
     float temp_val;
-    for (uint i = 0; i < uNumVertices; ++i) {
+    for (unsigned i = 0; i < uNumVertices; ++i) {
         if (pVertices[i].vWorldPosition.z <= test_val)
             temp_val = test_val - pVertices[i].vWorldPosition.z;
         else
@@ -99,18 +99,18 @@ void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     pFace->Flatten(&points, MODEL_INDOOR);
 
     float x_min = points.u[0];
-    uint x_min_idx = 0;
+    unsigned x_min_idx = 0;
 
     float x_max = points.u[0];
-    uint x_max_idx = 0;
+    unsigned x_max_idx = 0;
 
     float y_min = points.v[0];
-    uint y_min_idx = 0;
+    unsigned y_min_idx = 0;
 
     float y_max = points.v[0];
-    uint y_max_idx = 0;
+    unsigned y_max_idx = 0;
 
-    for (uint i = 0; i < pFace->uNumVertices; ++i) {
+    for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
         if (points.u[i] < x_min) {
             x_min = points.u[i];
             x_min_idx = i;

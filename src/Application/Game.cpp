@@ -488,13 +488,13 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_SelectHouseNPCDialogueOption:
-                selectHouseNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectHouseNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_SelectProprietorDialogueOption:
-                selectProprietorDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectProprietorDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_SelectNPCDialogueOption:
-                selectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);
@@ -859,8 +859,8 @@ void Game::processQueuedMessages() {
                                         // NPCPanel
                 if (uMessageParam) {
                     new OnButtonClick2({626, 179}, {0, 0}, pBtn_NPCRight);
-                    v37 = (!pParty->pHirelings[0].pName.empty()) +
-                          (!pParty->pHirelings[1].pName.empty()) +
+                    v37 = (!pParty->pHirelings[0].name.empty()) +
+                          (!pParty->pHirelings[1].name.empty()) +
                           (uint8_t)pParty->cNonHireFollowers - 2;
                     // v37 is max scroll position
                     if (pParty->hirelingScrollPosition < v37) {
@@ -1052,7 +1052,7 @@ void Game::processQueuedMessages() {
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 SaveGame(1, 0);
-                pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].pFilename;
+                pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].fileName;
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
@@ -1138,7 +1138,7 @@ void Game::processQueuedMessages() {
                 if (frameTableTxtLine.uPropCount == 1) {
                     MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
                     if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
-                    std::string map_name = pMapStats->pInfos[map_index].pFilename;
+                    std::string map_name = pMapStats->pInfos[map_index].fileName;
                     pCurrentMapName = map_name;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -1294,7 +1294,7 @@ void Game::processQueuedMessages() {
                         continue;
                     }
 
-                    if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER)) // airbourne or on water
+                    if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER)) // airbourne or on water
                         _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                     else
                         _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
@@ -1308,13 +1308,13 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                if (!(pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))) {
+                if (!(pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))) {
                     pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                     continue;
                 } else {
-                    if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
+                    if (pParty->uFlags & PARTY_FLAG_AIRBORNE)
                         logger->trace("Party is airborne");
-                    if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+                    if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                         logger->trace("Party on water");
                 }
 
@@ -1323,7 +1323,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))
+                if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))
                     _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                 else
                     _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
@@ -1354,12 +1354,13 @@ void Game::processQueuedMessages() {
                     //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
                     MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
-                    if (grng->random(100) + 1 <= pMapInfo->Encounter_percent) {
+                    if (grng->random(100) + 1 <= pMapInfo->encounterChance) {
                         v91 = grng->random(100);
-                        v92 = pMapInfo->EncM1percent;
+                        v92 = pMapInfo->encounter1Chance;
                         v93 = v91 + 1;
+                        // TODO(captainurist): this is some weird code here.
                         if (v93 > v92)
-                            encounter_index = v93 > v92 + pMapInfo->EncM2percent + 2;
+                            encounter_index = v93 > v92 + pMapInfo->encounter2Chance + 2;
                         else
                             encounter_index = 1;
 
@@ -2069,7 +2070,7 @@ void Game::gameLoop() {
                 }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += GameTime::FromDays(7);  // += 2580480
-                pParty->uFlags &= ~(PARTY_FLAGS_1_WATER_DAMAGE | PARTY_FLAGS_1_BURNING);
+                pParty->uFlags &= ~(PARTY_FLAG_WATER_DAMAGE | PARTY_FLAG_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
                 pParty->pPartyBuffs.fill(SpellBuff());

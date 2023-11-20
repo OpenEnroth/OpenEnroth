@@ -610,11 +610,11 @@ void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst);
 
 struct MonsterInfo_MM7 {
     int32_t name;
-    int32_t pictureName;
+    int32_t textureName;
     uint8_t level;
     uint8_t treasureDropChance;
-    uint8_t treasureDiceRolls;
-    uint8_t treasureDiceSides;
+    uint8_t goldDiceRolls;
+    uint8_t goldDiceSides;
     uint8_t treasureLevel;
     uint8_t treasureType;
     uint8_t flying;
@@ -628,13 +628,13 @@ struct MonsterInfo_MM7 {
     uint8_t attack1DamageDiceRolls;
     uint8_t attack1DamageDiceSides;
     uint8_t attack1DamageBonus;
-    uint8_t missileAttack1Type;
+    uint8_t attack1MissileType;
     uint8_t attack2Chance;
     uint8_t attack2Type;
     uint8_t attack2DamageDiceRolls;
     uint8_t attack2DamageDiceSides;
     uint8_t attack2DamageBonus;
-    uint8_t missileAttack2Type;
+    uint8_t attack2MissileType;
     uint8_t spell1UseChance;
     uint8_t spell1Id;
     uint8_t spell2UseChance;
@@ -657,8 +657,8 @@ struct MonsterInfo_MM7 {
     char _pad;
     uint16_t id;
     uint16_t bloodSplatOnDeath;
-    uint16_t spellSkillAndMastery1;
-    uint16_t spellSkillAndMastery2;
+    uint16_t spell1SkillMastery;
+    uint16_t spell2SkillMastery;
     int16_t field_3C_some_special_attack;
     int16_t field_3E;
     uint32_t hp;
@@ -989,7 +989,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst);
 
 
 struct DecorationDesc_MM6 {
-    std::array<char, 32> pName;
+    std::array<char, 32> name;
     std::array<char, 32> field_20;
     int16_t uType;
     uint16_t uDecorationHeight;

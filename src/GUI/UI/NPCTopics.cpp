@@ -30,7 +30,7 @@
 
 int membershipOrTrainingApproved;
 int topicEventId; // event id of currently viewed scripted NPC event
-DIALOGUE_TYPE guildMembershipNPCTopicId;
+DialogueId guildMembershipNPCTopicId;
 
 int gold_transaction_amount;
 
@@ -217,7 +217,7 @@ static constexpr std::array<std::pair<QuestBit, ItemId>, 27> _4F0882_evt_VAR_Pla
     {QBIT_241, ITEM_SPECIAL_THE_PERFECT_BOW}
 }};
 
-DIALOGUE_TYPE arenaMainDialogue() {
+DialogueId arenaMainDialogue() {
     if (pParty->field_7B5_in_arena_quest) {
         if (pParty->field_7B5_in_arena_quest == -1) {
             return DIALOGUE_ARENA_ALREADY_WON;
@@ -259,7 +259,7 @@ DIALOGUE_TYPE arenaMainDialogue() {
 /**
  * @offset 0x4BC109
  */
-void prepareArenaFight(DIALOGUE_TYPE dialogue) {
+void prepareArenaFight(DialogueId dialogue) {
     pParty->field_7B5_in_arena_quest = dialogue;
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
@@ -325,7 +325,7 @@ void prepareArenaFight(DIALOGUE_TYPE dialogue) {
 
     std::vector<MonsterId> candidateIds;
     for (MonsterId i : allArenaMonsters()) {
-        if (pMonsterStats->pInfos[i].uLevel >= monsterMinLevel && pMonsterStats->pInfos[i].uLevel <= monsterMaxLevel) {
+        if (pMonsterStats->infos[i].level >= monsterMinLevel && pMonsterStats->infos[i].level <= monsterMaxLevel) {
             candidateIds.push_back(i);
         }
     }
@@ -432,7 +432,7 @@ void oracleDialogue() {
  * @offset 0x4B29F2
  */
 const std::string &joinGuildOptionString() {
-    GUILD_ID guild_id = static_cast<GUILD_ID>(topicEventId - 400);
+    GuildId guild_id = static_cast<GuildId>(topicEventId - 400);
     static const int dialogue_base = 110;
     AwardType guildMembershipAwardBit = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
 
@@ -574,7 +574,7 @@ std::string masteryTeacherOptionString() {
                                       localization->GetSkillName(skillBeingTaught), gold_transaction_amount);
 }
 
-std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData) {
+std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
     switch (topic) {
       case DIALOGUE_SCRIPTED_LINE_1:
         return pNPCTopics[npcData->dialogue_1_evt_id].pTopic;
@@ -590,13 +590,13 @@ std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData) {
         return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
       case DIALOGUE_HIRE_FIRE:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->pName);
+            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
         } else {
             return localization->GetString(LSTR_HIRE);
         }
       case DIALOGUE_13_hiring_related:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->pName);
+            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
         } else {
             return localization->GetString(LSTR_JOIN);
         }
@@ -621,8 +621,8 @@ std::string npcDialogueOptionString(DIALOGUE_TYPE topic, NPCData *npcData) {
     }
 }
 
-std::vector<DIALOGUE_TYPE> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
-    std::vector<DIALOGUE_TYPE> optionList;
+std::vector<DialogueId> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
+    std::vector<DialogueId> optionList;
 
     if (npcData->is_joinable) {
         optionList.push_back(DIALOGUE_13_hiring_related);
@@ -651,7 +651,7 @@ std::vector<DIALOGUE_TYPE> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
     return optionList;
 }
 
-DIALOGUE_TYPE handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcData) {
+DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData) {
     int eventId;
 
     if (topic == DIALOGUE_SCRIPTED_LINE_1) {
@@ -700,7 +700,7 @@ DIALOGUE_TYPE handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, NPCData *npcD
     return DIALOGUE_MAIN;
 }
 
-std::vector<DIALOGUE_TYPE> listNPCDialogueOptions(DIALOGUE_TYPE topic) {
+std::vector<DialogueId> listNPCDialogueOptions(DialogueId topic) {
     switch (topic) {
       case DIALOGUE_MAGIC_GUILD_OFFER:
         return {DIALOGUE_MAGIC_GUILD_JOIN};
@@ -714,7 +714,7 @@ std::vector<DIALOGUE_TYPE> listNPCDialogueOptions(DIALOGUE_TYPE topic) {
 }
 
 
-void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
+void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
     if (topic == DIALOGUE_MASTERY_TEACHER_LEARN) {
         if (membershipOrTrainingApproved) {
             if (pParty->hasActiveCharacter()) {
@@ -777,7 +777,7 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
         for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
-            if (iequals(pParty->pHirelings[hirelingId].pName, npcData->pName)) {
+            if (iequals(pParty->pHirelings[hirelingId].name, npcData->name)) {
                 break;
             }
         }
@@ -794,14 +794,14 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
         if (npcData->Hired()) {
             if (pNPCStats->uNumNewNPCs > 0) {
                 for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-                    if (pNPCStats->pNewNPCData[i].Hired() && npcData->pName == pNPCStats->pNewNPCData[i].pName) {
+                    if (pNPCStats->pNewNPCData[i].Hired() && npcData->name == pNPCStats->pNewNPCData[i].name) {
                         pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
                     }
                 }
             }
-            if (iequals(pParty->pHirelings[0].pName, npcData->pName)) {
+            if (iequals(pParty->pHirelings[0].name, npcData->name)) {
                 pParty->pHirelings[0] = NPCData();
-            } else if (iequals(pParty->pHirelings[1].pName, npcData->pName)) {
+            } else if (iequals(pParty->pHirelings[1].name, npcData->name)) {
                 pParty->pHirelings[1] = NPCData();
             }
             pParty->hirelingScrollPosition = 0;
@@ -809,7 +809,7 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
-        if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
+        if (!pParty->pHirelings[0].name.empty() && !pParty->pHirelings[1].name.empty()) {
             engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
         } else {
             if (npcData->profession != Burglar) {
@@ -826,12 +826,12 @@ void selectSpecialNPCTopicSelection(DIALOGUE_TYPE topic, NPCData* npcData) {
                 pParty->TakeGold(pNPCStats->pProfessions[npcData->profession].uHirePrice);
             }
             npcData->uFlags |= NPC_HIRED;
-            if (!pParty->pHirelings[0].pName.empty()) {
+            if (!pParty->pHirelings[0].name.empty()) {
                 pParty->pHirelings[1] = *npcData;
-                pParty->pHireling2Name = npcData->pName;
+                pParty->pHireling2Name = npcData->name;
             } else {
                 pParty->pHirelings[0] = *npcData;
-                pParty->pHireling1Name = npcData->pName;
+                pParty->pHireling1Name = npcData->name;
             }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

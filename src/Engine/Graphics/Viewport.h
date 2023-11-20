@@ -37,7 +37,6 @@ struct Viewport {
 
 extern struct Viewport *pViewport;
 
-/*  201 */
 struct ViewingParams {
     inline ViewingParams() {
         draw_sw_outlines = false;

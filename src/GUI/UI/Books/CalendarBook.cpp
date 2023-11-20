@@ -110,7 +110,7 @@ void GUIWindow_CalendarBook::Update() {
     MapId pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     std::string pMapName;
     if (pMapID != MAP_INVALID) {
-        pMapName = pMapStats->pInfos[pMapID].pName;
+        pMapName = pMapStats->pInfos[pMapID].name;
     } else {
         pMapName = "Unknown";
     }

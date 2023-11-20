@@ -412,7 +412,7 @@ void prepareHouse(HouseId house) {
             if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
-                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].pName);
+                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].name);
                 desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNewNPCData[i].uPortraitID));
                 desc.npc = &pNPCStats->pNewNPCData[i];
 
@@ -436,7 +436,7 @@ void prepareHouse(HouseId house) {
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
-            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
+            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].name);
             desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
@@ -472,11 +472,11 @@ void NPCHireableDialogPrepare() {
     window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
 
-void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
+void selectHouseNPCDialogueOption(DialogueId topic) {
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
 
     if (topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
-        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
+        DialogueId newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
 
         if (newTopic != DIALOGUE_MAIN) {
             window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
@@ -553,7 +553,7 @@ void updateHouseNPCTopics(int npc) {
     }
 }
 
-void selectProprietorDialogueOption(DIALOGUE_TYPE option) {
+void selectProprietorDialogueOption(DialogueId option) {
     if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
         return;
     }
@@ -720,12 +720,12 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;
-        house_window.DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
+        house_window.DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapStats->pInfos[id].name, 3);
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
-            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].name);
             house_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
@@ -773,7 +773,7 @@ void GUIWindow_House::houseNPCDialogue() {
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
         GUIButton *pButton = right_panel_window.GetControl(i);
-        DIALOGUE_TYPE topic = (DIALOGUE_TYPE)pButton->msg_param;
+        DialogueId topic = (DialogueId)pButton->msg_param;
         std::string str = npcDialogueOptionString(topic, pNPC);
         if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
             pButton->msg_param = 0;
@@ -904,13 +904,13 @@ void GUIWindow_House::houseDialogManager() {
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
         // Draw house title
-        if (!buildingTable[houseId()].pName.empty()) {
+        if (!buildingTable[houseId()].name.empty()) {
             if (current_screen_type != SCREEN_SHOP_INVENTORY) {
-                int yPos = 2 * assets->pFontCreate->GetHeight() - 6 - assets->pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
+                int yPos = 2 * assets->pFontCreate->GetHeight() - 6 - assets->pFontCreate->CalcTextHeight(buildingTable[houseId()].name, 130, 0);
                 if (yPos < 0) {
                     yPos = 0;
                 }
-                pWindow.DrawTitleText(assets->pFontCreate.get(), 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].pName, 3);
+                pWindow.DrawTitleText(assets->pFontCreate.get(), 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].name, 3);
             }
         }
     }
@@ -947,7 +947,7 @@ void GUIWindow_House::houseDialogManager() {
                 int yPos = 0;
                 switch (houseNpcs[i].type) {
                   case HOUSE_TRANSITION:
-                    pTitleText = pMapStats->pInfos[houseNpcs[i].targetMapID].pName;
+                    pTitleText = pMapStats->pInfos[houseNpcs[i].targetMapID].name;
                     yPos = 94 * i + SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_PROPRIETOR:
@@ -955,7 +955,7 @@ void GUIWindow_House::houseDialogManager() {
                     yPos = SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_NPC:
-                    pTitleText = houseNpcs[i].npc->pName;
+                    pTitleText = houseNpcs[i].npc->name;
                     yPos = pNPCPortraits_y[houseNpcs.size() - 1][i] + houseNpcs[i].icon->height() + 2;
                     break;
                 }
@@ -993,7 +993,7 @@ void GUIWindow_House::initializeProprietorDialogue() {
         return;
     }
 
-    std::vector<DIALOGUE_TYPE> optionList = listDialogueOptions();
+    std::vector<DialogueId> optionList = listDialogueOptions();
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
@@ -1012,7 +1012,7 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
     initializeNPCDialogueButtons(prepareScriptedNPCDialogueTopics(houseNpcs[npc].npc));
 }
 
-void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> optionList) {
+void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DialogueId> optionList) {
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
             pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
@@ -1032,7 +1032,7 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
     int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
-        CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+        CharacterSkillType skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
         if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
             optionsText.push_back(localization->GetSkillName(skill));
@@ -1146,7 +1146,7 @@ void GUIWindow_House::Release() {
     GUIWindow::Release();
 }
 
-void GUIWindow_House::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_House::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
 }
 
@@ -1154,7 +1154,7 @@ void GUIWindow_House::houseSpecificDialogue() {
     // Nothing
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_House::listDialogueOptions() {
     return {};
 }
 

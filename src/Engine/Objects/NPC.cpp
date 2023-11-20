@@ -87,10 +87,10 @@ bool PartyHasDragon() { return pNPCStats->pNewNPCData[57].Hired(); }
 
 //----- (00476395) --------------------------------------------------------
 // 0x26 Wizard eye at skill level 2
-bool CheckHiredNPCSpeciality(NPCProf prof) {
+bool CheckHiredNPCSpeciality(NpcProfession prof) {
     if (bNoNPCHiring == 1) return false;
 
-    for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
+    for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNewNPCData[i].profession == prof &&
             (pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
             return true;
@@ -115,7 +115,7 @@ NpcType getNPCType(int npcId) {
 }
 
 //----- (00445308) --------------------------------------------------------
-const std::string &GetProfessionActionText(NPCProf prof) {
+const std::string &GetProfessionActionText(NpcProfession prof) {
     switch (prof) {
     case Healer:
     case ExpertHealer:
@@ -135,7 +135,7 @@ const std::string &GetProfessionActionText(NPCProf prof) {
 }
 
 //----- (004BB756) --------------------------------------------------------
-int UseNPCSkill(NPCProf profession, int id) {
+int UseNPCSkill(NpcProfession profession, int id) {
     switch (profession) {
         case Healer: {
             for (Character &player : pParty->pCharacters) {
@@ -279,15 +279,15 @@ void FlatHirelings::Prepare() {
     count = 0;
 
     for (size_t i = 0; i < 2; ++i)
-        if (!pParty->pHirelings[i].pName.empty())
+        if (!pParty->pHirelings[i].name.empty())
             ids[count++] = i;
 
     for (size_t i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
         if (npc->Hired()) {
-            assert(!npc->pName.empty()); // Important for the checks below.
+            assert(!npc->name.empty()); // Important for the checks below.
 
-            if (npc->pName != pParty->pHirelings[0].pName && npc->pName != pParty->pHirelings[1].pName) {
+            if (npc->name != pParty->pHirelings[0].name && npc->name != pParty->pHirelings[1].name) {
                 assert(i + 2 < 256); // Won't fit into uint8_t otherwise.
                 ids[count++] = i + 2;
             }

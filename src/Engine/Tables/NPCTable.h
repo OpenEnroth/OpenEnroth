@@ -37,13 +37,13 @@ struct NPCTopic {
 struct NPCData {  // 4Ch
     inline bool Hired() { return uFlags & NPC_HIRED; }
 
-    std::string pName;               // 0
+    std::string name;               // 0
     unsigned int uPortraitID = 0;  // 4
     NpcFlags uFlags = 0;  // 8
     int fame = 0;                  // c
     int rep = 0;                   // 10
     HouseId Location2D = HOUSE_INVALID;   // 14  house_id
-    NPCProf profession = NoProfession;  // 18
+    NpcProfession profession = NoProfession;  // 18
     int greet = 0;                 // 1c
     int is_joinable = 0;           // 20
     int field_24 = 0;

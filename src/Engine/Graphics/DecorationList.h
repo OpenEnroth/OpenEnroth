@@ -11,7 +11,6 @@
 #include "Utility/Flags.h"
 #include "Utility/Memory/Blob.h"
 
-/*  321 */
 enum class DecorationDescFlag : uint16_t {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
     DECORATION_DESC_DONT_DRAW = 0x0002,
@@ -30,7 +29,7 @@ MM_DECLARE_FLAGS(DecorationDescFlags, DecorationDescFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DecorationDescFlags)
 
 struct DecorationDesc {
-    std::string pName;
+    std::string name;
     std::string field_20; // TODO(captainurist): actually interactionText?
     int16_t uType;
     uint16_t uDecorationHeight;

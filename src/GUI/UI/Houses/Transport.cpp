@@ -125,7 +125,7 @@ void GUIWindow_Transport::mainDialogue() {
 
         if (routeActive && (transportSchedule[schedule_id].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
             int travel_time = getTravelTimeTransportDays(schedule_id);
-            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].pName));
+            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
             hasActiveRoute = true;
         } else {
             optionsText.push_back("");
@@ -156,9 +156,9 @@ void GUIWindow_Transport::transportDialogue() {
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
+        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].fileName) {
             SaveGame(1, 0);
-            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
+            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].fileName;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -210,11 +210,11 @@ void GUIWindow_Transport::houseSpecificDialogue() {
     }
 }
 
-void GUIWindow_Transport::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Transport::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Transport::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Transport::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRANSPORT_SCHEDULE_1, DIALOGUE_TRANSPORT_SCHEDULE_2, DIALOGUE_TRANSPORT_SCHEDULE_3, DIALOGUE_TRANSPORT_SCHEDULE_4};

@@ -110,7 +110,7 @@ GUIWindow_Training::GUIWindow_Training(HouseId houseId) : GUIWindow_House(houseI
     std::fill(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end(), 0);
 }
 
-void GUIWindow_Training::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Training::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (IsSkillLearningDialogue(option)) {
         learnSelectedSkill(GetLearningDialogueSkill(option));
@@ -139,7 +139,7 @@ void GUIWindow_Training::houseSpecificDialogue() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Training::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRAINING_HALL_TRAIN, DIALOGUE_LEARN_SKILLS};

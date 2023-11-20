@@ -60,7 +60,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.faceExtras, &dst->pFaceExtras);
 
     std::string textureName;
-    for (uint i = 0; i < dst->pFaceExtras.size(); ++i) {
+    for (unsigned i = 0; i < dst->pFaceExtras.size(); ++i) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
@@ -119,7 +119,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
     reconstruct(src.sectorLightData, &dst->ptr_0002B8_sector_lrdata);
 
-    for (uint i = 0, j = 0; i < dst->pSectors.size(); ++i) {
+    for (unsigned i = 0, j = 0; i < dst->pSectors.size(); ++i) {
         BLVSector *pSector = &dst->pSectors[i];
 
         pSector->pLights = dst->ptr_0002B8_sector_lrdata.data() + j;
@@ -222,7 +222,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
 
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
-            pSpriteObjects[i].uType = static_cast<SPRITE_OBJECT_TYPE>(pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID);
+            pSpriteObjects[i].uType = static_cast<SpriteId>(pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID);
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
     }
@@ -231,7 +231,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.doors, &dst->pDoors);
     reconstruct(src.doorsData, &dst->ptr_0002B4_doors_ddata);
 
-    for (uint i = 0, j = 0; i < dst->pDoors.size(); ++i) {
+    for (unsigned i = 0, j = 0; i < dst->pDoors.size(); ++i) {
         BLVDoor *pDoor = &dst->pDoors[i];
 
         pDoor->pVertexIDs = dst->ptr_0002B4_doors_ddata.data() + j;
@@ -264,7 +264,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0; i < dst->pDoors.size(); ++i) {
         BLVDoor *pDoor = &dst->pDoors[i];
 
-        for (uint j = 0; j < pDoor->uNumFaces; ++j) {
+        for (unsigned j = 0; j < pDoor->uNumFaces; ++j) {
             BLVFace *pFace = &dst->pFaces[pDoor->pFaceIDs[j]];
             BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
 

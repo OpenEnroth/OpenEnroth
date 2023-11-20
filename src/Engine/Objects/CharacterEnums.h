@@ -69,7 +69,6 @@ enum class CharacterBuff {
 };
 using enum CharacterBuff;
 
-/*  301 */
 enum class CharacterSpeech {
     SPEECH_NONE = 0,
     SPEECH_KILL_WEAK_ENEMY = 1,

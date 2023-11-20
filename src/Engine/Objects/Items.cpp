@@ -808,7 +808,7 @@ bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
     }
 }
 
-Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
+Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {
     // Mapping [item_level][map_level] -> [actual_level_min, actual_level_max];
     // Rows are item treasure levels, columns are map treasure levels. Not using IndexedArray to keep things terse.
     // Original offset was 0x004E8168.

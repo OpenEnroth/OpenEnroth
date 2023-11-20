@@ -4,25 +4,24 @@
 
 #include "Utility/Flags.h"
 
-enum class ACTOR_KILL_CHECK_POLICY {
+enum class ActorKillCheckPolicy {
     KILL_CHECK_ANY = 0,
     KILL_CHECK_GROUPID = 1,
     KILL_CHECK_MONSTERID = 2,
     KILL_CHECK_ACTORID = 3
 };
-using enum ACTOR_KILL_CHECK_POLICY;
+using enum ActorKillCheckPolicy;
 
-enum class ABILITY_INDEX : char {
+enum class ActorAbility : char {
     ABILITY_ATTACK1 = 0,
     ABILITY_ATTACK2 = 1,
     ABILITY_SPELL1 = 2,
     ABILITY_SPELL2 = 3,
     ABILITY_SPECIAL = 4, // E.g. gogs exploding on death
 };
-using enum ABILITY_INDEX;
+using enum ActorAbility;
 
-/*  361 */
-enum class ACTOR_BUFF_INDEX {
+enum class ActorBuff {
     ACTOR_BUFF_NONE = 0,
     ACTOR_BUFF_CHARM = 1,
     ACTOR_BUFF_SUMMONED = 2,
@@ -49,9 +48,9 @@ enum class ACTOR_BUFF_INDEX {
     ACTOR_BUFF_FIRST = ACTOR_BUFF_CHARM,
     ACTOR_BUFF_LAST = ACTOR_BUFF_HAMMERHANDS
 };
-using enum ACTOR_BUFF_INDEX;
+using enum ActorBuff;
 
-/*  264 */
+// TODO(captainurist): #enum need to do some renamings here
 enum class AIState : uint16_t {
     Standing = 0x0,
     Tethered = 0x1,
@@ -76,7 +75,6 @@ enum class AIState : uint16_t {
 };
 using enum AIState;
 
-/*  265 */
 enum class ActorAnimation {
     ANIM_Standing = 0x0,
     ANIM_Walking = 0x1,

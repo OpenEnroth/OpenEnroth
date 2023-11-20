@@ -352,14 +352,14 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
             uDefaultTravelTime_ByFoot = 1;
             *pOut = "out15.odm";  // Shoals
             uLevel_StartingPointType = MAP_START_POINT_EAST;
-            pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE);
+            pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
             return true;
         }
     } else if (mapNumberAsInt == MAP_SHOALS && direction == 3) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
         *pOut = "out14.odm";  // Avlee
         uLevel_StartingPointType = MAP_START_POINT_WEST;
-        pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE);
+        pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
         return true;
     }
     destinationMap = foot_travel_destinations[mapNumberAsInt][direction - 1];
@@ -370,7 +370,7 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
 
     uDefaultTravelTime_ByFoot = foot_travel_times[mapNumberAsInt][direction - 1];
     uLevel_StartingPointType = foot_travel_arrival_points[mapNumberAsInt][direction - 1];
-    *pOut = pMapStats->pInfos[destinationMap].pFilename;
+    *pOut = pMapStats->pInfos[destinationMap].fileName;
     return true;
 }
 
@@ -408,7 +408,7 @@ void OutdoorLocation::MessWithLUN() {
     this->field_D2C = 0;
     this->uSpriteID_LUN_SUN = pSpriteFrameTable->FastFindSprite("LUN-SUN");
     this->field_D14 = -131072;
-    for (uint i = 0; i < 8; i++)
+    for (unsigned i = 0; i < 8; i++)
         pSpriteFrameTable->InitializeSprite(this->pSpriteIDs_LUN[i]);  // v2 += 2;
     pSpriteFrameTable->InitializeSprite(this->uSpriteID_LUN_SUN);
 }
@@ -473,7 +473,7 @@ void OutdoorLocation::SetFog() {
         map_id == MAP_PIT || map_id > MAP_SHOALS)
         return;
 
-    uint chance = vrng->random(100);
+    unsigned chance = vrng->random(100);
 
     if (chance < fog_probability_table[map_id].small_fog_chance) {
         ::day_fogrange_1 = 4096;
@@ -1144,7 +1144,7 @@ bool OutdoorLocation::PrepareDecorations() {
     }
 
     decorationsWithSound.clear();
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+    for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
@@ -1211,13 +1211,13 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                 if (pActors[i].aiState != AIState::Removed &&
                     pActors[i].aiState != AIState::Disabled &&
                     (pActors[i].currentHP == 0 ||
-                     pActors[i].monsterInfo.uHP == 0))
+                     pActors[i].monsterInfo.hp == 0))
                     pActors[i].aiState = AIState::Dead;
                 pActors[i].speed.x = 0;
                 pActors[i].speed.y = 0;
                 pActors[i].speed.z = 0;
                 pActors[i].UpdateAnimation();
-                pActors[i].monsterInfo.uHostilityType =
+                pActors[i].monsterInfo.hostilityType =
                     HOSTILITY_FRIENDLY;
                 pActors[i].PrepareSprites(0);
             } else {
@@ -1235,13 +1235,13 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
             if (pActors[i].aiState != AIState::Removed &&
                 pActors[i].aiState != AIState::Disabled &&
                 (pActors[i].currentHP == 0 ||
-                 pActors[i].monsterInfo.uHP == 0))
+                 pActors[i].monsterInfo.hp == 0))
                 pActors[i].aiState = AIState::Dead;
             pActors[i].speed.x = 0;
             pActors[i].speed.y = 0;
             pActors[i].speed.z = 0;
             pActors[i].UpdateAnimation();
-            pActors[i].monsterInfo.uHostilityType =
+            pActors[i].monsterInfo.hostilityType =
                 HOSTILITY_FRIENDLY;
             pActors[i].PrepareSprites(0);
         } else {
@@ -1269,7 +1269,7 @@ bool OutdoorLocation::LoadRoadTileset() {
 
 //----- (0047F420) --------------------------------------------------------
 bool OutdoorLocation::LoadTileGroupIds() {
-    for (uint i = 0; i < 3; ++i)
+    for (unsigned i = 0; i < 3; ++i)
         pTileTypes[i].uTileID =
             pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
 
@@ -1296,7 +1296,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         // view culling
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
-            for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
+            for (unsigned j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
                 if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == pActors[i].sectorId) {
                     onlist = true;
                     break;
@@ -1335,7 +1335,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (pActors[i].aiState == Summoned) {
             if (pActors[i].summonerId.type() != OBJECT_Actor ||
                 pActors[pActors[i].summonerId.id()]
-                .monsterInfo.uSpecialAbilityDamageDiceSides != 1) {
+                .monsterInfo.specialAbilityDamageDiceSides != 1) {
                 z += floorf(pActors[i].height * 0.5f + 0.5f);
             } else {
                 v49 = 1;
@@ -1426,7 +1426,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->pMonsters[pActors[i].monsterInfo.uID].sTintColor;  // *((int *)&v35[v36] - 36);
+                            pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                                 flags | 0x100;
@@ -1496,7 +1496,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
 
     int current_floor_level = odm_floor_level[0];
     int current_idx = 0;
-    for (uint i = 1; i < surface_count; ++i) {
+    for (unsigned i = 1; i < surface_count; ++i) {
         if (current_floor_level <= pos.z + 5) {
             if (odm_floor_level[i] >= current_floor_level && odm_floor_level[i] <= pos.z + 5) {
                 current_floor_level = odm_floor_level[i];
@@ -1527,8 +1527,8 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
 // out as FP
 //----- (0046DCC8) --------------------------------------------------------
 void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
-    uint grid_x = WorldPosToGridCellX(pos_x);
-    uint grid_y = WorldPosToGridCellY(pos_y);
+    unsigned grid_x = WorldPosToGridCellX(pos_x);
+    unsigned grid_y = WorldPosToGridCellY(pos_y);
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
@@ -1581,8 +1581,8 @@ void ODM_UpdateUserInputAndOther() {
         pParty->pos.y < -22528 || pParty->pos.y > 22528) {
         pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut);
-        if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
-                             pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
+        if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
+                             pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) ||
             !v0) {
             if (pParty->pos.x < -22528) pParty->pos.x = -22528;
             if (pParty->pos.x > 22528) pParty->pos.x = 22528;
@@ -1625,7 +1625,7 @@ OutdoorLocation::OutdoorLocation() {
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions() {
     bool waterWalkActive = false;
-    pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+    pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         waterWalkActive = true;
         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
@@ -1643,7 +1643,7 @@ void ODM_ProcessPartyActions() {
     int currentGroundLevel = floorZ + 1;
 
     bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
-                                    || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                                    || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
     if (partyHasFeatherFall)
         pParty->uFallStartZ = floorZ;
     else
@@ -1662,7 +1662,7 @@ void ODM_ProcessPartyActions() {
     if (pParty->pos.z <= currentGroundLevel) {  // landing from flight
         ceilingHeight = -1;
         pParty->bFlying = false;
-        pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+        pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
     } else {
         partyNotTouchingFloor = true;
     }
@@ -1672,7 +1672,7 @@ void ODM_ProcessPartyActions() {
     // check if we should be flying
     if (!engine->IsUnderwater() && !pParty->FlyActive()) {
         pParty->bFlying = false;
-        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+        pParty->uFlags &= ~PARTY_FLAG_LANDING;
     }
 
      // is party standing on any trigger faces
@@ -1722,7 +1722,7 @@ void ODM_ProcessPartyActions() {
                         pParty->bFlying = true;
                         pParty->speed.z = 0;
                         noFlightBob = true;
-                        pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                        pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
                         if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
                             partyInputSpeed.z = pParty->walkSpeed * 4;
                             partyOldFlightZ = pParty->pos.z;
@@ -1905,8 +1905,8 @@ void ODM_ProcessPartyActions() {
                     // to avoid jump hesitancy when moving downhill
                     (!partyNotTouchingFloor || (partyCloseToGround && partyInputSpeed.z <= 0)) &&
                     pParty->jump_strength &&
-                    !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
-                    !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
+                    !(pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) &&
+                    !(pParty->uFlags & PARTY_FLAG_BURNING)) {
                     partyNotTouchingFloor = true;
                     partyInputSpeed.z += pParty->jump_strength * 96.0f;
                     // boost party upwards slightly so we dont "land" straight away
@@ -1916,7 +1916,7 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_Land:
                 if (pParty->bFlying) {
-                    pParty->uFlags |= PARTY_FLAGS_1_LANDING;
+                    pParty->uFlags |= PARTY_FLAG_LANDING;
                 }
                 pPartyActionQueue->uNumActions = 0;
                 break;
@@ -1927,7 +1927,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // Behaviour divergence from vanilla - now treat landing process as flying down for consistency
-    if (pParty->uFlags & PARTY_FLAGS_1_LANDING || flyDown) {
+    if (pParty->uFlags & PARTY_FLAG_LANDING || flyDown) {
         if (pParty->FlyActive() || engine->IsUnderwater()) {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
@@ -1938,7 +1938,7 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = true;
                 noFlightBob = true;
                 if (flyDown)
-                    pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                    pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
             }
         }
     }
@@ -2008,7 +2008,7 @@ void ODM_ProcessPartyActions() {
             if (partyInputSpeed.z < -500 && !pParty->bFlying &&
                 pParty->pos.z - currentGroundLevel > 1000 &&
                 !pParty->FeatherFallActive() &&
-                !(pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING))) {  // falling scream
+                !(pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
                     if (!pParty->pCharacters[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pParty->pCharacters[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
@@ -2067,7 +2067,7 @@ void ODM_ProcessPartyActions() {
         pParty->pos.z = partyNewPos.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
-        pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
+        pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
     } else {
         // we are on/approaching water tile
         bool waterMoveX;
@@ -2096,11 +2096,11 @@ void ODM_ProcessPartyActions() {
 
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
-                pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+                pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
                 engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
-                        pParty->uFlags |= PARTY_FLAGS_1_STANDING_ON_WATER;
+                        pParty->uFlags |= PARTY_FLAG_STANDING_ON_WATER;
                         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] &= 0xFFFE;
                     }
                 }
@@ -2111,13 +2111,13 @@ void ODM_ProcessPartyActions() {
         pParty->speed.z = partyInputSpeed.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
-        pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
+        pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
         if (partyDrowningFlag) {
             bool onWater = false;
             int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos.x, pParty->pos.y, &onWater, 1);
             if (pParty->pos.z <= pTerrainHeight + 1) {
-                pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
+                pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
         }
     }
@@ -2144,8 +2144,8 @@ void ODM_ProcessPartyActions() {
             if (pParty->uFallStartZ - partyNewPos.z > 512 && !partyHasFeatherFall &&
                 (partyNewPos.z <= newGroundLevel || partyHasHitModel) &&
                 !engine->IsUnderwater()) {
-                if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
-                    pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
+                if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
+                    pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
                 } else {
                     pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
                 }
@@ -2310,11 +2310,11 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].aiState == Summoned || !pActors[Actor_ITR].moveSpeed)
                 continue;
 
-        bool Water_Walk = supertypeForMonsterId(pActors[Actor_ITR].monsterInfo.uID) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
+        bool Water_Walk = supertypeForMonsterId(pActors[Actor_ITR].monsterInfo.id) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
 
         pActors[Actor_ITR].sectorId = 0;
 
-        bool uIsFlying = pActors[Actor_ITR].monsterInfo.uFlying;
+        bool uIsFlying = pActors[Actor_ITR].monsterInfo.flying;
         if (!pActors[Actor_ITR].CanAct())
             uIsFlying = 0;
 
@@ -2330,7 +2330,7 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].donebloodsplat) {
             if (pActors[Actor_ITR].aiState == Dead || pActors[Actor_ITR].aiState == Dying) {
                 if (pActors[Actor_ITR].pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[pActors[Actor_ITR].monsterInfo.uID].bBloodSplatOnDeath) {
+                    if (pMonsterStats->infos[pActors[Actor_ITR].monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = pActors[Actor_ITR].radius * engine->config->graphics.BloodSplatsMultiplier.value();
                             EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
@@ -2485,7 +2485,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
-        respawn_interval = map_info->uRespawnIntervalDays;
+        respawn_interval = map_info->respawnIntervalDays;
     }
     day_attrib &= ~MAP_WEATHER_FOGGY;
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
@@ -2500,7 +2500,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
 
     if (outdoor_was_respawned && map_id != MAP_INVALID) {
-        for (uint i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
+        for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
             if (spawn->uKind == OBJECT_Actor)
@@ -2784,7 +2784,7 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;
-    for (uint i = 0; i < unumverts; i++) {
+    for (unsigned i = 0; i < unumverts; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
             result = pVertices[i].vWorldPosition.z;
         }
@@ -2795,7 +2795,7 @@ double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int
 //----- (00436A40) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int unumverts) {
     double result = FLT_MIN;
-    for (uint i = 0; i < unumverts; i++) {
+    for (unsigned i = 0; i < unumverts; i++) {
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;
     }

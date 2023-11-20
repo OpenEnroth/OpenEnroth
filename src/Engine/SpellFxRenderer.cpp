@@ -125,14 +125,14 @@ void SpellFX_Billboard::Initialize(int a2) {
     uNumVec3sInArray2 = 128;
     pArray2 = new stru160[128];
 
-    for (uint i = 0; i < uNumVec4sInArray1; ++i) {
+    for (unsigned i = 0; i < uNumVec4sInArray1; ++i) {
         pArray1[i].field_0 = array_4EB8B8[i].field_0;
         pArray1[i].field_4 = array_4EB8B8[i].field_4;
         pArray1[i].field_8 = array_4EB8B8[i].field_8;
         pArray1[i].field_C = a2;
     }
 
-    for (uint i = 0; i < uNumVec3sInArray2; ++i) {
+    for (unsigned i = 0; i < uNumVec3sInArray2; ++i) {
         pArray2[i].field_0 = array_4EBBD0_x[3 * i];
         pArray2[i].field_4 = array_4EBBD0_x[(3 * i)+1];
         pArray2[i].field_8 = array_4EBBD0_x[(3 * i)+2];
@@ -640,7 +640,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
 //----- (004A81CA) --------------------------------------------------------
 bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     // SpellFxRenderer *v2; // ebx@1
-    SPRITE_OBJECT_TYPE result;  // eax@1
+    SpriteId result;  // eax@1
                  //  int v4; // eax@27
     // unsigned int diffuse; // esi@41
     // int v6; // ecx@49
@@ -1241,7 +1241,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
 //----- (004A902A) --------------------------------------------------------
 void SpellFxRenderer::DrawPlayerBuffAnims() {
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 

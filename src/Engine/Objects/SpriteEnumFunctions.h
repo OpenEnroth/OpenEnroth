@@ -6,7 +6,7 @@
 
 #include "SpriteEnums.h"
 
-inline SPRITE_OBJECT_TYPE impactSprite(SPRITE_OBJECT_TYPE projectile) {
+inline SpriteId impactSprite(SpriteId projectile) {
     assert(std::to_underlying(projectile) % 5 == 0);
-    return static_cast<SPRITE_OBJECT_TYPE>(std::to_underlying(projectile) + 1);
+    return static_cast<SpriteId>(std::to_underlying(projectile) + 1);
 }

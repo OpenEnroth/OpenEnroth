@@ -87,24 +87,24 @@ bool ShouldMonsterPlayAttackAnim(SpellId spell_id) {
 void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     // bar length
     unsigned int bar_length;
-    if (actor->monsterInfo.uHP <= 25)
+    if (actor->monsterInfo.hp <= 25)
         bar_length = 25;
-    else if (actor->monsterInfo.uHP < 200)
-        bar_length = actor->monsterInfo.uHP;
+    else if (actor->monsterInfo.hp < 200)
+        bar_length = actor->monsterInfo.hp;
     else
         bar_length = 200;
 
     // bar colour
     GraphicsImage *bar_image = game_ui_monster_hp_green;
-    if (actor->currentHP <= (0.34 * actor->monsterInfo.uHP))
+    if (actor->currentHP <= (0.34 * actor->monsterInfo.hp))
         bar_image = game_ui_monster_hp_red;
-    else if (actor->currentHP <= (0.67 * actor->monsterInfo.uHP))
+    else if (actor->currentHP <= (0.67 * actor->monsterInfo.hp))
         bar_image = game_ui_monster_hp_yellow;
 
     // how much of bar is filled
     unsigned int bar_filled_length = bar_length;
-    if (actor->currentHP < (int)actor->monsterInfo.uHP)
-        bar_filled_length = (bar_length * actor->currentHP) / actor->monsterInfo.uHP;
+    if (actor->currentHP < (int)actor->monsterInfo.hp)
+        bar_filled_length = (bar_length * actor->currentHP) / actor->monsterInfo.hp;
 
     // centralise for clipping and draw
     unsigned int uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
@@ -143,7 +143,7 @@ void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
 }
 
 void npcSetItem(int npc, ItemId item, int a3) {
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (pActors[i].npcId == npc) {
             Actor::giveItem(i, item, a3);
         }
@@ -193,18 +193,18 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
     v2 = 0;
     if (this->items[3].uItemID == ITEM_NULL) {
-        if (this->monsterInfo.uTreasureDiceRolls) {
-            v2 = grng->randomDice(this->monsterInfo.uTreasureDiceRolls, this->monsterInfo.uTreasureDiceSides);
+        if (this->monsterInfo.goldDiceRolls) {
+            v2 = grng->randomDice(this->monsterInfo.goldDiceRolls, this->monsterInfo.goldDiceSides);
             if (v2) {
                 this->items[3].uItemID = ITEM_GOLD_SMALL;
                 this->items[3].goldAmount = v2;
             }
         }
     }
-    if (grng->random(100) < this->monsterInfo.uTreasureDropChance) {
-        if (this->monsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID)
-            pItemTable->generateItem(this->monsterInfo.uTreasureLevel,
-                                     this->monsterInfo.uTreasureType,
+    if (grng->random(100) < this->monsterInfo.treasureDropChance) {
+        if (this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID)
+            pItemTable->generateItem(this->monsterInfo.treasureLevel,
+                                     this->monsterInfo.treasureType,
                                      &this->items[2]);
     }
     this->attributes |= ACTOR_HAS_ITEM;
@@ -212,7 +212,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SpellId uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
+                           SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
@@ -533,8 +533,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
         case SPELL_BODY_POWER_CURE:
             actorPtr->currentHP += 5 * realPoints + 10;
-            if (actorPtr->currentHP >= actorPtr->monsterInfo.uHP) {
-                actorPtr->currentHP = actorPtr->monsterInfo.uHP;
+            if (actorPtr->currentHP >= actorPtr->monsterInfo.hp) {
+                actorPtr->currentHP = actorPtr->monsterInfo.hp;
             }
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
             pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
@@ -693,11 +693,11 @@ unsigned short Actor::GetObjDescId(SpellId spellId) {
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
     MonsterType v2 = a1->ally;
     if (a1->ally == MONSTER_TYPE_INVALID)
-        v2 = monsterTypeForMonsterId(a1->monsterInfo.uID);
+        v2 = monsterTypeForMonsterId(a1->monsterInfo.id);
 
     MonsterType v3 = a2->ally;
     if (a2->ally == MONSTER_TYPE_INVALID)
-        v3 = monsterTypeForMonsterId(a2->monsterInfo.uID);
+        v3 = monsterTypeForMonsterId(a2->monsterInfo.id);
 
     if (isPeasant(v2) && isPeasant(v3) && raceForMonsterType(v2) == raceForMonsterType(v3) || v2 == v3)
         return true;
@@ -718,7 +718,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
     Actor *victim = &pActors[uActorID];
     if (a2 == 1) victim->attributes |= ACTOR_AGGRESSOR;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
         if (!actor->CanAct() || i == uActorID) continue;
 
@@ -727,7 +727,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
             v5 = std::abs(actor->pos.y - victim->pos.y);
             v6 = std::abs(actor->pos.z - victim->pos.z);
             if (int_get_vector_length(v4, v5, v6) < 4096) {
-                actor->monsterInfo.uHostilityType =
+                actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
             }
@@ -737,7 +737,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
 
 //----- (00404874) --------------------------------------------------------
 void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
-                            int type, ABILITY_INDEX a4) {
+                            int type, ActorAbility a4) {
     char specAb;  // al@1
     int v13;      // edx@28
 
@@ -817,8 +817,8 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
               pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
 
-    if (pActors[uActorID].monsterInfo.uSpecialAbilityType == MONSTER_SPECIAL_ABILITY_SHOT) {
-        specAb = pActors[uActorID].monsterInfo.uSpecialAbilityDamageDiceBonus;
+    if (pActors[uActorID].monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_SHOT) {
+        specAb = pActors[uActorID].monsterInfo.specialAbilityDamageDiceBonus;
         if (specAb == 2) {
             a1.vPosition.z += 40;
             v13 = pDir->uYawAngle;
@@ -978,8 +978,8 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         pOut->vDirection.x = (int32_t)(1.0 / v33 * v31 * 65536.0);
         pOut->vDirection.y = (int32_t)(1.0 / v33 * v32 * 65536.0);
         pOut->vDirection.z = (int32_t)(1.0 / v33 * a4a * 65536.0);
-        pOut->uDistance = (uint)v33;
-        pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
+        pOut->uDistance = (unsigned)v33;
+        pOut->uDistanceXZ = (unsigned)sqrt(outy2 + outx2);
         pOut->uYawAngle = TrigLUT.atan2(v31, v32);
         pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, a4a);
     }
@@ -1075,8 +1075,8 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
 
     assert(uActorID < pActors.size());
 
-    if (pActors[uActorID].monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY &&
-        pActors[uActorID].monsterInfo.uAIType == MONSTER_AI_WIMP) {
+    if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY &&
+        pActors[uActorID].monsterInfo.aiType == MONSTER_AI_WIMP) {
         Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
         return;
     }
@@ -1117,13 +1117,13 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         pActors[uActorID].currentActionTime = 0;
         pActors[uActorID].aiState = AttackingMelee;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        v25 = pMonsterStats->pInfos[pActors[uActorID].monsterInfo.uID]
-                  .uRecoveryTime;
+        v25 = pMonsterStats->infos[pActors[uActorID].monsterInfo.id]
+                  .recoveryTime;
         if (pActors[uActorID].buffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            pActors[uActorID].monsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * v25 * flt_debugrecmod3);
+            pActors[uActorID].monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * v25 * flt_debugrecmod3);
         } else {
-            pActors[uActorID].monsterInfo.uRecoveryTime = v25;
+            pActors[uActorID].monsterInfo.recoveryTime = v25;
         }
         pActors[uActorID].speed.z = 0;
         pActors[uActorID].speed.y = 0;
@@ -1144,8 +1144,8 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if ((uLevelMapStatsID == MAP_DEYJA || uLevelMapStatsID == MAP_PIT) && pParty->isPartyGood())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID]._steal_perm +
-                            pActors[uActorID].monsterInfo.uLevel +
+    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID].baseStealingFine +
+                            pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
     if (pParty->uFine < 0) pParty->uFine = 0;
     if (pParty->uFine > 4000000) pParty->uFine = 4000000;
@@ -1211,7 +1211,7 @@ void Actor::AddOnDamageOverlay(unsigned int uActorID, int overlayType, signed in
 }
 
 //----- (0043B3E0) --------------------------------------------------------
-int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
+int Actor::_43B3E0_CalcDamage(ActorAbility dmgSource) {
     int damageDiceRolls;
     int damageDiceSides;
     int damageBonus;
@@ -1229,33 +1229,33 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
                 spellPower = this->buffs[ACTOR_BUFF_HEROISM].power;
             if (this->buffs[ACTOR_BUFF_HAMMERHANDS].Active())
                 spellPower += this->buffs[ACTOR_BUFF_HAMMERHANDS].power;
-            damageDiceRolls = this->monsterInfo.uAttack1DamageDiceRolls;
-            damageDiceSides = this->monsterInfo.uAttack1DamageDiceSides;
-            damageBonus = this->monsterInfo.uAttack1DamageBonus;
+            damageDiceRolls = this->monsterInfo.attack1DamageDiceRolls;
+            damageDiceSides = this->monsterInfo.attack1DamageDiceSides;
+            damageBonus = this->monsterInfo.attack1DamageBonus;
             break;
         case ABILITY_ATTACK2:
-            damageDiceRolls = this->monsterInfo.uAttack2DamageDiceRolls;
-            damageDiceSides = this->monsterInfo.uAttack2DamageDiceSides;
-            damageBonus = this->monsterInfo.uAttack2DamageBonus;
+            damageDiceRolls = this->monsterInfo.attack2DamageDiceRolls;
+            damageDiceSides = this->monsterInfo.attack2DamageDiceSides;
+            damageBonus = this->monsterInfo.attack2DamageBonus;
             break;
         case ABILITY_SPELL1:
-            spellID = this->monsterInfo.uSpell1ID;
-            skill = this->monsterInfo.uSpellSkillAndMastery2;
+            spellID = this->monsterInfo.spell1Id;
+            skill = this->monsterInfo.spell2SkillMastery;
             skillLevel = skill.level();
             skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPELL2:
-            spellID = this->monsterInfo.uSpell2ID;
-            skill = this->monsterInfo.uSpellSkillAndMastery2;
+            spellID = this->monsterInfo.spell2Id;
+            skill = this->monsterInfo.spell2SkillMastery;
             skillLevel = skill.level();
             skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPECIAL:
-            damageDiceRolls = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
-            damageDiceSides = this->monsterInfo.uSpecialAbilityDamageDiceSides;
-            damageBonus = this->monsterInfo.uSpecialAbilityDamageDiceBonus;
+            damageDiceRolls = this->monsterInfo.specialAbilityDamageDiceRolls;
+            damageDiceSides = this->monsterInfo.specialAbilityDamageDiceSides;
+            damageBonus = this->monsterInfo.specialAbilityDamageDiceBonus;
         default:
             return 0;
     }
@@ -1271,7 +1271,7 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
 bool Actor::IsPeasant() {
     MonsterType monsterType = this->ally;
     if (this->ally == MONSTER_TYPE_INVALID)
-        monsterType = monsterTypeForMonsterId(this->monsterInfo.uID);
+        monsterType = monsterTypeForMonsterId(this->monsterInfo.id);
     return isPeasant(monsterType);
 }
 
@@ -1288,7 +1288,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
-        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5]._steal_perm;
+        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -1350,17 +1350,17 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged4;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.uID].uRecoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
-            v3->monsterInfo.uRecoveryTime = pDira;
+            v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.uRecoveryTime = v3->currentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
         v3->speed.x = 0;
-        if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.uSpell2ID)) {
+        if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell2Id)) {
             v3->currentActionLength = 64;
             v3->currentActionTime = 0;
             v3->aiState = Fidgeting;
@@ -1424,18 +1424,18 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged3;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.uID].uRecoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
-            v3->monsterInfo.uRecoveryTime = pDira;
+            v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.uRecoveryTime = v3->currentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
         }
-        v16 = v3->monsterInfo.uSpell1ID;
+        v16 = v3->monsterInfo.spell1Id;
         v3->speed.z = 0;
         v3->speed.y = 0;
         v3->speed.x = 0;
-        if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.uSpell1ID)) {
+        if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell1Id)) {
             v3->currentActionLength = 64;
             v3->currentActionTime = 0;
             v3->aiState = Fidgeting;
@@ -1499,12 +1499,12 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged2;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.uID].uRecoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            v3->monsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
         } else {
-            v3->monsterInfo.uRecoveryTime = pDira;
+            v3->monsterInfo.recoveryTime = pDira;
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
@@ -1570,12 +1570,12 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->currentActionTime = 0;
         v3->aiState = AttackingRanged1;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
-        pDira = pMonsterStats->pInfos[v3->monsterInfo.uID].uRecoveryTime;
+        pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
-            v3->monsterInfo.uRecoveryTime = pDira;
+            v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.uRecoveryTime = v3->currentActionLength - (int)(debug_combat_recovery_mul * pDira * -flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = v3->currentActionLength - (int)(debug_combat_recovery_mul * pDira * -flt_debugrecmod3);
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
@@ -1606,13 +1606,13 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
         absx = absy + (absx / 2);
     else
         absx = absx + absy / 2;
-    if (supertypeForMonsterId(pActors[uActor_id].monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
+    if (supertypeForMonsterId(pActors[uActor_id].monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         Actor::AI_StandOrBored(uActor_id, Pid(OBJECT_Character, 0), uActionLength,
                                &doNotInitializeBecauseShouldBeRandom);
         return;
     }
-    if (pActors[uActor_id].monsterInfo.uMovementType ==
+    if (pActors[uActor_id].monsterInfo.movementType ==
         MONSTER_MOVEMENT_TYPE_GLOBAL &&
         absx < 128) {
         Actor::AI_Stand(uActor_id, uTarget_id, 256,
@@ -1715,9 +1715,9 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
 
     if (pActors[uActorID].aiState == Fleeing)
         pActors[uActorID].attributes |= ACTOR_FLEEING;
-    if (pActors[uActorID].monsterInfo.uHostilityType != HOSTILITY_LONG) {
+    if (pActors[uActorID].monsterInfo.hostilityType != HOSTILITY_LONG) {
         pActors[uActorID].attributes &= ~ACTOR_UNKNOWN_4;
-        pActors[uActorID].monsterInfo.uHostilityType = HOSTILITY_LONG;
+        pActors[uActorID].monsterInfo.hostilityType = HOSTILITY_LONG;
     }
     if (pActors[uActorID].buffs[ACTOR_BUFF_CHARM].Active())
         pActors[uActorID].buffs[ACTOR_BUFF_CHARM].Reset();
@@ -1792,17 +1792,17 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->currentActionLength =
         8 * pSpriteFrameTable->pSpriteSFrames[pActor->spriteIds[ANIM_Dying]]
                 .uAnimLength;
-    pActor->currentHP = (short)pActor->monsterInfo.uHP;
+    pActor->currentHP = (short)pActor->monsterInfo.hp;
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
 
-    pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+    pActor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     // TODO(pskelton): vanilla behaviour but does it make sense to drop all carried treasure
-    pActor->monsterInfo.uTreasureDropChance = 0;
-    pActor->monsterInfo.uTreasureDiceRolls = 0;
-    pActor->monsterInfo.uTreasureDiceSides = 0;
-    pActor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-    pActor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
+    pActor->monsterInfo.treasureDropChance = 0;
+    pActor->monsterInfo.goldDiceRolls = 0;
+    pActor->monsterInfo.goldDiceSides = 0;
+    pActor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+    pActor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     pActor->ally = MONSTER_TYPE_9999;
     pActor->ResetAggressor();  // ~0x80000
     pActor->group = 0;
@@ -1828,7 +1828,7 @@ void Actor::Die(unsigned int uActorID) {
     actor->UpdateAnimation();
 
     for (HouseId house : allTownhallHouses())
-        if (pParty->monster_id_for_hunting[house] == actor->monsterInfo.uID)
+        if (pParty->monster_id_for_hunting[house] == actor->monsterInfo.id)
             pParty->monster_for_hunting_killed[house] = true;
 
     for (SpellBuff &buff : actor->buffs)
@@ -1836,14 +1836,14 @@ void Actor::Die(unsigned int uActorID) {
 
     ItemGen drop;
     drop.Reset();
-    drop.uItemID = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.uID));
+    drop.uItemID = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.id));
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
                                  actor->pos + Vec3i(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
-    if (actor->monsterInfo.uSpecialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {
+    if (actor->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {
         Actor::Explode(uActorID);
     }
 }
@@ -1886,8 +1886,8 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     int WantedZ = 0;
     v7 = &pActors[uActorID];
     v8 = Pid(OBJECT_Actor, uActorID);
-    if (v7->monsterInfo.uFlying != 0 && !pParty->bFlying) {
-        if (v7->monsterInfo.uMissleAttack1Type)
+    if (v7->monsterInfo.flying && !pParty->bFlying) {
+        if (v7->monsterInfo.attack1MissileType)
             WantedZ = v7->radius + 512; // hovering above ground for missle
         else
             WantedZ = pParty->height; // eye height for melee
@@ -1899,7 +1899,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     } else {
         v10 = pDir;
     }
-    if (supertypeForMonsterId(v7->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
+    if (supertypeForMonsterId(v7->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
@@ -1942,13 +1942,13 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
     if (v5->CanAct()) {
         v7 = Pid(OBJECT_Actor, uActorID);
         if (!a4) {
-            Actor::GetDirectionInfo(v7, sTargetPid, &a3,
-                                    v5->monsterInfo.uFlying);
+            // TODO(captainurist): passing v5->monsterInfo.flying makes no sense here, but dropping it breaks 735d. Retrace.
+            Actor::GetDirectionInfo(v7, sTargetPid, &a3, v5->monsterInfo.flying);
             a4 = &a3;
         }
         Actor::GetDirectionInfo(v7, Pid::character(0), &v10, 0);
         v13 = &v10;
-        if (supertypeForMonsterId(v5->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT ||
+        if (supertypeForMonsterId(v5->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT ||
             sTargetPid.type() == OBJECT_Actor && v13->uDistance < 307.2) {
             if (!uActionLength) uActionLength = 256;
             Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
@@ -1987,8 +1987,8 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
     v6 = 0;
     v7 = &pActors[uActorID];
     v8 = Pid(OBJECT_Actor, uActorID);
-    if (v7->monsterInfo.uFlying != 0 && !pParty->bFlying) {
-        if (v7->monsterInfo.uMissleAttack1Type &&
+    if (v7->monsterInfo.flying && !pParty->bFlying) {
+        if (v7->monsterInfo.attack1MissileType &&
             uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v6 = v7->radius + 512;
         else
@@ -1999,7 +1999,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
         Actor::GetDirectionInfo(v8, a2, &a3, v6);
         v10 = &a3;
     }
-    if (supertypeForMonsterId(v7->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
+    if (supertypeForMonsterId(v7->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
@@ -2043,8 +2043,8 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     v5 = 0;
     v6 = &pActors[uActorID];
     v7 = Pid(OBJECT_Actor, uActorID);
-    if (v6->monsterInfo.uFlying != 0 && !pParty->bFlying) {
-        if (v6->monsterInfo.uMissleAttack1Type &&
+    if (v6->monsterInfo.flying && !pParty->bFlying) {
+        if (v6->monsterInfo.attack1MissileType &&
             uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v5 = v6->radius + 512;
         else
@@ -2054,7 +2054,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         Actor::GetDirectionInfo(v7, a2, &a3, v5);
         v20 = &a3;
     }
-    if (supertypeForMonsterId(v6->monsterInfo.uID) == MONSTER_SUPERTYPE_TREANT) {
+    if (supertypeForMonsterId(v6->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256;
         return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
@@ -2093,17 +2093,17 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
     MonsterHostility v10;             // eax@13
-    uint v11;                   // ebx@16
-    uint v12;                   // eax@16
+    unsigned v11;                   // ebx@16
+    unsigned v12;                   // eax@16
     MonsterHostility v14;             // eax@31
-    uint v15;                   // edi@43
-    //uint v16;                   // ebx@45
-    //uint v17;                   // eax@45
+    unsigned v15;                   // edi@43
+    //unsigned v16;                   // ebx@45
+    //unsigned v17;                   // eax@45
     signed int closestId;       // [sp+14h] [bp-1Ch]@1
-    uint v23;                   // [sp+1Ch] [bp-14h]@16
+    unsigned v23;                   // [sp+1Ch] [bp-14h]@16
     unsigned int lowestRadius;  // [sp+24h] [bp-Ch]@1
-    uint v27;                   // [sp+2Ch] [bp-4h]@16
-    //uint v28;                   // [sp+2Ch] [bp-4h]@45
+    unsigned v27;                   // [sp+2Ch] [bp-4h]@16
+    //unsigned v28;                   // [sp+2Ch] [bp-4h]@45
 
     lowestRadius = UINT_MAX;
     v5 = 0;
@@ -2113,7 +2113,7 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
         if (actor->aiState == Dead || actor->aiState == Dying ||
             actor->aiState == Removed || actor->aiState == Summoned ||
@@ -2133,9 +2133,9 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                 continue;
             v10 = HOSTILITY_LONG;
         }
-        if (thisActor->monsterInfo.uHostilityType != HOSTILITY_FRIENDLY)
-            v10 = pMonsterStats->pInfos[thisActor->monsterInfo.uID]
-                      .uHostilityType;
+        if (thisActor->monsterInfo.hostilityType != HOSTILITY_FRIENDLY)
+            v10 = pMonsterStats->infos[thisActor->monsterInfo.id]
+                      .hostilityType;
         v11 = _4DF380_hostilityRanges[v10];
         v23 = std::abs(thisActor->pos.x - actor->pos.x);
         v27 = std::abs(thisActor->pos.y - actor->pos.y);
@@ -2162,13 +2162,13 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
         else
             v14 = thisActor->GetActorsRelation(0);
         if (v14 != HOSTILITY_FRIENDLY) {
-            if (thisActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY)
+            if (thisActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY)
                 v15 = _4DF380_hostilityRanges[v14];
             else
                 v15 = _4DF380_hostilityRanges[HOSTILITY_LONG];
-            uint v16 = std::abs(thisActor->pos.x - pParty->pos.x);
-            uint v28 = std::abs(thisActor->pos.y - pParty->pos.y);
-            uint v17 = std::abs(thisActor->pos.z - pParty->pos.z);
+            unsigned v16 = std::abs(thisActor->pos.x - pParty->pos.x);
+            unsigned v28 = std::abs(thisActor->pos.y - pParty->pos.y);
+            unsigned v17 = std::abs(thisActor->pos.z - pParty->pos.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
                 *OutTargetPID = Pid(OBJECT_Character, 0);
@@ -2197,7 +2197,7 @@ MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
     else if (thisAlly != MONSTER_TYPE_INVALID)
         thisGroup = thisAlly;
     else
-        thisGroup = monsterTypeForMonsterId(this->monsterInfo.uID);
+        thisGroup = monsterTypeForMonsterId(this->monsterInfo.id);
 
     if (otherActPtr) {
         if (otherActPtr->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
@@ -2207,7 +2207,7 @@ MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
         else if (otherAlly != MONSTER_TYPE_INVALID)
             otherGroup = otherAlly;
         else
-            otherGroup = monsterTypeForMonsterId(otherActPtr->monsterInfo.uID);
+            otherGroup = monsterTypeForMonsterId(otherActPtr->monsterInfo.id);
     } else {
         otherGroup = MONSTER_TYPE_INVALID;
     }
@@ -2309,21 +2309,21 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     MonsterDesc *v3;  // esi@1
     MonsterInfo *v9;  // [sp+84h] [bp-10h]@1
 
-    v3 = &pMonsterList->pMonsters[monsterInfo.uID];
-    v9 = &pMonsterStats->pInfos[monsterInfo.uID /*- 1 + 1*/];
+    v3 = &pMonsterList->monsters[monsterInfo.id];
+    v9 = &pMonsterStats->infos[monsterInfo.id /*- 1 + 1*/];
     // v12 = pSpriteIDs;
     // Source = (char *)v3->pSpriteNames;
     // do
     for (ActorAnimation i : spriteIds.indices()) {
         // strcpy(pSpriteName, v3->pSpriteNames[i]);
-        spriteIds[i] = pSpriteFrameTable->FastFindSprite(v3->pSpriteNames[i]);
+        spriteIds[i] = pSpriteFrameTable->FastFindSprite(v3->spriteNames[i]);
         pSpriteFrameTable->InitializeSprite(spriteIds[i]);
     }
-    height = v3->uMonsterHeight;
-    radius = v3->uMonsterRadius;
-    moveSpeed = v9->uBaseSpeed;
+    height = v3->monsterHeight;
+    radius = v3->monsterRadius;
+    moveSpeed = v9->baseSpeed;
     if (!(load_sounds_if_bit1_set & 1)) {
-        soundSampleIds = v3->pSoundSampleIDs;
+        soundSampleIds = v3->soundSampleIds;
     }
 }
 
@@ -2333,7 +2333,7 @@ void Actor::Remove() { this->aiState = Removed; }
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    unsigned int actor_id, Vec3i *pVelocity,
-                                   ABILITY_INDEX a4) {
+                                   ActorAbility a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
     DamageType v12;    // ecx@20
@@ -2369,21 +2369,21 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                     dmgToRecv = 0;
                 if (a4 == ABILITY_ATTACK1) {
                     v12 =
-                        pActors[attacker_id.id()].monsterInfo.uAttack1Type;
+                        pActors[attacker_id.id()].monsterInfo.attack1Type;
                 } else if (a4 == ABILITY_ATTACK2) {
                     v12 =
-                        pActors[attacker_id.id()].monsterInfo.uAttack2Type;
+                        pActors[attacker_id.id()].monsterInfo.attack2Type;
                     if (pActors[actor_id]
                             .buffs[ACTOR_BUFF_SHIELD]
                             .Active())
                         dmgToRecv = dmgToRecv / 2;
                 } else if (a4 == ABILITY_SPELL1) {
                     v12 = pSpellStats
-                        ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell1ID]
+                        ->pInfos[pActors[attacker_id.id()].monsterInfo.spell1Id]
                         .damageType;
                 } else if (a4 == ABILITY_SPELL2) {
                     v12 = pSpellStats
-                        ->pInfos[pActors[attacker_id.id()].monsterInfo.uSpell2ID]
+                        ->pInfos[pActors[attacker_id.id()].monsterInfo.spell2Id]
                         .damageType;
                 } else if (a4 == ABILITY_SPECIAL) {
                     v12 = static_cast<DamageType>(pActors[attacker_id.id()].monsterInfo.field_3C_some_special_attack);
@@ -2400,9 +2400,9 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                         Actor::Die(actor_id);
                     Actor::AggroSurroundingPeasants(actor_id, 0);
                     pushDistance =
-                        20 * finalDmg / pActors[actor_id].monsterInfo.uHP;
+                        20 * finalDmg / pActors[actor_id].monsterInfo.hp;
                     if (pushDistance > 10) pushDistance = 10;
-                    if (supertypeForMonsterId(pActors[actor_id].monsterInfo.uID) != MONSTER_SUPERTYPE_TREANT) {
+                    if (supertypeForMonsterId(pActors[actor_id].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
                         pVelocity->x =
                             (int32_t)fixpoint_mul(pushDistance, pVelocity->x);
                         pVelocity->y =
@@ -2447,7 +2447,7 @@ void Actor::SummonMinion(int summonerId) {
 
     v19 = this->ally;
     if (this->ally == MONSTER_TYPE_INVALID) {
-        v19 = monsterTypeForMonsterId(this->monsterInfo.uID); // Original binary had an off by one here, forgetting the last +1.
+        v19 = monsterTypeForMonsterId(this->monsterInfo.id); // Original binary had an off by one here, forgetting the last +1.
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     v13 = grng->random(2048);
@@ -2462,7 +2462,7 @@ void Actor::SummonMinion(int summonerId) {
         if (std::abs(z - v27) > 1024) return;
     }
 
-    extraSummonLevel = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
+    extraSummonLevel = this->monsterInfo.specialAbilityDamageDiceRolls;
     // TODO(captainurist): drop the cast here, store the data properly.
     summonMonsterBaseType = static_cast<MonsterId>(this->monsterInfo.field_3C_some_special_attack);
     if (extraSummonLevel) {
@@ -2482,17 +2482,17 @@ void Actor::SummonMinion(int summonerId) {
     if (!actor)
         return;
 
-    v9 = &pMonsterStats->pInfos[summonMonsterBaseType];
-    actor->name = v9->pName;
-    actor->currentHP = v9->uHP;
+    v9 = &pMonsterStats->infos[summonMonsterBaseType];
+    actor->name = v9->name;
+    actor->currentHP = v9->hp;
     actor->monsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
-    actor->radius = pMonsterList->pMonsters[summonMonsterBaseType].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[summonMonsterBaseType].uMonsterHeight;
-    actor->monsterInfo.uTreasureDiceRolls = 0;
-    actor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-    actor->monsterInfo.uExp = 0;
-    actor->moveSpeed = pMonsterList->pMonsters[summonMonsterBaseType].uMovementSpeed;
+    actor->radius = pMonsterList->monsters[summonMonsterBaseType].monsterRadius;
+    actor->height = pMonsterList->monsters[summonMonsterBaseType].monsterHeight;
+    actor->monsterInfo.goldDiceRolls = 0;
+    actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
+    actor->monsterInfo.exp = 0;
+    actor->moveSpeed = pMonsterList->monsters[summonMonsterBaseType].movementSpeed;
 
     actor->initialPosition.x = v15;
     actor->initialPosition.y = v17;
@@ -2504,7 +2504,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->tetherDistance = 256;
     actor->sectorId = actorSector;
     actor->PrepareSprites(0);
-    actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+    actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     actor->ally = v19;
     actor->currentActionTime = 0;
     actor->group = this->group;
@@ -2512,7 +2512,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->currentActionLength = 256;
     actor->UpdateAnimation();
 
-    ++this->monsterInfo.uSpecialAbilityDamageDiceBonus;
+    ++this->monsterInfo.specialAbilityDamageDiceBonus;
     if (ActorEnemy())
         actor->attributes |= ACTOR_AGGRESSOR;
     actor->summonerId = Pid(OBJECT_Actor, summonerId);
@@ -2522,10 +2522,10 @@ void Actor::SummonMinion(int summonerId) {
 void Actor::UpdateActorAI() {
     double v42;              // st7@176
     double v43;              // st6@176
-    ABILITY_INDEX v45;                 // eax@192
+    ActorAbility v45;                 // eax@192
     SpellId v46;     // cl@197
     signed int v47;          // st7@206
-    uint v58;                // st7@246
+    unsigned v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
@@ -2533,7 +2533,7 @@ void Actor::UpdateActorAI() {
     AIDirection *pDir;       // [sp+7Ch] [bp-34h]@129
     int v81;                 // [sp+9Ch] [bp-14h]@100
     Pid target_pid;   // [sp+ACh] [bp-4h]@83
-    uint v38;
+    unsigned v38;
 
     // Build AI array
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
@@ -2552,7 +2552,7 @@ void Actor::UpdateActorAI() {
     }
 
     // this loops over all actors in background ai state
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *pActor = &pActors[i];
         ai_near_actors_targets_pid[i] = Pid(OBJECT_Character, 0);
 
@@ -2566,22 +2566,22 @@ void Actor::UpdateActorAI() {
             Actor::Die(i);
 
         // Kill buffs if expired
-        for (ACTOR_BUFF_INDEX i : pActor->buffs.indices())
+        for (ActorBuff i : pActor->buffs.indices())
             if (i != ACTOR_BUFF_MASS_DISTORTION)
                 pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.uID].uMonsterHeight;
+            pActor->height = pMonsterList->monsters[pActor->monsterInfo.id].monsterHeight;
             pActor->buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
         // If Charm still active: make actor friendly
         if (pActor->buffs[ACTOR_BUFF_CHARM].Active()) {
-            pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+            pActor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
         } else if (pActor->buffs[ACTOR_BUFF_CHARM].Expired()) {
           // Else: reset hostilty
-          pActor->monsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->monsterInfo.uID].uHostilityType;
+          pActor->monsterInfo.hostilityType = pMonsterStats->infos[pActor->monsterInfo.id].hostilityType;
           pActor->buffs[ACTOR_BUFF_CHARM].Reset();
         }
 
@@ -2595,7 +2595,7 @@ void Actor::UpdateActorAI() {
             continue;
 
         // Calculate RecoveryTime
-        pActor->monsterInfo.uRecoveryTime = std::max(pActor->monsterInfo.uRecoveryTime - pEventTimer->uTimeElapsed, 0); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed, 0); // was pMiscTimer
 
         pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
@@ -2618,18 +2618,18 @@ void Actor::UpdateActorAI() {
 
     // loops over for the actors in "full" ai state
     for (int v78 = 0; v78 < ai_arrays_size; ++v78) {
-        uint actor_id = ai_near_actors_ids[v78];
+        unsigned actor_id = ai_near_actors_ids[v78];
         assert(actor_id < pActors.size());
         Pid actorPid = Pid(OBJECT_Actor, actor_id);
 
         Actor *pActor = &pActors[actor_id];
 
-        v47 = pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3;
+        v47 = pActor->monsterInfo.recoveryTime * flt_debugrecmod3;
 
         Actor::_SelectTarget(actor_id, &ai_near_actors_targets_pid[actor_id], true);
 
-        if (pActor->monsterInfo.uHostilityType != HOSTILITY_FRIENDLY && !ai_near_actors_targets_pid[actor_id])
-            pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+        if (pActor->monsterInfo.hostilityType != HOSTILITY_FRIENDLY && !ai_near_actors_targets_pid[actor_id])
+            pActor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
 
         target_pid = ai_near_actors_targets_pid[actor_id];
         target_pid_type = target_pid.type();
@@ -2644,19 +2644,19 @@ void Actor::UpdateActorAI() {
         if (!pActor->currentHP)
             Actor::Die(actor_id);
 
-        for (ACTOR_BUFF_INDEX i : pActor->buffs.indices())
+        for (ActorBuff i : pActor->buffs.indices())
             if (i != ACTOR_BUFF_MASS_DISTORTION)
                 pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
-            pActor->height = pMonsterList->pMonsters[pActor->monsterInfo.uID].uMonsterHeight;
+            pActor->height = pMonsterList->monsters[pActor->monsterInfo.id].monsterHeight;
             pActor->buffs[ACTOR_BUFF_SHRINK].Reset();
         }
 
         if (pActor->buffs[ACTOR_BUFF_CHARM].Active()) {
-            pActor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+            pActor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
         } else if (pActor->buffs[ACTOR_BUFF_CHARM].Expired()) {
-            pActor->monsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->monsterInfo.uID].uHostilityType;
+            pActor->monsterInfo.hostilityType = pMonsterStats->infos[pActor->monsterInfo.id].hostilityType;
             pActor->buffs[ACTOR_BUFF_CHARM].Reset();
         }
 
@@ -2672,7 +2672,7 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        pActor->monsterInfo.uRecoveryTime = std::max(0, pActor->monsterInfo.uRecoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(0, pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
         pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
 
         if (!pActor->ActorNearby())
@@ -2685,35 +2685,35 @@ void Actor::UpdateActorAI() {
 
         // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
         // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
-        if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY ||
-            pActor->monsterInfo.uRecoveryTime > 0 ||
+        if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
+            pActor->monsterInfo.recoveryTime > 0 ||
             radiusMultiplier * 307.2 < pDir->uDistance ||
-            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.uMissleAttack1Type ||
+            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.attack1MissileType ||
             uAIState != Stunned) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
             } else if (pActor->aiState == AttackingMelee) {
                 pushMeleeAttack(actorPid, pActor->pos + Vec3i(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
             } else if (pActor->aiState == AttackingRanged1) {
-                Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.uMissleAttack1Type, ABILITY_ATTACK1);  // light missile
+                Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.attack1MissileType, ABILITY_ATTACK1);  // light missile
             } else if (pActor->aiState == AttackingRanged2) {
-                Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.uMissleAttack2Type, ABILITY_ATTACK2);  // arrow
+                Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.attack2MissileType, ABILITY_ATTACK2);  // arrow
             } else if (pActor->aiState == AttackingRanged3) {
-                Actor::AI_SpellAttack(actor_id, pDir, pActor->monsterInfo.uSpell1ID, ABILITY_SPELL1,
-                                      pActor->monsterInfo.uSpellSkillAndMastery1);
+                Actor::AI_SpellAttack(actor_id, pDir, pActor->monsterInfo.spell1Id, ABILITY_SPELL1,
+                                      pActor->monsterInfo.spell1SkillMastery);
             } else if (pActor->aiState == AttackingRanged4) {
-                Actor::AI_SpellAttack(actor_id, pDir, pActor->monsterInfo.uSpell2ID, ABILITY_SPELL2,
-                                      pActor->monsterInfo.uSpellSkillAndMastery2);
+                Actor::AI_SpellAttack(actor_id, pDir, pActor->monsterInfo.spell2Id, ABILITY_SPELL2,
+                                      pActor->monsterInfo.spell2SkillMastery);
             }
         }
 
         int distanceToTarget = pDir->uDistance;
 
         MonsterHostility relationToTarget;
-        if (pActor->monsterInfo.uHostilityType == HOSTILITY_FRIENDLY) {
+        if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
-                relationToTarget = pFactionTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.uID)]
-                                                           [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.uID)];
+                relationToTarget = pFactionTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.id)]
+                                                           [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.id)];
             } else {
                 relationToTarget = HOSTILITY_LONG;
             }
@@ -2725,7 +2725,7 @@ void Actor::UpdateActorAI() {
             else if (relationToTarget == HOSTILITY_LONG)
                 v38 = 5120;
             if (relationToTarget >= HOSTILITY_CLOSE && relationToTarget <= HOSTILITY_LONG && distanceToTarget < v38 || relationToTarget == HOSTILITY_CLOSE)
-                pActor->monsterInfo.uHostilityType = HOSTILITY_LONG;
+                pActor->monsterInfo.hostilityType = HOSTILITY_LONG;
         }
 
         // If actor afraid: flee or if out of range random move
@@ -2737,22 +2737,22 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        if (pActor->monsterInfo.uHostilityType == HOSTILITY_LONG &&
+        if (pActor->monsterInfo.hostilityType == HOSTILITY_LONG &&
             target_pid) {
-            if (pActor->monsterInfo.uAIType == MONSTER_AI_WIMP) {
-                if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                    Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3), pDir);
+            if (pActor->monsterInfo.aiType == MONSTER_AI_WIMP) {
+                if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                    Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.recoveryTime * flt_debugrecmod3), pDir);
                 } else {
                     Actor::AI_Flee(actor_id, target_pid, 0, pDir);
                     continue;
                 }
             }
             if (!(pActor->attributes & ACTOR_FLEEING)) {
-                if (pActor->monsterInfo.uAIType == MONSTER_AI_NORMAL || pActor->monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE) {
-                    if (pActor->monsterInfo.uAIType == MONSTER_AI_NORMAL)
-                        v43 = pActor->monsterInfo.uHP * 0.2;
-                    if (pActor->monsterInfo.uAIType == MONSTER_AI_AGGRESSIVE)
-                        v43 = pActor->monsterInfo.uHP * 0.1;
+                if (pActor->monsterInfo.aiType == MONSTER_AI_NORMAL || pActor->monsterInfo.aiType == MONSTER_AI_AGGRESSIVE) {
+                    if (pActor->monsterInfo.aiType == MONSTER_AI_NORMAL)
+                        v43 = pActor->monsterInfo.hp * 0.2;
+                    if (pActor->monsterInfo.aiType == MONSTER_AI_AGGRESSIVE)
+                        v43 = pActor->monsterInfo.hp * 0.1;
                     v42 = pActor->currentHP;
                     if (v43 > v42 && distanceToTarget < 10240) {
                         Actor::AI_Flee(actor_id, target_pid, 0, pDir);
@@ -2771,10 +2771,10 @@ void Actor::UpdateActorAI() {
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
-                    if (pActor->monsterInfo.uMissleAttack1Type) {
-                        if (pActor->monsterInfo.uRecoveryTime <= 0) {
+                    if (pActor->monsterInfo.attack1MissileType) {
+                        if (pActor->monsterInfo.recoveryTime <= 0) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
-                        } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                        } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             if (radiusMultiplier * 307.2 > v81)
@@ -2784,7 +2784,7 @@ void Actor::UpdateActorAI() {
                         }
                     } else {
                         if (v81 >= radiusMultiplier * 307.2) {
-                            if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                            if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {  // monsters
                                 Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
@@ -2795,7 +2795,7 @@ void Actor::UpdateActorAI() {
                                 // follow player
                                 Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.uRecoveryTime > 0) {
+                        } else if (pActor->monsterInfo.recoveryTime > 0) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             // monsters
@@ -2805,16 +2805,16 @@ void Actor::UpdateActorAI() {
                     continue;
                 } else if (v45 == ABILITY_SPELL1 || v45 == ABILITY_SPELL2) {
                     if (v45 == ABILITY_SPELL1)
-                        v46 = pActor->monsterInfo.uSpell1ID;
+                        v46 = pActor->monsterInfo.spell1Id;
                     else
-                        v46 = pActor->monsterInfo.uSpell2ID;
+                        v46 = pActor->monsterInfo.spell2Id;
                     if (v46 != SPELL_NONE) {
-                        if (pActor->monsterInfo.uRecoveryTime <= 0) {
+                        if (pActor->monsterInfo.recoveryTime <= 0) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
                                 Actor::AI_SpellAttack2(actor_id, target_pid, pDir);
-                        } else if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                        } else if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
@@ -2822,7 +2822,7 @@ void Actor::UpdateActorAI() {
                     } else {
                         // v45 == ABILITY_ATTACK2
                         if (v81 >= radiusMultiplier * 307.2) {
-                            if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                            if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {
                                 Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
@@ -2830,7 +2830,7 @@ void Actor::UpdateActorAI() {
                                 v70 = (radiusMultiplier * 307.2);
                                 Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.uRecoveryTime > 0) {
+                        } else if (pActor->monsterInfo.recoveryTime > 0) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
@@ -2841,24 +2841,24 @@ void Actor::UpdateActorAI() {
             }
         }
 
-        if (pActor->monsterInfo.uHostilityType != HOSTILITY_LONG ||
+        if (pActor->monsterInfo.hostilityType != HOSTILITY_LONG ||
             !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
-            if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_SHORT) {
+            if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_SHORT) {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0);
-            } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_MEDIUM) {
+            } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_MEDIUM) {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0);
-            } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_LONG) {
+            } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_LONG) {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0);
-            } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE) {
+            } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_FREE) {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
-            } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+            } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, Pid::character(0), &v72, 0);
-                v58 = (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3);
+                v58 = (pActor->monsterInfo.recoveryTime * flt_debugrecmod3);
                 Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
             }
-        } else if (!pActor->monsterInfo.uMissleAttack2Type) {
+        } else if (!pActor->monsterInfo.attack2MissileType) {
             if (v81 >= radiusMultiplier * 307.2) {
-                if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                 } else if (v81 >= 1024) {
                     Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
@@ -2866,13 +2866,13 @@ void Actor::UpdateActorAI() {
                     v70 = (radiusMultiplier * 307.2);
                     Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
                 }
-            } else if (pActor->monsterInfo.uRecoveryTime > 0) {
+            } else if (pActor->monsterInfo.recoveryTime > 0) {
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             } else {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
-        } else if (pActor->monsterInfo.uRecoveryTime > 0) {
-            if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
+        } else if (pActor->monsterInfo.recoveryTime > 0) {
+            if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else
                 Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
@@ -2882,7 +2882,7 @@ void Actor::UpdateActorAI() {
     }
 }
 
-bool Actor::isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count) {
+bool Actor::isActorKilled(ActorKillCheckPolicy policy, int param, int count) {
     int deadActors = 0;
     int totalActors = 0;
 
@@ -2925,7 +2925,7 @@ int Actor::searchDeadActorsByGroup(int *pTotalActors, int group) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].group == group) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -2942,8 +2942,8 @@ int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MonsterId monsterID) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (uint i = 0; i < pActors.size(); i++) {
-        if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].monsterInfo.uID == monsterID) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
+        if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].monsterInfo.id == monsterID) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
                 result++;
@@ -2959,7 +2959,7 @@ int Actor::searchDeadActors(int *pTotalActors) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (uint i = 0; i < pActors.size(); i++) {
+    for (unsigned i = 0; i < pActors.size(); i++) {
         if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -2989,21 +2989,21 @@ void Actor::InitializeActors() {
 
     ai_near_actors_targets_pid.fill(Pid());
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
 
         if (actor->CanAct() || actor->aiState == Disabled) {
             actor->pos.x = actor->initialPosition.x;
             actor->pos.y = actor->initialPosition.y;
             actor->pos.z = actor->initialPosition.z;
-            actor->currentHP = actor->monsterInfo.uHP;
+            actor->currentHP = actor->monsterInfo.hp;
             if (actor->aiState != Disabled) {
                 Actor::AI_Stand(i, ai_near_actors_targets_pid[i],
-                                actor->monsterInfo.uRecoveryTime, 0);
+                                actor->monsterInfo.recoveryTime, 0);
             }
         }
 
-        actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+        actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
 
         if (!bCelestia || good)
             if (!bPit || evil)
@@ -3081,7 +3081,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
             }
         }
         attackElement = DAMAGE_PHYSICAL;
-        uDamageAmount = character->CalculateMeleeDamageTo(false, false, pMonster->monsterInfo.uID);
+        uDamageAmount = character->CalculateMeleeDamageTo(false, false, pMonster->monsterInfo.id);
         if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
             character->playReaction(SPEECH_ATTACK_MISS);
             return;
@@ -3238,12 +3238,12 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         Actor::Die(uActorID_Monster);
         Actor::ApplyFineForKillingPeasant(uActorID_Monster);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
-        if (pMonster->monsterInfo.uExp)
+        if (pMonster->monsterInfo.exp)
             pParty->GivePartyExp(
-                pMonsterStats->pInfos[pMonster->monsterInfo.uID].uExp);
+                pMonsterStats->infos[pMonster->monsterInfo.id].exp);
         CharacterSpeech speech = SPEECH_ATTACK_HIT;
         if (vrng->random(100) < 20) {
-            speech = pMonster->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+            speech = pMonster->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
         }
         character->playReaction(speech);
         if (engine->config->settings.ShowHits.value()) {
@@ -3252,14 +3252,14 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     }
     if (pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
         character->receiveDamage(uDamageAmount, attackElement);
-    int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.uHP;
+    int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.hp;
     if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         extraRecoveryTime = 20;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
             extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
-        pMonster->monsterInfo.uRecoveryTime += extraRecoveryTime;
+        pMonster->monsterInfo.recoveryTime += extraRecoveryTime;
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_FMT_S_STUNS_S, character->name, pMonster->name);
         }
@@ -3274,7 +3274,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         }
     }
     if (knockbackValue > 10) knockbackValue = 10;
-    if (supertypeForMonsterId(pMonster->monsterInfo.uID) != MONSTER_SUPERTYPE_TREANT) {
+    if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
         pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
         pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
         pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
@@ -3295,25 +3295,25 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         v16 = pIndoor->GetSector(pos);
 
-    actor->name = pMonsterStats->pInfos[monster_id].pName;
-    actor->currentHP = (short)pMonsterStats->pInfos[monster_id].uHP;
-    actor->monsterInfo = pMonsterStats->pInfos[monster_id];
+    actor->name = pMonsterStats->infos[monster_id].name;
+    actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
+    actor->monsterInfo = pMonsterStats->infos[monster_id];
     actor->word_000086_some_monster_id = monster_id;
-    actor->radius = pMonsterList->pMonsters[monster_id].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[monster_id].uMonsterHeight;
-    actor->moveSpeed = pMonsterList->pMonsters[monster_id].uMovementSpeed;
+    actor->radius = pMonsterList->monsters[monster_id].monsterRadius;
+    actor->height = pMonsterList->monsters[monster_id].monsterHeight;
+    actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
     actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
-    actor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-    actor->monsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-    actor->monsterInfo.uTreasureDiceSides = 0;
-    actor->monsterInfo.uTreasureDiceRolls = 0;
-    actor->monsterInfo.uTreasureDropChance = 0;
+    actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
+    actor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+    actor->monsterInfo.goldDiceSides = 0;
+    actor->monsterInfo.goldDiceRolls = 0;
+    actor->monsterInfo.treasureDropChance = 0;
     actor->tetherDistance = 256;
     actor->sectorId = v16;
     actor->group = 1;
-    actor->monsterInfo.uHostilityType = HOSTILITY_LONG;
+    actor->monsterInfo.hostilityType = HOSTILITY_LONG;
     actor->PrepareSprites(0);
     //    for ( int i = 0; i < 4; i++)
     //      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id -
@@ -3332,9 +3332,9 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
 int stru319::which_player_to_attack(Actor *pActor) {
     std::array<int, 60> victims;
     signed int victimCount = 0;
-    if (pActor->monsterInfo.uAttackPreferences) {
+    if (pActor->monsterInfo.attackPreferences) {
         for (MonsterAttackPreference preference : allMonsterAttackPreferences()) {
-            if (pActor->monsterInfo.uAttackPreferences & preference) {
+            if (pActor->monsterInfo.attackPreferences & preference) {
                 for (int i = 0; i < pParty->pCharacters.size(); ++i) {
                     if (!pParty->pCharacters[i].matchesAttackPreference(preference))
                         continue;
@@ -3537,7 +3537,7 @@ bool CheckActors_proximity() {
     distance = 5120;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
-    for (uint i = 0; i < pActors.size(); ++i) {
+    for (unsigned i = 0; i < pActors.size(); ++i) {
         for_x = std::abs(pActors[i].pos.x - pParty->pos.x);
         for_y = std::abs(pActors[i].pos.y - pParty->pos.y);
         for_z = std::abs(pActors[i].pos.z - pParty->pos.z);
@@ -3576,7 +3576,7 @@ void Actor::LootActor() {
     itemFound = false;
     int foundGold = 0;
     if (!ActorHasItem()) {
-        foundGold = grng->randomDice(this->monsterInfo.uTreasureDiceRolls, this->monsterInfo.uTreasureDiceSides);
+        foundGold = grng->randomDice(this->monsterInfo.goldDiceRolls, this->monsterInfo.goldDiceSides);
         if (foundGold) {
             pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);
         }
@@ -3637,8 +3637,8 @@ void Actor::LootActor() {
             itemFound = true;
         }
     } else {
-        if (grng->random(100) < this->monsterInfo.uTreasureDropChance && this->monsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
-            pItemTable->generateItem(this->monsterInfo.uTreasureLevel, this->monsterInfo.uTreasureType, &Dst);
+        if (grng->random(100) < this->monsterInfo.treasureDropChance && this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
+            pItemTable->generateItem(this->monsterInfo.treasureLevel, this->monsterInfo.treasureType, &Dst);
 
             StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
 
@@ -3673,7 +3673,7 @@ void Actor::LootActor() {
 bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
     switch (spell) {
         case SPELL_BODY_POWER_CURE: {
-            if (this->currentHP >= this->monsterInfo.uHP) return false;
+            if (this->currentHP >= this->monsterInfo.hp) return false;
             return true;
         }
 
@@ -3719,17 +3719,17 @@ bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
 }
 
 //----- (0042704B) --------------------------------------------------------
-ABILITY_INDEX Actor::special_ability_use_check(int a2) {
-    if (this->monsterInfo.uSpecialAbilityType == MONSTER_SPECIAL_ABILITY_SUMMON && this->monsterInfo.uSpecialAbilityDamageDiceBonus < 3 && grng->random(100) < 5)
+ActorAbility Actor::special_ability_use_check(int a2) {
+    if (this->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_SUMMON && this->monsterInfo.specialAbilityDamageDiceBonus < 3 && grng->random(100) < 5)
         this->SummonMinion(a2);
 
-    bool okToCastSpell1 = this->_427102_IsOkToCastSpell(this->monsterInfo.uSpell1ID);
-    bool okToCastSpell2 = this->_427102_IsOkToCastSpell(this->monsterInfo.uSpell2ID);
-    if (okToCastSpell1 && this->monsterInfo.uSpell1UseChance && grng->random(100) < this->monsterInfo.uSpell1UseChance)
+    bool okToCastSpell1 = this->_427102_IsOkToCastSpell(this->monsterInfo.spell1Id);
+    bool okToCastSpell2 = this->_427102_IsOkToCastSpell(this->monsterInfo.spell2Id);
+    if (okToCastSpell1 && this->monsterInfo.spell1UseChance && grng->random(100) < this->monsterInfo.spell1UseChance)
         return ABILITY_SPELL1;
-    if (okToCastSpell2 && this->monsterInfo.uSpell2UseChance && grng->random(100) < this->monsterInfo.uSpell2UseChance)
+    if (okToCastSpell2 && this->monsterInfo.spell2UseChance && grng->random(100) < this->monsterInfo.spell2UseChance)
         return ABILITY_SPELL2;
-    if (this->monsterInfo.uAttack2Chance && grng->random(100) < this->monsterInfo.uAttack2Chance)
+    if (this->monsterInfo.attack2Chance && grng->random(100) < this->monsterInfo.attack2Chance)
         return ABILITY_ATTACK2;
     return ABILITY_ATTACK1;
 }
@@ -3741,7 +3741,7 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
     int armorSum;    // ebx@10
     signed int a2a;  // [sp+18h] [bp+Ch]@1
 
-    v6 = defender->monsterInfo.uAC;
+    v6 = defender->monsterInfo.ac;
     v7 = 0;
     a2a = 0;
     if (defender->buffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active())
@@ -3761,7 +3761,7 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
         a2a += this->buffs[ACTOR_BUFF_FATE].power;
         this->buffs[ACTOR_BUFF_FATE].Reset();
     }
-    return grng->random(armorSum + 2 * this->monsterInfo.uLevel + 10) + a2a + 1 >
+    return grng->random(armorSum + 2 * this->monsterInfo.level + 10) + a2a + 1 >
            armorSum + 5;
 }
 
@@ -3781,7 +3781,7 @@ bool Actor::ActorHitOrMiss(Character *pPlayer) {
         v3 += this->buffs[ACTOR_BUFF_FATE].power;
         this->buffs[ACTOR_BUFF_FATE].Reset();
     }
-    v4 = pPlayer->GetActualAC() + 2 * this->monsterInfo.uLevel + 10;
+    v4 = pPlayer->GetActualAC() + 2 * this->monsterInfo.level + 10;
     v5 = grng->random(v4) + 1;
     return (v3 + v5 > pPlayer->GetActualAC() + 5);
 }
@@ -3801,40 +3801,40 @@ int Actor::CalcMagicalDamageToActor(DamageType dmgType,
         v5 = this->buffs[ACTOR_BUFF_HOUR_OF_POWER].power;
     switch (dmgType) {
         case DAMAGE_FIRE:
-            v6 = this->monsterInfo.uResFire;
+            v6 = this->monsterInfo.resFire;
             v4 = v5;
             break;
         case DAMAGE_AIR:
-            v6 = this->monsterInfo.uResAir;
+            v6 = this->monsterInfo.resAir;
             v4 = v5;
             break;
         case DAMAGE_WATER:
-            v6 = this->monsterInfo.uResWater;
+            v6 = this->monsterInfo.resWater;
             v4 = v5;
             break;
         case DAMAGE_EARTH:
-            v6 = this->monsterInfo.uResEarth;
+            v6 = this->monsterInfo.resEarth;
             v4 = v5;
             break;
         case DAMAGE_PHYSICAL:
-            v6 = this->monsterInfo.uResPhysical;
+            v6 = this->monsterInfo.resPhysical;
             break;
         case DAMAGE_SPIRIT:
-            v6 = this->monsterInfo.uResSpirit;
+            v6 = this->monsterInfo.resSpirit;
             break;
         case DAMAGE_MIND:
-            v6 = this->monsterInfo.uResMind;
+            v6 = this->monsterInfo.resMind;
             v4 = v5;
             break;
         case DAMAGE_BODY:
-            v6 = this->monsterInfo.uResBody;
+            v6 = this->monsterInfo.resBody;
             v4 = v5;
             break;
         case DAMAGE_LIGHT:
-            v6 = this->monsterInfo.uResLight;
+            v6 = this->monsterInfo.resLight;
             break;
         case DAMAGE_DARK:
-            v6 = this->monsterInfo.uResDark;
+            v6 = this->monsterInfo.resDark;
             break;
         default:
             v6 = 0;
@@ -3859,39 +3859,39 @@ bool Actor::DoesDmgTypeDoDamage(DamageType uType) {
 
     switch (uType) {
         case DAMAGE_FIRE:
-            resist = this->monsterInfo.uResFire;
+            resist = this->monsterInfo.resFire;
             break;
         case DAMAGE_AIR:
-            resist = this->monsterInfo.uResAir;
+            resist = this->monsterInfo.resAir;
             break;
         case DAMAGE_WATER:
-            resist = this->monsterInfo.uResWater;
+            resist = this->monsterInfo.resWater;
             break;
         case DAMAGE_EARTH:
-            resist = this->monsterInfo.uResEarth;
+            resist = this->monsterInfo.resEarth;
             break;
         case DAMAGE_PHYSICAL:
-            resist = this->monsterInfo.uResPhysical;
+            resist = this->monsterInfo.resPhysical;
             break;
         case DAMAGE_SPIRIT:
-            resist = this->monsterInfo.uResSpirit;
+            resist = this->monsterInfo.resSpirit;
             break;
         case DAMAGE_MIND:
-            resist = this->monsterInfo.uResMind;
+            resist = this->monsterInfo.resMind;
         case DAMAGE_BODY:
-            resist = this->monsterInfo.uResBody;
+            resist = this->monsterInfo.resBody;
             break;
         case DAMAGE_LIGHT:
-            resist = this->monsterInfo.uResLight;
+            resist = this->monsterInfo.resLight;
             break;
         case DAMAGE_DARK:
-            resist = this->monsterInfo.uResDark;
+            resist = this->monsterInfo.resDark;
             break;
         default:
             return true;
     }
     if (resist < 200)
-        return grng->random((this->monsterInfo.uLevel >> 2) + resist + 30) < 30;
+        return grng->random((this->monsterInfo.level >> 2) + resist + 30) < 30;
     else
         return false;
 }
@@ -3901,7 +3901,7 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                           bool bValue) {
     if (uGroupID) {
         if (bValue) {
-            for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
+            for (unsigned i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].group == uGroupID) {
                     pActors[i].attributes |= uFlag;
                     if (uFlag == ACTOR_UNKNOW11) {
@@ -3911,7 +3911,7 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                 }
             }
         } else {
-            for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
+            for (unsigned i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].group == uGroupID) {
                     if (uFlag == ACTOR_UNKNOW11) {
                         if (pActors[i].aiState != Dead) {
@@ -3931,7 +3931,7 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
 void Actor::MakeActorAIList_ODM() {
     std::vector<std::pair<int, int>> activeActorsDistances; // pair<id, distance>
 
-    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
+    pParty->uFlags &= ~PARTY_FLAG_ALERT_RED_OR_YELLOW;
 
     for (Actor &actor : pActors) {
         actor.ResetFullAiState();
@@ -3983,7 +3983,7 @@ int Actor::MakeActorAIList_BLV() {
     std::vector<int> pickedActorIds;
 
     // reset party alert level
-    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
+    pParty->uFlags &= ~PARTY_FLAG_ALERT_RED_OR_YELLOW;
 
     // find actors that are in range and can act
     for (Actor &actor : pActors) {
@@ -4250,16 +4250,16 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     int radius = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     int angle = grng->random(2048);
 
-    actor->name = pMonsterStats->pInfos[uMonsterID].pName;
-    actor->currentHP = pMonsterStats->pInfos[uMonsterID].uHP;
-    actor->monsterInfo = pMonsterStats->pInfos[uMonsterID];
+    actor->name = pMonsterStats->infos[uMonsterID].name;
+    actor->currentHP = pMonsterStats->infos[uMonsterID].hp;
+    actor->monsterInfo = pMonsterStats->infos[uMonsterID];
     actor->word_000086_some_monster_id = uMonsterID;
-    actor->radius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
-    actor->monsterInfo.uTreasureDiceRolls = 0;
-    actor->monsterInfo.uTreasureType = RANDOM_ITEM_ANY;
-    actor->monsterInfo.uExp = 0;
-    actor->moveSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
+    actor->radius = pMonsterList->monsters[uMonsterID].monsterRadius;
+    actor->height = pMonsterList->monsters[uMonsterID].monsterHeight;
+    actor->monsterInfo.goldDiceRolls = 0;
+    actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
+    actor->monsterInfo.exp = 0;
+    actor->moveSpeed = pMonsterList->monsters[uMonsterID].movementSpeed;
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
@@ -4267,7 +4267,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->tetherDistance = 256;
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
-    actor->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+    actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     actor->ally = MONSTER_TYPE_9999;
     actor->group = 0;
     actor->currentActionTime = 0;
@@ -4346,78 +4346,78 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             // v10 = rand();
             // v11 = pMapInfo->uEncounterMonster1AtMost;
             // pTexture = pMapInfo->pEncounterMonster1Texture;
-            v12 = grng->random(pMapInfo->uEncounterMonster1AtMost - pMapInfo->uEncounterMonster1AtLeast + 1);
+            v12 = grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
-            NumToSpawn = pMapInfo->uEncounterMonster1AtLeast + v12;
-            Source = pMapInfo->pEncounterMonster1Texture;
+            NumToSpawn = pMapInfo->encounter1MinCount + v12;
+            Source = pMapInfo->encounter1MonsterTexture;
             break;
         case 3:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s A";
-            Source = pMapInfo->pEncounterMonster1Texture + " A";
+            Source = pMapInfo->encounter1MonsterTexture + " A";
             break;
         case 4:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s A";
-            Source = pMapInfo->pEncounterMonster2Texture + " A";
+            Source = pMapInfo->encounter2MonsterTexture + " A";
             break;
         case 5:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s A";
-            Source = pMapInfo->pEncounterMonster3Texture + " A";
+            Source = pMapInfo->encounter3MonsterTexture + " A";
             break;
         case 1:
             // v9 = pMapInfo->uEncounterMonster2AtLeast;
             // v14 = rand();
             // v15 = pMapInfo->uEncounterMonster2AtMost;
             // pTexture = pMapInfo->pEncounterMonster2Texture;
-            v12 = grng->random(pMapInfo->uEncounterMonster2AtMost - pMapInfo->uEncounterMonster2AtLeast + 1);
+            v12 = grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
-            NumToSpawn = pMapInfo->uEncounterMonster2AtLeast + v12;
-            Source = pMapInfo->pEncounterMonster2Texture;
+            NumToSpawn = pMapInfo->encounter2MinCount + v12;
+            Source = pMapInfo->encounter2MonsterTexture;
             break;
         case 6:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s B";
-            Source = pMapInfo->pEncounterMonster1Texture + " B";
+            Source = pMapInfo->encounter1MonsterTexture + " B";
             break;
         case 7:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s B";
-            Source = pMapInfo->pEncounterMonster2Texture + " B";
+            Source = pMapInfo->encounter2MonsterTexture + " B";
             break;
         case 8:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s B";
-            Source = pMapInfo->pEncounterMonster3Texture + " B";
+            Source = pMapInfo->encounter3MonsterTexture + " B";
             break;
         case 2:
             // v9 = pMapInfo->uEncounterMonster3AtLeast;
             // v16 = rand();
             // v17 = pMapInfo->uEncounterMonster3AtMost;
             // pTexture = pMapInfo->pEncounterMonster3Texture;
-            v12 = grng->random(pMapInfo->uEncounterMonster3AtMost - pMapInfo->uEncounterMonster3AtLeast + 1);
+            v12 = grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
-            NumToSpawn = pMapInfo->uEncounterMonster3AtLeast + v12;
-            Source = pMapInfo->pEncounterMonster3Texture;
+            NumToSpawn = pMapInfo->encounter3MinCount + v12;
+            Source = pMapInfo->encounter3MonsterTexture;
             break;
         case 9:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s C";
-            Source = pMapInfo->pEncounterMonster1Texture + " C";
+            Source = pMapInfo->encounter1MonsterTexture + " C";
             break;
         case 10:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s C";
-            Source = pMapInfo->pEncounterMonster2Texture + " C";
+            Source = pMapInfo->encounter2MonsterTexture + " C";
             break;
         case 11:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s C";
-            Source = pMapInfo->pEncounterMonster3Texture + " C";
+            Source = pMapInfo->encounter3MonsterTexture + " C";
             break;
         default:
             return;
@@ -4482,22 +4482,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         MonsterId v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
 
-        v27 = &pMonsterList->pMonsters[v50];
+        v27 = &pMonsterList->monsters[v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
         // TODO(captainurist): MONSTER_ANGEL_A is monster #1, why do we even need this check?
         if (v28 == MONSTER_INVALID) v28 = MONSTER_ANGEL_A;
-        Src = &pMonsterStats->pInfos[v28];
-        pMonster->name = Src->pName;
-        pMonster->currentHP = Src->uHP;
+        Src = &pMonsterStats->infos[v28];
+        pMonster->name = Src->name;
+        pMonster->currentHP = Src->hp;
 
         // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access
 
-        pMonster->monsterInfo = pMonsterStats->pInfos[v28];
+        pMonster->monsterInfo = pMonsterStats->infos[v28];
 
         pMonster->word_000086_some_monster_id = v50;
-        pMonster->radius = v27->uMonsterRadius;
-        pMonster->height = v27->uMonsterHeight;
-        pMonster->moveSpeed = v27->uMovementSpeed;
+        pMonster->radius = v27->monsterRadius;
+        pMonster->height = v27->monsterHeight;
+        pMonster->moveSpeed = v27->movementSpeed;
         pMonster->initialPosition.x = spawn->vPosition.x;
         pMonster->pos.x = spawn->vPosition.x;
         pMonster->tetherDistance = 256;
@@ -4508,7 +4508,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pMonster->sectorId = pSector;
         pMonster->group = spawn->uGroup;
         pMonster->PrepareSprites(0);
-        pMonster->monsterInfo.uHostilityType = HOSTILITY_FRIENDLY;
+        pMonster->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
         v32 = grng->random(2048);
         a3 = TrigLUT.cos(v32) * v52;
         pPosX = a3 + spawn->vPosition.x;
@@ -4698,12 +4698,12 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                     else
                         Actor::Die(uActorID);
                     a2a = 20 * damage /
-                          (signed int)pActors[uActorID].monsterInfo.uHP;
+                          (signed int)pActors[uActorID].monsterInfo.hp;
                     if (20 * damage /
-                            (signed int)pActors[uActorID].monsterInfo.uHP >
+                            (signed int)pActors[uActorID].monsterInfo.hp >
                         10)
                         a2a = 10;
-                    if (supertypeForMonsterId(pActors[uActorID].monsterInfo.uID) != MONSTER_SUPERTYPE_TREANT) {
+                    if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
                         pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
                         pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
                         pVelocity->z = fixpoint_mul(a2a, pVelocity->z);

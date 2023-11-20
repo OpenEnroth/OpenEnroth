@@ -95,14 +95,14 @@ void LoadGame(unsigned int uSlot) {
     pParty->setActiveToFirstCanAct();
 
 /*
-    for (uint i = 0; i < 4; ++i) {
+    for (unsigned i = 0; i < 4; ++i) {
         if (pParty->pCharacters[i].uQuickSpell) {
             AA1058_PartyQuickSpellSound[i].AddPartySpellSound(
                 pParty->pCharacters[i].uQuickSpell, i + 1);
         }
 
-        for (uint j = 0; j < 2; ++j) {
-            uint uEquipIdx = pParty->pCharacters[i].pEquipment.pIndices[j];
+        for (unsigned j = 0; j < 2; ++j) {
+            unsigned uEquipIdx = pParty->pCharacters[i].pEquipment.pIndices[j];
             if (uEquipIdx) {
                 int pItemID = pParty->pCharacters[i]
                                   .pInventoryItemList[uEquipIdx - 1]

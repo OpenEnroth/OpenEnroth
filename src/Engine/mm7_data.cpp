@@ -501,7 +501,7 @@ IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level 
     {CHARACTER_SKILL_LEARNING, 60},     {CHARACTER_SKILL_CLUB, 1},        {CHARACTER_SKILL_MISC, 1}
 };
 
-IndexedArray<uint, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type = {
+IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type = {
     /* Base recovery value for staffs, and for unarmed combat w/o the unarmed skill. */
     {CHARACTER_SKILL_STAFF, 100},
 

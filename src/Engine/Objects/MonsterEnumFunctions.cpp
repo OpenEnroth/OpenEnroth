@@ -273,7 +273,7 @@ ItemId itemDropForMonsterType(MonsterType monsterType) {
     }
 }
 
-MONSTER_SUPERTYPE supertypeForMonsterType(MonsterType monsterType) {
+MonsterSupertype supertypeForMonsterType(MonsterType monsterType) {
     switch (monsterType) {
     case MONSTER_TYPE_GHOST:
     case MONSTER_TYPE_LICH:

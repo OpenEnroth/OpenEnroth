@@ -870,7 +870,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
 
     std::string result;
 
-    uint len = str.length();
+    unsigned len = str.length();
     for (int i = 0, dst = 0; i < len; ++i) {
         char c = str[i];  // skip through string till we find insertion point
         if (c != '%') {
@@ -881,7 +881,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
 
             switch (mask) {
             case 1:
-                result += npc->pName;
+                result += npc->name;
                 break;
             case 2:
                 result += pPlayer->name;
@@ -967,7 +967,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 break;
             case 17:  // hired npc text
             {
-                uint pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
+                unsigned pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
                 if (pay_percentage == 0) pay_percentage = 1;
                 v1 = fmt::format("{}", pay_percentage);
                 result += v1;
@@ -986,7 +986,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 break;
             case 23:
                 if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID)
-                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName;
+                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name;
                 else
                     result += localization->GetString(LSTR_UNKNOWN);
                 break;
@@ -1130,7 +1130,7 @@ void WindowManager::DeleteAllVisibleWindows() {
 }
 
 void MainMenuUI_LoadFontsAndSomeStuff() {
-    // for (uint i = 0; i < 480; ++i) {  // must be 480 - needs sorting
+    // for (unsigned i = 0; i < 480; ++i) {  // must be 480 - needs sorting
     //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
     // }
     if (!assets->pFontArrus)
@@ -1146,7 +1146,7 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
 }
 
 static void LoadPartyBuffIcons() {
-    for (uint i = 0; i < 14; ++i) {
+    for (unsigned i = 0; i < 14; ++i) {
         //auto temp = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
         //int booty = temp->GetHeight();
         //party_buff_icons[i] = assets->getImage_ColorKey(StringPrintf("isn-%02d", i + 1), colorTable.TealMask);
@@ -1289,7 +1289,7 @@ std::string NameAndTitle(const std::string &name, CharacterClass class_type) {
 }
 
 
-std::string NameAndTitle(const std::string &name, NPCProf profession) {
+std::string NameAndTitle(const std::string &name, NpcProfession profession) {
     return NameAndTitle(
         name,
         localization->GetNpcProfessionName(profession)
@@ -1298,11 +1298,11 @@ std::string NameAndTitle(const std::string &name, NPCProf profession) {
 
 
 std::string NameAndTitle(NPCData *npc) {
-    if (!npc->pName.empty()) {
+    if (!npc->name.empty()) {
         if (npc->profession != NoProfession)
-            return NameAndTitle(npc->pName, npc->profession);
+            return NameAndTitle(npc->name, npc->profession);
 
-        return npc->pName;
+        return npc->name;
     }
 
     return std::string();
@@ -1311,7 +1311,7 @@ std::string NameAndTitle(NPCData *npc) {
 
 std::string GetDisplayName(Actor *actor) {
     if (actor->uniqueNameIndex)
-        return pMonsterStats->pUniqueNames[actor->uniqueNameIndex];
+        return pMonsterStats->uniqueNames[actor->uniqueNameIndex];
     else
-        return pMonsterStats->pInfos[actor->monsterInfo.uID].pName;
+        return pMonsterStats->infos[actor->monsterInfo.id].name;
 }

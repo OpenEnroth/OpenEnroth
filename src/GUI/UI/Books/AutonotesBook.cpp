@@ -15,7 +15,7 @@
 
 GraphicsImage *ui_book_autonotes_background = nullptr;
 
-AUTONOTE_TYPE autonoteBookDisplayType;
+AutonoteType autonoteBookDisplayType;
 
 void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
     _startingNotesIdx = 0;
@@ -98,16 +98,16 @@ void GUIWindow_AutonotesBook::Update() {
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_POTION) {
-        if (autonoteBookDisplayType == AUTONOTE_POTION_RECEPIE) {
+        if (autonoteBookDisplayType == AUTONOTE_POTION_RECIPE) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-            autonoteBookDisplayType = AUTONOTE_POTION_RECEPIE;
+            autonoteBookDisplayType = AUTONOTE_POTION_RECIPE;
             noteTypeChanged = true;
             render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         }
     } else {
-        if (autonoteBookDisplayType == AUTONOTE_POTION_RECEPIE) {
+        if (autonoteBookDisplayType == AUTONOTE_POTION_RECIPE) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         } else {
             render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_off);

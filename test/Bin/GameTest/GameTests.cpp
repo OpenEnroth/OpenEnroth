@@ -253,7 +253,7 @@ GAME_TEST(Issues, Issue268_939) {
 GAME_TEST(Issues, Issue271) {
     // Party shouldn't yell when landing from flight.
     auto expressionTape = charTapes.expression(1);
-    auto landingTape = tapes.custom([] { return !!(pParty->uFlags & PARTY_FLAGS_1_LANDING); });
+    auto landingTape = tapes.custom([] { return !!(pParty->uFlags & PARTY_FLAG_LANDING); });
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("issue_271.mm7", "issue_271.json");
     EXPECT_FALSE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
@@ -1172,7 +1172,7 @@ GAME_TEST(Issues, Issue728) {
 GAME_TEST(Issues, Issue730) {
     // Thrown items are throwing a party of their own
     test.playTraceFromTestData("issue_730.mm7", "issue_730.json");
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         EXPECT_EQ(pSpriteObjects[i].vVelocity, Vec3i(0, 0, 0));
     }
 }
@@ -1466,7 +1466,7 @@ GAME_TEST(Issues, Issue872) {
     test.playTraceFromTestData("issue_872.mm7", "issue_872.json");
     FlatHirelings buf;
     buf.Prepare();
-    EXPECT_NE(buf.Get(0)->pName, "Dummy");
+    EXPECT_NE(buf.Get(0)->name, "Dummy");
 }
 
 GAME_TEST(Issues, Issue878) {

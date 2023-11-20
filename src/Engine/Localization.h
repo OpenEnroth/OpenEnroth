@@ -12,6 +12,7 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Format.h"
 
+// TODO(captainurist): #enum
 #define LSTR_AC                               0   // "AC"
 #define LSTR_ACCURACY                         1   // "Accuracy"
 #define LSTR_AFRAID                           4   // "Afraid"
@@ -464,7 +465,7 @@ class Localization {
         return this->spell_school_names[index];
     }
 
-    const char *GetPartyBuffName(PARTY_BUFF_INDEX index) const {
+    const char *GetPartyBuffName(PartyBuff index) const {
         return this->party_buff_names[index];
     }
 
@@ -548,7 +549,7 @@ class Localization {
         return this->GetString(472 + index);
     }
 
-    const char *GetNpcProfessionName(NPCProf prof) const {
+    const char *GetNpcProfessionName(NpcProfession prof) const {
         return this->npc_profession_names[prof];
     }
 

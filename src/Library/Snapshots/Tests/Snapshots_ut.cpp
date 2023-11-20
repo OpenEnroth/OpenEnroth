@@ -111,3 +111,31 @@ UNIT_TEST(Snapshots, IndexedBitset) {
     EXPECT_EQ(bytes, bytes2);
     EXPECT_EQ(bits, bits2);
 }
+
+UNIT_TEST(Snapshots, Cast) {
+    uint32_t i32 = 0;
+    uint8_t i8 = 0;
+
+    i32 = 0xFFFF;
+    snapshot(i32, &i8, tags::cast<uint32_t, uint8_t>);
+    EXPECT_EQ(i8, 0xFF);
+
+    reconstruct(i8, &i32, tags::cast<uint8_t, uint32_t>);
+    EXPECT_EQ(i32, 0xFF);
+}
+
+template<class T1, class T2>
+bool snapshotCastCompiles() {
+    return requires (T1 a, T2 b) { snapshot(a, &b, tags::cast<uint8_t, uint32_t>); }; // NOLINT: linter chokes here.
+}
+
+UNIT_TEST(Snapshots, CastRequiresExplicitTypes) {
+    // Check that calls with tags::cast<T1, T2> don't compile if the types passed into the function don't exactly match
+    // the types passed as template parameters to tags::cast.
+    EXPECT_FALSE((snapshotCastCompiles<int, int>()));
+    EXPECT_FALSE((snapshotCastCompiles<uint8_t, int>()));
+    EXPECT_FALSE((snapshotCastCompiles<int, uint32_t>()));
+    EXPECT_FALSE((snapshotCastCompiles<int8_t, uint32_t>()));
+    EXPECT_FALSE((snapshotCastCompiles<uint8_t, int32_t>()));
+    EXPECT_TRUE((snapshotCastCompiles<uint8_t, uint32_t>()));
+}

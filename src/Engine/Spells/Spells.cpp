@@ -26,7 +26,7 @@ struct SpellStats *pSpellStats = nullptr;
 /**
  * @offset 0x4E3ACC
  */
-const IndexedArray<SPRITE_OBJECT_TYPE, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping = {
+const IndexedArray<SpriteId, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping = {
     {SPELL_FIRE_TORCH_LIGHT, SPRITE_SPELL_FIRE_TORCH_LIGHT},
     {SPELL_FIRE_FIRE_BOLT, SPRITE_SPELL_FIRE_FIRE_BOLT},
     {SPELL_FIRE_PROTECTION_FROM_FIRE, SPRITE_SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -581,7 +581,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
     int spell_spray_arc;
     int spell_spray_angles;
     int spriteid;
-    PARTY_BUFF_INDEX buff_id;
+    PartyBuff buff_id;
 
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
@@ -855,8 +855,8 @@ void armageddonProgress() {
                 Actor::AI_Stun(actor.id, Pid::character(0), 0);
             } else {
                 Actor::Die(actor.id);
-                if (actor.monsterInfo.uExp) {
-                    pParty->GivePartyExp(pMonsterStats->pInfos[actor.monsterInfo.uID].uExp);
+                if (actor.monsterInfo.exp) {
+                    pParty->GivePartyExp(pMonsterStats->infos[actor.monsterInfo.id].exp);
                 }
             }
         }

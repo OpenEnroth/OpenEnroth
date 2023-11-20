@@ -10,9 +10,9 @@ class GUIWindow_Transport : public GUIWindow_House {
     explicit GUIWindow_Transport(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Transport() {}
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual std::vector<DialogueId> listDialogueOptions() override;
 
  protected:
     void mainDialogue();

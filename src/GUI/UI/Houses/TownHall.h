@@ -13,9 +13,9 @@ class GUIWindow_TownHall : public GUIWindow_House {
     explicit GUIWindow_TownHall(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_TownHall() {}
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual std::vector<DialogueId> listDialogueOptions() override;
 
     /**
      * @return   Text to show after the player has clicked on the "Bounty Hunt" dialogue option.
