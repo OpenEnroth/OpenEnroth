@@ -25,13 +25,13 @@ enum class TURN_ENGINE_AI_ACTION {
 };
 using enum TURN_ENGINE_AI_ACTION;
 
-enum class TURN_ENGINE_TURN_STAGE {
+enum class TurnEngineStep {
     TE_NONE = 0,
     TE_WAIT = 1,
     TE_ATTACK = 2,
     TE_MOVEMENT = 3,
 };
-using enum TURN_ENGINE_TURN_STAGE;
+using enum TurnEngineStep;
 
 struct TurnBased_QueueElem {
     inline TurnBased_QueueElem() {
@@ -77,7 +77,7 @@ struct stru262_TurnBased {
     void ActorAIChooseNewTargets();
 
     int turns_count;
-    TURN_ENGINE_TURN_STAGE turn_stage;  // if = 2 - action
+    TurnEngineStep turn_stage;  // if = 2 - action
     int ai_turn_timer;
     int turn_initiative;
     int uActionPointsLeft;  // 14
