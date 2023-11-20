@@ -122,8 +122,7 @@ using enum PARTY_FLAG_2;
 MM_DECLARE_FLAGS(PARTY_FLAGS_2, PARTY_FLAG_2)
 MM_DECLARE_OPERATORS_FOR_FLAGS(PARTY_FLAGS_2)
 
-/*  347 */
-enum class PARTY_BUFF_INDEX {
+enum class PartyBuff {
     PARTY_BUFF_RESIST_AIR = 0,
     PARTY_BUFF_RESIST_BODY = 1,
     PARTY_BUFF_DAY_OF_GODS = 2,
@@ -148,7 +147,7 @@ enum class PARTY_BUFF_INDEX {
     PARTY_BUFF_FIRST = PARTY_BUFF_RESIST_AIR,
     PARTY_BUFF_LAST = PARTY_BUFF_WIZARD_EYE
 };
-using enum PARTY_BUFF_INDEX;
+using enum PartyBuff;
 
 /*  300 */
 enum class PartyAction : uint32_t {

@@ -465,7 +465,7 @@ class Localization {
         return this->spell_school_names[index];
     }
 
-    const char *GetPartyBuffName(PARTY_BUFF_INDEX index) const {
+    const char *GetPartyBuffName(PartyBuff index) const {
         return this->party_buff_names[index];
     }
 

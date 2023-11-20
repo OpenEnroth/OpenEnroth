@@ -1430,7 +1430,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // Check if Fly/Water Walk caster can act
-    for (PARTY_BUFF_INDEX buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
+    for (PartyBuff buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
         SpellBuff *pBuff = &pParty->pPartyBuffs[buffIdx];
         if (pBuff->Inactive()) {
             continue;

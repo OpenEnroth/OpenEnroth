@@ -768,7 +768,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_BODY_PROTECTION_FROM_BODY:
                 {
                     int spell_power = std::to_underlying(spell_mastery) * spell_level;
-                    PARTY_BUFF_INDEX resist;
+                    PartyBuff resist;
                     switch (pCastSpell->uSpellID) {
                         case SPELL_FIRE_PROTECTION_FROM_FIRE:
                             resist = PARTY_BUFF_RESIST_FIRE;
@@ -918,7 +918,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     int spell_power;
-                    PARTY_BUFF_INDEX buff;
+                    PartyBuff buff;
                     switch (pCastSpell->uSpellID) {
                         case SPELL_AIR_SHIELD:
                             spell_power = 0;

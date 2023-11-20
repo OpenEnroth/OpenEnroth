@@ -1378,7 +1378,7 @@ static void drawBuffPopupWindow() {
     }
 
     stringCount = 0;
-    for (PARTY_BUFF_INDEX i : pParty->pPartyBuffs.indices()) {
+    for (PartyBuff i : pParty->pPartyBuffs.indices()) {
         if (pParty->pPartyBuffs[i].Active()) {
             GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * assets->pFontComic->GetHeight() + 40;

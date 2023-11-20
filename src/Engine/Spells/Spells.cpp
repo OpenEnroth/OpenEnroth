@@ -581,7 +581,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
     int spell_spray_arc;
     int spell_spray_angles;
     int spriteid;
-    PARTY_BUFF_INDEX buff_id;
+    PartyBuff buff_id;
 
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
