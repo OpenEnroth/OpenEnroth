@@ -1116,14 +1116,14 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
             break;
         case EVENT_IsActorKilled:
             requireSize(12);
-            ir.data.actor_descr.policy = static_cast<ACTOR_KILL_CHECK_POLICY>(evt->v5);
+            ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(evt->v5);
             ir.data.actor_descr.param = EVT_DWORD(&evt->v6);
             ir.data.actor_descr.num = evt->v10;
             ir.target_step = evt->v11;
             break;
         case EVENT_CanShowTopic_IsActorKilled:
             requireSize(12);
-            ir.data.actor_descr.policy = static_cast<ACTOR_KILL_CHECK_POLICY>(evt->v5);
+            ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(evt->v5);
             ir.data.actor_descr.param = EVT_DWORD(&evt->v6);
             ir.data.actor_descr.num = evt->v10;
             ir.target_step = evt->v11;

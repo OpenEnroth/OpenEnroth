@@ -2882,7 +2882,7 @@ void Actor::UpdateActorAI() {
     }
 }
 
-bool Actor::isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count) {
+bool Actor::isActorKilled(ActorKillCheckPolicy policy, int param, int count) {
     int deadActors = 0;
     int totalActors = 0;
 

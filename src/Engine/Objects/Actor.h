@@ -170,7 +170,7 @@ class Actor {
      * @param count     Killed count or 0 if all must be killed
      * @offset 0x44665D
      */
-    static bool isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count);
+    static bool isActorKilled(ActorKillCheckPolicy policy, int param, int count);
 
     /**
      * @offset 0x408A27

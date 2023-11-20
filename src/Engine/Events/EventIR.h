@@ -63,7 +63,7 @@ class EventIR {
             int damage;
         } damage_descr;
         struct {
-            ACTOR_KILL_CHECK_POLICY policy;
+            ActorKillCheckPolicy policy;
             int param;
             int num;
         } actor_descr;

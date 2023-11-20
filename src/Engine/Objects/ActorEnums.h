@@ -4,13 +4,13 @@
 
 #include "Utility/Flags.h"
 
-enum class ACTOR_KILL_CHECK_POLICY {
+enum class ActorKillCheckPolicy {
     KILL_CHECK_ANY = 0,
     KILL_CHECK_GROUPID = 1,
     KILL_CHECK_MONSTERID = 2,
     KILL_CHECK_ACTORID = 3
 };
-using enum ACTOR_KILL_CHECK_POLICY;
+using enum ActorKillCheckPolicy;
 
 enum class ABILITY_INDEX : char {
     ABILITY_ATTACK1 = 0,
