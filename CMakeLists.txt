@@ -110,9 +110,11 @@ endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
     # Flags that are available only in gcc but not in clang go here.
+    add_compile_options(-Werror=return-local-addr) # Returning reference to temporary
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
 elseif(BUILD_COMPILER STREQUAL "clang")
     # Flags that are available only in clang but not in gcc go here.
+    add_compile_options(-Werror=return-stack-address) # Returning reference to temporary
     add_compile_options(-Werror=unused-comparison) # Comparison result unused.
     add_compile_options(-Werror=inconsistent-missing-override) # 'override' only used on some of the overridden functions.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
