@@ -27,7 +27,6 @@ struct BLVLight {
     int16_t uBrightness = 0;
 };
 
-/*  100 */
 struct BLVDoor {  // 50h
     enum class State : uint16_t {
         Closed = 0,
@@ -259,7 +258,6 @@ struct IndoorLocation {
 
 extern IndoorLocation *pIndoor;
 
-/*  162 */
 struct BLVRenderParams {
     inline BLVRenderParams() {
         uViewportX = 0;

@@ -93,7 +93,6 @@ enum class QuestBit : uint16_t {
 };
 using enum QuestBit;
 
-/*  355 */
 enum class PartyFlag : int32_t {
     PARTY_FLAG_0002 = 0x0002, // was force drawing
     PARTY_FLAG_WATER_DAMAGE = 0x0004,
@@ -149,7 +148,6 @@ enum class PartyBuff {
 };
 using enum PartyBuff;
 
-/*  300 */
 enum class PartyAction : uint32_t {
     PARTY_INVALID = 0,
     PARTY_TurnLeft = 1,

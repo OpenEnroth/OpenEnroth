@@ -28,7 +28,6 @@ struct ActionQueue {
     PartyAction pActions[30]{};
 };
 
-/*  208 */
 struct PartyTimeStruct {
     IndexedArray<GameTime, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> bountyHuntNextGenTime; // Size was 10 originally.
     IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopNextRefreshTime;

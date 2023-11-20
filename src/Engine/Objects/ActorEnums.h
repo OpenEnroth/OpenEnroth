@@ -75,7 +75,6 @@ enum class AIState : uint16_t {
 };
 using enum AIState;
 
-/*  265 */
 enum class ActorAnimation {
     ANIM_Standing = 0x0,
     ANIM_Walking = 0x1,

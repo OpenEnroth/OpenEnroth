@@ -417,7 +417,6 @@ enum class MonsterType {
 };
 using enum MonsterType;
 
-/*  335 */
 enum class MonsterSpecialAbility {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
@@ -436,7 +435,6 @@ enum class MONSTER_MOVEMENT_TYPE {
 };
 using enum MONSTER_MOVEMENT_TYPE;
 
-/*  336 */
 enum class MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_NONE = 0x0, // OE addition, didn't exist in the original binary.
     MONSTER_SUPERTYPE_UNDEAD = 0x1,
