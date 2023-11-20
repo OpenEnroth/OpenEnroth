@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['damagecharacterfrommonster_0',['DamageCharacterFromMonster',['../Character_8cpp.html#a0139dc0c81c55adb6d387642ebb7a7a7',1,'DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar):&#160;Character.cpp'],['../Character_8h.html#a31106f07178c4f0c2d6dd9431704b6b3',1,'DamageCharacterFromMonster(Pid uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4):&#160;Character.cpp']]],
+  ['damagecharacterfrommonster_0',['DamageCharacterFromMonster',['../Character_8cpp.html#a37829c4ed82fc7b937eb871cd9bfee7c',1,'DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int targetchar):&#160;Character.cpp'],['../Character_8h.html#a5c8ded43571552ec3c1eefc3133da749',1,'DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int a4):&#160;Character.cpp']]],
   ['damagemonsterfromparty_1',['DamageMonsterFromParty',['../classActor.html#a91d26f4a21f58aa752c31e6491f04c9d',1,'Actor']]],
   ['data_2',['data',['../structdetail_1_1AppendWrapper.html#a3b0e6cbadfd4be37a4c303cd67d3e1df',1,'detail::AppendWrapper::data()'],['../classBlob.html#a177116f40a530c74dbfd7db661ecbe4b',1,'Blob::data()']]],
   ['deactivate_3',['Deactivate',['../classIo_1_1Mouse.html#a55bc9d098685924ee4ac7c4790a0aee6',1,'Io::Mouse']]],
@@ -41,7 +41,7 @@ var searchData=
   ['detect_5fbetween_5fobjects_38',['Detect_Between_Objects',['../Actor_8cpp.html#a0cbd5c9f5e2b9c934bac6d2e7ef3124f',1,'Detect_Between_Objects(Pid uObjID, Pid uObj2ID):&#160;Actor.cpp'],['../Actor_8h.html#a0cbd5c9f5e2b9c934bac6d2e7ef3124f',1,'Detect_Between_Objects(Pid uObjID, Pid uObj2ID):&#160;Actor.cpp']]],
   ['determinefacetintersection_39',['DetermineFacetIntersection',['../classVis.html#a0942b94f28a1236d891854d7b3b97d7b',1,'Vis']]],
   ['dialogueending_40',['DialogueEnding',['../GUIWindow_8h.html#a2c04776db08e21e3fb9372aa7a8f1100',1,'DialogueEnding():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#a2c04776db08e21e3fb9372aa7a8f1100',1,'DialogueEnding():&#160;GUIWindow.cpp']]],
-  ['dialoguetype_41',['dialogueType',['../classCommonTapeRecorder.html#acac47dafe119ef6d13db341880e494b3',1,'CommonTapeRecorder']]],
+  ['dialoguetype_41',['dialogueType',['../classCommonTapeRecorder.html#aa0b2d31a24de3b8c78deedadb60408b1',1,'CommonTapeRecorder']]],
   ['die_42',['Die',['../classActor.html#a447dcfe201137f104ad0778124f80787',1,'Actor']]],
   ['discardcard_43',['DiscardCard',['../Arcomage_8cpp.html#a1391e8406f047a8fa32055a275960a7f',1,'Arcomage.cpp']]],
   ['discardconditioniflastslongerthan_44',['DiscardConditionIfLastsLongerThan',['../classCharacter.html#af9549ba2a89c4af009131c145eeb7176',1,'Character']]],
@@ -167,7 +167,7 @@ var searchData=
   ['drawtwodverts_164',['DrawTwodVerts',['../classIRender.html#adfbff9bcb735079ba54dc01b77e2b301',1,'IRender::DrawTwodVerts()'],['../classRenderOpenGL.html#a32c59e2a963c6782a956a30d83181b8e',1,'RenderOpenGL::DrawTwodVerts()'],['../classRenderNull.html#a09002994c6ef4e5d292ce749437b3a61',1,'RenderNull::DrawTwodVerts()']]],
   ['drawworld_165',['drawWorld',['../classEngine.html#a01f2f47484993e77f2787b8fd1d989f9',1,'Engine']]],
   ['drophelditem_166',['dropHeldItem',['../structParty.html#a0693aea0ed8b47d1ae9d99258818fb54',1,'Party']]],
-  ['dropitemat_167',['dropItemAt',['../structSpriteObject.html#af03e2b0f3616e142fa60a59ba953b506',1,'SpriteObject']]],
+  ['dropitemat_167',['dropItemAt',['../structSpriteObject.html#adf1ecfc0805153b143e1e98ba94b0d2a',1,'SpriteObject']]],
   ['droptreasureat_168',['DropTreasureAt',['../Indoor_8cpp.html#a90afed9c265a6f3d55807df2e034a1c5',1,'DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing):&#160;Indoor.cpp'],['../Indoor_8h.html#a90afed9c265a6f3d55807df2e034a1c5',1,'DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing):&#160;Indoor.cpp']]],
   ['dummy_169',['dummy',['../classPid.html#a2b54090a269fa38086281f48604715d8',1,'Pid']]],
   ['dump_170',['dump',['../classEventMap.html#a8ad7b6b1ee85fddbdc480c5a69053296',1,'EventMap::dump()'],['../classCodeGenMap.html#afd344537301d5c6e5856d383aee98ae1',1,'CodeGenMap::dump()']]],

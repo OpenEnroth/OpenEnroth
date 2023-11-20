@@ -162,8 +162,8 @@ var searchData=
   ['keyreleaseevent_159',['keyReleaseEvent',['../classPlatformEventHandler.html#a9292d2132651bc487858ddc05971963e',1,'PlatformEventHandler::keyReleaseEvent()'],['../classGameKeyboardController.html#a0716e5db3bd923f291f4a94d7203b0ea',1,'GameKeyboardController::keyReleaseEvent()'],['../classGameTraceHandler.html#a14ca7609c3cf38430cbae53ba34e782e',1,'GameTraceHandler::keyReleaseEvent()'],['../classGameWindowHandler.html#aea9e3bfa329b538c22de7c4eccb3efa9',1,'GameWindowHandler::keyReleaseEvent()'],['../classNuklearEventHandler.html#a9eb3a029e21ae3b3025f6400cdcb1151',1,'NuklearEventHandler::keyReleaseEvent()'],['../classPlatformEventFilter.html#a94c447fef1096ee7034b201f21e13158',1,'PlatformEventFilter::keyReleaseEvent()']]],
   ['keytogglemap_160',['keyToggleMap',['../classIo_1_1KeyboardActionMapping.html#a6bec1fe1388d4246402e7351ef5cc070',1,'Io::KeyboardActionMapping']]],
   ['keytoggletype_161',['KeyToggleType',['../namespaceIo.html#a2c93bc6b898f8766fc71035a886995fd',1,'Io']]],
-  ['kill_5fcheck_5factorid_162',['KILL_CHECK_ACTORID',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224ab91fcd3ea12e4a5035ebacdbccc4979c',1,'ActorEnums.h']]],
-  ['kill_5fcheck_5fany_163',['KILL_CHECK_ANY',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224a9e31046d592fe3bbe2ab41f4dd89f782',1,'ActorEnums.h']]],
-  ['kill_5fcheck_5fgroupid_164',['KILL_CHECK_GROUPID',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224ad618be51c321932e9b5e4b07e12810ab',1,'ActorEnums.h']]],
-  ['kill_5fcheck_5fmonsterid_165',['KILL_CHECK_MONSTERID',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224ae984ad5a3492404c7497031fe01393eb',1,'ActorEnums.h']]]
+  ['kill_5fcheck_5factorid_162',['KILL_CHECK_ACTORID',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2ab91fcd3ea12e4a5035ebacdbccc4979c',1,'ActorEnums.h']]],
+  ['kill_5fcheck_5fany_163',['KILL_CHECK_ANY',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2a9e31046d592fe3bbe2ab41f4dd89f782',1,'ActorEnums.h']]],
+  ['kill_5fcheck_5fgroupid_164',['KILL_CHECK_GROUPID',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2ad618be51c321932e9b5e4b07e12810ab',1,'ActorEnums.h']]],
+  ['kill_5fcheck_5fmonsterid_165',['KILL_CHECK_MONSTERID',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2ae984ad5a3492404c7497031fe01393eb',1,'ActorEnums.h']]]
 ];

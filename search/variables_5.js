@@ -40,7 +40,7 @@ var searchData=
   ['equipment_37',['equipment',['../structConditionTableEntry.html#a8ac55b24239e835612e47d16dac5274b',1,'ConditionTableEntry::equipment()'],['../structPlayer__MM7.html#a9ad291a28103c5666a59928491f8822e',1,'Player_MM7::equipment()']]],
   ['errormessageexpiretime_38',['errorMessageExpireTime',['../UIPartyCreation_8cpp.html#ac54019dcdf19c1ba1073379fd0913889',1,'UIPartyCreation.cpp']]],
   ['escape_39',['Escape',['../classGameConfig_1_1Gamepad.html#a95c2e8172fca2903b4ec88477d9d2e45',1,'GameConfig::Gamepad::Escape()'],['../classGameConfig_1_1Keybindings.html#aa80b6c9247c211497de5f7a6caff9890',1,'GameConfig::Keybindings::Escape()']]],
-  ['etype_40',['eType',['../structSoundInfo__MM6.html#a679d2024a51bfe8c9121886200df2156',1,'SoundInfo_MM6::eType()'],['../structAutonote.html#a5be3e9d1436fbab53def086f3dbfad70',1,'Autonote::eType()'],['../classSoundInfo.html#aff20802fd3eb8b96e5d9351446a57994',1,'SoundInfo::eType()']]],
+  ['etype_40',['eType',['../structSoundInfo__MM6.html#a679d2024a51bfe8c9121886200df2156',1,'SoundInfo_MM6::eType()'],['../structAutonote.html#ad8ff29c12f01f1c6df75e35d00acdb77',1,'Autonote::eType()'],['../classSoundInfo.html#aacc902249ea76b27d2bbd99e3835ad9e',1,'SoundInfo::eType()']]],
   ['event_5fduration_41',['EVENT_DURATION',['../classStatusBar.html#ab679b0a67966827f97d5ffa8248872f2',1,'StatusBar']]],
   ['event_5fduration_5fshort_42',['EVENT_DURATION_SHORT',['../classStatusBar.html#aa7d15b29bc1a208f32875bb7833793a6',1,'StatusBar']]],
   ['event_5fid_43',['event_id',['../classEventIR.html#a98d4acbb1097d453b67d88368159506b',1,'EventIR']]],

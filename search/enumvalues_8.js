@@ -1,8 +1,8 @@
 var searchData=
 [
   ['id_5fmax_0',['ID_MAX',['../classPid.html#a94274d80a1fd2546f7e19d17fe17be50a576ecb7a058c32a3378cdd347c2620b2',1,'Pid']]],
-  ['initiate_1',['Initiate',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a88167bfb453911e2256aa20e7b231d69',1,'NPCEnums.h']]],
-  ['instructor_2',['Instructor',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a07f8bcc8ac3a48011c67c0d0f77f07d0',1,'NPCEnums.h']]],
+  ['initiate_1',['Initiate',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea88167bfb453911e2256aa20e7b231d69',1,'NPCEnums.h']]],
+  ['instructor_2',['Instructor',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea07f8bcc8ac3a48011c67c0d0f77f07d0',1,'NPCEnums.h']]],
   ['interacting_3',['Interacting',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaf023446a52e84d38f186937dad1d8f76',1,'ActorEnums.h']]],
   ['invalid_4',['Invalid',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4bbb8f967da6d1a610596d7257179c2b',1,'Io']]],
   ['inventory_5',['Inventory',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4d604dd8f008145471dc845683399189',1,'Io']]],

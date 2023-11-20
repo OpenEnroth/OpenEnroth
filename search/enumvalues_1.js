@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['banker_0',['Banker',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9c20f2154ddd42475793ee059c1ff50d',1,'NPCEnums.h']]],
-  ['bard_1',['Bard',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a51a547788c5ebad8e66b330b9fa747c5',1,'NPCEnums.h']]],
+  ['banker_0',['Banker',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea9c20f2154ddd42475793ee059c1ff50d',1,'NPCEnums.h']]],
+  ['bard_1',['Bard',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea51a547788c5ebad8e66b330b9fa747c5',1,'NPCEnums.h']]],
   ['become_5fmagic_5fguild_5fmember_2',['BECOME_MAGIC_GUILD_MEMBER',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90ae042cd921bb2a7ea017fc2726a6b991f',1,'SpellEnums.h']]],
   ['book_5fnext_5fpage_3',['BOOK_NEXT_PAGE',['../UIBooks_8h.html#abbda3eb2bdcb9adac18ddd95a07a17caac304e3a8ddca2eb5cc0a79b6a448f535',1,'UIBooks.h']]],
   ['book_5fnotes_5ffountain_4',['BOOK_NOTES_FOUNTAIN',['../UIBooks_8h.html#abbda3eb2bdcb9adac18ddd95a07a17caa11b9222a154cdf635899fd8c30c1626c',1,'UIBooks.h']]],
@@ -54,7 +54,7 @@ var searchData=
   ['building_5ftraining_5fground_51',['BUILDING_TRAINING_GROUND',['../BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a767ad2ba375d27914c19234e9b94d0d8',1,'BuildingTable.h']]],
   ['building_5fwater_5fguild_52',['BUILDING_WATER_GUILD',['../BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aef511d16b4c81d66e40d6fdb98df4973',1,'BuildingTable.h']]],
   ['building_5fweapon_5fshop_53',['BUILDING_WEAPON_SHOP',['../BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d',1,'BuildingTable.h']]],
-  ['burglar_54',['Burglar',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a330fdf856085e8951a2714e3a2141e67',1,'NPCEnums.h']]],
+  ['burglar_54',['Burglar',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea330fdf856085e8951a2714e3a2141e67',1,'NPCEnums.h']]],
   ['button_5fleft_55',['BUTTON_LEFT',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a36d9e3a4330b098458b81de2a861cbaa',1,'PlatformEnums.h']]],
   ['button_5fmiddle_56',['BUTTON_MIDDLE',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a02029eeec1878b3c58e83b74ce07d11c',1,'PlatformEnums.h']]],
   ['button_5fnone_57',['BUTTON_NONE',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a4f6d316e9c91ae3f7b3735526fc1e169',1,'PlatformEnums.h']]],

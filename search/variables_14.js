@@ -181,7 +181,7 @@ var searchData=
   ['tundora_178',['Tundora',['../classColorTable.html#abd02d682d72f11790105d35cecf5705d',1,'ColorTable']]],
   ['turbospeed_179',['TurboSpeed',['../classGameConfig_1_1Debug.html#a7975805d7bc69dad45d691ed78e6f2d2',1,'GameConfig::Debug']]],
   ['turn_5finitiative_180',['turn_initiative',['../structstru262__TurnBased.html#a3e761a764c584f7b17a9c4aac0a06f02',1,'stru262_TurnBased']]],
-  ['turn_5fstage_181',['turn_stage',['../structstru262__TurnBased.html#a387677ebd13143c117de530fd4c32b1f',1,'stru262_TurnBased']]],
+  ['turn_5fstage_181',['turn_stage',['../structstru262__TurnBased.html#a2da44b302325041c7e03a8843d8a7270',1,'stru262_TurnBased']]],
   ['turnbasedmodeon_182',['turnBasedModeOn',['../structParty__MM7.html#a25799a43635ef3e644ef69b0f74fcbb3',1,'Party_MM7']]],
   ['turnbasedplayerrecoverytimes_183',['turnBasedPlayerRecoveryTimes',['../structParty__MM7.html#a1f9f0622c6f0dc09ca289dc7a6023203',1,'Party_MM7']]],
   ['turns_5fcount_184',['turns_count',['../structstru262__TurnBased.html#a998fa646c47b2bd6e657bf1ad85403d5',1,'stru262_TurnBased']]],

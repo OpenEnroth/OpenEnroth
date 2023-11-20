@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['objectidbyitemid_0',['ObjectIDByItemID',['../classObjectList.html#a0a77d1851b94c0ec1f53a0d1dd8f53a7',1,'ObjectList']]],
+  ['objectidbyitemid_0',['ObjectIDByItemID',['../classObjectList.html#ab093d33444443815bb950ba3f9572af0',1,'ObjectList']]],
   ['odm_5ffarclip_1',['ODM_FarClip',['../IRender_8h.html#ac2b8592615b91fc5af64de95b76d6dcd',1,'IRender.h']]],
   ['odm_5fgetfloorlevel_2',['ODM_GetFloorLevel',['../Outdoor_8cpp.html#a06da99627203c8693ab9d3a4887aba79',1,'ODM_GetFloorLevel(const Vec3i &amp;pos, int unused, bool *pIsOnWater, int *faceId, int bWaterWalk):&#160;Outdoor.cpp'],['../Outdoor_8h.html#a303c01e8f8fdd8f321f198d6356e15db',1,'ODM_GetFloorLevel(const Vec3i &amp;pos, int unused, bool *pOnWater, int *faceId, int bWaterWalk):&#160;Outdoor.cpp']]],
   ['odm_5fgetterrainnormalat_3',['ODM_GetTerrainNormalAt',['../Outdoor_8cpp.html#aed5cb416b285f9b7a993dcb17851e0b9',1,'ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out):&#160;Outdoor.cpp'],['../Outdoor_8h.html#aed5cb416b285f9b7a993dcb17851e0b9',1,'ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out):&#160;Outdoor.cpp']]],

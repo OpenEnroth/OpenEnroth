@@ -69,7 +69,7 @@ var searchData=
   ['qbit_5fobelisk_5ftreasure_5ffound_66',['QBIT_OBELISK_TREASURE_FOUND',['../PartyEnums_8h.html#aab0780fca5f3ce09b3a361f3eec4460aa88a9154f4202849246adad18e91e2b85',1,'PartyEnums.h']]],
   ['qbit_5fremove_5ffear_5ffound_67',['QBIT_REMOVE_FEAR_FOUND',['../PartyEnums_8h.html#aab0780fca5f3ce09b3a361f3eec4460aa3c9827b46f68fbf78641faf1090b06d9',1,'PartyEnums.h']]],
   ['qbit_5fsplitter_5ffound_68',['QBIT_SPLITTER_FOUND',['../PartyEnums_8h.html#aab0780fca5f3ce09b3a361f3eec4460aa0e3ceac4f57f0dbb5bc56986f12dbb3f',1,'PartyEnums.h']]],
-  ['quartermaster_69',['QuarterMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aae82ea307385abe07c7e4e34b788197e',1,'NPCEnums.h']]],
+  ['quartermaster_69',['QuarterMaster',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aeaae82ea307385abe07c7e4e34b788197e',1,'NPCEnums.h']]],
   ['quest_70',['Quest',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca07bf513a88c3df282a30cb374f8a933d',1,'Io']]],
   ['quickload_71',['QuickLoad',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9a2691007df3673842172269e98d6ed5',1,'Io']]],
   ['quickref_72',['QuickRef',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caaac7cd14cb9bedf69f4ed5dc53360cd5',1,'Io']]],

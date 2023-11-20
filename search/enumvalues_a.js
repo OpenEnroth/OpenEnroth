@@ -132,8 +132,8 @@ var searchData=
   ['key_5fx_129',['KEY_X',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccadf3153982c2e083bc603f505d69e7956',1,'PlatformEnums.h']]],
   ['key_5fy_130',['KEY_Y',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca045fb70fafbcaf257eff3209601153ff',1,'PlatformEnums.h']]],
   ['key_5fz_131',['KEY_Z',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca40a30d27cd7724dbd18532078cb6d22a',1,'PlatformEnums.h']]],
-  ['kill_5fcheck_5factorid_132',['KILL_CHECK_ACTORID',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224ab91fcd3ea12e4a5035ebacdbccc4979c',1,'ActorEnums.h']]],
-  ['kill_5fcheck_5fany_133',['KILL_CHECK_ANY',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224a9e31046d592fe3bbe2ab41f4dd89f782',1,'ActorEnums.h']]],
-  ['kill_5fcheck_5fgroupid_134',['KILL_CHECK_GROUPID',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224ad618be51c321932e9b5e4b07e12810ab',1,'ActorEnums.h']]],
-  ['kill_5fcheck_5fmonsterid_135',['KILL_CHECK_MONSTERID',['../ActorEnums_8h.html#abf626b8034b1662f854cd5d75b65f224ae984ad5a3492404c7497031fe01393eb',1,'ActorEnums.h']]]
+  ['kill_5fcheck_5factorid_132',['KILL_CHECK_ACTORID',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2ab91fcd3ea12e4a5035ebacdbccc4979c',1,'ActorEnums.h']]],
+  ['kill_5fcheck_5fany_133',['KILL_CHECK_ANY',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2a9e31046d592fe3bbe2ab41f4dd89f782',1,'ActorEnums.h']]],
+  ['kill_5fcheck_5fgroupid_134',['KILL_CHECK_GROUPID',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2ad618be51c321932e9b5e4b07e12810ab',1,'ActorEnums.h']]],
+  ['kill_5fcheck_5fmonsterid_135',['KILL_CHECK_MONSTERID',['../ActorEnums_8h.html#ae33f57e738c0b5e39b104e9e069772a2ae984ad5a3492404c7497031fe01393eb',1,'ActorEnums.h']]]
 ];
