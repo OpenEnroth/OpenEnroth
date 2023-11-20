@@ -12,14 +12,14 @@ enum class ActorKillCheckPolicy {
 };
 using enum ActorKillCheckPolicy;
 
-enum class ABILITY_INDEX : char {
+enum class ActorAbility : char {
     ABILITY_ATTACK1 = 0,
     ABILITY_ATTACK2 = 1,
     ABILITY_SPELL1 = 2,
     ABILITY_SPELL2 = 3,
     ABILITY_SPECIAL = 4, // E.g. gogs exploding on death
 };
-using enum ABILITY_INDEX;
+using enum ActorAbility;
 
 /*  361 */
 enum class ACTOR_BUFF_INDEX {

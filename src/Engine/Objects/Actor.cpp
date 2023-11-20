@@ -212,7 +212,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SpellId uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
+                           SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
@@ -737,7 +737,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
 
 //----- (00404874) --------------------------------------------------------
 void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
-                            int type, ABILITY_INDEX a4) {
+                            int type, ActorAbility a4) {
     char specAb;  // al@1
     int v13;      // edx@28
 
@@ -1211,7 +1211,7 @@ void Actor::AddOnDamageOverlay(unsigned int uActorID, int overlayType, signed in
 }
 
 //----- (0043B3E0) --------------------------------------------------------
-int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
+int Actor::_43B3E0_CalcDamage(ActorAbility dmgSource) {
     int damageDiceRolls;
     int damageDiceSides;
     int damageBonus;
@@ -2333,7 +2333,7 @@ void Actor::Remove() { this->aiState = Removed; }
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    unsigned int actor_id, Vec3i *pVelocity,
-                                   ABILITY_INDEX a4) {
+                                   ActorAbility a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
     DamageType v12;    // ecx@20
@@ -2522,7 +2522,7 @@ void Actor::SummonMinion(int summonerId) {
 void Actor::UpdateActorAI() {
     double v42;              // st7@176
     double v43;              // st6@176
-    ABILITY_INDEX v45;                 // eax@192
+    ActorAbility v45;                 // eax@192
     SpellId v46;     // cl@197
     signed int v47;          // st7@206
     unsigned v58;                // st7@246
@@ -3719,7 +3719,7 @@ bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
 }
 
 //----- (0042704B) --------------------------------------------------------
-ABILITY_INDEX Actor::special_ability_use_check(int a2) {
+ActorAbility Actor::special_ability_use_check(int a2) {
     if (this->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_SUMMON && this->monsterInfo.specialAbilityDamageDiceBonus < 3 && grng->random(100) < 5)
         this->SummonMinion(a2);
 

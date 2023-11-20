@@ -1531,7 +1531,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_caster_pid = Pid::fromPacked(src.spell_caster_pid);
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
-    dst->spellCasterAbility = static_cast<ABILITY_INDEX>(src.spellCasterAbility);
+    dst->spellCasterAbility = static_cast<ActorAbility>(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
 }
 
