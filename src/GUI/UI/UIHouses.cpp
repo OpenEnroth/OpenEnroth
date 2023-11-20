@@ -472,11 +472,11 @@ void NPCHireableDialogPrepare() {
     window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
 
-void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
+void selectHouseNPCDialogueOption(DialogueId topic) {
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
 
     if (topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
-        DIALOGUE_TYPE newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
+        DialogueId newTopic = handleScriptedNPCTopicSelection(topic, pCurrentNPCInfo);
 
         if (newTopic != DIALOGUE_MAIN) {
             window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
@@ -553,7 +553,7 @@ void updateHouseNPCTopics(int npc) {
     }
 }
 
-void selectProprietorDialogueOption(DIALOGUE_TYPE option) {
+void selectProprietorDialogueOption(DialogueId option) {
     if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
         return;
     }
@@ -773,7 +773,7 @@ void GUIWindow_House::houseNPCDialogue() {
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
         GUIButton *pButton = right_panel_window.GetControl(i);
-        DIALOGUE_TYPE topic = (DIALOGUE_TYPE)pButton->msg_param;
+        DialogueId topic = (DialogueId)pButton->msg_param;
         std::string str = npcDialogueOptionString(topic, pNPC);
         if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
             pButton->msg_param = 0;
@@ -993,7 +993,7 @@ void GUIWindow_House::initializeProprietorDialogue() {
         return;
     }
 
-    std::vector<DIALOGUE_TYPE> optionList = listDialogueOptions();
+    std::vector<DialogueId> optionList = listDialogueOptions();
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
@@ -1012,7 +1012,7 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
     initializeNPCDialogueButtons(prepareScriptedNPCDialogueTopics(houseNpcs[npc].npc));
 }
 
-void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> optionList) {
+void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DialogueId> optionList) {
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
             pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
@@ -1032,7 +1032,7 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
     int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
-        CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+        CharacterSkillType skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
         if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
             optionsText.push_back(localization->GetSkillName(skill));
@@ -1146,7 +1146,7 @@ void GUIWindow_House::Release() {
     GUIWindow::Release();
 }
 
-void GUIWindow_House::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_House::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
 }
 
@@ -1154,7 +1154,7 @@ void GUIWindow_House::houseSpecificDialogue() {
     // Nothing
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_House::listDialogueOptions() {
     return {};
 }
 

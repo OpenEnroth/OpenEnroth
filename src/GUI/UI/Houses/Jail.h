@@ -8,6 +8,6 @@ class GUIWindow_Jail : public GUIWindow_House {
     explicit GUIWindow_Jail(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Jail() {}
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
 };

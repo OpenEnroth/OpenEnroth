@@ -12,9 +12,9 @@ class GUIWindow_Training : public GUIWindow_House {
     explicit GUIWindow_Training(HouseId houseId);
     virtual ~GUIWindow_Training() {}
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual std::vector<DialogueId> listDialogueOptions() override;
     virtual void updateDialogueOnEscape() override;
 
  protected:

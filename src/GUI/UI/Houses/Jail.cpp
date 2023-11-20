@@ -15,6 +15,6 @@ void GUIWindow_Jail::houseSpecificDialogue() {
     jail_dialogue_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.PaleCanary, localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
 }
 
-void GUIWindow_Jail::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Jail::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
 }

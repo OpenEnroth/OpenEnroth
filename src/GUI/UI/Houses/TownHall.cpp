@@ -122,7 +122,7 @@ void GUIWindow_TownHall::houseSpecificDialogue() {
     }
 }
 
-void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_TownHall::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_TOWNHALL_BOUNTY_HUNT) {
         bountyHuntingDialogueOptionClicked();
@@ -131,7 +131,7 @@ void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_TownHall::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         if (pParty->uFine) {

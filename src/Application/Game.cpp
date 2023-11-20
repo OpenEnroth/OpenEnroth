@@ -488,13 +488,13 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_SelectHouseNPCDialogueOption:
-                selectHouseNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectHouseNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_SelectProprietorDialogueOption:
-                selectProprietorDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectProprietorDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_SelectNPCDialogueOption:
-                selectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                selectNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);

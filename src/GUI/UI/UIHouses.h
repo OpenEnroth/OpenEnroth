@@ -25,7 +25,7 @@ void BackToHouseMenu();
 /**
  * @offset 0x4BCACC
  */
-void selectProprietorDialogueOption(DIALOGUE_TYPE option);
+void selectProprietorDialogueOption(DialogueId option);
 
 /**
  * @offset 0x44606A
@@ -46,7 +46,7 @@ bool houseDialogPressEscape();
  */
 void playHouseSound(HouseId houseID, HouseSoundType type);
 
-void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic);
+void selectHouseNPCDialogueOption(DialogueId topic);
 
 /**
  * @offset 0x4B4224
@@ -88,11 +88,11 @@ class GUIWindow_House : public GUIWindow {
         return _houseId;
     }
 
-    DIALOGUE_TYPE getCurrentDialogue() const {
+    DialogueId getCurrentDialogue() const {
         return _currentDialogue;
     }
 
-    void setCurrentDialogue(DIALOGUE_TYPE dialogue) {
+    void setCurrentDialogue(DialogueId dialogue) {
         _currentDialogue = dialogue;
     }
 
@@ -100,7 +100,7 @@ class GUIWindow_House : public GUIWindow {
     void houseNPCDialogue();
     void initializeProprietorDialogue();
     void initializeNPCDialogue(int npc);
-    void initializeNPCDialogueButtons(std::vector<DIALOGUE_TYPE> optionList);
+    void initializeNPCDialogueButtons(std::vector<DialogueId> optionList);
     void learnSelectedSkill(CharacterSkillType skill);
     void reinitDialogueWindow();
     bool checkIfPlayerCanInteract();
@@ -108,9 +108,9 @@ class GUIWindow_House : public GUIWindow {
     void drawOptions(std::vector<std::string> &optionsText, Color selectColor,
                      int topOptionShift = 0, bool denseSpacing = false);
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
+    virtual void houseDialogueOptionSelected(DialogueId option);
     virtual void houseSpecificDialogue();
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions();
+    virtual std::vector<DialogueId> listDialogueOptions();
     virtual void updateDialogueOnEscape();
     virtual void houseScreenClick();
     virtual void playHouseGoodbyeSpeech();
@@ -119,7 +119,7 @@ class GUIWindow_House : public GUIWindow {
     void learnSkillsDialogue(Color selectColor);
 
     HouseId _houseId = HOUSE_INVALID;
-    DIALOGUE_TYPE _currentDialogue = DIALOGUE_NULL;
+    DialogueId _currentDialogue = DIALOGUE_NULL;
     int _savedButtonsNum{};
     bool _transactionPerformed = false;
 };

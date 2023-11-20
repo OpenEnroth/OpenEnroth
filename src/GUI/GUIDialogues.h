@@ -10,7 +10,7 @@
 #define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  (36 + std::to_underlying(skill))
 
 // TODO(captainurist): #enum
-enum DIALOGUE_TYPE : int32_t {
+enum DialogueId : int32_t {
     DIALOGUE_NULL = 0,
     DIALOGUE_MAIN = 1,
     DIALOGUE_SHOP_BUY_STANDARD = 2,
@@ -119,11 +119,11 @@ enum DIALOGUE_TYPE : int32_t {
 
 #undef SKILL_TO_LEARNING_DIALOGUE_ID
 
-inline bool IsSkillLearningDialogue(DIALOGUE_TYPE type) {
+inline bool IsSkillLearningDialogue(DialogueId type) {
     return type >= DIALOGUE_LEARN_FIRST && type <= DIALOGUE_LEARN_LAST;
 }
 
-inline CharacterSkillType GetLearningDialogueSkill(DIALOGUE_TYPE type) {
+inline CharacterSkillType GetLearningDialogueSkill(DialogueId type) {
     assert(IsSkillLearningDialogue(type));
     return static_cast<CharacterSkillType>(std::to_underlying(type) - std::to_underlying(DIALOGUE_LEARN_STAFF) + std::to_underlying(CHARACTER_SKILL_STAFF));
 }

@@ -210,11 +210,11 @@ void GUIWindow_Transport::houseSpecificDialogue() {
     }
 }
 
-void GUIWindow_Transport::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Transport::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Transport::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Transport::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRANSPORT_SCHEDULE_1, DIALOGUE_TRANSPORT_SCHEDULE_2, DIALOGUE_TRANSPORT_SCHEDULE_3, DIALOGUE_TRANSPORT_SCHEDULE_4};

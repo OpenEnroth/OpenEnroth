@@ -12,9 +12,9 @@ class GUIWindow_Shop : public GUIWindow_House {
     explicit GUIWindow_Shop(HouseId houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_Shop() {}
 
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual std::vector<DialogueId> listDialogueOptions() override;
     virtual void updateDialogueOnEscape() override;
     virtual void houseScreenClick() override;
     virtual void playHouseGoodbyeSpeech() override;
@@ -33,7 +33,7 @@ class GUIWindow_Shop : public GUIWindow_House {
 
     virtual void shopWaresDialogue(bool isSpecial) = 0;
     virtual void generateShopItems(bool isSpecial) = 0;
-    virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() = 0;
+    virtual std::vector<DialogueId> listShopLearnableSkills() = 0;
 };
 
 class GUIWindow_WeaponShop : public GUIWindow_Shop {
@@ -44,7 +44,7 @@ class GUIWindow_WeaponShop : public GUIWindow_Shop {
  private:
     virtual void shopWaresDialogue(bool isSpecial) override;
     virtual void generateShopItems(bool isSpecial) override;
-    virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() override;
+    virtual std::vector<DialogueId> listShopLearnableSkills() override;
 };
 
 class GUIWindow_ArmorShop : public GUIWindow_Shop {
@@ -55,7 +55,7 @@ class GUIWindow_ArmorShop : public GUIWindow_Shop {
  private:
     virtual void shopWaresDialogue(bool isSpecial) override;
     virtual void generateShopItems(bool isSpecial) override;
-    virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() override;
+    virtual std::vector<DialogueId> listShopLearnableSkills() override;
 };
 
 class GUIWindow_MagicAlchemyShop : public GUIWindow_Shop {
@@ -74,7 +74,7 @@ class GUIWindow_MagicShop : public GUIWindow_MagicAlchemyShop {
 
  private:
     virtual void generateShopItems(bool isSpecial) override;
-    virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() override;
+    virtual std::vector<DialogueId> listShopLearnableSkills() override;
 };
 
 class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
@@ -82,12 +82,12 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     explicit GUIWindow_AlchemyShop(HouseId houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_AlchemyShop() {}
 
-    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions() override;
+    virtual std::vector<DialogueId> listDialogueOptions() override;
     virtual void playHouseGoodbyeSpeech() override;
 
  private:
     virtual void generateShopItems(bool isSpecial) override;
-    virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() override;
+    virtual std::vector<DialogueId> listShopLearnableSkills() override;
 };
 
 void UIShop_Buy_Identify_Repair();

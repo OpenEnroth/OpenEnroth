@@ -1452,8 +1452,8 @@ void ShowPopupShopSkills() {
     if (pDialogueWindow && pDialogueWindow->pNumPresenceButton != 0) {
         for (GUIButton *pButton : pDialogueWindow->vButtons) {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
-                    auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
+                if (IsSkillLearningDialogue((DialogueId)pButton->msg_param)) {
+                    auto skill_id = GetLearningDialogueSkill((DialogueId)pButton->msg_param);
                     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != CHARACTER_SKILL_MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
@@ -1474,7 +1474,7 @@ void ShowPopupShopItem() {
     int invindex;
     int testpos;
     BuildingType buildingType = window_SpeakInHouse->buildingType();
-    DIALOGUE_TYPE dialogue = window_SpeakInHouse->getCurrentDialogue();
+    DialogueId dialogue = window_SpeakInHouse->getCurrentDialogue();
 
     if (buildingType == BUILDING_INVALID)
         return;

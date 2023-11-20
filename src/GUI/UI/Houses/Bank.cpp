@@ -108,7 +108,7 @@ void GUIWindow_Bank::getGoldDialogue() {
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
-void GUIWindow_Bank::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Bank::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_BANK_PUT_GOLD || option == DIALOGUE_BANK_GET_GOLD) {
         keyboardInputHandler->StartTextInput(TextInputType::Number, 10, this);
@@ -131,7 +131,7 @@ void GUIWindow_Bank::houseSpecificDialogue() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Bank::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Bank::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_BANK_PUT_GOLD, DIALOGUE_BANK_GET_GOLD};

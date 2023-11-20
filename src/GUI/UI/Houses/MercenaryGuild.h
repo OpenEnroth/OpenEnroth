@@ -15,6 +15,6 @@ class GUIWindow_MercenaryGuild : public GUIWindow_House {
      *
      * @brief Mercenary guild in MM6.
      */
-    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseDialogueOptionSelected(DialogueId option) override;
     virtual void houseSpecificDialogue() override;
 };

@@ -158,7 +158,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
-void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+void GUIWindow_Tavern::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_PlayArcomage, 0, 0);
@@ -204,7 +204,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
     }
 }
 
-std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions() {
+std::vector<DialogueId> GUIWindow_Tavern::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
         if (houseId() == HOUSE_TAVERN_EMERALD_ISLAND) {
