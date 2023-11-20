@@ -277,7 +277,7 @@ var searchData=
   ['setparalyzed_274',['SetParalyzed',['../classCharacter.html#a3699c890bff1100ed6098852158daa88',1,'Character']]],
   ['setpartybuffanim_275',['SetPartyBuffAnim',['../structSpellFxRenderer.html#a1b8a68f06dd56ff5258a46034a0d85e0',1,'SpellFxRenderer']]],
   ['setpermanent_276',['setPermanent',['../classStatusBar.html#aa89dfe7187c47f7d1fed86e75ab847f6',1,'StatusBar::setPermanent(const std::string &amp;str)'],['../classStatusBar.html#a064fc308ecacd43442c0b5d0aaf8ee5c',1,'StatusBar::setPermanent(int locId, Args &amp;&amp;... args)']]],
-  ['setpertified_277',['SetPertified',['../classCharacter.html#ade8e335ffe84f31ffe7a2fa3a9b9352f',1,'Character']]],
+  ['setpetrified_277',['SetPetrified',['../classCharacter.html#a536b8ae6f9eef35e664242ab18ec63a1',1,'Character']]],
   ['setplayerbuffanim_278',['SetPlayerBuffAnim',['../structSpellFxRenderer.html#ad8885077cb828e7611dd93819dab6d80',1,'SpellFxRenderer']]],
   ['setpoisonmedium_279',['SetPoisonMedium',['../classCharacter.html#a432f81565749035ab8a69198ec31a4cb',1,'Character']]],
   ['setpoisonsevere_280',['SetPoisonSevere',['../classCharacter.html#a8d9971cdd22c9db410c73518acadbe37',1,'Character']]],

@@ -183,7 +183,7 @@ var searchData=
   ['ispassiveequipment_180',['isPassiveEquipment',['../ItemEnumFunctions_8h.html#a67b8c2f3c90c63305804816733416fbc',1,'isPassiveEquipment():&#160;ItemEnumFunctions.h'],['../structItemGen.html#a4c6d02f9b44949a526c07e3b889bd038',1,'ItemGen::isPassiveEquipment()']]],
   ['ispeasant_181',['isPeasant',['../MonsterEnumFunctions_8h.html#ab117e53c7d2458dd2cfb67551ca74064',1,'isPeasant(MonsterId monsterId):&#160;MonsterEnumFunctions.h'],['../MonsterEnumFunctions_8h.html#a54a179076dc4668a6493d35d93885f74',1,'isPeasant(MonsterType monsterType):&#160;MonsterEnumFunctions.h']]],
   ['ispeasant_182',['IsPeasant',['../classActor.html#ae652380272c68abe2af75d71c2306daf',1,'Actor']]],
-  ['ispertified_183',['IsPertified',['../classCharacter.html#a0d09779067aa74292540babfbeeda788',1,'Character']]],
+  ['ispetrified_183',['IsPetrified',['../classCharacter.html#a27cf967312f46c37c0884709f30ef258',1,'Character']]],
   ['isplayerhealablebytemple_184',['isPlayerHealableByTemple',['../classGUIWindow__Temple.html#a2f1a17d9b0cd7ad02282f2aec93427d6',1,'GUIWindow_Temple']]],
   ['isplaying_185',['isPlaying',['../classEngineTracePlayer.html#a06b9814100d9f37e4f458309e3b2789b',1,'EngineTracePlayer']]],
   ['isplaying_186',['IsPlaying',['../classIMovie.html#ae14788317d35602a59a07ddcfcf5f49a',1,'IMovie::IsPlaying()'],['../classMovie.html#ac193f331cdd9078746204bf77ae7b8b3',1,'Movie::IsPlaying()']]],

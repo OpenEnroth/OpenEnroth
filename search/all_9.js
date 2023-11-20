@@ -363,7 +363,7 @@ var searchData=
   ['ispeasant_360',['isPeasant',['../MonsterEnumFunctions_8h.html#ab117e53c7d2458dd2cfb67551ca74064',1,'MonsterEnumFunctions.h']]],
   ['ispeasant_361',['IsPeasant',['../classActor.html#ae652380272c68abe2af75d71c2306daf',1,'Actor']]],
   ['ispeasant_362',['isPeasant',['../MonsterEnumFunctions_8h.html#a54a179076dc4668a6493d35d93885f74',1,'MonsterEnumFunctions.h']]],
-  ['ispertified_363',['IsPertified',['../classCharacter.html#a0d09779067aa74292540babfbeeda788',1,'Character']]],
+  ['ispetrified_363',['IsPetrified',['../classCharacter.html#a27cf967312f46c37c0884709f30ef258',1,'Character']]],
   ['isplayerhealablebytemple_364',['isPlayerHealableByTemple',['../classGUIWindow__Temple.html#a2f1a17d9b0cd7ad02282f2aec93427d6',1,'GUIWindow_Temple']]],
   ['isplaying_365',['IsPlaying',['../classIMovie.html#ae14788317d35602a59a07ddcfcf5f49a',1,'IMovie::IsPlaying()'],['../classMovie.html#ac193f331cdd9078746204bf77ae7b8b3',1,'Movie::IsPlaying()']]],
   ['isplaying_366',['isPlaying',['../classEngineTraceSimplePlayer.html#ae5a44a2d98cfc28e230dc8b6b7597181',1,'EngineTraceSimplePlayer::isPlaying()'],['../classEngineTracePlayer.html#a06b9814100d9f37e4f458309e3b2789b',1,'EngineTracePlayer::isPlaying()']]],
