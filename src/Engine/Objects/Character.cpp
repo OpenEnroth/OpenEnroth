@@ -2001,10 +2001,10 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 }
 
 //----- (0048E1B5) --------------------------------------------------------
-int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
+int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     const ItemGen *weapon = nullptr;
     unsigned weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
-    if (bRangedAttack) {
+    if (attackUsesBow) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
         weapon = GetBowItem();
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
@@ -2070,10 +2070,10 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     }
 
     bool shooting_laser = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
-    assert(!shooting_laser || !bRangedAttack); // For blasters we expect bRangedAttack == false.
+    assert(!shooting_laser || !attackUsesBow); // For blasters we expect attackUsesBow == false.
 
     unsigned armsmaster_recovery_reduction = 0;
-    if (!bRangedAttack && !shooting_laser) {
+    if (!attackUsesBow && !shooting_laser) {
         CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
             armsmaster_recovery_reduction = armsmasterSkill.level();
@@ -2103,7 +2103,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     unsigned minRecovery;
     if (shooting_laser) {
         minRecovery = engine->config->gameplay.MinRecoveryBlasters.value();
-    } else if (bRangedAttack) {
+    } else if (attackUsesBow) {
         minRecovery = engine->config->gameplay.MinRecoveryRanged.value();
     } else {
         minRecovery = engine->config->gameplay.MinRecoveryMelee.value();

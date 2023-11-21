@@ -1212,9 +1212,10 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
         {
-            int missrecov = pParty->activeCharacter().GetAttackRecoveryTime(true);
+            bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
+            int missRecov = pParty->activeCharacter().GetAttackRecoveryTime(hasBow);
             // TODO(captainurist): fmt can throw
-            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
+            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov);
             description = fmt::format("{}\n\n{}", localization->getRangedAttackDescription(), description);
             CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
             break;
