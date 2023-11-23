@@ -433,8 +433,9 @@
 #define LSTR_FMT_S_U_OUT_OF_U               679  // "%s: %lu out of %lu"
 #define LSTR_NOBODY_IS_IN_CONDITION         680  // "Nobody is in a condition to do anything!"
 #define LSTR_KEY_CONFLICT                   681  // "Please resolve all key conflicts!"
+#define LSTR_RECOVERY_TIME_NA               682  // "Recovery time: N/A"
 
-#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 5
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 6
 
 class Localization {
  public:
