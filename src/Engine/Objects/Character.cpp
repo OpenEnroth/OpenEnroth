@@ -2001,10 +2001,10 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 }
 
 //----- (0048E1B5) --------------------------------------------------------
-int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
+int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     const ItemGen *weapon = nullptr;
-    unsigned weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
-    if (bRangedAttack) {
+    int weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
+    if (attackUsesBow) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
         weapon = GetBowItem();
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
@@ -2019,13 +2019,13 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         }
     }
 
-    unsigned shield_recovery = 0;
+    int shield_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
         if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
             CharacterSkillType skill_type = GetOffHandItem()->GetPlayerSkillType();
-            unsigned shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
+            int shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
-            shield_recovery = (unsigned)(shield_base_recovery * multiplier);
+            shield_recovery = (shield_base_recovery * multiplier);
         } else {
             if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery) {
                 weapon = GetOffHandItem();
@@ -2034,10 +2034,10 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         }
     }
 
-    unsigned armour_recovery = 0;
+    int armour_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_ARMOUR)) {
         CharacterSkillType armour_skill_type = GetArmorItem()->GetPlayerSkillType();
-        unsigned base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
+        int base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
         if (armour_skill_type == CHARACTER_SKILL_LEATHER) {
@@ -2051,12 +2051,12 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
-        armour_recovery = (unsigned)(base_armour_recovery * multiplier);
+        armour_recovery = base_armour_recovery * multiplier;
     }
 
-    unsigned player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed());
+    int player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed());
 
-    unsigned sword_axe_bow_recovery_reduction = 0;
+    int sword_axe_bow_recovery_reduction = 0;
     if (weapon != nullptr) {
         CombinedSkillValue weaponSkill = getActualSkillValue(weapon->GetPlayerSkillType());
         if (weaponSkill.level() > 0 &&
@@ -2070,10 +2070,10 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     }
 
     bool shooting_laser = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
-    assert(!shooting_laser || !bRangedAttack); // For blasters we expect bRangedAttack == false.
+    assert(!shooting_laser || !attackUsesBow); // For blasters we expect attackUsesBow == false.
 
-    unsigned armsmaster_recovery_reduction = 0;
-    if (!bRangedAttack && !shooting_laser) {
+    int armsmaster_recovery_reduction = 0;
+    if (!attackUsesBow && !shooting_laser) {
         CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
             armsmaster_recovery_reduction = armsmasterSkill.level();
@@ -2082,11 +2082,11 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         }
     }
 
-    unsigned hasteRecoveryReduction = 0;
+    int hasteRecoveryReduction = 0;
     if (pCharacterBuffs[CHARACTER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
 
-    unsigned weapon_enchantment_recovery_reduction = 0;
+    int weapon_enchantment_recovery_reduction = 0;
     if (weapon != nullptr) {
         if (weapon->special_enchantment == ITEM_ENCHANTMENT_SWIFT ||
             weapon->special_enchantment == ITEM_ENCHANTMENT_OF_DARKNESS ||
@@ -2100,10 +2100,10 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
-    unsigned minRecovery;
+    int minRecovery;
     if (shooting_laser) {
         minRecovery = engine->config->gameplay.MinRecoveryBlasters.value();
-    } else if (bRangedAttack) {
+    } else if (attackUsesBow) {
         minRecovery = engine->config->gameplay.MinRecoveryRanged.value();
     } else {
         minRecovery = engine->config->gameplay.MinRecoveryMelee.value();

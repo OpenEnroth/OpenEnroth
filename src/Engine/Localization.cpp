@@ -70,6 +70,8 @@ bool Localization::Initialize() {
         this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION] = "Nobody is in a condition to do anything!";
     if (!this->localization_strings[LSTR_KEY_CONFLICT])
         this->localization_strings[LSTR_KEY_CONFLICT] = "Please resolve all key conflicts!";
+    if (!this->localization_strings[LSTR_RECOVERY_TIME_NA])
+        this->localization_strings[LSTR_RECOVERY_TIME_NA] = "Recovery time: N/A";
 
     InitializeMm6ItemCategories();
 

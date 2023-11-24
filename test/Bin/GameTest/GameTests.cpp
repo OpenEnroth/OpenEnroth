@@ -1733,6 +1733,20 @@ GAME_TEST(Issues, Issue1282) {
     EXPECT_EQ(totalObjectsTape.delta(), -1);
 }
 
+GAME_TEST(Issues, Issue1294_1389) {
+    // Bow and Blaster recovery times
+    // Character::GetAttackRecoveryTime assert when character is using blaster
+    auto windowTape = tapes.custom([] { return current_character_screen_window; });
+    test.playTraceFromTestData("issue_1294.mm7", "issue_1294.json");
+
+    // Check that we get back to stats screen without asserting
+    EXPECT_TRUE(windowTape.contains(WindowType::WINDOW_CharacterWindow_Inventory));
+    EXPECT_EQ(windowTape.back(), WindowType::WINDOW_CharacterWindow_Stats);
+    // Check min values are used
+    EXPECT_EQ(pParty->pCharacters[0].GetAttackRecoveryTime(false), engine->config->gameplay.MinRecoveryBlasters.value());
+    EXPECT_EQ(pParty->pCharacters[2].GetAttackRecoveryTime(true), engine->config->gameplay.MinRecoveryRanged.value());
+}
+
 // 1300
 
 GAME_TEST(Issues, Issue1315) {

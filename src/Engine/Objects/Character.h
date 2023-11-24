@@ -208,7 +208,7 @@ class Character {
 
     // TODO(captainurist): move closer to Spells data.
     DamageType GetSpellDamageType(SpellId uSpellID) const;
-    int GetAttackRecoveryTime(bool bRangedAttack) const;
+    int GetAttackRecoveryTime(bool attackUsesBow) const;
 
     int GetHealth() const { return this->health; }
     int GetMaxHealth() const;

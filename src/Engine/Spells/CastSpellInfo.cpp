@@ -288,7 +288,7 @@ void CastSpellInfoHelpers::castSpell() {
                 pParty->bTurnBasedModeOn) {
                 ++pTurnEngine->pending_actions;
             }
-            // TODO(Nik-RE-dev): recovery time for melee used?
+
             setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(false));
         } else if (pCastSpell->uSpellID == SPELL_WATER_TOWN_PORTAL) {
             int success_chance_percent = 10 * spell_level;

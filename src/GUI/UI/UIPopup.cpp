@@ -1212,9 +1212,18 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
         {
-            int missrecov = pParty->activeCharacter().GetAttackRecoveryTime(true);
+            bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
+            auto weapon = pParty->activeCharacter().GetMainHandItem();
+            bool hasBlaster = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
             // TODO(captainurist): fmt can throw
-            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
+            std::string description;
+            if (hasBow || hasBlaster) {
+                // Blaster takes precendence in the event both are equipped
+                int missRecov = pParty->activeCharacter().GetAttackRecoveryTime(!hasBlaster);
+                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov);
+            } else {
+                description = localization->GetString(LSTR_RECOVERY_TIME_NA);
+            }
             description = fmt::format("{}\n\n{}", localization->getRangedAttackDescription(), description);
             CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
             break;
