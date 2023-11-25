@@ -44,3 +44,6 @@
 [submodule "thirdparty/backward_cpp"]
 	path = thirdparty/backward_cpp
 	url = https://github.com/captainurist/backward-cpp.git
+[submodule "thirdparty/glob"]
+	path = thirdparty/glob
+	url = https://github.com/p-ranav/glob.git

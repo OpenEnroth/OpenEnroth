@@ -13,6 +13,7 @@ add_subdirectory(nuklear)
 add_subdirectory(cli11)
 add_subdirectory(nlohmann_json)
 add_subdirectory(mio)
+add_subdirectory(glob)
 
 # fmt
 add_subdirectory(fmt)
