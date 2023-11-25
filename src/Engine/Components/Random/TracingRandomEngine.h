@@ -4,9 +4,11 @@
 
 #include "Library/Random/RandomEngine.h"
 
+class Platform;
+
 class TracingRandomEngine : public RandomEngine {
  public:
-    explicit TracingRandomEngine(std::unique_ptr<RandomEngine> base);
+    explicit TracingRandomEngine(Platform *platform, RandomEngine *base);
 
     virtual float randomFloat() override;
     virtual int random(int hi) override;
@@ -18,5 +20,6 @@ class TracingRandomEngine : public RandomEngine {
     void printTrace(const char *function, const T &value) const;
 
  private:
-    std::unique_ptr<RandomEngine> _base;
+    Platform *_platform = nullptr;
+    RandomEngine *_base = nullptr;
 };

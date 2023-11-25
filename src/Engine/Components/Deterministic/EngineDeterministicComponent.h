@@ -2,9 +2,10 @@
 
 #include <memory>
 
+#include "Engine/Random/RandomEnums.h"
+
 #include "Library/Platform/Proxy/ProxyPlatform.h"
 #include "Library/Platform/Proxy/ProxyOpenGLContext.h"
-#include "Engine/Random/RandomEnums.h"
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
 class RandomEngine;
@@ -43,7 +44,7 @@ class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLC
     void finish();
 
     [[nodiscard]] bool isActive() const {
-        return _oldRandomEngine != nullptr;
+        return _active;
     }
 
  private:
@@ -54,7 +55,7 @@ class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLC
     virtual void removeNotify() override;
 
  private:
+    bool _active = false;
     int64_t _tickCount = 0;
     int _frameTimeMs = 0;
-    std::unique_ptr<RandomEngine> _oldRandomEngine;
 };

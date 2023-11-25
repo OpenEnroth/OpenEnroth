@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "Application/GameStarter.h"
+#include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventMap.h"
@@ -340,7 +341,9 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
 
 int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
     // Fill bounty hunt map.
-    grng = rngf->createEngine(RANDOM_ENGINE_SEQUENTIAL);
+    EngineRandomComponent randomComponent;
+    randomComponent.reset(RANDOM_ENGINE_SEQUENTIAL);
+
     IndexedArray<std::unordered_set<MonsterId>, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monstersByTownHall;
     for (const HouseId townHall : allTownhallHouses()) {
         grng->seed(0);
