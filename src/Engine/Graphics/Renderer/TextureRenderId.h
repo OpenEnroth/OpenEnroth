@@ -3,7 +3,7 @@
 #include <cstdint>
 
 /**
- * Texture id, as used by `IRender` API.
+ * Texture id, as used by `Renderer` API.
  *
  * We only have an OpenGL implementation right now, so this is essentially a wrapper atop a `GLuint` that removes
  * all the integer operations.

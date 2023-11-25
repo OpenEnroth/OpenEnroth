@@ -3,12 +3,10 @@
 #include <cassert>
 #include <utility>
 
+#include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-
-#include "Engine/Graphics/ImageLoader.h"
-
-#include "IRender.h"
 
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 

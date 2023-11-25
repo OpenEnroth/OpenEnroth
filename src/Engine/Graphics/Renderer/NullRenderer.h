@@ -1,12 +1,12 @@
 #pragma once
 
-#include "RenderBase.h"
-
 #include <string>
 
-class RenderNull : public RenderBase {
+#include "BaseRenderer.h"
+
+class NullRenderer : public BaseRenderer {
  public:
-    using RenderBase::RenderBase;
+    using BaseRenderer::BaseRenderer;
 
     virtual bool Initialize() override;
     virtual bool Reinitialize(bool firstInit) override;

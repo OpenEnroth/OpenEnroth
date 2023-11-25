@@ -3,7 +3,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"

@@ -9,30 +9,30 @@ set(ENGINE_GRAPHICS_SOURCES
         DecalBuilder.cpp
         DecorationList.cpp
         FrameLimiter.cpp
-        IRenderFactory.cpp
         Image.cpp
         ImageLoader.cpp
         Indoor.cpp
-        IRender.cpp
         Level/Decoration.cpp
         LightmapBuilder.cpp
         LightsStack.cpp
         LocationFunctions.cpp
         Nuklear.cpp
         NuklearEventHandler.cpp
-        OpenGL/GLShaderLoader.cpp
-        OpenGL/RenderOpenGL.cpp
         Outdoor.cpp
         Overlays.cpp
         PaletteManager.cpp
         ParticleEngine.cpp
         PortalFunctions.cpp
-        RenderBase.cpp
-        RenderNull.cpp
-        RenderEnums.cpp
+        Renderer/BaseRenderer.cpp
+        Renderer/NullRenderer.cpp
+        Renderer/OpenGLRenderer.cpp
+        Renderer/OpenGLShader.cpp
+        Renderer/Renderer.cpp
+        Renderer/RendererEnums.cpp
+        Renderer/RendererFactory.cpp
         Sprites.cpp
-        Texture_MM7.cpp
         TextureFrameTable.cpp
+        Texture_MM7.cpp
         Viewport.cpp
         Vis.cpp
         Weather.cpp)
@@ -47,8 +47,6 @@ set(ENGINE_GRAPHICS_HEADERS
         DecorationList.h
         FaceEnums.h
         FrameLimiter.h
-        IRender.h
-        IRenderFactory.h
         Image.h
         ImageLoader.h
         Indoor.h
@@ -60,22 +58,24 @@ set(ENGINE_GRAPHICS_HEADERS
         LocationTime.h
         Nuklear.h
         NuklearEventHandler.h
-        OpenGL/GLShaderLoader.h
-        OpenGL/RenderOpenGL.h
         Outdoor.h
         Overlays.h
         PaletteManager.h
         ParticleEngine.h
         Polygon.h
         PortalFunctions.h
-        RenderBase.h
         RenderEntities.h
-        RenderNull.h
-        RenderEnums.h
+        Renderer/BaseRenderer.h
+        Renderer/NullRenderer.h
+        Renderer/OpenGLRenderer.h
+        Renderer/OpenGLShader.h
+        Renderer/Renderer.h
+        Renderer/RendererEnums.h
+        Renderer/RendererFactory.h
+        Renderer/TextureRenderId.h
         Sprites.h
-        TextureRenderId.h
-        Texture_MM7.h
         TextureFrameTable.h
+        Texture_MM7.h
         Viewport.h
         Vis.h
         Weather.h)

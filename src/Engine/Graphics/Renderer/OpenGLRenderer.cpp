@@ -1,4 +1,4 @@
-#include "RenderOpenGL.h"
+#include "OpenGLRenderer.h"
 
 #include <algorithm>
 #include <memory>
@@ -22,7 +22,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/OpenGL/GLShaderLoader.h"
+#include "OpenGLShader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -206,13 +206,13 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
         (this->CamVecFront_Z * this->field_8_party_dir_z);
 }
 
-RenderOpenGL::RenderOpenGL(
+OpenGLRenderer::OpenGLRenderer(
     std::shared_ptr<GameConfig> config,
     DecalBuilder *decal_builder,
     SpellFxRenderer *spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis *vis
-) : RenderBase(config, decal_builder, spellfx, particle_engine, vis) {
+) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {
     nk = std::make_unique<nk_state>();
     clip_w = 0;
     clip_x = 0;
@@ -220,11 +220,11 @@ RenderOpenGL::RenderOpenGL(
     clip_z = 0;
 }
 
-RenderOpenGL::~RenderOpenGL() { logger->info("RenderGl - Destructor"); }
+OpenGLRenderer::~OpenGLRenderer() { logger->info("RenderGl - Destructor"); }
 
-void RenderOpenGL::Release() { logger->info("RenderGL - Release"); }
+void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }
 
-RgbaImage RenderOpenGL::ReadScreenPixels() {
+RgbaImage OpenGLRenderer::ReadScreenPixels() {
     RgbaImage result = RgbaImage::uninitialized(outputRender.w, outputRender.h);
     if (outputRender != outputPresent) {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
@@ -236,7 +236,7 @@ RgbaImage RenderOpenGL::ReadScreenPixels() {
     return result;
 }
 
-bool RenderOpenGL::InitializeFullscreen() {
+bool OpenGLRenderer::InitializeFullscreen() {
     // pViewport->ResetScreen();
     // CreateZBuffer();
 
@@ -244,15 +244,15 @@ bool RenderOpenGL::InitializeFullscreen() {
 }
 
 // when losing and regaining window focus - not required for OGL??
-void RenderOpenGL::RestoreFrontBuffer() { logger->info("RenderGl - RestoreFrontBuffer"); }
-void RenderOpenGL::RestoreBackBuffer() { logger->info("RenderGl - RestoreBackBuffer"); }
+void OpenGLRenderer::RestoreFrontBuffer() { logger->info("RenderGl - RestoreFrontBuffer"); }
+void OpenGLRenderer::RestoreBackBuffer() { logger->info("RenderGl - RestoreBackBuffer"); }
 
-void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
+void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
     logger->info("RenderGl - BltBackToFontFast");
     // never called anywhere
 }
 
-void RenderOpenGL::ClearTarget(Color uColor) {
+void OpenGLRenderer::ClearTarget(Color uColor) {
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -269,7 +269,7 @@ struct linesverts {
 linesverts lineshaderstore[2000] = {};
 int linevertscnt = 0;
 
-void RenderOpenGL::BeginLines2D() {
+void OpenGLRenderer::BeginLines2D() {
     if (linevertscnt)
         logger->trace("BeginLines with points still stored in buffer");
 
@@ -293,7 +293,7 @@ void RenderOpenGL::BeginLines2D() {
     }
 }
 
-void RenderOpenGL::EndLines2D() {
+void OpenGLRenderer::EndLines2D() {
     if (!linevertscnt) return;
 
     // update buffer
@@ -325,7 +325,7 @@ void RenderOpenGL::EndLines2D() {
     linevertscnt = 0;
 }
 
-void RenderOpenGL::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) {
+void OpenGLRenderer::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) {
     Colorf cf = uColor32.toColorf();
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uX);
@@ -343,7 +343,7 @@ void RenderOpenGL::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) 
 }
 
 // used for debug protal lines
-void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
+void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     BeginLines2D();
     for (unsigned i = 0; i < num_vertices - 1; ++i) {
         Colorf color0 = vertices[i].diffuse.toColorf();
@@ -365,7 +365,7 @@ void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_
     EndLines2D();
 }
 
-void RenderOpenGL::BeginScene3D() {
+void OpenGLRenderer::BeginScene3D() {
     // Setup for 3D
 
     if (outputRender != outputPresent) {
@@ -407,9 +407,9 @@ forcepersverts forceperstore[MAX_FORCEPERSTORECNT]{};
 int forceperstorecnt{ 0 };
 
 
-void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
-                                  float dstX, float dstY, float dstworldview, float dstfovoworldview,
-                                  GraphicsImage *texture) {
+void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
+                                    float dstX, float dstY, float dstworldview, float dstfovoworldview,
+                                    GraphicsImage *texture) {
     // billboards projectile - lightning bolt
 
     int xDifference = bankersRounding(dstX - srcX);
@@ -548,7 +548,7 @@ struct twodverts {
 twodverts twodshaderstore[500] = {};
 int twodvertscnt = 0;
 
-void RenderOpenGL::ScreenFade(Color color, float t) {
+void OpenGLRenderer::ScreenFade(Color color, float t) {
     Colorf cf = color.toColorf();
     cf.a = std::clamp(t, 0.0f, 1.0f);
 
@@ -629,13 +629,13 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
 }
 
 
-void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
-                                     GraphicsImage *pTexture) {
+void OpenGLRenderer::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
+                                       GraphicsImage *pTexture) {
     DrawTextureNew((float)(pX - move_X)/outputRender.w, (float)(pY - move_Y)/outputRender.h, pTexture);
 }
 
 
-void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, unsigned paletteid, Color uColor32) {
+void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, unsigned paletteid, Color uColor32) {
     if (!img) {
         logger->trace("Null img passed to DrawImage");
         return;
@@ -738,8 +738,8 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, unsigned pal
 
 // TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
-void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsImage *imgblend, int time, int start_opacity,
-                                 int end_opacity) {
+void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsImage *imgblend, int time, int start_opacity,
+                                   int end_opacity) {
     // thrown together as a crude estimate of the enchaintg effects
     // leaves gap where it shouldnt on dark pixels currently
     // doesnt use opacity params
@@ -813,7 +813,7 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
 //----- (004A65CC) --------------------------------------------------------
 //_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
 // a6 is time, a7 is 0, a8 is 63
-void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {
+void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {
     // TODO(pskelton): sort this - precalculate/ shader
     static std::array<GraphicsImage *, 14> cachedtemp {};
     static std::array<int, 14> cachetime { -1 };
@@ -854,7 +854,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
 }
 
 // TODO(pskelton): renderbase
-void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
+void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
@@ -941,7 +941,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     }
 }
 
-void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
+void OpenGLRenderer::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
     int texid = pSkyPolygon->texture->renderId().value();
 
     Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
@@ -992,12 +992,12 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
     }
 }
 
-bool RenderOpenGL::AreRenderSurfacesOk() {
+bool OpenGLRenderer::AreRenderSurfacesOk() {
     logger->info("RenderGl - AreRenderSurfacesOk");
     return true;
 }
 
-RgbaImage RenderOpenGL::MakeScreenshot32(const int width, const int height) {
+RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -1037,11 +1037,11 @@ RgbaImage RenderOpenGL::MakeScreenshot32(const int width, const int height) {
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
-void RenderOpenGL::BeginLightmaps() { return; }
-void RenderOpenGL::EndLightmaps() { return; }
-void RenderOpenGL::BeginLightmaps2() { return; }
-void RenderOpenGL::EndLightmaps2() { return; }
-bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
+void OpenGLRenderer::BeginLightmaps() { return; }
+void OpenGLRenderer::EndLightmaps() { return; }
+void OpenGLRenderer::BeginLightmaps2() { return; }
+void OpenGLRenderer::EndLightmaps2() { return; }
+bool OpenGLRenderer::DrawLightmap(struct Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
     return true;
 }
 
@@ -1062,7 +1062,7 @@ GLdecalverts decalshaderstore[10000] = {};
 int numdecalverts{ 0 };
 
 
-void RenderOpenGL::BeginDecals() {
+void OpenGLRenderer::BeginDecals() {
     GraphicsImage *texture = assets->getBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
@@ -1105,7 +1105,7 @@ void RenderOpenGL::BeginDecals() {
     numdecalverts = 0;
 }
 
-void RenderOpenGL::EndDecals() {
+void OpenGLRenderer::EndDecals() {
     // draw here
 
     if (numdecalverts) {
@@ -1175,7 +1175,7 @@ void RenderOpenGL::EndDecals() {
 
 
 
-void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
+void OpenGLRenderer::DrawDecal(struct Decal *pDecal, float z_bias) {
     if (pDecal->uNumVertices < 3) {
         logger->warning("Decal has < 3 vertices");
         return;
@@ -1237,7 +1237,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     }
 }
 
-void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
+void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
 
     GraphicsImage *texture = pArcomageGame->pSprites;
@@ -1350,11 +1350,11 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     return;
 }
 
-void RenderOpenGL::Update_Texture(GraphicsImage *texture) {
+void OpenGLRenderer::Update_Texture(GraphicsImage *texture) {
     UpdateTexture(texture->renderId(), texture->rgba());
 }
 
-TextureRenderId RenderOpenGL::CreateTexture(RgbaImageView image) {
+TextureRenderId OpenGLRenderer::CreateTexture(RgbaImageView image) {
     assert(image);
 
     GLuint glId;
@@ -1370,7 +1370,7 @@ TextureRenderId RenderOpenGL::CreateTexture(RgbaImageView image) {
     return TextureRenderId(glId);
 }
 
-void RenderOpenGL::DeleteTexture(TextureRenderId id) {
+void OpenGLRenderer::DeleteTexture(TextureRenderId id) {
     if (!id)
         return;
 
@@ -1378,7 +1378,7 @@ void RenderOpenGL::DeleteTexture(TextureRenderId id) {
     glDeleteTextures(1, &glId);
 }
 
-void RenderOpenGL::UpdateTexture(TextureRenderId id, RgbaImageView image) {
+void OpenGLRenderer::UpdateTexture(TextureRenderId id, RgbaImageView image) {
     assert(image);
     assert(id);
 
@@ -1388,7 +1388,7 @@ void RenderOpenGL::UpdateTexture(TextureRenderId id, RgbaImageView image) {
 }
 
 // TODO(pskelton): to camera?
-void RenderOpenGL::_set_3d_projection_matrix() {
+void OpenGLRenderer::_set_3d_projection_matrix() {
     float near_clip = pCamera3D->GetNearClip();
     float far_clip = pCamera3D->GetFarClip();
 
@@ -1397,7 +1397,7 @@ void RenderOpenGL::_set_3d_projection_matrix() {
 }
 
 // TODO(pskelton): to camera?
-void RenderOpenGL::_set_3d_modelview_matrix() {
+void OpenGLRenderer::_set_3d_modelview_matrix() {
     float camera_x = pCamera3D->vCameraPos.x;
     float camera_y = pCamera3D->vCameraPos.y;
     float camera_z = pCamera3D->vCameraPos.z;
@@ -1413,7 +1413,7 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
 }
 
 // TODO(pskelton): to camera?
-void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
+void OpenGLRenderer::_set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
         glViewport(0, 0, outputRender.w, outputRender.h);
         projmat = glm::ortho(float(0), float(outputRender.w), float(outputRender.h), float(0), float(-1), float(1));
@@ -1424,7 +1424,7 @@ void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
 }
 
 // TODO(pskelton): to camera?
-void RenderOpenGL::_set_ortho_modelview() {
+void OpenGLRenderer::_set_ortho_modelview() {
     // load identity matrix
     viewmat = glm::mat4x4(1);
 }
@@ -1452,7 +1452,7 @@ struct GLshaderverts {
 
 GLshaderverts terrshaderstore[127 * 127 * 6] = {};
 
-void RenderOpenGL::DrawOutdoorTerrain() {
+void OpenGLRenderer::DrawOutdoorTerrain() {
     // shader version
     // draws entire terrain in one go at the moment
     // textures must all be square and same size
@@ -2003,10 +2003,10 @@ void RenderOpenGL::DrawOutdoorTerrain() {
 }
 
 // TODO(pskelton): drop - this is now obselete with shader terrain drawing
-void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
+void OpenGLRenderer::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
 
 // TODO(pskelton): renderbase
-void RenderOpenGL::DrawOutdoorSky() {
+void OpenGLRenderer::DrawOutdoorSky() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
@@ -2134,7 +2134,7 @@ void RenderOpenGL::DrawOutdoorSky() {
 
 
 //----- (004A2DA3) --------------------------------------------------------
-void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
+void OpenGLRenderer::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = pSkyPolygon->texture;
     auto texid = texture->renderId().value();
 
@@ -2270,7 +2270,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     DrawForcePerVerts();
 }
 
-void RenderOpenGL::DrawForcePerVerts() {
+void OpenGLRenderer::DrawForcePerVerts() {
     if (!forceperstorecnt) return;
 
     if (forceperVAO == 0) {
@@ -2387,7 +2387,7 @@ void RenderOpenGL::DrawForcePerVerts() {
 }
 
 // TODO(pskelton): move ?
-void RenderOpenGL::SetFogParametersGL() {
+void OpenGLRenderer::SetFogParametersGL() {
     Color fogcol = GetLevelFogColor();
 
     if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -2430,7 +2430,7 @@ billbverts billbstore[1000] {};
 int billbstorecnt{ 0 };
 
 //----- (004A1C1E) --------------------------------------------------------
-void RenderOpenGL::DoRenderBillboards_D3D() {
+void OpenGLRenderer::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);  // in theory billboards all sorted by depth so dont cull by depth test
     glDisable(GL_CULL_FACE);  // some quads are reversed to reuse sprites opposite hand
@@ -2573,7 +2573,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 }
 
 // name better
-void RenderOpenGL::DrawBillboards() {
+void OpenGLRenderer::DrawBillboards() {
     if (!billbstorecnt) return;
 
     if (billbVAO == 0) {
@@ -2712,12 +2712,12 @@ void RenderOpenGL::DrawBillboards() {
 }
 
 //----- (004A1DA8) --------------------------------------------------------
-void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
+void OpenGLRenderer::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
     return;
 }
 
-void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
-                                 unsigned int w) {
+void OpenGLRenderer::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
+                                   unsigned int w) {
     this->clip_x = x;
     this->clip_y = y;
     this->clip_z = z;
@@ -2725,11 +2725,11 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     glScissor(x, outputRender.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
 }
 
-void RenderOpenGL::ResetUIClipRect() {
+void OpenGLRenderer::ResetUIClipRect() {
     this->SetUIClipRect(0, 0, outputRender.w, outputRender.h);
 }
 
-void RenderOpenGL::BeginScene2D() {
+void OpenGLRenderer::BeginScene2D() {
     // Setup for 2D
 
     if (outputRender != outputPresent) {
@@ -2750,7 +2750,7 @@ void RenderOpenGL::BeginScene2D() {
 }
 
 // TODO(pskelton): use alpha from mask too
-void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
+void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
     if (!tex) {
         logger->trace("Null texture passed to DrawTextureNew");
         return;
@@ -2857,7 +2857,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
 }
 
 // TODO(pskelton): add optional colour32
-void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage *img, int custom_height) {
+void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, class GraphicsImage *img, int custom_height) {
     if (!img) {
         logger->trace("Null texture passed to DrawTextureCustomHeight");
         return;
@@ -2967,7 +2967,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
 twodverts textshaderstore[10000] = {};
 int textvertscnt = 0;
 
-void RenderOpenGL::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
+void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
     // draw any images in buffer
     if (twodvertscnt) {
         DrawTwodVerts();
@@ -2991,7 +2991,7 @@ void RenderOpenGL::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
     return;
 }
 
-void RenderOpenGL::EndTextNew() {
+void OpenGLRenderer::EndTextNew() {
     if (!textvertscnt) return;
 
     if (twodvertscnt) {
@@ -3080,7 +3080,7 @@ void RenderOpenGL::EndTextNew() {
     return;
 }
 
-void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {
+void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {
     Colorf cf = colour.toColorf();
     // not 100% sure why this is required but it is
     if (cf.r == 0.0f)
@@ -3174,7 +3174,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     if (textvertscnt > 9990) EndTextNew();
 }
 
-void RenderOpenGL::Present() {
+void OpenGLRenderer::Present() {
     // flush any undrawn items
     DrawTwodVerts();
     EndLines2D();
@@ -3225,7 +3225,7 @@ void RenderOpenGL::Present() {
 GLshaderverts *outbuildshaderstore[16] = { nullptr };
 int numoutbuildverts[16] = { 0 };
 
-void RenderOpenGL::DrawOutdoorBuildings() {
+void OpenGLRenderer::DrawOutdoorBuildings() {
     // shader
     // verts are streamed to gpu as required
     // textures can be different sizes
@@ -3846,7 +3846,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
 GLshaderverts *BSPshaderstore[16] = { nullptr };
 int numBSPverts[16] = { 0 };
 
-void RenderOpenGL::DrawIndoorFaces() {
+void OpenGLRenderer::DrawIndoorFaces() {
     // void RenderOpenGL::DrawIndoorBSP() {
 
     // TODO(pskelton): might have to pass a texture width through for the waterr flow textures to size right
@@ -4573,7 +4573,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         return;
 }
 
-bool RenderOpenGL::SwitchToWindow() {
+bool OpenGLRenderer::SwitchToWindow() {
     // pViewport->ResetScreen();
     // CreateZBuffer();
 
@@ -4581,8 +4581,8 @@ bool RenderOpenGL::SwitchToWindow() {
 }
 
 
-bool RenderOpenGL::Initialize() {
-    if (!RenderBase::Initialize()) {
+bool OpenGLRenderer::Initialize() {
+    if (!BaseRenderer::Initialize()) {
         return false;
     }
 
@@ -4640,8 +4640,8 @@ bool RenderOpenGL::Initialize() {
     return false;
 }
 
-void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                                unsigned int uHeight, Color uColor32) {
+void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
+                                  unsigned int uHeight, Color uColor32) {
     Colorf cf = uColor32.toColorf();
 
     float depth = 0;
@@ -4737,7 +4737,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
 }
 
 // gl shaders
-bool RenderOpenGL::InitShaders() {
+bool OpenGLRenderer::InitShaders() {
     logger->info("initialising OpenGL shaders...");
 
     std::string title = "CRITICAL ERROR: shader compilation failure";
@@ -4816,7 +4816,7 @@ bool RenderOpenGL::InitShaders() {
     return true;
 }
 
-bool RenderOpenGL::Reinitialize(bool firstInit) {
+bool OpenGLRenderer::Reinitialize(bool firstInit) {
     outputPresent = window->size();
     if (config->graphics.RenderFilter.value() != 0)
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
@@ -4923,10 +4923,10 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
     //     ReloadShaders();
     // }
 
-    return RenderBase::Reinitialize(firstInit);
+    return BaseRenderer::Reinitialize(firstInit);
 }
 
-void RenderOpenGL::ReloadShaders() {
+void OpenGLRenderer::ReloadShaders() {
     logger->info("reloading Shaders...");
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -5011,7 +5011,7 @@ void RenderOpenGL::ReloadShaders() {
     }
 }
 
-void RenderOpenGL::ReleaseTerrain() {
+void OpenGLRenderer::ReleaseTerrain() {
     /*GLuint terrainVBO, terrainVAO;
     GLuint terraintextures[8];
     unsigned numterraintexloaded[8];
@@ -5059,7 +5059,7 @@ void RenderOpenGL::ReleaseTerrain() {
     }
 }
 
-void RenderOpenGL::ReleaseBSP() {
+void OpenGLRenderer::ReleaseBSP() {
     /*GLuint bspVBO, bspVAO;
     GLuint bsptextures[16];
     unsigned bsptexloaded[16];
@@ -5087,7 +5087,7 @@ void RenderOpenGL::ReleaseBSP() {
 }
 
 
-void RenderOpenGL::DrawTwodVerts() {
+void OpenGLRenderer::DrawTwodVerts() {
     if (!twodvertscnt) return;
 
     int savex = this->clip_x;
@@ -5213,7 +5213,7 @@ void RenderOpenGL::DrawTwodVerts() {
 }
 
 
-bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
+bool OpenGLRenderer::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_context *nk_ctx = nuklear->ctx;
     if (!nk_ctx) {
         logger->warning("Nuklear context is not available");
@@ -5248,7 +5248,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     return true;
 }
 
-bool RenderOpenGL::NuklearCreateDevice() {
+bool OpenGLRenderer::NuklearCreateDevice() {
     nuklearshader.build("nuklear", "glnuklear", OpenGLES);
     if (nuklearshader.ID == 0) {
         logger->warning("Nuklear shader failed to compile!");
@@ -5292,7 +5292,7 @@ bool RenderOpenGL::NuklearCreateDevice() {
     return true;
 }
 
-bool RenderOpenGL::NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) {
+bool OpenGLRenderer::NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) {
     struct nk_context *nk_ctx = nuklear->ctx;
     if (!nk_ctx)
         return false;
@@ -5413,7 +5413,7 @@ bool RenderOpenGL::NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_verte
     return true;
 }
 
-void RenderOpenGL::NuklearRelease() {
+void OpenGLRenderer::NuklearRelease() {
     nk_font_atlas_clear(&nk->dev.atlas);
 
     glDeleteProgram(nuklearshader.ID);
@@ -5426,7 +5426,7 @@ void RenderOpenGL::NuklearRelease() {
     memset(&nk->dev, 0, sizeof(nk->dev));
 }
 
-struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char *font_path, size_t font_size) {
+struct nk_tex_font *OpenGLRenderer::NuklearFontLoad(const char *font_path, size_t font_size) {
     const void *image;
     int w, h;
     GLuint texid;
@@ -5467,16 +5467,16 @@ struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char *font_path, size_t 
     return tfont;
 }
 
-void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
+void OpenGLRenderer::NuklearFontFree(struct nk_tex_font *tfont) {
     if (tfont)
         glDeleteTextures(1, &tfont->texid);
 }
 
-struct nk_image RenderOpenGL::NuklearImageLoad(GraphicsImage *img) {
+struct nk_image OpenGLRenderer::NuklearImageLoad(GraphicsImage *img) {
     GLuint texid = img->renderId().value();
     return nk_image_id(texid);
 }
 
-void RenderOpenGL::NuklearImageFree(GraphicsImage *img) {
+void OpenGLRenderer::NuklearImageFree(GraphicsImage *img) {
     img->releaseRenderId();
 }

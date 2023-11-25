@@ -2,7 +2,7 @@
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Tables/ItemTable.h"
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIMessageScroll.h"

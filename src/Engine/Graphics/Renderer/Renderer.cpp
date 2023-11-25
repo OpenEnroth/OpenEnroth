@@ -1,8 +1,8 @@
-#include "IRender.h"
+#include "Renderer.h"
 
-IRender *render = nullptr;
+Renderer *render = nullptr;
 
-IRender::IRender(
+Renderer::Renderer(
     std::shared_ptr<GameConfig> config,
     DecalBuilder *decal_builder,
     SpellFxRenderer *spellfx,
@@ -23,4 +23,4 @@ IRender::IRender(
     drawcalls = 0;
 }
 
-IRender::~IRender() = default;
+Renderer::~Renderer() = default;

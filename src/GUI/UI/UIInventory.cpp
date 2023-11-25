@@ -4,7 +4,7 @@
 #include "Engine/Localization.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Party.h"
 
 #include "GUI/GUIFont.h"

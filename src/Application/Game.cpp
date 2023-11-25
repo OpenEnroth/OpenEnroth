@@ -21,8 +21,8 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/IRenderFactory.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
@@ -100,8 +100,6 @@
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
-using Graphics::IRenderFactory;
-
 void initDataPath(Platform *platform, const std::string &dataPath) {
     std::string missing_file;
 
@@ -162,7 +160,7 @@ Game::~Game() {
 }
 
 int Game::run() {
-    _render = IRenderFactory().Create(_config);
+    _render = RendererFactory().Create(_config);
     ::render = _render.get();
 
     if (!_render) {

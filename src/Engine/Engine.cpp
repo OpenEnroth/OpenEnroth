@@ -10,8 +10,8 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/IRenderFactory.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -80,8 +80,6 @@
 #include "Library/BuildInfo/BuildInfo.h"
 
 #include "Utility/DataPath.h"
-
-using Graphics::IRenderFactory;
 
 /*
 

@@ -9,25 +9,25 @@
 #include <glm/glm.hpp>
 
 #include "Engine/Graphics/FrameLimiter.h"
-#include "Engine/Graphics/RenderBase.h"
+#include "BaseRenderer.h"
 
 #include "Library/Color/Colorf.h"
 
-#include "GLShaderLoader.h"
+#include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
 struct nk_state;
 
-class RenderOpenGL : public RenderBase {
+class OpenGLRenderer : public BaseRenderer {
  public:
-    RenderOpenGL(
+    OpenGLRenderer(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis
     );
-    virtual ~RenderOpenGL();
+    virtual ~OpenGLRenderer();
 
     virtual bool Initialize() override;
 
@@ -170,16 +170,16 @@ class RenderOpenGL : public RenderBase {
     int GPU_MAX_TOTAL_TEXTURES{};
 
     bool InitShaders();
-    GLShader terrainshader;
-    GLShader outbuildshader;
-    GLShader bspshader;
-    GLShader textshader;
-    GLShader lineshader;
-    GLShader twodshader;
-    GLShader billbshader;
-    GLShader decalshader;
-    GLShader forcepershader;
-    GLShader nuklearshader;
+    OpenGLShader terrainshader;
+    OpenGLShader outbuildshader;
+    OpenGLShader bspshader;
+    OpenGLShader textshader;
+    OpenGLShader lineshader;
+    OpenGLShader twodshader;
+    OpenGLShader billbshader;
+    OpenGLShader decalshader;
+    OpenGLShader forcepershader;
+    OpenGLShader nuklearshader;
 
     // terrain shader
     GLuint terrainVBO{}, terrainVAO{};

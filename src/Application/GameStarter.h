@@ -12,6 +12,7 @@ class LogSink;
 class PlatformApplication;
 class GameConfig;
 class Game;
+class Renderer;
 
 class GameStarter {
  public:

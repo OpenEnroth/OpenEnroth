@@ -4,17 +4,17 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Graphics/IRender.h"
+#include "Renderer.h"
 
-class RenderBase : public IRender {
+class BaseRenderer : public Renderer {
  public:
-    inline RenderBase(
+    inline BaseRenderer(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis
-    ) : IRender(config, decal_builder, spellfx, particle_engine, vis) {
+    ) : Renderer(config, decal_builder, spellfx, particle_engine, vis) {
     }
 
     virtual bool Initialize() override;

@@ -8,7 +8,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIButton.h"

@@ -12,7 +12,7 @@
 #include "Library/Geometry/Rect.h"
 
 #include "TextureRenderId.h"
-#include "RenderEntities.h"
+#include "Engine/Graphics/RenderEntities.h"
 
 class Actor;
 class GraphicsImage;
@@ -31,16 +31,17 @@ class File;
 
 bool PauseGameDrawing();
 
-class IRender {
+// TODO(captainurist): rename Renderer
+class Renderer {
  public:
-    IRender(
+    Renderer(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis
     );
-    virtual ~IRender();
+    virtual ~Renderer();
 
     virtual bool Initialize() = 0;
 
@@ -210,7 +211,7 @@ class IRender {
     Vis *vis = nullptr;
 };
 
-extern IRender *render;
+extern Renderer *render;
 
 extern int uNumDecorationsDrawnThisFrame;
 extern RenderBillboard pBillboardRenderList[500];

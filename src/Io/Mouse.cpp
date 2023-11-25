@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"

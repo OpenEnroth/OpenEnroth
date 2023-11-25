@@ -6,11 +6,11 @@
 
 #include <string>
 
-class GLShader {
+class OpenGLShader {
  public:
     unsigned int ID{};
 
-    GLShader() {
+    OpenGLShader() {
         ID = 0;
     }
 

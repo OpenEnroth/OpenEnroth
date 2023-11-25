@@ -1,6 +1,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Pid.h"

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 
 #include "GUI/GUIFont.h"
 

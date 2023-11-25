@@ -3,7 +3,7 @@
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 #include "Engine/mm7_data.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
