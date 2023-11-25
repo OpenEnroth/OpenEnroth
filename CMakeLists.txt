@@ -72,6 +72,7 @@ elseif(BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=inconsistent-missing-override) # 'override' only used on some of the overridden functions.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
+    add_compile_options(-Werror=delete-abstract-non-virtual-dtor) # delete called on 'x' that is abstract but has non-virtual destructor.
 elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute.
     add_compile_options(/we4172) # Returning address of local variable or temporary.
