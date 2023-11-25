@@ -32,8 +32,6 @@ class Game {
  private:
     PlatformApplication *_application = nullptr;
     std::shared_ptr<GameConfig> _config;
-    std::unique_ptr<Engine> _engine;
-    std::shared_ptr<Mouse> _mouse;
     DecalBuilder *_decalBuilder = nullptr;
     Menu *_menu = nullptr;
 };

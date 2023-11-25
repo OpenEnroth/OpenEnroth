@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -122,11 +123,30 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (_nuklear)
         _application->install(std::make_unique<NuklearEventHandler>());
 
+    // Init io.
+    ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
+    ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(
+        _application->get<GameKeyboardController>(),
+        keyboardActionMapping
+    );
+    ::mouse = EngineIocContainer::ResolveMouse();
+
+    // Init engine.
+    _engine = std::make_unique<Engine>(_config);
+    ::engine = _engine.get();
+    _engine->Initialize();
+
     // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
 }
 
 GameStarter::~GameStarter() {
+    if (_engine) {
+        _engine->Deinitialize(); // TODO(captainurist): should be called from Engine's destructor.
+        _engine.reset();
+        ::engine = nullptr;
+    }
+
     ::nuklear = nullptr;
 
     ::render = nullptr;

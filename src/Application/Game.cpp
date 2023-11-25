@@ -126,26 +126,6 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
 Game::~Game() = default;
 
 int Game::run() {
-    keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);
-    ::keyboardActionMapping = keyboardActionMapping;
-
-    keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(
-        _application->get<GameKeyboardController>(),
-        keyboardActionMapping
-    );
-
-    _mouse = EngineIocContainer::ResolveMouse();
-    ::mouse = _mouse;
-
-    _engine = std::make_unique<Engine>(_config);
-    ::engine = _engine.get();
-
-    if (!_engine) {
-        logger->error("Engine creation failed");
-        return -1;
-    }
-
-    _engine->Initialize();
     /* TODO: We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
      * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken.
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
@@ -177,12 +157,6 @@ int Game::run() {
 
     if (window) {
         _application->get<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
-    }
-
-    if (_engine) {
-        _engine->Deinitialize();
-        _engine = nullptr;
-        ::engine = nullptr;
     }
 
     return 0;
@@ -217,7 +191,7 @@ bool Game::loop() {
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (_engine->config->debug.NoMargaret.value()) {
+            if (engine->config->debug.NoMargaret.value()) {
                 pParty->_questBits.set(QBIT_EMERALD_ISLAND_MARGARETH_OFF);
             }
 
@@ -238,7 +212,7 @@ bool Game::loop() {
             uGameState = GAME_STATE_PLAYING;
             gameLoop();
         } else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
-            _mouse->ChangeActivation(0);
+            mouse->ChangeActivation(0);
             pParty->Reset();
             pParty->createDefaultParty(true);
 
@@ -254,7 +228,7 @@ bool Game::loop() {
             }
             _chdir("..\\");
             strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
-            _mouse->ChangeActivation(1);
+            mouse->ChangeActivation(1);
             gameLoop();
         }
         if (uGameState == GAME_STATE_LOADING_GAME) {
@@ -329,12 +303,12 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
 void Game::closeTargetedSpellWindow() {
     if (pGUIWindow_CastTargetedSpell) {
         if (current_screen_type == SCREEN_CHARACTERS) {
-            _mouse->SetCursorImage("MICON2");
+            mouse->SetCursorImage("MICON2");
         } else {
             pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
             pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
-            _mouse->SetCursorImage("MICON1");
-            _engine->_statusBar->clearEvent();
+            mouse->SetCursorImage("MICON1");
+            engine->_statusBar->clearEvent();
             IsEnchantingInProgress = false;
             back_to_game();
         }
@@ -466,7 +440,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_QuestBook();
@@ -485,7 +459,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_AutonotesBook();
@@ -504,7 +478,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                 }
                 // open window;
                 pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
@@ -523,7 +497,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_CalendarBook();
@@ -542,7 +516,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                 }
                 // open window
                 pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
@@ -552,7 +526,7 @@ void Game::processQueuedMessages() {
                 if (current_screen_type == SCREEN_DEBUG) {
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                     break;
                 }
                 if (current_screen_type != SCREEN_GAME) continue;
@@ -606,8 +580,8 @@ void Game::processQueuedMessages() {
                     } else {
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
-                        _mouse->SetCursorImage("MICON1");
-                        _engine->_statusBar->clearEvent();
+                        mouse->SetCursorImage("MICON1");
+                        engine->_statusBar->clearEvent();
                         IsEnchantingInProgress = false;
                         back_to_game();
                     }
@@ -741,7 +715,7 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_GAME;
                                     continue;
                                 case SCREEN_BRANCHLESS_NPC_DIALOG:  // click escape
-                                    _engine->_statusBar->clearEvent();
+                                    engine->_statusBar->clearEvent();
 
                                     releaseBranchlessDialogue();
                                     DialogueEnding();
@@ -863,7 +837,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
                 pOutdoor->level_filename = pCurrentMapName;
-                if (!_engine->IsUnderwater() && pParty->bFlying ||
+                if (!engine->IsUnderwater() && pParty->bFlying ||
                     pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
                     PlayButtonClickSound();
                     if (pParty->pos.x < -22528)
@@ -906,8 +880,7 @@ void Game::processQueuedMessages() {
 
                     bNoNPCHiring = 0;
 
-                    _engine->SetUnderwater(
-                        Is_out15odm_underwater());
+                    engine->SetUnderwater(Is_out15odm_underwater());
 
                     if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
                         bNoNPCHiring = 1;
@@ -920,7 +893,7 @@ void Game::processQueuedMessages() {
                     pParty->pos.z = GetTerrainHeightsAroundParty2(
                         pParty->pos.x, pParty->pos.y, &bOnWater, 0);
                     pParty->uFallStartZ = pParty->pos.z;
-                    _engine->_461103_load_level_sub();
+                    engine->_461103_load_level_sub();
                     pEventTimer->Resume();
                     current_screen_type = SCREEN_GAME;
                     pGameLoadingUI_ProgressBar->Release();
@@ -1101,12 +1074,12 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     status_string = "Can't jump to that location!";
                 }
-                _engine->_statusBar->setEvent(status_string);
+                engine->_statusBar->setEvent(status_string);
                 continue;
             }
             case UIMSG_CastQuickSpell: {
-                if (_engine->IsUnderwater()) {
-                    _engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
+                if (engine->IsUnderwater()) {
+                    engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1123,7 +1096,7 @@ void Game::processQueuedMessages() {
                 Vis_PIDAndDepth object = engine->PickMouseTarget();
                 Pid pid = object.pid;
                 int depth = object.depth;
-                if (pid.type() == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
+                if (pid.type() == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.value()) {
                     spellTargetPicked(pid, -1);
                     closeTargetedSpellWindow();
                 }
@@ -1176,7 +1149,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_Wait5Minutes:
                 if (currentRestType == REST_HEAL) {
-                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
+                    engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1187,7 +1160,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_Wait1Hour:
                 if (currentRestType == REST_HEAL) {
-                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
+                    engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1226,21 +1199,21 @@ void Game::processQueuedMessages() {
 
                 if (CheckActors_proximity()) {
                     if (pParty->bTurnBasedModeOn) {
-                        _engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
+                        engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
                         continue;
                     }
 
                     if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER)) // airbourne or on water
-                        _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
+                        engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                     else
-                        _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
+                        engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                     if (!pParty->hasActiveCharacter()) continue;
                     pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
                     continue;
                 }
                 if (pParty->bTurnBasedModeOn) {
-                    _engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
+                    engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
                     continue;
                 }
 
@@ -1255,14 +1228,14 @@ void Game::processQueuedMessages() {
                 }
 
                 if (pParty->bTurnBasedModeOn) {
-                    _engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
+                    engine->_statusBar->setEvent(LSTR_CANT_REST_IN_TURN_BASED);
                     continue;
                 }
 
                 if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))
-                    _engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
+                    engine->_statusBar->setEvent(LSTR_CANT_REST_HERE);
                 else
-                    _engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
+                    engine->_statusBar->setEvent(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                 if (!pParty->hasActiveCharacter()) continue;
                 pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
@@ -1270,12 +1243,12 @@ void Game::processQueuedMessages() {
             case UIMSG_Rest8Hour:
                 engine->_messageQueue->clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
                 if (currentRestType != REST_NONE) {
-                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
+                    engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
                 if (pParty->GetFood() < foodRequiredToRest) {
-                    _engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_FOOD);
+                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_FOOD);
                     if (pParty->hasActiveCharacter() && pParty->activeCharacter().CanAct()) {
                         pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_FOOD);
                     }
@@ -1311,7 +1284,7 @@ void Game::processQueuedMessages() {
                             currentRestType = REST_NONE;
 
                             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
-                            _engine->_statusBar->setEvent(LSTR_ENCOUNTER);
+                            engine->_statusBar->setEvent(LSTR_ENCOUNTER);
                             pAudioPlayer->playUISound(SOUND_encounter);
                             continue;
                         }
@@ -1328,7 +1301,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_WaitTillDawn:
                 if (currentRestType == REST_HEAL) {
-                    _engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
+                    engine->_statusBar->setEvent(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
@@ -1364,7 +1337,7 @@ void Game::processQueuedMessages() {
                 int uAction = 0;
                 for (MagicSchool page : allMagicSchools()) {
                     CharacterSkillType skill = skillForMagicSchool(page);
-                    if (pParty->activeCharacter().pActiveSkills[skill] || _engine->config->debug.AllMagic.value()) {
+                    if (pParty->activeCharacter().pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
                         spellbookPages[skill_count++] = page;
@@ -1404,7 +1377,7 @@ void Game::processQueuedMessages() {
 
                 Character *character = &pParty->activeCharacter();
                 SpellId selectedSpell = static_cast<SpellId>(uMessageParam);
-                if (character->spellbook.bHaveSpell[selectedSpell] || _engine->config->debug.AllMagic.value()) {
+                if (character->spellbook.bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
                         pEventTimer->Resume();
@@ -1435,8 +1408,8 @@ void Game::processQueuedMessages() {
                 if (pTurnEngine->turn_stage == TE_MOVEMENT) {
                     continue;
                 }
-                if (_engine->IsUnderwater()) {
-                    _engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
+                if (engine->IsUnderwater()) {
+                    engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     engine->_messageQueue->clear();
@@ -1454,7 +1427,7 @@ void Game::processQueuedMessages() {
                                 // close out current window
                                 back_to_game();
                                 onEscape();
-                                _engine->_statusBar->clearAll();
+                                engine->_statusBar->clearAll();
                             }
                             // open window
                             new OnButtonClick2({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
@@ -1478,7 +1451,7 @@ void Game::processQueuedMessages() {
                     // close out current window
                     back_to_game();
                     onEscape();
-                    _engine->_statusBar->clearAll();
+                    engine->_statusBar->clearAll();
                 }
                 // open window
                 new OnButtonClick2({560, 450}, {0, 0}, pBtn_QuickReference);
@@ -1502,7 +1475,7 @@ void Game::processQueuedMessages() {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_ClickAwardScrollBar:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsScroll(_mouse->GetCursorPos().y);
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsScroll(mouse->GetCursorPos().y);
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_ClickAwardsUpBtn:
@@ -1527,7 +1500,7 @@ void Game::processQueuedMessages() {
                 int cost = skillValue.level() + 1;
 
                 if (character->uSkillPoints < cost) {
-                    _engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_SKILL_POINTS);
+                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_SKILL_POINTS);
                 } else {
                     if (skillValue.level() < skills_max_level[skill]) {
                         character->setSkillValue(skill, CombinedSkillValue::increaseLevel(skillValue));
@@ -1535,7 +1508,7 @@ void Game::processQueuedMessages() {
                         character->playReaction(SPEECH_SKILL_INCREASE);
                         pAudioPlayer->playUISound(SOUND_quest);
                     } else {
-                        _engine->_statusBar->setEvent(LSTR_SKILL_ALREADY_MASTERED);
+                        engine->_statusBar->setEvent(LSTR_SKILL_ALREADY_MASTERED);
                     }
                 }
                 continue;
@@ -1613,9 +1586,9 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_MouseLeftClickInScreen:  // срабатывает при нажатии на
                                                 // правую кнопку мыши после
-                                                // UIMSG_MouseLeftClickInGame
+                                                // UIMSGmouseLeftClickInGame
                 engine->_messageQueue->clear();
-                _engine->onGameViewportClick();
+                engine->onGameViewportClick();
                 continue;
             case UIMSG_F:  // what event?
                 assert(false);
@@ -1783,59 +1756,59 @@ void Game::processQueuedMessages() {
                 pParty->AddGold(10000);
                 continue;
             case UIMSG_DebugTownPortal:
-                _engine->config->debug.TownPortal.toggle();
+                engine->config->debug.TownPortal.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugWizardEye:
-                _engine->config->debug.WizardEye.toggle();
+                engine->config->debug.WizardEye.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugAllMagic:
-                _engine->config->debug.AllMagic.toggle();
+                engine->config->debug.AllMagic.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugTerrain:
-                _engine->config->debug.Terrain.toggle();
+                engine->config->debug.Terrain.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugLightmap:
-                _engine->config->debug.LightmapDecals.toggle();
+                engine->config->debug.LightmapDecals.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugTurboSpeed:
-                _engine->config->debug.TurboSpeed.toggle();
+                engine->config->debug.TurboSpeed.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugNoActors:
-                _engine->config->debug.NoActors.toggle();
+                engine->config->debug.NoActors.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugFog:
-                _engine->config->graphics.Fog.toggle();
+                engine->config->graphics.Fog.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugSnow:
-                _engine->config->graphics.Snow.toggle();
+                engine->config->graphics.Snow.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugNoDamage:
-                _engine->config->debug.NoDamage.toggle();
+                engine->config->debug.NoDamage.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugPortalLines:
-                _engine->config->debug.PortalOutlines.toggle();
+                engine->config->debug.PortalOutlines.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugPickedFace:
-                _engine->config->debug.ShowPickedFace.toggle();
+                engine->config->debug.ShowPickedFace.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugShowFPS:
-                _engine->config->debug.ShowFPS.toggle();
+                engine->config->debug.ShowFPS.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugSeasonsChange:
-                _engine->config->graphics.SeasonsChange.toggle();
+                engine->config->graphics.SeasonsChange.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugReloadShader:
@@ -1864,7 +1837,7 @@ void Game::processQueuedMessages() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::onPressSpace() {
-    Pid pid = _engine->PickKeyboard(_engine->config->gameplay.KeyboardInteractionDepth.value(),
+    Pid pid = engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.value(),
                                     &vis_decoration_noevent_filter, &vis_door_filter).pid;
     if (pid) {
         DoInteractionWithTopmostZObject(pid);
@@ -1908,10 +1881,10 @@ void Game::gameLoop() {
         do {
             MessageLoopWithWait();
 
-            _engine->particle_engine->UpdateParticles();
-            _engine->decal_builder->bloodsplat_container->uNumBloodsplats = 0;
-            if (_engine->uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-                _engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
+            engine->particle_engine->UpdateParticles();
+            engine->decal_builder->bloodsplat_container->uNumBloodsplats = 0;
+            if (engine->uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
+                engine->uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
             }
 
             keyboardInputHandler->GenerateInputActions();
@@ -1953,10 +1926,10 @@ void Game::gameLoop() {
             pAudioPlayer->UpdateSounds();
 
             GameUI_WritePointedObjectStatusString();
-            _engine->_statusBar->update();
+            engine->_statusBar->update();
 
             if (uGameState == GAME_STATE_PLAYING) {
-                _engine->Draw();
+                engine->Draw();
                 continue;
             }
 
@@ -1986,7 +1959,7 @@ void Game::gameLoop() {
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED) {
-                _engine->Draw();  // when could this occur - can it be dropped?
+                engine->Draw();  // when could this occur - can it be dropped?
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
@@ -2057,7 +2030,7 @@ void Game::gameLoop() {
                     pParty->pCharacters[playerId].playReaction(SPEECH_CHEATED_DEATH);
                 }
 
-                _engine->_statusBar->setEvent(LSTR_CHEATED_THE_DEATH);
+                engine->_statusBar->setEvent(LSTR_CHEATED_THE_DEATH);
                 uGameState = GAME_STATE_PLAYING;
 
                 // need to clear messages here??
@@ -2065,7 +2038,7 @@ void Game::gameLoop() {
         } while (!game_finished);
 
         pEventTimer->Pause();
-        _engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+        engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
             GameUI_LoadPlayerPortraintsAndVoices();
             uGameState = GAME_STATE_PLAYING;
