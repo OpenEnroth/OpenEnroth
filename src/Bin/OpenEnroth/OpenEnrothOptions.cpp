@@ -30,8 +30,13 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->set_help_flag("-h,--help", "Print help and exit.");
 
     CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();
-    retrace->add_option("TRACE", result.retrace.traces,
-                        "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");
+    retrace->add_flag(
+        "--tracing-rng", result.tracingRng,
+        "Use random number generators that print stack trace on each call.");
+    retrace->add_option(
+        "TRACE", result.retrace.traces,
+        "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");
+    retrace->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
 
     app->parse(argc, argv, result.helpPrinted);
 
