@@ -1,6 +1,5 @@
 #include "Arcomage/Arcomage.h"
 
-#include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"

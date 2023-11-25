@@ -4,8 +4,8 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Engine/mm7_data.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"

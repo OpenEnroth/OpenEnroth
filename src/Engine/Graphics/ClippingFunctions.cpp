@@ -1,7 +1,5 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 
-#include "Engine/Engine.h"
-
 #include "Library/Logger/Logger.h"
 
 //----- (00498377) --------------------------------------------------------

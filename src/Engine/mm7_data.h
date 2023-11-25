@@ -114,6 +114,7 @@ extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE
 extern MapId dword_6BE13C_uCurrentlyLoadedLocationID;
 extern MapId uLevelMapStatsID;
 
+// TODO(captainurist): #enum
 #define GAME_SETTINGS_SKIP_WORLD_UPDATE 0x0001  // Skip updating world next frame due to changing levels etc.
 #define GAME_SETTINGS_INVALID_RESOLUTION 0x0002
 #define GAME_SETTINGS_NO_INTRO 0x0004

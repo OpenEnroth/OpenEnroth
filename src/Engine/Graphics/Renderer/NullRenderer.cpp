@@ -1,7 +1,5 @@
 #include "NullRenderer.h"
 
-#include <memory>
-
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Engine/EngineGlobals.h"

@@ -88,7 +88,6 @@ class Engine {
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
     void StackPartyTorchLight();
-    void Deinitialize();
     void DrawParticles();
     void Draw();
     void drawWorld();

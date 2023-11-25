@@ -5,7 +5,6 @@
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
