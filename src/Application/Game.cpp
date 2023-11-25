@@ -22,7 +22,6 @@
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
@@ -133,13 +132,6 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     _vis = EngineIocContainer::ResolveVis();
     _menu = GameIocContainer::ResolveGameMenu();
 
-    ::application = application;
-    ::platform = application->platform();
-    ::eventLoop = application->eventLoop();
-    ::window = application->window();
-    ::eventHandler = application->eventHandler();
-    ::openGLContext = application->openGLContext(); // OK to store into a global even if not yet initialized
-
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
@@ -160,19 +152,6 @@ Game::~Game() {
 }
 
 int Game::run() {
-    _render = RendererFactory().Create(_config);
-    ::render = _render.get();
-
-    if (!_render) {
-        logger->error("Render creation failed");
-        return -1;
-    }
-
-    if (!_render->Initialize()) {
-        logger->error("Render failed to initialize");
-        return -1;
-    }
-
     _nuklear = Nuklear::Initialize();
     if (!_nuklear) {
         logger->error("Nuklear failed to initialize");
@@ -209,7 +188,7 @@ int Game::run() {
      * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
      * Hack below with render reinitialization is a temporary workaround. */
     _application->get<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
-    _render->Reinitialize();
+    render->Reinitialize();
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
@@ -240,11 +219,6 @@ int Game::run() {
         _engine->Deinitialize();
         _engine = nullptr;
         ::engine = nullptr;
-    }
-
-    if (_render) {
-        _render->Release();
-        _render = nullptr;
     }
 
     return 0;
@@ -658,7 +632,7 @@ void Game::processQueuedMessages() {
                         continue;
                     }
                 }
-                _render->ClearZBuffer();
+                render->ClearZBuffer();
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                         new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
@@ -1557,7 +1531,7 @@ void Game::processQueuedMessages() {
                     gamma_preview_image->Release();
                     gamma_preview_image = nullptr;
                 }
-                _render->SaveScreenshot("gamma.pcx", 155, 117);
+                render->SaveScreenshot("gamma.pcx", 155, 117);
                 gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
 
                 new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
@@ -1901,7 +1875,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugReloadShader:
-                _render->ReloadShaders();
+                render->ReloadShaders();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             default:
@@ -1980,7 +1954,7 @@ void Game::gameLoop() {
             processQueuedMessages();
             if (pArcomageGame->bGameInProgress) {
                 ArcomageGame::Loop();
-                _render->Present();
+                render->Present();
                 continue;
             }
 
@@ -2042,9 +2016,9 @@ void Game::gameLoop() {
                 continue;
             }
             if (uGameState == GAME_STATE_FINAL_WINDOW) {
-                _render->BeginScene2D();
+                render->BeginScene2D();
                 GUI_UpdateWindows();
-                _render->Present();
+                render->Present();
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED) {

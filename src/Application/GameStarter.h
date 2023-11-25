@@ -41,5 +41,6 @@ class GameStarter {
     std::shared_ptr<GameConfig> _config;
     std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
+    std::unique_ptr<Renderer> _renderer;
     std::shared_ptr<Game> _game;
 };

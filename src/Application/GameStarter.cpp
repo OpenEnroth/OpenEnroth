@@ -6,7 +6,10 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Random/Random.h"
+#include "Engine/Graphics/Renderer/RendererFactory.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -17,6 +20,7 @@
 #include "Library/Platform/Null/NullPlatform.h"
 
 #include "Utility/DataPath.h"
+#include "Utility/Exception.h"
 
 #include "GamePathResolver.h"
 #include "GameConfig.h"
@@ -50,8 +54,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
             _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", _options.configPath);
         }
     }
-    if (_options.headless)
-        _config->graphics.Renderer.setValue(RENDERER_NULL); // TODO(captainurist): we shouldn't be writing to config here.
 
     // Finish logger init now that we know the desired log level.
     if (_options.logLevel) {
@@ -72,12 +74,35 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // Init global data path.
     initDataPath(_platform.get(), _options.dataPath);
 
-    // Create application & game.
+    // Create application.
     _application = std::make_unique<PlatformApplication>(_platform.get());
+    ::application = _application.get();
+    ::platform = _application->platform();
+    ::eventLoop = _application->eventLoop();
+    ::window = _application->window();
+    ::eventHandler = _application->eventHandler();
+    ::openGLContext = _application->openGLContext(); // OK to store into a global even if not yet initialized
+
+    // Init renderer.
+    _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);
+    ::render = _renderer.get();
+    if (!_renderer->Initialize())
+        throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
+
+    // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
 }
 
-GameStarter::~GameStarter() = default;
+GameStarter::~GameStarter() {
+    ::render = nullptr;
+
+    ::application = nullptr;
+    ::platform = nullptr;
+    ::eventLoop = nullptr;
+    ::window = nullptr;
+    ::eventHandler = nullptr;
+    ::openGLContext = nullptr;
+}
 
 void GameStarter::resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger) {
     if (options->dataPath.empty()) {

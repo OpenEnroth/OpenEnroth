@@ -1,15 +1,13 @@
 #pragma once
 
 #include <memory>
-#include <string>
 
-#include "Engine/Graphics/Renderer/RendererEnums.h"
+#include "RendererEnums.h"
 
 class Renderer;
 class GameConfig;
 
-// TODO(captainurist): merge into GameStarter
 class RendererFactory {
  public:
-    std::shared_ptr<Renderer> Create(std::shared_ptr<GameConfig> config);
+    std::unique_ptr<Renderer> createRenderer(RendererType type, std::shared_ptr<GameConfig> config);
 };

@@ -15,7 +15,6 @@
 
 using Io::Mouse;
 
-class Renderer;
 class PlatformApplication;
 class GameTraceHandler;
 class NuklearEventHandler;
@@ -41,7 +40,6 @@ class Game {
     std::shared_ptr<GameConfig> _config;
     std::unique_ptr<NuklearEventHandler> _nuklearHandler;
     std::unique_ptr<Engine> _engine;
-    std::shared_ptr<Renderer> _render;
     std::shared_ptr<Mouse> _mouse;
     DecalBuilder *_decalBuilder = nullptr;
     Vis *_vis = nullptr;
