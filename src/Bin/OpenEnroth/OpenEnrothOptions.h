@@ -17,6 +17,7 @@ struct OpenEnrothOptions : public GameStarterOptions {
 
     struct RetraceOptions {
         std::vector<std::string> traces;
+        bool checkCanonical = false;
     };
 
     Subcommand subcommand = SUBCOMMAND_GAME;

@@ -30,9 +30,15 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->set_help_flag("-h,--help", "Print help and exit.");
 
     CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();
+    app->add_flag(
+        "--headless", result.headless,
+        "Run in headless mode.");
     retrace->add_flag(
         "--tracing-rng", result.tracingRng,
         "Use random number generators that print stack trace on each call.");
+    retrace->add_flag(
+        "--check-canonical", result.retrace.checkCanonical,
+        "Check whether all passed traces are stored in canonical representation and return an error if not.");
     retrace->add_option(
         "TRACE", result.retrace.traces,
         "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");

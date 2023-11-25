@@ -15,6 +15,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 
+#include "Utility/Streams/FileInputStream.h"
 #include "Utility/Format.h"
 #include "Utility/UnicodeCrt.h"
 
@@ -24,13 +25,21 @@ int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
     EngineTraceStateAccessor::prepareForPlayback(starter.config()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
 
-    starter.application()->get<EngineControlComponent>()->runControlRoutine([options, application = starter.application()] (EngineController *game) {
+    int status = 0;
+
+    starter.application()->get<EngineControlComponent>()->runControlRoutine([&status, options, application = starter.application()] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.
 
         EngineTraceSimplePlayer *player = application->get<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->get<EngineTraceRecorder>();
 
         for (const std::string &tracePath : options.retrace.traces) {
+            fmt::println(stderr, "Retracing '{}'...", tracePath);
+
+            std::string oldTraceJson;
+            if (options.retrace.checkCanonical)
+                oldTraceJson = FileInputStream(tracePath).readAll();
+
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
             EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
@@ -40,6 +49,14 @@ int runRetrace(OpenEnrothOptions options) {
             engine->config->graphics.FPSLimit.setValue(0);
             player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS); // Don't skip time checks.
             recorder->finishRecording(game);
+
+            if (options.retrace.checkCanonical) {
+                std::string newTraceJson = FileInputStream(tracePath).readAll();
+                if (oldTraceJson != newTraceJson) {
+                    fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
+                    status = 1;
+                }
+            }
         }
 
         game->goToMainMenu();
@@ -47,7 +64,10 @@ int runRetrace(OpenEnrothOptions options) {
     });
     starter.run();
 
-    return 0;
+    if (options.retrace.checkCanonical && status == 0)
+        fmt::println(stderr, "All traces are in canonical representation.");
+
+    return status;
 }
 
 int runOpenEnroth(OpenEnrothOptions options) {
