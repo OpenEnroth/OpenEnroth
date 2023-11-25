@@ -1,4 +1,4 @@
-#include "Engine/Graphics/RenderBase.h"
+#include "BaseRenderer.h"
 
 #include <cassert>
 #include <utility>
@@ -38,18 +38,18 @@
 #include "Utility/Memory/MemSet.h"
 #include "Utility/DataPath.h"
 
-#include "ImageLoader.h"
+#include "Engine/Graphics/ImageLoader.h"
 
 static Sizei outputRender = {0, 0};
 static Sizei outputPresent = {0, 0};
 
-bool RenderBase::Initialize() {
+bool BaseRenderer::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
 
     return true;
 }
 
-unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
+unsigned int BaseRenderer::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     if (uNumBillboardsToDraw >= 999) {
         return 0;
     }
@@ -101,7 +101,7 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
 
 // TODO: Move this to sprites ?
 // combined with IndoorLocation::PrepareItemsRenderList_BLV() (0044028F)
-void RenderBase::DrawSpriteObjects() {
+void BaseRenderer::DrawSpriteObjects() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         // exit if we are at max sprites
         if (::uNumBillboardsToDraw >= 500) {
@@ -232,7 +232,7 @@ void RenderBase::DrawSpriteObjects() {
 }
 
 // TODO(pskelton): Move to outdoors - clean up
-void RenderBase::PrepareDecorationsRenderList_ODM() {
+void BaseRenderer::PrepareDecorationsRenderList_ODM() {
     unsigned int v6;        // edi@9
     int v7;                 // eax@9
     SpriteFrame *frame;     // eax@9
@@ -381,7 +381,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
     }
 }
 
-void RenderBase::TransformBillboardsAndSetPalettesODM() {
+void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
     SoftwareBillboard billboard = {0};
     billboard.sParentBillboardID = -1;
     //  billboard.pTarget = render->pTargetSurface;
@@ -421,7 +421,7 @@ Color BlendColors(Color a1, Color a2) {
     return Color(red, green, blue, alpha);
 }
 
-void RenderBase::TransformBillboard(const SoftwareBillboard *pSoftBillboard, const RenderBillboard *pBillboard) {
+void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, const RenderBillboard *pBillboard) {
     Sprite *pSprite = pBillboard->hwsprite;
     // error catching
     if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
@@ -515,10 +515,10 @@ void RenderBase::TransformBillboard(const SoftwareBillboard *pSoftBillboard, con
     billboard->PaletteIndex = pBillboard->uPaletteIndex;
 }
 
-void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                              GraphicsImage *texture,
-                                              Color uDiffuse,
-                                              int angle) {
+void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
+                                                GraphicsImage *texture,
+                                                Color uDiffuse,
+                                                int angle) {
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
@@ -593,50 +593,50 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     }
 }
 
-float RenderBase::GetGamma() {
+float BaseRenderer::GetGamma() {
     const float base = 0.60f;
     const float mult = 0.1f;
     int level = engine->config->graphics.Gamma.value();
     return base + mult * level;
 }
 
-void RenderBase::SavePCXScreenshot() {
+void BaseRenderer::SavePCXScreenshot() {
     engine->config->settings.ScreenshotNumber.increment();
     SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
 }
 
-void RenderBase::SavePCXImage32(const std::string &filename, RgbaImageView image) {
+void BaseRenderer::SavePCXImage32(const std::string &filename, RgbaImageView image) {
     // TODO(pskelton): add "Screenshots" folder?
     FileOutputStream output(makeDataPath(filename));
     output.write(pcx::encode(image).string_view());
     output.close();
 }
 
-void RenderBase::SaveScreenshot(const std::string &filename, const unsigned int width, const unsigned int height) {
+void BaseRenderer::SaveScreenshot(const std::string &filename, const unsigned int width, const unsigned int height) {
     SavePCXImage32(filename, render->MakeScreenshot32(width, height));
 }
 
-Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int height) {
+Blob BaseRenderer::PackScreenshot(const unsigned int width, const unsigned int height) {
     return pcx::encode(render->MakeScreenshot32(width, height));
 }
 
-GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
+GraphicsImage *BaseRenderer::TakeScreenshot(const unsigned int width, const unsigned int height) {
     return GraphicsImage::Create(MakeScreenshot32(width, height));
 }
 
-void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
+void BaseRenderer::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
 }
 
-void RenderBase::DrawTransparentRedShade(float u, float v, GraphicsImage *a4) {
+void BaseRenderer::DrawTransparentRedShade(float u, float v, GraphicsImage *a4) {
     DrawMasked(u, v, a4, 0, colorTable.Red);
 }
 
-void RenderBase::DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) {
+void BaseRenderer::DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) {
     DrawMasked(u, v, pTexture, 0, colorTable.Green);
 }
 
-void RenderBase::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, Color mask) {
+void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, Color mask) {
     int b = mask.b & (0xFF >> color_dimming_level);
     int g = mask.g & (0xFF >> color_dimming_level);
     int r = mask.r & (0xFF >> color_dimming_level);
@@ -645,13 +645,13 @@ void RenderBase::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned 
     DrawTextureNew(u, v, pTexture, mask);
 }
 
-void RenderBase::ClearBlack() {  // used only at start and in game over win
+void BaseRenderer::ClearBlack() {  // used only at start and in game over win
     ClearZBuffer();
     ClearTarget(Color());
 }
 
 //----- (004A4CC9) ---------------------------------------
-void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) {
+void BaseRenderer::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) {
     // fireball / implosion sphere
     // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
 
@@ -706,7 +706,7 @@ void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diff
     }
 }
 
-void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
+void BaseRenderer::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
@@ -718,7 +718,7 @@ void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offs
     render->ResetUIClipRect();
 }
 
-void RenderBase::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
+void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;
@@ -728,20 +728,20 @@ void RenderBase::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
     DrawImage(texture, targetrect, palette, colorTable.MediumGrey);
 }
 
-void RenderBase::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
+void BaseRenderer::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     engine->draw_debug_outlines();
     render->DoRenderBillboards_D3D();
     spell_fx_renderer->RenderSpecialEffects();
 }
 
-void RenderBase::PresentBlackScreen() {
+void BaseRenderer::PresentBlackScreen() {
     BeginScene2D();
     ClearBlack();
     Present();
 }
 
 // TODO: should this be combined / moved out of render
-std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
+std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     std::vector<Actor*> foundActors;
 
     for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
@@ -771,7 +771,7 @@ std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
 }
 
 // TODO(pskelton): z buffer must go
-void RenderBase::CreateZBuffer() {
+void BaseRenderer::CreateZBuffer() {
     if (pActiveZBuffer)
         free(pActiveZBuffer);
 
@@ -783,12 +783,12 @@ void RenderBase::CreateZBuffer() {
 }
 
 // TODO(pskelton): z buffer must go
-void RenderBase::ClearZBuffer() {
+void BaseRenderer::ClearZBuffer() {
     memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
 }
 
 // TODO(pskelton): zbuffer must go
-void RenderBase::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
+void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
     int uOutX = static_cast<int>(u * outputRender.w);
@@ -810,7 +810,7 @@ void RenderBase::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVa
     }
 }
 
-bool RenderBase::Reinitialize(bool firstInit) {
+bool BaseRenderer::Reinitialize(bool firstInit) {
     // TODO(captainurist): code copied from RenderOpenGL
     outputPresent = window->size();
     if (config->graphics.RenderFilter.value() != 0)
@@ -823,15 +823,15 @@ bool RenderBase::Reinitialize(bool firstInit) {
     return true;
 }
 
-Sizei RenderBase::GetRenderDimensions() {
+Sizei BaseRenderer::GetRenderDimensions() {
     return outputRender;
 }
 
-Sizei RenderBase::GetPresentDimensions() {
+Sizei BaseRenderer::GetPresentDimensions() {
     return outputPresent;
 }
 
-void RenderBase::SaveWinnersCertificate(const std::string &filePath) {
+void BaseRenderer::SaveWinnersCertificate(const std::string &filePath) {
     RgbaImage sPixels = flipVertically(ReadScreenPixels());
 
     // save to disk

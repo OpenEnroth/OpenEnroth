@@ -5,7 +5,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 
 #include "GUI/GUIFont.h"
 

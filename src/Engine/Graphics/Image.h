@@ -3,13 +3,13 @@
 #include <string>
 #include <memory>
 
+#include "Engine/Graphics/Renderer/TextureRenderId.h"
+
 #include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 
 #include "Utility/Types.h"
-
-#include "TextureRenderId.h"
 
 class ImageLoader;
 

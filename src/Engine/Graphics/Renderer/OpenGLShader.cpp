@@ -1,4 +1,4 @@
-#include "GLShaderLoader.h"
+#include "OpenGLShader.h"
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 
@@ -31,7 +31,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
 })
 } // namespace detail_name
 
-int GLShader::build(const std::string &name, const std::string &filename, bool OpenGLES, bool reload) {
+int OpenGLShader::build(const std::string &name, const std::string &filename, bool OpenGLES, bool reload) {
     // 1. retrieve the vertex/fragment source code from filePath
     GLuint vertex = load(name, filename, GL_VERTEX_SHADER, OpenGLES);
     if (vertex == 0)
@@ -73,7 +73,7 @@ int GLShader::build(const std::string &name, const std::string &filename, bool O
     return 0;
 }
 
-bool GLShader::reload(const std::string &name, bool OpenGLES) {
+bool OpenGLShader::reload(const std::string &name, bool OpenGLES) {
     int tryreload = build(name, sFilename, OpenGLES, true);
 
     if (tryreload) {
@@ -86,23 +86,23 @@ bool GLShader::reload(const std::string &name, bool OpenGLES) {
     return false;
 }
 
-void GLShader::use() {
+void OpenGLShader::use() {
     glUseProgram(ID);
 }
 
-std::string GLShader::shaderTypeToExtension(int type) {
+std::string OpenGLShader::shaderTypeToExtension(int type) {
     std::string result;
     detail_extension::serialize(type, &result);
     return result;
 }
 
-std::string GLShader::shaderTypeToName(int type) {
+std::string OpenGLShader::shaderTypeToName(int type) {
     std::string result;
     detail_name::serialize(type, &result);
     return result;
 }
 
-bool GLShader::checkCompileErrors(int shader, const std::string &name, const std::string &type) {
+bool OpenGLShader::checkCompileErrors(int shader, const std::string &name, const std::string &type) {
     GLint success;
     GLchar infoLog[1024];
     if (type != "program") {
@@ -123,7 +123,7 @@ bool GLShader::checkCompileErrors(int shader, const std::string &name, const std
     return true;
 }
 
-int GLShader::load(const std::string &name, const std::string &filename, int type, bool OpenGLES, bool nonFatal) {
+int OpenGLShader::load(const std::string &name, const std::string &filename, int type, bool OpenGLES, bool nonFatal) {
     std::string directory = "shaders";
     std::string typeName = shaderTypeToName(type);
     std::string path = makeDataPath(directory, filename + "." + shaderTypeToExtension(type));

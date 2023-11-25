@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Application/GameStarterOptions.h"
-#include "Engine/Graphics/RenderEnums.h"
+#include "Engine/Graphics/Renderer/RendererEnums.h"
 
 struct GameTestOptions : GameStarterOptions {
     std::string testPath;

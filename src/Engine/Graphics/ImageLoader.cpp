@@ -4,7 +4,7 @@
 #include <string_view>
 #include <memory>
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/LodTextureCache.h"

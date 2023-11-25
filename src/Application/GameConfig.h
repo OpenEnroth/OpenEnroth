@@ -3,7 +3,7 @@
 #include <string>
 #include <algorithm>
 
-#include "Engine/Graphics/RenderEnums.h"
+#include "Engine/Graphics/Renderer/RendererEnums.h"
 
 #include "Io/Key.h"
 

@@ -4,7 +4,7 @@
 
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Party.h"

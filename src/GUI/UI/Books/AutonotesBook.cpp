@@ -3,7 +3,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIButton.h"

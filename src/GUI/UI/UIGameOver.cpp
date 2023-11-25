@@ -7,7 +7,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 
 #include "Application/GameOver.h"
 
