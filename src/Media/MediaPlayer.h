@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 
+#include "Library/Vid/VidReader.h"
+
 #include "Media/Movie.h"
 
 // MOVIE_3DOLogo  "3dologo"
@@ -34,12 +36,11 @@ class MPlayer {
 
  protected:
     std::unique_ptr<FFmpegLogProxy> logProxy;
-    VideoList *might_list;
-    VideoList *magic_list;
+    VidReader might_list;
+    VidReader magic_list;
     std::string sInHouseMovie;
 
-    FILE *LoadMovie(const std::string &video_name, size_t &size,
-                    size_t &offset);
+    Blob LoadMovie(const std::string &video_name);
 };
 
 extern MPlayer *pMediaPlayer;

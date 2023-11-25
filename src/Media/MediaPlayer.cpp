@@ -33,6 +33,7 @@ extern "C" {
 #include "Media/Audio/OpenALSoundProvider.h"
 #include "Media/FFmpegLogProxy.h"
 
+#include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/DataPath.h"
 
@@ -303,10 +304,7 @@ class Movie : public IMovie {
         looping = false;
         playing = false;
 
-        uFileSize = 0;
-        uFilePos = 0;
-        uFileOffset = 0;
-        hFile = nullptr;
+        _blob = Blob();
     }
 
     virtual ~Movie() { Close(); }
@@ -375,11 +373,9 @@ class Movie : public IMovie {
         return true;
     }
 
-    bool LoadFromLOD(FILE *f, size_t size, size_t offset) {
-        hFile = f;
-        uFileSize = size;
-        uFileOffset = offset;
-        uFilePos = 0;
+    bool LoadFromLOD(const Blob &blob) {
+        _blob = Blob::share(blob);
+        _stream.reset(_blob.data(), _blob.size());
 
         if (!ioBuffer) {
             ioBuffer = (unsigned char *)av_malloc(AV_INPUT_BUFFER_MIN_SIZE);  // can get av_free()ed by libav
@@ -590,44 +586,38 @@ class Movie : public IMovie {
 
  protected:
     static int s_read(void *opaque, uint8_t *buf, int buf_size) {
-        Movie *_this = (Movie *)opaque;
-        return _this->read(opaque, buf, buf_size);
+        return static_cast<Movie *>(opaque)->read(buf, buf_size);
     }
 
     static int64_t s_seek(void *opaque, int64_t offset, int whence) {
-        Movie *_this = (Movie *)opaque;
-        return _this->seek(opaque, offset, whence);
+        return static_cast<Movie *>(opaque)->seek(offset, whence);
     }
 
-    int read(void *opaque, uint8_t *buf, int buf_size) {
-        fseek(hFile, uFileOffset + uFilePos, SEEK_SET);
-        buf_size = std::min(buf_size, (int)uFileSize - (int)uFilePos);
-        buf_size = fread(buf, 1, buf_size, hFile);
-        uFilePos += buf_size;
-        return buf_size;
+    int read(uint8_t *buf, int buf_size) {
+        return _stream.read(buf, buf_size);
     }
 
-    int64_t seek(void *opaque, int64_t offset, int whence) {
+    int64_t seek(int64_t offset, int whence) {
         if (whence == AVSEEK_SIZE) {
-            return uFileSize;
+            return _blob.size();
         }
 
         switch (whence) {
             case SEEK_SET:
-                uFilePos = (size_t)offset;
+                _stream.seek(offset);
                 break;
             case SEEK_CUR:
-                uFilePos += (size_t)offset;
+                _stream.seek(_stream.position() + offset);
                 break;
             case SEEK_END:
-                uFilePos = uFileSize - (size_t)offset;
+                _stream.seek(_blob.size() - offset);
                 break;
             default:
                 assert(false);
                 break;
         }
-        fseek(hFile, uFileOffset + uFilePos, SEEK_SET);
-        return uFilePos;
+
+        return _stream.position();
     }
 
  protected:
@@ -648,115 +638,13 @@ class Movie : public IMovie {
     bool looping;
     bool playing;
 
-    FILE *hFile;
-    size_t uFileSize;
-    size_t uFileOffset;
-    size_t uFilePos;
-};
-
-// for video/////////////////////////////////////////////////////////////////
-
-class VideoList {
- protected:
-#pragma pack(push, 1)
-    struct MovieHeader {
-        char pVideoName[40];
-        unsigned int uFileOffset;
-    };
-#pragma pack(pop)
-
-    struct Node {
-        size_t offset;
-        size_t size;
-    };
-    typedef std::map<std::string, Node> Nodes;
-
- public:
-    VideoList() { file = nullptr; }
-
-    virtual ~VideoList() {
-        if (file != nullptr) {
-            fclose(file);
-            file = nullptr;
-        }
-    }
-
-    void Initialize(const std::string &file_path) {
-        static_assert(sizeof(MovieHeader) == 44, "Wrong type size");
-
-        if (engine->config->debug.NoVideo.value()) {
-            return;
-        }
-
-        file = fopen(file_path.c_str(), "rb");
-        if (file == nullptr) {
-            logger->warning("Can't open video file: {}", file_path);
-            return;
-        }
-        fseek(file, 0, SEEK_END);
-        size_t file_size = ftell(file);
-        fseek(file, 0, SEEK_SET);
-
-        uint32_t uNumVideoHeaders = 0;
-        if (fread(&uNumVideoHeaders, 4, 1, file) != 1) {
-            logger->warning("Invalid video file format: {}", file_path);
-            return;
-        }
-
-        std::vector<MovieHeader> headers;
-        headers.resize(uNumVideoHeaders);
-        if (fread(&headers[0], sizeof(MovieHeader), uNumVideoHeaders, file) != uNumVideoHeaders) {
-            return;
-        }
-        std::sort(headers.begin(), headers.end(),
-                  [](MovieHeader &a, MovieHeader &b) {
-                      return a.uFileOffset < b.uFileOffset;
-                  });
-
-        for (size_t i = 0; i < headers.size(); i++) {
-            std::string name = toLower(headers[i].pVideoName);
-            Node node;
-            node.offset = headers[i].uFileOffset;
-            if (i < headers.size() - 1) {
-                node.size = headers[i + 1].uFileOffset - headers[i].uFileOffset;
-            } else {
-                node.size = file_size - headers[i].uFileOffset;
-            }
-            nodes[name] = node;
-        }
-    }
-
-    bool find(const std::string &video_name, FILE *&file_, size_t &offset,
-              size_t &size) {
-        file_ = nullptr;
-        offset = 0;
-        size = 0;
-
-        std::string name = toLower(video_name);
-        Nodes::iterator it = nodes.find(name);
-        if (it != nodes.end()) {
-            file_ = file;
-            offset = it->second.offset;
-            size = it->second.size;
-            return true;
-        }
-
-        return false;
-    }
-
- protected:
-    Nodes nodes;
-    FILE *file;
+    Blob _blob;
+    MemoryInputStream _stream;
 };
 
 void MPlayer::Initialize() {
-    might_list = new VideoList();
-    std::string filename = makeDataPath("anims", "might7.vid");
-    might_list->Initialize(filename);
-
-    magic_list = new VideoList();
-    filename = makeDataPath("anims", "magic7.vid");
-    magic_list->Initialize(filename);
+    might_list.open(makeDataPath("anims", "might7.vid"));
+    magic_list.open(makeDataPath("anims", "magic7.vid"));
 }
 
 void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
@@ -767,15 +655,13 @@ void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
     pEventTimer->Pause();
     pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
-    size_t size = 0;
-    size_t offset = 0;
-    FILE *file = LoadMovie(pMovieName, size, offset);
-    if (file == nullptr) {
+    Blob blob = LoadMovie(pMovieName);
+    if (!blob) {
         return;
     }
 
     std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
-    pMovie->LoadFromLOD(file, size, offset);
+    pMovie->LoadFromLOD(blob);
     pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
     sInHouseMovie = pMovieName;
 }
@@ -814,12 +700,10 @@ void MPlayer::HouseMovieLoop() {
 
     } else {
         pMovie_Track = nullptr;
-        size_t size = 0;
-        size_t offset = 0;
-        FILE *file = LoadMovie(sInHouseMovie, size, offset);
-        if (file != nullptr) {
+        Blob blob = LoadMovie(sInHouseMovie);
+        if (blob) {
             std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
-            pMovie->LoadFromLOD(file, size, offset);
+            pMovie->LoadFromLOD(blob);
             pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
             pMovie_Track->Play();
         }
@@ -833,15 +717,13 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
         return;
     }
 
-    size_t size = 0;
-    size_t offset = 0;
-    FILE *file = LoadMovie(pFilename, size, offset);
-    if (file == nullptr) {
+    Blob blob = LoadMovie(pFilename);
+    if (!blob) {
         return;
     }
 
     std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
-    if (!pMovie->LoadFromLOD(file, size, offset)) {
+    if (!pMovie->LoadFromLOD(blob)) {
         return;
     }
     pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
@@ -915,33 +797,29 @@ bool MPlayer::StopMovie() {
     return false;
 }
 
-FILE *MPlayer::LoadMovie(const std::string &video_name, size_t &size, size_t &offset) {
-    std::string pVideoNameBik = toLower(video_name) + ".bik";
-    std::string pVideoNameSmk = toLower(video_name) + ".smk";
+Blob MPlayer::LoadMovie(const std::string &video_name) {
+    std::string pVideoNameBik = video_name + ".bik";
+    std::string pVideoNameSmk = video_name + ".smk";
 
-    FILE *file = nullptr;
-    offset = 0;
-    size = 0;
-
-    if (might_list != nullptr) {
-        if (might_list->find(pVideoNameBik, file, offset, size)) {
-            return file;
+    if (might_list.isOpen()) {
+        if (might_list.exists(pVideoNameBik)) {
+            return might_list.read(pVideoNameBik);
         }
-        if (might_list->find(pVideoNameSmk, file, offset, size)) {
-            return file;
+        if (might_list.exists(pVideoNameSmk)) {
+            return might_list.read(pVideoNameSmk);
         }
     }
 
-    if (magic_list != nullptr) {
-        if (magic_list->find(pVideoNameBik, file, offset, size)) {
-            return file;
+    if (magic_list.isOpen()) {
+        if (magic_list.exists(pVideoNameBik)) {
+            return magic_list.read(pVideoNameBik);
         }
-        if (magic_list->find(pVideoNameSmk, file, offset, size)) {
-            return file;
+        if (magic_list.exists(pVideoNameSmk)) {
+            return magic_list.read(pVideoNameSmk);
         }
     }
 
-    return nullptr;
+    return {};
 }
 
 void MPlayer::Unload() {
@@ -961,8 +839,6 @@ void MPlayer::Unload() {
 MPlayer::MPlayer() {
     logProxy = std::make_unique<FFmpegLogProxy>(logger);
     pMovie_Track = nullptr;
-    might_list = nullptr;
-    magic_list = nullptr;
 
     if (!provider) {
         provider = new OpenALSoundProvider;
@@ -972,15 +848,5 @@ MPlayer::MPlayer() {
 }
 
 MPlayer::~MPlayer() {
-    if (might_list != nullptr) {
-        delete might_list;
-        might_list = nullptr;
-    }
-
-    if (magic_list != nullptr) {
-        delete magic_list;
-        magic_list = nullptr;
-    }
-
     delete provider;
 }
