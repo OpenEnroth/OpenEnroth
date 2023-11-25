@@ -23,12 +23,8 @@
 #include "OpenEnrothOptions.h"
 
 static std::string readTextFile(const std::string &path) {
-    // TODO(captainurist): why do we even need to normalize line endings?
-    std::string result = FileInputStream(path).readAll();
-    result = replaceAll(result, "\r\n", "\n"); // Normalize to UNIX line endings.
-    while(result.ends_with('\n'))
-        result.pop_back(); // Drop trailing newlines.
-    return result;
+    // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
+    return replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
 }
 
 int runRetrace(OpenEnrothOptions options) {
