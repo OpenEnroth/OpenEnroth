@@ -103,6 +103,14 @@ jobs:
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
+      - name: Run retrace tests
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release'
+        working-directory: build
+        run: |
+          make RetraceTest_Headless
+        env:
+          OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
       - name: Prepare files for release
         run: |
           mkdir dist

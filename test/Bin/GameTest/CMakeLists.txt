@@ -37,4 +37,20 @@ if(OE_BUILD_TESTS)
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
+
+    # RetraceTest
+    add_custom_target(RetraceTest
+            OpenEnroth retrace --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
+            DEPENDS OpenEnroth OpenEnroth_TestData
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            USES_TERMINAL
+    )
+
+    add_custom_target(RetraceTest_Headless
+            OpenEnroth retrace --headless --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
+            DEPENDS OpenEnroth OpenEnroth_TestData
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            USES_TERMINAL
+    )
+
 endif()
