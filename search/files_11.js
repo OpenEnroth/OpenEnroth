@@ -11,13 +11,11 @@ var searchData=
   ['rawevent_2eh_8',['RawEvent.h',['../RawEvent_8h.html',1,'']]],
   ['readme_2emd_9',['README.md',['../README_8md.html',1,'']]],
   ['rect_2eh_10',['Rect.h',['../Rect_8h.html',1,'']]],
-  ['renderbase_2ecpp_11',['RenderBase.cpp',['../RenderBase_8cpp.html',1,'']]],
-  ['renderbase_2eh_12',['RenderBase.h',['../RenderBase_8h.html',1,'']]],
-  ['renderentities_2eh_13',['RenderEntities.h',['../RenderEntities_8h.html',1,'']]],
-  ['renderenums_2ecpp_14',['RenderEnums.cpp',['../RenderEnums_8cpp.html',1,'']]],
-  ['renderenums_2eh_15',['RenderEnums.h',['../RenderEnums_8h.html',1,'']]],
-  ['rendernull_2ecpp_16',['RenderNull.cpp',['../RenderNull_8cpp.html',1,'']]],
-  ['rendernull_2eh_17',['RenderNull.h',['../RenderNull_8h.html',1,'']]],
-  ['renderopengl_2ecpp_18',['RenderOpenGL.cpp',['../RenderOpenGL_8cpp.html',1,'']]],
-  ['renderopengl_2eh_19',['RenderOpenGL.h',['../RenderOpenGL_8h.html',1,'']]]
+  ['renderentities_2eh_11',['RenderEntities.h',['../RenderEntities_8h.html',1,'']]],
+  ['renderer_2ecpp_12',['Renderer.cpp',['../Renderer_8cpp.html',1,'']]],
+  ['renderer_2eh_13',['Renderer.h',['../Renderer_8h.html',1,'']]],
+  ['rendererenums_2ecpp_14',['RendererEnums.cpp',['../RendererEnums_8cpp.html',1,'']]],
+  ['rendererenums_2eh_15',['RendererEnums.h',['../RendererEnums_8h.html',1,'']]],
+  ['rendererfactory_2ecpp_16',['RendererFactory.cpp',['../RendererFactory_8cpp.html',1,'']]],
+  ['rendererfactory_2eh_17',['RendererFactory.h',['../RendererFactory_8h.html',1,'']]]
 ];

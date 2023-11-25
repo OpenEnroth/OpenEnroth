@@ -40,8 +40,8 @@ var searchData=
   ['_5f4a8bfc_5fprismatic_5flight_37',['_4A8BFC_prismatic_light',['../structSpellFxRenderer.html#aae709462f85e9dc5875ff66d529a175a',1,'SpellFxRenderer']]],
   ['_5fget_5fnormals_38',['_get_normals',['../structBLVFace.html#aef30e1e4346c3357d0b6b9e3fde1819e',1,'BLVFace']]],
   ['_5fselecttarget_39',['_SelectTarget',['../classActor.html#ae68fd9faf29b645a7664aabc93dd3076',1,'Actor']]],
-  ['_5fset_5f3d_5fmodelview_5fmatrix_40',['_set_3d_modelview_matrix',['../classRenderOpenGL.html#ab03449d5141fb82ddc324204883bab0c',1,'RenderOpenGL']]],
-  ['_5fset_5f3d_5fprojection_5fmatrix_41',['_set_3d_projection_matrix',['../classRenderOpenGL.html#a7d5ffdf04f796810a19224b04d0ff3ea',1,'RenderOpenGL']]],
-  ['_5fset_5fortho_5fmodelview_42',['_set_ortho_modelview',['../classRenderOpenGL.html#aba07e6fc89c29aa14955190507c90546',1,'RenderOpenGL']]],
-  ['_5fset_5fortho_5fprojection_43',['_set_ortho_projection',['../classRenderOpenGL.html#a5a8f73f1f24c87c1e20c0822c48757ea',1,'RenderOpenGL']]]
+  ['_5fset_5f3d_5fmodelview_5fmatrix_40',['_set_3d_modelview_matrix',['../classOpenGLRenderer.html#a1d172a631484c081e11bd66476b794cb',1,'OpenGLRenderer']]],
+  ['_5fset_5f3d_5fprojection_5fmatrix_41',['_set_3d_projection_matrix',['../classOpenGLRenderer.html#a801acf5bc0462a5b6d2553e5eb301d4c',1,'OpenGLRenderer']]],
+  ['_5fset_5fortho_5fmodelview_42',['_set_ortho_modelview',['../classOpenGLRenderer.html#a8517f3bab1f58716ae3879bd7a3f240c',1,'OpenGLRenderer']]],
+  ['_5fset_5fortho_5fprojection_43',['_set_ortho_projection',['../classOpenGLRenderer.html#aa516d829bf373f6bba13a3086bb1401d',1,'OpenGLRenderer']]]
 ];

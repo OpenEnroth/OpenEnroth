@@ -20,6 +20,8 @@ var searchData=
   ['nullplatform_2eh_17',['NullPlatform.h',['../NullPlatform_8h.html',1,'']]],
   ['nullplatformoptions_2eh_18',['NullPlatformOptions.h',['../NullPlatformOptions_8h.html',1,'']]],
   ['nullplatformsharedstate_2eh_19',['NullPlatformSharedState.h',['../NullPlatformSharedState_8h.html',1,'']]],
-  ['nullwindow_2ecpp_20',['NullWindow.cpp',['../NullWindow_8cpp.html',1,'']]],
-  ['nullwindow_2eh_21',['NullWindow.h',['../NullWindow_8h.html',1,'']]]
+  ['nullrenderer_2ecpp_20',['NullRenderer.cpp',['../NullRenderer_8cpp.html',1,'']]],
+  ['nullrenderer_2eh_21',['NullRenderer.h',['../NullRenderer_8h.html',1,'']]],
+  ['nullwindow_2ecpp_22',['NullWindow.cpp',['../NullWindow_8cpp.html',1,'']]],
+  ['nullwindow_2eh_23',['NullWindow.h',['../NullWindow_8h.html',1,'']]]
 ];

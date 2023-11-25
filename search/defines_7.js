@@ -1,7 +1,7 @@
 var searchData=
 [
   ['lightmap_5fflags_5fuse_5fspecular_0',['LIGHTMAP_FLAGS_USE_SPECULAR',['../LightmapBuilder_8h.html#afa91bd12d027d8d90c418bc1c9695728',1,'LightmapBuilder.h']]],
-  ['loword_1',['LOWORD',['../RenderOpenGL_8cpp.html#a00be6c40bc7a1297ada4d47a028066b8',1,'RenderOpenGL.cpp']]],
+  ['loword_1',['LOWORD',['../OpenGLRenderer_8cpp.html#a00be6c40bc7a1297ada4d47a028066b8',1,'OpenGLRenderer.cpp']]],
   ['lstr_5f3do_5fcopyright_2',['LSTR_3DO_COPYRIGHT',['../Localization_8h.html#a625debc3be4d6049ab92ceba7506d3d8',1,'Localization.h']]],
   ['lstr_5fa_5ftie_3',['LSTR_A_TIE',['../Localization_8h.html#a8d462f984138423d0f7e6f6e99c44eee',1,'Localization.h']]],
   ['lstr_5fac_4',['LSTR_AC',['../Localization_8h.html#a966c72fc058d891c67a19fcdae7f3190',1,'Localization.h']]],
