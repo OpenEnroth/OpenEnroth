@@ -27,7 +27,7 @@
 #include "Utility/DataPath.h"
 
 lua_State *lua = nullptr;
-std::shared_ptr<Nuklear> nuklear;
+Nuklear *nuklear = nullptr;
 
 Nuklear::Nuklear() {
 }
@@ -111,16 +111,17 @@ std::vector<struct lua_nk_style> lua_nk_styles;
 #define PUSH_STYLE(element, component, property, type) element.push_back({ #property, &nuklear->ctx->style.component.property, type});
 #define PUSH_BUTTON_STYLE(element, style, property, type) element.push_back({ #property, &style->property, type});
 
-std::shared_ptr<Nuklear> Nuklear::Initialize() {
-    nuklear = std::make_shared<Nuklear>();
+std::unique_ptr<Nuklear> Nuklear::Initialize() {
+    std::unique_ptr<Nuklear> result = std::make_unique<Nuklear>();
+    ::nuklear = result.get();
 
-    nuklear->ctx = new(struct nk_context);
-    if (!nuklear->ctx) {
+    result->ctx = new(struct nk_context);
+    if (!result->ctx) {
         return nullptr;
     }
 
     if (!render->NuklearInitialize(&font_default)) {
-        delete nuklear->ctx;
+        delete result->ctx;
         return nullptr;
     }
 
@@ -720,7 +721,7 @@ std::shared_ptr<Nuklear> Nuklear::Initialize() {
     wins[WINDOW_MainMenu_Load].tmpl = "mainmenu_load";
     wins[WINDOW_GameUI].tmpl = "gameui";
 
-    return nuklear;
+    return result;
 }
 
 bool Nuklear::Create(WindowType winType) {

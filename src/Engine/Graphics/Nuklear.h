@@ -29,7 +29,7 @@ class Nuklear {
 
      Nuklear();
 
-     static std::shared_ptr<Nuklear> Initialize();
+     static std::unique_ptr<Nuklear> Initialize();
      bool Create(WindowType winType);
      bool Draw(NUKLEAR_STAGE stage, WindowType winType, int type);
      int KeyEvent(PlatformKey key);
@@ -49,4 +49,4 @@ class Nuklear {
  protected:
 };
 
-extern std::shared_ptr<Nuklear> nuklear;
+extern Nuklear *nuklear;

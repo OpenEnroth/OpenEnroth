@@ -10,6 +10,8 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -112,11 +114,21 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
+    // Init Nuklear - depends on renderer.
+    _nuklear = Nuklear::Initialize();
+    if (!_nuklear)
+        logger->error("Nuklear failed to initialize");
+    ::nuklear = _nuklear.get();
+    if (_nuklear)
+        _application->install(std::make_unique<NuklearEventHandler>());
+
     // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
 }
 
 GameStarter::~GameStarter() {
+    ::nuklear = nullptr;
+
     ::render = nullptr;
 
     ::application = nullptr;

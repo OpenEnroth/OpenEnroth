@@ -11,9 +11,6 @@ using Io::Mouse;
 class Engine;
 class DecalBuilder;
 class PlatformApplication;
-class GameTraceHandler;
-class NuklearEventHandler;
-class Nuklear;
 class Platform;
 class Menu;
 
@@ -35,12 +32,10 @@ class Game {
  private:
     PlatformApplication *_application = nullptr;
     std::shared_ptr<GameConfig> _config;
-    std::unique_ptr<NuklearEventHandler> _nuklearHandler;
     std::unique_ptr<Engine> _engine;
     std::shared_ptr<Mouse> _mouse;
     DecalBuilder *_decalBuilder = nullptr;
     Menu *_menu = nullptr;
-    std::shared_ptr<Nuklear> _nuklear = nullptr;
 };
 
 void initDataPath(Platform *platform, const std::string &dataPath);

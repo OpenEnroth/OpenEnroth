@@ -17,8 +17,6 @@
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -125,22 +123,9 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     _menu = GameIocContainer::ResolveGameMenu();
 }
 
-Game::~Game() {
-    if (_nuklearHandler)
-        _application->remove(_nuklearHandler.get());
-}
+Game::~Game() = default;
 
 int Game::run() {
-    _nuklear = Nuklear::Initialize();
-    if (!_nuklear) {
-        logger->error("Nuklear failed to initialize");
-    }
-    ::nuklear = _nuklear;
-    if (_nuklear) {
-        _nuklearHandler = std::make_unique<NuklearEventHandler>();
-        _application->install(_nuklearHandler.get());
-    }
-
     keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);
     ::keyboardActionMapping = keyboardActionMapping;
 

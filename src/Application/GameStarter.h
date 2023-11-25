@@ -13,6 +13,7 @@ class PlatformApplication;
 class GameConfig;
 class Game;
 class Renderer;
+class Nuklear;
 
 class GameStarter {
  public:
@@ -42,5 +43,6 @@ class GameStarter {
     std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
     std::unique_ptr<Renderer> _renderer;
+    std::unique_ptr<Nuklear> _nuklear;
     std::shared_ptr<Game> _game;
 };
