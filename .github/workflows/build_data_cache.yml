@@ -5,12 +5,6 @@ on:
     # schedule build once per day
     - cron: "6 11 * * *"
   workflow_dispatch: # Allow to manually run a workflow
-    inputs:
-      forceRebuild:
-        description: Force Rebuild
-        required: false
-        default: false
-        type: boolean
 
 jobs:
   build_data_cache:
@@ -30,7 +24,7 @@ jobs:
         key: data-cache
 
     - name: Checkout private data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true' || ${{inputs.forceRebuild}}
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
       uses: actions/checkout@v3
       with:
         repository: OpenEnroth/OpenEnroth_GameData
@@ -39,7 +33,7 @@ jobs:
         token: '${{secrets.DATA_ACCESS_TOKEN}}'
 
     - name: Cache data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true' || ${{inputs.forceRebuild}}
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
       uses: actions/cache/save@v3
       with:
         path: |
