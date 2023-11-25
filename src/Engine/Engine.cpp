@@ -360,14 +360,6 @@ void Engine::StackPartyTorchLight() {
     }
 }
 
-//----- (004645FA) --------------------------------------------------------
-void Engine::Deinitialize() {
-    if (mouse)
-        mouse->Deactivate();
-
-    delete pEventTimer;
-}
-
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
     if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.value()) {
@@ -500,6 +492,10 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
+    if (mouse)
+        mouse->Deactivate();
+
+    delete pEventTimer;
     delete pStru10Instance;
     delete pCamera3D;
     pAudioPlayer.reset();

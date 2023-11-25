@@ -84,7 +84,6 @@
 #include "Utility/Exception.h"
 
 #include "GameIocContainer.h"
-#include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
 
@@ -126,6 +125,7 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
 Game::~Game() = default;
 
 int Game::run() {
+    // TODO(captainurist): this belongs to GameStarter?
     /* TODO: We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
      * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken.
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.

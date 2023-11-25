@@ -141,11 +141,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 }
 
 GameStarter::~GameStarter() {
-    if (_engine) {
-        _engine->Deinitialize(); // TODO(captainurist): should be called from Engine's destructor.
-        _engine.reset();
-        ::engine = nullptr;
-    }
+    ::engine = nullptr;
 
     ::nuklear = nullptr;
 
