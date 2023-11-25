@@ -18,8 +18,18 @@
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Format.h"
 #include "Utility/UnicodeCrt.h"
+#include "Utility/String.h"
 
 #include "OpenEnrothOptions.h"
+
+static std::string readTextFile(const std::string &path) {
+    // TODO(captainurist): why do we even need to normalize line endings?
+    std::string result = FileInputStream(path).readAll();
+    result = replaceAll(result, "\r\n", "\n"); // Normalize to UNIX line endings.
+    while(result.ends_with('\n'))
+        result.pop_back(); // Drop trailing newlines.
+    return result;
+}
 
 int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
@@ -38,7 +48,7 @@ int runRetrace(OpenEnrothOptions options) {
 
             std::string oldTraceJson;
             if (options.retrace.checkCanonical)
-                oldTraceJson = FileInputStream(tracePath).readAll();
+                oldTraceJson = readTextFile(tracePath);
 
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
@@ -51,7 +61,7 @@ int runRetrace(OpenEnrothOptions options) {
             recorder->finishRecording(game);
 
             if (options.retrace.checkCanonical) {
-                std::string newTraceJson = FileInputStream(tracePath).readAll();
+                std::string newTraceJson = readTextFile(tracePath);
                 if (oldTraceJson != newTraceJson) {
                     fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
                     status = 1;
