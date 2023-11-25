@@ -143,6 +143,6 @@ var searchData=
   ['_7estru10_140',['~stru10',['../structstru10.html#afbbbedb5c6f95ffe0fdb4d1a8580f468',1,'stru10']]],
   ['_7estru314_141',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
   ['_7etempfileoutputstream_142',['~TempFileOutputStream',['../classTempFileOutputStream.html#a1e2b6f8642b1355a6609b238a8cd28c6',1,'TempFileOutputStream']]],
-  ['_7evideolist_143',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
+  ['_7evidreader_143',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
   ['_7ewindowmanager_144',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];

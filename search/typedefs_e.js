@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['size_5ftype_0',['size_type',['../classSegment.html#a7c9f78831978be533d6013d2091db49e',1,'Segment']]],
-  ['sizef_1',['Sizef',['../Size_8h.html#a762e169fec3b7c10f6d45b7b2866db16',1,'Size.h']]],
-  ['sizei_2',['Sizei',['../Size_8h.html#a075755610ebd937662bd46b0703fbabf',1,'Size.h']]],
-  ['string_3',['String',['../classGameConfig.html#a85d38ef3ce59ab99fe3fa7c8b8a56b57',1,'GameConfig']]]
+  ['testbodyfunction_0',['TestBodyFunction',['../classGameTest.html#a3bdf97636000a17fb3ed471638da6f84',1,'GameTest']]],
+  ['testmultitape_1',['TestMultiTape',['../TestTape_8h.html#a799b26618609969a4acd254638b0a9c3',1,'TestTape.h']]],
+  ['testtape_2',['TestTape',['../TestTape_8h.html#a2f42e61a4e33649463dcf85788db2c6c',1,'TestTape.h']]]
 ];

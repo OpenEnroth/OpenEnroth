@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;675c120</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a51b665</span>
    </div>
   </td>
  </tr>
@@ -100,8 +100,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae127560c9b743d7a21ad27f0c617a0ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ff25439adbe3f75e945dd2b4bd8deaa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a5ff25439adbe3f75e945dd2b4bd8deaa">Load</a> (const char *filename)</td></tr>
 <tr class="separator:a5ff25439adbe3f75e945dd2b4bd8deaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae528f4eacffa4317dd6404768ff563dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#ae528f4eacffa4317dd6404768ff563dc">LoadFromLOD</a> (FILE *f, size_t size, size_t offset)</td></tr>
-<tr class="separator:ae528f4eacffa4317dd6404768ff563dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4362f25679d3f41aaf7afcc9fdd6ab05"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a4362f25679d3f41aaf7afcc9fdd6ab05">LoadFromLOD</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:a4362f25679d3f41aaf7afcc9fdd6ab05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afffb761bac87d2608f860d5a406e6239"><td class="memItemLeft" align="right" valign="top">virtual std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#afffb761bac87d2608f860d5a406e6239">GetFrame</a> () override</td></tr>
 <tr class="separator:afffb761bac87d2608f860d5a406e6239"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8583fedc135f8d1daa1e4804087863ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a8583fedc135f8d1daa1e4804087863ba">PlayBink</a> () override</td></tr>
@@ -142,10 +142,10 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a45bf9d5b2ddb363a2698250a753c6a9d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a45bf9d5b2ddb363a2698250a753c6a9d">read</a> (void *opaque, uint8_t *buf, int buf_size)</td></tr>
-<tr class="separator:a45bf9d5b2ddb363a2698250a753c6a9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3240461c15319133f62213b061dd6353"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a3240461c15319133f62213b061dd6353">seek</a> (void *opaque, int64_t offset, int whence)</td></tr>
-<tr class="separator:a3240461c15319133f62213b061dd6353"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f29554833eed9f230ec6726511d09f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a1f29554833eed9f230ec6726511d09f0">read</a> (uint8_t *buf, int buf_size)</td></tr>
+<tr class="separator:a1f29554833eed9f230ec6726511d09f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8937b34cf57d6421c533883cfd245c5f"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a8937b34cf57d6421c533883cfd245c5f">seek</a> (int64_t offset, int whence)</td></tr>
+<tr class="separator:a8937b34cf57d6421c533883cfd245c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-methods" name="pro-static-methods"></a>
 Static Protected Member Functions</h2></td></tr>
@@ -182,14 +182,10 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a21205753ca24cc7089b27c57254f053d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb198cbb087c22dd7fad72c5955f712d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#acb198cbb087c22dd7fad72c5955f712d">playing</a></td></tr>
 <tr class="separator:acb198cbb087c22dd7fad72c5955f712d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2475fe6037b8d5464d860c0915450f9"><td class="memItemLeft" align="right" valign="top">FILE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#af2475fe6037b8d5464d860c0915450f9">hFile</a></td></tr>
-<tr class="separator:af2475fe6037b8d5464d860c0915450f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a451cf6b8f34699e4e5691e75ebd675c8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a451cf6b8f34699e4e5691e75ebd675c8">uFileSize</a></td></tr>
-<tr class="separator:a451cf6b8f34699e4e5691e75ebd675c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a127fb76ed9715e1522cf576688e1d1be"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a127fb76ed9715e1522cf576688e1d1be">uFileOffset</a></td></tr>
-<tr class="separator:a127fb76ed9715e1522cf576688e1d1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec0c0528c9d709bd409f734873242d62"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#aec0c0528c9d709bd409f734873242d62">uFilePos</a></td></tr>
-<tr class="separator:aec0c0528c9d709bd409f734873242d62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e676ebf479652283175c0c5d4d39234"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a5e676ebf479652283175c0c5d4d39234">_blob</a></td></tr>
+<tr class="separator:a5e676ebf479652283175c0c5d4d39234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71cdc647886950461919921e62ec01b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMemoryInputStream.html">MemoryInputStream</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMovie.html#a71cdc647886950461919921e62ec01b9">_stream</a></td></tr>
+<tr class="separator:a71cdc647886950461919921e62ec01b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a62d82e9e61d6349ae66a73d0af6667ac" name="a62d82e9e61d6349ae66a73d0af6667ac"></a>
@@ -429,8 +425,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae528f4eacffa4317dd6404768ff563dc" name="ae528f4eacffa4317dd6404768ff563dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae528f4eacffa4317dd6404768ff563dc">&#9670;&#160;</a></span>LoadFromLOD()</h2>
+<a id="a4362f25679d3f41aaf7afcc9fdd6ab05" name="a4362f25679d3f41aaf7afcc9fdd6ab05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4362f25679d3f41aaf7afcc9fdd6ab05">&#9670;&#160;</a></span>LoadFromLOD()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -441,25 +437,9 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">bool Movie::LoadFromLOD </td>
           <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>f</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>offset</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -526,8 +506,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a45bf9d5b2ddb363a2698250a753c6a9d" name="a45bf9d5b2ddb363a2698250a753c6a9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45bf9d5b2ddb363a2698250a753c6a9d">&#9670;&#160;</a></span>read()</h2>
+<a id="a1f29554833eed9f230ec6726511d09f0" name="a1f29554833eed9f230ec6726511d09f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f29554833eed9f230ec6726511d09f0">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -538,12 +518,6 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">int Movie::read </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>opaque</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">uint8_t *&#160;</td>
           <td class="paramname"><em>buf</em>, </td>
         </tr>
@@ -677,8 +651,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3240461c15319133f62213b061dd6353" name="a3240461c15319133f62213b061dd6353"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3240461c15319133f62213b061dd6353">&#9670;&#160;</a></span>seek()</h2>
+<a id="a8937b34cf57d6421c533883cfd245c5f" name="a8937b34cf57d6421c533883cfd245c5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8937b34cf57d6421c533883cfd245c5f">&#9670;&#160;</a></span>seek()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -689,12 +663,6 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">int64_t Movie::seek </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>opaque</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">int64_t&#160;</td>
           <td class="paramname"><em>offset</em>, </td>
         </tr>
@@ -747,6 +715,50 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5e676ebf479652283175c0c5d4d39234" name="a5e676ebf479652283175c0c5d4d39234"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e676ebf479652283175c0c5d4d39234">&#9670;&#160;</a></span>_blob</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> Movie::_blob</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a71cdc647886950461919921e62ec01b9" name="a71cdc647886950461919921e62ec01b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71cdc647886950461919921e62ec01b9">&#9670;&#160;</a></span>_stream</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMemoryInputStream.html">MemoryInputStream</a> Movie::_stream</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aae9550392fdbe31a88e79b6decc79959" name="aae9550392fdbe31a88e79b6decc79959"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aae9550392fdbe31a88e79b6decc79959">&#9670;&#160;</a></span>audio</h2>
 
@@ -846,28 +858,6 @@ Protected Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">unsigned int Movie::height</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af2475fe6037b8d5464d860c0915450f9" name="af2475fe6037b8d5464d860c0915450f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2475fe6037b8d5464d860c0915450f9">&#9670;&#160;</a></span>hFile</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">FILE* Movie::hFile</td>
         </tr>
       </table>
   </td>
@@ -1000,72 +990,6 @@ Protected Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::chrono::time_point&lt;std::chrono::system_clock&gt; Movie::start_time</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a127fb76ed9715e1522cf576688e1d1be" name="a127fb76ed9715e1522cf576688e1d1be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a127fb76ed9715e1522cf576688e1d1be">&#9670;&#160;</a></span>uFileOffset</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t Movie::uFileOffset</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aec0c0528c9d709bd409f734873242d62" name="aec0c0528c9d709bd409f734873242d62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec0c0528c9d709bd409f734873242d62">&#9670;&#160;</a></span>uFilePos</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t Movie::uFilePos</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a451cf6b8f34699e4e5691e75ebd675c8" name="a451cf6b8f34699e4e5691e75ebd675c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a451cf6b8f34699e4e5691e75ebd675c8">&#9670;&#160;</a></span>uFileSize</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t Movie::uFileSize</td>
         </tr>
       </table>
   </td>

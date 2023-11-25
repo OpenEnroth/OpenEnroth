@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;675c120</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a51b665</span>
    </div>
   </td>
  </tr>
@@ -104,6 +104,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a24bd1affb3a8203c65d69aad51b3d55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade3b3c9a4a35fcf89fb8c6109047cba2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#ade3b3c9a4a35fcf89fb8c6109047cba2">close</a> () override</td></tr>
 <tr class="separator:ade3b3c9a4a35fcf89fb8c6109047cba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33f02611f82b18c9bd5ff17f7f3ce6ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#a33f02611f82b18c9bd5ff17f7f3ce6ea">seek</a> (size_t pos)</td></tr>
+<tr class="separator:a33f02611f82b18c9bd5ff17f7f3ce6ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9bfaf4dc2c0ace24c93f090805bf7f4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#ac9bfaf4dc2c0ace24c93f090805bf7f4">position</a> () const</td></tr>
+<tr class="separator:ac9bfaf4dc2c0ace24c93f090805bf7f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classInputStream"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classInputStream')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classInputStream.html">InputStream</a></td></tr>
 <tr class="memitem:a8c49246dd62e559578732f518f159432 inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a8c49246dd62e559578732f518f159432">~InputStream</a> ()</td></tr>
 <tr class="separator:a8c49246dd62e559578732f518f159432 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,6 +126,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a51611d5453948cf270240af38de3cbfc"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#a51611d5453948cf270240af38de3cbfc">_begin</a> = nullptr</td></tr>
+<tr class="separator:a51611d5453948cf270240af38de3cbfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a471e080dd5169ac7a32c70ad70a8282f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#a471e080dd5169ac7a32c70ad70a8282f">_pos</a> = nullptr</td></tr>
 <tr class="separator:a471e080dd5169ac7a32c70ad70a8282f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5acb255a84601d0a8434fdcfec6256b"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#ab5acb255a84601d0a8434fdcfec6256b">_end</a> = nullptr</td></tr>
@@ -234,6 +240,23 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ac9bfaf4dc2c0ace24c93f090805bf7f4" name="ac9bfaf4dc2c0ace24c93f090805bf7f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9bfaf4dc2c0ace24c93f090805bf7f4">&#9670;&#160;</a></span>position()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t MemoryInputStream::position </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4986d3872a3360ff338987ce3980d963" name="a4986d3872a3360ff338987ce3980d963"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4986d3872a3360ff338987ce3980d963">&#9670;&#160;</a></span>read()</h2>
 
@@ -314,6 +337,24 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a33f02611f82b18c9bd5ff17f7f3ce6ea" name="a33f02611f82b18c9bd5ff17f7f3ce6ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33f02611f82b18c9bd5ff17f7f3ce6ea">&#9670;&#160;</a></span>seek()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MemoryInputStream::seek </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a24bd1affb3a8203c65d69aad51b3d55d" name="a24bd1affb3a8203c65d69aad51b3d55d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a24bd1affb3a8203c65d69aad51b3d55d">&#9670;&#160;</a></span>skip()</h2>
 
@@ -356,6 +397,28 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a51611d5453948cf270240af38de3cbfc" name="a51611d5453948cf270240af38de3cbfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51611d5453948cf270240af38de3cbfc">&#9670;&#160;</a></span>_begin</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* MemoryInputStream::_begin = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab5acb255a84601d0a8434fdcfec6256b" name="ab5acb255a84601d0a8434fdcfec6256b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab5acb255a84601d0a8434fdcfec6256b">&#9670;&#160;</a></span>_end</h2>
 
