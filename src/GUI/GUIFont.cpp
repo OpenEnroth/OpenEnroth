@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/LodTextureCache.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"

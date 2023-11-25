@@ -2,17 +2,16 @@
 
 #include <string>
 
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
+#include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
 
 GraphicsImage *ui_book_calendar_background = nullptr;
 

@@ -1,9 +1,9 @@
 #include "UIStatusBar.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
+#include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 

@@ -1,18 +1,16 @@
 #include <string>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
-
 #include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/mm7_data.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/Books/JournalBook.h"
 

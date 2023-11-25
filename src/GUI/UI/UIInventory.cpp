@@ -1,15 +1,12 @@
 #include "GUI/UI/UIInventory.h"
 
-#include "Engine/Engine.h"
 #include "Engine/Localization.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Party.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
-#include "GUI/UI/UIStatusBar.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
