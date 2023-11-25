@@ -4,7 +4,13 @@ on:
   schedule:
     # schedule build once per day
     - cron: "6 11 * * *"
-  workflow_dispatch: #allows to manually run a workflow
+  workflow_dispatch: # Allow to manually run a workflow
+    inputs:
+      forceRebuild:
+        description: Force Rebuild
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build_data_cache:
@@ -15,7 +21,7 @@ jobs:
         configuration: [Release]
         architecture: [x64]
     steps:
-    - name: Check for Data cache
+    - name: Check for data cache
       id: check-for-data-cache
       uses: actions/cache/restore@v3
       with:
@@ -24,7 +30,7 @@ jobs:
         key: data-cache
 
     - name: Checkout private data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true' || ${{inputs.forceRebuild}}
       uses: actions/checkout@v3
       with:
         repository: OpenEnroth/OpenEnroth_GameData
@@ -32,8 +38,8 @@ jobs:
         lfs: 'true' # .vid files are stored in LFS.
         token: '${{secrets.DATA_ACCESS_TOKEN}}'
 
-    - name: Cache data if needed
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+    - name: Cache data
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true' || ${{inputs.forceRebuild}}
       uses: actions/cache/save@v3
       with:
         path: |
