@@ -47,12 +47,15 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
         game->saveGame(savePath);
     _trace->header.saveFileSize = std::filesystem::file_size(_savePath);
 
+    // Reset all pressed buttons. It's important to do this before loading the game b/c game loading peeks into pressed
+    // buttons and does all kinds of weird stuff.
+    _keyboardController->reset();
+
     game->goToMainMenu(); // This might call into a random engine.
     _deterministicComponent->restart(frameTimeMs, rngType);
     game->loadGame(savePath);
     _trace->header.afterLoadRandomState = grng->peek(1024);
     _deterministicComponent->restart(frameTimeMs, rngType);
-    _keyboardController->reset(); // Reset all pressed buttons.
 
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();
     _simpleRecorder->startRecording();
