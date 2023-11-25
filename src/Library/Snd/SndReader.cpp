@@ -30,7 +30,7 @@ void SndReader::open(std::string_view path) {
     deserialize(stream, &entries, tags::via<SndEntry_MM7>);
 
     std::unordered_map<std::string, SndEntry> files;
-    for (const SndEntry &entry : entries) {
+    for (SndEntry &entry : entries) {
         std::string name = toLower(entry.name);
         if (files.contains(name))
             throw Exception("File '{}' is not a valid SND: contains duplicate entries for '{}'", path, name);
@@ -38,7 +38,7 @@ void SndReader::open(std::string_view path) {
         if (entry.offset + entry.size > blob.size())
             throw Exception("File '{}' is not a valid SND: entry '{}' points outside the SND file", path, entry.name);
 
-        files[name] = std::move(entry);
+        files.emplace(std::move(name), std::move(entry));
     }
 
     // All good, this is a valid SND, can update `this`.

@@ -82,7 +82,7 @@ void FileInputStream::seek(size_t pos) {
         Exception::throwFromErrno(_path);
 
     if (pos > end)
-        throw Exception("Could not seek past the end of file '{}': file size is {}, but trying to seek to {}", _path, end, pos);
+        pos = end; // Seek beyond EOF just seeks to EOF.
 
     if (fseeko(_file, pos, SEEK_SET) != 0)
         Exception::throwFromErrno(_path);

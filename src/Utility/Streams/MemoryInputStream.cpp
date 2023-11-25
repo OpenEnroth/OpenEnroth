@@ -15,7 +15,8 @@ MemoryInputStream::MemoryInputStream(const void *data, size_t size) {
 MemoryInputStream::~MemoryInputStream() {}
 
 void MemoryInputStream::reset(const void *data, size_t size) {
-    _pos = static_cast<const char *>(data);
+    _begin = static_cast<const char *>(data);
+    _pos = _begin;
     _end = _pos + size;
 }
 
@@ -39,4 +40,12 @@ size_t MemoryInputStream::skip(size_t size) {
 
 void MemoryInputStream::close() {
     reset(nullptr, 0);
+}
+
+void MemoryInputStream::seek(size_t pos) {
+    _pos = _begin + std::min(pos, static_cast<size_t>(_end - _begin));
+}
+
+size_t MemoryInputStream::position() const {
+    return _pos - _begin;
 }

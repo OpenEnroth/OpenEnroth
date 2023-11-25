@@ -14,7 +14,11 @@ class MemoryInputStream: public InputStream {
     virtual size_t skip(size_t size) override;
     virtual void close() override;
 
+    void seek(size_t pos);
+    size_t position() const;
+
  private:
+    const char *_begin = nullptr;
     const char *_pos = nullptr;
     const char *_end = nullptr;
 };
