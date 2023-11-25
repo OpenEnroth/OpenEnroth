@@ -10,6 +10,12 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Components/Trace/EngineTracePlayer.h"
+#include "Engine/Components/Trace/EngineTraceRecorder.h"
+#include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
+#include "Engine/Components/Trace/EngineTraceSimpleRecorder.h"
+#include "Engine/Components/Control/EngineControlComponent.h"
+#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -25,6 +31,9 @@
 #include "GamePathResolver.h"
 #include "GameConfig.h"
 #include "Game.h"
+#include "GameKeyboardController.h"
+#include "GameWindowHandler.h"
+#include "GameTraceHandler.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init random engine factory.
@@ -82,6 +91,20 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     ::window = _application->window();
     ::eventHandler = _application->eventHandler();
     ::openGLContext = _application->openGLContext(); // OK to store into a global even if not yet initialized
+
+    // Install components.
+    // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
+    // But the trace component should go after the deterministic component - deterministic component updates tick count,
+    // and then trace component stores the updated value in a recorded `PaintEvent`.
+    _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
+    _application->install(std::make_unique<GameWindowHandler>());
+    _application->install(std::make_unique<EngineControlComponent>());
+    _application->install(std::make_unique<EngineTraceSimpleRecorder>());
+    _application->install(std::make_unique<EngineTraceSimplePlayer>());
+    _application->install(std::make_unique<EngineDeterministicComponent>());
+    _application->install(std::make_unique<EngineTraceRecorder>());
+    _application->install(std::make_unique<EngineTracePlayer>());
+    _application->install(std::make_unique<GameTraceHandler>());
 
     // Init renderer.
     _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);

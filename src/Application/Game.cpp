@@ -7,12 +7,6 @@
 
 #include "Arcomage/Arcomage.h"
 
-#include "Application/GameKeyboardController.h"
-#include "Application/GameWindowHandler.h"
-#include "Application/GamePathResolver.h"
-#include "Application/GameTraceHandler.h"
-#include "Application/GameMenu.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -32,12 +26,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Components/Trace/EngineTracePlayer.h"
-#include "Engine/Components/Trace/EngineTraceRecorder.h"
-#include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
-#include "Engine/Components/Trace/EngineTraceSimpleRecorder.h"
-#include "Engine/Components/Control/EngineControlComponent.h"
-#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Localization.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
@@ -97,6 +85,11 @@
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
+#include "GameIocContainer.h"
+#include "GameKeyboardController.h"
+#include "GameWindowHandler.h"
+#include "GameMenu.h"
+
 void ShowMM7IntroVideo_and_LoadingScreen();
 
 void initDataPath(Platform *platform, const std::string &dataPath) {
@@ -129,21 +122,7 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     _application = application;
     _config = config;
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
-    _vis = EngineIocContainer::ResolveVis();
     _menu = GameIocContainer::ResolveGameMenu();
-
-    // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
-    // But the trace component should go after the deterministic component - deterministic component updates tick count,
-    // and then trace component stores the updated value in a recorded `PaintEvent`.
-    _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
-    _application->install(std::make_unique<GameWindowHandler>());
-    _application->install(std::make_unique<EngineControlComponent>());
-    _application->install(std::make_unique<EngineTraceSimpleRecorder>());
-    _application->install(std::make_unique<EngineTraceSimplePlayer>());
-    _application->install(std::make_unique<EngineDeterministicComponent>());
-    _application->install(std::make_unique<EngineTraceRecorder>());
-    _application->install(std::make_unique<EngineTracePlayer>());
-    _application->install(std::make_unique<GameTraceHandler>());
 }
 
 Game::~Game() {

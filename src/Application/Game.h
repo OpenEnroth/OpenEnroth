@@ -3,22 +3,19 @@
 #include <memory>
 #include <string>
 
-#include "GameConfig.h"
-#include "GameMenu.h"
-#include "GameIocContainer.h"
-
-#include "Engine/Engine.h"
-
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
-
 using Io::Mouse;
 
+class Engine;
+class DecalBuilder;
 class PlatformApplication;
 class GameTraceHandler;
 class NuklearEventHandler;
+class Nuklear;
 class Platform;
+class Menu;
 
 class Game {
  public:
@@ -42,7 +39,6 @@ class Game {
     std::unique_ptr<Engine> _engine;
     std::shared_ptr<Mouse> _mouse;
     DecalBuilder *_decalBuilder = nullptr;
-    Vis *_vis = nullptr;
     Menu *_menu = nullptr;
     std::shared_ptr<Nuklear> _nuklear = nullptr;
 };
