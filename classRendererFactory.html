@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a51b665</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f130f9</span>
    </div>
   </td>
  </tr>
@@ -80,22 +80,32 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a02bf8c044e1eaef88b984228aa8a112c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classRenderer.html">Renderer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRendererFactory.html#a02bf8c044e1eaef88b984228aa8a112c">Create</a> (std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt; config)</td></tr>
-<tr class="separator:a02bf8c044e1eaef88b984228aa8a112c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7de8dc2a0fb150aac0e2e26e6c5a913a"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRenderer.html">Renderer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRendererFactory.html#a7de8dc2a0fb150aac0e2e26e6c5a913a">createRenderer</a> (<a class="el" href="RendererEnums_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ce">RendererType</a> type, std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt; config)</td></tr>
+<tr class="separator:a7de8dc2a0fb150aac0e2e26e6c5a913a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a02bf8c044e1eaef88b984228aa8a112c" name="a02bf8c044e1eaef88b984228aa8a112c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02bf8c044e1eaef88b984228aa8a112c">&#9670;&#160;</a></span>Create()</h2>
+<a id="a7de8dc2a0fb150aac0e2e26e6c5a913a" name="a7de8dc2a0fb150aac0e2e26e6c5a913a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7de8dc2a0fb150aac0e2e26e6c5a913a">&#9670;&#160;</a></span>createRenderer()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; <a class="el" href="classRenderer.html">Renderer</a> &gt; RendererFactory::Create </td>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classRenderer.html">Renderer</a> &gt; RendererFactory::createRenderer </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt;&#160;</td>
-          <td class="paramname"><em>config</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="RendererEnums_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ce">RendererType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt;&#160;</td>
+          <td class="paramname"><em>config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

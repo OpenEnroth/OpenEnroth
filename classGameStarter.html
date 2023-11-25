@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a51b665</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f130f9</span>
    </div>
   </td>
  </tr>
@@ -116,6 +116,12 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ac68a518d94fa40a198407c8c63edefa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d9aee55e10d1b476bee78456dff793f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformApplication.html">PlatformApplication</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a0d9aee55e10d1b476bee78456dff793f">_application</a></td></tr>
 <tr class="separator:a0d9aee55e10d1b476bee78456dff793f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd7b0ca54a78725492499ece09de9401"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRenderer.html">Renderer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#acd7b0ca54a78725492499ece09de9401">_renderer</a></td></tr>
+<tr class="separator:acd7b0ca54a78725492499ece09de9401"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d0dbbd5d4a2bf30bca583bb80876eb5"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classNuklear.html">Nuklear</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a0d0dbbd5d4a2bf30bca583bb80876eb5">_nuklear</a></td></tr>
+<tr class="separator:a0d0dbbd5d4a2bf30bca583bb80876eb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaa123893b7122dea87055c0e087a84e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classEngine.html">Engine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#adaa123893b7122dea87055c0e087a84e">_engine</a></td></tr>
+<tr class="separator:adaa123893b7122dea87055c0e087a84e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa59264f2fc213f62b0faaf97b6f8252"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classGame.html">Game</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#afa59264f2fc213f62b0faaf97b6f8252">_game</a></td></tr>
 <tr class="separator:afa59264f2fc213f62b0faaf97b6f8252"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -151,9 +157,6 @@ Private Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">GameStarter::~GameStarter </td>
@@ -162,11 +165,6 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -370,6 +368,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="adaa123893b7122dea87055c0e087a84e" name="adaa123893b7122dea87055c0e087a84e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaa123893b7122dea87055c0e087a84e">&#9670;&#160;</a></span>_engine</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classEngine.html">Engine</a>&gt; GameStarter::_engine</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a98d25ec3dd5bdbddaaf3003398eaf4f5" name="a98d25ec3dd5bdbddaaf3003398eaf4f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98d25ec3dd5bdbddaaf3003398eaf4f5">&#9670;&#160;</a></span>_environment</h2>
 
@@ -436,6 +456,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a0d0dbbd5d4a2bf30bca583bb80876eb5" name="a0d0dbbd5d4a2bf30bca583bb80876eb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d0dbbd5d4a2bf30bca583bb80876eb5">&#9670;&#160;</a></span>_nuklear</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classNuklear.html">Nuklear</a>&gt; GameStarter::_nuklear</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a409dd64a320faa9388fa4777243537ac" name="a409dd64a320faa9388fa4777243537ac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a409dd64a320faa9388fa4777243537ac">&#9670;&#160;</a></span>_options</h2>
 
@@ -469,6 +511,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classPlatform.html">Platform</a>&gt; GameStarter::_platform</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd7b0ca54a78725492499ece09de9401" name="acd7b0ca54a78725492499ece09de9401"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd7b0ca54a78725492499ece09de9401">&#9670;&#160;</a></span>_renderer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRenderer.html">Renderer</a>&gt; GameStarter::_renderer</td>
         </tr>
       </table>
   </td>
