@@ -8,6 +8,7 @@
 
 class LogSink {
  public:
+    virtual ~LogSink() = default;
     virtual void write(const LogCategory &category, LogLevel level, std::string_view message) = 0;
 
     /**
