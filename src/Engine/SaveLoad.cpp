@@ -143,11 +143,6 @@ void LoadGame(unsigned int uSlot) {
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
 
-    // TODO: what is this magic? old party position correction with current angle settings?
-    // TODO(captainurist): might be a source of non-determinism, just drop this.
-    if (engine->config->settings.TurnSpeed.value() > 0) {
-        pParty->_viewYaw = engine->config->settings.TurnSpeed.value() * pParty->_viewYaw / engine->config->settings.TurnSpeed.value();
-    }
     MM7Initialization();
 
     // TODO: disable flashing for all books until we save state to savegame file
