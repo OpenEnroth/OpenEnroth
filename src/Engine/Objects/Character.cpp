@@ -354,9 +354,7 @@ bool Character::NothingOrJustBlastersEquipped() const {
         if (item_idx) {
             item_id = pOwnItems[item_idx - 1].uItemID;
 
-            if (item_id != ITEM_BLASTER &&
-                item_id != ITEM_BLASTER_RIFLE)  // soemthing other than blaster&
-                                              // blaster rifle
+            if (!isAncientWeapon(item_id))
                 return false;
         }
     }
@@ -1186,9 +1184,7 @@ int Character::GetRangedAttack() {
 
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr &&
-        (mainHandItem->uItemID < ITEM_BLASTER ||
-         mainHandItem->uItemID > ITEM_BLASTER_RIFLE)) {  // no blasters
+    if (mainHandItem != nullptr && !isAncientWeapon(mainHandItem->uItemID)) {  // no blasters
         weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) +
                     GetParameterBonus(GetActualAccuracy());
         skillbonus =
@@ -1282,9 +1278,7 @@ std::string Character::GetMeleeDamageString() {
     if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_OF_FIRE) &&
         (mainHandItem->uItemID <= ITEM_MYSTIC_WAND_OF_INCINERATION)) {
         return std::string(localization->GetString(LSTR_WAND));
-    } else if (mainHandItem != nullptr &&
-               (mainHandItem->uItemID == ITEM_BLASTER ||
-                mainHandItem->uItemID == ITEM_BLASTER_RIFLE)) {
+    } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->uItemID)) {
         min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN);  // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX);
     } else {
@@ -1308,9 +1302,7 @@ std::string Character::GetRangedDamageString() {
 
     if (mainHandItem != nullptr && isWand(mainHandItem->uItemID)) {
         return std::string(localization->GetString(LSTR_WAND));
-    } else if (mainHandItem != nullptr &&
-               (mainHandItem->uItemID == ITEM_BLASTER ||
-                mainHandItem->uItemID == ITEM_BLASTER_RIFLE)) {
+    } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->uItemID)) {
         min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
@@ -7128,8 +7120,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
                         0;  // wand discharged - unequip
                 else
                     wand_item_id = item->uItemID;  // *((int *)v5 + 124);
-            } else if (item->uItemID == ITEM_BLASTER ||
-                       item->uItemID == ITEM_BLASTER_RIFLE) {
+            } else if (isAncientWeapon(item->uItemID)) {
                 laser_weapon_item_id = item->uItemID;  // *((int *)v5 + 124);
             }
         }

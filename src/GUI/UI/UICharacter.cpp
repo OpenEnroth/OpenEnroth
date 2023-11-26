@@ -1963,9 +1963,7 @@ void OnPaperdollLeftClick() {
                 // -------------------------taken in hand(взять в руку)-------------------------------------------
             case ITEM_TYPE_SINGLE_HANDED:
             case ITEM_TYPE_WAND:
-                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
-                    pParty->pPickedItem.uItemID != ITEM_BLASTER &&
-                    pParty->pPickedItem.uItemID != ITEM_BLASTER_RIFLE) {
+                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && !isAncientWeapon(pParty->pPickedItem.uItemID)) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }

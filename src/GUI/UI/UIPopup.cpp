@@ -2354,9 +2354,7 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isEnchantingPotion(pParty->pPickedItem.uItemID)) {
-        if (item->IsBroken() || isArtifact(item->uItemID) ||
-            item->isPassiveEquipment() || item->isWand() ||
-            item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_BLASTER_RIFLE) {
+        if (item->IsBroken() || isArtifact(item->uItemID) || item->isPassiveEquipment() || item->isWand() || isAncientWeapon(item->uItemID)) {
             // Sound error and stop right click item actions until button is released
             pAudioPlayer->playUISound(SOUND_error);
             rightClickItemActionPerformed = true;
