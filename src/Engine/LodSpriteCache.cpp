@@ -5,7 +5,8 @@
 
 #include "Library/LodFormats/LodFormats.h"
 
-#include "Utility/Streams/BlobInputStream.h"
+#include "Utility/String.h"
+#include "Utility/MapAccess.h"
 
 #include "AssetsManager.h"
 
@@ -21,9 +22,8 @@ void LODSprite::Release() {
 LodSpriteCache::LodSpriteCache() = default;
 
 LodSpriteCache::~LodSpriteCache() {
-    for (size_t i = 0; i < this->_sprites.size(); ++i) {
-        this->_sprites[i].Release();
-    }
+    for (auto &[_, sprite] : _spriteByName)
+        sprite.Release();
 }
 
 bool LodSpriteCache::open(const std::string &pFilename) {
@@ -32,35 +32,36 @@ bool LodSpriteCache::open(const std::string &pFilename) {
 }
 
 void LodSpriteCache::reserveLoadedSprites() {  // final init
-    _reservedCount = _sprites.size();
+    _reservedCount = _spritesInOrder.size();
 }
 
 void LodSpriteCache::releaseUnreserved() {
-    for (size_t i = this->_reservedCount; i < this->_sprites.size(); i++) {
-        this->_sprites[i].Release();
+    while (_spritesInOrder.size() > _reservedCount) {
+        const std::string &name = _spritesInOrder.back();
+        _spriteByName[name].Release();
+        _spriteByName.erase(name);
+        _spritesInOrder.pop_back();
     }
-    this->_sprites.resize(this->_reservedCount);
 }
 
 Sprite *LodSpriteCache::loadSprite(const std::string &pContainerName) {
-    for (Sprite &pSprite : _sprites) {
-        if (pSprite.pName == pContainerName) {
-            return &pSprite;
-        }
-    }
+    std::string name = toLower(pContainerName);
+
+    Sprite *result = valuePtr(_spriteByName, name);
+    if (result)
+        return result;
 
     std::unique_ptr<LODSprite> header = std::make_unique<LODSprite>();
-    if (!LoadSpriteFromFile(header.get(), pContainerName))
+    if (!LoadSpriteFromFile(header.get(), name))
         return nullptr;
 
-    // if (uNumLoadedSprites == 879) assert(false);
-
-    Sprite &sprite = _sprites.emplace_back();
+    Sprite &sprite = _spriteByName[name];
     sprite.pName = pContainerName;
     sprite.uWidth = header->bitmap.width();
     sprite.uHeight = header->bitmap.height();
     sprite.texture = assets->getSprite(pContainerName); // TODO(captainurist): very weird dependency here.
     sprite.sprite_header = header.release();
+    _spritesInOrder.push_back(name);
     return &sprite;
 }
 

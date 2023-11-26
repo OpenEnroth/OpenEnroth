@@ -48,7 +48,7 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
         return result;
 
     result = &_textureByName[name];
-    if (LoadTextureFromLOD(result, pContainer)) {
+    if (LoadTextureFromLOD(result, name)) {
         _texturesInOrder.push_back(name);
         return result;
     }
