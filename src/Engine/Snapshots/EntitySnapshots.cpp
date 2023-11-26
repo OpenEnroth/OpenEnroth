@@ -188,6 +188,11 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->z = src.z;
 }
 
+void reconstruct(const Planef_MM7 &src, Planef *dst) {
+    dst->normal = src.normal;
+    dst->dist = src.dist;
+}
+
 void reconstruct(const Planei_MM7 &src, Planef *dst) {
     dst->normal.x = src.normal.x / 65536.0f;
     dst->normal.y = src.normal.y / 65536.0f;
@@ -216,7 +221,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
 }
 
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
-    dst->facePlane = src.facePlane;
+    reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;

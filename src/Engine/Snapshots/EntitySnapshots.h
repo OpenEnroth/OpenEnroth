@@ -63,12 +63,10 @@ struct Timer;
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
 static_assert(sizeof(Vec3f) == 12);
-static_assert(sizeof(Planef) == 16);
 static_assert(sizeof(BBoxs) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3s)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3i)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3f)
-MM_DECLARE_MEMCOPY_SERIALIZABLE(Planef)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs)
 
 
@@ -80,6 +78,16 @@ void reconstruct(const Vec3s &src, Vec3i *dst);
 
 
 #pragma pack(push, 1)
+
+struct Planef_MM7 {
+    Vec3f normal;
+    float dist;
+};
+static_assert(sizeof(Planef_MM7) == 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Planef_MM7)
+
+void reconstruct(const Planef_MM7 &src, Planef *dst);
+
 
 struct Planei_MM7 {
     Vec3i normal; // Fixpoint normal.
@@ -117,7 +125,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {
-    Planef facePlane;
+    Planef_MM7 facePlane;
     Planei_MM7 facePlaneOld;
     int32_t zCalc1;
     int32_t zCalc2;
