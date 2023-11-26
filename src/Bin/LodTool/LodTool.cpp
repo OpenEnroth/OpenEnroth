@@ -1,5 +1,7 @@
 #include "LodToolOptions.h"
 
+#include <cstdio>
+
 #include "Library/Lod/LodReader.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Serialization/Serialization.h"
@@ -7,6 +9,12 @@
 #include "Utility/Format.h"
 #include "Utility/String.h"
 #include "Utility/UnicodeCrt.h"
+
+int runLs(const LodToolOptions &options) {
+    LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
+    fmt::println("{}", fmt::join(reader.ls(), "\n"));
+    return 0;
+}
 
 int runDump(const LodToolOptions &options) {
     LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
@@ -40,6 +48,17 @@ int runDump(const LodToolOptions &options) {
     return 0;
 }
 
+int runCat(const LodToolOptions &options) {
+    LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
+    Blob data = reader.read(options.cat.entry);
+    if (!options.cat.raw) {
+        LodFileFormat format = lod::magic(data, options.cat.entry);
+        if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE)
+            data = lod::decodeCompressed(data);
+    }
+    return fwrite(data.data(), data.size(), 1, stdout) != 1;
+}
+
 int main(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
@@ -48,10 +67,10 @@ int main(int argc, char **argv) {
             return 1;
 
         switch (options.subcommand) {
-        case LodToolOptions::SUBCOMMAND_DUMP: return runDump(std::move(options));
-        default:
-            assert(false);
-            return 1;
+        default: assert(false); [[fallthrough]];
+        case LodToolOptions::SUBCOMMAND_LS: return runLs(options);
+        case LodToolOptions::SUBCOMMAND_DUMP: return runDump(options);
+        case LodToolOptions::SUBCOMMAND_CAT: return runCat(options);
         }
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());
