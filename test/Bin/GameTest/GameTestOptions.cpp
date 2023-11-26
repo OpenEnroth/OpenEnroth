@@ -37,7 +37,7 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     app->set_help_flag("-h,--help", "Print help and exit.")->group(otherOptions);
     app->add_flag(
         "--gtest_list_tests", result.listRequested,
-        "List the names of all tests instead of running them.")->group(""); // group("") hides the option.
+        "List the names of all tests instead of running them.")->group(""); // group("") hides the option. It's shown in gtest's help.
     app->allow_extras();
 
     app->parse(argc, argv, result.helpPrinted);

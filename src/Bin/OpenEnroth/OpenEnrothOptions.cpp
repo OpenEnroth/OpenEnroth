@@ -1,6 +1,10 @@
 #include "OpenEnrothOptions.h"
 
 #include <memory>
+#include <utility>
+#include <ranges>
+
+#include <glob/glob.h> // NOLINT: not a C system include.
 
 #include "Application/GamePathResolver.h"
 
@@ -29,14 +33,39 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Set log level to 'trace'.");
     app->set_help_flag("-h,--help", "Print help and exit.");
 
+    bool globTraces = false;
     CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();
-    retrace->add_option("TRACE", result.retrace.traces,
-                        "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");
+    app->add_flag(
+        "--headless", result.headless,
+        "Run in headless mode.");
+    retrace->add_flag(
+        "--tracing-rng", result.tracingRng,
+        "Use random number generators that print stack trace on each call.");
+    retrace->add_flag(
+        "--check-canonical", result.retrace.checkCanonical,
+        "Check whether all passed traces are stored in canonical representation and return an error if not.");
+    retrace->add_flag(
+        "--glob", globTraces,
+        "Glob passed trace paths.")->group(""); // group("") hides this option. It's here so that we don't have to jump through hoops in cmake.
+    retrace->add_option(
+        "TRACE", result.retrace.traces,
+        "Path to trace file(s) to retrace.")->required()->option_text("...");
+    retrace->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
 
     app->parse(argc, argv, result.helpPrinted);
 
-    if (result.subcommand == SUBCOMMAND_RETRACE)
+    if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.useConfig = false; // Don't use external config if retracing.
+
+        if (globTraces) {
+            std::vector<std::string> patterns = std::move(result.retrace.traces);
+            result.retrace.traces.clear();
+            for (const std::string &pattern : patterns)
+                for (const std::filesystem::path &path : glob::glob(pattern))
+                    result.retrace.traces.push_back(path.string());
+            std::ranges::sort(result.retrace.traces); // NOLINT: This is ranges::sort. We want a fixed order.
+        }
+    }
 
     return result;
 }

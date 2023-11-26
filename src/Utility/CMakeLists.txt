@@ -65,6 +65,7 @@ if(OE_BUILD_TESTS)
             Math/Tests/Float_ut.cpp
             Memory/Tests/Blob_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
+            Streams/Tests/InputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp

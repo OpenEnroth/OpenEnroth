@@ -18,12 +18,13 @@ std::string InputStream::readAll(size_t maxSize) {
     std::string result;
     while (true) {
         size_t oldSize = result.size();
-        result.resize(oldSize + chunkSize); // TODO(captainurist): Use C++23 resize_and_overwrite.
+        size_t newSize = std::min(oldSize + chunkSize, maxSize);
+        result.resize(newSize); // TODO(captainurist): Use C++23 resize_and_overwrite.
 
-        chunkSize = std::min(maxSize - result.size(), chunkSize);
-        size_t bytesRead = read(result.data() + oldSize, chunkSize);
-        if (bytesRead < chunkSize) {
-            result.resize(result.size() + bytesRead);
+        size_t bytesRequested = newSize - oldSize;
+        size_t bytesRead = read(result.data() + oldSize, bytesRequested);
+        if (bytesRead < bytesRequested) {
+            result.resize(oldSize + bytesRead);
             return result;
         }
 

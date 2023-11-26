@@ -18,7 +18,7 @@ if(OE_BUILD_TESTS)
     ExternalProject_Add(OpenEnroth_TestData
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}/test_data_tmp
             GIT_REPOSITORY https://github.com/OpenEnroth/OpenEnroth_TestData.git
-            GIT_TAG ee67386f0a475fc81fcd61bf6873abc706a5aeea
+            GIT_TAG 39dd17b8a2913d942229e202de90d34886a0efb1
             SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/test_data
             CONFIGURE_COMMAND ""
             BUILD_COMMAND ""
@@ -37,4 +37,20 @@ if(OE_BUILD_TESTS)
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
+
+    # RetraceTest
+    add_custom_target(RetraceTest
+            OpenEnroth retrace --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
+            DEPENDS OpenEnroth OpenEnroth_TestData
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            USES_TERMINAL
+    )
+
+    add_custom_target(RetraceTest_Headless
+            OpenEnroth retrace --headless --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
+            DEPENDS OpenEnroth OpenEnroth_TestData
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            USES_TERMINAL
+    )
+
 endif()
