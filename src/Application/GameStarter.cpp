@@ -96,17 +96,17 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
-    _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
-    _application->install(std::make_unique<GameWindowHandler>());
-    _application->install(std::make_unique<EngineControlComponent>());
-    _application->install(std::make_unique<EngineTraceSimpleRecorder>());
-    _application->install(std::make_unique<EngineTraceSimplePlayer>());
-    _application->install(std::make_unique<EngineDeterministicComponent>());
-    _application->install(std::make_unique<EngineTraceRecorder>());
-    _application->install(std::make_unique<EngineTracePlayer>());
-    _application->install(std::make_unique<GameTraceHandler>());
-    _application->install(std::make_unique<EngineRandomComponent>());
-    _application->get<EngineRandomComponent>()->setTracing(_options.tracingRng);
+    _application->installComponent(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
+    _application->installComponent(std::make_unique<GameWindowHandler>());
+    _application->installComponent(std::make_unique<EngineControlComponent>());
+    _application->installComponent(std::make_unique<EngineTraceSimpleRecorder>());
+    _application->installComponent(std::make_unique<EngineTraceSimplePlayer>());
+    _application->installComponent(std::make_unique<EngineDeterministicComponent>());
+    _application->installComponent(std::make_unique<EngineTraceRecorder>());
+    _application->installComponent(std::make_unique<EngineTracePlayer>());
+    _application->installComponent(std::make_unique<GameTraceHandler>());
+    _application->installComponent(std::make_unique<EngineRandomComponent>());
+    _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
     // Init renderer.
     _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);
@@ -120,12 +120,11 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         logger->error("Nuklear failed to initialize");
     ::nuklear = _nuklear.get();
     if (_nuklear)
-        _application->install(std::make_unique<NuklearEventHandler>());
+        _application->installComponent(std::make_unique<NuklearEventHandler>());
 
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
-    ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(
-        _application->get<GameKeyboardController>(),
+    ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(_application->component<GameKeyboardController>(),
         keyboardActionMapping
     );
     ::mouse = EngineIocContainer::ResolveMouse();

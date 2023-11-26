@@ -20,8 +20,8 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
     if (isTriggerKeySequence(event)) {
         _waitingForKeyRelease = true;
 
-        application()->get<EngineControlComponent>()->runControlRoutine([this] (EngineController *game) {
-            EngineTraceRecorder *tracer = application()->get<EngineTraceRecorder>();
+        component<EngineControlComponent>()->runControlRoutine([this] (EngineController *game) {
+            EngineTraceRecorder *tracer = component<EngineTraceRecorder>();
             if (tracer->isRecording()) {
                 tracer->finishRecording(game);
             } else {

@@ -33,11 +33,11 @@ int runRetrace(OpenEnrothOptions options) {
 
     int status = 0;
 
-    starter.application()->get<EngineControlComponent>()->runControlRoutine([&status, options, application = starter.application()] (EngineController *game) {
+    starter.application()->component<EngineControlComponent>()->runControlRoutine([&status, options, application = starter.application()] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.
 
-        EngineTraceSimplePlayer *player = application->get<EngineTraceSimplePlayer>();
-        EngineTraceRecorder *recorder = application->get<EngineTraceRecorder>();
+        EngineTraceSimplePlayer *player = application->component<EngineTraceSimplePlayer>();
+        EngineTraceRecorder *recorder = application->component<EngineTraceRecorder>();
 
         for (const std::string &tracePath : options.retrace.traces) {
             fmt::println(stderr, "Retracing '{}'...", tracePath);

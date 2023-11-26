@@ -35,7 +35,7 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     // TODO(captainurist): we need to overhaul our usage of path::string, path::u8string, path::generic_string,
     // pick one, and spell it out explicitly in HACKING
-    ::application->get<EngineTracePlayer>()->playTrace(
+    ::application->component<EngineTracePlayer>()->playTrace(
         _controller,
         fullPathInTestData(saveName),
         fullPathInTestData(traceName),
@@ -69,8 +69,8 @@ void TestController::resetConfigInternal() {
 
 void TestController::prepareForNextTestInternal(int frameTimeMs, RandomEngineType rngType) {
     _tapeCallbacks.clear();
-    ::application->get<GameKeyboardController>()->reset();
-    ::application->get<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+    ::application->component<GameKeyboardController>()->reset();
+    ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     _controller->goToMainMenu();
 }
 

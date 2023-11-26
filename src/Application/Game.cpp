@@ -131,7 +131,7 @@ int Game::run() {
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
      * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
      * Hack below with render reinitialization is a temporary workaround. */
-    _application->get<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
+    _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
     render->Reinitialize();
     window->activate();
     ::eventLoop->processMessages(eventHandler);
@@ -156,7 +156,7 @@ int Game::run() {
     }
 
     if (window) {
-        _application->get<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
+        _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
     }
 
     return 0;

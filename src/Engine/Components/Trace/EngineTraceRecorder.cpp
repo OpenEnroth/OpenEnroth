@@ -49,16 +49,16 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
 
     // Reset all pressed buttons. It's important to do this before loading the game b/c game loading peeks into pressed
     // buttons and does all kinds of weird stuff.
-    application()->get<GameKeyboardController>()->reset();
+    component<GameKeyboardController>()->reset();
 
     game->goToMainMenu(); // This might call into a random engine.
-    application()->get<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+    component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     game->loadGame(savePath);
     _trace->header.afterLoadRandomState = grng->peek(1024);
-    application()->get<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+    component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();
-    application()->get<EngineTraceSimpleRecorder>()->startRecording();
+    component<EngineTraceSimpleRecorder>()->startRecording();
 
     engine->config->graphics.FPSLimit.setValue(traceFpsLimit);
     logger->info("Tracing started.");
@@ -71,12 +71,12 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
         _tracePath.clear();
         _savePath.clear();
         _trace.reset();
-        application()->get<EngineDeterministicComponent>()->finish();
+        component<EngineDeterministicComponent>()->finish();
     });
 
     engine->config->graphics.FPSLimit.setValue(_oldFpsLimit);
 
-    _trace->events = application()->get<EngineTraceSimpleRecorder>()->finishRecording();
+    _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();
     _trace->header.endState = EngineTraceStateAccessor::makeGameState();
 
     EventTrace::saveToFile(_tracePath, *_trace);

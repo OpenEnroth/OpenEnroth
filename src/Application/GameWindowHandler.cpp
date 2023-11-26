@@ -575,7 +575,7 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
     // TODO(captainurist): That's a very convoluted way to exit the game, redo this properly once we have a unified
     //                     event loop.
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
-    application()->get<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
+    component<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
         game->goToMainMenu();
         game->pressGuiButton("MainMenu_ExitGame");
     });
