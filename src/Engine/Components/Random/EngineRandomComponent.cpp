@@ -43,25 +43,44 @@ void EngineRandomComponent::setTracing(bool tracing) {
     swizzleGlobals();
 }
 
-void EngineRandomComponent::reset(RandomEngineType withType) {
-    _vrng = createRandomEngine(withType);
-    _grng = createRandomEngine(withType);
-    _tracingGrng = std::make_unique<TracingRandomEngine>(application()->platform(), _grng.get());
+RandomEngineType EngineRandomComponent::type() const {
+    return _type;
+}
+
+void EngineRandomComponent::setType(RandomEngineType type) {
+    if (_type == type)
+        return;
+
+    _type = type;
     swizzleGlobals();
 }
 
+void EngineRandomComponent::seed(int seed) {
+    for (RandomEngineType type : _grngs.indices()) {
+        _vrngs[type]->seed(seed);
+        _grngs[type]->seed(seed);
+    }
+}
+
 void EngineRandomComponent::installNotify() {
-    reset(RANDOM_ENGINE_MERSENNE_TWISTER);
+    for (RandomEngineType type : _grngs.indices()) {
+        _vrngs[type] = createRandomEngine(type);
+        _grngs[type] = createRandomEngine(type);
+        _tracingGrngs[type] = std::make_unique<TracingRandomEngine>(application()->platform(), _grngs[type].get());
+    }
+    swizzleGlobals();
 }
 
 void EngineRandomComponent::removeNotify() {
-    _vrng.reset();
-    _grng.reset();
-    _tracingGrng.reset();
+    for (RandomEngineType type : _grngs.indices()) {
+        _vrngs[type].reset();
+        _grngs[type].reset();
+        _tracingGrngs[type].reset();
+    }
     swizzleGlobals(); // Set globals to nullptr.
 }
 
 void EngineRandomComponent::swizzleGlobals() {
-    vrng._ptr = _vrng.get();
-    grng._ptr = _tracing ? _tracingGrng.get() : _grng.get();
+    vrng._ptr = _vrngs[_type].get();
+    grng._ptr = (_tracing ? _tracingGrngs : _grngs)[_type].get();
 }

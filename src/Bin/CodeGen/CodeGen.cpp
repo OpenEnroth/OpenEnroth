@@ -342,7 +342,7 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
 int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
     // Fill bounty hunt map.
     EngineRandomComponent randomComponent;
-    randomComponent.reset(RANDOM_ENGINE_SEQUENTIAL);
+    randomComponent.setType(RANDOM_ENGINE_SEQUENTIAL);
 
     IndexedArray<std::unordered_set<MonsterId>, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monstersByTownHall;
     for (const HouseId townHall : allTownhallHouses()) {
