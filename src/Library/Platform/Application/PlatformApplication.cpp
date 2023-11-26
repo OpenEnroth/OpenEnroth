@@ -77,7 +77,9 @@ PlatformApplication::PlatformApplication(Platform *platform) : _platform(platfor
     initProxyLeaf<PlatformWindow>(_rootProxy.get(), _window.get());
 }
 
-PlatformApplication::~PlatformApplication() = default;
+PlatformApplication::~PlatformApplication() {
+    _components.clear();
+}
 
 void PlatformApplication::initializeOpenGLContext(const PlatformOpenGLOptions &options) {
     initializeOpenGLContext(_window->createOpenGLContext(options));
