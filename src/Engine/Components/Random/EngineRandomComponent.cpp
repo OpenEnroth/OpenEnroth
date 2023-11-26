@@ -10,7 +10,7 @@
 
 #include "TracingRandomEngine.h"
 
-static EngineRandomComponent *globalRngManager = nullptr;
+static EngineRandomComponent *globalRandomComponent = nullptr;
 
 static std::unique_ptr<RandomEngine> createRandomEngine(RandomEngineType type) {
     if (type == RANDOM_ENGINE_MERSENNE_TWISTER) {
@@ -22,13 +22,13 @@ static std::unique_ptr<RandomEngine> createRandomEngine(RandomEngineType type) {
 }
 
 EngineRandomComponent::EngineRandomComponent() {
-    assert(globalRngManager == nullptr);
-    globalRngManager = this;
+    assert(globalRandomComponent == nullptr);
+    globalRandomComponent = this;
 }
 
 EngineRandomComponent::~EngineRandomComponent() {
-    assert(globalRngManager == this);
-    globalRngManager = nullptr;
+    assert(globalRandomComponent == this);
+    globalRandomComponent = nullptr;
 }
 
 bool EngineRandomComponent::isTracing() const {

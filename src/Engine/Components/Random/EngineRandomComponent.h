@@ -19,6 +19,7 @@ class EngineRandomComponent : public PlatformApplicationAware {
     [[nodiscard]] bool isTracing() const;
     void setTracing(bool tracing);
 
+    // TODO(captainurist): reset doesn't reset tracing state. Think of a better name.
     void reset(RandomEngineType withType);
 
  private:
