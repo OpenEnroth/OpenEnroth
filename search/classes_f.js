@@ -1,7 +1,7 @@
 var searchData=
 [
   ['randomengine_0',['RandomEngine',['../classRandomEngine.html',1,'']]],
-  ['randomenginefactory_1',['RandomEngineFactory',['../classRandomEngineFactory.html',1,'']]],
+  ['randomengineptr_1',['RandomEnginePtr',['../classdetail_1_1RandomEnginePtr.html',1,'detail']]],
   ['rangeiterator_2',['RangeIterator',['../classdetail_1_1RangeIterator.html',1,'detail']]],
   ['rawevent_3',['RawEvent',['../structRawEvent.html',1,'']]],
   ['rect_4',['Rect',['../structRect.html',1,'']]],
