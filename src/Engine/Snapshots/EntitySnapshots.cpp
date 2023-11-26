@@ -148,25 +148,6 @@ static void reconstruct(int16_t src, MonsterId *dst) {
     *dst = static_cast<MonsterId>(src);
 }
 
-static void snapshot(const BBoxi &src, BBoxs *dst) {
-    // TODO(captainurist): do we need to check for overflows here?
-    dst->x1 = src.x1;
-    dst->x2 = src.x2;
-    dst->y1 = src.y1;
-    dst->y2 = src.y2;
-    dst->z1 = src.z1;
-    dst->z2 = src.z2;
-}
-
-static void reconstruct(const BBoxs &src, BBoxi *dst) {
-    dst->x1 = src.x1;
-    dst->x2 = src.x2;
-    dst->y1 = src.y1;
-    dst->y2 = src.y2;
-    dst->z1 = src.z1;
-    dst->z2 = src.z2;
-}
-
 void snapshot(const Pid &src, uint16_t *dst) {
     *dst = src.packed();
 }
@@ -186,6 +167,25 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
+}
+
+void snapshot(const BBoxi &src, BBoxs_MM7 *dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+void reconstruct(const BBoxs_MM7 &src, BBoxi *dst) {
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
 }
 
 void reconstruct(const Planef_MM7 &src, Planef *dst) {
