@@ -668,13 +668,13 @@ void MM7_LoadLods() {
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LodTextureCache;
-    pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons");
+    pIcons_LOD->open(makeDataPath("data", "icons.lod"));
 
     pBitmaps_LOD = new LodTextureCache;
-    pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps");
+    pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"));
 
     pSprites_LOD = new LodSpriteCache;
-    pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08");
+    pSprites_LOD->open(makeDataPath("data", "sprites.lod"));
 
     // TODO(captainurist):
     // on error in `open` we had this:

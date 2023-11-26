@@ -26,7 +26,7 @@ LodSpriteCache::~LodSpriteCache() {
     }
 }
 
-bool LodSpriteCache::open(const std::string &pFilename, const std::string &folder) {
+bool LodSpriteCache::open(const std::string &pFilename) {
     _reader.open(pFilename);
     return true;
 }

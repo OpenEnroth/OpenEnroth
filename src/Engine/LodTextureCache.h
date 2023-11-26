@@ -17,7 +17,7 @@ class LodTextureCache {
     LodTextureCache();
     ~LodTextureCache();
 
-    void open(const std::string &pFilename, const std::string &pFolderName);
+    void open(const std::string &pFilename);
 
     void reserveLoadedTextures();
     void releaseUnreserved();
