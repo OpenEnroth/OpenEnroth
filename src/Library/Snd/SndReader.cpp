@@ -69,7 +69,7 @@ Blob SndReader::read(const std::string &filename) const {
     const SndEntry &entry = pos->second;
 
     Blob result = _snd.subBlob(entry.offset, entry.size);
-    if (entry.decompressedSize)
+    if (entry.decompressedSize && entry.decompressedSize != entry.size)
         result = zlib::uncompress(result, entry.decompressedSize);
     return result;
 }
