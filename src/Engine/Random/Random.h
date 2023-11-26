@@ -4,9 +4,6 @@
 
 #include "Library/Random/RandomEngine.h"
 
-#include "RandomEnums.h"
-#include "RandomEngineFactory.h"
-
 /**
  * @file
  *
@@ -24,22 +21,44 @@
  * else. This won't add much overhead, and would let us test what we want to.
  */
 
+class EngineRandomComponent;
+
+namespace detail {
+
+class RandomEnginePtr {
+ public:
+    RandomEngine *operator->() const {
+        return _ptr;
+    }
+
+    RandomEngine &operator*() const {
+        return *_ptr;
+    }
+
+    RandomEngine *get() const {
+        return _ptr;
+    }
+
+ private:
+    friend EngineRandomComponent;
+
+ private:
+    RandomEngine *_ptr = nullptr;
+};
+
+} // namespace detail
+
+
 /**
  * `grng` stands for `game random number generator`. This is the random number engine that should be used for
  * everything that affects gameplay.
  */
-extern std::unique_ptr<RandomEngine> grng;
+extern detail::RandomEnginePtr grng;
 
 /**
  * `vrng` stands for `view random number generator`. This is the random number engine that should be used for
  * visual & audio effects that do not affect gameplay, e.g. particle trails, or party members shouting "got him!"
  * after a kill.
  */
-extern std::unique_ptr<RandomEngine> vrng;
-
-/**
- * When game engine needs to construct a random engine, it calls into `rngf`. This is mainly used for trace recording
- * and playback, random engines aren't reconstructed during normal gameplay.
- */
-extern std::unique_ptr<RandomEngineFactory> rngf;
+extern detail::RandomEnginePtr vrng;
 

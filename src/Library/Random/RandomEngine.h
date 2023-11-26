@@ -35,7 +35,8 @@ class RandomEngine {
     virtual int peek(int hi) const = 0;
 
     /**
-     * Reinitializes this random engine with the provided seed value.
+     * Reinitializes this random engine with the provided seed value. Passing `0` should be equivalent to calling
+     * an in-place destructor and then reconstructing the object.
      *
      * @param seed                      Random seed.
      */

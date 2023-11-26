@@ -1,9 +1,10 @@
 #include "EngineDeterministicComponent.h"
 
 #include <cassert>
-#include <utility>
 
-#include "Engine/Random/Random.h"
+#include "Engine/Components/Random/EngineRandomComponent.h"
+
+#include "Library/Platform/Application/PlatformApplication.h"
 
 EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;
@@ -11,21 +12,18 @@ EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 void EngineDeterministicComponent::restart(int frameTimeMs, RandomEngineType rngType) {
     assert(frameTimeMs >= 1 && frameTimeMs <= 1000);
 
-    if (!isActive())
-        _oldRandomEngine = std::move(grng);
-
+    _active = true;
     _tickCount = 0;
     _frameTimeMs = frameTimeMs;
-    grng = rngf->createEngine(rngType);
-    assert(isActive());
+    application()->get<EngineRandomComponent>()->reset(rngType);
 }
 
 void EngineDeterministicComponent::finish() {
     if (!isActive())
         return;
 
-    grng = std::move(_oldRandomEngine);
-    assert(!isActive());
+    application()->get<EngineRandomComponent>()->reset(RANDOM_ENGINE_MERSENNE_TWISTER);
+    _active = false;
 }
 
 int64_t EngineDeterministicComponent::tickCount() const {

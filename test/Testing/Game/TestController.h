@@ -26,13 +26,15 @@ class TestController {
     void playTraceFromTestData(const std::string &saveName, const std::string &traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});
 
     void prepareForNextTest();
-
-    void restart(int frameTimeMs, RandomEngineType rngType); // TODO(captainurist): need a better name here.
+    void prepareForNextTest(int frameTimeMs, RandomEngineType rngType);
 
  private:
     friend class CharacterTapeRecorder;
     friend class CommonTapeRecorder;
     friend class ActorTapeRecorder;
+
+    void resetConfigInternal();
+    void prepareForNextTestInternal(int frameTimeMs, RandomEngineType rngType);
 
     // Accessed by tape recorders.
     template<class Callback, class T = std::invoke_result_t<Callback>>

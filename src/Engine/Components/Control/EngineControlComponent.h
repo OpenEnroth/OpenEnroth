@@ -14,6 +14,8 @@ class EngineController;
 class EngineControlState;
 class PlatformEvent;
 
+// TODO(captainurist): Engine- in component names kinda doesn't make sense. Drop?
+
 /**
  * This component exposes a coroutine-like API that makes it possible to control the game by passing in synthetic
  * platform events.

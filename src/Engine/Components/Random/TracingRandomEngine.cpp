@@ -1,18 +1,15 @@
 #include "TracingRandomEngine.h"
 
 #include <cassert>
-#include <utility>
 
-#include "Engine/EngineGlobals.h"
-
-#include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/Platform/Interface/Platform.h"
 #include "Library/StackTrace/StackTrace.h"
 
 #include "Utility/Format.h"
 
-TracingRandomEngine::TracingRandomEngine(std::unique_ptr<RandomEngine> base) {
+TracingRandomEngine::TracingRandomEngine(Platform *platform, RandomEngine *base): _platform(platform), _base(base) {
+    assert(platform);
     assert(base);
-    _base = std::move(base);
 }
 
 float TracingRandomEngine::randomFloat() {
@@ -38,6 +35,6 @@ void TracingRandomEngine::seed(int seed) {
 template<class T>
 void TracingRandomEngine::printTrace(const char *function, const T &value) const {
     fmt::println(stderr, "TracingRandomEngine::{} called at {}ms, returning {}, stacktrace:",
-                 function, application->platform()->tickCount(), value);
+                 function, _platform->tickCount(), value);
     printStackTrace(stderr);
 }

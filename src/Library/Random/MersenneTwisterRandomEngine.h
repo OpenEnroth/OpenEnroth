@@ -25,7 +25,11 @@ class MersenneTwisterRandomEngine: public RandomEngine {
     }
 
     virtual void seed(int seed) override {
-        _base.seed(seed);
+        if (seed == 0) {
+            _base = std::mt19937();
+        } else {
+            _base.seed(seed);
+        }
     }
 
  private:

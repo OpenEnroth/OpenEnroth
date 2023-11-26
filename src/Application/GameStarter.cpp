@@ -19,6 +19,7 @@
 #include "Engine/Components/Trace/EngineTraceSimpleRecorder.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
+#include "Engine/Components/Random/EngineRandomComponent.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -39,10 +40,6 @@
 #include "GameTraceHandler.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
-    // Init random engine factory.
-    if (_options.tracingRng)
-        rngf = RandomEngineFactory::tracing();
-
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 
@@ -95,7 +92,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     ::eventHandler = _application->eventHandler();
     ::openGLContext = _application->openGLContext(); // OK to store into a global even if not yet initialized
 
-    // Install components.
+    // Install & set up components.
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
@@ -108,6 +105,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->install(std::make_unique<EngineTraceRecorder>());
     _application->install(std::make_unique<EngineTracePlayer>());
     _application->install(std::make_unique<GameTraceHandler>());
+    _application->install(std::make_unique<EngineRandomComponent>());
+    _application->get<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
     // Init renderer.
     _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);

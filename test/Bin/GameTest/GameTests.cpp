@@ -509,6 +509,7 @@ GAME_TEST(Issues, Issue403_970) {
 GAME_TEST(Issues, Issue405) {
     // FPS affects effective recovery time.
     auto runTrace = [&] {
+        engine->config->debug.AllMagic.setValue(true);
         test.loadGameFromTestData("issue_405.mm7");
         // TODO(captainurist): Drop this if once we fix #1174. Right now the 1st char is selected on load, and pressing
         //                     the portrait again opens up character screen.
@@ -523,17 +524,16 @@ GAME_TEST(Issues, Issue405) {
         game.pressGuiButton("SpellBook_Spell7"); // Confirm.
         game.tick(1);
     };
-    engine->config->debug.AllMagic.setValue(true);
 
     // 100ms/frame
-    test.restart(100, RANDOM_ENGINE_SEQUENTIAL);
+    test.prepareForNextTest(100, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
     int firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     // 10ms/frame
-    test.restart(10, RANDOM_ENGINE_SEQUENTIAL);
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(100);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());

@@ -48,24 +48,30 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 }
 
 void TestController::prepareForNextTest() {
-    _tapeCallbacks.clear();
-    ::application->get<GameKeyboardController>()->reset();
+    resetConfigInternal();
+    // Use frame time & rng from config defaults. If calling playTraceFromTestData next, these will be overridden
+    // by whatever is saved in the trace file.
+    prepareForNextTest(engine->config->debug.TraceFrameTimeMs.value(), engine->config->debug.TraceRandomEngine.value());
+}
 
+void TestController::prepareForNextTest(int frameTimeMs, RandomEngineType rngType) {
+    resetConfigInternal();
+    prepareForNextTestInternal(frameTimeMs, rngType);
+}
+
+void TestController::resetConfigInternal() {
     // These two lines bring the game config into the same state as if a trace playback was started with an empty
     // config patch. Mainly needed for tests that don't play back any traces.
     EngineTraceStateAccessor::prepareForPlayback(engine->config.get());
     EngineTraceStateAccessor::patchConfig(engine->config.get(), {});
     pAudioPlayer->UpdateVolumeFromConfig();
-
-    // This is frame time for tests that don't play any traces and use TestController methods to control the game.
-    // For such tests, frame time value is taken from config defaults.
-    restart(engine->config->debug.TraceFrameTimeMs.value(), engine->config->debug.TraceRandomEngine.value());
-
-    _controller->goToMainMenu();
 }
 
-void TestController::restart(int frameTimeMs, RandomEngineType rngType) {
+void TestController::prepareForNextTestInternal(int frameTimeMs, RandomEngineType rngType) {
+    _tapeCallbacks.clear();
+    ::application->get<GameKeyboardController>()->reset();
     ::application->get<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+    _controller->goToMainMenu();
 }
 
 void TestController::runTapeCallbacks() {
