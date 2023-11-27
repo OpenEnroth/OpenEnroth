@@ -29,8 +29,8 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
     return
         entry->string() != entry->defaultString() ||
         entry == &config->debug.TraceFrameTimeMs ||
-        entry == &config->debug.TraceRandomEngine;
-    // TODO(captainurist): add TraceNoVideo here.
+        entry == &config->debug.TraceRandomEngine ||
+        entry == &config->debug.TraceNoVideo;
 }
 
 void EngineTraceStateAccessor::prepareForRecording(GameConfig *config, std::vector<EventTraceConfigLine> *patch) {
