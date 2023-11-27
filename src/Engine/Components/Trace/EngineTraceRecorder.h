@@ -7,6 +7,7 @@
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "EngineTraceEnums.h"
+#include "EngineTraceConfigSnapshot.h"
 
 class EngineController;
 class EventTrace;
@@ -74,6 +75,6 @@ class EngineTraceRecorder : private PlatformApplicationAware {
  private:
     std::string _savePath;
     std::string _tracePath;
-    int _oldFpsLimit = 0;
     std::unique_ptr<EventTrace> _trace;
+    EngineTraceConfigSnapshot _configSnapshot;
 };

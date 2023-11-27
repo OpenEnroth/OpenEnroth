@@ -49,8 +49,6 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
     checkSaveFileSize(_trace->header.saveFileSize);
 
     game->resizeWindow(640, 480);
-    engine->config->window.MouseGrab.setValue(false);
-    engine->config->debug.NoVideo.setValue(true);
     game->tick();
 
     EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), _trace->header.config);

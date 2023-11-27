@@ -197,7 +197,7 @@ void GameStarter::run() {
 
 void GameStarter::runInstrumented(std::function<void(EngineController *)> controlRoutine) {
     // Instrumentation implies that we'll be running traces, either hand-crafted, or from files. So calling
-    // `prepareForPlayback` here makes sense. This also skips the intro videos.
+    // `prepareForPlayback` here makes sense. This also disables intro videos.
     EngineTraceStateAccessor::prepareForPlayback(_config.get(), {});
 
     _application->component<EngineControlComponent>()->runControlRoutine([controlRoutine = std::move(controlRoutine)] (EngineController *game) {

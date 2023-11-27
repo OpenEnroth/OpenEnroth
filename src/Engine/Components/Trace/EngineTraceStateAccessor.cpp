@@ -30,25 +30,27 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
         entry->string() != entry->defaultString() ||
         entry == &config->debug.TraceFrameTimeMs ||
         entry == &config->debug.TraceRandomEngine;
+    // TODO(captainurist): add TraceNoVideo here.
 }
 
-std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(const GameConfig *config) {
-    std::vector<EventTraceConfigLine> result;
+void EngineTraceStateAccessor::prepareForRecording(GameConfig *config, std::vector<EventTraceConfigLine> *patch) {
     for (const ConfigSection *section : config->sections())
         for (const AnyConfigEntry *entry : section->entries())
             if (!shouldSkip(config, section, entry) && shouldTake(config, section, entry))
-                result.push_back({section->name(), entry->name(), entry->string()});
-    return result;
+                patch->push_back({section->name(), entry->name(), entry->string()});
+
+    config->graphics.FPSLimit.setValue(1000 / config->debug.TraceFrameTimeMs.value());
+    config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
 }
 
-void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const std::vector<EventTraceConfigLine>& withPatch) {
+void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const std::vector<EventTraceConfigLine> &patch) {
     for (ConfigSection *section : config->sections())
         for (AnyConfigEntry *entry : section->entries())
             if (!shouldSkip(config, section, entry))
                 entry->reset();
 
     // TODO(captainurist): Right now setting keybindings here doesn't work
-    for (const EventTraceConfigLine &line : withPatch) {
+    for (const EventTraceConfigLine &line : patch) {
         ConfigSection *section = config->section(line.section);
         if (!section)
             throw Exception("Config section '{}' doesn't exist", line.section);
@@ -65,7 +67,7 @@ void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const std:
     config->settings.SoundLevel.setValue(0);
     config->window.MouseGrab.setValue(false);
     config->graphics.FPSLimit.setValue(0); // Unlimited
-    config->debug.NoVideo.setValue(true);
+    config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
     pAudioPlayer->UpdateVolumeFromConfig();
 }
 

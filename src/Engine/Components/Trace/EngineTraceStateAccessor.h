@@ -8,8 +8,8 @@ class GameConfig;
 struct EventTraceGameState;
 
 struct EngineTraceStateAccessor {
-    static std::vector<EventTraceConfigLine> makeConfigPatch(const GameConfig *config);
-    static void prepareForPlayback(GameConfig *config, const std::vector<EventTraceConfigLine>& withPatch);
+    static void prepareForRecording(GameConfig *config, std::vector<EventTraceConfigLine> *patch);
+    static void prepareForPlayback(GameConfig *config, const std::vector<EventTraceConfigLine> &patch);
 
     static EventTraceGameState makeGameState();
 };

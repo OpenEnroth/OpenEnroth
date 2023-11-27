@@ -87,7 +87,9 @@ class GameConfig : public Config {
                                 "Number of milliseconds per frame when recording game traces."};
 
         ConfigEntry<RandomEngineType> TraceRandomEngine = {this, "trace_random_engine", RANDOM_ENGINE_SEQUENTIAL,
-                                                           "Random engine to use for trace playback and recording, 'sequential' or 'mersenne_twister'."};
+                                                           "Random engine to use for trace recording, 'sequential' or 'mersenne_twister'."};
+
+        Bool TraceNoVideo = {this, "trace_no_video", true, "Don't play movies when recording traces."};
 
         Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
 
