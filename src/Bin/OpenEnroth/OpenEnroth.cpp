@@ -8,6 +8,7 @@
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
+#include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
@@ -50,7 +51,7 @@ int runRetrace(const OpenEnrothOptions &options) {
 
             recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);
             engine->config->graphics.FPSLimit.setValue(0);
-            player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS); // Don't skip time checks.
+            player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
             recorder->finishRecording(game);
 
             if (options.retrace.checkCanonical) {
@@ -69,6 +70,26 @@ int runRetrace(const OpenEnrothOptions &options) {
     return status;
 }
 
+int runPlay(const OpenEnrothOptions &options) {
+    GameStarter starter(options);
+
+    starter.runInstrumented([options, application = starter.application()] (EngineController *game) {
+        EngineTracePlayer *player = application->component<EngineTracePlayer>();
+
+        for (const std::string &tracePath : options.play.traces) {
+            fmt::println(stderr, "Playing back '{}'...", tracePath);
+
+            std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+            player->playTrace(game, savePath, tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS , [&] {
+                int fps = options.play.speed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
+                engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
+            });
+        }
+    });
+
+    return 0;
+}
+
 int runOpenEnroth(const OpenEnrothOptions &options) {
     GameStarter(options).run();
     return 0;
@@ -85,6 +106,7 @@ int openEnrothMain(int argc, char **argv) {
         switch (options.subcommand) {
         default: assert(false); [[fallthrough]];
         case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(options);
+        case OpenEnrothOptions::SUBCOMMAND_PLAY: return runPlay(options);
         case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(options);
         }
     } catch (const std::exception &e) {

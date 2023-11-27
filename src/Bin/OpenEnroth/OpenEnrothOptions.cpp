@@ -33,6 +33,15 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Set log level to 'trace'.");
     app->set_help_flag("-h,--help", "Print help and exit.");
 
+    CLI::App *play = app->add_subcommand("play", "Play provided traces.", result.subcommand, SUBCOMMAND_PLAY)->fallthrough();
+    play->add_option(
+        "--speed", result.play.speed,
+        "Playback speed, default is '1.0'.")->option_text("SPEED");
+    play->add_option(
+        "TRACE", result.play.traces,
+        "Path to trace file(s) to play.")->required()->option_text("...");
+    play->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
+
     bool globTraces = false;
     CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();
     app->add_flag(

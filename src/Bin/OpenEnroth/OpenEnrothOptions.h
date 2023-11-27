@@ -11,6 +11,7 @@ class Platform;
 struct OpenEnrothOptions : public GameStarterOptions {
     enum class Subcommand {
         SUBCOMMAND_GAME,
+        SUBCOMMAND_PLAY,
         SUBCOMMAND_RETRACE
     };
     using enum Subcommand;
@@ -20,9 +21,15 @@ struct OpenEnrothOptions : public GameStarterOptions {
         bool checkCanonical = false;
     };
 
+    struct PlayOptions {
+        std::vector<std::string> traces;
+        float speed = 1.0f;
+    };
+
     Subcommand subcommand = SUBCOMMAND_GAME;
     bool helpPrinted = false; // True means that help message was already printed.
     RetraceOptions retrace;
+    PlayOptions play;
 
     /**
      * Parses OpenEnroth command line options.
