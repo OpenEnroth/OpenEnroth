@@ -27,7 +27,7 @@ static std::string readTextFile(const std::string &path) {
     return replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
 }
 
-int runRetrace(OpenEnrothOptions options) {
+int runRetrace(const OpenEnrothOptions &options) {
     GameStarter starter(options);
 
     int status = 0;
@@ -69,7 +69,7 @@ int runRetrace(OpenEnrothOptions options) {
     return status;
 }
 
-int runOpenEnroth(OpenEnrothOptions options) {
+int runOpenEnroth(const OpenEnrothOptions &options) {
     GameStarter(options).run();
     return 0;
 }
@@ -84,8 +84,8 @@ int openEnrothMain(int argc, char **argv) {
 
         switch (options.subcommand) {
         default: assert(false); [[fallthrough]];
-        case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(std::move(options));
-        case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(std::move(options));
+        case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(options);
+        case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(options);
         }
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());
