@@ -78,16 +78,7 @@ PlatformApplication::PlatformApplication(Platform *platform) : _platform(platfor
 }
 
 PlatformApplication::~PlatformApplication() {
-    // First call the routines in reverse order - this should uninstall everything.
-    for (const auto &routine : _cleanupRoutines | std::views::reverse)
-        routine();
-
-    // User should uninstall all components that platform application doesn't own before destroying the platform application.
-    assert(_componentByType.empty());
-
-    // Then destroy every component that we own.
-    while (!_cleanupRoutines.empty())
-        _cleanupRoutines.pop_back();
+    _components.clear();
 }
 
 void PlatformApplication::initializeOpenGLContext(const PlatformOpenGLOptions &options) {
@@ -130,78 +121,57 @@ void PlatformApplication::waitForMessages() {
     eventLoop()->waitForMessages();
 }
 
-void PlatformApplication::installInternal(ProxyPlatform *platform) {
+void PlatformApplication::installComponentInternal(ProxyPlatform *platform) {
     installTypedProxy<Platform>(_rootProxy.get(), platform);
 }
 
-void PlatformApplication::removeInternal(ProxyPlatform *platform) {
+void PlatformApplication::removeComponentInternal(ProxyPlatform *platform) {
     removeTypedProxy<Platform>(_rootProxy.get(), platform, _platform);
 }
 
-void PlatformApplication::installInternal(ProxyEventLoop *eventLoop) {
+void PlatformApplication::installComponentInternal(ProxyEventLoop *eventLoop) {
     installTypedProxy<PlatformEventLoop>(_rootProxy.get(), eventLoop);
 }
 
-void PlatformApplication::removeInternal(ProxyEventLoop *eventLoop) {
+void PlatformApplication::removeComponentInternal(ProxyEventLoop *eventLoop) {
     removeTypedProxy<PlatformEventLoop>(_rootProxy.get(), eventLoop, _eventLoop.get());
 }
 
-void PlatformApplication::installInternal(ProxyWindow *window) {
+void PlatformApplication::installComponentInternal(ProxyWindow *window) {
     installTypedProxy<PlatformWindow>(_rootProxy.get(), window);
 }
 
-void PlatformApplication::removeInternal(ProxyWindow *window) {
+void PlatformApplication::removeComponentInternal(ProxyWindow *window) {
     removeTypedProxy<PlatformWindow>(_rootProxy.get(), window, _window.get());
 }
 
-void PlatformApplication::installInternal(ProxyOpenGLContext *openGLContext) {
+void PlatformApplication::installComponentInternal(ProxyOpenGLContext *openGLContext) {
     installTypedProxy<PlatformOpenGLContext>(_rootProxy.get(), openGLContext);
 }
 
-void PlatformApplication::removeInternal(ProxyOpenGLContext *openGLContext) {
+void PlatformApplication::removeComponentInternal(ProxyOpenGLContext *openGLContext) {
     removeTypedProxy<PlatformOpenGLContext>(_rootProxy.get(), openGLContext, _openGLContext.get());
 }
 
-void PlatformApplication::installInternal(PlatformEventFilter *eventFilter) {
+void PlatformApplication::installComponentInternal(PlatformEventFilter *eventFilter) {
     _eventHandler->installEventFilter(eventFilter);
 }
 
-void PlatformApplication::removeInternal(PlatformEventFilter *eventFilter) {
+void PlatformApplication::removeComponentInternal(PlatformEventFilter *eventFilter) {
     _eventHandler->removeEventFilter(eventFilter);
 }
 
-void PlatformApplication::installInternal(PlatformApplicationAware *aware) {
+void PlatformApplication::installComponentInternal(PlatformApplicationAware *aware) {
     assert(aware->application() == nullptr);
-    aware->setApplication(this);
+    aware->initialize(this, components());
     aware->installNotify();
 }
 
-void PlatformApplication::removeInternal(PlatformApplicationAware *aware) {
+void PlatformApplication::removeComponentInternal(PlatformApplicationAware *aware) {
     if (aware->application() == nullptr)
         return; // All remove methods allow double-removal.
 
     assert(aware->application() == this);
     aware->removeNotify();
-    aware->setApplication(nullptr);
+    aware->deinitialize();
 }
-
-void PlatformApplication::installInternal(std::type_index componentType, void *component) {
-    assert(component);
-    assert(!_componentByType.contains(componentType));
-    _componentByType.emplace(componentType, component);
-}
-
-void PlatformApplication::removeInternal(std::type_index componentType, void *component) {
-    assert(component);
-    assert(!_componentByType.contains(componentType) || valueOr(_componentByType, componentType, nullptr) == component);
-    _componentByType.erase(componentType);
-}
-
-bool PlatformApplication::hasInternal(std::type_index componentType) const {
-    return _componentByType.contains(componentType);
-}
-
-void *PlatformApplication::getInternal(std::type_index componentType) const {
-    return valueOr(_componentByType, componentType, nullptr);
-}
-

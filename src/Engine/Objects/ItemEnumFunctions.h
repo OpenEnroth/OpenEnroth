@@ -86,6 +86,10 @@ inline bool isQuestItem(ItemId item) {
     return item >= ITEM_FIRST_QUEST && item <= ITEM_LAST_QUEST;
 }
 
+inline bool isAncientWeapon(ItemId item) {
+    return item == ITEM_BLASTER || item == ITEM_BLASTER_RIFLE;
+}
+
 inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {
     assert(isRandomItem(type));
     return ItemTreasureLevel(-std::to_underlying(type));

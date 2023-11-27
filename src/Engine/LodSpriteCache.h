@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
-#include <deque>
+#include <unordered_map>
+#include <vector>
 #include <memory>
 
 #include "Engine/Graphics/Sprites.h"
@@ -24,7 +24,7 @@ class LodSpriteCache {
     LodSpriteCache();
     ~LodSpriteCache();
 
-    bool open(const std::string &pFilename, const std::string &folder);
+    bool open(const std::string &pFilename);
 
     void reserveLoadedSprites();
     void releaseUnreserved();
@@ -37,7 +37,8 @@ class LodSpriteCache {
  private:
     LodReader _reader;
     int _reservedCount = 0;
-    std::deque<Sprite> _sprites;
+    std::unordered_map<std::string, Sprite> _spriteByName;
+    std::vector<std::string> _spritesInOrder;
 };
 
 extern LodSpriteCache *pSprites_LOD;

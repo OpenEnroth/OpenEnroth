@@ -9,9 +9,6 @@
 #include "EngineTraceEnums.h"
 
 class EngineController;
-class EngineTraceSimpleRecorder;
-class EngineDeterministicComponent;
-class GameKeyboardController;
 class EventTrace;
 
 /**
@@ -74,15 +71,9 @@ class EngineTraceRecorder : private PlatformApplicationAware {
  private:
     friend class PlatformIntrospection;
 
-    virtual void installNotify() override;
-    virtual void removeNotify() override;
-
  private:
     std::string _savePath;
     std::string _tracePath;
     int _oldFpsLimit = 0;
     std::unique_ptr<EventTrace> _trace;
-    EngineDeterministicComponent *_deterministicComponent = nullptr;
-    EngineTraceSimpleRecorder *_simpleRecorder = nullptr;
-    GameKeyboardController *_keyboardController = nullptr;
 };

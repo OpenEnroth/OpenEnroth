@@ -4,7 +4,7 @@
 
 #include "Library/Geometry/Vec.h"
 #include "Library/Geometry/Plane.h"
-#include "Library/Geometry/BBox.h" // TODO(captainurist): Don't depend on BBox binary layout.
+#include "Library/Geometry/BBox.h"
 
 #include "Library/Binary/BinarySerialization.h"
 
@@ -63,13 +63,9 @@ struct Timer;
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
 static_assert(sizeof(Vec3f) == 12);
-static_assert(sizeof(Planef) == 16);
-static_assert(sizeof(BBoxs) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3s)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3i)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3f)
-MM_DECLARE_MEMCOPY_SERIALIZABLE(Planef)
-MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs)
 
 
 void snapshot(const Pid &src, uint16_t *dst);
@@ -80,6 +76,31 @@ void reconstruct(const Vec3s &src, Vec3i *dst);
 
 
 #pragma pack(push, 1)
+
+struct BBoxs_MM7 {
+    int16_t x1;
+    int16_t x2;
+    int16_t y1;
+    int16_t y2;
+    int16_t z1;
+    int16_t z2;
+};
+static_assert(sizeof(BBoxs_MM7) == 12);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs_MM7)
+
+void snapshot(const BBoxi &src, BBoxs_MM7 *dst);
+void reconstruct(const BBoxs_MM7 &src, BBoxi *dst);
+
+
+struct Planef_MM7 {
+    Vec3f normal;
+    float dist;
+};
+static_assert(sizeof(Planef_MM7) == 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Planef_MM7)
+
+void reconstruct(const Planef_MM7 &src, Planef *dst);
+
 
 struct Planei_MM7 {
     Vec3i normal; // Fixpoint normal.
@@ -117,7 +138,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {
-    Planef facePlane;
+    Planef_MM7 facePlane;
     Planei_MM7 facePlaneOld;
     int32_t zCalc1;
     int32_t zCalc2;
@@ -133,7 +154,7 @@ struct BLVFace_MM7 {
     uint16_t bitmapId;
     uint16_t sectorId;
     int16_t backSectorId;
-    BBoxs bounding;
+    BBoxs_MM7 bounding;
     uint8_t polygonType;
     uint8_t numVertices;
     int16_t _pad;
@@ -840,7 +861,7 @@ struct BLVSector_MM7 {
     int16_t uMinAmbientLightLevel;
     int16_t uFirstBSPNode;
     int16_t exit_tag;
-    BBoxs pBounding;
+    BBoxs_MM7 pBounding;
 };
 static_assert(sizeof(BLVSector_MM7) == 0x74);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM7)
@@ -897,7 +918,7 @@ struct ODMFace_MM7 {
     int16_t uTextureID;
     int16_t sTextureDeltaU;
     int16_t sTextureDeltaV;
-    BBoxs pBoundingBox;
+    BBoxs_MM7 pBoundingBox;
     int16_t sCogNumber;
     int16_t sCogTriggeredID;
     int16_t sCogTriggerType;

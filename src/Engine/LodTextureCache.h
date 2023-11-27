@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
-#include <deque>
 #include <memory>
+#include <unordered_map>
+#include <vector>
 
 #include "Engine/Graphics/Texture_MM7.h"
 
@@ -17,7 +18,7 @@ class LodTextureCache {
     LodTextureCache();
     ~LodTextureCache();
 
-    void open(const std::string &pFilename, const std::string &pFolderName);
+    void open(const std::string &pFilename);
 
     void reserveLoadedTextures();
     void releaseUnreserved();
@@ -27,12 +28,13 @@ class LodTextureCache {
     Blob LoadCompressedTexture(const std::string &pContainer); // TODO(captainurist): doesn't belong here.
 
  private:
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
+    bool LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
 
  private:
     LodReader _reader;
     int _reservedCount = 0;
-    std::deque<Texture_MM7> _textures;
+    std::unordered_map<std::string, Texture_MM7> _textureByName;
+    std::vector<std::string> _texturesInOrder;
 };
 
 extern LodTextureCache *pIcons_LOD;

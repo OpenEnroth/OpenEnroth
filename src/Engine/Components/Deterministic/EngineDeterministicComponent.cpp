@@ -15,14 +15,15 @@ void EngineDeterministicComponent::restart(int frameTimeMs, RandomEngineType rng
     _active = true;
     _tickCount = 0;
     _frameTimeMs = frameTimeMs;
-    application()->get<EngineRandomComponent>()->reset(rngType);
+    component<EngineRandomComponent>()->setType(rngType);
+    component<EngineRandomComponent>()->seed(0);
 }
 
 void EngineDeterministicComponent::finish() {
     if (!isActive())
         return;
 
-    application()->get<EngineRandomComponent>()->reset(RANDOM_ENGINE_MERSENNE_TWISTER);
+    component<EngineRandomComponent>()->setType(RANDOM_ENGINE_MERSENNE_TWISTER);
     _active = false;
 }
 

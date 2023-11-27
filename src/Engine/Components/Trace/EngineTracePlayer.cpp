@@ -32,7 +32,6 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
                                   EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback,
                                   std::function<void()> tickCallback) {
     assert(!isPlaying());
-    EngineDeterministicComponent *deterministicComponent = application()->get<EngineDeterministicComponent>();
 
     _tracePath = tracePath;
     _savePath = savePath;
@@ -44,7 +43,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
         _savePath.clear();
         _flags = 0;
         _trace.reset();
-        deterministicComponent->finish();
+        component<EngineDeterministicComponent>()->finish();
     });
 
     checkSaveFileSize(_trace->header.saveFileSize);
@@ -59,17 +58,17 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
     game->goToMainMenu(); // This might call into a random engine.
-    deterministicComponent->restart(frameTimeMs, rngType);
+    component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     game->loadGame(_savePath);
     checkAfterLoadRng(_trace->header.afterLoadRandomState);
-    deterministicComponent->restart(frameTimeMs, rngType);
-    application()->get<GameKeyboardController>()->reset(); // Reset all pressed buttons.
+    component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+    component<GameKeyboardController>()->reset(); // Reset all pressed buttons.
 
     if (postLoadCallback)
         postLoadCallback();
 
     checkState(_trace->header.startState, true);
-    application()->get<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), _tracePath, _flags, std::move(tickCallback));
+    component<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), _tracePath, _flags, std::move(tickCallback));
     checkState(_trace->header.endState, false);
 }
 

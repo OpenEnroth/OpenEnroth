@@ -49,16 +49,16 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
 
     // Reset all pressed buttons. It's important to do this before loading the game b/c game loading peeks into pressed
     // buttons and does all kinds of weird stuff.
-    _keyboardController->reset();
+    component<GameKeyboardController>()->reset();
 
     game->goToMainMenu(); // This might call into a random engine.
-    _deterministicComponent->restart(frameTimeMs, rngType);
+    component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     game->loadGame(savePath);
     _trace->header.afterLoadRandomState = grng->peek(1024);
-    _deterministicComponent->restart(frameTimeMs, rngType);
+    component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();
-    _simpleRecorder->startRecording();
+    component<EngineTraceSimpleRecorder>()->startRecording();
 
     engine->config->graphics.FPSLimit.setValue(traceFpsLimit);
     logger->info("Tracing started.");
@@ -71,12 +71,12 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
         _tracePath.clear();
         _savePath.clear();
         _trace.reset();
-        _deterministicComponent->finish();
+        component<EngineDeterministicComponent>()->finish();
     });
 
     engine->config->graphics.FPSLimit.setValue(_oldFpsLimit);
 
-    _trace->events = _simpleRecorder->finishRecording();
+    _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();
     _trace->header.endState = EngineTraceStateAccessor::makeGameState();
 
     EventTrace::saveToFile(_tracePath, *_trace);
@@ -85,17 +85,3 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
                  absolute(std::filesystem::path(_savePath)).generic_string(),
                  absolute(std::filesystem::path(_tracePath)).generic_string());
 }
-
-void EngineTraceRecorder::installNotify() {
-    _simpleRecorder = application()->get<EngineTraceSimpleRecorder>();
-    _deterministicComponent = application()->get<EngineDeterministicComponent>();
-    _keyboardController = application()->get<GameKeyboardController>();
-}
-
-void EngineTraceRecorder::removeNotify() {
-    _simpleRecorder = nullptr;
-    _deterministicComponent = nullptr;
-    _keyboardController = nullptr;
-}
-
-

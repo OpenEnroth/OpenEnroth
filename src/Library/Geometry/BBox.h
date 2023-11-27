@@ -116,9 +116,7 @@ struct BBox {
 };
 
 using BBoxi = BBox<int>;
-using BBoxs = BBox<short>;
 using BBoxf = BBox<float>;
 
 static_assert(sizeof(BBoxi) == 24);
-static_assert(sizeof(BBoxs) == 12);
 static_assert(sizeof(BBoxf) == 24);

@@ -44,7 +44,7 @@ int platformMain(int argc, char **argv) {
         EngineTraceStateAccessor::prepareForPlayback(starter.config());
 
         int exitCode = 0;
-        starter.application()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
+        starter.application()->component<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
             TestController test(game, opts.testPath);
 
             GameTest::init(game, &test);

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cassert>
+
+#include "PlatformComponentStorage.h"
+
 class PlatformApplication;
 
 /**
@@ -12,6 +16,12 @@ class PlatformApplicationAware {
 
     PlatformApplication *application() const {
         return _application;
+    }
+
+    template<class T>
+    T *component() {
+        assert(_application); // Should be installed.
+        return _componentStorage->require<T>();
     }
 
     /**
@@ -27,10 +37,17 @@ class PlatformApplicationAware {
  private:
     friend class PlatformApplication;
 
-    void setApplication(PlatformApplication *application) {
+    void initialize(PlatformApplication *application, const PlatformComponentStorage *componentStorage) {
         _application = application;
+        _componentStorage = componentStorage;
+    }
+
+    void deinitialize() {
+        _application = nullptr;
+        _componentStorage = nullptr;
     }
 
  private:
     PlatformApplication *_application = nullptr;
+    const PlatformComponentStorage *_componentStorage = nullptr;
 };
