@@ -3,11 +3,8 @@
 #include "Application/GameStarter.h"
 #include "Application/GameConfig.h"
 
-#include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
-
-#include "Media/Audio/AudioPlayer.h"
 
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestController.h"
@@ -43,7 +40,6 @@ int platformMain(int argc, char **argv) {
             return RUN_ALL_TESTS();
 
         GameStarter starter(opts);
-        EngineTraceStateAccessor::prepareForPlayback(starter.config(), pAudioPlayer.get());
 
         int exitCode = 0;
         starter.runInstrumented([&] (EngineController *game) {
