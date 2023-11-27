@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -103,8 +103,7 @@ Variables</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Some notes on what is happening here.</p>
 <p >We want to be able to record play traces, and for this we need deterministic random number generation. Unfortunately, right now some code paths use <code>pMiscTimer</code> in conditionals, and this timer isn't even stored in saves. So there is some non-determinism in the code, and there's little that we can do about it.</p>
-<p >This is the reason why we have two random engines. One is for everything that's affecting gameplay, the other one is for everything else.</p>
-<p >If there comes a moment where we'd want to e.g. test that characters are using the right speech phrases when killing a monster, the proper way to do it would be to split the <code>vrng</code> engine in two. One for speech, one for everything else. This won't add much overhead, and would let us test what we want to. </p>
+<p >This is the reason why we have two random endpoints. One is for everything that's affecting gameplay, the other one is for everything else. </p>
 </div><h2 class="groupheader">Variable Documentation</h2>
 <a id="a18464b21fe76db236f4cb718af47983e" name="a18464b21fe76db236f4cb718af47983e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a18464b21fe76db236f4cb718af47983e">&#9670;&#160;</a></span>grng</h2>
@@ -125,7 +124,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p ><code>grng</code> stands for <code>game random number generator</code>. This is the random number engine that should be used for everything that affects gameplay. </p>
+<p ><code>grng</code> stands for <code>game random number generator</code>. This is the random number engine that should be used for everything that affects gameplay.</p>
+<p ><code>grng</code> is managed externally by an instance of <code><a class="el" href="classEngineRandomComponent.html">EngineRandomComponent</a></code>. Create the component before using <code>grng</code>. </p>
 
 </div>
 </div>
@@ -148,7 +148,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p ><code>vrng</code> stands for <code>view random number generator</code>. This is the random number engine that should be used for visual &amp; audio effects that do not affect gameplay, e.g. particle trails, or party members shouting "got him!" after a kill. </p>
+<p ><code>vrng</code> stands for <code>view random number generator</code>. This is the random number engine that should be used for visual &amp; audio effects that do not affect gameplay, e.g. particle trails, or party members shouting "got him!" after a kill.</p>
+<p ><code>vrng</code> is managed externally by an instance of <code><a class="el" href="classEngineRandomComponent.html">EngineRandomComponent</a></code>. Create the component before using <code>vrng</code>. </p>
 
 </div>
 </div>

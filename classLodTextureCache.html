@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -86,8 +86,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a47fc8e55f0512f6d6954d005dc8bee96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad557736cd874f27fe2cb9da47dfdacd0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#ad557736cd874f27fe2cb9da47dfdacd0">~LodTextureCache</a> ()</td></tr>
 <tr class="separator:ad557736cd874f27fe2cb9da47dfdacd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a1fb973d35f4c4abfe477ff2e099616"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#a4a1fb973d35f4c4abfe477ff2e099616">open</a> (const std::string &amp;pFilename, const std::string &amp;pFolderName)</td></tr>
-<tr class="separator:a4a1fb973d35f4c4abfe477ff2e099616"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad927ab26ef8ba1ad12d3c52258cad6f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#ad927ab26ef8ba1ad12d3c52258cad6f3">open</a> (const std::string &amp;pFilename)</td></tr>
+<tr class="separator:ad927ab26ef8ba1ad12d3c52258cad6f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ed386a6a1d1decaba0936a250dc8a3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#a2ed386a6a1d1decaba0936a250dc8a3b">reserveLoadedTextures</a> ()</td></tr>
 <tr class="separator:a2ed386a6a1d1decaba0936a250dc8a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a105594b541e469b7e7758cbc38159744"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#a105594b541e469b7e7758cbc38159744">releaseUnreserved</a> ()</td></tr>
@@ -99,8 +99,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:ac6dca1af3634d46ed63b4ade3f88f232"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#ac6dca1af3634d46ed63b4ade3f88f232">LoadTextureFromLOD</a> (struct <a class="el" href="structTexture__MM7.html">Texture_MM7</a> *pOutTex, const std::string &amp;pContainer)</td></tr>
-<tr class="separator:ac6dca1af3634d46ed63b4ade3f88f232"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e7904c07f6f19f69de8abbce4bd2846"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#a1e7904c07f6f19f69de8abbce4bd2846">LoadTextureFromLOD</a> (struct <a class="el" href="structTexture__MM7.html">Texture_MM7</a> *pOutTex, const std::string &amp;pContainer)</td></tr>
+<tr class="separator:a1e7904c07f6f19f69de8abbce4bd2846"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -108,8 +108,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a8a28e3386d8d0e0f4e3cd6b108296d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a513b05b5aaf48141d7d31596e84d3805"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#a513b05b5aaf48141d7d31596e84d3805">_reservedCount</a> = 0</td></tr>
 <tr class="separator:a513b05b5aaf48141d7d31596e84d3805"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a56d3f18faefcc86d81d8a838a36535"><td class="memItemLeft" align="right" valign="top">std::deque&lt; <a class="el" href="structTexture__MM7.html">Texture_MM7</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#a0a56d3f18faefcc86d81d8a838a36535">_textures</a></td></tr>
-<tr class="separator:a0a56d3f18faefcc86d81d8a838a36535"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa85241a372f9c0e970c98ea03b2eb76d"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="structTexture__MM7.html">Texture_MM7</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#aa85241a372f9c0e970c98ea03b2eb76d">_textureByName</a></td></tr>
+<tr class="separator:aa85241a372f9c0e970c98ea03b2eb76d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa900eefe96126a9a19f7c539f4a79a81"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodTextureCache.html#aa900eefe96126a9a19f7c539f4a79a81">_texturesInOrder</a></td></tr>
+<tr class="separator:aa900eefe96126a9a19f7c539f4a79a81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a47fc8e55f0512f6d6954d005dc8bee96" name="a47fc8e55f0512f6d6954d005dc8bee96"></a>
@@ -201,8 +203,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac6dca1af3634d46ed63b4ade3f88f232" name="ac6dca1af3634d46ed63b4ade3f88f232"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6dca1af3634d46ed63b4ade3f88f232">&#9670;&#160;</a></span>LoadTextureFromLOD()</h2>
+<a id="a1e7904c07f6f19f69de8abbce4bd2846" name="a1e7904c07f6f19f69de8abbce4bd2846"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e7904c07f6f19f69de8abbce4bd2846">&#9670;&#160;</a></span>LoadTextureFromLOD()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -211,7 +213,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int LodTextureCache::LoadTextureFromLOD </td>
+          <td class="memname">bool LodTextureCache::LoadTextureFromLOD </td>
           <td>(</td>
           <td class="paramtype">struct <a class="el" href="structTexture__MM7.html">Texture_MM7</a> *&#160;</td>
           <td class="paramname"><em>pOutTex</em>, </td>
@@ -237,8 +239,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4a1fb973d35f4c4abfe477ff2e099616" name="a4a1fb973d35f4c4abfe477ff2e099616"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a1fb973d35f4c4abfe477ff2e099616">&#9670;&#160;</a></span>open()</h2>
+<a id="ad927ab26ef8ba1ad12d3c52258cad6f3" name="ad927ab26ef8ba1ad12d3c52258cad6f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad927ab26ef8ba1ad12d3c52258cad6f3">&#9670;&#160;</a></span>open()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -247,18 +249,8 @@ Private Attributes</h2></td></tr>
           <td class="memname">void LodTextureCache::open </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>pFilename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>pFilename</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>pFolderName</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -344,8 +336,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0a56d3f18faefcc86d81d8a838a36535" name="a0a56d3f18faefcc86d81d8a838a36535"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a56d3f18faefcc86d81d8a838a36535">&#9670;&#160;</a></span>_textures</h2>
+<a id="aa85241a372f9c0e970c98ea03b2eb76d" name="aa85241a372f9c0e970c98ea03b2eb76d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa85241a372f9c0e970c98ea03b2eb76d">&#9670;&#160;</a></span>_textureByName</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -354,7 +346,29 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::deque&lt;<a class="el" href="structTexture__MM7.html">Texture_MM7</a>&gt; LodTextureCache::_textures</td>
+          <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="structTexture__MM7.html">Texture_MM7</a>&gt; LodTextureCache::_textureByName</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa900eefe96126a9a19f7c539f4a79a81" name="aa900eefe96126a9a19f7c539f4a79a81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa900eefe96126a9a19f7c539f4a79a81">&#9670;&#160;</a></span>_texturesInOrder</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::string&gt; LodTextureCache::_texturesInOrder</td>
         </tr>
       </table>
   </td>

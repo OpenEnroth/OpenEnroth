@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -73,6 +73,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classPlatformApplication-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">PlatformApplication Class Reference</div></div>
 </div><!--header-->
@@ -100,21 +101,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a72958837a13aed50e80770fd5fc4f804"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c0278c18eb1a98f3e2d877ca3c1efcd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a7c0278c18eb1a98f3e2d877ca3c1efcd">eventHandler</a> ()</td></tr>
 <tr class="separator:a7c0278c18eb1a98f3e2d877ca3c1efcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a072eb48874458852b8fc7d51651993a5"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a072eb48874458852b8fc7d51651993a5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a072eb48874458852b8fc7d51651993a5">install</a> (T *component)</td></tr>
-<tr class="separator:a072eb48874458852b8fc7d51651993a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cefa5ebc8a2b356d642554a2877e92c"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a5cefa5ebc8a2b356d642554a2877e92c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a5cefa5ebc8a2b356d642554a2877e92c">install</a> (std::unique_ptr&lt; T &gt; component)</td></tr>
-<tr class="separator:a5cefa5ebc8a2b356d642554a2877e92c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4ad6a90ebb4c2e23469f8f8e02f3ad8"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad4ad6a90ebb4c2e23469f8f8e02f3ad8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#ad4ad6a90ebb4c2e23469f8f8e02f3ad8">remove</a> (T *component)</td></tr>
-<tr class="separator:ad4ad6a90ebb4c2e23469f8f8e02f3ad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac32241998a863bb01d954d2cabc73d55"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ac32241998a863bb01d954d2cabc73d55"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#ac32241998a863bb01d954d2cabc73d55">has</a> () const</td></tr>
-<tr class="separator:ac32241998a863bb01d954d2cabc73d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a659d8155183c87083b76eb8e1bda1e4e"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a659d8155183c87083b76eb8e1bda1e4e"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a659d8155183c87083b76eb8e1bda1e4e">get</a> () const</td></tr>
-<tr class="separator:a659d8155183c87083b76eb8e1bda1e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a502524425ea28cfc398b25771e2495ae"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a502524425ea28cfc398b25771e2495ae"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a502524425ea28cfc398b25771e2495ae">installComponent</a> (std::unique_ptr&lt; T &gt; <a class="el" href="classPlatformApplication.html#adee816bd26e6f10caa78b9cd8ccad3f1">component</a>)</td></tr>
+<tr class="separator:a502524425ea28cfc398b25771e2495ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4728d738fbc348e25ab14bbc86f52079"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPlatformComponentStorage.html">PlatformComponentStorage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a4728d738fbc348e25ab14bbc86f52079">components</a> () const</td></tr>
+<tr class="separator:a4728d738fbc348e25ab14bbc86f52079"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adee816bd26e6f10caa78b9cd8ccad3f1"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:adee816bd26e6f10caa78b9cd8ccad3f1"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#adee816bd26e6f10caa78b9cd8ccad3f1">component</a> () const</td></tr>
+<tr class="separator:adee816bd26e6f10caa78b9cd8ccad3f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2838570c149b13ce8ed4539b8e15b59f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a2838570c149b13ce8ed4539b8e15b59f">processMessages</a> (int count=-1)</td></tr>
 <tr class="separator:a2838570c149b13ce8ed4539b8e15b59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe7e2d86d4c6a0cffaeed95d773a479b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#abe7e2d86d4c6a0cffaeed95d773a479b">waitForMessages</a> ()</td></tr>
@@ -122,38 +116,30 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:abf840cab72b26225cadedbc64072e836"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#abf840cab72b26225cadedbc64072e836">installInternal</a> (<a class="el" href="classProxyPlatform.html">ProxyPlatform</a> *<a class="el" href="classPlatformApplication.html#a1c2f0129b1d8de41b40549634d366582">platform</a>)</td></tr>
-<tr class="separator:abf840cab72b26225cadedbc64072e836"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9165c469e564a795057784ab5b82f11f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a9165c469e564a795057784ab5b82f11f">removeInternal</a> (<a class="el" href="classProxyPlatform.html">ProxyPlatform</a> *<a class="el" href="classPlatformApplication.html#a1c2f0129b1d8de41b40549634d366582">platform</a>)</td></tr>
-<tr class="separator:a9165c469e564a795057784ab5b82f11f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4996e301a7c412feed58602fc38f1f52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a4996e301a7c412feed58602fc38f1f52">installInternal</a> (<a class="el" href="classProxyEventLoop.html">ProxyEventLoop</a> *<a class="el" href="classPlatformApplication.html#a9fd9570f8ed29d67a0977cf5e8146868">eventLoop</a>)</td></tr>
-<tr class="separator:a4996e301a7c412feed58602fc38f1f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa44115a8058581f86f8e134b5cc8ef74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#aa44115a8058581f86f8e134b5cc8ef74">removeInternal</a> (<a class="el" href="classProxyEventLoop.html">ProxyEventLoop</a> *<a class="el" href="classPlatformApplication.html#a9fd9570f8ed29d67a0977cf5e8146868">eventLoop</a>)</td></tr>
-<tr class="separator:aa44115a8058581f86f8e134b5cc8ef74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afeea9496841fed191bfcbb3b61cd8bad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#afeea9496841fed191bfcbb3b61cd8bad">installInternal</a> (<a class="el" href="classProxyWindow.html">ProxyWindow</a> *<a class="el" href="classPlatformApplication.html#a26f76cd527f0952fbc83ff46d746af77">window</a>)</td></tr>
-<tr class="separator:afeea9496841fed191bfcbb3b61cd8bad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7ce0603862d6a6e482accb55a5ce6ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#ae7ce0603862d6a6e482accb55a5ce6ee">removeInternal</a> (<a class="el" href="classProxyWindow.html">ProxyWindow</a> *<a class="el" href="classPlatformApplication.html#a26f76cd527f0952fbc83ff46d746af77">window</a>)</td></tr>
-<tr class="separator:ae7ce0603862d6a6e482accb55a5ce6ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7598b713665bad877584aa229bdc7a9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a7598b713665bad877584aa229bdc7a9a">installInternal</a> (<a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a> *<a class="el" href="classPlatformApplication.html#a72958837a13aed50e80770fd5fc4f804">openGLContext</a>)</td></tr>
-<tr class="separator:a7598b713665bad877584aa229bdc7a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a698d23f12ab3144bffffc8afbd2b20a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a698d23f12ab3144bffffc8afbd2b20a3">removeInternal</a> (<a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a> *<a class="el" href="classPlatformApplication.html#a72958837a13aed50e80770fd5fc4f804">openGLContext</a>)</td></tr>
-<tr class="separator:a698d23f12ab3144bffffc8afbd2b20a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa531588c8333df50b21c4b78dd72e44b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#aa531588c8333df50b21c4b78dd72e44b">installInternal</a> (<a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a> *eventFilter)</td></tr>
-<tr class="separator:aa531588c8333df50b21c4b78dd72e44b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaecadc5c29c49cffc3ca924268ae724d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#aaecadc5c29c49cffc3ca924268ae724d">removeInternal</a> (<a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a> *eventFilter)</td></tr>
-<tr class="separator:aaecadc5c29c49cffc3ca924268ae724d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac224e4d1d6bb50b7995c1880defe4e77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#ac224e4d1d6bb50b7995c1880defe4e77">installInternal</a> (<a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a> *aware)</td></tr>
-<tr class="separator:ac224e4d1d6bb50b7995c1880defe4e77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2b5a620a80f40908d1cb003d6868e47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#ac2b5a620a80f40908d1cb003d6868e47">removeInternal</a> (<a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a> *aware)</td></tr>
-<tr class="separator:ac2b5a620a80f40908d1cb003d6868e47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40483f73d55cf30ab83d15e2c0900ba2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a40483f73d55cf30ab83d15e2c0900ba2">installInternal</a> (std::type_index componentType, void *component)</td></tr>
-<tr class="separator:a40483f73d55cf30ab83d15e2c0900ba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00e8f74fd9491806c40db1b625a7ce24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a00e8f74fd9491806c40db1b625a7ce24">removeInternal</a> (std::type_index componentType, void *component)</td></tr>
-<tr class="separator:a00e8f74fd9491806c40db1b625a7ce24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a138d4e440ca1ab6459cb47d05175c5d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a138d4e440ca1ab6459cb47d05175c5d6">hasInternal</a> (std::type_index componentType) const</td></tr>
-<tr class="separator:a138d4e440ca1ab6459cb47d05175c5d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb5441ffe8f53607d2e5a2dfe88b7ddd"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#adb5441ffe8f53607d2e5a2dfe88b7ddd">getInternal</a> (std::type_index componentType) const</td></tr>
-<tr class="separator:adb5441ffe8f53607d2e5a2dfe88b7ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeae0aff9f2dcda781fecfcfdd95add80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#aeae0aff9f2dcda781fecfcfdd95add80">installComponentInternal</a> (<a class="el" href="classProxyPlatform.html">ProxyPlatform</a> *<a class="el" href="classPlatformApplication.html#a1c2f0129b1d8de41b40549634d366582">platform</a>)</td></tr>
+<tr class="separator:aeae0aff9f2dcda781fecfcfdd95add80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8de03df056bad12cec6f1d341c84dcf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a8de03df056bad12cec6f1d341c84dcf9">removeComponentInternal</a> (<a class="el" href="classProxyPlatform.html">ProxyPlatform</a> *<a class="el" href="classPlatformApplication.html#a1c2f0129b1d8de41b40549634d366582">platform</a>)</td></tr>
+<tr class="separator:a8de03df056bad12cec6f1d341c84dcf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f4c4bf8056a9d25f733453ab3873388"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a7f4c4bf8056a9d25f733453ab3873388">installComponentInternal</a> (<a class="el" href="classProxyEventLoop.html">ProxyEventLoop</a> *<a class="el" href="classPlatformApplication.html#a9fd9570f8ed29d67a0977cf5e8146868">eventLoop</a>)</td></tr>
+<tr class="separator:a7f4c4bf8056a9d25f733453ab3873388"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87d5378f0806596fd4b6b2407280dffc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a87d5378f0806596fd4b6b2407280dffc">removeComponentInternal</a> (<a class="el" href="classProxyEventLoop.html">ProxyEventLoop</a> *<a class="el" href="classPlatformApplication.html#a9fd9570f8ed29d67a0977cf5e8146868">eventLoop</a>)</td></tr>
+<tr class="separator:a87d5378f0806596fd4b6b2407280dffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af29a58cb23c6234230b1888c56f766b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#af29a58cb23c6234230b1888c56f766b1">installComponentInternal</a> (<a class="el" href="classProxyWindow.html">ProxyWindow</a> *<a class="el" href="classPlatformApplication.html#a26f76cd527f0952fbc83ff46d746af77">window</a>)</td></tr>
+<tr class="separator:af29a58cb23c6234230b1888c56f766b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4f02851eb46ad76e123c4cda3e96930"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#aa4f02851eb46ad76e123c4cda3e96930">removeComponentInternal</a> (<a class="el" href="classProxyWindow.html">ProxyWindow</a> *<a class="el" href="classPlatformApplication.html#a26f76cd527f0952fbc83ff46d746af77">window</a>)</td></tr>
+<tr class="separator:aa4f02851eb46ad76e123c4cda3e96930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adeed7125dccc0dc7303869068184cf90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#adeed7125dccc0dc7303869068184cf90">installComponentInternal</a> (<a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a> *<a class="el" href="classPlatformApplication.html#a72958837a13aed50e80770fd5fc4f804">openGLContext</a>)</td></tr>
+<tr class="separator:adeed7125dccc0dc7303869068184cf90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ab27b3e43e82bd7179dd9aabf468d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a78ab27b3e43e82bd7179dd9aabf468d9">removeComponentInternal</a> (<a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a> *<a class="el" href="classPlatformApplication.html#a72958837a13aed50e80770fd5fc4f804">openGLContext</a>)</td></tr>
+<tr class="separator:a78ab27b3e43e82bd7179dd9aabf468d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e89346e2d3c521530f0634cd4185bd5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a9e89346e2d3c521530f0634cd4185bd5">installComponentInternal</a> (<a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a> *eventFilter)</td></tr>
+<tr class="separator:a9e89346e2d3c521530f0634cd4185bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7befd399ae89c9300e96950e4cff5e23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a7befd399ae89c9300e96950e4cff5e23">removeComponentInternal</a> (<a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a> *eventFilter)</td></tr>
+<tr class="separator:a7befd399ae89c9300e96950e4cff5e23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad06e1cccf8a37f53805b746f5e4c66b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#ad06e1cccf8a37f53805b746f5e4c66b8">installComponentInternal</a> (<a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a> *aware)</td></tr>
+<tr class="separator:ad06e1cccf8a37f53805b746f5e4c66b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51d503e61a2f5894073d550645c3834b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a51d503e61a2f5894073d550645c3834b">removeComponentInternal</a> (<a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a> *aware)</td></tr>
+<tr class="separator:a51d503e61a2f5894073d550645c3834b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -169,10 +155,13 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a3cc767d407df5625b6b13a57442e45b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9a9879798332722a51a1ab3701497bd"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classApplicationProxy.html">ApplicationProxy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#af9a9879798332722a51a1ab3701497bd">_rootProxy</a></td></tr>
 <tr class="separator:af9a9879798332722a51a1ab3701497bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fd6522f8c69a3b3a95901af1a4a1140"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::type_index, void * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a4fd6522f8c69a3b3a95901af1a4a1140">_componentByType</a></td></tr>
-<tr class="separator:a4fd6522f8c69a3b3a95901af1a4a1140"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a252c3974e0887ea6ae75a183f64e7c25"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::function&lt; void()&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a252c3974e0887ea6ae75a183f64e7c25">_cleanupRoutines</a></td></tr>
-<tr class="separator:a252c3974e0887ea6ae75a183f64e7c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d29da25d558a087919365e79748ed0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformComponentStorage.html">PlatformComponentStorage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a9d29da25d558a087919365e79748ed0b">_components</a></td></tr>
+<tr class="separator:a9d29da25d558a087919365e79748ed0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a03cd6f570dd1907c20695fd75b91dcc0"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplication.html#a03cd6f570dd1907c20695fd75b91dcc0">PlatformApplicationAware</a></td></tr>
+<tr class="separator:a03cd6f570dd1907c20695fd75b91dcc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >This class ties together everything in platform for a particular use case of an application with a single window.</p>
@@ -229,6 +218,58 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="adee816bd26e6f10caa78b9cd8ccad3f1" name="adee816bd26e6f10caa78b9cd8ccad3f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adee816bd26e6f10caa78b9cd8ccad3f1">&#9670;&#160;</a></span>component()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T * PlatformApplication::component </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4728d738fbc348e25ab14bbc86f52079" name="a4728d738fbc348e25ab14bbc86f52079"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4728d738fbc348e25ab14bbc86f52079">&#9670;&#160;</a></span>components()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classPlatformComponentStorage.html">PlatformComponentStorage</a> * PlatformApplication::components </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a7c0278c18eb1a98f3e2d877ca3c1efcd" name="a7c0278c18eb1a98f3e2d877ca3c1efcd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7c0278c18eb1a98f3e2d877ca3c1efcd">&#9670;&#160;</a></span>eventHandler()</h2>
 
@@ -259,112 +300,6 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a659d8155183c87083b76eb8e1bda1e4e" name="a659d8155183c87083b76eb8e1bda1e4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a659d8155183c87083b76eb8e1bda1e4e">&#9670;&#160;</a></span>get()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">T * PlatformApplication::get </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adb5441ffe8f53607d2e5a2dfe88b7ddd" name="adb5441ffe8f53607d2e5a2dfe88b7ddd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb5441ffe8f53607d2e5a2dfe88b7ddd">&#9670;&#160;</a></span>getInternal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void * PlatformApplication::getInternal </td>
-          <td>(</td>
-          <td class="paramtype">std::type_index&#160;</td>
-          <td class="paramname"><em>componentType</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac32241998a863bb01d954d2cabc73d55" name="ac32241998a863bb01d954d2cabc73d55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac32241998a863bb01d954d2cabc73d55">&#9670;&#160;</a></span>has()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool PlatformApplication::has </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a138d4e440ca1ab6459cb47d05175c5d6" name="a138d4e440ca1ab6459cb47d05175c5d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a138d4e440ca1ab6459cb47d05175c5d6">&#9670;&#160;</a></span>hasInternal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool PlatformApplication::hasInternal </td>
-          <td>(</td>
-          <td class="paramtype">std::type_index&#160;</td>
-          <td class="paramname"><em>componentType</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -405,8 +340,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a5cefa5ebc8a2b356d642554a2877e92c" name="a5cefa5ebc8a2b356d642554a2877e92c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5cefa5ebc8a2b356d642554a2877e92c">&#9670;&#160;</a></span>install() <span class="overload">[1/2]</span></h2>
+<a id="a502524425ea28cfc398b25771e2495ae" name="a502524425ea28cfc398b25771e2495ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a502524425ea28cfc398b25771e2495ae">&#9670;&#160;</a></span>installComponent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -417,7 +352,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::install </td>
+          <td class="memname">void PlatformApplication::installComponent </td>
           <td>(</td>
           <td class="paramtype">std::unique_ptr&lt; T &gt;&#160;</td>
           <td class="paramname"><em>component</em></td><td>)</td>
@@ -433,36 +368,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a072eb48874458852b8fc7d51651993a5" name="a072eb48874458852b8fc7d51651993a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a072eb48874458852b8fc7d51651993a5">&#9670;&#160;</a></span>install() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PlatformApplication::install </td>
-          <td>(</td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>component</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac224e4d1d6bb50b7995c1880defe4e77" name="ac224e4d1d6bb50b7995c1880defe4e77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac224e4d1d6bb50b7995c1880defe4e77">&#9670;&#160;</a></span>installInternal() <span class="overload">[1/7]</span></h2>
+<a id="ad06e1cccf8a37f53805b746f5e4c66b8" name="ad06e1cccf8a37f53805b746f5e4c66b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad06e1cccf8a37f53805b746f5e4c66b8">&#9670;&#160;</a></span>installComponentInternal() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -471,7 +378,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
+          <td class="memname">void PlatformApplication::installComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a> *&#160;</td>
           <td class="paramname"><em>aware</em></td><td>)</td>
@@ -487,8 +394,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="aa531588c8333df50b21c4b78dd72e44b" name="aa531588c8333df50b21c4b78dd72e44b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa531588c8333df50b21c4b78dd72e44b">&#9670;&#160;</a></span>installInternal() <span class="overload">[2/7]</span></h2>
+<a id="a9e89346e2d3c521530f0634cd4185bd5" name="a9e89346e2d3c521530f0634cd4185bd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e89346e2d3c521530f0634cd4185bd5">&#9670;&#160;</a></span>installComponentInternal() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -497,7 +404,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
+          <td class="memname">void PlatformApplication::installComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a> *&#160;</td>
           <td class="paramname"><em>eventFilter</em></td><td>)</td>
@@ -513,8 +420,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a4996e301a7c412feed58602fc38f1f52" name="a4996e301a7c412feed58602fc38f1f52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4996e301a7c412feed58602fc38f1f52">&#9670;&#160;</a></span>installInternal() <span class="overload">[3/7]</span></h2>
+<a id="a7f4c4bf8056a9d25f733453ab3873388" name="a7f4c4bf8056a9d25f733453ab3873388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f4c4bf8056a9d25f733453ab3873388">&#9670;&#160;</a></span>installComponentInternal() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -523,7 +430,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
+          <td class="memname">void PlatformApplication::installComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyEventLoop.html">ProxyEventLoop</a> *&#160;</td>
           <td class="paramname"><em>eventLoop</em></td><td>)</td>
@@ -539,8 +446,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a7598b713665bad877584aa229bdc7a9a" name="a7598b713665bad877584aa229bdc7a9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7598b713665bad877584aa229bdc7a9a">&#9670;&#160;</a></span>installInternal() <span class="overload">[4/7]</span></h2>
+<a id="adeed7125dccc0dc7303869068184cf90" name="adeed7125dccc0dc7303869068184cf90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adeed7125dccc0dc7303869068184cf90">&#9670;&#160;</a></span>installComponentInternal() <span class="overload">[4/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -549,7 +456,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
+          <td class="memname">void PlatformApplication::installComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a> *&#160;</td>
           <td class="paramname"><em>openGLContext</em></td><td>)</td>
@@ -565,8 +472,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="abf840cab72b26225cadedbc64072e836" name="abf840cab72b26225cadedbc64072e836"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf840cab72b26225cadedbc64072e836">&#9670;&#160;</a></span>installInternal() <span class="overload">[5/7]</span></h2>
+<a id="aeae0aff9f2dcda781fecfcfdd95add80" name="aeae0aff9f2dcda781fecfcfdd95add80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeae0aff9f2dcda781fecfcfdd95add80">&#9670;&#160;</a></span>installComponentInternal() <span class="overload">[5/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -575,7 +482,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
+          <td class="memname">void PlatformApplication::installComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyPlatform.html">ProxyPlatform</a> *&#160;</td>
           <td class="paramname"><em>platform</em></td><td>)</td>
@@ -591,8 +498,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="afeea9496841fed191bfcbb3b61cd8bad" name="afeea9496841fed191bfcbb3b61cd8bad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afeea9496841fed191bfcbb3b61cd8bad">&#9670;&#160;</a></span>installInternal() <span class="overload">[6/7]</span></h2>
+<a id="af29a58cb23c6234230b1888c56f766b1" name="af29a58cb23c6234230b1888c56f766b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af29a58cb23c6234230b1888c56f766b1">&#9670;&#160;</a></span>installComponentInternal() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -601,47 +508,11 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
+          <td class="memname">void PlatformApplication::installComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyWindow.html">ProxyWindow</a> *&#160;</td>
           <td class="paramname"><em>window</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a40483f73d55cf30ab83d15e2c0900ba2" name="a40483f73d55cf30ab83d15e2c0900ba2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40483f73d55cf30ab83d15e2c0900ba2">&#9670;&#160;</a></span>installInternal() <span class="overload">[7/7]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PlatformApplication::installInternal </td>
-          <td>(</td>
-          <td class="paramtype">std::type_index&#160;</td>
-          <td class="paramname"><em>componentType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>component</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -705,36 +576,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="ad4ad6a90ebb4c2e23469f8f8e02f3ad8" name="ad4ad6a90ebb4c2e23469f8f8e02f3ad8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4ad6a90ebb4c2e23469f8f8e02f3ad8">&#9670;&#160;</a></span>remove()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PlatformApplication::remove </td>
-          <td>(</td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>component</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac2b5a620a80f40908d1cb003d6868e47" name="ac2b5a620a80f40908d1cb003d6868e47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac2b5a620a80f40908d1cb003d6868e47">&#9670;&#160;</a></span>removeInternal() <span class="overload">[1/7]</span></h2>
+<a id="a51d503e61a2f5894073d550645c3834b" name="a51d503e61a2f5894073d550645c3834b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51d503e61a2f5894073d550645c3834b">&#9670;&#160;</a></span>removeComponentInternal() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -743,7 +586,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
+          <td class="memname">void PlatformApplication::removeComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a> *&#160;</td>
           <td class="paramname"><em>aware</em></td><td>)</td>
@@ -759,8 +602,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="aaecadc5c29c49cffc3ca924268ae724d" name="aaecadc5c29c49cffc3ca924268ae724d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaecadc5c29c49cffc3ca924268ae724d">&#9670;&#160;</a></span>removeInternal() <span class="overload">[2/7]</span></h2>
+<a id="a7befd399ae89c9300e96950e4cff5e23" name="a7befd399ae89c9300e96950e4cff5e23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7befd399ae89c9300e96950e4cff5e23">&#9670;&#160;</a></span>removeComponentInternal() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -769,7 +612,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
+          <td class="memname">void PlatformApplication::removeComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a> *&#160;</td>
           <td class="paramname"><em>eventFilter</em></td><td>)</td>
@@ -785,8 +628,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="aa44115a8058581f86f8e134b5cc8ef74" name="aa44115a8058581f86f8e134b5cc8ef74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa44115a8058581f86f8e134b5cc8ef74">&#9670;&#160;</a></span>removeInternal() <span class="overload">[3/7]</span></h2>
+<a id="a87d5378f0806596fd4b6b2407280dffc" name="a87d5378f0806596fd4b6b2407280dffc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87d5378f0806596fd4b6b2407280dffc">&#9670;&#160;</a></span>removeComponentInternal() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -795,7 +638,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
+          <td class="memname">void PlatformApplication::removeComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyEventLoop.html">ProxyEventLoop</a> *&#160;</td>
           <td class="paramname"><em>eventLoop</em></td><td>)</td>
@@ -811,8 +654,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a698d23f12ab3144bffffc8afbd2b20a3" name="a698d23f12ab3144bffffc8afbd2b20a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a698d23f12ab3144bffffc8afbd2b20a3">&#9670;&#160;</a></span>removeInternal() <span class="overload">[4/7]</span></h2>
+<a id="a78ab27b3e43e82bd7179dd9aabf468d9" name="a78ab27b3e43e82bd7179dd9aabf468d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78ab27b3e43e82bd7179dd9aabf468d9">&#9670;&#160;</a></span>removeComponentInternal() <span class="overload">[4/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -821,7 +664,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
+          <td class="memname">void PlatformApplication::removeComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a> *&#160;</td>
           <td class="paramname"><em>openGLContext</em></td><td>)</td>
@@ -837,8 +680,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a9165c469e564a795057784ab5b82f11f" name="a9165c469e564a795057784ab5b82f11f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9165c469e564a795057784ab5b82f11f">&#9670;&#160;</a></span>removeInternal() <span class="overload">[5/7]</span></h2>
+<a id="a8de03df056bad12cec6f1d341c84dcf9" name="a8de03df056bad12cec6f1d341c84dcf9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8de03df056bad12cec6f1d341c84dcf9">&#9670;&#160;</a></span>removeComponentInternal() <span class="overload">[5/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -847,7 +690,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
+          <td class="memname">void PlatformApplication::removeComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyPlatform.html">ProxyPlatform</a> *&#160;</td>
           <td class="paramname"><em>platform</em></td><td>)</td>
@@ -863,8 +706,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="ae7ce0603862d6a6e482accb55a5ce6ee" name="ae7ce0603862d6a6e482accb55a5ce6ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7ce0603862d6a6e482accb55a5ce6ee">&#9670;&#160;</a></span>removeInternal() <span class="overload">[6/7]</span></h2>
+<a id="aa4f02851eb46ad76e123c4cda3e96930" name="aa4f02851eb46ad76e123c4cda3e96930"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4f02851eb46ad76e123c4cda3e96930">&#9670;&#160;</a></span>removeComponentInternal() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -873,47 +716,11 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
+          <td class="memname">void PlatformApplication::removeComponentInternal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classProxyWindow.html">ProxyWindow</a> *&#160;</td>
           <td class="paramname"><em>window</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a00e8f74fd9491806c40db1b625a7ce24" name="a00e8f74fd9491806c40db1b625a7ce24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a00e8f74fd9491806c40db1b625a7ce24">&#9670;&#160;</a></span>removeInternal() <span class="overload">[7/7]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PlatformApplication::removeInternal </td>
-          <td>(</td>
-          <td class="paramtype">std::type_index&#160;</td>
-          <td class="paramname"><em>componentType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>component</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -959,9 +766,9 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a252c3974e0887ea6ae75a183f64e7c25" name="a252c3974e0887ea6ae75a183f64e7c25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a252c3974e0887ea6ae75a183f64e7c25">&#9670;&#160;</a></span>_cleanupRoutines</h2>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="a03cd6f570dd1907c20695fd75b91dcc0" name="a03cd6f570dd1907c20695fd75b91dcc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03cd6f570dd1907c20695fd75b91dcc0">&#9670;&#160;</a></span>PlatformApplicationAware</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -970,20 +777,21 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::function&lt;void()&gt; &gt; PlatformApplication::_cleanupRoutines</td>
+          <td class="memname">friend class <a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a4fd6522f8c69a3b3a95901af1a4a1140" name="a4fd6522f8c69a3b3a95901af1a4a1140"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4fd6522f8c69a3b3a95901af1a4a1140">&#9670;&#160;</a></span>_componentByType</h2>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a9d29da25d558a087919365e79748ed0b" name="a9d29da25d558a087919365e79748ed0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d29da25d558a087919365e79748ed0b">&#9670;&#160;</a></span>_components</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -992,7 +800,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;std::type_index, void *&gt; PlatformApplication::_componentByType</td>
+          <td class="memname"><a class="el" href="classPlatformComponentStorage.html">PlatformComponentStorage</a> PlatformApplication::_components</td>
         </tr>
       </table>
   </td>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -77,14 +77,15 @@ $(function() {
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#a31010e298399b6fa43cca47da1a6bf13">_reader</a></td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#a7d03a3cf91f3e418f7358b6254b5baf6">_reservedCount</a></td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#a5fd05fbed8804fddfffebe70cccd7f25">_sprites</a></td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#a291a660943221a6ad9705e679f4c3597">loadSprite</a>(const std::string &amp;pContainerName)</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#a145df9b28c04e2ea495ce89ce75c7b4b">LoadSpriteFromFile</a>(LODSprite *pSpriteHeader, const std::string &amp;pContainer)</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#a1bf51d22dbb8f4ea50070eb86097fbff">LodSpriteCache</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#ae0a2ae711260a0eace454ecb6ad3fcd9">open</a>(const std::string &amp;pFilename, const std::string &amp;folder)</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#a56dccec1ea11de8e56364d5db990e8e3">releaseUnreserved</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#aa6104cfc685ff11f161e574c8cf36eb1">reserveLoadedSprites</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#acb5b75a7c1acf896dad863c3d5469623">~LodSpriteCache</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#af6bcd719167d86c310b4211f76d1bf99">_spriteByName</a></td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#af776f4f9ebd61c2dca4251529cf1b373">_spritesInOrder</a></td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#a291a660943221a6ad9705e679f4c3597">loadSprite</a>(const std::string &amp;pContainerName)</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#a145df9b28c04e2ea495ce89ce75c7b4b">LoadSpriteFromFile</a>(LODSprite *pSpriteHeader, const std::string &amp;pContainer)</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#a1bf51d22dbb8f4ea50070eb86097fbff">LodSpriteCache</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#a6704762f626964b43bf82d63d2d96f00">open</a>(const std::string &amp;pFilename)</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#a56dccec1ea11de8e56364d5db990e8e3">releaseUnreserved</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classLodSpriteCache.html#aa6104cfc685ff11f161e574c8cf36eb1">reserveLoadedSprites</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classLodSpriteCache.html#acb5b75a7c1acf896dad863c3d5469623">~LodSpriteCache</a>()</td><td class="entry"><a class="el" href="classLodSpriteCache.html">LodSpriteCache</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

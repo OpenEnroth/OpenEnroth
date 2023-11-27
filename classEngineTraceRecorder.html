@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -71,7 +71,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classEngineTraceRecorder-members.html">List of all members</a>  </div>
@@ -103,22 +102,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a16c33f2dc904389d54b896e3283fab68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a16c33f2dc904389d54b896e3283fab68">isRecording</a> () const</td></tr>
 <tr class="separator:a16c33f2dc904389d54b896e3283fab68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:ae6fe35764e2dedd27856b9e47f66a0a1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ae6fe35764e2dedd27856b9e47f66a0a1">installNotify</a> () override</td></tr>
-<tr class="separator:ae6fe35764e2dedd27856b9e47f66a0a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e586eae3277275a7dfe47054b35375b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a7e586eae3277275a7dfe47054b35375b">removeNotify</a> () override</td></tr>
-<tr class="separator:a7e586eae3277275a7dfe47054b35375b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classPlatformApplicationAware"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformApplicationAware')"><img src="closed.png" alt="-"/>&#160;Private Member Functions inherited from <a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a></td></tr>
-<tr class="memitem:abc15db7bee6d230e5b46e0955a2d51a2 inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#abc15db7bee6d230e5b46e0955a2d51a2">~PlatformApplicationAware</a> ()=default</td></tr>
-<tr class="separator:abc15db7bee6d230e5b46e0955a2d51a2 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed85e21801a9f13b1e04f168fac59001 inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#aed85e21801a9f13b1e04f168fac59001">application</a> () const</td></tr>
-<tr class="separator:aed85e21801a9f13b1e04f168fac59001 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a243ad3ee230552c7638e18fb93adae55 inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#a243ad3ee230552c7638e18fb93adae55">installNotify</a> ()</td></tr>
-<tr class="separator:a243ad3ee230552c7638e18fb93adae55 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37fc00d6c4be85dadf00248ff2b620be inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#a37fc00d6c4be85dadf00248ff2b620be">removeNotify</a> ()</td></tr>
-<tr class="separator:a37fc00d6c4be85dadf00248ff2b620be inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a96069addb38148baf4951a7627bee550"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a96069addb38148baf4951a7627bee550">_savePath</a></td></tr>
@@ -129,17 +112,26 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a821aa80e1f886f39eb53a1815f819d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#af944ae412ccf9ab1e0a1b41394a5ac6d">_trace</a></td></tr>
 <tr class="separator:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a166df9687844d30424932166ef81c75e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a166df9687844d30424932166ef81c75e">_deterministicComponent</a> = nullptr</td></tr>
-<tr class="separator:a166df9687844d30424932166ef81c75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5b2d03049a6065495e9798361653dd9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTraceSimpleRecorder.html">EngineTraceSimpleRecorder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ad5b2d03049a6065495e9798361653dd9">_simpleRecorder</a> = nullptr</td></tr>
-<tr class="separator:ad5b2d03049a6065495e9798361653dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98d4a9edbd1547e885f0ec812d1a58c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameKeyboardController.html">GameKeyboardController</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a98d4a9edbd1547e885f0ec812d1a58c8">_keyboardController</a> = nullptr</td></tr>
-<tr class="separator:a98d4a9edbd1547e885f0ec812d1a58c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:ab885b56275df91cf58aedeb374cdea9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ab885b56275df91cf58aedeb374cdea9c">PlatformIntrospection</a></td></tr>
 <tr class="separator:ab885b56275df91cf58aedeb374cdea9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_methods_classPlatformApplicationAware"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformApplicationAware')"><img src="closed.png" alt="-"/>&#160;Private Member Functions inherited from <a class="el" href="classPlatformApplicationAware.html">PlatformApplicationAware</a></td></tr>
+<tr class="memitem:abc15db7bee6d230e5b46e0955a2d51a2 inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#abc15db7bee6d230e5b46e0955a2d51a2">~PlatformApplicationAware</a> ()=default</td></tr>
+<tr class="separator:abc15db7bee6d230e5b46e0955a2d51a2 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed85e21801a9f13b1e04f168fac59001 inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#aed85e21801a9f13b1e04f168fac59001">application</a> () const</td></tr>
+<tr class="separator:aed85e21801a9f13b1e04f168fac59001 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17a6f851e67d4dafbdddf82ef9200700 inherit pub_methods_classPlatformApplicationAware"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a17a6f851e67d4dafbdddf82ef9200700 inherit pub_methods_classPlatformApplicationAware"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#a17a6f851e67d4dafbdddf82ef9200700">component</a> ()</td></tr>
+<tr class="separator:a17a6f851e67d4dafbdddf82ef9200700 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a243ad3ee230552c7638e18fb93adae55 inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#a243ad3ee230552c7638e18fb93adae55">installNotify</a> ()</td></tr>
+<tr class="separator:a243ad3ee230552c7638e18fb93adae55 inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37fc00d6c4be85dadf00248ff2b620be inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#a37fc00d6c4be85dadf00248ff2b620be">removeNotify</a> ()</td></tr>
+<tr class="separator:a37fc00d6c4be85dadf00248ff2b620be inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Component that exposes a trace recording interface. Doesn't have a <code>Component</code> in its name because who likes class names half a screen long.</p>
@@ -214,34 +206,6 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ae6fe35764e2dedd27856b9e47f66a0a1" name="ae6fe35764e2dedd27856b9e47f66a0a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6fe35764e2dedd27856b9e47f66a0a1">&#9670;&#160;</a></span>installNotify()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EngineTraceRecorder::installNotify </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Called after installation into a <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code>. <code><a class="el" href="EngineGlobals_8cpp.html#a72a12c3fd157814e5ecfe471779c69d9">application()</a></code> will return non-null inside this function. </p>
-
-<p>Reimplemented from <a class="el" href="classPlatformApplicationAware.html#a243ad3ee230552c7638e18fb93adae55">PlatformApplicationAware</a>.</p>
-
-</div>
-</div>
 <a id="a16c33f2dc904389d54b896e3283fab68" name="a16c33f2dc904389d54b896e3283fab68"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16c33f2dc904389d54b896e3283fab68">&#9670;&#160;</a></span>isRecording()</h2>
 
@@ -265,34 +229,6 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Whether recording is in progress. Make sure to call this method only from the control thread, otherwise you basically can't reason about the current recording state. </dd></dl>
-
-</div>
-</div>
-<a id="a7e586eae3277275a7dfe47054b35375b" name="a7e586eae3277275a7dfe47054b35375b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e586eae3277275a7dfe47054b35375b">&#9670;&#160;</a></span>removeNotify()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EngineTraceRecorder::removeNotify </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Called before removal from a <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code>. <code><a class="el" href="EngineGlobals_8cpp.html#a72a12c3fd157814e5ecfe471779c69d9">application()</a></code> will return non-null inside this function. </p>
-
-<p>Reimplemented from <a class="el" href="classPlatformApplicationAware.html#a37fc00d6c4be85dadf00248ff2b620be">PlatformApplicationAware</a>.</p>
 
 </div>
 </div>
@@ -371,50 +307,6 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a166df9687844d30424932166ef81c75e" name="a166df9687844d30424932166ef81c75e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a166df9687844d30424932166ef81c75e">&#9670;&#160;</a></span>_deterministicComponent</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a>* EngineTraceRecorder::_deterministicComponent = nullptr</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a98d4a9edbd1547e885f0ec812d1a58c8" name="a98d4a9edbd1547e885f0ec812d1a58c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98d4a9edbd1547e885f0ec812d1a58c8">&#9670;&#160;</a></span>_keyboardController</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGameKeyboardController.html">GameKeyboardController</a>* EngineTraceRecorder::_keyboardController = nullptr</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a821aa80e1f886f39eb53a1815f819d93" name="a821aa80e1f886f39eb53a1815f819d93"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a821aa80e1f886f39eb53a1815f819d93">&#9670;&#160;</a></span>_oldFpsLimit</h2>
 
@@ -448,28 +340,6 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string EngineTraceRecorder::_savePath</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad5b2d03049a6065495e9798361653dd9" name="ad5b2d03049a6065495e9798361653dd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5b2d03049a6065495e9798361653dd9">&#9670;&#160;</a></span>_simpleRecorder</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classEngineTraceSimpleRecorder.html">EngineTraceSimpleRecorder</a>* EngineTraceRecorder::_simpleRecorder = nullptr</td>
         </tr>
       </table>
   </td>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -147,24 +147,23 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> ENUM &amp;src, std::string *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                              \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> ENUM &amp;src, std::string *dst) {                                                              \</div>
 <div class="line">        std::string_view result = magic_enum::enum_name(src);                                                           \</div>
 <div class="line">        if (result.empty())                                                                                             \</div>
 <div class="line">            <span class="keywordflow">return</span> <span class="keyword">false</span>;                                                                                               \</div>
-<div class="line">        *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a> = std::string(result);                                                                                     \</div>
+<div class="line">        *dst = std::string(result);                                                                                     \</div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;                                                                                                    \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, ENUM *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                              \</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, ENUM *dst) {                                                              \</div>
 <div class="line">        std::optional&lt;ENUM&gt; result = magic_enum::enum_cast&lt;ENUM&gt;(src);                                                  \</div>
 <div class="line">        if (!result.has_value())                                                                                        \</div>
 <div class="line">            <span class="keywordflow">return</span> <span class="keyword">false</span>;                                                                                               \</div>
-<div class="line">        *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a> = *result;                                                                                                 \</div>
+<div class="line">        *dst = *result;                                                                                                 \</div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;                                                                                                    \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
 <div class="line">    MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_VIA_TRY_FUNCTIONS_I(ENUM)</div>
-<div class="ttc" id="aLodFormats_8cpp_html_a9004b62236f4be2804bfa96bf4929ed3"><div class="ttname"><a href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a></div><div class="ttdeci">Palette * dst</div><div class="ttdef"><b>Definition:</b> LodFormats.cpp:30</div></div>
 <div class="ttc" id="aStandardSerialization_8cpp_html_a2e030070a47872390fb1f3ec08447b5e"><div class="ttname"><a href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a></div><div class="ttdeci">bool trySerialize(const bool &amp;src, std::string *dst)</div><div class="ttdef"><b>Definition:</b> StandardSerialization.cpp:32</div></div>
 <div class="ttc" id="aStandardSerialization_8cpp_html_a897b4104dc916637eb6e69bd81724456"><div class="ttname"><a href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a></div><div class="ttdeci">bool tryDeserialize(std::string_view src, bool *dst)</div><div class="ttdef"><b>Definition:</b> StandardSerialization.cpp:37</div></div>
 </div><!-- fragment --><p >Same as <code>MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</code>, but using <code>magic_enum</code>.</p>
@@ -274,12 +273,12 @@ Macros</h2></td></tr>
 <div class="line">        <span class="keywordflow">return</span> &amp;SERIALIZER;                                                                                             \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> ENUM &amp;src, std::string *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                              \</div>
-<div class="line">        <span class="keywordflow">return</span> SERIALIZER.trySerialize(src, <a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>);                                                                       \</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> ENUM &amp;src, std::string *dst) {                                                              \</div>
+<div class="line">        <span class="keywordflow">return</span> SERIALIZER.trySerialize(src, dst);                                                                       \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, ENUM *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                              \</div>
-<div class="line">        <span class="keywordflow">return</span> SERIALIZER.tryDeserialize(src, <a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>);                                                                     \</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, ENUM *dst) {                                                              \</div>
+<div class="line">        <span class="keywordflow">return</span> SERIALIZER.tryDeserialize(src, dst);                                                                     \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
 <div class="line">    MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_VIA_TRY_FUNCTIONS_I(ENUM)</div>
@@ -302,13 +301,13 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                                 \</div>
-<div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(src, <a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>))                                                                                    \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *dst) {                                                                 \</div>
+<div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(src, dst))                                                                                    \</div>
 <div class="line">            throwEnumSerializationError(src, #TYPE);                                                                    \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CompositeSnapshots_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a>(std::string_view src, TYPE *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                                 \</div>
-<div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(src, <a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>))                                                                                  \</div>
+<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CompositeSnapshots_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a>(std::string_view src, TYPE *dst) {                                                                 \</div>
+<div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(src, dst))                                                                                  \</div>
 <div class="line">            throwDeserializationError(src, #TYPE);                                                                      \</div>
 <div class="line">    }</div>
 <div class="ttc" id="aCompositeSnapshots_8cpp_html_a19304568664873e32a8849fbf0496588"><div class="ttname"><a href="CompositeSnapshots_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a></div><div class="ttdeci">void deserialize(InputStream &amp;src, IndoorLocation_MM7 *dst)</div><div class="ttdef"><b>Definition:</b> CompositeSnapshots.cpp:145</div></div>
@@ -336,12 +335,12 @@ Macros</h2></td></tr>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;                                                                                                    \</div>
 <div class="line">    }();                                                                                                                \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> FLAGS &amp;src, std::string *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                             \</div>
-<div class="line">        <span class="keywordflow">return</span> serializer(<span class="keyword">static_cast&lt;</span>typename FLAGS::enumeration_type *<span class="keyword">&gt;</span>(<span class="keyword">nullptr</span>))-&gt;trySerialize(src, <a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>);            \</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> FLAGS &amp;src, std::string *dst) {                                                             \</div>
+<div class="line">        <span class="keywordflow">return</span> serializer(<span class="keyword">static_cast&lt;</span>typename FLAGS::enumeration_type *<span class="keyword">&gt;</span>(<span class="keyword">nullptr</span>))-&gt;trySerialize(src, dst);            \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, FLAGS *<a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>) {                                                             \</div>
-<div class="line">        <span class="keywordflow">return</span> serializer(<span class="keyword">static_cast&lt;</span>typename FLAGS::enumeration_type *<span class="keyword">&gt;</span>(<span class="keyword">nullptr</span>))-&gt;tryDeserialize(src, <a class="code hl_variable" href="LodFormats_8cpp.html#a9004b62236f4be2804bfa96bf4929ed3">dst</a>);          \</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, FLAGS *dst) {                                                             \</div>
+<div class="line">        <span class="keywordflow">return</span> serializer(<span class="keyword">static_cast&lt;</span>typename FLAGS::enumeration_type *<span class="keyword">&gt;</span>(<span class="keyword">nullptr</span>))-&gt;tryDeserialize(src, dst);          \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
 <div class="line">    MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_VIA_TRY_FUNCTIONS_I(FLAGS)</div>

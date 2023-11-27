@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5dacfec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99bfec5</span>
    </div>
   </td>
  </tr>
@@ -86,8 +86,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1bf51d22dbb8f4ea50070eb86097fbff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb5b75a7c1acf896dad863c3d5469623"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#acb5b75a7c1acf896dad863c3d5469623">~LodSpriteCache</a> ()</td></tr>
 <tr class="separator:acb5b75a7c1acf896dad863c3d5469623"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0a2ae711260a0eace454ecb6ad3fcd9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#ae0a2ae711260a0eace454ecb6ad3fcd9">open</a> (const std::string &amp;pFilename, const std::string &amp;folder)</td></tr>
-<tr class="separator:ae0a2ae711260a0eace454ecb6ad3fcd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6704762f626964b43bf82d63d2d96f00"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#a6704762f626964b43bf82d63d2d96f00">open</a> (const std::string &amp;pFilename)</td></tr>
+<tr class="separator:a6704762f626964b43bf82d63d2d96f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6104cfc685ff11f161e574c8cf36eb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#aa6104cfc685ff11f161e574c8cf36eb1">reserveLoadedSprites</a> ()</td></tr>
 <tr class="separator:aa6104cfc685ff11f161e574c8cf36eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56dccec1ea11de8e56364d5db990e8e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#a56dccec1ea11de8e56364d5db990e8e3">releaseUnreserved</a> ()</td></tr>
@@ -106,8 +106,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a31010e298399b6fa43cca47da1a6bf13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d03a3cf91f3e418f7358b6254b5baf6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#a7d03a3cf91f3e418f7358b6254b5baf6">_reservedCount</a> = 0</td></tr>
 <tr class="separator:a7d03a3cf91f3e418f7358b6254b5baf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5fd05fbed8804fddfffebe70cccd7f25"><td class="memItemLeft" align="right" valign="top">std::deque&lt; <a class="el" href="classSprite.html">Sprite</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#a5fd05fbed8804fddfffebe70cccd7f25">_sprites</a></td></tr>
-<tr class="separator:a5fd05fbed8804fddfffebe70cccd7f25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6bcd719167d86c310b4211f76d1bf99"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="classSprite.html">Sprite</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#af6bcd719167d86c310b4211f76d1bf99">_spriteByName</a></td></tr>
+<tr class="separator:af6bcd719167d86c310b4211f76d1bf99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af776f4f9ebd61c2dca4251529cf1b373"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodSpriteCache.html#af776f4f9ebd61c2dca4251529cf1b373">_spritesInOrder</a></td></tr>
+<tr class="separator:af776f4f9ebd61c2dca4251529cf1b373"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1bf51d22dbb8f4ea50070eb86097fbff" name="a1bf51d22dbb8f4ea50070eb86097fbff"></a>
@@ -207,8 +209,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae0a2ae711260a0eace454ecb6ad3fcd9" name="ae0a2ae711260a0eace454ecb6ad3fcd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0a2ae711260a0eace454ecb6ad3fcd9">&#9670;&#160;</a></span>open()</h2>
+<a id="a6704762f626964b43bf82d63d2d96f00" name="a6704762f626964b43bf82d63d2d96f00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6704762f626964b43bf82d63d2d96f00">&#9670;&#160;</a></span>open()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,18 +219,8 @@ Private Attributes</h2></td></tr>
           <td class="memname">bool LodSpriteCache::open </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>pFilename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>pFilename</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>folder</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -314,8 +306,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5fd05fbed8804fddfffebe70cccd7f25" name="a5fd05fbed8804fddfffebe70cccd7f25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5fd05fbed8804fddfffebe70cccd7f25">&#9670;&#160;</a></span>_sprites</h2>
+<a id="af6bcd719167d86c310b4211f76d1bf99" name="af6bcd719167d86c310b4211f76d1bf99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6bcd719167d86c310b4211f76d1bf99">&#9670;&#160;</a></span>_spriteByName</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -324,7 +316,29 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::deque&lt;<a class="el" href="classSprite.html">Sprite</a>&gt; LodSpriteCache::_sprites</td>
+          <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="classSprite.html">Sprite</a>&gt; LodSpriteCache::_spriteByName</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af776f4f9ebd61c2dca4251529cf1b373" name="af776f4f9ebd61c2dca4251529cf1b373"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af776f4f9ebd61c2dca4251529cf1b373">&#9670;&#160;</a></span>_spritesInOrder</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::string&gt; LodSpriteCache::_spritesInOrder</td>
         </tr>
       </table>
   </td>
