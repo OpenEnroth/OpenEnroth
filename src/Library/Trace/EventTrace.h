@@ -6,15 +6,10 @@
 #include <string>
 
 #include "Library/Platform/Interface/PlatformEvents.h"
+#include "Library/Config/ConfigPatch.h"
 #include "Library/Geometry/Vec.h"
 
 // TODO(captainurist): this should go to Core/, not Library/,
-
-struct EventTraceConfigLine {
-    std::string section;
-    std::string key;
-    std::string value;
-};
 
 struct EventTraceGameState {
     std::string locationName;
@@ -26,7 +21,7 @@ struct EventTraceHeader {
     int saveFileSize = -1;
 
     /** Config diff relative to the default config. Applied before loading the save associated with the trace. */
-    std::vector<EventTraceConfigLine> config;
+    ConfigPatch config;
 
     /** Game state at the start of the trace, right after the save is loaded. */
     EventTraceGameState startState;

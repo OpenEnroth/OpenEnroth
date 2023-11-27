@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 set(LIBRARY_CONFIG_SOURCES
         AnyConfigEntry.cpp
         Config.cpp
-        ConfigSection.cpp)
+        ConfigSection.cpp
+        ConfigPatch.cpp)
 
 set(LIBRARY_CONFIG_HEADERS
         AnyConfigEntry.h
@@ -11,7 +12,8 @@ set(LIBRARY_CONFIG_HEADERS
         Config.h
         ConfigFwd.h
         ConfigSection.h
-        ConfigEntry.h)
+        ConfigEntry.h
+        ConfigPatch.h)
 
 add_library(library_config STATIC ${LIBRARY_CONFIG_SOURCES} ${LIBRARY_CONFIG_HEADERS})
 target_check_style(library_config)

@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <filesystem>
-#include <utility>
 #include <memory>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
@@ -34,7 +33,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     _savePath = savePath;
     _tracePath = tracePath;
     _trace = std::make_unique<EventTrace>();
-    _configSnapshot = EngineTraceConfigSnapshot(engine->config.get());
+    _configSnapshot = std::make_unique<ConfigPatch>(ConfigPatch::fromConfig(engine->config.get()));
 
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
@@ -70,7 +69,8 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
         _savePath.clear();
         _trace.reset();
         component<EngineDeterministicComponent>()->finish();
-        _configSnapshot.apply(); // Roll back all config changes.
+        _configSnapshot->apply(engine->config.get()); // Roll back all config changes.
+        _configSnapshot.reset();
     });
 
     _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();

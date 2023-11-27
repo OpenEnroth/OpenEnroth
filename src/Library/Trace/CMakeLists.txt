@@ -8,5 +8,10 @@ set(LIBRARY_TRACE_HEADERS
         PaintEvent.h)
 
 add_library(library_trace STATIC ${LIBRARY_TRACE_SOURCES} ${LIBRARY_TRACE_HEADERS})
-target_link_libraries(library_trace PUBLIC library_serialization library_platform_interface library_json)
 target_check_style(library_trace)
+target_link_libraries(library_trace PUBLIC
+        library_serialization
+        library_json
+        library_platform_interface
+        library_config
+        library_geometry)

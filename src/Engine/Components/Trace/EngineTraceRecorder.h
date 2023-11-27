@@ -7,10 +7,10 @@
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "EngineTraceEnums.h"
-#include "EngineTraceConfigSnapshot.h"
 
 class EngineController;
 class EventTrace;
+class ConfigPatch;
 
 /**
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
@@ -76,5 +76,5 @@ class EngineTraceRecorder : private PlatformApplicationAware {
     std::string _savePath;
     std::string _tracePath;
     std::unique_ptr<EventTrace> _trace;
-    EngineTraceConfigSnapshot _configSnapshot;
+    std::unique_ptr<ConfigPatch> _configSnapshot;
 };

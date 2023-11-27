@@ -33,34 +33,23 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
         entry == &config->debug.TraceNoVideo;
 }
 
-void EngineTraceStateAccessor::prepareForRecording(GameConfig *config, std::vector<EventTraceConfigLine> *patch) {
-    for (const ConfigSection *section : config->sections())
-        for (const AnyConfigEntry *entry : section->entries())
-            if (!shouldSkip(config, section, entry) && shouldTake(config, section, entry))
-                patch->push_back({section->name(), entry->name(), entry->string()});
+void EngineTraceStateAccessor::prepareForRecording(GameConfig *config, ConfigPatch *patch) {
+    *patch = ConfigPatch::fromConfig(config, [config] (const ConfigSection *section, const AnyConfigEntry *entry) {
+        return !shouldSkip(config, section, entry) && shouldTake(config, section, entry);
+    });
 
     config->graphics.FPSLimit.setValue(1000 / config->debug.TraceFrameTimeMs.value());
     config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
 }
 
-void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const std::vector<EventTraceConfigLine> &patch) {
+void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const ConfigPatch &patch) {
     for (ConfigSection *section : config->sections())
         for (AnyConfigEntry *entry : section->entries())
             if (!shouldSkip(config, section, entry))
                 entry->reset();
 
     // TODO(captainurist): Right now setting keybindings here doesn't work
-    for (const EventTraceConfigLine &line : patch) {
-        ConfigSection *section = config->section(line.section);
-        if (!section)
-            throw Exception("Config section '{}' doesn't exist", line.section);
-
-        AnyConfigEntry *entry = section->entry(line.key);
-        if (!entry)
-            throw Exception("Config entry '{}.{}' doesn't exist", line.section, line.key);
-
-        entry->setString(line.value);
-    }
+    patch.apply(config);
 
     config->settings.MusicLevel.setValue(0);
     config->settings.VoiceLevel.setValue(0);
