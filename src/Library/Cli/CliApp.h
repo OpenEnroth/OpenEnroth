@@ -11,7 +11,7 @@
 class CliApp : public CLI::App {
     using base_type = CLI::App;
  public:
-    CliApp() = default;
+    using base_type::base_type;
 
     template<class SubcommandEnum>
     CliApp *add_subcommand(std::string name, std::string description, SubcommandEnum &target, SubcommandEnum targetValue) {

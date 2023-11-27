@@ -6,7 +6,7 @@
 
 LodToolOptions LodToolOptions::parse(int argc, char **argv) {
     LodToolOptions result;
-    std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
+    std::unique_ptr<CliApp> app = std::make_unique<CliApp>("Might & Magic lod archive manipulation tool.\n");
 
     app->set_help_flag("-h,--help", "Print help and exit.");
     app->require_subcommand();
