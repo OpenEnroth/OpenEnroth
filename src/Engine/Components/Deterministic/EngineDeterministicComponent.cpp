@@ -12,6 +12,9 @@ EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 void EngineDeterministicComponent::restart(int frameTimeMs, RandomEngineType rngType) {
     assert(frameTimeMs >= 1 && frameTimeMs <= 1000);
 
+    if (!_active)
+        _oldRandomEngineType = component<EngineRandomComponent>()->type();
+
     _active = true;
     _tickCount = 0;
     _frameTimeMs = frameTimeMs;
@@ -23,7 +26,7 @@ void EngineDeterministicComponent::finish() {
     if (!isActive())
         return;
 
-    component<EngineRandomComponent>()->setType(RANDOM_ENGINE_MERSENNE_TWISTER);
+    component<EngineRandomComponent>()->setType(_oldRandomEngineType);
     _active = false;
 }
 

@@ -29,9 +29,7 @@ class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLC
      * Why we're passing frame time in milliseconds here and not setting the target fps directly?
      * For example, it is possible to target 60fps, but since the platform API is in milliseconds, this will result in
      * staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might
-     * result in some non-determinism down the line, e.g. changing the code in level loading will change the number
-     * of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after
-     * the level is loaded. Unlikely to really affect anything, but we'd rather not find out.
+     * result in some non-determinism down the line. Unlikely to really affect anything, but we'd rather not find out.
      *
      * @param frameTimeMs               Frame time to use inside the segment, in milliseconds.
      * @param rngType                   Random engine type to use inside the segment.
@@ -58,4 +56,5 @@ class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLC
     bool _active = false;
     int64_t _tickCount = 0;
     int _frameTimeMs = 0;
+    RandomEngineType _oldRandomEngineType = RANDOM_ENGINE_MERSENNE_TWISTER;
 };
