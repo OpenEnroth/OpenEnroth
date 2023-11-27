@@ -37,7 +37,7 @@ static auto contains = [](const std::string &haystack, const std::string &needle
     return haystack.find(needle) != std::string::npos;
 };
 
-int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     ItemTable itemTable;
     itemTable.Initialize(resourceManager);
 
@@ -149,7 +149,7 @@ std::string mapIdEnumName(const MapInfo &mapInfo) {
     return result;
 }
 
-int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runMapIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
@@ -172,7 +172,7 @@ const MapInfo &mapInfoByFileName(const MapStats &mapStats, const std::string &fi
     return *pos;
 }
 
-int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runBeaconsCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
@@ -190,7 +190,7 @@ int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
     return 0;
 }
 
-int runHouseIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
@@ -282,7 +282,7 @@ std::string cleanupMonsterIdEnumName(std::string enumName) {
     return enumName;
 }
 
-int runMonsterIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runMonsterIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     MonsterStats monsterStats = loadMonsterStats(resourceManager);
 
     CodeGenMap map;
@@ -318,7 +318,7 @@ std::string cleanupMonsterTypeEnumName(std::string enumName) {
     return enumName;
 }
 
-int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runMonsterTypeCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     MonsterStats monsterStats = loadMonsterStats(resourceManager);
 
     CodeGenMap map;
@@ -339,7 +339,7 @@ int runMonsterTypeCodeGen(CodeGenOptions options, GameResourceManager *resourceM
     return 0;
 }
 
-int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runBountyHuntCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     // Fill bounty hunt map.
     EngineRandomComponent randomComponent;
     randomComponent.setType(RANDOM_ENGINE_SEQUENTIAL);
@@ -392,7 +392,7 @@ int runBountyHuntCodeGen(CodeGenOptions options, GameResourceManager *resourceMa
     return 0;
 }
 
-int runMusicCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+int runMusicCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
@@ -444,14 +444,14 @@ int platformMain(int argc, char **argv) {
         resourceManager.openGameResources();
 
         switch (options.subcommand) {
-        case CodeGenOptions::SUBCOMMAND_ITEM_ID: return runItemIdCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_MAP_ID: return runMapIdCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_BEACON_MAPPING: return runBeaconsCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_HOUSE_ID: return runHouseIdCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_MONSTER_ID: return runMonsterIdCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(std::move(options), &resourceManager);
-        case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_ITEM_ID: return runItemIdCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MAP_ID: return runMapIdCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_BEACON_MAPPING: return runBeaconsCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_HOUSE_ID: return runHouseIdCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MONSTER_ID: return runMonsterIdCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(options, &resourceManager);
         default:
             assert(false);
             return 1;

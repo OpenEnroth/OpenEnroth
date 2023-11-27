@@ -17,7 +17,9 @@
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
 #include "Engine/Components/Trace/EngineTraceSimpleRecorder.h"
+#include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
+#include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
 
@@ -191,4 +193,21 @@ void GameStarter::run() {
         _config->save(_options.configPath);
         logger->info("Configuration file '{}' saved!", _options.configPath);
     }
+}
+
+void GameStarter::runInstrumented(std::function<void(EngineController *)> controlRoutine) {
+    // Instrumentation implies that we'll be running traces, either hand-crafted, or from files. So calling
+    // `prepareForPlayback` here makes sense. This also disables intro videos.
+    EngineTraceStateAccessor::prepareForPlayback(_config.get(), {});
+
+    _application->component<EngineControlComponent>()->runControlRoutine([controlRoutine = std::move(controlRoutine)] (EngineController *game) {
+        game->tick(10); // Let the game thread initialize everything.
+
+        controlRoutine(game);
+
+        game->goToMainMenu();
+        game->pressGuiButton("MainMenu_ExitGame");
+    });
+
+    run();
 }

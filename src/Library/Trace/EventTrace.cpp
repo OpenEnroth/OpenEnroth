@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
@@ -169,11 +170,21 @@ static void from_json(const Json &json, std::unique_ptr<PlatformEvent> &value) {
     });
 }
 
-MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceConfigLine, (
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(ConfigPatchEntry, (
     (section, "section"),
     (key, "key"),
     (value, "value")
 ))
+
+static void to_json(Json &json, const ConfigPatch &patch) {
+    to_json(json, patch.entries());
+}
+
+static void from_json(const Json &json, ConfigPatch &patch) {
+    std::vector<ConfigPatchEntry> entries;
+    from_json(json, entries);
+    patch = ConfigPatch::fromEntries(std::move(entries));
+}
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceGameState, (
     (locationName, "locationName"),

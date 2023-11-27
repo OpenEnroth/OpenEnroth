@@ -10,6 +10,7 @@
 
 class EngineController;
 class EventTrace;
+class ConfigPatch;
 
 /**
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
@@ -74,6 +75,6 @@ class EngineTraceRecorder : private PlatformApplicationAware {
  private:
     std::string _savePath;
     std::string _tracePath;
-    int _oldFpsLimit = 0;
     std::unique_ptr<EventTrace> _trace;
+    std::unique_ptr<ConfigPatch> _configSnapshot;
 };

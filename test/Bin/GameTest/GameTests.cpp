@@ -1705,6 +1705,25 @@ GAME_TEST(Issues, Issue1255) {
     EXPECT_EQ(wandTape, tape(false, true));
 }
 
+GAME_TEST(Issues, Issue1272) {
+    // Game (but not UI) is frozen after death, until click.
+    auto deathsTape = tapes.deaths();
+    auto screenTape = tapes.screen();
+    auto actorWiggleAfterDeath = tapes.custom([] {
+        if (pParty->uNumDeaths == 0 || current_screen_type != SCREEN_GAME)
+            return 0;
+
+        int result = 0;
+        for (const Actor &actor : pActors)
+            result += static_cast<int>(actor.pos.x);
+        return result;
+    });
+    test.playTraceFromTestData("issue_1272.mm7", "issue_1272.json");
+    EXPECT_EQ(deathsTape.delta(), +1); // Party did die.
+    EXPECT_TRUE(screenTape.contains(SCREEN_VIDEO)); // Party death video should have played.
+    EXPECT_GT(actorWiggleAfterDeath.size(), 2); // Time did flow after respawn, and actors did move around.
+}
+
 GAME_TEST(Issues, Issue1273) {
     // Assert when clicking on shop video area
     auto dialogueTape = tapes.dialogueType();

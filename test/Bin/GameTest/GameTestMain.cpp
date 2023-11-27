@@ -3,7 +3,6 @@
 #include "Application/GameStarter.h"
 #include "Application/GameConfig.h"
 
-#include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 
@@ -41,22 +40,13 @@ int platformMain(int argc, char **argv) {
             return RUN_ALL_TESTS();
 
         GameStarter starter(opts);
-        EngineTraceStateAccessor::prepareForPlayback(starter.config());
 
         int exitCode = 0;
-        starter.application()->component<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
+        starter.runInstrumented([&] (EngineController *game) {
             TestController test(game, opts.testPath);
-
             GameTest::init(game, &test);
-            game->tick(10); // Let the game thread initialize everything.
-
             exitCode = RUN_ALL_TESTS();
-
-            game->goToMainMenu();
-            game->pressGuiButton("MainMenu_ExitGame");
         });
-        starter.run();
-
         return exitCode;
     } catch (const std::exception &e) {
         // TODO(captainurist): we need a separate test that testing framework terminates correctly if the engine throws.

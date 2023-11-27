@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <filesystem>
-#include <utility>
 #include <memory>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
@@ -34,14 +33,10 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     _savePath = savePath;
     _tracePath = tracePath;
     _trace = std::make_unique<EventTrace>();
+    _configSnapshot = std::make_unique<ConfigPatch>(ConfigPatch::fromConfig(engine->config.get()));
 
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
-    int traceFpsLimit = 1000 / frameTimeMs;
-
-    _trace->header.config = EngineTraceStateAccessor::makeConfigPatch(engine->config.get());
-    _oldFpsLimit = engine->config->graphics.FPSLimit.value();
-    engine->config->graphics.FPSLimit.setValue(0); // Load game real quick!
 
     if (!(flags & TRACE_RECORDING_LOAD_EXISTING_SAVE))
         game->saveGame(savePath);
@@ -51,6 +46,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     // buttons and does all kinds of weird stuff.
     component<GameKeyboardController>()->reset();
 
+    engine->config->graphics.FPSLimit.setValue(0);
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     game->loadGame(savePath);
@@ -58,9 +54,10 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();
+    EngineTraceStateAccessor::prepareForRecording(engine->config.get(), &_trace->header.config);
+
     component<EngineTraceSimpleRecorder>()->startRecording();
 
-    engine->config->graphics.FPSLimit.setValue(traceFpsLimit);
     logger->info("Tracing started.");
 }
 
@@ -72,9 +69,9 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
         _savePath.clear();
         _trace.reset();
         component<EngineDeterministicComponent>()->finish();
+        _configSnapshot->apply(engine->config.get()); // Roll back all config changes.
+        _configSnapshot.reset();
     });
-
-    engine->config->graphics.FPSLimit.setValue(_oldFpsLimit);
 
     _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();
     _trace->header.endState = EngineTraceStateAccessor::makeGameState();

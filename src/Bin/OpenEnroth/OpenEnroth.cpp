@@ -8,6 +8,7 @@
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
+#include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
@@ -27,15 +28,12 @@ static std::string readTextFile(const std::string &path) {
     return replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
 }
 
-int runRetrace(OpenEnrothOptions options) {
+int runRetrace(const OpenEnrothOptions &options) {
     GameStarter starter(options);
-    EngineTraceStateAccessor::prepareForPlayback(starter.config()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
 
     int status = 0;
 
-    starter.application()->component<EngineControlComponent>()->runControlRoutine([&status, options, application = starter.application()] (EngineController *game) {
-        game->tick(10); // Let the game thread initialize everything.
-
+    starter.runInstrumented([&status, options, application = starter.application()] (EngineController *game) {
         EngineTraceSimplePlayer *player = application->component<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->component<EngineTraceRecorder>();
 
@@ -49,11 +47,11 @@ int runRetrace(OpenEnrothOptions options) {
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
             EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
-            EngineTraceStateAccessor::patchConfig(engine->config.get(), oldTrace.header.config);
+            EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
 
             recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);
             engine->config->graphics.FPSLimit.setValue(0);
-            player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS); // Don't skip time checks.
+            player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
             recorder->finishRecording(game);
 
             if (options.retrace.checkCanonical) {
@@ -64,11 +62,7 @@ int runRetrace(OpenEnrothOptions options) {
                 }
             }
         }
-
-        game->goToMainMenu();
-        game->pressGuiButton("MainMenu_ExitGame");
     });
-    starter.run();
 
     if (options.retrace.checkCanonical && status == 0)
         fmt::println(stderr, "All traces are in canonical representation.");
@@ -76,7 +70,27 @@ int runRetrace(OpenEnrothOptions options) {
     return status;
 }
 
-int runOpenEnroth(OpenEnrothOptions options) {
+int runPlay(const OpenEnrothOptions &options) {
+    GameStarter starter(options);
+
+    starter.runInstrumented([options, application = starter.application()] (EngineController *game) {
+        EngineTracePlayer *player = application->component<EngineTracePlayer>();
+
+        for (const std::string &tracePath : options.play.traces) {
+            fmt::println(stderr, "Playing back '{}'...", tracePath);
+
+            std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+            player->playTrace(game, savePath, tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS , [&] {
+                int fps = options.play.speed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
+                engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
+            });
+        }
+    });
+
+    return 0;
+}
+
+int runOpenEnroth(const OpenEnrothOptions &options) {
     GameStarter(options).run();
     return 0;
 }
@@ -91,8 +105,9 @@ int openEnrothMain(int argc, char **argv) {
 
         switch (options.subcommand) {
         default: assert(false); [[fallthrough]];
-        case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(std::move(options));
-        case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(std::move(options));
+        case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(options);
+        case OpenEnrothOptions::SUBCOMMAND_PLAY: return runPlay(options);
+        case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(options);
         }
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());

@@ -7,6 +7,8 @@
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Exception.h"
@@ -27,45 +29,35 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
     return
         entry->string() != entry->defaultString() ||
         entry == &config->debug.TraceFrameTimeMs ||
-        entry == &config->debug.TraceRandomEngine;
+        entry == &config->debug.TraceRandomEngine ||
+        entry == &config->debug.TraceNoVideo;
 }
 
-void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config) {
-    config->settings.MusicLevel.setValue(0);
-    config->settings.VoiceLevel.setValue(0);
-    config->settings.SoundLevel.setValue(0); // Note: still need to call AudioPlayer::UpdateVolumeFromConfig.
-    config->window.MouseGrab.setValue(false);
-    config->graphics.FPSLimit.setValue(0); // Unlimited
-    config->debug.NoVideo.setValue(true);
+void EngineTraceStateAccessor::prepareForRecording(GameConfig *config, ConfigPatch *patch) {
+    *patch = ConfigPatch::fromConfig(config, [config] (const ConfigSection *section, const AnyConfigEntry *entry) {
+        return !shouldSkip(config, section, entry) && shouldTake(config, section, entry);
+    });
+
+    config->graphics.FPSLimit.setValue(1000 / config->debug.TraceFrameTimeMs.value());
+    config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
 }
 
-std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(const GameConfig *config) {
-    std::vector<EventTraceConfigLine> result;
-    for (const ConfigSection *section : config->sections())
-        for (const AnyConfigEntry *entry : section->entries())
-            if (!shouldSkip(config, section, entry) && shouldTake(config, section, entry))
-                result.push_back({section->name(), entry->name(), entry->string()});
-    return result;
-}
-
-void EngineTraceStateAccessor::patchConfig(GameConfig *config, const std::vector<EventTraceConfigLine>& patch) {
+void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const ConfigPatch &patch) {
     for (ConfigSection *section : config->sections())
         for (AnyConfigEntry *entry : section->entries())
             if (!shouldSkip(config, section, entry))
                 entry->reset();
 
     // TODO(captainurist): Right now setting keybindings here doesn't work
-    for (const EventTraceConfigLine &line : patch) {
-        ConfigSection *section = config->section(line.section);
-        if (!section)
-            throw Exception("Config section '{}' doesn't exist", line.section);
+    patch.apply(config);
 
-        AnyConfigEntry *entry = section->entry(line.key);
-        if (!entry)
-            throw Exception("Config entry '{}.{}' doesn't exist", line.section, line.key);
-
-        entry->setString(line.value);
-    }
+    config->settings.MusicLevel.setValue(0);
+    config->settings.VoiceLevel.setValue(0);
+    config->settings.SoundLevel.setValue(0);
+    config->window.MouseGrab.setValue(false);
+    config->graphics.FPSLimit.setValue(0); // Unlimited
+    config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
+    pAudioPlayer->UpdateVolumeFromConfig();
 }
 
 EventTraceGameState EngineTraceStateAccessor::makeGameState() {
