@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acca1ba</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c9f6423</span>
    </div>
   </td>
  </tr>
@@ -108,10 +108,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a96069addb38148baf4951a7627bee550"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7cf662c77d82cebb03ce84db5a63ee4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ae7cf662c77d82cebb03ce84db5a63ee4">_tracePath</a></td></tr>
 <tr class="separator:ae7cf662c77d82cebb03ce84db5a63ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a821aa80e1f886f39eb53a1815f819d93"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a821aa80e1f886f39eb53a1815f819d93">_oldFpsLimit</a> = 0</td></tr>
-<tr class="separator:a821aa80e1f886f39eb53a1815f819d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#af944ae412ccf9ab1e0a1b41394a5ac6d">_trace</a></td></tr>
 <tr class="separator:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2a2d88d2a3ee4edc4970fa8995344fb"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classConfigPatch.html">ConfigPatch</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ad2a2d88d2a3ee4edc4970fa8995344fb">_configSnapshot</a></td></tr>
+<tr class="separator:ad2a2d88d2a3ee4edc4970fa8995344fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -307,8 +307,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a821aa80e1f886f39eb53a1815f819d93" name="a821aa80e1f886f39eb53a1815f819d93"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a821aa80e1f886f39eb53a1815f819d93">&#9670;&#160;</a></span>_oldFpsLimit</h2>
+<a id="ad2a2d88d2a3ee4edc4970fa8995344fb" name="ad2a2d88d2a3ee4edc4970fa8995344fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2a2d88d2a3ee4edc4970fa8995344fb">&#9670;&#160;</a></span>_configSnapshot</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -317,7 +317,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int EngineTraceRecorder::_oldFpsLimit = 0</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classConfigPatch.html">ConfigPatch</a>&gt; EngineTraceRecorder::_configSnapshot</td>
         </tr>
       </table>
   </td>

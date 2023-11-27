@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acca1ba</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c9f6423</span>
    </div>
   </td>
  </tr>
@@ -216,6 +216,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:acd815e14c227b930c0f166f9c3f61d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57f2b41946a9d850fcff736bfc928dc5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a57f2b41946a9d850fcff736bfc928dc5">_frameTimeMs</a> = 0</td></tr>
 <tr class="separator:a57f2b41946a9d850fcff736bfc928dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaf1c5a588d199f8dfef74f819348452"><td class="memItemLeft" align="right" valign="top"><a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6">RandomEngineType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#adaf1c5a588d199f8dfef74f819348452">_oldRandomEngineType</a> = <a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6a13626f78f86e43da70c953fabd8bd492">RANDOM_ENGINE_MERSENNE_TWISTER</a></td></tr>
+<tr class="separator:adaf1c5a588d199f8dfef74f819348452"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -380,7 +382,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Starts a new deterministic segment, resetting all state - rolls the tick count back to zero, and resets <code>grng</code>.</p>
-<p >Why we're passing frame time in milliseconds here and not setting the target fps directly? For example, it is possible to target 60fps, but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line, e.g. changing the code in level loading will change the number of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.</p>
+<p >Why we're passing frame time in milliseconds here and not setting the target fps directly? For example, it is possible to target 60fps, but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line. Unlikely to really affect anything, but we'd rather not find out.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">frameTimeMs</td><td>Frame time to use inside the segment, in milliseconds. </td></tr>
@@ -503,6 +505,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int EngineDeterministicComponent::_frameTimeMs = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adaf1c5a588d199f8dfef74f819348452" name="adaf1c5a588d199f8dfef74f819348452"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaf1c5a588d199f8dfef74f819348452">&#9670;&#160;</a></span>_oldRandomEngineType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6">RandomEngineType</a> EngineDeterministicComponent::_oldRandomEngineType = <a class="el" href="RandomEnums_8h.html#a7e51f3c6b7d56bca6af9d33097dba1c6a13626f78f86e43da70c953fabd8bd492">RANDOM_ENGINE_MERSENNE_TWISTER</a></td>
         </tr>
       </table>
   </td>

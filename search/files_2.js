@@ -51,7 +51,9 @@ var searchData=
   ['config_2eh_48',['Config.h',['../Config_8h.html',1,'']]],
   ['configentry_2eh_49',['ConfigEntry.h',['../ConfigEntry_8h.html',1,'']]],
   ['configfwd_2eh_50',['ConfigFwd.h',['../ConfigFwd_8h.html',1,'']]],
-  ['configsection_2ecpp_51',['ConfigSection.cpp',['../ConfigSection_8cpp.html',1,'']]],
-  ['configsection_2eh_52',['ConfigSection.h',['../ConfigSection_8h.html',1,'']]],
-  ['containerserialization_2eh_53',['ContainerSerialization.h',['../ContainerSerialization_8h.html',1,'']]]
+  ['configpatch_2ecpp_51',['ConfigPatch.cpp',['../ConfigPatch_8cpp.html',1,'']]],
+  ['configpatch_2eh_52',['ConfigPatch.h',['../ConfigPatch_8h.html',1,'']]],
+  ['configsection_2ecpp_53',['ConfigSection.cpp',['../ConfigSection_8cpp.html',1,'']]],
+  ['configsection_2eh_54',['ConfigSection.h',['../ConfigSection_8h.html',1,'']]],
+  ['containerserialization_2eh_55',['ContainerSerialization.h',['../ContainerSerialization_8h.html',1,'']]]
 ];

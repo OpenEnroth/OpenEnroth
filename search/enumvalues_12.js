@@ -706,6 +706,7 @@ var searchData=
   ['subcommand_5fmonster_5ftype_703',['SUBCOMMAND_MONSTER_TYPE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a364c6ccc16d66629b4e5fd9b5007c84f',1,'CodeGenOptions']]],
   ['subcommand_5fmusic_704',['SUBCOMMAND_MUSIC',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226aed01925541e088cf7a9e8afc3158c986',1,'CodeGenOptions']]],
   ['subcommand_5fnone_705',['SUBCOMMAND_NONE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a745ca9977da10b91ea23c9ff55d82975',1,'CodeGenOptions']]],
-  ['subcommand_5fretrace_706',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
-  ['summoned_707',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
+  ['subcommand_5fplay_706',['SUBCOMMAND_PLAY',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2a37b7775a0b058c6712038ab75647f8bf',1,'OpenEnrothOptions']]],
+  ['subcommand_5fretrace_707',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
+  ['summoned_708',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acca1ba</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c9f6423</span>
    </div>
   </td>
  </tr>
@@ -80,42 +80,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aff201e6930df582be0352187b7a37dce"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngineTraceStateAccessor.html#aff201e6930df582be0352187b7a37dce">prepareForPlayback</a> (<a class="el" href="classGameConfig.html">GameConfig</a> *config)</td></tr>
-<tr class="separator:aff201e6930df582be0352187b7a37dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c88f1e07cad4cd1b3899557e66c3dce"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structEventTraceConfigLine.html">EventTraceConfigLine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngineTraceStateAccessor.html#a7c88f1e07cad4cd1b3899557e66c3dce">makeConfigPatch</a> (const <a class="el" href="classGameConfig.html">GameConfig</a> *config)</td></tr>
-<tr class="separator:a7c88f1e07cad4cd1b3899557e66c3dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c91f044217a2dd5f5b1255b5b05d9de"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngineTraceStateAccessor.html#a9c91f044217a2dd5f5b1255b5b05d9de">patchConfig</a> (<a class="el" href="classGameConfig.html">GameConfig</a> *config, const std::vector&lt; <a class="el" href="structEventTraceConfigLine.html">EventTraceConfigLine</a> &gt; &amp;patch)</td></tr>
-<tr class="separator:a9c91f044217a2dd5f5b1255b5b05d9de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ad1a04072566ca5665650cb3c1d673c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngineTraceStateAccessor.html#a9ad1a04072566ca5665650cb3c1d673c">prepareForRecording</a> (<a class="el" href="classGameConfig.html">GameConfig</a> *config, <a class="el" href="classConfigPatch.html">ConfigPatch</a> *patch)</td></tr>
+<tr class="separator:a9ad1a04072566ca5665650cb3c1d673c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3ed75c9525d5c7ce02ecde795a4c008"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngineTraceStateAccessor.html#ab3ed75c9525d5c7ce02ecde795a4c008">prepareForPlayback</a> (<a class="el" href="classGameConfig.html">GameConfig</a> *config, const <a class="el" href="classConfigPatch.html">ConfigPatch</a> &amp;patch)</td></tr>
+<tr class="separator:ab3ed75c9525d5c7ce02ecde795a4c008"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9342bd2df2bad6246ca03a4c117e0f8b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structEventTraceGameState.html">EventTraceGameState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngineTraceStateAccessor.html#a9342bd2df2bad6246ca03a4c117e0f8b">makeGameState</a> ()</td></tr>
 <tr class="separator:a9342bd2df2bad6246ca03a4c117e0f8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7c88f1e07cad4cd1b3899557e66c3dce" name="a7c88f1e07cad4cd1b3899557e66c3dce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c88f1e07cad4cd1b3899557e66c3dce">&#9670;&#160;</a></span>makeConfigPatch()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; <a class="el" href="structEventTraceConfigLine.html">EventTraceConfigLine</a> &gt; EngineTraceStateAccessor::makeConfigPatch </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classGameConfig.html">GameConfig</a> *&#160;</td>
-          <td class="paramname"><em>config</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a9342bd2df2bad6246ca03a4c117e0f8b" name="a9342bd2df2bad6246ca03a4c117e0f8b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9342bd2df2bad6246ca03a4c117e0f8b">&#9670;&#160;</a></span>makeGameState()</h2>
 
@@ -141,8 +113,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a9c91f044217a2dd5f5b1255b5b05d9de" name="a9c91f044217a2dd5f5b1255b5b05d9de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c91f044217a2dd5f5b1255b5b05d9de">&#9670;&#160;</a></span>patchConfig()</h2>
+<a id="ab3ed75c9525d5c7ce02ecde795a4c008" name="ab3ed75c9525d5c7ce02ecde795a4c008"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3ed75c9525d5c7ce02ecde795a4c008">&#9670;&#160;</a></span>prepareForPlayback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -151,7 +123,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineTraceStateAccessor::patchConfig </td>
+          <td class="memname">void EngineTraceStateAccessor::prepareForPlayback </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classGameConfig.html">GameConfig</a> *&#160;</td>
           <td class="paramname"><em>config</em>, </td>
@@ -159,7 +131,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structEventTraceConfigLine.html">EventTraceConfigLine</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classConfigPatch.html">ConfigPatch</a> &amp;&#160;</td>
           <td class="paramname"><em>patch</em>&#160;</td>
         </tr>
         <tr>
@@ -177,8 +149,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aff201e6930df582be0352187b7a37dce" name="aff201e6930df582be0352187b7a37dce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff201e6930df582be0352187b7a37dce">&#9670;&#160;</a></span>prepareForPlayback()</h2>
+<a id="a9ad1a04072566ca5665650cb3c1d673c" name="a9ad1a04072566ca5665650cb3c1d673c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ad1a04072566ca5665650cb3c1d673c">&#9670;&#160;</a></span>prepareForRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,11 +159,21 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineTraceStateAccessor::prepareForPlayback </td>
+          <td class="memname">void EngineTraceStateAccessor::prepareForRecording </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classGameConfig.html">GameConfig</a> *&#160;</td>
-          <td class="paramname"><em>config</em></td><td>)</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classConfigPatch.html">ConfigPatch</a> *&#160;</td>
+          <td class="paramname"><em>patch</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

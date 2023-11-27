@@ -43,7 +43,9 @@ var searchData=
   ['configentry_3c_20renderertype_20_3e_40',['ConfigEntry&lt; RendererType &gt;',['../classConfigEntry.html',1,'']]],
   ['configentry_3c_20std_3a_3astring_20_3e_41',['ConfigEntry&lt; std::string &gt;',['../classConfigEntry.html',1,'']]],
   ['configentry_3c_3a_3aloglevel_20_3e_42',['ConfigEntry&lt;::LogLevel &gt;',['../classConfigEntry.html',1,'']]],
-  ['configsection_43',['ConfigSection',['../classConfigSection.html',1,'']]],
-  ['context_44',['context',['../structcontext.html',1,'']]],
-  ['contexttag_45',['ContextTag',['../classContextTag.html',1,'']]]
+  ['configpatch_43',['ConfigPatch',['../classConfigPatch.html',1,'']]],
+  ['configpatchentry_44',['ConfigPatchEntry',['../structConfigPatchEntry.html',1,'']]],
+  ['configsection_45',['ConfigSection',['../classConfigSection.html',1,'']]],
+  ['context_46',['context',['../structcontext.html',1,'']]],
+  ['contexttag_47',['ContextTag',['../classContextTag.html',1,'']]]
 ];

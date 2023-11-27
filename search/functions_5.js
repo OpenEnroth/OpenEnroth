@@ -25,7 +25,7 @@ var searchData=
   ['enginetracesimpleplayer_22',['EngineTraceSimplePlayer',['../classEngineTraceSimplePlayer.html#a4f732ab96e034772f751c8b8a5c57f9b',1,'EngineTraceSimplePlayer']]],
   ['enginetracesimplerecorder_23',['EngineTraceSimpleRecorder',['../classEngineTraceSimpleRecorder.html#a08313f8e85b5314bcc73d300c92aa75b',1,'EngineTraceSimpleRecorder']]],
   ['enterhouse_24',['enterHouse',['../UIHouses_8cpp.html#af4d20571aa6a3376cd8925a817ce16fd',1,'enterHouse(HouseId uHouseID):&#160;UIHouses.cpp'],['../UIHouses_8h.html#af4d20571aa6a3376cd8925a817ce16fd',1,'enterHouse(HouseId uHouseID):&#160;UIHouses.cpp']]],
-  ['entries_25',['entries',['../classConfigSection.html#adc121fe273afa1b37703b6ae14b88961',1,'ConfigSection']]],
+  ['entries_25',['entries',['../classConfigPatch.html#a8c90a3541670b739df7adf9b8260b841',1,'ConfigPatch::entries()'],['../classConfigSection.html#adc121fe273afa1b37703b6ae14b88961',1,'ConfigSection::entries() const']]],
   ['entry_26',['entry',['../classConfigSection.html#a54ac5f8b17444f4b9ee7044855bd221b',1,'ConfigSection']]],
   ['enumeratetriggers_27',['enumerateTriggers',['../classEventMap.html#a27e9f85fb7ff6ecb6ca282f1e9b03132',1,'EventMap']]],
   ['enumserializationtable_28',['EnumSerializationTable',['../classdetail_1_1EnumSerializationTable.html#a9d767abdcf85570fa657dd062c0efeff',1,'detail::EnumSerializationTable']]],
