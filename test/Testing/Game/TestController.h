@@ -33,8 +33,7 @@ class TestController {
     friend class CommonTapeRecorder;
     friend class ActorTapeRecorder;
 
-    void resetConfigInternal();
-    void prepareForNextTestInternal(int frameTimeMs, RandomEngineType rngType);
+    void prepareForNextTestInternal();
 
     // Accessed by tape recorders.
     template<class Callback, class T = std::invoke_result_t<Callback>>

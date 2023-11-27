@@ -23,8 +23,6 @@
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
 
-#include "Media/Audio/AudioPlayer.h"
-
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
@@ -200,7 +198,7 @@ void GameStarter::run() {
 void GameStarter::runInstrumented(std::function<void(EngineController *)> controlRoutine) {
     // Instrumentation implies that we'll be running traces, either hand-crafted, or from files. So calling
     // `prepareForPlayback` here makes sense. This also skips the intro videos.
-    EngineTraceStateAccessor::prepareForPlayback(_config.get(), pAudioPlayer.get());
+    EngineTraceStateAccessor::prepareForPlayback(_config.get(), {});
 
     _application->component<EngineControlComponent>()->runControlRoutine([controlRoutine = std::move(controlRoutine)] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.

@@ -46,7 +46,7 @@ int runRetrace(OpenEnrothOptions options) {
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
             EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
-            EngineTraceStateAccessor::patchConfig(engine->config.get(), oldTrace.header.config);
+            EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
 
             recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);
             engine->config->graphics.FPSLimit.setValue(0);

@@ -48,25 +48,23 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 }
 
 void TestController::prepareForNextTest() {
-    resetConfigInternal();
-    // Use frame time & rng from config defaults. If calling playTraceFromTestData next, these will be overridden
-    // by whatever is saved in the trace file.
-    prepareForNextTest(engine->config->debug.TraceFrameTimeMs.value(), engine->config->debug.TraceRandomEngine.value());
+    // Use frame time & rng from config defaults. However, if calling playTraceFromTestData next, these will be
+    // overridden by whatever is saved in the trace file.
+    EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), {});
+    prepareForNextTestInternal();
 }
 
 void TestController::prepareForNextTest(int frameTimeMs, RandomEngineType rngType) {
-    resetConfigInternal();
-    prepareForNextTestInternal(frameTimeMs, rngType);
+    EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), {});
+    engine->config->debug.TraceFrameTimeMs.setValue(frameTimeMs);
+    engine->config->debug.TraceRandomEngine.setValue(rngType);
+    prepareForNextTestInternal();
 }
 
-void TestController::resetConfigInternal() {
-    // These two lines bring the game config into the same state as if a trace playback was started with an empty
-    // config patch. Mainly needed for tests that don't play back any traces.
-    EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), pAudioPlayer.get());
-    EngineTraceStateAccessor::patchConfig(engine->config.get(), {});
-}
+void TestController::prepareForNextTestInternal() {
+    int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
+    RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
-void TestController::prepareForNextTestInternal(int frameTimeMs, RandomEngineType rngType) {
     _tapeCallbacks.clear();
     ::application->component<GameKeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);

@@ -32,16 +32,6 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
         entry == &config->debug.TraceRandomEngine;
 }
 
-void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, AudioPlayer *player) {
-    config->settings.MusicLevel.setValue(0);
-    config->settings.VoiceLevel.setValue(0);
-    config->settings.SoundLevel.setValue(0);
-    config->window.MouseGrab.setValue(false);
-    config->graphics.FPSLimit.setValue(0); // Unlimited
-    config->debug.NoVideo.setValue(true);
-    player->UpdateVolumeFromConfig();
-}
-
 std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(const GameConfig *config) {
     std::vector<EventTraceConfigLine> result;
     for (const ConfigSection *section : config->sections())
@@ -51,14 +41,14 @@ std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(cons
     return result;
 }
 
-void EngineTraceStateAccessor::patchConfig(GameConfig *config, const std::vector<EventTraceConfigLine>& patch) {
+void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const std::vector<EventTraceConfigLine>& withPatch) {
     for (ConfigSection *section : config->sections())
         for (AnyConfigEntry *entry : section->entries())
             if (!shouldSkip(config, section, entry))
                 entry->reset();
 
     // TODO(captainurist): Right now setting keybindings here doesn't work
-    for (const EventTraceConfigLine &line : patch) {
+    for (const EventTraceConfigLine &line : withPatch) {
         ConfigSection *section = config->section(line.section);
         if (!section)
             throw Exception("Config section '{}' doesn't exist", line.section);
@@ -69,6 +59,14 @@ void EngineTraceStateAccessor::patchConfig(GameConfig *config, const std::vector
 
         entry->setString(line.value);
     }
+
+    config->settings.MusicLevel.setValue(0);
+    config->settings.VoiceLevel.setValue(0);
+    config->settings.SoundLevel.setValue(0);
+    config->window.MouseGrab.setValue(false);
+    config->graphics.FPSLimit.setValue(0); // Unlimited
+    config->debug.NoVideo.setValue(true);
+    pAudioPlayer->UpdateVolumeFromConfig();
 }
 
 EventTraceGameState EngineTraceStateAccessor::makeGameState() {

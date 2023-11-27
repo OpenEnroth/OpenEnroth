@@ -53,7 +53,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
     engine->config->debug.NoVideo.setValue(true);
     game->tick();
 
-    EngineTraceStateAccessor::patchConfig(engine->config.get(), _trace->header.config);
+    EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), _trace->header.config);
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
