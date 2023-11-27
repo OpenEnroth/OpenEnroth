@@ -454,6 +454,7 @@ GAME_TEST(Issues, Issue355) {
 }
 
 GAME_TEST(Issues, Issue388) {
+    // TODO(captainurist): this one doesn't obey the unlimited FPS when retracing. Implement properly.
     // Testing that Arcomage works.
     // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern.
     int oldfpslimit = pArcomageGame->_targetFPS;

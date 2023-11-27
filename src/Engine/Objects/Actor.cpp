@@ -1942,8 +1942,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
     if (v5->CanAct()) {
         v7 = Pid(OBJECT_Actor, uActorID);
         if (!a4) {
-            // TODO(captainurist): passing v5->monsterInfo.flying makes no sense here, but dropping it breaks 735d. Retrace.
-            Actor::GetDirectionInfo(v7, sTargetPid, &a3, v5->monsterInfo.flying);
+            Actor::GetDirectionInfo(v7, sTargetPid, &a3, 0);
             a4 = &a3;
         }
         Actor::GetDirectionInfo(v7, Pid::character(0), &v10, 0);
