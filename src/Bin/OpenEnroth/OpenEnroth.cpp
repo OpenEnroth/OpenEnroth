@@ -33,9 +33,7 @@ int runRetrace(OpenEnrothOptions options) {
 
     int status = 0;
 
-    starter.application()->component<EngineControlComponent>()->runControlRoutine([&status, options, application = starter.application()] (EngineController *game) {
-        game->tick(10); // Let the game thread initialize everything.
-
+    starter.runInstrumented([&status, options, application = starter.application()] (EngineController *game) {
         EngineTraceSimplePlayer *player = application->component<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->component<EngineTraceRecorder>();
 
@@ -64,11 +62,7 @@ int runRetrace(OpenEnrothOptions options) {
                 }
             }
         }
-
-        game->goToMainMenu();
-        game->pressGuiButton("MainMenu_ExitGame");
     });
-    starter.run();
 
     if (options.retrace.checkCanonical && status == 0)
         fmt::println(stderr, "All traces are in canonical representation.");

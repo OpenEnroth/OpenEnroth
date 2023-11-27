@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 
 #include "GameStarterOptions.h"
 
@@ -15,6 +16,7 @@ class Renderer;
 class Nuklear;
 class Engine;
 class Game;
+class EngineController;
 
 class GameStarter {
  public:
@@ -30,6 +32,8 @@ class GameStarter {
     }
 
     void run();
+
+    void runInstrumented(std::function<void(EngineController *)> controlRoutine);
 
  private:
     static void resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger);
