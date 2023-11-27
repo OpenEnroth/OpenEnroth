@@ -7,6 +7,8 @@
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Exception.h"
@@ -30,13 +32,14 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
         entry == &config->debug.TraceRandomEngine;
 }
 
-void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config) {
+void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, AudioPlayer *player) {
     config->settings.MusicLevel.setValue(0);
     config->settings.VoiceLevel.setValue(0);
-    config->settings.SoundLevel.setValue(0); // Note: still need to call AudioPlayer::UpdateVolumeFromConfig.
+    config->settings.SoundLevel.setValue(0);
     config->window.MouseGrab.setValue(false);
     config->graphics.FPSLimit.setValue(0); // Unlimited
     config->debug.NoVideo.setValue(true);
+    player->UpdateVolumeFromConfig();
 }
 
 std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(const GameConfig *config) {

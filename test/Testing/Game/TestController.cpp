@@ -62,9 +62,8 @@ void TestController::prepareForNextTest(int frameTimeMs, RandomEngineType rngTyp
 void TestController::resetConfigInternal() {
     // These two lines bring the game config into the same state as if a trace playback was started with an empty
     // config patch. Mainly needed for tests that don't play back any traces.
-    EngineTraceStateAccessor::prepareForPlayback(engine->config.get());
+    EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), pAudioPlayer.get());
     EngineTraceStateAccessor::patchConfig(engine->config.get(), {});
-    pAudioPlayer->UpdateVolumeFromConfig();
 }
 
 void TestController::prepareForNextTestInternal(int frameTimeMs, RandomEngineType rngType) {

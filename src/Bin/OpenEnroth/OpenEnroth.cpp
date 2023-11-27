@@ -11,6 +11,8 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
@@ -29,7 +31,7 @@ static std::string readTextFile(const std::string &path) {
 
 int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
-    EngineTraceStateAccessor::prepareForPlayback(starter.config()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
+    EngineTraceStateAccessor::prepareForPlayback(starter.config(), pAudioPlayer.get()); // These settings are not changed by EngineTraceStateAccessor::patchConfig.
 
     int status = 0;
 
