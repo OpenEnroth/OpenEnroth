@@ -19,6 +19,7 @@
 
 #include "SoundEnums.h"
 #include "AudioSamplePool.h"
+#include "SoundInfo.h"
 
 class AudioPlayer {
  public:
@@ -51,6 +52,13 @@ class AudioPlayer {
     bool isWalkingSoundPlays();
 
     /**
+     * Returns length of sound in seconds.
+     *
+     * @param eSoundID                  ID of sound.
+     */
+    float getSoundLength(SoundId eSoundID);
+
+    /**
      * Play sound.
      *
      * @param eSoundID                  ID of sound.
@@ -58,6 +66,13 @@ class AudioPlayer {
      * @param pid                       `Pid` of sound source.
      */
     void playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid = Pid());
+
+    /**
+     * Checks that data source has been populated and if not loads it into SoundInfo. Returns true on success
+     *
+     * @param si                        SoundInfo to be loaded
+     */
+    bool loadSoundDataSource(SoundInfo* si);
 
     /**
      * Play sound of spell casting or spell sprite impact.

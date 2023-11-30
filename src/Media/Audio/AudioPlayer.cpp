@@ -204,29 +204,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     //logger->Info("AudioPlayer: sound id {} found as '{}'", eSoundID, si.sName);
 
-    if (!si->dataSource) {
-        Blob buffer;
-
-        if (si->sName == "") {  // enable this for bonus sound effects
-            //logger->Info("AudioPlayer: trying to load bonus sound {}", eSoundID);
-            //buffer = LoadSound(int(eSoundID));
-        } else {
-            buffer = LoadSound(si->sName);
-        }
-
-        if (!buffer) {
-            logger->warning("AudioPlayer: failed to load sound {} ({})", std::to_underlying(eSoundID), si->sName);
-            return;
-        }
-
-        si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
-        if (!si->dataSource) {
-            logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(eSoundID), si->sName);
-            return;
-        }
-
-        si->dataSource = PlatformDataSourceInitialize(si->dataSource);
-    }
+    if (!loadSoundDataSource(si)) return;
 
     PAudioSample sample = CreateAudioSample();
 
@@ -349,6 +327,36 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     }
 }
 
+bool AudioPlayer::loadSoundDataSource(SoundInfo* si) {
+    if (!si->dataSource) {
+        Blob buffer;
+
+        if (si->sName == "") {  // enable this for bonus sound effects
+            //logger->Info("AudioPlayer: trying to load bonus sound {}", eSoundID);
+            //buffer = LoadSound(int(eSoundID));
+        } else {
+            buffer = LoadSound(si->sName);
+        }
+
+        if (!buffer) {
+            logger->warning("AudioPlayer: failed to load sound {} ({})", std::to_underlying(si->uSoundID), si->sName);
+            return false;
+        }
+
+        size_t tempSize = buffer.size();
+
+        si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
+        if (!si->dataSource) {
+            logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(si->uSoundID), si->sName);
+            return false;
+        }
+
+        si->_dataSourceSize = tempSize;
+        si->dataSource = PlatformDataSourceInitialize(si->dataSource);
+    }
+    return true;
+}
+
 void AudioPlayer::UpdateSounds() {
     float pitch = M_PI * pParty->_viewPitch / 1024.f;
     float yaw = M_PI * pParty->_viewYaw / 1024.f;
@@ -397,6 +405,33 @@ bool AudioPlayer::isWalkingSoundPlays() {
         return !_currentWalkingSample->IsStopped();
     }
     return false;
+}
+
+float AudioPlayer::getSoundLength(SoundId eSoundID) {
+    SoundInfo* si = pSoundList->soundInfo(eSoundID);
+    if (!si) {
+        logger->warning("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
+        return 0.0f;
+    }
+
+    if (!si->dataSource) {
+        // if the sound hasnt been used before - load it
+        if (!loadSoundDataSource(si)) return 0.0f;
+
+        // then force the sample to load/play to save codec info
+        PAudioSample sample = CreateAudioSample();
+        sample->SetVolume(0);
+        bool result = _regularSoundPool.playNew(sample, si->dataSource);
+    }
+
+    int bufsize = si->_dataSourceSize;
+    const int bits = 4; // can we always assume this??
+    int channels = si->dataSource->GetChannelCount();
+    int freq = si->dataSource->GetSampleRate();
+
+    float lengthS = bufsize / channels / (bits / 8.0f) / freq;
+
+     return lengthS;
 }
 
 void AudioPlayer::Initialize() {

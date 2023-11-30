@@ -29,4 +29,7 @@ class AudioBaseDataSource : public IAudioDataSource {
     SwrContext *pConverter;
     bool bOpened;
     std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> queue;
+
+    size_t _savedSampleRate;
+    size_t _savedNumChannels;
 };

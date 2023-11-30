@@ -16,6 +16,9 @@ AudioBaseDataSource::AudioBaseDataSource() {
     pCodecContext = nullptr;
     pConverter = nullptr;
     bOpened = false;
+
+    _savedSampleRate = 0;
+    _savedNumChannels = 0;
 }
 
 bool AudioBaseDataSource::Open() {
@@ -109,17 +112,19 @@ void AudioBaseDataSource::Close() {
 
 size_t AudioBaseDataSource::GetSampleRate() {
     if (pCodecContext == nullptr) {
-        return 0;
+        return _savedSampleRate;
     }
 
+    _savedSampleRate = pCodecContext->sample_rate;
     return pCodecContext->sample_rate;
 }
 
 size_t AudioBaseDataSource::GetChannelCount() {
     if (pCodecContext == nullptr) {
-        return 0;
+        return _savedNumChannels;
     }
 
+    _savedNumChannels = pCodecContext->channels;
     return pCodecContext->channels;
 }
 
