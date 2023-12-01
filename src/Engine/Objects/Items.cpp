@@ -153,19 +153,16 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 }
 
 //----- (00456442) --------------------------------------------------------
-unsigned int ItemGen::GetValue() const {
-    unsigned int uBaseValue;  // edi@1
-    unsigned int mod, bonus;
-
-    uBaseValue = pItemTable->pItems[this->uItemID].uValue;
+int ItemGen::GetValue() const {
+    int uBaseValue = pItemTable->pItems[this->uItemID].uValue;
     if (uAttributes & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
     if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
         return uBaseValue + 100 * m_enchantmentStrength;
 
     if (special_enchantment != ITEM_ENCHANTMENT_NULL) {
-        mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
-        bonus = pItemTable->pSpecialEnchantments[special_enchantment].iValue;
+        int mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
+        int bonus = pItemTable->pSpecialEnchantments[special_enchantment].iValue;
         if (!mod)
             return uBaseValue + bonus;
         else
