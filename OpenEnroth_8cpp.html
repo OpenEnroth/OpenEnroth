@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c9f6423</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acad6b8</span>
    </div>
   </td>
  </tr>
@@ -79,7 +79,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdio&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;ranges&gt;</code><br />
 <code>#include &quot;<a class="el" href="GameStarter_8h.html">Application/GameStarter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineControlComponent_8h.html">Engine/Components/Control/EngineControlComponent.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineController_8h.html">Engine/Components/Control/EngineController.h</a>&quot;</code><br />
@@ -96,12 +98,17 @@ $(function() {
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/Format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UnicodeCrt_8h.html">Utility/UnicodeCrt.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Types_8h.html">Utility/Types.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OpenEnrothOptions_8h.html">OpenEnrothOptions.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a86d7262f248b663836d7e457f429146e"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a86d7262f248b663836d7e457f429146e">readTextFile</a> (const std::string &amp;path)</td></tr>
 <tr class="separator:a86d7262f248b663836d7e457f429146e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a07aec9820e428e19c1ba4fb9a3524e9b">printLines</a> (const std::vector&lt; std::string_view &gt; &amp;lines, ssize_t line, ssize_t delta)</td></tr>
+<tr class="separator:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfd5773b09d3bbafb74476bc1974d978"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#acfd5773b09d3bbafb74476bc1974d978">printTraceDiff</a> (const std::string &amp;canonical, const std::string &amp;current)</td></tr>
+<tr class="separator:acfd5773b09d3bbafb74476bc1974d978"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87e03b34539cd80852738d4372992e70"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a87e03b34539cd80852738d4372992e70">runRetrace</a> (const <a class="el" href="structOpenEnrothOptions.html">OpenEnrothOptions</a> &amp;options)</td></tr>
 <tr class="separator:a87e03b34539cd80852738d4372992e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21a7ae22ec88e30ef5745c36b4653222"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a21a7ae22ec88e30ef5745c36b4653222">runPlay</a> (const <a class="el" href="structOpenEnrothOptions.html">OpenEnrothOptions</a> &amp;options)</td></tr>
@@ -176,6 +183,84 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Program return code. </dd></dl>
+
+</div>
+</div>
+<a id="a07aec9820e428e19c1ba4fb9a3524e9b" name="a07aec9820e428e19c1ba4fb9a3524e9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07aec9820e428e19c1ba4fb9a3524e9b">&#9670;&#160;</a></span>printLines()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void printLines </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; std::string_view &gt; &amp;&#160;</td>
+          <td class="paramname"><em>lines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t&#160;</td>
+          <td class="paramname"><em>line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t&#160;</td>
+          <td class="paramname"><em>delta</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acfd5773b09d3bbafb74476bc1974d978" name="acfd5773b09d3bbafb74476bc1974d978"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfd5773b09d3bbafb74476bc1974d978">&#9670;&#160;</a></span>printTraceDiff()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void printTraceDiff </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>canonical</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>current</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
