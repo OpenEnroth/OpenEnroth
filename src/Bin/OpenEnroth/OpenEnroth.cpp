@@ -36,7 +36,7 @@ static void printLines(const std::vector<std::string_view> &lines, ssize_t line,
         fmt::println(stderr, "{:>5}: {}", i + 1, lines[i]);
 }
 
-static void printTraceDiff(const std::string &canonical, const std::string &current) {
+static void printTraceDiff(const std::string &current, const std::string &canonical) {
     assert(canonical != current);
 
     size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) { return canonical[i] != current[i]; });
