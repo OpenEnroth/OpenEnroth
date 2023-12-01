@@ -9,6 +9,12 @@
 
 #include "CharacterEnums.h"
 
+//
+// Condition
+//
+
+CharacterExpressionID expressionForCondition(Condition condition);
+
 
 //
 // CharacterSkillMastery
