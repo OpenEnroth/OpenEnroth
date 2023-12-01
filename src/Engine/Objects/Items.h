@@ -53,7 +53,7 @@ struct ItemGen {  // 0x24
 
     bool GenerateArtifact();
     void generateGold(ItemTreasureLevel treasureLevel);
-    unsigned int GetValue() const;
+    int GetValue() const;
     std::string GetDisplayName();
     std::string GetIdentifiedName();
     void UpdateTempBonus(GameTime time);

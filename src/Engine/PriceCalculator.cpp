@@ -9,7 +9,7 @@
 #include "Engine/Party.h"
 
 int PriceCalculator::baseItemIdentifyPrice(float priceMultiplier) {
-    int baseCost = (int)(priceMultiplier * 50.0f);
+    int baseCost = priceMultiplier * 50;
 
     if (baseCost < 1) {  // min price
         baseCost = 1;
@@ -18,8 +18,8 @@ int PriceCalculator::baseItemIdentifyPrice(float priceMultiplier) {
     return baseCost;
 }
 
-int PriceCalculator::baseItemRepairPrice(int uRealValue, float priceMultiplier) {
-    int baseCost = (int)(uRealValue / (6.0f - priceMultiplier));
+int PriceCalculator::baseItemRepairPrice(int realValue, float priceMultiplier) {
+    int baseCost = realValue / (6.0f - priceMultiplier);
 
     if (baseCost < 1) {  // min price
         baseCost = 1;
@@ -28,8 +28,8 @@ int PriceCalculator::baseItemRepairPrice(int uRealValue, float priceMultiplier) 
     return baseCost;
 }
 
-int PriceCalculator::baseItemBuyingPrice(int uRealValue, float priceMultiplier) {
-    int baseCost = (int)(uRealValue * priceMultiplier);
+int PriceCalculator::baseItemBuyingPrice(int realValue, float priceMultiplier) {
+    int baseCost = realValue * priceMultiplier;
 
     if (baseCost < 1) {  // min price
         baseCost = 1;
@@ -38,8 +38,8 @@ int PriceCalculator::baseItemBuyingPrice(int uRealValue, float priceMultiplier) 
     return baseCost;
 }
 
-int PriceCalculator::baseItemSellingPrice(int uRealValue, float priceMultiplier) {
-    int baseCost = (int)(uRealValue / (priceMultiplier + 2.0f));
+int PriceCalculator::baseItemSellingPrice(int realValue, float priceMultiplier) {
+    int baseCost = realValue / (priceMultiplier + 2.0f);
 
     if (baseCost < 1) {  // min price
         baseCost = 1;
@@ -48,8 +48,8 @@ int PriceCalculator::baseItemSellingPrice(int uRealValue, float priceMultiplier)
     return baseCost;
 }
 
-int PriceCalculator::itemRepairPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier) {
-    int baseCost = (int)(uRealValue / (6.0f - priceMultiplier));
+int PriceCalculator::itemRepairPriceForPlayer(const Character *player, int realValue, float priceMultiplier) {
+    int baseCost = realValue / (6.0f - priceMultiplier);
     int actualCost = applyMerchantDiscount(player, baseCost);
 
     if (actualCost < baseCost / 3) {  // min price
@@ -60,7 +60,7 @@ int PriceCalculator::itemRepairPriceForPlayer(const Character *player, int uReal
 }
 
 int PriceCalculator::itemIdentificationPriceForPlayer(const Character *player, float priceMultiplier) {
-    int baseCost = (int)(priceMultiplier * 50.0f);
+    int baseCost = priceMultiplier * 50;
     int actualCost = applyMerchantDiscount(player, baseCost);
 
     if (actualCost < baseCost / 3) {  // minimum price
@@ -70,23 +70,23 @@ int PriceCalculator::itemIdentificationPriceForPlayer(const Character *player, f
     return std::max(1, actualCost);
 }
 
-int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier) {
-    int price = applyMerchantDiscount(player, uRealValue * priceMultiplier);
+int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, int realValue, float priceMultiplier) {
+    int price = applyMerchantDiscount(player, realValue * priceMultiplier);
 
-    if (price < uRealValue) {  // price should always be at least item value
-        price = uRealValue;
+    if (price < realValue) {  // price should always be at least item value
+        price = realValue;
     }
 
     return price;
 }
 
 int PriceCalculator::itemSellingPriceForPlayer(const Character *player, const ItemGen &item, float priceMultiplier) {
-    int uRealValue = item.GetValue();
-    int result = static_cast<int>((uRealValue / (priceMultiplier + 2.0)) + uRealValue * playerMerchant(player) / 100.0);
+    int realValue = item.GetValue();
+    int result = static_cast<int>((realValue / (priceMultiplier + 2.0)) + realValue * playerMerchant(player) / 100.0);
 
-    if (uRealValue) {
+    if (realValue) {
         // can't get less than 1 gold or more than item is actually worth
-        result = std::clamp(result, 1, uRealValue);
+        result = std::clamp(result, 1, realValue);
     } else {
         // TODO(Nik-RE-dev): blaster price is 0 and we can sell it for 1 gold because of the code below, but this is probably not how it should work
         result = 1;
@@ -137,7 +137,7 @@ int PriceCalculator::playerMerchant(const Character *player) {
     int multiplier = player->GetMultiplierForSkillLevel(CHARACTER_SKILL_MERCHANT, 1, 2, 3, 5);
 
     if (merchantSkill.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
-        return 10000;
+        return 100;
     }
 
     int rep = pParty->GetPartyReputation();
@@ -147,7 +147,7 @@ int PriceCalculator::playerMerchant(const Character *player) {
         return -rep;
     }
 
-    return bonus - rep + 7;
+    return std::min(bonus - rep + 7, 100);
 }
 
 int PriceCalculator::applyMerchantDiscount(const Character *player, int goldAmount) {
@@ -171,6 +171,7 @@ int PriceCalculator::skillLearningCostForPlayer(const Character *player, const B
     }
     return effectivePrice;
 }
+
 int PriceCalculator::transportCostForPlayer(const Character *player, const BuildingDesc &house) {
     // boats are 2 times pricier than stables
     int basePrice = house.uType == BUILDING_STABLE ? 25 : 50;

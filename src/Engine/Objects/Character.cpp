@@ -1474,13 +1474,13 @@ int Character::StealFromShop(
         return 0;  // no item or cant act - no stealing
     } else {
         CombinedSkillValue val = this->getActualSkillValue(CHARACTER_SKILL_STEALING);
-        unsigned int itemvalue = itemToSteal->GetValue();
+        int itemValue = itemToSteal->GetValue();
 
         if (itemToSteal->isWeapon())
-            itemvalue *= 3;
+            itemValue *= 3;
 
         int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + val.level() * StealingMasteryBonuses[val.mastery()];
-        *fineIfFailed = 100 * (reputation + extraStealDifficulty) + itemvalue;
+        *fineIfFailed = 100 * (reputation + extraStealDifficulty) + itemValue;
 
         if (extraStealFine) {
             *fineIfFailed += 500;

@@ -67,3 +67,13 @@ std::string toPrintable(std::string_view s, char placeholder = ' ');
 std::string toHexDump(std::string_view s, size_t groupSize = 0);
 
 std::string replaceAll(std::string_view text, std::string_view what, std::string_view replacement);
+
+void splitString(std::string_view s, char sep, std::vector<std::string_view> *result);
+
+inline std::vector<std::string_view> splitString(std::string_view s, char sep) {
+    std::vector<std::string_view> result;
+    splitString(s, sep, &result);
+    return result;
+}
+
+std::vector<std::string_view> splitString(std::string &&s, char sep) = delete; // Don't dangle!

@@ -8,152 +8,152 @@ struct BuildingDesc;
 class PriceCalculator {
  public:
     /**
-     * @offset 0x4B824B
-     * @brief Calculates base item identify price (before factoring in merchant).
-     * @param priceMultiplier General shop price multiplier.
+     * Originally was a method of class `Character`.
      *
-     * Note: originally method of Character class.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Base item identify price (before applying merchant skill).
+     * @offset 0x4B824B
      */
     static int baseItemIdentifyPrice(float priceMultiplier);
 
     /**
+     * Originally was a method of class `Character`.
+     *
+     * @param realValue                 Item base value.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Base item repair price (before applying merchant skill).
      * @offset 0x4B8265
-     * @brief Calculates base item repair price (before factoring in merchant).
-     * @param uRealValue Item base value.
-     * @param priceMultiplier General shop price multiplier.
-     *
-     * Note: originally method of Character class.
      */
-    static int baseItemRepairPrice(int uRealValue, float priceMultiplier);
+    static int baseItemRepairPrice(int realValue, float priceMultiplier);
 
     /**
+     * Originally was a method of class `Character`.
+     *
+     * @param realValue                 Item base value.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Base item buying price (before applying merchant skill).
      * @offset 0x4B8233
-     * @brief Calculates base item buying price (before factoring in merchant).
-     * @param uRealValue Item base value.
-     * @param priceMultiplier General shop price multiplier.
-     *
-     * Note: originally method of Character class.
      */
-    static int baseItemBuyingPrice(int uRealValue, float priceMultiplier);
+    static int baseItemBuyingPrice(int realValue, float priceMultiplier);
 
     /**
+     * Originally was a method of class `Character`.
+     *
+     * @param realValue                 Item base value.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Base item selling price (before applying merchant skill).
      * @offset 0x4B8213
-     * @brief Calculates base item selling price (before factoring in merchant).
-     * @param uRealValue Item base value.
-     * @param priceMultiplier General shop price multiplier.
-     *
-     * Note: originally method of Character class.
      */
-    static int baseItemSellingPrice(int uRealValue, float priceMultiplier);
+    static int baseItemSellingPrice(int realValue, float priceMultiplier);
 
     /**
+     * Originally was a method of class `Character`.
+     *
+     * @param player                    Character trying to repair item.
+     * @param realValue                 Item base value.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Price that player has to pay for repairing an item.
      * @offset 0x4B81C3
-     * @brief Calculates price that player has to pay for repairing an item.
-     * @param player Character trying to repair item.
-     * @param uRealValue Item base value.
-     * @param priceMultiplier General shop price multiplier.
-     *
-     * Note: originally method of Character class.
      */
-    static int itemRepairPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier);
+    static int itemRepairPriceForPlayer(const Character *player, int realValue, float priceMultiplier);
 
     /**
-     * @offset 0x4B8179
-     * @brief Calculates price that player has to pay for identifying an item.
-     * @param player Character trying to identify the item.
-     * @param priceMultiplier General shop price multiplier.
+     * Originally was a method of class `Character`.
      *
-     * Note: originally method of Character class.
+     * @param player                    Character trying to identify the item.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Price that player has to pay for identifying an item.
+     * @offset 0x4B8179
      */
     static int itemIdentificationPriceForPlayer(const Character *player, float priceMultiplier);
 
     /**
-     * @offset 0x4B8142
-     * @brief Calculates price that player has to pay for buying an item.
-     * @param player Character buying the item.
-     * @param uRealValue Real item value.
-     * @param priceMultiplier General shop price multiplier.
+     * Originally was a method of class `Character`.
      *
-     * Note: originally method of Character class.
+     * @param player                    Character buying the item.
+     * @param realValue                 Real item value.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Price that player has to pay for buying an item.
+     * @offset 0x4B8142
      */
-    static int itemBuyingPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier);
+    static int itemBuyingPriceForPlayer(const Character *player, int realValue, float priceMultiplier);
 
     /**
-     * @offset 0x4B8102
-     * @brief Calculates price that player will get for selling an item.
-     * @param player Character buying the item.
-     * @param item Item being bought.
-     * @param priceMultiplier General shop price multiplier.
+     * Originally was a method of class `Character`.
      *
-     * Note: originally method of Character class.
+     * @param player                    Character selling the item.
+     * @param item                      Item being sold.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Price that player will get for selling an item.
+     * @offset 0x4B8102
      */
     static int itemSellingPriceForPlayer(const Character *player, const ItemGen &item, float priceMultiplier);
 
     /**
-     * @offset 0x4B807C
-     * @brief Calculates price that player has to pay for healing in a temple.
-     * @param player Character being healed.
-     * @param priceMultiplier General shop price multiplier.
+     * Originally was a method of class `Character`.
      *
-     * Note: originally method of Character class.
+     * @param player                    Character being healed.
+     * @param priceMultiplier           General shop price multiplier.
+     * @returns                         Price that player has to pay for healing in a temple.
+     * @offset 0x4B807C
      */
     static int templeHealingCostForPlayer(const Character *player, float priceMultiplier);
 
     /**
-     * @offset 0x4911F3
-     * @brief Gets effective merchant value for player. May depend also on other things than actual skill value.
-     * @param player Character to calculate value for.
+     * Originally was a method of class `Character`.
      *
-     * Note: originally method of Character class.
+     * @param player                    Character to calculate value for.
+     * @returns                         Merchant modifier for the character, a number in range (-inf, 100].
+     * @offset 0x4911F3
      */
     static int playerMerchant(const Character *player);
 
     /**
-     * @brief Applies player's merchant discount for given gold value.
-     * @param player Character to calculate discount for.
-     * @param goldAmount Full price before merchant.
+     * @param player                    Character to calculate discount for.
+     * @param goldAmount                Full price before applying the merchant skill.
+     * @returns                         Price after applying the merchant skill.
      */
     static int applyMerchantDiscount(const Character *player, int goldAmount);
 
     /**
-     * @brief Applies player's merchant discount for given gold value
-     * @param player Character to calculate discount for.
-     * @param goldAmount Full price before merchant.
+     * @param player                    Character to calculate discount for.
+     * @param goldAmount                Full price before applying the merchant skill.
+     * @returns                         Price after applying the merchant skill.
      */
     static int applyMerchantDiscount(const Character *player, float goldAmount);
 
     /**
-     * @brief Calculates skill learning cost for player.
-     * @param player Character to calculate cost for.
-     * @param house House in which player tries to learn skill.
+     * @param player                    Character to calculate cost for.
+     * @param house                     House in which player tries to learn skill.
+     * @returns                         Skill learning cost for character.
      */
     static int skillLearningCostForPlayer(const Character *player, const BuildingDesc &house);
 
     /**
-     * @brief Calculates transport (stable/boat) cost for player.
-     * @param player Character to calculate cost for.
-     * @param house Stable/boat building in which player travels.
+     * @param player                    Character to calculate cost for.
+     * @param house                     Stable/boat building in which player travels.
+     * @returns                         Transport (stable/boat) cost for character.
      */
     static int transportCostForPlayer(const Character *player, const BuildingDesc &house);
 
     /**
-     * @brief Calculates tavern room cost for player.
-     * @param player Character to calculate cost for.
-     * @param house Tavern in which player tries to buy room.
+     * @param player                    Character to calculate cost for.
+     * @param house                     Tavern in which player tries to buy room.
+     * @returns                         Tavern room cost for character.
      */
     static int tavernRoomCostForPlayer(const Character *player, const BuildingDesc &house);
 
     /**
-     * @brief Calculates tavern food cost for player.
-     * @param player Character to calculate cost for.
-     * @param house Tavern in which player tries to buy food.
+     * @param player                    Character to calculate cost for.
+     * @param house                     Tavern in which player tries to buy food.
+     * @returns                         Tavern food cost for character.
      */
     static int tavernFoodCostForPlayer(const Character *player, const BuildingDesc &house);
 
     /**
-     * @brief Calculates training cost for player.
-     * @param player Character to calculate cost for.
-     * @param house Training hall in which player tries to train.
+     * @param player                    Character to calculate cost for.
+     * @param house                     Training hall in which player tries to train.
+     * @returns                         Training cost for character.
      */
     static int trainingCostForPlayer(const Character *player, const BuildingDesc &house);
 };
