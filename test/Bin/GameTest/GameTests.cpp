@@ -19,6 +19,7 @@
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/PriceCalculator.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
@@ -1904,4 +1905,23 @@ GAME_TEST(Issues, Issue1371) {
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("issue_1371.mm7", "issue_1371.json");
     EXPECT_GT(zTape.max(), 448);
+}
+
+GAME_TEST(Issues, Issue1383) {
+    // Negative buying prices for characters with GM Merchant.
+    uCurrentlyLoadedLevelType = LEVEL_INDOOR;
+    pIndoor->dlv.reputation = 0; // Reputation is used for price calculations.
+
+    Character character;
+    character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    ItemGen item;
+    item.uItemID = ITEM_SPELLBOOK_ARMAGEDDON;
+    int gmPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
+    EXPECT_EQ(gmPrice, 7500);
+    EXPECT_EQ(item.GetValue(), 7500);
+
+    // Also check prices w/o skill, just in case.
+    character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
+    int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
+    EXPECT_EQ(noobPrice, 75000);
 }
