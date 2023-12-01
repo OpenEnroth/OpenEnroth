@@ -39,3 +39,22 @@ UNIT_TEST(String, ReplaceAll) {
     EXPECT_EQ(replaceAll("ab123ab", "ab", "zz"), "zz123zz");
     EXPECT_EQ(replaceAll("AAAA", "AA", "AAZAA"), "AAZAAAAZAA");
 }
+
+UNIT_TEST(String, Split) {
+    std::vector<std::string_view> v;
+
+    splitString("aa;bb;cc", ';', &v);
+    std::vector<std::string_view> r0 = {"aa", "bb", "cc"};
+    EXPECT_EQ(v, r0);
+
+    splitString("ABC", ';', &v);
+    std::vector<std::string_view> r1 = {"ABC"};
+    EXPECT_EQ(v, r1);
+
+    splitString("AB", 'B', &v);
+    std::vector<std::string_view> r2 = {"A", ""};
+    EXPECT_EQ(v, r2);
+
+    splitString("", ';', &v);
+    EXPECT_TRUE(v.empty());
+}

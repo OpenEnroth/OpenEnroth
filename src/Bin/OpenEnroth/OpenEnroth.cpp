@@ -1,5 +1,7 @@
 #include <cstdio>
+#include <cassert>
 #include <utility>
+#include <ranges>
 
 #include "Application/GameStarter.h"
 
@@ -20,12 +22,33 @@
 #include "Utility/Format.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String.h"
+#include "Utility/Types.h"
 
 #include "OpenEnrothOptions.h"
 
 static std::string readTextFile(const std::string &path) {
     // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
     return replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
+}
+
+static void printLines(const std::vector<std::string_view> &lines, ssize_t line, ssize_t delta) {
+    for (size_t i = std::max(static_cast<ssize_t>(0), line - delta); i < std::min(std::ssize(lines), line + delta + 1); i++)
+        fmt::println(stderr, "{:>5}: {}", i + 1, lines[i]);
+}
+
+static void printTraceDiff(const std::string &canonical, const std::string &current) {
+    assert(canonical != current);
+
+    size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) { return canonical[i] != current[i]; });
+    size_t line = std::ranges::count(std::string_view(canonical.data(), pos), '\n'); // 0-indexed.
+
+    std::vector<std::string_view> canonicalLines = splitString(canonical, '\n');
+    std::vector<std::string_view> currentLines = splitString(current, '\n');
+
+    fmt::println(stderr, "Canonical:");
+    printLines(canonicalLines, line, 2);
+    fmt::println(stderr, "Current:");
+    printLines(currentLines, line, 2);
 }
 
 int runRetrace(const OpenEnrothOptions &options) {
@@ -58,6 +81,7 @@ int runRetrace(const OpenEnrothOptions &options) {
                 std::string newTraceJson = readTextFile(tracePath);
                 if (oldTraceJson != newTraceJson) {
                     fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
+                    printTraceDiff(oldTraceJson, newTraceJson);
                     status = 1;
                 }
             }
