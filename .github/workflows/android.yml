@@ -120,6 +120,11 @@ jobs:
           CMAKE_BUILD_PARALLEL_LEVEL: 3
           GITHUBARCH: '${{matrix.architecture}}'
 
+      - name: List
+        run: |
+          find .
+
+
       - name: Publish apk package
         if: inputs.releaseTag != ''
         uses: softprops/action-gh-release@v1
