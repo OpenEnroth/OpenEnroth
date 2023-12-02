@@ -64,16 +64,17 @@ jobs:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
+      # Note that secrets are not passed to actions triggered by PRs, so this step will be skipped for PRs.
       - name: Decode keystore
-        if: env.super_secret != ''
+        if: env.SECRETS_KEYSTORE != ''
         id: decode_keystore
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v1.2.4
         with:
           fileName: android_keystore.jks
-          fileDir: /home/runner/work/OpenEnroth/OpenEnroth/app/keystore/
-          encodedString: '${{secrets.KEYSTORE}}'
+          encodedString: '${{env.SECRETS_KEYSTORE}}'
         env:
-          super_secret: '${{secrets.KEYSTORE}}'
+          # Secrets cannot be referenced in if: blocks, so we have to work it around.
+          SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
 
       - name: Get NDK
         id: get-ndk
@@ -114,16 +115,16 @@ jobs:
         run: |
           ./gradlew "assemble${{matrix.configuration}}" -Pandroid.native.buildOutput=verbose
         env:
+          SIGNING_KEYSTORE: '${{steps.decode_keystore.outputs.filePath}}'
           SIGNING_KEY_ALIAS: '${{secrets.SIGNING_KEY_ALIAS}}'
           SIGNING_KEY_PASSWORD: '${{secrets.SIGNING_KEY_PASSWORD}}'
           SIGNING_STORE_PASSWORD: '${{secrets.SIGNING_STORE_PASSWORD}}'
           CMAKE_BUILD_PARALLEL_LEVEL: 3
           GITHUBARCH: '${{matrix.architecture}}'
 
-      - name: List
+      - name: List artifacts
         run: |
-          find .
-
+          find android/openenroth/build/outputs/apk
 
       - name: Publish apk package
         if: inputs.releaseTag != ''
