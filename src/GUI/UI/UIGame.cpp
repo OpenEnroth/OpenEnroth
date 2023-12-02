@@ -58,8 +58,9 @@
 
 using Io::InputAction;
 
-std::array<unsigned int, 4> pHealthBarPos = {{23, 138, 251, 366}}; // was 22, 137
-std::array<unsigned int, 4> pManaBarPos = {{102, 217, 331, 447}};
+std::array<int, 4> pHealthBarPos = {{23, 138, 251, 366}}; // was 22, 137
+std::array<int, 4> pManaBarPos = {{102, 217, 331, 447}};
+extern const int pHealthManaBarYPos = 402;
 
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {{489, 559}};
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {{152, 152}};
@@ -822,9 +823,9 @@ void GameUI_DrawLifeManaBars() {
             if (hpFillRatio > 0.0) {
                 render->SetUIClipRect(
                     v17 + pHealthBarPos[i],
-                    (int64_t)((1.0 - hpFillRatio) * pTextureHealth->height()) + 402,
-                    v17 + pHealthBarPos[i] + pTextureHealth->width(), pTextureHealth->height() + 402);
-                render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f, 402 / 480.0f, pTextureHealth);
+                    (int64_t)((1.0 - hpFillRatio) * pTextureHealth->height()) + pHealthManaBarYPos,
+                    v17 + pHealthBarPos[i] + pTextureHealth->width(), pTextureHealth->height() + pHealthManaBarYPos);
+                render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f, pHealthManaBarYPos / 480.0f, pTextureHealth);
                 render->ResetUIClipRect();
             }
         }
@@ -837,9 +838,9 @@ void GameUI_DrawLifeManaBars() {
             if (i == 2) v17 = 1;
             render->SetUIClipRect(
                 v17 + pManaBarPos[i],
-                (int64_t)((1.0 - mpFillRatio) * game_ui_bar_blue->height()) + 402,
-                v17 + pManaBarPos[i] + game_ui_bar_blue->width(), game_ui_bar_blue->height() + 402);
-            render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f, 402 / 480.0f, game_ui_bar_blue);
+                (int64_t)((1.0 - mpFillRatio) * game_ui_bar_blue->height()) + pHealthManaBarYPos,
+                v17 + pManaBarPos[i] + game_ui_bar_blue->width(), game_ui_bar_blue->height() + pHealthManaBarYPos);
+            render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f, pHealthManaBarYPos / 480.0f, game_ui_bar_blue);
             render->ResetUIClipRect();
         }
     }
