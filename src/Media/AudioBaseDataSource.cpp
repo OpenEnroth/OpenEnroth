@@ -17,8 +17,7 @@ AudioBaseDataSource::AudioBaseDataSource() {
     pConverter = nullptr;
     bOpened = false;
 
-    _savedSampleRate = 0;
-    _savedNumChannels = 0;
+    _savedDuration = 0.0f;
 }
 
 bool AudioBaseDataSource::Open() {
@@ -85,6 +84,7 @@ bool AudioBaseDataSource::Open() {
     }
 
     bOpened = true;
+    _savedDuration = static_cast<float>(pFormatContext->duration) / AV_TIME_BASE;
 
     return true;
 }
@@ -112,19 +112,17 @@ void AudioBaseDataSource::Close() {
 
 size_t AudioBaseDataSource::GetSampleRate() {
     if (pCodecContext == nullptr) {
-        return _savedSampleRate;
+        return 0;
     }
 
-    _savedSampleRate = pCodecContext->sample_rate;
     return pCodecContext->sample_rate;
 }
 
 size_t AudioBaseDataSource::GetChannelCount() {
     if (pCodecContext == nullptr) {
-        return _savedNumChannels;
+        return 0;
     }
 
-    _savedNumChannels = pCodecContext->channels;
     return pCodecContext->channels;
 }
 
@@ -175,4 +173,8 @@ std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
     av_packet_free(&packet);
 
     return buffer;
+}
+
+float AudioBaseDataSource::GetDuration() {
+    return _savedDuration;
 }

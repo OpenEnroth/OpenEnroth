@@ -343,15 +343,12 @@ bool AudioPlayer::loadSoundDataSource(SoundInfo* si) {
             return false;
         }
 
-        size_t tempSize = buffer.size();
-
         si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
         if (!si->dataSource) {
             logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(si->uSoundID), si->sName);
             return false;
         }
 
-        si->_dataSourceSize = tempSize;
         si->dataSource = PlatformDataSourceInitialize(si->dataSource);
     }
     return true;
@@ -424,14 +421,7 @@ float AudioPlayer::getSoundLength(SoundId eSoundID) {
         bool result = _regularSoundPool.playNew(sample, si->dataSource);
     }
 
-    int bufsize = si->_dataSourceSize;
-    const int bits = 4; // can we always assume this??
-    int channels = si->dataSource->GetChannelCount();
-    int freq = si->dataSource->GetSampleRate();
-
-    float lengthS = bufsize / channels / (bits / 8.0f) / freq;
-
-     return lengthS;
+     return si->dataSource->GetDuration();
 }
 
 void AudioPlayer::Initialize() {

@@ -19,6 +19,4 @@ class SoundInfo {
     SoundId uSoundID;
     SoundFlags uFlags;
     PAudioDataSource dataSource;
-
-    size_t _dataSourceSize;
 };
