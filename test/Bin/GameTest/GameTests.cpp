@@ -1874,6 +1874,26 @@ GAME_TEST(Issues, Issue1342) {
         EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
 }
 
+GAME_TEST(Issues, Issue1362) {
+    // HP/SP hint doesn't show when hovering over the SP bar
+    game.startNewGame();
+    game.tick(1);
+    engine->_statusBar->clearEvent();
+
+    game.moveMouse(104, 426);
+    game.tick(1);
+    EXPECT_EQ(engine->_statusBar->get(), "45 / 45 Hit Points    0 / 0 Spell Points");
+    game.moveMouse(219, 426);
+    game.tick(1);
+    EXPECT_EQ(engine->_statusBar->get(), "39 / 39 Hit Points    0 / 0 Spell Points");
+    game.moveMouse(333, 426);
+    game.tick(1);
+    EXPECT_EQ(engine->_statusBar->get(), "35 / 35 Hit Points    22 / 22 Spell Points");
+    game.moveMouse(449, 426);
+    game.tick(1);
+    EXPECT_EQ(engine->_statusBar->get(), "22 / 22 Hit Points    36 / 36 Spell Points");
+}
+
 GAME_TEST(Issues, Issue1364) {
     // Saving in Arena should display an appropriate status message.
     auto mapTape = tapes.map();
