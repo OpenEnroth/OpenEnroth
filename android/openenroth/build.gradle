@@ -2,27 +2,31 @@ def buildAsLibrary = project.hasProperty('BUILD_AS_LIBRARY');
 def buildAsApplication = !buildAsLibrary
 if (buildAsApplication) {
     apply plugin: 'com.android.application'
-}
-else {
+} else {
     apply plugin: 'com.android.library'
 }
 
 android {
-    if ( file("keystore/android_keystore.jks").exists() ) {
+    def keyStorePath = System.getenv("SIGNING_KEYSTORE") ?: "keystore.jks"
+    def keyStoreFile = file(keyStorePath)
+    if ( keyStoreFile.exists() ) {
+        logger.quiet("Using keystore '$keyStorePath'")
         signingConfigs {
             debug {
-                storeFile = file("keystore/android_keystore.jks")
+                storeFile keyStoreFile
                 storePassword System.getenv("SIGNING_STORE_PASSWORD")
                 keyAlias System.getenv("SIGNING_KEY_ALIAS")
                 keyPassword System.getenv("SIGNING_KEY_PASSWORD")
             }
             release {
-                storeFile = file("keystore/android_keystore.jks")
+                storeFile keyStoreFile
                 storePassword System.getenv("SIGNING_STORE_PASSWORD")
                 keyAlias System.getenv("SIGNING_KEY_ALIAS")
                 keyPassword System.getenv("SIGNING_KEY_PASSWORD")
             }
         }
+    } else {
+        logger.error("Keystore '$keyStorePath' not found")
     }
     compileSdkVersion 31
     ndkVersion "26.0.10636728"
@@ -49,9 +53,9 @@ android {
                 }
             }
         }
-       if ( file("keystore/android_keystore.jks").exists() ) {
-          signingConfig signingConfigs.release
-       }
+        if ( keyStoreFile.exists() ) {
+            signingConfig signingConfigs.release
+        }
     }
     buildTypes {
         release {
