@@ -89,7 +89,7 @@ endif()
 # backward
 if(NOT BUILD_PLATFORM STREQUAL "android")
     add_subdirectory(backward_cpp)
-    if (BUILD_PLATFORM STREQUAL "linux")
+    if (BUILD_PLATFORM STREQUAL "linux" AND NOT OE_USE_DUMMY_DEPENDENCIES)
         string(FIND "${BACKWARD_DEFINITIONS}" "BACKWARD_HAS_DWARF=1" DWARF_POS)
         if (${DWARF_POS} EQUAL -1)
             message(WARNING "libdwarf is required for backward-cpp on linux.")

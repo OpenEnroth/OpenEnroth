@@ -24,14 +24,9 @@ jobs:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libglu1-mesa-dev libsdl2-dev libdwarf-dev libavformat-dev libavcodec-dev libswscale-dev zlib1g-dev
-
       - name: Configure
         run: |
-          cmake -B build
+          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON
 
       - name: Check style
         working-directory: build

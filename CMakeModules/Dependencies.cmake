@@ -76,10 +76,28 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         find_package(FFmpeg REQUIRED)
+    elseif(OE_USE_DUMMY_DEPENDENCIES)
+        # Just create dummy libs so that configure pass works. We won't be building anything.
+        add_library(ZLIB INTERFACE)
+        add_library(ZLIB::ZLIB ALIAS ZLIB)
+        add_library(OpenAL INTERFACE)
+        add_library(OpenAL::OpenAL ALIAS OpenAL)
+        add_library(SDL2OE INTERFACE)
+        add_library(SDL2::SDL2OE ALIAS SDL2OE)
+        set(SDL2_FOUND ON)
+        set(OPENAL_FOUND ON)
     else()
         message(STATUS "Not using prebuilt dependencies")
         find_package(FFmpeg REQUIRED)
-        find_package(OpenGL REQUIRED)
         find_package(ZLIB REQUIRED)
+    endif()
+
+    # On Android we somehow get OpenGL available by default, despite it not being findable by find_package. So we
+    # just create a dummy lib.
+    if(OE_USE_DUMMY_DEPENDENCIES OR BUILD_PLATFORM STREQUAL "android")
+        add_library(OpenGL_GL INTERFACE)
+        add_library(OpenGL::GL ALIAS OpenGL_GL)
+    else()
+        find_package(OpenGL REQUIRED)
     endif()
 endmacro()

@@ -24,11 +24,16 @@ endif()
 set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_CHECK_STYLE ON CACHE BOOL "Enable style checks.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
+set(OE_USE_DUMMY_DEPENDENCIES OFF CACHE BOOL "Use dummy dependencies. Build will fail if this is set to ON, only style checks will work.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that lld takes precedence.")
+
+if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
+    message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
+endif()
 
 # Find ccache / sccache.
 if(OE_USE_CCACHE)
