@@ -91,12 +91,8 @@ target_link_libraries(engine_graphics
         library_color
         library_image
         glm::glm
+        OpenGL::GL
         PRIVATE
         libluajit
         glad
         nuklear)
-
-if (NOT BUILD_PLATFORM STREQUAL "android")
-    find_package(OpenGL REQUIRED)
-    target_link_libraries(engine_graphics PUBLIC OpenGL::GL)
-endif ()
