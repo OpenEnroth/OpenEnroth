@@ -22,6 +22,7 @@ endif()
 
 # User-settable options.
 set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
+set(OE_CHECK_STYLE ON CACHE BOOL "Enable style checks.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
@@ -166,6 +167,7 @@ if(BUILD_PLATFORM STREQUAL "android")
     add_link_options("-Wl,-Bsymbolic")
 endif()
 
+init_check_style()
 resolve_dependencies()
 
 add_subdirectory(thirdparty)
