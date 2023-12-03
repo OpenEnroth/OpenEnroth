@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <AL/al.h> // NOLINT: not a C system header.
+#include <al.h> // NOLINT: not a C system header.
 
 #include "Media/AudioTrack.h"
 
