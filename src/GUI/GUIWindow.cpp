@@ -46,6 +46,10 @@
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Logger/Logger.h"
 
+extern std::array<int, 4> pHealthBarPos;
+extern std::array<int, 4> pManaBarPos;
+extern const int pHealthManaBarYPos;
+
 GUIWindow *pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
@@ -1200,15 +1204,15 @@ void UI_Create() {
     pPrimaryWindow->CreateButton("Game_Character3", {292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3);
     pPrimaryWindow->CreateButton("Game_Character4", {407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4);
 
-    pPrimaryWindow->CreateButton({24, 404}, {5, 49}, 1, 93, UIMSG_0, 1);  // buttons for HP
-    pPrimaryWindow->CreateButton({139, 404}, {5, 49}, 1, 93, UIMSG_0, 2);
-    pPrimaryWindow->CreateButton({255, 404}, {5, 49}, 1, 93, UIMSG_0, 3);
-    pPrimaryWindow->CreateButton({370, 404}, {5, 49}, 1, 93, UIMSG_0, 4);
+    pPrimaryWindow->CreateButton({ pHealthBarPos[0], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for HP
+    pPrimaryWindow->CreateButton({ pHealthBarPos[1], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
+    pPrimaryWindow->CreateButton({ pHealthBarPos[2], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
+    pPrimaryWindow->CreateButton({ pHealthBarPos[3], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
 
-    pPrimaryWindow->CreateButton({97, 404}, {5, 49}, 1, 93, UIMSG_0, 1);  // buttons for SP
-    pPrimaryWindow->CreateButton({212, 404}, {5, 49}, 1, 93, UIMSG_0, 2);
-    pPrimaryWindow->CreateButton({328, 404}, {5, 49}, 1, 93, UIMSG_0, 3);
-    pPrimaryWindow->CreateButton({443, 404}, {5, 49}, 1, 93, UIMSG_0, 4);
+    pPrimaryWindow->CreateButton({ pManaBarPos[0], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for SP
+    pPrimaryWindow->CreateButton({ pManaBarPos[1], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
+    pPrimaryWindow->CreateButton({ pManaBarPos[2], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
+    pPrimaryWindow->CreateButton({ pManaBarPos[3], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
 
     game_ui_tome_quests = assets->getImage_ColorKey("ib-td1-A");
     pBtn_Quests = pPrimaryWindow->CreateButton({491, 353}, game_ui_tome_quests->size(), 1, 0,
