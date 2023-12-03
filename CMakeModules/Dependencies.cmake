@@ -51,6 +51,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}")
         endif()
 
+        # Android sets CMAKE_FIND_ROOT_PATH and this breaks find_package for us. So we hack.
         if(CMAKE_FIND_ROOT_PATH)
             list(APPEND CMAKE_FIND_ROOT_PATH "${PREBUILT_DEPS_DIR}")
             list(APPEND CMAKE_MODULE_PATH "/")
@@ -71,10 +72,9 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                 target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
             endif()
             add_library(SDL2::SDL2OE ALIAS SDL2OE)
-
-            find_package(OpenAL CONFIG REQUIRED GLOBAL)
         endif()
 
+        find_package(OpenAL CONFIG REQUIRED)
         find_package(FFmpeg REQUIRED)
     elseif(OE_USE_DUMMY_DEPENDENCIES)
         # Just create dummy libs so that configure pass works. We won't be building anything.
@@ -85,11 +85,21 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(SDL2OE INTERFACE)
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
         set(SDL2_FOUND ON)
-        set(OPENAL_FOUND ON)
     else()
         message(STATUS "Not using prebuilt dependencies")
         find_package(FFmpeg REQUIRED)
         find_package(ZLIB REQUIRED)
+
+        # This should find OpenALConfig.cmake that comes with OpenAL Soft.
+        #
+        # Not even trying to do this w/o CONFIG because on MacOS it will find a MacOS framework, and there are two
+        # problems with it:
+        # - `FindOpenAL.cmake` sets the link target to point to the framework dir, which obviously doesn't work. We
+        #   should be linking to `Frameworks/OpenAL.framework/OpenAL.tbd`.
+        # - OpenEnroth doesn't support OpenAL that ships with MacOS. As in, sound barely works.
+        #
+        # If you're getting an error here, try passing something like -DOpenAL_ROOT=/opt/homebrew/opt/openal-soft to cmake.
+        find_package(OpenAL CONFIG REQUIRED)
     endif()
 
     # On Android we somehow get OpenGL available by default, despite it not being findable by find_package. So we

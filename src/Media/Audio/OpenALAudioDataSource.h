@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include <AL/al.h> // NOLINT: not a system C header.
+#include <al.h> // NOLINT: not a system C header.
 
 #include "Media/AudioDataSource.h"
 

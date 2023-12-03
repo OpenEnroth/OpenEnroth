@@ -42,17 +42,6 @@ set(SPDLOG_DISABLE_DEFAULT_LOGGER ON)
 set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
 add_subdirectory(spdlog)
 
-# openal_soft
-if (OPENAL_FOUND)
-    # Resolved in Dependencies.cmake
-else()
-    set(LIBTYPE STATIC)
-    set(ALSOFT_UTILS OFF)
-    set(ALSOFT_EXAMPLES OFF)
-    set(ALSOFT_TESTS OFF)
-    add_subdirectory(openal_soft)
-endif()
-
 # SDL
 if(SDL2_FOUND)
     # Resolved in Dependencies.cmake
