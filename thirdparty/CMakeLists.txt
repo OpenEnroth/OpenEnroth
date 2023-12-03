@@ -18,9 +18,9 @@ add_subdirectory(glob)
 # fmt
 add_subdirectory(fmt)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
-if (BUILD_COMPILER STREQUAL "msvc")
+if(BUILD_COMPILER STREQUAL "msvc")
     target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
-endif ()
+endif()
 
 # glad
 add_subdirectory(glad)
@@ -41,32 +41,6 @@ set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON)
 set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
 add_subdirectory(spdlog)
-
-# SDL
-if(SDL2_FOUND)
-    # Resolved in Dependencies.cmake
-elseif(BUILD_PLATFORM STREQUAL "linux")
-    find_package(SDL2 CONFIG REQUIRED GLOBAL) # GLOBAL is required for SDL2 to be available in src/
-    add_library(SDL2::SDL2OE ALIAS SDL2::SDL2) # Link dynamically on linux.
-elseif(BUILD_PLATFORM STREQUAL "android")
-    # Link dynamically on Android.
-    set(SDL_TEST OFF)
-    set(SDL_SHARED ON)
-    set(SDL_STATIC OFF)
-    add_subdirectory(sdl)
-    add_library(SDL2OE INTERFACE)
-    target_link_libraries(SDL2OE INTERFACE SDL2::SDL2 SDL2::SDL2main)
-    add_library(SDL2::SDL2OE ALIAS SDL2OE)
-else()
-    # Link statically on Windows & Mac.
-    set(SDL_TEST OFF)
-    set(SDL_SHARED OFF)
-    set(SDL_STATIC ON)
-    add_subdirectory(sdl)
-    add_library(SDL2OE INTERFACE)
-    target_link_libraries(SDL2OE INTERFACE SDL2::SDL2-static SDL2::SDL2main)
-    add_library(SDL2::SDL2OE ALIAS SDL2OE)
-endif()
 
 # googletest
 if(OE_BUILD_TESTS)

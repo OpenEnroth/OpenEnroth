@@ -60,23 +60,11 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             list(APPEND CMAKE_MODULE_PATH "${PREBUILT_DEPS_DIR}")
             list(APPEND CMAKE_PREFIX_PATH "${PREBUILT_DEPS_DIR}")
         endif()
+    else()
+        message(STATUS "Not using prebuilt dependencies")
+    endif()
 
-        set(ZLIB_USE_STATIC_LIBS ON)
-        find_package(ZLIB REQUIRED)
-
-        if (NOT BUILD_PLATFORM STREQUAL "android") # TODO(captainurist) : add more android prebuilt libs
-            find_package(SDL2 CONFIG REQUIRED GLOBAL)
-            add_library(SDL2OE INTERFACE)
-            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
-            if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
-                target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
-            endif()
-            add_library(SDL2::SDL2OE ALIAS SDL2OE)
-        endif()
-
-        find_package(OpenAL CONFIG REQUIRED)
-        find_package(FFmpeg REQUIRED)
-    elseif(OE_USE_DUMMY_DEPENDENCIES)
+    if(OE_USE_DUMMY_DEPENDENCIES)
         # Just create dummy libs so that configure pass works. We won't be building anything.
         add_library(ZLIB INTERFACE)
         add_library(ZLIB::ZLIB ALIAS ZLIB)
@@ -86,9 +74,18 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
         set(SDL2_FOUND ON)
     else()
-        message(STATUS "Not using prebuilt dependencies")
-        find_package(FFmpeg REQUIRED)
+        # Prebuilt & user-supplied deps are resolved using the same code here.
+        set(ZLIB_USE_STATIC_LIBS ON)
         find_package(ZLIB REQUIRED)
+        find_package(FFmpeg REQUIRED)
+
+        find_package(SDL2 CONFIG REQUIRED)
+        add_library(SDL2OE INTERFACE)
+        target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
+        if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
+            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
+        endif()
+        add_library(SDL2::SDL2OE ALIAS SDL2OE)
 
         # This should find OpenALConfig.cmake that comes with OpenAL Soft.
         #
