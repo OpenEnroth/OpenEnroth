@@ -747,7 +747,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->mana = src.mana;
     dst->birthYear = src.uBirthYear;
 
-    snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
+    snapshot(src.pEquipment, &dst->equipment);
 
     dst->lastOpenedSpellbookPage = std::to_underlying(src.lastOpenedSpellbookPage);
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
@@ -998,7 +998,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->mana = src.mana;
     dst->uBirthYear = src.birthYear;
 
-    reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
+    reconstruct(src.equipment, &dst->pEquipment);
 
     dst->lastOpenedSpellbookPage = static_cast<MagicSchool>(src.lastOpenedSpellbookPage);
     dst->uQuickSpell = static_cast<SpellId>(src.quickSpell);

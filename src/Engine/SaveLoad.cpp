@@ -102,7 +102,7 @@ void LoadGame(unsigned int uSlot) {
         }
 
         for (unsigned j = 0; j < 2; ++j) {
-            unsigned uEquipIdx = pParty->pCharacters[i].pEquipment.pIndices[j];
+            unsigned uEquipIdx = pParty->pCharacters[i].pEquipment[j];
             if (uEquipIdx) {
                 int pItemID = pParty->pCharacters[i]
                                   .pInventoryItemList[uEquipIdx - 1]

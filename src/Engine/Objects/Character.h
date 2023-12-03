@@ -62,32 +62,6 @@ struct CharacterSpells {
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
 };
 
-union CharacterEquipment {
-    union {
-        struct {
-            unsigned int uOffHand;
-            unsigned int uMainHand;
-            unsigned int uBow;
-            unsigned int uArmor;
-            unsigned int uHelm;
-            unsigned int uBelt;
-            unsigned int uCloak;
-            unsigned int uGlove;
-            unsigned int uBoot;
-            unsigned int uAmulet;
-            std::array<unsigned int, 6> uRings;
-            // unsigned int field_2C;
-            // unsigned int field_30;
-            // unsigned int field_34;
-            // unsigned int field_38;
-            // unsigned int field_3C;
-        };
-        IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pIndices;
-    };
-
-    CharacterEquipment() : pIndices() {}
-};
-
 class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
@@ -390,8 +364,7 @@ class Character {
     ItemGen *GetBootItem();
     ItemGen *GetAmuletItem();
     ItemGen *GetNthRingItem(int ringNum);
-    ItemGen *GetNthEquippedIndexItem(ItemSlot index);
-    ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos);
+    ItemGen *GetItem(ItemSlot index);
 
     const ItemGen *GetMainHandItem() const;
     const ItemGen *GetOffHandItem() const;
@@ -404,8 +377,7 @@ class Character {
     const ItemGen *GetBootItem() const;
     const ItemGen *GetAmuletItem() const;
     const ItemGen *GetNthRingItem(int ringNum) const;
-    const ItemGen *GetNthEquippedIndexItem(ItemSlot index) const;
-    const ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos) const;
+    const ItemGen *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int getCharacterIndex();
@@ -505,7 +477,7 @@ class Character {
     int health;
     int mana;
     unsigned int uBirthYear;
-    CharacterEquipment pEquipment;
+    IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pEquipment;
     MagicSchool lastOpenedSpellbookPage;
     SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;

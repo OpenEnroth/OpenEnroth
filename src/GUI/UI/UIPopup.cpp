@@ -2159,7 +2159,7 @@ void Inventory_ItemPopupAndAlchemy() {
             }
 
             if (pos != ITEM_SLOT_INVALID) {
-                item = pParty->activeCharacter().GetNthEquippedIndexItem(pos);
+                item = pParty->activeCharacter().GetItem(pos);
             }
         }
     } else {

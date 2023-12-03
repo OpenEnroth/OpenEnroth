@@ -272,14 +272,6 @@ struct PlayerSpells_MM7 {
 static_assert(sizeof(PlayerSpells_MM7) == 0x64);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpells_MM7)
 
-
-union PlayerEquipment_MM7 {
-    std::array<uint32_t, 16> indices;
-};
-static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerEquipment_MM7)
-
-
 struct LloydBeacon_MM7 {
     uint64_t beaconTime;
     int32_t partyPosX;
@@ -379,7 +371,7 @@ struct Player_MM7 {
     /* 193C */ int32_t health;
     /* 1940 */ int32_t mana;
     /* 1944 */ uint32_t birthYear;
-    /* 1948 */ PlayerEquipment_MM7 equipment;
+    /* 1948 */ std::array<uint32_t, 16> equipment;
     /* 1988 */ std::array<int32_t, 49> field_1988; // field_1988[27] was set to 1 in party creation when character
                                                    // name was changed. We just set everything to zero.
     /* 1A4C */ char field_1A4C;
