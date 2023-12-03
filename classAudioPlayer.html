@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;922f0cd</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b56ebda</span>
    </div>
   </td>
  </tr>
@@ -125,8 +125,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a88c5e9b7cc541425ae56bbbd14f8e006"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad855b8de97688de568cda99aed75497b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad855b8de97688de568cda99aed75497b">isWalkingSoundPlays</a> ()</td></tr>
 <tr class="separator:ad855b8de97688de568cda99aed75497b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad50376e350615d5bae582122e8e40920"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad50376e350615d5bae582122e8e40920">getSoundLength</a> (<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> eSoundID)</td></tr>
+<tr class="separator:ad50376e350615d5bae582122e8e40920"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae01fc34b1ac5b187030e37c0fea51e8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ae01fc34b1ac5b187030e37c0fea51e8b">playSound</a> (<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> eSoundID, <a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a> mode, <a class="el" href="classPid.html">Pid</a> pid=<a class="el" href="classPid.html">Pid</a>())</td></tr>
 <tr class="separator:ae01fc34b1ac5b187030e37c0fea51e8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab42078dea7a617dc1bfa2cad873570b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aab42078dea7a617dc1bfa2cad873570b">loadSoundDataSource</a> (<a class="el" href="classSoundInfo.html">SoundInfo</a> *si)</td></tr>
+<tr class="separator:aab42078dea7a617dc1bfa2cad873570b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afddc5ab247f9c6838ab512f32421ccf4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#afddc5ab247f9c6838ab512f32421ccf4">playSpellSound</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spell, bool is_impact, <a class="el" href="SoundEnums_8h.html#abb698a37a56e41cc9cbec7d90375d078">SoundPlaybackMode</a> mode, <a class="el" href="classPid.html">Pid</a> pid=<a class="el" href="classPid.html">Pid</a>())</td></tr>
 <tr class="separator:afddc5ab247f9c6838ab512f32421ccf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08121e9741fc978a46d06ec4acfd4e0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a08121e9741fc978a46d06ec4acfd4e0c">playUISound</a> (<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> id)</td></tr>
@@ -217,6 +221,31 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad50376e350615d5bae582122e8e40920" name="ad50376e350615d5bae582122e8e40920"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad50376e350615d5bae582122e8e40920">&#9670;&#160;</a></span>getSoundLength()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float AudioPlayer::getSoundLength </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>&#160;</td>
+          <td class="paramname"><em>eSoundID</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Returns length of sound in seconds.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eSoundID</td><td>ID of sound. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a00b979fccb64c86b92c23b5211659ba0" name="a00b979fccb64c86b92c23b5211659ba0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00b979fccb64c86b92c23b5211659ba0">&#9670;&#160;</a></span>Initialize()</h2>
 
@@ -266,6 +295,31 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab42078dea7a617dc1bfa2cad873570b" name="aab42078dea7a617dc1bfa2cad873570b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab42078dea7a617dc1bfa2cad873570b">&#9670;&#160;</a></span>loadSoundDataSource()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AudioPlayer::loadSoundDataSource </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSoundInfo.html">SoundInfo</a> *&#160;</td>
+          <td class="paramname"><em>si</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Checks that data source has been populated and if not loads it into <a class="el" href="classSoundInfo.html">SoundInfo</a>. Returns true on success</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">si</td><td><a class="el" href="classSoundInfo.html">SoundInfo</a> to be loaded </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
