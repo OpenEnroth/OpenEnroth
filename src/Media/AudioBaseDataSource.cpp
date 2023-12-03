@@ -16,6 +16,8 @@ AudioBaseDataSource::AudioBaseDataSource() {
     pCodecContext = nullptr;
     pConverter = nullptr;
     bOpened = false;
+
+    _savedDuration = 0.0f;
 }
 
 bool AudioBaseDataSource::Open() {
@@ -82,6 +84,7 @@ bool AudioBaseDataSource::Open() {
     }
 
     bOpened = true;
+    _savedDuration = static_cast<float>(pFormatContext->duration) / AV_TIME_BASE;
 
     return true;
 }
@@ -170,4 +173,8 @@ std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
     av_packet_free(&packet);
 
     return buffer;
+}
+
+float AudioBaseDataSource::GetDuration() {
+    return _savedDuration;
 }

@@ -21,6 +21,8 @@ class OpenALAudioDataSource : public IAudioDataSource {
     virtual size_t GetChannelCount() override { return _baseDataSource->GetChannelCount(); }
     virtual std::shared_ptr<Blob> GetNextBuffer() override { return _baseDataSource->GetNextBuffer(); }
 
+    virtual float GetDuration() override { return _baseDataSource->GetDuration(); }
+
     bool linkSource(ALuint al_source);
 
  protected:

@@ -21,6 +21,8 @@
 #include "Engine/Engine.h"
 #include "Engine/PriceCalculator.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
 
@@ -1898,6 +1900,19 @@ GAME_TEST(Issues, Issue1368) {
     EXPECT_TRUE(sleepTape.contains(true));
     // But awake at the end
     EXPECT_EQ(sleepTape.back(), false);
+}
+
+GAME_TEST(Issues, Issue1370) {
+    // CHARACTER_EXPRESSION_TALK doesn't work
+    EXPECT_TRUE(fuzzyEquals(2.53f, pAudioPlayer->getSoundLength(SOUND_EndTurnBasedMode), 0.001f));
+    EXPECT_TRUE(fuzzyEquals(2.49f, pAudioPlayer->getSoundLength(static_cast<SoundId>(6480)), 0.001f));
+
+    auto exprTape = tapes.custom([] { return pParty->pCharacters[2].expression; });
+    auto exprTimeTape = tapes.custom([] { return pParty->pCharacters[2].uExpressionTimeLength; });
+    test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
+    EXPECT_TRUE(exprTape.contains(CHARACTER_EXPRESSION_TALK));
+    EXPECT_TRUE(exprTimeTape.contains(318));  // 2.49 * 128
+    EXPECT_EQ(exprTape.back(), CHARACTER_EXPRESSION_NORMAL);
 }
 
 GAME_TEST(Issues, Issue1371) {

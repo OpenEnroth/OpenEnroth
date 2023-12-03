@@ -22,6 +22,8 @@ class AudioBaseDataSource : public IAudioDataSource {
     virtual size_t GetChannelCount() override;
     virtual std::shared_ptr<Blob> GetNextBuffer() override;
 
+    virtual float GetDuration() override;
+
  protected:
     AVFormatContext *pFormatContext;
     int iStreamIndex;
@@ -29,4 +31,6 @@ class AudioBaseDataSource : public IAudioDataSource {
     SwrContext *pConverter;
     bool bOpened;
     std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> queue;
+
+    float _savedDuration;
 };

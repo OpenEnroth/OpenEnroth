@@ -7319,9 +7319,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
         int expressionDuration = 0;
         if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
-                // TODO(captainurist): #sound sLastTrackLengthMS wasn't set, so was dropped. Implement properly, right now
-                //                     this doesn't work.
-                expressionDuration = 1000; // Was (sLastTrackLengthMS << 7) / 1000;
+                expressionDuration = 128 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID)); // Was (sLastTrackLengthMS << 7) / 1000;
             }
         }
         playEmotion(expression, expressionDuration);
@@ -7357,8 +7355,7 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
         this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
         assert(this->uExpressionTimeLength != 0); // GetDurationByExpression should have found the expression.
     } else {
-        // TODO(captainurist): why zero? makes no sense!
-        this->uExpressionTimeLength = 0;
+        this->uExpressionTimeLength = duration;
     }
 
     expression = new_expression;
