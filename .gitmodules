@@ -29,9 +29,6 @@
 [submodule "thirdparty/mio"]
 	path = thirdparty/mio
 	url = https://github.com/mandreyel/mio
-[submodule "thirdparty/sdl"]
-	path = thirdparty/sdl
-	url = https://github.com/libsdl-org/SDL.git
 [submodule "thirdparty/spdlog"]
 	path = thirdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
