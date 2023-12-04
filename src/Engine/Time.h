@@ -24,13 +24,14 @@ struct GameTime {
     int toWeeks() const { return toDays() / 7; }
     int toMonths() const { return toWeeks() / 4; }
     int toYears() const { return toMonths() / 12; }
-    int GetSecondsFraction() const { return toSeconds() % 60; }
-    int GetMinutesFraction() const { return toMinutes() % 60; }
-    int GetHoursOfDay() const { return toHours() % 24; }
-    int GetDaysOfWeek() const { return toDays() % 7; }
-    int GetDaysOfMonth() const { return toDays() % 28; }
-    int GetWeeksOfMonth() const { return toWeeks() % 4; }
-    int GetMonthsOfYear() const { return toMonths() % 12; }
+
+    int secondsFraction() const { return toSeconds() % 60; }
+    int minutesFraction() const { return toMinutes() % 60; }
+    int hoursOfDay() const { return toHours() % 24; }
+    int daysOfWeek() const { return toDays() % 7; }
+    int daysOfMonth() const { return toDays() % 28; }
+    int weeksOfMonth() const { return toWeeks() % 4; }
+    int monthsOfYear() const { return toMonths() % 12; }
 
     [[nodiscard]] GameTime AddSeconds(int seconds) const {
         return *this + GameTime::FromSeconds(seconds);

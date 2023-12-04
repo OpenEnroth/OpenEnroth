@@ -920,12 +920,12 @@ void restAndHeal(GameTime restTime) {
     pParty->pHirelings[0].bHasUsedTheAbility = false;
     pParty->pHirelings[1].bHasUsedTheAbility = false;
 
-    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
-    pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
-    pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
-    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetWeeksOfMonth();
-    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDaysOfMonth();
-    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
+    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().secondsFraction();
+    pParty->uCurrentMinute = pParty->GetPlayingTime().minutesFraction();
+    pParty->uCurrentHour = pParty->GetPlayingTime().hoursOfDay();
+    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().weeksOfMonth();
+    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().daysOfMonth();
+    pParty->uCurrentMonth = pParty->GetPlayingTime().monthsOfYear();
     pParty->uCurrentYear = pParty->GetPlayingTime().toYears() + game_starting_year;
     pParty->restAndHeal();
 

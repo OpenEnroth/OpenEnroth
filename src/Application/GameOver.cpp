@@ -66,8 +66,8 @@ void CreateWinnerCertificate() {
 
     int v19 = play_time.toDays();
     int v14 = play_time.toYears();
-    int v18 = play_time.GetMonthsOfYear();
-    int v17 = play_time.GetDaysOfMonth();
+    int v18 = play_time.monthsOfYear();
+    int v17 = play_time.daysOfMonth();
     if (!v19) v19 = 1;
 
     pWindow.DrawTitleText(

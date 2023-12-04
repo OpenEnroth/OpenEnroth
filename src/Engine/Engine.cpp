@@ -1204,12 +1204,12 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_year = pParty->uCurrentYear;
 
     pParty->GetPlayingTime().value += pEventTimer->uTimeElapsed;
-    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
-    pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
-    pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
+    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().secondsFraction();
+    pParty->uCurrentMinute = pParty->GetPlayingTime().minutesFraction();
+    pParty->uCurrentHour = pParty->GetPlayingTime().hoursOfDay();
     pParty->uCurrentMonthWeek = pParty->GetPlayingTime().toDays() / 7 & 3;
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().toDays() % 28;
-    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
+    pParty->uCurrentMonth = pParty->GetPlayingTime().monthsOfYear();
     pParty->uCurrentYear = pParty->GetPlayingTime().toYears() + game_starting_year;
 
     // New day dawns
