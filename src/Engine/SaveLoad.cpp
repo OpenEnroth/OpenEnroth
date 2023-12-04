@@ -321,11 +321,17 @@ void SavegameList::Initialize() {
 SavegameList::SavegameList() { Reset(); }
 
 void SavegameList::Reset() {
+    pSavegameUsedSlots.fill(false);
+    pSavegameThumbnails.fill(nullptr);
+
     for (int j = 0; j < MAX_SAVE_SLOTS; j++) {
         this->pFileList[j].clear();
     }
 
     numSavegameFiles = 0;
+    // Reset position in case that last loaded save will not be found
+    selectedSlot = 0;
+    saveListPosition = 0;
 }
 
 void SaveNewGame() {
@@ -365,4 +371,79 @@ void SaveNewGame() {
     pParty->_viewYaw = 512;
 
     SaveGame(1, 1);
+}
+
+void QuickSaveGame() {
+    assert(pCurrentMapName != "d05.blv"); // Not Arena.
+    pSavegameList->Initialize();
+
+    engine->config->gameplay.QuickSavesCount.cycleIncrement();
+    std::string quickSaveName = GetCurrentQuickSave();
+
+    int uSlot = -1;
+    // find QuickSave slot
+    for (int i = 0; i < MAX_SAVE_SLOTS; ++i) {
+        if (pSavegameList->pFileList[i] == quickSaveName) {
+            uSlot = i;
+            break;
+        }
+    }
+
+    // not found - find free slot
+    if (uSlot == -1) {
+        for (int i = 0; i < MAX_SAVE_SLOTS; ++i) {
+            if (pSavegameList->pFileList[i] == "") {
+                uSlot = i;
+                break;
+            }
+        }
+    }
+
+    // if no free slot error
+    if (uSlot == -1) {
+        logger->error("QuickSaveGame:: No free save game slots!");
+        engine->config->gameplay.QuickSavesCount.cycleDecrement();
+        return;
+    }
+
+    pSavegameList->pSavegameHeader[uSlot].name = "Quicksave";
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
+
+    std::string src = makeDataPath("data", "new.lod");
+    std::string dst = makeDataPath("saves", quickSaveName);
+    std::error_code ec;
+    if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec)) {
+        logger->error("Failed to copy: {}", src);
+        engine->config->gameplay.QuickSavesCount.cycleDecrement();
+    } else {
+        engine->_statusBar->setEvent(LSTR_GAME_SAVED);
+    }
+}
+
+void QuickLoadGame() {
+    pSavegameList->Initialize();
+
+    std::string quickSaveName = GetCurrentQuickSave();
+
+    int uSlot = -1;
+    // find QuickSave slot
+    for (int i = 0; i < MAX_SAVE_SLOTS; ++i) {
+        if (pSavegameList->pFileList[i] == quickSaveName) {
+            uSlot = i;
+            // make sure this slot is activated for load
+            pSavegameList->pSavegameUsedSlots[i] = true;
+            break;
+        }
+    }
+
+    if (uSlot != -1) {
+        LoadGame(uSlot);
+        uGameState = GAME_STATE_LOADING_GAME;
+    } else {
+        logger->error("QuickLoadGame:: No quick save could be found!");
+    }
+}
+
+std::string GetCurrentQuickSave() {
+    return engine->config->gameplay.QuickSaveName.value() + std::to_string(engine->config->gameplay.QuickSavesCount.value()) + ".mm7";
 }

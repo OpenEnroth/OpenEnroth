@@ -1815,6 +1815,12 @@ void Game::processQueuedMessages() {
                 render->ReloadShaders();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
+            case UIMSG_QuickSave:
+                QuickSaveGame();
+                continue;
+            case UIMSG_QuickLoad:
+                QuickLoadGame();
+                continue;
             default:
                 logger->warning("Game::processQueuedMessages - Unhandled message type: {}", uMessage);
                 continue;

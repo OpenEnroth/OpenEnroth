@@ -244,6 +244,9 @@ enum UIMessageType : uint32_t {
     UIMSG_DebugReloadShader = 1000,
     UIMSG_DebugUnused = 1001,
 
+    UIMSG_QuickSave = 2000,
+    UIMSG_QuickLoad = 2001,
+
     UIMSG_Invalid = 0xffffffff
 };
 
