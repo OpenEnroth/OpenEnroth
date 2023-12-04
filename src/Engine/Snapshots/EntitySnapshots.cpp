@@ -123,11 +123,11 @@ static const std::unordered_map<MapId, uint16_t> gamesLodIndexByMapId = {
 };
 static const std::unordered_map<uint16_t, MapId> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
 
-static void snapshot(const GameTime &src, int64_t *dst) {
+static void snapshot(const Time &src, int64_t *dst) {
     *dst = src.value;
 }
 
-static void reconstruct(int64_t src, GameTime *dst) {
+static void reconstruct(int64_t src, Time *dst) {
     dst->value = src;
 }
 
@@ -578,7 +578,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->lastEyeLevel = src.prevEyeLevel;
     dst->speed = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
-    dst->_6FC_water_lava_timer = GameTime::fromTicks(src.waterLavaTimer);
+    dst->_6FC_water_lava_timer = Time::fromTicks(src.waterLavaTimer);
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
@@ -1023,7 +1023,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
             LloydBeacon beacon;
-            beacon.uBeaconTime = GameTime::fromTicks(src.installedBeacons[i].beaconTime);
+            beacon.uBeaconTime = Time::fromTicks(src.installedBeacons[i].beaconTime);
             beacon._partyPos.x = src.installedBeacons[i].partyPosX;
             beacon._partyPos.y = src.installedBeacons[i].partyPosY;
             beacon._partyPos.z = src.installedBeacons[i].partyPosZ;

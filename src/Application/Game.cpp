@@ -668,7 +668,7 @@ void Game::processQueuedMessages() {
                                         pOutdoor->UpdateSunlightVectors();
                                         pOutdoor->UpdateFog();
                                     }
-                                    remainingRestTime = GameTime();
+                                    remainingRestTime = Time();
                                     currentRestType = REST_NONE;
                                     onEscape();
                                     continue;
@@ -811,7 +811,7 @@ void Game::processQueuedMessages() {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
                 if (iequals(s_SavedMapName.data(), "d05.blv"))
-                    pParty->GetPlayingTime() += GameTime::fromDays(4);
+                    pParty->GetPlayingTime() += Time::fromDays(4);
 
                 PlayButtonClickSound();
                 DialogueEnding();
@@ -858,7 +858,7 @@ void Game::processQueuedMessages() {
                     pGameLoadingUI_ProgressBar->Progress();
                     SaveGame(1, 0);
                     pGameLoadingUI_ProgressBar->Progress();
-                    restAndHeal(GameTime::fromDays(getTravelTime()));
+                    restAndHeal(Time::fromDays(getTravelTime()));
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
                         if (pParty->GetFood() < getTravelTime()) {
@@ -1156,7 +1156,7 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY}, {0, 0}, pButton_RestUI_Wait5Minutes,
                     localization->GetString(LSTR_WAIT_5_MINUTES));
                 currentRestType = REST_WAIT;
-                remainingRestTime = GameTime::fromMinutes(5);
+                remainingRestTime = Time::fromMinutes(5);
                 continue;
             case UIMSG_Wait1Hour:
                 if (currentRestType == REST_HEAL) {
@@ -1167,7 +1167,7 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY}, {0, 0}, pButton_RestUI_Wait1Hour,
                     localization->GetString(LSTR_WAIT_1_HOUR));
                 currentRestType = REST_WAIT;
-                remainingRestTime = GameTime::fromHours(1);
+                remainingRestTime = Time::fromHours(1);
                 continue;
             case UIMSG_RentRoom: {
                 HouseId tavern = static_cast<HouseId>(uMessageParam);
@@ -1175,15 +1175,15 @@ void Game::processQueuedMessages() {
 
                 pGUIWindow_CurrentMenu = new GUIWindow_Rest();
 
-                remainingRestTime = timeUntilDawn() + GameTime::fromHours(1);
+                remainingRestTime = timeUntilDawn() + Time::fromHours(1);
                 if (tavern == HOUSE_TAVERN_DEYJA || tavern == HOUSE_TAVERN_PIT || tavern == HOUSE_TAVERN_MOUNT_NIGHON) {
-                    remainingRestTime = remainingRestTime + GameTime::fromHours(12);
+                    remainingRestTime = remainingRestTime + Time::fromHours(12);
                 }
                 currentRestType = REST_HEAL;
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
                 for (Character &character : pParty->pCharacters) {
-                    character.SetAsleep(GameTime::fromTicks(1));
+                    character.SetAsleep(Time::fromTicks(1));
                 }
                 continue;
             }
@@ -1279,8 +1279,8 @@ void Game::processQueuedMessages() {
                         if (encounter_index) {
                             pPlayerNum = grng->random(4);
                             pParty->pCharacters[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
-                            Rest(GameTime::fromHours(1) + GameTime::fromMinutes(grng->random(6)));
-                            remainingRestTime = GameTime();
+                            Rest(Time::fromHours(1) + Time::fromMinutes(grng->random(6)));
+                            remainingRestTime = Time();
                             currentRestType = REST_NONE;
 
                             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
@@ -1290,12 +1290,12 @@ void Game::processQueuedMessages() {
                         }
                     }
                     pParty->TakeFood(foodRequiredToRest);
-                    remainingRestTime = GameTime::fromHours(8);
+                    remainingRestTime = Time::fromHours(8);
                     currentRestType = REST_HEAL;
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                     for (Character &character : pParty->pCharacters) {
-                        character.SetAsleep(GameTime::fromTicks(1));
+                        character.SetAsleep(Time::fromTicks(1));
                     }
                 }
                 continue;
@@ -1989,7 +1989,7 @@ void Game::gameLoop() {
                     character.SetVariable(VAR_Award, Award_Deaths);
                 }
                 pParty->days_played_without_rest = 0;
-                pParty->GetPlayingTime() += GameTime::fromDays(7);  // += 2580480
+                pParty->GetPlayingTime() += Time::fromDays(7);  // += 2580480
                 pParty->uFlags &= ~(PARTY_FLAG_WATER_DAMAGE | PARTY_FLAG_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();

@@ -142,7 +142,7 @@ void ItemGen::Reset() {
 }
 
 //----- (00458260) --------------------------------------------------------
-void ItemGen::UpdateTempBonus(GameTime time) {
+void ItemGen::UpdateTempBonus(Time time) {
     if (this->uAttributes & ITEM_TEMP_BONUS) {
         if (time > this->uExpireTime) {
             this->attributeEnchantment = {};

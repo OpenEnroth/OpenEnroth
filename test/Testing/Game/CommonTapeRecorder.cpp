@@ -89,7 +89,7 @@ TestTape<DialogueId> CommonTapeRecorder::dialogueType() {
     });
 }
 
-TestTape<GameTime> CommonTapeRecorder::time() {
+TestTape<Time> CommonTapeRecorder::time() {
     return custom([] { return pParty->GetPlayingTime(); });
 }
 

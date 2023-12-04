@@ -19,10 +19,10 @@
 #include "Library/Logger/Logger.h"
 
 struct MapTimer {
-    GameTime interval;
-    GameTime timeInsideDay;
-    GameTime altInterval;
-    GameTime alarmTime;
+    Time interval;
+    Time timeInsideDay;
+    Time altInterval;
+    Time alarmTime;
     int eventId = 0;
     int eventStep = 0;
 };
@@ -37,7 +37,7 @@ static std::vector<int> decorationsWithEvents;
 
 // Was in original code and ensures that timers are checked not more often than 30 game seconds.
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
-static GameTime timerGuard;
+static Time timerGuard;
 
 int savedEventID;
 int savedEventStep;
@@ -87,7 +87,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
 
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
-    GameTime levelLastVisit = currentLocationTime().last_visit;
+    Time levelLastVisit = currentLocationTime().last_visit;
 
     triggers->clear();
     for (EventTrigger &trigger : timerTriggers) {
@@ -96,34 +96,34 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
 
         if (ir.data.timer_descr.alt_halfmin_interval) {
             // Alternative interval is defined in terms of half-minutes
-            timer.altInterval = GameTime::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+            timer.altInterval = Time::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
             if (ir.data.timer_descr.is_yearly) {
-                timer.interval = GameTime::fromYears(1);
+                timer.interval = Time::fromYears(1);
             } else if (ir.data.timer_descr.is_monthly) {
-                timer.interval = GameTime::fromDays(28);
+                timer.interval = Time::fromDays(28);
             } else if (ir.data.timer_descr.is_weekly) {
-                timer.interval = GameTime::fromDays(7);
+                timer.interval = Time::fromDays(7);
             } else {
                 // Interval is daily with exact time of day
-                timer.interval = GameTime::fromDays(1);
-                timer.timeInsideDay = GameTime::fromHours(ir.data.timer_descr.daily_start_hour);
-                timer.timeInsideDay += GameTime::fromMinutes(ir.data.timer_descr.daily_start_minute);
-                timer.timeInsideDay += GameTime::fromSeconds(ir.data.timer_descr.daily_start_second);
+                timer.interval = Time::fromDays(1);
+                timer.timeInsideDay = Time::fromHours(ir.data.timer_descr.daily_start_hour);
+                timer.timeInsideDay += Time::fromMinutes(ir.data.timer_descr.daily_start_minute);
+                timer.timeInsideDay += Time::fromSeconds(ir.data.timer_descr.daily_start_second);
             }
 
-            if (timer.interval == GameTime::fromDays(1)) {
+            if (timer.interval == Time::fromDays(1)) {
                 if (levelLastVisit) {
                     // Calculate alarm time inside last visit day
-                    timer.alarmTime = GameTime::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
+                    timer.alarmTime = Time::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
                     if (timer.alarmTime < levelLastVisit) {
                         // Last visit time already passed alarm time inside that day so move alarm to next day
-                        timer.alarmTime = timer.alarmTime + GameTime::fromDays(1);
+                        timer.alarmTime = timer.alarmTime + Time::fromDays(1);
                     }
                 } else {
                     // Set alarm time to zero because it must always fire
-                    timer.alarmTime = GameTime();
+                    timer.alarmTime = Time();
                 }
             } else {
                 if (levelLastVisit) {
@@ -231,7 +231,7 @@ static void checkTimer(MapTimer &timer) {
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
-            if (!timer.alarmTime.isValid() && timer.interval == GameTime::fromDays(1)) {
+            if (!timer.alarmTime.isValid() && timer.interval == Time::fromDays(1)) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
                 timer.alarmTime = timer.timeInsideDay;
             }
@@ -247,7 +247,7 @@ void onTimer() {
         return;
     }
 
-    if ((pParty->GetPlayingTime() - timerGuard) < GameTime::fromSeconds(30)) { // 30 game seconds = 1 realtime second.
+    if ((pParty->GetPlayingTime() - timerGuard) < Time::fromSeconds(30)) { // 30 game seconds = 1 realtime second.
         return;
     }
 

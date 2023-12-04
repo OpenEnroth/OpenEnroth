@@ -279,7 +279,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     }
 }
 
-std::string MakeDateTimeString(GameTime time) {
+std::string MakeDateTimeString(Time time) {
     int seconds = time.secondsFraction();
     int minutes = time.minutesFraction();
     int hours = time.hoursOfDay();
@@ -318,7 +318,7 @@ std::string MakeDateTimeString(GameTime time) {
 }
 
 //----- (004B1854) --------------------------------------------------------
-void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
+void GUIWindow::DrawShops_next_generation_time_string(Time time) {
     auto str = MakeDateTimeString(time);
     this->DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
@@ -833,7 +833,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
     }
 }
 
-void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
+void DrawBuff_remaining_time_string(int uY, GUIWindow *window, Time remaining_time, GUIFont *Font) {
     window->DrawText(Font, {32, uY}, colorTable.White, "\r020" + MakeDateTimeString(remaining_time));
 }
 
@@ -853,7 +853,7 @@ Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkill
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, GameTime *a6) {
+std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     std::string pText;     // esi@7

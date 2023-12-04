@@ -87,15 +87,15 @@ void Party::Zero() {
     walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     _yawRotationSpeed = 90;
     jump_strength = 5;
-    playing_time = GameTime(0, 0, 0);
-    last_regenerated = GameTime(0, 0, 0);
-    PartyTimes.bountyHuntNextGenTime.fill(GameTime());
-    PartyTimes.CounterEventValues.fill(GameTime());
-    PartyTimes.HistoryEventTimes.fill(GameTime());
-    PartyTimes.shopNextRefreshTime.fill(GameTime());
-    PartyTimes.guildNextRefreshTime.fill(GameTime());
-    PartyTimes.shopBanTimes.fill(GameTime());
-    PartyTimes._s_times.fill(GameTime());
+    playing_time = Time(0, 0, 0);
+    last_regenerated = Time(0, 0, 0);
+    PartyTimes.bountyHuntNextGenTime.fill(Time());
+    PartyTimes.CounterEventValues.fill(Time());
+    PartyTimes.HistoryEventTimes.fill(Time());
+    PartyTimes.shopNextRefreshTime.fill(Time());
+    PartyTimes.guildNextRefreshTime.fill(Time());
+    PartyTimes.shopBanTimes.fill(Time());
+    PartyTimes._s_times.fill(Time());
     pos = lastPos = Vec3f();
     speed = Vec3f();
     _viewYaw = _viewPrevYaw = 0;
@@ -104,7 +104,7 @@ void Party::Zero() {
     sPartySavedFlightZ = 0;
     floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
-    _6FC_water_lava_timer = GameTime();
+    _6FC_water_lava_timer = Time();
     uFallStartZ = 0;
     bFlying = 0;
     hirelingScrollPosition = 0;
@@ -619,8 +619,8 @@ void Party::Reset() {
     SetUserInterface(alignment, true);
 
     // game begins at 9 am
-    this->playing_time = GameTime(0, 0, 9);
-    this->last_regenerated = GameTime(0, 0, 9);
+    this->playing_time = Time(0, 0, 9);
+    this->last_regenerated = Time(0, 0, 9);
     this->uCurrentHour = 9;
 
     bTurnBasedModeOn = false;
@@ -690,7 +690,7 @@ void Party::Reset() {
 
     pIsArtifactFound.fill(false);
 
-    PartyTimes.shopBanTimes.fill(GameTime());
+    PartyTimes.shopBanTimes.fill(Time());
 
     pNPCStats->pNewNPCData = pNPCStats->pNPCData;
     pNPCStats->pGroups_copy = pNPCStats->pGroups;
@@ -732,7 +732,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
-    this->_6FC_water_lava_timer = GameTime();
+    this->_6FC_water_lava_timer = Time();
 
     for (Character &player : this->pCharacters) {
         for (SpellBuff &buff : player.pCharacterBuffs) {
@@ -899,8 +899,8 @@ void Party::restAndHeal() {
     pParty->days_played_without_rest = 0;
 }
 
-void Rest(GameTime restTime) {
-    if (restTime > GameTime::fromHours(4)) {
+void Rest(Time restTime) {
+    if (restTime > Time::fromHours(4)) {
         Actor::InitializeActors();
     }
 
@@ -913,7 +913,7 @@ void Rest(GameTime restTime) {
     _494035_timed_effects__water_walking_damage__etc();
 }
 
-void restAndHeal(GameTime restTime) {
+void restAndHeal(Time restTime) {
     pParty->GetPlayingTime() += restTime;
 
     pParty->pHirelings[0].bHasUsedTheAbility = false;
@@ -941,7 +941,7 @@ void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused
     // resting to be too fast on high FPS
     // Now resting speed is roughly 6 game hours per second
-    GameTime restTick = GameTime::fromMinutes(3 * pEventTimer->uTimeElapsed);
+    Time restTick = Time::fromMinutes(3 * pEventTimer->uTimeElapsed);
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;

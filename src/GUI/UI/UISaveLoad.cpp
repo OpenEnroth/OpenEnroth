@@ -256,7 +256,7 @@ static void UI_DrawSaveLoad(bool save) {
                                        pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].name, 3);
 
         // Draw date
-        GameTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime;
+        Time savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime;
         auto savegame_hour = savegame_time.hoursOfDay();
 
         save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;

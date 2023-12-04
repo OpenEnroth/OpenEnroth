@@ -30,13 +30,13 @@ struct ActionQueue {
 };
 
 struct PartyTimeStruct {
-    IndexedArray<GameTime, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> bountyHuntNextGenTime; // Size was 10 originally.
-    IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopNextRefreshTime;
-    IndexedArray<GameTime, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildNextRefreshTime;
-    IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopBanTimes;
-    std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
-    std::array<GameTime, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
-    std::array<GameTime, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+    IndexedArray<Time, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> bountyHuntNextGenTime; // Size was 10 originally.
+    IndexedArray<Time, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopNextRefreshTime;
+    IndexedArray<Time, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildNextRefreshTime;
+    IndexedArray<Time, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopBanTimes;
+    std::array<Time, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
+    std::array<Time, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
+    std::array<Time, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
 };
 
 struct Party {
@@ -236,7 +236,7 @@ struct Party {
         return character - pCharacters.data();
     }
 
-    GameTime &GetPlayingTime() { return this->playing_time; }
+    Time &GetPlayingTime() { return this->playing_time; }
 
     bool isPartyEvil();
     bool isPartyGood();
@@ -273,8 +273,8 @@ struct Party {
     int walkSpeed; // Party walk speed, units per real time second.
     int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
-    GameTime playing_time;  // uint64_t uTimePlayed;
-    GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
+    Time playing_time;  // uint64_t uTimePlayed;
+    Time last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
     Vec3f pos;
     Vec3f speed; // Party speed, negative z => falling, positive z => jumping.
@@ -288,7 +288,7 @@ struct Party {
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_id;  // face we are standing at
     SoundId currentWalkingSound; // previously was 'walk_sound_timer'
-    GameTime _6FC_water_lava_timer;
+    Time _6FC_water_lava_timer;
     int uFallStartZ;
     unsigned int bFlying;
     uint8_t hirelingScrollPosition;
@@ -387,7 +387,7 @@ bool TestPartyQuestBit(QuestBit bit);
  * @param restTime      Resting time.
  * @offset 0x4938D1
  */
-void Rest(GameTime restTime);
+void Rest(Time restTime);
 
 /**
  * Perform resting with healing.
@@ -395,7 +395,7 @@ void Rest(GameTime restTime);
  * @param restTime      Resting time.
  * @offset 0x4B1BDB
  */
-void restAndHeal(GameTime restTime);
+void restAndHeal(Time restTime);
 
 /**
  * @offset 0x444D80

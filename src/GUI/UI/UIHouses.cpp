@@ -308,11 +308,11 @@ bool enterHouse(HouseId uHouseID) {
 
     int openHours = buildingTable[uHouseID].uOpenTime;
     int closeHours = buildingTable[uHouseID].uCloseTime;
-    GameTime currentTime = pParty->GetPlayingTime();
-    GameTime currentTimeDays = GameTime::fromDays(currentTime.toDays());
+    Time currentTime = pParty->GetPlayingTime();
+    Time currentTimeDays = Time::fromDays(currentTime.toDays());
     bool isOpened = false;
-    GameTime openTime = currentTimeDays + GameTime::fromHours(openHours);
-    GameTime closeTime = currentTimeDays + GameTime::fromHours(closeHours);
+    Time openTime = currentTimeDays + Time::fromHours(openHours);
+    Time closeTime = currentTimeDays + Time::fromHours(closeHours);
 
     if (closeHours > openHours) {
         // Store opened within one day
@@ -345,7 +345,7 @@ bool enterHouse(HouseId uHouseID) {
 
     if (isShop(uHouseID)) {
         if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
-            pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime();
+            pParty->PartyTimes.shopBanTimes[uHouseID] = Time();
         } else {
             engine->_statusBar->setEvent(LSTR_BANNED_FROM_SHOP);
             return false;
@@ -356,7 +356,7 @@ bool enterHouse(HouseId uHouseID) {
     if (pAnimatedRooms[uCurrentHouse_Animation].uBuildingType == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
         uHouseID = HOUSE_JAIL;
         uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
-        restAndHeal(GameTime::fromYears(1));
+        restAndHeal(Time::fromYears(1));
         ++pParty->uNumPrisonTerms;
         pParty->uFine = 0;
         for (Character &player : pParty->pCharacters) {
@@ -1119,7 +1119,7 @@ void GUIWindow_House::Update() {
         return;
     }
     if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
-        pParty->PartyTimes.shopBanTimes[houseId()] = GameTime();
+        pParty->PartyTimes.shopBanTimes[houseId()] = Time();
         return;
     }
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving

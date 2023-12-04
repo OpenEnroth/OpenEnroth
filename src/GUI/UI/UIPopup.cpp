@@ -1143,7 +1143,7 @@ void CharacterUI_StatsTab_ShowHint() {
             for (Condition condition : conditionImportancyTable()) {
                 if (pParty->activeCharacter().conditions.Has(condition)) {
                     str += " \n";
-                    GameTime condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    Time condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
                     pHour = condition_time.hoursOfDay();
                     pDay = condition_time.toDays();
                     pTextColor = GetConditionDrawColor(condition);
@@ -1389,7 +1389,7 @@ static void drawBuffPopupWindow() {
     stringCount = 0;
     for (PartyBuff i : pParty->pPartyBuffs.indices()) {
         if (pParty->pPartyBuffs[i].Active()) {
-            GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
+            Time remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * assets->pFontComic->GetHeight() + 40;
             popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
@@ -2368,10 +2368,10 @@ void Inventory_ItemPopupAndAlchemy() {
                 return;
             }
 
-            GameTime effectTime = GameTime::fromMinutes(30 * pParty->pPickedItem.potionPower);
+            Time effectTime = Time::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
-            item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
+            item->uExpireTime = Time(pParty->GetPlayingTime() + effectTime);
             // Sound was missing previously
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);

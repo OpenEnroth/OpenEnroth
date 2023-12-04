@@ -45,7 +45,7 @@ struct LloydBeacon {
         image = nullptr;
     }
 
-    GameTime uBeaconTime = GameTime();
+    Time uBeaconTime = Time();
     Vec3i _partyPos = Vec3i(0, 0, 0);
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;
@@ -72,19 +72,19 @@ class CharacterConditions {
     }
 
     void Reset(Condition condition) {
-        this->_times[condition] = GameTime();
+        this->_times[condition] = Time();
     }
 
     void ResetAll() {
-        for (GameTime &time : _times)
-            time = GameTime();
+        for (Time &time : _times)
+            time = Time();
     }
 
-    void Set(Condition condition, GameTime time) {
+    void Set(Condition condition, Time time) {
         this->_times[condition] = time;
     }
 
-    [[nodiscard]] GameTime Get(Condition condition) const {
+    [[nodiscard]] Time Get(Condition condition) const {
         return this->_times[condition];
     }
 
@@ -96,7 +96,7 @@ class CharacterConditions {
 
  private:
     /** Game time when condition has started. */
-    IndexedArray<GameTime, CONDITION_FIRST, CONDITION_LAST> _times;
+    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {
@@ -212,7 +212,7 @@ class Character {
     void IncreaseAttribute(CharacterAttributeType eAttribute);
     void resetTempBonuses();
     Color GetStatColor(CharacterAttributeType uStat) const;
-    bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
+    bool DiscardConditionIfLastsLongerThan(Condition uCondition, Time time);
     MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
@@ -271,7 +271,7 @@ class Character {
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
     void SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId);  // 0x4BE2DD
-    bool Recover(GameTime dt);
+    bool Recover(Time dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
@@ -317,24 +317,24 @@ class Character {
     bool IsParalyzed() const;
     bool IsDrunk() const;
 
-    void SetCursed(GameTime time);
-    void SetWeak(GameTime time);
-    void SetAsleep(GameTime time);
-    void SetAfraid(GameTime time);
-    void SetDrunk(GameTime time);
-    void SetInsane(GameTime time);
-    void SetPoisonWeak(GameTime time);
-    void SetDiseaseWeak(GameTime time);
-    void SetPoisonMedium(GameTime time);
-    void SetDiseaseMedium(GameTime time);
-    void SetPoisonSevere(GameTime time);
-    void SetDiseaseSevere(GameTime time);
-    void SetParalyzed(GameTime time);
-    void SetUnconcious(GameTime time);
-    void SetDead(GameTime time);
-    void SetPetrified(GameTime time);
-    void SetEradicated(GameTime time);
-    void SetZombie(GameTime time);
+    void SetCursed(Time time);
+    void SetWeak(Time time);
+    void SetAsleep(Time time);
+    void SetAfraid(Time time);
+    void SetDrunk(Time time);
+    void SetInsane(Time time);
+    void SetPoisonWeak(Time time);
+    void SetDiseaseWeak(Time time);
+    void SetPoisonMedium(Time time);
+    void SetDiseaseMedium(Time time);
+    void SetPoisonSevere(Time time);
+    void SetDiseaseSevere(Time time);
+    void SetParalyzed(Time time);
+    void SetUnconcious(Time time);
+    void SetDead(Time time);
+    void SetPetrified(Time time);
+    void SetEradicated(Time time);
+    void SetZombie(Time time);
 
     void SetCondWeakWithBlockCheck(int blockable);
     void SetCondInsaneWithBlockCheck(int blockable);
@@ -384,7 +384,7 @@ class Character {
     static void _42ECB5_CharacterAttacksActor();
     static void _42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signed int actchar);
     void cleanupBeacons();
-    bool setBeacon(int index, GameTime duration);
+    bool setBeacon(int index, Time duration);
 
     // TODO(captainurist): check all usages, most should be using getActualSkillValue.
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;

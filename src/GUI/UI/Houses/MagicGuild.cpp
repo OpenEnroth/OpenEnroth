@@ -211,7 +211,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
-            GameTime nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
+            Time nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
             working_window.DrawShops_next_generation_time_string(nextGenTime - pParty->GetPlayingTime());
             return;
         }
@@ -256,7 +256,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DialogueId option) {
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
         } else {
-            GameTime nextGenTime = pParty->GetPlayingTime() + GameTime::fromDays(buildingTable[houseId()].generation_interval_days);
+            Time nextGenTime = pParty->GetPlayingTime() + Time::fromDays(buildingTable[houseId()].generation_interval_days);
             generateSpellBooksForGuild();
             pParty->PartyTimes.guildNextRefreshTime[houseId()] = nextGenTime;
         }

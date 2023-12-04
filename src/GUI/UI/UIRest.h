@@ -31,5 +31,5 @@ extern class GraphicsImage *rest_ui_sky_frame_current;
 extern class GraphicsImage *rest_ui_hourglass_frame_current;
 
 extern int foodRequiredToRest;
-extern GameTime remainingRestTime;
+extern Time remainingRestTime;
 extern RestType currentRestType;

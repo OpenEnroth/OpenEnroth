@@ -56,7 +56,7 @@ struct ItemGen {  // 0x24
     int GetValue() const;
     std::string GetDisplayName();
     std::string GetIdentifiedName();
-    void UpdateTempBonus(GameTime time);
+    void UpdateTempBonus(Time time);
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
 
@@ -121,7 +121,7 @@ struct ItemGen {  // 0x24
      * Or whatever it is that's in the lich jar. */
     int8_t uHolderPlayer = -1;
     bool placedInChest = false;        // 1B (was unused, repurposed)
-    GameTime uExpireTime;        // uint64_t uExpireTime; //1C
+    Time uExpireTime;        // uint64_t uExpireTime; //1C
 };
 
 struct ItemDesc {  // 30h
@@ -156,7 +156,7 @@ struct ItemDesc {  // 30h
 
 struct SummonedItem {
     //----- (00493F79) --------------------------------------------------------
-    void Initialize(GameTime duration) {
+    void Initialize(Time duration) {
         this->field_0_expire_second = duration.secondsFraction();
         this->field_4_expire_minute = duration.minutesFraction();
         this->field_8_expire_hour = duration.hoursOfDay();

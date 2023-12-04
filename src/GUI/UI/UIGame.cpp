@@ -167,7 +167,7 @@ bool bFlashAutonotesBook;
 bool bFlashQuestBook;
 
 static bool bookFlashState = false;
-static GameTime bookFlashTimer;
+static Time bookFlashTimer;
 
 extern InputAction currently_selected_action_for_binding;  // 506E68
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
@@ -751,7 +751,7 @@ void GameUI_DrawRightPanelItems() {
         bookFlashTimer = {};
     }
 
-    if (pParty->GetPlayingTime() - bookFlashTimer > GameTime::fromTicks(128)) {
+    if (pParty->GetPlayingTime() - bookFlashTimer > Time::fromTicks(128)) {
         bookFlashTimer = pParty->GetPlayingTime();
         bookFlashState = !bookFlashState;
     }

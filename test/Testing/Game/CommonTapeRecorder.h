@@ -61,7 +61,7 @@ class CommonTapeRecorder {
 
     TestTape<DialogueId> dialogueType();
 
-    TestTape<GameTime> time();
+    TestTape<Time> time();
 
     TestTape<bool> turnBasedMode();
 

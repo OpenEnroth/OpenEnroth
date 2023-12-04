@@ -187,7 +187,7 @@ std::string GetReputationString(int reputation);
 /**
  * @offset 0x494820
  */
-GameTime timeUntilDawn();
+Time timeUntilDawn();
 
 /**
  * @offset 0x443E31
