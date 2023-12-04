@@ -434,7 +434,9 @@ class Character {
     int pure_accuracy_used;
     int pure_might_used;
     std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
-    std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix;
+    std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
+                                                            // positive => subtract 1 to get an index into pInventoryItemList.
+                                                            // negative => negate & subtract 1 to get a real index into pInventoryMatrix.
     int16_t sResFireBase;
     int16_t sResAirBase;
     int16_t sResWaterBase;
