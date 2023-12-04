@@ -213,7 +213,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
         pGUIWindow_CurrentMenu->Release();
         pGUIWindow_CurrentMenu = 0;
     } else {
-        character.setBeacon(beaconId, GameTime::FromDays(7 * _spellLevel));
+        character.setBeacon(beaconId, GameTime::fromDays(7 * _spellLevel));
         engine->_messageQueue->addMessageNextFrame(UIMSG_CloseAfterInstallBeacon, 0, 0);
     }
 }

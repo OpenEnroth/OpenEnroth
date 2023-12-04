@@ -96,30 +96,30 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
 
         if (ir.data.timer_descr.alt_halfmin_interval) {
             // Alternative interval is defined in terms of half-minutes
-            timer.altInterval = GameTime::FromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+            timer.altInterval = GameTime::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
             if (ir.data.timer_descr.is_yearly) {
-                timer.interval = GameTime::FromYears(1);
+                timer.interval = GameTime::fromYears(1);
             } else if (ir.data.timer_descr.is_monthly) {
-                timer.interval = GameTime::FromDays(28);
+                timer.interval = GameTime::fromDays(28);
             } else if (ir.data.timer_descr.is_weekly) {
-                timer.interval = GameTime::FromDays(7);
+                timer.interval = GameTime::fromDays(7);
             } else {
                 // Interval is daily with exact time of day
-                timer.interval = GameTime::FromDays(1);
-                timer.timeInsideDay = GameTime::FromHours(ir.data.timer_descr.daily_start_hour);
-                timer.timeInsideDay += GameTime::FromMinutes(ir.data.timer_descr.daily_start_minute);
-                timer.timeInsideDay += GameTime::FromSeconds(ir.data.timer_descr.daily_start_second);
+                timer.interval = GameTime::fromDays(1);
+                timer.timeInsideDay = GameTime::fromHours(ir.data.timer_descr.daily_start_hour);
+                timer.timeInsideDay += GameTime::fromMinutes(ir.data.timer_descr.daily_start_minute);
+                timer.timeInsideDay += GameTime::fromSeconds(ir.data.timer_descr.daily_start_second);
             }
 
-            if (timer.interval == GameTime::FromDays(1)) {
+            if (timer.interval == GameTime::fromDays(1)) {
                 if (levelLastVisit) {
                     // Calculate alarm time inside last visit day
-                    timer.alarmTime = GameTime::FromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
+                    timer.alarmTime = GameTime::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
                     if (timer.alarmTime < levelLastVisit) {
                         // Last visit time already passed alarm time inside that day so move alarm to next day
-                        timer.alarmTime = timer.alarmTime + GameTime::FromDays(1);
+                        timer.alarmTime = timer.alarmTime + GameTime::fromDays(1);
                     }
                 } else {
                     // Set alarm time to zero because it must always fire
@@ -231,7 +231,7 @@ static void checkTimer(MapTimer &timer) {
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
-            if (!timer.alarmTime.isValid() && timer.interval == GameTime::FromDays(1)) {
+            if (!timer.alarmTime.isValid() && timer.interval == GameTime::fromDays(1)) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
                 timer.alarmTime = timer.timeInsideDay;
             }
@@ -247,7 +247,7 @@ void onTimer() {
         return;
     }
 
-    if ((pParty->GetPlayingTime() - timerGuard) < GameTime::FromSeconds(30)) { // 30 game seconds = 1 realtime second.
+    if ((pParty->GetPlayingTime() - timerGuard) < GameTime::fromSeconds(30)) { // 30 game seconds = 1 realtime second.
         return;
     }
 

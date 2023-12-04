@@ -15,9 +15,20 @@ struct GameTime {
         value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
-    int64_t toSeconds() const {
-        return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND;
+    static GameTime fromTicks(int64_t ticks) {
+        GameTime result;
+        result.value = ticks;
+        return result;
     }
+
+    static GameTime fromSeconds(int seconds) { return GameTime(seconds, 0, 0, 0, 0, 0, 0); }
+    static GameTime fromMinutes(int minutes) { return GameTime(0, minutes, 0, 0, 0, 0, 0); }
+    static GameTime fromHours(int hours) { return GameTime(0, 0, hours, 0, 0, 0, 0); }
+    static GameTime fromDays(int days) { return GameTime(0, 0, 0, days, 0, 0, 0); }
+    static GameTime fromMonths(int months) { return GameTime(0, 0, 0, 0, 0, months, 0); }
+    static GameTime fromYears(int years) { return GameTime(0, 0, 0, 0, 0, 0, years); }
+
+    int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
     int64_t toMinutes() const { return toSeconds() / 60; }
     int64_t toHours() const { return toMinutes() / 60; }
     int toDays() const { return toHours() / 24; }
@@ -42,11 +53,11 @@ struct GameTime {
     bool isValid() const { return value > 0; }
 
     friend GameTime operator+(const GameTime &l, const GameTime &r) {
-        return GameTime::FromTicks(l.value + r.value);
+        return GameTime::fromTicks(l.value + r.value);
     }
 
     friend GameTime operator-(const GameTime &l, const GameTime &r) {
-        return GameTime::FromTicks(l.value - r.value);
+        return GameTime::fromTicks(l.value - r.value);
     }
 
     GameTime &operator+=(const GameTime &rhs) {
@@ -64,36 +75,6 @@ struct GameTime {
 
     explicit operator bool() const {
         return isValid();
-    }
-
-    static GameTime FromTicks(int64_t ticks) {
-        GameTime result;
-        result.value = ticks;
-        return result;
-    }
-
-    static GameTime FromSeconds(int seconds) {
-        return GameTime(seconds, 0, 0, 0, 0, 0, 0);
-    }
-
-    static GameTime FromMinutes(int minutes) {
-        return GameTime(0, minutes, 0, 0, 0, 0, 0);
-    }
-
-    static GameTime FromHours(int hours) {
-        return GameTime(0, 0, hours, 0, 0, 0, 0);
-    }
-
-    static GameTime FromDays(int days) {
-        return GameTime(0, 0, 0, days, 0, 0, 0);
-    }
-
-    static GameTime FromMonths(int months) {
-        return GameTime(0, 0, 0, 0, 0, months, 0);
-    }
-
-    static GameTime FromYears(int years) {
-        return GameTime(0, 0, 0, 0, 0, 0, years);
     }
 
     int64_t value = 0;

@@ -1257,7 +1257,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // water damage
     if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + GameTime::FromTicks(128);
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + GameTime::fromTicks(128);
         for (Character &character : pParty->pCharacters) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
@@ -1278,7 +1278,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // lava damage
     if (pParty->uFlags & PARTY_FLAG_BURNING && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + GameTime::FromTicks(128);
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + GameTime::fromTicks(128);
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
@@ -1301,7 +1301,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
         if (character.timeToRecovery && recoveryTimeDt > 0)
-            character.Recover(GameTime::FromTicks(recoveryTimeDt));
+            character.Recover(GameTime::fromTicks(recoveryTimeDt));
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             character.health + character.uEndurance >= 1 ||
@@ -1727,18 +1727,18 @@ void RegeneratePartyHealthMana() {
             }
             last_minutes += MINUTES_BETWEEN_REGEN;
         }
-        pParty->last_regenerated = GameTime::FromMinutes(last_minutes);
+        pParty->last_regenerated = GameTime::fromMinutes(last_minutes);
     }
 }
 
 GameTime timeUntilDawn() {
-    static const GameTime dawnHour = GameTime::FromHours(5);
-    GameTime currentTimeInDay = GameTime::FromHours(pParty->uCurrentHour) + GameTime::FromMinutes(pParty->uCurrentMinute);
+    static const GameTime dawnHour = GameTime::fromHours(5);
+    GameTime currentTimeInDay = GameTime::fromHours(pParty->uCurrentHour) + GameTime::fromMinutes(pParty->uCurrentMinute);
 
     if (currentTimeInDay < dawnHour) {
         return dawnHour - currentTimeInDay;
     }
-    return GameTime::FromDays(1) + dawnHour - currentTimeInDay;
+    return GameTime::fromDays(1) + dawnHour - currentTimeInDay;
 }
 
 void initLevelStrings(const Blob &blob) {

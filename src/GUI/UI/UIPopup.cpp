@@ -2368,7 +2368,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 return;
             }
 
-            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.potionPower);
+            GameTime effectTime = GameTime::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);

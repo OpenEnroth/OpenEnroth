@@ -651,11 +651,11 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
         case SPELL_FIRE_HASTE:
             if (skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE) {
                 if (skillMastery <= CHARACTER_SKILL_MASTERY_EXPERT) {
-                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(skillLevel);
+                    spell_length = GameTime::fromHours(1) + GameTime::fromMinutes(skillLevel);
                 } else if (skillMastery == CHARACTER_SKILL_MASTERY_MASTER) {
-                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(3 * skillLevel);
+                    spell_length = GameTime::fromHours(1) + GameTime::fromMinutes(3 * skillLevel);
                 } else if (skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(4 * skillLevel);
+                    spell_length = GameTime::fromHours(1) + GameTime::fromMinutes(4 * skillLevel);
                 }
             }
             for (Character &player : pParty->pCharacters) {
@@ -676,13 +676,13 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             switch (skillMastery) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(5 * skillLevel);
+                    spell_length = GameTime::fromHours(1) + GameTime::fromMinutes(5 * skillLevel);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(15 * skillLevel);
+                    spell_length = GameTime::fromHours(1) + GameTime::fromMinutes(15 * skillLevel);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spell_length = GameTime::FromHours(skillLevel + 1);
+                    spell_length = GameTime::fromHours(skillLevel + 1);
                     break;
                 default:
                     assert(false);
@@ -708,9 +708,9 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             break;
         case SPELL_FIRE_IMMOLATION:
             if (skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                spell_length = GameTime::FromMinutes(10 * skillLevel);
+                spell_length = GameTime::fromMinutes(10 * skillLevel);
             } else {
-                spell_length = GameTime::FromMinutes(skillLevel);
+                spell_length = GameTime::fromMinutes(skillLevel);
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, skillLevel, 0, 0);
@@ -725,7 +725,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
         case SPELL_EARTH_PROTECTION_FROM_EARTH:
         case SPELL_MIND_PROTECTION_FROM_MIND:
         case SPELL_BODY_PROTECTION_FROM_BODY:
-            spell_length = GameTime::FromHours(skillLevel);
+            spell_length = GameTime::fromHours(skillLevel);
             spell_power = skillLevel * std::to_underlying(skillMastery);
 
             if (uSpellID == SPELL_FIRE_PROTECTION_FROM_FIRE) {
@@ -754,15 +754,15 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             // Spell lengths for master and grandmaster were mixed up
             switch (skillMastery) {
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spell_length = GameTime::FromHours(3 * skillLevel);
+                    spell_length = GameTime::fromHours(3 * skillLevel);
                     spell_power = 3 * skillLevel + 10;
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spell_length = GameTime::FromHours(4 * skillLevel);
+                    spell_length = GameTime::fromHours(4 * skillLevel);
                     spell_power = 5 * skillLevel + 10;
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spell_length = GameTime::FromHours(5 * skillLevel);
+                    spell_length = GameTime::fromHours(5 * skillLevel);
                     spell_power = 4 * skillLevel + 10;
                     break;
                 default:

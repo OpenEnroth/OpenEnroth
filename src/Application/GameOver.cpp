@@ -62,7 +62,7 @@ void CreateWinnerCertificate() {
     else
         assert(false);
 
-    GameTime play_time = pParty->GetPlayingTime() - GameTime::FromHours(9); // game begins at 9 am
+    GameTime play_time = pParty->GetPlayingTime() - GameTime::fromHours(9); // game begins at 9 am
 
     int v19 = play_time.toDays();
     int v14 = play_time.toYears();

@@ -3584,7 +3584,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     if (pParty->pPickedItem.isPotion()) {
         // TODO(Nik-RE-dev): no CanAct check?
         int potionStrength = pParty->pPickedItem.potionPower;
-        GameTime buffDuration = GameTime::FromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
+        GameTime buffDuration = GameTime::fromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:
                 playerAffected->SetCondition(CONDITION_POISON_WEAK, 1);
@@ -4453,7 +4453,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         {
             int idx = std::to_underlying(VarNum) - std::to_underlying(VAR_Counter1);
             if (pParty->PartyTimes.CounterEventValues[idx].isValid()) {
-                return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::FromHours(pValue)) <= pParty->GetPlayingTime();
+                return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::fromHours(pValue)) <= pParty->GetPlayingTime();
             }
             return false;
         }
