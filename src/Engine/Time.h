@@ -5,28 +5,18 @@
 
 const int game_starting_year = 1168;
 
-// Number of game ticks per 30 game seconds
-#define TIME_QUANT                  128
-#define TIME_SECONDS_PER_QUANT      30
-
-#define GAME_TIME_TO_SECONDS(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_SECONDS_PER_QUANT) / TIME_QUANT)
-#define SECONDS_TO_GAME_TIME(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_QUANT) / TIME_SECONDS_PER_QUANT)
-
 struct GameTime {
+    static constexpr int64_t TICKS_PER_REALTIME_SECOND = 128;
+    static constexpr int64_t GAME_SECONDS_IN_REALTIME_SECOND = 30; // Game time runs 30x faster than real time.
+
     GameTime() = default;
     GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
-        this->value = SECONDS_TO_GAME_TIME(
-            seconds +
-            60ull * minutes +
-            3600ull * hours +
-            86400ull * days +
-            604800ull * weeks +
-            2419200ull * months +
-            29030400ull * years);
+        this->value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
+        this->value = this->value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
     int64_t GetSeconds() const {
-        return GAME_TIME_TO_SECONDS(this->value);
+        return this->value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND;
     }
     int64_t GetMinutes() const { return this->GetSeconds() / 60; }
     int64_t GetHours() const { return this->GetMinutes() / 60; }

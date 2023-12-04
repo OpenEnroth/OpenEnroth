@@ -247,7 +247,7 @@ void onTimer() {
         return;
     }
 
-    if ((pParty->GetPlayingTime() - timerGuard) < GameTime::FromSeconds(TIME_SECONDS_PER_QUANT)) {
+    if ((pParty->GetPlayingTime() - timerGuard) < GameTime::FromSeconds(30)) { // 30 game seconds = 1 realtime second.
         return;
     }
 
