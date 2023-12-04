@@ -106,10 +106,8 @@ class Character {
     static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
 
-    // Maximum number of items the character inventory can hold
-    static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH*INVENTORY_SLOTS_HEIGHT;
-    static constexpr unsigned int ADDITIONAL_SLOT_COUNT = 12; // TODO: investigate, these look unused
-    static constexpr unsigned int TOTAL_ITEM_SLOT_COUNT = INVENTORY_SLOT_COUNT + ADDITIONAL_SLOT_COUNT;
+    // Maximum number of items the character inventory can hold.
+    static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH * INVENTORY_SLOTS_HEIGHT;
 
     Character();
 
@@ -435,16 +433,7 @@ class Character {
     int pure_personality_used;
     int pure_accuracy_used;
     int pure_might_used;
-    union {  // 214h
-        struct {
-            // TODO(captainurist): gcc doesn't let us turn these into std::array. And we probably need to drop the 2nd
-            //                     one anyway. Investigate.
-            ItemGen pInventoryItemList[INVENTORY_SLOT_COUNT];
-            ItemGen pEquippedItems[ADDITIONAL_SLOT_COUNT];
-        };
-        std::array<ItemGen, TOTAL_ITEM_SLOT_COUNT> pOwnItems;
-    };
-
+    std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
     std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix;
     int16_t sResFireBase;
     int16_t sResAirBase;
@@ -477,7 +466,8 @@ class Character {
     int health;
     int mana;
     unsigned int uBirthYear;
-    IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pEquipment;
+    IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pEquipment; // 0 => empty,
+                                                                                        // non-zero => subtract 1 to get an index into pInventoryItemList.
     MagicSchool lastOpenedSpellbookPage;
     SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;

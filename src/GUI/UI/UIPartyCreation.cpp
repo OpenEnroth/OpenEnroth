@@ -872,9 +872,9 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             }
 
-            for (unsigned k = 0; k < 138; k++) {
-                if (pParty->pCharacters[i].pOwnItems[k].uItemID != ITEM_NULL)
-                    pParty->pCharacters[i].pOwnItems[k].SetIdentified();
+            for (ItemGen &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
+                if (inventoryItem.uItemID != ITEM_NULL)
+                    inventoryItem.SetIdentified();
             }
         }
     }

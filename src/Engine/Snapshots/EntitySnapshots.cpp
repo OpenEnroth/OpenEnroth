@@ -710,7 +710,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->pureAccuracyUsed = src.pure_accuracy_used;
     dst->pureMightUsed = src.pure_might_used;
 
-    snapshot(src.pOwnItems, &dst->ownItems);
+    snapshot(src.pInventoryItemList, &dst->inventoryItems);
     snapshot(src.pInventoryMatrix, &dst->inventoryMatrix);
 
     dst->resFireBase = src.sResFireBase;
@@ -961,7 +961,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->pure_accuracy_used = src.pureAccuracyUsed;
     dst->pure_might_used = src.pureMightUsed;
 
-    reconstruct(src.ownItems, &dst->pOwnItems);
+    reconstruct(src.inventoryItems, &dst->pInventoryItemList);
     reconstruct(src.inventoryMatrix, &dst->pInventoryMatrix);
 
     dst->sResFireBase = src.resFireBase;

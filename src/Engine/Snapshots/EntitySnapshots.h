@@ -334,7 +334,8 @@ struct Player_MM7 {
     /* 0208 */ int32_t purePersonalityUsed;
     /* 020C */ int32_t pureAccuracyUsed;
     /* 0210 */ int32_t pureMightUsed;
-    /* 0214 */ std::array<ItemGen_MM7, 138> ownItems;
+    /* 0214 */ std::array<ItemGen_MM7, 126> inventoryItems;
+    /* .... */ std::array<ItemGen_MM7, 12> unusedItems;
     /* 157C */ std::array<int32_t, 126> inventoryMatrix;
     /* 1774 */ int16_t resFireBase;
     /* 1776 */ int16_t resAirBase;

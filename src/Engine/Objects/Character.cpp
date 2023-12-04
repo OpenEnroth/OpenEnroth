@@ -335,7 +335,7 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 //----- (004BE2DD) --------------------------------------------------------
 void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId) {
     float shop_mult = buildingTable[houseId].fPriceMultiplier;
-    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
+    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pInventoryItemList[item_index], shop_mult);
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
@@ -352,7 +352,7 @@ bool Character::NothingOrJustBlastersEquipped() const {
         item_idx = pEquipment[i];
 
         if (item_idx) {
-            item_id = pOwnItems[item_idx - 1].uItemID;
+            item_id = pInventoryItemList[item_idx - 1].uItemID;
 
             if (!isAncientWeapon(item_id))
                 return false;
@@ -416,11 +416,11 @@ unsigned int Character::GetItemMainInventoryIndex(int inout_item_cell) {
 void Character::ItemsPotionDmgBreak(int enchant_count) {
     int avalible_items = 0;
 
-    int16_t item_index_tabl[TOTAL_ITEM_SLOT_COUNT];  // table holding items
+    int16_t item_index_tabl[INVENTORY_SLOT_COUNT];  // table holding items
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
-    for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; ++i)  // scan through and log in table
-        if (isRegular(pOwnItems[i].uItemID))
+    for (int i = 0; i < INVENTORY_SLOT_COUNT; ++i)  // scan through and log in table
+        if (isRegular(pInventoryItemList[i].uItemID))
             item_index_tabl[avalible_items++] = i;
 
     if (avalible_items) {  // is there anything to break
@@ -1430,7 +1430,7 @@ bool Character::IsUnarmed() const {
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
     unsigned i = pEquipment[uEquipIndex];
     if (i)
-        return !pOwnItems[i - 1].IsBroken();
+        return !pInventoryItemList[i - 1].IsBroken();
     else
         return false;
 }
@@ -1702,12 +1702,8 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             break;
 
         case SPECIAL_ATTACK_BREAK_ANY:
-            for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
-                if (i < INVENTORY_SLOT_COUNT) {
-                    itemtocheck = &this->pInventoryItemList[i];
-                } else {
-                    itemtocheck = &this->pEquippedItems[i - INVENTORY_SLOT_COUNT];
-                }
+            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
+                itemtocheck = &this->pInventoryItemList[i];
 
                 if (isRegular(itemtocheck->uItemID) && !itemtocheck->IsBroken()) {
                     itemstobreaklist[itemstobreakcounter++] = i;
@@ -3316,7 +3312,6 @@ void Character::Reset(CharacterClass cls) {
     pEquipment.fill(0);
     pInventoryMatrix.fill(0);
     for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-    for (unsigned i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     health = GetMaxHealth();
     mana = GetMaxMana();
@@ -4424,14 +4419,9 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
                                 // regeneration
             v4 = 0;
             for (Character &character : pParty->pCharacters) {
-                for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
-                    ItemId itemId;
+                for (int invPos = 0; invPos < INVENTORY_SLOT_COUNT; invPos++) {
+                    ItemId itemId = character.pInventoryItemList[invPos].uItemID;
 
-                    if (invPos < INVENTORY_SLOT_COUNT) {
-                        itemId = character.pInventoryItemList[invPos].uItemID;
-                    } else {
-                        itemId = character.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
-                    }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
                             ++v4;
@@ -4553,10 +4543,10 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_Class:
             this->classType = (CharacterClass)var_value;
             if ((CharacterClass)var_value == CLASS_LICH) {
-                for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
-                    if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
-                        this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pOwnItems[i].uHolderPlayer = getCharacterIndex();
+                for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
+                    if (this->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
+                        this->pInventoryItemList[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
+                        this->pInventoryItemList[i].uHolderPlayer = getCharacterIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -7452,7 +7442,6 @@ Character::Character() {
     pEquipment.fill(0);
     pInventoryMatrix.fill(0);
     for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-    for (unsigned i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     for (auto &buf : pCharacterBuffs) {
         buf.Reset();
