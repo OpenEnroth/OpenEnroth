@@ -481,7 +481,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->prevEyeLevel = src.lastEyeLevel;
     dst->fallSpeed = src.speed.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
-    dst->waterLavaTimer = src._6FC_water_lava_timer;
+    dst->waterLavaTimer = src._6FC_water_lava_timer.value; // Can overflow and that's OK.
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
     dst->field_708 = 15; // Vanilla set this to 15, so we're doing the same just in case.
@@ -579,7 +579,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->lastEyeLevel = src.prevEyeLevel;
     dst->speed = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
-    dst->_6FC_water_lava_timer = src.waterLavaTimer;
+    dst->_6FC_water_lava_timer = GameTime::FromTicks(src.waterLavaTimer);
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;

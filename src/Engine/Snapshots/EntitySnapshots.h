@@ -447,7 +447,9 @@ struct Party_MM7 {
                                             // Always set to zero on level loading, so in OE we are just saving 0 and
                                             // not using it when loading a savegame.
     /* 006F8 */ int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
-    /* 006FC */ int32_t waterLavaTimer;
+    /* 006FC */ int32_t waterLavaTimer; // Next game time when water/lava damage should be processed. This value will
+                                        // overflow after ~16 in-game years, and then the lava logic will trigger on
+                                        // the 1st frame after loading the game. We are OK with that.
     /* 00700 */ int32_t fallStartZ;
     /* 00704 */ uint32_t flying;
     /* 00708 */ char field_708; // Was set to 15 in Party::Reset & Party::Zero, not used for anything.

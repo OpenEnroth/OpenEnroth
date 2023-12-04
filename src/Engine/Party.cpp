@@ -105,7 +105,7 @@ void Party::Zero() {
     sPartySavedFlightZ = 0;
     floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
-    _6FC_water_lava_timer = 0;
+    _6FC_water_lava_timer = GameTime();
     uFallStartZ = 0;
     bFlying = 0;
     hirelingScrollPosition = 0;
@@ -733,7 +733,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
-    this->_6FC_water_lava_timer = 0;
+    this->_6FC_water_lava_timer = GameTime();
 
     for (Character &player : this->pCharacters) {
         for (SpellBuff &buff : player.pCharacterBuffs) {
