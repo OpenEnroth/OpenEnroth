@@ -926,7 +926,7 @@ void restAndHeal(GameTime restTime) {
     pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetWeeksOfMonth();
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDaysOfMonth();
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
-    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
+    pParty->uCurrentYear = pParty->GetPlayingTime().toYears() + game_starting_year;
     pParty->restAndHeal();
 
     for (Character &player : pParty->pCharacters) {

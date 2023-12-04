@@ -907,7 +907,7 @@ void PrepareToLoadBLV(bool bLoading) {
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
-    pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, &indoor_was_respawned);
+    pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();

@@ -15,23 +15,22 @@ struct GameTime {
         value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
-    int64_t GetSeconds() const {
+    int64_t toSeconds() const {
         return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND;
     }
-    int64_t GetMinutes() const { return GetSeconds() / 60; }
-    int64_t GetHours() const { return GetMinutes() / 60; }
-    int GetDays() const { return GetHours() / 24; }
-    int GetWeeks() const { return GetDays() / 7; }
-    int GetMonths() const { return GetWeeks() / 4; }
-    int GetYears() const { return GetMonths() / 12; }
-
-    int GetSecondsFraction() const { return GetSeconds() % 60; }
-    int GetMinutesFraction() const { return GetMinutes() % 60; }
-    int GetHoursOfDay() const { return GetHours() % 24; }
-    int GetDaysOfWeek() const { return GetDays() % 7; }
-    int GetDaysOfMonth() const { return GetDays() % 28; }
-    int GetWeeksOfMonth() const { return GetWeeks() % 4; }
-    int GetMonthsOfYear() const { return GetMonths() % 12; }
+    int64_t toMinutes() const { return toSeconds() / 60; }
+    int64_t toHours() const { return toMinutes() / 60; }
+    int toDays() const { return toHours() / 24; }
+    int toWeeks() const { return toDays() / 7; }
+    int toMonths() const { return toWeeks() / 4; }
+    int toYears() const { return toMonths() / 12; }
+    int GetSecondsFraction() const { return toSeconds() % 60; }
+    int GetMinutesFraction() const { return toMinutes() % 60; }
+    int GetHoursOfDay() const { return toHours() % 24; }
+    int GetDaysOfWeek() const { return toDays() % 7; }
+    int GetDaysOfMonth() const { return toDays() % 28; }
+    int GetWeeksOfMonth() const { return toWeeks() % 4; }
+    int GetMonthsOfYear() const { return toMonths() % 12; }
 
     [[nodiscard]] GameTime AddSeconds(int seconds) const {
         return *this + GameTime::FromSeconds(seconds);

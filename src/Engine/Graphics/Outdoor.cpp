@@ -930,7 +930,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
         loc_time.sky_texture_name = "sky19";
     } else if (loc_time.last_visit) {
-        if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
+        if (loc_time.last_visit.toDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
             if (vrng->random(100) >= 20)
                 sky_to_use = skyTexturesIds1[vrng->random(9)];
@@ -2490,7 +2490,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     day_attrib &= ~MAP_WEATHER_FOGGY;
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
     bool outdoor_was_respawned;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1,
+    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().toDays() + 1,
         respawn_interval, &outdoor_was_respawned);
 
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {

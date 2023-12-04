@@ -1145,7 +1145,7 @@ void CharacterUI_StatsTab_ShowHint() {
                     str += " \n";
                     GameTime condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
                     pHour = condition_time.GetHoursOfDay();
-                    pDay = condition_time.GetDays();
+                    pDay = condition_time.toDays();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));
                     if (pHour && pHour <= 1)

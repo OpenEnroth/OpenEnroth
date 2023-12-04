@@ -309,7 +309,7 @@ bool enterHouse(HouseId uHouseID) {
     int openHours = buildingTable[uHouseID].uOpenTime;
     int closeHours = buildingTable[uHouseID].uCloseTime;
     GameTime currentTime = pParty->GetPlayingTime();
-    GameTime currentTimeDays = GameTime::FromDays(currentTime.GetDays());
+    GameTime currentTimeDays = GameTime::FromDays(currentTime.toDays());
     bool isOpened = false;
     GameTime openTime = currentTimeDays.AddHours(openHours);
     GameTime closeTime = currentTimeDays.AddHours(closeHours);

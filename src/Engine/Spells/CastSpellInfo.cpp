@@ -2443,7 +2443,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    Spawn_Light_Elemental(pCastSpell->casterCharacterIndex, spell_mastery, spell_duration.GetSeconds());
+                    Spawn_Light_Elemental(pCastSpell->casterCharacterIndex, spell_mastery, spell_duration.toSeconds());
                     break;
                 }
 

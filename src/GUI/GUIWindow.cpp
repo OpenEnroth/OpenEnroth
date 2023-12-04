@@ -283,7 +283,7 @@ std::string MakeDateTimeString(GameTime time) {
     int seconds = time.GetSecondsFraction();
     int minutes = time.GetMinutesFraction();
     int hours = time.GetHoursOfDay();
-    int days = time.GetDays();
+    int days = time.toDays();
 
     std::string str = "";
     if (days) {

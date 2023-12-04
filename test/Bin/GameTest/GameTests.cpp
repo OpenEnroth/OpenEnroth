@@ -148,7 +148,7 @@ GAME_TEST(Issues, Issue201) {
     // Unhandled EVENT_ShowMovie in Event Processor
     auto healthTape = tapes.totalHp();
     auto mapTape = tapes.map();
-    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().GetDays(); });
+    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
     test.playTraceFromTestData("issue_201.mm7", "issue_201.json");
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
     EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to Harmondale.
@@ -733,7 +733,7 @@ GAME_TEST(Issues, Issue503) {
 
 GAME_TEST(Issues, Issue504) {
     // Going to prison doesn't recharge hirelings.
-    auto yearsTape = tapes.custom([] { return pParty->GetPlayingTime().GetYears(); });
+    auto yearsTape = tapes.custom([] { return pParty->GetPlayingTime().toYears(); });
     auto heroismTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active(); });
     auto castsTape = tapes.custom([] { return pParty->pHirelings[0].bHasUsedTheAbility; });
     test.playTraceFromTestData("issue_504.mm7", "issue_504.json");

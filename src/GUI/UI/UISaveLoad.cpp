@@ -290,8 +290,7 @@ static void UI_DrawSaveLoad(bool save) {
             savegame_time.GetMinutesFraction(),
             localization->GetAmPm(am),
             savegame_time.GetDaysOfMonth() + 1,
-            localization->GetMonthName(savegame_time.GetMonthsOfYear()),
-            savegame_time.GetYears() + game_starting_year
+            localization->GetMonthName(savegame_time.GetMonthsOfYear()), savegame_time.toYears() + game_starting_year
         );
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3);
     }

@@ -116,7 +116,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
             if (timer.interval == GameTime::FromDays(1)) {
                 if (levelLastVisit) {
                     // Calculate alarm time inside last visit day
-                    timer.alarmTime = GameTime::FromDays(levelLastVisit.GetDays()) + timer.timeInsideDay;
+                    timer.alarmTime = GameTime::FromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
                     if (timer.alarmTime < levelLastVisit) {
                         // Last visit time already passed alarm time inside that day so move alarm to next day
                         timer.alarmTime = timer.alarmTime + GameTime::FromDays(1);

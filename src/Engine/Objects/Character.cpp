@@ -374,7 +374,7 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     GameTime condtime = this->conditions.Get(condition);
     GameTime diff = playtime - condtime;
 
-    return diff.GetDays() + 1;
+    return diff.toDays() + 1;
 }
 
 ItemGen *Character::GetItemAtInventoryIndex(int inout_item_cell) {
@@ -2233,7 +2233,7 @@ int Character::GetActualAC() const {
 
 //----- (0048E6DC) --------------------------------------------------------
 unsigned int Character::GetBaseAge() const {
-    return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
+    return pParty->GetPlayingTime().toYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
@@ -4162,10 +4162,10 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             return pParty->GetPlayingTime().GetHoursOfDay() == pValue;
 
         case VAR_DayOfYear:
-            return pParty->GetPlayingTime().GetDays() % 336 + 1 == pValue;
+            return pParty->GetPlayingTime().toDays() % 336 + 1 == pValue;
 
         case VAR_DayOfWeek:
-            return pParty->GetPlayingTime().GetDays() % 7 == pValue;
+            return pParty->GetPlayingTime().toDays() % 7 == pValue;
 
         case VAR_FixedGold:
             return pParty->GetGold() >= pValue;

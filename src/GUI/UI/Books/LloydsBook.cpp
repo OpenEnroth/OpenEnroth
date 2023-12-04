@@ -118,7 +118,7 @@ void GUIWindow_LloydsBook::Update() {
             pWindow.uFrameY = lloydsBeaconsPreviewYs[beaconId];
             GameTime remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
             unsigned int pHours = remainingTime.GetHoursOfDay();
-            unsigned int pDays = remainingTime.GetDays();
+            unsigned int pDays = remainingTime.toDays();
             std::string str;
             if (pDays > 1) {
                 str = fmt::format("{} {}", pDays + 1, localization->GetString(LSTR_DAYS));

@@ -1207,10 +1207,10 @@ void _494035_timed_effects__water_walking_damage__etc() {
     pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
     pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
     pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
-    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetDays() / 7 & 3;
-    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDays() % 28;
+    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().toDays() / 7 & 3;
+    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().toDays() % 28;
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
-    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
+    pParty->uCurrentYear = pParty->GetPlayingTime().toYears() + game_starting_year;
 
     // New day dawns
     // TODO(pskelton): ticks over at 3 in the morning?? check
@@ -1474,8 +1474,8 @@ void updatePartyDeathState() {
 
 void RegeneratePartyHealthMana() {
     constexpr int MINUTES_BETWEEN_REGEN = 5;
-    int cur_minutes = pParty->GetPlayingTime().GetMinutes();
-    int last_minutes = pParty->last_regenerated.GetMinutes();
+    int cur_minutes = pParty->GetPlayingTime().toMinutes();
+    int last_minutes = pParty->last_regenerated.toMinutes();
 
     if (cur_minutes == last_minutes) {
         return;
