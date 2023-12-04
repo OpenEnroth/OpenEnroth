@@ -14,7 +14,7 @@ const int game_starting_year = 1168;
 
 struct GameTime {
     GameTime() = default;
-    explicit GameTime(uint64_t val) : value(val) {}
+    explicit GameTime(int64_t val) : value(val) {}
     GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
         this->value = SECONDS_TO_GAME_TIME(
             seconds +
@@ -26,11 +26,11 @@ struct GameTime {
             29030400ull * years);
     }
 
-    uint64_t GetSeconds() const {
+    int64_t GetSeconds() const {
         return GAME_TIME_TO_SECONDS(this->value);
     }
-    uint64_t GetMinutes() const { return this->GetSeconds() / 60; }
-    uint64_t GetHours() const { return this->GetMinutes() / 60; }
+    int64_t GetMinutes() const { return this->GetSeconds() / 60; }
+    int64_t GetHours() const { return this->GetMinutes() / 60; }
     int GetDays() const { return (int)(this->GetHours() / 24); }
     int GetWeeks() const { return this->GetDays() / 7; }
     int GetMonths() const { return this->GetWeeks() / 4; }
