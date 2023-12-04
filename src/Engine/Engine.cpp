@@ -690,7 +690,7 @@ void Engine::MM7_Initialize() {
     grng->seed(platform->tickCount());
     vrng->seed(platform->tickCount());
 
-    pEventTimer = Timer::Create();
+    pEventTimer = new Timer();
 
     pParty = new Party();
 

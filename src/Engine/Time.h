@@ -124,8 +124,6 @@ struct GameTime {
 };
 
 struct Timer {
-    static Timer *Create() { return new Timer; }
-
     Timer() = default;
 
     /**
