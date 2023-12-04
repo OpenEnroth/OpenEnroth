@@ -1733,7 +1733,7 @@ void RegeneratePartyHealthMana() {
 
 GameTime timeUntilDawn() {
     static const GameTime dawnHour = GameTime::FromHours(5);
-    GameTime currentTimeInDay = GameTime::FromHours(pParty->uCurrentHour).AddMinutes(pParty->uCurrentMinute);
+    GameTime currentTimeInDay = GameTime::FromHours(pParty->uCurrentHour) + GameTime::FromMinutes(pParty->uCurrentMinute);
 
     if (currentTimeInDay < dawnHour) {
         return dawnHour - currentTimeInDay;

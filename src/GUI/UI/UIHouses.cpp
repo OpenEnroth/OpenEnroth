@@ -311,8 +311,8 @@ bool enterHouse(HouseId uHouseID) {
     GameTime currentTime = pParty->GetPlayingTime();
     GameTime currentTimeDays = GameTime::FromDays(currentTime.toDays());
     bool isOpened = false;
-    GameTime openTime = currentTimeDays.AddHours(openHours);
-    GameTime closeTime = currentTimeDays.AddHours(closeHours);
+    GameTime openTime = currentTimeDays + GameTime::FromHours(openHours);
+    GameTime closeTime = currentTimeDays + GameTime::FromHours(closeHours);
 
     if (closeHours > openHours) {
         // Store opened within one day

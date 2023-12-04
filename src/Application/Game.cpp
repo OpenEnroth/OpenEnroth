@@ -1175,7 +1175,7 @@ void Game::processQueuedMessages() {
 
                 pGUIWindow_CurrentMenu = new GUIWindow_Rest();
 
-                remainingRestTime = timeUntilDawn().AddHours(1);
+                remainingRestTime = timeUntilDawn() + GameTime::FromHours(1);
                 if (tavern == HOUSE_TAVERN_DEYJA || tavern == HOUSE_TAVERN_PIT || tavern == HOUSE_TAVERN_MOUNT_NIGHON) {
                     remainingRestTime = remainingRestTime + GameTime::FromHours(12);
                 }
@@ -1279,7 +1279,7 @@ void Game::processQueuedMessages() {
                         if (encounter_index) {
                             pPlayerNum = grng->random(4);
                             pParty->pCharacters[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
-                            Rest(GameTime::FromHours(1).AddMinutes(grng->random(6)));
+                            Rest(GameTime::FromHours(1) + GameTime::FromMinutes(grng->random(6)));
                             remainingRestTime = GameTime();
                             currentRestType = REST_NONE;
 

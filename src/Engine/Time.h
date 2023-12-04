@@ -32,32 +32,7 @@ struct GameTime {
     int daysOfMonth() const { return toDays() % 28; }
     int weeksOfMonth() const { return toWeeks() % 4; }
     int monthsOfYear() const { return toMonths() % 12; }
-
-    [[nodiscard]] GameTime AddSeconds(int seconds) const {
-        return *this + GameTime::FromSeconds(seconds);
-    }
-    [[nodiscard]] GameTime AddMinutes(int minutes) const {
-        return *this + GameTime::FromMinutes(minutes);
-    }
-    [[nodiscard]] GameTime SubtractMinutes(int minutes) const {
-        return *this - GameTime::FromMinutes(minutes);
-    }
-    [[nodiscard]] GameTime AddHours(int hours) const {
-        return *this + GameTime::FromHours(hours);
-    }
-    [[nodiscard]] GameTime SubtractHours(int hours) const {
-        return *this - GameTime::FromHours(hours);
-    }
-    [[nodiscard]] GameTime AddDays(int days) const {
-        return *this + GameTime::FromDays(days);
-    }
-    [[nodiscard]] GameTime SubtractDays(int days) const {
-        return *this - GameTime::FromDays(days);
-    }
-    [[nodiscard]] GameTime AddYears(int years) const {
-        return *this + GameTime::FromYears(years);
-    }
-
+    
     void SetExpired() { value = -1;  }
     bool Expired() const { return value < 0; }
     void Reset() { value = 0; }

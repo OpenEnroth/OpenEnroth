@@ -109,8 +109,8 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                 // Interval is daily with exact time of day
                 timer.interval = GameTime::FromDays(1);
                 timer.timeInsideDay = GameTime::FromHours(ir.data.timer_descr.daily_start_hour);
-                timer.timeInsideDay = timer.timeInsideDay.AddMinutes(ir.data.timer_descr.daily_start_minute);
-                timer.timeInsideDay = timer.timeInsideDay.AddSeconds(ir.data.timer_descr.daily_start_second);
+                timer.timeInsideDay += GameTime::FromMinutes(ir.data.timer_descr.daily_start_minute);
+                timer.timeInsideDay += GameTime::FromSeconds(ir.data.timer_descr.daily_start_second);
             }
 
             if (timer.interval == GameTime::FromDays(1)) {

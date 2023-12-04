@@ -651,11 +651,11 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
         case SPELL_FIRE_HASTE:
             if (skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE) {
                 if (skillMastery <= CHARACTER_SKILL_MASTERY_EXPERT) {
-                    spell_length = GameTime::FromHours(1).AddMinutes(skillLevel);
+                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(skillLevel);
                 } else if (skillMastery == CHARACTER_SKILL_MASTERY_MASTER) {
-                    spell_length = GameTime::FromHours(1).AddMinutes(3 * skillLevel);
+                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(3 * skillLevel);
                 } else if (skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                    spell_length = GameTime::FromHours(1).AddMinutes(4 * skillLevel);
+                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(4 * skillLevel);
                 }
             }
             for (Character &player : pParty->pCharacters) {
@@ -676,10 +676,10 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             switch (skillMastery) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spell_length = GameTime::FromHours(1).AddMinutes(5 * skillLevel);
+                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(5 * skillLevel);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spell_length = GameTime::FromHours(1).AddMinutes(15 * skillLevel);
+                    spell_length = GameTime::FromHours(1) + GameTime::FromMinutes(15 * skillLevel);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spell_length = GameTime::FromHours(skillLevel + 1);
