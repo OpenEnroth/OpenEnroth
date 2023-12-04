@@ -261,7 +261,7 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
 void snapshot(const Timer &src, Timer_MM7 *dst) {
     memzero(dst);
 
-    dst->ready = src.bReady;
+    dst->ready = true;
     dst->paused = src.bPaused;
     dst->tackGameTime = src.bTackGameTime;
     dst->startTime = src.uStartTime;
@@ -273,7 +273,6 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
 }
 
 void reconstruct(const Timer_MM7 &src, Timer *dst) {
-    dst->bReady = src.ready;
     dst->bPaused = src.paused;
     dst->bTackGameTime = src.tackGameTime;
     dst->uStartTime = src.startTime;

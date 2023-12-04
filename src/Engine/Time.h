@@ -128,8 +128,6 @@ struct Timer {
 
     Timer() = default;
 
-    void Initialize();
-
     /**
      * @return                          Current real time (not game time!) in timer ticks. One tick is 1/128th of a
      *                                  real time second.
@@ -142,7 +140,6 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bReady = false; // Unused.
     unsigned int bPaused = false;
     int bTackGameTime = 0;
     unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).
