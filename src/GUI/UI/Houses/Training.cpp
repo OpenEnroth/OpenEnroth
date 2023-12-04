@@ -75,11 +75,11 @@ void GUIWindow_Training::trainDialogue() {
                 _charactersTrainedLevels[pParty->activeCharacterIndex() - 1]++;
                 int maxLevelStepsAfter = *std::max_element(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end());
                 if (maxLevelStepsAfter > maxLevelStepsBefore) {
-                    GameTime trainingTime = timeUntilDawn().AddHours(4);
+                    GameTime trainingTime = timeUntilDawn() + GameTime::fromHours(4);
                     if (houseId() == HOUSE_TRAINING_HALL_PIT || houseId() == HOUSE_TRAINING_HALL_MOUNT_NIGHON) {
-                        trainingTime += GameTime::FromHours(12);
+                        trainingTime += GameTime::fromHours(12);
                     }
-                    restAndHeal(trainingTime.AddDays(7));
+                    restAndHeal(trainingTime + GameTime::fromDays(7));
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                         pOutdoor->SetFog();
                     }

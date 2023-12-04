@@ -374,7 +374,7 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     GameTime condtime = this->conditions.Get(condition);
     GameTime diff = playtime - condtime;
 
-    return diff.GetDays() + 1;
+    return diff.toDays() + 1;
 }
 
 ItemGen *Character::GetItemAtInventoryIndex(int inout_item_cell) {
@@ -2233,7 +2233,7 @@ int Character::GetActualAC() const {
 
 //----- (0048E6DC) --------------------------------------------------------
 unsigned int Character::GetBaseAge() const {
-    return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
+    return pParty->GetPlayingTime().toYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
@@ -3584,7 +3584,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     if (pParty->pPickedItem.isPotion()) {
         // TODO(Nik-RE-dev): no CanAct check?
         int potionStrength = pParty->pPickedItem.potionPower;
-        GameTime buffDuration = GameTime::FromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
+        GameTime buffDuration = GameTime::fromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:
                 playerAffected->SetCondition(CONDITION_POISON_WEAK, 1);
@@ -4159,13 +4159,13 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             return pParty->pPickedItem.uItemID == ItemId(pValue);
 
         case VAR_Hour:
-            return pParty->GetPlayingTime().GetHoursOfDay() == pValue;
+            return pParty->GetPlayingTime().hoursOfDay() == pValue;
 
         case VAR_DayOfYear:
-            return pParty->GetPlayingTime().GetDays() % 336 + 1 == pValue;
+            return pParty->GetPlayingTime().toDays() % 336 + 1 == pValue;
 
         case VAR_DayOfWeek:
-            return pParty->GetPlayingTime().GetDays() % 7 == pValue;
+            return pParty->GetPlayingTime().toDays() % 7 == pValue;
 
         case VAR_FixedGold:
             return pParty->GetGold() >= pValue;
@@ -4452,8 +4452,8 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Counter10:
         {
             int idx = std::to_underlying(VarNum) - std::to_underlying(VAR_Counter1);
-            if (pParty->PartyTimes.CounterEventValues[idx ].Valid()) {
-                return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::FromHours(pValue)) <= pParty->GetPlayingTime();
+            if (pParty->PartyTimes.CounterEventValues[idx].isValid()) {
+                return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::fromHours(pValue)) <= pParty->GetPlayingTime();
             }
             return false;
         }

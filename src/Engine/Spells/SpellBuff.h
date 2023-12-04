@@ -26,7 +26,7 @@ struct SpellBuff {
      * @offset 0x42EB31
      * Active is state where spell buff is in effect
      */
-    bool Active() const { return this->expireTime.Valid(); }
+    bool Active() const { return this->expireTime.isValid(); }
     /**
     * Inactive is state where spell buff is not in effect (includes state expired)
     */

@@ -269,7 +269,7 @@ static void UI_DrawSaveLoad(bool save) {
 
         // Draw date
         GameTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime;
-        auto savegame_hour = savegame_time.GetHoursOfDay();
+        auto savegame_hour = savegame_time.hoursOfDay();
 
         save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
         int am;
@@ -285,13 +285,10 @@ static void UI_DrawSaveLoad(bool save) {
 
         auto str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
-            localization->GetDayName(savegame_time.GetDaysOfWeek()),
-            savegame_hour,
-            savegame_time.GetMinutesFraction(),
-            localization->GetAmPm(am),
-            savegame_time.GetDaysOfMonth() + 1,
-            localization->GetMonthName(savegame_time.GetMonthsOfYear()),
-            savegame_time.GetYears() + game_starting_year
+            localization->GetDayName(savegame_time.daysOfWeek()),
+            savegame_hour, savegame_time.minutesFraction(),
+            localization->GetAmPm(am), savegame_time.daysOfMonth() + 1,
+            localization->GetMonthName(savegame_time.monthsOfYear()), savegame_time.toYears() + game_starting_year
         );
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3);
     }

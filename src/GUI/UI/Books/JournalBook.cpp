@@ -47,7 +47,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
 
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
-        if (pParty->PartyTimes.HistoryEventTimes[i].Valid()) {
+        if (pParty->PartyTimes.HistoryEventTimes[i].isValid()) {
             if (!pStorylineText->StoreLine[i + 1].pText.empty()) {
                 std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
                 int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.uFrameWidth, 1);

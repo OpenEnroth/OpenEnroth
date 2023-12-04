@@ -901,7 +901,7 @@ void Party::restAndHeal() {
 }
 
 void Rest(GameTime restTime) {
-    if (restTime > GameTime::FromHours(4)) {
+    if (restTime > GameTime::fromHours(4)) {
         Actor::InitializeActors();
     }
 
@@ -920,13 +920,13 @@ void restAndHeal(GameTime restTime) {
     pParty->pHirelings[0].bHasUsedTheAbility = false;
     pParty->pHirelings[1].bHasUsedTheAbility = false;
 
-    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
-    pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
-    pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
-    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetWeeksOfMonth();
-    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDaysOfMonth();
-    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
-    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
+    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().secondsFraction();
+    pParty->uCurrentMinute = pParty->GetPlayingTime().minutesFraction();
+    pParty->uCurrentHour = pParty->GetPlayingTime().hoursOfDay();
+    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().weeksOfMonth();
+    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().daysOfMonth();
+    pParty->uCurrentMonth = pParty->GetPlayingTime().monthsOfYear();
+    pParty->uCurrentYear = pParty->GetPlayingTime().toYears() + game_starting_year;
     pParty->restAndHeal();
 
     for (Character &player : pParty->pCharacters) {
@@ -942,19 +942,19 @@ void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused
     // resting to be too fast on high FPS
     // Now resting speed is roughly 6 game hours per second
-    GameTime restTick = GameTime::FromMinutes(3 * pEventTimer->uTimeElapsed);
+    GameTime restTick = GameTime::fromMinutes(3 * pEventTimer->uTimeElapsed);
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;
     }
 
-    if (restTick.Valid()) {
+    if (restTick.isValid()) {
         Rest(restTick);
         remainingRestTime -= restTick;
         OutdoorLocation::LoadActualSkyFrame();
     }
 
-    if (!remainingRestTime.Valid()) {
+    if (!remainingRestTime.isValid()) {
         if (currentRestType == REST_HEAL) {
             // Close rest screen when healing is done.
             // Resting type is reset on Escape processing

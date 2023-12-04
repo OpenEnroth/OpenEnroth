@@ -148,7 +148,7 @@ GAME_TEST(Issues, Issue201) {
     // Unhandled EVENT_ShowMovie in Event Processor
     auto healthTape = tapes.totalHp();
     auto mapTape = tapes.map();
-    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().GetDays(); });
+    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
     test.playTraceFromTestData("issue_201.mm7", "issue_201.json");
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
     EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to Harmondale.
@@ -733,7 +733,7 @@ GAME_TEST(Issues, Issue503) {
 
 GAME_TEST(Issues, Issue504) {
     // Going to prison doesn't recharge hirelings.
-    auto yearsTape = tapes.custom([] { return pParty->GetPlayingTime().GetYears(); });
+    auto yearsTape = tapes.custom([] { return pParty->GetPlayingTime().toYears(); });
     auto heroismTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active(); });
     auto castsTape = tapes.custom([] { return pParty->pHirelings[0].bHasUsedTheAbility; });
     test.playTraceFromTestData("issue_504.mm7", "issue_504.json");
@@ -1271,11 +1271,11 @@ GAME_TEST(Issues, Issue783) {
 
         // And all buffs should expire way in the future.
         for (CharacterBuff buff : allPotionBuffs())
-            EXPECT_GT(pParty->pCharacters[0].pCharacterBuffs[buff].GetExpireTime(), pParty->GetPlayingTime() + GameTime::FromHours(10));
+            EXPECT_GT(pParty->pCharacters[0].pCharacterBuffs[buff].GetExpireTime(), pParty->GetPlayingTime() + GameTime::fromHours(10));
     });
 
-    EXPECT_GT(timeTape.delta(), GameTime::FromHours(8)); // Check that we did rest.
-    EXPECT_LT(timeTape.delta(), GameTime::FromHours(10)); // Check that we didn't wait out the buff expire times.
+    EXPECT_GT(timeTape.delta(), GameTime::fromHours(8)); // Check that we did rest.
+    EXPECT_LT(timeTape.delta(), GameTime::fromHours(10)); // Check that we didn't wait out the buff expire times.
     check783784Buffs(false); // Check that the buffs still expired.
 }
 
@@ -1484,7 +1484,7 @@ GAME_TEST(Issues, Issue895) {
     // Test that entering magic guild does not shift date
     auto timeTape = tapes.time();
     test.playTraceFromTestData("issue_895.mm7", "issue_895.json");
-    EXPECT_LT(timeTape.delta(), GameTime::FromMinutes(5));
+    EXPECT_LT(timeTape.delta(), GameTime::fromMinutes(5));
 }
 
 // 900

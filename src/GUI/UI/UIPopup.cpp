@@ -1144,8 +1144,8 @@ void CharacterUI_StatsTab_ShowHint() {
                 if (pParty->activeCharacter().conditions.Has(condition)) {
                     str += " \n";
                     GameTime condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
-                    pHour = condition_time.GetHoursOfDay();
-                    pDay = condition_time.GetDays();
+                    pHour = condition_time.hoursOfDay();
+                    pDay = condition_time.toDays();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));
                     if (pHour && pHour <= 1)
@@ -2368,7 +2368,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 return;
             }
 
-            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.potionPower);
+            GameTime effectTime = GameTime::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);

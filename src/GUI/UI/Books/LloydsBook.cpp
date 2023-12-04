@@ -117,8 +117,8 @@ void GUIWindow_LloydsBook::Update() {
 
             pWindow.uFrameY = lloydsBeaconsPreviewYs[beaconId];
             GameTime remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
-            unsigned int pHours = remainingTime.GetHoursOfDay();
-            unsigned int pDays = remainingTime.GetDays();
+            unsigned int pHours = remainingTime.hoursOfDay();
+            unsigned int pDays = remainingTime.toDays();
             std::string str;
             if (pDays > 1) {
                 str = fmt::format("{} {}", pDays + 1, localization->GetString(LSTR_DAYS));
@@ -213,7 +213,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
         pGUIWindow_CurrentMenu->Release();
         pGUIWindow_CurrentMenu = 0;
     } else {
-        character.setBeacon(beaconId, GameTime::FromDays(7 * _spellLevel));
+        character.setBeacon(beaconId, GameTime::fromDays(7 * _spellLevel));
         engine->_messageQueue->addMessageNextFrame(UIMSG_CloseAfterInstallBeacon, 0, 0);
     }
 }

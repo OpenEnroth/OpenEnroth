@@ -57,7 +57,7 @@ struct LloydBeacon {
 class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
-        return this->_times[condition].Valid();
+        return this->_times[condition].isValid();
     }
 
     [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
@@ -72,12 +72,12 @@ class CharacterConditions {
     }
 
     void Reset(Condition condition) {
-        this->_times[condition].Reset();
+        this->_times[condition] = GameTime();
     }
 
     void ResetAll() {
         for (GameTime &time : _times)
-            time.Reset();
+            time = GameTime();
     }
 
     void Set(Condition condition, GameTime time) {

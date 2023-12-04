@@ -752,7 +752,7 @@ void GameUI_DrawRightPanelItems() {
         bookFlashTimer = {};
     }
 
-    if (pParty->GetPlayingTime() - bookFlashTimer > GameTime::FromTicks(128)) {
+    if (pParty->GetPlayingTime() - bookFlashTimer > GameTime::fromTicks(128)) {
         bookFlashTimer = pParty->GetPlayingTime();
         bookFlashState = !bookFlashState;
     }

@@ -280,10 +280,10 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
 }
 
 std::string MakeDateTimeString(GameTime time) {
-    int seconds = time.GetSecondsFraction();
-    int minutes = time.GetMinutesFraction();
-    int hours = time.GetHoursOfDay();
-    int days = time.GetDays();
+    int seconds = time.secondsFraction();
+    int minutes = time.minutesFraction();
+    int hours = time.hoursOfDay();
+    int days = time.toDays();
 
     std::string str = "";
     if (days) {
@@ -896,7 +896,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += v1;
                 break;
             case 5:
-                v18 = pParty->GetPlayingTime().GetHoursOfDay();
+                v18 = pParty->GetPlayingTime().hoursOfDay();
                 if (v18 >= 11 && v18 < 20) {
                     pText = localization->GetString(LSTR_DAY);
                 } else if (v18 >= 5 && v18 < 11) {

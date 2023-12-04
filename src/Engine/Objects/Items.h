@@ -157,13 +157,13 @@ struct ItemDesc {  // 30h
 struct SummonedItem {
     //----- (00493F79) --------------------------------------------------------
     void Initialize(GameTime duration) {
-        this->field_0_expire_second = duration.GetSecondsFraction();
-        this->field_4_expire_minute = duration.GetMinutesFraction();
-        this->field_8_expire_hour = duration.GetHoursOfDay();
-        this->field_10_expire_week = duration.GetWeeksOfMonth();
-        this->field_C_expire_day = duration.GetDaysOfMonth();
-        this->field_14_exprie_month = duration.GetMonths();
-        this->field_18_expire_year = duration.GetYears() + game_starting_year;
+        this->field_0_expire_second = duration.secondsFraction();
+        this->field_4_expire_minute = duration.minutesFraction();
+        this->field_8_expire_hour = duration.hoursOfDay();
+        this->field_10_expire_week = duration.weeksOfMonth();
+        this->field_C_expire_day = duration.daysOfMonth();
+        this->field_14_exprie_month = duration.toMonths();
+        this->field_18_expire_year = duration.toYears() + game_starting_year;
     }
 
     int field_0_expire_second = 0;

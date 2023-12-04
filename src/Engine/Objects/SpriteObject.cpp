@@ -642,7 +642,7 @@ void SpriteObject::InitializeSpriteObjects() {
 bool SpriteObject::applyShrinkRayAoe() {
     bool isApplied = false;
     // Calculation was moved from initial sprite creation processing
-    GameTime duration = GameTime::FromMinutes(this->spell_level * 5);
+    GameTime duration = GameTime::fromMinutes(this->spell_level * 5);
     static const int shrinkPower = 4;
     int effectDistance = engine->config->gameplay.ShrinkRayAoeDistance.value();
 
@@ -1109,7 +1109,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             int shrinkPower = 0;
             // Calculation was moved from initial sprite creation processing
-            GameTime duration = GameTime::FromMinutes(object->spell_level * 5);
+            GameTime duration = GameTime::fromMinutes(object->spell_level * 5);
             CharacterSkillMastery skillMastery = object->spell_skill;
             DamageType dmgType;
             ActorBuff buffIdx;
