@@ -133,7 +133,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                     timer.alarmTime = pParty->GetPlayingTime();
                 }
             }
-            assert(timer.interval.Valid());
+            assert(timer.interval.isValid());
         }
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;
@@ -231,7 +231,7 @@ static void checkTimer(MapTimer &timer) {
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
-            if (!timer.alarmTime.Valid() && timer.interval == GameTime::FromDays(1)) {
+            if (!timer.alarmTime.isValid() && timer.interval == GameTime::FromDays(1)) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
                 timer.alarmTime = timer.timeInsideDay;
             }

@@ -214,7 +214,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
             }
             LloydBeacon *beacon = &player->vBeacons[j];
             GraphicsImage *image = beacon->image;
-            if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
+            if ((beacon->uBeaconTime.isValid()) && (image != nullptr)) {
                 assert(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 lodWriter.write(str, pcx::encode(image->rgba()));

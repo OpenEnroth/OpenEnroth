@@ -4452,7 +4452,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Counter10:
         {
             int idx = std::to_underlying(VarNum) - std::to_underlying(VAR_Counter1);
-            if (pParty->PartyTimes.CounterEventValues[idx ].Valid()) {
+            if (pParty->PartyTimes.CounterEventValues[idx].isValid()) {
                 return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::FromHours(pValue)) <= pParty->GetPlayingTime();
             }
             return false;

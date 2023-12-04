@@ -948,13 +948,13 @@ void Party::restOneFrame() {
         restTick = remainingRestTime;
     }
 
-    if (restTick.Valid()) {
+    if (restTick.isValid()) {
         Rest(restTick);
         remainingRestTime -= restTick;
         OutdoorLocation::LoadActualSkyFrame();
     }
 
-    if (!remainingRestTime.Valid()) {
+    if (!remainingRestTime.isValid()) {
         if (currentRestType == REST_HEAL) {
             // Close rest screen when healing is done.
             // Resting type is reset on Escape processing

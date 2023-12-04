@@ -57,7 +57,7 @@ struct LloydBeacon {
 class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
-        return this->_times[condition].Valid();
+        return this->_times[condition].isValid();
     }
 
     [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {

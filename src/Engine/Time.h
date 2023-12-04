@@ -37,7 +37,9 @@ struct GameTime {
     void SetExpired() { value = -1;  }
     bool Expired() const { return value < 0; }
 
-    bool Valid() const { return value > 0; }
+    // TODO(captainurist): This is something to look at, we have comparisons with GameTime() in the code, they are not
+    //                     the same as Valid().
+    bool isValid() const { return value > 0; }
 
     friend GameTime operator+(const GameTime &l, const GameTime &r) {
         return GameTime::FromTicks(l.value + r.value);
@@ -61,7 +63,7 @@ struct GameTime {
     friend auto operator<=>(const GameTime &l, const GameTime &r) = default;
 
     explicit operator bool() const {
-        return Valid();
+        return isValid();
     }
 
     static GameTime FromTicks(int64_t ticks) {
@@ -69,21 +71,27 @@ struct GameTime {
         result.value = ticks;
         return result;
     }
+
     static GameTime FromSeconds(int seconds) {
         return GameTime(seconds, 0, 0, 0, 0, 0, 0);
     }
+
     static GameTime FromMinutes(int minutes) {
         return GameTime(0, minutes, 0, 0, 0, 0, 0);
     }
+
     static GameTime FromHours(int hours) {
         return GameTime(0, 0, hours, 0, 0, 0, 0);
     }
+
     static GameTime FromDays(int days) {
         return GameTime(0, 0, 0, days, 0, 0, 0);
     }
+
     static GameTime FromMonths(int months) {
         return GameTime(0, 0, 0, 0, 0, months, 0);
     }
+
     static GameTime FromYears(int years) {
         return GameTime(0, 0, 0, 0, 0, 0, years);
     }
