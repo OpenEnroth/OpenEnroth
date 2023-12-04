@@ -232,7 +232,7 @@ struct ItemGen_MM7 {
     /* 19 */ uint8_t maxCharges;
     /* 1A */ uint8_t holderPlayer;
     /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
-    /* 1C */ uint64_t expireTime;
+    /* 1C */ int64_t expireTime;
 };
 static_assert(sizeof(ItemGen_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
@@ -258,7 +258,7 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
 struct LloydBeacon_MM7 {
-    uint64_t beaconTime;
+    int64_t beaconTime;
     int32_t partyPosX;
     int32_t partyPosY;
     int32_t partyPosZ;
@@ -428,7 +428,7 @@ struct Party_MM7 {
     /* 00020 */ int32_t yawRotationSpeed;  // deg/s
     /* 00024 */ int32_t jumpStrength;
     /* 00028 */ int32_t field_28;
-    /* 0002C */ uint64_t timePlayed;
+    /* 0002C */ int64_t timePlayed;
     /* 00034 */ int64_t lastRegenerationTime;
     /* 0003C */ PartyTimeStruct_MM7 partyTimes;
     /* 006B4 */ Vec3i position;

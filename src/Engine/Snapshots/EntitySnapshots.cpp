@@ -369,7 +369,7 @@ void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
 void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
     memzero(dst);
 
-    dst->expireTime = src.expireTime.value;
+    snapshot(src.expireTime, &dst->expireTime);
     dst->power = src.power;
     dst->skillMastery = std::to_underlying(src.skillMastery);
     dst->overlayId = src.overlayID;
@@ -378,7 +378,7 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
 }
 
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
-    dst->expireTime.value = src.expireTime;
+    reconstruct(src.expireTime, &dst->expireTime);
     dst->power = src.power;
     dst->skillMastery = static_cast<CharacterSkillMastery>(src.skillMastery);
     dst->overlayID = src.overlayId;
@@ -409,7 +409,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->maxCharges = src.uMaxCharges;
     dst->holderPlayer = src.uHolderPlayer;
     dst->placedInChest = src.placedInChest;
-    dst->expireTime = src.uExpireTime.value;
+    snapshot(src.uExpireTime, &dst->expireTime);
 }
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
@@ -438,7 +438,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uMaxCharges = src.maxCharges;
     dst->uHolderPlayer = src.holderPlayer;
     dst->placedInChest = src.placedInChest;
-    dst->uExpireTime.value = src.expireTime;
+    reconstruct(src.expireTime, &dst->uExpireTime);
 }
 
 void snapshot(const Party &src, Party_MM7 *dst) {
@@ -454,8 +454,8 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->walkSpeed = src.walkSpeed;
     dst->yawRotationSpeed = src._yawRotationSpeed;
     dst->jumpStrength = src.jump_strength;
-    dst->timePlayed = src.playing_time.value;
-    dst->lastRegenerationTime = src.last_regenerated.value;
+    snapshot(src.playing_time, &dst->timePlayed);
+    snapshot(src.last_regenerated, &dst->lastRegenerationTime);
 
     snapshot(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime);
     dst->partyTimes.bountyHuntingNextGenerationTimeUnused.fill(0);
@@ -559,8 +559,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->walkSpeed = src.walkSpeed;
     dst->_yawRotationSpeed = src.yawRotationSpeed;
     dst->jump_strength = src.jumpStrength;
-    dst->playing_time.value = src.timePlayed;
-    dst->last_regenerated.value = src.lastRegenerationTime;
+    reconstruct(src.timePlayed, &dst->playing_time);
+    reconstruct(src.lastRegenerationTime, &dst->last_regenerated);
 
     reconstruct(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime);
     reconstruct(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
@@ -771,7 +771,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
         if (i >= src.vBeacons.size()) {
             continue;
         }
-        dst->installedBeacons[i].beaconTime = src.vBeacons[i].uBeaconTime.value;
+        snapshot(src.vBeacons[i].uBeaconTime, &dst->installedBeacons[i].beaconTime);
         dst->installedBeacons[i].partyPosX = src.vBeacons[i]._partyPos.x;
         dst->installedBeacons[i].partyPosY = src.vBeacons[i]._partyPos.y;
         dst->installedBeacons[i].partyPosZ = src.vBeacons[i]._partyPos.z;
