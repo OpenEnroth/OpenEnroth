@@ -116,7 +116,10 @@ struct ItemGen {  // 0x24
     ItemFlags uAttributes = 0;          // 14
     ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // 18
     uint8_t uMaxCharges = 0;           // 19
-    int8_t uHolderPlayer = -1;        // 1A
+
+    /** Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
+     * Or whatever it is that's in the lich jar. */
+    int8_t uHolderPlayer = -1;
     bool placedInChest = false;        // 1B (was unused, repurposed)
     GameTime uExpireTime;        // uint64_t uExpireTime; //1C
 };
