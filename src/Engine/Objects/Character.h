@@ -57,7 +57,7 @@ struct LloydBeacon {
 class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
-        return this->times_[std::to_underlying(condition)].Valid();
+        return this->_times[condition].Valid();
     }
 
     [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
@@ -72,25 +72,31 @@ class CharacterConditions {
     }
 
     void Reset(Condition condition) {
-        this->times_[std::to_underlying(condition)].Reset();
+        this->_times[condition].Reset();
     }
 
     void ResetAll() {
-        for(size_t i = 0; i < times_.size(); i++)
-            times_[i].Reset();
+        for (GameTime &time : _times)
+            time.Reset();
     }
 
     void Set(Condition condition, GameTime time) {
-        this->times_[std::to_underlying(condition)] = time;
+        this->_times[condition] = time;
     }
 
     [[nodiscard]] GameTime Get(Condition condition) const {
-        return this->times_[std::to_underlying(condition)];
+        return this->_times[condition];
+    }
+
+    // TODO(captainurist): this is very ugly. Is there a better way to do the same?
+    template<class Self>
+    friend auto &raw(Self &self) {
+        return self._times;
     }
 
  private:
     /** Game time when condition has started. */
-    std::array<GameTime, 20> times_;
+    IndexedArray<GameTime, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {

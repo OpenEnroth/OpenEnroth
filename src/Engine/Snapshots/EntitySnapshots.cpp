@@ -659,8 +659,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 void snapshot(const Character &src, Player_MM7 *dst) {
     memzero(dst);
 
-    for (unsigned int i = 0; i < 20; ++i)
-        dst->conditions[i] = src.conditions.Get(static_cast<Condition>(i)).value;
+    snapshot(raw(src.conditions), &dst->conditions);
 
     dst->experience = src.experience;
 
@@ -788,8 +787,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 }
 
 void reconstruct(const Player_MM7 &src, Character *dst) {
-    for (unsigned int i = 0; i < 20; ++i)
-        dst->conditions.Set(static_cast<Condition>(i), GameTime(src.conditions[i]));
+    reconstruct(src.conditions, &raw(dst->conditions));
 
     dst->experience = src.experience;
 

@@ -22,6 +22,9 @@ enum class Condition : uint32_t {
     CONDITION_ERADICATED = 16,
     CONDITION_ZOMBIE = 17,
     CONDITION_GOOD = 18,
+
+    CONDITION_FIRST = CONDITION_CURSED,
+    CONDITION_LAST = CONDITION_GOOD
 };
 using enum Condition;
 
