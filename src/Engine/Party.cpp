@@ -20,14 +20,13 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIRest.h"
 

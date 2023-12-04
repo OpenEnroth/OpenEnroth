@@ -4,13 +4,12 @@
 #include "GameOver.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Time.h"
 #include "Engine/mm7_data.h"
 
 #include "GUI/GUIButton.h"

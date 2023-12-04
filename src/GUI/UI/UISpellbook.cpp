@@ -14,7 +14,7 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 
 #include "GUI/GUIButton.h"
 

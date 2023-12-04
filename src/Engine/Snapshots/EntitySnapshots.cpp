@@ -1,7 +1,6 @@
 #include "EntitySnapshots.h"
 
 #include <algorithm>
-#include <type_traits>
 #include <string>
 #include <unordered_map>
 
@@ -24,7 +23,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Time.h"
 
 #include "Media/Audio/SoundInfo.h"
 

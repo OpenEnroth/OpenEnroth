@@ -16,7 +16,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Spells/Spells.h"

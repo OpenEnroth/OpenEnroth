@@ -23,7 +23,7 @@
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 #include "Engine/Conditions.h"
 
 #include "Io/Mouse.h"

@@ -1,16 +1,13 @@
 #include "Engine/Graphics/Overlays.h"
 
 #include "Engine/Party.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIWindow.h"
-
-#include "Utility/String.h"
 
 #include "Sprites.h"
 
