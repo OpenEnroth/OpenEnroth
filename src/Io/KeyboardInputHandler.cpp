@@ -225,7 +225,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
                 CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
 
-                uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
+                uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
             }
 
             bool enoughMana = pParty->activeCharacter().mana >= uRequiredMana;

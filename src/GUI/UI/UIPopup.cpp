@@ -1328,7 +1328,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
 
     auto str2 = fmt::format(
         "{}\n{}", localization->GetString(LSTR_SP_COST),
-        pSpellDatas[spell_id].mana_per_skill[std::to_underlying(skill_mastery) - 1]);
+        pSpellDatas[spell_id].mana_per_skill[skill_mastery]);
     spell_info_window.DrawTitleText(
         assets->pFontComic.get(), 12,
         spell_info_window.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str2,
@@ -1448,7 +1448,7 @@ void showSpellbookInfo(ItemId spellbook) {
     popup.uFrameWidth = 108;
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(skillForSpell(spell)), 3u);
 
-    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].uNormalLevelMana);
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, popup.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str, 3);
 }
 

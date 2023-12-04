@@ -176,16 +176,16 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
         return;
     }
 
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelMana);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelMana);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelMana);
-    character.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana);
+    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
+    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
+    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
+    character.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
 
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelRecovery);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelRecovery);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelRecovery);
+    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
+    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
+    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
 
-    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery;
+    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
     if (pParty->bTurnBasedModeOn) {
         pParty->pTurnBasedCharacterRecoveryTimes[_casterId] = sRecoveryTime;
         character.SetRecoveryTime(sRecoveryTime);

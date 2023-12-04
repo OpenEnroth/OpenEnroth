@@ -200,10 +200,10 @@ void CastSpellInfoHelpers::castSpell() {
             if (pCastSpell->overrideSkillValue || engine->config->debug.AllMagic.value()) {
                 uRequiredMana = 0;
             } else {
-                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[std::to_underlying(spell_mastery) - 1];
+                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[spell_mastery];
             }
 
-            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
+            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[spell_mastery];
         }
 
         // Recovery time for spell failure if it cannot be cast at all in current context

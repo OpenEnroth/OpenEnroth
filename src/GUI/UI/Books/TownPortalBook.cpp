@@ -136,15 +136,15 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
     int casterId = _casterPid.id();
     if (casterId < pParty->pCharacters.size()) {
         // Town portal casted by character
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
-        pParty->pCharacters[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
+        pParty->pCharacters[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
 
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
-        signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
+        signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
         if (pParty->bTurnBasedModeOn) {
             pParty->pTurnBasedCharacterRecoveryTimes[casterId] = sRecoveryTime;
             pParty->pCharacters[casterId].SetRecoveryTime(sRecoveryTime);
