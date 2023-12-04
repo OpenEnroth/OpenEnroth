@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7a0a751</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ee7be62</span>
    </div>
   </td>
  </tr>
@@ -75,7 +75,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Time.h File Reference</div></div>
 </div><!--header-->
@@ -90,17 +89,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer.html">Timer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a48cda5a1c67fc5d0af89c63aebbfc2da"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da">TIME_QUANT</a>&#160;&#160;&#160;128</td></tr>
-<tr class="separator:a48cda5a1c67fc5d0af89c63aebbfc2da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a438aa758d82a47abe6a32cbab57ad650"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a438aa758d82a47abe6a32cbab57ad650">TIME_SECONDS_PER_QUANT</a>&#160;&#160;&#160;30</td></tr>
-<tr class="separator:a438aa758d82a47abe6a32cbab57ad650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92d0188cd169ae2c9b9bd59af68ab5f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a92d0188cd169ae2c9b9bd59af68ab5f3">GAME_TIME_TO_SECONDS</a>(VALUE)&#160;&#160;&#160;((VALUE) * static_cast&lt;uint64_t&gt;(<a class="el" href="Time_8h.html#a438aa758d82a47abe6a32cbab57ad650">TIME_SECONDS_PER_QUANT</a>) / <a class="el" href="Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da">TIME_QUANT</a>)</td></tr>
-<tr class="separator:a92d0188cd169ae2c9b9bd59af68ab5f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf2e4aaadad8ce5414accb5ab31eb8cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#adf2e4aaadad8ce5414accb5ab31eb8cc">SECONDS_TO_GAME_TIME</a>(VALUE)&#160;&#160;&#160;((VALUE) * static_cast&lt;uint64_t&gt;(<a class="el" href="Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da">TIME_QUANT</a>) / <a class="el" href="Time_8h.html#a438aa758d82a47abe6a32cbab57ad650">TIME_SECONDS_PER_QUANT</a>)</td></tr>
-<tr class="separator:adf2e4aaadad8ce5414accb5ab31eb8cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a2ad26c3f2b5e54993203668a354ea997"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a2ad26c3f2b5e54993203668a354ea997">game_starting_year</a> = 1168</td></tr>
@@ -110,71 +98,6 @@ Variables</h2></td></tr>
 <tr class="memitem:a9b16df08347bd1a24e9e426848ffca3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTimer.html">Timer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a9b16df08347bd1a24e9e426848ffca3c">pEventTimer</a></td></tr>
 <tr class="separator:a9b16df08347bd1a24e9e426848ffca3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a92d0188cd169ae2c9b9bd59af68ab5f3" name="a92d0188cd169ae2c9b9bd59af68ab5f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92d0188cd169ae2c9b9bd59af68ab5f3">&#9670;&#160;</a></span>GAME_TIME_TO_SECONDS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define GAME_TIME_TO_SECONDS</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">VALUE</td><td>)</td>
-          <td>&#160;&#160;&#160;((VALUE) * static_cast&lt;uint64_t&gt;(<a class="el" href="Time_8h.html#a438aa758d82a47abe6a32cbab57ad650">TIME_SECONDS_PER_QUANT</a>) / <a class="el" href="Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da">TIME_QUANT</a>)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adf2e4aaadad8ce5414accb5ab31eb8cc" name="adf2e4aaadad8ce5414accb5ab31eb8cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf2e4aaadad8ce5414accb5ab31eb8cc">&#9670;&#160;</a></span>SECONDS_TO_GAME_TIME</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SECONDS_TO_GAME_TIME</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">VALUE</td><td>)</td>
-          <td>&#160;&#160;&#160;((VALUE) * static_cast&lt;uint64_t&gt;(<a class="el" href="Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da">TIME_QUANT</a>) / <a class="el" href="Time_8h.html#a438aa758d82a47abe6a32cbab57ad650">TIME_SECONDS_PER_QUANT</a>)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a48cda5a1c67fc5d0af89c63aebbfc2da" name="a48cda5a1c67fc5d0af89c63aebbfc2da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48cda5a1c67fc5d0af89c63aebbfc2da">&#9670;&#160;</a></span>TIME_QUANT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define TIME_QUANT&#160;&#160;&#160;128</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a438aa758d82a47abe6a32cbab57ad650" name="a438aa758d82a47abe6a32cbab57ad650"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a438aa758d82a47abe6a32cbab57ad650">&#9670;&#160;</a></span>TIME_SECONDS_PER_QUANT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define TIME_SECONDS_PER_QUANT&#160;&#160;&#160;30</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a2ad26c3f2b5e54993203668a354ea997" name="a2ad26c3f2b5e54993203668a354ea997"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ad26c3f2b5e54993203668a354ea997">&#9670;&#160;</a></span>game_starting_year</h2>

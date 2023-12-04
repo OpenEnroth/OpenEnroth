@@ -18,6 +18,5 @@ var searchData=
   ['game_5ftest_15',['GAME_TEST',['../GameTest_8h.html#a25b775f4858a78bb7b135d38e47fb6db',1,'GameTest.h']]],
   ['game_5ftest_5fi_16',['GAME_TEST_I',['../GameTest_8h.html#a531e57633382ad92982de61eaa5d380a',1,'GameTest.h']]],
   ['game_5ftest_5fii_17',['GAME_TEST_II',['../GameTest_8h.html#a5bbbbfc49ae0f95f0707fdd808f910a0',1,'GameTest.h']]],
-  ['game_5ftime_5fto_5fseconds_18',['GAME_TIME_TO_SECONDS',['../Time_8h.html#a92d0188cd169ae2c9b9bd59af68ab5f3',1,'Time.h']]],
-  ['gtest_5ffatal_5ffailure_5f_19',['GTEST_FATAL_FAILURE_',['../ThrowingAssertions_8h.html#a0f9a4c3ea82cc7bf4478eaffdc168358',1,'ThrowingAssertions.h']]]
+  ['gtest_5ffatal_5ffailure_5f_18',['GTEST_FATAL_FAILURE_',['../ThrowingAssertions_8h.html#a0f9a4c3ea82cc7bf4478eaffdc168358',1,'ThrowingAssertions.h']]]
 ];
