@@ -817,31 +817,31 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             case CHARACTER_SKILL_FIRE:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_FIRE_TORCH_LIGHT] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_FIRE_TORCH_LIGHT] = true;
                 break;
             case CHARACTER_SKILL_AIR:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_AIR_WIZARD_EYE] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_AIR_WIZARD_EYE] = true;
                 break;
             case CHARACTER_SKILL_WATER:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_WATER_AWAKEN] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_WATER_AWAKEN] = true;
                 break;
             case CHARACTER_SKILL_EARTH:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_SLOW);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_EARTH_STUN] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_EARTH_STUN] = true;
                 break;
             case CHARACTER_SKILL_SPIRIT:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_BLESS);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_SPIRIT_DETECT_LIFE] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_SPIRIT_DETECT_LIFE] = true;
                 break;
             case CHARACTER_SKILL_MIND:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_MIND_REMOVE_FEAR] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_MIND_REMOVE_FEAR] = true;
                 break;
             case CHARACTER_SKILL_BODY:
                 pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_HEAL);
-                pParty->pCharacters[i].spellbook.bHaveSpell[SPELL_BODY_CURE_WEAKNESS] = true;
+                pParty->pCharacters[i].bHaveSpell[SPELL_BODY_CURE_WEAKNESS] = true;
                 break;
             case CHARACTER_SKILL_LIGHT:
             case CHARACTER_SKILL_DARK:
@@ -872,9 +872,9 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             }
 
-            for (unsigned k = 0; k < 138; k++) {
-                if (pParty->pCharacters[i].pOwnItems[k].uItemID != ITEM_NULL)
-                    pParty->pCharacters[i].pOwnItems[k].SetIdentified();
+            for (ItemGen &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
+                if (inventoryItem.uItemID != ITEM_NULL)
+                    inventoryItem.SetIdentified();
             }
         }
     }

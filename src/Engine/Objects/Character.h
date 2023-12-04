@@ -54,44 +54,10 @@ struct LloydBeacon {
     GraphicsImage *image = nullptr;
 };
 
-struct CharacterSpellbookChapter {
-    std::array<char, 11> bIsSpellAvailable;
-};
-
-struct CharacterSpells {
-    IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
-};
-
-union CharacterEquipment {
-    union {
-        struct {
-            unsigned int uOffHand;
-            unsigned int uMainHand;
-            unsigned int uBow;
-            unsigned int uArmor;
-            unsigned int uHelm;
-            unsigned int uBelt;
-            unsigned int uCloak;
-            unsigned int uGlove;
-            unsigned int uBoot;
-            unsigned int uAmulet;
-            std::array<unsigned int, 6> uRings;
-            // unsigned int field_2C;
-            // unsigned int field_30;
-            // unsigned int field_34;
-            // unsigned int field_38;
-            // unsigned int field_3C;
-        };
-        IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pIndices;
-    };
-
-    CharacterEquipment() : pIndices() {}
-};
-
 class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
-        return this->times_[std::to_underlying(condition)].Valid();
+        return this->_times[condition].Valid();
     }
 
     [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
@@ -106,25 +72,31 @@ class CharacterConditions {
     }
 
     void Reset(Condition condition) {
-        this->times_[std::to_underlying(condition)].Reset();
+        this->_times[condition].Reset();
     }
 
     void ResetAll() {
-        for(size_t i = 0; i < times_.size(); i++)
-            times_[i].Reset();
+        for (GameTime &time : _times)
+            time.Reset();
     }
 
     void Set(Condition condition, GameTime time) {
-        this->times_[std::to_underlying(condition)] = time;
+        this->_times[condition] = time;
     }
 
     [[nodiscard]] GameTime Get(Condition condition) const {
-        return this->times_[std::to_underlying(condition)];
+        return this->_times[condition];
+    }
+
+    // TODO(captainurist): this is very ugly. Is there a better way to do the same?
+    template<class Self>
+    friend auto &raw(Self &self) {
+        return self._times;
     }
 
  private:
     /** Game time when condition has started. */
-    std::array<GameTime, 20> times_;
+    IndexedArray<GameTime, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {
@@ -132,10 +104,8 @@ class Character {
     static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
 
-    // Maximum number of items the character inventory can hold
-    static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH*INVENTORY_SLOTS_HEIGHT;
-    static constexpr unsigned int ADDITIONAL_SLOT_COUNT = 12; // TODO: investigate, these look unused
-    static constexpr unsigned int TOTAL_ITEM_SLOT_COUNT = INVENTORY_SLOT_COUNT + ADDITIONAL_SLOT_COUNT;
+    // Maximum number of items the character inventory can hold.
+    static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH * INVENTORY_SLOTS_HEIGHT;
 
     Character();
 
@@ -390,8 +360,7 @@ class Character {
     ItemGen *GetBootItem();
     ItemGen *GetAmuletItem();
     ItemGen *GetNthRingItem(int ringNum);
-    ItemGen *GetNthEquippedIndexItem(ItemSlot index);
-    ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos);
+    ItemGen *GetItem(ItemSlot index);
 
     const ItemGen *GetMainHandItem() const;
     const ItemGen *GetOffHandItem() const;
@@ -404,8 +373,7 @@ class Character {
     const ItemGen *GetBootItem() const;
     const ItemGen *GetAmuletItem() const;
     const ItemGen *GetNthRingItem(int ringNum) const;
-    const ItemGen *GetNthEquippedIndexItem(ItemSlot index) const;
-    const ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos) const;
+    const ItemGen *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int getCharacterIndex();
@@ -455,7 +423,7 @@ class Character {
     int field_104;
     IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
-    CharacterSpells spellbook;
+    IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
     int pure_luck_used;
     int pure_speed_used;
     int pure_intellect_used;
@@ -463,17 +431,10 @@ class Character {
     int pure_personality_used;
     int pure_accuracy_used;
     int pure_might_used;
-    union {  // 214h
-        struct {
-            // TODO(captainurist): gcc doesn't let us turn these into std::array. And we probably need to drop the 2nd
-            //                     one anyway. Investigate.
-            ItemGen pInventoryItemList[INVENTORY_SLOT_COUNT];
-            ItemGen pEquippedItems[ADDITIONAL_SLOT_COUNT];
-        };
-        std::array<ItemGen, TOTAL_ITEM_SLOT_COUNT> pOwnItems;
-    };
-
-    std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix;
+    std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
+    std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
+                                                            // positive => subtract 1 to get an index into pInventoryItemList.
+                                                            // negative => negate & subtract 1 to get a real index into pInventoryMatrix.
     int16_t sResFireBase;
     int16_t sResAirBase;
     int16_t sResWaterBase;
@@ -505,7 +466,8 @@ class Character {
     int health;
     int mana;
     unsigned int uBirthYear;
-    CharacterEquipment pEquipment;
+    IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pEquipment; // 0 => empty,
+                                                                                        // non-zero => subtract 1 to get an index into pInventoryItemList.
     MagicSchool lastOpenedSpellbookPage;
     SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;

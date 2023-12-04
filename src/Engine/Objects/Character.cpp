@@ -335,7 +335,7 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 //----- (004BE2DD) --------------------------------------------------------
 void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId) {
     float shop_mult = buildingTable[houseId].fPriceMultiplier;
-    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
+    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pInventoryItemList[item_index], shop_mult);
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
@@ -349,10 +349,10 @@ bool Character::NothingOrJustBlastersEquipped() const {
 
     // scan through all equipped items
     for (ItemSlot i : allItemSlots()) {
-        item_idx = pEquipment.pIndices[i];
+        item_idx = pEquipment[i];
 
         if (item_idx) {
-            item_id = pOwnItems[item_idx - 1].uItemID;
+            item_id = pInventoryItemList[item_idx - 1].uItemID;
 
             if (!isAncientWeapon(item_id))
                 return false;
@@ -416,11 +416,11 @@ unsigned int Character::GetItemMainInventoryIndex(int inout_item_cell) {
 void Character::ItemsPotionDmgBreak(int enchant_count) {
     int avalible_items = 0;
 
-    int16_t item_index_tabl[TOTAL_ITEM_SLOT_COUNT];  // table holding items
+    int16_t item_index_tabl[INVENTORY_SLOT_COUNT];  // table holding items
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
-    for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; ++i)  // scan through and log in table
-        if (isRegular(pOwnItems[i].uItemID))
+    for (int i = 0; i < INVENTORY_SLOT_COUNT; ++i)  // scan through and log in table
+        if (isRegular(pInventoryItemList[i].uItemID))
             item_index_tabl[avalible_items++] = i;
 
     if (avalible_items) {  // is there anything to break
@@ -694,7 +694,7 @@ void Character::WearItem(ItemId uItemID) {
     if (item_indx != -1) {
         pInventoryItemList[item_indx].uItemID = uItemID;
         ItemSlot item_body_anch = pEquipTypeToBodyAnchor[pItemTable->pItems[uItemID].uEquipType];
-        pEquipment.pIndices[item_body_anch] = item_indx + 1;
+        pEquipment[item_body_anch] = item_indx + 1;
         pInventoryItemList[item_indx].uBodyAnchor = item_body_anch;
     }
 }
@@ -758,7 +758,7 @@ int Character::CreateItemInInventory2(unsigned int index,
         result = 0;
     } else {
         PutItemArInventoryIndex(Src->uItemID, freeSlot, index);
-        memcpy(&pInventoryItemList[freeSlot], Src, sizeof(ItemGen));
+        pInventoryItemList[freeSlot] = *Src;
         result = freeSlot + 1;
     }
 
@@ -1088,8 +1088,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
             ItemId itemId = mainHandItemGen->uItemID;
             bool addOneDice = false;
             if (pItemTable->pItems[itemId].uSkillType == CHARACTER_SKILL_SPEAR &&
-                !this->pEquipment
-                     .uOffHand)  // using spear in two hands adds a dice roll
+                !this->pEquipment[ITEM_SLOT_OFF_HAND])  // using spear in two hands adds a dice roll
                 addOneDice = true;
 
             mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
@@ -1101,7 +1100,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                                                               // that not a shield
                 ItemGen *offHandItemGen =
                     (ItemGen*)&this
-                        ->pInventoryItemList[this->pEquipment.uOffHand - 1];
+                        ->pInventoryItemList[this->pEquipment[ITEM_SLOT_OFF_HAND] - 1];
 
                 if (!offHandItemGen->isShield()) {
                     offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
@@ -1234,7 +1233,7 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
         return 0;
 
     ItemGen *bow =
-        (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
+        (ItemGen*)&this->pInventoryItemList[this->pEquipment[ITEM_SLOT_BOW] - 1];
     ItemEnchantment itemenchant = bow->special_enchantment;
 
     signed int dmgperroll = pItemTable->pItems[bow->uItemID].uDamageRoll;
@@ -1412,12 +1411,12 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
 
 //----- (0048D62C) --------------------------------------------------------
 ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
-    return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
+    return GetItem(uEquipSlot)->GetItemEquipType();
 }
 
 //----- (0048D651) --------------------------------------------------------
 CharacterSkillType Character::GetEquippedItemSkillType(ItemSlot uEquipSlot) const {
-    return GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
+    return GetItem(uEquipSlot)->GetPlayerSkillType();
 }
 
 //----- (0048D676) --------------------------------------------------------
@@ -1429,9 +1428,9 @@ bool Character::IsUnarmed() const {
 
 //----- (0048D6AA) --------------------------------------------------------
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
-    unsigned i = pEquipment.pIndices[uEquipIndex];
+    unsigned i = pEquipment[uEquipIndex];
     if (i)
-        return !pOwnItems[i - 1].IsBroken();
+        return !pInventoryItemList[i - 1].IsBroken();
     else
         return false;
 }
@@ -1439,8 +1438,7 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 //----- (0048D6D0) --------------------------------------------------------
 bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
     for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
-        if (HasItemEquipped(i) &&
-            GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
+        if (HasItemEquipped(i) && GetItem(i)->special_enchantment == uEnchantment)
             return true;  // check item equipped and is enchanted
     }
 
@@ -1451,7 +1449,7 @@ bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
 bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
     // check aginst specific item and slot
     assert(equip_type != ITEM_SLOT_INVALID && "Invalid item slot passed to WearsItem");
-    return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
+    return (HasItemEquipped(equip_type) && GetItem(equip_type)->uItemID == item_id);
 }
 
 bool Character::wearsItemAnywhere(ItemId item_id) const {
@@ -1575,7 +1573,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                     }
                 } else {
                     ItemGen *itemToSteal = &actroPtr->items[randslot];
-                    memcpy(&tempItem, itemToSteal, sizeof(tempItem));
+                    tempItem = *itemToSteal;
                     itemToSteal->Reset();
                     carriedItemId = tempItem.uItemID;
                 }
@@ -1704,12 +1702,8 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             break;
 
         case SPECIAL_ATTACK_BREAK_ANY:
-            for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
-                if (i < INVENTORY_SLOT_COUNT) {
-                    itemtocheck = &this->pInventoryItemList[i];
-                } else {
-                    itemtocheck = &this->pEquippedItems[i - INVENTORY_SLOT_COUNT];
-                }
+            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
+                itemtocheck = &this->pInventoryItemList[i];
 
                 if (isRegular(itemtocheck->uItemID) && !itemtocheck->IsBroken()) {
                     itemstobreaklist[itemstobreakcounter++] = i;
@@ -1730,12 +1724,12 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_ARMOUR)
                         itemstobreaklist[itemstobreakcounter++] =
-                            this->pEquipment.uArmor - 1;
+                            this->pEquipment[ITEM_SLOT_ARMOUR] - 1;
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
                         GetEquippedItemEquipType(i) == ITEM_TYPE_SHIELD)
                         itemstobreaklist[itemstobreakcounter++] =
-                            this->pEquipment.pIndices[i] - 1;
+                            this->pEquipment[i] - 1;
                 }
             }
 
@@ -1753,7 +1747,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_BOW)
                         itemstobreaklist[itemstobreakcounter++] =
-                            (unsigned char)(this->pEquipment.uBow) - 1;
+                            (unsigned char)(this->pEquipment[ITEM_SLOT_BOW]) - 1;
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
                         (GetEquippedItemEquipType(i) ==
@@ -1761,7 +1755,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
                          GetEquippedItemEquipType(i) ==
                              ITEM_TYPE_TWO_HANDED))
                         itemstobreaklist[itemstobreakcounter++] =
-                            this->pEquipment.pIndices[i] - 1;
+                            this->pEquipment[i] - 1;
                 }
             }
 
@@ -1937,7 +1931,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
 
             case SPECIAL_ATTACK_STEAL: {
                 playReaction(SPEECH_ITEM_BROKEN);
-                void *actoritems = &pActor->items[0];
+                ItemGen *actoritems = &pActor->items[0];
                 if (pActor->items[0].uItemID != ITEM_NULL) {
                     actoritems = &pActor->items[1];
                     if (pActor->items[1].uItemID != ITEM_NULL) {
@@ -1946,9 +1940,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
                     }
                 }
 
-                memcpy(actoritems,
-                       &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1],
-                       0x24u);
+                *actoritems = this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1];
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
                 pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
@@ -2406,14 +2398,14 @@ int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
     for (ItemSlot i : allItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
-                if (GetNthEquippedIndexItem(i)->special_enchantment ==
-                        ITEM_ENCHANTMENT_OF_RECOVERY ||
-                    (GetNthEquippedIndexItem(i)->uItemID ==
+                if (GetItem(i)->special_enchantment ==
+                    ITEM_ENCHANTMENT_OF_RECOVERY ||
+                    (GetItem(i)->uItemID ==
                      ITEM_ARTIFACT_ELVEN_CHAINMAIL))
                     return 50;
             }
             if (enchantment == ITEM_ENCHANTMENT_OF_FORCE) {
-                if (GetNthEquippedIndexItem(i)->special_enchantment ==
+                if (GetItem(i)->special_enchantment ==
                     ITEM_ENCHANTMENT_OF_FORCE)
                     return 5;
             }
@@ -2659,7 +2651,7 @@ int Character::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDm
         case CHARACTER_ATTRIBUTE_SKILL_LEARNING:
             for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
-                    currEquippedItem = GetNthEquippedIndexItem(i);
+                    currEquippedItem = GetItem(i);
                     if (attr == CHARACTER_ATTRIBUTE_AC_BONUS) {
                         if (isPassiveEquipment(currEquippedItem->GetItemEquipType())) {
                             v5 += currEquippedItem->GetDamageDice() +
@@ -2970,7 +2962,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             unsigned int ACSum = 0;
 
             for (ItemSlot j : allItemSlots()) {
-                const ItemGen *currItem = GetNthEquippedIndexItem(j);
+                const ItemGen *currItem = GetItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
                     CharacterSkillType itemSkillType =
                         (CharacterSkillType)currItem->GetPlayerSkillType();
@@ -3040,7 +3032,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             }
             for (ItemSlot i : allItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
-                    const ItemGen *currItem = GetNthEquippedIndexItem(i);
+                    const ItemGen *currItem = GetItem(i);
                     if (currItem->isMeleeWeapon()) {
                         CharacterSkillType currItemSkillType = currItem->GetPlayerSkillType();
                         int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -3063,9 +3055,9 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
             for (ItemSlot i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
+                    const ItemGen *currItemPtr = GetItem(i);
                     if (currItemPtr->isWeapon()) {
-                        CharacterSkillType currentItemSkillType = GetNthEquippedIndexItem(i)->GetPlayerSkillType();
+                        CharacterSkillType currentItemSkillType = GetItem(i)->GetPlayerSkillType();
                         int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
                         if (currentItemSkillType == CHARACTER_SKILL_BOW) {
                             int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BOW, 1, 1, 1, 1);
@@ -3091,7 +3083,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             }
             for (ItemSlot i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
+                    const ItemGen *currItemPtr = GetItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
                         CharacterSkillType currItemSkillType = currItemPtr->GetPlayerSkillType();
                         int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -3305,7 +3297,7 @@ void Character::Reset(CharacterClass cls) {
     pActiveSkills[CHARACTER_SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
     pActiveSkills[CHARACTER_SKILL_MISC] = CombinedSkillValue::novice();
     _achievedAwardsBits.reset();
-    memset(&spellbook, 0, sizeof(spellbook));
+    bHaveSpell.fill(false);
     uQuickSpell = SPELL_NONE;
 
     for (CharacterSkillType i : allSkills()) {
@@ -3315,10 +3307,9 @@ void Character::Reset(CharacterClass cls) {
         setSkillValue(i, CombinedSkillValue::novice());
     }
 
-    memset(&pEquipment, 0, sizeof(CharacterEquipment));
+    pEquipment.fill(0);
     pInventoryMatrix.fill(0);
     for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-    for (unsigned i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     health = GetMaxHealth();
     mana = GetMaxMana();
@@ -3897,7 +3888,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
     if (pParty->pPickedItem.isBook()) {
         SpellId bookSpellId = spellForSpellbook(pParty->pPickedItem.uItemID);
-        if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
+        if (playerAffected->bHaveSpell[bookSpellId]) {
             engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
@@ -3917,7 +3908,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[bookSpellId] = true;
+        playerAffected->bHaveSpell[bookSpellId] = true;
         playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -4426,14 +4417,9 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
                                 // regeneration
             v4 = 0;
             for (Character &character : pParty->pCharacters) {
-                for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
-                    ItemId itemId;
+                for (int invPos = 0; invPos < INVENTORY_SLOT_COUNT; invPos++) {
+                    ItemId itemId = character.pInventoryItemList[invPos].uItemID;
 
-                    if (invPos < INVENTORY_SLOT_COUNT) {
-                        itemId = character.pInventoryItemList[invPos].uItemID;
-                    } else {
-                        itemId = character.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
-                    }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
                             ++v4;
@@ -4503,8 +4489,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
             for (ItemSlot i : allItemSlots()) {
-                if (HasItemEquipped(i) &&
-                    GetNthEquippedIndexItem(i)->uItemID == ItemId(pValue)) {
+                if (HasItemEquipped(i) && GetItem(i)->uItemID == ItemId(pValue)) {
                     return true;
                 }
             }
@@ -4556,10 +4541,10 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_Class:
             this->classType = (CharacterClass)var_value;
             if ((CharacterClass)var_value == CLASS_LICH) {
-                for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
-                    if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
-                        this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pOwnItems[i].uHolderPlayer = getCharacterIndex();
+                for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
+                    if (this->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
+                        this->pInventoryItemList[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
+                        this->pInventoryItemList[i].uHolderPlayer = getCharacterIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -5759,12 +5744,11 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_PlayerItemInHands:
             for (ItemSlot i : allItemSlots()) {
-                int id_ = this->pEquipment.pIndices[i];
+                int id_ = this->pEquipment[i];
                 if (id_ > 0) {
-                    if (this->pInventoryItemList[this->pEquipment.pIndices[i] -
-                                                 1]
+                    if (this->pInventoryItemList[this->pEquipment[i] - 1]
                             .uItemID == ItemId(pValue)) {
-                        this->pEquipment.pIndices[i] = 0;
+                        this->pEquipment[i] = 0;
                     }
                 }
             }
@@ -6284,7 +6268,7 @@ void Character::EquipBody(ItemType uEquipType) {
 
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    itemInvLocation = pParty->activeCharacter().pEquipment.pIndices[itemAnchor];
+    itemInvLocation = pParty->activeCharacter().pEquipment[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
         tempPickedItem = pParty->pPickedItem;
         pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
@@ -6292,13 +6276,13 @@ void Character::EquipBody(ItemType uEquipType) {
         pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.uBodyAnchor = itemAnchor;
         pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
-        pParty->activeCharacter().pEquipment.pIndices[itemAnchor] = itemInvLocation;
+        pParty->activeCharacter().pEquipment[itemAnchor] = itemInvLocation;
     } else {  // одеть вещь
         freeSlot = pParty->activeCharacter().findFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
             pParty->activeCharacter().pInventoryItemList[freeSlot] = pParty->pPickedItem;
-            pParty->activeCharacter().pEquipment.pIndices[itemAnchor] = freeSlot + 1;
+            pParty->activeCharacter().pEquipment[itemAnchor] = freeSlot + 1;
             mouse->RemoveHoldingItem();
         }
     }
@@ -6347,9 +6331,9 @@ bool Character::hasItem(ItemId uItemID, bool checkHeldItem) {
             }
         }
         for (ItemSlot i : allItemSlots()) {
-            if (this->pEquipment.pIndices[i]) {
+            if (this->pEquipment[i]) {
                 if (this
-                        ->pInventoryItemList[this->pEquipment.pIndices[i] - 1]
+                        ->pInventoryItemList[this->pEquipment[i] - 1]
                         .uItemID == uItemID)
                     return true;
             }
@@ -6798,7 +6782,7 @@ void Character::OnInventoryLeftClick() {
                 if (!invItemIndex) {
                     return;
                 } else {
-                    memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex - 1], sizeof(pParty->pPickedItem));
+                    pParty->pPickedItem = this->pInventoryItemList[invItemIndex - 1];
                     this->RemoveItemAtInventoryIndex(invMatrixIndex);
                     pickedItemId = pParty->pPickedItem.uItemID;
                     mouse->SetCursorImage(pItemTable->pItems[pickedItemId].iconName);
@@ -6807,7 +6791,7 @@ void Character::OnInventoryLeftClick() {
             } else {  // hold item
                 if (invItemIndex) {
                     ItemGen *invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
-                    memcpy(&tmpItem, invItemPtr, sizeof(tmpItem));
+                    tmpItem = *invItemPtr;
                     int oldinvMatrixIndex = invMatrixIndex;
                     invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
                     this->RemoveItemAtInventoryIndex(oldinvMatrixIndex);
@@ -6817,19 +6801,19 @@ void Character::OnInventoryLeftClick() {
                         emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
                         if (!emptyIndex) {
                             this->PutItemArInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
-                            memcpy(invItemPtr, &tmpItem, sizeof(ItemGen));
+                            *invItemPtr = tmpItem;
                             return;
                         }
                     }
 
-                    memcpy(&pParty->pPickedItem, &tmpItem, sizeof(ItemGen));
+                    pParty->pPickedItem = tmpItem;
                     mouse->SetCursorImage(pParty->pPickedItem.GetIconName());
                     return;
                 } else {
                     itemPos = this->AddItem(invMatrixIndex, pickedItemId);
 
                     if (itemPos) {
-                        memcpy(&this->pInventoryItemList[itemPos - 1], &pParty->pPickedItem, sizeof(ItemGen));
+                        this->pInventoryItemList[itemPos - 1] = pParty->pPickedItem;
                         mouse->RemoveHoldingItem();
                         return;
                     }
@@ -6976,62 +6960,49 @@ void Character::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(CONDITION_UNCONSCIOUS, blockable);
 }
 
-ItemGen *Character::GetOffHandItem() { return GetItem(&CharacterEquipment::uOffHand); }
-const ItemGen *Character::GetOffHandItem() const { return GetItem(&CharacterEquipment::uOffHand); }
+ItemGen *Character::GetOffHandItem() { return GetItem(ITEM_SLOT_OFF_HAND); }
+const ItemGen *Character::GetOffHandItem() const { return GetItem(ITEM_SLOT_OFF_HAND); }
 
-ItemGen *Character::GetMainHandItem() { return GetItem(&CharacterEquipment::uMainHand); }
-const ItemGen *Character::GetMainHandItem() const { return GetItem(&CharacterEquipment::uMainHand); }
+ItemGen *Character::GetMainHandItem() { return GetItem(ITEM_SLOT_MAIN_HAND); }
+const ItemGen *Character::GetMainHandItem() const { return GetItem(ITEM_SLOT_MAIN_HAND); }
 
-ItemGen *Character::GetBowItem() { return GetItem(&CharacterEquipment::uBow); }
-const ItemGen *Character::GetBowItem() const { return GetItem(&CharacterEquipment::uBow); }
+ItemGen *Character::GetBowItem() { return GetItem(ITEM_SLOT_BOW); }
+const ItemGen *Character::GetBowItem() const { return GetItem(ITEM_SLOT_BOW); }
 
-ItemGen *Character::GetArmorItem() { return GetItem(&CharacterEquipment::uArmor); }
-const ItemGen *Character::GetArmorItem() const { return GetItem(&CharacterEquipment::uArmor); }
+ItemGen *Character::GetArmorItem() { return GetItem(ITEM_SLOT_ARMOUR); }
+const ItemGen *Character::GetArmorItem() const { return GetItem(ITEM_SLOT_ARMOUR); }
 
-ItemGen *Character::GetHelmItem() { return GetItem(&CharacterEquipment::uHelm); }
-const ItemGen *Character::GetHelmItem() const { return GetItem(&CharacterEquipment::uHelm); }
+ItemGen *Character::GetHelmItem() { return GetItem(ITEM_SLOT_HELMET); }
+const ItemGen *Character::GetHelmItem() const { return GetItem(ITEM_SLOT_HELMET); }
 
-ItemGen *Character::GetBeltItem() { return GetItem(&CharacterEquipment::uBelt); }
-const ItemGen *Character::GetBeltItem() const { return GetItem(&CharacterEquipment::uBelt); }
+ItemGen *Character::GetBeltItem() { return GetItem(ITEM_SLOT_BELT); }
+const ItemGen *Character::GetBeltItem() const { return GetItem(ITEM_SLOT_BELT); }
 
-ItemGen *Character::GetCloakItem() { return GetItem(&CharacterEquipment::uCloak); }
-const ItemGen *Character::GetCloakItem() const { return GetItem(&CharacterEquipment::uCloak); }
+ItemGen *Character::GetCloakItem() { return GetItem(ITEM_SLOT_CLOAK); }
+const ItemGen *Character::GetCloakItem() const { return GetItem(ITEM_SLOT_CLOAK); }
 
-ItemGen *Character::GetGloveItem() { return GetItem(&CharacterEquipment::uGlove); }
-const ItemGen *Character::GetGloveItem() const { return GetItem(&CharacterEquipment::uGlove); }
+ItemGen *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUTNLETS); }
+const ItemGen *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUTNLETS); }
 
-ItemGen *Character::GetBootItem() { return GetItem(&CharacterEquipment::uBoot); }
-const ItemGen *Character::GetBootItem() const { return GetItem(&CharacterEquipment::uBoot); }
+ItemGen *Character::GetBootItem() { return GetItem(ITEM_SLOT_BOOTS); }
+const ItemGen *Character::GetBootItem() const { return GetItem(ITEM_SLOT_BOOTS); }
 
-ItemGen *Character::GetAmuletItem() { return GetItem(&CharacterEquipment::uAmulet); }
-const ItemGen *Character::GetAmuletItem() const { return GetItem(&CharacterEquipment::uAmulet); }
+ItemGen *Character::GetAmuletItem() { return GetItem(ITEM_SLOT_AMULET); }
+const ItemGen *Character::GetAmuletItem() const { return GetItem(ITEM_SLOT_AMULET); }
 
-ItemGen *Character::GetNthRingItem(int ringNum) {
-    return GetNthEquippedIndexItem(ringSlot(ringNum));
-}
-const ItemGen *Character::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(ringSlot(ringNum)); }
+ItemGen *Character::GetNthRingItem(int ringNum) { return GetItem(ringSlot(ringNum)); }
+const ItemGen *Character::GetNthRingItem(int ringNum) const { return GetItem(ringSlot(ringNum)); }
 
-ItemGen *Character::GetNthEquippedIndexItem(ItemSlot index) {
-    if (this->pEquipment.pIndices[index] == 0) {
+ItemGen *Character::GetItem(ItemSlot index) {
+    if (this->pEquipment[index] == 0) {
         return nullptr;
     }
 
-    return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
+    return &this->pInventoryItemList[this->pEquipment[index] - 1];
 }
 
-const ItemGen *Character::GetNthEquippedIndexItem(ItemSlot index) const {
-    return const_cast<Character *>(this)->GetNthEquippedIndexItem(index);
-}
-
-ItemGen *Character::GetItem(unsigned int CharacterEquipment::*itemPos) {
-    if (this->pEquipment.*itemPos == 0) {
-        return nullptr;
-    }
-
-    return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
-}
-const ItemGen *Character::GetItem(unsigned int CharacterEquipment::*itemPos) const {
-    return const_cast<Character *>(this)->GetItem(itemPos);
+const ItemGen *Character::GetItem(ItemSlot index) const {
+    return const_cast<Character *>(this)->GetItem(index);
 }
 
 int Character::getCharacterIndex() {
@@ -7096,8 +7067,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
     if (pParty->Invisible())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
 
-    // v31 = character->pEquipment.uBow;
-    int bow_idx = character->pEquipment.uBow;
+    // v31 = character->pEquipment[ITEM_SLOT_BOW];
+    int bow_idx = character->pEquipment[ITEM_SLOT_BOW];
     if (bow_idx && character->pInventoryItemList[bow_idx - 1].IsBroken())
         bow_idx = 0;
 
@@ -7107,7 +7078,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     ItemId laser_weapon_item_id = ITEM_NULL;
 
-    int main_hand_idx = character->pEquipment.uMainHand;
+    int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
     if (main_hand_idx) {
         const ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
         // v5 = (char *)v1 + 36 * v4;
@@ -7116,7 +7087,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
             // v6 = v1->pInventoryItems[v4].uItemID;//*((int *)v5 + 124);
             if (item->isWand()) {
                 if (item->uNumCharges <= 0)
-                    character->pEquipment.uMainHand =
+                    character->pEquipment[ITEM_SLOT_MAIN_HAND] =
                         0;  // wand discharged - unequip
                 else
                     wand_item_id = item->uItemID;  // *((int *)v5 + 124);
@@ -7167,12 +7138,12 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        int main_hand_idx = character->pEquipment.uMainHand;
+        int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
         pushSpellOrRangedAttack(spellForWand(character->pInventoryItemList[main_hand_idx - 1].uItemID),
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
-            character->pEquipment.uMainHand = 0;
+            character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
@@ -7208,7 +7179,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (shotting_laser) {
         skill = CHARACTER_SKILL_BLASTER;
     } else {
-        int main_hand_idx = character->pEquipment.uMainHand;
+        int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand_idx)
             skill = character->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
 
@@ -7466,10 +7437,9 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
 
 //----- (0048C6AF) --------------------------------------------------------
 Character::Character() {
-    memset(&pEquipment, 0, sizeof(CharacterEquipment));
+    pEquipment.fill(0);
     pInventoryMatrix.fill(0);
     for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-    for (unsigned i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     for (auto &buf : pCharacterBuffs) {
         buf.Reset();

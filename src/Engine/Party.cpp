@@ -297,7 +297,7 @@ void Party::switchToNextActiveCharacter() {
 
 bool Party::hasItem(ItemId uItemID) {
     for (Character &player : this->pCharacters) {
-        for (ItemGen &item : player.pOwnItems) {
+        for (ItemGen &item : player.pInventoryItemList) {
             if (item.uItemID == uItemID)
                 return true;
         }
@@ -599,11 +599,6 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             for (int i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
                 if (pCharacter.pInventoryItemList[i].uItemID != ITEM_NULL) {
                     pCharacter.pInventoryItemList[i].SetIdentified();
-                }
-            }
-            for (int i = 0; i < Character::ADDITIONAL_SLOT_COUNT; i++) {
-                if (pCharacter.pEquippedItems[i].uItemID != ITEM_NULL) {
-                    pCharacter.pEquippedItems[i].SetIdentified();
                 }
             }
         }

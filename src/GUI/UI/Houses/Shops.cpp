@@ -360,7 +360,7 @@ void GUIWindow_Shop::repairDialogue() {
         if (pItemID == 0)
             return;
 
-        if (pParty->activeCharacter().pOwnItems[pItemID - 1].uAttributes & ITEM_BROKEN) {
+        if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].uAttributes & ITEM_BROKEN) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, houseId(), SHOP_SCREEN_REPAIR);

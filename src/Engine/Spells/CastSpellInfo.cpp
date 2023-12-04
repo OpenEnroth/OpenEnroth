@@ -250,7 +250,7 @@ void CastSpellInfoHelpers::castSpell() {
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
-            pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1];
+            pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment[ITEM_SLOT_BOW] - 1];
             pSpellSprite.uAttributes |= SPRITE_MISSILE;
             if (pParty->bTurnBasedModeOn) {
                 pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
@@ -274,10 +274,10 @@ void CastSpellInfoHelpers::castSpell() {
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
-            pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment.uMainHand - 1];
+            pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment[ITEM_SLOT_MAIN_HAND] - 1];
             // &pParty->pCharacters[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
             // *
-            // pParty->pCharacters[pCastSpell->uPlayerID].pEquipment.uMainHand + 5], );
+            // pParty->pCharacters[pCastSpell->uPlayerID].pEquipment[ITEM_SLOT_MAIN_HAND] + 5], );
             pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
             pSpellSprite.uAttributes |= SPRITE_MISSILE;
             if (pParty->bTurnBasedModeOn) {

@@ -60,7 +60,7 @@ FrameTableTxtLine *txt_file_frametable_parser(const char *str_to_parse,
         }
         tokens_buff1[i] = '\0';
     }
-    memcpy(tokens_table, &temp_tokens_table1, sizeof(FrameTableTxtLine));
+    *tokens_table = temp_tokens_table1;
     return tokens_table;
 }
 // F8BA58: using guessed type FrameTableTxtLine static_stru_F8BA58;
@@ -121,6 +121,6 @@ FrameTableTxtLine *frame_table_txt_parser(const char *str_to_parse,
 
         tokens_buff2[i] = '\0';
     }
-    memcpy(tokens_table, &temp_tokens_table2, sizeof(FrameTableTxtLine));
+    *tokens_table = temp_tokens_table2;
     return tokens_table;
 }

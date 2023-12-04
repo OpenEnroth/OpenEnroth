@@ -3051,7 +3051,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     if (pMonster->aiState == Fleeing) pMonster->attributes |= ACTOR_FLEEING;
     bool hit_will_stun = false, hit_will_paralyze = false;
     if (!projectileSprite) {
-        int main_hand_idx = character->pEquipment.uMainHand;
+        int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
         IsAdditionalDamagePossible = true;
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             CharacterSkillType main_hand_skill = character->GetMainHandItem()->GetPlayerSkillType();

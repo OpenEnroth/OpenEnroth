@@ -659,8 +659,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 void snapshot(const Character &src, Player_MM7 *dst) {
     memzero(dst);
 
-    for (unsigned int i = 0; i < 20; ++i)
-        dst->conditions[i] = src.conditions.Get(static_cast<Condition>(i)).value;
+    snapshot(raw(src.conditions), &dst->conditions);
 
     dst->experience = src.experience;
 
@@ -700,7 +699,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 
     snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
-    snapshot(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
+    snapshot(src.bHaveSpell, &dst->haveSpell);
 
     dst->pureLuckUsed = src.pure_luck_used;
     dst->pureSpeedUsed = src.pure_speed_used;
@@ -710,7 +709,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->pureAccuracyUsed = src.pure_accuracy_used;
     dst->pureMightUsed = src.pure_might_used;
 
-    snapshot(src.pOwnItems, &dst->ownItems);
+    snapshot(src.pInventoryItemList, &dst->inventoryItems);
     snapshot(src.pInventoryMatrix, &dst->inventoryMatrix);
 
     dst->resFireBase = src.sResFireBase;
@@ -747,7 +746,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->mana = src.mana;
     dst->birthYear = src.uBirthYear;
 
-    snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
+    snapshot(src.pEquipment, &dst->equipment);
 
     dst->lastOpenedSpellbookPage = std::to_underlying(src.lastOpenedSpellbookPage);
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
@@ -788,8 +787,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 }
 
 void reconstruct(const Player_MM7 &src, Character *dst) {
-    for (unsigned int i = 0; i < 20; ++i)
-        dst->conditions.Set(static_cast<Condition>(i), GameTime(src.conditions[i]));
+    reconstruct(src.conditions, &raw(dst->conditions));
 
     dst->experience = src.experience;
 
@@ -951,7 +949,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 
     reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
-    reconstruct(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
+    reconstruct(src.haveSpell, &dst->bHaveSpell);
 
     dst->pure_luck_used = src.pureLuckUsed;
     dst->pure_speed_used = src.pureSpeedUsed;
@@ -961,7 +959,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->pure_accuracy_used = src.pureAccuracyUsed;
     dst->pure_might_used = src.pureMightUsed;
 
-    reconstruct(src.ownItems, &dst->pOwnItems);
+    reconstruct(src.inventoryItems, &dst->pInventoryItemList);
     reconstruct(src.inventoryMatrix, &dst->pInventoryMatrix);
 
     dst->sResFireBase = src.resFireBase;
@@ -998,7 +996,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->mana = src.mana;
     dst->uBirthYear = src.birthYear;
 
-    reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
+    reconstruct(src.equipment, &dst->pEquipment);
 
     dst->lastOpenedSpellbookPage = static_cast<MagicSchool>(src.lastOpenedSpellbookPage);
     dst->uQuickSpell = static_cast<SpellId>(src.quickSpell);

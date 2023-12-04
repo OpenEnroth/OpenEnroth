@@ -2159,7 +2159,7 @@ void Inventory_ItemPopupAndAlchemy() {
             }
 
             if (pos != ITEM_SLOT_INVALID) {
-                item = pParty->activeCharacter().GetNthEquippedIndexItem(pos);
+                item = pParty->activeCharacter().GetItem(pos);
             }
         }
     } else {
@@ -2297,7 +2297,7 @@ void Inventory_ItemPopupAndAlchemy() {
             rightClickItemActionPerformed = true;
             int bottleId = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
             if (bottleId) {
-                pParty->activeCharacter().pOwnItems[bottleId - 1].uAttributes = ITEM_IDENTIFIED;
+                pParty->activeCharacter().pInventoryItemList[bottleId - 1].uAttributes = ITEM_IDENTIFIED;
             } else {
                 // Can't fit bottle in inventory - place it in hand
                 ItemGen bottle;

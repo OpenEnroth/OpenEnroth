@@ -110,7 +110,7 @@ void GUIWindow_Spellbook::openSpellbook() {
 
     MagicSchool chapter = player.lastOpenedSpellbookPage;
     for (SpellId spell : spellsForMagicSchool(chapter)) {
-        if (!player.spellbook.bHaveSpell[spell] && !engine->config->debug.AllMagic.value())
+        if (!player.bHaveSpell[spell] && !engine->config->debug.AllMagic.value())
             continue;
 
         int index = spellIndexInMagicSchool(spell);
@@ -176,7 +176,7 @@ void GUIWindow_Spellbook::Update() {
 
             for (SpellId spell : spellsForMagicSchool(player.lastOpenedSpellbookPage)) {
                 int index = spellIndexInMagicSchool(spell);
-                if (player.spellbook.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
+                if (player.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
                     // this should check if player knows spell
                     if (SBPageSSpellsTextureList[index + 1]) {
                         GraphicsImage *pTexture = (spellbookSelectedSpell == spell) ? SBPageCSpellsTextureList[index + 1] : SBPageSSpellsTextureList[index + 1];
@@ -227,7 +227,7 @@ void GUIWindow_Spellbook::loadSpellbook() {
         spellbookSelectedSpell = SPELL_NONE;
 
     for (SpellId spell : spellsForMagicSchool(page)) {
-        if (pParty->activeCharacter().spellbook.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
+        if (pParty->activeCharacter().bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
             int index = spellIndexInMagicSchool(spell);
             std::string pContainer;
 

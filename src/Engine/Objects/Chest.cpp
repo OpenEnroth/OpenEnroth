@@ -516,7 +516,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
             if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
-                memcpy(&pParty->activeCharacter().pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
+                pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = chestitem;
                 grabcount++;
                 engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.uItemID].pUnidentifiedName);
             } else {  // no room so set as holding item

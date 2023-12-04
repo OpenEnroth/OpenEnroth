@@ -1606,7 +1606,7 @@ void RegeneratePartyHealthMana() {
                     bool decrease_HP = false;
                     bool recovery_SP = false;
                     if (character.HasItemEquipped(idx)) {
-                        unsigned _idx = character.pEquipment.pIndices[idx];
+                        unsigned _idx = character.pEquipment[idx];
                         ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
                         if (!isRegular(equppedItem.uItemID)) {
                             if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {

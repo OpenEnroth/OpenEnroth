@@ -1377,7 +1377,7 @@ void Game::processQueuedMessages() {
 
                 Character *character = &pParty->activeCharacter();
                 SpellId selectedSpell = static_cast<SpellId>(uMessageParam);
-                if (character->spellbook.bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
+                if (character->bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
                         pEventTimer->Resume();

@@ -257,29 +257,6 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst);
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
-struct PlayerSpellbookChapter_MM7 {
-    /* 00 */ std::array<char, 11> isSpellAvailable;
-    /* 0B */
-};
-static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpellbookChapter_MM7)
-
-
-struct PlayerSpells_MM7 {
-    std::array<bool, 99> haveSpell;
-    uint8_t _pad;
-};
-static_assert(sizeof(PlayerSpells_MM7) == 0x64);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpells_MM7)
-
-
-union PlayerEquipment_MM7 {
-    std::array<uint32_t, 16> indices;
-};
-static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerEquipment_MM7)
-
-
 struct LloydBeacon_MM7 {
     uint64_t beaconTime;
     int32_t partyPosX;
@@ -296,7 +273,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LloydBeacon_MM7)
 
 
 struct Player_MM7 {
-    /* 0000 */ std::array<int64_t, 20> conditions;
+    /* 0000 */ std::array<int64_t, 19> conditions;
+    /* .... */ int64_t unusedCondition; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
     /* 00A0 */ uint64_t experience;
     /* 00A8 */ std::array<char, 16> name;
     /* 00B8 */ uint8_t sex;
@@ -333,8 +311,8 @@ struct Player_MM7 {
     /* 0104 */ int32_t field_104;
     /* 0108 */ std::array<uint16_t, 37> activeSkills;
     /* 0152 */ std::array<uint8_t, 64> achievedAwardsBits;
-    /* 0192 */ PlayerSpells_MM7 spellbook;
-    /* 01F6 */ uint16_t _pad2;
+    /* 0192 */ std::array<bool, 99> haveSpell;
+    /* .... */ std::array<char, 3> _pad2;
     /* 01F8 */ int32_t pureLuckUsed;
     /* 01FC */ int32_t pureSpeedUsed;
     /* 0200 */ int32_t pureIntellectUsed;
@@ -342,7 +320,8 @@ struct Player_MM7 {
     /* 0208 */ int32_t purePersonalityUsed;
     /* 020C */ int32_t pureAccuracyUsed;
     /* 0210 */ int32_t pureMightUsed;
-    /* 0214 */ std::array<ItemGen_MM7, 138> ownItems;
+    /* 0214 */ std::array<ItemGen_MM7, 126> inventoryItems;
+    /* .... */ std::array<ItemGen_MM7, 12> unusedItems;
     /* 157C */ std::array<int32_t, 126> inventoryMatrix;
     /* 1774 */ int16_t resFireBase;
     /* 1776 */ int16_t resAirBase;
@@ -379,7 +358,7 @@ struct Player_MM7 {
     /* 193C */ int32_t health;
     /* 1940 */ int32_t mana;
     /* 1944 */ uint32_t birthYear;
-    /* 1948 */ PlayerEquipment_MM7 equipment;
+    /* 1948 */ std::array<uint32_t, 16> equipment;
     /* 1988 */ std::array<int32_t, 49> field_1988; // field_1988[27] was set to 1 in party creation when character
                                                    // name was changed. We just set everything to zero.
     /* 1A4C */ char field_1A4C;
