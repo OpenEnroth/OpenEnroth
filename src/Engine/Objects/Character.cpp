@@ -758,7 +758,7 @@ int Character::CreateItemInInventory2(unsigned int index,
         result = 0;
     } else {
         PutItemArInventoryIndex(Src->uItemID, freeSlot, index);
-        memcpy(&pInventoryItemList[freeSlot], Src, sizeof(ItemGen));
+        pInventoryItemList[freeSlot] = *Src;
         result = freeSlot + 1;
     }
 
@@ -1573,7 +1573,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                     }
                 } else {
                     ItemGen *itemToSteal = &actroPtr->items[randslot];
-                    memcpy(&tempItem, itemToSteal, sizeof(tempItem));
+                    tempItem = *itemToSteal;
                     itemToSteal->Reset();
                     carriedItemId = tempItem.uItemID;
                 }
@@ -1931,7 +1931,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
 
             case SPECIAL_ATTACK_STEAL: {
                 playReaction(SPEECH_ITEM_BROKEN);
-                void *actoritems = &pActor->items[0];
+                ItemGen *actoritems = &pActor->items[0];
                 if (pActor->items[0].uItemID != ITEM_NULL) {
                     actoritems = &pActor->items[1];
                     if (pActor->items[1].uItemID != ITEM_NULL) {
@@ -1940,9 +1940,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
                     }
                 }
 
-                memcpy(actoritems,
-                       &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1],
-                       0x24u);
+                *actoritems = this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1];
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
                 pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
@@ -6784,7 +6782,7 @@ void Character::OnInventoryLeftClick() {
                 if (!invItemIndex) {
                     return;
                 } else {
-                    memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex - 1], sizeof(pParty->pPickedItem));
+                    pParty->pPickedItem = this->pInventoryItemList[invItemIndex - 1];
                     this->RemoveItemAtInventoryIndex(invMatrixIndex);
                     pickedItemId = pParty->pPickedItem.uItemID;
                     mouse->SetCursorImage(pItemTable->pItems[pickedItemId].iconName);
@@ -6793,7 +6791,7 @@ void Character::OnInventoryLeftClick() {
             } else {  // hold item
                 if (invItemIndex) {
                     ItemGen *invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
-                    memcpy(&tmpItem, invItemPtr, sizeof(tmpItem));
+                    tmpItem = *invItemPtr;
                     int oldinvMatrixIndex = invMatrixIndex;
                     invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
                     this->RemoveItemAtInventoryIndex(oldinvMatrixIndex);
@@ -6803,19 +6801,19 @@ void Character::OnInventoryLeftClick() {
                         emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
                         if (!emptyIndex) {
                             this->PutItemArInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
-                            memcpy(invItemPtr, &tmpItem, sizeof(ItemGen));
+                            *invItemPtr = tmpItem;
                             return;
                         }
                     }
 
-                    memcpy(&pParty->pPickedItem, &tmpItem, sizeof(ItemGen));
+                    pParty->pPickedItem = tmpItem;
                     mouse->SetCursorImage(pParty->pPickedItem.GetIconName());
                     return;
                 } else {
                     itemPos = this->AddItem(invMatrixIndex, pickedItemId);
 
                     if (itemPos) {
-                        memcpy(&this->pInventoryItemList[itemPos - 1], &pParty->pPickedItem, sizeof(ItemGen));
+                        this->pInventoryItemList[itemPos - 1] = pParty->pPickedItem;
                         mouse->RemoveHoldingItem();
                         return;
                     }

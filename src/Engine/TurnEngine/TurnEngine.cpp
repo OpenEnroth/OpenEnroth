@@ -267,8 +267,8 @@ void stru262_TurnBased::AITurnBasedAction() {
                 target_pid = ai_near_actors_targets_pid[i];
                 Actor::GetDirectionInfo(Pid(OBJECT_Actor, i), target_pid, &v6,
                                         0);
-                memcpy(&v15, &v6, sizeof(AIDirection));
-                memcpy(&v14, &v15, sizeof(AIDirection));
+                v15 = v6;
+                v14 = v15;
                 if (curr_actor->aiState == Dying) {
                     curr_actor->currentActionTime = 0;
                     curr_actor->currentActionLength = 0;
@@ -587,7 +587,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
         // a2a = ai_near_actors_targets_pid[v4];
         Actor::GetDirectionInfo(pQueue[queue_index].uPackedID,
                                 ai_near_actors_targets_pid[actor_id], &a3, 0);
-        memcpy(&a4, &a3, sizeof(a4));
+        a4 = a3;
         // v5 = &pActors[v4];
         // LOWORD(v3) = v5->uAIState;
         if ((pActors[actor_id].aiState != Dead) &&
@@ -665,8 +665,8 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 pActors[actor_id].monsterInfo.hostilityType =
                     HOSTILITY_FRIENDLY;
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, actor_id), v22, &v7, 0);
-            memcpy(&a3, &v7, sizeof(AIDirection));
-            memcpy(&v18, &a3, sizeof(AIDirection));
+            a3 = v7;
+            v18 = a3;
             v9 = a3.uDistance - pActors[actor_id].radius;
             if (v9 < 0) v9 = 0;
             if (v22.type() == OBJECT_Actor)
@@ -865,8 +865,8 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             HOSTILITY_FRIENDLY;
     Actor::GetDirectionInfo(pQueue[queue_position].uPackedID,
                             ai_near_actors_targets_pid[uActorID], &v9, 0);
-    memcpy(&a3, &v9, sizeof(AIDirection));
-    memcpy(&pDir, &a3, sizeof(AIDirection));
+    a3 = v9;
+    pDir = a3;
     v11 = a3.uDistance - pActors[uActorID].radius;
     if (v11 < 0) v11 = 0;
     pHostileType = pActors[uActorID].monsterInfo.hostilityType;
@@ -1000,7 +1000,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
                     uActorID, &ai_near_actors_targets_pid[uActorID], true);
                 Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v9,
                                         0);
-                memcpy(&a4, &v9, sizeof(AIDirection));
+                a4 = v9;
                 curr_acror->currentActionTime += pEventTimer->uTimeElapsed;
                 if (curr_acror->currentActionTime >
                     curr_acror->currentActionLength) {
