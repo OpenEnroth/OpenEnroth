@@ -95,7 +95,7 @@ class GameConfig : public Config {
 
      private:
         static int ValidateFrameTime(int frameTime) {
-            return std::clamp(frameTime, 1, 1000);
+            return std::max(frameTime, 1);
         }
     };
 

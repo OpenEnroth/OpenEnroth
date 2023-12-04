@@ -10,7 +10,7 @@ EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 
 void EngineDeterministicComponent::restart(int frameTimeMs, RandomEngineType rngType) {
-    assert(frameTimeMs >= 1 && frameTimeMs <= 1000);
+    assert(frameTimeMs >= 1);
 
     if (!_active)
         _oldRandomEngineType = component<EngineRandomComponent>()->type();
