@@ -232,7 +232,7 @@ struct ItemGen_MM7 {
     /* 19 */ uint8_t maxCharges;
     /* 1A */ uint8_t holderPlayer;
     /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
-    /* 1C */ uint64_t expireTime;
+    /* 1C */ int64_t expireTime;
 };
 static_assert(sizeof(ItemGen_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
@@ -258,7 +258,7 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
 struct LloydBeacon_MM7 {
-    uint64_t beaconTime;
+    int64_t beaconTime;
     int32_t partyPosX;
     int32_t partyPosY;
     int32_t partyPosZ;
@@ -428,7 +428,7 @@ struct Party_MM7 {
     /* 00020 */ int32_t yawRotationSpeed;  // deg/s
     /* 00024 */ int32_t jumpStrength;
     /* 00028 */ int32_t field_28;
-    /* 0002C */ uint64_t timePlayed;
+    /* 0002C */ int64_t timePlayed;
     /* 00034 */ int64_t lastRegenerationTime;
     /* 0003C */ PartyTimeStruct_MM7 partyTimes;
     /* 006B4 */ Vec3i position;
@@ -447,7 +447,9 @@ struct Party_MM7 {
                                             // Always set to zero on level loading, so in OE we are just saving 0 and
                                             // not using it when loading a savegame.
     /* 006F8 */ int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
-    /* 006FC */ int32_t waterLavaTimer;
+    /* 006FC */ int32_t waterLavaTimer; // Next game time when water/lava damage should be processed. This value will
+                                        // overflow after ~16 in-game years, and then the lava logic will trigger on
+                                        // the 1st frame after loading the game. We are OK with that.
     /* 00700 */ int32_t fallStartZ;
     /* 00704 */ uint32_t flying;
     /* 00708 */ char field_708; // Was set to 15 in Party::Reset & Party::Zero, not used for anything.
@@ -526,7 +528,8 @@ void snapshot(const Party &src, Party_MM7 *dst);
 void reconstruct(const Party_MM7 &src, Party *dst);
 
 struct Timer_MM7 {
-    /* 00 */ uint32_t ready;
+    /* 00 */ uint32_t ready; // Not used by the engine, was set to true for event timer & to false for misc timer.
+                             // Misc timer is never serialized, so we set it to true unconditionally.
     /* 04 */ uint32_t paused;
     /* 08 */ int32_t tackGameTime;
     /* 0C */ uint32_t startTime;

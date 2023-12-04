@@ -200,10 +200,10 @@ void CastSpellInfoHelpers::castSpell() {
             if (pCastSpell->overrideSkillValue || engine->config->debug.AllMagic.value()) {
                 uRequiredMana = 0;
             } else {
-                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[std::to_underlying(spell_mastery) - 1];
+                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[spell_mastery];
             }
 
-            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
+            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[spell_mastery];
         }
 
         // Recovery time for spell failure if it cannot be cast at all in current context
@@ -418,7 +418,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_MASS_DISTORTION]
-                            .Apply(GameTime(pMiscTimer->uTotalTimeElapsed + 128), spell_mastery, 0, 0, 0);
+                            .Apply(GameTime::FromTicks(pMiscTimer->uTotalTimeElapsed + 128), spell_mastery, 0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos;
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
@@ -1232,7 +1232,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -1545,7 +1545,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -1678,7 +1678,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -1779,7 +1779,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -1824,7 +1824,7 @@ void CastSpellInfoHelpers::castSpell() {
                                 pParty->pCharacters[i].health = pParty->pCharacters[i].GetMaxHealth();
                             }
                             if (pParty->pCharacters[i].health > 0) {
-                                pParty->pCharacters[i].SetUnconcious(GameTime(0));
+                                pParty->pCharacters[i].SetUnconcious(GameTime());
                             }
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
                         }
@@ -1849,7 +1849,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -1893,7 +1893,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -1926,7 +1926,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -2134,7 +2134,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -2221,7 +2221,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -2291,7 +2291,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);
@@ -2330,7 +2330,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = GameTime(0);
+                            spell_duration = GameTime();
                             break;
                         default:
                             assert(false);

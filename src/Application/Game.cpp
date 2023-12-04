@@ -651,7 +651,7 @@ void Game::processQueuedMessages() {
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
                                         for (Character &character : pParty->pCharacters) {
-                                            character.SetAsleep(GameTime(0));
+                                            character.conditions.Reset(CONDITION_SLEEP);
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
@@ -1183,7 +1183,7 @@ void Game::processQueuedMessages() {
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
                 for (Character &character : pParty->pCharacters) {
-                    character.SetAsleep(GameTime(1));
+                    character.SetAsleep(GameTime::FromTicks(1));
                 }
                 continue;
             }
@@ -1295,7 +1295,7 @@ void Game::processQueuedMessages() {
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                     for (Character &character : pParty->pCharacters) {
-                        character.SetAsleep(GameTime(1));
+                        character.SetAsleep(GameTime::FromTicks(1));
                     }
                 }
                 continue;

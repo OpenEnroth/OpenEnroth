@@ -261,7 +261,7 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
 void snapshot(const Timer &src, Timer_MM7 *dst) {
     memzero(dst);
 
-    dst->ready = src.bReady;
+    dst->ready = true;
     dst->paused = src.bPaused;
     dst->tackGameTime = src.bTackGameTime;
     dst->startTime = src.uStartTime;
@@ -273,7 +273,6 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
 }
 
 void reconstruct(const Timer_MM7 &src, Timer *dst) {
-    dst->bReady = src.ready;
     dst->bPaused = src.paused;
     dst->bTackGameTime = src.tackGameTime;
     dst->uStartTime = src.startTime;
@@ -370,7 +369,7 @@ void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
 void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
     memzero(dst);
 
-    dst->expireTime = src.expireTime.value;
+    snapshot(src.expireTime, &dst->expireTime);
     dst->power = src.power;
     dst->skillMastery = std::to_underlying(src.skillMastery);
     dst->overlayId = src.overlayID;
@@ -379,7 +378,7 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
 }
 
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
-    dst->expireTime.value = src.expireTime;
+    reconstruct(src.expireTime, &dst->expireTime);
     dst->power = src.power;
     dst->skillMastery = static_cast<CharacterSkillMastery>(src.skillMastery);
     dst->overlayID = src.overlayId;
@@ -410,7 +409,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->maxCharges = src.uMaxCharges;
     dst->holderPlayer = src.uHolderPlayer;
     dst->placedInChest = src.placedInChest;
-    dst->expireTime = src.uExpireTime.value;
+    snapshot(src.uExpireTime, &dst->expireTime);
 }
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
@@ -439,7 +438,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uMaxCharges = src.maxCharges;
     dst->uHolderPlayer = src.holderPlayer;
     dst->placedInChest = src.placedInChest;
-    dst->uExpireTime.value = src.expireTime;
+    reconstruct(src.expireTime, &dst->uExpireTime);
 }
 
 void snapshot(const Party &src, Party_MM7 *dst) {
@@ -455,8 +454,8 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->walkSpeed = src.walkSpeed;
     dst->yawRotationSpeed = src._yawRotationSpeed;
     dst->jumpStrength = src.jump_strength;
-    dst->timePlayed = src.playing_time.value;
-    dst->lastRegenerationTime = src.last_regenerated.value;
+    snapshot(src.playing_time, &dst->timePlayed);
+    snapshot(src.last_regenerated, &dst->lastRegenerationTime);
 
     snapshot(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime);
     dst->partyTimes.bountyHuntingNextGenerationTimeUnused.fill(0);
@@ -482,7 +481,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->prevEyeLevel = src.lastEyeLevel;
     dst->fallSpeed = src.speed.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
-    dst->waterLavaTimer = src._6FC_water_lava_timer;
+    dst->waterLavaTimer = src._6FC_water_lava_timer.value; // Can overflow and that's OK.
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
     dst->field_708 = 15; // Vanilla set this to 15, so we're doing the same just in case.
@@ -560,8 +559,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->walkSpeed = src.walkSpeed;
     dst->_yawRotationSpeed = src.yawRotationSpeed;
     dst->jump_strength = src.jumpStrength;
-    dst->playing_time.value = src.timePlayed;
-    dst->last_regenerated.value = src.lastRegenerationTime;
+    reconstruct(src.timePlayed, &dst->playing_time);
+    reconstruct(src.lastRegenerationTime, &dst->last_regenerated);
 
     reconstruct(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime);
     reconstruct(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
@@ -580,7 +579,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->lastEyeLevel = src.prevEyeLevel;
     dst->speed = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
-    dst->_6FC_water_lava_timer = src.waterLavaTimer;
+    dst->_6FC_water_lava_timer = GameTime::FromTicks(src.waterLavaTimer);
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
@@ -772,7 +771,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
         if (i >= src.vBeacons.size()) {
             continue;
         }
-        dst->installedBeacons[i].beaconTime = src.vBeacons[i].uBeaconTime.value;
+        snapshot(src.vBeacons[i].uBeaconTime, &dst->installedBeacons[i].beaconTime);
         dst->installedBeacons[i].partyPosX = src.vBeacons[i]._partyPos.x;
         dst->installedBeacons[i].partyPosY = src.vBeacons[i]._partyPos.y;
         dst->installedBeacons[i].partyPosZ = src.vBeacons[i]._partyPos.z;
@@ -1025,7 +1024,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
             LloydBeacon beacon;
-            beacon.uBeaconTime = GameTime(src.installedBeacons[i].beaconTime);
+            beacon.uBeaconTime = GameTime::FromTicks(src.installedBeacons[i].beaconTime);
             beacon._partyPos.x = src.installedBeacons[i].partyPosX;
             beacon._partyPos.y = src.installedBeacons[i].partyPosY;
             beacon._partyPos.z = src.installedBeacons[i].partyPosZ;

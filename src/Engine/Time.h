@@ -5,44 +5,33 @@
 
 const int game_starting_year = 1168;
 
-// Number of game ticks per 30 game seconds
-#define TIME_QUANT                  128
-#define TIME_SECONDS_PER_QUANT      30
-
-#define GAME_TIME_TO_SECONDS(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_SECONDS_PER_QUANT) / TIME_QUANT)
-#define SECONDS_TO_GAME_TIME(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_QUANT) / TIME_SECONDS_PER_QUANT)
-
 struct GameTime {
+    static constexpr int64_t TICKS_PER_REALTIME_SECOND = 128;
+    static constexpr int64_t GAME_SECONDS_IN_REALTIME_SECOND = 30; // Game time runs 30x faster than real time.
+
     GameTime() = default;
-    explicit GameTime(uint64_t val) : value(val) {}
     GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
-        this->value = SECONDS_TO_GAME_TIME(
-            seconds +
-            60ull * minutes +
-            3600ull * hours +
-            86400ull * days +
-            604800ull * weeks +
-            2419200ull * months +
-            29030400ull * years);
+        value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
+        value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
-    uint64_t GetSeconds() const {
-        return GAME_TIME_TO_SECONDS(this->value);
+    int64_t GetSeconds() const {
+        return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND;
     }
-    uint64_t GetMinutes() const { return this->GetSeconds() / 60; }
-    uint64_t GetHours() const { return this->GetMinutes() / 60; }
-    int GetDays() const { return (int)(this->GetHours() / 24); }
-    int GetWeeks() const { return this->GetDays() / 7; }
-    int GetMonths() const { return this->GetWeeks() / 4; }
-    int GetYears() const { return this->GetMonths() / 12; }
+    int64_t GetMinutes() const { return GetSeconds() / 60; }
+    int64_t GetHours() const { return GetMinutes() / 60; }
+    int GetDays() const { return GetHours() / 24; }
+    int GetWeeks() const { return GetDays() / 7; }
+    int GetMonths() const { return GetWeeks() / 4; }
+    int GetYears() const { return GetMonths() / 12; }
 
-    int GetSecondsFraction() const { return this->GetSeconds() % 60; }
-    int GetMinutesFraction() const { return this->GetMinutes() % 60; }
-    int GetHoursOfDay() const { return this->GetHours() % 24; }
-    int GetDaysOfWeek() const { return this->GetDays() % 7; }
-    int GetDaysOfMonth() const { return this->GetDays() % 28; }
-    int GetWeeksOfMonth() const { return this->GetWeeks() % 4; }
-    int GetMonthsOfYear() const { return this->GetMonths() % 12; }
+    int GetSecondsFraction() const { return GetSeconds() % 60; }
+    int GetMinutesFraction() const { return GetMinutes() % 60; }
+    int GetHoursOfDay() const { return GetHours() % 24; }
+    int GetDaysOfWeek() const { return GetDays() % 7; }
+    int GetDaysOfMonth() const { return GetDays() % 28; }
+    int GetWeeksOfMonth() const { return GetWeeks() % 4; }
+    int GetMonthsOfYear() const { return GetMonths() % 12; }
 
     [[nodiscard]] GameTime AddSeconds(int seconds) const {
         return *this + GameTime::FromSeconds(seconds);
@@ -69,26 +58,26 @@ struct GameTime {
         return *this + GameTime::FromYears(years);
     }
 
-    void SetExpired() { this->value = -1;  }
-    bool Expired() const { return this->value < 0; }
-    void Reset() { this->value = 0; }
-    bool Valid() const { return this->value > 0; }
+    void SetExpired() { value = -1;  }
+    bool Expired() const { return value < 0; }
+    void Reset() { value = 0; }
+    bool Valid() const { return value > 0; }
 
     friend GameTime operator+(const GameTime &l, const GameTime &r) {
-        return GameTime(l.value + r.value);
+        return GameTime::FromTicks(l.value + r.value);
     }
 
     friend GameTime operator-(const GameTime &l, const GameTime &r) {
-        return GameTime(l.value - r.value);
+        return GameTime::FromTicks(l.value - r.value);
     }
 
     GameTime &operator+=(const GameTime &rhs) {
-        this->value += rhs.value;
+        value += rhs.value;
         return *this;
     }
 
     GameTime &operator-=(const GameTime &rhs) {
-        this->value -= rhs.value;
+        value -= rhs.value;
         return *this;
     }
 
@@ -96,11 +85,14 @@ struct GameTime {
     friend auto operator<=>(const GameTime &l, const GameTime &r) = default;
 
     explicit operator bool() const {
-        return this->Valid();
+        return Valid();
     }
 
-    explicit operator int64_t() const { return this->value; }  // cast operator conversion require
-
+    static GameTime FromTicks(int64_t ticks) {
+        GameTime result;
+        result.value = ticks;
+        return result;
+    }
     static GameTime FromSeconds(int seconds) {
         return GameTime(seconds, 0, 0, 0, 0, 0, 0);
     }
@@ -124,11 +116,7 @@ struct GameTime {
 };
 
 struct Timer {
-    static Timer *Create() { return new Timer; }
-
     Timer() = default;
-
-    void Initialize();
 
     /**
      * @return                          Current real time (not game time!) in timer ticks. One tick is 1/128th of a
@@ -142,7 +130,6 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bReady = false; // Unused.
     unsigned int bPaused = false;
     int bTackGameTime = 0;
     unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).

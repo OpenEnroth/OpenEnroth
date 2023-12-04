@@ -227,17 +227,12 @@ struct Party {
     /**
      * Return id of character that is represented by given pointer.
      *
-     * @param character     Pointer to character class.
-     * @return              ID of character.
+     * @param character     `Character` pointer.
+     * @return              0-based index of the given character in party.
      */
     int getCharacterIdInParty(Character *character) {
-        for (int i = 0; i < pCharacters.size(); i++) {
-            if (&pCharacters[i] == character) {
-                return i;
-            }
-        }
-        assert(false && "Character not found.");
-        return -1;
+        assert(character >= pCharacters.data() && character < pCharacters.data() + pCharacters.size());
+        return character - pCharacters.data();
     }
 
     GameTime &GetPlayingTime() { return this->playing_time; }
@@ -292,7 +287,7 @@ struct Party {
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_id;  // face we are standing at
     SoundId currentWalkingSound; // previously was 'walk_sound_timer'
-    int _6FC_water_lava_timer;
+    GameTime _6FC_water_lava_timer;
     int uFallStartZ;
     unsigned int bFlying;
     uint8_t hirelingScrollPosition;

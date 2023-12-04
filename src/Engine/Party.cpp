@@ -90,13 +90,13 @@ void Party::Zero() {
     jump_strength = 5;
     playing_time = GameTime(0, 0, 0);
     last_regenerated = GameTime(0, 0, 0);
-    PartyTimes.bountyHuntNextGenTime.fill(GameTime(0));
-    PartyTimes.CounterEventValues.fill(GameTime(0));
-    PartyTimes.HistoryEventTimes.fill(GameTime(0));
-    PartyTimes.shopNextRefreshTime.fill(GameTime(0));
-    PartyTimes.guildNextRefreshTime.fill(GameTime(0));
-    PartyTimes.shopBanTimes.fill(GameTime(0));
-    PartyTimes._s_times.fill(GameTime(0));
+    PartyTimes.bountyHuntNextGenTime.fill(GameTime());
+    PartyTimes.CounterEventValues.fill(GameTime());
+    PartyTimes.HistoryEventTimes.fill(GameTime());
+    PartyTimes.shopNextRefreshTime.fill(GameTime());
+    PartyTimes.guildNextRefreshTime.fill(GameTime());
+    PartyTimes.shopBanTimes.fill(GameTime());
+    PartyTimes._s_times.fill(GameTime());
     pos = lastPos = Vec3f();
     speed = Vec3f();
     _viewYaw = _viewPrevYaw = 0;
@@ -105,7 +105,7 @@ void Party::Zero() {
     sPartySavedFlightZ = 0;
     floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
-    _6FC_water_lava_timer = 0;
+    _6FC_water_lava_timer = GameTime();
     uFallStartZ = 0;
     bFlying = 0;
     hirelingScrollPosition = 0;
@@ -691,7 +691,7 @@ void Party::Reset() {
 
     pIsArtifactFound.fill(false);
 
-    PartyTimes.shopBanTimes.fill(GameTime(0));
+    PartyTimes.shopBanTimes.fill(GameTime());
 
     pNPCStats->pNewNPCData = pNPCStats->pNPCData;
     pNPCStats->pGroups_copy = pNPCStats->pGroups;
@@ -733,7 +733,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
-    this->_6FC_water_lava_timer = 0;
+    this->_6FC_water_lava_timer = GameTime();
 
     for (Character &player : this->pCharacters) {
         for (SpellBuff &buff : player.pCharacterBuffs) {

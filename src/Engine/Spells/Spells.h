@@ -44,27 +44,11 @@ class SpellData {
               int16_t inMasterLevelRecovery, int16_t inMagisterLevelRecovery,
               int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats,
               CharacterSkillMastery inSkillMastery);
-    union {
-        uint16_t mana_per_skill[4];
-        struct {
-            uint16_t uNormalLevelMana;
-            uint16_t uExpertLevelMana;
-            uint16_t uMasterLevelMana;
-            uint16_t uMagisterLevelMana;
-        };
-    };
-    union {
-        uint16_t recovery_per_skill[4];
-        struct {
-            uint16_t uNormalLevelRecovery;
-            uint16_t uExpertLevelRecovery;
-            uint16_t uMasterLevelRecovery;
-            uint16_t uMagisterLevelRecovery;
-        };
-    };
+    IndexedArray<uint16_t, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> mana_per_skill;
+    IndexedArray<uint16_t, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> recovery_per_skill;
     int8_t baseDamage;
     int8_t bonusSkillDamage;
-    int16_t stats; // TODO(captainurist): flags.
+    int16_t stats; // TODO(captainurist): #enum flags.
     CharacterSkillMastery skillMastery;
     // char field_12;
     // char field_13;

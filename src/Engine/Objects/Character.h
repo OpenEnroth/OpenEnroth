@@ -45,7 +45,7 @@ struct LloydBeacon {
         image = nullptr;
     }
 
-    GameTime uBeaconTime = GameTime(0);
+    GameTime uBeaconTime = GameTime();
     Vec3i _partyPos = Vec3i(0, 0, 0);
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;
@@ -376,6 +376,9 @@ class Character {
     const ItemGen *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
+    /**
+     * @return                          0-based index of this character in the party.
+     */
     int getCharacterIndex();
 
     static void _42ECB5_CharacterAttacksActor();

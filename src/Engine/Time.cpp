@@ -78,9 +78,3 @@ void Timer::Update() {
 
     dt_fixpoint = (uTimeElapsed << 16) / 128;
 }
-
-//----- (00426402) --------------------------------------------------------
-void Timer::Initialize() {
-    uTotalTimeElapsed = 0;
-    bReady = true;
-}

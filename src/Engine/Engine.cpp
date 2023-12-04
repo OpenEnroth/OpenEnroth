@@ -690,8 +690,7 @@ void Engine::MM7_Initialize() {
     grng->seed(platform->tickCount());
     vrng->seed(platform->tickCount());
 
-    pEventTimer = Timer::Create();
-    pEventTimer->Initialize();
+    pEventTimer = new Timer();
 
     pParty = new Party();
 
@@ -1257,9 +1256,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // water damage
-    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE &&
-        pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
+    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + GameTime::FromTicks(128);
         for (Character &character : pParty->pCharacters) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
@@ -1279,9 +1277,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // lava damage
-    if (pParty->uFlags & PARTY_FLAG_BURNING &&
-        pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
+    if (pParty->uFlags & PARTY_FLAG_BURNING && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + GameTime::FromTicks(128);
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
@@ -1304,7 +1301,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
         if (character.timeToRecovery && recoveryTimeDt > 0)
-            character.Recover(GameTime(recoveryTimeDt));
+            character.Recover(GameTime::FromTicks(recoveryTimeDt));
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             character.health + character.uEndurance >= 1 ||

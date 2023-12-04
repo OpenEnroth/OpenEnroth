@@ -213,7 +213,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                            SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkillMastery) {
-    GameTime spellLength = GameTime(0);
+    GameTime spellLength;
 
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];

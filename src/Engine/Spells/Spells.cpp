@@ -150,19 +150,20 @@ SpellData::SpellData(int16_t inNormalMana,
                      int8_t inBaseDamage,
                      int8_t inBonusSkillDamage,
                      int16_t inStats,
-                     CharacterSkillMastery inSkillMastery)
-    : uNormalLevelMana(inNormalMana),
-      uExpertLevelMana(inExpertLevelMana),
-      uMasterLevelMana(inMasterLevelMana),
-      uMagisterLevelMana(inMagisterLevelMana),
-      uNormalLevelRecovery(inNormalLevelRecovery),
-      uExpertLevelRecovery(inExpertLevelRecovery),
-      uMasterLevelRecovery(inMasterLevelRecovery),
-      uMagisterLevelRecovery(inMagisterLevelRecovery),
-      baseDamage(inBaseDamage),
-      bonusSkillDamage(inBonusSkillDamage),
-      stats(inStats),
-      skillMastery(inSkillMastery) {}
+                     CharacterSkillMastery inSkillMastery) {
+    mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = inNormalMana;
+    mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelMana;
+    mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = inMasterLevelMana;
+    mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = inMagisterLevelMana;
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = inNormalLevelRecovery;
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelRecovery;
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = inMasterLevelRecovery;
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = inMagisterLevelRecovery;
+    baseDamage = inBaseDamage;
+    bonusSkillDamage = inBonusSkillDamage;
+    stats = inStats;
+    skillMastery = inSkillMastery;
+}
 
 /**
  * Description of spells.

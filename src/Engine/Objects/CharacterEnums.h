@@ -28,7 +28,7 @@ enum class Condition : uint32_t {
 };
 using enum Condition;
 
-// TODO(pskelton): drop CHARACTER_ at start?
+// TODO(pskelton): #enum drop CHARACTER_SKILL_ at start?
 enum class CharacterSkillMastery {
     CHARACTER_SKILL_MASTERY_NONE = 0,
     CHARACTER_SKILL_MASTERY_NOVICE = 1,
