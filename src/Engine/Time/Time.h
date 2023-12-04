@@ -26,6 +26,7 @@ struct Time {
     static Time fromMonths(int months) { return Time(0, 0, 0, 0, 0, months, 0); }
     static Time fromYears(int years) { return Time(0, 0, 0, 0, 0, 0, years); }
 
+    int64_t ticks() const { return value; }
     int64_t toSeconds() const { return value * Duration::GAME_SECONDS_IN_REALTIME_SECOND / Duration::TICKS_PER_REALTIME_SECOND; }
     int64_t toMinutes() const { return toSeconds() / 60; }
     int64_t toHours() const { return toMinutes() / 60; }
@@ -79,3 +80,9 @@ struct Time {
 
     int64_t value = 0;
 };
+
+inline Time operator+(const Time &l, const Duration &r) {
+    return Time::fromTicks(l.ticks() + r.ticks());
+}
+
+// We don't provide operator+(Duration, Time)

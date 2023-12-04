@@ -27,6 +27,7 @@ class Duration {
     static Duration fromMonths(int months) { return Duration(0, 0, 0, 0, 0, months, 0); }
     static Duration fromYears(int years) { return Duration(0, 0, 0, 0, 0, 0, years); }
 
+    int64_t ticks() const { return value; }
     int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
     int64_t toMinutes() const { return toSeconds() / 60; }
     int64_t toHours() const { return toMinutes() / 60; }

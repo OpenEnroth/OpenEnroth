@@ -213,7 +213,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                            SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkillMastery) {
-    Time spellLength;
+    Duration spellLength;
 
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];
@@ -275,13 +275,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromMinutes(40 + 2 * realPoints);
+                    spellLength = Duration::fromMinutes(40 + 2 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromMinutes(45 + 3 * realPoints);
+                    spellLength = Duration::fromMinutes(45 + 3 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -412,13 +412,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromHours(64 + realPoints);
+                    spellLength = Duration::fromHours(64 + realPoints);
                     break;
                 default:
                     assert(false);
@@ -435,13 +435,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromHours(64 + realPoints);
+                    spellLength = Duration::fromHours(64 + realPoints);
                     break;
                 default:
                     assert(false);
@@ -458,13 +458,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 20 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 20 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -505,13 +505,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromHours(1) + Time::fromMinutes(4 + 20 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 20 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -566,15 +566,15 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     assert(false);
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromMinutes(64 + 5 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 5 * realPoints);
                     spellPower = realPoints;
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromMinutes(64 + 15 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 15 * realPoints);
                     spellPower = 3 * realPoints;
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromMinutes(64 + 20 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 20 * realPoints);
                     spellPower = 4 * realPoints;
                     break;
             }
@@ -590,13 +590,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = Time::fromMinutes(64 + 5 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromMinutes(64 + 15 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromMinutes(64 + 20 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 20 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -666,10 +666,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = Time::fromMinutes(64) + Time::fromSeconds(5 * 30 * realPoints);
+                    spellLength = Duration::fromMinutes(64) + Duration::fromSeconds(5 * 30 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = Time::fromMinutes(64) + Time::fromSeconds(15 * 30 * realPoints);
+                    spellLength = Duration::fromMinutes(64) + Duration::fromSeconds(15 * 30 * realPoints);
                     break;
                 default:
                     assert(false);
