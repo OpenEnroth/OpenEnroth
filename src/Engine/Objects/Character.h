@@ -45,7 +45,7 @@ struct LloydBeacon {
         image = nullptr;
     }
 
-    GameTime uBeaconTime = GameTime(0);
+    GameTime uBeaconTime = GameTime();
     Vec3i _partyPos = Vec3i(0, 0, 0);
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;

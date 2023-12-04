@@ -14,7 +14,6 @@ const int game_starting_year = 1168;
 
 struct GameTime {
     GameTime() = default;
-    explicit GameTime(int64_t val) : value(val) {}
     GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
         this->value = SECONDS_TO_GAME_TIME(
             seconds +
@@ -75,11 +74,11 @@ struct GameTime {
     bool Valid() const { return this->value > 0; }
 
     friend GameTime operator+(const GameTime &l, const GameTime &r) {
-        return GameTime(l.value + r.value);
+        return GameTime::FromTicks(l.value + r.value);
     }
 
     friend GameTime operator-(const GameTime &l, const GameTime &r) {
-        return GameTime(l.value - r.value);
+        return GameTime::FromTicks(l.value - r.value);
     }
 
     GameTime &operator+=(const GameTime &rhs) {
@@ -101,6 +100,11 @@ struct GameTime {
 
     explicit operator int64_t() const { return this->value; }  // cast operator conversion require
 
+    static GameTime FromTicks(int64_t ticks) {
+        GameTime result;
+        result.value = ticks;
+        return result;
+    }
     static GameTime FromSeconds(int seconds) {
         return GameTime(seconds, 0, 0, 0, 0, 0, 0);
     }

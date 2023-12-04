@@ -1303,7 +1303,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
         if (character.timeToRecovery && recoveryTimeDt > 0)
-            character.Recover(GameTime(recoveryTimeDt));
+            character.Recover(GameTime::FromTicks(recoveryTimeDt));
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             character.health + character.uEndurance >= 1 ||

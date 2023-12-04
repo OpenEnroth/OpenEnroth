@@ -1605,14 +1605,14 @@ void Character::Heal(int amount) {
 
         if (IsUnconcious()) {
             if (health > 0) {  // wake up if health rises above 0
-                SetUnconcious(GameTime(0));
+                conditions.Reset(CONDITION_UNCONSCIOUS);
             }
         }
     }
 }
 
 int Character::receiveDamage(signed int amount, DamageType dmg_type) {
-    SetAsleep(GameTime(0));  // wake up if asleep
+    conditions.Reset(CONDITION_SLEEP);  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
     if (!engine->config->debug.NoDamage.value()) {

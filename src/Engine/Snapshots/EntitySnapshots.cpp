@@ -1024,7 +1024,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
             LloydBeacon beacon;
-            beacon.uBeaconTime = GameTime(src.installedBeacons[i].beaconTime);
+            beacon.uBeaconTime = GameTime::FromTicks(src.installedBeacons[i].beaconTime);
             beacon._partyPos.x = src.installedBeacons[i].partyPosX;
             beacon._partyPos.y = src.installedBeacons[i].partyPosY;
             beacon._partyPos.z = src.installedBeacons[i].partyPosZ;

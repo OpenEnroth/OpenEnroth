@@ -19,10 +19,10 @@
 #include "Library/Logger/Logger.h"
 
 struct MapTimer {
-    GameTime interval = GameTime(0);
-    GameTime timeInsideDay = GameTime(0);
-    GameTime altInterval = GameTime(0);
-    GameTime alarmTime = GameTime(0);
+    GameTime interval;
+    GameTime timeInsideDay;
+    GameTime altInterval;
+    GameTime alarmTime;
     int eventId = 0;
     int eventStep = 0;
 };
@@ -37,7 +37,7 @@ static std::vector<int> decorationsWithEvents;
 
 // Was in original code and ensures that timers are checked not more often than 30 game seconds.
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
-static GameTime timerGuard = GameTime(0);
+static GameTime timerGuard;
 
 int savedEventID;
 int savedEventStep;
@@ -123,7 +123,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                     }
                 } else {
                     // Set alarm time to zero because it must always fire
-                    timer.alarmTime = GameTime(0);
+                    timer.alarmTime = GameTime();
                 }
             } else {
                 if (levelLastVisit) {
@@ -231,7 +231,7 @@ static void checkTimer(MapTimer &timer) {
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
-            if (timer.alarmTime == GameTime(0) && timer.interval == GameTime::FromDays(1)) {
+            if (!timer.alarmTime.Valid() && timer.interval == GameTime::FromDays(1)) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
                 timer.alarmTime = timer.timeInsideDay;
             }

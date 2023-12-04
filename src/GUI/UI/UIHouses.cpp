@@ -345,7 +345,7 @@ bool enterHouse(HouseId uHouseID) {
 
     if (isShop(uHouseID)) {
         if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
-            pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime(0);
+            pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime();
         } else {
             engine->_statusBar->setEvent(LSTR_BANNED_FROM_SHOP);
             return false;
@@ -1119,7 +1119,7 @@ void GUIWindow_House::Update() {
         return;
     }
     if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
-        pParty->PartyTimes.shopBanTimes[houseId()] = GameTime(0);
+        pParty->PartyTimes.shopBanTimes[houseId()] = GameTime();
         return;
     }
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving
