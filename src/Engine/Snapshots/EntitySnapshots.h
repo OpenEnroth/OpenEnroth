@@ -528,7 +528,7 @@ void snapshot(const Party &src, Party_MM7 *dst);
 void reconstruct(const Party_MM7 &src, Party *dst);
 
 struct Timer_MM7 {
-    /* 00 */ uint32_t ready; // Not by the engine, was set to true for event timer & to false for misc timer.
+    /* 00 */ uint32_t ready; // Not used by the engine, was set to true for event timer & to false for misc timer.
                              // Misc timer is never serialized, so we set it to true unconditionally.
     /* 04 */ uint32_t paused;
     /* 08 */ int32_t tackGameTime;
