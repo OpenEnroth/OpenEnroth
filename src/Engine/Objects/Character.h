@@ -72,12 +72,12 @@ class CharacterConditions {
     }
 
     void Reset(Condition condition) {
-        this->_times[condition].Reset();
+        this->_times[condition] = GameTime();
     }
 
     void ResetAll() {
         for (GameTime &time : _times)
-            time.Reset();
+            time = GameTime();
     }
 
     void Set(Condition condition, GameTime time) {

@@ -32,10 +32,11 @@ struct GameTime {
     int daysOfMonth() const { return toDays() % 28; }
     int weeksOfMonth() const { return toWeeks() % 4; }
     int monthsOfYear() const { return toMonths() % 12; }
-    
+
+    // TODO(captainurist): doesn't belong to GameTime.
     void SetExpired() { value = -1;  }
     bool Expired() const { return value < 0; }
-    void Reset() { value = 0; }
+
     bool Valid() const { return value > 0; }
 
     friend GameTime operator+(const GameTime &l, const GameTime &r) {

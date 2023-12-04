@@ -431,7 +431,7 @@ const IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> Sp
 void SpellBuff::Reset() {
     skillMastery = CHARACTER_SKILL_MASTERY_NONE;
     power = 0;
-    expireTime.Reset();
+    expireTime = GameTime();
     caster = 0;
     isGMBuff = false;
     if (overlayID) {
