@@ -257,21 +257,6 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst);
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
-struct PlayerSpellbookChapter_MM7 {
-    /* 00 */ std::array<char, 11> isSpellAvailable;
-    /* 0B */
-};
-static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpellbookChapter_MM7)
-
-
-struct PlayerSpells_MM7 {
-    std::array<bool, 99> haveSpell;
-    uint8_t _pad;
-};
-static_assert(sizeof(PlayerSpells_MM7) == 0x64);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerSpells_MM7)
-
 struct LloydBeacon_MM7 {
     uint64_t beaconTime;
     int32_t partyPosX;
@@ -325,8 +310,8 @@ struct Player_MM7 {
     /* 0104 */ int32_t field_104;
     /* 0108 */ std::array<uint16_t, 37> activeSkills;
     /* 0152 */ std::array<uint8_t, 64> achievedAwardsBits;
-    /* 0192 */ PlayerSpells_MM7 spellbook;
-    /* 01F6 */ uint16_t _pad2;
+    /* 0192 */ std::array<bool, 99> haveSpell;
+    /* .... */ std::array<char, 3> _pad2;
     /* 01F8 */ int32_t pureLuckUsed;
     /* 01FC */ int32_t pureSpeedUsed;
     /* 0200 */ int32_t pureIntellectUsed;

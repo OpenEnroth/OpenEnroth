@@ -3297,7 +3297,7 @@ void Character::Reset(CharacterClass cls) {
     pActiveSkills[CHARACTER_SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
     pActiveSkills[CHARACTER_SKILL_MISC] = CombinedSkillValue::novice();
     _achievedAwardsBits.reset();
-    memset(&spellbook, 0, sizeof(spellbook));
+    bHaveSpell.fill(false);
     uQuickSpell = SPELL_NONE;
 
     for (CharacterSkillType i : allSkills()) {
@@ -3888,7 +3888,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
     if (pParty->pPickedItem.isBook()) {
         SpellId bookSpellId = spellForSpellbook(pParty->pPickedItem.uItemID);
-        if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
+        if (playerAffected->bHaveSpell[bookSpellId]) {
             engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
@@ -3908,7 +3908,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[bookSpellId] = true;
+        playerAffected->bHaveSpell[bookSpellId] = true;
         playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {

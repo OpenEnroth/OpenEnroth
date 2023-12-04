@@ -700,7 +700,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 
     snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
-    snapshot(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
+    snapshot(src.bHaveSpell, &dst->haveSpell);
 
     dst->pureLuckUsed = src.pure_luck_used;
     dst->pureSpeedUsed = src.pure_speed_used;
@@ -951,7 +951,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 
     reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
-    reconstruct(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
+    reconstruct(src.haveSpell, &dst->bHaveSpell);
 
     dst->pure_luck_used = src.pureLuckUsed;
     dst->pure_speed_used = src.pureSpeedUsed;

@@ -54,14 +54,6 @@ struct LloydBeacon {
     GraphicsImage *image = nullptr;
 };
 
-struct CharacterSpellbookChapter {
-    std::array<char, 11> bIsSpellAvailable;
-};
-
-struct CharacterSpells {
-    IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
-};
-
 class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
@@ -425,7 +417,7 @@ class Character {
     int field_104;
     IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
-    CharacterSpells spellbook;
+    IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
     int pure_luck_used;
     int pure_speed_used;
     int pure_intellect_used;
