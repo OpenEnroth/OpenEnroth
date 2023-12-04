@@ -374,7 +374,7 @@ void SaveNewGame() {
 }
 
 void QuickSaveGame() {
-    assert(pCurrentMapName != "d05.blv"); // Not Arena.
+    if (pCurrentMapName == "d05.blv") return; // Not Arena.
     pSavegameList->Initialize();
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();
@@ -445,5 +445,5 @@ void QuickLoadGame() {
 }
 
 std::string GetCurrentQuickSave() {
-    return engine->config->gameplay.QuickSaveName.value() + std::to_string(engine->config->gameplay.QuickSavesCount.value()) + ".mm7";
+    return fmt::format( "{}{}.mm7", engine->config->gameplay.QuickSaveName.value(), engine->config->gameplay.QuickSavesCount.value());
 }
