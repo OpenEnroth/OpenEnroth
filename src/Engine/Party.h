@@ -227,17 +227,12 @@ struct Party {
     /**
      * Return id of character that is represented by given pointer.
      *
-     * @param character     Pointer to character class.
-     * @return              ID of character.
+     * @param character     `Character` pointer.
+     * @return              0-based index of the given character in party.
      */
     int getCharacterIdInParty(Character *character) {
-        for (int i = 0; i < pCharacters.size(); i++) {
-            if (&pCharacters[i] == character) {
-                return i;
-            }
-        }
-        assert(false && "Character not found.");
-        return -1;
+        assert(character >= pCharacters.data() && character < pCharacters.data() + pCharacters.size());
+        return character - pCharacters.data();
     }
 
     GameTime &GetPlayingTime() { return this->playing_time; }

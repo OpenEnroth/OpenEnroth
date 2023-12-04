@@ -376,6 +376,9 @@ class Character {
     const ItemGen *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
+    /**
+     * @return                          0-based index of this character in the party.
+     */
     int getCharacterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
