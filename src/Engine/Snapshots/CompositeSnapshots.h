@@ -21,7 +21,7 @@ struct OutdoorLocation;
 struct SpriteFrameTable;
 class LodReader;
 class LodWriter;
-
+class FontData;
 
 struct IndoorLocation_MM7 {
     BLVHeader_MM7 header;
@@ -149,3 +149,11 @@ struct SpriteFrameTable_MM7 {
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst);
 void deserialize(InputStream &src, SpriteFrameTable_MM7 *dst);
 
+
+struct FontData_MM7 {
+    FontHeader_MM7 header;
+    std::vector<uint8_t> pixels;
+};
+
+void reconstruct(const FontData_MM7 &src, FontData *dst);
+void deserialize(InputStream &src, FontData_MM7 *dst);

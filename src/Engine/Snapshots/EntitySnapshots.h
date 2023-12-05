@@ -37,7 +37,7 @@ struct BSPNode;
 struct Chest;
 struct ChestDesc;
 struct DecorationDesc;
-struct FontData;
+struct FontHeader;
 struct GUICharMetric;
 struct ItemGen;
 struct LevelDecoration;
@@ -864,7 +864,7 @@ void snapshot(const GUICharMetric &src, GUICharMetric_MM7 *dst);
 void reconstruct(const GUICharMetric_MM7 &src, GUICharMetric *dst);
 
 
-struct FontData_MM7 {
+struct FontHeader_MM7 {
     uint8_t cFirstChar;  // 0
     uint8_t cLastChar;   // 1
     uint8_t field_2;
@@ -876,13 +876,12 @@ struct FontData_MM7 {
     std::array<uint32_t, 5> pFontPalettes;
     std::array<GUICharMetric_MM7, 256> pMetrics;
     std::array<uint32_t, 256> font_pixels_offset;
-    uint8_t pFontData[0];  // array of font pixels
+    // array of font pixels follows in the serialized representation.
 };
-static_assert(sizeof(FontData_MM7) == 0x1020);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(FontData_MM7)
+static_assert(sizeof(FontHeader_MM7) == 0x1020);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(FontHeader_MM7)
 
-void snapshot(const FontData &src, FontData_MM7 *dst);
-void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst);
+void reconstruct(const FontHeader_MM7 &src, FontHeader *dst);
 
 
 struct ODMFace_MM7 {
