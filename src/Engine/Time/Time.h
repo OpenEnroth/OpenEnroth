@@ -96,3 +96,7 @@ inline Time operator+(const Time &l, const Duration &r) {
 }
 
 // We don't provide operator+(Duration, Time)
+
+inline Time operator-(const Time &l, const Duration &r) {
+    return Time::fromTicks(l.ticks() - r.ticks());
+}
