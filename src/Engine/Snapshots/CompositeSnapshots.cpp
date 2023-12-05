@@ -1,6 +1,7 @@
 #include "CompositeSnapshots.h"
 
 #include <string>
+#include <algorithm>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -15,6 +16,8 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+
+#include "GUI/GUIFont.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Lod/LodWriter.h"
@@ -569,4 +572,23 @@ void deserialize(InputStream &src, SpriteFrameTable_MM7 *dst) {
     deserialize(src, &dst->eframeCount);
     deserialize(src, &dst->frames, tags::presized(dst->frameCount));
     deserialize(src, &dst->eframes, tags::presized(dst->eframeCount));
+}
+
+void reconstruct(const FontData_MM7 &src, FontData *dst) {
+    reconstruct(src.header, &dst->header);
+    reconstruct(src.pixels, &dst->pixels);
+}
+
+void deserialize(InputStream &src, FontData_MM7 *dst) {
+    deserialize(src, &dst->header);
+
+    size_t dataSize = 0;
+    for (size_t i = 0; i < 256; i++) {
+        size_t charOffset = dst->header.font_pixels_offset[i];
+        size_t charSize = dst->header.uFontHeight * dst->header.pMetrics[i].uWidth;
+
+        dataSize = std::max(dataSize, charOffset + charSize);
+    }
+
+    deserialize(src, &dst->pixels, tags::presized(dataSize));
 }

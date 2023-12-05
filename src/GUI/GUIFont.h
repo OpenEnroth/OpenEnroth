@@ -15,29 +15,26 @@ struct GUICharMetric {
     int32_t uRightSpacing;
 };
 
-struct FontData {
-    uint8_t cFirstChar = 0;  // 0
-    uint8_t cLastChar = 0;   // 1
-    uint16_t uFontHeight = 0;  // 5-6
-    uint32_t palletes_count = 0;
-    std::array<Palette, 5> pFontPalettes = {{}};
+struct FontHeader {
+    uint8_t cFirstChar = 0;
+    uint8_t cLastChar = 0;
+    uint16_t uFontHeight = 0;
     std::array<GUICharMetric, 256> pMetrics = {{}};
     std::array<uint32_t, 256> font_pixels_offset = {{}};
-    std::vector<uint8_t> pFontData;  // array of font pixels
-//    uint8_t pFontData[0];  // array of font pixels
+};
+
+struct FontData {
+    FontHeader header;
+    std::vector<uint8_t> pixels;
 };
 
 class GUIWindow;
 class GraphicsImage;
-struct FontData;
 
 class GUIFont {
  public:
-    GUIFont () : pData(new FontData()) {}
-    ~GUIFont() {
-        ReleaseFontTex();
-        delete pData;
-    }
+    GUIFont();
+    ~GUIFont();
 
     static std::unique_ptr<GUIFont> LoadFont(const std::string &pFontFile, const std::string &pFontPalette);
 
@@ -90,14 +87,16 @@ class GUIFont {
     GraphicsImage *fonttex = nullptr;
     GraphicsImage *fontshadow = nullptr;
 
- protected:
-    FontData *pData;
-
+ private:
     std::string FitTwoFontStringINWindow(const std::string &inString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     bool return_on_carriage = false);
     void DrawTextLineToBuff(Color color, Color *uX_buff_pos,
                             const std::string &text, int line_width);
+
+ private:
+    FontData pData;
+    Palette palette;
 };
 
 void ReloadFonts();

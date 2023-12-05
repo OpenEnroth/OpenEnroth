@@ -1425,30 +1425,13 @@ void reconstruct(const GUICharMetric_MM7 &src, GUICharMetric *dst) {
     dst->uRightSpacing = src.uRightSpacing;
 }
 
-void snapshot(const FontData &src, FontData_MM7 *dst) {
-    memzero(dst);
-
+void reconstruct(const FontHeader_MM7 &src, FontHeader *dst) {
     dst->cFirstChar = src.cFirstChar;
     dst->cLastChar = src.cLastChar;
     dst->uFontHeight = src.uFontHeight;
-    dst->palletes_count = src.palletes_count;
-
-    snapshot(src.pMetrics, &dst->pMetrics);
-    snapshot(src.font_pixels_offset, &dst->font_pixels_offset);
-
-    std::copy(src.pFontData.begin(), src.pFontData.end(), dst->pFontData);
-}
-
-void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst) {
-    dst->cFirstChar = src.cFirstChar;
-    dst->cLastChar = src.cLastChar;
-    dst->uFontHeight = src.uFontHeight;
-    dst->palletes_count = src.palletes_count;
 
     reconstruct(src.pMetrics, &dst->pMetrics);
     reconstruct(src.font_pixels_offset, &dst->font_pixels_offset);
-
-    dst->pFontData.assign(src.pFontData, &src.pFontData[size - 4128]);
 }
 
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
