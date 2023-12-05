@@ -617,23 +617,23 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
 float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     int v2;     // ecx@1
     int v3;     // eax@1
-    double v4;  // st7@2
 
-    v3 = *(int *)&pActor->buffs[ACTOR_BUFF_MASS_DISTORTION]
-              .expireTime.value -
-         pMiscTimer->uTotalTimeElapsed;
+    if (pActor->massDistortionTime == -1)
+        return 1.0;
+
+    assert(pActor->massDistortionTime <= pMiscTimer->uTotalTimeElapsed);
+
+    v3 = 128 - (pMiscTimer->uTotalTimeElapsed - pActor->massDistortionTime);
     if (v3 > 64) {
         v2 = (v3 - 64) * (v3 - 64);
-        v4 = (double)v2 / 5120.0 + 0.2;
+        return v2 / 5120.0 + 0.2;
     } else if (v3 > 0) {
         v2 = v3 * v3;
-        v4 = 1.0 - (double)(signed int)(v3 * v3) / 5120.0;
+        return 1.0 - (v3 * v3) / 5120.0;
     } else {
-        pActor->buffs[ACTOR_BUFF_MASS_DISTORTION].Reset();
-        v4 = 1.0;
+        pActor->massDistortionTime = -1;
+        return 1.0;
     }
-
-    return v4;
 }
 
 //----- (004A81CA) --------------------------------------------------------

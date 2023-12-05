@@ -2566,8 +2566,7 @@ void Actor::UpdateActorAI() {
 
         // Kill buffs if expired
         for (ActorBuff i : pActor->buffs.indices())
-            if (i != ACTOR_BUFF_MASS_DISTORTION)
-                pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
+            pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
@@ -2644,8 +2643,7 @@ void Actor::UpdateActorAI() {
             Actor::Die(actor_id);
 
         for (ActorBuff i : pActor->buffs.indices())
-            if (i != ACTOR_BUFF_MASS_DISTORTION)
-                pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
+            pActor->buffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->buffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->height = pMonsterList->monsters[pActor->monsterInfo.id].monsterHeight;
