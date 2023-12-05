@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Time.h File Reference</title>
+<title>OpenEnroth: src/Engine/Time/Time.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;69e2fb5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e0dd5f2</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_c577c4158b457dd6c1de94effce7d1f8.html">Time</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -80,23 +80,16 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
-<code>#include &lt;compare&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTime.html">GameTime</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer.html">Timer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a2ad26c3f2b5e54993203668a354ea997"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a2ad26c3f2b5e54993203668a354ea997">game_starting_year</a> = 1168</td></tr>
 <tr class="separator:a2ad26c3f2b5e54993203668a354ea997"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ca3ab6c124ad35dfe22a7d293537c77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTimer.html">Timer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a9ca3ab6c124ad35dfe22a7d293537c77">pMiscTimer</a></td></tr>
-<tr class="separator:a9ca3ab6c124ad35dfe22a7d293537c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b16df08347bd1a24e9e426848ffca3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTimer.html">Timer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Time_8h.html#a9b16df08347bd1a24e9e426848ffca3c">pEventTimer</a></td></tr>
-<tr class="separator:a9b16df08347bd1a24e9e426848ffca3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a2ad26c3f2b5e54993203668a354ea997" name="a2ad26c3f2b5e54993203668a354ea997"></a>
@@ -109,50 +102,6 @@ Variables</h2></td></tr>
           <td class="memname">const int game_starting_year = 1168</td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9b16df08347bd1a24e9e426848ffca3c" name="a9b16df08347bd1a24e9e426848ffca3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b16df08347bd1a24e9e426848ffca3c">&#9670;&#160;</a></span>pEventTimer</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structTimer.html">Timer</a>* pEventTimer</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9ca3ab6c124ad35dfe22a7d293537c77" name="a9ca3ab6c124ad35dfe22a7d293537c77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ca3ab6c124ad35dfe22a7d293537c77">&#9670;&#160;</a></span>pMiscTimer</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structTimer.html">Timer</a>* pMiscTimer</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
