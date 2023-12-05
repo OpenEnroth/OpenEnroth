@@ -32,7 +32,8 @@ enum class ActorBuff {
     ACTOR_BUFF_SLOWED = 7,
     ACTOR_BUFF_SOMETHING_THAT_HALVES_AC = 8,  // suspect gm axe effect??
     ACTOR_BUFF_BERSERK = 9,
-    ACTOR_BUFF_MASS_DISTORTION = 10,
+    ACTOR_BUFF_MASS_DISTORTION = 10, // Fake debuff, was used in vanilla to animate the momentary shrinkage of a monster
+                                     // when mass distortion is cast. Not used in OE, see Actor::massDistortionTime.
     ACTOR_BUFF_FATE = 11,
     ACTOR_BUFF_ENSLAVED = 12,
     ACTOR_BUFF_DAY_OF_PROTECTION = 13,

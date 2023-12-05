@@ -1407,7 +1407,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                                 .screenspace_projection_factor_y = 1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
                                                                    pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .screenspace_projection_factor_y;
-                        } else if (pActors[i].buffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
+                        } else if (pActors[i].massDistortionTime != -1) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
                                 spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
                                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
