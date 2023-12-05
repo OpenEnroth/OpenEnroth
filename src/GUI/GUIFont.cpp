@@ -3,6 +3,7 @@
 #include <sstream>
 #include <memory>
 #include <algorithm>
+#include <ranges>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/LodTextureCache.h"
@@ -70,10 +71,8 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(const std::string &pFontFile, const s
         result->palette = pallete_texture->palette;
     }
 
-    // get max xhar width
-    result->maxcharwidth = 0;
-    for (int l = 0; l < 256; l++)
-        result->maxcharwidth = std::max(result->maxcharwidth, result->pData.header.pMetrics[l].uWidth);
+    // Get max char width.
+    result->maxcharwidth = std::ranges::max(result->pData.header.pMetrics | std::views::transform(&GUICharMetric::uWidth));
 
     result->CreateFontTex();
 
