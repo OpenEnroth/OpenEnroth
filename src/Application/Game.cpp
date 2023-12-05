@@ -1815,6 +1815,17 @@ void Game::processQueuedMessages() {
                 render->ReloadShaders();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
+            case UIMSG_QuickSave:
+                if (pCurrentMapName == "d05.blv") {
+                    engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
+                    pAudioPlayer->playUISound(SOUND_error);
+                } else {
+                    QuickSaveGame();
+                }
+                continue;
+            case UIMSG_QuickLoad:
+                QuickLoadGame();
+                continue;
             default:
                 logger->warning("Game::processQueuedMessages - Unhandled message type: {}", uMessage);
                 continue;

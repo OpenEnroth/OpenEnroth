@@ -36,4 +36,8 @@ void DoSavegame(unsigned int uSlot);
 bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
 
+void QuickSaveGame();
+void QuickLoadGame();
+std::string GetCurrentQuickSave();
+
 extern struct SavegameList *pSavegameList;

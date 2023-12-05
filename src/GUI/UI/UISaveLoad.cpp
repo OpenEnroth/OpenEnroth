@@ -49,18 +49,12 @@ static GraphicsImage *scrollstop = nullptr;
 static bool isLoadSlotClicked = false;
 
 GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
-    pSavegameList->pSavegameUsedSlots.fill(false);
-    pSavegameList->pSavegameThumbnails.fill(nullptr);
-
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
     saveload_ui_save_up = assets->getImage_ColorKey("save_up");
     saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
     saveload_ui_x_u = assets->getImage_ColorKey("x_u");
 
     pSavegameList->Initialize();
-    // Reset positions for save UI
-    pSavegameList->selectedSlot = 0;
-    pSavegameList->saveListPosition = 0;
 
     LodReader pLODFile;
     for (unsigned i = 0; i < MAX_SAVE_SLOTS; ++i) {
@@ -132,9 +126,6 @@ void GUIWindow_Save::Update() {
 GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0, 0}) {
     current_screen_type = SCREEN_LOADGAME;
 
-    pSavegameList->pSavegameUsedSlots.fill(false);
-    pSavegameList->pSavegameThumbnails.fill(nullptr);
-
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
     saveload_ui_load_up = assets->getImage_ColorKey("load_up");
     saveload_ui_loadu = assets->getImage_ColorKey("LS_loadU");
@@ -163,9 +154,6 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     render->Present();
 
     pSavegameList->Initialize();
-    // Reset position in case that last loaded save will not be found
-    pSavegameList->selectedSlot = 0;
-    pSavegameList->saveListPosition = 0;
 
     LodReader pLODFile;
     for (unsigned i = 0; i < pSavegameList->numSavegameFiles; ++i) {

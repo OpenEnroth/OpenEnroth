@@ -319,6 +319,10 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickSave, key) && current_screen_type == SCREEN_GAME) {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickSave, window_SpeakInHouse != 0, 0);
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickLoad, key) && current_screen_type == SCREEN_GAME) {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickLoad, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
