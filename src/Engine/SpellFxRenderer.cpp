@@ -623,6 +623,8 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
 
     assert(pActor->massDistortionTime <= pMiscTimer->uTotalTimeElapsed);
 
+    // TODO(captainurist): rewrite this magic. 128 = real-time second.
+    //                     Also, that's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
     v3 = 128 - (pMiscTimer->uTotalTimeElapsed - pActor->massDistortionTime);
     if (v3 > 64) {
         v2 = (v3 - 64) * (v3 - 64);
