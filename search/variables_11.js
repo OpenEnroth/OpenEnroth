@@ -10,5 +10,7 @@ var searchData=
   ['quickload_7',['QuickLoad',['../classGameConfig_1_1Gamepad.html#a3173e207823ae9b2ec843485269bba1b',1,'GameConfig::Gamepad::QuickLoad()'],['../classGameConfig_1_1Keybindings.html#a07764c42697b6fa4a337ef456e73f97b',1,'GameConfig::Keybindings::QuickLoad()']]],
   ['quickreference_8',['QuickReference',['../classGameConfig_1_1Gamepad.html#ae2f9232a1ac97977fcf7577d05da21fe',1,'GameConfig::Gamepad::QuickReference()'],['../classGameConfig_1_1Keybindings.html#a2ae4ba38db2d7ace8c71f667bd485afd',1,'GameConfig::Keybindings::QuickReference()']]],
   ['quicksave_9',['QuickSave',['../classGameConfig_1_1Gamepad.html#af22687f6c3582de7e81e91d5ed8c183e',1,'GameConfig::Gamepad::QuickSave()'],['../classGameConfig_1_1Keybindings.html#acf0450b470b0e108513a68ea3a6c5e7e',1,'GameConfig::Keybindings::QuickSave()']]],
-  ['quickspell_10',['quickSpell',['../structPlayer__MM7.html#ace707a23551d85cf6529a015267c3a9e',1,'Player_MM7']]]
+  ['quicksavename_10',['QuickSaveName',['../classGameConfig_1_1Gameplay.html#a85a41f1cc8c6adf5cfd6f8139a8610b4',1,'GameConfig::Gameplay']]],
+  ['quicksavescount_11',['QuickSavesCount',['../classGameConfig_1_1Gameplay.html#ab0b99938dc819fff4a2a5285c68e6ca7',1,'GameConfig::Gameplay']]],
+  ['quickspell_12',['quickSpell',['../structPlayer__MM7.html#ace707a23551d85cf6529a015267c3a9e',1,'Player_MM7']]]
 ];
