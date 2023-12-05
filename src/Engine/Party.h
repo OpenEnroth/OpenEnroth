@@ -387,7 +387,7 @@ bool TestPartyQuestBit(QuestBit bit);
  * @param restTime      Resting time.
  * @offset 0x4938D1
  */
-void Rest(Time restTime);
+void Rest(Duration restTime);
 
 /**
  * Perform resting with healing.
@@ -395,7 +395,7 @@ void Rest(Time restTime);
  * @param restTime      Resting time.
  * @offset 0x4B1BDB
  */
-void restAndHeal(Time restTime);
+void restAndHeal(Duration restTime);
 
 /**
  * @offset 0x444D80

@@ -25,7 +25,7 @@ GraphicsImage *rest_ui_sky_frame_current = nullptr;
 GraphicsImage *rest_ui_hourglass_frame_current = nullptr;
 
 int foodRequiredToRest;
-Time remainingRestTime;
+Duration remainingRestTime;
 RestType currentRestType;
 
 static void prepareToLoadRestUI() {
@@ -39,7 +39,7 @@ static void prepareToLoadRestUI() {
     if (currentRestType != REST_HEAL) {
         new OnButtonClick2({518, 450}, {0, 0}, pBtn_Rest);
     }
-    remainingRestTime = Time();
+    remainingRestTime = Duration();
     currentRestType = REST_NONE;
 }
 

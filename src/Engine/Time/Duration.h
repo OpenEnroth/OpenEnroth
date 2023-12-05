@@ -3,13 +3,15 @@
 #include <cstdint>
 #include <compare>
 
+#include <chrono>
+
 class Duration {
  public:
     static constexpr int64_t TICKS_PER_REALTIME_SECOND = 128;
     static constexpr int64_t GAME_SECONDS_IN_REALTIME_SECOND = 30; // Game time runs 30x faster than real time.
 
-    Duration() = default;
-    Duration(int seconds, int minutes, int hours, int days, int weeks, int months, int years) {
+    constexpr Duration() = default;
+    constexpr Duration(int seconds, int minutes, int hours, int days, int weeks, int months, int years) {
         value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
         value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
@@ -59,6 +61,10 @@ class Duration {
 
     explicit operator bool() const {
         return value != 0;
+    }
+
+    static constexpr Duration zero() {
+        return {};
     }
 
  private:

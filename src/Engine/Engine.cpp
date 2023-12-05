@@ -1731,14 +1731,14 @@ void RegeneratePartyHealthMana() {
     }
 }
 
-Time timeUntilDawn() {
-    static const Time dawnHour = Time::fromHours(5);
-    Time currentTimeInDay = Time::fromHours(pParty->uCurrentHour) + Time::fromMinutes(pParty->uCurrentMinute);
+Duration timeUntilDawn() {
+    const Duration dawnHour = Duration::fromHours(5);
+    Duration currentTimeInDay = Duration::fromHours(pParty->uCurrentHour) + Duration::fromMinutes(pParty->uCurrentMinute);
 
     if (currentTimeInDay < dawnHour) {
         return dawnHour - currentTimeInDay;
     }
-    return Time::fromDays(1) + dawnHour - currentTimeInDay;
+    return Duration::fromDays(1) + dawnHour - currentTimeInDay;
 }
 
 void initLevelStrings(const Blob &blob) {

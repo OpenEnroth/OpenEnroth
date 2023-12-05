@@ -899,21 +899,21 @@ void Party::restAndHeal() {
     pParty->days_played_without_rest = 0;
 }
 
-void Rest(Time restTime) {
-    if (restTime > Time::fromHours(4)) {
+void Rest(Duration restTime) {
+    if (restTime > Duration::fromHours(4)) {
         Actor::InitializeActors();
     }
 
     pParty->GetPlayingTime() += restTime;
 
     for (Character &player : pParty->pCharacters) {
-        player.Recover(restTime);  // ??
+        player.Recover(Time::fromTicks(restTime.ticks()));  // TODO(captainurist): #time
     }
 
     _494035_timed_effects__water_walking_damage__etc();
 }
 
-void restAndHeal(Time restTime) {
+void restAndHeal(Duration restTime) {
     pParty->GetPlayingTime() += restTime;
 
     pParty->pHirelings[0].bHasUsedTheAbility = false;
@@ -941,19 +941,20 @@ void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused
     // resting to be too fast on high FPS
     // Now resting speed is roughly 6 game hours per second
-    Time restTick = Time::fromMinutes(3 * pEventTimer->uTimeElapsed);
+    Duration restTick = Duration::fromMinutes(3 * pEventTimer->uTimeElapsed);
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;
     }
 
-    if (restTick.isValid()) {
+    if (restTick) {
         Rest(restTick);
         remainingRestTime -= restTick;
+        assert(remainingRestTime >= Duration::zero());
         OutdoorLocation::LoadActualSkyFrame();
     }
 
-    if (!remainingRestTime.isValid()) {
+    if (!remainingRestTime) {
         if (currentRestType == REST_HEAL) {
             // Close rest screen when healing is done.
             // Resting type is reset on Escape processing

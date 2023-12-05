@@ -65,9 +65,19 @@ struct Time {
         return *this;
     }
 
+    Time &operator+=(const Duration &rhs) {
+        value += rhs.ticks();
+        return *this;
+    }
+
     // TODO(captainurist): drop
     Time &operator-=(const Time &rhs) {
         value -= rhs.value;
+        return *this;
+    }
+
+    Time &operator-=(const Duration &rhs) {
+        value -= rhs.ticks();
         return *this;
     }
 

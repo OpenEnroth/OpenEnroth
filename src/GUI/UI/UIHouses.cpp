@@ -356,7 +356,7 @@ bool enterHouse(HouseId uHouseID) {
     if (pAnimatedRooms[uCurrentHouse_Animation].uBuildingType == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
         uHouseID = HOUSE_JAIL;
         uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
-        restAndHeal(Time::fromYears(1));
+        restAndHeal(Duration::fromYears(1));
         ++pParty->uNumPrisonTerms;
         pParty->uFine = 0;
         for (Character &player : pParty->pCharacters) {
