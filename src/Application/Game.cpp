@@ -1816,7 +1816,12 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_QuickSave:
-                QuickSaveGame();
+                if (pCurrentMapName == "d05.blv") {
+                    engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
+                    pAudioPlayer->playUISound(SOUND_error);
+                } else {
+                    QuickSaveGame();
+                }
                 continue;
             case UIMSG_QuickLoad:
                 QuickLoadGame();

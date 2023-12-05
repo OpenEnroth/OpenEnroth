@@ -374,7 +374,7 @@ void SaveNewGame() {
 }
 
 void QuickSaveGame() {
-    if (pCurrentMapName == "d05.blv") return; // Not Arena.
+    assert(pCurrentMapName != "d05.blv"); // Not Arena.
     pSavegameList->Initialize();
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();
@@ -403,6 +403,7 @@ void QuickSaveGame() {
     if (uSlot == -1) {
         logger->error("QuickSaveGame:: No free save game slots!");
         engine->config->gameplay.QuickSavesCount.cycleDecrement();
+        pAudioPlayer->playUISound(SOUND_error);
         return;
     }
 
@@ -415,8 +416,10 @@ void QuickSaveGame() {
     if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec)) {
         logger->error("Failed to copy: {}", src);
         engine->config->gameplay.QuickSavesCount.cycleDecrement();
+        pAudioPlayer->playUISound(SOUND_error);
     } else {
         engine->_statusBar->setEvent(LSTR_GAME_SAVED);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 }
 
@@ -439,8 +442,10 @@ void QuickLoadGame() {
     if (uSlot != -1) {
         LoadGame(uSlot);
         uGameState = GAME_STATE_LOADING_GAME;
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     } else {
         logger->error("QuickLoadGame:: No quick save could be found!");
+        pAudioPlayer->playUISound(SOUND_error);
     }
 }
 
