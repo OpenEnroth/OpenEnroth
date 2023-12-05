@@ -14,10 +14,9 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIMessageQueue.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"

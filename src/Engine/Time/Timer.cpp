@@ -1,10 +1,8 @@
-#include "Engine/Time.h"
+#include "Timer.h"
 
-#include <chrono>
+#include "Engine/EngineGlobals.h"
 
 #include "Io/KeyboardInputHandler.h"
-
-#include "EngineGlobals.h"
 
 Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;

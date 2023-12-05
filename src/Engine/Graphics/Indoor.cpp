@@ -31,7 +31,7 @@
 #include "Engine/Party.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"

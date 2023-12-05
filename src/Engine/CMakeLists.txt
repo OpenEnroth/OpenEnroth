@@ -20,7 +20,6 @@ set(ENGINE_SOURCES
         SaveLoad.cpp
         SpellFxRenderer.cpp
         TeleportPoint.cpp
-        Time.cpp
         GameResourceManager.cpp
         mm7_data.cpp
         mm7text_ru.cpp)
@@ -46,7 +45,6 @@ set(ENGINE_HEADERS
         SaveLoad.h
         SpellFxRenderer.h
         TeleportPoint.h
-        Time.h
         GameResourceManager.h
         mm7_data.h
         stru160.h
@@ -65,6 +63,7 @@ target_link_libraries(engine
         engine_turn_engine
         engine_events
         engine_random
+        engine_time
         library_compression
         library_logger
         library_serialization
@@ -79,12 +78,13 @@ target_compile_definitions(engine PRIVATE
         BUILD_PLATFORM="${BUILD_PLATFORM}"
         BUILD_ARCHITECTURE="${BUILD_ARCHITECTURE}")
 
+add_subdirectory(Components)
+add_subdirectory(Events)
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
+add_subdirectory(Random)
 add_subdirectory(Snapshots)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
-add_subdirectory(Components)
+add_subdirectory(Time)
 add_subdirectory(TurnEngine)
-add_subdirectory(Events)
-add_subdirectory(Random)

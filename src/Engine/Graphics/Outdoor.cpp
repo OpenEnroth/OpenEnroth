@@ -32,7 +32,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/BspRenderer.h"

@@ -10,7 +10,7 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Outdoor.h"

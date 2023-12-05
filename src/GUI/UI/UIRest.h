@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUI/GUIWindow.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Time.h"
 
 class GUIWindow_Rest : public GUIWindow {
  public:

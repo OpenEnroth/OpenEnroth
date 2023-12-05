@@ -7,7 +7,7 @@
 #include "Engine/Objects/ItemEnumFunctions.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
 
 #include "Utility/IndexedArray.h"

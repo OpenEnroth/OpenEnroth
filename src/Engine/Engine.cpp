@@ -56,7 +56,7 @@
 #include "Engine/Tables/TransitionTable.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/MessageScrollTable.h"
-#include "Engine/Time.h"
+#include "Engine/Time/Timer.h"
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
