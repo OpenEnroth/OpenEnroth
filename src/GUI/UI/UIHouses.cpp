@@ -311,8 +311,8 @@ bool enterHouse(HouseId uHouseID) {
     Time currentTime = pParty->GetPlayingTime();
     Time currentTimeDays = Time::fromDays(currentTime.toDays());
     bool isOpened = false;
-    Time openTime = currentTimeDays + Time::fromHours(openHours);
-    Time closeTime = currentTimeDays + Time::fromHours(closeHours);
+    Time openTime = currentTimeDays + Duration::fromHours(openHours);
+    Time closeTime = currentTimeDays + Duration::fromHours(closeHours);
 
     if (closeHours > openHours) {
         // Store opened within one day

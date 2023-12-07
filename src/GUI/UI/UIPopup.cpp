@@ -2370,10 +2370,10 @@ void Inventory_ItemPopupAndAlchemy() {
                 return;
             }
 
-            Time effectTime = Time::fromMinutes(30 * pParty->pPickedItem.potionPower);
+            Duration effectTime = Duration::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
-            item->uExpireTime = Time(pParty->GetPlayingTime() + effectTime);
+            item->uExpireTime = pParty->GetPlayingTime() + effectTime;
             // Sound was missing previously
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);

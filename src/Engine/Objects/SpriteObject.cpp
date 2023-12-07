@@ -1109,7 +1109,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             int shrinkPower = 0;
             // Calculation was moved from initial sprite creation processing
-            Time duration = Time::fromMinutes(object->spell_level * 5);
+            Duration duration = Duration::fromMinutes(object->spell_level * 5);
             CharacterSkillMastery skillMastery = object->spell_skill;
             DamageType dmgType;
             ActorBuff buffIdx;
