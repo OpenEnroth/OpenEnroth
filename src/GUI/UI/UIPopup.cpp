@@ -1387,8 +1387,7 @@ static void drawBuffPopupWindow() {
     stringCount = 0;
     for (PartyBuff i : pParty->pPartyBuffs.indices()) {
         if (pParty->pPartyBuffs[i].Active()) {
-            // TODO(captainurist): #time
-            Duration remaingTime = Duration::fromTicks((pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime()).ticks());
+            Duration remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * assets->pFontComic->GetHeight() + 40;
             popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
@@ -1712,9 +1711,8 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
             window->DrawText(assets->pFontComic.get(), {52, v36},
                              ui_game_character_record_playerbuff_colors[i],
                              localization->GetCharacterBuffName(i));
-            // TODO(captainurist): #time
             DrawBuff_remaining_time_string(
-                v36, window, Duration::fromTicks((buff->GetExpireTime() - pParty->GetPlayingTime()).ticks()),
+                v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
                 assets->pFontComic.get());
         }
     }

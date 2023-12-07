@@ -432,8 +432,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                 }
             }
         } else {
-            // TODO(captainurist): #time
-            dialogwin.DrawShops_next_generation_time_string(Duration::fromTicks((pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime()).ticks()));
+            dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
         }
     }
 }
@@ -520,8 +519,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                 }
             }
         } else {
-            // TODO(captainurist): #time
-            dialogwin.DrawShops_next_generation_time_string(Duration::fromTicks((pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime()).ticks()));
+            dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
         }
     }
 }
@@ -625,8 +623,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                 }
             }
         } else {
-            // TODO(captainurist): #time
-            dialogwin.DrawShops_next_generation_time_string(Duration::fromTicks((pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime()).ticks()));
+            dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
         }
     }
 }
