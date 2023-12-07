@@ -907,7 +907,7 @@ void Rest(Duration restTime) {
     pParty->GetPlayingTime() += restTime;
 
     for (Character &player : pParty->pCharacters) {
-        player.Recover(Time::fromTicks(restTime.ticks()));  // TODO(captainurist): #time
+        player.Recover(restTime);
     }
 
     _494035_timed_effects__water_walking_damage__etc();

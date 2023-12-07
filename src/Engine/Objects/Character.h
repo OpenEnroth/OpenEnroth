@@ -271,7 +271,7 @@ class Character {
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
     void SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId);  // 0x4BE2DD
-    bool Recover(Time dt);
+    bool Recover(Duration dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
