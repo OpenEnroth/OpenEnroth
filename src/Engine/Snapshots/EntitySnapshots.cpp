@@ -1210,14 +1210,14 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uYawAngle = src.yawAngle;
     dst->uPitchAngle = src.pitchAngle;
     dst->uSectorID = src.sectorId;
-    dst->uCurrentActionLength = src.currentActionLength;
+    dst->uCurrentActionLength = src.currentActionLength.ticks();
     snapshot(src.initialPosition, &dst->vInitialPosition);
     snapshot(src.guardingPosition, &dst->vGuardingPosition);
     dst->uTetherDistance = src.tetherDistance;
     dst->uAIState = std::to_underlying(src.aiState);
     dst->uCurrentActionAnimation = std::to_underlying(src.currentActionAnimation);
     dst->uCarriedItemID = std::to_underlying(src.carriedItemId);
-    dst->uCurrentActionTime = src.currentActionTime;
+    dst->uCurrentActionTime = src.currentActionTime.ticks();
 
     snapshot(src.spriteIds, &dst->pSpriteIDs);
     snapshot(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<SoundId, uint16_t>);
@@ -1304,14 +1304,14 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->yawAngle = src.uYawAngle;
     dst->pitchAngle = src.uPitchAngle;
     dst->sectorId = src.uSectorID;
-    dst->currentActionLength = src.uCurrentActionLength;
+    dst->currentActionLength = Duration::fromTicks(src.uCurrentActionLength);
     reconstruct(src.vInitialPosition, &dst->initialPosition);
     reconstruct(src.vGuardingPosition, &dst->guardingPosition);
     dst->tetherDistance = src.uTetherDistance;
     dst->aiState = static_cast<AIState>(src.uAIState);
     dst->currentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
     dst->carriedItemId = ItemId(src.uCarriedItemID);
-    dst->currentActionTime = src.uCurrentActionTime;
+    dst->currentActionTime = Duration::fromTicks(src.uCurrentActionTime);
 
     reconstruct(src.pSpriteIDs, &dst->spriteIds);
     reconstruct(src.pSoundSampleIDs, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);

@@ -216,7 +216,7 @@ class Actor {
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;
     int sectorId = 0;
-    uint16_t currentActionLength = 0;
+    Duration currentActionLength = Duration::zero();
     Vec3i initialPosition;
     Vec3i guardingPosition;
     uint16_t tetherDistance = 256;
@@ -224,7 +224,7 @@ class Actor {
     ActorAnimation currentActionAnimation = ANIM_Standing;
     ItemId carriedItemId = ITEM_NULL; // carried items are special items the
                                          // ncp carries (ie lute from bard)
-    unsigned int currentActionTime = 0;
+    Duration currentActionTime = Duration::zero();
     IndexedArray<uint16_t, ANIM_First, ANIM_Last> spriteIds = {{}};
     IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds = {{}};
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;

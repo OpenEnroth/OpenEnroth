@@ -647,34 +647,34 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
     int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(pActors[uActorID].monsterInfo.id)] - 40;
 
-    uint16_t actionLen = 0;
+    Duration actionLen;
     if (pActors[uActorID].monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
         actionLen = pMonsterInfoUI_Doll.currentActionLength;
     } else {
         // copy actor info if different
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.currentActionTime = 0;
-        actionLen = vrng->random(256) + 128;
+        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
+        actionLen = Duration::fromTicks(vrng->random(256) + 128);
         pMonsterInfoUI_Doll.currentActionLength = actionLen;
     }
 
     if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.currentActionTime = 0;
+        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
         if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.currentActionLength = vrng->random(128) + 128;
+            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(vrng->random(128) + 128);
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
             if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.currentActionLength =
+            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(
                 8 *
                 pSpriteFrameTable
                     ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                    .uAnimLength;
+                    .uAnimLength);
         }
     }
 
@@ -684,7 +684,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
                 .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
-            pMonsterInfoUI_Doll.currentActionTime);
+            pMonsterInfoUI_Doll.currentActionTime.ticks());
 
         // Draw portrait border
         render->ResetUIClipRect();
@@ -703,7 +703,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
-    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->uTimeElapsed;
+    pMonsterInfoUI_Doll.currentActionTime += Duration::fromTicks(pMiscTimer->uTimeElapsed);
 
     // Draw name and profession
     std::string str;

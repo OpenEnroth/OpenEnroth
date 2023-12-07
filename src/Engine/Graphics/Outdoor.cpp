@@ -1204,8 +1204,8 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     for (int i = 0; i < pActors.size(); ++i) {
         if (!(pActors[i].attributes & ACTOR_UNKNOW7)) {
             if (!alert_status) {
-                pActors[i].currentActionTime = 0;
-                pActors[i].currentActionLength = 0;
+                pActors[i].currentActionTime = Duration::zero();
+                pActors[i].currentActionLength = Duration::zero();
                 if (pActors[i].attributes & ACTOR_UNKNOW11)
                     pActors[i].aiState = AIState::Disabled;
                 if (pActors[i].aiState != AIState::Removed &&
@@ -1228,8 +1228,8 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
             pActors[i].aiState = AIState::Disabled;
             pActors[i].attributes |= ACTOR_UNKNOW11;
         } else if (alert_status) {
-            pActors[i].currentActionTime = 0;
-            pActors[i].currentActionLength = 0;
+            pActors[i].currentActionTime = Duration::zero();
+            pActors[i].currentActionLength = Duration::zero();
             if (pActors[i].attributes & ACTOR_UNKNOW11)
                 pActors[i].aiState = AIState::Disabled;
             if (pActors[i].aiState != AIState::Removed &&
@@ -1317,7 +1317,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                                       ((signed int)TrigLUT.uIntegerPi >> 3) + pActors[i].yawAngle -
                                       Angle_To_Cam) >> 8) & 7;
 
-        Cur_Action_Time = pActors[i].currentActionTime;
+        Cur_Action_Time = pActors[i].currentActionTime.ticks();
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
                 Cur_Action_Time = 32 * i + pMiscTimer->uTotalTimeElapsed;
@@ -1340,8 +1340,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
             } else {
                 v49 = 1;
                 spell_fx_renderer->_4A7F74(pActors[i].pos.x, pActors[i].pos.y, z);
-                v4 = (1.0 - (double)pActors[i].currentActionTime /
-                            (double)pActors[i].currentActionLength) *
+                v4 = (1.0 - (double)pActors[i].currentActionTime.ticks() /
+                            (double)pActors[i].currentActionLength.ticks()) *
                      (double)(2 * pActors[i].height);
                 z -= floorf(v4 + 0.5f);
                 if (z > pActors[i].pos.z) z = pActors[i].pos.z;
@@ -2429,8 +2429,8 @@ void UpdateActors_ODM() {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
                     pActors[Actor_ITR].yawAngle -= 32;
-                    pActors[Actor_ITR].currentActionTime = 0;
-                    pActors[Actor_ITR].currentActionLength = 128;
+                    pActors[Actor_ITR].currentActionTime = Duration::zero();
+                    pActors[Actor_ITR].currentActionLength = Duration::fromTicks(128);
                     pActors[Actor_ITR].aiState = Fleeing;
                 }
             }
@@ -2449,8 +2449,8 @@ void UpdateActors_ODM() {
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
                                 pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
                                                                              target_y - pActors[Actor_ITR].pos.y);
-                                pActors[Actor_ITR].currentActionTime = 0;
-                                pActors[Actor_ITR].currentActionLength = 128;
+                                pActors[Actor_ITR].currentActionTime = Duration::zero();
+                                pActors[Actor_ITR].currentActionLength = Duration::fromTicks(128);
                                 pActors[Actor_ITR].aiState = Fleeing;
                                 break;
                             }
