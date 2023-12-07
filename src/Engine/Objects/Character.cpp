@@ -372,7 +372,7 @@ int Character::GetConditionDaysPassed(Condition condition) const {
 
     Time playtime = pParty->GetPlayingTime();
     Time condtime = this->conditions.Get(condition);
-    Time diff = playtime - condtime;
+    Duration diff = playtime - condtime;
 
     return diff.toDays() + 1;
 }

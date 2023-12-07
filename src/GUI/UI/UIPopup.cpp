@@ -589,7 +589,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
             (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
-            v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
+            // TODO(captainurist): #time
+            v67.Initialize(Time::fromTicks((inspect_item->uExpireTime - pParty->GetPlayingTime()).ticks()));
 
             std::string txt4 = "Duration:";
             bool formatting = false;
@@ -1100,8 +1101,6 @@ void CharacterUI_StatsTab_ShowHint() {
     Color pTextColor;  // eax@15
     std::string pHourWord;  // ecx@17
     std::string pDayWord;   // eax@20
-    int pHour;              // [sp+14h] [bp-1Ch]@15
-    unsigned int pDay;      // [sp+24h] [bp-Ch]@15
 
     Pointi pt = mouse->GetCursorPos();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum) {
@@ -1143,18 +1142,17 @@ void CharacterUI_StatsTab_ShowHint() {
             for (Condition condition : conditionImportancyTable()) {
                 if (pParty->activeCharacter().conditions.Has(condition)) {
                     str += " \n";
-                    Time condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
-                    pHour = condition_time.hoursOfDay();
-                    pDay = condition_time.toDays();
+                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    CivilDuration d = condition_time.toCivilDuration();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));
-                    if (pHour && pHour <= 1)
+                    if (d.hours && d.hours <= 1)
                         pHourWord = localization->GetString(LSTR_HOUR);
                     else
                         pHourWord = localization->GetString(LSTR_HOURS);
-                    if (!pDay || (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), pDay > 1))
+                    if (!d.days || (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), d.days > 1))
                         pDayWord = localization->GetString(LSTR_DAYS);
-                    str += fmt::format("{} {}, {} {}", pDay, pDayWord, pHour, pHourWord);
+                    str += fmt::format("{} {}, {} {}", d.days, pDayWord, d.hours, pHourWord);
                 }
             }
 

@@ -24,7 +24,7 @@ using AccessibleVector = Accessible<std::vector<T>>;
  * @return                              Delta between the first and the second value.
  */
 template<class T>
-T calculateDelta(const T &l, const T &r) {
+auto calculateDelta(const T &l, const T &r) {
     return r - l;
 }
 
@@ -79,7 +79,7 @@ class Accessible : public Base {
         return {front(), back()};
     }
 
-    value_type delta() const {
+    auto delta() const {
         assert(begin() != end());
         return calculateDelta(front(), back());
     }

@@ -115,17 +115,17 @@ void GUIWindow_LloydsBook::Update() {
             pWindow.uFrameY -= 6 + pTextHeight;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3);
 
+            // TODO(captainurist): #time honestly these d.days + 1 below make no sense.
             pWindow.uFrameY = lloydsBeaconsPreviewYs[beaconId];
-            Time remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
-            unsigned int pHours = remainingTime.hoursOfDay();
-            unsigned int pDays = remainingTime.toDays();
+            Duration remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
+            CivilDuration d = remainingTime.toCivilDuration();
             std::string str;
-            if (pDays > 1) {
-                str = fmt::format("{} {}", pDays + 1, localization->GetString(LSTR_DAYS));
-            } else if (pHours + 1 <= 23) {
-                str = fmt::format("{} {}", pHours + 1, localization->GetString((pHours < 1) ? LSTR_HOUR : LSTR_HOURS));
+            if (d.days > 1) {
+                str = fmt::format("{} {}", d.days + 1, localization->GetString(LSTR_DAYS));
+            } else if (d.hours + 1 <= 23) {
+                str = fmt::format("{} {}", d.hours + 1, localization->GetString((d.hours < 1) ? LSTR_HOUR : LSTR_HOURS));
             } else {
-                str = fmt::format("{} {}", pDays + 1, localization->GetString(LSTR_DAY_CAPITALIZED));
+                str = fmt::format("{} {}", d.days + 1, localization->GetString(LSTR_DAY_CAPITALIZED));
             }
             pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3);

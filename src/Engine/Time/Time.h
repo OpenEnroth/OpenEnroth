@@ -51,28 +51,8 @@ struct Time {
     //                     the same as Valid().
     bool isValid() const { return value > 0; }
 
-    friend Time operator+(const Time &l, const Time &r) {
-        return Time::fromTicks(l.value + r.value);
-    }
-
-    // TODO(captainurist): return Duration
-    friend Time operator-(const Time &l, const Time &r) {
-        return Time::fromTicks(l.value - r.value);
-    }
-
-    Time &operator+=(const Time &rhs) {
-        value += rhs.value;
-        return *this;
-    }
-
     Time &operator+=(const Duration &rhs) {
         value += rhs.ticks();
-        return *this;
-    }
-
-    // TODO(captainurist): drop
-    Time &operator-=(const Time &rhs) {
-        value -= rhs.value;
         return *this;
     }
 
@@ -99,4 +79,8 @@ inline Time operator+(const Time &l, const Duration &r) {
 
 inline Time operator-(const Time &l, const Duration &r) {
     return Time::fromTicks(l.ticks() - r.ticks());
+}
+
+inline Duration operator-(const Time &l, const Time &r) {
+    return Duration::fromTicks(l.ticks() - r.ticks());
 }

@@ -783,7 +783,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
         if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
             generateShopItems(false);
             generateShopItems(true);
-            Time nextGenTime = pParty->GetPlayingTime() + Time::fromDays(buildingTable[houseId()].generation_interval_days);
+            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(buildingTable[houseId()].generation_interval_days);
             pParty->PartyTimes.shopNextRefreshTime[houseId()] = nextGenTime;
         }
 
@@ -1166,7 +1166,7 @@ void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) { 
             reputationDelta = 1;
 
         // only ban when caught
-        pParty->PartyTimes.shopBanTimes[houseId()] = pParty->GetPlayingTime() + Time::fromDays(1);
+        pParty->PartyTimes.shopBanTimes[houseId()] = pParty->GetPlayingTime() + Duration::fromDays(1);
     } else {
         reputationDelta = 2;
     }

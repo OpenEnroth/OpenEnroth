@@ -21,7 +21,7 @@
 struct MapTimer {
     Duration interval;
     Duration timeInsideDay;
-    Time altInterval;
+    Duration altInterval;
     Time alarmTime;
     int eventId = 0;
     int eventStep = 0;
@@ -96,7 +96,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
 
         if (ir.data.timer_descr.alt_halfmin_interval) {
             // Alternative interval is defined in terms of half-minutes
-            timer.altInterval = Time::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+            timer.altInterval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
             if (ir.data.timer_descr.is_yearly) {
@@ -248,7 +248,7 @@ void onTimer() {
         return;
     }
 
-    if ((pParty->GetPlayingTime() - timerGuard) < Time::fromSeconds(30)) { // 30 game seconds = 1 realtime second.
+    if ((pParty->GetPlayingTime() - timerGuard) < Duration::fromSeconds(30)) { // 30 game seconds = 1 realtime second.
         return;
     }
 
