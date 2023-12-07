@@ -293,6 +293,8 @@ struct Party {
     unsigned int bFlying;
     uint8_t hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
+
+    // TODO(captainurist): #time drop all of these?
     unsigned int uCurrentYear;
     unsigned int uCurrentMonth;
     unsigned int uCurrentMonthWeek;
@@ -300,6 +302,7 @@ struct Party {
     unsigned int uCurrentHour;
     unsigned int uCurrentMinute;
     unsigned int uCurrentTimeSecond;
+
     unsigned int uNumFoodRations;
     unsigned int uNumGold;
     unsigned int uNumGoldInBank;

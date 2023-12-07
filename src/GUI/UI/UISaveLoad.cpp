@@ -256,8 +256,8 @@ static void UI_DrawSaveLoad(bool save) {
                                        pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].name, 3);
 
         // Draw date
-        Time savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime;
-        auto savegame_hour = savegame_time.hoursOfDay();
+        CivilTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime.toCivilTime();
+        auto savegame_hour = savegame_time.hour;
 
         save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
         int am;
@@ -273,10 +273,10 @@ static void UI_DrawSaveLoad(bool save) {
 
         auto str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
-            localization->GetDayName(savegame_time.daysOfWeek()),
-            savegame_hour, savegame_time.minutesFraction(),
-            localization->GetAmPm(am), savegame_time.daysOfMonth() + 1,
-            localization->GetMonthName(savegame_time.monthsOfYear()), savegame_time.toYears() + game_starting_year
+            localization->GetDayName(savegame_time.dayOfWeek - 1),
+            savegame_hour, savegame_time.minute,
+            localization->GetAmPm(am), savegame_time.day,
+            localization->GetMonthName(savegame_time.month - 1), savegame_time.year
         );
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3);
     }

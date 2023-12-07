@@ -4159,7 +4159,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             return pParty->pPickedItem.uItemID == ItemId(pValue);
 
         case VAR_Hour:
-            return pParty->GetPlayingTime().hoursOfDay() == pValue;
+            return pParty->GetPlayingTime().toCivilTime().hour == pValue;
 
         case VAR_DayOfYear:
             return pParty->GetPlayingTime().toDays() % 336 + 1 == pValue;

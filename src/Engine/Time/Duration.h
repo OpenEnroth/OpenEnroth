@@ -12,6 +12,15 @@ struct CivilDuration {
     int seconds = 0;
 };
 
+struct LongCivilDuration {
+    int years = 0;
+    int months = 0;
+    int days = 0;
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+};
+
 class Duration {
  public:
     static constexpr int64_t TICKS_PER_REALTIME_SECOND = 128;
@@ -53,6 +62,17 @@ class Duration {
         result.seconds = toSeconds() % 60;
         return result;
     };
+
+    LongCivilDuration toLongCivilDuration() const {
+        LongCivilDuration result;
+        result.years = toYears();
+        result.months = toMonths() % 12;
+        result.days = toDays() % 28;
+        result.hours = toHours() % 24;
+        result.minutes = toMinutes() % 60;
+        result.seconds = toSeconds() % 60;
+        return result;
+    }
 
     friend Duration operator+(const Duration &l, const Duration &r) {
         return Duration::fromTicks(l.value + r.value);

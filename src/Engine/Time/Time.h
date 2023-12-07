@@ -9,8 +9,10 @@ const int game_starting_year = 1168;
 struct CivilTime {
     int year = 0; // Since the Silence.
     int month = 0; // In [1,12].
+    int week = 0; // In [1, 4].
     int day = 0; // In [1, 28].
-    int hour = 0;
+    int dayOfWeek = 0; // In [1, 7].
+    int hour = 0; // In [0, 23].
     int minute = 0;
     int second = 0;
 };
@@ -48,20 +50,14 @@ struct Time {
         CivilTime result;
         result.year = game_starting_year + toYears();
         result.month = 1 + toMonths() % 12;
+        result.week = 1 + toWeeks() % 4;
         result.day = 1 + toDays() % 28;
+        result.dayOfWeek = 1 + toDays() % 7;
         result.hour = toHours() % 24;
         result.minute = toMinutes() % 60;
         result.second = toSeconds() % 60;
         return result;
     }
-
-    int secondsFraction() const { return toSeconds() % 60; }
-    int minutesFraction() const { return toMinutes() % 60; }
-    int hoursOfDay() const { return toHours() % 24; }
-    int daysOfWeek() const { return toDays() % 7; }
-    int daysOfMonth() const { return toDays() % 28; }
-    int weeksOfMonth() const { return toWeeks() % 4; }
-    int monthsOfYear() const { return toMonths() % 12; }
 
     // TODO(captainurist): doesn't belong to GameTime.
     void SetExpired() { value = -1;  }

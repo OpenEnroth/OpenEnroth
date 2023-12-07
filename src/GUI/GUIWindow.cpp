@@ -893,10 +893,10 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += v1;
                 break;
             case 5:
-                v18 = pParty->GetPlayingTime().hoursOfDay();
-                if (v18 >= 11 && v18 < 20) {
+                time = pParty->GetPlayingTime().toCivilTime();
+                if (time.hour >= 11 && time.hour < 20) {
                     pText = localization->GetString(LSTR_DAY);
-                } else if (v18 >= 5 && v18 < 11) {
+                } else if (time.hour >= 5 && time.hour < 11) {
                     pText = localization->GetString(LSTR_MORNING);
                 } else {
                     pText = localization->GetString(LSTR_EVENING);

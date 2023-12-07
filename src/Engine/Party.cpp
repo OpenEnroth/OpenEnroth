@@ -919,13 +919,15 @@ void restAndHeal(Duration restTime) {
     pParty->pHirelings[0].bHasUsedTheAbility = false;
     pParty->pHirelings[1].bHasUsedTheAbility = false;
 
-    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().secondsFraction();
-    pParty->uCurrentMinute = pParty->GetPlayingTime().minutesFraction();
-    pParty->uCurrentHour = pParty->GetPlayingTime().hoursOfDay();
-    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().weeksOfMonth();
-    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().daysOfMonth();
-    pParty->uCurrentMonth = pParty->GetPlayingTime().monthsOfYear();
-    pParty->uCurrentYear = pParty->GetPlayingTime().toYears() + game_starting_year;
+    CivilTime time = pParty->GetPlayingTime().toCivilTime();
+
+    pParty->uCurrentTimeSecond = time.second;
+    pParty->uCurrentMinute = time.minute;
+    pParty->uCurrentHour = time.hour;
+    pParty->uCurrentMonthWeek = time.week - 1;
+    pParty->uCurrentDayOfMonth = time.day - 1;
+    pParty->uCurrentMonth = time.month - 1;
+    pParty->uCurrentYear = time.year;
     pParty->restAndHeal();
 
     for (Character &player : pParty->pCharacters) {

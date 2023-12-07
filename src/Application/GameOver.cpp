@@ -61,14 +61,16 @@ void CreateWinnerCertificate() {
     else
         assert(false);
 
-    // TODO(captainurist): add a constant here, for game starting time.
-    Time play_time = pParty->GetPlayingTime() - Duration::fromHours(9); // game begins at 9 am
+    // TODO(captainurist): Introduce a constant here, for game start time.
+    Duration play_time = pParty->GetPlayingTime() - Time() -  Duration::fromHours(9); // game begins at 9 am
 
-    int v19 = play_time.toDays();
-    int v14 = play_time.toYears();
-    int v18 = play_time.monthsOfYear();
-    int v17 = play_time.daysOfMonth();
-    if (!v19) v19 = 1;
+    int totalDays = play_time.toDays();
+    if (!totalDays) totalDays = 1;
+
+    LongCivilDuration duration = play_time.toLongCivilDuration();
+    int years = duration.years;
+    int months = duration.months;
+    int days = duration.days;
 
     pWindow.DrawTitleText(
         pFont.get(), 1, 0x23, colorTable.Black, localization->GetString(LSTR_CONGRATULATIONS), 3
@@ -89,22 +91,22 @@ void CreateWinnerCertificate() {
             3);
         v23 += pParty->pCharacters[i].experience;
     }
-    v23 = (int64_t)v23 / v19;
+    v23 = (int64_t)v23 / totalDays;
     std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
 
     const char *v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
-    if (v17 != 1) v7 = localization->GetString(LSTR_DAYS);
+    if (days != 1) v7 = localization->GetString(LSTR_DAYS);
 
     const char *v8 = localization->GetString(LSTR_MONTH);
-    if (v18 != 1) v8 = localization->GetString(LSTR_MONTHS);
+    if (months != 1) v8 = localization->GetString(LSTR_MONTHS);
 
     const char *v9 = localization->GetString(LSTR_YEAR);
-    if (v14 != 1) v9 = localization->GetString(LSTR_YEARS);
+    if (years != 1) v9 = localization->GetString(LSTR_YEARS);
 
     pWindow.DrawTitleText(
         pFont.get(), 1, pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, colorTable.Black,
-        fmt::format("{} {} {}, {} {}, {} {} ", localization->GetString(LSTR_TOTAL_TIME), v14, v9, v18, v8, v17, v7), 3);
+        fmt::format("{} {} {}, {} {}, {} {} ", localization->GetString(LSTR_TOTAL_TIME), years, v9, months, v8, days, v7), 3);
 
     pWindow.DrawTitleText(pFont.get(), 1, pWindow.uFrameHeight, colorTable.Black,
         localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);

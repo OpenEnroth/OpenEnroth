@@ -588,14 +588,21 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
             (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
-            CivilDuration d = (inspect_item->uExpireTime - pParty->GetPlayingTime()).toCivilDuration();
+            LongCivilDuration d = (inspect_item->uExpireTime - pParty->GetPlayingTime()).toLongCivilDuration();
 
             std::string txt4 = "Duration:";
             bool formatting = false;
 
-            // captainurist: we used to have years & months here, I dropped them.
             // TODO(captainurist): check how other durations are formatted, this is not the only place that creates
             //                     a CivilDuration. Unify the code?
+
+            formatting |= d.years != 0;
+            if (formatting)
+                txt4 += fmt::format(" {}:yr", d.years);
+
+            formatting |= d.months != 0;
+            if (formatting)
+                txt4 += fmt::format(" {}:mo", d.months);
 
             formatting |= d.days != 0;
             if (formatting)
