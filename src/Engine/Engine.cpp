@@ -1257,7 +1257,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // water damage
     if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + Time::fromTicks(128);
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + Duration::fromTicks(128);
         for (Character &character : pParty->pCharacters) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
@@ -1278,7 +1278,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // lava damage
     if (pParty->uFlags & PARTY_FLAG_BURNING && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + Time::fromTicks(128);
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + Duration::fromTicks(128);
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);

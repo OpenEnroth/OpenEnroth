@@ -212,7 +212,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
         if (!itemcount) {  // shop empty
             Time nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
-            working_window.DrawShops_next_generation_time_string(nextGenTime - pParty->GetPlayingTime());
+            // TODO(captainurist): #time
+            working_window.DrawShops_next_generation_time_string(Duration::fromTicks((nextGenTime - pParty->GetPlayingTime()).ticks()));
             return;
         }
 

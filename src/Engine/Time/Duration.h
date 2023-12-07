@@ -5,6 +5,13 @@
 
 #include <chrono>
 
+struct CivilDuration {
+    int days = 0;
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+};
+
 class Duration {
  public:
     static constexpr int64_t TICKS_PER_REALTIME_SECOND = 128;
@@ -37,6 +44,15 @@ class Duration {
     int toWeeks() const { return toDays() / 7; }
     int toMonths() const { return toWeeks() / 4; }
     int toYears() const { return toMonths() / 12; }
+
+    CivilDuration toCivilDuration() const {
+        CivilDuration result;
+        result.days = toDays();
+        result.hours = toHours() % 24;
+        result.minutes = toMinutes() % 60;
+        result.seconds = toSeconds() % 60;
+        return result;
+    };
 
     friend Duration operator+(const Duration &l, const Duration &r) {
         return Duration::fromTicks(l.value + r.value);

@@ -811,7 +811,7 @@ void Game::processQueuedMessages() {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
                 if (iequals(s_SavedMapName.data(), "d05.blv"))
-                    pParty->GetPlayingTime() += Time::fromDays(4);
+                    pParty->GetPlayingTime() += Duration::fromDays(4);
 
                 PlayButtonClickSound();
                 DialogueEnding();
@@ -1989,7 +1989,7 @@ void Game::gameLoop() {
                     character.SetVariable(VAR_Award, Award_Deaths);
                 }
                 pParty->days_played_without_rest = 0;
-                pParty->GetPlayingTime() += Time::fromDays(7);  // += 2580480
+                pParty->GetPlayingTime() += Duration::fromDays(7);  // += 2580480
                 pParty->uFlags &= ~(PARTY_FLAG_WATER_DAMAGE | PARTY_FLAG_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
