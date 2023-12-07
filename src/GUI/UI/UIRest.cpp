@@ -78,7 +78,7 @@ GUIWindow_Rest::GUIWindow_Rest()
 
     current_screen_type = SCREEN_REST;
 
-    hourglassLoopTimer = 0;
+    hourglassLoopTimer = Duration::zero();
     rest_ui_restmain = assets->getImage_Alpha("restmain");
     rest_ui_btn_1 = assets->getImage_Alpha("restb1");
     rest_ui_btn_2 = assets->getImage_Alpha("restb2");
@@ -124,12 +124,12 @@ void GUIWindow_Rest::Update() {
             rest_ui_hourglass_frame_current = nullptr;
         }
 
-        hourglassLoopTimer += pEventTimer->uTimeElapsed;
-        if (hourglassLoopTimer >= (Timer::Second * 4)) {
-            hourglassLoopTimer = 0;
+        hourglassLoopTimer += Duration::fromTicks(pEventTimer->uTimeElapsed);
+        if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
+            hourglassLoopTimer = Duration::zero();
         }
 
-        int hourglass_icon_idx = (int)floorf(((double)hourglassLoopTimer / 512.0 * 120.0) + 0.5f) % 256 + 1;
+        int hourglass_icon_idx = (int)floorf(((double)hourglassLoopTimer.ticks() / 512.0 * 120.0) + 0.5f) % 256 + 1;
         if (hourglass_icon_idx >= 120) {
             hourglass_icon_idx = 1;
         }

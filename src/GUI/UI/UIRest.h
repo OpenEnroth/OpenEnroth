@@ -17,7 +17,7 @@ class GUIWindow_Rest : public GUIWindow {
     virtual void Update() override;
 
  private:
-    int hourglassLoopTimer;
+    Duration hourglassLoopTimer;
 };
 
 enum class RestType {
