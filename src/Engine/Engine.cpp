@@ -1203,7 +1203,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_hour = pParty->uCurrentHour;
     int old_year = pParty->uCurrentYear;
 
-    pParty->GetPlayingTime().value += pEventTimer->uTimeElapsed;
+    pParty->GetPlayingTime() += Duration::fromTicks(pEventTimer->uTimeElapsed);
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
     pParty->uCurrentTimeSecond = time.second;

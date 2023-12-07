@@ -124,11 +124,11 @@ static const std::unordered_map<MapId, uint16_t> gamesLodIndexByMapId = {
 static const std::unordered_map<uint16_t, MapId> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
 
 static void snapshot(const Time &src, int64_t *dst) {
-    *dst = src.value;
+    *dst = src.ticks();
 }
 
 static void reconstruct(int64_t src, Time *dst) {
-    dst->value = src;
+    *dst = Time::fromTicks(src);
 }
 
 static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
@@ -480,7 +480,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->prevEyeLevel = src.lastEyeLevel;
     dst->fallSpeed = src.speed.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
-    dst->waterLavaTimer = src._6FC_water_lava_timer.value; // Can overflow and that's OK.
+    dst->waterLavaTimer = src._6FC_water_lava_timer.ticks(); // Can overflow and that's OK.
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
     dst->field_708 = 15; // Vanilla set this to 15, so we're doing the same just in case.

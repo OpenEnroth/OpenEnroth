@@ -17,7 +17,8 @@ struct CivilTime {
     int second = 0;
 };
 
-struct Time {
+class Time {
+ public:
     Time() = default;
     Time(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
         value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
@@ -84,6 +85,7 @@ struct Time {
         return isValid();
     }
 
+ private:
     int64_t value = 0;
 };
 
