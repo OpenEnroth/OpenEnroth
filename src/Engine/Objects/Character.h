@@ -95,7 +95,7 @@ class CharacterConditions {
     }
 
  private:
-    /** Game time when condition has started. */
+    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
     IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
@@ -384,7 +384,7 @@ class Character {
     static void _42ECB5_CharacterAttacksActor();
     static void _42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signed int actchar);
     void cleanupBeacons();
-    bool setBeacon(int index, Time duration);
+    bool setBeacon(int index, Duration duration);
 
     // TODO(captainurist): check all usages, most should be using getActualSkillValue.
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
