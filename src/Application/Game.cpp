@@ -1183,7 +1183,7 @@ void Game::processQueuedMessages() {
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
                 for (Character &character : pParty->pCharacters) {
-                    character.SetAsleep(Time::fromTicks(1));
+                    character.conditions.Set(CONDITION_SLEEP, Time::fromTicks(1));
                 }
                 continue;
             }
@@ -1254,7 +1254,7 @@ void Game::processQueuedMessages() {
                     }
                 } else {
                     for (Character &character : pParty->pCharacters) {
-                        character.SetAsleep(pParty->GetPlayingTime());
+                        character.conditions.Set(CONDITION_SLEEP, pParty->GetPlayingTime());
                     }
                     MapId mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
                     assert(mapIdx != MAP_INVALID);
@@ -1295,7 +1295,7 @@ void Game::processQueuedMessages() {
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                     for (Character &character : pParty->pCharacters) {
-                        character.SetAsleep(Time::fromTicks(1));
+                        character.conditions.Set(CONDITION_SLEEP, Time::fromTicks(1));
                     }
                 }
                 continue;

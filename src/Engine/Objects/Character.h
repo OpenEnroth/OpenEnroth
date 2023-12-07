@@ -317,25 +317,6 @@ class Character {
     bool IsParalyzed() const;
     bool IsDrunk() const;
 
-    void SetCursed(Time time);
-    void SetWeak(Time time);
-    void SetAsleep(Time time);
-    void SetAfraid(Time time);
-    void SetDrunk(Time time);
-    void SetInsane(Time time);
-    void SetPoisonWeak(Time time);
-    void SetDiseaseWeak(Time time);
-    void SetPoisonMedium(Time time);
-    void SetDiseaseMedium(Time time);
-    void SetPoisonSevere(Time time);
-    void SetDiseaseSevere(Time time);
-    void SetParalyzed(Time time);
-    void SetUnconcious(Time time);
-    void SetDead(Time time);
-    void SetPetrified(Time time);
-    void SetEradicated(Time time);
-    void SetZombie(Time time);
-
     void SetCondWeakWithBlockCheck(int blockable);
     void SetCondInsaneWithBlockCheck(int blockable);
     void SetCondDeadWithBlockCheck(int blockable);
