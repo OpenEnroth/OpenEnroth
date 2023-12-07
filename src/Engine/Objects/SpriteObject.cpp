@@ -642,7 +642,7 @@ void SpriteObject::InitializeSpriteObjects() {
 bool SpriteObject::applyShrinkRayAoe() {
     bool isApplied = false;
     // Calculation was moved from initial sprite creation processing
-    Time duration = Time::fromMinutes(this->spell_level * 5);
+    Duration duration = Duration::fromMinutes(this->spell_level * 5);
     static const int shrinkPower = 4;
     int effectDistance = engine->config->gameplay.ShrinkRayAoeDistance.value();
 

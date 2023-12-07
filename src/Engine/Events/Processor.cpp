@@ -19,8 +19,8 @@
 #include "Library/Logger/Logger.h"
 
 struct MapTimer {
-    Time interval;
-    Time timeInsideDay;
+    Duration interval;
+    Duration timeInsideDay;
     Time altInterval;
     Time alarmTime;
     int eventId = 0;
@@ -100,26 +100,26 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
             if (ir.data.timer_descr.is_yearly) {
-                timer.interval = Time::fromYears(1);
+                timer.interval = Duration::fromYears(1);
             } else if (ir.data.timer_descr.is_monthly) {
-                timer.interval = Time::fromDays(28);
+                timer.interval = Duration::fromDays(28);
             } else if (ir.data.timer_descr.is_weekly) {
-                timer.interval = Time::fromDays(7);
+                timer.interval = Duration::fromDays(7);
             } else {
                 // Interval is daily with exact time of day
-                timer.interval = Time::fromDays(1);
-                timer.timeInsideDay = Time::fromHours(ir.data.timer_descr.daily_start_hour);
-                timer.timeInsideDay += Time::fromMinutes(ir.data.timer_descr.daily_start_minute);
-                timer.timeInsideDay += Time::fromSeconds(ir.data.timer_descr.daily_start_second);
+                timer.interval = Duration::fromDays(1);
+                timer.timeInsideDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
+                timer.timeInsideDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
+                timer.timeInsideDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
             }
 
-            if (timer.interval == Time::fromDays(1)) {
+            if (timer.interval == Duration::fromDays(1)) {
                 if (levelLastVisit) {
                     // Calculate alarm time inside last visit day
                     timer.alarmTime = Time::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
                     if (timer.alarmTime < levelLastVisit) {
                         // Last visit time already passed alarm time inside that day so move alarm to next day
-                        timer.alarmTime = timer.alarmTime + Time::fromDays(1);
+                        timer.alarmTime = timer.alarmTime + Duration::fromDays(1);
                     }
                 } else {
                     // Set alarm time to zero because it must always fire
@@ -133,7 +133,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                     timer.alarmTime = pParty->GetPlayingTime();
                 }
             }
-            assert(timer.interval.isValid());
+            assert(timer.interval);
         }
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;
@@ -231,10 +231,11 @@ static void checkTimer(MapTimer &timer) {
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
-            if (!timer.alarmTime.isValid() && timer.interval == Time::fromDays(1)) {
+            if (!timer.alarmTime.isValid() && timer.interval == Duration::fromDays(1)) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
-                timer.alarmTime = timer.timeInsideDay;
+                timer.alarmTime = Time() + timer.timeInsideDay;
             }
+            // TODO(captainurist): #time
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
                 timer.alarmTime += timer.interval;
             }
