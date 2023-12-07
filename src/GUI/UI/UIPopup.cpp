@@ -303,7 +303,6 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     unsigned int frameXpos;     // eax@3
     int v34;             // esi@81
-    SummonedItem v67;
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
     int v85;
 
@@ -589,32 +588,26 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
             (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
-            // TODO(captainurist): #time
-            v67.Initialize(Time::fromTicks((inspect_item->uExpireTime - pParty->GetPlayingTime()).ticks()));
+            CivilDuration d = (inspect_item->uExpireTime - pParty->GetPlayingTime()).toCivilDuration();
 
             std::string txt4 = "Duration:";
             bool formatting = false;
 
-            int years = v67.field_18_expire_year - game_starting_year;
-            formatting |= years != 0;
-            if (formatting)
-                txt4 += fmt::format(" {}:yr", years);
+            // captainurist: we used to have years & months here, I dropped them.
+            // TODO(captainurist): check how other durations are formatted, this is not the only place that creates
+            //                     a CivilDuration. Unify the code?
 
-            formatting |= v67.field_14_exprie_month != 0;
+            formatting |= d.days != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:mo", v67.field_14_exprie_month);
+                txt4 += fmt::format(" {}:dy", d.days);
 
-            formatting |= v67.field_C_expire_day != 0;
+            formatting |= d.hours != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:dy", v67.field_C_expire_day);
+                txt4 += fmt::format(" {}:hr", d.hours);
 
-            formatting |= v67.field_8_expire_hour != 0;
+            formatting |= d.minutes != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:hr", v67.field_8_expire_hour);
-
-            formatting |= v67.field_4_expire_minute != 0;
-            if (formatting)
-                txt4 += fmt::format(" {}:mn", v67.field_4_expire_minute);
+                txt4 += fmt::format(" {}:mn", d.minutes);
 
             iteminfo_window.DrawText(assets->pFontComic.get(), {100, iteminfo_window.uFrameHeight - 2 * assets->pFontComic->GetHeight()}, colorTable.White, txt4);
         }

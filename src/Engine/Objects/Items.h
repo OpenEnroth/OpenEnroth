@@ -154,27 +154,6 @@ struct ItemDesc {  // 30h
     char field_2f = 0;
 };
 
-struct SummonedItem {
-    //----- (00493F79) --------------------------------------------------------
-    void Initialize(Time duration) {
-        this->field_0_expire_second = duration.secondsFraction();
-        this->field_4_expire_minute = duration.minutesFraction();
-        this->field_8_expire_hour = duration.hoursOfDay();
-        this->field_10_expire_week = duration.weeksOfMonth();
-        this->field_C_expire_day = duration.daysOfMonth();
-        this->field_14_exprie_month = duration.toMonths();
-        this->field_18_expire_year = duration.toYears() + game_starting_year;
-    }
-
-    int field_0_expire_second = 0;
-    int field_4_expire_minute = 0;
-    int field_8_expire_hour = 0;
-    int field_C_expire_day = 0;
-    int field_10_expire_week = 0;
-    int field_14_exprie_month = 0;
-    int field_18_expire_year = 0;
-};
-
 std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel);

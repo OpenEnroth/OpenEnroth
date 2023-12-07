@@ -857,7 +857,7 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
     int64_t v18;    // qax@18
     int v29;               // eax@68
     std::vector<int> addressingBits;
-    SummonedItem v56;      // [sp+80h] [bp-B8h]@107
+    CivilTime time;
 
     pPlayer = &pParty->pCharacters[uPlayerID];
 
@@ -1063,12 +1063,8 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                     assert(false); // should never get here?
                     break;
                 }
-                v56.Initialize(*a6);
-                result += localization->FormatString(
-                    LSTR_FMT_S_D_D,
-                    localization->GetMonthName(v56.field_14_exprie_month),
-                    v56.field_C_expire_day + 1,
-                    v56.field_18_expire_year);
+                time = a6->toCivilTime();
+                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             case 31:
             case 32:
@@ -1090,12 +1086,8 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                     break;
                 }
 
-                v56.Initialize(pParty->PartyTimes._s_times[mask - 51]);
-                result += localization->FormatString(
-                    LSTR_FMT_S_D_D,
-                    localization->GetMonthName(v56.field_14_exprie_month),
-                    v56.field_C_expire_day + 1,
-                    v56.field_18_expire_year);
+                time = pParty->PartyTimes._s_times[mask - 51].toCivilTime();
+                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             }
         }

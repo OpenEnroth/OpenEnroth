@@ -6,6 +6,15 @@
 
 const int game_starting_year = 1168;
 
+struct CivilTime {
+    int year = 0; // Since the Silence.
+    int month = 0; // In [1,12].
+    int day = 0; // In [1, 28].
+    int hour = 0;
+    int minute = 0;
+    int second = 0;
+};
+
 struct Time {
     Time() = default;
     Time(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
@@ -34,6 +43,17 @@ struct Time {
     int toWeeks() const { return toDays() / 7; }
     int toMonths() const { return toWeeks() / 4; }
     int toYears() const { return toMonths() / 12; }
+
+    CivilTime toCivilTime() const {
+        CivilTime result;
+        result.year = game_starting_year + toYears();
+        result.month = 1 + toMonths() % 12;
+        result.day = 1 + toDays() % 28;
+        result.hour = toHours() % 24;
+        result.minute = toMinutes() % 60;
+        result.second = toSeconds() % 60;
+        return result;
+    }
 
     int secondsFraction() const { return toSeconds() % 60; }
     int minutesFraction() const { return toMinutes() % 60; }
