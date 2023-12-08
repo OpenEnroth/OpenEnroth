@@ -182,7 +182,7 @@ void GUIWindow_Transport::transportDialogue() {
             pSpeech = SPEECH_TRAVEL_HORSE;
         }
 
-        restAndHeal(GameTime::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
+        restAndHeal(Duration::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
         pAudioPlayer->soundDrain();
         while (houseDialogPressEscape()) {}

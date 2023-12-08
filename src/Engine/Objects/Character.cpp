@@ -370,9 +370,9 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     if (!this->conditions.Has(condition))
         return 0;
 
-    GameTime playtime = pParty->GetPlayingTime();
-    GameTime condtime = this->conditions.Get(condition);
-    GameTime diff = playtime - condtime;
+    Time playtime = pParty->GetPlayingTime();
+    Time condtime = this->conditions.Get(condition);
+    Duration diff = playtime - condtime;
 
     return diff.toDays() + 1;
 }
@@ -2338,9 +2338,9 @@ int Character::GetActualResistance(CharacterAttributeType resistance) const {
 }
 
 //----- (0048E8F5) --------------------------------------------------------
-bool Character::Recover(GameTime dt) {
+bool Character::Recover(Duration dt) {
     int timepassed =
-        dt.value * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.value;
+        dt.ticks() * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.ticks();
 
     if (timeToRecovery > timepassed) {  // need more time till recovery
         timeToRecovery -= timepassed;
@@ -3529,7 +3529,7 @@ Color Character::GetStatColor(CharacterAttributeType uStat) const {
 
 //----- (004908A8) --------------------------------------------------------
 bool Character::DiscardConditionIfLastsLongerThan(Condition uCondition,
-                                               GameTime time) {
+                                                  Time time) {
     if (conditions.Has(uCondition) && time < conditions.Get(uCondition)) {
         conditions.Reset(uCondition);
         return true;
@@ -3584,7 +3584,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     if (pParty->pPickedItem.isPotion()) {
         // TODO(Nik-RE-dev): no CanAct check?
         int potionStrength = pParty->pPickedItem.potionPower;
-        GameTime buffDuration = GameTime::fromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
+        Duration buffDuration = Duration::fromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:
                 playerAffected->SetCondition(CONDITION_POISON_WEAK, 1);
@@ -3710,9 +3710,9 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_DIVINE_RESTORATION:
             {
-                GameTime deadTime = playerAffected->conditions.Get(CONDITION_DEAD);
-                GameTime petrifedTime = playerAffected->conditions.Get(CONDITION_PETRIFIED);
-                GameTime eradicatedTime = playerAffected->conditions.Get(CONDITION_ERADICATED);
+                Time deadTime = playerAffected->conditions.Get(CONDITION_DEAD);
+                Time petrifedTime = playerAffected->conditions.Get(CONDITION_PETRIFIED);
+                Time eradicatedTime = playerAffected->conditions.Get(CONDITION_ERADICATED);
                 // TODO(Nik-RE-dev): why not playerAffected?
                 conditions.ResetAll();
                 playerAffected->conditions.Set(CONDITION_DEAD, deadTime);
@@ -4159,7 +4159,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
             return pParty->pPickedItem.uItemID == ItemId(pValue);
 
         case VAR_Hour:
-            return pParty->GetPlayingTime().hoursOfDay() == pValue;
+            return pParty->GetPlayingTime().toCivilTime().hour == pValue;
 
         case VAR_DayOfYear:
             return pParty->GetPlayingTime().toDays() % 336 + 1 == pValue;
@@ -4453,7 +4453,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         {
             int idx = std::to_underlying(VarNum) - std::to_underlying(VAR_Counter1);
             if (pParty->PartyTimes.CounterEventValues[idx].isValid()) {
-                return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::fromHours(pValue)) <= pParty->GetPlayingTime();
+                return (pParty->PartyTimes.CounterEventValues[idx] + Duration::fromHours(pValue)) <= pParty->GetPlayingTime();
             }
             return false;
         }
@@ -6872,78 +6872,6 @@ bool Character::IsDrunk() const {
     return this->conditions.Has(CONDITION_DRUNK);
 }
 
-void Character::SetCursed(GameTime time) {
-    this->conditions.Set(CONDITION_CURSED, time);
-}
-
-void Character::SetWeak(GameTime time) {
-    this->conditions.Set(CONDITION_WEAK, time);
-}
-
-void Character::SetAsleep(GameTime time) {
-    this->conditions.Set(CONDITION_SLEEP, time);
-}
-
-void Character::SetAfraid(GameTime time) {
-    this->conditions.Set(CONDITION_FEAR, time);
-}
-
-void Character::SetDrunk(GameTime time) {
-    this->conditions.Set(CONDITION_DRUNK, time);
-}
-
-void Character::SetInsane(GameTime time) {
-    this->conditions.Set(CONDITION_INSANE, time);
-}
-
-void Character::SetPoisonWeak(GameTime time) {
-    this->conditions.Set(CONDITION_POISON_WEAK, time);
-}
-
-void Character::SetDiseaseWeak(GameTime time) {
-    this->conditions.Set(CONDITION_DISEASE_WEAK, time);
-}
-
-void Character::SetPoisonMedium(GameTime time) {
-    this->conditions.Set(CONDITION_POISON_MEDIUM, time);
-}
-
-void Character::SetDiseaseMedium(GameTime time) {
-    this->conditions.Set(CONDITION_DISEASE_MEDIUM, time);
-}
-
-void Character::SetPoisonSevere(GameTime time) {
-    this->conditions.Set(CONDITION_POISON_SEVERE, time);
-}
-
-void Character::SetDiseaseSevere(GameTime time) {
-    this->conditions.Set(CONDITION_DISEASE_SEVERE, time);
-}
-
-void Character::SetParalyzed(GameTime time) {
-    this->conditions.Set(CONDITION_PARALYZED, time);
-}
-
-void Character::SetUnconcious(GameTime time) {
-    this->conditions.Set(CONDITION_UNCONSCIOUS, time);
-}
-
-void Character::SetDead(GameTime time) {
-    this->conditions.Set(CONDITION_DEAD, time);
-}
-
-void Character::SetPetrified(GameTime time) {
-    this->conditions.Set(CONDITION_PETRIFIED, time);
-}
-
-void Character::SetEradicated(GameTime time) {
-    this->conditions.Set(CONDITION_ERADICATED, time);
-}
-
-void Character::SetZombie(GameTime time) {
-    this->conditions.Set(CONDITION_ZOMBIE, time);
-}
-
 void Character::SetCondWeakWithBlockCheck(int blockable) {
     SetCondition(CONDITION_WEAK, blockable);
 }
@@ -7564,7 +7492,7 @@ void Character::cleanupBeacons() {
     );
 }
 
-bool Character::setBeacon(int index, GameTime duration) {
+bool Character::setBeacon(int index, Duration duration) {
     MapId file_index = pMapStats->GetMapInfo(pCurrentMapName);
     if (file_index == MAP_INVALID) {
         return false;

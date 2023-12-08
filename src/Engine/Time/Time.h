@@ -2,32 +2,44 @@
 
 #include <cstdint>
 
+#include "Duration.h"
+
 const int game_starting_year = 1168;
 
-struct GameTime {
-    static constexpr int64_t TICKS_PER_REALTIME_SECOND = 128;
-    static constexpr int64_t GAME_SECONDS_IN_REALTIME_SECOND = 30; // Game time runs 30x faster than real time.
+struct CivilTime {
+    int year = 0; // Since the Silence.
+    int month = 0; // In [1,12].
+    int week = 0; // In [1, 4].
+    int day = 0; // In [1, 28].
+    int dayOfWeek = 0; // In [1, 7].
+    int hour = 0; // In [0, 23].
+    int minute = 0;
+    int second = 0;
+};
 
-    GameTime() = default;
-    GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
+class Time {
+ public:
+    Time() = default;
+    Time(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
         value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
-        value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
+        value = value * Duration::TICKS_PER_REALTIME_SECOND / Duration::GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
-    static GameTime fromTicks(int64_t ticks) {
-        GameTime result;
+    static Time fromTicks(int64_t ticks) {
+        Time result;
         result.value = ticks;
         return result;
     }
 
-    static GameTime fromSeconds(int seconds) { return GameTime(seconds, 0, 0, 0, 0, 0, 0); }
-    static GameTime fromMinutes(int minutes) { return GameTime(0, minutes, 0, 0, 0, 0, 0); }
-    static GameTime fromHours(int hours) { return GameTime(0, 0, hours, 0, 0, 0, 0); }
-    static GameTime fromDays(int days) { return GameTime(0, 0, 0, days, 0, 0, 0); }
-    static GameTime fromMonths(int months) { return GameTime(0, 0, 0, 0, 0, months, 0); }
-    static GameTime fromYears(int years) { return GameTime(0, 0, 0, 0, 0, 0, years); }
+    static Time fromSeconds(int seconds) { return Time(seconds, 0, 0, 0, 0, 0, 0); }
+    static Time fromMinutes(int minutes) { return Time(0, minutes, 0, 0, 0, 0, 0); }
+    static Time fromHours(int hours) { return Time(0, 0, hours, 0, 0, 0, 0); }
+    static Time fromDays(int days) { return Time(0, 0, 0, days, 0, 0, 0); }
+    static Time fromMonths(int months) { return Time(0, 0, 0, 0, 0, months, 0); }
+    static Time fromYears(int years) { return Time(0, 0, 0, 0, 0, 0, years); }
 
-    int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
+    int64_t ticks() const { return value; }
+    int64_t toSeconds() const { return value * Duration::GAME_SECONDS_IN_REALTIME_SECOND / Duration::TICKS_PER_REALTIME_SECOND; }
     int64_t toMinutes() const { return toSeconds() / 60; }
     int64_t toHours() const { return toMinutes() / 60; }
     int toDays() const { return toHours() / 24; }
@@ -35,13 +47,18 @@ struct GameTime {
     int toMonths() const { return toWeeks() / 4; }
     int toYears() const { return toMonths() / 12; }
 
-    int secondsFraction() const { return toSeconds() % 60; }
-    int minutesFraction() const { return toMinutes() % 60; }
-    int hoursOfDay() const { return toHours() % 24; }
-    int daysOfWeek() const { return toDays() % 7; }
-    int daysOfMonth() const { return toDays() % 28; }
-    int weeksOfMonth() const { return toWeeks() % 4; }
-    int monthsOfYear() const { return toMonths() % 12; }
+    CivilTime toCivilTime() const {
+        CivilTime result;
+        result.year = game_starting_year + toYears();
+        result.month = 1 + toMonths() % 12;
+        result.week = 1 + toWeeks() % 4;
+        result.day = 1 + toDays() % 28;
+        result.dayOfWeek = 1 + toDays() % 7;
+        result.hour = toHours() % 24;
+        result.minute = toMinutes() % 60;
+        result.second = toSeconds() % 60;
+        return result;
+    }
 
     // TODO(captainurist): doesn't belong to GameTime.
     void SetExpired() { value = -1;  }
@@ -51,30 +68,37 @@ struct GameTime {
     //                     the same as Valid().
     bool isValid() const { return value > 0; }
 
-    friend GameTime operator+(const GameTime &l, const GameTime &r) {
-        return GameTime::fromTicks(l.value + r.value);
-    }
-
-    friend GameTime operator-(const GameTime &l, const GameTime &r) {
-        return GameTime::fromTicks(l.value - r.value);
-    }
-
-    GameTime &operator+=(const GameTime &rhs) {
-        value += rhs.value;
+    Time &operator+=(const Duration &rhs) {
+        value += rhs.ticks();
         return *this;
     }
 
-    GameTime &operator-=(const GameTime &rhs) {
-        value -= rhs.value;
+    Time &operator-=(const Duration &rhs) {
+        value -= rhs.ticks();
         return *this;
     }
 
-    friend bool operator==(const GameTime &l, const GameTime &r) = default;
-    friend auto operator<=>(const GameTime &l, const GameTime &r) = default;
+    friend bool operator==(const Time &l, const Time &r) = default;
+    friend auto operator<=>(const Time &l, const Time &r) = default;
 
     explicit operator bool() const {
         return isValid();
     }
 
+ private:
     int64_t value = 0;
 };
+
+inline Time operator+(const Time &l, const Duration &r) {
+    return Time::fromTicks(l.ticks() + r.ticks());
+}
+
+// We don't provide operator+(Duration, Time)
+
+inline Time operator-(const Time &l, const Duration &r) {
+    return Time::fromTicks(l.ticks() - r.ticks());
+}
+
+inline Duration operator-(const Time &l, const Time &r) {
+    return Duration::fromTicks(l.ticks() - r.ticks());
+}

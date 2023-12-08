@@ -1271,11 +1271,11 @@ GAME_TEST(Issues, Issue783) {
 
         // And all buffs should expire way in the future.
         for (CharacterBuff buff : allPotionBuffs())
-            EXPECT_GT(pParty->pCharacters[0].pCharacterBuffs[buff].GetExpireTime(), pParty->GetPlayingTime() + GameTime::fromHours(10));
+            EXPECT_GT(pParty->pCharacters[0].pCharacterBuffs[buff].GetExpireTime(), pParty->GetPlayingTime() + Duration::fromHours(10));
     });
 
-    EXPECT_GT(timeTape.delta(), GameTime::fromHours(8)); // Check that we did rest.
-    EXPECT_LT(timeTape.delta(), GameTime::fromHours(10)); // Check that we didn't wait out the buff expire times.
+    EXPECT_GT(timeTape.delta(), Duration::fromHours(8)); // Check that we did rest.
+    EXPECT_LT(timeTape.delta(), Duration::fromHours(10)); // Check that we didn't wait out the buff expire times.
     check783784Buffs(false); // Check that the buffs still expired.
 }
 
@@ -1484,7 +1484,7 @@ GAME_TEST(Issues, Issue895) {
     // Test that entering magic guild does not shift date
     auto timeTape = tapes.time();
     test.playTraceFromTestData("issue_895.mm7", "issue_895.json");
-    EXPECT_LT(timeTape.delta(), GameTime::fromMinutes(5));
+    EXPECT_LT(timeTape.delta(), Duration::fromMinutes(5));
 }
 
 // 900

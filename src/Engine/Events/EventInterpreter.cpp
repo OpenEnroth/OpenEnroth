@@ -266,7 +266,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                 SetUserInterface(pParty->alignment, true);
             } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
-                Rest(GameTime::fromDays(7));
+                Rest(Duration::fromDays(7));
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
             }

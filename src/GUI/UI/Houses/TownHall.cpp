@@ -158,7 +158,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
     // Generate new bounty
     if (pParty->PartyTimes.bountyHuntNextGenTime[house] < pParty->GetPlayingTime()) {
         pParty->monster_for_hunting_killed[house] = false;
-        pParty->PartyTimes.bountyHuntNextGenTime[house] = GameTime::fromMonths(pParty->GetPlayingTime().toMonths() + 1);
+        pParty->PartyTimes.bountyHuntNextGenTime[house] = Time::fromMonths(pParty->GetPlayingTime().toMonths() + 1);
         pParty->monster_id_for_hunting[house] = randomMonsterForHunting(house);
     }
 

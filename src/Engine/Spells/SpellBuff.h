@@ -9,7 +9,7 @@ struct SpellBuff {
     /**
      * @offset 0x4584E0
      */
-    bool Apply(GameTime time, CharacterSkillMastery uSkillMastery,
+    bool Apply(Time time, CharacterSkillMastery uSkillMastery,
                int uPower, int uOverlayID, uint8_t caster);
 
     /**
@@ -20,7 +20,7 @@ struct SpellBuff {
     /**
      * @offset 0x4585CA
      */
-    bool IsBuffExpiredToTime(GameTime time);
+    bool IsBuffExpiredToTime(Time time);
 
     /**
      * @offset 0x42EB31
@@ -35,9 +35,9 @@ struct SpellBuff {
     * Expired is state where spell buff is not in effect after previously being active
     */
     bool Expired() const { return this->expireTime.Expired(); }
-    GameTime &GetExpireTime() { return this->expireTime; }
+    Time &GetExpireTime() { return this->expireTime; }
 
-    GameTime expireTime;
+    Time expireTime;
     uint16_t power = 0; // Spell power, semantics are spell-specific.
     CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t overlayID = 0;

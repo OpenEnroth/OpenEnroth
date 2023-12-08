@@ -56,7 +56,7 @@ struct ItemGen {  // 0x24
     int GetValue() const;
     std::string GetDisplayName();
     std::string GetIdentifiedName();
-    void UpdateTempBonus(GameTime time);
+    void UpdateTempBonus(Time time);
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
 
@@ -121,7 +121,7 @@ struct ItemGen {  // 0x24
      * Or whatever it is that's in the lich jar. */
     int8_t uHolderPlayer = -1;
     bool placedInChest = false;        // 1B (was unused, repurposed)
-    GameTime uExpireTime;        // uint64_t uExpireTime; //1C
+    Time uExpireTime;        // uint64_t uExpireTime; //1C
 };
 
 struct ItemDesc {  // 30h
@@ -152,27 +152,6 @@ struct ItemDesc {  // 30h
     IndexedArray<uint8_t, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}};
     unsigned char uItemID_Rep_St = 0;  // 2e 32
     char field_2f = 0;
-};
-
-struct SummonedItem {
-    //----- (00493F79) --------------------------------------------------------
-    void Initialize(GameTime duration) {
-        this->field_0_expire_second = duration.secondsFraction();
-        this->field_4_expire_minute = duration.minutesFraction();
-        this->field_8_expire_hour = duration.hoursOfDay();
-        this->field_10_expire_week = duration.weeksOfMonth();
-        this->field_C_expire_day = duration.daysOfMonth();
-        this->field_14_exprie_month = duration.toMonths();
-        this->field_18_expire_year = duration.toYears() + game_starting_year;
-    }
-
-    int field_0_expire_second = 0;
-    int field_4_expire_minute = 0;
-    int field_8_expire_hour = 0;
-    int field_C_expire_day = 0;
-    int field_10_expire_week = 0;
-    int field_14_exprie_month = 0;
-    int field_18_expire_year = 0;
 };
 
 std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);

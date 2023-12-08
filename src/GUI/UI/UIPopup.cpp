@@ -303,7 +303,6 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     unsigned int frameXpos;     // eax@3
     int v34;             // esi@81
-    SummonedItem v67;
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
     int v85;
 
@@ -589,31 +588,33 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
             (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
-            v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
+            LongCivilDuration d = (inspect_item->uExpireTime - pParty->GetPlayingTime()).toLongCivilDuration();
 
             std::string txt4 = "Duration:";
             bool formatting = false;
 
-            int years = v67.field_18_expire_year - game_starting_year;
-            formatting |= years != 0;
-            if (formatting)
-                txt4 += fmt::format(" {}:yr", years);
+            // TODO(captainurist): check how other durations are formatted, this is not the only place that creates
+            //                     a CivilDuration. Unify the code?
 
-            formatting |= v67.field_14_exprie_month != 0;
+            formatting |= d.years != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:mo", v67.field_14_exprie_month);
+                txt4 += fmt::format(" {}:yr", d.years);
 
-            formatting |= v67.field_C_expire_day != 0;
+            formatting |= d.months != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:dy", v67.field_C_expire_day);
+                txt4 += fmt::format(" {}:mo", d.months);
 
-            formatting |= v67.field_8_expire_hour != 0;
+            formatting |= d.days != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:hr", v67.field_8_expire_hour);
+                txt4 += fmt::format(" {}:dy", d.days);
 
-            formatting |= v67.field_4_expire_minute != 0;
+            formatting |= d.hours != 0;
             if (formatting)
-                txt4 += fmt::format(" {}:mn", v67.field_4_expire_minute);
+                txt4 += fmt::format(" {}:hr", d.hours);
+
+            formatting |= d.minutes != 0;
+            if (formatting)
+                txt4 += fmt::format(" {}:mn", d.minutes);
 
             iteminfo_window.DrawText(assets->pFontComic.get(), {100, iteminfo_window.uFrameHeight - 2 * assets->pFontComic->GetHeight()}, colorTable.White, txt4);
         }
@@ -646,34 +647,34 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
     int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(pActors[uActorID].monsterInfo.id)] - 40;
 
-    uint16_t actionLen = 0;
+    Duration actionLen;
     if (pActors[uActorID].monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
         actionLen = pMonsterInfoUI_Doll.currentActionLength;
     } else {
         // copy actor info if different
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.currentActionTime = 0;
-        actionLen = vrng->random(256) + 128;
+        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
+        actionLen = Duration::fromTicks(vrng->random(256) + 128);
         pMonsterInfoUI_Doll.currentActionLength = actionLen;
     }
 
     if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.currentActionTime = 0;
+        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
         if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.currentActionLength = vrng->random(128) + 128;
+            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(vrng->random(128) + 128);
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
             if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.currentActionLength =
+            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(
                 8 *
                 pSpriteFrameTable
                     ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                    .uAnimLength;
+                    .uAnimLength);
         }
     }
 
@@ -683,7 +684,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
                 .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
-            pMonsterInfoUI_Doll.currentActionTime);
+            pMonsterInfoUI_Doll.currentActionTime.ticks());
 
         // Draw portrait border
         render->ResetUIClipRect();
@@ -702,7 +703,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
-    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->uTimeElapsed;
+    pMonsterInfoUI_Doll.currentActionTime += Duration::fromTicks(pMiscTimer->uTimeElapsed);
 
     // Draw name and profession
     std::string str;
@@ -1100,8 +1101,6 @@ void CharacterUI_StatsTab_ShowHint() {
     Color pTextColor;  // eax@15
     std::string pHourWord;  // ecx@17
     std::string pDayWord;   // eax@20
-    int pHour;              // [sp+14h] [bp-1Ch]@15
-    unsigned int pDay;      // [sp+24h] [bp-Ch]@15
 
     Pointi pt = mouse->GetCursorPos();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum) {
@@ -1143,18 +1142,17 @@ void CharacterUI_StatsTab_ShowHint() {
             for (Condition condition : conditionImportancyTable()) {
                 if (pParty->activeCharacter().conditions.Has(condition)) {
                     str += " \n";
-                    GameTime condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
-                    pHour = condition_time.hoursOfDay();
-                    pDay = condition_time.toDays();
+                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    CivilDuration d = condition_time.toCivilDuration();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));
-                    if (pHour && pHour <= 1)
+                    if (d.hours && d.hours <= 1)
                         pHourWord = localization->GetString(LSTR_HOUR);
                     else
                         pHourWord = localization->GetString(LSTR_HOURS);
-                    if (!pDay || (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), pDay > 1))
+                    if (!d.days || (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), d.days > 1))
                         pDayWord = localization->GetString(LSTR_DAYS);
-                    str += fmt::format("{} {}, {} {}", pDay, pDayWord, pHour, pHourWord);
+                    str += fmt::format("{} {}, {} {}", d.days, pDayWord, d.hours, pHourWord);
                 }
             }
 
@@ -1389,7 +1387,7 @@ static void drawBuffPopupWindow() {
     stringCount = 0;
     for (PartyBuff i : pParty->pPartyBuffs.indices()) {
         if (pParty->pPartyBuffs[i].Active()) {
-            GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
+            Duration remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * assets->pFontComic->GetHeight() + 40;
             popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
@@ -2368,10 +2366,10 @@ void Inventory_ItemPopupAndAlchemy() {
                 return;
             }
 
-            GameTime effectTime = GameTime::fromMinutes(30 * pParty->pPickedItem.potionPower);
+            Duration effectTime = Duration::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
-            item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
+            item->uExpireTime = pParty->GetPlayingTime() + effectTime;
             // Sound was missing previously
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);

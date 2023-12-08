@@ -213,7 +213,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                            SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkillMastery) {
-    GameTime spellLength;
+    Duration spellLength;
 
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];
@@ -275,13 +275,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromMinutes(40 + 2 * realPoints);
+                    spellLength = Duration::fromMinutes(40 + 2 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromMinutes(45 + 3 * realPoints);
+                    spellLength = Duration::fromMinutes(45 + 3 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -412,13 +412,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromHours(64 + realPoints);
+                    spellLength = Duration::fromHours(64 + realPoints);
                     break;
                 default:
                     assert(false);
@@ -435,13 +435,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromHours(64 + realPoints);
+                    spellLength = Duration::fromHours(64 + realPoints);
                     break;
                 default:
                     assert(false);
@@ -458,13 +458,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 20 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 20 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -494,7 +494,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + GameTime::fromMinutes(5), masteryLevel, spellPower, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -505,13 +505,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 5 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 15 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromHours(1) + GameTime::fromMinutes(4 + 20 * realPoints);
+                    spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 20 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -526,7 +526,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_BODY_HAMMERHANDS:
             // TODO(Nik-RE-dev): calculation of duration is strange
             actorPtr->buffs[ACTOR_BUFF_HAMMERHANDS]
-                .Apply(pParty->GetPlayingTime() + GameTime::fromHours(realPoints), masteryLevel, realPoints, 0, 0);
+                .Apply(pParty->GetPlayingTime() + Duration::fromHours(realPoints), masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
             pAudioPlayer->playSound(SOUND_51heroism03, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -566,15 +566,15 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     assert(false);
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromMinutes(64 + 5 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 5 * realPoints);
                     spellPower = realPoints;
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromMinutes(64 + 15 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 15 * realPoints);
                     spellPower = 3 * realPoints;
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromMinutes(64 + 20 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 20 * realPoints);
                     spellPower = 4 * realPoints;
                     break;
             }
@@ -590,13 +590,13 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                    spellLength = GameTime::fromMinutes(64 + 5 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 5 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromMinutes(64 + 15 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 15 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromMinutes(64 + 20 * realPoints);
+                    spellLength = Duration::fromMinutes(64 + 20 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -666,10 +666,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 case CHARACTER_SKILL_MASTERY_NOVICE:
                 case CHARACTER_SKILL_MASTERY_EXPERT:
                 case CHARACTER_SKILL_MASTERY_MASTER:
-                    spellLength = GameTime::fromMinutes(64) + GameTime::fromSeconds(5 * 30 * realPoints);
+                    spellLength = Duration::fromMinutes(64) + Duration::fromSeconds(5 * 30 * realPoints);
                     break;
                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                    spellLength = GameTime::fromMinutes(64) + GameTime::fromSeconds(15 * 30 * realPoints);
+                    spellLength = Duration::fromMinutes(64) + Duration::fromSeconds(15 * 30 * realPoints);
                     break;
                 default:
                     assert(false);
@@ -1000,12 +1000,12 @@ void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID, int UNUSED,
         }
 
         pActors[uActorID].yawAngle = Dir_Out->uYawAngle;
-        pActors[uActorID].currentActionTime = 0;
+        pActors[uActorID].currentActionTime = Duration::zero();
         pActors[uActorID].speed.z = 0;
         pActors[uActorID].speed.y = 0;
         pActors[uActorID].speed.x = 0;
         pActors[uActorID].pitchAngle = Dir_Out->uPitchAngle;
-        pActors[uActorID].currentActionLength = 256;
+        pActors[uActorID].currentActionLength = Duration::fromRealtimeSeconds(2);
         pActors[uActorID].aiState = Interacting;
         pActors[uActorID].UpdateAnimation();
     } else {
@@ -1037,10 +1037,10 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
 
     pActors[uActorID].aiState = Standing;
     if (!uActionLength)
-        pActors[uActorID].currentActionLength = grng->random(256) + 256;  // от 256 до 256 + 256
+        pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(256) + 256);  // от 256 до 256 + 256
     else
-        pActors[uActorID].currentActionLength = uActionLength;
-    pActors[uActorID].currentActionTime = 0;
+        pActors[uActorID].currentActionLength = Duration::fromTicks(uActionLength); // TODO(captainurist): #time
+    pActors[uActorID].currentActionTime = Duration::zero();
     pActors[uActorID].yawAngle = a4->uYawAngle;
     pActors[uActorID].pitchAngle = a4->uPitchAngle;
     pActors[uActorID].speed.z = 0;
@@ -1051,8 +1051,8 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
 
 //----- (00403E61) --------------------------------------------------------
 void Actor::StandAwhile(unsigned int uActorID) {
-    pActors[uActorID].currentActionLength = grng->random(128) + 128;
-    pActors[uActorID].currentActionTime = 0;
+    pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(128) + 128);
+    pActors[uActorID].currentActionTime = Duration::zero();
     pActors[uActorID].aiState = Standing;
     pActors[uActorID].speed.z = 0;
     pActors[uActorID].speed.y = 0;
@@ -1109,12 +1109,12 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
             v12 = &a3;
         }
         pActors[uActorID].yawAngle = (short)v12->uYawAngle;
-        pActors[uActorID].currentActionLength =
+        pActors[uActorID].currentActionLength = Duration::fromTicks(
             pSpriteFrameTable
                 ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_AtkMelee]]
                 .uAnimLength *
-            8;
-        pActors[uActorID].currentActionTime = 0;
+            8);
+        pActors[uActorID].currentActionTime = Duration::zero();
         pActors[uActorID].aiState = AttackingMelee;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         v25 = pMonsterStats->infos[pActors[uActorID].monsterInfo.id]
@@ -1346,8 +1346,8 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = 8 * v13;
-        v3->currentActionTime = 0;
+        v3->currentActionLength = Duration::fromTicks(8 * v13);
+        v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged4;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1355,14 +1355,14 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = v3->currentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = (v3->currentActionLength + Duration::fromTicks(debug_combat_recovery_mul * pDira * flt_debugrecmod3)).ticks();
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
         v3->speed.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell2Id)) {
-            v3->currentActionLength = 64;
-            v3->currentActionTime = 0;
+            v3->currentActionLength = Duration::fromTicks(64);
+            v3->currentActionTime = Duration::zero();
             v3->aiState = Fidgeting;
             v3->UpdateAnimation();
             v3->aiState = AttackingRanged4;
@@ -1420,8 +1420,8 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = 8 * v13;
-        v3->currentActionTime = 0;
+        v3->currentActionLength = Duration::fromTicks(8 * v13);
+        v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged3;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1429,15 +1429,15 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = v3->currentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = (v3->currentActionLength + Duration::fromTicks(debug_combat_recovery_mul * pDira * flt_debugrecmod3)).ticks();
         }
         v16 = v3->monsterInfo.spell1Id;
         v3->speed.z = 0;
         v3->speed.y = 0;
         v3->speed.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell1Id)) {
-            v3->currentActionLength = 64;
-            v3->currentActionTime = 0;
+            v3->currentActionLength = Duration::fromTicks(64);
+            v3->currentActionTime = Duration::zero();
             v3->aiState = Fidgeting;
             v3->UpdateAnimation();
             v3->aiState = AttackingRanged3;
@@ -1495,8 +1495,8 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = 8 * v13;
-        v3->currentActionTime = 0;
+        v3->currentActionLength = Duration::fromTicks(8 * v13);
+        v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged2;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1566,8 +1566,8 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->yawAngle = (short)v10->uYawAngle;
         v14 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = 8 * v14;
-        v3->currentActionTime = 0;
+        v3->currentActionLength = Duration::fromTicks(8 * v14);
+        v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged1;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1575,7 +1575,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = v3->currentActionLength - (int)(debug_combat_recovery_mul * pDira * -flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = (v3->currentActionLength - Duration::fromTicks(debug_combat_recovery_mul * pDira * -flt_debugrecmod3)).ticks();
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
@@ -1634,11 +1634,11 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     }
     pActors[uActor_id].yawAngle = v10;
     if (pActors[uActor_id].moveSpeed)
-        pActors[uActor_id].currentActionLength =
-            32 * absx / pActors[uActor_id].moveSpeed;
+        pActors[uActor_id].currentActionLength = Duration::fromTicks(
+            32 * absx / pActors[uActor_id].moveSpeed);
     else
-        pActors[uActor_id].currentActionLength = 0;
-    pActors[uActor_id].currentActionTime = 0;
+        pActors[uActor_id].currentActionLength = Duration::zero();
+    pActors[uActor_id].currentActionTime = Duration::zero();
     pActors[uActor_id].aiState = Tethered;
     if (vrng->random(100) < 2) {
         Actor::playSound(uActor_id, ACTOR_BORED_SOUND);
@@ -1736,9 +1736,9 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
         v7 = pSpriteFrameTable
                  ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_GotHit]]
                  .uAnimLength;
-        pActors[uActorID].currentActionTime = 0;
+        pActors[uActorID].currentActionTime = Duration::zero();
         pActors[uActorID].aiState = Stunned;
-        pActors[uActorID].currentActionLength = 8 * v7;
+        pActors[uActorID].currentActionLength = Duration::fromTicks(8 * v7);
         Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
         pActors[uActorID].UpdateAnimation();
     }
@@ -1758,19 +1758,19 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
         a4 = &a3;
     }
 
-    actor->currentActionLength =
+    actor->currentActionLength = Duration::fromTicks(
         8 * pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Bored]]
-                .uAnimLength;
+                .uAnimLength);
 
     v7 = TrigLUT.atan2(actor->pos.x - pCamera3D->vCameraPos.x, actor->pos.y - pCamera3D->vCameraPos.y);
     v9 = TrigLUT.uIntegerPi + actor->yawAngle +
          ((signed int)TrigLUT.uIntegerPi >> 3) - v7;
 
     if (v9 & 0x700) {  // turned away - just stand
-        Actor::AI_Stand(uActorID, uObjID, actor->currentActionLength, a4);
+        Actor::AI_Stand(uActorID, uObjID, actor->currentActionLength.ticks(), a4);
     } else {  // facing player - play bored anim
         actor->aiState = Fidgeting;
-        actor->currentActionTime = 0;
+        actor->currentActionTime = Duration::zero();
         actor->yawAngle = a4->uYawAngle;
         actor->speed.z = 0;
         actor->speed.y = 0;
@@ -1786,12 +1786,12 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
 void Actor::resurrect(unsigned int uActorID) {
     assert(uActorID < pActors.size());
     Actor *pActor = &pActors[uActorID];
-    pActor->currentActionTime = 0;
+    pActor->currentActionTime = Duration::zero();
     pActor->aiState = Resurrected;
     pActor->currentActionAnimation = ANIM_Dying;
-    pActor->currentActionLength =
+    pActor->currentActionLength = Duration::fromTicks(
         8 * pSpriteFrameTable->pSpriteSFrames[pActor->spriteIds[ANIM_Dying]]
-                .uAnimLength;
+                .uAnimLength);
     pActor->currentHP = (short)pActor->monsterInfo.hp;
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
@@ -1815,13 +1815,13 @@ void Actor::resurrect(unsigned int uActorID) {
 void Actor::Die(unsigned int uActorID) {
     Actor *actor = &pActors[uActorID];
 
-    actor->currentActionTime = 0;
+    actor->currentActionTime = Duration::zero();
     actor->aiState = Dying;
     actor->currentActionAnimation = ANIM_Dying;
     actor->currentHP = 0;
-    actor->currentActionLength =
+    actor->currentActionLength = Duration::fromTicks(
         8 * pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Dying]]
-                .uAnimLength;
+                .uAnimLength);
     actor->buffs[ACTOR_BUFF_PARALYZED].Reset();
     actor->buffs[ACTOR_BUFF_STONED].Reset();
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
@@ -1921,9 +1921,9 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     v7->yawAngle = TrigLUT.atan2(pParty->pos.x + TrigLUT.cos(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->pos.x,
                                   pParty->pos.y + TrigLUT.sin(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->pos.y);
     if (uActionLength)
-        v7->currentActionLength = uActionLength;
+        v7->currentActionLength = Duration::fromTicks(uActionLength);
     else
-        v7->currentActionLength = 128;
+        v7->currentActionLength = Duration::fromTicks(128);
     v7->pitchAngle = (short)v10->uPitchAngle;
     v7->aiState = Pursuing;
     v7->UpdateAnimation();
@@ -1953,17 +1953,17 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
             Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
             if (v5->moveSpeed)
-                v5->currentActionLength =
-                    (signed int)(a4->uDistanceXZ << 7) / v5->moveSpeed;
+                v5->currentActionLength = Duration::fromTicks(
+                    (signed int)(a4->uDistanceXZ << 7) / v5->moveSpeed);
             else
-                v5->currentActionLength = 0;
-            if (v5->currentActionLength > 256) v5->currentActionLength = 256;
+                v5->currentActionLength = Duration::zero();
+            if (v5->currentActionLength > Duration::fromTicks(256)) v5->currentActionLength = Duration::fromTicks(256);
             v5->yawAngle =
                 (short)TrigLUT.uIntegerHalfPi + (short)a4->uYawAngle;
             v5->yawAngle =
                 (short)TrigLUT.uDoublePiMask &
                 (v5->yawAngle + grng->random(TrigLUT.uIntegerPi));
-            v5->currentActionTime = 0;
+            v5->currentActionTime = Duration::zero();
             v5->pitchAngle = (short)a4->uPitchAngle;
             v5->aiState = Fleeing;
             v5->UpdateAnimation();
@@ -2009,19 +2009,19 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
         return;
     }
     if (uActionLength) {
-        v7->currentActionLength = uActionLength;
+        v7->currentActionLength = Duration::fromTicks(uActionLength);
     } else {
         v13 = v7->moveSpeed;
         if (v13)
-            v7->currentActionLength =
-                (signed int)(v10->uDistanceXZ << 7) / v13;
+            v7->currentActionLength = Duration::fromTicks(
+                (signed int)(v10->uDistanceXZ << 7) / v13);
         else
-            v7->currentActionLength = 0;
-        if (v7->currentActionLength > 32) v7->currentActionLength = 32;
+            v7->currentActionLength = Duration::zero();
+        if (v7->currentActionLength > Duration::fromTicks(32)) v7->currentActionLength = Duration::fromTicks(32);
     }
     v7->yawAngle = (short)v10->uYawAngle;
     v14 = (short)v10->uPitchAngle;
-    v7->currentActionTime = 0;
+    v7->currentActionTime = Duration::zero();
     v7->pitchAngle = v14;
     v7->aiState = Pursuing;
     v7->UpdateAnimation();
@@ -2062,14 +2062,14 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
     if (uActionLength) {
-        v6->currentActionLength = uActionLength + grng->random(uActionLength);
+        v6->currentActionLength = Duration::fromTicks(uActionLength + grng->random(uActionLength));
     } else {
         v12 = v6->moveSpeed;
         if (v12)
-            v6->currentActionLength = (signed int)(a4->uDistanceXZ << 7) / v12;
+            v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ << 7) / v12);
         else
-            v6->currentActionLength = 0;
-        if (v6->currentActionLength > 128) v6->currentActionLength = 128;
+            v6->currentActionLength = Duration::zero();
+        if (v6->currentActionLength > Duration::fromTicks(128)) v6->currentActionLength = Duration::fromTicks(128);
     }
     v14 = (short)a4->uYawAngle;
     if (grng->random(2))
@@ -2078,7 +2078,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         v14 -= 256;
     v6->yawAngle = v14;
     v16 = (short)a4->uPitchAngle;
-    v6->currentActionTime = 0;
+    v6->currentActionTime = Duration::zero();
     v6->pitchAngle = v16;
     v6->aiState = Pursuing;
     if (vrng->random(100) < 2) {
@@ -2505,10 +2505,10 @@ void Actor::SummonMinion(int summonerId) {
     actor->PrepareSprites(0);
     actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     actor->ally = v19;
-    actor->currentActionTime = 0;
+    actor->currentActionTime = Duration::zero();
     actor->group = this->group;
     actor->aiState = Summoned;
-    actor->currentActionLength = 256;
+    actor->currentActionLength = Duration::fromTicks(256);
     actor->UpdateAnimation();
 
     ++this->monsterInfo.specialAbilityDamageDiceBonus;
@@ -2595,7 +2595,7 @@ void Actor::UpdateActorAI() {
         // Calculate RecoveryTime
         pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed, 0); // was pMiscTimer
 
-        pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
+        pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
             continue;
 
@@ -2609,8 +2609,8 @@ void Actor::UpdateActorAI() {
             pActor->aiState = Standing;
         }
 
-        pActor->currentActionTime = 0;
-        pActor->currentActionLength = 0;
+        pActor->currentActionTime = Duration::zero();
+        pActor->currentActionLength = Duration::zero();
         pActor->UpdateAnimation();
     }
 
@@ -2670,7 +2670,7 @@ void Actor::UpdateActorAI() {
         }
 
         pActor->monsterInfo.recoveryTime = std::max(0, pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
-        pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
+        pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
 
         if (!pActor->ActorNearby())
             pActor->attributes |= ACTOR_NEARBY;
@@ -3264,8 +3264,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         CombinedSkillValue maceSkill = character->getActualSkillValue(CHARACTER_SKILL_MACE);
-        GameTime v46 = GameTime(0, maceSkill.level());  // ??
-        pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
+        pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(maceSkill.level()), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_FMT_S_PARALYZES_S, character->name, pMonster->name);
         }
@@ -4267,9 +4266,9 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     actor->ally = MONSTER_TYPE_9999;
     actor->group = 0;
-    actor->currentActionTime = 0;
+    actor->currentActionTime = Duration::zero();
     actor->aiState = Summoned;
-    actor->currentActionLength = 256;
+    actor->currentActionLength = Duration::fromTicks(256);
     actor->UpdateAnimation();
 
     int sectorId = pIndoor->GetSector(actor->pos);
@@ -4281,9 +4280,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
             (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
-        GameTime spell_length = GameTime::fromSeconds(duration_game_seconds);
-
-        actor->buffs[ACTOR_BUFF_SUMMONED].Apply((pParty->GetPlayingTime() + spell_length),
+        actor->buffs[ACTOR_BUFF_SUMMONED].Apply((pParty->GetPlayingTime() + Duration::fromSeconds(duration_game_seconds)),
                                                 caster_skill_mastery, spell_power, 0, 0);
     } else {
         actor->Remove();

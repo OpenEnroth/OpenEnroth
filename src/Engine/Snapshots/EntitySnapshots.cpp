@@ -123,12 +123,12 @@ static const std::unordered_map<MapId, uint16_t> gamesLodIndexByMapId = {
 };
 static const std::unordered_map<uint16_t, MapId> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
 
-static void snapshot(const GameTime &src, int64_t *dst) {
-    *dst = src.value;
+static void snapshot(const Time &src, int64_t *dst) {
+    *dst = src.ticks();
 }
 
-static void reconstruct(int64_t src, GameTime *dst) {
-    dst->value = src;
+static void reconstruct(int64_t src, Time *dst) {
+    *dst = Time::fromTicks(src);
 }
 
 static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
@@ -480,7 +480,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->prevEyeLevel = src.lastEyeLevel;
     dst->fallSpeed = src.speed.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
-    dst->waterLavaTimer = src._6FC_water_lava_timer.value; // Can overflow and that's OK.
+    dst->waterLavaTimer = src._6FC_water_lava_timer.ticks(); // Can overflow and that's OK.
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
     dst->field_708 = 15; // Vanilla set this to 15, so we're doing the same just in case.
@@ -578,7 +578,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->lastEyeLevel = src.prevEyeLevel;
     dst->speed = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
-    dst->_6FC_water_lava_timer = GameTime::fromTicks(src.waterLavaTimer);
+    dst->_6FC_water_lava_timer = Time::fromTicks(src.waterLavaTimer);
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
@@ -1023,7 +1023,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
             LloydBeacon beacon;
-            beacon.uBeaconTime = GameTime::fromTicks(src.installedBeacons[i].beaconTime);
+            beacon.uBeaconTime = Time::fromTicks(src.installedBeacons[i].beaconTime);
             beacon._partyPos.x = src.installedBeacons[i].partyPosX;
             beacon._partyPos.y = src.installedBeacons[i].partyPosY;
             beacon._partyPos.z = src.installedBeacons[i].partyPosZ;
@@ -1210,14 +1210,14 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uYawAngle = src.yawAngle;
     dst->uPitchAngle = src.pitchAngle;
     dst->uSectorID = src.sectorId;
-    dst->uCurrentActionLength = src.currentActionLength;
+    dst->uCurrentActionLength = src.currentActionLength.ticks();
     snapshot(src.initialPosition, &dst->vInitialPosition);
     snapshot(src.guardingPosition, &dst->vGuardingPosition);
     dst->uTetherDistance = src.tetherDistance;
     dst->uAIState = std::to_underlying(src.aiState);
     dst->uCurrentActionAnimation = std::to_underlying(src.currentActionAnimation);
     dst->uCarriedItemID = std::to_underlying(src.carriedItemId);
-    dst->uCurrentActionTime = src.currentActionTime;
+    dst->uCurrentActionTime = src.currentActionTime.ticks();
 
     snapshot(src.spriteIds, &dst->pSpriteIDs);
     snapshot(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<SoundId, uint16_t>);
@@ -1304,14 +1304,14 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->yawAngle = src.uYawAngle;
     dst->pitchAngle = src.uPitchAngle;
     dst->sectorId = src.uSectorID;
-    dst->currentActionLength = src.uCurrentActionLength;
+    dst->currentActionLength = Duration::fromTicks(src.uCurrentActionLength);
     reconstruct(src.vInitialPosition, &dst->initialPosition);
     reconstruct(src.vGuardingPosition, &dst->guardingPosition);
     dst->tetherDistance = src.uTetherDistance;
     dst->aiState = static_cast<AIState>(src.uAIState);
     dst->currentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
     dst->carriedItemId = ItemId(src.uCarriedItemID);
-    dst->currentActionTime = src.uCurrentActionTime;
+    dst->currentActionTime = Duration::fromTicks(src.uCurrentActionTime);
 
     reconstruct(src.pSpriteIDs, &dst->spriteIds);
     reconstruct(src.pSoundSampleIDs, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);

@@ -17,7 +17,7 @@ class GUIWindow_Rest : public GUIWindow {
     virtual void Update() override;
 
  private:
-    int hourglassLoopTimer;
+    Duration hourglassLoopTimer;
 };
 
 enum class RestType {
@@ -31,5 +31,5 @@ extern class GraphicsImage *rest_ui_sky_frame_current;
 extern class GraphicsImage *rest_ui_hourglass_frame_current;
 
 extern int foodRequiredToRest;
-extern GameTime remainingRestTime;
+extern Duration remainingRestTime;
 extern RestType currentRestType;

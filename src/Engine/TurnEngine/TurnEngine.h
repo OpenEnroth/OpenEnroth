@@ -37,12 +37,12 @@ struct TurnBased_QueueElem {
     inline TurnBased_QueueElem() {
         uPackedID = Pid();
         actor_initiative = 0;
-        uActionLength = 0;
+        uActionLength = Duration::zero();
         AI_action_type = TE_AI_STAND;
     }
     Pid uPackedID;
     int actor_initiative;  // act first who have less
-    int uActionLength;
+    Duration uActionLength;
     TurnEngineAiAction AI_action_type;
 };
 

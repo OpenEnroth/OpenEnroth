@@ -279,46 +279,43 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     }
 }
 
-std::string MakeDateTimeString(GameTime time) {
-    int seconds = time.secondsFraction();
-    int minutes = time.minutesFraction();
-    int hours = time.hoursOfDay();
-    int days = time.toDays();
+std::string MakeDateTimeString(Duration time) {
+    CivilDuration d = time.toCivilDuration();
 
     std::string str = "";
-    if (days) {
+    if (d.days) {
         auto day_str = localization->GetString(LSTR_DAYS);
-        if (days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
+        if (d.days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
 
-        str += fmt::format("{} {} ", days, day_str);
+        str += fmt::format("{} {} ", d.days, day_str);
     }
 
-    if (hours) {
+    if (d.hours) {
         auto hour_str = localization->GetString(LSTR_HOURS);
-        if (hours <= 1) hour_str = localization->GetString(LSTR_HOUR);
+        if (d.hours <= 1) hour_str = localization->GetString(LSTR_HOUR);
 
-        str += fmt::format("{} {} ", hours, hour_str);
+        str += fmt::format("{} {} ", d.hours, hour_str);
     }
 
-    if (minutes && !days) {
+    if (d.minutes && !d.days) {
         auto minute_str = localization->GetString(LSTR_MINUTES);
-        if (minutes <= 1) minute_str = localization->GetString(LSTR_MINUTE);
+        if (d.minutes <= 1) minute_str = localization->GetString(LSTR_MINUTE);
 
-        str += fmt::format("{} {} ", minutes, minute_str);
+        str += fmt::format("{} {} ", d.minutes, minute_str);
     }
 
-    if (seconds && !hours) {
+    if (d.seconds && !d.hours && !d.days) {
         auto seconds_str = localization->GetString(LSTR_SECONDS);
-        if (seconds <= 1) seconds_str = localization->GetString(LSTR_SECOND);
+        if (d.seconds <= 1) seconds_str = localization->GetString(LSTR_SECOND);
 
-        str += fmt::format("{} {} ", seconds, seconds_str);
+        str += fmt::format("{} {} ", d.seconds, seconds_str);
     }
 
     return str;
 }
 
 //----- (004B1854) --------------------------------------------------------
-void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
+void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
     auto str = MakeDateTimeString(time);
     this->DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
@@ -833,7 +830,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
     }
 }
 
-void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
+void DrawBuff_remaining_time_string(int uY, GUIWindow *window, Duration remaining_time, GUIFont *Font) {
     window->DrawText(Font, {32, uY}, colorTable.White, "\r020" + MakeDateTimeString(remaining_time));
 }
 
@@ -853,14 +850,14 @@ Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkill
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, GameTime *a6) {
+std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     std::string pText;     // esi@7
     int64_t v18;    // qax@18
     int v29;               // eax@68
     std::vector<int> addressingBits;
-    SummonedItem v56;      // [sp+80h] [bp-B8h]@107
+    CivilTime time;
 
     pPlayer = &pParty->pCharacters[uPlayerID];
 
@@ -896,10 +893,10 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                 result += v1;
                 break;
             case 5:
-                v18 = pParty->GetPlayingTime().hoursOfDay();
-                if (v18 >= 11 && v18 < 20) {
+                time = pParty->GetPlayingTime().toCivilTime();
+                if (time.hour >= 11 && time.hour < 20) {
                     pText = localization->GetString(LSTR_DAY);
-                } else if (v18 >= 5 && v18 < 11) {
+                } else if (time.hour >= 5 && time.hour < 11) {
                     pText = localization->GetString(LSTR_MORNING);
                 } else {
                     pText = localization->GetString(LSTR_EVENING);
@@ -1066,12 +1063,8 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                     assert(false); // should never get here?
                     break;
                 }
-                v56.Initialize(*a6);
-                result += localization->FormatString(
-                    LSTR_FMT_S_D_D,
-                    localization->GetMonthName(v56.field_14_exprie_month),
-                    v56.field_C_expire_day + 1,
-                    v56.field_18_expire_year);
+                time = a6->toCivilTime();
+                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             case 31:
             case 32:
@@ -1093,12 +1086,8 @@ std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemG
                     break;
                 }
 
-                v56.Initialize(pParty->PartyTimes._s_times[mask - 51]);
-                result += localization->FormatString(
-                    LSTR_FMT_S_D_D,
-                    localization->GetMonthName(v56.field_14_exprie_month),
-                    v56.field_C_expire_day + 1,
-                    v56.field_18_expire_year);
+                time = pParty->PartyTimes._s_times[mask - 51].toCivilTime();
+                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             }
         }

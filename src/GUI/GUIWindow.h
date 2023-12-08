@@ -66,7 +66,7 @@ class GUIWindow {
 
     void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing);
 
-    void DrawShops_next_generation_time_string(GameTime time);
+    void DrawShops_next_generation_time_string(Duration time);
     void DrawMessageBox(bool inside_game_viewport);
     GUIButton *GetControl(unsigned int uID);
 
@@ -265,7 +265,7 @@ unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
 class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
 void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
-                                    GameTime remaining_time, GUIFont *Font);
+                                    Duration remaining_time, GUIFont *Font);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
 void CreateMsgScrollWindow(ItemId mscroll_id);
 void CreateScrollWindow();
@@ -282,7 +282,7 @@ bool isHoldingMouseRightButton();
  */
 std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
                                 ItemGen *a3 = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
-                                GameTime *a6 = nullptr);
+                                Time *a6 = nullptr);
 
 
 std::string NameAndTitle(const std::string &name, const std::string &title);
