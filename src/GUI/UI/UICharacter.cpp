@@ -2141,7 +2141,7 @@ void OnPaperdollLeftClick() {
             mouse->SetCursorImage("MICON1");
             AfterEnchClickEventId = UIMSG_Escape;
             AfterEnchClickEventSecondParam = 0;
-            AfterEnchClickEventTimeout = Timer::Second * 2;
+            AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->setHoldingItem(pitem);
@@ -2213,7 +2213,7 @@ void OnPaperdollLeftClick() {
                 mouse->SetCursorImage("MICON1");
                 AfterEnchClickEventId = UIMSG_Escape;
                 AfterEnchClickEventSecondParam = 0;
-                AfterEnchClickEventTimeout = Timer::Second * 2;
+                AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
             } else {
                 if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34 - 1]);

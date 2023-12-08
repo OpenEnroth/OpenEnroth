@@ -691,7 +691,7 @@ void CastSpellInfoHelpers::castSpell() {
                             !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
+                        AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -1341,7 +1341,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!item->isWand() || item->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
+                        AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -1369,7 +1369,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (uNewCharges <= 0) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
+                        AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);

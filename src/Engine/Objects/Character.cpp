@@ -6766,7 +6766,7 @@ void Character::OnInventoryLeftClick() {
                     mouse->SetCursorImage("MICON1");
                     AfterEnchClickEventId = UIMSG_Escape;
                     AfterEnchClickEventSecondParam = 0;
-                    AfterEnchClickEventTimeout = Timer::Second * 2;
+                    AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
                 }
 
                 return;

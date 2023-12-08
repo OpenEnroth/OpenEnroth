@@ -2418,7 +2418,7 @@ bool IsEnchantingInProgress;
 int ItemEnchantmentTimer;
 UIMessageType AfterEnchClickEventId;
 int AfterEnchClickEventSecondParam;
-int AfterEnchClickEventTimeout;
+Duration AfterEnchClickEventTimeout;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
 
