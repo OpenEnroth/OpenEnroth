@@ -1333,7 +1333,7 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
 
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
+    dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
     dst->vDirection = src.vDirection;
     dst->uMoveLength = src.uMoveLength;
     dst->uOpenSpeed = src.uOpenSpeed;
@@ -1348,7 +1348,7 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
 void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
     dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
+    dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
     dst->vDirection = src.vDirection;
     dst->uMoveLength = src.uMoveLength;
     dst->uOpenSpeed = src.uOpenSpeed;

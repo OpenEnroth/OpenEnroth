@@ -45,8 +45,6 @@ class Duration {
     static Duration fromMonths(int months) { return Duration(0, 0, 0, 0, 0, months, 0); }
     static Duration fromYears(int years) { return Duration(0, 0, 0, 0, 0, 0, years); }
 
-    static Duration fromRealtimeSeconds(int seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
-
     int64_t ticks() const { return value; }
     int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
     int64_t toMinutes() const { return toSeconds() / 60; }
@@ -55,6 +53,9 @@ class Duration {
     int toWeeks() const { return toDays() / 7; }
     int toMonths() const { return toWeeks() / 4; }
     int toYears() const { return toMonths() / 12; }
+
+    static Duration fromRealtimeSeconds(int seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
+    float toRealtimeSecondsF() { return ticks() * 1.0f / TICKS_PER_REALTIME_SECOND; }
 
     CivilDuration toCivilDuration() const {
         CivilDuration result;
