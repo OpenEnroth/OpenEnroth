@@ -33,7 +33,7 @@ var searchData=
   ['v8_30',['v8',['../structRawEvent.html#a0dbd68cc90b13f83a42cfd8f548c21db',1,'RawEvent']]],
   ['v9_31',['v9',['../structRawEvent.html#a87f24b62939d9f3169e369ea1b0433ed',1,'RawEvent']]],
   ['v_5f18_32',['v_18',['../structPolygon.html#a1e134c3cac44986570f447677baf9fd8',1,'Polygon']]],
-  ['value_33',['value',['../structInt__MM.html#a7669c8e442ac2fa7349028831e0c247e',1,'Int_MM::value()'],['../classPlatformGamepadAxisEvent.html#a1fcda63b8faadbb81e5077ce5e3334cb',1,'PlatformGamepadAxisEvent::value()'],['../structGameTime.html#a19529c76d49c92dc7e664297b1d51244',1,'GameTime::value()'],['../structConfigPatchEntry.html#a7131b1935860044cdfcf6d11e41e90f4',1,'ConfigPatchEntry::value()'],['../classEventIR.html#a0096cb59f2f186fe87c97687f459c28a',1,'EventIR::value()']]],
+  ['value_33',['value',['../structInt__MM.html#a7669c8e442ac2fa7349028831e0c247e',1,'Int_MM::value()'],['../classPlatformGamepadAxisEvent.html#a1fcda63b8faadbb81e5077ce5e3334cb',1,'PlatformGamepadAxisEvent::value()'],['../classTime.html#a353986f16881c8b5b95e8a7a4b90a2bd',1,'Time::value()'],['../structConfigPatchEntry.html#a7131b1935860044cdfcf6d11e41e90f4',1,'ConfigPatchEntry::value()'],['../classEventIR.html#a0096cb59f2f186fe87c97687f459c28a',1,'EventIR::value()'],['../classDuration.html#a5ac15bf6fb23b139cef94598b151e3c8',1,'Duration::value()']]],
   ['vao_34',['vao',['../structnk__device.html#a808576f36d442ea8c5fc6f918eed2e83',1,'nk_device']]],
   ['variable_5fdescr_35',['variable_descr',['../classEventIR.html#a60d2c1fd5eab1ce29633dc181a0e2792',1,'EventIR']]],
   ['vbeacons_36',['vBeacons',['../classCharacter.html#ae4690d0a322870e900e1433296d6471f',1,'Character']]],

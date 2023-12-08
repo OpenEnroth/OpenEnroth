@@ -68,6 +68,5 @@ var searchData=
   ['stru2_5flinelist_65',['stru2_LineList',['../structstru2__LineList.html',1,'']]],
   ['stru314_66',['stru314',['../structstru314.html',1,'']]],
   ['stru319_67',['stru319',['../structstru319.html',1,'']]],
-  ['stru6_5fstru2_68',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
-  ['summoneditem_69',['SummonedItem',['../structSummonedItem.html',1,'']]]
+  ['stru6_5fstru2_68',['stru6_stru2',['../structstru6__stru2.html',1,'']]]
 ];
