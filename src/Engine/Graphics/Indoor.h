@@ -27,15 +27,15 @@ struct BLVLight {
     int16_t uBrightness = 0;
 };
 
-struct BLVDoor {  // 50h
-    enum class State : uint16_t {
-        Closed = 0,
-        Opening = 1,
-        Open = 2,
-        Closing = 3
-    };
-    using enum State;
+enum class DoorState : uint16_t {
+    DOOR_CLOSED = 0,
+    DOOR_OPENING = 1,
+    DOOR_OPEN = 2,
+    DOOR_CLOSING = 3
+};
+using enum DoorState;
 
+struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
     uint32_t uDoorID;
     Duration uTimeSinceTriggered;
@@ -55,7 +55,7 @@ struct BLVDoor {  // 50h
     uint16_t uNumFaces;
     uint16_t uNumSectors;
     uint16_t uNumOffsets;
-    State uState;
+    DoorState uState;
 };
 
 struct BLVMapOutline {  // 0C

@@ -1357,7 +1357,7 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = static_cast<BLVDoor::State>(src.uState);
+    dst->uState = static_cast<DoorState>(src.uState);
 }
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
