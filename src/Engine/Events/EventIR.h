@@ -11,7 +11,6 @@
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Graphics/FaceEnums.h"
-#include "Engine/Graphics/IndoorEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 

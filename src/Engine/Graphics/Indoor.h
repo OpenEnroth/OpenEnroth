@@ -13,7 +13,7 @@
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationFunctions.h"
-#include "IndoorEnums.h"
+#include "FaceEnums.h"
 
 struct IndoorLocation;
 
