@@ -2,8 +2,7 @@
 
 #include <cstdint>
 #include <compare>
-
-#include <chrono>
+#include <type_traits>
 
 struct CivilDuration {
     int days = 0;
@@ -88,6 +87,16 @@ class Duration {
         return Duration::fromTicks(l.value - r.value);
     }
 
+    template<class L> requires std::is_arithmetic_v<L>
+    [[nodiscard]] friend Duration operator*(L l, const Duration &r) {
+        return Duration::fromTicks(l * r.value);
+    }
+
+    template<class R> requires std::is_arithmetic_v<R>
+    [[nodiscard]] friend Duration operator*(const Duration &l, R r) {
+        return Duration::fromTicks(l.value * r);
+    }
+
     Duration &operator+=(const Duration &rhs) {
         value += rhs.value;
         return *this;
@@ -95,6 +104,12 @@ class Duration {
 
     Duration &operator-=(const Duration &rhs) {
         value -= rhs.value;
+        return *this;
+    }
+
+    template<class R> requires std::is_arithmetic_v<R>
+    Duration &operator*=(R r) {
+        value *= r;
         return *this;
     }
 

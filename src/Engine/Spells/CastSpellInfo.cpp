@@ -730,7 +730,7 @@ void CastSpellInfoHelpers::castSpell() {
                         item->uAttributes |= ITEM_TEMP_BONUS;
                     }
 
-                    ItemEnchantmentTimer = Timer::Second * 2;
+                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
 
@@ -1377,7 +1377,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-                    ItemEnchantmentTimer = Timer::Second * 2;
+                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
 
@@ -1467,7 +1467,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
-                                    ItemEnchantmentTimer = Timer::Second * 2;
+                                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
@@ -1512,7 +1512,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // set item ench
                                     spell_item_to_enchant->special_enchantment = ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
-                                    ItemEnchantmentTimer = Timer::Second * 2;
+                                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 }
                             }

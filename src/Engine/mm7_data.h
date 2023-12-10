@@ -82,7 +82,7 @@ extern int dword_50C994;
 extern int dword_50C998_turnbased_icon_1A;
 extern int uSpriteID_Spell11;  // idb
 extern bool IsEnchantingInProgress; // 50C9A0 Indicates that inventory window is opened for enchant-like spell
-extern int ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
+extern Duration ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
 extern UIMessageType AfterEnchClickEventId; // 50C9D0 Event id that is pushed in queue after enchant item has been clicked
 extern int AfterEnchClickEventSecondParam; // 50C9D4 Parameter passed for event "AfterEnchClickEventId"
 extern Duration AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchClickEventId" is pushed in queue

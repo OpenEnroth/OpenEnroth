@@ -622,7 +622,7 @@ void Game::processQueuedMessages() {
                                     if (ptr_50C9A4_ItemToEnchant &&
                                         ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                         ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
-                                        ItemEnchantmentTimer = 0;
+                                        ItemEnchantmentTimer = Duration::zero();
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }
                                     onEscape();

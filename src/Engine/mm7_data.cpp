@@ -2415,7 +2415,7 @@ int dword_50C994 = 0;
 int dword_50C998_turnbased_icon_1A = 0;
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
-int ItemEnchantmentTimer;
+Duration ItemEnchantmentTimer;
 UIMessageType AfterEnchClickEventId;
 int AfterEnchClickEventSecondParam;
 Duration AfterEnchClickEventTimeout;

@@ -2319,7 +2319,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
             // Effect and sound was not present previously
             item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-            ItemEnchantmentTimer = Timer::Second * 2;
+            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
             pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, false, SOUND_MODE_UI);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
@@ -2342,7 +2342,7 @@ void Inventory_ItemPopupAndAlchemy() {
             // Sound was missing previously
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
-            ItemEnchantmentTimer = Timer::Second * 2;
+            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;
@@ -2374,7 +2374,7 @@ void Inventory_ItemPopupAndAlchemy() {
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
-            ItemEnchantmentTimer = Timer::Second * 2;
+            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;
