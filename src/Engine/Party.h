@@ -333,7 +333,7 @@ struct Party {
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
     std::string pHireling1Name;
     std::string pHireling2Name;
-    int armageddon_timer;
+    Duration armageddon_timer;
     int armageddonDamage;
     // Keeps track of how many impulses have been applied to actors during armeggeddon
     // Stops actors being yeeted high in the air at high fps

@@ -2399,7 +2399,7 @@ void UpdateActors_ODM() {
         }
 
         // ARMAGEDDON PANIC
-        if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct() && pParty->armageddonForceCount > 0) {
+        if (pParty->armageddon_timer && pActors[Actor_ITR].CanAct() && pParty->armageddonForceCount > 0) {
             pActors[Actor_ITR].speed.x += grng->random(100) - 50;
             pActors[Actor_ITR].speed.y += grng->random(100) - 50;
             pActors[Actor_ITR].speed.z += grng->random(100) - 20;

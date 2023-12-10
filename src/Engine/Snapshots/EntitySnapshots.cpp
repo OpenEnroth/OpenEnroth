@@ -541,7 +541,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.pHireling1Name, &dst->hireling1Name);
     snapshot(src.pHireling2Name, &dst->hireling2Name);
 
-    dst->armageddonTimer = src.armageddon_timer;
+    dst->armageddonTimer = src.armageddon_timer.ticks();
     dst->armageddonDamage = src.armageddonDamage;
 
     snapshot(src.pTurnBasedCharacterRecoveryTimes, &dst->turnBasedPlayerRecoveryTimes);
@@ -645,7 +645,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.hireling1Name, &dst->pHireling1Name);
     reconstruct(src.hireling2Name, &dst->pHireling2Name);
 
-    dst->armageddon_timer = src.armageddonTimer;
+    dst->armageddon_timer = Duration::fromTicks(src.armageddonTimer);
     dst->armageddonDamage = src.armageddonDamage;
 
     reconstruct(src.turnBasedPlayerRecoveryTimes, &dst->pTurnBasedCharacterRecoveryTimes);

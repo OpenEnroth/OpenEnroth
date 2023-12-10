@@ -2881,13 +2881,12 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         max_casts_a_day = 3;
                     }
-                    if (pPlayer->uNumArmageddonCasts >= max_casts_a_day ||
-                            pParty->armageddon_timer > 0) {
+                    if (pPlayer->uNumArmageddonCasts >= max_casts_a_day || pParty->armageddon_timer) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    pParty->armageddon_timer = 256;
+                    pParty->armageddon_timer = Duration::fromTicks(256);
                     pParty->armageddonDamage = spell_level;
                     pParty->armageddonForceCount = 60;
                     ++pPlayer->uNumArmageddonCasts;

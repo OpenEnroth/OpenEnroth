@@ -957,7 +957,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
     pSpriteFrameTable->ResetLoadedFlags();
-    pParty->armageddon_timer = 0;
+    pParty->armageddon_timer = Duration::zero();
 
     windowManager.DeleteAllVisibleWindows();
 }

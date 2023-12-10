@@ -155,7 +155,7 @@ void Party::Zero() {
 
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
-    armageddon_timer = 0;
+    armageddon_timer = Duration::zero();
     armageddonDamage = 0;
     pTurnBasedCharacterRecoveryTimes.fill(0);
     InTheShopFlags.fill(0);

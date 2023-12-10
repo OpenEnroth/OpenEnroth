@@ -2541,7 +2541,7 @@ void Actor::UpdateActorAI() {
         Actor::MakeActorAIList_BLV();
 
     // Armageddon damage mechanic
-    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR && pParty->armageddon_timer > 0)
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR && pParty->armageddon_timer)
         armageddonProgress();
 
     // Turn-based mode: return
