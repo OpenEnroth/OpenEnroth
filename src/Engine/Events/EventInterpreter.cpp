@@ -295,7 +295,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_ChangeDoorState:
-            switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_new_state);
+            switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
             doForChosenPlayer(_who, grng.get(), [&] (Character &player) { player.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });

@@ -1812,7 +1812,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         eventProcessor(faceEvent, Pid(), 1);
 }
 
-void switchDoorAnimation(unsigned int uDoorID, int a2) {
+void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
     DoorState old_state;       // eax@1
     signed int door_id;  // esi@2
 
@@ -1828,7 +1828,7 @@ void switchDoorAnimation(unsigned int uDoorID, int a2) {
     //           2 - в верхнем положении/открыто,
     // a2: 1 - открыть
     //    2 - опустить/поднять
-    if (a2 == 2) {
+    if (a2 == DOOR_ACTION_TRIGGER) {
         if (pIndoor->pDoors[door_id].uState == DOOR_CLOSING ||
             pIndoor->pDoors[door_id].uState == DOOR_OPENING)
             return;
@@ -1857,7 +1857,7 @@ void switchDoorAnimation(unsigned int uDoorID, int a2) {
             return;
         }
     } else {
-        if (a2 == 0) {
+        if (a2 == DOOR_ACTION_CLOSE) {
             if (pIndoor->pDoors[door_id].uState != DOOR_CLOSED &&
                 pIndoor->pDoors[door_id].uState != DOOR_CLOSING) {
                 pIndoor->pDoors[door_id].uState = DOOR_CLOSING;
@@ -1881,7 +1881,7 @@ void switchDoorAnimation(unsigned int uDoorID, int a2) {
             }
             return;
         }
-        if (a2 != 1) return;
+        if (a2 != DOOR_ACTION_OPEN) return;
     }
     if (old_state != DOOR_OPEN && old_state != DOOR_OPENING) {
         pIndoor->pDoors[door_id].uState = DOOR_OPENING;

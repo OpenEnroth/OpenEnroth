@@ -11,6 +11,7 @@
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Graphics/IndoorEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 
@@ -112,7 +113,7 @@ class EventIR {
         } sprite_texture_descr;
         struct {
             int door_id;
-            int door_new_state;
+            DoorAction door_action;
         } door_descr;
         struct {
             int light_id;

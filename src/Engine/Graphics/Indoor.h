@@ -13,6 +13,7 @@
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationFunctions.h"
+#include "IndoorEnums.h"
 
 struct IndoorLocation;
 
@@ -26,14 +27,6 @@ struct BLVLight {
     int16_t uAtributes = 0;  // & 0x08    doesn't light faces
     int16_t uBrightness = 0;
 };
-
-enum class DoorState : uint16_t {
-    DOOR_CLOSED = 0,
-    DOOR_OPENING = 1,
-    DOOR_OPEN = 2,
-    DOOR_CLOSING = 3
-};
-using enum DoorState;
 
 struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
@@ -307,7 +300,7 @@ void BLV_ProcessPartyActions();
 /**
  * @offset 0x449A49
  */
-void switchDoorAnimation(unsigned int uDoorID, int a2);
+void switchDoorAnimation(unsigned int uDoorID, DoorAction a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
