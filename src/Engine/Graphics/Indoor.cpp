@@ -688,7 +688,7 @@ void BLV_UpdateDoors() {
 
         int openDistance;     // [sp+60h] [bp-4h]@6
         if (door->uState == DOOR_OPENING) {
-            openDistance = door->uTimeSinceTriggered.toRealtimeSecondsF() * door->uCloseSpeed;
+            openDistance = door->uTimeSinceTriggered.toRealtimeMilliseconds() * door->uCloseSpeed / 1000;
 
             if (openDistance >= door->uMoveLength) {
                 openDistance = door->uMoveLength;
@@ -701,7 +701,7 @@ void BLV_UpdateDoors() {
         } else {
             assert(door->uState == DOOR_CLOSING);
 
-            int closeDistance = door->uTimeSinceTriggered.toRealtimeSecondsF() * door->uOpenSpeed;
+            int closeDistance = door->uTimeSinceTriggered.toRealtimeMilliseconds() * door->uOpenSpeed / 1000;
             if (closeDistance >= door->uMoveLength) {
                 openDistance = 0;
                 door->uState = DOOR_CLOSED;
