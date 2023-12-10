@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <ranges>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -1813,94 +1814,88 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 }
 
 void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
-    DoorState old_state;       // eax@1
-    signed int door_id;  // esi@2
-
-    if (pIndoor->pDoors.empty()) return;
-    for (door_id = 0; door_id < 200; ++door_id) {
-        if (pIndoor->pDoors[door_id].uDoorID == uDoorID) break;
-    }
-    if (door_id >= 200) {
+    auto pos = std::ranges::find(pIndoor->pDoors, uDoorID, &BLVDoor::uDoorID);
+    if (pos == pIndoor->pDoors.end()) {
         logger->error("Unable to find Door ID: {}!", uDoorID);
+        return;
     }
-    old_state = pIndoor->pDoors[door_id].uState;
-    // old_state: 0 - в нижнем положении/закрыто
-    //           2 - в верхнем положении/открыто,
-    // a2: 1 - открыть
-    //    2 - опустить/поднять
+
+    BLVDoor &door = *pos;
+    DoorState old_state = door.uState;
+
     if (a2 == DOOR_ACTION_TRIGGER) {
-        if (pIndoor->pDoors[door_id].uState == DOOR_CLOSING ||
-            pIndoor->pDoors[door_id].uState == DOOR_OPENING)
+        if (door.uState == DOOR_CLOSING ||
+            door.uState == DOOR_OPENING)
             return;
-        if (pIndoor->pDoors[door_id].uState != DOOR_CLOSED) {
-            if (pIndoor->pDoors[door_id].uState != DOOR_CLOSED &&
-                pIndoor->pDoors[door_id].uState != DOOR_CLOSING) {
-                pIndoor->pDoors[door_id].uState = DOOR_CLOSING;
+        if (door.uState != DOOR_CLOSED) {
+            if (door.uState != DOOR_CLOSED &&
+                door.uState != DOOR_CLOSING) {
+                door.uState = DOOR_CLOSING;
                 if (old_state == DOOR_OPEN) {
-                    pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::zero();
+                    door.uTimeSinceTriggered = Duration::zero();
                     return;
                 }
-                if (pIndoor->pDoors[door_id].uTimeSinceTriggered != Duration::fromTicks(15360)) {
-                    pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::fromTicks(
-                        (pIndoor->pDoors[door_id].uMoveLength << 7) /
-                            pIndoor->pDoors[door_id].uOpenSpeed -
-                        ((signed int)(pIndoor->pDoors[door_id]
+                if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+                    door.uTimeSinceTriggered = Duration::fromTicks(
+                        (door.uMoveLength << 7) /
+                            door.uOpenSpeed -
+                        ((signed int)(door
                                           .uTimeSinceTriggered.ticks() *
-                                      pIndoor->pDoors[door_id].uCloseSpeed) /
+                                      door.uCloseSpeed) /
                              128
                          << 7) /
-                            pIndoor->pDoors[door_id].uOpenSpeed);
+                            door.uOpenSpeed);
                     return;
                 }
-                pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::fromTicks(15360);
+                door.uTimeSinceTriggered = Duration::fromTicks(15360);
             }
             return;
         }
     } else {
         if (a2 == DOOR_ACTION_CLOSE) {
-            if (pIndoor->pDoors[door_id].uState != DOOR_CLOSED &&
-                pIndoor->pDoors[door_id].uState != DOOR_CLOSING) {
-                pIndoor->pDoors[door_id].uState = DOOR_CLOSING;
+            if (door.uState != DOOR_CLOSED &&
+                door.uState != DOOR_CLOSING) {
+                door.uState = DOOR_CLOSING;
                 if (old_state == DOOR_OPEN) {
-                    pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::zero();
+                    door.uTimeSinceTriggered = Duration::zero();
                     return;
                 }
-                if (pIndoor->pDoors[door_id].uTimeSinceTriggered != Duration::fromTicks(15360)) {
-                    pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::fromTicks(
-                        (pIndoor->pDoors[door_id].uMoveLength << 7) /
-                            pIndoor->pDoors[door_id].uOpenSpeed -
-                        ((signed int)(pIndoor->pDoors[door_id]
+                if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+                    door.uTimeSinceTriggered = Duration::fromTicks(
+                        (door.uMoveLength << 7) /
+                            door.uOpenSpeed -
+                        ((signed int)(door
                                           .uTimeSinceTriggered.ticks() *
-                                      pIndoor->pDoors[door_id].uCloseSpeed) /
+                                      door.uCloseSpeed) /
                              128
                          << 7) /
-                            pIndoor->pDoors[door_id].uOpenSpeed);
+                            door.uOpenSpeed);
                     return;
                 }
-                pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::fromTicks(15360);
+                door.uTimeSinceTriggered = Duration::fromTicks(15360);
             }
             return;
         }
         if (a2 != DOOR_ACTION_OPEN) return;
     }
     if (old_state != DOOR_OPEN && old_state != DOOR_OPENING) {
-        pIndoor->pDoors[door_id].uState = DOOR_OPENING;
+        door.uState = DOOR_OPENING;
         if (old_state == DOOR_CLOSED) {
-            pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::zero();
+            door.uTimeSinceTriggered = Duration::zero();
             return;
         }
-        if (pIndoor->pDoors[door_id].uTimeSinceTriggered != Duration::fromTicks(15360)) {
-            pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::fromTicks(
-                (pIndoor->pDoors[door_id].uMoveLength << 7) /
-                    pIndoor->pDoors[door_id].uCloseSpeed -
-                ((signed int)(pIndoor->pDoors[door_id].uTimeSinceTriggered.ticks() *
-                              pIndoor->pDoors[door_id].uOpenSpeed) /
+        if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+            door.uTimeSinceTriggered = Duration::fromTicks(
+                (door.uMoveLength << 7) /
+                    door.uCloseSpeed -
+                ((signed int)(door.uTimeSinceTriggered.ticks() *
+                              door.uOpenSpeed) /
                      128
                  << 7) /
-                    pIndoor->pDoors[door_id].uCloseSpeed);
+                    door.uCloseSpeed);
             return;
         }
-        pIndoor->pDoors[door_id].uTimeSinceTriggered = Duration::fromTicks(15360);
+        door.uTimeSinceTriggered = Duration::fromTicks(15360);
     }
     return;
 }
