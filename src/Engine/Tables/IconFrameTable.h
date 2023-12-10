@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Time/Duration.h"
+
 #include "Utility/Memory/Blob.h"
 
 class GraphicsImage;
@@ -19,10 +21,10 @@ class Icon {
     }
     inline const std::string &GetAnimationName() const { return anim_name; }
 
-    inline void SetAnimLength(unsigned int anim_length) {
+    inline void SetAnimLength(Duration anim_length) {
         this->anim_length = anim_length;
     }
-    inline unsigned int GetAnimLength() const { return this->anim_length; }
+    inline Duration GetAnimLength() const { return this->anim_length; }
 
     inline void SetAnimTime(unsigned int anim_time) {
         this->anim_time = anim_time;
@@ -37,7 +39,7 @@ class Icon {
 
  protected:
     std::string anim_name;
-    unsigned int anim_length = 0;
+    Duration anim_length;
     unsigned int anim_time = 0;
     GraphicsImage *img = nullptr;
 };
@@ -46,7 +48,7 @@ struct IconFrameTable {
     Icon *GetIcon(unsigned int idx);
     Icon *GetIcon(const char *pIconName);
     unsigned int FindIcon(const std::string &pIconName);
-    Icon *GetFrame(unsigned int uIconID, unsigned int frame_time);
+    Icon *GetFrame(unsigned int uIconID, Duration frame_time);
     void InitializeAnimation(unsigned int uIconID);
 
     std::vector<Icon> pIcons;
@@ -57,7 +59,7 @@ class UIAnimation {
     class Icon *icon;
 
     int16_t uAnimTime;
-    int16_t uAnimLength;
+    Duration uAnimLength;
     int16_t x;
     int16_t y;
 };

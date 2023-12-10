@@ -1043,7 +1043,7 @@ void snapshot(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.GetAnimationName(), &dst->animationName);
-    dst->animLength = src.GetAnimLength();
+    dst->animLength = src.GetAnimLength().ticks();
 
     snapshot(src.pTextureName, &dst->textureName);
     dst->animTime = src.GetAnimTime();
@@ -1054,7 +1054,7 @@ void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
     std::string name;
     reconstruct(src.animationName, &name);
     dst->SetAnimationName(name);
-    dst->SetAnimLength(8 * src.animLength);
+    dst->SetAnimLength(Duration::fromTicks(8 * src.animLength));
 
     reconstruct(src.textureName, &dst->pTextureName);
     dst->SetAnimTime(src.animTime);
@@ -1066,7 +1066,7 @@ void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst) {
 
     /* 000 */ dst->iconId = src.icon->id;
     /* 004 */ dst->animTime = src.uAnimTime;
-    /* 006 */ dst->animLength = src.uAnimLength;
+    /* 006 */ dst->animLength = src.uAnimLength.ticks();
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
 }
@@ -1075,7 +1075,7 @@ void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst) {
     dst->icon = pIconsFrameTable->GetIcon(src.iconId);
     ///* 000 */ anim->uIconID = src.uIconID;
     /* 004 */ dst->uAnimTime = src.animTime;
-    /* 006 */ dst->uAnimLength = src.animLength;
+    /* 006 */ dst->uAnimLength = Duration::fromTicks(src.animLength);
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
 }

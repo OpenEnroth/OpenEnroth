@@ -97,6 +97,10 @@ class Duration {
         return Duration::fromTicks(l.value * r);
     }
 
+    [[nodiscard]] friend Duration operator%(const Duration &l, const Duration &r) {
+        return Duration::fromTicks(l.value % r.value);
+    }
+
     Duration &operator+=(const Duration &rhs) {
         value += rhs.value;
         return *this;

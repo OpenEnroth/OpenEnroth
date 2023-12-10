@@ -802,7 +802,7 @@ void Engine::SecondaryInitialization() {
         pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
         pIconsFrameTable->InitializeAnimation(pUIAnims[i]->icon->id);
 
-        pUIAnims[i]->uAnimLength = 0;
+        pUIAnims[i]->uAnimLength = Duration::zero();
         pUIAnims[i]->uAnimTime = 0;
         pUIAnims[i]->x = _4E98D0[i][0];
         pUIAnims[i]->y = _4E98D0[i][2];

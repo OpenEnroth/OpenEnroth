@@ -323,7 +323,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureNew(494 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[3].uCurrentFace]);
 
     // arrows
-    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
+    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, Duration::fromTicks(pEventTimer->uStartTime));
     render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards

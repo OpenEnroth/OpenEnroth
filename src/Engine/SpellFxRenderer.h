@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Time/Duration.h"
 
 #include "Library/Color/ColorTable.h"
 
@@ -62,8 +63,8 @@ struct SpellFX_Billboard {
 struct PlayerBuffAnim {
     int16_t bRender = false;
     int16_t field_2 = 0;
-    int uSpellAnimTimeElapsed = 0;
-    int uSpellAnimTime = 0;
+    Duration uSpellAnimTimeElapsed;
+    Duration uSpellAnimTime;
     int uSpellIconID = 0;
 };
 

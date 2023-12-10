@@ -1071,7 +1071,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
     const char *v6;      // [sp-4h] [bp-10h]@2
 
     v4 = &pCharacterBuffs[uPlayerID];
-    v4->uSpellAnimTimeElapsed = 0;
+    v4->uSpellAnimTimeElapsed = Duration::zero();
     v4->bRender = uSpellID != SPELL_NONE;
 
     switch (uSpellID) {
@@ -1246,7 +1246,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
-        buff->uSpellAnimTimeElapsed += pEventTimer->uTimeElapsed;
+        buff->uSpellAnimTimeElapsed += Duration::fromTicks(pEventTimer->uTimeElapsed);
         if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime) {
             buff->bRender = false;
             continue;

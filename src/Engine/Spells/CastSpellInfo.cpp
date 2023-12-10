@@ -2795,7 +2795,8 @@ void CastSpellInfoHelpers::castSpell() {
                     NPCData *npcData = buf.Get(flatHirelingId);
                     npcData->dialogue_1_evt_id = 1;
                     npcData->dialogue_2_evt_id = 0;
-                    npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+                    // TODO(captainurist): #time what's going on here? vvv
+                    npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength().ticks();
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();
                         character.mana = character.GetMaxMana();
