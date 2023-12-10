@@ -928,6 +928,8 @@ void PrepareToLoadBLV(bool bLoading) {
         RespawnGlobalDecorations();
     }
 
+    // TODO(captainurist): that's some convoluted logic. We set up doors, set uTimeSinceTriggered to 120sec, and thus
+    //                     they snap into place on the next frame. Just init them properly!
     for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
             pIndoor->pDoors[i].uState = DOOR_OPENING;
