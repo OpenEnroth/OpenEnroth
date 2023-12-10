@@ -4,6 +4,7 @@
 
 // TODO(captainurist): this should be in some other header probably.
 
+// TODO(captainurist): most closed doors are in DOOR_OPEN, and most open doors are in DOOR_CLOSED. Rename states.
 enum class DoorState : uint16_t {
     DOOR_CLOSED = 0,
     DOOR_OPENING = 1,
