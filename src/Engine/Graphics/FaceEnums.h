@@ -56,12 +56,12 @@ using enum DoorAttribute;
 MM_DECLARE_FLAGS(DoorAttributes, DoorAttribute)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
-// TODO(captainurist): most closed doors are in DOOR_OPEN, and most open doors are in DOOR_CLOSED. Rename states.
+// TODO(captainurist): most closed doors are in DOOR_OPEN, and most open doors are in DOOR_CLOSED. Rename states?
 enum class DoorState : uint16_t {
-    DOOR_CLOSED = 0,
-    DOOR_OPENING = 1,
-    DOOR_OPEN = 2,
-    DOOR_CLOSING = 3
+    DOOR_CLOSED = 0, // Initial state, door mesh is at a position where BLVDoor::p[XYZ]Offsets point.
+    DOOR_OPENING = 1, // Going into alternative state.
+    DOOR_OPEN = 2, // Alternative state, door mesh is at BLVDoor::p[XYZ]Offsets + BLVDoor::vDirection * BLVDoor::uMoveLength.
+    DOOR_CLOSING = 3, // Going into initial state.
 };
 using enum DoorState;
 
