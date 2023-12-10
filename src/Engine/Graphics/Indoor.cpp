@@ -1824,80 +1824,40 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
     DoorState old_state = door.uState;
 
     if (a2 == DOOR_ACTION_TRIGGER) {
-        if (door.uState == DOOR_CLOSING ||
-            door.uState == DOOR_OPENING)
+        if (door.uState == DOOR_CLOSING || door.uState == DOOR_OPENING)
             return;
-        if (door.uState != DOOR_CLOSED) {
-            if (door.uState != DOOR_CLOSED &&
-                door.uState != DOOR_CLOSING) {
-                door.uState = DOOR_CLOSING;
-                if (old_state == DOOR_OPEN) {
-                    door.uTimeSinceTriggered = Duration::zero();
-                    return;
-                }
-                if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
-                    door.uTimeSinceTriggered = Duration::fromTicks(
-                        (door.uMoveLength << 7) /
-                            door.uOpenSpeed -
-                        ((signed int)(door
-                                          .uTimeSinceTriggered.ticks() *
-                                      door.uCloseSpeed) /
-                             128
-                         << 7) /
-                            door.uOpenSpeed);
-                    return;
-                }
-                door.uTimeSinceTriggered = Duration::fromTicks(15360);
-            }
-            return;
+
+        door.uTimeSinceTriggered = Duration::zero();
+
+        if (door.uState == DOOR_OPEN) {
+            door.uState = DOOR_CLOSING;
+        } else {
+            assert(door.uState == DOOR_CLOSED);
+            door.uState = DOOR_OPENING;
         }
-    } else {
-        if (a2 == DOOR_ACTION_CLOSE) {
-            if (door.uState != DOOR_CLOSED &&
-                door.uState != DOOR_CLOSING) {
-                door.uState = DOOR_CLOSING;
-                if (old_state == DOOR_OPEN) {
-                    door.uTimeSinceTriggered = Duration::zero();
-                    return;
-                }
-                if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
-                    door.uTimeSinceTriggered = Duration::fromTicks(
-                        (door.uMoveLength << 7) /
-                            door.uOpenSpeed -
-                        ((signed int)(door
-                                          .uTimeSinceTriggered.ticks() *
-                                      door.uCloseSpeed) /
-                             128
-                         << 7) /
-                            door.uOpenSpeed);
-                    return;
-                }
-                door.uTimeSinceTriggered = Duration::fromTicks(15360);
-            }
+    } else if (a2 == DOOR_ACTION_CLOSE) {
+        if (door.uState == DOOR_CLOSED || door.uState == DOOR_CLOSING)
             return;
+
+        door.uState = DOOR_CLOSING;
+        if (old_state == DOOR_OPEN) {
+            door.uTimeSinceTriggered = Duration::zero();
+        } else if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+            door.uTimeSinceTriggered = Duration::fromTicks(
+                (door.uMoveLength << 7) / door.uOpenSpeed - ((signed int) (door.uTimeSinceTriggered.ticks() * door.uCloseSpeed) / 128 << 7) / door.uOpenSpeed);
         }
-        if (a2 != DOOR_ACTION_OPEN) return;
-    }
-    if (old_state != DOOR_OPEN && old_state != DOOR_OPENING) {
+    } else if (a2 == DOOR_ACTION_OPEN) {
+        if (door.uState == DOOR_OPEN || door.uState == DOOR_OPENING)
+            return;
+
         door.uState = DOOR_OPENING;
         if (old_state == DOOR_CLOSED) {
             door.uTimeSinceTriggered = Duration::zero();
-            return;
-        }
-        if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+        } else if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
             door.uTimeSinceTriggered = Duration::fromTicks(
-                (door.uMoveLength << 7) /
-                    door.uCloseSpeed -
-                ((signed int)(door.uTimeSinceTriggered.ticks() *
-                              door.uOpenSpeed) /
-                     128
-                 << 7) /
-                    door.uCloseSpeed);
-            return;
+                (door.uMoveLength << 7) / door.uCloseSpeed - ((signed int) (door.uTimeSinceTriggered.ticks() * door.uOpenSpeed) / 128 << 7) / door.uCloseSpeed);
         }
-        door.uTimeSinceTriggered = Duration::fromTicks(15360);
     }
-    return;
 }
 
 //----- (004088E9) --------------------------------------------------------
