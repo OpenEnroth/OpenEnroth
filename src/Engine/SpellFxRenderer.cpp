@@ -1188,7 +1188,7 @@ void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
 }
 
 //----- (004A8BDF) --------------------------------------------------------
-void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, unsigned int uFadeTime) {
+void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, Duration uFadeTime) {
     this->uFadeTime = uFadeTime;
     this->uFadeLength = uFadeTime;
     this->uFadeColor = uDiffuseColor;
@@ -1218,14 +1218,14 @@ void SpellFxRenderer::RenderSpecialEffects() {
     }
 
     field_204 = 0;
-    if (uFadeTime > 0) {
-        v4 = (double)uFadeTime / (double)uFadeLength;
+    if (uFadeTime > Duration::zero()) {
+        v4 = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
         v5 = 1.0 - v4 * v4;
         // v6 = v5;
         if (v5 > 0.9) v5 = 1.0 - (v5 - 0.9) * 10.0;
         v7 = v5;
         render->ScreenFade(uFadeColor, v7);
-        uFadeTime -= pEventTimer->uTimeElapsed;
+        uFadeTime -= Duration::fromTicks(pEventTimer->uTimeElapsed);
     }
 
     if (uAnimLength > Duration::zero()) {

@@ -94,7 +94,7 @@ struct SpellFxRenderer {
         this->particle_engine = particle_engine;
 
         this->field_204 = 0;
-        this->uFadeTime = 0;
+        this->uFadeTime = Duration::zero();
         this->uNumProjectiles = 0;
         this->field_0 = 0;
         this->uAnimLength = Duration::zero();
@@ -139,7 +139,7 @@ struct SpellFxRenderer {
     bool RenderAsSprite(struct SpriteObject *a2);
     void SetPlayerBuffAnim(SpellId uSpellID, uint16_t uPlayerID);
     void SetPartyBuffAnim(SpellId uSpellID);
-    void FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, unsigned int uFadeTime);
+    void FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, Duration uFadeTime);
     void _4A8BFC_prismatic_light();
     void RenderSpecialEffects();
     void DrawPlayerBuffAnims();
@@ -156,8 +156,8 @@ struct SpellFxRenderer {
     SpellFX_Billboard *pStru1;
     int field_5D0;
     Duration uAnimLength;
-    int uFadeTime;
-    int uFadeLength;
+    Duration uFadeTime;
+    Duration uFadeLength;
     Color uFadeColor;
     GraphicsImage *effpar01;  // unsigned int effpar01; // trail fire
     GraphicsImage *effpar02;  // unsigned int effpar02;
