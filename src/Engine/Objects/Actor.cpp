@@ -1109,11 +1109,10 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
             v12 = &a3;
         }
         pActors[uActorID].yawAngle = (short)v12->uYawAngle;
-        pActors[uActorID].currentActionLength = Duration::fromTicks(
+        pActors[uActorID].currentActionLength =
             pSpriteFrameTable
                 ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_AtkMelee]]
-                .uAnimLength *
-            8);
+                .uAnimLength;
         pActors[uActorID].currentActionTime = Duration::zero();
         pActors[uActorID].aiState = AttackingMelee;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
@@ -1309,7 +1308,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
     signed int v6;       // eax@4
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
-    int16_t v13;         // ax@10
+    Duration v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
@@ -1346,7 +1345,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = Duration::fromTicks(8 * v13);
+        v3->currentActionLength = v13;
         v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged4;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
@@ -1383,7 +1382,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     signed int v6;       // eax@4
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
-    int16_t v13;         // ax@10
+    Duration v13;         // ax@10
     SpellId v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
@@ -1420,7 +1419,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = Duration::fromTicks(8 * v13);
+        v3->currentActionLength = v13;
         v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged3;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
@@ -1459,7 +1458,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
     signed int v6;       // eax@4
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
-    int16_t v13;         // ax@10
+    Duration v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v17;     // [sp+28h] [bp-2Ch]@9
     int v18;             // [sp+44h] [bp-10h]@6
@@ -1495,7 +1494,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = Duration::fromTicks(8 * v13);
+        v3->currentActionLength = v13;
         v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged2;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
@@ -1524,7 +1523,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
     signed int v6;     // eax@4
     Vec3i v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
-    int16_t v14;       // ax@11
+    Duration v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
     //int v19;           // [sp+44h] [bp-10h]@6
@@ -1566,7 +1565,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->yawAngle = (short)v10->uYawAngle;
         v14 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
-        v3->currentActionLength = Duration::fromTicks(8 * v14);
+        v3->currentActionLength = v14;
         v3->currentActionTime = Duration::zero();
         v3->aiState = AttackingRanged1;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
@@ -1710,7 +1709,7 @@ char Actor::_4031C1_update_job_never_gets_called(
 //----- (004030AD) --------------------------------------------------------
 void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
                     int stunRegardlessOfState) {
-    int16_t v7;      // ax@16
+    Duration v7;      // ax@16
     AIDirection a3;  // [sp+Ch] [bp-40h]@16
 
     if (pActors[uActorID].aiState == Fleeing)
@@ -1738,7 +1737,7 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
                  .uAnimLength;
         pActors[uActorID].currentActionTime = Duration::zero();
         pActors[uActorID].aiState = Stunned;
-        pActors[uActorID].currentActionLength = Duration::fromTicks(8 * v7);
+        pActors[uActorID].currentActionLength = v7;
         Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
         pActors[uActorID].UpdateAnimation();
     }
@@ -1758,9 +1757,9 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
         a4 = &a3;
     }
 
-    actor->currentActionLength = Duration::fromTicks(
-        8 * pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Bored]]
-                .uAnimLength);
+    actor->currentActionLength =
+        pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Bored]]
+                .uAnimLength;
 
     v7 = TrigLUT.atan2(actor->pos.x - pCamera3D->vCameraPos.x, actor->pos.y - pCamera3D->vCameraPos.y);
     v9 = TrigLUT.uIntegerPi + actor->yawAngle +
@@ -1789,9 +1788,9 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->currentActionTime = Duration::zero();
     pActor->aiState = Resurrected;
     pActor->currentActionAnimation = ANIM_Dying;
-    pActor->currentActionLength = Duration::fromTicks(
-        8 * pSpriteFrameTable->pSpriteSFrames[pActor->spriteIds[ANIM_Dying]]
-                .uAnimLength);
+    pActor->currentActionLength =
+        pSpriteFrameTable->pSpriteSFrames[pActor->spriteIds[ANIM_Dying]]
+                .uAnimLength;
     pActor->currentHP = (short)pActor->monsterInfo.hp;
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
@@ -1819,9 +1818,9 @@ void Actor::Die(unsigned int uActorID) {
     actor->aiState = Dying;
     actor->currentActionAnimation = ANIM_Dying;
     actor->currentHP = 0;
-    actor->currentActionLength = Duration::fromTicks(
-        8 * pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Dying]]
-                .uAnimLength);
+    actor->currentActionLength =
+        pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Dying]]
+                .uAnimLength;
     actor->buffs[ACTOR_BUFF_PARALYZED].Reset();
     actor->buffs[ACTOR_BUFF_STONED].Reset();
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);

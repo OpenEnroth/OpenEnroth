@@ -174,13 +174,16 @@ int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
 }
 
 //----- (0044D8D0) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, int uTime) {
+SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
     if (~v4->uFlags & 1 || !v4->uAnimLength)
         return v4;
 
+    // TODO(captainurist): Retrace & drop.
+    uTime = Duration::fromTicks(uTime.ticks() & ~7);
+
     // uAnimLength / uAnimTime = actual number of frames in sprite
-    for (int t = (uTime / 8) % v4->uAnimLength; t > v4->uAnimTime; ++v4)
+    for (Duration t = uTime % v4->uAnimLength; t > v4->uAnimTime; ++v4)
         t -= v4->uAnimTime;
 
     // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
@@ -208,12 +211,15 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, int uTime) {
 }
 
 //----- (0044D91F) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, int time) {
+SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     SpriteFrame *sprite = &pSpriteSFrames[uSpriteID];
-    if (!(sprite->uFlags & 1) || sprite->uAnimLength == 0)
+    if (!(sprite->uFlags & 1) || !sprite->uAnimLength)
         return sprite;
 
-    for (int t = sprite->uAnimLength - (time / 8) % sprite->uAnimLength; t > sprite->uAnimTime; ++sprite)
+    // TODO(captainurist): Retrace & drop.
+    time = Duration::fromTicks(time.ticks() & ~7);
+
+    for (Duration t = sprite->uAnimLength - time % sprite->uAnimLength; t > sprite->uAnimTime; ++sprite)
         t -= sprite->uAnimTime;
 
     return sprite;
@@ -225,7 +231,7 @@ void SpriteFrameTable::ResetPaletteIndexes() {
         spriteFrame.ResetPaletteIndex();
 }
 
-SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {
+SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, Duration t, int month) {
     switch (month/*pParty->uCurrentMonth*/) {
         // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter
         // sprites

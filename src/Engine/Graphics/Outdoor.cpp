@@ -1350,12 +1350,12 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
 
         if (pActors[i].aiState == Summoned && !v49)
-            frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time.ticks());
+            frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
         else if (pActors[i].aiState == Resurrected)
-            frame = pSpriteFrameTable->GetFrameReversed(pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time.ticks());
+            frame = pSpriteFrameTable->GetFrameReversed(pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
         else
             frame = pSpriteFrameTable->GetFrame(
-                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time.ticks());
+                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
 
         // no sprite frame to draw
         if (frame->icon_name == "null") continue;

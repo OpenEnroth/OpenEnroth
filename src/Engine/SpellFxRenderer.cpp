@@ -1195,12 +1195,11 @@ void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiff
 }
 
 //----- (004A8BFC) --------------------------------------------------------
-int SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_LIGHT
+void SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_LIGHT
     uAnimLength =
-        8 * pSpriteFrameTable
+        pSpriteFrameTable
                 ->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")]
-                .uAnimLength;
-    return uAnimLength;
+                .uAnimLength.ticks();
 }
 
 //----- (004A8C27) --------------------------------------------------------
@@ -1208,7 +1207,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
     double v4;         // st7@4
     double v5;         // st6@4
     float v7;          // ST14_4@6
-    unsigned int v8;   // ST14_4@8
+    Duration v8;   // ST14_4@8
     SpriteFrame *v10;  // eax@8
     // int v11; // edi@8
     RenderVertexD3D3 vd3d[4];  // [sp+60h] [bp-8Ch]@9
@@ -1231,7 +1230,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
     if (uAnimLength > 0) {
         // prismatic light
-        v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
+        v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - Duration::fromTicks(uAnimLength);
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
         int pal = v10->GetPaletteIndex();
         uAnimLength -= pEventTimer->uTimeElapsed;

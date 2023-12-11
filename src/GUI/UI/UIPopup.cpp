@@ -670,11 +670,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
             if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(
-                8 *
+            pMonsterInfoUI_Doll.currentActionLength =
                 pSpriteFrameTable
                     ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                    .uAnimLength);
+                    .uAnimLength;
         }
     }
 
@@ -684,7 +683,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
                 .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
-            pMonsterInfoUI_Doll.currentActionTime.ticks());
+            pMonsterInfoUI_Doll.currentActionTime);
 
         // Draw portrait border
         render->ResetUIClipRect();

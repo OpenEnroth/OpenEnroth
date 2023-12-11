@@ -1206,7 +1206,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
     v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
-    v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + v10);
+    v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, Duration::fromTicks(v37 + v10));
 
     // error catching
     if (v11->icon_name == "null") assert(false);

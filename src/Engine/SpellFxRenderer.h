@@ -140,7 +140,7 @@ struct SpellFxRenderer {
     void SetPlayerBuffAnim(SpellId uSpellID, uint16_t uPlayerID);
     void SetPartyBuffAnim(SpellId uSpellID);
     void FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, unsigned int uFadeTime);
-    int _4A8BFC_prismatic_light();
+    void _4A8BFC_prismatic_light();
     void RenderSpecialEffects();
     void DrawPlayerBuffAnims();
     void LoadAnimations();

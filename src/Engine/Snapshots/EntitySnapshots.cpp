@@ -215,8 +215,8 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     dst->uGlowRadius = src.glowRadius;
     dst->uPaletteID = src.paletteId;
     dst->ResetPaletteIndex(src.paletteIndex);
-    dst->uAnimTime = src.animTime;
-    dst->uAnimLength = src.animLength;
+    dst->uAnimTime = Duration::fromTicks(src.animTime * 8);
+    dst->uAnimLength = Duration::fromTicks(src.animLength * 8);
 }
 
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
