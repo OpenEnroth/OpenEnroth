@@ -23,12 +23,12 @@ int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
 }
 
 GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
-    int animLength = textures[frameId].animLength;
+    int animLength = textures[frameId].animationDuration;
 
     if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animLength != 0) {
         int step = (time >> 3) % animLength;
-        while (textures[frameId].animTime < step) {
-            step -= textures[frameId].animTime;
+        while (textures[frameId].frameDuration < step) {
+            step -= textures[frameId].frameDuration;
             ++frameId;
         }
     }
@@ -37,7 +37,7 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
 }
 
 int TextureFrameTable::textureFrameAnimLength(int frameID) {
-    int animLength = textures[frameID].animLength;
+    int animLength = textures[frameID].animationDuration;
     if ((textures[frameID].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animLength != 0) {
         return animLength;
     }
@@ -45,5 +45,5 @@ int TextureFrameTable::textureFrameAnimLength(int frameID) {
 }
 
 int TextureFrameTable::textureFrameAnimTime(int frameID) {
-    return textures[frameID].animTime;
+    return textures[frameID].frameDuration;
 }

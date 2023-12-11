@@ -1,6 +1,7 @@
 #pragma once
 
 // TODO(captainurist): #enum where is this used?
+// TODO(captainurist): also see TextureFrameFlag
 enum FRAME_TABLE_FLAGS {
     FRAME_TABLE_MORE_FRAMES = 0x1,
     FRAME_TABLE_FIRST = 0x4,
