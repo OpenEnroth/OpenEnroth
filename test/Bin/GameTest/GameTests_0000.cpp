@@ -584,6 +584,22 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     checkSkills({ {0, 10}, {1, 11}, {2, 14}, {3, 9} });
 }
 
+GAME_TEST(Issues, Issue416) {
+    // Area in The Dragon Caves is inaccessible
+    test.playTraceFromTestData("issue_416.mm7", "issue_416.json");
+    // Make sure all dragons are above the ground
+    for (auto& actor : pActors) {
+        EXPECT_GE(actor.pos.z, 0);
+    }
+
+    // Same issue in Lincoln
+    test.playTraceFromTestData("issue_416b.mm7", "issue_416b.json");
+    // Make sure all droids are above the ground
+    for (auto& actor : pActors) {
+        EXPECT_GE(actor.pos.z, 224);
+    }
+}
+
 GAME_TEST(Issues, Issue417a) {
     // Testing that portal nodes looping doesnt assert.
     test.playTraceFromTestData("issue_417a.mm7", "issue_417a.json");
