@@ -137,7 +137,7 @@ class ParticleEngine {
     float field_E420; // unused
     int uStartParticle;
     int uEndParticle;
-    int uTimeElapsed;
+    Duration uTimeElapsed;
 };
 
 struct TrailParticle {

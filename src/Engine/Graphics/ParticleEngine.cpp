@@ -54,7 +54,7 @@ void ParticleEngine::ResetParticles() {
     pParticles.fill({});
     uStartParticle = PARTICLES_ARRAY_SIZE;
     uEndParticle = 0;
-    uTimeElapsed = 0;
+    uTimeElapsed = Duration::zero();
 }
 
 void ParticleEngine::AddParticle(Particle_sw *particle) {
@@ -104,7 +104,7 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
 }
 
 void ParticleEngine::Draw() {
-    uTimeElapsed += pEventTimer->uTimeElapsed;
+    uTimeElapsed += Duration::fromTicks(pEventTimer->uTimeElapsed);
     pLines.uNumLines = 0;
 
     DrawParticles_BLV();
