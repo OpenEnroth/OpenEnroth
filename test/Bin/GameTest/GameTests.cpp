@@ -1962,7 +1962,7 @@ GAME_TEST(Issues, Issue1383) {
     EXPECT_EQ(noobPrice, 75000);
 }
 
-GAME_TEST(Prs, PrXXXX) {
+GAME_TEST(Prs, Pr1440) {
     // Frame table search is off by 1 tick.
     TextureFrameTable table;
 

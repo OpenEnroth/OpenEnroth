@@ -47,7 +47,7 @@ Icon *IconFrameTable::GetFrame(unsigned int uIconID, Duration frame_time) {
 
         // TODO(captainurist): #time get rid of yet another way to count time. / 8 should go.
         int tt = t.ticks() / 8;
-        for (i = uIconID; tt > this->pIcons[i].GetAnimTime(); i++)
+        for (i = uIconID; tt >= this->pIcons[i].GetAnimTime(); i++)
             tt -= this->pIcons[i].GetAnimTime();
         return &this->pIcons[i];
     } else {
