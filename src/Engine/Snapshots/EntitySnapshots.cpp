@@ -252,8 +252,8 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
     reconstruct(src.textureName, &dst->name);
     dst->name = toLower(dst->name);
 
-    dst->animationDuration = src.animLength;
-    dst->frameDuration = src.animTime;
+    dst->animationDuration = Duration::fromTicks(src.animLength * 8);
+    dst->frameDuration = Duration::fromTicks(src.animTime * 8);
     dst->flags = static_cast<TextureFrameFlags>(src.flags);
 }
 

@@ -3295,7 +3295,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         GraphicsImage *tex = face.GetTexture();
                         std::string *texname = tex->GetName();
 
-                        int animLength = 0, frame = 0;
+                        Duration animLength;
+                        Duration frame;
                         if (face.IsTextureFrameTable()) {
                             tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
                             animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face.resource);
@@ -3377,8 +3378,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                             if (face.IsTextureFrameTable()) {
                                 // TODO(pskelton): any instances where animTime is not consistent would need checking
                                 frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face.resource);
-                                // 'frame * 8' as input gets divided in function
-                                tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame * 8);
+                                tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
                                 texname = tex->GetName();
                             }
                         } while (animLength > frame);
@@ -3913,7 +3913,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 GraphicsImage *tex = face->GetTexture();
                 std::string *texname = tex->GetName();
 
-                int animLength = 0, frame = 0;
+                Duration animLength;
+                Duration frame;
                 if (face->IsTextureFrameTable()) {
                     tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
                     animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face->resource);
@@ -3996,8 +3997,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     if (face->IsTextureFrameTable()) {
                         // TODO(pskelton): any instances where animTime is not consistent would need checking
                         frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face->resource);
-                        // 'frame * 8' as input gets divided in function
-                        tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame * 8);
+                        tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
                         texname = tex->GetName();
                     }
                 } while (animLength > frame);

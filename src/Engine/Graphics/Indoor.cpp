@@ -236,8 +236,10 @@ void BLVFace::FromODM(ODMFace *face) {
 //----- (004AE5BA) --------------------------------------------------------
 GraphicsImage *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())
+        // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
+        //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
+            (int64_t)this->resource, Duration::fromTicks(pEventTimer->uTotalTimeElapsed));
     else
         return static_cast<GraphicsImage *>(this->resource);
 }

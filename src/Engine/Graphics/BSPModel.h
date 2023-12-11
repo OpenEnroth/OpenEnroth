@@ -66,7 +66,7 @@ struct ODMFace {
     std::array<int16_t, 20> pTextureVIDs = {{}};
 
     // details store for array texture
-    void *resource = nullptr;  // int16_t uTextureID;
+    void *resource = nullptr;  // TODO(captainurist): this can be an int64, deal away with weird casts.
     int texunit = -1;
     int texlayer = -1;
 
