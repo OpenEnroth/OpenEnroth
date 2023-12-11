@@ -4,7 +4,9 @@ if(OE_BUILD_TESTS)
     set(GAME_TEST_MAIN_SOURCES
             GameTestMain.cpp
             GameTestOptions.cpp
-            GameTests.cpp)
+            GameTests_0000.cpp
+            GameTests_0500.cpp
+            GameTests_1000.cpp)
     set(GAME_TEST_MAIN_HEADERS
             GameTestOptions.h)
 
