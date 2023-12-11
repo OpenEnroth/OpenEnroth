@@ -120,7 +120,7 @@ void stru262_TurnBased::Start() {
 
     this->turn_initiative = 100;
     this->turns_count = 0;
-    this->ai_turn_timer = 64;
+    this->ai_turn_timer = Duration::fromTicks(64);
     this->turn_stage = TE_WAIT;
     this->pQueue.resize(0);
 
@@ -281,15 +281,15 @@ void stru262_TurnBased::AITurnBasedAction() {
         }
     }
     if (turn_stage == TE_WAIT) {
-        if (ai_turn_timer == 64) {
+        if (ai_turn_timer == Duration::fromTicks(64)) {
             ActorAISetMovementDecision();
-        } else if (ai_turn_timer > 0) {
+        } else if (ai_turn_timer > Duration::zero()) {
             ActorAIDoAdditionalMove();
         } else {
             ActorAIStopMovement();
             turn_initiative = 100;
         }
-        ai_turn_timer -= pEventTimer->uTimeElapsed;
+        ai_turn_timer -= Duration::fromTicks(pEventTimer->uTimeElapsed);
     } else if (turn_stage == TE_ATTACK) {
         if (!(flags & TE_FLAG_1)) {
             if (turn_initiative == 100) {
@@ -310,7 +310,7 @@ void stru262_TurnBased::AITurnBasedAction() {
         } else {
             flags &= ~TE_FLAG_8_finished;
             turn_stage = TE_WAIT;
-            ai_turn_timer = 64;
+            ai_turn_timer = Duration::fromTicks(64);
         }
     }
 }
@@ -759,7 +759,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
     AIDirection v7;           // [sp+24h] [bp-28h]@5
     int i;
 
-    this->ai_turn_timer = 64;
+    this->ai_turn_timer = Duration::fromTicks(64);
     dword_50C994 = Duration::zero();
     pParty->setActiveCharacterIndex(0);
     for (i = 0; i < this->pQueue.size(); ++i) {
@@ -792,7 +792,7 @@ void stru262_TurnBased::ActorAIStopMovement() {
         }
     }
     turn_stage = TE_ATTACK;
-    ai_turn_timer = 100;
+    ai_turn_timer = Duration::fromTicks(100);
 }
 
 //----- (00406B9F) --------------------------------------------------------
