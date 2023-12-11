@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4f7e78f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8b6db3d</span>
    </div>
   </td>
  </tr>
@@ -82,6 +82,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;ranges&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
@@ -150,8 +151,8 @@ Functions</h2></td></tr>
 <tr class="separator:a7d511837933d59eeeccfc25275a366d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07b99aba77bf867821578ea0151a2f64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a07b99aba77bf867821578ea0151a2f64">BLV_ProcessPartyActions</a> ()</td></tr>
 <tr class="separator:a07b99aba77bf867821578ea0151a2f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5faa0b67b22698e38a93101e7f053709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a5faa0b67b22698e38a93101e7f053709">switchDoorAnimation</a> (unsigned int uDoorID, int a2)</td></tr>
-<tr class="separator:a5faa0b67b22698e38a93101e7f053709"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83a0cc251dff835bd5e8acd2b9e824ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a83a0cc251dff835bd5e8acd2b9e824ad">switchDoorAnimation</a> (unsigned int uDoorID, <a class="el" href="FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7b">DoorAction</a> a2)</td></tr>
+<tr class="separator:a83a0cc251dff835bd5e8acd2b9e824ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a30df2bace671fdb9c53d5955263ae2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a0a30df2bace671fdb9c53d5955263ae2">CalcDistPointToLine</a> (int x1, int y1, int x2, int y2, int x3, int y3)</td></tr>
 <tr class="separator:a0a30df2bace671fdb9c53d5955263ae2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b37ce513996c958704b75ff9e7cdbef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a9b37ce513996c958704b75ff9e7cdbef">SpawnEncounterMonsters</a> (<a class="el" href="structMapInfo.html">MapInfo</a> *map_info, int enc_index)</td></tr>
@@ -680,8 +681,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5faa0b67b22698e38a93101e7f053709" name="a5faa0b67b22698e38a93101e7f053709"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5faa0b67b22698e38a93101e7f053709">&#9670;&#160;</a></span>switchDoorAnimation()</h2>
+<a id="a83a0cc251dff835bd5e8acd2b9e824ad" name="a83a0cc251dff835bd5e8acd2b9e824ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83a0cc251dff835bd5e8acd2b9e824ad">&#9670;&#160;</a></span>switchDoorAnimation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -695,7 +696,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype"><a class="el" href="FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7b">DoorAction</a>&#160;</td>
           <td class="paramname"><em>a2</em>&#160;</td>
         </tr>
         <tr>

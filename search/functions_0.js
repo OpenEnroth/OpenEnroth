@@ -37,7 +37,7 @@ var searchData=
   ['_5f4a7c07_5fstun_5fspell_5ffx_34',['_4A7C07_stun_spell_fx',['../structSpellFxRenderer.html#aa3347d545ef33a03e121ea468eb45201',1,'SpellFxRenderer']]],
   ['_5f4a7f74_35',['_4A7F74',['../structSpellFxRenderer.html#a003d0ba7d2245a178a30356d2e56e3f6',1,'SpellFxRenderer']]],
   ['_5f4a806f_5fget_5fmass_5fdistortion_5fvalue_36',['_4A806F_get_mass_distortion_value',['../structSpellFxRenderer.html#ab1ecbb8f41ed659f88025c23ae01e616',1,'SpellFxRenderer']]],
-  ['_5f4a8bfc_5fprismatic_5flight_37',['_4A8BFC_prismatic_light',['../structSpellFxRenderer.html#aae709462f85e9dc5875ff66d529a175a',1,'SpellFxRenderer']]],
+  ['_5f4a8bfc_5fprismatic_5flight_37',['_4A8BFC_prismatic_light',['../structSpellFxRenderer.html#a37e6adb2e0e0edad2d5a25f6423a5d41',1,'SpellFxRenderer']]],
   ['_5fget_5fnormals_38',['_get_normals',['../structBLVFace.html#aef30e1e4346c3357d0b6b9e3fde1819e',1,'BLVFace']]],
   ['_5fselecttarget_39',['_SelectTarget',['../classActor.html#ae68fd9faf29b645a7664aabc93dd3076',1,'Actor']]],
   ['_5fset_5f3d_5fmodelview_5fmatrix_40',['_set_3d_modelview_matrix',['../classOpenGLRenderer.html#a1d172a631484c081e11bd66476b794cb',1,'OpenGLRenderer']]],

@@ -137,9 +137,16 @@ var searchData=
   ['dialogup_134',['DialogUp',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cab0bf104a01d2387f56ae13d1a391cca9',1,'Io']]],
   ['diplomat_135',['Diplomat',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea31b6692af5e8d8cd9ec0ea5e4febf99d',1,'NPCEnums.h']]],
   ['disabled_136',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedab9f5c797ebbf55adccdd8539a65a0241',1,'ActorEnums.h']]],
-  ['door_5fnosound_137',['DOOR_NOSOUND',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176eaf1bcbdf1a0baef9189e25188ba8b81ad',1,'FaceEnums.h']]],
-  ['door_5fsetting_5fup_138',['DOOR_SETTING_UP',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176ea4cb8faa7bb18c8c47f8ab14fb871547b',1,'FaceEnums.h']]],
-  ['door_5ftriggered_139',['DOOR_TRIGGERED',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'FaceEnums.h']]],
-  ['duper_140',['Duper',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aeac3ec4265a411ae97d8dad58692cfb693',1,'NPCEnums.h']]],
-  ['dying_141',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2ef54119c1f0d131a1a60e7776fa78f0',1,'ActorEnums.h']]]
+  ['door_5faction_5fclose_137',['DOOR_ACTION_CLOSE',['../FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7bad4f26bedf8abfdefefe0e0a63b864471',1,'FaceEnums.h']]],
+  ['door_5faction_5fopen_138',['DOOR_ACTION_OPEN',['../FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7ba41372d7f1a60165192f0869624889868',1,'FaceEnums.h']]],
+  ['door_5faction_5ftrigger_139',['DOOR_ACTION_TRIGGER',['../FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7ba8f4eaa0d34d7bf56c41ef3cd87b4b985',1,'FaceEnums.h']]],
+  ['door_5fclosed_140',['DOOR_CLOSED',['../FaceEnums_8h.html#a8bc9ae6996989fb55c906c882f4802b9a6fc93032dc520e975c9078bc23477c14',1,'FaceEnums.h']]],
+  ['door_5fclosing_141',['DOOR_CLOSING',['../FaceEnums_8h.html#a8bc9ae6996989fb55c906c882f4802b9a43800661d30a1f82312d89f7458f1c67',1,'FaceEnums.h']]],
+  ['door_5fnosound_142',['DOOR_NOSOUND',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176eaf1bcbdf1a0baef9189e25188ba8b81ad',1,'FaceEnums.h']]],
+  ['door_5fopen_143',['DOOR_OPEN',['../FaceEnums_8h.html#a8bc9ae6996989fb55c906c882f4802b9a927253e2e79060acf1e59038c5d72b9d',1,'FaceEnums.h']]],
+  ['door_5fopening_144',['DOOR_OPENING',['../FaceEnums_8h.html#a8bc9ae6996989fb55c906c882f4802b9a6417fbf87fa7184b06dc2408da9e2b7b',1,'FaceEnums.h']]],
+  ['door_5fsetting_5fup_145',['DOOR_SETTING_UP',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176ea4cb8faa7bb18c8c47f8ab14fb871547b',1,'FaceEnums.h']]],
+  ['door_5ftriggered_146',['DOOR_TRIGGERED',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'FaceEnums.h']]],
+  ['duper_147',['Duper',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aeac3ec4265a411ae97d8dad58692cfb693',1,'NPCEnums.h']]],
+  ['dying_148',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2ef54119c1f0d131a1a60e7776fa78f0',1,'ActorEnums.h']]]
 ];
