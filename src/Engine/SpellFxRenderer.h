@@ -97,7 +97,7 @@ struct SpellFxRenderer {
         this->uFadeTime = 0;
         this->uNumProjectiles = 0;
         this->field_0 = 0;
-        this->uAnimLength = 0;
+        this->uAnimLength = Duration::zero();
 
         pStru1 = new SpellFX_Billboard();
         pStru1->Initialize(colorTable.OrangeyRed.c32());
@@ -155,7 +155,7 @@ struct SpellFxRenderer {
     int uNumProjectiles;
     SpellFX_Billboard *pStru1;
     int field_5D0;
-    int uAnimLength;
+    Duration uAnimLength;
     int uFadeTime;
     int uFadeLength;
     Color uFadeColor;
