@@ -219,7 +219,7 @@ var searchData=
   ['allmonstertypes_216',['allMonsterTypes',['../MonsterEnumFunctions_8h.html#a3df50b4da19c804145180877c89d7797',1,'MonsterEnumFunctions.h']]],
   ['allocateactor_217',['AllocateActor',['../Actor_8h.html#a11f0e5830746921e41b31a47ea54fe69',1,'AllocateActor(bool appendOnly):&#160;Actor.cpp'],['../Actor_8cpp.html#a11f0e5830746921e41b31a47ea54fe69',1,'AllocateActor(bool appendOnly):&#160;Actor.cpp']]],
   ['alloccursorsystemmem_218',['AllocCursorSystemMem',['../classIo_1_1Mouse.html#a0ba914aa030302ad616012df0031091f',1,'Io::Mouse']]],
-  ['allpotionbuffs_219',['allPotionBuffs',['../GameTests_8cpp.html#ae18930af1f64c8f0d5b08d336f3ac894',1,'GameTests.cpp']]],
+  ['allpotionbuffs_219',['allPotionBuffs',['../GameTests__0500_8cpp.html#ae18930af1f64c8f0d5b08d336f3ac894',1,'GameTests_0500.cpp']]],
   ['allrecipescrolls_220',['allRecipeScrolls',['../ItemEnumFunctions_8h.html#a49fd5cccab019b87e57a0dd326ea12d8',1,'ItemEnumFunctions.h']]],
   ['allregularspells_221',['allRegularSpells',['../SpellEnumFunctions_8h.html#a06c53dc2f892e6b5aae2ae0e54f35831',1,'SpellEnumFunctions.h']]],
   ['allringslots_222',['allRingSlots',['../ItemEnumFunctions_8h.html#ab2c0bff7aee34577824f3dd88b119c62',1,'ItemEnumFunctions.h']]],
