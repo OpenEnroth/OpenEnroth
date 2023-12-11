@@ -234,7 +234,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_ShowFace:
-            doForChosenPlayer(ir.who, vrng.get(), [&] (Character &player) { player.playEmotion(ir.data.expr_id, 0); return false; });
+            doForChosenPlayer(ir.who, vrng.get(), [&] (Character &player) { player.playEmotion(ir.data.expr_id, Duration::zero()); return false; });
             break;
         case EVENT_ReceiveDamage:
             doForChosenPlayer(ir.who, grng.get(), [&] (Character &player) { player.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type); return false; });
@@ -295,7 +295,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_ChangeDoorState:
-            switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_new_state);
+            switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
             doForChosenPlayer(_who, grng.get(), [&] (Character &player) { player.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });

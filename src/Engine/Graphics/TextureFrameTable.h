@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Time/Duration.h"
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/Flags.h"
 
@@ -20,8 +22,8 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(TextureFrameFlags)
 class TextureFrame {
  public:
     std::string name = "null";
-    int16_t animTime = 0; // Frame time, in 1/16ths of a real-time second.
-    int16_t animLength = 0; // Total animation length, in 1/16ths of a real-time second. Set only for the first frame in a sequence.
+    Duration frameDuration; // Duration of this frame.
+    Duration animationDuration; // Total animation duration. Set only for the first frame in a sequence.
     TextureFrameFlags flags = 0;
 
     GraphicsImage *GetTexture();
@@ -31,17 +33,21 @@ class TextureFrame {
 };
 
 struct TextureFrameTable {
-    GraphicsImage *GetFrameTexture(int frameId, int time);
+    GraphicsImage *GetFrameTexture(int frameId, Duration offset);
+
     /**
-    * @param   frameID        TextureFrameTable index
-    * @return                 Total length of texture animation
-    */
-    int textureFrameAnimLength(int frameID);
+     * @param frameID                   Texture index in this table.
+     * @return                          Total duration of the corresponding animation. Passed frame must be the first
+     *                                  one in a sequence.
+     */
+    Duration textureFrameAnimLength(int frameID);
+
     /**
-    * @param   frameID        TextureFrameTable index
-    * @return                 Dwell time of this texture
-    */
-    int textureFrameAnimTime(int frameID);
+     * @param frameID                   Texture index in this table.
+     * @return                          Dwell time of this texture.
+     */
+    Duration textureFrameAnimTime(int frameID);
+
     int64_t FindTextureByName(const std::string &Str2);
 
     std::vector<TextureFrame> textures;

@@ -112,7 +112,7 @@ class EventIR {
         } sprite_texture_descr;
         struct {
             int door_id;
-            int door_new_state;
+            DoorAction door_action;
         } door_descr;
         struct {
             int light_id;

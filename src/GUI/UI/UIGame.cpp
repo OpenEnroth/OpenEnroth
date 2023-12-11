@@ -1243,13 +1243,14 @@ void GameUI_DrawCharacterSelectionFrame() {
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
     // TODO(pskelton): check tickcount usage here
-    unsigned int frameNum = platform->tickCount() / 20;
+    // TODO(captainurist): #time we have relativistic time dilation here, / 20 doesn't give us Duration ticks.
+    Duration frameNum = Duration::fromTicks(platform->tickCount() / 20);
     GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
     for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
             render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640., pPartySpellbuffsUI_XYs[i][1] / 480.,
-                                           party_buff_icons[i], frameNum + 20 * pPartySpellbuffsUI_smthns[i]);
+                                           party_buff_icons[i], frameNum.ticks() + 20 * pPartySpellbuffsUI_smthns[i]);
         }
     }
 
@@ -1259,14 +1260,14 @@ void GameUI_DrawPartySpells() {
             if (pParty->bFlying)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, Duration::zero())->GetTexture();
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, Duration::zero())->GetTexture();
             render->DrawTextureNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }
@@ -1322,7 +1323,7 @@ void GameUI_DrawPortraits() {
         if (face_expression_ID == 0)
             face_expression_ID = 1;
         if (pPlayer->expression == CHARACTER_EXPRESSION_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, Duration::fromTicks(pMiscTimer->uTimeElapsed));
         else
             pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
@@ -1678,14 +1679,14 @@ void GameUI_DrawTorchlightAndWizardEye() {
                 pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
                 pIconsFrameTable
                     ->GetFrame(pUIAnum_Torchlight->icon->id,
-                               pEventTimer->Time())
+                               Duration::fromTicks(pEventTimer->Time()))
                     ->GetTexture());
         }
         if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
                 pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnim_WizardEye->icon->id, pEventTimer->Time())
+                    ->GetFrame(pUIAnim_WizardEye->icon->id, Duration::fromTicks(pEventTimer->Time()))
                     ->GetTexture());
         }
     }
@@ -1723,7 +1724,7 @@ void GameUI_DrawHiredNPCs() {
                 render->DrawTextureNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    pIconsFrameTable->GetFrame(v13, uFrameID)->GetTexture());
+                    pIconsFrameTable->GetFrame(v13, Duration::fromTicks(uFrameID))->GetTexture());
             }
             ++pNPC_limit_ID;
         }

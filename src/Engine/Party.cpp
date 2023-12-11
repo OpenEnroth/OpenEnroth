@@ -155,7 +155,7 @@ void Party::Zero() {
 
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
-    armageddon_timer = 0;
+    armageddon_timer = Duration::zero();
     armageddonDamage = 0;
     pTurnBasedCharacterRecoveryTimes.fill(0);
     InTheShopFlags.fill(0);
@@ -511,7 +511,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             }
         }
 
-        pCharacter.uExpressionTimePassed = 0;
+        pCharacter.uExpressionTimePassed = Duration::zero();
 
         if (bDebugGiveItems) {
             Dst.Reset();
@@ -668,8 +668,8 @@ void Party::Reset() {
         }
 
         player.expression = CHARACTER_EXPRESSION_NORMAL;
-        player.uExpressionTimePassed = 0;
-        player.uExpressionTimeLength = vrng->random(256) + 128;
+        player.uExpressionTimePassed = Duration::zero();
+        player.uExpressionTimeLength = Duration::fromTicks(vrng->random(256) + 128);
     }
 
     for (SpellBuff &buff : this->pPartyBuffs) {
@@ -748,11 +748,11 @@ void Party::resetCharacterEmotions() {
     for (Character &player : this->pCharacters) {
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
-            player.uExpressionTimeLength = 32;
+            player.uExpressionTimeLength = Duration::fromTicks(32);
             player.expression = CHARACTER_EXPRESSION_NORMAL;
         } else {
-            player.uExpressionTimeLength = 0;
-            player.uExpressionTimePassed = 0;
+            player.uExpressionTimeLength = Duration::zero();
+            player.uExpressionTimePassed = Duration::zero();
             player.expression = expressionForCondition(condition);
         }
     }
@@ -764,17 +764,17 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.uExpressionTimePassed += (unsigned short)pMiscTimer->uTimeElapsed;
+        player.uExpressionTimePassed += Duration::fromTicks(pMiscTimer->uTimeElapsed);
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             if (player.uExpressionTimePassed < player.uExpressionTimeLength)
                 continue;
 
-            player.uExpressionTimePassed = 0;
+            player.uExpressionTimePassed = Duration::zero();
             if (player.expression != CHARACTER_EXPRESSION_NORMAL || vrng->random(5)) {
                 player.expression = CHARACTER_EXPRESSION_NORMAL;
-                player.uExpressionTimeLength = vrng->random(256) + 32;
+                player.uExpressionTimeLength = Duration::fromTicks(vrng->random(256) + 32);
             } else {
                 int randomVal = vrng->random(100);
                 if (randomVal < 25)
@@ -809,15 +809,15 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
             // TODO(captainurist): We overwrite the random timing from the CHARACTER_EXPRESSION_NORMAL branch here.
             //                     Doesn't seem intentional!
-            int timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
-            if (timeLength != 0)
+            Duration timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
+            if (timeLength)
                 player.uExpressionTimeLength = timeLength;
         } else if (player.expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
                    player.uExpressionTimePassed >= player.uExpressionTimeLength) {
-            player.uExpressionTimeLength = 0;
-            player.uExpressionTimePassed = 0;
+            player.uExpressionTimeLength = Duration::zero();
+            player.uExpressionTimePassed = Duration::zero();
             player.expression = expressionForCondition(condition);
         }
     }

@@ -670,11 +670,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
             if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(
-                8 *
+            pMonsterInfoUI_Doll.currentActionLength =
                 pSpriteFrameTable
                     ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                    .uAnimLength);
+                    .uAnimLength;
         }
     }
 
@@ -684,7 +683,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
                 .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
-            pMonsterInfoUI_Doll.currentActionTime.ticks());
+            pMonsterInfoUI_Doll.currentActionTime);
 
         // Draw portrait border
         render->ResetUIClipRect();
@@ -1669,9 +1668,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
         if (!uFramesetID)
             uFramesetID = 1;
         if (player->expression == CHARACTER_EXPRESSION_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->uTimeElapsed);
+            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, Duration::fromTicks(pMiscTimer->uTimeElapsed));
         else
-            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->Time());
+            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, Duration::fromTicks(pMiscTimer->Time()));
         player->uExpressionImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
     }
@@ -2319,7 +2318,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
             // Effect and sound was not present previously
             item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-            ItemEnchantmentTimer = Timer::Second * 2;
+            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
             pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, false, SOUND_MODE_UI);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
@@ -2342,7 +2341,7 @@ void Inventory_ItemPopupAndAlchemy() {
             // Sound was missing previously
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
-            ItemEnchantmentTimer = Timer::Second * 2;
+            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;
@@ -2374,7 +2373,7 @@ void Inventory_ItemPopupAndAlchemy() {
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
-            ItemEnchantmentTimer = Timer::Second * 2;
+            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;

@@ -11,21 +11,21 @@ unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterExpressionID expr
     return 0;
 }
 
-int PlayerFrameTable::GetDurationByExpression(CharacterExpressionID expression) {
+Duration PlayerFrameTable::GetDurationByExpression(CharacterExpressionID expression) {
     int index = GetFrameIdByExpression(expression);
     if (index == 0)
-        return 0;
-    return this->pFrames[index].uAnimLength * 8;
+        return Duration::zero();
+    return this->pFrames[index].uAnimLength;
 }
 
 //----- (00494B10) --------------------------------------------------------
-PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, int gameTime) {
-    if (this->pFrames[uFramesetID].uFlags & 1 && this->pFrames[uFramesetID].uAnimLength != 0) {
+PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, Duration gameTime) {
+    if (this->pFrames[uFramesetID].uFlags & 1 && this->pFrames[uFramesetID].uAnimLength) {
         // Processing animated character expressions - e.g., CHARACTER_EXPRESSION_YES & CHARACTER_EXPRESSION_NO.
-        int time = (gameTime >> 3) % this->pFrames[uFramesetID].uAnimLength;
+        Duration time = gameTime % this->pFrames[uFramesetID].uAnimLength;
 
         while (true) {
-            int frameTime = this->pFrames[uFramesetID].uAnimTime;
+            Duration frameTime = this->pFrames[uFramesetID].uAnimTime;
             if (time < frameTime)
                 break;
             time -= frameTime;
@@ -37,18 +37,17 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, int gameTime) {
 }
 
 //----- (00494B5E) --------------------------------------------------------
-PlayerFrame *PlayerFrameTable::GetFrameBy_y(int *pFramesetID, int *pAnimTime,
-                                            int a4) {
-    int v5;  // esi@1
+PlayerFrame *PlayerFrameTable::GetFrameBy_y(int *pFramesetID, Duration *pAnimTime,
+                                            Duration a4) {
     int v6;  // eax@2
 
-    v5 = a4 + *pAnimTime;
-    if (v5 < 8 * this->pFrames[*pFramesetID].uAnimTime) {
+    Duration v5 = a4 + *pAnimTime;
+    if (v5 < this->pFrames[*pFramesetID].uAnimTime) {
         *pAnimTime = v5;
     } else {
         v6 = vrng->random(4) + 21;
         *pFramesetID = v6;
-        *pAnimTime = 8 * v5 % this->pFrames[v6].uAnimTime;
+        *pAnimTime = v5 % this->pFrames[v6].uAnimTime;
     }
     return &this->pFrames[*pFramesetID];
 }

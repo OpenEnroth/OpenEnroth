@@ -3,22 +3,23 @@
 #include <vector>
 
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Time/Duration.h"
 
 #include "Utility/Memory/Blob.h"
 
 struct PlayerFrame {
     CharacterExpressionID expression;
     uint16_t uTextureID;
-    int16_t uAnimTime;
-    int16_t uAnimLength;
+    Duration uAnimTime;
+    Duration uAnimLength;
     int16_t uFlags;
 };
 
 struct PlayerFrameTable {
     unsigned int GetFrameIdByExpression(CharacterExpressionID expression);
-    int GetDurationByExpression(CharacterExpressionID expression);
-    PlayerFrame *GetFrameBy_x(int uFramesetID, int gameTime);
-    PlayerFrame *GetFrameBy_y(int *a2, int *a3, int a4);
+    Duration GetDurationByExpression(CharacterExpressionID expression);
+    PlayerFrame *GetFrameBy_x(int uFramesetID, Duration gameTime);
+    PlayerFrame *GetFrameBy_y(int *a2, Duration *a3, Duration a4);
 
     std::vector<PlayerFrame> pFrames;
 };

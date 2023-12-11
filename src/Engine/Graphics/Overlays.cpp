@@ -23,7 +23,7 @@ void ActiveOverlayList::Reset() {
 
 //----- (004418B6) --------------------------------------------------------
 int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, int animLength, int fpDamageMod, int16_t projSize) {
-    int16_t v11;    // dx@11
+    Duration v11;    // dx@11
 
     for (unsigned int i = 0; i < 50; ++i) {
         if (this->pOverlays[i].animLength <= 0) {
@@ -37,10 +37,10 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, int animLength, int fpDa
             this->pOverlays[i].indexToOverlayList = indexer;
             this->pOverlays[i].spriteFrameTime = 0;
             if (animLength)
-                v11 = animLength;
+                v11 = Duration::fromTicks(animLength);
             else
-                v11 = 8 * pSpriteFrameTable->pSpriteSFrames[pOverlayList->pOverlays[indexer].uSpriteFramesetID].uAnimLength;
-            this->pOverlays[i].animLength = v11;
+                v11 = pSpriteFrameTable->pSpriteSFrames[pOverlayList->pOverlays[indexer].uSpriteFramesetID].uAnimLength;
+            this->pOverlays[i].animLength = v11.ticks();
             this->pOverlays[i].fpDamageMod = fpDamageMod;
             this->pOverlays[i].projSize = projSize;
             return true;
@@ -59,7 +59,7 @@ void ActiveOverlayList::DrawTurnBasedIcon() {
     if (pTurnEngine->turn_stage == TE_MOVEMENT) {  // все персы отстрелялись(сжатый кулак)
         frame = pIconsFrameTable->GetFrame(
             pIconIDs_Turn[5 - pTurnEngine->uActionPointsLeft / 26],
-            pEventTimer->uStartTime);
+            Duration::fromTicks(pEventTimer->uStartTime));
     } else if (pTurnEngine->turn_stage == TE_WAIT) {
         if (dword_50C998_turnbased_icon_1A)
             v5 = uIconID_TurnStart;  //анимация руки(запуск пошагового режима)
@@ -68,7 +68,7 @@ void ActiveOverlayList::DrawTurnBasedIcon() {
         frame = pIconsFrameTable->GetFrame(v5, dword_50C994);
     } else if (pTurnEngine->turn_stage == TE_ATTACK) {  //группа атакует(ладонь)
         frame = pIconsFrameTable->GetFrame(uIconID_TurnStop,
-            pEventTimer->uStartTime);
+            Duration::fromTicks(pEventTimer->uStartTime));
     } else {
         assert(false);
         return;
@@ -79,9 +79,9 @@ void ActiveOverlayList::DrawTurnBasedIcon() {
     /*else
       render->DrawTextureIndexedAlpha(0x18Au, 0x120u, v7);*/
     if (dword_50C994 < dword_50C998_turnbased_icon_1A) {
-        dword_50C994 += pEventTimer->uTimeElapsed;
-        if ((signed int)dword_50C994 >= dword_50C998_turnbased_icon_1A)
-            dword_50C998_turnbased_icon_1A = 0;
+        dword_50C994 += Duration::fromTicks(pEventTimer->uTimeElapsed);
+        if (dword_50C994 >= dword_50C998_turnbased_icon_1A)
+            dword_50C998_turnbased_icon_1A = Duration::zero();
     }
 }
 

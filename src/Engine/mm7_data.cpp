@@ -2411,14 +2411,14 @@ unsigned int uIconID_TurnStop;
 unsigned int uIconID_TurnHour;
 int uIconID_CharacterFrame;  // idb
 unsigned int uIconID_TurnStart;
-int dword_50C994 = 0;
-int dword_50C998_turnbased_icon_1A = 0;
+Duration dword_50C994;
+Duration dword_50C998_turnbased_icon_1A;
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
-int ItemEnchantmentTimer;
+Duration ItemEnchantmentTimer;
 UIMessageType AfterEnchClickEventId;
 int AfterEnchClickEventSecondParam;
-int AfterEnchClickEventTimeout;
+Duration AfterEnchClickEventTimeout;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
 

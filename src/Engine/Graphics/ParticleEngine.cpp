@@ -19,7 +19,7 @@ void TrailParticleGenerator::AddParticle(int x, int y, int z, Color color) {
     particles[num_particles].x = x;
     particles[num_particles].y = y;
     particles[num_particles].z = z;
-    particles[num_particles].time_to_live = vrng->random(64) + 256;
+    particles[num_particles].time_to_live = Duration::fromTicks(vrng->random(64) + 256);
     particles[num_particles].time_left = particles[num_particles].time_to_live;
     particles[num_particles].color = color;
 
@@ -37,11 +37,11 @@ void TrailParticleGenerator::GenerateTrailParticles(int x, int y, int z,
 //----- (00440F07) --------------------------------------------------------
 void TrailParticleGenerator::UpdateParticles() {
     for (unsigned int i = 0; i < 100; ++i) {
-        if (particles[i].time_left > 0) {
+        if (particles[i].time_left > Duration::zero()) {
             particles[i].x += vrng->random(5) + 4;
             particles[i].y += vrng->random(5) - 2;
             particles[i].z += vrng->random(5) - 2;
-            particles[i].time_left -= pEventTimer->uTimeElapsed;
+            particles[i].time_left -= Duration::fromTicks(pEventTimer->uTimeElapsed);
         }
     }
 }

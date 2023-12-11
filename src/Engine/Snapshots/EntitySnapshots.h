@@ -778,8 +778,8 @@ struct BLVDoor_MM7 {
     uint32_t uTimeSinceTriggered;
     Vec3i vDirection;
     uint32_t uMoveLength;
-    uint32_t uOpenSpeed;
     uint32_t uCloseSpeed;
+    uint32_t uOpenSpeed;
     uint32_t pVertexIDs;
     uint32_t pFaceIDs;
     uint32_t pSectorIDs;

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Time/Duration.h"
+
 #include "Utility/Memory/Blob.h"
 
 struct LODSprite;
@@ -42,8 +44,8 @@ class SpriteFrame {
     int uFlags = 0;  // 128 for loaded - 1 for anim
     int uGlowRadius = 0;
     int uPaletteID = 0;
-    int uAnimTime = 0;
-    int uAnimLength = 0;
+    Duration uAnimTime;
+    Duration uAnimLength;
  private:
     int uPaletteIndex = 0;
 };
@@ -58,8 +60,8 @@ struct SpriteFrameTable {
      *                                  Conveniently, sprite 0 is a dummy sprite that actually exists.
      */
     int FastFindSprite(std::string_view pSpriteName);
-    SpriteFrame *GetFrame(int uSpriteID, int uTime);
-    SpriteFrame *GetFrameBy_x(int uSpriteID, int time);
+    SpriteFrame *GetFrame(int uSpriteID, Duration uTime);
+    SpriteFrame *GetFrameReversed(int uSpriteID, Duration time);
 
     /**
      * Resets the uPaletteIndex of all loaded pSpriteSFrames. Called by PaletteManager on reset.
@@ -75,4 +77,4 @@ struct SpriteFrameTable {
 
 extern struct SpriteFrameTable *pSpriteFrameTable;
 
-SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month);
+SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, Duration t, int month);

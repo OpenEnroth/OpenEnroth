@@ -700,7 +700,7 @@ std::string EventIR::toString() const {
         case EVENT_Compare:
             return fmt::format("{}: If({}) -> {}", step, getVariableCompareStr(data.variable_descr.type, data.variable_descr.value), target_step);
         case EVENT_ChangeDoorState:
-            return fmt::format("{}: ChangeDoorState({}, {})", step, data.door_descr.door_id, data.door_descr.door_new_state);
+            return fmt::format("{}: ChangeDoorState({}, {})", step, data.door_descr.door_id, std::to_underlying(data.door_descr.door_action));
         case EVENT_Add:
             return fmt::format("{}: Add({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
         case EVENT_Substract:
@@ -936,7 +936,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
         case EVENT_ChangeDoorState:
             requireSize(7);
             ir.data.door_descr.door_id = evt->v5;
-            ir.data.door_descr.door_new_state = evt->v6;
+            ir.data.door_descr.door_action = static_cast<DoorAction>(evt->v6);
             break;
         case EVENT_Add:
         case EVENT_Substract:

@@ -617,12 +617,12 @@ void Game::processQueuedMessages() {
                                         }
                                         AfterEnchClickEventId = UIMSG_0;
                                         AfterEnchClickEventSecondParam = 0;
-                                        AfterEnchClickEventTimeout = 0;
+                                        AfterEnchClickEventTimeout = Duration::zero();
                                     }
                                     if (ptr_50C9A4_ItemToEnchant &&
                                         ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                         ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
-                                        ItemEnchantmentTimer = 0;
+                                        ItemEnchantmentTimer = Duration::zero();
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }
                                     onEscape();
@@ -1030,7 +1030,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_PLAYING;
 
                 for (Character &character : pParty->pCharacters) {
-                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
+                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, Duration::zero());
                 }
 
                 // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
@@ -1835,12 +1835,11 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
-        if (AfterEnchClickEventTimeout <= 0) {
+        AfterEnchClickEventTimeout = std::max(Duration::zero(), AfterEnchClickEventTimeout - Duration::fromTicks(pEventTimer->uTimeElapsed));
+        if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
             AfterEnchClickEventSecondParam = 0;
-            AfterEnchClickEventTimeout = 0;
         }
     }
     CastSpellInfoHelpers::castSpell();

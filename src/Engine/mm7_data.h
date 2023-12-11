@@ -10,6 +10,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Time/Duration.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIEnums.h"
@@ -77,14 +78,14 @@ extern unsigned int uIconID_TurnStop;
 extern unsigned int uIconID_TurnHour;
 extern int uIconID_CharacterFrame;  // idb
 extern unsigned int uIconID_TurnStart;
-extern int dword_50C994;
-extern int dword_50C998_turnbased_icon_1A;
+extern Duration dword_50C994;
+extern Duration dword_50C998_turnbased_icon_1A;
 extern int uSpriteID_Spell11;  // idb
 extern bool IsEnchantingInProgress; // 50C9A0 Indicates that inventory window is opened for enchant-like spell
-extern int ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
+extern Duration ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
 extern UIMessageType AfterEnchClickEventId; // 50C9D0 Event id that is pushed in queue after enchant item has been clicked
 extern int AfterEnchClickEventSecondParam; // 50C9D4 Parameter passed for event "AfterEnchClickEventId"
-extern int AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchClickEventId" is pushed in queue
+extern Duration AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchClickEventId" is pushed in queue
 
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;

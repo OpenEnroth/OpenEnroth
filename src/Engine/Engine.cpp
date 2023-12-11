@@ -802,7 +802,7 @@ void Engine::SecondaryInitialization() {
         pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
         pIconsFrameTable->InitializeAnimation(pUIAnims[i]->icon->id);
 
-        pUIAnims[i]->uAnimLength = 0;
+        pUIAnims[i]->uAnimLength = Duration::zero();
         pUIAnims[i]->uAnimTime = 0;
         pUIAnims[i]->x = _4E98D0[i][0];
         pUIAnims[i]->y = _4E98D0[i][2];
@@ -957,7 +957,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
     pSpriteFrameTable->ResetLoadedFlags();
-    pParty->armageddon_timer = 0;
+    pParty->armageddon_timer = Duration::zero();
 
     windowManager.DeleteAllVisibleWindows();
 }
@@ -1264,7 +1264,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+                character.playEmotion(CHARACTER_EXPRESSION_SMILE, Duration::zero());
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
@@ -1272,7 +1272,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
                 } else {
-                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, Duration::zero());
                 }
             }
         }

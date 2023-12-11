@@ -13,6 +13,7 @@
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationFunctions.h"
+#include "FaceEnums.h"
 
 struct IndoorLocation;
 
@@ -28,21 +29,13 @@ struct BLVLight {
 };
 
 struct BLVDoor {  // 50h
-    enum class State : uint16_t {
-        Closed = 0,
-        Opening = 1,
-        Open = 2,
-        Closing = 3
-    };
-    using enum State;
-
     DoorAttributes uAttributes;
     uint32_t uDoorID;
-    uint32_t uTimeSinceTriggered;
+    Duration uTimeSinceTriggered;
     Vec3i vDirection; // Fixpoint direction vector
     int32_t uMoveLength;
-    int32_t uOpenSpeed;
-    int32_t uCloseSpeed;
+    int32_t uCloseSpeed; // In map units per real-time second.
+    int32_t uOpenSpeed; // In map units per real-time second.
     int16_t *pVertexIDs;
     int16_t *pFaceIDs;
     int16_t *pSectorIDs;
@@ -55,7 +48,7 @@ struct BLVDoor {  // 50h
     uint16_t uNumFaces;
     uint16_t uNumSectors;
     uint16_t uNumOffsets;
-    State uState;
+    DoorState uState;
 };
 
 struct BLVMapOutline {  // 0C
@@ -307,7 +300,7 @@ void BLV_ProcessPartyActions();
 /**
  * @offset 0x449A49
  */
-void switchDoorAnimation(unsigned int uDoorID, int a2);
+void switchDoorAnimation(unsigned int uDoorID, DoorAction a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);

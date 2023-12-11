@@ -133,7 +133,8 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                     timer.alarmTime = pParty->GetPlayingTime();
                 }
             }
-            assert(timer.interval);
+
+            assert(timer.interval > Duration::zero());
         }
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;

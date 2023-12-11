@@ -585,7 +585,7 @@ unsigned int SpriteObject::GetLifetime() {
 
 SpriteFrame *SpriteObject::getSpriteFrame() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, uSpriteFrameID);
+    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, Duration::fromTicks(uSpriteFrameID));
 }
 
 bool SpriteObject::IsUnpickable() {

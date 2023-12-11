@@ -1314,9 +1314,8 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsIm
         else
             assert(false);
 
-        ItemEnchantmentTimer -= pEventTimer->uTimeElapsed;
-        if (ItemEnchantmentTimer <= 0) {
-            ItemEnchantmentTimer = 0;
+        ItemEnchantmentTimer = std::max(Duration::zero(), ItemEnchantmentTimer - Duration::fromTicks(pEventTimer->uTimeElapsed));
+        if (!ItemEnchantmentTimer) {
             item->ResetEnchantAnimation();
             ptr_50C9A4_ItemToEnchant = nullptr;
         }
@@ -2141,7 +2140,7 @@ void OnPaperdollLeftClick() {
             mouse->SetCursorImage("MICON1");
             AfterEnchClickEventId = UIMSG_Escape;
             AfterEnchClickEventSecondParam = 0;
-            AfterEnchClickEventTimeout = Timer::Second * 2;
+            AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->setHoldingItem(pitem);
@@ -2213,7 +2212,7 @@ void OnPaperdollLeftClick() {
                 mouse->SetCursorImage("MICON1");
                 AfterEnchClickEventId = UIMSG_Escape;
                 AfterEnchClickEventSecondParam = 0;
-                AfterEnchClickEventTimeout = Timer::Second * 2;
+                AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
             } else {
                 if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34 - 1]);

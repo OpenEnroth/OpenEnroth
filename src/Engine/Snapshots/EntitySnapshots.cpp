@@ -215,8 +215,8 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     dst->uGlowRadius = src.glowRadius;
     dst->uPaletteID = src.paletteId;
     dst->ResetPaletteIndex(src.paletteIndex);
-    dst->uAnimTime = src.animTime;
-    dst->uAnimLength = src.animLength;
+    dst->uAnimTime = Duration::fromTicks(src.animTime * 8);
+    dst->uAnimLength = Duration::fromTicks(src.animLength * 8);
 }
 
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
@@ -252,8 +252,8 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
     reconstruct(src.textureName, &dst->name);
     dst->name = toLower(dst->name);
 
-    dst->animLength = src.animLength;
-    dst->animTime = src.animTime;
+    dst->animationDuration = Duration::fromTicks(src.animLength * 8);
+    dst->frameDuration = Duration::fromTicks(src.animTime * 8);
     dst->flags = static_cast<TextureFrameFlags>(src.flags);
 }
 
@@ -541,7 +541,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.pHireling1Name, &dst->hireling1Name);
     snapshot(src.pHireling2Name, &dst->hireling2Name);
 
-    dst->armageddonTimer = src.armageddon_timer;
+    dst->armageddonTimer = src.armageddon_timer.ticks();
     dst->armageddonDamage = src.armageddonDamage;
 
     snapshot(src.pTurnBasedCharacterRecoveryTimes, &dst->turnBasedPlayerRecoveryTimes);
@@ -645,7 +645,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.hireling1Name, &dst->pHireling1Name);
     reconstruct(src.hireling2Name, &dst->pHireling2Name);
 
-    dst->armageddon_timer = src.armageddonTimer;
+    dst->armageddon_timer = Duration::fromTicks(src.armageddonTimer);
     dst->armageddonDamage = src.armageddonDamage;
 
     reconstruct(src.turnBasedPlayerRecoveryTimes, &dst->pTurnBasedCharacterRecoveryTimes);
@@ -760,10 +760,10 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->fullManaBonus = src.uFullManaBonus;
     dst->manaRelated = src._mana_related;
     dst->expression = std::to_underlying(src.expression);
-    dst->expressionTimePassed = src.uExpressionTimePassed;
-    dst->expressionTimeLength = src.uExpressionTimeLength;
+    dst->expressionTimePassed = src.uExpressionTimePassed.ticks();
+    dst->expressionTimeLength = src.uExpressionTimeLength.ticks();
     dst->field_1AA2 = src.uExpressionImageIndex;
-    dst->_expression21_animtime = src._expression21_animtime;
+    dst->_expression21_animtime = src._expression21_animtime.ticks();
     dst->_expression21_frameset = src._expression21_frameset;
 
     for (unsigned int i = 0; i < 5; ++i) {
@@ -1010,10 +1010,10 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
     dst->expression = static_cast<CharacterExpressionID>(src.expression);
-    dst->uExpressionTimePassed = src.expressionTimePassed;
-    dst->uExpressionTimeLength = src.expressionTimeLength;
+    dst->uExpressionTimePassed = Duration::fromTicks(src.expressionTimePassed);
+    dst->uExpressionTimeLength = Duration::fromTicks(src.expressionTimeLength);
     dst->uExpressionImageIndex = src.field_1AA2;
-    dst->_expression21_animtime = src._expression21_animtime;
+    dst->_expression21_animtime = Duration::fromTicks(src._expression21_animtime);
     dst->_expression21_frameset = src._expression21_frameset;
 
     for (int z = 0; z < dst->vBeacons.size(); z++)
@@ -1043,7 +1043,7 @@ void snapshot(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.GetAnimationName(), &dst->animationName);
-    dst->animLength = src.GetAnimLength();
+    dst->animLength = src.GetAnimLength().ticks();
 
     snapshot(src.pTextureName, &dst->textureName);
     dst->animTime = src.GetAnimTime();
@@ -1054,7 +1054,7 @@ void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
     std::string name;
     reconstruct(src.animationName, &name);
     dst->SetAnimationName(name);
-    dst->SetAnimLength(8 * src.animLength);
+    dst->SetAnimLength(Duration::fromTicks(8 * src.animLength));
 
     reconstruct(src.textureName, &dst->pTextureName);
     dst->SetAnimTime(src.animTime);
@@ -1066,7 +1066,7 @@ void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst) {
 
     /* 000 */ dst->iconId = src.icon->id;
     /* 004 */ dst->animTime = src.uAnimTime;
-    /* 006 */ dst->animLength = src.uAnimLength;
+    /* 006 */ dst->animLength = src.uAnimLength.ticks();
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
 }
@@ -1075,7 +1075,7 @@ void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst) {
     dst->icon = pIconsFrameTable->GetIcon(src.iconId);
     ///* 000 */ anim->uIconID = src.uIconID;
     /* 004 */ dst->uAnimTime = src.animTime;
-    /* 006 */ dst->uAnimLength = src.animLength;
+    /* 006 */ dst->uAnimLength = Duration::fromTicks(src.animLength);
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
 }
@@ -1333,11 +1333,11 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
 
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
+    dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
     dst->vDirection = src.vDirection;
     dst->uMoveLength = src.uMoveLength;
-    dst->uOpenSpeed = src.uOpenSpeed;
     dst->uCloseSpeed = src.uCloseSpeed;
+    dst->uOpenSpeed = src.uOpenSpeed;
     dst->uNumVertices = src.uNumVertices;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
@@ -1348,16 +1348,16 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
 void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
     dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
+    dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
     dst->vDirection = src.vDirection;
     dst->uMoveLength = src.uMoveLength;
-    dst->uOpenSpeed = src.uOpenSpeed;
     dst->uCloseSpeed = src.uCloseSpeed;
+    dst->uOpenSpeed = src.uOpenSpeed;
     dst->uNumVertices = src.uNumVertices;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = static_cast<BLVDoor::State>(src.uState);
+    dst->uState = static_cast<DoorState>(src.uState);
 }
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
@@ -1603,8 +1603,8 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
     dst->expression = static_cast<CharacterExpressionID>(src.expression);
     dst->uTextureID = src.uTextureID;
-    dst->uAnimTime = src.uAnimTime;
-    dst->uAnimLength = src.uAnimLength;
+    dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);
+    dst->uAnimLength = Duration::fromTicks(src.uAnimLength * 8);
     dst->uFlags = src.uFlags;
 }
 

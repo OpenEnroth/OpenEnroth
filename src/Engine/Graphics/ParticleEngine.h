@@ -3,6 +3,7 @@
 #include <array>
 
 #include "Engine/Graphics/RenderEntities.h"
+#include "Engine/Time/Duration.h"
 
 #include "Library/Color/Color.h"
 
@@ -149,8 +150,8 @@ struct TrailParticle {
     int16_t x = 0;
     int16_t y = 0;
     int16_t z = 0;
-    int16_t time_left = 0;
-    int16_t time_to_live = 0;
+    Duration time_left;
+    Duration time_to_live;
     char field_10 = 0;
     char field_11 = 0;
     char field_12 = 0;

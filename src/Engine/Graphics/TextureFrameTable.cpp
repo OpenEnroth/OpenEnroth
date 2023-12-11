@@ -22,13 +22,13 @@ int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
     return -1;
 }
 
-GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
-    int animLength = textures[frameId].animLength;
+GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, Duration offset) {
+    Duration animationDuration = textures[frameId].animationDuration;
 
-    if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animLength != 0) {
-        int step = (time >> 3) % animLength;
-        while (textures[frameId].animTime < step) {
-            step -= textures[frameId].animTime;
+    if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animationDuration) {
+        offset = offset % animationDuration;
+        while (textures[frameId].frameDuration < offset) {
+            offset -= textures[frameId].frameDuration;
             ++frameId;
         }
     }
@@ -36,14 +36,13 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
     return textures[frameId].GetTexture();
 }
 
-int TextureFrameTable::textureFrameAnimLength(int frameID) {
-    int animLength = textures[frameID].animLength;
-    if ((textures[frameID].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animLength != 0) {
-        return animLength;
-    }
-    return 1;
+Duration TextureFrameTable::textureFrameAnimLength(int frameID) {
+    Duration result = textures[frameID].animationDuration;
+    if ((textures[frameID].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && result)
+        return result;
+    return Duration::fromTicks(1);
 }
 
-int TextureFrameTable::textureFrameAnimTime(int frameID) {
-    return textures[frameID].animTime;
+Duration TextureFrameTable::textureFrameAnimTime(int frameID) {
+    return textures[frameID].frameDuration;
 }

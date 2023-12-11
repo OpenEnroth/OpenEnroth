@@ -691,7 +691,7 @@ void CastSpellInfoHelpers::castSpell() {
                             !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
+                        AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -730,7 +730,7 @@ void CastSpellInfoHelpers::castSpell() {
                         item->uAttributes |= ITEM_TEMP_BONUS;
                     }
 
-                    ItemEnchantmentTimer = Timer::Second * 2;
+                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
 
@@ -1341,7 +1341,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!item->isWand() || item->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
+                        AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -1369,7 +1369,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (uNewCharges <= 0) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
+                        AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -1377,7 +1377,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-                    ItemEnchantmentTimer = Timer::Second * 2;
+                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
 
@@ -1467,7 +1467,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
-                                    ItemEnchantmentTimer = Timer::Second * 2;
+                                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
@@ -1512,7 +1512,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // set item ench
                                     spell_item_to_enchant->special_enchantment = ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
-                                    ItemEnchantmentTimer = Timer::Second * 2;
+                                    ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 }
                             }
@@ -2795,7 +2795,8 @@ void CastSpellInfoHelpers::castSpell() {
                     NPCData *npcData = buf.Get(flatHirelingId);
                     npcData->dialogue_1_evt_id = 1;
                     npcData->dialogue_2_evt_id = 0;
-                    npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+                    // TODO(captainurist): #time what's going on here? vvv
+                    npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength().ticks();
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();
                         character.mana = character.GetMaxMana();
@@ -2881,13 +2882,12 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         max_casts_a_day = 3;
                     }
-                    if (pPlayer->uNumArmageddonCasts >= max_casts_a_day ||
-                            pParty->armageddon_timer > 0) {
+                    if (pPlayer->uNumArmageddonCasts >= max_casts_a_day || pParty->armageddon_timer) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    pParty->armageddon_timer = 256;
+                    pParty->armageddon_timer = Duration::fromTicks(256);
                     pParty->armageddonDamage = spell_level;
                     pParty->armageddonForceCount = 60;
                     ++pPlayer->uNumArmageddonCasts;

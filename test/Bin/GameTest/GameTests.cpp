@@ -1931,7 +1931,7 @@ GAME_TEST(Issues, Issue1370) {
     auto exprTimeTape = tapes.custom([] { return pParty->pCharacters[2].uExpressionTimeLength; });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
     EXPECT_TRUE(exprTape.contains(CHARACTER_EXPRESSION_TALK));
-    EXPECT_TRUE(exprTimeTape.contains(318));  // 2.49 * 128
+    EXPECT_TRUE(exprTimeTape.contains(Duration::fromTicks(318)));  // 2.49 * 128
     EXPECT_EQ(exprTape.back(), CHARACTER_EXPRESSION_NORMAL);
 }
 
