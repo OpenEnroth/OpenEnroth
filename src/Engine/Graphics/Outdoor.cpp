@@ -1281,7 +1281,7 @@ bool OutdoorLocation::LoadTileGroupIds() {
 //----- (0047B42C) --------------------------------------------------------
 void OutdoorLocation::PrepareActorsDrawList() {
     unsigned int Angle_To_Cam;   // eax@11
-    signed int Cur_Action_Time;    // eax@16
+    Duration Cur_Action_Time;    // eax@16
     SpriteFrame *frame;  // eax@24
     int Sprite_Octant;           // [sp+24h] [bp-3Ch]@11
 
@@ -1317,18 +1317,18 @@ void OutdoorLocation::PrepareActorsDrawList() {
                                       ((signed int)TrigLUT.uIntegerPi >> 3) + pActors[i].yawAngle -
                                       Angle_To_Cam) >> 8) & 7;
 
-        Cur_Action_Time = pActors[i].currentActionTime.ticks();
+        Cur_Action_Time = pActors[i].currentActionTime;
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = 32 * i + pMiscTimer->uTotalTimeElapsed;
+                Cur_Action_Time = Duration::fromTicks(32 * i + pMiscTimer->uTotalTimeElapsed);
         } else {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = 32 * i + pEventTimer->uTotalTimeElapsed;
+                Cur_Action_Time = Duration::fromTicks(32 * i + pEventTimer->uTotalTimeElapsed);
         }
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
             pActors[i].buffs[ACTOR_BUFF_PARALYZED].Active())
-            Cur_Action_Time = 0;
+            Cur_Action_Time = Duration::zero();
 
         int v49 = 0;
         float v4 = 0.0f;
@@ -1350,13 +1350,12 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
 
         if (pActors[i].aiState == Summoned && !v49)
-            frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
+            frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time.ticks());
         else if (pActors[i].aiState == Resurrected)
-            frame = pSpriteFrameTable->GetFrameBy_x(
-                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
+            frame = pSpriteFrameTable->GetFrameReversed(pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time.ticks());
         else
             frame = pSpriteFrameTable->GetFrame(
-                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
+                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time.ticks());
 
         // no sprite frame to draw
         if (frame->icon_name == "null") continue;

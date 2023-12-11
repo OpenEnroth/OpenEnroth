@@ -59,7 +59,7 @@ struct SpriteFrameTable {
      */
     int FastFindSprite(std::string_view pSpriteName);
     SpriteFrame *GetFrame(int uSpriteID, int uTime);
-    SpriteFrame *GetFrameBy_x(int uSpriteID, int time);
+    SpriteFrame *GetFrameReversed(int uSpriteID, int time);
 
     /**
      * Resets the uPaletteIndex of all loaded pSpriteSFrames. Called by PaletteManager on reset.

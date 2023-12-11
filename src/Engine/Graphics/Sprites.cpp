@@ -208,7 +208,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, int uTime) {
 }
 
 //----- (0044D91F) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrameBy_x(int uSpriteID, int time) {
+SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, int time) {
     SpriteFrame *sprite = &pSpriteSFrames[uSpriteID];
     if (!(sprite->uFlags & 1) || sprite->uAnimLength == 0)
         return sprite;
