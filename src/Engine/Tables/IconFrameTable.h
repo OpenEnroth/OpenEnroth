@@ -26,10 +26,10 @@ class Icon {
     }
     inline Duration GetAnimLength() const { return this->anim_length; }
 
-    inline void SetAnimTime(unsigned int anim_time) {
+    inline void SetAnimTime(Duration anim_time) {
         this->anim_time = anim_time;
     }
-    inline unsigned int GetAnimTime() const { return this->anim_time; }
+    inline Duration GetAnimTime() const { return this->anim_time; }
 
     GraphicsImage *GetTexture();
 
@@ -40,7 +40,7 @@ class Icon {
  protected:
     std::string anim_name;
     Duration anim_length;
-    unsigned int anim_time = 0;
+    Duration anim_time;
     GraphicsImage *img = nullptr;
 };
 

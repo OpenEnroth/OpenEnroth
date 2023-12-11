@@ -1043,10 +1043,10 @@ void snapshot(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.GetAnimationName(), &dst->animationName);
-    dst->animLength = src.GetAnimLength().ticks();
+    dst->animLength = src.GetAnimLength().ticks() / 8;
 
     snapshot(src.pTextureName, &dst->textureName);
-    dst->animTime = src.GetAnimTime();
+    dst->animTime = src.GetAnimTime().ticks() / 8;
     dst->flags = src.uFlags;
 }
 
@@ -1057,7 +1057,7 @@ void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
     dst->SetAnimLength(Duration::fromTicks(8 * src.animLength));
 
     reconstruct(src.textureName, &dst->pTextureName);
-    dst->SetAnimTime(src.animTime);
+    dst->SetAnimTime(Duration::fromTicks(8 * src.animTime));
     dst->uFlags = src.flags;
 }
 
