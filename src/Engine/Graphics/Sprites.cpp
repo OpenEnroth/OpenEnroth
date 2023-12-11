@@ -191,20 +191,6 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     }
 
     return v4;
-
-    /*for (v4; v4->uAnimTime <= t; ++v4)
-
-      v6 = (uTime / 8) % v4->uAnimLength;
-      //v7 = uSpriteID;
-      for ( i = (char *)&v4->uAnimTime; ; i += 60 )
-      {
-        v9 = *(short *)i;
-        if ( v6 <= v9 )
-          break;
-        v6 -= v9;
-        ++v7;
-      }
-      return &pSpriteSFrames[v7];*/
 }
 
 //----- (0044D91F) --------------------------------------------------------
