@@ -7,11 +7,12 @@
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 #include "Engine/Time/Timer.h"
+#include "Engine/Time/Duration.h"
 
 class GUIWindow;
 
-constexpr int DELAY_TOGGLE_TIME_FIRST = Timer::Second / 2;
-constexpr int DELAY_TOGGLE_TIME_AFTER = Timer::Second / 15;
+constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500);
+constexpr Duration DELAY_TOGGLE_TIME_AFTER = Duration::fromRealtimeMilliseconds(67); // 1/15th of a second.
 
 enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_NONE = 0,
@@ -68,7 +69,7 @@ class KeyboardInputHandler {
     std::shared_ptr<KeyboardActionMapping> actionMapping;
 
     PlatformKey lastKeyPressed;
-    int keydelaytimer;
+    Duration keydelaytimer;
     int max_input_string_len;
     std::string pPressedKeysBuffer;
     TextInputType inputType;

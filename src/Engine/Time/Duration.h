@@ -31,35 +31,35 @@ class Duration {
         value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
-    [[nodiscard]] static Duration fromTicks(int64_t ticks) {
+    [[nodiscard]] constexpr static Duration fromTicks(int64_t ticks) {
         Duration result;
         result.value = ticks;
         return result;
     }
 
-    [[nodiscard]] static Duration fromSeconds(int seconds) { return Duration(seconds, 0, 0, 0, 0, 0, 0); }
-    [[nodiscard]] static Duration fromMinutes(int minutes) { return Duration(0, minutes, 0, 0, 0, 0, 0); }
-    [[nodiscard]] static Duration fromHours(int hours) { return Duration(0, 0, hours, 0, 0, 0, 0); }
-    [[nodiscard]] static Duration fromDays(int days) { return Duration(0, 0, 0, days, 0, 0, 0); }
-    [[nodiscard]] static Duration fromMonths(int months) { return Duration(0, 0, 0, 0, 0, months, 0); }
-    [[nodiscard]] static Duration fromYears(int years) { return Duration(0, 0, 0, 0, 0, 0, years); }
+    [[nodiscard]] constexpr static Duration fromSeconds(int seconds) { return Duration(seconds, 0, 0, 0, 0, 0, 0); }
+    [[nodiscard]] constexpr static Duration fromMinutes(int minutes) { return Duration(0, minutes, 0, 0, 0, 0, 0); }
+    [[nodiscard]] constexpr static Duration fromHours(int hours) { return Duration(0, 0, hours, 0, 0, 0, 0); }
+    [[nodiscard]] constexpr static Duration fromDays(int days) { return Duration(0, 0, 0, days, 0, 0, 0); }
+    [[nodiscard]] constexpr static Duration fromMonths(int months) { return Duration(0, 0, 0, 0, 0, months, 0); }
+    [[nodiscard]] constexpr static Duration fromYears(int years) { return Duration(0, 0, 0, 0, 0, 0, years); }
 
-    [[nodiscard]] int64_t ticks() const { return value; }
-    [[nodiscard]] int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] int64_t toMinutes() const { return toSeconds() / 60; }
-    [[nodiscard]] int64_t toHours() const { return toMinutes() / 60; }
-    [[nodiscard]] int toDays() const { return toHours() / 24; }
-    [[nodiscard]] int toWeeks() const { return toDays() / 7; }
-    [[nodiscard]] int toMonths() const { return toWeeks() / 4; }
-    [[nodiscard]] int toYears() const { return toMonths() / 12; }
+    [[nodiscard]] constexpr int64_t ticks() const { return value; }
+    [[nodiscard]] constexpr int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr int64_t toMinutes() const { return toSeconds() / 60; }
+    [[nodiscard]] constexpr int64_t toHours() const { return toMinutes() / 60; }
+    [[nodiscard]] constexpr int toDays() const { return toHours() / 24; }
+    [[nodiscard]] constexpr int toWeeks() const { return toDays() / 7; }
+    [[nodiscard]] constexpr int toMonths() const { return toWeeks() / 4; }
+    [[nodiscard]] constexpr int toYears() const { return toMonths() / 12; }
 
-    [[nodiscard]] static Duration fromRealtimeSeconds(int64_t seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
-    [[nodiscard]] static Duration fromRealtimeMilliseconds(int64_t msec) { return fromTicks(msec * TICKS_PER_REALTIME_SECOND / 1000); }
+    [[nodiscard]] constexpr static Duration fromRealtimeSeconds(int64_t seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
+    [[nodiscard]] constexpr static Duration fromRealtimeMilliseconds(int64_t msec) { return fromTicks(msec * TICKS_PER_REALTIME_SECOND / 1000); }
 
-    [[nodiscard]] int64_t toRealtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] int64_t toRealtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr int64_t toRealtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr int64_t toRealtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
 
-    [[nodiscard]] CivilDuration toCivilDuration() const {
+    [[nodiscard]] constexpr CivilDuration toCivilDuration() const {
         CivilDuration result;
         result.days = toDays();
         result.hours = toHours() % 24;
@@ -68,7 +68,7 @@ class Duration {
         return result;
     };
 
-    [[nodiscard]] LongCivilDuration toLongCivilDuration() const {
+    [[nodiscard]] constexpr LongCivilDuration toLongCivilDuration() const {
         LongCivilDuration result;
         result.years = toYears();
         result.months = toMonths() % 12;
@@ -79,52 +79,52 @@ class Duration {
         return result;
     }
 
-    [[nodiscard]] friend Duration operator+(const Duration &l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator+(const Duration &l, const Duration &r) {
         return Duration::fromTicks(l.value + r.value);
     }
 
-    [[nodiscard]] friend Duration operator-(const Duration &l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator-(const Duration &l, const Duration &r) {
         return Duration::fromTicks(l.value - r.value);
     }
 
     template<class L> requires std::is_arithmetic_v<L>
-    [[nodiscard]] friend Duration operator*(L l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator*(L l, const Duration &r) {
         return Duration::fromTicks(l * r.value);
     }
 
     template<class R> requires std::is_arithmetic_v<R>
-    [[nodiscard]] friend Duration operator*(const Duration &l, R r) {
+    [[nodiscard]] constexpr friend Duration operator*(const Duration &l, R r) {
         return Duration::fromTicks(l.value * r);
     }
 
-    [[nodiscard]] friend Duration operator%(const Duration &l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator%(const Duration &l, const Duration &r) {
         return Duration::fromTicks(l.value % r.value);
     }
 
-    Duration &operator+=(const Duration &rhs) {
+    constexpr Duration &operator+=(const Duration &rhs) {
         value += rhs.value;
         return *this;
     }
 
-    Duration &operator-=(const Duration &rhs) {
+    constexpr Duration &operator-=(const Duration &rhs) {
         value -= rhs.value;
         return *this;
     }
 
     template<class R> requires std::is_arithmetic_v<R>
-    Duration &operator*=(R r) {
+    constexpr Duration &operator*=(R r) {
         value *= r;
         return *this;
     }
 
-    [[nodiscard]] friend bool operator==(const Duration &l, const Duration &r) = default;
-    [[nodiscard]] friend auto operator<=>(const Duration &l, const Duration &r) = default;
+    [[nodiscard]] constexpr friend bool operator==(const Duration &l, const Duration &r) = default;
+    [[nodiscard]] constexpr friend auto operator<=>(const Duration &l, const Duration &r) = default;
 
-    [[nodiscard]] explicit operator bool() const {
+    [[nodiscard]] constexpr explicit operator bool() const {
         return value != 0;
     }
 
-    [[nodiscard]] static constexpr Duration zero() {
+    [[nodiscard]] constexpr static Duration zero() {
         return {};
     }
 
