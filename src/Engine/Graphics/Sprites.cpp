@@ -183,7 +183,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     uTime = Duration::fromTicks(uTime.ticks() & ~7);
 
     // uAnimLength / uAnimTime = actual number of frames in sprite
-    for (Duration t = uTime % v4->uAnimLength; t > v4->uAnimTime; ++v4)
+    for (Duration t = uTime % v4->uAnimLength; t >= v4->uAnimTime; ++v4)
         t -= v4->uAnimTime;
 
     // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
@@ -219,7 +219,7 @@ SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     // TODO(captainurist): Retrace & drop.
     time = Duration::fromTicks(time.ticks() & ~7);
 
-    for (Duration t = sprite->uAnimLength - time % sprite->uAnimLength; t > sprite->uAnimTime; ++sprite)
+    for (Duration t = sprite->uAnimLength - time % sprite->uAnimLength; t >= sprite->uAnimTime; ++sprite)
         t -= sprite->uAnimTime;
 
     return sprite;

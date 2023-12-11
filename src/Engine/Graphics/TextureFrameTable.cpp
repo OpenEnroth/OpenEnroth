@@ -27,7 +27,7 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, Duration offset) 
 
     if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animationDuration) {
         offset = offset % animationDuration;
-        while (textures[frameId].frameDuration < offset) {
+        while (offset >= textures[frameId].frameDuration) {
             offset -= textures[frameId].frameDuration;
             ++frameId;
         }

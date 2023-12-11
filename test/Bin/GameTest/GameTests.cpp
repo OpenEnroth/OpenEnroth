@@ -9,6 +9,7 @@
 #include "GUI/GUIProgressBar.h"
 
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/Actor.h"
@@ -1959,4 +1960,35 @@ GAME_TEST(Issues, Issue1383) {
     character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
     int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(noobPrice, 75000);
+}
+
+GAME_TEST(Prs, Pr1440) {
+    // Frame table search is off by 1 tick.
+    TextureFrameTable table;
+
+    TextureFrame frame0;
+    frame0.name = "dec33b";
+    frame0.animationDuration = Duration::fromTicks(16);
+    frame0.frameDuration = Duration::fromTicks(8);
+    frame0.flags = TEXTURE_FRAME_TABLE_MORE_FRAMES;
+    GraphicsImage *tex0 = frame0.GetTexture();
+
+    TextureFrame frame1;
+    frame1.name = "dec33d";
+    frame1.animationDuration = Duration::zero();
+    frame1.frameDuration = Duration::fromTicks(8);
+    frame1.flags = 0;
+    GraphicsImage *tex1 = frame1.GetTexture();
+
+    table.textures.push_back(frame0);
+    table.textures.push_back(frame1);
+
+    for (int i = 0; i < 8; i++)
+        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex0) << i;
+    for (int i = 8; i < 16; i++)
+        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
+    for (int i = 16; i < 24; i++)
+        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex0) << i;
+    for (int i = 24; i < 32; i++)
+        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
 }
