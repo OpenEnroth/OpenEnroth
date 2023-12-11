@@ -353,7 +353,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
 }
 
 void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
-    double v3 = (double)a2->uSpriteFrameID / (double)a2->GetLifetime();
+    double v3 = (double)a2->uSpriteFrameID.ticks() / (double)a2->GetLifetime().ticks();
     double v4;
     if (v3 >= 0.75)
         v4 = (1.0 - v3) * 4.0;
@@ -386,7 +386,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
 }
 
 void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
-    double v4 = (double)a1->uSpriteFrameID / (double)a1->GetLifetime();
+    double v4 = (double)a1->uSpriteFrameID.ticks() / (double)a1->GetLifetime().ticks();
     double v5;
     if (v4 >= 0.75) {
         v5 = v4 * 4.0;

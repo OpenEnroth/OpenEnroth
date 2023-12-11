@@ -578,14 +578,14 @@ void SpriteObject::explosionTraps() {
     }
 }
 
-unsigned int SpriteObject::GetLifetime() {
+Duration SpriteObject::GetLifetime() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
     return pObjectDesc->uLifetime;
 }
 
 SpriteFrame *SpriteObject::getSpriteFrame() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, Duration::fromTicks(uSpriteFrameID));
+    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, uSpriteFrameID);
 }
 
 bool SpriteObject::IsUnpickable() {
@@ -1309,12 +1309,12 @@ void UpdateObjects() {
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                pSpriteObjects[i].uSpriteFrameID += Duration::fromTicks(pEventTimer->uTimeElapsed);
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                     continue;
                 }
-                if (pSpriteObjects[i].uSpriteFrameID >= 0) {
-                    int lifetime = object->uLifetime;
+                if (pSpriteObjects[i].uSpriteFrameID >= Duration::zero()) {
+                    Duration lifetime = object->uLifetime;
                     if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
                         lifetime = pSpriteObjects[i].tempLifetime;
                     }
@@ -1326,10 +1326,10 @@ void UpdateObjects() {
                 continue;
             }
             if (pSpriteObjects[i].uObjectDescID) {
-                int lifetime = 0;
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                Duration lifetime;
+                pSpriteObjects[i].uSpriteFrameID += Duration::fromTicks(pEventTimer->uTimeElapsed);
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
-                    if (pSpriteObjects[i].uSpriteFrameID < 0) {
+                    if (pSpriteObjects[i].uSpriteFrameID < Duration::zero()) {
                         SpriteObject::OnInteraction(i);
                         continue;
                     }
