@@ -763,7 +763,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->expressionTimePassed = src.uExpressionTimePassed;
     dst->expressionTimeLength = src.uExpressionTimeLength;
     dst->field_1AA2 = src.uExpressionImageIndex;
-    dst->_expression21_animtime = src._expression21_animtime;
+    dst->_expression21_animtime = src._expression21_animtime.ticks();
     dst->_expression21_frameset = src._expression21_frameset;
 
     for (unsigned int i = 0; i < 5; ++i) {
@@ -1013,7 +1013,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uExpressionTimePassed = src.expressionTimePassed;
     dst->uExpressionTimeLength = src.expressionTimeLength;
     dst->uExpressionImageIndex = src.field_1AA2;
-    dst->_expression21_animtime = src._expression21_animtime;
+    dst->_expression21_animtime = Duration::fromTicks(src._expression21_animtime);
     dst->_expression21_frameset = src._expression21_frameset;
 
     for (int z = 0; z < dst->vBeacons.size(); z++)
@@ -1603,8 +1603,8 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
     dst->expression = static_cast<CharacterExpressionID>(src.expression);
     dst->uTextureID = src.uTextureID;
-    dst->uAnimTime = src.uAnimTime;
-    dst->uAnimLength = src.uAnimLength;
+    dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);
+    dst->uAnimLength = Duration::fromTicks(src.uAnimLength * 8);
     dst->uFlags = src.uFlags;
 }
 

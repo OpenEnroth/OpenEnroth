@@ -7251,7 +7251,7 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
     this->uExpressionTimePassed = 0;
 
     if (!duration) {
-        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
+        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression).ticks();
         assert(this->uExpressionTimeLength != 0); // GetDurationByExpression should have found the expression.
     } else {
         this->uExpressionTimeLength = duration;
@@ -7449,7 +7449,7 @@ Character::Character() {
     field_100 = 0;
     field_104 = 0;
 
-    _expression21_animtime = 0;
+    _expression21_animtime = Duration::zero();
     _expression21_frameset = 0;
 
     lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;

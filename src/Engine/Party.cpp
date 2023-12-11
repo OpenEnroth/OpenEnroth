@@ -809,9 +809,9 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
             // TODO(captainurist): We overwrite the random timing from the CHARACTER_EXPRESSION_NORMAL branch here.
             //                     Doesn't seem intentional!
-            int timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
-            if (timeLength != 0)
-                player.uExpressionTimeLength = timeLength;
+            Duration timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
+            if (timeLength)
+                player.uExpressionTimeLength = timeLength.ticks();
         } else if (player.expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||

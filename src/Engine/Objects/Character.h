@@ -465,9 +465,9 @@ class Character {
     char _mana_related;
     CharacterExpressionID expression;
     uint16_t uExpressionTimePassed;
-    uint16_t uExpressionTimeLength;
+    uint16_t uExpressionTimeLength; // TODO(captainurist): #time Duration
     int16_t uExpressionImageIndex;
-    int _expression21_animtime;
+    Duration _expression21_animtime;
     int _expression21_frameset;
     std::vector<LloydBeacon> vBeacons;
     char uNumDivineInterventionCastsThisDay;
