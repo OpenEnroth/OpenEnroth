@@ -1030,7 +1030,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_PLAYING;
 
                 for (Character &character : pParty->pCharacters) {
-                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
+                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, Duration::zero());
                 }
 
                 // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");

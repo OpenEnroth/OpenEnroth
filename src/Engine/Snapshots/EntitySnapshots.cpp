@@ -760,8 +760,8 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->fullManaBonus = src.uFullManaBonus;
     dst->manaRelated = src._mana_related;
     dst->expression = std::to_underlying(src.expression);
-    dst->expressionTimePassed = src.uExpressionTimePassed;
-    dst->expressionTimeLength = src.uExpressionTimeLength;
+    dst->expressionTimePassed = src.uExpressionTimePassed.ticks();
+    dst->expressionTimeLength = src.uExpressionTimeLength.ticks();
     dst->field_1AA2 = src.uExpressionImageIndex;
     dst->_expression21_animtime = src._expression21_animtime.ticks();
     dst->_expression21_frameset = src._expression21_frameset;
@@ -1010,8 +1010,8 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
     dst->expression = static_cast<CharacterExpressionID>(src.expression);
-    dst->uExpressionTimePassed = src.expressionTimePassed;
-    dst->uExpressionTimeLength = src.expressionTimeLength;
+    dst->uExpressionTimePassed = Duration::fromTicks(src.expressionTimePassed);
+    dst->uExpressionTimeLength = Duration::fromTicks(src.expressionTimeLength);
     dst->uExpressionImageIndex = src.field_1AA2;
     dst->_expression21_animtime = Duration::fromTicks(src._expression21_animtime);
     dst->_expression21_frameset = src._expression21_frameset;

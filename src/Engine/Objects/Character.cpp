@@ -7215,17 +7215,17 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
     }
     if (expressionCount) {
         CharacterExpressionID expression = (CharacterExpressionID)expressionVariants[speech][vrng->random(expressionCount)];
-        int expressionDuration = 0;
+        Duration expressionDuration;
         if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
-                expressionDuration = 128 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID)); // Was (sLastTrackLengthMS << 7) / 1000;
+                expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID))); // Was (sLastTrackLengthMS << 7) / 1000;
             }
         }
         playEmotion(expression, expressionDuration);
     }
 }
 
-void Character::playEmotion(CharacterExpressionID new_expression, int duration) {
+void Character::playEmotion(CharacterExpressionID new_expression, Duration duration) {
     // 38 - sparkles 1 character?
 
     CharacterExpressionID currexpr = expression;
@@ -7248,11 +7248,11 @@ void Character::playEmotion(CharacterExpressionID new_expression, int duration) 
         }
     }
 
-    this->uExpressionTimePassed = 0;
+    this->uExpressionTimePassed = Duration::zero();
 
     if (!duration) {
-        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression).ticks();
-        assert(this->uExpressionTimeLength != 0); // GetDurationByExpression should have found the expression.
+        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
+        assert(this->uExpressionTimeLength); // GetDurationByExpression should have found the expression.
     } else {
         this->uExpressionTimeLength = duration;
     }
@@ -7429,8 +7429,8 @@ Character::Character() {
     _ranged_dmg_bonus = 0;
 
     expression = CHARACTER_EXPRESSION_INVALID;
-    uExpressionTimePassed = 0;
-    uExpressionTimeLength = 0;
+    uExpressionTimePassed = Duration::zero();
+    uExpressionTimeLength = Duration::zero();
 
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;

@@ -263,7 +263,7 @@ class Character {
     /**
      * @offset 0x494A25
      */
-    void playEmotion(CharacterExpressionID expression, int duration);
+    void playEmotion(CharacterExpressionID expression, Duration duration);
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
@@ -464,8 +464,8 @@ class Character {
     char uFullManaBonus;
     char _mana_related;
     CharacterExpressionID expression;
-    uint16_t uExpressionTimePassed;
-    uint16_t uExpressionTimeLength; // TODO(captainurist): #time Duration
+    Duration uExpressionTimePassed;
+    Duration uExpressionTimeLength;
     int16_t uExpressionImageIndex;
     Duration _expression21_animtime;
     int _expression21_frameset;
