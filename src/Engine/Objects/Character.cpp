@@ -2342,7 +2342,7 @@ int Character::GetActualResistance(CharacterAttributeType resistance) const {
 //----- (0048E8F5) --------------------------------------------------------
 bool Character::Recover(Duration dt) {
     Duration timepassed =
-        Duration::fromTicks(dt.ticks() * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.ticks());
+        dt * (100 + GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY)) / 100;
 
     if (timeToRecovery > timepassed) {  // need more time till recovery
         timeToRecovery -= timepassed;
