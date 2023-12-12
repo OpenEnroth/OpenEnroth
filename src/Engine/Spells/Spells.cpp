@@ -156,10 +156,10 @@ SpellData::SpellData(int16_t inNormalMana,
     mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelMana;
     mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = inMasterLevelMana;
     mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = inMagisterLevelMana;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = inNormalLevelRecovery;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelRecovery;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = inMasterLevelRecovery;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = inMagisterLevelRecovery;
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = Duration::fromTicks(inNormalLevelRecovery);
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = Duration::fromTicks(inExpertLevelRecovery);
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = Duration::fromTicks(inMasterLevelRecovery);
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = Duration::fromTicks(inMagisterLevelRecovery);
     baseDamage = inBaseDamage;
     bonusSkillDamage = inBonusSkillDamage;
     stats = inStats;

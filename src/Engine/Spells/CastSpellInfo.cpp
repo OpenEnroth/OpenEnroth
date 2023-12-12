@@ -203,7 +203,7 @@ void CastSpellInfoHelpers::castSpell() {
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[spell_mastery];
             }
 
-            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[spell_mastery];
+            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[spell_mastery].ticks();
         }
 
         // Recovery time for spell failure if it cannot be cast at all in current context

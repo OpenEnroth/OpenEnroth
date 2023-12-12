@@ -185,7 +185,8 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
 
-    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
+    // TODO(captainurist): #time drop .ticks()
+    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE].ticks();
     if (pParty->bTurnBasedModeOn) {
         pParty->pTurnBasedCharacterRecoveryTimes[_casterId] = sRecoveryTime;
         character.SetRecoveryTime(sRecoveryTime);
