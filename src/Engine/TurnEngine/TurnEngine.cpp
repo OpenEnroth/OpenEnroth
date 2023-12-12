@@ -88,7 +88,7 @@ void stru262_TurnBased::SortTurnQueue() {
         if (pQueue[i].uPackedID.type() ==
             OBJECT_Character)  // set recovery times
             pParty->pCharacters[pQueue[i].uPackedID.id()].timeToRecovery =
-                (uint16_t)((double)pQueue[i].actor_initiative * 0.46875);
+                Duration::fromTicks((double)pQueue[i].actor_initiative * 0.46875);
     }
 }
 //----- (0040471C) --------------------------------------------------------
@@ -158,8 +158,8 @@ void stru262_TurnBased::Start() {
     for (int k = 0; k < this->pQueue.size(); ++k) {
         // set initial initiative for turn actors
         if (this->pQueue[k].uPackedID.type() == OBJECT_Character) {
-            if (pParty->pCharacters[this->pQueue[k].uPackedID.id()].timeToRecovery != 0) {
-                this->pQueue[k].actor_initiative = (int)((double)pParty->pCharacters[this->pQueue[k].uPackedID.id()].timeToRecovery * 0.46875);
+            if (pParty->pCharacters[this->pQueue[k].uPackedID.id()].timeToRecovery) {
+                this->pQueue[k].actor_initiative = (int)((double)pParty->pCharacters[this->pQueue[k].uPackedID.id()].timeToRecovery.ticks() * 0.46875);
             } else {
                 activ_players[a_players_count] = k;
                 ++a_players_count;
@@ -221,7 +221,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
         objType = (ObjectType)pQueue[i].uPackedID.type();
         objID = pQueue[i].uPackedID.id();
         if (objType == OBJECT_Character)
-            pParty->pCharacters[objID].timeToRecovery = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
+            pParty->pCharacters[objID].timeToRecovery = Duration::fromTicks((double)pQueue[i].actor_initiative * flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
             pActors[objID].monsterInfo.recoveryTime = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
     }

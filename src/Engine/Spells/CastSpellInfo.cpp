@@ -96,13 +96,13 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
     if (pParty->bTurnBasedModeOn) {
         pParty->pTurnBasedCharacterRecoveryTimes[pCastSpell->casterCharacterIndex] = recoveryTime;
 
-        pPlayer->SetRecoveryTime(recoveryTime);
+        pPlayer->SetRecoveryTime(Duration::fromTicks(recoveryTime));
 
         if (!enchantingActiveCharacter) {
             pTurnEngine->ApplyPlayerAction();
         }
     } else {
-        pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
+        pPlayer->SetRecoveryTime(Duration::fromTicks(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
     }
 
     // It's here to set character portrain emotion on spell cast.
@@ -3189,5 +3189,5 @@ void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {
     // TODO(Nik-RE-dev): need to get rid of uPlayerID_2 and use pid with OBJECT_Character and something else for hirelings.
     pCastSpell->targetCharacterIndex = targetCharacterIndex;
     // TODO(Nik-RE-dev): why recovery time is set here?
-    pParty->pCharacters[pCastSpell->casterCharacterIndex].SetRecoveryTime(300);
+    pParty->pCharacters[pCastSpell->casterCharacterIndex].SetRecoveryTime(300_ticks);
 }

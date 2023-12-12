@@ -1293,8 +1293,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         v8 = pPlayer->GetAttackRecoveryTime(false);
         v8 = std::max(v8, Duration::fromTicks(engine->config->gameplay.MinRecoveryMelee.value()));
         if (!pParty->bTurnBasedModeOn)
-            pPlayer->SetRecoveryTime(
-                (int)(debug_non_combat_recovery_mul * v8.ticks() * flt_debugrecmod3));
+            pPlayer->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * v8);
         pTurnEngine->ApplyPlayerAction();
     }
 }

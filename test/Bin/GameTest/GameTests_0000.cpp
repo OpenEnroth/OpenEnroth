@@ -502,14 +502,14 @@ GAME_TEST(Issues, Issue405) {
     runTrace();
     game.tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
-    int firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
+    Duration firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     // 10ms/frame
     test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
     runTrace();
     game.tick(100);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
-    int secondRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
+    Duration secondRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     EXPECT_EQ(firstRemainingRecovery, secondRemainingRecovery);
 }

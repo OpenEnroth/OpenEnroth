@@ -344,7 +344,7 @@ GAME_TEST(Issues, Issue663) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST, SCREEN_CHEST_INVENTORY));
     // should switch to char 2 inv
     EXPECT_EQ(pParty->activeCharacterIndex(), 2);
-    EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0);
+    EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0_ticks);
 }
 
 GAME_TEST(Issues, Issue664) {

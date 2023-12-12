@@ -248,7 +248,7 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
     if (hasActiveCharacter() && this->pCharacters[_activeCharacter - 1].CanAct() &&
-        this->pCharacters[_activeCharacter - 1].timeToRecovery < 1)
+        this->pCharacters[_activeCharacter - 1].timeToRecovery <= Duration::zero())
         return;
 
     if (pParty->bTurnBasedModeOn) {
@@ -266,7 +266,7 @@ void Party::switchToNextActiveCharacter() {
 
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (!this->pCharacters[i].CanAct() ||
-            this->pCharacters[i].timeToRecovery > 0) {
+            this->pCharacters[i].timeToRecovery > Duration::zero()) {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
@@ -283,7 +283,7 @@ void Party::switchToNextActiveCharacter() {
     unsigned v8{};
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() &&
-            this->pCharacters[i].timeToRecovery == 0) {
+            !this->pCharacters[i].timeToRecovery) {
             if (v12 == 0 || this->pCharacters[i].uSpeedBonus > v8) {
                 v8 = this->pCharacters[i].uSpeedBonus;
                 v12 = i + 1;
@@ -660,7 +660,7 @@ void Party::Reset() {
     pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
     for (Character &player : this->pCharacters) {
-        player.timeToRecovery = 0;
+        player.timeToRecovery = Duration::zero();
         player.conditions.ResetAll();
 
         for (SpellBuff &buff : player.pCharacterBuffs) {
@@ -864,7 +864,7 @@ void Party::restAndHeal() {
         pPlayer->conditions.Reset(CONDITION_SLEEP);
         pPlayer->conditions.Reset(CONDITION_WEAK);
 
-        pPlayer->timeToRecovery = 0;
+        pPlayer->timeToRecovery = Duration::zero();
         pPlayer->health = pPlayer->GetMaxHealth();
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
@@ -931,7 +931,7 @@ void restAndHeal(Duration restTime) {
     pParty->restAndHeal();
 
     for (Character &player : pParty->pCharacters) {
-        player.timeToRecovery = 0;
+        player.timeToRecovery = Duration::zero();
         player.uNumDivineInterventionCastsThisDay = 0;
         player.uNumArmageddonCasts = 0;
         player.uNumFireSpikeCasts = 0;
@@ -1202,7 +1202,7 @@ void Party::giveFallDamage(int distance) {
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
             player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DAMAGE_PHYSICAL);
-            int bonus = 20 - player.GetParameterBonus(player.GetActualEndurance());
+            Duration bonus = Duration::fromTicks(20 - player.GetParameterBonus(player.GetActualEndurance()));
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
         }
     }

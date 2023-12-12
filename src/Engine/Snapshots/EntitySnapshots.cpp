@@ -728,7 +728,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->voiceId = src.uVoiceID;
     dst->prevVoiceId = src.uPrevVoiceID;
     dst->prevFace = src.uPrevFace;
-    dst->timeToRecovery = src.timeToRecovery;
+    dst->timeToRecovery = src.timeToRecovery.ticks();
     dst->skillPoints = src.uSkillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
@@ -968,7 +968,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uVoiceID = src.voiceId;
     dst->uPrevVoiceID = src.prevVoiceId;
     dst->uPrevFace = src.prevFace;
-    dst->timeToRecovery = src.timeToRecovery;
+    dst->timeToRecovery = Duration::fromTicks(src.timeToRecovery);
     dst->uSkillPoints = src.skillPoints;
     dst->health = src.health;
     dst->mana = src.mana;

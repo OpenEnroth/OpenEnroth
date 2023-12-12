@@ -191,7 +191,7 @@ class Character {
     unsigned int GetActualAge() const;
     int GetBaseResistance(CharacterAttributeType a2) const;
     int GetActualResistance(CharacterAttributeType resistance) const;
-    void SetRecoveryTime(signed int sRecoveryTime);
+    void SetRecoveryTime(Duration sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int character_parameter) const;
@@ -435,7 +435,7 @@ class Character {
     unsigned int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;
-    uint16_t timeToRecovery;
+    Duration timeToRecovery;
     unsigned int uSkillPoints;
     int health;
     int mana;

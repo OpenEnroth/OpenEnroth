@@ -2341,14 +2341,14 @@ int Character::GetActualResistance(CharacterAttributeType resistance) const {
 
 //----- (0048E8F5) --------------------------------------------------------
 bool Character::Recover(Duration dt) {
-    int timepassed =
-        dt.ticks() * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.ticks();
+    Duration timepassed =
+        Duration::fromTicks(dt.ticks() * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.ticks());
 
     if (timeToRecovery > timepassed) {  // need more time till recovery
         timeToRecovery -= timepassed;
         return true;
     } else {
-        timeToRecovery = 0;  // recovered
+        timeToRecovery = Duration::zero();  // recovered
 
         if (!pParty->hasActiveCharacter())  // set recoverd char as active
             pParty->switchToNextActiveCharacter();
@@ -2358,9 +2358,9 @@ bool Character::Recover(Duration dt) {
 }
 
 //----- (0048E96A) --------------------------------------------------------
-void Character::SetRecoveryTime(signed int rec) {
+void Character::SetRecoveryTime(Duration rec) {
     // to avoid switching characters if endurance eliminates hit recovery
-    if (rec < 1) return;
+    if (rec <= Duration::zero()) return;
 
     if (rec > timeToRecovery) timeToRecovery = rec;
 
@@ -3564,10 +3564,10 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         //if (v73) {
             if (pParty->bTurnBasedModeOn) {
                 pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
-                this->SetRecoveryTime(100);
+                this->SetRecoveryTime(100_ticks);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
+                this->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100_ticks);
             }
         //}
         mouse->RemoveHoldingItem();
@@ -3837,10 +3837,10 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
         if (pParty->bTurnBasedModeOn) {
             pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
-            this->SetRecoveryTime(100);
+            this->SetRecoveryTime(100_ticks);
             pTurnEngine->ApplyPlayerAction();
         } else {
-            this->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0);
+            this->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100_ticks);
         }
         mouse->RemoveHoldingItem();
         return;
@@ -6292,7 +6292,7 @@ int cycleCharacter(bool backwards) {
         } else if (currentId >= pParty->pCharacters.size()) {
             currentId = 0;
         }
-        if (pParty->pCharacters[currentId].timeToRecovery == 0) {
+        if (!pParty->pCharacters[currentId].timeToRecovery) {
             return currentId + 1;
         }
     }
@@ -6513,7 +6513,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos,
         // add recovery after being hit
         if (!pParty->bTurnBasedModeOn) {
             int actEndurance = playerPtr->GetActualEndurance();
-            int recoveryTime = (int)((20 - playerPtr->GetParameterBonus(actEndurance)) *
+            Duration recoveryTime = Duration::fromTicks((20 - playerPtr->GetParameterBonus(actEndurance)) *
                       debug_non_combat_recovery_mul * flt_debugrecmod3);
             playerPtr->SetRecoveryTime(recoveryTime);
         }
@@ -6683,8 +6683,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos,
             // set recovery after hit
             if (!pParty->bTurnBasedModeOn) {
                 int actEnd = playerPtr->GetActualEndurance();
-                int recTime =
-                    (int)((20 - playerPtr->GetParameterBonus(actEnd)) *
+                Duration recTime =
+                    Duration::fromTicks((20 - playerPtr->GetParameterBonus(actEnd)) *
                           debug_non_combat_recovery_mul * flt_debugrecmod3);
                 playerPtr->SetRecoveryTime(recTime);
             }
@@ -7088,7 +7088,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     if (!pParty->bTurnBasedModeOn && melee_attack) {
         // wands, bows & lasers will add recovery while shooting spell effect
         Duration recovery = character->GetAttackRecoveryTime(false);
-        character->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery.ticks() * flt_debugrecmod3));
+        character->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * recovery);
     }
 
     CharacterSkillType skill = CHARACTER_SKILL_STAFF;
@@ -7402,7 +7402,7 @@ Character::Character() {
     sResLightBase = sResLightBonus = 0;
     sResDarkBase = sResDarkBonus = 0;
 
-    timeToRecovery = 0;
+    timeToRecovery = Duration::zero();
 
     uSkillPoints = 0;
 
