@@ -1292,18 +1292,19 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     RegeneratePartyHealthMana();
 
-    unsigned recoveryTimeDt = pEventTimer->uTimeElapsed;
+    // TODO(captainurist): #time drop once we move to msecs in duration.
+    Duration recoveryTimeDt = Duration::fromTicks(pEventTimer->uTimeElapsed);
     recoveryTimeDt += pParty->_roundingDt;
-    pParty->_roundingDt = 0;
-    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
-        pParty->_roundingDt = recoveryTimeDt % 2;
+    pParty->_roundingDt = Duration::zero();
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running
+        pParty->_roundingDt = recoveryTimeDt % Duration::fromTicks(2);
         recoveryTimeDt /= 2;
     }
 
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
-        if (character.timeToRecovery && recoveryTimeDt > 0)
-            character.Recover(Duration::fromTicks(recoveryTimeDt)); // TODO(captainurist): #time
+        if (character.timeToRecovery && recoveryTimeDt > Duration::zero())
+            character.Recover(recoveryTimeDt);
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             character.health + character.uEndurance >= 1 ||

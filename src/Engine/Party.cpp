@@ -162,7 +162,7 @@ void Party::Zero() {
     uFine = 0;
     TorchLightLastIntensity = 0.0f;
 
-    _roundingDt = 0;
+    _roundingDt = Duration::zero();
 
     // players
     for (Character &player : this->pCharacters) {

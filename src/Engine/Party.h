@@ -343,7 +343,7 @@ struct Party {
     int uFine;
     float TorchLightLastIntensity;
 
-    unsigned int _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
+    Duration _roundingDt;  // keeps track of rounding remainder for recovery
 
     int _delayedReactionTimer;
     CharacterSpeech _delayedReactionSpeech;
