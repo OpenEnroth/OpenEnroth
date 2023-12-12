@@ -46,6 +46,9 @@ static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRe
 static const size_t CAST_SPELL_QUEUE_SIZE = 10;
 static std::array<CastSpellInfo, CAST_SPELL_QUEUE_SIZE> pCastSpellInfo;
 
+// Recovery time when spell failed because of curse
+static constexpr Duration SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100_ticks;
+
 /**
  * Common initialization of SpriteObject for spell casting
  *
@@ -82,27 +85,27 @@ static void spellFailed(CastSpellInfo *pCastSpell,
  * Set recovery time for spell casting
  */
 static void setSpellRecovery(CastSpellInfo *pCastSpell,
-                             int recoveryTime) {
+                             Duration recoveryTime) {
     if (pCastSpell->flags & ON_CAST_NoRecoverySpell) {
         return;
     }
 
-    if (recoveryTime < 0) {
-        recoveryTime = 0;
+    if (recoveryTime < Duration::zero()) {
+        recoveryTime = Duration::zero();
     }
 
     Character *pPlayer = &pParty->pCharacters[pCastSpell->casterCharacterIndex];
 
     if (pParty->bTurnBasedModeOn) {
-        pParty->pTurnBasedCharacterRecoveryTimes[pCastSpell->casterCharacterIndex] = recoveryTime;
+        pParty->pTurnBasedCharacterRecoveryTimes[pCastSpell->casterCharacterIndex] = recoveryTime.ticks();
 
-        pPlayer->SetRecoveryTime(Duration::fromTicks(recoveryTime));
+        pPlayer->SetRecoveryTime(recoveryTime);
 
         if (!enchantingActiveCharacter) {
             pTurnEngine->ApplyPlayerAction();
         }
     } else {
-        pPlayer->SetRecoveryTime(Duration::fromTicks(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
+        pPlayer->SetRecoveryTime(debug_combat_recovery_mul * flt_debugrecmod3 * recoveryTime);
     }
 
     // It's here to set character portrain emotion on spell cast.
@@ -119,7 +122,9 @@ void CastSpellInfoHelpers::castSpell() {
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         SpriteObject pSpellSprite;
         CastSpellInfo *pCastSpell = &spellInfo;
-        int uRequiredMana{}, recoveryTime{}, failureRecoveryTime{};
+        int uRequiredMana{};
+        Duration recoveryTime;
+        Duration failureRecoveryTime;
 
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
@@ -203,7 +208,7 @@ void CastSpellInfoHelpers::castSpell() {
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[spell_mastery];
             }
 
-            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[spell_mastery].ticks();
+            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[spell_mastery];
         }
 
         // Recovery time for spell failure if it cannot be cast at all in current context
@@ -266,7 +271,7 @@ void CastSpellInfoHelpers::castSpell() {
                     ++pTurnEngine->pending_actions;
                 }
             }
-            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(true).ticks());
+            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(true));
         } else if (pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             // TODO(pskelton): was pParty->uPartyHeight / 2
@@ -289,7 +294,7 @@ void CastSpellInfoHelpers::castSpell() {
                 ++pTurnEngine->pending_actions;
             }
 
-            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(false).ticks());
+            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(false));
         } else if (pCastSpell->uSpellID == SPELL_WATER_TOWN_PORTAL) {
             int success_chance_percent = 10 * spell_level;
             bool castSuccessful = true;
@@ -2388,7 +2393,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_DISPEL_MAGIC:
                 {
-                    recoveryTime -= spell_level;
+                    recoveryTime -= Duration::fromTicks(spell_level);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -2605,7 +2610,7 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         pPlayer->sAgeModifier = pPlayer->sAgeModifier + 10;
                     }
-                    recoveryTime = 5 * spell_level;
+                    recoveryTime = 5_ticks * spell_level;
                     ++pPlayer->uNumDivineInterventionCastsThisDay;
                     break;
                 }
