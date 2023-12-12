@@ -217,7 +217,7 @@ var searchData=
   ['setairecoverytimes_214',['SetAIRecoveryTimes',['../structstru262__TurnBased.html#aed14fc6f5ed70ea3a485aa388f31f399',1,'stru262_TurnBased']]],
   ['setanimationname_215',['SetAnimationName',['../classIcon.html#a3c67b59bc3840accb0b056ae06456d27',1,'Icon']]],
   ['setanimlength_216',['SetAnimLength',['../classIcon.html#a944f4fe802b492e36758a08e37da68f8',1,'Icon']]],
-  ['setanimtime_217',['SetAnimTime',['../classIcon.html#a554dd50cdfbf4672f92852985fe784f3',1,'Icon']]],
+  ['setanimtime_217',['SetAnimTime',['../classIcon.html#a6871f482712220d86cd852f82a634d92',1,'Icon']]],
   ['setbankgold_218',['SetBankGold',['../structParty.html#afb0f1088fc61a59d8dc2c8d690473f24',1,'Party']]],
   ['setbase_219',['setBase',['../classProxyBase.html#ad7eb15cbba921e40789a234ec5d5bee1',1,'ProxyBase']]],
   ['setbeacon_220',['setBeacon',['../classCharacter.html#a08194f4ce255408cd4acfafcd6d8d5f8',1,'Character']]],
