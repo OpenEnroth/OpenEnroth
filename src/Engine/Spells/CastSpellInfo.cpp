@@ -266,7 +266,7 @@ void CastSpellInfoHelpers::castSpell() {
                     ++pTurnEngine->pending_actions;
                 }
             }
-            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(true));
+            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(true).ticks());
         } else if (pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             // TODO(pskelton): was pParty->uPartyHeight / 2
@@ -289,7 +289,7 @@ void CastSpellInfoHelpers::castSpell() {
                 ++pTurnEngine->pending_actions;
             }
 
-            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(false));
+            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(false).ticks());
         } else if (pCastSpell->uSpellID == SPELL_WATER_TOWN_PORTAL) {
             int success_chance_percent = 10 * spell_level;
             bool castSuccessful = true;

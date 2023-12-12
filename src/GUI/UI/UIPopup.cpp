@@ -1196,9 +1196,10 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 15:  // Attack Bonus
         {
-            int meleerecov = pParty->activeCharacter().GetAttackRecoveryTime(false);
+            Duration meleerecov = pParty->activeCharacter().GetAttackRecoveryTime(false);
             // TODO(captainurist): fmt can throw
-            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
+            // TODO(captainurist): write it out in game seconds?
+            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov.ticks());
             description = fmt::format("{}\n\n{}", localization->getMeleeAttackDescription(), description);
             CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             break;
@@ -1216,8 +1217,8 @@ void CharacterUI_StatsTab_ShowHint() {
             std::string description;
             if (hasBow || hasBlaster) {
                 // Blaster takes precendence in the event both are equipped
-                int missRecov = pParty->activeCharacter().GetAttackRecoveryTime(!hasBlaster);
-                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov);
+                Duration missRecov = pParty->activeCharacter().GetAttackRecoveryTime(!hasBlaster);
+                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov.ticks());
             } else {
                 description = localization->GetString(LSTR_RECOVERY_TIME_NA);
             }

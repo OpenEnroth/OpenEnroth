@@ -1280,7 +1280,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     int v4;              // ebx@2
     MapId v5;     // eax@2
     LocationInfo *v6;  // esi@4
-    int v8;              // [sp+8h] [bp-4h]@6
+    Duration v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
@@ -1291,10 +1291,10 @@ void Actor::StealFrom(unsigned int uActorID) {
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
-        if (v8 < engine->config->gameplay.MinRecoveryMelee.value()) v8 = engine->config->gameplay.MinRecoveryMelee.value();
+        v8 = std::max(v8, Duration::fromTicks(engine->config->gameplay.MinRecoveryMelee.value()));
         if (!pParty->bTurnBasedModeOn)
             pPlayer->SetRecoveryTime(
-                (int)(debug_non_combat_recovery_mul * v8 * flt_debugrecmod3));
+                (int)(debug_non_combat_recovery_mul * v8.ticks() * flt_debugrecmod3));
         pTurnEngine->ApplyPlayerAction();
     }
 }

@@ -181,7 +181,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 if (pParty->activeCharacter().timeToRecovery == 0) {
                     if (!pParty->bTurnBasedModeOn) {
                         pParty->activeCharacter().SetRecoveryTime(
-                            debug_non_combat_recovery_mul * (double)pParty->activeCharacter().GetAttackRecoveryTime(false) * flt_debugrecmod3
+                            debug_non_combat_recovery_mul * (double)pParty->activeCharacter().GetAttackRecoveryTime(false).ticks() * flt_debugrecmod3
                         );
                     }
                     CastSpellInfoHelpers::cancelSpellCastInProgress();

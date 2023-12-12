@@ -1985,7 +1985,7 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 }
 
 //----- (0048E1B5) --------------------------------------------------------
-int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
+Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     const ItemGen *weapon = nullptr;
     Duration weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
     if (attackUsesBow) {
@@ -2098,7 +2098,7 @@ int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     if (recovery < minRecovery)
         recovery = minRecovery;
 
-    return recovery.ticks();
+    return recovery;
 }
 
 //----- new --------------------------------------------------------
@@ -7087,8 +7087,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     if (!pParty->bTurnBasedModeOn && melee_attack) {
         // wands, bows & lasers will add recovery while shooting spell effect
-        int recovery = character->GetAttackRecoveryTime(false);
-        character->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
+        Duration recovery = character->GetAttackRecoveryTime(false);
+        character->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery.ticks() * flt_debugrecmod3));
     }
 
     CharacterSkillType skill = CHARACTER_SKILL_STAFF;

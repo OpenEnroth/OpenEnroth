@@ -273,8 +273,8 @@ GAME_TEST(Issues, Issue1294_1389) {
     EXPECT_TRUE(windowTape.contains(WindowType::WINDOW_CharacterWindow_Inventory));
     EXPECT_EQ(windowTape.back(), WindowType::WINDOW_CharacterWindow_Stats);
     // Check min values are used
-    EXPECT_EQ(pParty->pCharacters[0].GetAttackRecoveryTime(false), engine->config->gameplay.MinRecoveryBlasters.value());
-    EXPECT_EQ(pParty->pCharacters[2].GetAttackRecoveryTime(true), engine->config->gameplay.MinRecoveryRanged.value());
+    EXPECT_EQ(pParty->pCharacters[0].GetAttackRecoveryTime(false), Duration::fromTicks(engine->config->gameplay.MinRecoveryBlasters.value()));
+    EXPECT_EQ(pParty->pCharacters[2].GetAttackRecoveryTime(true), Duration::fromTicks(engine->config->gameplay.MinRecoveryRanged.value()));
 }
 
 // 1300
