@@ -338,7 +338,7 @@ struct Party {
     // Keeps track of how many impulses have been applied to actors during armeggeddon
     // Stops actors being yeeted high in the air at high fps
     int armageddonForceCount{ 0 };
-    std::array<int, 4> pTurnBasedCharacterRecoveryTimes;
+    std::array<Duration, 4> pTurnBasedCharacterRecoveryTimes;
     IndexedArray<int, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> InTheShopFlags;
     int uFine;
     float TorchLightLastIntensity;

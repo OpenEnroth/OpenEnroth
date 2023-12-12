@@ -157,7 +157,7 @@ void Party::Zero() {
     pHireling2Name[0] = 0;
     armageddon_timer = Duration::zero();
     armageddonDamage = 0;
-    pTurnBasedCharacterRecoveryTimes.fill(0);
+    pTurnBasedCharacterRecoveryTimes.fill(Duration::zero());
     InTheShopFlags.fill(0);
     uFine = 0;
     TorchLightLastIntensity = 0.0f;

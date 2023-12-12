@@ -130,7 +130,7 @@ void stru262_TurnBased::Start() {
             element.uPackedID = Pid(OBJECT_Character, pl_id);
             element.AI_action_type = TE_AI_PURSUE;
             element.uActionLength = Duration::zero();
-            pParty->pTurnBasedCharacterRecoveryTimes[this->pQueue.size() - 1] = 0;
+            pParty->pTurnBasedCharacterRecoveryTimes[this->pQueue.size() - 1] = Duration::zero();
         }
     }
 
@@ -482,26 +482,25 @@ bool stru262_TurnBased::StepTurnQueue() {
 //----- (00406457) --------------------------------------------------------
 void stru262_TurnBased::_406457(int a2) {
     signed int v4;  // ecx@2
-    signed int v6;  // eax@2
+    Duration v6;  // eax@2
     int i;
-    v6 = 0;
     if (pQueue[a2].uPackedID.type() == OBJECT_Character) {
         v4 = pQueue[a2].uPackedID.id();
         if (pParty->pTurnBasedCharacterRecoveryTimes[v4]) {
             v6 = pParty->pTurnBasedCharacterRecoveryTimes[v4];
-            pParty->pTurnBasedCharacterRecoveryTimes[v4] = 0;
+            pParty->pTurnBasedCharacterRecoveryTimes[v4] = Duration::zero();
         } else {
-            v6 = pParty->pCharacters[v4].GetAttackRecoveryTime(false).ticks();
+            v6 = pParty->pCharacters[v4].GetAttackRecoveryTime(false);
         }
-        if (v6 < 30) v6 = 30;
+        if (v6 < 30_ticks) v6 = 30_ticks;
     } else {
         v6 =
-            pMonsterStats
+            Duration::fromTicks(pMonsterStats
             ->infos[pActors[pQueue[a2].uPackedID.id()].monsterInfo.id]
-            .recoveryTime;
+            .recoveryTime);
     }
 
-    pQueue[a2].actor_initiative = v6;
+    pQueue[a2].actor_initiative = v6.ticks();
     SortTurnQueue();
     if (pQueue[0].uPackedID.type() == OBJECT_Character)
         pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);

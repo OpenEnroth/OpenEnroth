@@ -3563,7 +3563,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
         //if (v73) {
             if (pParty->bTurnBasedModeOn) {
-                pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
+                pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100_ticks;
                 this->SetRecoveryTime(100_ticks);
                 pTurnEngine->ApplyPlayerAction();
             } else {
@@ -3836,7 +3836,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
         if (pParty->bTurnBasedModeOn) {
-            pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
+            pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100_ticks;
             this->SetRecoveryTime(100_ticks);
             pTurnEngine->ApplyPlayerAction();
         } else {

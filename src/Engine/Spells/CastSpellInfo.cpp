@@ -97,7 +97,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
     Character *pPlayer = &pParty->pCharacters[pCastSpell->casterCharacterIndex];
 
     if (pParty->bTurnBasedModeOn) {
-        pParty->pTurnBasedCharacterRecoveryTimes[pCastSpell->casterCharacterIndex] = recoveryTime.ticks();
+        pParty->pTurnBasedCharacterRecoveryTimes[pCastSpell->casterCharacterIndex] = recoveryTime;
 
         pPlayer->SetRecoveryTime(recoveryTime);
 

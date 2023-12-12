@@ -131,6 +131,14 @@ static void reconstruct(int64_t src, Time *dst) {
     *dst = Time::fromTicks(src);
 }
 
+static void snapshot(const Duration &src, int32_t *dst) {
+    *dst = src.ticks();
+}
+
+static void reconstruct(int32_t src, Duration *dst) {
+    *dst = Duration::fromTicks(src);
+}
+
 static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
     *dst = src.joined();
 }
