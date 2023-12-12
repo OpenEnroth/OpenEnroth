@@ -1987,7 +1987,7 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 //----- (0048E1B5) --------------------------------------------------------
 int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     const ItemGen *weapon = nullptr;
-    int weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
+    Duration weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
     if (attackUsesBow) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
         weapon = GetBowItem();
@@ -1997,19 +1997,19 @@ int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[spellForWand(weapon->uItemID)].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT].ticks();
+            weapon_recovery = pSpellDatas[spellForWand(weapon->uItemID)].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT];
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
     }
 
-    int shield_recovery = 0;
+    Duration shield_recovery;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
         if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
             CharacterSkillType skill_type = GetOffHandItem()->GetPlayerSkillType();
-            int shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
+            Duration shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
-            shield_recovery = (shield_base_recovery * multiplier);
+            shield_recovery = shield_base_recovery * multiplier;
         } else {
             if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery) {
                 weapon = GetOffHandItem();
@@ -2018,10 +2018,10 @@ int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         }
     }
 
-    int armour_recovery = 0;
+    Duration armour_recovery;
     if (HasItemEquipped(ITEM_SLOT_ARMOUR)) {
         CharacterSkillType armour_skill_type = GetArmorItem()->GetPlayerSkillType();
-        int base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
+        Duration base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
         if (armour_skill_type == CHARACTER_SKILL_LEATHER) {
@@ -2038,9 +2038,9 @@ int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         armour_recovery = base_armour_recovery * multiplier;
     }
 
-    int player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed());
+    Duration player_speed_recovery_reduction = Duration::fromTicks(GetParameterBonus(GetActualSpeed()));
 
-    int sword_axe_bow_recovery_reduction = 0;
+    Duration sword_axe_bow_recovery_reduction;
     if (weapon != nullptr) {
         CombinedSkillValue weaponSkill = getActualSkillValue(weapon->GetPlayerSkillType());
         if (weaponSkill.level() > 0 &&
@@ -2049,54 +2049,56 @@ int Character::GetAttackRecoveryTime(bool attackUsesBow) const {
              weapon->GetPlayerSkillType() == CHARACTER_SKILL_BOW)) {
             // Expert Sword, Axe & Bow reduce recovery
             if (weaponSkill.mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
-                sword_axe_bow_recovery_reduction = weaponSkill.level();
+                sword_axe_bow_recovery_reduction = Duration::fromTicks(weaponSkill.level());
         }
     }
 
     bool shooting_laser = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
     assert(!shooting_laser || !attackUsesBow); // For blasters we expect attackUsesBow == false.
 
-    int armsmaster_recovery_reduction = 0;
+    Duration armsmaster_recovery_reduction;
     if (!attackUsesBow && !shooting_laser) {
         CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
-            armsmaster_recovery_reduction = armsmasterSkill.level();
+            armsmaster_recovery_reduction = Duration::fromTicks(armsmasterSkill.level());
             if (armsmasterSkill.mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER)
                 armsmaster_recovery_reduction *= 2;
         }
     }
 
-    int hasteRecoveryReduction = 0;
-    if (pCharacterBuffs[CHARACTER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
-    if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
+    Duration hasteRecoveryReduction;
+    if (pCharacterBuffs[CHARACTER_BUFF_HASTE].Active())
+        hasteRecoveryReduction = 25_ticks;
+    if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active())
+        hasteRecoveryReduction = 25_ticks;
 
-    int weapon_enchantment_recovery_reduction = 0;
+    Duration weapon_enchantment_recovery_reduction;
     if (weapon != nullptr) {
         if (weapon->special_enchantment == ITEM_ENCHANTMENT_SWIFT ||
             weapon->special_enchantment == ITEM_ENCHANTMENT_OF_DARKNESS ||
             weapon->uItemID == ITEM_ARTIFACT_PUCK)
-            weapon_enchantment_recovery_reduction = 20;
+            weapon_enchantment_recovery_reduction = 20_ticks;
     }
 
-    int recovery = weapon_recovery + armour_recovery + shield_recovery -
+    Duration recovery = weapon_recovery + armour_recovery + shield_recovery -
                    armsmaster_recovery_reduction -
                    weapon_enchantment_recovery_reduction -
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
-    int minRecovery;
+    Duration minRecovery;
     if (shooting_laser) {
-        minRecovery = engine->config->gameplay.MinRecoveryBlasters.value();
+        minRecovery = Duration::fromTicks(engine->config->gameplay.MinRecoveryBlasters.value());
     } else if (attackUsesBow) {
-        minRecovery = engine->config->gameplay.MinRecoveryRanged.value();
+        minRecovery = Duration::fromTicks(engine->config->gameplay.MinRecoveryRanged.value());
     } else {
-        minRecovery = engine->config->gameplay.MinRecoveryMelee.value();
+        minRecovery = Duration::fromTicks(engine->config->gameplay.MinRecoveryMelee.value());
     }
 
     if (recovery < minRecovery)
         recovery = minRecovery;
 
-    return recovery;
+    return recovery.ticks();
 }
 
 //----- new --------------------------------------------------------

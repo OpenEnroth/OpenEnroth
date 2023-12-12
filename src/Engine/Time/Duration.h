@@ -142,3 +142,7 @@ class Duration {
  private:
     int64_t value = 0;
 };
+
+constexpr Duration operator""_ticks(unsigned long long ticks) {
+    return Duration::fromTicks(ticks);
+}
