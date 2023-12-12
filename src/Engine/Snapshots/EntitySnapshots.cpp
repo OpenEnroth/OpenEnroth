@@ -684,16 +684,6 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->level = src.uLevel;
     dst->levelModifier = src.sLevelModifier;
     dst->ageModifier = src.sAgeModifier;
-    dst->field_E0 = src.field_E0;
-    dst->field_E4 = src.field_E4;
-    dst->field_E8 = src.field_E8;
-    dst->field_EC = src.field_EC;
-    dst->field_F0 = src.field_F0;
-    dst->field_F4 = src.field_F4;
-    dst->field_F8 = src.field_F8;
-    dst->field_FC = src.field_FC;
-    dst->field_100 = src.field_100;
-    dst->field_104 = src.field_104;
 
     snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
@@ -934,16 +924,6 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uLevel = src.level;
     dst->sLevelModifier = src.levelModifier;
     dst->sAgeModifier = src.ageModifier;
-    dst->field_E0 = src.field_E0;
-    dst->field_E4 = src.field_E4;
-    dst->field_E8 = src.field_E8;
-    dst->field_EC = src.field_EC;
-    dst->field_F0 = src.field_F0;
-    dst->field_F4 = src.field_F4;
-    dst->field_F8 = src.field_F8;
-    dst->field_FC = src.field_FC;
-    dst->field_100 = src.field_100;
-    dst->field_104 = src.field_104;
 
     reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);

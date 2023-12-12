@@ -3456,15 +3456,6 @@ void Character::resetTempBonuses() {
     this->uPersonalityBonus = 0;
     this->uIntelligenceBonus = 0;
     this->uMightBonus = 0;
-    this->field_100 = 0;
-    this->field_FC = 0;
-    this->field_F8 = 0;
-    this->field_F4 = 0;
-    this->field_F0 = 0;
-    this->field_EC = 0;
-    this->field_E8 = 0;
-    this->field_E4 = 0;
-    this->field_E0 = 0;
     this->sResFireBonus = 0;
     this->sResAirBonus = 0;
     this->sResWaterBonus = 0;
@@ -7437,17 +7428,6 @@ Character::Character() {
     uNumFireSpikeCasts = 0;
 
     _characterEventBits.reset();
-
-    field_E0 = 0;
-    field_E4 = 0;
-    field_E8 = 0;
-    field_EC = 0;
-    field_F0 = 0;
-    field_F4 = 0;
-    field_F8 = 0;
-    field_FC = 0;
-    field_100 = 0;
-    field_104 = 0;
 
     _expression21_animtime = Duration::zero();
     _expression21_frameset = 0;
