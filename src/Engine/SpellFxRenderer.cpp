@@ -287,7 +287,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.r = 0.0;
         local_0.g = 0.0;
         local_0.b = 0.0;
-        local_0.timeToLive = vrng->random(0x40) + 96; // was rand() & 0x40
+        local_0.timeToLive = Duration::fromTicks(vrng->random(0x40) + 96); // was rand() & 0x40
         local_0.texture = texture;
         local_0.particle_size = 1.0f;
         particle_engine->AddParticle(&local_0);
@@ -317,7 +317,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.particle_size = 1.0f;
-        local_0.timeToLive = vrng->random(0x80) + 128;
+        local_0.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128);
         local_0.texture = texture;
         particle_engine->AddParticle(&local_0);
         local_0.x = (float)a2->vPosition.x - 4.0f;
@@ -340,7 +340,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     local_0.uDiffuse = uDiffuse;
     local_0.z = v4;
     v5 = 10;
-    local_0.timeToLive = vrng->random(0x80) + 128;
+    local_0.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128);
     local_0.texture = texture;
     local_0.particle_size = 1.0f;
     do {
@@ -353,7 +353,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
 }
 
 void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
-    double v3 = (double)a2->uSpriteFrameID / (double)a2->GetLifetime();
+    double v3 = (double)a2->uSpriteFrameID.ticks() / (double)a2->GetLifetime().ticks();
     double v4;
     if (v3 >= 0.75)
         v4 = (1.0 - v3) * 4.0;
@@ -366,7 +366,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
     local_0.x = (float)a2->vPosition.x;
     local_0.y = (float)a2->vPosition.y;
     local_0.z = (float)a2->vPosition.z;
-    local_0.timeToLive = vrng->random(0x80) + 128;
+    local_0.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128);
     local_0.texture = this->effpar01;
     local_0.particle_size = 1.0;
 
@@ -386,7 +386,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
 }
 
 void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
-    double v4 = (double)a1->uSpriteFrameID / (double)a1->GetLifetime();
+    double v4 = (double)a1->uSpriteFrameID.ticks() / (double)a1->GetLifetime().ticks();
     double v5;
     if (v4 >= 0.75) {
         v5 = v4 * 4.0;
@@ -411,7 +411,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.z = (float)a1->vPosition.z;
     Dst.texture = a1->getSpriteFrame()->hw_sprites[0]->texture;
     Dst.particle_size = 1.0;
-    Dst.timeToLive = vrng->random(0x80) + 128;
+    Dst.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128);
     for (int i = 0; i < 10; i++) {
         Dst.r = (float) vrng->random(0x200) - 255.0f;
         Dst.g = (float) vrng->random(0x200) - 255.0f;
@@ -451,7 +451,7 @@ void SpellFxRenderer::
     local_0.z = (float)(v5 + 32);
     local_0.particle_size = 1.0;
     v7 = 0.0 * a4;
-    local_0.timeToLive = vrng->random(0x80) + 128;
+    local_0.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128);
     local_0.texture = texture;
     a1a = v7;
     local_0.r = v7;
@@ -509,7 +509,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.b = 0.0f;
 
         local_0.particle_size = 3.0;
-        local_0.timeToLive = vrng->random(0x40) + 64;
+        local_0.timeToLive = Duration::fromTicks(vrng->random(0x40) + 64);
         local_0.texture = a2->getSpriteFrame()->hw_sprites[0]->texture;
         local_0.paletteID = a2->getSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
@@ -517,7 +517,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
-        local_0.timeToLive = vrng->random(0x40) + 64;
+        local_0.timeToLive = Duration::fromTicks(vrng->random(0x40) + 64);
         particle_engine->AddParticle(&local_0);
         v6->flt_0_x = (float)a2->vPosition.x;
         v6->flt_4_y = (float)a2->vPosition.y;
@@ -536,7 +536,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.r = 0.0f;
         local_0.g = 0.0f;
         local_0.b = 0.0f;
-        local_0.timeToLive = vrng->random(0x40) + 64;
+        local_0.timeToLive = Duration::fromTicks(vrng->random(0x40) + 64);
         local_0.texture = a2->getSpriteFrame()->hw_sprites[0]->texture;
         local_0.paletteID = a2->getSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
@@ -564,7 +564,7 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiff
 
     memset(&particle, 0, sizeof(Particle_sw));
     particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-    particle.timeToLive = vrng->random(128) + 128;
+    particle.timeToLive = Duration::fromTicks(vrng->random(128) + 128);
     particle.texture = this->effpar02;
     particle.particle_size = 1.0;
 
@@ -595,7 +595,7 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     local_0.uDiffuse = colorTable.MediumGrey;
     local_0.particle_size = 1.0;
     v6 = 8;
-    local_0.timeToLive = vrng->random(0x80) + 128;
+    local_0.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128);
 
     v12 = (float)x;
     local_0.texture = this->effpar01;
@@ -1188,7 +1188,7 @@ void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
 }
 
 //----- (004A8BDF) --------------------------------------------------------
-void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, unsigned int uFadeTime) {
+void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, Duration uFadeTime) {
     this->uFadeTime = uFadeTime;
     this->uFadeLength = uFadeTime;
     this->uFadeColor = uDiffuseColor;
@@ -1199,7 +1199,7 @@ void SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_
     uAnimLength =
         pSpriteFrameTable
                 ->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")]
-                .uAnimLength.ticks();
+                .uAnimLength;
 }
 
 //----- (004A8C27) --------------------------------------------------------
@@ -1218,22 +1218,22 @@ void SpellFxRenderer::RenderSpecialEffects() {
     }
 
     field_204 = 0;
-    if (uFadeTime > 0) {
-        v4 = (double)uFadeTime / (double)uFadeLength;
+    if (uFadeTime > Duration::zero()) {
+        v4 = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
         v5 = 1.0 - v4 * v4;
         // v6 = v5;
         if (v5 > 0.9) v5 = 1.0 - (v5 - 0.9) * 10.0;
         v7 = v5;
         render->ScreenFade(uFadeColor, v7);
-        uFadeTime -= pEventTimer->uTimeElapsed;
+        uFadeTime -= Duration::fromTicks(pEventTimer->uTimeElapsed);
     }
 
-    if (uAnimLength > 0) {
+    if (uAnimLength > Duration::zero()) {
         // prismatic light
-        v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - Duration::fromTicks(uAnimLength);
+        v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
         int pal = v10->GetPaletteIndex();
-        uAnimLength -= pEventTimer->uTimeElapsed;
+        uAnimLength -= Duration::fromTicks(pEventTimer->uTimeElapsed);
 
         render->DrawSpecialEffectsQuad(v10->hw_sprites[0]->texture, pal);
     }

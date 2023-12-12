@@ -1188,7 +1188,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         particle.g = 0.0;
         particle.b = 0.0;
         particle.particle_size = 1.0;
-        particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
+        particle.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128); // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar01;
         particle_engine->AddParticle(&particle);
         return;
@@ -1982,7 +1982,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i p
     a1.uFacing = facing;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = 0;
+    a1.uSpriteFrameID = Duration::zero();
     return a1.Create(0, 0, 0, 0);
 }
 
@@ -2027,7 +2027,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
-    a1a.uSpriteFrameID = 0;
+    a1a.uSpriteFrameID = Duration::zero();
     a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
     a1a.Create(0, 0, 0, 0);
 }

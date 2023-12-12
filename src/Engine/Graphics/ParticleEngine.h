@@ -35,7 +35,7 @@ struct Particle_sw {
     float g{};
     float b{};
     Color uDiffuse{};
-    int timeToLive{};
+    Duration timeToLive{};
     GraphicsImage *texture{ nullptr };
     int paletteID{ 0 };
     float particle_size{};
@@ -54,7 +54,7 @@ struct Particle {
     float shift_y = 0;
     float shift_z = 0;
     Color uParticleColor;
-    int timeToLive = 0;
+    Duration timeToLive;
     GraphicsImage *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
     int paletteID = 0;
@@ -137,7 +137,7 @@ class ParticleEngine {
     float field_E420; // unused
     int uStartParticle;
     int uEndParticle;
-    int uTimeElapsed;
+    Duration uTimeElapsed;
 };
 
 struct TrailParticle {

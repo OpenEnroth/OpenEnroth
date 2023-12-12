@@ -54,7 +54,7 @@ void ParticleEngine::ResetParticles() {
     pParticles.fill({});
     uStartParticle = PARTICLES_ARRAY_SIZE;
     uEndParticle = 0;
-    uTimeElapsed = 0;
+    uTimeElapsed = Duration::zero();
 }
 
 void ParticleEngine::AddParticle(Particle_sw *particle) {
@@ -104,7 +104,7 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
 }
 
 void ParticleEngine::Draw() {
-    uTimeElapsed += pEventTimer->uTimeElapsed;
+    uTimeElapsed += Duration::fromTicks(pEventTimer->uTimeElapsed);
     pLines.uNumLines = 0;
 
     DrawParticles_BLV();
@@ -116,9 +116,11 @@ void ParticleEngine::Draw() {
 void ParticleEngine::UpdateParticles() {
     unsigned uCurrentEnd = 0;
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
-    int time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : 0;
 
-    if (time == 0) {
+    // TODO(captainurist): checking pMiscTimer->bPaused, then using pEventTimer->uTimeElapsed?
+    Duration time = pMiscTimer->bPaused == 0 ? Duration::fromTicks(pEventTimer->uTimeElapsed) : Duration::zero();
+
+    if (!time) {
         return;
     }
 
@@ -130,7 +132,7 @@ void ParticleEngine::UpdateParticles() {
         }
 
         if (p->timeToLive <= time) {
-            p->timeToLive = 0;
+            p->timeToLive = Duration::zero();
             p->type = ParticleType_Invalid;
             continue;
         }
@@ -146,28 +148,28 @@ void ParticleEngine::UpdateParticles() {
 
         // Dropping particles drop downward with acceleration
         if (p->type & ParticleType_Dropping) {
-            p->shift_z -= time * 5.0;
+            p->shift_z -= time.ticks() * 5.0;
         }
 
         // Ascending particles slowly float upward
         if (p->type & ParticleType_Ascending) {
-            p->x += (vrng->random(5) - 2) * time / 16.0;
-            p->y += (vrng->random(5) - 2) * time / 16.0;
-            p->z += (vrng->random(5) + 4) * time / 16.0;
+            p->x += (vrng->random(5) - 2) * time.ticks() / 16.0;
+            p->y += (vrng->random(5) - 2) * time.ticks() / 16.0;
+            p->z += (vrng->random(5) + 4) * time.ticks() / 16.0;
         }
 
         // v9 = (signed int)(time * p->rotation_speed) / 16;
 
         // Particle shift with time
-        double shift = time / 128.0f;
+        double shift = time.ticks() / 128.0f;
         p->x += shift * p->shift_x;
         p->y += shift * p->shift_y;
         p->z += shift * p->shift_z;
 
-        p->angle += time * p->rotation_speed / 16;
+        p->angle += time.ticks() * p->rotation_speed / 16;
 
         // With time particles become more transparent
-        int dissipate_value = 2 * p->timeToLive;
+        int dissipate_value = 2 * p->timeToLive.ticks();
         if (dissipate_value >= 255) {
             dissipate_value = 255;
         }

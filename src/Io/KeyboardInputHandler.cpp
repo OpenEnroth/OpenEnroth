@@ -87,9 +87,9 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             // delay press
             if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
                 resettimer = false;
-                if (this->keydelaytimer == 0) {
+                if (!this->keydelaytimer) {
                     isTriggered = true;
-                    this->keydelaytimer++;
+                    this->keydelaytimer = Duration::fromTicks(1);
                 }
                 // big delay after first press then small delay
                 if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
@@ -330,10 +330,10 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
     }
 
     if (resettimer == true) {
-        this->keydelaytimer = 0;
+        this->keydelaytimer = Duration::zero();
     } else {
         // use timer so pacing is consistent across framerates
-        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->uTimeElapsed;
+        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += Duration::fromTicks(pEventTimer->uTimeElapsed);
     }
 }
 

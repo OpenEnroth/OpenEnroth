@@ -567,7 +567,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
             spell_sprites.uSectorID = pIndoor->GetSector(from);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
-            spell_sprites.uSpriteFrameID = 0;
+            spell_sprites.uSpriteFrameID = Duration::zero();
             spell_sprites.spell_caster_pid = Pid(OBJECT_Item, 1000); // 8000 | OBJECT_Item;
             spell_sprites.uSoundID = 0;
             break;

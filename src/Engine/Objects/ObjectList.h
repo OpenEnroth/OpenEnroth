@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+#include "Engine/Time/Duration.h"
+
 #include "Library/Color/Color.h"
 
 #include "Utility/Memory/Blob.h"
@@ -38,7 +40,7 @@ struct ObjectDesc {
     int16_t uHeight;
     ObjectDescFlags uFlags;
     uint16_t uSpriteID;
-    int16_t uLifetime;
+    Duration uLifetime;
     Color uParticleTrailColor;
     int16_t uSpeed;
 };

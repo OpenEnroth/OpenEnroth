@@ -121,21 +121,21 @@ static void createSpriteTrailParticle(Vec3i pos, ObjectDescFlags flags) {
     if (flags & OBJECT_DESC_TRIAL_FIRE) {
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         particle.uDiffuse = colorTable.OrangeyRed;
-        particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
+        particle.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128); // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar01;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     } else if (flags & OBJECT_DESC_TRIAL_LINE) {
         particle.type = ParticleType_Line;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
-        particle.timeToLive = 64;
+        particle.timeToLive = Duration::fromTicks(64);
         particle.texture = nullptr;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     } else if (flags & OBJECT_DESC_TRIAL_PARTICLE) {
         particle.type = ParticleType_Bitmap | ParticleType_Ascending;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
-        particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
+        particle.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128); // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar03;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
@@ -578,14 +578,14 @@ void SpriteObject::explosionTraps() {
     }
 }
 
-unsigned int SpriteObject::GetLifetime() {
+Duration SpriteObject::GetLifetime() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
     return pObjectDesc->uLifetime;
 }
 
 SpriteFrame *SpriteObject::getSpriteFrame() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, Duration::fromTicks(uSpriteFrameID));
+    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, uSpriteFrameID);
 }
 
 bool SpriteObject::IsUnpickable() {
@@ -1309,12 +1309,12 @@ void UpdateObjects() {
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                pSpriteObjects[i].uSpriteFrameID += Duration::fromTicks(pEventTimer->uTimeElapsed);
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                     continue;
                 }
-                if (pSpriteObjects[i].uSpriteFrameID >= 0) {
-                    int lifetime = object->uLifetime;
+                if (pSpriteObjects[i].uSpriteFrameID >= Duration::zero()) {
+                    Duration lifetime = object->uLifetime;
                     if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
                         lifetime = pSpriteObjects[i].tempLifetime;
                     }
@@ -1326,10 +1326,10 @@ void UpdateObjects() {
                 continue;
             }
             if (pSpriteObjects[i].uObjectDescID) {
-                int lifetime = 0;
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                Duration lifetime;
+                pSpriteObjects[i].uSpriteFrameID += Duration::fromTicks(pEventTimer->uTimeElapsed);
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
-                    if (pSpriteObjects[i].uSpriteFrameID < 0) {
+                    if (pSpriteObjects[i].uSpriteFrameID < Duration::zero()) {
                         SpriteObject::OnInteraction(i);
                         continue;
                     }

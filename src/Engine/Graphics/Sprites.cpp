@@ -179,9 +179,6 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     if (~v4->uFlags & 1 || !v4->uAnimLength)
         return v4;
 
-    // TODO(captainurist): Retrace & drop.
-    uTime = Duration::fromTicks(uTime.ticks() & ~7);
-
     // uAnimLength / uAnimTime = actual number of frames in sprite
     for (Duration t = uTime % v4->uAnimLength; t >= v4->uAnimTime; ++v4)
         t -= v4->uAnimTime;
@@ -194,20 +191,6 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     }
 
     return v4;
-
-    /*for (v4; v4->uAnimTime <= t; ++v4)
-
-      v6 = (uTime / 8) % v4->uAnimLength;
-      //v7 = uSpriteID;
-      for ( i = (char *)&v4->uAnimTime; ; i += 60 )
-      {
-        v9 = *(short *)i;
-        if ( v6 <= v9 )
-          break;
-        v6 -= v9;
-        ++v7;
-      }
-      return &pSpriteSFrames[v7];*/
 }
 
 //----- (0044D91F) --------------------------------------------------------
@@ -215,9 +198,6 @@ SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     SpriteFrame *sprite = &pSpriteSFrames[uSpriteID];
     if (!(sprite->uFlags & 1) || !sprite->uAnimLength)
         return sprite;
-
-    // TODO(captainurist): Retrace & drop.
-    time = Duration::fromTicks(time.ticks() & ~7);
 
     for (Duration t = sprite->uAnimLength - time % sprite->uAnimLength; t >= sprite->uAnimTime; ++sprite)
         t -= sprite->uAnimTime;

@@ -1043,10 +1043,10 @@ void snapshot(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.GetAnimationName(), &dst->animationName);
-    dst->animLength = src.GetAnimLength().ticks();
+    dst->animLength = src.GetAnimLength().ticks() / 8;
 
     snapshot(src.pTextureName, &dst->textureName);
-    dst->animTime = src.GetAnimTime();
+    dst->animTime = src.GetAnimTime().ticks() / 8;
     dst->flags = src.uFlags;
 }
 
@@ -1057,7 +1057,7 @@ void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
     dst->SetAnimLength(Duration::fromTicks(8 * src.animLength));
 
     reconstruct(src.textureName, &dst->pTextureName);
-    dst->SetAnimTime(src.animTime);
+    dst->SetAnimTime(Duration::fromTicks(8 * src.animTime));
     dst->uFlags = src.flags;
 }
 
@@ -1480,8 +1480,8 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uSectorID = src.uSectorID;
-    dst->uSpriteFrameID = src.uSpriteFrameID;
-    dst->tempLifetime = src.tempLifetime;
+    dst->uSpriteFrameID = src.uSpriteFrameID.ticks();
+    dst->tempLifetime = src.tempLifetime.ticks();
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     snapshot(src.containing_item, &dst->containing_item);
     dst->uSpellID = std::to_underlying(src.uSpellID);
@@ -1504,8 +1504,8 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = SpriteAttributes(src.uAttributes);
     dst->uSectorID = src.uSectorID;
-    dst->uSpriteFrameID = src.uSpriteFrameID;
-    dst->tempLifetime = src.tempLifetime;
+    dst->uSpriteFrameID = Duration::fromTicks(src.uSpriteFrameID);
+    dst->tempLifetime = Duration::fromTicks(src.tempLifetime);
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     reconstruct(src.containing_item, &dst->containing_item);
     dst->uSpellID = static_cast<SpellId>(src.uSpellID);
@@ -1652,7 +1652,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
-    dst->uLifetime = src.uLifetime;
+    dst->uLifetime = Duration::fromTicks(src.uLifetime);
     // Note: src.uParticleTrailColor16 is ignored.
     dst->uParticleTrailColor = Color(src.uParticleTrailColorR, src.uParticleTrailColorG, src.uParticleTrailColorB);
     dst->uSpeed = src.uSpeed;
@@ -1665,7 +1665,7 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uHeight = src.uHeight;
     dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
-    dst->uLifetime = src.uLifetime;
+    dst->uLifetime = Duration::fromTicks(src.uLifetime);
     // Note: src.uParticleTrailColor32 is ignored.
     dst->uParticleTrailColor = Color(src.uParticleTrailColorR, src.uParticleTrailColorG, src.uParticleTrailColorB);
     dst->uSpeed = src.uSpeed;

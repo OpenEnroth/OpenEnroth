@@ -50,7 +50,7 @@ struct stru262_TurnBased {
     inline stru262_TurnBased() {
         turns_count = 0;
         turn_stage = TE_NONE;
-        ai_turn_timer = 0;
+        ai_turn_timer = Duration::zero();
         turn_initiative = 0;
         uActionPointsLeft = 0;
         flags = 0;
@@ -78,7 +78,7 @@ struct stru262_TurnBased {
 
     int turns_count;
     TurnEngineStep turn_stage;  // if = 2 - action
-    int ai_turn_timer;
+    Duration ai_turn_timer;
     int turn_initiative;
     int uActionPointsLeft;  // 14
     TurnEngineFlags flags;

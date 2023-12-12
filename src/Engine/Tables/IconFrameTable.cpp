@@ -36,19 +36,14 @@ unsigned int IconFrameTable::FindIcon(const std::string &pIconName) {
 
 //----- (00494F70) --------------------------------------------------------
 Icon *IconFrameTable::GetFrame(unsigned int uIconID, Duration frame_time) {
-    //    int v6; // edx@3
-    int i;
-
     if (this->pIcons[uIconID].uFlags & 1 && this->pIcons[uIconID].GetAnimLength()) {
         Duration t = frame_time;
 
-        t = (t /*/ 8*/) %
-            this->pIcons[uIconID].GetAnimLength();
+        t = t % this->pIcons[uIconID].GetAnimLength();
 
-        // TODO(captainurist): #time get rid of yet another way to count time. / 8 should go.
-        int tt = t.ticks() / 8;
-        for (i = uIconID; tt >= this->pIcons[i].GetAnimTime(); i++)
-            tt -= this->pIcons[i].GetAnimTime();
+        int i;
+        for (i = uIconID; t >= this->pIcons[i].GetAnimTime(); i++)
+            t -= this->pIcons[i].GetAnimTime();
         return &this->pIcons[i];
     } else {
         return &this->pIcons[uIconID];
