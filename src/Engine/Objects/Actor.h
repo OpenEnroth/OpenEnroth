@@ -87,7 +87,7 @@ class Actor {
     static void _SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                               bool can_target_party);
     static void AI_Pursue3(unsigned int uActorID, Pid a2,
-                           signed int uActionLength, struct AIDirection *a4);
+                           Duration uActionLength, struct AIDirection *a4);
     static void AI_Pursue2(unsigned int uActorID, Pid a2,
                            signed int uActionLength, struct AIDirection *pDir,
                            int a5);

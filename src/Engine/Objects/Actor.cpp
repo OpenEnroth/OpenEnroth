@@ -2027,7 +2027,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
 
 //----- (00402686) --------------------------------------------------------
 void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
-                       signed int uActionLength, AIDirection *a4) {
+                       Duration uActionLength, AIDirection *a4) {
     int v5;                // eax@1
     Actor *v6;             // ebx@1
     Pid v7;                // ecx@1
@@ -2052,15 +2052,15 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         v20 = &a3;
     }
     if (supertypeForMonsterId(v6->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
-        return Actor::AI_StandOrBored(uActorID, Pid::character(0), Duration::fromTicks(uActionLength), a4);
+        if (!uActionLength) uActionLength = 256_ticks;
+        return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
     if (a4->uDistance < 307.2) {
-        if (!uActionLength) uActionLength = 256;
-        return Actor::AI_StandOrBored(uActorID, a2, Duration::fromTicks(uActionLength), a4);
+        if (!uActionLength) uActionLength = 256_ticks;
+        return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
     if (uActionLength) {
-        v6->currentActionLength = Duration::fromTicks(uActionLength + grng->random(uActionLength));
+        v6->currentActionLength = uActionLength + Duration::fromTicks(grng->random(uActionLength.ticks()));
     } else {
         v12 = v6->moveSpeed;
         if (v12)
@@ -2782,7 +2782,7 @@ void Actor::UpdateActorAI() {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {  // monsters
-                                Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
+                                Actor::AI_Pursue3(actor_id, target_pid, 0_ticks, pDir);
                             } else {
                                 v70 = (radiusMultiplier * 307.2);
                                 // monsters
@@ -2820,7 +2820,7 @@ void Actor::UpdateActorAI() {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {
-                                Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
+                                Actor::AI_Pursue3(actor_id, target_pid, 256_ticks, pDir);
                             } else {
                                 v70 = (radiusMultiplier * 307.2);
                                 Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
@@ -2856,7 +2856,7 @@ void Actor::UpdateActorAI() {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                 } else if (v81 >= 1024) {
-                    Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
+                    Actor::AI_Pursue3(actor_id, target_pid, 256_ticks, pDir);
                 } else {
                     v70 = (radiusMultiplier * 307.2);
                     Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
