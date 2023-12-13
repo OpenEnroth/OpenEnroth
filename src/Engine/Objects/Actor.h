@@ -124,8 +124,7 @@ class Actor {
                          Duration uActionLength, struct AIDirection *a4);
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                                 Duration uActionLength, struct AIDirection *a4);
-    static void AI_FaceObject(unsigned int uActorID, Pid uObjID,
-                              int UNUSED, struct AIDirection *Dir_In);
+    static void AI_FaceObject(unsigned int uActorID, Pid uObjID, struct AIDirection *Dir_In);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
                                  struct AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);

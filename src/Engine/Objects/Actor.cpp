@@ -986,7 +986,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
 }
 
 //----- (00404030) --------------------------------------------------------
-void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID, int UNUSED,
+void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID,
                           AIDirection *Dir_In) {
     AIDirection *Dir_Out;
     AIDirection Dir_Ret;

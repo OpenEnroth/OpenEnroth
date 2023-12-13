@@ -252,7 +252,7 @@ bool CanInteractWithActor(unsigned int id) {
 void InteractWithActor(unsigned int id) {
     assert(CanInteractWithActor(id));
 
-    Actor::AI_FaceObject(id, Pid::character(0), 0, 0);
+    Actor::AI_FaceObject(id, Pid::character(0), 0);
     if (pActors[id].npcId) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_StartNPCDialogue, id, 0);
     } else {
