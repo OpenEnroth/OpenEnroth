@@ -1129,7 +1129,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         pActors[uActorID].speed.x = 0;
         pActors[uActorID].UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, grng->random(2), 64, arg0);
+        Actor::AI_Pursue1(uActorID, sTargetPid, grng->random(2), 64_ticks, arg0);
     }
 }
 
@@ -1368,7 +1368,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
             v3->UpdateAnimation();
         }
     } else {
-        Actor::AI_Pursue1(uActorID, a2, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, a2, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1444,7 +1444,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         }
     } else {
         // TODO(pskelton): Consider adding potshots if no LOS
-        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1509,7 +1509,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v3->speed.x = 0;
         v3->UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1580,7 +1580,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->speed.x = 0;
         v3->UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1874,7 +1874,7 @@ void Actor::playSound(unsigned int uActorID, ActorSound uSoundID) {
 
 //----- (00402AD7) --------------------------------------------------------
 void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
-                       signed int uActionLength, AIDirection *pDir) {
+                       Duration uActionLength, AIDirection *pDir) {
     Actor *v7;         // ebx@1
     Pid v8;   // ecx@1
     AIDirection *v10;  // esi@6
@@ -1898,17 +1898,17 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
         v10 = pDir;
     }
     if (supertypeForMonsterId(v7->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActorID, Pid::character(0), Duration::fromTicks(uActionLength), v10);
+        if (!uActionLength) uActionLength = 256_ticks;
+        Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if (v10->uDistance < 307.2) {
-        if (!uActionLength) uActionLength = 256;
-        Actor::AI_Stand(uActorID, a2, Duration::fromTicks(uActionLength), v10);
+        if (!uActionLength) uActionLength = 256_ticks;
+        Actor::AI_Stand(uActorID, a2, uActionLength, v10);
         return;
     }
     if (v7->moveSpeed == 0) {
-        Actor::AI_Stand(uActorID, a2, Duration::fromTicks(uActionLength), v10);
+        Actor::AI_Stand(uActorID, a2, uActionLength, v10);
         return;
     }
     if (arg0 % 2)
@@ -1919,7 +1919,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     v7->yawAngle = TrigLUT.atan2(pParty->pos.x + TrigLUT.cos(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->pos.x,
                                   pParty->pos.y + TrigLUT.sin(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->pos.y);
     if (uActionLength)
-        v7->currentActionLength = Duration::fromTicks(uActionLength);
+        v7->currentActionLength = uActionLength;
     else
         v7->currentActionLength = Duration::fromTicks(128);
     v7->pitchAngle = (short)v10->uPitchAngle;
@@ -2775,7 +2775,7 @@ void Actor::UpdateActorAI() {
                             if (radiusMultiplier * 307.2 > v81)
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             else
-                                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47.ticks(), pDir);
+                                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
                         }
                     } else {
                         if (v81 >= radiusMultiplier * 307.2) {
@@ -2812,7 +2812,7 @@ void Actor::UpdateActorAI() {
                         } else if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
-                            Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47.ticks(), pDir);
+                            Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
                         }
                     } else {
                         // v45 == ABILITY_ATTACK2
@@ -2870,7 +2870,7 @@ void Actor::UpdateActorAI() {
             if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else
-                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47.ticks(), pDir);
+                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
         } else {
             Actor::AI_MissileAttack2(actor_id, target_pid, pDir);
         }

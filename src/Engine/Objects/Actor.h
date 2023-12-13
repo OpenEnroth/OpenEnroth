@@ -94,7 +94,7 @@ class Actor {
     static void AI_Flee(unsigned int uActorID, Pid edx0,
                         int uActionLength, struct AIDirection *a4);
     static void AI_Pursue1(unsigned int uActorID, Pid a2,
-                           signed int arg0, signed int uActionLength,
+                           signed int arg0, Duration uActionLength,
                            struct AIDirection *pDir);
     /**
      * @offset 0x402CED
