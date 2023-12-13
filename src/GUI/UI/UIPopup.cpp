@@ -2314,12 +2314,20 @@ void Inventory_ItemPopupAndAlchemy() {
             }
 
             float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
-            item->uMaxCharges = item->uNumCharges = item->uMaxCharges * invMaxChargesDecrease;
+            int newCharges = item->uMaxCharges * invMaxChargesDecrease;
 
-            // Effect and sound was not present previously
-            item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-            ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
-            pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, false, SOUND_MODE_UI);
+            // Disallow if wand will lose charges
+            if (newCharges < item->uNumCharges) {
+                engine->_statusBar->setEvent(LSTR_WAND_ALREADY_CHARGED);
+                pAudioPlayer->playUISound(SOUND_spellfail0201);
+            } else {
+                item->uMaxCharges = item->uNumCharges = newCharges;
+                // Effect and sound was not present previously
+                item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+                ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
+                pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, false, SOUND_MODE_UI);
+            }
+
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;

@@ -1364,13 +1364,21 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     int uNewCharges = item->uMaxCharges * spell_recharge_factor;
-                    item->uMaxCharges = uNewCharges;
-                    item->uNumCharges = uNewCharges;
-                    if (uNewCharges <= 0) {
+
+                    // Disallow if wand will lose charges
+                    bool chargeFailed = false;
+                    if (uNewCharges < item->uNumCharges) {
+                        chargeFailed = true;
+                    } else {
+                        item->uMaxCharges = uNewCharges;
+                        item->uNumCharges = uNewCharges;
+                    }
+
+                    if (uNewCharges <= 0 || chargeFailed) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
                         AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
-                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        spellFailed(pCastSpell, chargeFailed ? LSTR_WAND_ALREADY_CHARGED : LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
