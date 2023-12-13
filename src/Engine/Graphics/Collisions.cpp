@@ -656,7 +656,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0_ticks, nullptr);
                 }
             }
         }
@@ -778,7 +778,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0_ticks, nullptr);
                 }
             }
         }

@@ -885,7 +885,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
     }
     if (pActors[uActorID].buffs[ACTOR_BUFF_AFRAID].Active()) {
         if (v11 < 10240) {
-            Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 0,
+            Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 0_ticks,
                            &pDir);
             pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
         } else {
@@ -905,7 +905,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                 if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                     Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                 else
-                    Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                    Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                 pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
                 pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].currentActionLength;
                 return true;
@@ -917,7 +917,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                         Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                     else
-                        Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                        Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                     pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
                     pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].currentActionLength;
                     return true;
@@ -930,7 +930,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                         Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                     else
-                        Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                        Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                     pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
                     pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].currentActionLength;
                     return true;

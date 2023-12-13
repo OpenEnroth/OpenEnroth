@@ -1929,7 +1929,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
 
 //----- (00402968) --------------------------------------------------------
 void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
-                    int uActionLength, AIDirection *a4) {
+                    Duration uActionLength, AIDirection *a4) {
     Actor *v5;         // ebx@1
     Pid v7;            // ecx@2
     AIDirection v10;   // [sp+8h] [bp-7Ch]@4
@@ -1947,8 +1947,8 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         v13 = &v10;
         if (supertypeForMonsterId(v5->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT ||
             sTargetPid.type() == OBJECT_Actor && v13->uDistance < 307.2) {
-            if (!uActionLength) uActionLength = 256;
-            Actor::AI_StandOrBored(uActorID, Pid::character(0), Duration::fromTicks(uActionLength), v13);
+            if (!uActionLength) uActionLength = 256_ticks;
+            Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
             if (v5->moveSpeed)
                 v5->currentActionLength = Duration::fromTicks(
@@ -2728,7 +2728,7 @@ void Actor::UpdateActorAI() {
             if (distanceToTarget >= 10240)
                 Actor::AI_RandomMove(actor_id, target_pid, 1024, 0_ticks);
             else
-                Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
             continue;
         }
 
@@ -2738,7 +2738,7 @@ void Actor::UpdateActorAI() {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, pActor->monsterInfo.recoveryTime * flt_debugrecmod3, pDir);
                 } else {
-                    Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                    Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
                     continue;
                 }
             }
@@ -2750,7 +2750,7 @@ void Actor::UpdateActorAI() {
                         v43 = pActor->monsterInfo.hp * 0.1;
                     v42 = pActor->currentHP;
                     if (v43 > v42 && distanceToTarget < 10240) {
-                        Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                        Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
                         continue;
                     }
                 }
