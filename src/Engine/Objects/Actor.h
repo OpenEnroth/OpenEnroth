@@ -121,9 +121,9 @@ class Actor {
                                struct AIDirection *arg0);
     static void StandAwhile(unsigned int uActorID);
     static void AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
-                         unsigned int uActionLength, struct AIDirection *a4);
+                         Duration uActionLength, struct AIDirection *a4);
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
-                                int uActionLength, struct AIDirection *a4);
+                                Duration uActionLength, struct AIDirection *a4);
     static void AI_FaceObject(unsigned int uActorID, Pid uObjID,
                               int UNUSED, struct AIDirection *Dir_In);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,

@@ -144,7 +144,7 @@ void stru262_TurnBased::Start() {
                     Pid(OBJECT_Actor, ai_near_actors_ids[i]),
                     ai_near_actors_targets_pid[ai_near_actors_ids[i]], &v31, 0);
                 v30 = v31;
-                Actor::AI_StandOrBored(ai_near_actors_ids[i], Pid::character(0), 32, &v30);
+                Actor::AI_StandOrBored(ai_near_actors_ids[i], Pid::character(0), 32_ticks, &v30);
 
                 TurnBased_QueueElem &element = this->pQueue.emplace_back();
                 element.uPackedID = Pid(OBJECT_Actor, ai_near_actors_ids[i]);
@@ -275,7 +275,7 @@ void stru262_TurnBased::AITurnBasedAction() {
                     curr_actor->UpdateAnimation();
                 } else if ((curr_actor->aiState > Removed) &&
                            (curr_actor->aiState < Disabled)) {
-                    Actor::AI_StandOrBored(i, target_pid, 32, &v14);
+                    Actor::AI_StandOrBored(i, target_pid, 32_ticks, &v14);
                 }
             }
         }
@@ -409,7 +409,7 @@ void stru262_TurnBased::NextTurn() {
                     if (pActors[monster_id].aiState == Stunned)  // Stunned
                         Actor::AI_StandOrBored(
                             monster_id,
-                            ai_near_actors_targets_pid[monster_id], 32, 0);
+                            ai_near_actors_targets_pid[monster_id], 32_ticks, 0);
                 }
             }
         }
@@ -432,7 +432,7 @@ void stru262_TurnBased::NextTurn() {
                 pQueue[i].uActionLength = Duration::zero();
                 Actor::AI_StandOrBored(monster_id,
                                        ai_near_actors_targets_pid[monster_id],
-                                       32, nullptr);
+                                       32_ticks, nullptr);
             }
         }
     }
@@ -596,11 +596,11 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                     case AttackingMelee:
                         v19 = pActors[actor_id].special_ability_use_check(actor_id);
                         pushMeleeAttack(pQueue[queue_index].uPackedID, pActors[actor_id].pos + Vec3i(0, 0, pActors[actor_id].height / 2), v19);
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case AttackingRanged1:
                         Actor::AI_RangedAttack(actor_id, &a4, pActors[actor_id].monsterInfo.attack1MissileType, ABILITY_ATTACK1);
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case Dying:
                         pActors[actor_id].currentActionTime = Duration::zero();
@@ -609,27 +609,27 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         pActors[actor_id].UpdateAnimation();
                         break;
                     case Stunned:
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case AttackingRanged2:
                         Actor::AI_RangedAttack(actor_id, &a4, pActors[actor_id].monsterInfo.attack2MissileType, ABILITY_ATTACK2);
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case AttackingRanged3:
                         Actor::AI_SpellAttack(actor_id, &a4, pActors[actor_id].monsterInfo.spell1Id,
                                               ABILITY_SPELL1, pActors[actor_id].monsterInfo.spell1SkillMastery);
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case AttackingRanged4:
                         Actor::AI_SpellAttack(actor_id, &a4, pActors[actor_id].monsterInfo.spell2Id,
                                               ABILITY_SPELL2, pActors[actor_id].monsterInfo.spell2SkillMastery);
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     default:
                         if (!grng->random(2))
                             Actor::AI_Bored(actor_id, ai_near_actors_targets_pid[actor_id], &a4);
                         else
-                            Actor::AI_Stand( actor_id, ai_near_actors_targets_pid[actor_id], 64, &a4);
+                            Actor::AI_Stand( actor_id, ai_near_actors_targets_pid[actor_id], 64_ticks, &a4);
                 }
             }
         }
@@ -737,13 +737,13 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                     Actor::AI_MeleeAttack(actor_id, v22, &v18);
                     pQueue[queue_index].AI_action_type = TE_AI_MELEE_ATTACK;
                 } else if (pQueue[queue_index].AI_action_type == TE_AI_STAND) {
-                    Actor::AI_Stand(actor_id, v22, 64, &v18);
+                    Actor::AI_Stand(actor_id, v22, 64_ticks, &v18);
                 }
 
                 pQueue[queue_index].uActionLength = pActors[actor_id].currentActionLength;
                 return;
             } else {
-                Actor::AI_Stand(actor_id, v22, 64, &v18);
+                Actor::AI_Stand(actor_id, v22, 64_ticks, &v18);
                 pQueue[queue_index].AI_action_type = TE_AI_STAND;
             }
             pQueue[queue_index].uActionLength =
@@ -767,7 +767,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
                 ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
             if (!ActorMove(i))
-                Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32,
+                Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32_ticks,
                                 &v7);
         }
     }
@@ -785,7 +785,7 @@ void stru262_TurnBased::ActorAIStopMovement() {
             Pid target_pid =
                 ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
-            Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32, &v7);
+            Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32_ticks, &v7);
             pQueue[i].AI_action_type = TE_AI_STAND;
             pQueue[i].uActionLength = Duration::zero();
         }
@@ -815,7 +815,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                 if (pActors[monster_id].aiState == Pursuing ||
                     pActors[monster_id].aiState == Tethered) {
                     if ((double)(signed int)v9.uDistance < 307.2)
-                        Actor::AI_Stand(pQueue[i].uPackedID.id(), v13, 32,
+                        Actor::AI_Stand(pQueue[i].uPackedID.id(), v13, 32_ticks,
                                         &v9);
                 } else {
                     pActors[monster_id].currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed);
@@ -829,7 +829,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                         }
                         if (!ActorMove(i))
                             Actor::AI_Stand(pQueue[i].uPackedID.id(), v13,
-                                            32, &v9);
+                                            32_ticks, &v9);
                     }
                 }
             }
@@ -903,7 +903,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             pActors[uActorID].monsterInfo.aiType == MONSTER_AI_WIMP) {
             if (pActors[uActorID].monsterInfo.aiType == MONSTER_AI_WIMP) {
                 if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
-                    Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                    Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                 else
                     Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                 pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
@@ -915,7 +915,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                     (double)pActors[uActorID].currentHP &&
                     (v11 < 10240)) {
                     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
-                        Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                        Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                     else
                         Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                     pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
@@ -928,7 +928,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                     (double)pActors[uActorID].currentHP &&
                     (v11 < 10240)) {
                     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
-                        Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                        Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
                     else
                         Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                     pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
@@ -963,7 +963,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 10240, 32);
             break;
         case MONSTER_MOVEMENT_TYPE_STATIONARY:
-            Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+            Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
             break;
         default:
             return true;
@@ -1008,7 +1008,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
                         break;
                     }
                     if (grng->random(2))
-                        Actor::AI_Stand(uActorID, target_pid, 64, &a4);
+                        Actor::AI_Stand(uActorID, target_pid, 64_ticks, &a4);
                     else
                         Actor::AI_Bored(uActorID, target_pid, &a4);
                 }

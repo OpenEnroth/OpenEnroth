@@ -556,7 +556,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_LIGHT)) {
-                        Actor::AI_Stand(monster_id, Pid::character(0), 0x80, 0);
+                        Actor::AI_Stand(monster_id, Pid::character(0), 128_ticks, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
