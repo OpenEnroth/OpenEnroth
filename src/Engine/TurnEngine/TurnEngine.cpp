@@ -943,7 +943,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                 (signed int)v11 < 1024)
                 Actor::AI_Pursue1(uActorID, ai_near_actors_targets_pid[uActorID], uActorID, 32_ticks, &pDir);
             else
-                Actor::AI_Pursue2(uActorID, ai_near_actors_targets_pid[uActorID], 32, &pDir, 307);
+                Actor::AI_Pursue2(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, &pDir, 307);
             pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_PURSUE;
             pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].currentActionLength;
             return true;
