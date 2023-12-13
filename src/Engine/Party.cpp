@@ -764,7 +764,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.uExpressionTimePassed += Duration::fromTicks(pMiscTimer->uTimeElapsed);
+        player.uExpressionTimePassed += pMiscTimer->uTimeElapsed;
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
@@ -826,7 +826,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
         NPCData *hireling = &pParty->pHirelings[i];
         if (!hireling->dialogue_3_evt_id) continue;
 
-        hireling->dialogue_2_evt_id += pMiscTimer->uTimeElapsed;
+        hireling->dialogue_2_evt_id += pMiscTimer->uTimeElapsed.ticks();
         if (hireling->dialogue_2_evt_id >= hireling->dialogue_3_evt_id) {
             hireling->dialogue_1_evt_id = 0;
             hireling->dialogue_2_evt_id = 0;
@@ -943,7 +943,7 @@ void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused
     // resting to be too fast on high FPS
     // Now resting speed is roughly 6 game hours per second
-    Duration restTick = Duration::fromMinutes(3 * pEventTimer->uTimeElapsed);
+    Duration restTick = Duration::fromMinutes(3 * pEventTimer->uTimeElapsed.ticks());
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;

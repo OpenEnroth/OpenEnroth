@@ -1203,7 +1203,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_hour = pParty->uCurrentHour;
     int old_year = pParty->uCurrentYear;
 
-    pParty->GetPlayingTime() += Duration::fromTicks(pEventTimer->uTimeElapsed);
+    pParty->GetPlayingTime() += pEventTimer->uTimeElapsed;
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
     pParty->uCurrentTimeSecond = time.second;
@@ -1293,7 +1293,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     RegeneratePartyHealthMana();
 
     // TODO(captainurist): #time drop once we move to msecs in duration.
-    Duration recoveryTimeDt = Duration::fromTicks(pEventTimer->uTimeElapsed);
+    Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = Duration::zero();
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running

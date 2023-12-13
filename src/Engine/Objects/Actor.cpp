@@ -2591,9 +2591,9 @@ void Actor::UpdateActorAI() {
             continue;
 
         // Calculate RecoveryTime
-        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - Duration::fromTicks(pEventTimer->uTimeElapsed), 0_ticks); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed, 0_ticks); // was pMiscTimer
 
-        pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
             continue;
 
@@ -2667,8 +2667,8 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - Duration::fromTicks(pEventTimer->uTimeElapsed)); // was pMiscTimer
-        pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
 
         if (!pActor->ActorNearby())
             pActor->attributes |= ACTOR_NEARBY;

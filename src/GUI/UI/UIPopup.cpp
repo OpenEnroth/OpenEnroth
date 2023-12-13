@@ -702,7 +702,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
-    pMonsterInfoUI_Doll.currentActionTime += Duration::fromTicks(pMiscTimer->uTimeElapsed);
+    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->uTimeElapsed;
 
     // Draw name and profession
     std::string str;
@@ -1669,7 +1669,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
         if (!uFramesetID)
             uFramesetID = 1;
         if (player->expression == CHARACTER_EXPRESSION_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, Duration::fromTicks(pMiscTimer->uTimeElapsed));
+            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->uTimeElapsed);
         else
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, Duration::fromTicks(pMiscTimer->Time()));
         player->uExpressionImageIndex = v15->uTextureID - 1;

@@ -79,7 +79,7 @@ void ActiveOverlayList::DrawTurnBasedIcon() {
     /*else
       render->DrawTextureIndexedAlpha(0x18Au, 0x120u, v7);*/
     if (dword_50C994 < dword_50C998_turnbased_icon_1A) {
-        dword_50C994 += Duration::fromTicks(pEventTimer->uTimeElapsed);
+        dword_50C994 += pEventTimer->uTimeElapsed;
         if (dword_50C994 >= dword_50C998_turnbased_icon_1A)
             dword_50C998_turnbased_icon_1A = Duration::zero();
     }

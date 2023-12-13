@@ -65,14 +65,14 @@ void Timer::Update() {
     // TODO(captainurist): this magically works with EventTracer because of how Time() is written:
     // it sets uStartTime to zero if it's larger than current time. And TickCount() in EventTracer starts at zero.
     // This looks very fragile, but rethinking it would require diving into how timers work.
-    uTimeElapsed = new_time - uStartTime;
+    uTimeElapsed = Duration::fromTicks(new_time - uStartTime);
     uStartTime = new_time;
 
-    if (uTimeElapsed > 32)
-        uTimeElapsed = 32; // 32 is 250ms
+    if (uTimeElapsed > 32_ticks)
+        uTimeElapsed = 32_ticks; // 32 is 250ms
 
     if (!bPaused && !bTackGameTime)
-        uTotalTimeElapsed += uTimeElapsed;
+        uTotalTimeElapsed += uTimeElapsed.ticks();
 
-    dt_fixpoint = (uTimeElapsed << 16) / 128;
+    dt_fixpoint = (uTimeElapsed.ticks() << 16) / 128;
 }

@@ -1323,7 +1323,7 @@ void GameUI_DrawPortraits() {
         if (face_expression_ID == 0)
             face_expression_ID = 1;
         if (pPlayer->expression == CHARACTER_EXPRESSION_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, Duration::fromTicks(pMiscTimer->uTimeElapsed));
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
         else
             pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {

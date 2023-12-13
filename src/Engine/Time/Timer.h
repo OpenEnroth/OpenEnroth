@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Duration.h"
+
 struct Timer {
     Timer() = default;
 
@@ -22,7 +24,7 @@ struct Timer {
     unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).
     unsigned int uStopTime = 0;
     int uGameTimeStart = 0;
-    int uTimeElapsed = 0; // dt since last frame in real time ticks (128 ticks is 1 real time second).
+    Duration uTimeElapsed; // dt since last frame.
     int dt_fixpoint = 0; // dt since last frame in real time seconds in fixpoint format.
     unsigned int uTotalTimeElapsed = 0; // Total time elapsed since the last Initialize() call, in real time ticks (128 ticks is 1 real time second).
 

@@ -124,7 +124,7 @@ void GUIWindow_Rest::Update() {
             rest_ui_hourglass_frame_current = nullptr;
         }
 
-        hourglassLoopTimer += Duration::fromTicks(pEventTimer->uTimeElapsed);
+        hourglassLoopTimer += pEventTimer->uTimeElapsed;
         if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
             hourglassLoopTimer = Duration::zero();
         }
