@@ -898,7 +898,7 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
-    pParty->_delayedReactionTimer = 0;
+    pParty->_delayedReactionTimer = 0_ticks;
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];

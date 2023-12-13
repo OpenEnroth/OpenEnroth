@@ -2479,7 +2479,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
-    pParty->_delayedReactionTimer = 0;
+    pParty->_delayedReactionTimer = 0_ticks;
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {

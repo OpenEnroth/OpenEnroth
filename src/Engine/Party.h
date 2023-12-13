@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Tables/NPCTable.h"
@@ -248,7 +249,7 @@ struct Party {
 
     void setDelayedReaction(CharacterSpeech speech, int id) {
         if (!_delayedReactionTimer) {
-            _delayedReactionTimer = Timer::Second * 2;
+            _delayedReactionTimer = Duration::fromRealtimeSeconds(2);
             _delayedReactionSpeech = speech;
             _delayedReactionCharacterId = id;
         }
@@ -256,12 +257,9 @@ struct Party {
 
     void updateDelayedReaction() {
         if (_delayedReactionTimer) {
-            _delayedReactionTimer -= pMiscTimer->uTimeElapsed;
-            if (_delayedReactionTimer <= 0) {
-                if (pCharacters[_delayedReactionCharacterId].CanAct()) {
-                    pCharacters[_delayedReactionCharacterId].playReaction(_delayedReactionSpeech);
-                }
-                _delayedReactionTimer = 0;
+            _delayedReactionTimer = std::max(0_ticks, _delayedReactionTimer - Duration::fromTicks(pMiscTimer->uTimeElapsed));
+            if (!_delayedReactionTimer && pCharacters[_delayedReactionCharacterId].CanAct()) {
+                pCharacters[_delayedReactionCharacterId].playReaction(_delayedReactionSpeech);
             }
         }
     }
@@ -345,7 +343,7 @@ struct Party {
 
     Duration _roundingDt;  // keeps track of rounding remainder for recovery
 
-    int _delayedReactionTimer;
+    Duration _delayedReactionTimer;
     CharacterSpeech _delayedReactionSpeech;
     int _delayedReactionCharacterId;
 

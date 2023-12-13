@@ -2800,7 +2800,8 @@ void CastSpellInfoHelpers::castSpell() {
                     NPCData *npcData = buf.Get(flatHirelingId);
                     npcData->dialogue_1_evt_id = 1;
                     npcData->dialogue_2_evt_id = 0;
-                    // TODO(captainurist): #time what's going on here? vvv
+                    // TODO(captainurist): #time that's the timer for dark sacrifice.
+                    //                     It's processed in Party::updateCharactersAndHirelingsEmotions. Redo properly?
                     npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength().ticks();
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();
