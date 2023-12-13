@@ -890,7 +890,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
         } else {
             Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID],
-                                 1024, 0);
+                                 1024, 0_ticks);
             pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_PURSUE;
         }
         pTurnEngine->pQueue[queue_position].uActionLength =
@@ -951,16 +951,16 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
     }
     switch (pActors[uActorID].monsterInfo.movementType) {
         case MONSTER_MOVEMENT_TYPE_SHORT:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 1024, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 1024, 32_ticks);
             break;
         case MONSTER_MOVEMENT_TYPE_MEDIUM:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 2560, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 2560, 32_ticks);
             break;
         case MONSTER_MOVEMENT_TYPE_LONG:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 5120, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 5120, 32_ticks);
             break;
         case MONSTER_MOVEMENT_TYPE_FREE:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 10240, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 10240, 32_ticks);
             break;
         case MONSTER_MOVEMENT_TYPE_STATIONARY:
             Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);

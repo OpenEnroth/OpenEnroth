@@ -1586,7 +1586,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
 
 //----- (004032B2) --------------------------------------------------------
 void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
-                          int radius, int uActionLength) {
+                          int radius, Duration uActionLength) {
     int x;                                             // ebx@1
     int absy;                                          // eax@1
     unsigned int v9;                                   // ebx@11
@@ -1605,8 +1605,8 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     else
         absx = absx + absy / 2;
     if (supertypeForMonsterId(pActors[uActor_id].monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActor_id, Pid(OBJECT_Character, 0), Duration::fromTicks(uActionLength),
+        if (!uActionLength) uActionLength = 256_ticks;
+        Actor::AI_StandOrBored(uActor_id, Pid(OBJECT_Character, 0), uActionLength,
                                &doNotInitializeBecauseShouldBeRandom);
         return;
     }
@@ -2726,7 +2726,7 @@ void Actor::UpdateActorAI() {
         // If actor afraid: flee or if out of range random move
         if (pActor->buffs[ACTOR_BUFF_AFRAID].Active()) {
             if (distanceToTarget >= 10240)
-                Actor::AI_RandomMove(actor_id, target_pid, 1024, 0);
+                Actor::AI_RandomMove(actor_id, target_pid, 1024, 0_ticks);
             else
                 Actor::AI_Flee(actor_id, target_pid, 0, pDir);
             continue;
@@ -2839,13 +2839,13 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.hostilityType != HOSTILITY_LONG ||
             !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_SHORT) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_MEDIUM) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_LONG) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_FREE) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, Pid::character(0), &v72, 0);
                 v58 = pActor->monsterInfo.recoveryTime * flt_debugrecmod3;

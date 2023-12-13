@@ -108,7 +108,7 @@ class Actor {
     static char _4031C1_update_job_never_gets_called(unsigned int uActorID,
                                                      signed int a2, int a3);
     static void AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
-                              int radius, int uActionLength);
+                              int radius, Duration uActionLength);
     static void AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                                   struct AIDirection *pDir);
     static void AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
