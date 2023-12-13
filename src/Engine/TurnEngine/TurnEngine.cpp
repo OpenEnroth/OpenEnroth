@@ -223,7 +223,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
         if (objType == OBJECT_Character)
             pParty->pCharacters[objID].timeToRecovery = Duration::fromTicks((double)pQueue[i].actor_initiative * flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
-            pActors[objID].monsterInfo.recoveryTime = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
+            pActors[objID].monsterInfo.recoveryTime = Duration::fromTicks((double)pQueue[i].actor_initiative * flt_debugrecmod3);
     }
     if (bPlaySound != 0)
         pAudioPlayer->playUISound(SOUND_EndTurnBasedMode);
@@ -495,9 +495,9 @@ void stru262_TurnBased::_406457(int a2) {
         if (v6 < 30_ticks) v6 = 30_ticks;
     } else {
         v6 =
-            Duration::fromTicks(pMonsterStats
+            pMonsterStats
             ->infos[pActors[pQueue[a2].uPackedID.id()].monsterInfo.id]
-            .recoveryTime);
+            .recoveryTime;
     }
 
     pQueue[a2].actor_initiative = v6.ticks();
@@ -530,7 +530,7 @@ void stru262_TurnBased::SetAIRecoveryTimes() {
                 monster_ai_state == Fidgeting) {
                 pQueue[i].actor_initiative =
                     pMonsterStats->infos[monster->monsterInfo.id]
-                        .recoveryTime;
+                        .recoveryTime.ticks();
                 if (monster->buffs[ACTOR_BUFF_SLOWED].Active())
                     pQueue[i].actor_initiative *= 2;
             }

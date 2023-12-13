@@ -1186,7 +1186,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.ac = src.monsterInfo.ac;
     dst->pMonsterInfo.exp = src.monsterInfo.exp;
     dst->pMonsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
-    dst->pMonsterInfo.recoveryTime = src.monsterInfo.recoveryTime;
+    dst->pMonsterInfo.recoveryTime = src.monsterInfo.recoveryTime.ticks();
     dst->pMonsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.attackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
@@ -1280,7 +1280,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.ac = src.pMonsterInfo.ac;
     dst->monsterInfo.exp = src.pMonsterInfo.exp;
     dst->monsterInfo.baseSpeed = src.pMonsterInfo.baseSpeed;
-    dst->monsterInfo.recoveryTime = src.pMonsterInfo.recoveryTime;
+    dst->monsterInfo.recoveryTime = Duration::fromTicks(src.pMonsterInfo.recoveryTime);
     dst->monsterInfo.attackPreferences = static_cast<MonsterAttackPreferences>(src.pMonsterInfo.attackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id

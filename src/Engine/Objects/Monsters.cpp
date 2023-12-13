@@ -608,7 +608,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         infos[curr_rec_num].baseSpeed = atoi(test_string);
                         break;
                     case 14:
-                        infos[curr_rec_num].recoveryTime = atoi(test_string);
+                        infos[curr_rec_num].recoveryTime = Duration::fromTicks(atoi(test_string));
                         break;
                     case 15: {
                         int str_len = 0;

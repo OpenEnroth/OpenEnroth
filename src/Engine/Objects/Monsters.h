@@ -11,6 +11,7 @@
 
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Time/Duration.h"
 
 #include "Media/Audio/SoundEnums.h"
 
@@ -77,7 +78,7 @@ struct MonsterInfo {
     unsigned int ac = 0;
     unsigned int exp = 0; // Amount of experience the party gains upon killing this monster.
     unsigned int baseSpeed = 0;
-    signed int recoveryTime = 0;
+    Duration recoveryTime;
     MonsterAttackPreferences attackPreferences;
 };
 

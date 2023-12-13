@@ -1071,7 +1071,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
     AIDirection a3;    // [sp+Ch] [bp-48h]@12
     AIDirection v20;   // [sp+28h] [bp-2Ch]@12
     int v23;           // [sp+4Ch] [bp-8h]@6
-    unsigned int v25;  // [sp+5Ch] [bp+8h]@13
+    Duration v25;  // [sp+5Ch] [bp+8h]@13
 
     assert(uActorID < pActors.size());
 
@@ -1120,7 +1120,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                   .recoveryTime;
         if (pActors[uActorID].buffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            pActors[uActorID].monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * v25 * flt_debugrecmod3);
+            pActors[uActorID].monsterInfo.recoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * v25;
         } else {
             pActors[uActorID].monsterInfo.recoveryTime = v25;
         }
@@ -1313,7 +1313,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
     int v19;             // [sp+44h] [bp-10h]@6
     Pid a2;       // [sp+48h] [bp-Ch]@1
     int v21;             // [sp+4Ch] [bp-8h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
+    Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
     a2 = edx0;
@@ -1353,7 +1353,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = (v3->currentActionLength + Duration::fromTicks(debug_combat_recovery_mul * pDira * flt_debugrecmod3)).ticks();
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
@@ -1387,7 +1387,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
     int v21;             // [sp+4Ch] [bp-8h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
+    Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
     if (sTargetPid.type() == OBJECT_Actor) {
@@ -1427,7 +1427,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = (v3->currentActionLength + Duration::fromTicks(debug_combat_recovery_mul * pDira * flt_debugrecmod3)).ticks();
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         }
         v16 = v3->monsterInfo.spell1Id;
         v3->speed.z = 0;
@@ -1462,7 +1462,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
     AIDirection v17;     // [sp+28h] [bp-2Ch]@9
     int v18;             // [sp+44h] [bp-10h]@6
     int v20;             // [sp+4Ch] [bp-8h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
+    Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
     if (sTargetPid.type() == OBJECT_Actor) {
@@ -1500,7 +1500,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            v3->monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         } else {
             v3->monsterInfo.recoveryTime = pDira;
         }
@@ -1528,7 +1528,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
     //int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
     int zpos = 0;             // [sp+50h] [bp-4h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@11
+    Duration pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
     // a2 = edx0;
@@ -1573,7 +1573,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = (v3->currentActionLength - Duration::fromTicks(debug_combat_recovery_mul * pDira * -flt_debugrecmod3)).ticks();
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + flt_debugrecmod3 * debug_combat_recovery_mul * pDira;
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
@@ -2521,8 +2521,8 @@ void Actor::UpdateActorAI() {
     double v43;              // st6@176
     ActorAbility v45;                 // eax@192
     SpellId v46;     // cl@197
-    signed int v47;          // st7@206
-    unsigned v58;                // st7@246
+    Duration v47;          // st7@206
+    Duration v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
@@ -2591,7 +2591,7 @@ void Actor::UpdateActorAI() {
             continue;
 
         // Calculate RecoveryTime
-        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed, 0); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - Duration::fromTicks(pEventTimer->uTimeElapsed), 0_ticks); // was pMiscTimer
 
         pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
@@ -2667,7 +2667,7 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        pActor->monsterInfo.recoveryTime = std::max(0, pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - Duration::fromTicks(pEventTimer->uTimeElapsed)); // was pMiscTimer
         pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
 
         if (!pActor->ActorNearby())
@@ -2681,7 +2681,7 @@ void Actor::UpdateActorAI() {
         // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
         // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
-            pActor->monsterInfo.recoveryTime > 0 ||
+            pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * 307.2 < pDir->uDistance ||
             uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.attack1MissileType ||
             uAIState != Stunned) {
@@ -2736,7 +2736,7 @@ void Actor::UpdateActorAI() {
             target_pid) {
             if (pActor->monsterInfo.aiType == MONSTER_AI_WIMP) {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                    Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.recoveryTime * flt_debugrecmod3), pDir);
+                    Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.recoveryTime * flt_debugrecmod3).ticks(), pDir);
                 } else {
                     Actor::AI_Flee(actor_id, target_pid, 0, pDir);
                     continue;
@@ -2767,20 +2767,20 @@ void Actor::UpdateActorAI() {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
                     if (pActor->monsterInfo.attack1MissileType) {
-                        if (pActor->monsterInfo.recoveryTime <= 0) {
+                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                            Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                         } else {
                             if (radiusMultiplier * 307.2 > v81)
-                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                                Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                             else
-                                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
+                                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47.ticks(), pDir);
                         }
                     } else {
                         if (v81 >= radiusMultiplier * 307.2) {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                                Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                             } else if (v81 >= 1024) {  // monsters
                                 Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
                             } else {
@@ -2790,8 +2790,8 @@ void Actor::UpdateActorAI() {
                                 // follow player
                                 Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > 0) {
-                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                            Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                         } else {
                             // monsters
                             Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
@@ -2804,29 +2804,29 @@ void Actor::UpdateActorAI() {
                     else
                         v46 = pActor->monsterInfo.spell2Id;
                     if (v46 != SPELL_NONE) {
-                        if (pActor->monsterInfo.recoveryTime <= 0) {
+                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
                                 Actor::AI_SpellAttack2(actor_id, target_pid, pDir);
                         } else if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                            Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                         } else {
-                            Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
+                            Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47.ticks(), pDir);
                         }
                     } else {
                         // v45 == ABILITY_ATTACK2
                         if (v81 >= radiusMultiplier * 307.2) {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                                Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                             } else if (v81 >= 1024) {
                                 Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
                             } else {
                                 v70 = (radiusMultiplier * 307.2);
                                 Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > 0) {
-                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                            Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                         } else {
                             Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
                         }
@@ -2848,29 +2848,29 @@ void Actor::UpdateActorAI() {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, Pid::character(0), &v72, 0);
-                v58 = (pActor->monsterInfo.recoveryTime * flt_debugrecmod3);
-                Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
+                v58 = pActor->monsterInfo.recoveryTime * flt_debugrecmod3;
+                Actor::AI_Stand(actor_id, Pid::character(0), v58.ticks(), &v72);
             }
         } else if (!pActor->monsterInfo.attack2MissileType) {
             if (v81 >= radiusMultiplier * 307.2) {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                    Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                    Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
                 } else if (v81 >= 1024) {
                     Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
                 } else {
                     v70 = (radiusMultiplier * 307.2);
                     Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
                 }
-            } else if (pActor->monsterInfo.recoveryTime > 0) {
-                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+            } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
             } else {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
-        } else if (pActor->monsterInfo.recoveryTime > 0) {
+        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
             if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
-                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                Actor::AI_Stand(actor_id, target_pid, v47.ticks(), pDir);
             else
-                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
+                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47.ticks(), pDir);
         } else {
             Actor::AI_MissileAttack2(actor_id, target_pid, pDir);
         }
@@ -2994,7 +2994,7 @@ void Actor::InitializeActors() {
             actor->currentHP = actor->monsterInfo.hp;
             if (actor->aiState != Disabled) {
                 Actor::AI_Stand(i, ai_near_actors_targets_pid[i],
-                                actor->monsterInfo.recoveryTime, 0);
+                                actor->monsterInfo.recoveryTime.ticks(), 0);
             }
         }
 
@@ -3015,7 +3015,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
-    int extraRecoveryTime;           // qax@125
+    Duration extraRecoveryTime;           // qax@125
     uint16_t v43{};            // ax@132
     uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
@@ -3250,10 +3250,10 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.hp;
     if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-        extraRecoveryTime = 20;
+        extraRecoveryTime = 20_ticks;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
-            extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
+            extraRecoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * 20_ticks;
         pMonster->monsterInfo.recoveryTime += extraRecoveryTime;
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_FMT_S_STUNS_S, character->name, pMonster->name);
