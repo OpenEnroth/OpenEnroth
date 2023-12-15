@@ -615,26 +615,22 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
 
 //----- (004A806F) --------------------------------------------------------
 float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
-    int v2;     // ecx@1
-    int v3;     // eax@1
-
-    if (pActor->massDistortionTime == -1)
+    if (!pActor->massDistortionTime)
         return 1.0;
 
-    assert(pActor->massDistortionTime <= pMiscTimer->uTotalTimeElapsed);
+    assert(pActor->massDistortionTime <= Duration::fromTicks(pMiscTimer->uTotalTimeElapsed));
 
-    // TODO(captainurist): rewrite this magic. 128 = real-time second.
-    //                     Also, that's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
-    v3 = 128 - (pMiscTimer->uTotalTimeElapsed - pActor->massDistortionTime);
-    if (v3 > 64) {
-        v2 = (v3 - 64) * (v3 - 64);
-        return v2 / 5120.0 + 0.2;
+    // That's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
+    float v3 = 1.0f - (Duration::fromTicks(pMiscTimer->uTotalTimeElapsed) - pActor->massDistortionTime).toFloatRealtimeSeconds();
+    if (v3 > 0.5f) {
+        float v2 = (v3 - 0.5f) * (v3 - 0.5f) / 0.25f;
+        return 0.2f + v2 * 0.8f;
     } else if (v3 > 0) {
-        v2 = v3 * v3;
-        return 1.0 - (v3 * v3) / 5120.0;
+        float v2 = v3 * v3 / 0.25f;
+        return 1.0f - v2 * 0.8f;
     } else {
-        pActor->massDistortionTime = -1;
-        return 1.0;
+        pActor->massDistortionTime = 0_ticks;
+        return 1.0f;
     }
 }
 
