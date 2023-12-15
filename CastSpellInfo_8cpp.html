@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f68d095</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6116f06</span>
    </div>
   </td>
  </tr>
@@ -122,8 +122,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab5fadbcc3239b59c41e7fee991449c0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19ec3fa409280bffd996c0ee004e5b2d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a19ec3fa409280bffd996c0ee004e5b2d">spellFailed</a> (<a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell, int error_str_id)</td></tr>
 <tr class="separator:a19ec3fa409280bffd996c0ee004e5b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9de5b080f9428f861e8b62fcdcacd48"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#ad9de5b080f9428f861e8b62fcdcacd48">setSpellRecovery</a> (<a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell, int recoveryTime)</td></tr>
-<tr class="separator:ad9de5b080f9428f861e8b62fcdcacd48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58d4f43b9b39c3788ffd6b8444a5b311"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a58d4f43b9b39c3788ffd6b8444a5b311">setSpellRecovery</a> (<a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell, <a class="el" href="classDuration.html">Duration</a> recoveryTime)</td></tr>
+<tr class="separator:a58d4f43b9b39c3788ffd6b8444a5b311"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77555be04fd3fd61005987948596319d"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a77555be04fd3fd61005987948596319d">pushCastSpellInfo</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> uSpellID, int casterIndex, <a class="el" href="classCombinedSkillValue.html">CombinedSkillValue</a> skill_level, SpellCastFlags uFlags, int overrideSoundId)</td></tr>
 <tr class="separator:a77555be04fd3fd61005987948596319d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae28f6d8f77d31169894ce5a050b01f2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#ae28f6d8f77d31169894ce5a050b01f2b">pushSpellOrRangedAttack</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spell, int casterIndex, <a class="el" href="classCombinedSkillValue.html">CombinedSkillValue</a> skill_value, SpellCastFlags flags, int overrideSoundId)</td></tr>
@@ -145,6 +145,8 @@ Variables</h2></td></tr>
 <tr class="separator:a6c5ea2872dcbe8ac53c2f24f907446a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dccff3a63c7ab1c82962e6278c4b2d1"><td class="memItemLeft" align="right" valign="top">static std::array&lt; <a class="el" href="structCastSpellInfo.html">CastSpellInfo</a>, <a class="el" href="CastSpellInfo_8cpp.html#a6c5ea2872dcbe8ac53c2f24f907446a6">CAST_SPELL_QUEUE_SIZE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a3dccff3a63c7ab1c82962e6278c4b2d1">pCastSpellInfo</a></td></tr>
 <tr class="separator:a3dccff3a63c7ab1c82962e6278c4b2d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c3beadd8dd6324aadf21dd0b4c8e11b"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a6c3beadd8dd6324aadf21dd0b4c8e11b">SPELL_FAILURE_RECOVERY_TIME_ON_CURSE</a> = 100_ticks</td></tr>
+<tr class="separator:a6c3beadd8dd6324aadf21dd0b4c8e11b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab5fadbcc3239b59c41e7fee991449c0a" name="ab5fadbcc3239b59c41e7fee991449c0a"></a>
@@ -399,8 +401,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad9de5b080f9428f861e8b62fcdcacd48" name="ad9de5b080f9428f861e8b62fcdcacd48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9de5b080f9428f861e8b62fcdcacd48">&#9670;&#160;</a></span>setSpellRecovery()</h2>
+<a id="a58d4f43b9b39c3788ffd6b8444a5b311" name="a58d4f43b9b39c3788ffd6b8444a5b311"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58d4f43b9b39c3788ffd6b8444a5b311">&#9670;&#160;</a></span>setSpellRecovery()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -417,7 +419,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype"><a class="el" href="classDuration.html">Duration</a>&#160;</td>
           <td class="paramname"><em>recoveryTime</em>&#160;</td>
         </tr>
         <tr>
@@ -548,6 +550,28 @@ Variables</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c3beadd8dd6324aadf21dd0b4c8e11b" name="a6c3beadd8dd6324aadf21dd0b4c8e11b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c3beadd8dd6324aadf21dd0b4c8e11b">&#9670;&#160;</a></span>SPELL_FAILURE_RECOVERY_TIME_ON_CURSE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classDuration.html">Duration</a> SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100_ticks</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
