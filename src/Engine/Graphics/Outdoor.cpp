@@ -1982,7 +1982,7 @@ void ODM_ProcessPartyActions() {
     //------------------------------------------
 
     if (partyNotTouchingFloor && !pParty->bFlying) {  // add gravity
-        partyInputSpeed.z += -2.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
+        partyInputSpeed.z += -2.0f * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
     } else if (!partyNotTouchingFloor) {
         if (!floorFaceId) {
             // rolling down the hill
@@ -1993,7 +1993,7 @@ void ODM_ProcessPartyActions() {
             if (partyAtHighSlope) {
                 Vec3i v98;
                 ODM_GetTerrainNormalAt(partyNewPos.x, partyNewPos.y, &v98);
-                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->uTimeElapsed * (int)GetGravityStrength()));
+                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->uTimeElapsed.ticks() * (int)GetGravityStrength()));
                 float dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z) / 65536.0f;
                 partyInputSpeed.x += dot * v98.x / 65536.0f;
                 partyInputSpeed.y += dot * v98.y / 65536.0f;
@@ -2383,7 +2383,7 @@ void UpdateActors_ODM() {
                 ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
                 uint16_t Gravity = GetGravityStrength();
 
-                pActors[Actor_ITR].speed.z += -16 * pEventTimer->uTimeElapsed * Gravity;
+                pActors[Actor_ITR].speed.z += -16 * pEventTimer->uTimeElapsed.ticks() * Gravity;
                 int v73 = std::abs(Terrain_Norm.x * pActors[Actor_ITR].speed.x +
                               Terrain_Norm.z * pActors[Actor_ITR].speed.z +
                               Terrain_Norm.y * pActors[Actor_ITR].speed.y) >> 15;
@@ -2394,7 +2394,7 @@ void UpdateActors_ODM() {
                 // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }
         } else {
-            pActors[Actor_ITR].speed.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+            pActors[Actor_ITR].speed.z -= pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
         }
 
         // ARMAGEDDON PANIC
@@ -2479,7 +2479,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
-    pParty->_delayedReactionTimer = 0;
+    pParty->_delayedReactionTimer = 0_ticks;
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {

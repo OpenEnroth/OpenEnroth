@@ -41,7 +41,7 @@ void TrailParticleGenerator::UpdateParticles() {
             particles[i].x += vrng->random(5) + 4;
             particles[i].y += vrng->random(5) - 2;
             particles[i].z += vrng->random(5) - 2;
-            particles[i].time_left -= Duration::fromTicks(pEventTimer->uTimeElapsed);
+            particles[i].time_left -= pEventTimer->uTimeElapsed;
         }
     }
 }
@@ -104,7 +104,7 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
 }
 
 void ParticleEngine::Draw() {
-    uTimeElapsed += Duration::fromTicks(pEventTimer->uTimeElapsed);
+    uTimeElapsed += pEventTimer->uTimeElapsed;
     pLines.uNumLines = 0;
 
     DrawParticles_BLV();
@@ -118,7 +118,7 @@ void ParticleEngine::UpdateParticles() {
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
 
     // TODO(captainurist): checking pMiscTimer->bPaused, then using pEventTimer->uTimeElapsed?
-    Duration time = pMiscTimer->bPaused == 0 ? Duration::fromTicks(pEventTimer->uTimeElapsed) : Duration::zero();
+    Duration time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : Duration::zero();
 
     if (!time) {
         return;

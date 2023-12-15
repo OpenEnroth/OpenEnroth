@@ -157,12 +157,12 @@ void Party::Zero() {
     pHireling2Name[0] = 0;
     armageddon_timer = Duration::zero();
     armageddonDamage = 0;
-    pTurnBasedCharacterRecoveryTimes.fill(0);
+    pTurnBasedCharacterRecoveryTimes.fill(Duration::zero());
     InTheShopFlags.fill(0);
     uFine = 0;
     TorchLightLastIntensity = 0.0f;
 
-    _roundingDt = 0;
+    _roundingDt = Duration::zero();
 
     // players
     for (Character &player : this->pCharacters) {
@@ -248,7 +248,7 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
     if (hasActiveCharacter() && this->pCharacters[_activeCharacter - 1].CanAct() &&
-        this->pCharacters[_activeCharacter - 1].timeToRecovery < 1)
+        this->pCharacters[_activeCharacter - 1].timeToRecovery <= Duration::zero())
         return;
 
     if (pParty->bTurnBasedModeOn) {
@@ -266,7 +266,7 @@ void Party::switchToNextActiveCharacter() {
 
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (!this->pCharacters[i].CanAct() ||
-            this->pCharacters[i].timeToRecovery > 0) {
+            this->pCharacters[i].timeToRecovery > Duration::zero()) {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
@@ -283,7 +283,7 @@ void Party::switchToNextActiveCharacter() {
     unsigned v8{};
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() &&
-            this->pCharacters[i].timeToRecovery == 0) {
+            !this->pCharacters[i].timeToRecovery) {
             if (v12 == 0 || this->pCharacters[i].uSpeedBonus > v8) {
                 v8 = this->pCharacters[i].uSpeedBonus;
                 v12 = i + 1;
@@ -660,7 +660,7 @@ void Party::Reset() {
     pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
     for (Character &player : this->pCharacters) {
-        player.timeToRecovery = 0;
+        player.timeToRecovery = Duration::zero();
         player.conditions.ResetAll();
 
         for (SpellBuff &buff : player.pCharacterBuffs) {
@@ -713,7 +713,7 @@ void Party::yell() {
                 actor.monsterInfo.hostilityType != HOSTILITY_LONG &&
                 actor.monsterInfo.movementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 if ((actor.pos - pParty->pos.toInt()).length() < 512) {
-                    Actor::AI_Flee(i, Pid::character(0), 0, 0);
+                    Actor::AI_Flee(i, Pid::character(0), 0_ticks, 0);
                 }
             }
         }
@@ -764,7 +764,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.uExpressionTimePassed += Duration::fromTicks(pMiscTimer->uTimeElapsed);
+        player.uExpressionTimePassed += pMiscTimer->uTimeElapsed;
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
@@ -826,7 +826,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
         NPCData *hireling = &pParty->pHirelings[i];
         if (!hireling->dialogue_3_evt_id) continue;
 
-        hireling->dialogue_2_evt_id += pMiscTimer->uTimeElapsed;
+        hireling->dialogue_2_evt_id += pMiscTimer->uTimeElapsed.ticks();
         if (hireling->dialogue_2_evt_id >= hireling->dialogue_3_evt_id) {
             hireling->dialogue_1_evt_id = 0;
             hireling->dialogue_2_evt_id = 0;
@@ -864,7 +864,7 @@ void Party::restAndHeal() {
         pPlayer->conditions.Reset(CONDITION_SLEEP);
         pPlayer->conditions.Reset(CONDITION_WEAK);
 
-        pPlayer->timeToRecovery = 0;
+        pPlayer->timeToRecovery = Duration::zero();
         pPlayer->health = pPlayer->GetMaxHealth();
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
@@ -931,7 +931,7 @@ void restAndHeal(Duration restTime) {
     pParty->restAndHeal();
 
     for (Character &player : pParty->pCharacters) {
-        player.timeToRecovery = 0;
+        player.timeToRecovery = Duration::zero();
         player.uNumDivineInterventionCastsThisDay = 0;
         player.uNumArmageddonCasts = 0;
         player.uNumFireSpikeCasts = 0;
@@ -943,7 +943,7 @@ void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused
     // resting to be too fast on high FPS
     // Now resting speed is roughly 6 game hours per second
-    Duration restTick = Duration::fromMinutes(3 * pEventTimer->uTimeElapsed);
+    Duration restTick = Duration::fromMinutes(3 * pEventTimer->uTimeElapsed.ticks());
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;
@@ -1202,7 +1202,7 @@ void Party::giveFallDamage(int distance) {
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
             player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DAMAGE_PHYSICAL);
-            int bonus = 20 - player.GetParameterBonus(player.GetActualEndurance());
+            Duration bonus = Duration::fromTicks(20 - player.GetParameterBonus(player.GetActualEndurance()));
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
         }
     }

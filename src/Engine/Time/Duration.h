@@ -97,6 +97,11 @@ class Duration {
         return Duration::fromTicks(l.value * r);
     }
 
+    template<class R> requires std::is_arithmetic_v<R>
+    [[nodiscard]] constexpr friend Duration operator/(const Duration &l, R r) {
+        return Duration::fromTicks(l.value / r);
+    }
+
     [[nodiscard]] constexpr friend Duration operator%(const Duration &l, const Duration &r) {
         return Duration::fromTicks(l.value % r.value);
     }
@@ -117,6 +122,12 @@ class Duration {
         return *this;
     }
 
+    template<class R> requires std::is_arithmetic_v<R>
+    constexpr Duration &operator/=(R r) {
+        value /= r;
+        return *this;
+    }
+
     [[nodiscard]] constexpr friend bool operator==(const Duration &l, const Duration &r) = default;
     [[nodiscard]] constexpr friend auto operator<=>(const Duration &l, const Duration &r) = default;
 
@@ -131,3 +142,7 @@ class Duration {
  private:
     int64_t value = 0;
 };
+
+constexpr Duration operator""_ticks(unsigned long long ticks) {
+    return Duration::fromTicks(ticks);
+}

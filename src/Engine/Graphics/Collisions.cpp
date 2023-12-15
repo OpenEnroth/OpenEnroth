@@ -622,7 +622,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             if (!isAboveGround && !isFlying) {
                 if (actor.monsterInfo.hostilityType == HOSTILITY_FRIENDLY || isInCrowd)
-                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0_ticks, nullptr);
 
                 break; // Trying to walk into indoor sky, bad idea!
             }
@@ -652,11 +652,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 bool isFriendly = actor.monsterInfo.hostilityType == HOSTILITY_FRIENDLY;
                 bool otherFriendly = pActors[id].monsterInfo.hostilityType == HOSTILITY_FRIENDLY;
                 if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0_ticks, nullptr);
                 } else if (isFriendly && otherFriendly) {
-                    Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                    Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
                 } else {
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0_ticks, nullptr);
                 }
             }
         }
@@ -670,7 +670,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                 }
             } else {
-                Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
             }
         }
 
@@ -774,11 +774,11 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 bool isFriendly = actor.monsterInfo.hostilityType == HOSTILITY_FRIENDLY;
                 bool otherFriendly = pActors[id].monsterInfo.hostilityType == HOSTILITY_FRIENDLY;
                 if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, Pid(OBJECT_Character, 0), 0_ticks, nullptr);
                 } else if (isFriendly && otherFriendly) {
-                    Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                    Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
                 } else {
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0_ticks, nullptr);
                 }
             }
         }
@@ -792,7 +792,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                 }
             } else {
-                Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
             }
         }
 

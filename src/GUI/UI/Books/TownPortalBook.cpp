@@ -144,13 +144,13 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
         assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
         assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
-        signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
+        Duration sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
         if (pParty->bTurnBasedModeOn) {
             pParty->pTurnBasedCharacterRecoveryTimes[casterId] = sRecoveryTime;
             pParty->pCharacters[casterId].SetRecoveryTime(sRecoveryTime);
             pTurnEngine->ApplyPlayerAction();
         } else {
-            pParty->pCharacters[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+            pParty->pCharacters[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * sRecoveryTime);
         }
     } else {
         // Town portal casted by hireling

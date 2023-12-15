@@ -501,40 +501,40 @@ IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level 
     {CHARACTER_SKILL_LEARNING, 60},     {CHARACTER_SKILL_CLUB, 1},        {CHARACTER_SKILL_MISC, 1}
 };
 
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type = {
+IndexedArray<Duration, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type = {
     /* Base recovery value for staffs, and for unarmed combat w/o the unarmed skill. */
-    {CHARACTER_SKILL_STAFF, 100},
+    {CHARACTER_SKILL_STAFF, 100_ticks},
 
     /* Base recovery for unarmed combat when the character has unarmed skill. Original binary was reading this value
      * from an entry for CHARACTER_SKILL_DAGGER, in OE we have a separate table entry. */
-    {CHARACTER_SKILL_UNARMED, 60},
+    {CHARACTER_SKILL_UNARMED, 60_ticks},
 
     /* Base recovery values for different weapon types. */
-    {CHARACTER_SKILL_SWORD, 90},        {CHARACTER_SKILL_DAGGER, 60},     {CHARACTER_SKILL_AXE, 100},
-    {CHARACTER_SKILL_SPEAR, 80},        {CHARACTER_SKILL_BOW, 100},       {CHARACTER_SKILL_MACE, 80},
-    {CHARACTER_SKILL_BLASTER, 30},
+    {CHARACTER_SKILL_SWORD, 90_ticks},        {CHARACTER_SKILL_DAGGER, 60_ticks},     {CHARACTER_SKILL_AXE, 100_ticks},
+    {CHARACTER_SKILL_SPEAR, 80_ticks},        {CHARACTER_SKILL_BOW, 100_ticks},       {CHARACTER_SKILL_MACE, 80_ticks},
+    {CHARACTER_SKILL_BLASTER, 30_ticks},
 
     /* Base recovery penalties for different armor types. */
-    {CHARACTER_SKILL_SHIELD, 10},       {CHARACTER_SKILL_LEATHER, 10},    {CHARACTER_SKILL_CHAIN, 20},
-    {CHARACTER_SKILL_PLATE, 30},
+    {CHARACTER_SKILL_SHIELD, 10_ticks},       {CHARACTER_SKILL_LEATHER, 10_ticks},    {CHARACTER_SKILL_CHAIN, 20_ticks},
+    {CHARACTER_SKILL_PLATE, 30_ticks},
 
     /* Recovery penalty for wetsuits. */
-    {CHARACTER_SKILL_MISC, 0},
+    {CHARACTER_SKILL_MISC, 0_ticks},
 
     /* In MM6 clubs had 100 base recovery, in MM7/MM8 they don't have base recovery, and so they were always capped by
      * minimal recovery for melee weapons (30). Was this change was intentional to make them more viable, or they were
      * just forgotten? */
-    {CHARACTER_SKILL_CLUB, 100},
+    {CHARACTER_SKILL_CLUB, 100_ticks},
 
     /* Skills below aren't accessed, they are here just to make IndexedArray's assert happy. */
-    {CHARACTER_SKILL_FIRE, 0},          {CHARACTER_SKILL_AIR, 0},         {CHARACTER_SKILL_WATER, 0},
-    {CHARACTER_SKILL_EARTH, 0},         {CHARACTER_SKILL_SPIRIT, 0},      {CHARACTER_SKILL_MIND, 0},
-    {CHARACTER_SKILL_BODY, 0},          {CHARACTER_SKILL_LIGHT, 0},       {CHARACTER_SKILL_DARK, 0},
-    {CHARACTER_SKILL_ITEM_ID, 0},       {CHARACTER_SKILL_MERCHANT, 0},    {CHARACTER_SKILL_REPAIR, 0},
-    {CHARACTER_SKILL_BODYBUILDING, 0},  {CHARACTER_SKILL_MEDITATION, 0},  {CHARACTER_SKILL_PERCEPTION, 0},
-    {CHARACTER_SKILL_DIPLOMACY, 0},     {CHARACTER_SKILL_THIEVERY, 0},    {CHARACTER_SKILL_TRAP_DISARM, 0},
-    {CHARACTER_SKILL_DODGE, 0},         {CHARACTER_SKILL_MONSTER_ID, 0},  {CHARACTER_SKILL_ARMSMASTER, 0},
-    {CHARACTER_SKILL_STEALING, 0},      {CHARACTER_SKILL_ALCHEMY, 0},     {CHARACTER_SKILL_LEARNING, 0}
+    {CHARACTER_SKILL_FIRE, 0_ticks},          {CHARACTER_SKILL_AIR, 0_ticks},         {CHARACTER_SKILL_WATER, 0_ticks},
+    {CHARACTER_SKILL_EARTH, 0_ticks},         {CHARACTER_SKILL_SPIRIT, 0_ticks},      {CHARACTER_SKILL_MIND, 0_ticks},
+    {CHARACTER_SKILL_BODY, 0_ticks},          {CHARACTER_SKILL_LIGHT, 0_ticks},       {CHARACTER_SKILL_DARK, 0_ticks},
+    {CHARACTER_SKILL_ITEM_ID, 0_ticks},       {CHARACTER_SKILL_MERCHANT, 0_ticks},    {CHARACTER_SKILL_REPAIR, 0_ticks},
+    {CHARACTER_SKILL_BODYBUILDING, 0_ticks},  {CHARACTER_SKILL_MEDITATION, 0_ticks},  {CHARACTER_SKILL_PERCEPTION, 0_ticks},
+    {CHARACTER_SKILL_DIPLOMACY, 0_ticks},     {CHARACTER_SKILL_THIEVERY, 0_ticks},    {CHARACTER_SKILL_TRAP_DISARM, 0_ticks},
+    {CHARACTER_SKILL_DODGE, 0_ticks},         {CHARACTER_SKILL_MONSTER_ID, 0_ticks},  {CHARACTER_SKILL_ARMSMASTER, 0_ticks},
+    {CHARACTER_SKILL_STEALING, 0_ticks},      {CHARACTER_SKILL_ALCHEMY, 0_ticks},     {CHARACTER_SKILL_LEARNING, 0_ticks}
 };
 
 // byte[] @ MM7.exe::004ED820, some of these are started at 4ED94C, but needs to be here

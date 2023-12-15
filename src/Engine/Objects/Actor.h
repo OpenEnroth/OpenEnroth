@@ -87,14 +87,14 @@ class Actor {
     static void _SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                               bool can_target_party);
     static void AI_Pursue3(unsigned int uActorID, Pid a2,
-                           signed int uActionLength, struct AIDirection *a4);
+                           Duration uActionLength, struct AIDirection *a4);
     static void AI_Pursue2(unsigned int uActorID, Pid a2,
-                           signed int uActionLength, struct AIDirection *pDir,
+                           Duration uActionLength, struct AIDirection *pDir,
                            int a5);
     static void AI_Flee(unsigned int uActorID, Pid edx0,
-                        int uActionLength, struct AIDirection *a4);
+                        Duration uActionLength, struct AIDirection *a4);
     static void AI_Pursue1(unsigned int uActorID, Pid a2,
-                           signed int arg0, signed int uActionLength,
+                           signed int arg0, Duration uActionLength,
                            struct AIDirection *pDir);
     /**
      * @offset 0x402CED
@@ -108,7 +108,7 @@ class Actor {
     static char _4031C1_update_job_never_gets_called(unsigned int uActorID,
                                                      signed int a2, int a3);
     static void AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
-                              int radius, int uActionLength);
+                              int radius, Duration uActionLength);
     static void AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                                   struct AIDirection *pDir);
     static void AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
@@ -121,11 +121,10 @@ class Actor {
                                struct AIDirection *arg0);
     static void StandAwhile(unsigned int uActorID);
     static void AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
-                         unsigned int uActionLength, struct AIDirection *a4);
+                         Duration uActionLength, struct AIDirection *a4);
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
-                                int uActionLength, struct AIDirection *a4);
-    static void AI_FaceObject(unsigned int uActorID, Pid uObjID,
-                              int UNUSED, struct AIDirection *Dir_In);
+                                Duration uActionLength, struct AIDirection *a4);
+    static void AI_FaceObject(unsigned int uActorID, Pid uObjID, struct AIDirection *Dir_In);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
                                  struct AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);

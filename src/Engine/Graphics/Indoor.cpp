@@ -686,7 +686,7 @@ void BLV_UpdateDoors() {
         }
         bool shouldPlaySound = !(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0;
 
-        door->uTimeSinceTriggered += Duration::fromTicks(pEventTimer->uTimeElapsed);
+        door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
 
         int openDistance;     // [sp+60h] [bp-4h]@6
         if (door->uState == DOOR_OPENING) {
@@ -855,11 +855,11 @@ void UpdateActors_BLV() {
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
-                    actor.speed.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+                    actor.speed.z -= pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
             }
         } else {
             if (isAboveGround && !isFlying)
-                actor.speed.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
+                actor.speed.z += -8 * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
         }
 
         if (actor.speed.lengthSqr() >= 400) {
@@ -898,7 +898,7 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
-    pParty->_delayedReactionTimer = 0;
+    pParty->_delayedReactionTimer = 0_ticks;
     MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
@@ -1700,7 +1700,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (isAboveGround) {
-        pParty->speed.z += -2.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
+        pParty->speed.z += -2.0f * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
         if (pParty->speed.z < -500) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
@@ -1711,7 +1711,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     } else {
         if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
-            pParty->speed.z -= 1.0f * pEventTimer->uTimeElapsed * GetGravityStrength();
+            pParty->speed.z -= 1.0f * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
         } else {
             if (!(pParty->uFlags & PARTY_FLAG_LANDING))
                 pParty->speed.z = 0;
@@ -1722,7 +1722,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->uFallStartZ = pParty->pos.z;
 
     // If party movement delta is lower then this number then the party remains stationary.
-    int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000);
+    int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed.ticks(), static_cast<std::int64_t>(10000));
     int min_party_move_delta_sqr = 400 * elapsed_time_bounded * elapsed_time_bounded / 8;
 
     if (pParty->speed.xy().lengthSqr() < min_party_move_delta_sqr) {

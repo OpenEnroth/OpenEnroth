@@ -1203,7 +1203,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_hour = pParty->uCurrentHour;
     int old_year = pParty->uCurrentYear;
 
-    pParty->GetPlayingTime() += Duration::fromTicks(pEventTimer->uTimeElapsed);
+    pParty->GetPlayingTime() += pEventTimer->uTimeElapsed;
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
     pParty->uCurrentTimeSecond = time.second;
@@ -1292,18 +1292,19 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     RegeneratePartyHealthMana();
 
-    unsigned recoveryTimeDt = pEventTimer->uTimeElapsed;
+    // TODO(captainurist): #time drop once we move to msecs in duration.
+    Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
-    pParty->_roundingDt = 0;
-    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
-        pParty->_roundingDt = recoveryTimeDt % 2;
+    pParty->_roundingDt = Duration::zero();
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running
+        pParty->_roundingDt = recoveryTimeDt % Duration::fromTicks(2);
         recoveryTimeDt /= 2;
     }
 
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
-        if (character.timeToRecovery && recoveryTimeDt > 0)
-            character.Recover(Duration::fromTicks(recoveryTimeDt)); // TODO(captainurist): #time
+        if (character.timeToRecovery && recoveryTimeDt > Duration::zero())
+            character.Recover(recoveryTimeDt);
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             character.health + character.uEndurance >= 1 ||
@@ -1312,87 +1313,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 character.SetCondition(CONDITION_UNCONSCIOUS, 0);
         } else {
             character.SetCondition(CONDITION_DEAD, 0);
-        }
-
-        if (character.field_E0) {
-            int v24 = character.field_E0 - pEventTimer->uTimeElapsed;
-            if (v24 > 0) {
-                character.field_E0 = v24;
-            } else {
-                character.field_E0 = 0;
-            }
-        }
-        if (character.field_E4) {
-            int v26 = character.field_E4 - pEventTimer->uTimeElapsed;
-            if (v26 > 0) {
-                character.field_E4 = v26;
-            } else {
-                character.field_E4 = 0;
-            }
-        }
-        if (character.field_E8) {
-            int v28 = character.field_E8 - pEventTimer->uTimeElapsed;
-            if (v28 > 0) {
-                character.field_E8 = v28;
-            } else {
-                character.field_E8 = 0;
-            }
-        }
-        if (character.field_EC) {
-            int v30 = character.field_EC - pEventTimer->uTimeElapsed;
-            if (v30 > 0) {
-                character.field_EC = v30;
-            } else {
-                character.field_EC = 0;
-            }
-        }
-        if (character.field_F0) {
-            int v32 = character.field_F0 - pEventTimer->uTimeElapsed;
-            if (v32 > 0) {
-                character.field_F0 = v32;
-            } else {
-                character.field_F0 = 0;
-            }
-        }
-        if (character.field_F4) {
-            int v34 = character.field_F4 - pEventTimer->uTimeElapsed;
-            if (v34 > 0) {
-                character.field_F4 = v34;
-            } else {
-                character.field_F4 = 0;
-            }
-        }
-        if (character.field_F8) {
-            int v36 = character.field_F8 - pEventTimer->uTimeElapsed;
-            if (v36 > 0) {
-                character.field_F8 = v36;
-            } else {
-                character.field_F8 = 0;
-            }
-        }
-        if (character.field_FC) {
-            int v38 = character.field_FC - pEventTimer->uTimeElapsed;
-            if (v38 > 0) {
-                character.field_FC = v38;
-            } else {
-                character.field_FC = 0;
-            }
-        }
-        if (character.field_100) {
-            int v40 = character.field_100 - pEventTimer->uTimeElapsed;
-            if (v40 > 0) {
-                character.field_100 = v40;
-            } else {
-                character.field_100 = 0;
-            }
-        }
-        if (character.field_104) {
-            int v42 = character.field_104 - pEventTimer->uTimeElapsed;
-            if (v42 > 0) {
-                character.field_104 = v42;
-            } else {
-                character.field_104 = 0;
-            }
         }
 
         if (!character.CanAct()) {

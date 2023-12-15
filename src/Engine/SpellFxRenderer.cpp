@@ -1225,7 +1225,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         if (v5 > 0.9) v5 = 1.0 - (v5 - 0.9) * 10.0;
         v7 = v5;
         render->ScreenFade(uFadeColor, v7);
-        uFadeTime -= Duration::fromTicks(pEventTimer->uTimeElapsed);
+        uFadeTime -= pEventTimer->uTimeElapsed;
     }
 
     if (uAnimLength > Duration::zero()) {
@@ -1233,7 +1233,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
         int pal = v10->GetPaletteIndex();
-        uAnimLength -= Duration::fromTicks(pEventTimer->uTimeElapsed);
+        uAnimLength -= pEventTimer->uTimeElapsed;
 
         render->DrawSpecialEffectsQuad(v10->hw_sprites[0]->texture, pal);
     }
@@ -1245,7 +1245,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
-        buff->uSpellAnimTimeElapsed += Duration::fromTicks(pEventTimer->uTimeElapsed);
+        buff->uSpellAnimTimeElapsed += pEventTimer->uTimeElapsed;
         if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime) {
             buff->bRender = false;
             continue;

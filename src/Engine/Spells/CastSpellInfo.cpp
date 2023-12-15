@@ -46,6 +46,9 @@ static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRe
 static const size_t CAST_SPELL_QUEUE_SIZE = 10;
 static std::array<CastSpellInfo, CAST_SPELL_QUEUE_SIZE> pCastSpellInfo;
 
+// Recovery time when spell failed because of curse
+static constexpr Duration SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100_ticks;
+
 /**
  * Common initialization of SpriteObject for spell casting
  *
@@ -82,13 +85,13 @@ static void spellFailed(CastSpellInfo *pCastSpell,
  * Set recovery time for spell casting
  */
 static void setSpellRecovery(CastSpellInfo *pCastSpell,
-                             int recoveryTime) {
+                             Duration recoveryTime) {
     if (pCastSpell->flags & ON_CAST_NoRecoverySpell) {
         return;
     }
 
-    if (recoveryTime < 0) {
-        recoveryTime = 0;
+    if (recoveryTime < Duration::zero()) {
+        recoveryTime = Duration::zero();
     }
 
     Character *pPlayer = &pParty->pCharacters[pCastSpell->casterCharacterIndex];
@@ -102,7 +105,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
             pTurnEngine->ApplyPlayerAction();
         }
     } else {
-        pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
+        pPlayer->SetRecoveryTime(debug_combat_recovery_mul * flt_debugrecmod3 * recoveryTime);
     }
 
     // It's here to set character portrain emotion on spell cast.
@@ -119,7 +122,9 @@ void CastSpellInfoHelpers::castSpell() {
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         SpriteObject pSpellSprite;
         CastSpellInfo *pCastSpell = &spellInfo;
-        int uRequiredMana{}, recoveryTime{}, failureRecoveryTime{};
+        int uRequiredMana{};
+        Duration recoveryTime;
+        Duration failureRecoveryTime;
 
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
@@ -551,7 +556,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_LIGHT)) {
-                        Actor::AI_Stand(monster_id, Pid::character(0), 0x80, 0);
+                        Actor::AI_Stand(monster_id, Pid::character(0), 128_ticks, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
@@ -2396,7 +2401,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_DISPEL_MAGIC:
                 {
-                    recoveryTime -= spell_level;
+                    recoveryTime -= Duration::fromTicks(spell_level);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -2613,7 +2618,7 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         pPlayer->sAgeModifier = pPlayer->sAgeModifier + 10;
                     }
-                    recoveryTime = 5 * spell_level;
+                    recoveryTime = 5_ticks * spell_level;
                     ++pPlayer->uNumDivineInterventionCastsThisDay;
                     break;
                 }
@@ -2803,7 +2808,8 @@ void CastSpellInfoHelpers::castSpell() {
                     NPCData *npcData = buf.Get(flatHirelingId);
                     npcData->dialogue_1_evt_id = 1;
                     npcData->dialogue_2_evt_id = 0;
-                    // TODO(captainurist): #time what's going on here? vvv
+                    // TODO(captainurist): #time that's the timer for dark sacrifice.
+                    //                     It's processed in Party::updateCharactersAndHirelingsEmotions. Redo properly?
                     npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength().ticks();
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();
@@ -3197,5 +3203,5 @@ void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {
     // TODO(Nik-RE-dev): need to get rid of uPlayerID_2 and use pid with OBJECT_Character and something else for hirelings.
     pCastSpell->targetCharacterIndex = targetCharacterIndex;
     // TODO(Nik-RE-dev): why recovery time is set here?
-    pParty->pCharacters[pCastSpell->casterCharacterIndex].SetRecoveryTime(300);
+    pParty->pCharacters[pCastSpell->casterCharacterIndex].SetRecoveryTime(300_ticks);
 }

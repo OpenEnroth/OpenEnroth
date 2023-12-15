@@ -156,10 +156,10 @@ SpellData::SpellData(int16_t inNormalMana,
     mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelMana;
     mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = inMasterLevelMana;
     mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = inMagisterLevelMana;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = inNormalLevelRecovery;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelRecovery;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = inMasterLevelRecovery;
-    recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = inMagisterLevelRecovery;
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = Duration::fromTicks(inNormalLevelRecovery);
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = Duration::fromTicks(inExpertLevelRecovery);
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER] = Duration::fromTicks(inMasterLevelRecovery);
+    recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = Duration::fromTicks(inMagisterLevelRecovery);
     baseDamage = inBaseDamage;
     bonusSkillDamage = inBonusSkillDamage;
     stats = inStats;
@@ -830,7 +830,7 @@ void armageddonProgress() {
 
     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->randomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
     pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->randomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
-    pParty->armageddon_timer = std::max(Duration::zero(), pParty->armageddon_timer - Duration::fromTicks(pEventTimer->uTimeElapsed)); // Was pMiscTimer
+    pParty->armageddon_timer = std::max(Duration::zero(), pParty->armageddon_timer - pEventTimer->uTimeElapsed); // Was pMiscTimer
 
     // TODO(pskelton): ignore if pEventTimer->uTimeElapsed is zero?
     // TODO(captainurist): See the logic in Outdoor.cpp, right now the force is applied in fixed amounts per frame,

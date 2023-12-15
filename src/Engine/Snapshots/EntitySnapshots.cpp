@@ -131,6 +131,14 @@ static void reconstruct(int64_t src, Time *dst) {
     *dst = Time::fromTicks(src);
 }
 
+static void snapshot(const Duration &src, int32_t *dst) {
+    *dst = src.ticks();
+}
+
+static void reconstruct(int32_t src, Duration *dst) {
+    *dst = Duration::fromTicks(src);
+}
+
 static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
     *dst = src.joined();
 }
@@ -266,7 +274,7 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
     dst->startTime = src.uStartTime;
     dst->stopTime = src.uStopTime;
     dst->gameTimeStart = src.uGameTimeStart;
-    dst->timeElapsed = src.uTimeElapsed;
+    dst->timeElapsed = src.uTimeElapsed.ticks();
     dst->dtFixpoint = src.dt_fixpoint;
     dst->totalGameTimeElapsed = src.uTotalTimeElapsed;
 }
@@ -277,7 +285,7 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
     dst->uStartTime = src.startTime;
     dst->uStopTime = src.stopTime;
     dst->uGameTimeStart = src.gameTimeStart;
-    dst->uTimeElapsed = src.timeElapsed;
+    dst->uTimeElapsed = Duration::fromTicks(src.timeElapsed);
     dst->dt_fixpoint = src.dtFixpoint;
     dst->uTotalTimeElapsed = src.totalGameTimeElapsed;
 }
@@ -684,16 +692,6 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->level = src.uLevel;
     dst->levelModifier = src.sLevelModifier;
     dst->ageModifier = src.sAgeModifier;
-    dst->field_E0 = src.field_E0;
-    dst->field_E4 = src.field_E4;
-    dst->field_E8 = src.field_E8;
-    dst->field_EC = src.field_EC;
-    dst->field_F0 = src.field_F0;
-    dst->field_F4 = src.field_F4;
-    dst->field_F8 = src.field_F8;
-    dst->field_FC = src.field_FC;
-    dst->field_100 = src.field_100;
-    dst->field_104 = src.field_104;
 
     snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
@@ -738,7 +736,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->voiceId = src.uVoiceID;
     dst->prevVoiceId = src.uPrevVoiceID;
     dst->prevFace = src.uPrevFace;
-    dst->timeToRecovery = src.timeToRecovery;
+    dst->timeToRecovery = src.timeToRecovery.ticks();
     dst->skillPoints = src.uSkillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
@@ -934,16 +932,6 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uLevel = src.level;
     dst->sLevelModifier = src.levelModifier;
     dst->sAgeModifier = src.ageModifier;
-    dst->field_E0 = src.field_E0;
-    dst->field_E4 = src.field_E4;
-    dst->field_E8 = src.field_E8;
-    dst->field_EC = src.field_EC;
-    dst->field_F0 = src.field_F0;
-    dst->field_F4 = src.field_F4;
-    dst->field_F8 = src.field_F8;
-    dst->field_FC = src.field_FC;
-    dst->field_100 = src.field_100;
-    dst->field_104 = src.field_104;
 
     reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
@@ -988,7 +976,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uVoiceID = src.voiceId;
     dst->uPrevVoiceID = src.prevVoiceId;
     dst->uPrevFace = src.prevFace;
-    dst->timeToRecovery = src.timeToRecovery;
+    dst->timeToRecovery = Duration::fromTicks(src.timeToRecovery);
     dst->uSkillPoints = src.skillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
@@ -1198,7 +1186,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.ac = src.monsterInfo.ac;
     dst->pMonsterInfo.exp = src.monsterInfo.exp;
     dst->pMonsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
-    dst->pMonsterInfo.recoveryTime = src.monsterInfo.recoveryTime;
+    dst->pMonsterInfo.recoveryTime = src.monsterInfo.recoveryTime.ticks();
     dst->pMonsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.attackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
@@ -1292,7 +1280,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.ac = src.pMonsterInfo.ac;
     dst->monsterInfo.exp = src.pMonsterInfo.exp;
     dst->monsterInfo.baseSpeed = src.pMonsterInfo.baseSpeed;
-    dst->monsterInfo.recoveryTime = src.pMonsterInfo.recoveryTime;
+    dst->monsterInfo.recoveryTime = Duration::fromTicks(src.pMonsterInfo.recoveryTime);
     dst->monsterInfo.attackPreferences = static_cast<MonsterAttackPreferences>(src.pMonsterInfo.attackPreferences);
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id

@@ -299,16 +299,17 @@ struct Player_MM7 {
     /* 00DA */ uint16_t level;
     /* 00DC */ int16_t levelModifier;
     /* 00DE */ int16_t ageModifier;
-    /* 00E0 */ int32_t field_E0;
-    /* 00E4 */ int32_t field_E4;
-    /* 00E8 */ int32_t field_E8;
-    /* 00EC */ int32_t field_EC;
-    /* 00F0 */ int32_t field_F0;
-    /* 00F4 */ int32_t field_F4;
-    /* 00F8 */ int32_t field_F8;
-    /* 00FC */ int32_t field_FC;
-    /* 0100 */ int32_t field_100;
-    /* 0104 */ int32_t field_104;
+    /* 00E0 */ int32_t timer_E0; // These look like some timers. In the original binary they were decremented by ticks
+                                 // elapsed on each frame, but weren't used anywhere. Not used in OE.
+    /* 00E4 */ int32_t timer_E4;
+    /* 00E8 */ int32_t timer_E8;
+    /* 00EC */ int32_t timer_EC;
+    /* 00F0 */ int32_t timer_F0;
+    /* 00F4 */ int32_t timer_F4;
+    /* 00F8 */ int32_t timer_F8;
+    /* 00FC */ int32_t timer_FC;
+    /* 0100 */ int32_t timer_100;
+    /* 0104 */ int32_t timer_104;
     /* 0108 */ std::array<uint16_t, 37> activeSkills;
     /* 0152 */ std::array<uint8_t, 64> achievedAwardsBits;
     /* 0192 */ std::array<bool, 99> haveSpell;

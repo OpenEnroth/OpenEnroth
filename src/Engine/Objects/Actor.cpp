@@ -986,7 +986,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
 }
 
 //----- (00404030) --------------------------------------------------------
-void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID, int UNUSED,
+void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID,
                           AIDirection *Dir_In) {
     AIDirection *Dir_Out;
     AIDirection Dir_Ret;
@@ -1015,7 +1015,7 @@ void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID, int UNUSED,
 
 //----- (00403F58) --------------------------------------------------------
 void Actor::AI_StandOrBored(unsigned int uActorID, Pid uObjID,
-                            int uActionLength, AIDirection *a4) {
+                            Duration uActionLength, AIDirection *a4) {
     if (grng->random(2))  // 0 or 1
         AI_Bored(uActorID, uObjID, a4);
     else
@@ -1024,7 +1024,7 @@ void Actor::AI_StandOrBored(unsigned int uActorID, Pid uObjID,
 
 //----- (00403EB6) --------------------------------------------------------
 void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
-                     unsigned int uActionLength, AIDirection *a4) {
+                     Duration uActionLength, AIDirection *a4) {
     assert(uActorID < pActors.size());
     // Actor *actor = &pActors[uActorID];
 
@@ -1039,7 +1039,7 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
     if (!uActionLength)
         pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(256) + 256);  // от 256 до 256 + 256
     else
-        pActors[uActorID].currentActionLength = Duration::fromTicks(uActionLength); // TODO(captainurist): #time
+        pActors[uActorID].currentActionLength = uActionLength;
     pActors[uActorID].currentActionTime = Duration::zero();
     pActors[uActorID].yawAngle = a4->uYawAngle;
     pActors[uActorID].pitchAngle = a4->uPitchAngle;
@@ -1071,13 +1071,13 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
     AIDirection a3;    // [sp+Ch] [bp-48h]@12
     AIDirection v20;   // [sp+28h] [bp-2Ch]@12
     int v23;           // [sp+4Ch] [bp-8h]@6
-    unsigned int v25;  // [sp+5Ch] [bp+8h]@13
+    Duration v25;  // [sp+5Ch] [bp+8h]@13
 
     assert(uActorID < pActors.size());
 
     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY &&
         pActors[uActorID].monsterInfo.aiType == MONSTER_AI_WIMP) {
-        Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
+        Actor::AI_Stand(uActorID, sTargetPid, 0_ticks, arg0);
         return;
     }
 
@@ -1120,7 +1120,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                   .recoveryTime;
         if (pActors[uActorID].buffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            pActors[uActorID].monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * v25 * flt_debugrecmod3);
+            pActors[uActorID].monsterInfo.recoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * v25;
         } else {
             pActors[uActorID].monsterInfo.recoveryTime = v25;
         }
@@ -1129,7 +1129,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         pActors[uActorID].speed.x = 0;
         pActors[uActorID].UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, grng->random(2), 64, arg0);
+        Actor::AI_Pursue1(uActorID, sTargetPid, grng->random(2), 64_ticks, arg0);
     }
 }
 
@@ -1280,7 +1280,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     int v4;              // ebx@2
     MapId v5;     // eax@2
     LocationInfo *v6;  // esi@4
-    int v8;              // [sp+8h] [bp-4h]@6
+    Duration v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
@@ -1291,10 +1291,9 @@ void Actor::StealFrom(unsigned int uActorID) {
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
-        if (v8 < engine->config->gameplay.MinRecoveryMelee.value()) v8 = engine->config->gameplay.MinRecoveryMelee.value();
+        v8 = std::max(v8, Duration::fromTicks(engine->config->gameplay.MinRecoveryMelee.value()));
         if (!pParty->bTurnBasedModeOn)
-            pPlayer->SetRecoveryTime(
-                (int)(debug_non_combat_recovery_mul * v8 * flt_debugrecmod3));
+            pPlayer->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * v8);
         pTurnEngine->ApplyPlayerAction();
     }
 }
@@ -1314,7 +1313,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
     int v19;             // [sp+44h] [bp-10h]@6
     Pid a2;       // [sp+48h] [bp-Ch]@1
     int v21;             // [sp+4Ch] [bp-8h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
+    Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
     a2 = edx0;
@@ -1354,7 +1353,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = (v3->currentActionLength + Duration::fromTicks(debug_combat_recovery_mul * pDira * flt_debugrecmod3)).ticks();
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
@@ -1369,7 +1368,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
             v3->UpdateAnimation();
         }
     } else {
-        Actor::AI_Pursue1(uActorID, a2, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, a2, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1388,7 +1387,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
     int v21;             // [sp+4Ch] [bp-8h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
+    Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
     if (sTargetPid.type() == OBJECT_Actor) {
@@ -1428,7 +1427,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = (v3->currentActionLength + Duration::fromTicks(debug_combat_recovery_mul * pDira * flt_debugrecmod3)).ticks();
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         }
         v16 = v3->monsterInfo.spell1Id;
         v3->speed.z = 0;
@@ -1445,7 +1444,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         }
     } else {
         // TODO(pskelton): Consider adding potshots if no LOS
-        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1463,7 +1462,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
     AIDirection v17;     // [sp+28h] [bp-2Ch]@9
     int v18;             // [sp+44h] [bp-10h]@6
     int v20;             // [sp+4Ch] [bp-8h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
+    Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
     if (sTargetPid.type() == OBJECT_Actor) {
@@ -1501,7 +1500,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
         if (v3->buffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            v3->monsterInfo.recoveryTime = (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
+            v3->monsterInfo.recoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         } else {
             v3->monsterInfo.recoveryTime = pDira;
         }
@@ -1510,7 +1509,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v3->speed.x = 0;
         v3->UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
     }
 }
 
@@ -1529,7 +1528,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
     //int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
     int zpos = 0;             // [sp+50h] [bp-4h]@3
-    unsigned int pDira;  // [sp+5Ch] [bp+8h]@11
+    Duration pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
     // a2 = edx0;
@@ -1574,20 +1573,20 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->monsterInfo.recoveryTime = pDira;
         } else {
-            v3->monsterInfo.recoveryTime = (v3->currentActionLength - Duration::fromTicks(debug_combat_recovery_mul * pDira * -flt_debugrecmod3)).ticks();
+            v3->monsterInfo.recoveryTime = v3->currentActionLength + flt_debugrecmod3 * debug_combat_recovery_mul * pDira;
         }
         v3->speed.z = 0;
         v3->speed.y = 0;
         v3->speed.x = 0;
         v3->UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
     }
 }
 
 //----- (004032B2) --------------------------------------------------------
 void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
-                          int radius, int uActionLength) {
+                          int radius, Duration uActionLength) {
     int x;                                             // ebx@1
     int absy;                                          // eax@1
     unsigned int v9;                                   // ebx@11
@@ -1606,7 +1605,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     else
         absx = absx + absy / 2;
     if (supertypeForMonsterId(pActors[uActor_id].monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         Actor::AI_StandOrBored(uActor_id, Pid(OBJECT_Character, 0), uActionLength,
                                &doNotInitializeBecauseShouldBeRandom);
         return;
@@ -1614,7 +1613,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     if (pActors[uActor_id].monsterInfo.movementType ==
         MONSTER_MOVEMENT_TYPE_GLOBAL &&
         absx < 128) {
-        Actor::AI_Stand(uActor_id, uTarget_id, 256,
+        Actor::AI_Stand(uActor_id, uTarget_id, 256_ticks,
                         &doNotInitializeBecauseShouldBeRandom);
         return;
     }
@@ -1627,7 +1626,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     v10 = v9 + grng->random(256) - 128;
     if (std::abs(v10 - pActors[uActor_id].yawAngle) > 256 &&
         !(pActors[uActor_id].attributes & ACTOR_ANIMATION)) {
-        Actor::AI_Stand(uActor_id, uTarget_id, 256,
+        Actor::AI_Stand(uActor_id, uTarget_id, 256_ticks,
                         &doNotInitializeBecauseShouldBeRandom);
         return;
     }
@@ -1766,7 +1765,7 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
          ((signed int)TrigLUT.uIntegerPi >> 3) - v7;
 
     if (v9 & 0x700) {  // turned away - just stand
-        Actor::AI_Stand(uActorID, uObjID, actor->currentActionLength.ticks(), a4);
+        Actor::AI_Stand(uActorID, uObjID, actor->currentActionLength, a4);
     } else {  // facing player - play bored anim
         actor->aiState = Fidgeting;
         actor->currentActionTime = Duration::zero();
@@ -1875,7 +1874,7 @@ void Actor::playSound(unsigned int uActorID, ActorSound uSoundID) {
 
 //----- (00402AD7) --------------------------------------------------------
 void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
-                       signed int uActionLength, AIDirection *pDir) {
+                       Duration uActionLength, AIDirection *pDir) {
     Actor *v7;         // ebx@1
     Pid v8;   // ecx@1
     AIDirection *v10;  // esi@6
@@ -1899,12 +1898,12 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
         v10 = pDir;
     }
     if (supertypeForMonsterId(v7->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if (v10->uDistance < 307.2) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         Actor::AI_Stand(uActorID, a2, uActionLength, v10);
         return;
     }
@@ -1920,7 +1919,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     v7->yawAngle = TrigLUT.atan2(pParty->pos.x + TrigLUT.cos(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->pos.x,
                                   pParty->pos.y + TrigLUT.sin(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->pos.y);
     if (uActionLength)
-        v7->currentActionLength = Duration::fromTicks(uActionLength);
+        v7->currentActionLength = uActionLength;
     else
         v7->currentActionLength = Duration::fromTicks(128);
     v7->pitchAngle = (short)v10->uPitchAngle;
@@ -1930,7 +1929,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
 
 //----- (00402968) --------------------------------------------------------
 void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
-                    int uActionLength, AIDirection *a4) {
+                    Duration uActionLength, AIDirection *a4) {
     Actor *v5;         // ebx@1
     Pid v7;            // ecx@2
     AIDirection v10;   // [sp+8h] [bp-7Ch]@4
@@ -1948,7 +1947,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         v13 = &v10;
         if (supertypeForMonsterId(v5->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT ||
             sTargetPid.type() == OBJECT_Actor && v13->uDistance < 307.2) {
-            if (!uActionLength) uActionLength = 256;
+            if (!uActionLength) uActionLength = 256_ticks;
             Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
             if (v5->moveSpeed)
@@ -1972,7 +1971,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
 
 //----- (0040281C) --------------------------------------------------------
 void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
-                       signed int uActionLength, AIDirection *pDir, int a5) {
+                       Duration uActionLength, AIDirection *pDir, int a5) {
     int v6;                // eax@1
     Actor *v7;             // ebx@1
     Pid v8;       // ecx@1
@@ -1998,17 +1997,17 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
         v10 = &a3;
     }
     if (supertypeForMonsterId(v7->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if ((signed int)v10->uDistance < a5) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         Actor::AI_StandOrBored(uActorID, a2, uActionLength, v10);
         return;
     }
     if (uActionLength) {
-        v7->currentActionLength = Duration::fromTicks(uActionLength);
+        v7->currentActionLength = uActionLength;
     } else {
         v13 = v7->moveSpeed;
         if (v13)
@@ -2028,7 +2027,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
 
 //----- (00402686) --------------------------------------------------------
 void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
-                       signed int uActionLength, AIDirection *a4) {
+                       Duration uActionLength, AIDirection *a4) {
     int v5;                // eax@1
     Actor *v6;             // ebx@1
     Pid v7;                // ecx@1
@@ -2053,15 +2052,15 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         v20 = &a3;
     }
     if (supertypeForMonsterId(v6->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
     if (a4->uDistance < 307.2) {
-        if (!uActionLength) uActionLength = 256;
+        if (!uActionLength) uActionLength = 256_ticks;
         return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
     if (uActionLength) {
-        v6->currentActionLength = Duration::fromTicks(uActionLength + grng->random(uActionLength));
+        v6->currentActionLength = uActionLength + Duration::fromTicks(grng->random(uActionLength.ticks()));
     } else {
         v12 = v6->moveSpeed;
         if (v12)
@@ -2522,8 +2521,8 @@ void Actor::UpdateActorAI() {
     double v43;              // st6@176
     ActorAbility v45;                 // eax@192
     SpellId v46;     // cl@197
-    signed int v47;          // st7@206
-    unsigned v58;                // st7@246
+    Duration v47;          // st7@206
+    Duration v58;                // st7@246
     unsigned int v65{};        // [sp-10h] [bp-C0h]@144
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
@@ -2592,9 +2591,9 @@ void Actor::UpdateActorAI() {
             continue;
 
         // Calculate RecoveryTime
-        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed, 0); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed, 0_ticks); // was pMiscTimer
 
-        pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
             continue;
 
@@ -2602,7 +2601,7 @@ void Actor::UpdateActorAI() {
             pActor->aiState = Dead;
         } else {
             if (pActor->aiState != Summoned) {
-                Actor::AI_StandOrBored(i, Pid(OBJECT_Character, 0), 256, nullptr);
+                Actor::AI_StandOrBored(i, Pid(OBJECT_Character, 0), 256_ticks, nullptr);
                 continue;
             }
             pActor->aiState = Standing;
@@ -2668,8 +2667,8 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        pActor->monsterInfo.recoveryTime = std::max(0, pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
-        pActor->currentActionTime += Duration::fromTicks(pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - pEventTimer->uTimeElapsed); // was pMiscTimer
+        pActor->currentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
 
         if (!pActor->ActorNearby())
             pActor->attributes |= ACTOR_NEARBY;
@@ -2682,7 +2681,7 @@ void Actor::UpdateActorAI() {
         // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
         // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
-            pActor->monsterInfo.recoveryTime > 0 ||
+            pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * 307.2 < pDir->uDistance ||
             uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.attack1MissileType ||
             uAIState != Stunned) {
@@ -2727,9 +2726,9 @@ void Actor::UpdateActorAI() {
         // If actor afraid: flee or if out of range random move
         if (pActor->buffs[ACTOR_BUFF_AFRAID].Active()) {
             if (distanceToTarget >= 10240)
-                Actor::AI_RandomMove(actor_id, target_pid, 1024, 0);
+                Actor::AI_RandomMove(actor_id, target_pid, 1024, 0_ticks);
             else
-                Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
             continue;
         }
 
@@ -2737,9 +2736,9 @@ void Actor::UpdateActorAI() {
             target_pid) {
             if (pActor->monsterInfo.aiType == MONSTER_AI_WIMP) {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                    Actor::AI_Stand(actor_id, target_pid, (pActor->monsterInfo.recoveryTime * flt_debugrecmod3), pDir);
+                    Actor::AI_Stand(actor_id, target_pid, pActor->monsterInfo.recoveryTime * flt_debugrecmod3, pDir);
                 } else {
-                    Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                    Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
                     continue;
                 }
             }
@@ -2751,7 +2750,7 @@ void Actor::UpdateActorAI() {
                         v43 = pActor->monsterInfo.hp * 0.1;
                     v42 = pActor->currentHP;
                     if (v43 > v42 && distanceToTarget < 10240) {
-                        Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                        Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
                         continue;
                     }
                 }
@@ -2768,7 +2767,7 @@ void Actor::UpdateActorAI() {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
                     if (pActor->monsterInfo.attack1MissileType) {
-                        if (pActor->monsterInfo.recoveryTime <= 0) {
+                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
@@ -2783,15 +2782,15 @@ void Actor::UpdateActorAI() {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {  // monsters
-                                Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
+                                Actor::AI_Pursue3(actor_id, target_pid, 0_ticks, pDir);
                             } else {
                                 v70 = (radiusMultiplier * 307.2);
                                 // monsters
                                 // guard after player runs away
                                 // follow player
-                                Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
+                                Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > 0) {
+                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             // monsters
@@ -2805,7 +2804,7 @@ void Actor::UpdateActorAI() {
                     else
                         v46 = pActor->monsterInfo.spell2Id;
                     if (v46 != SPELL_NONE) {
-                        if (pActor->monsterInfo.recoveryTime <= 0) {
+                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
@@ -2821,12 +2820,12 @@ void Actor::UpdateActorAI() {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {
-                                Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
+                                Actor::AI_Pursue3(actor_id, target_pid, 256_ticks, pDir);
                             } else {
                                 v70 = (radiusMultiplier * 307.2);
-                                Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
+                                Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > 0) {
+                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
@@ -2840,16 +2839,16 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.hostilityType != HOSTILITY_LONG ||
             !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_SHORT) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_MEDIUM) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_LONG) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_FREE) {
-                Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0_ticks);
             } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, Pid::character(0), &v72, 0);
-                v58 = (pActor->monsterInfo.recoveryTime * flt_debugrecmod3);
+                v58 = pActor->monsterInfo.recoveryTime * flt_debugrecmod3;
                 Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
             }
         } else if (!pActor->monsterInfo.attack2MissileType) {
@@ -2857,17 +2856,17 @@ void Actor::UpdateActorAI() {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                 } else if (v81 >= 1024) {
-                    Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
+                    Actor::AI_Pursue3(actor_id, target_pid, 256_ticks, pDir);
                 } else {
                     v70 = (radiusMultiplier * 307.2);
-                    Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
+                    Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                 }
-            } else if (pActor->monsterInfo.recoveryTime > 0) {
+            } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             } else {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
-        } else if (pActor->monsterInfo.recoveryTime > 0) {
+        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
             if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else
@@ -3016,7 +3015,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
-    int extraRecoveryTime;           // qax@125
+    Duration extraRecoveryTime;           // qax@125
     uint16_t v43{};            // ax@132
     uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
@@ -3251,10 +3250,10 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.hp;
     if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-        extraRecoveryTime = 20;
+        extraRecoveryTime = 20_ticks;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
-            extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
+            extraRecoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * 20_ticks;
         pMonster->monsterInfo.recoveryTime += extraRecoveryTime;
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_FMT_S_STUNS_S, character->name, pMonster->name);

@@ -185,13 +185,14 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
 
-    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
+    // TODO(captainurist): #time drop .ticks()
+    Duration sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
     if (pParty->bTurnBasedModeOn) {
         pParty->pTurnBasedCharacterRecoveryTimes[_casterId] = sRecoveryTime;
         character.SetRecoveryTime(sRecoveryTime);
         pTurnEngine->ApplyPlayerAction();
     } else {
-        character.SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+        character.SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * sRecoveryTime);
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, false, SOUND_MODE_UI);
     if (_recallingBeacon) {

@@ -7,6 +7,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
+#include "Engine/Time/Duration.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -45,7 +46,7 @@ class SpellData {
               int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats,
               CharacterSkillMastery inSkillMastery);
     IndexedArray<uint16_t, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> mana_per_skill;
-    IndexedArray<uint16_t, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> recovery_per_skill;
+    IndexedArray<Duration, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> recovery_per_skill;
     int8_t baseDamage;
     int8_t bonusSkillDamage;
     int16_t stats; // TODO(captainurist): #enum flags.

@@ -360,7 +360,7 @@ bool enterHouse(HouseId uHouseID) {
         ++pParty->uNumPrisonTerms;
         pParty->uFine = 0;
         for (Character &player : pParty->pCharacters) {
-            player.timeToRecovery = 0;
+            player.timeToRecovery = Duration::zero();
             player.uNumDivineInterventionCastsThisDay = 0;
             player.SetVariable(VAR_Award, Award_PrisonTerms);
         }

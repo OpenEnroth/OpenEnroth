@@ -344,7 +344,7 @@ GAME_TEST(Issues, Issue663) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST, SCREEN_CHEST_INVENTORY));
     // should switch to char 2 inv
     EXPECT_EQ(pParty->activeCharacterIndex(), 2);
-    EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0);
+    EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0_ticks);
 }
 
 GAME_TEST(Issues, Issue664) {
@@ -633,8 +633,8 @@ GAME_TEST(Issues, Issue784) {
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_BODY));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_EARTH));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_FIRE));
-    EXPECT_EQ(58, player0.GetAttackRecoveryTime(false)); // CHARACTER_BUFF_HASTE.
-    // EXPECT_EQ(59, player0.GetAttackRecoveryTime(true)); // Can't call this b/c no bow.
+    EXPECT_EQ(58_ticks, player0.GetAttackRecoveryTime(false)); // CHARACTER_BUFF_HASTE.
+    // EXPECT_EQ(59_ticks, player0.GetAttackRecoveryTime(true)); // Can't call this b/c no bow.
     EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS)); // CHARACTER_BUFF_HEROISM.
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_MIND));
     // No check for CHARACTER_BUFF_PRESERVATION.

@@ -1835,7 +1835,7 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout = std::max(Duration::zero(), AfterEnchClickEventTimeout - Duration::fromTicks(pEventTimer->uTimeElapsed));
+        AfterEnchClickEventTimeout = std::max(Duration::zero(), AfterEnchClickEventTimeout - pEventTimer->uTimeElapsed);
         if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
