@@ -228,7 +228,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         collision_state.position_lo = pSpriteObjects[uLayingItemID].vPosition.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
         collision_state.position_hi = collision_state.position_lo;
         collision_state.velocity = pSpriteObjects[uLayingItemID].vVelocity.toFloat();
-        if (collision_state.PrepareAndCheckIfStationary(0)) {
+        if (collision_state.PrepareAndCheckIfStationary()) {
             return;
         }
 
@@ -380,7 +380,7 @@ LABEL_25:
             collision_state.position_lo = collision_state.position_hi;
             collision_state.velocity = pSpriteObject->vVelocity.toFloat();
             collision_state.uSectorID = pSpriteObject->uSectorID;
-            if (collision_state.PrepareAndCheckIfStationary(0)) {
+            if (collision_state.PrepareAndCheckIfStationary()) {
                 return;
             }
 

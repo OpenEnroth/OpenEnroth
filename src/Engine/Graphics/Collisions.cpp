@@ -366,10 +366,10 @@ static void CollideWithDecoration(int id) {
 // Public API.
 //
 
-bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
-    if (!dt_fp)
-        dt_fp = pEventTimer->dt_fixpoint;
-    float dt = fixpoint_to_float(dt_fp);
+bool CollisionState::PrepareAndCheckIfStationary(Duration dt) {
+    if (!dt)
+        dt = pEventTimer->uTimeElapsed;
+    float dtf = dt.ticks() / 128.0f;
 
     this->speed = this->velocity.length();
     if (fuzzyIsNull(this->speed, COLLISIONS_EPS))
@@ -377,7 +377,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
 
     this->direction = this->velocity / this->speed;
 
-    this->move_distance = dt * this->speed - this->total_move_distance;
+    this->move_distance = dtf * this->speed - this->total_move_distance;
     if (this->move_distance <= COLLISIONS_MIN_MOVE_DISTANCE)
         return true;
 
@@ -591,7 +591,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.speed.toFloat();
         collision_state.uSectorID = actor.sectorId;
-        if (collision_state.PrepareAndCheckIfStationary(0))
+        if (collision_state.PrepareAndCheckIfStationary())
             break;
 
         int actorCollisions = 0;
@@ -729,7 +729,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.speed.toFloat();
         collision_state.uSectorID = 0;
-        if (collision_state.PrepareAndCheckIfStationary(0))
+        if (collision_state.PrepareAndCheckIfStationary())
             break;
 
         CollideOutdoorWithModels(true);
@@ -851,9 +851,9 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         collision_state.velocity = pParty->speed;
 
         collision_state.uSectorID = sectorId;
-        int dt = 0; // zero means use actual dt
+        Duration dt; // zero means use actual dt
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
-            dt = 13312; // fixpoint(13312) = 0.203125
+            dt = 26_ticks;
 
         if (collision_state.PrepareAndCheckIfStationary(dt))
             break;
@@ -983,9 +983,9 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         collision_state.velocity = *partyInputSpeed;
         collision_state.uSectorID = 0;
 
-        int frame_movement_dt = 0;
+        Duration frame_movement_dt;
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
-            frame_movement_dt = 13312;
+            frame_movement_dt = 26_ticks;
         if (collision_state.PrepareAndCheckIfStationary(frame_movement_dt)) {
             break;
         }
