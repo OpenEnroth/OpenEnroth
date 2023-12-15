@@ -434,8 +434,9 @@
 #define LSTR_NOBODY_IS_IN_CONDITION         680  // "Nobody is in a condition to do anything!"
 #define LSTR_KEY_CONFLICT                   681  // "Please resolve all key conflicts!"
 #define LSTR_RECOVERY_TIME_NA               682  // "Recovery time: N/A"
+#define LSTR_WAND_ALREADY_CHARGED           683  // "Wand already charged!"
 
-#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 6
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 7
 
 class Localization {
  public:

@@ -72,6 +72,8 @@ bool Localization::Initialize() {
         this->localization_strings[LSTR_KEY_CONFLICT] = "Please resolve all key conflicts!";
     if (!this->localization_strings[LSTR_RECOVERY_TIME_NA])
         this->localization_strings[LSTR_RECOVERY_TIME_NA] = "Recovery time: N/A";
+    if (!this->localization_strings[LSTR_WAND_ALREADY_CHARGED])
+        this->localization_strings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
 
     InitializeMm6ItemCategories();
 
