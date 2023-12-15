@@ -1599,7 +1599,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     int rotation =
-        (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
+        pEventTimer->uTimeElapsed.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
 
     pParty->speed = Vec3f(0, 0, pParty->speed.z);
 

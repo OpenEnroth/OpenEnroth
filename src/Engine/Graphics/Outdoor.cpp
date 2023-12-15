@@ -1706,7 +1706,7 @@ void ODM_ProcessPartyActions() {
 
     bool flyDown{ false };
 
-    int64_t dturn = ((int64_t) pEventTimer->dt_fixpoint * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
+    int64_t dturn = pEventTimer->uTimeElapsed.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:

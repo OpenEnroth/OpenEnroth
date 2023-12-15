@@ -73,6 +73,4 @@ void Timer::Update() {
 
     if (!bPaused && !bTackGameTime)
         uTotalTimeElapsed += uTimeElapsed.ticks();
-
-    dt_fixpoint = (uTimeElapsed.ticks() << 16) / 128;
 }
