@@ -925,9 +925,9 @@ void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
         float worldviewdepth = -512.0f / newX;
 
         // offset tex coords
-        float texoffset_U = ((pMiscTimer->uTotalTimeElapsed) / 128.0f) + ((skyfinalleft * worldviewdepth) / 16.0f);
+        float texoffset_U = Duration::fromTicks(pMiscTimer->uTotalTimeElapsed).toFloatRealtimeSeconds() + ((skyfinalleft * worldviewdepth) / 16.0f);
         VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->width());
-        float texoffset_V = ((pMiscTimer->uTotalTimeElapsed) / 128.0f) + ((skyfinalfront * worldviewdepth) / 16.0f);
+        float texoffset_V = Duration::fromTicks(pMiscTimer->uTotalTimeElapsed).toFloatRealtimeSeconds() + ((skyfinalfront * worldviewdepth) / 16.0f);
         VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->height());
 
         // this basically acts as texture perspective correction

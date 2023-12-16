@@ -1202,11 +1202,11 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
-    int v37 = pEventTimer->uTotalTimeElapsed;
-    if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
+    Duration v37 = Duration::fromTicks(pEventTimer->uTotalTimeElapsed);
+    if (pParty->bTurnBasedModeOn) v37 = Duration::fromTicks(pMiscTimer->uTotalTimeElapsed);
     v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
-    v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, Duration::fromTicks(v37 + v10));
+    v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
 
     // error catching
     if (v11->icon_name == "null") assert(false);
