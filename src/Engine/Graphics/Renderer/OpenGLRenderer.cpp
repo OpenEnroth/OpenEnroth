@@ -2092,9 +2092,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
             if (worldviewdepth < 0) worldviewdepth = pCamera3D->GetFarClip();
 
             // offset tex coords
-            float texoffset_U = (float(pMiscTimer->uTotalTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
+            float texoffset_U = Duration::fromTicks(pMiscTimer->uTotalTimeElapsed).toFloatRealtimeSeconds() + ((skyfinalleft * worldviewdepth));
             VertexRenderList[i].u = texoffset_U / ((float) pSkyPolygon.texture->width());
-            float texoffset_V = (float(pMiscTimer->uTotalTimeElapsed) / 128.0) + ((skyfinalfront * worldviewdepth));
+            float texoffset_V = Duration::fromTicks(pMiscTimer->uTotalTimeElapsed).toFloatRealtimeSeconds() + ((skyfinalfront * worldviewdepth));
             VertexRenderList[i].v = texoffset_V / ((float) pSkyPolygon.texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
