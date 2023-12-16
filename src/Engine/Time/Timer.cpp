@@ -28,7 +28,7 @@ void Timer::Resume() {
     if (bPaused) {
         keyboardInputHandler->ResetKeys();
 
-        bPaused = 0;
+        bPaused = false;
         uStartTime = Time();
     }
 }

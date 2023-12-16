@@ -4,14 +4,9 @@
 
 #include "Duration.h"
 
-struct Timer {
+class Timer {
+ public:
     Timer() = default;
-
-    /**
-     * @return                          Current real time (not game time!) in timer ticks. One tick is 1/128th of a
-     *                                  real time second.
-     */
-    uint64_t Time();
 
     void Update();
     void Pause();
@@ -19,7 +14,7 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bPaused = false;
+    bool bPaused = false;
     int bTackGameTime = 0;
     unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).
     unsigned int uStopTime = 0;
@@ -35,6 +30,9 @@ struct Timer {
     static const unsigned int Week = 7 * Day;
     static const unsigned int Month = 4 * Week;
     static const unsigned int Year = 12 * Month;
+
+ private:
+    uint64_t Time();
 };
 
 extern Timer *pMiscTimer;
