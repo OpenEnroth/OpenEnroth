@@ -155,14 +155,13 @@ void Engine::drawWorld() {
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
         if (!PauseGameDrawing()) {
-            // if ( render->pRenderD3D )
-            {
-                float v2 =
-                    (double)(((signed int)pMiscTimer->uTotalTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
-                // v3 = v2 + 6.7553994e15;
-                // render->field_1036A8_bitmapid = LODWORD(v3);
-                render->hd_water_current_frame = floorf(v2 + 0.5f);
-            }
+            // Water animation in vanilla was borked, or so it seems. Water has 7 frames, frame durations are:
+            //
+            // Frame    0       1       2       3       4       5       6       Total
+            // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
+            // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
+            render->hd_water_current_frame =
+                std::floor(std::fmod(Duration::fromTicks(pMiscTimer->uTotalTimeElapsed).toFloatRealtimeSeconds(), 1.0f) * 7.0f);
 
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
