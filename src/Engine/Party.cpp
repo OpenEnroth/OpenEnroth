@@ -940,10 +940,9 @@ void restAndHeal(Duration restTime) {
     pParty->updateCharactersAndHirelingsEmotions();
 }
 void Party::restOneFrame() {
-    // Before each frame party rested for 6 minutes but that caused
-    // resting to be too fast on high FPS
-    // Now resting speed is roughly 6 game hours per second
-    Duration restTick = Duration::fromMinutes(3 * pEventTimer->uTimeElapsed.ticks());
+    // Before each frame party rested for 6 minutes but that caused resting to be too fast on high FPS.
+    // Game time is 30x real time, so given the calculation below we're resting ~6 game hours per realtime second.
+    Duration restTick = pEventTimer->uTimeElapsed * 12 * 64;
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;
