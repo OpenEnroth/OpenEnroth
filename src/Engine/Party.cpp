@@ -748,7 +748,7 @@ void Party::resetCharacterEmotions() {
     for (Character &player : this->pCharacters) {
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
-            player.uExpressionTimeLength = Duration::fromTicks(32);
+            player.uExpressionTimeLength = 32_ticks;
             player.expression = CHARACTER_EXPRESSION_NORMAL;
         } else {
             player.uExpressionTimeLength = Duration::zero();

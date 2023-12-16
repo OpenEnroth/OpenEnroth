@@ -935,17 +935,17 @@ void PrepareToLoadBLV(bool bLoading) {
     for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
             pIndoor->pDoors[i].uState = DOOR_OPENING;
-            pIndoor->pDoors[i].uTimeSinceTriggered = Duration::fromTicks(15360);
+            pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
 
         if (pIndoor->pDoors[i].uState == DOOR_CLOSED) {
             pIndoor->pDoors[i].uState = DOOR_CLOSING;
-            pIndoor->pDoors[i].uTimeSinceTriggered = Duration::fromTicks(15360);
+            pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         } else if (pIndoor->pDoors[i].uState == DOOR_OPEN) {
             pIndoor->pDoors[i].uState = DOOR_OPENING;
-            pIndoor->pDoors[i].uTimeSinceTriggered = Duration::fromTicks(15360);
+            pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
     }
@@ -1844,7 +1844,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
 
         if (door.uState == DOOR_OPEN) {
             door.uTimeSinceTriggered = Duration::zero();
-        } else if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+        } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_OPENING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
             int timeLeftMs = door.uTimeSinceTriggered.toRealtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
@@ -1857,7 +1857,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
 
         if (door.uState == DOOR_CLOSED) {
             door.uTimeSinceTriggered = Duration::zero();
-        } else if (door.uTimeSinceTriggered != Duration::fromTicks(15360)) {
+        } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_CLOSING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
             int timeLeftMs = door.uTimeSinceTriggered.toRealtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;

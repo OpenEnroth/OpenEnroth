@@ -1359,7 +1359,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v3->speed.y = 0;
         v3->speed.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell2Id)) {
-            v3->currentActionLength = Duration::fromTicks(64);
+            v3->currentActionLength = 64_ticks;
             v3->currentActionTime = Duration::zero();
             v3->aiState = Fidgeting;
             v3->UpdateAnimation();
@@ -1434,7 +1434,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->speed.y = 0;
         v3->speed.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell1Id)) {
-            v3->currentActionLength = Duration::fromTicks(64);
+            v3->currentActionLength = 64_ticks;
             v3->currentActionTime = Duration::zero();
             v3->aiState = Fidgeting;
             v3->UpdateAnimation();
@@ -1921,7 +1921,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     if (uActionLength)
         v7->currentActionLength = uActionLength;
     else
-        v7->currentActionLength = Duration::fromTicks(128);
+        v7->currentActionLength = 128_ticks;
     v7->pitchAngle = (short)v10->uPitchAngle;
     v7->aiState = Pursuing;
     v7->UpdateAnimation();
@@ -1955,7 +1955,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
                     (signed int)(a4->uDistanceXZ << 7) / v5->moveSpeed);
             else
                 v5->currentActionLength = Duration::zero();
-            if (v5->currentActionLength > Duration::fromTicks(256)) v5->currentActionLength = Duration::fromTicks(256);
+            if (v5->currentActionLength > 256_ticks) v5->currentActionLength = 256_ticks;
             v5->yawAngle =
                 (short)TrigLUT.uIntegerHalfPi + (short)a4->uYawAngle;
             v5->yawAngle =
@@ -2015,7 +2015,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
                 (signed int)(v10->uDistanceXZ << 7) / v13);
         else
             v7->currentActionLength = Duration::zero();
-        if (v7->currentActionLength > Duration::fromTicks(32)) v7->currentActionLength = Duration::fromTicks(32);
+        if (v7->currentActionLength > 32_ticks) v7->currentActionLength = 32_ticks;
     }
     v7->yawAngle = (short)v10->uYawAngle;
     v14 = (short)v10->uPitchAngle;
@@ -2067,7 +2067,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
             v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ << 7) / v12);
         else
             v6->currentActionLength = Duration::zero();
-        if (v6->currentActionLength > Duration::fromTicks(128)) v6->currentActionLength = Duration::fromTicks(128);
+        if (v6->currentActionLength > 128_ticks) v6->currentActionLength = 128_ticks;
     }
     v14 = (short)a4->uYawAngle;
     if (grng->random(2))
@@ -2506,7 +2506,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->currentActionTime = Duration::zero();
     actor->group = this->group;
     actor->aiState = Summoned;
-    actor->currentActionLength = Duration::fromTicks(256);
+    actor->currentActionLength = 256_ticks;
     actor->UpdateAnimation();
 
     ++this->monsterInfo.specialAbilityDamageDiceBonus;
@@ -4266,7 +4266,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->group = 0;
     actor->currentActionTime = Duration::zero();
     actor->aiState = Summoned;
-    actor->currentActionLength = Duration::fromTicks(256);
+    actor->currentActionLength = 256_ticks;
     actor->UpdateAnimation();
 
     int sectorId = pIndoor->GetSector(actor->pos);

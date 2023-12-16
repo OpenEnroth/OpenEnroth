@@ -136,7 +136,7 @@ GAME_TEST(Issues, Issue1164) {
     // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
     // shouldn't really be there, but for now we test it the way it actually works.
     auto ticks = end->second - begin->second;
-    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + Duration::fromTicks(1).toRealtimeMilliseconds() - 1 /* Round up! */);
+    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + (1_ticks).toRealtimeMilliseconds() - 1 /* Round up! */);
     EXPECT_GE(ticks, 144_ticks - frameTicks);
 }
 
@@ -438,7 +438,7 @@ GAME_TEST(Issues, Issue1370) {
     auto exprTimeTape = tapes.custom([] { return pParty->pCharacters[2].uExpressionTimeLength; });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
     EXPECT_TRUE(exprTape.contains(CHARACTER_EXPRESSION_TALK));
-    EXPECT_TRUE(exprTimeTape.contains(Duration::fromTicks(318)));  // 2.49 * 128
+    EXPECT_TRUE(exprTimeTape.contains(318_ticks));  // 2.49 * 128
     EXPECT_EQ(exprTape.back(), CHARACTER_EXPRESSION_NORMAL);
 }
 
@@ -476,15 +476,15 @@ GAME_TEST(Prs, Pr1440) {
 
     TextureFrame frame0;
     frame0.name = "dec33b";
-    frame0.animationDuration = Duration::fromTicks(16);
-    frame0.frameDuration = Duration::fromTicks(8);
+    frame0.animationDuration = 16_ticks;
+    frame0.frameDuration = 8_ticks;
     frame0.flags = TEXTURE_FRAME_TABLE_MORE_FRAMES;
     GraphicsImage *tex0 = frame0.GetTexture();
 
     TextureFrame frame1;
     frame1.name = "dec33d";
     frame1.animationDuration = Duration::zero();
-    frame1.frameDuration = Duration::fromTicks(8);
+    frame1.frameDuration = 8_ticks;
     frame1.flags = 0;
     GraphicsImage *tex1 = frame1.GetTexture();
 

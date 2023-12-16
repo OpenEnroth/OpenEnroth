@@ -128,7 +128,7 @@ static void createSpriteTrailParticle(Vec3i pos, ObjectDescFlags flags) {
     } else if (flags & OBJECT_DESC_TRIAL_LINE) {
         particle.type = ParticleType_Line;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
-        particle.timeToLive = Duration::fromTicks(64);
+        particle.timeToLive = 64_ticks;
         particle.texture = nullptr;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);

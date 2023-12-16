@@ -819,7 +819,7 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
 void armageddonProgress() {
     assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pParty->armageddon_timer > Duration::zero());
 
-    if (pParty->armageddon_timer > Duration::fromTicks(417)) {
+    if (pParty->armageddon_timer > 417_ticks) {
         pParty->armageddon_timer = Duration::zero();
         return; // TODO(captainurist): wtf? Looks like a quick hack for some bug.
     }

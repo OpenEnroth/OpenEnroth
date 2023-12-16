@@ -1320,10 +1320,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         Cur_Action_Time = pActors[i].currentActionTime;
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = Duration::fromTicks(32 * i) + pMiscTimer->uTotalTimeElapsed;
+                Cur_Action_Time = i * 32_ticks + pMiscTimer->uTotalTimeElapsed;
         } else {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = Duration::fromTicks(32 * i) + pEventTimer->uTotalTimeElapsed;
+                Cur_Action_Time = i * 32_ticks + pEventTimer->uTotalTimeElapsed;
         }
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
@@ -2429,7 +2429,7 @@ void UpdateActors_ODM() {
                 if (pActors[Actor_ITR].CanAct()) {
                     pActors[Actor_ITR].yawAngle -= 32;
                     pActors[Actor_ITR].currentActionTime = Duration::zero();
-                    pActors[Actor_ITR].currentActionLength = Duration::fromTicks(128);
+                    pActors[Actor_ITR].currentActionLength = 128_ticks;
                     pActors[Actor_ITR].aiState = Fleeing;
                 }
             }
@@ -2449,7 +2449,7 @@ void UpdateActors_ODM() {
                                 pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
                                                                              target_y - pActors[Actor_ITR].pos.y);
                                 pActors[Actor_ITR].currentActionTime = Duration::zero();
-                                pActors[Actor_ITR].currentActionLength = Duration::fromTicks(128);
+                                pActors[Actor_ITR].currentActionLength = 128_ticks;
                                 pActors[Actor_ITR].aiState = Fleeing;
                                 break;
                             }

@@ -40,7 +40,7 @@ Duration TextureFrameTable::textureFrameAnimLength(int frameID) {
     Duration result = textures[frameID].animationDuration;
     if ((textures[frameID].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && result)
         return result;
-    return Duration::fromTicks(1);
+    return 1_ticks;
 }
 
 Duration TextureFrameTable::textureFrameAnimTime(int frameID) {
