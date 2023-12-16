@@ -4221,7 +4221,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 }
 
 //----- (0044FA4C) --------------------------------------------------------
-void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds) {
+void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, Duration duration) {
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
@@ -4278,7 +4278,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
             (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
-        actor->buffs[ACTOR_BUFF_SUMMONED].Apply((pParty->GetPlayingTime() + Duration::fromSeconds(duration_game_seconds)),
+        actor->buffs[ACTOR_BUFF_SUMMONED].Apply(pParty->GetPlayingTime() + duration,
                                                 caster_skill_mastery, spell_power, 0, 0);
     } else {
         actor->Remove();
