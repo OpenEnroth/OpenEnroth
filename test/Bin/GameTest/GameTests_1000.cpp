@@ -123,7 +123,7 @@ GAME_TEST(Issues, Issue1155) {
 GAME_TEST(Issues, Issue1164) {
     // CHARACTER_EXPRESSION_NO animation ending abruptly - should show the character moving his/her head to the left,
     // then to the right.
-    auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->Time()); });
+    auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->uTotalTimeElapsed); });
     auto frameTimeTape = tapes.config(engine->config->debug.TraceFrameTimeMs);
     test.playTraceFromTestData("issue_1164.mm7", "issue_1164.json");
     EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo at other frame rates.
@@ -136,8 +136,8 @@ GAME_TEST(Issues, Issue1164) {
     // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
     // shouldn't really be there, but for now we test it the way it actually works.
     auto ticks = end->second - begin->second;
-    int frameTicks = (128 * 15 + 999) / 1000;
-    EXPECT_GE(ticks, 144 - frameTicks);
+    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + Duration::fromTicks(1).toRealtimeMilliseconds() - 1 /* Round up! */);
+    EXPECT_GE(ticks, 144_ticks - frameTicks);
 }
 
 GAME_TEST(Issues, Issue1191) {
