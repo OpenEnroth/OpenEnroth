@@ -254,7 +254,8 @@ void SpellFxRenderer::DrawProjectiles() {
 void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
         SpriteObject *a2, Color uDiffuse, GraphicsImage *texture) {
     // check if enough time has passed to add particle into the trail
-    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->uTotalTimeElapsed) {
+    // TODO(captainurist): we're checking for pEventTimer, and this means we're not getting any particles in turn-based mode!
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < Duration::fromTicks(pEventTimer->uTotalTimeElapsed)) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
     } else {
         return;
