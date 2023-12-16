@@ -4,6 +4,7 @@
 
 #include "Engine/Graphics/RenderEntities.h"
 #include "Engine/Tables/TileEnums.h"
+#include "Engine/Time/Duration.h"
 
 #include "Utility/Flags.h"
 
@@ -36,7 +37,7 @@ struct Bloodsplat {
                         // TODO(captainurist): doesn't belong to this struct, should be moved out.
     Color color;
     DecalFlags blood_flags = DecalFlagsNone;
-    uint64_t fade_timer = 0;
+    Duration fade_timer;
 };
 
 // store for all the bloodsplats to be applied
@@ -66,7 +67,7 @@ struct Decal {
     Color uColorMultiplier;
     int DimmingLevel;
 
-    uint64_t fadetime;
+    Duration fadetime;
     DecalFlags decal_flags;
 };
 
