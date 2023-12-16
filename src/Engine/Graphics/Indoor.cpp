@@ -239,7 +239,7 @@ GraphicsImage *BLVFace::GetTexture() {
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, Duration::fromTicks(pEventTimer->uTotalTimeElapsed));
+            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
     else
         return static_cast<GraphicsImage *>(this->resource);
 }
@@ -1202,8 +1202,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
-    Duration v37 = Duration::fromTicks(pEventTimer->uTotalTimeElapsed);
-    if (pParty->bTurnBasedModeOn) v37 = Duration::fromTicks(pMiscTimer->uTotalTimeElapsed);
+    Duration v37 = pEventTimer->uTotalTimeElapsed;
+    if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
     v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));

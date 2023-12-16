@@ -161,7 +161,7 @@ void Engine::drawWorld() {
             // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
             // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
             render->hd_water_current_frame =
-                std::floor(std::fmod(Duration::fromTicks(pMiscTimer->uTotalTimeElapsed).toFloatRealtimeSeconds(), 1.0f) * 7.0f);
+                std::floor(std::fmod(pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds(), 1.0f) * 7.0f);
 
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();

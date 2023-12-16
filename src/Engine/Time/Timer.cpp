@@ -72,5 +72,5 @@ void Timer::Update() {
         uTimeElapsed = 32_ticks; // 32 is 250ms
 
     if (!bPaused && !bTackGameTime)
-        uTotalTimeElapsed += uTimeElapsed.ticks();
+        uTotalTimeElapsed += uTimeElapsed;
 }

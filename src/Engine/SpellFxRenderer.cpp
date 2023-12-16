@@ -255,7 +255,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         SpriteObject *a2, Color uDiffuse, GraphicsImage *texture) {
     // check if enough time has passed to add particle into the trail
     // TODO(captainurist): we're checking for pEventTimer, and this means we're not getting any particles in turn-based mode!
-    if (a2->_lastParticleTime + a2->_ticksPerParticle < Duration::fromTicks(pEventTimer->uTotalTimeElapsed)) {
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->uTotalTimeElapsed) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
     } else {
         return;
@@ -619,10 +619,10 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     if (!pActor->massDistortionTime)
         return 1.0;
 
-    assert(pActor->massDistortionTime <= Duration::fromTicks(pMiscTimer->uTotalTimeElapsed));
+    assert(pActor->massDistortionTime <= pMiscTimer->uTotalTimeElapsed);
 
     // That's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
-    float v3 = 1.0f - (Duration::fromTicks(pMiscTimer->uTotalTimeElapsed) - pActor->massDistortionTime).toFloatRealtimeSeconds();
+    float v3 = 1.0f - (pMiscTimer->uTotalTimeElapsed - pActor->massDistortionTime).toFloatRealtimeSeconds();
     if (v3 > 0.5f) {
         float v2 = (v3 - 0.5f) * (v3 - 0.5f) / 0.25f;
         return 0.2f + v2 * 0.8f;
