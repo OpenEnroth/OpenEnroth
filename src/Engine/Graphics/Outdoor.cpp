@@ -1706,6 +1706,7 @@ void ODM_ProcessPartyActions() {
 
     bool flyDown{ false };
 
+    // TODO(captainurist): #time think about a better way to write this formula.
     int64_t dturn = pEventTimer->uTimeElapsed.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {

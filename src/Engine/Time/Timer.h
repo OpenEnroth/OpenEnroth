@@ -35,5 +35,10 @@ class Timer {
     uint64_t Time();
 };
 
+// TODO(captainurist): pAnimTimer? Also, if we are being purists, this is not a Timer. It's not measuring Enroth time,
+//                     it's measuring real time. So should operate with std::chrono primitives. Look at all the places
+//                     where it's used and write proper docs here first, maybe I'm missing smth.
 extern Timer *pMiscTimer;
+
+// TODO(captainurist): pGameTimer?
 extern Timer *pEventTimer;

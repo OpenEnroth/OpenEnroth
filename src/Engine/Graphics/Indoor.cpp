@@ -1598,6 +1598,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int vertical_angle = pParty->_viewPitch;
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
+    // TODO(captainurist): #time think about a better way to write this formula.
     int rotation =
         pEventTimer->uTimeElapsed.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
 
