@@ -22,15 +22,6 @@ class Timer {
     Duration uTimeElapsed; // dt since last frame.
     Duration uTotalTimeElapsed; // Total time elapsed.
 
-    // Real time intervals in timer ticks.
-    static const unsigned int Second = 128;
-    static const unsigned int Minute = 60 * Second;
-    static const unsigned int Hour = 60 * Minute;
-    static const unsigned int Day = 24 * Hour;
-    static const unsigned int Week = 7 * Day;
-    static const unsigned int Month = 4 * Week;
-    static const unsigned int Year = 12 * Month;
-
  private:
     uint64_t Time();
 };
