@@ -265,8 +265,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID)
     return false;
 }
 
-int Chest::CountChestItems(int uChestID) {
-    // this returns first free slot rather than an actual count
+int Chest::FindFreeItemSlot(int uChestID) {
     int item_count = 0;
     int max_items = pChestWidthsByType[vChests[uChestID].uChestBitmapID] *
                     pChestHeightsByType[vChests[uChestID].uChestBitmapID];
@@ -286,14 +285,14 @@ int Chest::CountChestItems(int uChestID) {
 }
 
 int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
-    int item_in_chest_count = CountChestItems(uChestID);
+    int firstFreeSlot = FindFreeItemSlot(uChestID);
 
     int max_size = pChestWidthsByType[vChests[uChestID].uChestBitmapID] *
                    pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
     int test_pos = max_size;
 
-    if (item_in_chest_count == -1) return 0;
+    if (firstFreeSlot == -1) return 0;
 
     if (position != -1) {
         if (CanPlaceItemAt(position, put_item->uItemID, uChestID)) {
@@ -331,9 +330,9 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
         }
     }
 
-    vChests[uChestID].pInventoryIndices[test_pos] = item_in_chest_count + 1;
-    vChests[uChestID].igChestItems[item_in_chest_count] = *put_item;
-    vChests[uChestID].igChestItems[item_in_chest_count].placedInChest = true;
+    vChests[uChestID].pInventoryIndices[test_pos] = firstFreeSlot + 1;
+    vChests[uChestID].igChestItems[firstFreeSlot] = *put_item;
+    vChests[uChestID].igChestItems[firstFreeSlot].placedInChest = true;
 
     return (test_pos + 1);
 }
