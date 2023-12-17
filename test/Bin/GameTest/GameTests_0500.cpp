@@ -10,6 +10,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
@@ -408,6 +409,16 @@ GAME_TEST(Issues, Issue677) {
     EXPECT_EQ(hasteTape, tape(true, false));
     EXPECT_EQ(conditionsTape, tape({CONDITION_GOOD, CONDITION_CURSED, CONDITION_GOOD, CONDITION_GOOD},
                                    {CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK}));
+}
+
+GAME_TEST(Issues, Issue680) {
+    // Chest items duplicate sometimes
+    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].igChestItems.cbegin(), vChests[4].igChestItems.cend(), [&](ItemGen item) { return item.uItemID != ITEM_NULL; }); });
+    test.playTraceFromTestData("issue_680.mm7", "issue_680.json");
+    // Make sure we havent gained any duplicates
+    EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back());
+    // And that items were added and removed
+    EXPECT_GE(chestItemsCount.size(), 2);
 }
 
 GAME_TEST(Issues, Issue681) {
