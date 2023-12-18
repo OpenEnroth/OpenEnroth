@@ -120,7 +120,7 @@ void stru262_TurnBased::Start() {
 
     this->turn_initiative = 100;
     this->turns_count = 0;
-    this->ai_turn_timer = Duration::fromTicks(64);
+    this->ai_turn_timer = 64_ticks;
     this->turn_stage = TE_WAIT;
     this->pQueue.resize(0);
 
@@ -281,7 +281,7 @@ void stru262_TurnBased::AITurnBasedAction() {
         }
     }
     if (turn_stage == TE_WAIT) {
-        if (ai_turn_timer == Duration::fromTicks(64)) {
+        if (ai_turn_timer == 64_ticks) {
             ActorAISetMovementDecision();
         } else if (ai_turn_timer > Duration::zero()) {
             ActorAIDoAdditionalMove();
@@ -310,7 +310,7 @@ void stru262_TurnBased::AITurnBasedAction() {
         } else {
             flags &= ~TE_FLAG_8_finished;
             turn_stage = TE_WAIT;
-            ai_turn_timer = Duration::fromTicks(64);
+            ai_turn_timer = 64_ticks;
         }
     }
 }
@@ -439,7 +439,7 @@ void stru262_TurnBased::NextTurn() {
 
     // turn tick
     turn_stage = TE_MOVEMENT;
-    pParty->GetPlayingTime() += Duration::fromTicks(213);
+    pParty->GetPlayingTime() += 213_ticks;
     _494035_timed_effects__water_walking_damage__etc();
     uActionPointsLeft = 130;
 }
@@ -758,7 +758,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
     AIDirection v7;           // [sp+24h] [bp-28h]@5
     int i;
 
-    this->ai_turn_timer = Duration::fromTicks(64);
+    this->ai_turn_timer = 64_ticks;
     dword_50C994 = Duration::zero();
     pParty->setActiveCharacterIndex(0);
     for (i = 0; i < this->pQueue.size(); ++i) {
@@ -791,7 +791,7 @@ void stru262_TurnBased::ActorAIStopMovement() {
         }
     }
     turn_stage = TE_ATTACK;
-    ai_turn_timer = Duration::fromTicks(100);
+    ai_turn_timer = 100_ticks;
 }
 
 //----- (00406B9F) --------------------------------------------------------

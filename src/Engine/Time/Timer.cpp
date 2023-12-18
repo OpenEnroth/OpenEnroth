@@ -28,7 +28,7 @@ void Timer::Resume() {
     if (bPaused) {
         keyboardInputHandler->ResetKeys();
 
-        bPaused = 0;
+        bPaused = false;
         uStartTime = Time();
     }
 }
@@ -72,7 +72,5 @@ void Timer::Update() {
         uTimeElapsed = 32_ticks; // 32 is 250ms
 
     if (!bPaused && !bTackGameTime)
-        uTotalTimeElapsed += uTimeElapsed.ticks();
-
-    dt_fixpoint = (uTimeElapsed.ticks() << 16) / 128;
+        uTotalTimeElapsed += uTimeElapsed;
 }

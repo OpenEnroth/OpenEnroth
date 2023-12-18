@@ -58,6 +58,7 @@ class Duration {
 
     [[nodiscard]] constexpr int64_t toRealtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
     [[nodiscard]] constexpr int64_t toRealtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr float toFloatRealtimeSeconds() const { return ticks() / static_cast<float>(TICKS_PER_REALTIME_SECOND); }
 
     [[nodiscard]] constexpr CivilDuration toCivilDuration() const {
         CivilDuration result;

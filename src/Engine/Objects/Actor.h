@@ -235,7 +235,7 @@ class Actor {
     Pid lastCharacterIdToHit;
     int uniqueNameIndex = 0; // Index into pMonsterStats->pUniqueNames for a unique monster name. Regular name is used if this field is 0.
     bool donebloodsplat{ false };
-    int massDistortionTime = -1; // Value of pMiscTimer when mass distortion was cast. This was stored in the buffs table
+    Duration massDistortionTime; // Value of pMiscTimer when mass distortion was cast. This was stored in the buffs table
                                  // in vanilla, which made little sense. Buff table stores game time, putting a value of
                                  // a misc timer in there is very questionable.
 };
@@ -254,7 +254,7 @@ void npcSetItem(int npc, ItemId item, int a3);
  */
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID);
-void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds);
+void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, Duration duration);
 void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
 /**
  * @offset 0x438F8F

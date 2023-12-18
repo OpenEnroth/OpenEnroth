@@ -89,7 +89,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 resettimer = false;
                 if (!this->keydelaytimer) {
                     isTriggered = true;
-                    this->keydelaytimer = Duration::fromTicks(1);
+                    this->keydelaytimer = 1_ticks;
                 }
                 // big delay after first press then small delay
                 if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {

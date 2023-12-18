@@ -58,7 +58,7 @@ struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
-struct Timer;
+class Timer;
 
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
@@ -538,7 +538,7 @@ struct Timer_MM7 {
     /* 14 */ int32_t gameTimeStart;
     /* 18 */ int32_t field_18;
     /* 1C */ uint32_t timeElapsed;
-    /* 20 */ int32_t dtFixpoint;
+    /* 20 */ int32_t dtFixpoint; // Time delta since the last frame in fixpoint seconds. Not used in OE.
     /* 24 */ uint32_t totalGameTimeElapsed;
     /* 28 */
 };

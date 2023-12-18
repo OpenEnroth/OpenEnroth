@@ -751,7 +751,7 @@ void GameUI_DrawRightPanelItems() {
         bookFlashTimer = {};
     }
 
-    if (pParty->GetPlayingTime() - bookFlashTimer > Duration::fromTicks(128)) {
+    if (pParty->GetPlayingTime() - bookFlashTimer > 128_ticks) {
         bookFlashTimer = pParty->GetPlayingTime();
         bookFlashState = !bookFlashState;
     }
@@ -1678,15 +1678,14 @@ void GameUI_DrawTorchlightAndWizardEye() {
             render->DrawTextureNew(
                 pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnum_Torchlight->icon->id,
-                               Duration::fromTicks(pEventTimer->Time()))
+                    ->GetFrame(pUIAnum_Torchlight->icon->id, pMiscTimer->uTotalTimeElapsed)
                     ->GetTexture());
         }
         if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
                 pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnim_WizardEye->icon->id, Duration::fromTicks(pEventTimer->Time()))
+                    ->GetFrame(pUIAnim_WizardEye->icon->id, pMiscTimer->uTotalTimeElapsed)
                     ->GetTexture());
         }
     }

@@ -233,7 +233,7 @@ void BaseRenderer::DrawSpriteObjects() {
 
 // TODO(pskelton): Move to outdoors - clean up
 void BaseRenderer::PrepareDecorationsRenderList_ODM() {
-    unsigned int v6;        // edi@9
+    Duration v6;        // edi@9
     int v7;                 // eax@9
     SpriteFrame *frame;     // eax@9
     int v13;                // ecx@9
@@ -262,10 +262,10 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         pLevelDecorations[i].vPosition.y);
 
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
-                        Duration::fromTicks(v6 + v7));
+                        v6 + Duration::fromTicks(v7));
 
                     if (engine->config->graphics.SeasonsChange.value()) {
-                        frame = LevelDecorationChangeSeason(decor_desc, Duration::fromTicks(v6 + v7), pParty->uCurrentMonth);
+                        frame = LevelDecorationChangeSeason(decor_desc, v6 + Duration::fromTicks(v7), pParty->uCurrentMonth);
                     }
 
                     if (!frame || frame->texture_name == "null" || frame->hw_sprites[0] == NULL) {

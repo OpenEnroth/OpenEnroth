@@ -925,9 +925,9 @@ void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
         float worldviewdepth = -512.0f / newX;
 
         // offset tex coords
-        float texoffset_U = ((pMiscTimer->uTotalTimeElapsed) / 128.0f) + ((skyfinalleft * worldviewdepth) / 16.0f);
+        float texoffset_U = pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds() + ((skyfinalleft * worldviewdepth) / 16.0f);
         VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->width());
-        float texoffset_V = ((pMiscTimer->uTotalTimeElapsed) / 128.0f) + ((skyfinalfront * worldviewdepth) / 16.0f);
+        float texoffset_V = pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds() + ((skyfinalfront * worldviewdepth) / 16.0f);
         VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->height());
 
         // this basically acts as texture perspective correction
@@ -2092,9 +2092,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
             if (worldviewdepth < 0) worldviewdepth = pCamera3D->GetFarClip();
 
             // offset tex coords
-            float texoffset_U = (float(pMiscTimer->uTotalTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
+            float texoffset_U = pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds() + ((skyfinalleft * worldviewdepth));
             VertexRenderList[i].u = texoffset_U / ((float) pSkyPolygon.texture->width());
-            float texoffset_V = (float(pMiscTimer->uTotalTimeElapsed) / 128.0) + ((skyfinalfront * worldviewdepth));
+            float texoffset_V = pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds() + ((skyfinalfront * worldviewdepth));
             VertexRenderList[i].v = texoffset_V / ((float) pSkyPolygon.texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();

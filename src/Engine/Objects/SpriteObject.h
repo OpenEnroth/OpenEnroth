@@ -87,8 +87,8 @@ struct SpriteObject {
     char field_60_distance_related_prolly_lod = 0;
     ActorAbility spellCasterAbility = ABILITY_ATTACK1;
     Vec3i initialPosition;
-    int _lastParticleTime{};
-    int _ticksPerParticle{ 2 }; // how many 1/128ths between particles
+    Duration _lastParticleTime;
+    Duration _ticksPerParticle = 2_ticks; // how many ticks between particles
 };
 
 void CompactLayingItemsList();

@@ -155,14 +155,13 @@ void Engine::drawWorld() {
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
         if (!PauseGameDrawing()) {
-            // if ( render->pRenderD3D )
-            {
-                float v2 =
-                    (double)(((signed int)pMiscTimer->uTotalTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
-                // v3 = v2 + 6.7553994e15;
-                // render->field_1036A8_bitmapid = LODWORD(v3);
-                render->hd_water_current_frame = floorf(v2 + 0.5f);
-            }
+            // Water animation in vanilla was borked, or so it seems. Water has 7 frames, frame durations are:
+            //
+            // Frame    0       1       2       3       4       5       6       Total
+            // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
+            // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
+            render->hd_water_current_frame =
+                std::floor(std::fmod(pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds(), 1.0f) * 7.0f);
 
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
@@ -1259,7 +1258,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // water damage
     if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + Duration::fromTicks(128);
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
         for (Character &character : pParty->pCharacters) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
@@ -1280,7 +1279,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // lava damage
     if (pParty->uFlags & PARTY_FLAG_BURNING && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
-        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + Duration::fromTicks(128);
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
@@ -1297,7 +1296,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = Duration::zero();
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running
-        pParty->_roundingDt = recoveryTimeDt % Duration::fromTicks(2);
+        pParty->_roundingDt = recoveryTimeDt % 2_ticks;
         recoveryTimeDt /= 2;
     }
 

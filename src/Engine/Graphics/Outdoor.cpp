@@ -1320,10 +1320,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         Cur_Action_Time = pActors[i].currentActionTime;
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = Duration::fromTicks(32 * i + pMiscTimer->uTotalTimeElapsed);
+                Cur_Action_Time = i * 32_ticks + pMiscTimer->uTotalTimeElapsed;
         } else {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = Duration::fromTicks(32 * i + pEventTimer->uTotalTimeElapsed);
+                Cur_Action_Time = i * 32_ticks + pEventTimer->uTotalTimeElapsed;
         }
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
@@ -1406,7 +1406,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                                 .screenspace_projection_factor_y = 1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
                                                                    pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .screenspace_projection_factor_y;
-                        } else if (pActors[i].massDistortionTime != -1) {
+                        } else if (pActors[i].massDistortionTime) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
                                 spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
                                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
@@ -1706,7 +1706,8 @@ void ODM_ProcessPartyActions() {
 
     bool flyDown{ false };
 
-    int64_t dturn = ((int64_t) pEventTimer->dt_fixpoint * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
+    // TODO(captainurist): #time think about a better way to write this formula.
+    int64_t dturn = pEventTimer->uTimeElapsed.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:
@@ -2429,7 +2430,7 @@ void UpdateActors_ODM() {
                 if (pActors[Actor_ITR].CanAct()) {
                     pActors[Actor_ITR].yawAngle -= 32;
                     pActors[Actor_ITR].currentActionTime = Duration::zero();
-                    pActors[Actor_ITR].currentActionLength = Duration::fromTicks(128);
+                    pActors[Actor_ITR].currentActionLength = 128_ticks;
                     pActors[Actor_ITR].aiState = Fleeing;
                 }
             }
@@ -2449,7 +2450,7 @@ void UpdateActors_ODM() {
                                 pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
                                                                              target_y - pActors[Actor_ITR].pos.y);
                                 pActors[Actor_ITR].currentActionTime = Duration::zero();
-                                pActors[Actor_ITR].currentActionLength = Duration::fromTicks(128);
+                                pActors[Actor_ITR].currentActionLength = 128_ticks;
                                 pActors[Actor_ITR].aiState = Fleeing;
                                 break;
                             }

@@ -11,7 +11,7 @@
 GraphicsImage *ODMFace::GetTexture() {
     if (this->IsTextureFrameTable()) {
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, Duration::fromTicks(pEventTimer->uTotalTimeElapsed));
+            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
     } else {
         return static_cast<GraphicsImage *>(this->resource);
     }

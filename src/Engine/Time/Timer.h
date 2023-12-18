@@ -4,14 +4,9 @@
 
 #include "Duration.h"
 
-struct Timer {
+class Timer {
+ public:
     Timer() = default;
-
-    /**
-     * @return                          Current real time (not game time!) in timer ticks. One tick is 1/128th of a
-     *                                  real time second.
-     */
-    uint64_t Time();
 
     void Update();
     void Pause();
@@ -19,24 +14,22 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bPaused = false;
+    bool bPaused = false;
     int bTackGameTime = 0;
     unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).
     unsigned int uStopTime = 0;
     int uGameTimeStart = 0;
     Duration uTimeElapsed; // dt since last frame.
-    int dt_fixpoint = 0; // dt since last frame in real time seconds in fixpoint format.
-    unsigned int uTotalTimeElapsed = 0; // Total time elapsed since the last Initialize() call, in real time ticks (128 ticks is 1 real time second).
+    Duration uTotalTimeElapsed; // Total time elapsed.
 
-    // Real time intervals in timer ticks.
-    static const unsigned int Second = 128;
-    static const unsigned int Minute = 60 * Second;
-    static const unsigned int Hour = 60 * Minute;
-    static const unsigned int Day = 24 * Hour;
-    static const unsigned int Week = 7 * Day;
-    static const unsigned int Month = 4 * Week;
-    static const unsigned int Year = 12 * Month;
+ private:
+    uint64_t Time();
 };
 
+// TODO(captainurist): pAnimTimer? Also, if we are being purists, this is not a Timer. It's not measuring Enroth time,
+//                     it's measuring real time. So should operate with std::chrono primitives. Look at all the places
+//                     where it's used and write proper docs here first, maybe I'm missing smth.
 extern Timer *pMiscTimer;
+
+// TODO(captainurist): pGameTimer?
 extern Timer *pEventTimer;

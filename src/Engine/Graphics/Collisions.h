@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Pid.h"
+#include "Engine/Time/Duration.h"
 
 #include "Library/Geometry/Vec.h"
 #include "Library/Geometry/BBox.h"
@@ -14,11 +15,10 @@ struct CollisionState {
      *
      * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
      *
-     * @param dt_fp                     Time delta, in fixpoint seconds. Pass `0` to take the correct value from
-     *                                  global `pEventTimer`.
+     * @param dt                        Time delta. Pass `0_ticks` to take the correct value from global `pEventTimer`.
      * @return                          True if there is no movement, false otherwise.
      */
-    bool PrepareAndCheckIfStationary(int dt_fp);
+    bool PrepareAndCheckIfStationary(Duration dt = 0_ticks);
 
     // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
 
