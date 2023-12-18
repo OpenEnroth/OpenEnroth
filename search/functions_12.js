@@ -127,7 +127,7 @@ var searchData=
   ['restorefrontbuffer_124',['RestoreFrontBuffer',['../classRenderer.html#a522b8081f033e6570bf901657a3b7a67',1,'Renderer::RestoreFrontBuffer()'],['../classOpenGLRenderer.html#a703e20bfaee0ff914abdcecd78e8b42b',1,'OpenGLRenderer::RestoreFrontBuffer()'],['../classNullRenderer.html#ad7179a8ff6a021fe8afdcd8f35475ffe',1,'NullRenderer::RestoreFrontBuffer()']]],
   ['resume_125',['Resume',['../classOpenALTrack16.html#ad79564dc43e9e23350ab506d46010829',1,'OpenALTrack16']]],
   ['resume_126',['resume',['../classAudioSamplePool.html#a406c2afb511ed0986dc72dae157620cc',1,'AudioSamplePool']]],
-  ['resume_127',['Resume',['../structTimer.html#ad3b4e386f8ebb885fa2ef6fcac8d9ca3',1,'Timer::Resume()'],['../classIAudioTrack.html#a9140ea4200193d1c87e7b25728835bb5',1,'IAudioTrack::Resume()'],['../classIAudioSample.html#a5f32ef4ec1c51668b8087aa829fea879',1,'IAudioSample::Resume()'],['../classAudioSample16.html#aba1ed8d497da66bc8ba8032a7146c8b2',1,'AudioSample16::Resume()']]],
+  ['resume_127',['Resume',['../classTimer.html#ad3b4e386f8ebb885fa2ef6fcac8d9ca3',1,'Timer::Resume()'],['../classIAudioTrack.html#a9140ea4200193d1c87e7b25728835bb5',1,'IAudioTrack::Resume()'],['../classIAudioSample.html#a5f32ef4ec1c51668b8087aa829fea879',1,'IAudioSample::Resume()'],['../classAudioSample16.html#aba1ed8d497da66bc8ba8032a7146c8b2',1,'AudioSample16::Resume()']]],
   ['resumesounds_128',['resumeSounds',['../classAudioPlayer.html#a2201d87691bbe58cb0d5da555b1f91e4',1,'AudioPlayer']]],
   ['resurrect_129',['resurrect',['../classActor.html#a19dc217219d46ec0d1563de450045a7a',1,'Actor']]],
   ['reversed_130',['reversed',['../classAccessible.html#abe60b2906c07b0b4e58f7848931ec48c',1,'Accessible']]],

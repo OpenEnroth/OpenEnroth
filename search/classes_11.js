@@ -24,7 +24,7 @@ var searchData=
   ['tiledesc_5fmm7_21',['TileDesc_MM7',['../structTileDesc__MM7.html',1,'']]],
   ['tiletable_22',['TileTable',['../structTileTable.html',1,'']]],
   ['time_23',['Time',['../classTime.html',1,'']]],
-  ['timer_24',['Timer',['../structTimer.html',1,'']]],
+  ['timer_24',['Timer',['../classTimer.html',1,'']]],
   ['timer_5fmm7_25',['Timer_MM7',['../structTimer__MM7.html',1,'']]],
   ['townportaldata_26',['TownPortalData',['../structTownPortalData.html',1,'']]],
   ['tracingrandomengine_27',['TracingRandomEngine',['../classTracingRandomEngine.html',1,'']]],

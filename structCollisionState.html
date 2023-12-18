@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2585722</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d3b2d44</span>
    </div>
   </td>
  </tr>
@@ -81,8 +81,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af6aaf15aad59d5c9aaf333200b5e3f18"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCollisionState.html#af6aaf15aad59d5c9aaf333200b5e3f18">PrepareAndCheckIfStationary</a> (int dt_fp)</td></tr>
-<tr class="separator:af6aaf15aad59d5c9aaf333200b5e3f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07294300c5ec3076e57db80130963e98"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCollisionState.html#a07294300c5ec3076e57db80130963e98">PrepareAndCheckIfStationary</a> (<a class="el" href="classDuration.html">Duration</a> dt=0_ticks)</td></tr>
+<tr class="separator:a07294300c5ec3076e57db80130963e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -124,8 +124,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af6c39e9224131a994a05f085a5e0f4e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="af6aaf15aad59d5c9aaf333200b5e3f18" name="af6aaf15aad59d5c9aaf333200b5e3f18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6aaf15aad59d5c9aaf333200b5e3f18">&#9670;&#160;</a></span>PrepareAndCheckIfStationary()</h2>
+<a id="a07294300c5ec3076e57db80130963e98" name="a07294300c5ec3076e57db80130963e98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07294300c5ec3076e57db80130963e98">&#9670;&#160;</a></span>PrepareAndCheckIfStationary()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -133,8 +133,8 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">bool CollisionState::PrepareAndCheckIfStationary </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dt_fp</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classDuration.html">Duration</a>&#160;</td>
+          <td class="paramname"><em>dt</em> = <code>0_ticks</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -143,7 +143,7 @@ Public Attributes</h2></td></tr>
 <p>Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dt_fp</td><td><a class="el" href="classTime.html">Time</a> delta, in fixpoint seconds. Pass <code>0</code> to take the correct value from global <code>pEventTimer</code>. </td></tr>
+    <tr><td class="paramname">dt</td><td><a class="el" href="classTime.html">Time</a> delta. Pass <code>0_ticks</code> to take the correct value from global <code>pEventTimer</code>. </td></tr>
   </table>
   </dd>
 </dl>
