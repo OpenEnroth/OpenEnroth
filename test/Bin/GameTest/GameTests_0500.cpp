@@ -147,6 +147,18 @@ GAME_TEST(Issues, Issue571) {
     EXPECT_NE(pParty->pPickedItem.uItemID, ITEM_NULL);
 }
 
+GAME_TEST(Issues, Issue573) {
+    // Make Recharge Item effect non-decreasing
+    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].uNumCharges; });
+    auto manaTape = tapes.custom([] { return pParty->pCharacters[0].mana; });
+    auto itemsTape = tapes.totalItemCount();
+    test.playTraceFromTestData("issue_573.mm7", "issue_573.json");
+    EXPECT_EQ(chargeTape.size(), 1); // Make sure we dont lose any charges
+    EXPECT_EQ(chargeTape.back(), 21);
+    EXPECT_LT(manaTape.back(), manaTape.front()); // Make sure spell was cast
+    EXPECT_EQ(itemsTape.delta(), -1); // And that potion was used
+}
+
 GAME_TEST(Issues, Issue574) {
     // Check that applying recharge item potion produces correct number of charges
     auto itemsTape = tapes.totalItemCount();
