@@ -528,9 +528,13 @@ GAME_TEST(Issues, Issue724) {
     EXPECT_EQ(hardenedTape, tape(false, true));
 }
 
-GAME_TEST(Issues, Issue728) {
+GAME_TEST(Issues, Issue728_746) {
     // Mousing over facets with nonexisting events shouldn't crash the game.
+    // Clicking faces with invalid events should show message "nothing here" #746
+    auto statusTape = tapes.statusBar();
     test.playTraceFromTestData("issue_728.mm7", "issue_728.json");
+    // Hover, click and space
+    EXPECT_EQ(statusTape, tape("", "Nothing here", "", "Nothing here", ""));
 }
 
 GAME_TEST(Issues, Issue730) {
