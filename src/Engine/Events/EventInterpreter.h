@@ -12,6 +12,7 @@ class EventInterpreter {
      bool executeNpcDialogue(int startStep);
 
      void prepare(const EventMap &eventMap, int eventId, Pid objectPid, bool canShowMessages);
+     bool isValid();
 
  protected:
      int executeOneEvent(int step, bool isNpc);
