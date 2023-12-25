@@ -2406,13 +2406,8 @@ SpellId dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
 int enchantingActiveCharacter;
-std::array<unsigned int, 5> pIconIDs_Turn;
-unsigned int uIconID_TurnStop;
 unsigned int uIconID_TurnHour;
 int uIconID_CharacterFrame;  // idb
-unsigned int uIconID_TurnStart;
-Duration dword_50C994;
-Duration dword_50C998_turnbased_icon_1A;
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
 Duration ItemEnchantmentTimer;

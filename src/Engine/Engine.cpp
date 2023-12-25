@@ -27,6 +27,7 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Graphics/Polygon.h"
+#include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
 #include "Engine/Localization.h"
@@ -229,7 +230,7 @@ void Engine::DrawGUI() {
 
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
-        pActiveOverlayList->DrawTurnBasedIcon();
+        turnBasedOverlay.draw();
         GameUI_DrawTorchlightAndWizardEye();
     }
 
@@ -799,7 +800,6 @@ void Engine::SecondaryInitialization() {
 
         // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
         pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
-        pIconsFrameTable->InitializeAnimation(pUIAnims[i]->icon->id);
 
         pUIAnims[i]->uAnimLength = Duration::zero();
         pUIAnims[i]->uAnimTime = 0;
@@ -1073,22 +1073,11 @@ void Engine::_461103_load_level_sub() {
 
 //----- (0042F3D6) --------------------------------------------------------
 void InitializeTurnBasedAnimations(void *_this) {
-    for (unsigned int i = 0; i < pIconIDs_Turn.size(); ++i) {
-        std::string icon_name = fmt::format("turn{}", i);
-        pIconIDs_Turn[i] = pIconsFrameTable->FindIcon(icon_name);
-        pIconsFrameTable->InitializeAnimation(pIconIDs_Turn[i]);
-    }
-
-    uIconID_TurnStop = pIconsFrameTable->FindIcon("turnstop");
     uIconID_TurnHour = pIconsFrameTable->FindIcon("turnhour");
-    uIconID_TurnStart = pIconsFrameTable->FindIcon("turnstart");
     uIconID_CharacterFrame = pIconsFrameTable->FindIcon("aframe1");
     uSpriteID_Spell11 = pSpriteFrameTable->FastFindSprite("spell11");
 
-    pIconsFrameTable->InitializeAnimation(uIconID_TurnHour);
-    pIconsFrameTable->InitializeAnimation(uIconID_TurnStop);
-    pIconsFrameTable->InitializeAnimation(uIconID_TurnStart);
-    pIconsFrameTable->InitializeAnimation(uIconID_CharacterFrame);
+    turnBasedOverlay.loadIcons();
 }
 
 //----- (0046BDA8) --------------------------------------------------------

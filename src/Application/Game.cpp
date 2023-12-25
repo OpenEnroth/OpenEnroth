@@ -24,6 +24,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Localization.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
@@ -1937,12 +1938,12 @@ void Game::gameLoop() {
 
             GameUI_WritePointedObjectStatusString();
             engine->_statusBar->update();
+            turnBasedOverlay.update(pMiscTimer->uTimeElapsed, pTurnEngine->turn_stage);
 
             if (uGameState == GAME_STATE_PLAYING) {
                 engine->Draw();
                 continue;
             }
-
 
             if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
                 pAudioPlayer->stopSounds();

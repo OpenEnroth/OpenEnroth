@@ -33,6 +33,7 @@ set(ENGINE_GRAPHICS_SOURCES
         Sprites.cpp
         TextureFrameTable.cpp
         Texture_MM7.cpp
+        TurnBasedOverlay.cpp
         Viewport.cpp
         Vis.cpp
         Weather.cpp)
@@ -76,6 +77,7 @@ set(ENGINE_GRAPHICS_HEADERS
         Sprites.h
         TextureFrameTable.h
         Texture_MM7.h
+        TurnBasedOverlay.h
         Viewport.h
         Vis.h
         Weather.h)

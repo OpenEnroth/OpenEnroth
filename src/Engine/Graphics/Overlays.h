@@ -27,7 +27,6 @@ struct ActiveOverlay {
 struct ActiveOverlayList {
     void Reset();
     int _4418B6(int uOverlayID, Pid pid, int animLength, int fpDamageMod, int16_t projSize);
-    void DrawTurnBasedIcon();
 
     std::array<ActiveOverlay, 50> pOverlays;
 };

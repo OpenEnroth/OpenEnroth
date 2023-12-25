@@ -1265,32 +1265,6 @@ void SpellFxRenderer::LoadAnimations() {
     // spell not implemented in the game
     // uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
 
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("zapp"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal1"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal2"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal3"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost1"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost2"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost3"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell03"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell05"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell14"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell17"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell21"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell25"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell27"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell36"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell38"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell46"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell51"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell55"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell58"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell69"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell71"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell73"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell75"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell96"));
-
     pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
     pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));
     pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell03"));
