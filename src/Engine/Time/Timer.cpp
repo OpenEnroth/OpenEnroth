@@ -9,9 +9,9 @@ Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
 Duration Timer::Time() {
-    Duration v2 = Duration::fromRealtimeMilliseconds(platform->tickCount());
-    if (v2 < lastFrameTime) lastFrameTime = 0_ticks;
-    return v2;
+    Duration result = Duration::fromRealtimeMilliseconds(platform->tickCount());
+    if (result < lastFrameTime) lastFrameTime = 0_ticks;
+    return result;
 }
 
 //----- (00426349) --------------------------------------------------------
