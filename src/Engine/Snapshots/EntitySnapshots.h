@@ -529,19 +529,28 @@ void snapshot(const Party &src, Party_MM7 *dst);
 void reconstruct(const Party_MM7 &src, Party *dst);
 
 struct Timer_MM7 {
-    /* 00 */ uint32_t ready; // Not used by the engine, was set to true for event timer & to false for misc timer.
-                             // Misc timer is never serialized, so we set it to true unconditionally.
-    /* 04 */ uint32_t paused;
-    /* 08 */ int32_t tackGameTime;
-    /* 0C */ uint32_t lastFrameTime; // "Real" time, converted to ticks, of the last frame.
-    /* 10 */ uint32_t pauseTime; // "Real" time, converted to ticks, when the timer was paused. Not used anywhere by the
-                                 // engine, so we just set it to 0.
-    /* 14 */ int32_t gameTimeStart;
-    /* 18 */ int32_t field_18;
-    /* 1C */ uint32_t timeElapsed;
-    /* 20 */ int32_t dtFixpoint; // Time delta since the last frame in fixpoint seconds. Not used in OE.
-    /* 24 */ uint32_t totalGameTimeElapsed;
-    /* 28 */
+    /** Not used by the engine, was set to true for event timer & to false for misc timer.
+     * Misc timer is never serialized, so we set it to true unconditionally. */
+    uint32_t ready;
+    uint32_t paused;
+
+    /** This is actually a bool. Means the timer is in turn-based mode. */
+    int32_t turnBased;
+
+    /** OS tick count, converted to game ticks, at the time of the last frame. */
+    uint32_t lastFrameTime;
+
+    /** OS tick count, converted to game ticks, when the timer was paused. Not used anywhere by the engine,
+     * so we just set it to 0. */
+    uint32_t pauseTime;
+
+    /** OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. */
+    int32_t turnBasedTime;
+
+    int32_t field_18;
+    uint32_t timeElapsed;
+    int32_t dtFixpoint; // Time delta since the last frame in fixpoint seconds. Not used in OE.
+    uint32_t totalGameTimeElapsed;
 };
 static_assert(sizeof(Timer_MM7) == 0x28);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Timer_MM7)

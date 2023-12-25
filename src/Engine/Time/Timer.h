@@ -17,7 +17,6 @@ class Timer {
     bool bPaused = false;
     int bTackGameTime = 0;
     Duration lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
-    Duration uGameTimeStart;
     Duration uTimeElapsed; // dt since last frame.
     Duration uTotalTimeElapsed; // Total time elapsed.
 

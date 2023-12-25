@@ -32,7 +32,6 @@ void Timer::Resume() {
 //----- (00426386) --------------------------------------------------------
 void Timer::TrackGameTime() {
     if (!bTackGameTime) {
-        uGameTimeStart = Time();
         bTackGameTime = true;
     }
 }
@@ -40,7 +39,7 @@ void Timer::TrackGameTime() {
 //----- (004263A0) --------------------------------------------------------
 void Timer::StopGameTime() {
     if (bTackGameTime) {
-        bTackGameTime = 0;
+        bTackGameTime = false;
         lastFrameTime = Time();
     }
 }

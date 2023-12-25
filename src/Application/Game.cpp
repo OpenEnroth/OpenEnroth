@@ -1914,7 +1914,7 @@ void Game::gameLoop() {
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
             if (pEventTimer->bTackGameTime && !pParty->bTurnBasedModeOn)
-                pEventTimer->bTackGameTime = 0;
+                pEventTimer->bTackGameTime = false;
             if (!pEventTimer->bPaused && uGameState == GAME_STATE_PLAYING) {
                 onTimer();
 
