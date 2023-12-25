@@ -49,14 +49,3 @@ Icon *IconFrameTable::GetFrame(unsigned int uIconID, Duration frame_time) {
         return &this->pIcons[uIconID];
     }
 }
-
-//----- (00494FBF) --------------------------------------------------------
-void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
-    if (uIconID && uIconID <= pIcons.size()) {
-        for (int i = uIconID;; ++i) {
-            if (!(this->pIcons[i].uFlags & 1)) {
-                break;
-            }
-        }
-    }
-}

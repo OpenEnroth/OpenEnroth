@@ -610,10 +610,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-c");
 
             pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
-            pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
 
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
-            pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
 
             ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-c");
 
@@ -664,10 +662,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
 
             pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
-            pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
 
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
-            pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
         }
         uGameUIFontMain = colorTable.MediumRed;
         uGameUIFontShadow = colorTable.Diesel;
@@ -704,9 +700,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-a");
 
             pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
-            pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
-            pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
 
             ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-a");
 
@@ -757,9 +751,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
 
             pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
-            pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
-            pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
 
             messagebox_corner_y = assets->getImage_Alpha("cornr_ll");
             messagebox_corner_w = assets->getImage_Alpha("cornr_lr");
@@ -806,9 +798,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-b");
 
             pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeB");
-            pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchB");
-            pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
 
             ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-b");
             game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-b");
@@ -1151,13 +1141,6 @@ static void LoadPartyBuffIcons() {
 }
 
 void UI_Create() {
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeC"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeB"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeA"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchC"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchB"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchA"));
-
     game_ui_minimap_dirs[0] = assets->getImage_Alpha("MAPDIR1");
     game_ui_minimap_dirs[1] = assets->getImage_Alpha("MAPDIR2");
     game_ui_minimap_dirs[2] = assets->getImage_Alpha("MAPDIR3");

@@ -49,7 +49,6 @@ struct IconFrameTable {
     Icon *GetIcon(const char *pIconName);
     unsigned int FindIcon(const std::string &pIconName);
     Icon *GetFrame(unsigned int uIconID, Duration frame_time);
-    void InitializeAnimation(unsigned int uIconID);
 
     std::vector<Icon> pIcons;
 };
