@@ -5,6 +5,8 @@
 #include "Engine/Pid.h"
 #include "Engine/Engine.h"
 
+#include "Engine/Graphics/TurnBasedOverlay.h"
+
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Engine/Objects/Actor.h"
@@ -113,10 +115,6 @@ void stru262_TurnBased::Start() {
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
     pAudioPlayer->playUISound(SOUND_StartTurnBasedMode);
-    // pPlayer = pParty->pCharacters.data();
-    dword_50C998_turnbased_icon_1A =
-        pIconsFrameTable->GetIcon(uIconID_TurnStart)->GetAnimLength();
-    dword_50C994 = Duration::zero();
 
     this->turn_initiative = 100;
     this->turns_count = 0;
@@ -229,8 +227,6 @@ void stru262_TurnBased::End(bool bPlaySound) {
         pAudioPlayer->playUISound(SOUND_EndTurnBasedMode);
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->StopGameTime();
-    dword_50C994 = Duration::zero();
-    dword_50C998_turnbased_icon_1A = Duration::zero();
     this->pQueue.clear();
 }
 // 50C994: using guessed type int dword_50C994;
@@ -759,7 +755,6 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
     int i;
 
     this->ai_turn_timer = 64_ticks;
-    dword_50C994 = Duration::zero();
     pParty->setActiveCharacterIndex(0);
     for (i = 0; i < this->pQueue.size(); ++i) {
         if (pQueue[i].uPackedID.type() == OBJECT_Actor) {

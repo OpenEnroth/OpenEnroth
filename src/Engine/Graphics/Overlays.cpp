@@ -49,42 +49,6 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, int animLength, int fpDa
     return 0;
 }
 
-//----- (00441964) --------------------------------------------------------
-void ActiveOverlayList::DrawTurnBasedIcon() {
-    Icon *frame = nullptr;      // eax@12
-    unsigned int v5;  // [sp-8h] [bp-Ch]@4
-
-    if (current_screen_type != SCREEN_GAME || !pParty->bTurnBasedModeOn) return;
-
-    if (pTurnEngine->turn_stage == TE_MOVEMENT) {  // все персы отстрелялись(сжатый кулак)
-        frame = pIconsFrameTable->GetFrame(
-            pIconIDs_Turn[5 - pTurnEngine->uActionPointsLeft / 26],
-            Duration::fromTicks(pEventTimer->uStartTime));
-    } else if (pTurnEngine->turn_stage == TE_WAIT) {
-        if (dword_50C998_turnbased_icon_1A)
-            v5 = uIconID_TurnStart;  //анимация руки(запуск пошагового режима)
-        else
-            v5 = uIconID_TurnHour;  //группа ожидает(часы)
-        frame = pIconsFrameTable->GetFrame(v5, dword_50C994);
-    } else if (pTurnEngine->turn_stage == TE_ATTACK) {  //группа атакует(ладонь)
-        frame = pIconsFrameTable->GetFrame(uIconID_TurnStop,
-            Duration::fromTicks(pEventTimer->uStartTime));
-    } else {
-        assert(false);
-        return;
-    }
-    // if ( render->pRenderD3D )
-    render->DrawTextureNew(394 / 640.0f, 288 / 480.0f,
-                                frame->GetTexture());
-    /*else
-      render->DrawTextureIndexedAlpha(0x18Au, 0x120u, v7);*/
-    if (dword_50C994 < dword_50C998_turnbased_icon_1A) {
-        dword_50C994 += pEventTimer->uTimeElapsed;
-        if (dword_50C994 >= dword_50C998_turnbased_icon_1A)
-            dword_50C998_turnbased_icon_1A = Duration::zero();
-    }
-}
-
 //----- (00458D97) --------------------------------------------------------
 void OverlayList::InitializeSprites() {
     for (size_t i = 0; i < pOverlays.size(); ++i)
