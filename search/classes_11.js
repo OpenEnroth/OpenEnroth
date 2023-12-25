@@ -35,6 +35,7 @@ var searchData=
   ['triblob_32',['TriBlob',['../structTriBlob.html',1,'']]],
   ['trigtablelookup_33',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
   ['turnbased_5fqueueelem_34',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
-  ['twodverts_35',['twodverts',['../structtwodverts.html',1,'']]],
-  ['typedhandler_36',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
+  ['turnbasedoverlay_35',['TurnBasedOverlay',['../classTurnBasedOverlay.html',1,'']]],
+  ['twodverts_36',['twodverts',['../structtwodverts.html',1,'']]],
+  ['typedhandler_37',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
 ];
