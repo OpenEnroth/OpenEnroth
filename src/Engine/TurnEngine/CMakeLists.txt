@@ -4,7 +4,8 @@ set(ENGINE_TURN_ENGINE_SOURCES
         TurnEngine.cpp)
 
 set(ENGINE_TURN_ENGINE_HEADERS
-        TurnEngine.h)
+        TurnEngine.h
+        TurnEngineEnums.h)
 
 add_library(engine_turn_engine STATIC ${ENGINE_TURN_ENGINE_SOURCES} ${ENGINE_TURN_ENGINE_HEADERS})
 target_link_libraries(engine_turn_engine PUBLIC engine)
