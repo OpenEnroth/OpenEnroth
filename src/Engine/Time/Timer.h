@@ -16,8 +16,7 @@ class Timer {
 
     bool bPaused = false;
     int bTackGameTime = 0;
-    unsigned int uStartTime = 0; // Last frame time, in real time ticks (128 ticks is 1 real time second).
-    unsigned int uStopTime = 0;
+    unsigned int uStartTime = 0;
     int uGameTimeStart = 0;
     Duration uTimeElapsed; // dt since last frame.
     Duration uTotalTimeElapsed; // Total time elapsed.

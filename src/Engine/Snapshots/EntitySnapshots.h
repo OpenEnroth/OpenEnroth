@@ -534,7 +534,8 @@ struct Timer_MM7 {
     /* 04 */ uint32_t paused;
     /* 08 */ int32_t tackGameTime;
     /* 0C */ uint32_t startTime;
-    /* 10 */ uint32_t stopTime;
+    /* 10 */ uint32_t pauseTime; // "Real" time, converted to ticks, when the timer was paused. Not used anywhere by the
+                                 // engine, so we just set it to 0.
     /* 14 */ int32_t gameTimeStart;
     /* 18 */ int32_t field_18;
     /* 1C */ uint32_t timeElapsed;

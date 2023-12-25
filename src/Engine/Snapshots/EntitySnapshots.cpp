@@ -272,7 +272,7 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
     dst->paused = src.bPaused;
     dst->tackGameTime = src.bTackGameTime;
     dst->startTime = src.uStartTime;
-    dst->stopTime = src.uStopTime;
+    dst->pauseTime = 0;
     dst->gameTimeStart = src.uGameTimeStart;
     dst->timeElapsed = src.uTimeElapsed.ticks();
     dst->dtFixpoint = (src.uTimeElapsed.ticks() << 16) / Duration::TICKS_PER_REALTIME_SECOND;
@@ -283,7 +283,6 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
     dst->bPaused = src.paused;
     dst->bTackGameTime = src.tackGameTime;
     dst->uStartTime = src.startTime;
-    dst->uStopTime = src.stopTime;
     dst->uGameTimeStart = src.gameTimeStart;
     dst->uTimeElapsed = Duration::fromTicks(src.timeElapsed);
     dst->uTotalTimeElapsed = Duration::fromTicks(src.totalGameTimeElapsed);
