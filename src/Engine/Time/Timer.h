@@ -16,13 +16,13 @@ class Timer {
 
     bool bPaused = false;
     int bTackGameTime = 0;
-    unsigned int uStartTime = 0;
-    int uGameTimeStart = 0;
+    Duration lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
+    Duration uGameTimeStart;
     Duration uTimeElapsed; // dt since last frame.
     Duration uTotalTimeElapsed; // Total time elapsed.
 
  private:
-    uint64_t Time();
+    Duration Time();
 };
 
 // TODO(captainurist): pAnimTimer? Also, if we are being purists, this is not a Timer. It's not measuring Enroth time,

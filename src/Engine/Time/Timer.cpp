@@ -8,10 +8,9 @@ Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
-uint64_t Timer::Time() {
-    int64_t ms = platform->tickCount();
-    uint64_t v2 = 128 * ms / 1000;
-    if (v2 < uStartTime) uStartTime = 0;
+Duration Timer::Time() {
+    Duration v2 = Duration::fromRealtimeMilliseconds(platform->tickCount());
+    if (v2 < lastFrameTime) lastFrameTime = 0_ticks;
     return v2;
 }
 
@@ -26,7 +25,7 @@ void Timer::Resume() {
         keyboardInputHandler->ResetKeys();
 
         bPaused = false;
-        uStartTime = Time();
+        lastFrameTime = Time();
     }
 }
 
@@ -42,7 +41,7 @@ void Timer::TrackGameTime() {
 void Timer::StopGameTime() {
     if (bTackGameTime) {
         bTackGameTime = 0;
-        uStartTime = Time();
+        lastFrameTime = Time();
     }
 }
 
@@ -53,7 +52,7 @@ void Timer::Update() {
     // signed int v3; // eax@3
     // char v4; // zf@5
 
-    uint64_t new_time = Time();
+    Duration new_time = Time();
 
     // TODO(captainurist): I had to comment the line below because it's now hooking into platform, and platform
     // code return the same tick count on every call when playing back an event trace.
@@ -62,8 +61,8 @@ void Timer::Update() {
     // TODO(captainurist): this magically works with EventTracer because of how Time() is written:
     // it sets uStartTime to zero if it's larger than current time. And TickCount() in EventTracer starts at zero.
     // This looks very fragile, but rethinking it would require diving into how timers work.
-    uTimeElapsed = Duration::fromTicks(new_time - uStartTime);
-    uStartTime = new_time;
+    uTimeElapsed = new_time - lastFrameTime;
+    lastFrameTime = new_time;
 
     if (uTimeElapsed > 32_ticks)
         uTimeElapsed = 32_ticks; // 32 is 250ms
