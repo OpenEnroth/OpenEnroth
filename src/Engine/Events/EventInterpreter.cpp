@@ -633,3 +633,7 @@ void EventInterpreter::prepare(const EventMap &eventMap, int eventId, Pid object
         _events = eventMap.events(eventId);
     }
 }
+
+bool EventInterpreter::isValid() {
+    return _events.size() > 0;
+}

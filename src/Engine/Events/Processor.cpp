@@ -145,18 +145,13 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
 
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
     if (!eventId) {
+        engine->_statusBar->nothingHere();
         return;
     }
 
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
-    if (!eventId) { // TODO(captainurist): never executed because it's checked above.
-        engine->_statusBar->nothingHere();
-        return;
-    }
-
     EventInterpreter interpreter;
-    bool mapExitTriggered = false;
     logger->trace("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
@@ -164,6 +159,12 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     } else {
         engine->_localEventMap.dump(eventId);
         interpreter.prepare(engine->_localEventMap, eventId, targetObj, canShowMessages);
+    }
+
+    if (!interpreter.isValid()) {
+        logger->info("Face has invalid event ID");
+        engine->_statusBar->nothingHere();
+        return;
     }
 
     if (interpreter.executeRegular(startStep)) {

@@ -54,6 +54,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         // pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
         current_screen_type = SCREEN_GAME;
+        engine->_statusBar->clearAll();
     } else {
         engine->_statusBar->setEvent(LSTR_START_NEW_GAME_PROMPT);
         pAudioPlayer->playUISound(SOUND_quest);
@@ -69,6 +70,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         pAudioPlayer->stopSounds();
         pAudioPlayer->playUISound(SOUND_WoodDoorClosing);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
+        engine->_statusBar->clearAll();
     } else {
         engine->_statusBar->setEvent(LSTR_EXIT_GAME_PROMPT);
         pAudioPlayer->playUISound(SOUND_quest);
