@@ -500,3 +500,17 @@ GAME_TEST(Prs, Pr1440) {
     for (int i = 24; i < 32; i++)
         EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
 }
+
+GAME_TEST(Issues, Issue1454) {
+    // Map hotkey doesn't close the map
+    game.startNewGame();
+    game.tick(1);
+    game.pressAndReleaseKey(PlatformKey::KEY_M);
+    game.tick(1);
+    EXPECT_EQ(current_screen_type, ScreenType::SCREEN_BOOKS);
+    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WindowType::WINDOW_MapsBook);
+    game.pressAndReleaseKey(PlatformKey::KEY_M);
+    game.tick(1);
+    EXPECT_EQ(current_screen_type, ScreenType::SCREEN_GAME);
+    EXPECT_EQ(pGUIWindow_CurrentMenu, nullptr);
+}

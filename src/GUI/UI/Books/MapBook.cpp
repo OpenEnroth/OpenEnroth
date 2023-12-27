@@ -27,6 +27,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 GraphicsImage *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() {
+    this->eWindowType = WindowType::WINDOW_MapsBook;
     viewparams->sViewCenterX = pParty->pos.x;
     viewparams->sViewCenterY = pParty->pos.y;
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);
