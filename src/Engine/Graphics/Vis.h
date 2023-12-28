@@ -113,6 +113,15 @@ class Vis {
     Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face, Pid pid, float pick_depth);
     bool IsPolygonOccludedByBillboard(struct RenderVertexSoft *vertices,
                                       int num_vertices, float x, float y);
+    /**
+    * @param test_x                        Screen x position of ray.
+    * @param test_y                        Screen y position of ray.
+    * @param fDepth                        Maximum screen depth of ray.
+    * @param fTestDepth                    Screen depth to test geometery against. 
+    *
+    * @return                              Whether no level geometery is hit at this location before fTestDepth.
+    */
+    bool DoesRayMissLevelGeom(float test_x, float test_y, float fDepth, float fTestDepth);
     void GetPolygonCenter(RenderVertexD3D3 *pVertices,
                           unsigned int uNumVertices, float *pCenterX,
                           float *pCenterY);
