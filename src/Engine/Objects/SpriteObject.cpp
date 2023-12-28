@@ -72,7 +72,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     initialPosition = vPosition;
 
     // set start timer for particle emmission
-    _lastParticleTime = pEventTimer->time();
+    _lastParticleTime = pMiscTimer->time();
 
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
