@@ -21,6 +21,7 @@ class Pid;
 class Actor;
 class Character;
 class Icon;
+class RawCharacterConditions;
 class SpriteFrame;
 class TextureFrame;
 class SoundInfo;
@@ -272,9 +273,19 @@ static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LloydBeacon_MM7)
 
 
+struct CharacterConditions_MM7 {
+    std::array<int64_t, 19> times;
+    int64_t unused; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
+};
+static_assert(sizeof(CharacterConditions_MM7) == 0xA0);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterConditions_MM7)
+
+void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst);
+void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst);
+
+
 struct Player_MM7 {
-    /* 0000 */ std::array<int64_t, 19> conditions;
-    /* .... */ int64_t unusedCondition; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
+    /* 0000 */ CharacterConditions_MM7 conditions;
     /* 00A0 */ uint64_t experience;
     /* 00A8 */ std::array<char, 16> name;
     /* 00B8 */ uint8_t sex;

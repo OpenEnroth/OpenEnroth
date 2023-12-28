@@ -659,10 +659,20 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uFine = src.fine;
 }
 
+void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst) {
+    memzero(dst);
+
+    snapshot(src._times, &dst->times);
+}
+
+void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst) {
+    reconstruct(src.times, &dst->_times);
+}
+
 void snapshot(const Character &src, Player_MM7 *dst) {
     memzero(dst);
 
-    snapshot(raw(src.conditions), &dst->conditions);
+    snapshot(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;
 
@@ -780,7 +790,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 }
 
 void reconstruct(const Player_MM7 &src, Character *dst) {
-    reconstruct(src.conditions, &raw(dst->conditions));
+    reconstruct(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;
 

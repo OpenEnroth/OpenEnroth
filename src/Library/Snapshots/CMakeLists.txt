@@ -4,7 +4,9 @@ set(LIBRARY_SNAPSHOTS_SOURCES)
 
 set(LIBRARY_SNAPSHOTS_HEADERS
         CommonSnapshots.h
-        SnapshotSerialization.h)
+        RawSnapshots.h
+        SnapshotSerialization.h
+        SnapshotConcepts.h)
 
 # No sources here, so it's an INTERFACE library. Also, I have no idea how the text aligns so well.
 add_library(library_snapshots INTERFACE ${LIBRARY_SNAPSHOTS_SOURCES} ${LIBRARY_SNAPSHOTS_HEADERS})

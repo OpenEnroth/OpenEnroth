@@ -22,6 +22,7 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
+#include "Library/Snapshots/RawSnapshots.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
@@ -54,10 +55,17 @@ struct LloydBeacon {
     GraphicsImage *image = nullptr;
 };
 
-class CharacterConditions {
+struct RawCharacterConditions {
+    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
+    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
+};
+
+class CharacterConditions : private RawCharacterConditions {
+    MM_DECLARE_RAW_PRIVATE_BASE(RawCharacterConditions);
+
  public:
     [[nodiscard]] bool Has(Condition condition) const {
-        return this->_times[condition].isValid();
+        return _times[condition].isValid();
     }
 
     [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
@@ -72,7 +80,7 @@ class CharacterConditions {
     }
 
     void Reset(Condition condition) {
-        this->_times[condition] = Time();
+        _times[condition] = Time();
     }
 
     void ResetAll() {
@@ -81,22 +89,12 @@ class CharacterConditions {
     }
 
     void Set(Condition condition, Time time) {
-        this->_times[condition] = time;
+        _times[condition] = time;
     }
 
     [[nodiscard]] Time Get(Condition condition) const {
-        return this->_times[condition];
+        return _times[condition];
     }
-
-    // TODO(captainurist): this is very ugly. Is there a better way to do the same?
-    template<class Self>
-    friend auto &raw(Self &self) {
-        return self._times;
-    }
-
- private:
-    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
-    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {
