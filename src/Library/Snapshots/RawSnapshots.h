@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 #include "SnapshotConcepts.h"
 
 //
@@ -51,7 +53,7 @@ void reconstruct(const T1 &src, T2 *dst) {
  */
 #define MM_DECLARE_RAW_PRIVATE_BASE(BASE)                                                                               \
  public:                                                                                                                \
-    template<class Self>                                                                                                \
+    template<class Self> requires std::is_base_of_v<BASE, std::remove_cvref_t<Self>>                                    \
     friend auto &raw(Self &self) {                                                                                      \
         if constexpr (std::is_const_v<Self>) {                                                                          \
             return static_cast<const BASE &>(self);                                                                     \

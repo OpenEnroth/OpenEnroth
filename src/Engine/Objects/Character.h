@@ -61,9 +61,8 @@ struct RawCharacterConditions {
 };
 
 class CharacterConditions : private RawCharacterConditions {
-    MM_DECLARE_RAW_PRIVATE_BASE(RawCharacterConditions);
-
- public:
+    MM_DECLARE_RAW_PRIVATE_BASE(RawCharacterConditions)
+ public: // NOLINT: no idea why linter is triggering here.
     [[nodiscard]] bool Has(Condition condition) const {
         return _times[condition].isValid();
     }

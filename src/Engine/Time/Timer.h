@@ -2,9 +2,20 @@
 
 #include <cstdint>
 
+#include "Library/Snapshots/RawSnapshots.h"
+
 #include "Duration.h"
 
-class Timer {
+struct RawTimer {
+    bool bPaused = false;
+    int bTackGameTime = 0;
+    Duration lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
+    Duration uTimeElapsed; // dt since last frame.
+    Duration uTotalTimeElapsed; // Total time elapsed.
+};
+
+class Timer : private RawTimer {
+    MM_DECLARE_RAW_PRIVATE_BASE(RawTimer)
  public:
     Timer() = default;
 
@@ -14,11 +25,11 @@ class Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    bool bPaused = false;
-    int bTackGameTime = 0;
-    Duration lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
-    Duration uTimeElapsed; // dt since last frame.
-    Duration uTotalTimeElapsed; // Total time elapsed.
+    // TODO(captainurist): encapsulate.
+    using RawTimer::bPaused;
+    using RawTimer::bTackGameTime;
+    using RawTimer::uTimeElapsed;
+    using RawTimer::uTotalTimeElapsed;
 
  private:
     Duration Time();

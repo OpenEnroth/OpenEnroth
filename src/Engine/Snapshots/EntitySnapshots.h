@@ -17,16 +17,19 @@
  * the engine has 100% freedom to change data layout without breaking backward compatibility.
  */
 
-class Pid;
 class Actor;
 class Character;
 class Icon;
+class Pid;
 class RawCharacterConditions;
+class RawTimer;
+class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
-class SoundInfo;
 class TileDesc;
 class UIAnimation;
+struct ActiveOverlay;
+struct ActiveOverlayList;
 struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
@@ -44,22 +47,19 @@ struct ItemGen;
 struct LevelDecoration;
 struct LocationInfo;
 struct LocationTime;
-struct PersistentVariables;
 struct MonsterDesc;
 struct NPCData;
-struct ObjectDesc;
 struct ODMFace;
+struct ObjectDesc;
 struct OutdoorLocationTileType;
 struct OverlayDesc;
-struct ActiveOverlay;
-struct ActiveOverlayList;
 struct Party;
+struct PersistentVariables;
 struct PlayerFrame;
 struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
-class Timer;
 
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
@@ -566,8 +566,8 @@ struct Timer_MM7 {
 static_assert(sizeof(Timer_MM7) == 0x28);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Timer_MM7)
 
-void snapshot(const Timer &src, Timer_MM7 *dst);
-void reconstruct(const Timer_MM7 &src, Timer *dst);
+void snapshot(const RawTimer &src, Timer_MM7 *dst);
+void reconstruct(const Timer_MM7 &src, RawTimer *dst);
 
 
 struct ActiveOverlay_MM7 {
