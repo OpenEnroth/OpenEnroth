@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cf151b3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1b46684</span>
    </div>
   </td>
  </tr>
@@ -84,14 +84,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ad70ff751d5d505e28e07ae821c8d2c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf4330e9e6dee81a0805994448271f18"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#adf4330e9e6dee81a0805994448271f18">paused</a></td></tr>
 <tr class="separator:adf4330e9e6dee81a0805994448271f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38819922f49deaf0d210af6783744743"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#a38819922f49deaf0d210af6783744743">tackGameTime</a></td></tr>
-<tr class="separator:a38819922f49deaf0d210af6783744743"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac731e70a6c1dee6c9b8835f08b94033f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#ac731e70a6c1dee6c9b8835f08b94033f">startTime</a></td></tr>
-<tr class="separator:ac731e70a6c1dee6c9b8835f08b94033f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb6a2add9b1c247178554e8de7ec7d87"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#afb6a2add9b1c247178554e8de7ec7d87">stopTime</a></td></tr>
-<tr class="separator:afb6a2add9b1c247178554e8de7ec7d87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb4125207891f74acaab9edd5cbff8b0"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#adb4125207891f74acaab9edd5cbff8b0">gameTimeStart</a></td></tr>
-<tr class="separator:adb4125207891f74acaab9edd5cbff8b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1953bf5f515e444440fc5a32cefbb19"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#af1953bf5f515e444440fc5a32cefbb19">turnBased</a></td></tr>
+<tr class="separator:af1953bf5f515e444440fc5a32cefbb19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9a4c520c09de5b3906810feca3ffe8a"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#aa9a4c520c09de5b3906810feca3ffe8a">lastFrameTime</a></td></tr>
+<tr class="separator:aa9a4c520c09de5b3906810feca3ffe8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44cddd03f4cbfaae66842f6e346cbbb6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#a44cddd03f4cbfaae66842f6e346cbbb6">pauseTime</a></td></tr>
+<tr class="separator:a44cddd03f4cbfaae66842f6e346cbbb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa700037bf2e352253214ee65bde65a36"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#aa700037bf2e352253214ee65bde65a36">turnBasedTime</a></td></tr>
+<tr class="separator:aa700037bf2e352253214ee65bde65a36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77762bfe7e5e16e3b917bc4707adff55"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#a77762bfe7e5e16e3b917bc4707adff55">field_18</a></td></tr>
 <tr class="separator:a77762bfe7e5e16e3b917bc4707adff55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31ffa7a7345601397d05bc9a2b05fa08"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTimer__MM7.html#a31ffa7a7345601397d05bc9a2b05fa08">timeElapsed</a></td></tr>
@@ -130,17 +130,18 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="adb4125207891f74acaab9edd5cbff8b0" name="adb4125207891f74acaab9edd5cbff8b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb4125207891f74acaab9edd5cbff8b0">&#9670;&#160;</a></span>gameTimeStart</h2>
+<a id="aa9a4c520c09de5b3906810feca3ffe8a" name="aa9a4c520c09de5b3906810feca3ffe8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9a4c520c09de5b3906810feca3ffe8a">&#9670;&#160;</a></span>lastFrameTime</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int32_t Timer_MM7::gameTimeStart</td>
+          <td class="memname">uint32_t Timer_MM7::lastFrameTime</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >OS tick count, converted to game ticks, at the time of the last frame. </p>
 
 </div>
 </div>
@@ -158,6 +159,21 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a44cddd03f4cbfaae66842f6e346cbbb6" name="a44cddd03f4cbfaae66842f6e346cbbb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44cddd03f4cbfaae66842f6e346cbbb6">&#9670;&#160;</a></span>pauseTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t Timer_MM7::pauseTime</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >OS tick count, converted to game ticks, when the timer was paused. Not used anywhere by the engine, so we just set it to 0. </p>
+
+</div>
+</div>
 <a id="ad70ff751d5d505e28e07ae821c8d2c81" name="ad70ff751d5d505e28e07ae821c8d2c81"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad70ff751d5d505e28e07ae821c8d2c81">&#9670;&#160;</a></span>ready</h2>
 
@@ -169,48 +185,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac731e70a6c1dee6c9b8835f08b94033f" name="ac731e70a6c1dee6c9b8835f08b94033f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac731e70a6c1dee6c9b8835f08b94033f">&#9670;&#160;</a></span>startTime</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t Timer_MM7::startTime</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afb6a2add9b1c247178554e8de7ec7d87" name="afb6a2add9b1c247178554e8de7ec7d87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb6a2add9b1c247178554e8de7ec7d87">&#9670;&#160;</a></span>stopTime</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t Timer_MM7::stopTime</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a38819922f49deaf0d210af6783744743" name="a38819922f49deaf0d210af6783744743"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38819922f49deaf0d210af6783744743">&#9670;&#160;</a></span>tackGameTime</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t Timer_MM7::tackGameTime</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p >Not used by the engine, was set to true for event timer &amp; to false for misc timer. Misc timer is never serialized, so we set it to true unconditionally. </p>
 
 </div>
 </div>
@@ -239,6 +214,36 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="af1953bf5f515e444440fc5a32cefbb19" name="af1953bf5f515e444440fc5a32cefbb19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1953bf5f515e444440fc5a32cefbb19">&#9670;&#160;</a></span>turnBased</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t Timer_MM7::turnBased</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >This is actually a bool. Means the timer is in turn-based mode. </p>
+
+</div>
+</div>
+<a id="aa700037bf2e352253214ee65bde65a36" name="aa700037bf2e352253214ee65bde65a36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa700037bf2e352253214ee65bde65a36">&#9670;&#160;</a></span>turnBasedTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t Timer_MM7::turnBasedTime</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. </p>
 
 </div>
 </div>
