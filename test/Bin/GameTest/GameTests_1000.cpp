@@ -466,6 +466,7 @@ GAME_TEST(Issues, Issue1383) {
     character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
     int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(noobPrice, 75000);
+    uCurrentlyLoadedLevelType = LevelType::LEVEL_NULL;
 }
 
 // 1400
