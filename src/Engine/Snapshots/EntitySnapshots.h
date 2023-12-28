@@ -543,9 +543,11 @@ struct Timer_MM7 {
     /** Not used by the engine, was set to true for event timer & to false for misc timer.
      * Misc timer is never serialized, so we set it to true unconditionally. */
     uint32_t ready;
+
+    /** Actually a bool. Whether the timer is paused. */
     uint32_t paused;
 
-    /** This is actually a bool. Means the timer is in turn-based mode. */
+    /** Actually a bool. Means the timer is in turn-based mode. */
     int32_t turnBased;
 
     /** OS tick count, converted to game ticks, at the time of the last frame. */
@@ -555,12 +557,19 @@ struct Timer_MM7 {
      * so we just set it to 0. */
     uint32_t pauseTime;
 
-    /** OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. */
+    /** OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. Not used anywhere
+     * by the engine, so we just set it to 0. */
     int32_t turnBasedTime;
 
     int32_t field_18;
+
+    /** Game ticks since the last frame. */
     uint32_t timeElapsed;
-    int32_t dtFixpoint; // Time delta since the last frame in fixpoint seconds. Not used in OE.
+
+    /** Time delta since the last frame in fixpoint realtime seconds. Not used in OE. */
+    int32_t dtFixpoint;
+
+    /** Total game ticks elapsed. */
     uint32_t totalGameTimeElapsed;
 };
 static_assert(sizeof(Timer_MM7) == 0x28);
