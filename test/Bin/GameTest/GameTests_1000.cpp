@@ -514,3 +514,12 @@ GAME_TEST(Issues, Issue1454) {
     EXPECT_EQ(current_screen_type, ScreenType::SCREEN_GAME);
     EXPECT_EQ(pGUIWindow_CurrentMenu, nullptr);
 }
+
+GAME_TEST(Issues, Issue1457) {
+    // Ghost items - able to pick up items across the map
+    auto itemsTape = tapes.totalItemCount();
+    auto mapItemsTape = tapes.mapItemCount();
+    test.playTraceFromTestData("issue_1457.mm7", "issue_1457.json");
+    EXPECT_EQ(itemsTape.size(), 1);
+    EXPECT_EQ(mapItemsTape.size(), 1);
+}
