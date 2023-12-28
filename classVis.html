@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1b46684</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;83bbbe2</span>
    </div>
   </td>
  </tr>
@@ -113,6 +113,8 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a0942b94f28a1236d891854d7b3b97d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8f2eb865108c7215a0812d12b2c7916"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVis.html#aa8f2eb865108c7215a0812d12b2c7916">IsPolygonOccludedByBillboard</a> (struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *vertices, int num_vertices, float x, float y)</td></tr>
 <tr class="separator:aa8f2eb865108c7215a0812d12b2c7916"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d2190d80c24d2f25d17c5f12ae1deba"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVis.html#a8d2190d80c24d2f25d17c5f12ae1deba">DoesRayMissLevelGeom</a> (float test_x, float test_y, float fDepth, float fTestDepth)</td></tr>
+<tr class="separator:a8d2190d80c24d2f25d17c5f12ae1deba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87b0ec3f0173e18fc200bd881289572b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVis.html#a87b0ec3f0173e18fc200bd881289572b">GetPolygonCenter</a> (<a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *pVertices, unsigned int uNumVertices, float *pCenterX, float *pCenterY)</td></tr>
 <tr class="separator:a87b0ec3f0173e18fc200bd881289572b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7954e70b4aa1f2e6fe2aea110b2282e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVis.html#ae7954e70b4aa1f2e6fe2aea110b2282e">GetPolygonScreenSpaceCenter</a> (struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *vertices, int num_vertices, float *out_center_x, float *out_center_y)</td></tr>
@@ -307,6 +309,64 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8d2190d80c24d2f25d17c5f12ae1deba" name="a8d2190d80c24d2f25d17c5f12ae1deba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d2190d80c24d2f25d17c5f12ae1deba">&#9670;&#160;</a></span>DoesRayMissLevelGeom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Vis::DoesRayMissLevelGeom </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>test_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>test_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>fDepth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>fTestDepth</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">test_x</td><td>Screen x position of ray. </td></tr>
+    <tr><td class="paramname">test_y</td><td>Screen y position of ray. </td></tr>
+    <tr><td class="paramname">fDepth</td><td>Maximum screen depth of ray. </td></tr>
+    <tr><td class="paramname">fTestDepth</td><td>Screen depth to test geometery against.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether no level geometery is hit at this location before fTestDepth. </dd></dl>
 
 </div>
 </div>
