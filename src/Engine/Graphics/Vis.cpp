@@ -870,7 +870,6 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
     return false;
 }
-// F93E18: using guessed type char static_byte_F93E18_init;
 
 bool Vis::DoesRayMissLevelGeom(float test_x, float test_y, float fDepth, float fTestDepth) {
     Vec3f rayOrigin, rayStep;
