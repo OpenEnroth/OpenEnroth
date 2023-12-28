@@ -47,7 +47,7 @@ std::array<GraphicsImage *, 22> ui_partycreation_portraits;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
 
-static int64_t errorMessageExpireTime; // expiration time (platform time) of error message
+static Duration errorMessageExpireTime; // expiration time (misc timer) of error message
 
 static const int ARROW_SPIN_PERIOD_MS = 475;
 
@@ -190,7 +190,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
             if (CharacterCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills()) {
-                errorMessageExpireTime = platform->tickCount() + 4000; // show message for 4 seconds
+                errorMessageExpireTime = pMiscTimer->uTotalTimeElapsed + Duration::fromRealtimeSeconds(4); // show message for 4 seconds
             } else {
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
             }
@@ -287,7 +287,7 @@ void GUIWindow_PartyCreation::Update() {
     // move sky
     render->BeginScene2D();
     render->DrawTextureNew(0, 0, main_menu_background);
-    int sky_slider_anim_timer = (platform->tickCount() % ((int)oldDims.w * 20)) / 20;
+    int sky_slider_anim_timer = std::fmod(pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds() * oldDims.w / 20, oldDims.w);
     render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
     render->DrawTextureNew((sky_slider_anim_timer - (int)oldDims.w) / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
     render->DrawTextureNew(0, 0, ui_partycreation_top);
@@ -323,11 +323,11 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureNew(494 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[3].uCurrentFace]);
 
     // arrows
-    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, Duration::fromTicks(pEventTimer->uStartTime));
+    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uTotalTimeElapsed);
     render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
-    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (platform->tickCount() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
+    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (pMiscTimer->uTotalTimeElapsed.toRealtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
     render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[arrowAnimTextureNum]);
     render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[arrowAnimTextureNum]);
 
@@ -568,7 +568,7 @@ void GUIWindow_PartyCreation::Update() {
     pTextCenter = assets->pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label);
 
-    if (errorMessageExpireTime > platform->tickCount()) {
+    if (errorMessageExpireTime > pMiscTimer->uTotalTimeElapsed) {
         GUIWindow message_window;
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)
@@ -732,6 +732,8 @@ bool PartyCreationUI_LoopInternal() {
     SetCurrentMenuID(MENU_CREATEPARTY);
     while (GetCurrentMenuID() == MENU_CREATEPARTY) {
         MessageLoopWithWait();
+
+        pMiscTimer->Update(); // This one is used for animations.
 
         // PlayerCreationUI_Draw();
         // MainMenu_EventLoop();
