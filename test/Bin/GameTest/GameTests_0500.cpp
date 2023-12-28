@@ -723,6 +723,21 @@ GAME_TEST(Issues, Issue816) {
     test.playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
 }
 
+GAME_TEST(Issues, Issue820) {
+    // Cannot interact with fruit trees if party too close
+    auto statusTape = tapes.statusBar();
+    auto foodTape = tapes.food();
+    test.playTraceFromTestData("issue_820A.mm7", "issue_820A.json");
+    EXPECT_TRUE(statusTape.contains("Fruit Tree"));
+    EXPECT_GT(foodTape.back(), foodTape.front());
+
+    // Cannot attack trees in Tularean forrest
+    auto treeHealthTape = actorTapes.hp(80);
+    test.playTraceFromTestData("issue_820B.mm7", "issue_820B.json");
+    EXPECT_TRUE(statusTape.contains("Zoltan hits Tree for 3 damage"));
+    EXPECT_LT(treeHealthTape.back(), treeHealthTape.front());
+}
+
 GAME_TEST(Issues, Issue830) {
     // Mouseover hints for UI elements not showing
     game.startNewGame();

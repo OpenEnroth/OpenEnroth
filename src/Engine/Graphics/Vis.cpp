@@ -831,109 +831,70 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
 
 //----- (004C091D) --------------------------------------------------------
 bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx) {
-    int billboardId;
-    Vec3f rayOrigin, rayStep;
-    Vec3f rayOrigin2, rayStep2;
+    // Too deep so never hit anyway
+    if (render->pBillboardRenderListD3D[uD3DBillboardIdx].screen_space_z > fDepth)
+        return false;
 
-    float test_x;
-    float test_y;
-
-    float t1_x;
-    float t1_y;
-    float t2_x;
-    float t2_y;
-
-    /*static*/ Vis_SelectionList Vis_static_stru_F91E10;
-    Vis_static_stru_F91E10.uSize = 0;
-    billboardId = render->pBillboardRenderListD3D[uD3DBillboardIdx].sParentBillboardID;
+    int billboardId = render->pBillboardRenderListD3D[uD3DBillboardIdx].sParentBillboardID;
     if (billboardId == -1)
         return false;
 
     if (pBillboardRenderList[billboardId].screen_space_z > fDepth)
         return false;
 
-    // test polygon center first
-    GetPolygonCenter(render->pBillboardRenderListD3D[/*billboardId*/uD3DBillboardIdx].pQuads.data(), 4, &test_x, &test_y);
-    // why check parent id billboardId? parent ID are wrong becasue of switching between pBillboardRenderListD3D and pBillboardRenderList
+    // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
+    auto& billboard = render->pBillboardRenderListD3D[uD3DBillboardIdx];
+    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
+    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
+    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
+    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
 
-    CastPickRay(test_x, test_y, fDepth, &rayOrigin, &rayStep);
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        PickIndoorFaces_Mouse(fDepth, rayOrigin, rayStep, &Vis_static_stru_F91E10, &vis_face_filter);
-    else
-        PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &Vis_static_stru_F91E10, &vis_face_filter, false);
+    // test visible polygon center first
+    float test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;
+    float test_y = (bbVisibleTop + bbVisibleBottom) * 0.5f;
+    if (DoesRayMissLevelGeom(test_x, test_y, fDepth, pBillboardRenderList[billboardId].screen_space_z))
+        return true;
+
+    // test visible four corners of quad
+    if (DoesRayMissLevelGeom(bbVisibleLeft, bbVisibleTop, fDepth, pBillboardRenderList[billboardId].screen_space_z) ||
+        DoesRayMissLevelGeom(bbVisibleLeft, bbVisibleBottom, fDepth, pBillboardRenderList[billboardId].screen_space_z) ||
+        DoesRayMissLevelGeom(bbVisibleRight, bbVisibleTop, fDepth, pBillboardRenderList[billboardId].screen_space_z) ||
+        DoesRayMissLevelGeom(bbVisibleRight, bbVisibleBottom, fDepth, pBillboardRenderList[billboardId].screen_space_z))
+        return true;
+
+    // test visible center bottom
+    test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;
+    test_y = bbVisibleBottom;
+    if (DoesRayMissLevelGeom(test_x, test_y, fDepth, pBillboardRenderList[billboardId].screen_space_z))
+        return true;
+
+    return false;
+}
+
+bool Vis::DoesRayMissLevelGeom(float test_x, float test_y, float fDepth, float fTestDepth) {
+    Vec3f rayOrigin, rayStep;
+    Vec3f rayOrigin2, rayStep2;
+    Vis_SelectionList Vis_static_stru_F91E10;
+    Vis_static_stru_F91E10.uSize = 0;
+
+    CastPickRay(test_x, test_y, fDepth, &rayOrigin2, &rayStep2);
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        PickIndoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter);
+    } else {
+        PickOutdoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter, false);
+    }
     Vis_static_stru_F91E10.create_object_pointers();
     Vis_static_stru_F91E10.sort_object_pointers();
-    if (Vis_static_stru_F91E10.uSize) {
-        if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[billboardId].screen_space_z) {
-            return true;
-        }
-    } else if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
-               (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
+
+    if (!Vis_static_stru_F91E10.uSize) {
+        return true;
+    }
+    if (Vis_static_stru_F91E10.object_pointers[0]->depth > fTestDepth) {
         return true;
     }
 
-
-    // test four corners of quad
-    for (RenderVertexD3D3 &vertex : render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads) {
-        test_x = vertex.pos.x;
-        test_y = vertex.pos.y;
-        if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
-            (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
-            CastPickRay(test_x, test_y, fDepth, &rayOrigin2, &rayStep2);
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                PickIndoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter);
-            } else {
-                PickOutdoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter, false);
-            }
-            Vis_static_stru_F91E10.create_object_pointers();
-            Vis_static_stru_F91E10.sort_object_pointers();
-            if (!Vis_static_stru_F91E10.uSize) {
-                return true;
-            }
-            if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[billboardId].screen_space_z) {
-                return true;
-            }
-        }
-    }
-
-    // reverse quad and test center
-    // if (uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) return false;
-    t1_x = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.x;
-    t2_x = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[3].pos.x;
-
-    t1_y = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.y;
-    t2_y = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[1].pos.y;
-    if (t1_x > t2_x) {
-        std::swap(t1_x, t2_x);
-    }
-    if (t1_y > t2_y)
-        test_y = t1_y;
-    else
-        test_y = t2_y;
-
-    Vis_static_stru_F91E10.uSize = 0;
-
-    test_x = (t2_x + t1_x) * 0.5;
-    if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
-        (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
-        CastPickRay(test_x, test_y, fDepth, &rayOrigin2, &rayStep2);
-        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            PickIndoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter);
-        } else {
-            PickOutdoorFaces_Mouse(fDepth, rayOrigin2, rayStep2, &Vis_static_stru_F91E10, &vis_face_filter, false);
-        }
-        Vis_static_stru_F91E10.create_object_pointers();
-        Vis_static_stru_F91E10.sort_object_pointers();
-        if (!Vis_static_stru_F91E10.uSize) {
-            return true;
-        }
-        if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[billboardId].screen_space_z) {
-            return true;
-        }
-    }
     return false;
 }
-// F93E18: using guessed type char static_byte_F93E18_init;
 
 //----- (004C0D32) --------------------------------------------------------
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
