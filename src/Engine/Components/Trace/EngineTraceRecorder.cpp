@@ -35,6 +35,9 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     _trace = std::make_unique<EventTrace>();
     _configSnapshot = std::make_unique<ConfigPatch>(ConfigPatch::fromConfig(engine->config.get()));
 
+    game->resizeWindow(640, 480);
+    game->tick();
+
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
