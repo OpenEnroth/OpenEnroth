@@ -966,7 +966,7 @@ struct SpriteObject_MM7 {
     uint16_t uSoundID;
     uint16_t uAttributes;
     int16_t uSectorID;
-    uint16_t uSpriteFrameID;
+    uint16_t uTimeSinceCreated;
     int16_t tempLifetime;
     int16_t field_22_glow_radius_multiplier;
     ItemGen_MM7 containing_item;

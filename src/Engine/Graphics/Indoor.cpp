@@ -1983,7 +1983,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i p
     a1.uFacing = facing;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = 0_ticks;
+    a1.timeSinceCreated = 0_ticks;
     return a1.Create(0, 0, 0, 0);
 }
 
@@ -2028,7 +2028,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
-    a1a.uSpriteFrameID = 0_ticks;
+    a1a.timeSinceCreated = 0_ticks;
     a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
     a1a.Create(0, 0, 0, 0);
 }

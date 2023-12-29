@@ -1465,7 +1465,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uSectorID = src.uSectorID;
-    dst->uSpriteFrameID = src.uSpriteFrameID.ticks();
+    dst->uTimeSinceCreated = src.timeSinceCreated.ticks();
     dst->tempLifetime = src.tempLifetime.ticks();
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     snapshot(src.containing_item, &dst->containing_item);
@@ -1489,7 +1489,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = SpriteAttributes(src.uAttributes);
     dst->uSectorID = src.uSectorID;
-    dst->uSpriteFrameID = Duration::fromTicks(src.uSpriteFrameID);
+    dst->timeSinceCreated = Duration::fromTicks(src.uTimeSinceCreated);
     dst->tempLifetime = Duration::fromTicks(src.tempLifetime);
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     reconstruct(src.containing_item, &dst->containing_item);

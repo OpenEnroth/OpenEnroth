@@ -34,7 +34,7 @@ struct SpriteObject {
     Color GetParticleTrailColor();
 
     inline void spellSpriteStop() {
-        uSpriteFrameID = 0_ticks;
+        timeSinceCreated = 0_ticks;
         vVelocity = Vec3i(0, 0, 0);
     }
 
@@ -74,7 +74,7 @@ struct SpriteObject {
     uint16_t uSoundID = 0;
     SpriteAttributes uAttributes = 0;
     int uSectorID = 0;
-    Duration uSpriteFrameID;
+    Duration timeSinceCreated;
     Duration tempLifetime;
     int16_t field_22_glow_radius_multiplier = 1;
     ItemGen containing_item;

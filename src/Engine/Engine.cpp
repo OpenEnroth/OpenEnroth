@@ -1489,7 +1489,7 @@ void RegeneratePartyHealthMana() {
                 spellSprite.field_60_distance_related_prolly_lod = 0;
                 spellSprite.uAttributes = 0;
                 spellSprite.uSectorID = 0;
-                spellSprite.uSpriteFrameID = 0_ticks;
+                spellSprite.timeSinceCreated = 0_ticks;
                 spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
                 spellSprite.uFacing = 0;
                 spellSprite.uSoundID = 0;

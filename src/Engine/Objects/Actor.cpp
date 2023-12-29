@@ -258,7 +258,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
-            sprite.uSpriteFrameID = 0_ticks;
+            sprite.timeSinceCreated = 0_ticks;
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.spell_target_pid = Pid();
             sprite.field_60_distance_related_prolly_lod = distancemod;
@@ -337,7 +337,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
-                sprite.uSpriteFrameID = 0_ticks;
+                sprite.timeSinceCreated = 0_ticks;
                 sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
                 sprite.spell_target_pid = Pid();
                 sprite.uFacing = yaw;
@@ -388,7 +388,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
-            sprite.uSpriteFrameID = 0_ticks;
+            sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
             sprite.field_60_distance_related_prolly_lod = 3;
 
@@ -641,7 +641,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
-            sprite.uSpriteFrameID = 0_ticks;
+            sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
             sprite.field_60_distance_related_prolly_lod = 3;
 
@@ -800,7 +800,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = 0_ticks;
+    a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
     if (pDir->uDistance < 307.2)
@@ -852,7 +852,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = 0_ticks;
+    a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
     a1.field_60_distance_related_prolly_lod = 3;

@@ -585,7 +585,7 @@ Duration SpriteObject::GetLifetime() {
 
 SpriteFrame *SpriteObject::getSpriteFrame() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, uSpriteFrameID);
+    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, timeSinceCreated);
 }
 
 bool SpriteObject::IsUnpickable() {
@@ -1309,16 +1309,16 @@ void UpdateObjects() {
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                pSpriteObjects[i].timeSinceCreated += pEventTimer->uTimeElapsed;
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                     continue;
                 }
-                if (pSpriteObjects[i].uSpriteFrameID >= Duration::zero()) {
+                if (pSpriteObjects[i].timeSinceCreated >= Duration::zero()) {
                     Duration lifetime = object->uLifetime;
                     if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
                         lifetime = pSpriteObjects[i].tempLifetime;
                     }
-                    if (pSpriteObjects[i].uSpriteFrameID < lifetime) {
+                    if (pSpriteObjects[i].timeSinceCreated < lifetime) {
                         continue;
                     }
                 }
@@ -1327,9 +1327,9 @@ void UpdateObjects() {
             }
             if (pSpriteObjects[i].uObjectDescID) {
                 Duration lifetime;
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                pSpriteObjects[i].timeSinceCreated += pEventTimer->uTimeElapsed;
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
-                    if (pSpriteObjects[i].uSpriteFrameID < Duration::zero()) {
+                    if (pSpriteObjects[i].timeSinceCreated < Duration::zero()) {
                         SpriteObject::OnInteraction(i);
                         continue;
                     }
@@ -1339,7 +1339,7 @@ void UpdateObjects() {
                     }
                 }
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
-                    pSpriteObjects[i].uSpriteFrameID < lifetime) {
+                    pSpriteObjects[i].timeSinceCreated < lifetime) {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         SpriteObject::updateObjectBLV(i);
                     } else {

@@ -1070,7 +1070,7 @@ void Party::dropHeldItem() {
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;
     sprite.uSectorID = pBLVRenderParams->uPartyEyeSectorID;
-    sprite.uSpriteFrameID = 0_ticks;
+    sprite.timeSinceCreated = 0_ticks;
     sprite.containing_item = pPickedItem;
 
     // extern int UnprojectX(int);
