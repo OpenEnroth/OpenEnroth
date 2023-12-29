@@ -22,7 +22,7 @@ void ActiveOverlayList::Reset() {
 }
 
 //----- (004418B6) --------------------------------------------------------
-int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, int animLength, int fpDamageMod, int16_t projSize) {
+int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, Duration animLength, int fpDamageMod, int16_t projSize) {
     Duration v11;    // dx@11
 
     for (unsigned int i = 0; i < 50; ++i) {
@@ -37,7 +37,7 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, int animLength, int fpDa
             this->pOverlays[i].indexToOverlayList = indexer;
             this->pOverlays[i].spriteFrameTime = 0;
             if (animLength)
-                v11 = Duration::fromTicks(animLength);
+                v11 = animLength;
             else
                 v11 = pSpriteFrameTable->pSpriteSFrames[pOverlayList->pOverlays[indexer].uSpriteFramesetID].uAnimLength;
             this->pOverlays[i].animLength = v11.ticks();
