@@ -1242,20 +1242,21 @@ void GameUI_DrawCharacterSelectionFrame() {
 
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
-    // TODO(pskelton): check tickcount usage here
-    // TODO(captainurist): #time we have relativistic time dilation here, / 20 doesn't give us Duration ticks.
-    Duration frameNum = Duration::fromTicks(platform->tickCount() / 20);
-    GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
-
     for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
-            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640., pPartySpellbuffsUI_XYs[i][1] / 480.,
-                                           party_buff_icons[i], frameNum.ticks() + 20 * pPartySpellbuffsUI_smthns[i]);
+            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
+                                           pPartySpellbuffsUI_XYs[i][1] / 480.,
+                                           party_buff_icons[i],
+                                           pMiscTimer->uTotalTimeElapsed.toRealtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]);
         }
     }
 
-    if (current_screen_type == SCREEN_GAME ||
-        current_screen_type == SCREEN_NPC_DIALOGUE) {
+    if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE) {
+        // Flight / water walk animation is purposefully slowed down compared to what's in the data files.
+        Duration frameNum = pMiscTimer->uTotalTimeElapsed * 50 / 128;
+
+        GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
+
         if (pParty->FlyActive()) {
             if (pParty->bFlying)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
@@ -1263,6 +1264,7 @@ void GameUI_DrawPartySpells() {
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0_ticks)->GetTexture();
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
+
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
