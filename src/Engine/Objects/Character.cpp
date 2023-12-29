@@ -2348,7 +2348,7 @@ bool Character::Recover(Duration dt) {
         timeToRecovery -= timepassed;
         return true;
     } else {
-        timeToRecovery = Duration::zero();  // recovered
+        timeToRecovery = 0_ticks;  // recovered
 
         if (!pParty->hasActiveCharacter())  // set recoverd char as active
             pParty->switchToNextActiveCharacter();
@@ -7153,7 +7153,7 @@ void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signe
     a1a.vPosition = pos;
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(pos);
-    a1a.uSpriteFrameID = Duration::zero();
+    a1a.uSpriteFrameID = 0_ticks;
     a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
     a1a.uFacing = 0;
@@ -7241,7 +7241,7 @@ void Character::playEmotion(CharacterExpressionID new_expression, Duration durat
         }
     }
 
-    this->uExpressionTimePassed = Duration::zero();
+    this->uExpressionTimePassed = 0_ticks;
 
     if (!duration) {
         this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
@@ -7402,7 +7402,7 @@ Character::Character() {
     sResLightBase = sResLightBonus = 0;
     sResDarkBase = sResDarkBonus = 0;
 
-    timeToRecovery = Duration::zero();
+    timeToRecovery = 0_ticks;
 
     uSkillPoints = 0;
 
@@ -7422,8 +7422,8 @@ Character::Character() {
     _ranged_dmg_bonus = 0;
 
     expression = CHARACTER_EXPRESSION_INVALID;
-    uExpressionTimePassed = Duration::zero();
-    uExpressionTimeLength = Duration::zero();
+    uExpressionTimePassed = 0_ticks;
+    uExpressionTimeLength = 0_ticks;
 
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;
@@ -7431,7 +7431,7 @@ Character::Character() {
 
     _characterEventBits.reset();
 
-    _expression21_animtime = Duration::zero();
+    _expression21_animtime = 0_ticks;
     _expression21_frameset = 0;
 
     lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;

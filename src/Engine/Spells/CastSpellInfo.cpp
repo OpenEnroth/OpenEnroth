@@ -91,7 +91,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
     }
 
     if (recoveryTime < Duration::zero()) {
-        recoveryTime = Duration::zero();
+        recoveryTime = 0_ticks;
     }
 
     Character *pPlayer = &pParty->pCharacters[pCastSpell->casterCharacterIndex];
@@ -1236,7 +1236,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -1557,7 +1557,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -1690,7 +1690,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -1791,7 +1791,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -1861,7 +1861,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -1905,7 +1905,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -1938,7 +1938,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -2146,7 +2146,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -2233,7 +2233,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -2303,7 +2303,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
@@ -2342,7 +2342,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_duration = Duration::fromDays(spell_level);
                             break;
                         case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                            spell_duration = Duration::zero();
+                            spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);

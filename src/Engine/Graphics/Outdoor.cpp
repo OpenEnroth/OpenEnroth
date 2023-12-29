@@ -1204,8 +1204,8 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     for (int i = 0; i < pActors.size(); ++i) {
         if (!(pActors[i].attributes & ACTOR_UNKNOW7)) {
             if (!alert_status) {
-                pActors[i].currentActionTime = Duration::zero();
-                pActors[i].currentActionLength = Duration::zero();
+                pActors[i].currentActionTime = 0_ticks;
+                pActors[i].currentActionLength = 0_ticks;
                 if (pActors[i].attributes & ACTOR_UNKNOW11)
                     pActors[i].aiState = AIState::Disabled;
                 if (pActors[i].aiState != AIState::Removed &&
@@ -1228,8 +1228,8 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
             pActors[i].aiState = AIState::Disabled;
             pActors[i].attributes |= ACTOR_UNKNOW11;
         } else if (alert_status) {
-            pActors[i].currentActionTime = Duration::zero();
-            pActors[i].currentActionLength = Duration::zero();
+            pActors[i].currentActionTime = 0_ticks;
+            pActors[i].currentActionLength = 0_ticks;
             if (pActors[i].attributes & ACTOR_UNKNOW11)
                 pActors[i].aiState = AIState::Disabled;
             if (pActors[i].aiState != AIState::Removed &&
@@ -1328,7 +1328,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
             pActors[i].buffs[ACTOR_BUFF_PARALYZED].Active())
-            Cur_Action_Time = Duration::zero();
+            Cur_Action_Time = 0_ticks;
 
         int v49 = 0;
         float v4 = 0.0f;
@@ -2429,7 +2429,7 @@ void UpdateActors_ODM() {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
                     pActors[Actor_ITR].yawAngle -= 32;
-                    pActors[Actor_ITR].currentActionTime = Duration::zero();
+                    pActors[Actor_ITR].currentActionTime = 0_ticks;
                     pActors[Actor_ITR].currentActionLength = 128_ticks;
                     pActors[Actor_ITR].aiState = Fleeing;
                 }
@@ -2449,7 +2449,7 @@ void UpdateActors_ODM() {
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
                                 pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
                                                                              target_y - pActors[Actor_ITR].pos.y);
-                                pActors[Actor_ITR].currentActionTime = Duration::zero();
+                                pActors[Actor_ITR].currentActionTime = 0_ticks;
                                 pActors[Actor_ITR].currentActionLength = 128_ticks;
                                 pActors[Actor_ITR].aiState = Fleeing;
                                 break;

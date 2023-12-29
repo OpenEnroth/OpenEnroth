@@ -618,12 +618,12 @@ void Game::processQueuedMessages() {
                                         }
                                         AfterEnchClickEventId = UIMSG_0;
                                         AfterEnchClickEventSecondParam = 0;
-                                        AfterEnchClickEventTimeout = Duration::zero();
+                                        AfterEnchClickEventTimeout = 0_ticks;
                                     }
                                     if (ptr_50C9A4_ItemToEnchant &&
                                         ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                         ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
-                                        ItemEnchantmentTimer = Duration::zero();
+                                        ItemEnchantmentTimer = 0_ticks;
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }
                                     onEscape();
@@ -1836,7 +1836,7 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout = std::max(Duration::zero(), AfterEnchClickEventTimeout - pEventTimer->uTimeElapsed);
+        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->uTimeElapsed);
         if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;

@@ -10,7 +10,7 @@ struct TurnBased_QueueElem {
     inline TurnBased_QueueElem() {
         uPackedID = Pid();
         actor_initiative = 0;
-        uActionLength = Duration::zero();
+        uActionLength = 0_ticks;
         AI_action_type = TE_AI_STAND;
     }
     Pid uPackedID;
@@ -23,7 +23,7 @@ struct stru262_TurnBased {
     inline stru262_TurnBased() {
         turns_count = 0;
         turn_stage = TE_NONE;
-        ai_turn_timer = Duration::zero();
+        ai_turn_timer = 0_ticks;
         turn_initiative = 0;
         uActionPointsLeft = 0;
         flags = 0;

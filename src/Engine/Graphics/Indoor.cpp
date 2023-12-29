@@ -1831,7 +1831,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
         if (door.uState == DOOR_CLOSING || door.uState == DOOR_OPENING)
             return;
 
-        door.uTimeSinceTriggered = Duration::zero();
+        door.uTimeSinceTriggered = 0_ticks;
 
         if (door.uState == DOOR_OPEN) {
             door.uState = DOOR_CLOSING;
@@ -1844,7 +1844,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
             return;
 
         if (door.uState == DOOR_OPEN) {
-            door.uTimeSinceTriggered = Duration::zero();
+            door.uTimeSinceTriggered = 0_ticks;
         } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_OPENING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
@@ -1857,7 +1857,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
             return;
 
         if (door.uState == DOOR_CLOSED) {
-            door.uTimeSinceTriggered = Duration::zero();
+            door.uTimeSinceTriggered = 0_ticks;
         } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_CLOSING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
@@ -1983,7 +1983,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i p
     a1.uFacing = facing;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = Duration::zero();
+    a1.uSpriteFrameID = 0_ticks;
     return a1.Create(0, 0, 0, 0);
 }
 
@@ -2028,7 +2028,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
-    a1a.uSpriteFrameID = Duration::zero();
+    a1a.uSpriteFrameID = 0_ticks;
     a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
     a1a.Create(0, 0, 0, 0);
 }

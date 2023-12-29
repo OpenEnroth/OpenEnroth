@@ -34,7 +34,7 @@ struct SpriteObject {
     Color GetParticleTrailColor();
 
     inline void spellSpriteStop() {
-        uSpriteFrameID = Duration::zero();
+        uSpriteFrameID = 0_ticks;
         vVelocity = Vec3i(0, 0, 0);
     }
 

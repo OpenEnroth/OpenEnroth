@@ -54,7 +54,7 @@ void ParticleEngine::ResetParticles() {
     pParticles.fill({});
     uStartParticle = PARTICLES_ARRAY_SIZE;
     uEndParticle = 0;
-    uTimeElapsed = Duration::zero();
+    uTimeElapsed = 0_ticks;
 }
 
 void ParticleEngine::AddParticle(Particle_sw *particle) {
@@ -118,7 +118,7 @@ void ParticleEngine::UpdateParticles() {
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
 
     // TODO(captainurist): checking pMiscTimer->bPaused, then using pEventTimer->uTimeElapsed?
-    Duration time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : Duration::zero();
+    Duration time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : 0_ticks;
 
     if (!time) {
         return;
@@ -132,7 +132,7 @@ void ParticleEngine::UpdateParticles() {
         }
 
         if (p->timeToLive <= time) {
-            p->timeToLive = Duration::zero();
+            p->timeToLive = 0_ticks;
             p->type = ParticleType_Invalid;
             continue;
         }

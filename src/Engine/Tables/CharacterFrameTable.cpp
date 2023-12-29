@@ -14,7 +14,7 @@ unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterExpressionID expr
 Duration PlayerFrameTable::GetDurationByExpression(CharacterExpressionID expression) {
     int index = GetFrameIdByExpression(expression);
     if (index == 0)
-        return Duration::zero();
+        return 0_ticks;
     return this->pFrames[index].uAnimLength;
 }
 

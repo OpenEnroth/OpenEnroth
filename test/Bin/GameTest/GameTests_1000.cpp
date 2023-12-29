@@ -466,8 +466,9 @@ GAME_TEST(Issues, Issue1383) {
     character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
     int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(noobPrice, 75000);
-    // Reset level type to avoid state errors in future tests
-    uCurrentlyLoadedLevelType = LevelType::LEVEL_NULL;
+
+    // Restore level type.
+    uCurrentlyLoadedLevelType = LEVEL_NULL;
 }
 
 // 1400
@@ -485,7 +486,7 @@ GAME_TEST(Prs, Pr1440) {
 
     TextureFrame frame1;
     frame1.name = "dec33d";
-    frame1.animationDuration = Duration::zero();
+    frame1.animationDuration = 0_ticks;
     frame1.frameDuration = 8_ticks;
     frame1.flags = 0;
     GraphicsImage *tex1 = frame1.GetTexture();

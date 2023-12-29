@@ -330,7 +330,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
     }
 
     if (resettimer == true) {
-        this->keydelaytimer = Duration::zero();
+        this->keydelaytimer = 0_ticks;
     } else {
         // use timer so pacing is consistent across framerates
         if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->uTimeElapsed;

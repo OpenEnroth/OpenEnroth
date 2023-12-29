@@ -801,7 +801,7 @@ void Engine::SecondaryInitialization() {
         // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
         pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
 
-        pUIAnims[i]->uAnimLength = Duration::zero();
+        pUIAnims[i]->uAnimLength = 0_ticks;
         pUIAnims[i]->uAnimTime = 0;
         pUIAnims[i]->x = _4E98D0[i][0];
         pUIAnims[i]->y = _4E98D0[i][2];
@@ -956,7 +956,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
     pSpriteFrameTable->ResetLoadedFlags();
-    pParty->armageddon_timer = Duration::zero();
+    pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();
 }
@@ -1283,7 +1283,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     // TODO(captainurist): #time drop once we move to msecs in duration.
     Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
-    pParty->_roundingDt = Duration::zero();
+    pParty->_roundingDt = 0_ticks;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running
         pParty->_roundingDt = recoveryTimeDt % 2_ticks;
         recoveryTimeDt /= 2;
@@ -1489,7 +1489,7 @@ void RegeneratePartyHealthMana() {
                 spellSprite.field_60_distance_related_prolly_lod = 0;
                 spellSprite.uAttributes = 0;
                 spellSprite.uSectorID = 0;
-                spellSprite.uSpriteFrameID = Duration::zero();
+                spellSprite.uSpriteFrameID = 0_ticks;
                 spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
                 spellSprite.uFacing = 0;
                 spellSprite.uSoundID = 0;

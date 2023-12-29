@@ -654,13 +654,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // copy actor info if different
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
+        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
         actionLen = Duration::fromTicks(vrng->random(256) + 128);
         pMonsterInfoUI_Doll.currentActionLength = actionLen;
     }
 
     if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
+        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
         if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
