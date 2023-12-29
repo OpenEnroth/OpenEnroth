@@ -6,6 +6,7 @@
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
@@ -46,6 +47,14 @@ TestTape<int> CommonTapeRecorder::totalItemCount() {
                 result += item.uItemID != ITEM_NULL;
         result += pParty->pPickedItem.uItemID != ITEM_NULL;
         return result;
+    });
+}
+
+TestTape<int> CommonTapeRecorder::totalHirelings() {
+    return custom([] {
+        FlatHirelings hirelings;
+        hirelings.Prepare();
+        return static_cast<int>(hirelings.Size());
     });
 }
 

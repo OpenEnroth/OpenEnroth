@@ -284,7 +284,7 @@ void Game_StartDialogue(unsigned int actor_id) {
     }
 }
 
-void Game_StartHirelingDialogue(unsigned int hireling_id) {
+void Game_StartHirelingDialogue(int hireling_id) {
     assert(hireling_id == 0 || hireling_id == 1);
 
     if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
@@ -294,7 +294,11 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     FlatHirelings buf;
     buf.Prepare();
 
-    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < buf.Size()) {
+    int index = hireling_id + pParty->hirelingScrollPosition;
+    if (index < buf.Size()) {
+        if (!buf.IsFollower(index) && buf.Get(index)->dialogue_1_evt_id == 1)
+            return; // Hireling is being dark sacrificed.
+
         Actor actor;
         actor.npcId += -1 - pParty->hirelingScrollPosition - hireling_id;
         initializeNPCDialogue(&actor, true);

@@ -526,3 +526,13 @@ GAME_TEST(Issues, Issue1457) {
     EXPECT_EQ(itemsTape.size(), 1);
     EXPECT_EQ(mapItemsTape.size(), 1);
 }
+
+GAME_TEST(Issues, Issue1464) {
+    // Can talk to the npc being dark-sacrificed.
+    // Talking to the last NPC while he's being dark-sacrificed asserts.
+    auto screenTape = tapes.screen();
+    auto hirelingsTape = tapes.totalHirelings();
+    test.playTraceFromTestData("issue_1464.mm7", "issue_1464.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME)); // No SCREEN_NPC_DIALOG.
+    EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
+}
