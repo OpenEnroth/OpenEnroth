@@ -234,7 +234,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_ShowFace:
-            doForChosenPlayer(ir.who, vrng, [&] (Character &player) { player.playEmotion(ir.data.expr_id, Duration::zero()); return false; });
+            doForChosenPlayer(ir.who, vrng, [&] (Character &player) { player.playEmotion(ir.data.expr_id, 0_ticks); return false; });
             break;
         case EVENT_ReceiveDamage:
             doForChosenPlayer(ir.who, grng, [&] (Character &player) { player.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type); return false; });

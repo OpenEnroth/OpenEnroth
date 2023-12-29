@@ -2767,7 +2767,7 @@ void Actor::UpdateActorAI() {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
                     if (pActor->monsterInfo.attack1MissileType) {
-                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
+                        if (pActor->monsterInfo.recoveryTime <= 0_ticks) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
@@ -2790,7 +2790,7 @@ void Actor::UpdateActorAI() {
                                 // follow player
                                 Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             // monsters
@@ -2804,7 +2804,7 @@ void Actor::UpdateActorAI() {
                     else
                         v46 = pActor->monsterInfo.spell2Id;
                     if (v46 != SPELL_NONE) {
-                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
+                        if (pActor->monsterInfo.recoveryTime <= 0_ticks) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
@@ -2825,7 +2825,7 @@ void Actor::UpdateActorAI() {
                                 v70 = (radiusMultiplier * 307.2);
                                 Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
@@ -2861,12 +2861,12 @@ void Actor::UpdateActorAI() {
                     v70 = (radiusMultiplier * 307.2);
                     Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                 }
-            } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+            } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             } else {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
-        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
             if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else

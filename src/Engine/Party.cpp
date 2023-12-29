@@ -157,7 +157,7 @@ void Party::Zero() {
     pHireling2Name[0] = 0;
     armageddon_timer = 0_ticks;
     armageddonDamage = 0;
-    pTurnBasedCharacterRecoveryTimes.fill(Duration::zero());
+    pTurnBasedCharacterRecoveryTimes.fill(0_ticks);
     InTheShopFlags.fill(0);
     uFine = 0;
     TorchLightLastIntensity = 0.0f;
@@ -248,7 +248,7 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
     if (hasActiveCharacter() && this->pCharacters[_activeCharacter - 1].CanAct() &&
-        this->pCharacters[_activeCharacter - 1].timeToRecovery <= Duration::zero())
+        this->pCharacters[_activeCharacter - 1].timeToRecovery <= 0_ticks)
         return;
 
     if (pParty->bTurnBasedModeOn) {
@@ -266,7 +266,7 @@ void Party::switchToNextActiveCharacter() {
 
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (!this->pCharacters[i].CanAct() ||
-            this->pCharacters[i].timeToRecovery > Duration::zero()) {
+            this->pCharacters[i].timeToRecovery > 0_ticks) {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
@@ -951,7 +951,7 @@ void Party::restOneFrame() {
     if (restTick) {
         Rest(restTick);
         remainingRestTime -= restTick;
-        assert(remainingRestTime >= Duration::zero());
+        assert(remainingRestTime >= 0_ticks);
         OutdoorLocation::LoadActualSkyFrame();
     }
 

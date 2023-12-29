@@ -1260,14 +1260,14 @@ void GameUI_DrawPartySpells() {
             if (pParty->bFlying)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, Duration::zero())->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0_ticks)->GetTexture();
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, Duration::zero())->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0_ticks)->GetTexture();
             render->DrawTextureNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }

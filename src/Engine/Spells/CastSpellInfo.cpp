@@ -90,7 +90,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
         return;
     }
 
-    if (recoveryTime < Duration::zero()) {
+    if (recoveryTime < 0_ticks) {
         recoveryTime = 0_ticks;
     }
 

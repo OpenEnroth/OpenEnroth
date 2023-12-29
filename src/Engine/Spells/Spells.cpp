@@ -817,7 +817,7 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
 }
 
 void armageddonProgress() {
-    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pParty->armageddon_timer > Duration::zero());
+    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pParty->armageddon_timer > 0_ticks);
 
     if (pParty->armageddon_timer > 417_ticks) {
         pParty->armageddon_timer = 0_ticks;

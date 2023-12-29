@@ -37,7 +37,7 @@ void TrailParticleGenerator::GenerateTrailParticles(int x, int y, int z,
 //----- (00440F07) --------------------------------------------------------
 void TrailParticleGenerator::UpdateParticles() {
     for (unsigned int i = 0; i < 100; ++i) {
-        if (particles[i].time_left > Duration::zero()) {
+        if (particles[i].time_left > 0_ticks) {
             particles[i].x += vrng->random(5) + 4;
             particles[i].y += vrng->random(5) - 2;
             particles[i].z += vrng->random(5) - 2;

@@ -1252,7 +1252,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                character.playEmotion(CHARACTER_EXPRESSION_SMILE, Duration::zero());
+                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
@@ -1260,7 +1260,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
                 } else {
-                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, Duration::zero());
+                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
                 }
             }
         }
@@ -1284,14 +1284,14 @@ void _494035_timed_effects__water_walking_damage__etc() {
     Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = 0_ticks;
-    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0_ticks) {  // half recovery speed if party is running
         pParty->_roundingDt = recoveryTimeDt % 2_ticks;
         recoveryTimeDt /= 2;
     }
 
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
-        if (character.timeToRecovery && recoveryTimeDt > Duration::zero())
+        if (character.timeToRecovery && recoveryTimeDt > 0_ticks)
             character.Recover(recoveryTimeDt);
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +

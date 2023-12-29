@@ -1215,7 +1215,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
     }
 
     field_204 = 0;
-    if (uFadeTime > Duration::zero()) {
+    if (uFadeTime > 0_ticks) {
         v4 = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
         v5 = 1.0 - v4 * v4;
         // v6 = v5;
@@ -1225,7 +1225,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         uFadeTime -= pEventTimer->uTimeElapsed;
     }
 
-    if (uAnimLength > Duration::zero()) {
+    if (uAnimLength > 0_ticks) {
         // prismatic light
         v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);

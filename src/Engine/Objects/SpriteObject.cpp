@@ -1313,7 +1313,7 @@ void UpdateObjects() {
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                     continue;
                 }
-                if (pSpriteObjects[i].timeSinceCreated >= Duration::zero()) {
+                if (pSpriteObjects[i].timeSinceCreated >= 0_ticks) {
                     Duration lifetime = object->uLifetime;
                     if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
                         lifetime = pSpriteObjects[i].tempLifetime;
@@ -1329,7 +1329,7 @@ void UpdateObjects() {
                 Duration lifetime;
                 pSpriteObjects[i].timeSinceCreated += pEventTimer->uTimeElapsed;
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
-                    if (pSpriteObjects[i].timeSinceCreated < Duration::zero()) {
+                    if (pSpriteObjects[i].timeSinceCreated < 0_ticks) {
                         SpriteObject::OnInteraction(i);
                         continue;
                     }

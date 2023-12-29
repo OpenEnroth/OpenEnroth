@@ -279,7 +279,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     if (turn_stage == TE_WAIT) {
         if (ai_turn_timer == 64_ticks) {
             ActorAISetMovementDecision();
-        } else if (ai_turn_timer > Duration::zero()) {
+        } else if (ai_turn_timer > 0_ticks) {
             ActorAIDoAdditionalMove();
         } else {
             ActorAIStopMovement();
@@ -545,7 +545,7 @@ void stru262_TurnBased::_4065B0() {
             if ((pQueue[i].uPackedID.type() == OBJECT_Character) ||
                 (pQueue[i].actor_initiative > 0))
                 break;
-            if ((pQueue[i].uActionLength <= Duration::zero()) &&
+            if ((pQueue[i].uActionLength <= 0_ticks) &&
                 (pQueue[i].uPackedID.type() == OBJECT_Actor))
                 AI_Action_(i);
         }

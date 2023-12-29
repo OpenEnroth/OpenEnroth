@@ -2360,7 +2360,7 @@ bool Character::Recover(Duration dt) {
 //----- (0048E96A) --------------------------------------------------------
 void Character::SetRecoveryTime(Duration rec) {
     // to avoid switching characters if endurance eliminates hit recovery
-    if (rec <= Duration::zero()) return;
+    if (rec <= 0_ticks) return;
 
     if (rec > timeToRecovery) timeToRecovery = rec;
 
