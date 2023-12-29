@@ -1188,7 +1188,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         particle.g = 0.0;
         particle.b = 0.0;
         particle.particle_size = 1.0;
-        particle.timeToLive = Duration::fromTicks(vrng->random(0x80) + 128); // was rand() & 0x80
+        particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
         particle.texture = spell_fx_renderer->effpar01;
         particle_engine->AddParticle(&particle);
         return;

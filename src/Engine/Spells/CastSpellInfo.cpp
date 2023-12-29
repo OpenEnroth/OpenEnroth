@@ -1099,7 +1099,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
                     while (spell_spray_angle_start <= spell_spray_angle_end) {
-                        pSpellSprite.timeSinceCreated = Duration::fromTicks(grng->random(64));
+                        pSpellSprite.timeSinceCreated = Duration::randomRealtimeMilliseconds(grng, 500);
                         pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                         int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                         int yaw = spell_spray_angle_start + target_direction.uYawAngle;
