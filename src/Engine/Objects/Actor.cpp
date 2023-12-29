@@ -2060,7 +2060,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
     if (uActionLength) {
-        v6->currentActionLength = uActionLength + Duration::fromTicks(grng->random(uActionLength.ticks()));
+        v6->currentActionLength = uActionLength + Duration::random(grng, uActionLength);
     } else {
         v12 = v6->moveSpeed;
         if (v12)

@@ -65,6 +65,7 @@ class Duration {
     // Unlike with RandomEngine::randomInSegment, two-arg functions below generate a duration in [lo, hi) open interval,
     // not in [lo, hi] segment.
 
+    [[nodiscard]] static Duration random(RandomEngine *rng, Duration hi);
     [[nodiscard]] static Duration randomRealtimeMilliseconds(RandomEngine *rng, int64_t hi);
     [[nodiscard]] static Duration randomRealtimeMilliseconds(RandomEngine *rng, int64_t lo, int64_t hi);
     [[nodiscard]] static Duration randomRealtimeSeconds(RandomEngine *rng, int64_t hi);

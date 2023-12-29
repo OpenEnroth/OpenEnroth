@@ -2,19 +2,23 @@
 
 #include "Library/Random/RandomEngine.h"
 
+Duration Duration::random(RandomEngine *rng, Duration hi) {
+    return fromTicks(rng->random(hi.ticks()));
+}
+
 Duration Duration::randomRealtimeMilliseconds(RandomEngine *rng, int64_t hi) {
-    return Duration::fromTicks(rng->random(Duration::fromRealtimeMilliseconds(hi).ticks()));
+    return random(rng, fromRealtimeMilliseconds(hi));
 }
 
 Duration Duration::randomRealtimeMilliseconds(RandomEngine *rng, int64_t lo, int64_t hi) {
-    return Duration::fromRealtimeMilliseconds(lo) + Duration::randomRealtimeMilliseconds(rng, hi - lo);
+    return fromRealtimeMilliseconds(lo) + randomRealtimeMilliseconds(rng, hi - lo);
 }
 
 Duration Duration::randomRealtimeSeconds(RandomEngine *rng, int64_t hi) {
-    return Duration::fromTicks(rng->random(Duration::fromRealtimeSeconds(hi).ticks()));
+    return random(rng, fromRealtimeSeconds(hi));
 }
 
 Duration Duration::randomRealtimeSeconds(RandomEngine *rng, int64_t lo, int64_t hi) {
-    return Duration::fromRealtimeSeconds(lo) + Duration::randomRealtimeSeconds(rng, hi - lo);
+    return fromRealtimeSeconds(lo) + randomRealtimeSeconds(rng, hi - lo);
 }
 
