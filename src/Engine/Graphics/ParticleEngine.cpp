@@ -19,7 +19,7 @@ void TrailParticleGenerator::AddParticle(int x, int y, int z, Color color) {
     particles[num_particles].x = x;
     particles[num_particles].y = y;
     particles[num_particles].z = z;
-    particles[num_particles].time_to_live = Duration::fromTicks(vrng->random(64) + 256);
+    particles[num_particles].time_to_live = Duration::randomRealtimeMilliseconds(vrng, 500, 2500);
     particles[num_particles].time_left = particles[num_particles].time_to_live;
     particles[num_particles].color = color;
 

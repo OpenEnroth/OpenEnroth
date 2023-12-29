@@ -669,7 +669,7 @@ void Party::Reset() {
 
         player.expression = CHARACTER_EXPRESSION_NORMAL;
         player.uExpressionTimePassed = 0_ticks;
-        player.uExpressionTimeLength = Duration::fromTicks(vrng->random(256) + 128);
+        player.uExpressionTimeLength = Duration::randomRealtimeSeconds(vrng, 1, 3);
     }
 
     for (SpellBuff &buff : this->pPartyBuffs) {
@@ -774,7 +774,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
             player.uExpressionTimePassed = 0_ticks;
             if (player.expression != CHARACTER_EXPRESSION_NORMAL || vrng->random(5)) {
                 player.expression = CHARACTER_EXPRESSION_NORMAL;
-                player.uExpressionTimeLength = Duration::fromTicks(vrng->random(256) + 32);
+                player.uExpressionTimeLength = Duration::randomRealtimeMilliseconds(vrng, 250, 2250);
             } else {
                 int randomVal = vrng->random(100);
                 if (randomVal < 25)
