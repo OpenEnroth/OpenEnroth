@@ -277,7 +277,7 @@ var searchData=
   ['_5ftickcount_274',['_tickCount',['../classEngineDeterministicComponent.html#acd815e14c227b930c0f166f9c3f61d2d',1,'EngineDeterministicComponent']]],
   ['_5ftickcount_275',['_tickcount',['../classGUIWindow__GameOver.html#a73a8e73d2f17096de483963c7fcf64fe',1,'GUIWindow_GameOver']]],
   ['_5fticksperparticle_276',['_ticksPerParticle',['../structSpriteObject.html#ac91020216d1a1a5fa331a41a682a3040',1,'SpriteObject']]],
-  ['_5ftimes_277',['_times',['../classCharacterConditions.html#a7be751e19e45af55c19b62cfa550f1f9',1,'CharacterConditions']]],
+  ['_5ftimes_277',['_times',['../structRawCharacterConditions.html#a9607db3b8f13a6954a602a4f8a90f3e9',1,'RawCharacterConditions']]],
   ['_5ftitle_278',['_title',['../classNullWindow.html#a0646a2cdb450a84e850682369e68c797',1,'NullWindow']]],
   ['_5ftmppath_279',['_tmpPath',['../classTempFileOutputStream.html#a2596a6860100df1b0b5f882bfdd70841',1,'TempFileOutputStream']]],
   ['_5ftrace_280',['_trace',['../classEngineTracePlayer.html#a7fb9b7c218585bf92bbcac346fd30a22',1,'EngineTracePlayer::_trace()'],['../classEngineTraceRecorder.html#af944ae412ccf9ab1e0a1b41394a5ac6d',1,'EngineTraceRecorder::_trace()']]],

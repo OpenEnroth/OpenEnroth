@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8cfd615</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d14dd8</span>
    </div>
   </td>
  </tr>
@@ -113,6 +113,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p ><a class="el" href="classTime.html">Time</a> delta since the last frame in fixpoint realtime seconds. Not used in OE. </p>
 
 </div>
 </div>
@@ -156,6 +157,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Actually a bool. Whether the timer is paused. </p>
 
 </div>
 </div>
@@ -200,6 +202,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p ><a class="el" href="classGame.html">Game</a> ticks since the last frame. </p>
 
 </div>
 </div>
@@ -214,6 +217,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Total game ticks elapsed. </p>
 
 </div>
 </div>
@@ -228,7 +232,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >This is actually a bool. Means the timer is in turn-based mode. </p>
+<p >Actually a bool. Means the timer is in turn-based mode. </p>
 
 </div>
 </div>
@@ -243,7 +247,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. </p>
+<p >OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. Not used anywhere by the engine, so we just set it to 0. </p>
 
 </div>
 </div>

@@ -11,7 +11,7 @@ var searchData=
   ['last_5fvisit_8',['last_visit',['../structLocationTime.html#a2286fce7f5cffe646f4cdf6567d5aebe',1,'LocationTime::last_visit()'],['../structLocationTime__MM7.html#af6844dcdeade6a33d4a0238e445038c9',1,'LocationTime_MM7::last_visit()']]],
   ['lastcharacteridtohit_9',['lastCharacterIdToHit',['../classActor.html#a698f9fb0f8eae8142e0460dc67d165cb',1,'Actor']]],
   ['lasteyelevel_10',['lastEyeLevel',['../structParty.html#a0158e7d185e3543b3a179bf2f2731e7f',1,'Party']]],
-  ['lastframetime_11',['lastFrameTime',['../structTimer__MM7.html#aa9a4c520c09de5b3906810feca3ffe8a',1,'Timer_MM7::lastFrameTime()'],['../classTimer.html#ad7191e5e75f4c364015dbcc9a8158b0e',1,'Timer::lastFrameTime()']]],
+  ['lastframetime_11',['lastFrameTime',['../structTimer__MM7.html#aa9a4c520c09de5b3906810feca3ffe8a',1,'Timer_MM7::lastFrameTime()'],['../structRawTimer.html#a56294da1791177a31f4045c991258353',1,'RawTimer::lastFrameTime()']]],
   ['lastkeypressed_12',['lastKeyPressed',['../classIo_1_1KeyboardInputHandler.html#a70c154d14bd26749561e573df2add2fe',1,'Io::KeyboardInputHandler']]],
   ['lastloadedsave_13',['lastLoadedSave',['../structSavegameList.html#a107398d947c07888d14d58eef37bb70c',1,'SavegameList']]],
   ['lastopenedspellbookpage_14',['lastOpenedSpellbookPage',['../structPlayer__MM7.html#affe88c84479b3c56ee4d7b76cb63705b',1,'Player_MM7::lastOpenedSpellbookPage()'],['../classCharacter.html#aecf6e21dce7b9cbb6ae5493c4f39e6d8',1,'Character::lastOpenedSpellbookPage()']]],
