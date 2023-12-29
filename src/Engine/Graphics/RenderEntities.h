@@ -27,7 +27,7 @@ struct RenderBillboard {
     int16_t world_z;
     int16_t screen_space_x;
     int16_t screen_space_y;
-    int16_t screen_space_z;
+    int32_t screen_space_z;
     Pid object_pid;
     uint16_t dimming_level;
     Color sTintColor;
@@ -116,7 +116,7 @@ struct RenderBillboardD3D {
     int field_90;
 
     Pid object_pid;
-    short screen_space_z;
+    int screen_space_z;
     int sParentBillboardID;
 
     //int PaletteID;
@@ -129,7 +129,7 @@ struct SoftwareBillboard {
     int *pTargetZ;
     int screen_space_x;
     int screen_space_y;
-    short screen_space_z;
+    int screen_space_z;
     float screenspace_projection_factor_x;
     float screenspace_projection_factor_y;
     char field_18[8];
