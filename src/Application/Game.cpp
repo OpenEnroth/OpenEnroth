@@ -2035,7 +2035,7 @@ void Game::gameLoop() {
 
                 Actor::InitializeActors();
 
-                int playerId = pParty->getRandomActiveCharacterId(vrng.get());
+                int playerId = pParty->getRandomActiveCharacterId(vrng);
 
                 if (playerId != -1) {
                     pParty->pCharacters[playerId].playReaction(SPEECH_CHEATED_DEATH);

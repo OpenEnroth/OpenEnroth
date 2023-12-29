@@ -1058,7 +1058,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     // Active character speaks.
     if (!bLoading && indoor_was_respawned) {
-        int id = pParty->getRandomActiveCharacterId(vrng.get());
+        int id = pParty->getRandomActiveCharacterId(vrng);
 
         if (id != -1) {
             pParty->setDelayedReaction(SPEECH_ENTER_DUNGEON, id);

@@ -234,10 +234,10 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_ShowFace:
-            doForChosenPlayer(ir.who, vrng.get(), [&] (Character &player) { player.playEmotion(ir.data.expr_id, Duration::zero()); return false; });
+            doForChosenPlayer(ir.who, vrng, [&] (Character &player) { player.playEmotion(ir.data.expr_id, Duration::zero()); return false; });
             break;
         case EVENT_ReceiveDamage:
-            doForChosenPlayer(ir.who, grng.get(), [&] (Character &player) { player.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type); return false; });
+            doForChosenPlayer(ir.who, grng, [&] (Character &player) { player.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type); return false; });
             break;
         case EVENT_SetSnow:
             if (!ir.data.snow_descr.is_nop) {
@@ -288,7 +288,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_Compare:
         {
-            bool res = doForChosenPlayer(_who, grng.get(), [&] (Character &player) { return player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); });
+            bool res = doForChosenPlayer(_who, grng, [&] (Character &player) { return player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); });
             if (res) {
                 return ir.target_step;
             }
@@ -298,7 +298,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
-            doForChosenPlayer(_who, grng.get(), [&] (Character &player) { player.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
+            doForChosenPlayer(_who, grng, [&] (Character &player) { player.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
             break;
         case EVENT_Substract:
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands && _who == CHOOSE_PARTY) {
@@ -309,11 +309,11 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                     }
                 }
             } else {
-                doForChosenPlayer(_who, grng.get(), [&] (Character &player) { player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
+                doForChosenPlayer(_who, grng, [&] (Character &player) { player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
             }
             break;
         case EVENT_Set:
-            doForChosenPlayer(_who, grng.get(), [&] (Character &player) { player.SetVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
+            doForChosenPlayer(_who, grng, [&] (Character &player) { player.SetVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
@@ -462,10 +462,10 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_CheckSkill:
         {
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
-            bool res = doForChosenPlayer(_who, grng.get(), [&] (Character &player) {
-                                         CombinedSkillValue val = player.getSkillValue(ir.data.check_skill_descr.skill_type);
-                                         return val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery;
-                                         });
+            bool res = doForChosenPlayer(_who, grng, [&] (Character &player) {
+                CombinedSkillValue val = player.getSkillValue(ir.data.check_skill_descr.skill_type);
+                return val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery;
+            });
             if (res) {
                 return ir.target_step;
             }
@@ -536,7 +536,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             Chest::toggleFlag(ir.data.chest_flag_descr.chest_id, ir.data.chest_flag_descr.flag, ir.data.chest_flag_descr.is_set);
             break;
         case EVENT_CharacterAnimation:
-            doForChosenPlayer(ir.who, vrng.get(), [&] (Character &player) { player.playReaction(ir.data.speech_id); return false; });
+            doForChosenPlayer(ir.who, vrng, [&] (Character &player) { player.playReaction(ir.data.speech_id); return false; });
             break;
         case EVENT_SetActorItem:
             Actor::giveItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);

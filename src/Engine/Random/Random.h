@@ -18,7 +18,7 @@ class RandomEnginePtr {
         return *_ptr;
     }
 
-    RandomEngine *get() const {
+    operator RandomEngine *() const {
         return _ptr;
     }
 

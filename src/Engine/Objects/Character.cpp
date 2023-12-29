@@ -6539,7 +6539,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos,
             if (targetchar != -1) {
                 playerPtr = &pParty->pCharacters[targetchar];
             } else {
-                int id = pParty->getRandomActiveCharacterId(grng.get());
+                int id = pParty->getRandomActiveCharacterId(grng);
 
                 if (id != -1) {
                     playerPtr = &pParty->pCharacters[id];
