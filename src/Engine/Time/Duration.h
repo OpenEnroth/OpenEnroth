@@ -67,7 +67,7 @@ class Duration {
         result.minutes = toMinutes() % 60;
         result.seconds = toSeconds() % 60;
         return result;
-    };
+    }
 
     [[nodiscard]] constexpr LongCivilDuration toLongCivilDuration() const {
         LongCivilDuration result;

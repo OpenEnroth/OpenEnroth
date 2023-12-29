@@ -265,7 +265,7 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
     dst->flags = static_cast<TextureFrameFlags>(src.flags);
 }
 
-void snapshot(const Timer &src, Timer_MM7 *dst) {
+void snapshot(const RawTimer &src, Timer_MM7 *dst) {
     memzero(dst);
 
     dst->ready = true;
@@ -275,11 +275,11 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
     dst->pauseTime = 0;
     dst->turnBasedTime = 0;
     dst->timeElapsed = src.uTimeElapsed.ticks();
-    dst->dtFixpoint = (src.uTimeElapsed.ticks() << 16) / Duration::TICKS_PER_REALTIME_SECOND;
+    dst->dtFixpoint = src.uTimeElapsed.toFloatRealtimeSeconds() * 65536.0f;
     dst->totalGameTimeElapsed = src.uTotalTimeElapsed.ticks();
 }
 
-void reconstruct(const Timer_MM7 &src, Timer *dst) {
+void reconstruct(const Timer_MM7 &src, RawTimer *dst) {
     dst->bPaused = src.paused;
     dst->bTackGameTime = src.turnBased;
     dst->lastFrameTime = Duration::fromTicks(src.lastFrameTime);
@@ -659,10 +659,20 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uFine = src.fine;
 }
 
+void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst) {
+    memzero(dst);
+
+    snapshot(src._times, &dst->times);
+}
+
+void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst) {
+    reconstruct(src.times, &dst->_times);
+}
+
 void snapshot(const Character &src, Player_MM7 *dst) {
     memzero(dst);
 
-    snapshot(raw(src.conditions), &dst->conditions);
+    snapshot(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;
 
@@ -780,7 +790,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 }
 
 void reconstruct(const Player_MM7 &src, Character *dst) {
-    reconstruct(src.conditions, &raw(dst->conditions));
+    reconstruct(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;
 

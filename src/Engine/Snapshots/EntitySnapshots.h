@@ -17,15 +17,19 @@
  * the engine has 100% freedom to change data layout without breaking backward compatibility.
  */
 
-class Pid;
 class Actor;
 class Character;
 class Icon;
+class Pid;
+class RawCharacterConditions;
+class RawTimer;
+class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
-class SoundInfo;
 class TileDesc;
 class UIAnimation;
+struct ActiveOverlay;
+struct ActiveOverlayList;
 struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
@@ -43,22 +47,19 @@ struct ItemGen;
 struct LevelDecoration;
 struct LocationInfo;
 struct LocationTime;
-struct PersistentVariables;
 struct MonsterDesc;
 struct NPCData;
-struct ObjectDesc;
 struct ODMFace;
+struct ObjectDesc;
 struct OutdoorLocationTileType;
 struct OverlayDesc;
-struct ActiveOverlay;
-struct ActiveOverlayList;
 struct Party;
+struct PersistentVariables;
 struct PlayerFrame;
 struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
-class Timer;
 
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
@@ -272,9 +273,19 @@ static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LloydBeacon_MM7)
 
 
+struct CharacterConditions_MM7 {
+    std::array<int64_t, 19> times;
+    int64_t unused; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
+};
+static_assert(sizeof(CharacterConditions_MM7) == 0xA0);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterConditions_MM7)
+
+void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst);
+void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst);
+
+
 struct Player_MM7 {
-    /* 0000 */ std::array<int64_t, 19> conditions;
-    /* .... */ int64_t unusedCondition; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
+    /* 0000 */ CharacterConditions_MM7 conditions;
     /* 00A0 */ uint64_t experience;
     /* 00A8 */ std::array<char, 16> name;
     /* 00B8 */ uint8_t sex;
@@ -532,9 +543,11 @@ struct Timer_MM7 {
     /** Not used by the engine, was set to true for event timer & to false for misc timer.
      * Misc timer is never serialized, so we set it to true unconditionally. */
     uint32_t ready;
+
+    /** Actually a bool. Whether the timer is paused. */
     uint32_t paused;
 
-    /** This is actually a bool. Means the timer is in turn-based mode. */
+    /** Actually a bool. Means the timer is in turn-based mode. */
     int32_t turnBased;
 
     /** OS tick count, converted to game ticks, at the time of the last frame. */
@@ -544,19 +557,26 @@ struct Timer_MM7 {
      * so we just set it to 0. */
     uint32_t pauseTime;
 
-    /** OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. */
+    /** OS tick count, converted to ticks, when the turn-based mode was enabled for this timer. Not used anywhere
+     * by the engine, so we just set it to 0. */
     int32_t turnBasedTime;
 
     int32_t field_18;
+
+    /** Game ticks since the last frame. */
     uint32_t timeElapsed;
-    int32_t dtFixpoint; // Time delta since the last frame in fixpoint seconds. Not used in OE.
+
+    /** Time delta since the last frame in fixpoint realtime seconds. Not used in OE. */
+    int32_t dtFixpoint;
+
+    /** Total game ticks elapsed. */
     uint32_t totalGameTimeElapsed;
 };
 static_assert(sizeof(Timer_MM7) == 0x28);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Timer_MM7)
 
-void snapshot(const Timer &src, Timer_MM7 *dst);
-void reconstruct(const Timer_MM7 &src, Timer *dst);
+void snapshot(const RawTimer &src, Timer_MM7 *dst);
+void reconstruct(const Timer_MM7 &src, RawTimer *dst);
 
 
 struct ActiveOverlay_MM7 {
