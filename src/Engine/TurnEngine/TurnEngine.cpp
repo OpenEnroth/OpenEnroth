@@ -90,7 +90,7 @@ void stru262_TurnBased::SortTurnQueue() {
         if (pQueue[i].uPackedID.type() ==
             OBJECT_Character)  // set recovery times
             pParty->pCharacters[pQueue[i].uPackedID.id()].timeToRecovery =
-                Duration::fromTicks((double)pQueue[i].actor_initiative * 0.46875);
+                Duration::fromTicks((double)pQueue[i].actor_initiative / flt_debugrecmod3); // Was * 0.46875, 0.46875 = 1 / 2.133333333333333.
     }
 }
 //----- (0040471C) --------------------------------------------------------

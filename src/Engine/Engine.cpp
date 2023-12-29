@@ -876,16 +876,6 @@ void MM6_Initialize() {
     pODMRenderParams->shading_dist_shade = 2048;
     pODMRenderParams->shading_dist_shademist = 4096;
 
-    // pODMRenderParams->shading_dist_mist = 0x2000;//drawing dist 0x2000
-
-    debug_non_combat_recovery_mul = 1.0f;
-    debug_combat_recovery_mul = 1.0f;
-
-    // this makes very little sense, but apparently this is how it was done in the original binary.
-    debug_turn_based_monster_movespeed_mul = debug_non_combat_recovery_mul * 1.666666666666667f;
-
-    flt_debugrecmod3 = 2.133333333333333f;
-
     MM7Initialization();
 }
 
