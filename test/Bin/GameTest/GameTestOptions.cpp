@@ -25,6 +25,9 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.")->group(otherOptions);
+    app->add_option(
+        "--speed", result.speed,
+        "Playback speed, default is infinite, use '1.0' for realtime playback.")->option_text("SPEED");
     app->add_flag(
         "--tracing-rng", result.tracingRng,
         "Use random number generators that print stack trace on each call.")->group(otherOptions);

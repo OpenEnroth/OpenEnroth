@@ -17,7 +17,7 @@ class EngineController;
 
 class TestController {
  public:
-    TestController(EngineController *controller, const std::string &testDataPath);
+    TestController(EngineController *controller, const std::string &testDataPath, float playbackSpeed);
 
     std::string fullPathInTestData(const std::string &fileName);
 
@@ -48,5 +48,6 @@ class TestController {
  private:
     EngineController *_controller;
     std::filesystem::path _testDataPath;
+    float _playbackSpeed;
     std::vector<std::function<void()>> _tapeCallbacks;
 };

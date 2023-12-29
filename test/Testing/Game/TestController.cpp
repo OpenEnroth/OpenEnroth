@@ -1,5 +1,6 @@
 #include "TestController.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "Application/GameKeyboardController.h"
@@ -15,9 +16,11 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
-TestController::TestController(EngineController *controller, const std::string &testDataPath):
+TestController::TestController(EngineController *controller, const std::string &testDataPath, float playbackSpeed):
     _controller(controller),
-    _testDataPath(testDataPath) {}
+    _testDataPath(testDataPath),
+    _playbackSpeed(playbackSpeed)
+{}
 
 std::string TestController::fullPathInTestData(const std::string &fileName) {
     return (_testDataPath / fileName).string();
@@ -40,7 +43,16 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
         fullPathInTestData(saveName),
         fullPathInTestData(traceName),
         flags,
-        std::move(postLoadCallback),
+        [this, postLoadCallback = std::move(postLoadCallback)] {
+            if (postLoadCallback)
+                postLoadCallback();
+
+            // FPS are unlimited by default, and speed over x1000 isn't really distinguishable from unlimited FPS.
+            if (_playbackSpeed < 1000.0f) {
+                int fps = _playbackSpeed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
+                engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
+            }
+        },
         [this] {
             runTapeCallbacks();
         }
