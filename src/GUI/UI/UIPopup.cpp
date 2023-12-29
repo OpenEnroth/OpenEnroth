@@ -664,7 +664,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(vrng->random(128) + 128);
+            pMonsterInfoUI_Doll.currentActionLength = Duration::randomRealtimeSeconds(vrng, 1, 2);
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
