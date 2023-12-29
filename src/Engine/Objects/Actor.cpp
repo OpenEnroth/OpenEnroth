@@ -1037,7 +1037,7 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
 
     pActors[uActorID].aiState = Standing;
     if (!uActionLength)
-        pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(256) + 256);  // от 256 до 256 + 256
+        pActors[uActorID].currentActionLength = Duration::randomRealtimeSeconds(grng, 2, 4);
     else
         pActors[uActorID].currentActionLength = uActionLength;
     pActors[uActorID].currentActionTime = 0_ticks;
@@ -1051,7 +1051,7 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
 
 //----- (00403E61) --------------------------------------------------------
 void Actor::StandAwhile(unsigned int uActorID) {
-    pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(128) + 128);
+    pActors[uActorID].currentActionLength = Duration::randomRealtimeSeconds(grng, 1, 2);
     pActors[uActorID].currentActionTime = 0_ticks;
     pActors[uActorID].aiState = Standing;
     pActors[uActorID].speed.z = 0;

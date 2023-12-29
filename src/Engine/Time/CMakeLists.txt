@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(ENGINE_TIME_SOURCES
+        Duration.cpp
         Timer.cpp)
 
 set(ENGINE_TIME_HEADERS
