@@ -257,7 +257,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
             const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
             if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
                 if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
-                    v6 = pMiscTimer->uTotalTimeElapsed;
+                    v6 = pMiscTimer->_time;
                     v7 = std::abs(pLevelDecorations[i].vPosition.x +
                         pLevelDecorations[i].vPosition.y);
 

@@ -392,14 +392,14 @@ void GameWindowHandler::OnDeactivated() {
 
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
         if (pEventTimer != nullptr) {
-            if (pEventTimer->bPaused)
+            if (pEventTimer->_paused)
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
             else
                 pEventTimer->Pause();
         }
 
         if (pMiscTimer != nullptr) {
-            if (pMiscTimer->bPaused)
+            if (pMiscTimer->_paused)
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
             else
                 pMiscTimer->Pause();

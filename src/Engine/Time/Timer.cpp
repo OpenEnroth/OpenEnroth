@@ -10,37 +10,37 @@ Timer *pEventTimer;
 //----- (00426317) --------------------------------------------------------
 Duration Timer::Time() {
     Duration result = Duration::fromRealtimeMilliseconds(platform->tickCount());
-    if (result < lastFrameTime) lastFrameTime = 0_ticks;
+    if (result < _lastFrameTime) _lastFrameTime = 0_ticks;
     return result;
 }
 
 //----- (00426349) --------------------------------------------------------
 void Timer::Pause() {
-    bPaused = true;
+    _paused = true;
 }
 
 //----- (00426363) --------------------------------------------------------
 void Timer::Resume() {
-    if (bPaused) {
+    if (_paused) {
         keyboardInputHandler->ResetKeys();
 
-        bPaused = false;
-        lastFrameTime = Time();
+        _paused = false;
+        _lastFrameTime = Time();
     }
 }
 
 //----- (00426386) --------------------------------------------------------
 void Timer::TrackGameTime() {
-    if (!bTackGameTime) {
-        bTackGameTime = true;
+    if (!_turnBased) {
+        _turnBased = true;
     }
 }
 
 //----- (004263A0) --------------------------------------------------------
 void Timer::StopGameTime() {
-    if (bTackGameTime) {
-        bTackGameTime = false;
-        lastFrameTime = Time();
+    if (_turnBased) {
+        _turnBased = false;
+        _lastFrameTime = Time();
     }
 }
 
@@ -60,12 +60,12 @@ void Timer::Update() {
     // TODO(captainurist): this magically works with EventTracer because of how Time() is written:
     // it sets uStartTime to zero if it's larger than current time. And TickCount() in EventTracer starts at zero.
     // This looks very fragile, but rethinking it would require diving into how timers work.
-    uTimeElapsed = new_time - lastFrameTime;
-    lastFrameTime = new_time;
+    _dt = new_time - _lastFrameTime;
+    _lastFrameTime = new_time;
 
-    if (uTimeElapsed > 32_ticks)
-        uTimeElapsed = 32_ticks; // 32 is 250ms
+    if (_dt > 32_ticks)
+        _dt = 32_ticks; // 32 is 250ms
 
-    if (!bPaused && !bTackGameTime)
-        uTotalTimeElapsed += uTimeElapsed;
+    if (!_paused && !_turnBased)
+        _time += _dt;
 }

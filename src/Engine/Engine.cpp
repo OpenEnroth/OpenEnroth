@@ -162,7 +162,7 @@ void Engine::drawWorld() {
             // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
             // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
             render->hd_water_current_frame =
-                std::floor(std::fmod(pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds(), 1.0f) * 7.0f);
+                std::floor(std::fmod(pMiscTimer->_time.toFloatRealtimeSeconds(), 1.0f) * 7.0f);
 
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
@@ -1181,7 +1181,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_hour = pParty->uCurrentHour;
     int old_year = pParty->uCurrentYear;
 
-    pParty->GetPlayingTime() += pEventTimer->uTimeElapsed;
+    pParty->GetPlayingTime() += pEventTimer->_dt;
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
     pParty->uCurrentTimeSecond = time.second;
@@ -1271,7 +1271,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     RegeneratePartyHealthMana();
 
     // TODO(captainurist): #time drop once we move to msecs in duration.
-    Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
+    Duration recoveryTimeDt = pEventTimer->_dt;
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = 0_ticks;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0_ticks) {  // half recovery speed if party is running

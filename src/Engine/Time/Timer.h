@@ -7,11 +7,11 @@
 #include "Duration.h"
 
 struct RawTimer {
-    bool bPaused = false;
-    int bTackGameTime = 0;
-    Duration lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
-    Duration uTimeElapsed; // dt since last frame.
-    Duration uTotalTimeElapsed; // Total time elapsed.
+    bool _paused = false;
+    int _turnBased = 0;
+    Duration _lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
+    Duration _dt; // dt since last frame.
+    Duration _time; // Total time elapsed.
 };
 
 class Timer : private RawTimer {
@@ -20,16 +20,18 @@ class Timer : private RawTimer {
     Timer() = default;
 
     void Update();
+
     void Pause();
     void Resume();
+
     void TrackGameTime();
     void StopGameTime();
 
     // TODO(captainurist): encapsulate.
-    using RawTimer::bPaused;
-    using RawTimer::bTackGameTime;
-    using RawTimer::uTimeElapsed;
-    using RawTimer::uTotalTimeElapsed;
+    using RawTimer::_paused;
+    using RawTimer::_turnBased;
+    using RawTimer::_dt;
+    using RawTimer::_time;
 
  private:
     Duration Time();

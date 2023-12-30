@@ -367,7 +367,7 @@ static void CollideWithDecoration(int id) {
 //
 
 bool CollisionState::PrepareAndCheckIfStationary(Duration dt) {
-    float dtf = dt ? dt.toFloatRealtimeSeconds() : pEventTimer->uTimeElapsed.toFloatRealtimeSeconds();
+    float dtf = dt ? dt.toFloatRealtimeSeconds() : pEventTimer->_dt.toFloatRealtimeSeconds();
 
     this->speed = this->velocity.length();
     if (fuzzyIsNull(this->speed, COLLISIONS_EPS))

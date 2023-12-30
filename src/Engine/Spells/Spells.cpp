@@ -830,7 +830,7 @@ void armageddonProgress() {
 
     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->randomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
     pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->randomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
-    pParty->armageddon_timer = std::max(0_ticks, pParty->armageddon_timer - pEventTimer->uTimeElapsed); // Was pMiscTimer
+    pParty->armageddon_timer = std::max(0_ticks, pParty->armageddon_timer - pEventTimer->_dt); // Was pMiscTimer
 
     // TODO(pskelton): ignore if pEventTimer->uTimeElapsed is zero?
     // TODO(captainurist): See the logic in Outdoor.cpp, right now the force is applied in fixed amounts per frame,

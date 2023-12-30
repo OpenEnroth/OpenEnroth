@@ -333,7 +333,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         this->keydelaytimer = 0_ticks;
     } else {
         // use timer so pacing is consistent across framerates
-        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->uTimeElapsed;
+        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->_dt;
     }
 }
 
@@ -353,7 +353,7 @@ void Io::KeyboardInputHandler::GenerateInputActions() {
         }
     }
 
-    if (pEventTimer->bPaused) {
+    if (pEventTimer->_paused) {
         GeneratePausedActions();
     } else {
         GenerateGameplayActions();

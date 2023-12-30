@@ -1314,7 +1314,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsIm
         else
             assert(false);
 
-        ItemEnchantmentTimer = std::max(0_ticks, ItemEnchantmentTimer - pEventTimer->uTimeElapsed);
+        ItemEnchantmentTimer = std::max(0_ticks, ItemEnchantmentTimer - pEventTimer->_dt);
         if (!ItemEnchantmentTimer) {
             item->ResetEnchantAnimation();
             ptr_50C9A4_ItemToEnchant = nullptr;

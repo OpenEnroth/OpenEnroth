@@ -1840,7 +1840,7 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->uTimeElapsed);
+        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->_dt);
         if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
@@ -1915,14 +1915,14 @@ void Game::gameLoop() {
             pEventTimer->Update();
             pMiscTimer->Update();
 
-            if (pMiscTimer->bPaused && !pEventTimer->bPaused)
+            if (pMiscTimer->_paused && !pEventTimer->_paused)
                 pMiscTimer->Resume();
-            if (pEventTimer->bTackGameTime && !pParty->bTurnBasedModeOn)
-                pEventTimer->bTackGameTime = false;
-            if (!pEventTimer->bPaused && uGameState == GAME_STATE_PLAYING) {
+            if (pEventTimer->_turnBased && !pParty->bTurnBasedModeOn)
+                pEventTimer->_turnBased = false;
+            if (!pEventTimer->_paused && uGameState == GAME_STATE_PLAYING) {
                 onTimer();
 
-                if (!pEventTimer->bTackGameTime) {
+                if (!pEventTimer->_turnBased) {
                     _494035_timed_effects__water_walking_damage__etc();
                 } else {
                     // Need to process party death in turn-based mode.
@@ -1942,7 +1942,7 @@ void Game::gameLoop() {
 
             GameUI_WritePointedObjectStatusString();
             engine->_statusBar->update();
-            turnBasedOverlay.update(pMiscTimer->uTimeElapsed, pTurnEngine->turn_stage);
+            turnBasedOverlay.update(pMiscTimer->_dt, pTurnEngine->turn_stage);
 
             if (uGameState == GAME_STATE_PLAYING) {
                 engine->Draw();
