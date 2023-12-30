@@ -13,6 +13,7 @@
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/Graphics/ParticleEngine.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -553,6 +554,36 @@ GAME_TEST(Prs, Pr1440) {
         EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex0) << i;
     for (int i = 24; i < 32; i++)
         EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
+}
+
+GAME_TEST(Issues, Issue1447A) {
+    // Fire bolt doesn't emit particles in turn based mode
+    auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
+                                        [](const Particle &par) { return par.type != ParticleType_Invalid; }); });
+    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    test.playTraceFromTestData("issue_1447A.mm7", "issue_1447A.json");
+    EXPECT_EQ(turnBasedTape.back(), true);
+    EXPECT_GT(particlesTape.max(), 10);
+}
+
+GAME_TEST(Issues, Issue1447B) {
+    // Fireball doesn't emit particles in turn based mode
+    auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
+                                        [](const Particle& par) { return par.type != ParticleType_Invalid; }); });
+    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    test.playTraceFromTestData("issue_1447B.mm7", "issue_1447B.json");
+    EXPECT_EQ(turnBasedTape.back(), true);
+    EXPECT_GT(particlesTape.max(), 10);
+}
+
+GAME_TEST(Issues, Issue1447C) {
+    // Acid blast doesn't emit particles in turn based mode
+    auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
+                                        [](const Particle& par) { return par.type != ParticleType_Invalid; }); });
+    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    test.playTraceFromTestData("issue_1447C.mm7", "issue_1447C.json");
+    EXPECT_EQ(turnBasedTape.back(), true);
+    EXPECT_GT(particlesTape.max(), 10);
 }
 
 GAME_TEST(Issues, Issue1454) {
