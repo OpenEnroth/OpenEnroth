@@ -246,7 +246,7 @@ static void checkTimer(MapTimer &timer) {
 }
 
 void onTimer() {
-    if (pEventTimer->_paused) {
+    if (pEventTimer->isPaused()) {
         return;
     }
 

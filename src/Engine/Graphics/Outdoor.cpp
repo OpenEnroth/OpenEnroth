@@ -1320,10 +1320,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         Cur_Action_Time = pActors[i].currentActionTime;
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = i * 32_ticks + pMiscTimer->_time;
+                Cur_Action_Time = i * 32_ticks + pMiscTimer->time();
         } else {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = i * 32_ticks + pEventTimer->_time;
+                Cur_Action_Time = i * 32_ticks + pEventTimer->time();
         }
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
@@ -1707,7 +1707,7 @@ void ODM_ProcessPartyActions() {
     bool flyDown{ false };
 
     // TODO(captainurist): #time think about a better way to write this formula.
-    int64_t dturn = pEventTimer->_dt.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
+    int64_t dturn = pEventTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:
@@ -1983,7 +1983,7 @@ void ODM_ProcessPartyActions() {
     //------------------------------------------
 
     if (partyNotTouchingFloor && !pParty->bFlying) {  // add gravity
-        partyInputSpeed.z += -2.0f * pEventTimer->_dt.ticks() * GetGravityStrength();
+        partyInputSpeed.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
     } else if (!partyNotTouchingFloor) {
         if (!floorFaceId) {
             // rolling down the hill
@@ -1994,7 +1994,7 @@ void ODM_ProcessPartyActions() {
             if (partyAtHighSlope) {
                 Vec3i v98;
                 ODM_GetTerrainNormalAt(partyNewPos.x, partyNewPos.y, &v98);
-                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->_dt.ticks() * (int)GetGravityStrength()));
+                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->dt().ticks() * (int)GetGravityStrength()));
                 float dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z) / 65536.0f;
                 partyInputSpeed.x += dot * v98.x / 65536.0f;
                 partyInputSpeed.y += dot * v98.y / 65536.0f;
@@ -2163,7 +2163,7 @@ void ODM_ProcessPartyActions() {
         bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
-        if (pEventTimer->_dt) {
+        if (pEventTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
             int walkDelta = integer_sqrt((partyOldPosition - pParty->pos).lengthSqr());
 
@@ -2384,7 +2384,7 @@ void UpdateActors_ODM() {
                 ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
                 uint16_t Gravity = GetGravityStrength();
 
-                pActors[Actor_ITR].speed.z += -16 * pEventTimer->_dt.ticks() * Gravity;
+                pActors[Actor_ITR].speed.z += -16 * pEventTimer->dt().ticks() * Gravity;
                 int v73 = std::abs(Terrain_Norm.x * pActors[Actor_ITR].speed.x +
                               Terrain_Norm.z * pActors[Actor_ITR].speed.z +
                               Terrain_Norm.y * pActors[Actor_ITR].speed.y) >> 15;
@@ -2395,7 +2395,7 @@ void UpdateActors_ODM() {
                 // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }
         } else {
-            pActors[Actor_ITR].speed.z -= pEventTimer->_dt.ticks() * GetGravityStrength();
+            pActors[Actor_ITR].speed.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
         // ARMAGEDDON PANIC

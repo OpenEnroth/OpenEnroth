@@ -72,7 +72,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     initialPosition = vPosition;
 
     // set start timer for particle emmission
-    _lastParticleTime = pEventTimer->_time;
+    _lastParticleTime = pEventTimer->time();
 
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
@@ -160,12 +160,12 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
 
     if (!(object->uFlags & OBJECT_DESC_NO_GRAVITY)) {
         if (isAboveGround) {
-            pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->_dt.ticks() * GetGravityStrength();
+            pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
             Vec3i norm;
             ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &norm);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
-            pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->_dt.ticks() * GetGravityStrength());
+            pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
             int dotFix = std::abs(dot(norm, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
             // v60 = ((uint64_t)(v56 * (int64_t)v51.x) >> 16);
@@ -367,7 +367,7 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
 
     // flying objects / projectiles
     if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
-        pSpriteObject->vVelocity.z -= pEventTimer->_dt.ticks() * GetGravityStrength();
+        pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         // TODO(Nik-RE-dev): get rid of goto here
 LABEL_25:
         collision_state.check_hi = false;
@@ -511,7 +511,7 @@ LABEL_25:
             pSpriteObject->vVelocity.z = 0;
         } else {
             if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
-                pSpriteObject->vVelocity.z -= pEventTimer->_dt.ticks() * GetGravityStrength();
+                pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
         }
         pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
@@ -1309,7 +1309,7 @@ void UpdateObjects() {
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
-                pSpriteObjects[i].timeSinceCreated += pEventTimer->_dt;
+                pSpriteObjects[i].timeSinceCreated += pEventTimer->dt();
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                     continue;
                 }
@@ -1327,7 +1327,7 @@ void UpdateObjects() {
             }
             if (pSpriteObjects[i].uObjectDescID) {
                 Duration lifetime;
-                pSpriteObjects[i].timeSinceCreated += pEventTimer->_dt;
+                pSpriteObjects[i].timeSinceCreated += pEventTimer->dt();
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
                     if (pSpriteObjects[i].timeSinceCreated < 0_ticks) {
                         SpriteObject::OnInteraction(i);

@@ -76,7 +76,7 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exi
     engine->_teleportPoint.setTeleportTarget(pos, yaw, pitch, zspeed);
     engine->_teleportPoint.setTeleportMap(locationName);
     uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
     current_screen_type = SCREEN_CHANGE_LOCATION;
 
     mapid = pMapStats->GetMapInfo(pCurrentMapName);
@@ -142,7 +142,7 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exi
 }
 
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions()) {
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
 
     game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 

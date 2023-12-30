@@ -123,7 +123,7 @@ GAME_TEST(Issues, Issue1155) {
 GAME_TEST(Issues, Issue1164) {
     // CHARACTER_EXPRESSION_NO animation ending abruptly - should show the character moving his/her head to the left,
     // then to the right.
-    auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->_time); });
+    auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->time()); });
     auto frameTimeTape = tapes.config(engine->config->debug.TraceFrameTimeMs);
     test.playTraceFromTestData("issue_1164.mm7", "issue_1164.json");
     EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo at other frame rates.

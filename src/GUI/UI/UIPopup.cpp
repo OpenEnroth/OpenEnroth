@@ -702,7 +702,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
-    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->_dt;
+    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
 
     // Draw name and profession
     std::string str;
@@ -1669,9 +1669,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
         if (!uFramesetID)
             uFramesetID = 1;
         if (player->expression == CHARACTER_EXPRESSION_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->_dt);
+            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->dt());
         else
-            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->_time);
+            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
         player->uExpressionImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
     }
@@ -1807,7 +1807,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     }
 
     // Otherwise pause game and enter right click mode until button will be released
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
     switch (current_screen_type) {
         case SCREEN_CASTING: {
             Inventory_ItemPopupAndAlchemy();

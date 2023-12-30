@@ -19,7 +19,7 @@ GraphicsImage *ui_game_quickref_background = nullptr;
 
 GUIWindow_QuickReference::GUIWindow_QuickReference() : GUIWindow(WINDOW_QuickReference, {0, 0}, render->GetRenderDimensions()) {
     // 004304E7 Game_EventLoop --- part
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
     current_screen_type = SCREEN_QUICK_REFERENCE;
 
     // paperdoll_dbrds[2] = assets->GetImage_16BitAlpha(L"BUTTEXI1");

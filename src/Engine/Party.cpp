@@ -696,7 +696,7 @@ void Party::Reset() {
     pNPCStats->pGroups_copy = pNPCStats->pGroups;
     pNPCStats->pNewNPCData[3].uFlags |= NPC_HIRED;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc(); // TODO(captainurist): this totally doesn't belong here.
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
 
     this->pPickedItem.uItemID = ITEM_NULL;
 }
@@ -764,7 +764,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.uExpressionTimePassed += pMiscTimer->_dt;
+        player.uExpressionTimePassed += pMiscTimer->dt();
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
@@ -826,7 +826,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
         NPCData *hireling = &pParty->pHirelings[i];
         if (!hireling->dialogue_3_evt_id) continue;
 
-        hireling->dialogue_2_evt_id += pMiscTimer->_dt.ticks();
+        hireling->dialogue_2_evt_id += pMiscTimer->dt().ticks();
         if (hireling->dialogue_2_evt_id >= hireling->dialogue_3_evt_id) {
             hireling->dialogue_1_evt_id = 0;
             hireling->dialogue_2_evt_id = 0;
@@ -942,7 +942,7 @@ void restAndHeal(Duration restTime) {
 void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused resting to be too fast on high FPS.
     // Game time is 30x real time, so given the calculation below we're resting ~6 game hours per realtime second.
-    Duration restTick = pEventTimer->_dt * 12 * 64;
+    Duration restTick = pEventTimer->dt() * 12 * 64;
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;

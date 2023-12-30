@@ -255,7 +255,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         SpriteObject *a2, Color uDiffuse, GraphicsImage *texture) {
     // check if enough time has passed to add particle into the trail
     // TODO(captainurist): we're checking for pEventTimer, and this means we're not getting any particles in turn-based mode!
-    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->_time) {
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->time()) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
     } else {
         return;
@@ -619,10 +619,10 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     if (!pActor->massDistortionTime)
         return 1.0;
 
-    assert(pActor->massDistortionTime <= pMiscTimer->_time);
+    assert(pActor->massDistortionTime <= pMiscTimer->time());
 
     // That's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
-    float v3 = 1.0f - (pMiscTimer->_time - pActor->massDistortionTime).toFloatRealtimeSeconds();
+    float v3 = 1.0f - (pMiscTimer->time() - pActor->massDistortionTime).toFloatRealtimeSeconds();
     if (v3 > 0.5f) {
         float v2 = (v3 - 0.5f) * (v3 - 0.5f) / 0.25f;
         return 0.2f + v2 * 0.8f;
@@ -1222,7 +1222,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         if (v5 > 0.9) v5 = 1.0 - (v5 - 0.9) * 10.0;
         v7 = v5;
         render->ScreenFade(uFadeColor, v7);
-        uFadeTime -= pEventTimer->_dt;
+        uFadeTime -= pEventTimer->dt();
     }
 
     if (uAnimLength > 0_ticks) {
@@ -1230,7 +1230,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
         int pal = v10->GetPaletteIndex();
-        uAnimLength -= pEventTimer->_dt;
+        uAnimLength -= pEventTimer->dt();
 
         render->DrawSpecialEffectsQuad(v10->hw_sprites[0]->texture, pal);
     }
@@ -1242,7 +1242,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
-        buff->uSpellAnimTimeElapsed += pEventTimer->_dt;
+        buff->uSpellAnimTimeElapsed += pEventTimer->dt();
         if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime) {
             buff->bRender = false;
             continue;

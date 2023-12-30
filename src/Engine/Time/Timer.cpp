@@ -8,50 +8,20 @@ Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
-Duration Timer::Time() {
+Duration Timer::platformTime() {
     Duration result = Duration::fromRealtimeMilliseconds(platform->tickCount());
     if (result < _lastFrameTime) _lastFrameTime = 0_ticks;
     return result;
 }
 
-//----- (00426349) --------------------------------------------------------
-void Timer::Pause() {
-    _paused = true;
-}
-
-//----- (00426363) --------------------------------------------------------
-void Timer::Resume() {
-    if (_paused) {
-        keyboardInputHandler->ResetKeys();
-
-        _paused = false;
-        _lastFrameTime = Time();
-    }
-}
-
-//----- (00426386) --------------------------------------------------------
-void Timer::TrackGameTime() {
-    if (!_turnBased) {
-        _turnBased = true;
-    }
-}
-
-//----- (004263A0) --------------------------------------------------------
-void Timer::StopGameTime() {
-    if (_turnBased) {
-        _turnBased = false;
-        _lastFrameTime = Time();
-    }
-}
-
 //----- (004263B7) --------------------------------------------------------
-void Timer::Update() {
+void Timer::tick() {
     // Timer *v1; // esi@1
     // unsigned int v2; // eax@2
     // signed int v3; // eax@3
     // char v4; // zf@5
 
-    Duration new_time = Time();
+    Duration new_time = platformTime();
 
     // TODO(captainurist): I had to comment the line below because it's now hooking into platform, and platform
     // code return the same tick count on every call when playing back an event trace.
@@ -68,4 +38,26 @@ void Timer::Update() {
 
     if (!_paused && !_turnBased)
         _time += _dt;
+}
+
+void Timer::setPaused(bool paused) {
+    if (_paused == paused)
+        return;
+
+    _paused = paused;
+
+    if (!_paused) {
+        keyboardInputHandler->ResetKeys(); // TODO(captainurist): doesn't belong here.
+        _lastFrameTime = platformTime();
+    }
+}
+
+void Timer::setTurnBased(bool turnBased) {
+    if (_turnBased == turnBased)
+        return;
+
+    _turnBased = turnBased;
+
+    if (!_turnBased)
+        _lastFrameTime = platformTime();
 }

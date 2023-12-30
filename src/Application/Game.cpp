@@ -336,7 +336,7 @@ void Game::onEscape() {
         pGUIWindow_CurrentMenu->Release();  // check this
         pGUIWindow_CurrentMenu = nullptr;
     }
-    pEventTimer->Resume();
+    pEventTimer->setPaused(false);
     current_screen_type = SCREEN_GAME;
 }
 
@@ -633,7 +633,7 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_BOOKS:
-                                    pEventTimer->Resume();
+                                    pEventTimer->setPaused(false);
                                     onEscape();
                                     continue;
                                 case SCREEN_CHEST_INVENTORY:
@@ -643,14 +643,14 @@ void Game::processQueuedMessages() {
                                     pWindow2 = pGUIWindow_CurrentMenu;
                                     pWindow2->Release();
                                     current_screen_type = SCREEN_GAME;
-                                    pEventTimer->Resume();
+                                    pEventTimer->setPaused(false);
                                     continue;
                                 case SCREEN_19:
                                     assert(false);
                                     pWindow2 = ptr_507BC8;
                                     pWindow2->Release();
                                     current_screen_type = SCREEN_GAME;
-                                    pEventTimer->Resume();
+                                    pEventTimer->setPaused(false);
                                     continue;
                                 case SCREEN_REST:  // close rest screen
                                     if (currentRestType != REST_NONE) {
@@ -858,7 +858,7 @@ void Game::processQueuedMessages() {
                 } else {
                     CastSpellInfoHelpers::cancelSpellCastInProgress();
                     DialogueEnding();
-                    pEventTimer->Pause();
+                    pEventTimer->setPaused(true);
                     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                     pGameLoadingUI_ProgressBar->Progress();
                     SaveGame(1, 0);
@@ -899,7 +899,7 @@ void Game::processQueuedMessages() {
                         pParty->pos.x, pParty->pos.y, &bOnWater, 0);
                     pParty->uFallStartZ = pParty->pos.z;
                     engine->_461103_load_level_sub();
-                    pEventTimer->Resume();
+                    pEventTimer->setPaused(false);
                     current_screen_type = SCREEN_GAME;
                     pGameLoadingUI_ProgressBar->Release();
                 }
@@ -1115,7 +1115,7 @@ void Game::processQueuedMessages() {
                                 // window->GetWidth(), window->GetHeight(),
                                 // WINDOW_68, uMessageParam, 0);
                 current_screen_type = SCREEN_19;
-                pEventTimer->Pause();
+                pEventTimer->setPaused(true);
                 continue;
             case UIMSG_STEALFROMACTOR:
                 if (!pParty->hasActiveCharacter()) continue;
@@ -1385,7 +1385,7 @@ void Game::processQueuedMessages() {
                 if (character->bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
-                        pEventTimer->Resume();
+                        pEventTimer->setPaused(false);
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
@@ -1465,7 +1465,7 @@ void Game::processQueuedMessages() {
             case UIMSG_GameMenuButton:
                 if (current_screen_type != SCREEN_GAME) {
                     pGUIWindow_CurrentMenu->Release();
-                    pEventTimer->Resume();
+                    pEventTimer->setPaused(false);
                     current_screen_type = SCREEN_GAME;
                 }
 
@@ -1840,7 +1840,7 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->_dt);
+        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->dt());
         if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
@@ -1885,7 +1885,7 @@ void Game::gameLoop() {
         pParty->bTurnBasedModeOn = false;  // Make sure turn engine and party turn based mode flag are in sync.
 
         DoPrepareWorld(bLoading, 1);
-        pEventTimer->Resume();
+        pEventTimer->setPaused(false);
         dword_6BE364_game_settings_1 |=
             GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
@@ -1912,17 +1912,17 @@ void Game::gameLoop() {
 
             pMediaPlayer->HouseMovieLoop();
 
-            pEventTimer->Update();
-            pMiscTimer->Update();
+            pEventTimer->tick();
+            pMiscTimer->tick();
 
-            if (pMiscTimer->_paused && !pEventTimer->_paused)
-                pMiscTimer->Resume();
-            if (pEventTimer->_turnBased && !pParty->bTurnBasedModeOn)
-                pEventTimer->_turnBased = false;
-            if (!pEventTimer->_paused && uGameState == GAME_STATE_PLAYING) {
+            if (pMiscTimer->isPaused() && !pEventTimer->isPaused())
+                pMiscTimer->setPaused(false);
+            if (pEventTimer->isTurnBased() && !pParty->bTurnBasedModeOn)
+                pEventTimer->setTurnBased(false);
+            if (!pEventTimer->isPaused() && uGameState == GAME_STATE_PLAYING) {
                 onTimer();
 
-                if (!pEventTimer->_turnBased) {
+                if (!pEventTimer->isTurnBased()) {
                     _494035_timed_effects__water_walking_damage__etc();
                 } else {
                     // Need to process party death in turn-based mode.
@@ -1942,7 +1942,7 @@ void Game::gameLoop() {
 
             GameUI_WritePointedObjectStatusString();
             engine->_statusBar->update();
-            turnBasedOverlay.update(pMiscTimer->_dt, pTurnEngine->turn_stage);
+            turnBasedOverlay.update(pMiscTimer->dt(), pTurnEngine->turn_stage);
 
             if (uGameState == GAME_STATE_PLAYING) {
                 engine->Draw();
@@ -2034,8 +2034,8 @@ void Game::gameLoop() {
                     engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
-                pMiscTimer->Resume();
-                pEventTimer->Resume();
+                pMiscTimer->setPaused(false);
+                pEventTimer->setPaused(false);
 
                 Actor::InitializeActors();
 
@@ -2052,7 +2052,7 @@ void Game::gameLoop() {
             }
         } while (!game_finished);
 
-        pEventTimer->Pause();
+        pEventTimer->setPaused(true);
         engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
             GameUI_LoadPlayerPortraintsAndVoices();

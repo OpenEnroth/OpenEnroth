@@ -12,7 +12,7 @@
 #include "Application/GameOver.h"
 
 GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(WINDOW_GameOverWindow, {0, 0}, render->GetRenderDimensions()), _releaseEvent(releaseEvent) {
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_GAMEOVER_WINDOW;
     _tickcount = platform->tickCount() + 5000;
@@ -51,7 +51,7 @@ void GUIWindow_GameOver::Release() {
 
     current_screen_type = prev_screen_type;
     bGameoverLoop = false;
-    pEventTimer->Resume();
+    pEventTimer->setPaused(false);
 
     GUIWindow::Release();
 }

@@ -21,7 +21,7 @@ float Decal::Fade_by_time() {
     if (!engine->config->graphics.BloodSplatsFade.value()) return 1.0f;
 
     // splats fade
-    Duration delta = fadetime - pEventTimer->_time;
+    Duration delta = fadetime - pEventTimer->time();
     float result = (delta.toFloatRealtimeSeconds() + 30.0f) / 30.0f;
     if (result < 0.0f) result = 0.0f;
     return result;
@@ -251,11 +251,11 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(TILE_DESC_FLAGS terrainFlags, Vec3f 
                 // apply fade flags
                 if (!(bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags & DecalFlagsFade)) {
                     bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags |= DecalFlagsFade;
-                    bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->_time;
+                    bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->time();
                 }
             }
 
-            bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->_time;
+            bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->time();
             bloodsplat_container->pBloodsplats_to_apply[whichsplat].faceDist = planedist;
 
             // store this decal to apply

@@ -433,8 +433,8 @@ void DialogueEnding() {
         pDialogueWindow->Release();
     }
     pDialogueWindow = nullptr;
-    pMiscTimer->Resume();
-    pEventTimer->Resume();
+    pMiscTimer->setPaused(false);
+    pEventTimer->setPaused(false);
 }
 
 void OnButtonClick::Update() {
