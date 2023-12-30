@@ -27,7 +27,7 @@ GUIWindow_Chest::GUIWindow_Chest(int chestId) : GUIWindow(WINDOW_Chest, {0, 0}, 
                                    localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
     CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_CHEST_ClickItem, 0);
     current_screen_type = SCREEN_CHEST;
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
 }
 
 void GUIWindow_Chest::Update() {

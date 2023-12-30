@@ -113,7 +113,7 @@ void stru262_TurnBased::Start() {
     int temp;
 
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
-    pEventTimer->TrackGameTime();
+    pEventTimer->setTurnBased(true);
     pAudioPlayer->playUISound(SOUND_StartTurnBasedMode);
 
     this->turn_initiative = 100;
@@ -226,7 +226,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
     if (bPlaySound != 0)
         pAudioPlayer->playUISound(SOUND_EndTurnBasedMode);
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
-    pEventTimer->StopGameTime();
+    pEventTimer->setTurnBased(false);
     this->pQueue.clear();
 }
 // 50C994: using guessed type int dword_50C994;
@@ -256,7 +256,7 @@ void stru262_TurnBased::AITurnBasedAction() {
         if (!(curr_actor->attributes & ACTOR_STAND_IN_QUEUE) &&
             !curr_actor->buffs[ACTOR_BUFF_STONED].Expired() &&
             !curr_actor->buffs[ACTOR_BUFF_PARALYZED].Expired()) {
-            curr_actor->currentActionTime += pMiscTimer->uTimeElapsed;
+            curr_actor->currentActionTime += pMiscTimer->dt();
             if (curr_actor->currentActionTime >=
                 curr_actor->currentActionLength) {
                 target_pid = ai_near_actors_targets_pid[i];
@@ -285,7 +285,7 @@ void stru262_TurnBased::AITurnBasedAction() {
             ActorAIStopMovement();
             turn_initiative = 100;
         }
-        ai_turn_timer -= pEventTimer->uTimeElapsed;
+        ai_turn_timer -= pEventTimer->dt();
     } else if (turn_stage == TE_ATTACK) {
         if (!(flags & TE_FLAG_1)) {
             if (turn_initiative == 100) {
@@ -392,7 +392,7 @@ void stru262_TurnBased::NextTurn() {
                 (pActors[monster_id].aiState == AttackingRanged3) ||
                 (pActors[monster_id].aiState == AttackingRanged4) ||
                 (pActors[monster_id].aiState == Summoned)) {
-                pActors[monster_id].currentActionTime += pEventTimer->uTimeElapsed;
+                pActors[monster_id].currentActionTime += pEventTimer->dt();
                 if (pActors[monster_id].currentActionTime <
                     pActors[monster_id].currentActionLength) {
                     v13 = 1;
@@ -586,7 +586,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
         if ((pActors[actor_id].aiState != Dead) &&
             (pActors[actor_id].aiState != Disabled) &&
             (pActors[actor_id].aiState != Removed)) {
-            pActors[actor_id].currentActionTime += pEventTimer->uTimeElapsed;
+            pActors[actor_id].currentActionTime += pEventTimer->dt();
             if (pActors[actor_id].currentActionTime >= pActors[actor_id].currentActionLength) {
                 switch (pActors[actor_id].aiState) {
                     case AttackingMelee:
@@ -813,7 +813,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                         Actor::AI_Stand(pQueue[i].uPackedID.id(), v13, 32_ticks,
                                         &v9);
                 } else {
-                    pActors[monster_id].currentActionTime += pEventTimer->uTimeElapsed;
+                    pActors[monster_id].currentActionTime += pEventTimer->dt();
                     if (pActors[monster_id].currentActionTime >
                         pActors[monster_id].currentActionLength) {
                         if (pActors[monster_id].aiState == Dying) {
@@ -992,7 +992,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
                 Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v9,
                                         0);
                 a4 = v9;
-                curr_acror->currentActionTime += pEventTimer->uTimeElapsed;
+                curr_acror->currentActionTime += pEventTimer->dt();
                 if (curr_acror->currentActionTime >
                     curr_acror->currentActionLength) {
                     if (curr_acror->aiState == Dying) {

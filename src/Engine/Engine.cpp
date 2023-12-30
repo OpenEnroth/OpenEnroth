@@ -162,7 +162,7 @@ void Engine::drawWorld() {
             // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
             // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
             render->hd_water_current_frame =
-                std::floor(std::fmod(pMiscTimer->uTotalTimeElapsed.toFloatRealtimeSeconds(), 1.0f) * 7.0f);
+                std::floor(std::fmod(pMiscTimer->time().toFloatRealtimeSeconds(), 1.0f) * 7.0f);
 
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
@@ -585,13 +585,13 @@ void UpdateUserInput_and_MapSpecificStuff() {
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
 
-    pEventTimer->Pause();
-    pMiscTimer->Pause();
+    pEventTimer->setPaused(true);
+    pMiscTimer->setPaused(true);
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
-    pMiscTimer->Resume();
-    pEventTimer->Resume();
+    pMiscTimer->setPaused(false);
+    pEventTimer->setPaused(false);
 }
 
 //----- (00464866) --------------------------------------------------------
@@ -847,7 +847,7 @@ void Engine::Initialize() {
 
     MM7_Initialize();
 
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
 
     GUIWindow::InitializeGUI();
 }
@@ -1171,7 +1171,7 @@ void back_to_game() {
     }
 
     if (current_screen_type == SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
-        pEventTimer->Resume();
+        pEventTimer->setPaused(false);
     }
 }
 
@@ -1181,7 +1181,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_hour = pParty->uCurrentHour;
     int old_year = pParty->uCurrentYear;
 
-    pParty->GetPlayingTime() += pEventTimer->uTimeElapsed;
+    pParty->GetPlayingTime() += pEventTimer->dt();
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
     pParty->uCurrentTimeSecond = time.second;
@@ -1271,7 +1271,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     RegeneratePartyHealthMana();
 
     // TODO(captainurist): #time drop once we move to msecs in duration.
-    Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
+    Duration recoveryTimeDt = pEventTimer->dt();
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = 0_ticks;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0_ticks) {  // half recovery speed if party is running

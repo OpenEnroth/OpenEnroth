@@ -39,8 +39,8 @@ const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialog
 void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
     currentAddressingAwardBit = -1;
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
-    pEventTimer->Pause();
-    pMiscTimer->Pause();
+    pEventTimer->setPaused(true);
+    pMiscTimer->setPaused(true);
     sDialogue_SpeakingActorNPC_ID = actor->npcId;
     pDialogue_SpeakingActor = actor;
     NPCData *pNPCInfo = GetNPCData(actor->npcId);

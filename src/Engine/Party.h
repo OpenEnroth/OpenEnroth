@@ -257,7 +257,7 @@ struct Party {
 
     void updateDelayedReaction() {
         if (_delayedReactionTimer) {
-            _delayedReactionTimer = std::max(0_ticks, _delayedReactionTimer - pMiscTimer->uTimeElapsed);
+            _delayedReactionTimer = std::max(0_ticks, _delayedReactionTimer - pMiscTimer->dt());
             if (!_delayedReactionTimer && pCharacters[_delayedReactionCharacterId].CanAct()) {
                 pCharacters[_delayedReactionCharacterId].playReaction(_delayedReactionSpeech);
             }

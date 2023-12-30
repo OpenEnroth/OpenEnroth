@@ -122,8 +122,8 @@ void LoadGame(unsigned int uSlot) {
 
     SetUserInterface(pParty->alignment, true);
 
-    pEventTimer->Resume();
-    pEventTimer->StopGameTime();
+    pEventTimer->setPaused(false);
+    pEventTimer->setTurnBased(false);
 
     if (!pGames_LOD->exists(header.locationName)) {
         logger->error("Unable to find: {}!", header.locationName);
@@ -291,7 +291,7 @@ void DoSavegame(unsigned int uSlot) {
         }
     }
 
-    pEventTimer->Resume();
+    pEventTimer->setPaused(false);
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
 }
 

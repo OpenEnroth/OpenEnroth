@@ -24,7 +24,7 @@ void GUIWindow_Inventory::Update() {
     //    ItemGen ItemGen2;
     //    ItemGen2.Reset();
     //    Release();
-    //    pEventTimer->Resume();
+    //    pEventTimer->setPaused(false);
     //    current_screen_type = SCREEN_GAME;
     //    int v39 = atoi(userInputHandler->GetTextInput().c_str());
     //    if (v39 > 0 && v39 < 800) {

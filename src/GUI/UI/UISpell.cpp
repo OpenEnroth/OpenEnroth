@@ -13,7 +13,7 @@ TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei d
     : GUIWindow(windowType, position, dimensions, hint), _spellInfo(spellInfo) {
     assert(spellInfo);
 
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
     mouse->SetCursorImage("MICON2");
     engine->_statusBar->setEvent(LSTR_CHOOSE_TARGET);
 }

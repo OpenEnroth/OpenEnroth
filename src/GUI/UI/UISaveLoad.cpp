@@ -394,7 +394,7 @@ void MainMenuLoad_EventLoop() {
 
                 SetCurrentMenuID(MENU_MAIN);
                 current_screen_type = SCREEN_GAME;
-                pEventTimer->Resume();
+                pEventTimer->setPaused(false);
                 break;
             }
             break;

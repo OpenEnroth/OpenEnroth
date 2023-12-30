@@ -7,37 +7,47 @@
 #include "Duration.h"
 
 struct RawTimer {
-    bool bPaused = false;
-    int bTackGameTime = 0;
-    Duration lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
-    Duration uTimeElapsed; // dt since last frame.
-    Duration uTotalTimeElapsed; // Total time elapsed.
+    bool _paused = false;
+    bool _turnBased = false;
+    Duration _lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
+    Duration _dt; // dt since last frame.
+    Duration _time; // Total time elapsed.
 };
 
 class Timer : private RawTimer {
     MM_DECLARE_RAW_PRIVATE_BASE(RawTimer)
- public:
+ public: // NOLINT: Linter, why???
     Timer() = default;
 
-    void Update();
-    void Pause();
-    void Resume();
-    void TrackGameTime();
-    void StopGameTime();
+    void tick();
 
-    // TODO(captainurist): encapsulate.
-    using RawTimer::bPaused;
-    using RawTimer::bTackGameTime;
-    using RawTimer::uTimeElapsed;
-    using RawTimer::uTotalTimeElapsed;
+    bool isPaused() const {
+        return _paused;
+    }
+
+    void setPaused(bool paused);
+
+    // TODO(captainurist): isTurnBased is just a synonym for 'really-totally-paused'. Doesn't belong here, move out.
+
+    bool isTurnBased() const {
+        return _turnBased;
+    }
+
+    void setTurnBased(bool turnBased);
+
+    Duration dt() const {
+        return _dt;
+    }
+
+    Duration time() const {
+        return _time;
+    }
 
  private:
-    Duration Time();
+    Duration platformTime();
 };
 
-// TODO(captainurist): pAnimTimer? Also, if we are being purists, this is not a Timer. It's not measuring Enroth time,
-//                     it's measuring real time. So should operate with std::chrono primitives. Look at all the places
-//                     where it's used and write proper docs here first, maybe I'm missing smth.
+// TODO(captainurist): pAnimTimer?
 extern Timer *pMiscTimer;
 
 // TODO(captainurist): pGameTimer?

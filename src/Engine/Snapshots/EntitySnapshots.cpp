@@ -269,22 +269,22 @@ void snapshot(const RawTimer &src, Timer_MM7 *dst) {
     memzero(dst);
 
     dst->ready = true;
-    dst->paused = src.bPaused;
-    dst->turnBased = src.bTackGameTime;
-    dst->lastFrameTime = src.lastFrameTime.ticks();
+    dst->paused = src._paused;
+    dst->turnBased = src._turnBased;
+    dst->lastFrameTime = src._lastFrameTime.ticks();
     dst->pauseTime = 0;
     dst->turnBasedTime = 0;
-    dst->timeElapsed = src.uTimeElapsed.ticks();
-    dst->dtFixpoint = src.uTimeElapsed.toFloatRealtimeSeconds() * 65536.0f;
-    dst->totalGameTimeElapsed = src.uTotalTimeElapsed.ticks();
+    dst->timeElapsed = src._dt.ticks();
+    dst->dtFixpoint = src._dt.toFloatRealtimeSeconds() * 65536.0f;
+    dst->totalGameTimeElapsed = src._time.ticks();
 }
 
 void reconstruct(const Timer_MM7 &src, RawTimer *dst) {
-    dst->bPaused = src.paused;
-    dst->bTackGameTime = src.turnBased;
-    dst->lastFrameTime = Duration::fromTicks(src.lastFrameTime);
-    dst->uTimeElapsed = Duration::fromTicks(src.timeElapsed);
-    dst->uTotalTimeElapsed = Duration::fromTicks(src.totalGameTimeElapsed);
+    dst->_paused = src.paused;
+    dst->_turnBased = src.turnBased;
+    dst->_lastFrameTime = Duration::fromTicks(src.lastFrameTime);
+    dst->_dt = Duration::fromTicks(src.timeElapsed);
+    dst->_time = Duration::fromTicks(src.totalGameTimeElapsed);
 }
 
 void snapshot(const NPCData &src, NPCData_MM7 *dst) {

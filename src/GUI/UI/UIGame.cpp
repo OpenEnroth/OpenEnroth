@@ -1247,13 +1247,13 @@ void GameUI_DrawPartySpells() {
             render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
                                            pPartySpellbuffsUI_XYs[i][1] / 480.,
                                            party_buff_icons[i],
-                                           pMiscTimer->uTotalTimeElapsed.toRealtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]);
+                                           pMiscTimer->time().toRealtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]);
         }
     }
 
     if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE) {
         // Flight / water walk animation is purposefully slowed down compared to what's in the data files.
-        Duration frameNum = pMiscTimer->uTotalTimeElapsed * 50 / 128;
+        Duration frameNum = pMiscTimer->time() * 50 / 128;
 
         GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
@@ -1325,7 +1325,7 @@ void GameUI_DrawPortraits() {
         if (face_expression_ID == 0)
             face_expression_ID = 1;
         if (pPlayer->expression == CHARACTER_EXPRESSION_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->dt());
         else
             pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
@@ -1680,14 +1680,14 @@ void GameUI_DrawTorchlightAndWizardEye() {
             render->DrawTextureNew(
                 pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnum_Torchlight->icon->id, pMiscTimer->uTotalTimeElapsed)
+                    ->GetFrame(pUIAnum_Torchlight->icon->id, pMiscTimer->time())
                     ->GetTexture());
         }
         if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
                 pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnim_WizardEye->icon->id, pMiscTimer->uTotalTimeElapsed)
+                    ->GetFrame(pUIAnim_WizardEye->icon->id, pMiscTimer->time())
                     ->GetTexture());
         }
     }
@@ -1804,7 +1804,7 @@ std::string GetReputationString(int reputation) {
 GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     : GUIWindow(WINDOW_DebugMenu, {0, 0}, render->GetRenderDimensions()) {
 
-    pEventTimer->Pause();
+    pEventTimer->setPaused(true);
     int width = 108;
     int height = 20;
 

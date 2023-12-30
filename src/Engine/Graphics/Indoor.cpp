@@ -239,7 +239,7 @@ GraphicsImage *BLVFace::GetTexture() {
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
+            (int64_t)this->resource, pEventTimer->time());
     else
         return static_cast<GraphicsImage *>(this->resource);
 }
@@ -686,7 +686,7 @@ void BLV_UpdateDoors() {
         }
         bool shouldPlaySound = !(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0;
 
-        door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
+        door->uTimeSinceTriggered += pEventTimer->dt();
 
         int openDistance;     // [sp+60h] [bp-4h]@6
         if (door->uState == DOOR_OPENING) {
@@ -855,11 +855,11 @@ void UpdateActors_BLV() {
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
-                    actor.speed.z -= pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
+                    actor.speed.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
         } else {
             if (isAboveGround && !isFlying)
-                actor.speed.z += -8 * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
+                actor.speed.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
         if (actor.speed.lengthSqr() >= 400) {
@@ -1202,8 +1202,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
-    Duration v37 = pEventTimer->uTotalTimeElapsed;
-    if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
+    Duration v37 = pEventTimer->time();
+    if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->time();
     v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
@@ -1600,7 +1600,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     // TODO(captainurist): #time think about a better way to write this formula.
     int rotation =
-        pEventTimer->uTimeElapsed.ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
+        pEventTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
 
     pParty->speed = Vec3f(0, 0, pParty->speed.z);
 
@@ -1701,7 +1701,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (isAboveGround) {
-        pParty->speed.z += -2.0f * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
+        pParty->speed.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         if (pParty->speed.z < -500) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
@@ -1712,7 +1712,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     } else {
         if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
-            pParty->speed.z -= 1.0f * pEventTimer->uTimeElapsed.ticks() * GetGravityStrength();
+            pParty->speed.z -= 1.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         } else {
             if (!(pParty->uFlags & PARTY_FLAG_LANDING))
                 pParty->speed.z = 0;
@@ -1723,7 +1723,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->uFallStartZ = pParty->pos.z;
 
     // If party movement delta is lower then this number then the party remains stationary.
-    int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed.ticks(), static_cast<std::int64_t>(10000));
+    int64_t elapsed_time_bounded = std::min(pEventTimer->dt().ticks(), static_cast<std::int64_t>(10000));
     int min_party_move_delta_sqr = 400 * elapsed_time_bounded * elapsed_time_bounded / 8;
 
     if (pParty->speed.xy().lengthSqr() < min_party_move_delta_sqr) {
@@ -1748,7 +1748,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
-        if (pEventTimer->uTimeElapsed) {
+        if (pEventTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
             int walkDelta = integer_sqrt((oldPos - pParty->pos).lengthSqr());
 
