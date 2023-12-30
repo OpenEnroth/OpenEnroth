@@ -2450,11 +2450,6 @@ std::string pCurrentMapName;
 MapId uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 
-float debug_non_combat_recovery_mul;
-float debug_combat_recovery_mul;
-float debug_turn_based_monster_movespeed_mul;
-float flt_debugrecmod3;
-
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::vector<Vec3f> pTerrainNormals;

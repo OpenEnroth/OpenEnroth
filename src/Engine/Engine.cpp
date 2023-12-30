@@ -801,7 +801,7 @@ void Engine::SecondaryInitialization() {
         // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
         pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
 
-        pUIAnims[i]->uAnimLength = Duration::zero();
+        pUIAnims[i]->uAnimLength = 0_ticks;
         pUIAnims[i]->uAnimTime = 0;
         pUIAnims[i]->x = _4E98D0[i][0];
         pUIAnims[i]->y = _4E98D0[i][2];
@@ -876,16 +876,6 @@ void MM6_Initialize() {
     pODMRenderParams->shading_dist_shade = 2048;
     pODMRenderParams->shading_dist_shademist = 4096;
 
-    // pODMRenderParams->shading_dist_mist = 0x2000;//drawing dist 0x2000
-
-    debug_non_combat_recovery_mul = 1.0f;
-    debug_combat_recovery_mul = 1.0f;
-
-    // this makes very little sense, but apparently this is how it was done in the original binary.
-    debug_turn_based_monster_movespeed_mul = debug_non_combat_recovery_mul * 1.666666666666667f;
-
-    flt_debugrecmod3 = 2.133333333333333f;
-
     MM7Initialization();
 }
 
@@ -956,7 +946,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
     pSpriteFrameTable->ResetLoadedFlags();
-    pParty->armageddon_timer = Duration::zero();
+    pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();
 }
@@ -1252,7 +1242,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                character.playEmotion(CHARACTER_EXPRESSION_SMILE, Duration::zero());
+                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
@@ -1260,7 +1250,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                         engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                     }
                 } else {
-                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, Duration::zero());
+                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
                 }
             }
         }
@@ -1283,15 +1273,15 @@ void _494035_timed_effects__water_walking_damage__etc() {
     // TODO(captainurist): #time drop once we move to msecs in duration.
     Duration recoveryTimeDt = pEventTimer->uTimeElapsed;
     recoveryTimeDt += pParty->_roundingDt;
-    pParty->_roundingDt = Duration::zero();
-    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > Duration::zero()) {  // half recovery speed if party is running
+    pParty->_roundingDt = 0_ticks;
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0_ticks) {  // half recovery speed if party is running
         pParty->_roundingDt = recoveryTimeDt % 2_ticks;
         recoveryTimeDt /= 2;
     }
 
     unsigned numPlayersCouldAct = pParty->pCharacters.size();
     for (Character &character : pParty->pCharacters) {
-        if (character.timeToRecovery && recoveryTimeDt > Duration::zero())
+        if (character.timeToRecovery && recoveryTimeDt > 0_ticks)
             character.Recover(recoveryTimeDt);
 
         if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
@@ -1489,7 +1479,7 @@ void RegeneratePartyHealthMana() {
                 spellSprite.field_60_distance_related_prolly_lod = 0;
                 spellSprite.uAttributes = 0;
                 spellSprite.uSectorID = 0;
-                spellSprite.uSpriteFrameID = Duration::zero();
+                spellSprite.timeSinceCreated = 0_ticks;
                 spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
                 spellSprite.uFacing = 0;
                 spellSprite.uSoundID = 0;

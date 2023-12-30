@@ -19,7 +19,7 @@ void TrailParticleGenerator::AddParticle(int x, int y, int z, Color color) {
     particles[num_particles].x = x;
     particles[num_particles].y = y;
     particles[num_particles].z = z;
-    particles[num_particles].time_to_live = Duration::fromTicks(vrng->random(64) + 256);
+    particles[num_particles].time_to_live = Duration::randomRealtimeMilliseconds(vrng, 500, 2500);
     particles[num_particles].time_left = particles[num_particles].time_to_live;
     particles[num_particles].color = color;
 
@@ -37,7 +37,7 @@ void TrailParticleGenerator::GenerateTrailParticles(int x, int y, int z,
 //----- (00440F07) --------------------------------------------------------
 void TrailParticleGenerator::UpdateParticles() {
     for (unsigned int i = 0; i < 100; ++i) {
-        if (particles[i].time_left > Duration::zero()) {
+        if (particles[i].time_left > 0_ticks) {
             particles[i].x += vrng->random(5) + 4;
             particles[i].y += vrng->random(5) - 2;
             particles[i].z += vrng->random(5) - 2;
@@ -54,7 +54,7 @@ void ParticleEngine::ResetParticles() {
     pParticles.fill({});
     uStartParticle = PARTICLES_ARRAY_SIZE;
     uEndParticle = 0;
-    uTimeElapsed = Duration::zero();
+    uTimeElapsed = 0_ticks;
 }
 
 void ParticleEngine::AddParticle(Particle_sw *particle) {
@@ -118,7 +118,7 @@ void ParticleEngine::UpdateParticles() {
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
 
     // TODO(captainurist): checking pMiscTimer->bPaused, then using pEventTimer->uTimeElapsed?
-    Duration time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : Duration::zero();
+    Duration time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : 0_ticks;
 
     if (!time) {
         return;
@@ -132,7 +132,7 @@ void ParticleEngine::UpdateParticles() {
         }
 
         if (p->timeToLive <= time) {
-            p->timeToLive = Duration::zero();
+            p->timeToLive = 0_ticks;
             p->type = ParticleType_Invalid;
             continue;
         }

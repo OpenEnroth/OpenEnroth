@@ -466,8 +466,9 @@ GAME_TEST(Issues, Issue1383) {
     character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
     int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(noobPrice, 75000);
-    // Reset level type to avoid state errors in future tests
-    uCurrentlyLoadedLevelType = LevelType::LEVEL_NULL;
+
+    // Restore level type.
+    uCurrentlyLoadedLevelType = LEVEL_NULL;
 }
 
 // 1400
@@ -485,7 +486,7 @@ GAME_TEST(Prs, Pr1440) {
 
     TextureFrame frame1;
     frame1.name = "dec33d";
-    frame1.animationDuration = Duration::zero();
+    frame1.animationDuration = 0_ticks;
     frame1.frameDuration = 8_ticks;
     frame1.flags = 0;
     GraphicsImage *tex1 = frame1.GetTexture();
@@ -524,4 +525,14 @@ GAME_TEST(Issues, Issue1457) {
     test.playTraceFromTestData("issue_1457.mm7", "issue_1457.json");
     EXPECT_EQ(itemsTape.size(), 1);
     EXPECT_EQ(mapItemsTape.size(), 1);
+}
+
+GAME_TEST(Issues, Issue1464) {
+    // Can talk to the npc being dark-sacrificed.
+    // Talking to the last NPC while he's being dark-sacrificed asserts.
+    auto screenTape = tapes.screen();
+    auto hirelingsTape = tapes.totalHirelings();
+    test.playTraceFromTestData("issue_1464.mm7", "issue_1464.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME)); // No SCREEN_NPC_DIALOG.
+    EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
 }

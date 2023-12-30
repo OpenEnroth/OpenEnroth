@@ -94,10 +94,10 @@ struct SpellFxRenderer {
         this->particle_engine = particle_engine;
 
         this->field_204 = 0;
-        this->uFadeTime = Duration::zero();
+        this->uFadeTime = 0_ticks;
         this->uNumProjectiles = 0;
         this->field_0 = 0;
-        this->uAnimLength = Duration::zero();
+        this->uAnimLength = 0_ticks;
 
         pStru1 = new SpellFX_Billboard();
         pStru1->Initialize(colorTable.OrangeyRed.c32());

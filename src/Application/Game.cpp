@@ -284,7 +284,7 @@ void Game_StartDialogue(unsigned int actor_id) {
     }
 }
 
-void Game_StartHirelingDialogue(unsigned int hireling_id) {
+void Game_StartHirelingDialogue(int hireling_id) {
     assert(hireling_id == 0 || hireling_id == 1);
 
     if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
@@ -294,7 +294,11 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     FlatHirelings buf;
     buf.Prepare();
 
-    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < buf.Size()) {
+    int index = hireling_id + pParty->hirelingScrollPosition;
+    if (index < buf.Size()) {
+        if (!buf.IsFollower(index) && buf.Get(index)->dialogue_1_evt_id == 1)
+            return; // Hireling is being dark sacrificed.
+
         Actor actor;
         actor.npcId += -1 - pParty->hirelingScrollPosition - hireling_id;
         initializeNPCDialogue(&actor, true);
@@ -618,12 +622,12 @@ void Game::processQueuedMessages() {
                                         }
                                         AfterEnchClickEventId = UIMSG_0;
                                         AfterEnchClickEventSecondParam = 0;
-                                        AfterEnchClickEventTimeout = Duration::zero();
+                                        AfterEnchClickEventTimeout = 0_ticks;
                                     }
                                     if (ptr_50C9A4_ItemToEnchant &&
                                         ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                         ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
-                                        ItemEnchantmentTimer = Duration::zero();
+                                        ItemEnchantmentTimer = 0_ticks;
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }
                                     onEscape();
@@ -1031,7 +1035,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_PLAYING;
 
                 for (Character &character : pParty->pCharacters) {
-                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, Duration::zero());
+                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0_ticks);
                 }
 
                 // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
@@ -1836,7 +1840,7 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout = std::max(Duration::zero(), AfterEnchClickEventTimeout - pEventTimer->uTimeElapsed);
+        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->uTimeElapsed);
         if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
@@ -2035,7 +2039,7 @@ void Game::gameLoop() {
 
                 Actor::InitializeActors();
 
-                int playerId = pParty->getRandomActiveCharacterId(vrng.get());
+                int playerId = pParty->getRandomActiveCharacterId(vrng);
 
                 if (playerId != -1) {
                     pParty->pCharacters[playerId].playReaction(SPEECH_CHEATED_DEATH);

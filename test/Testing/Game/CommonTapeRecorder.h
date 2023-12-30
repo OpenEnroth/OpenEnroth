@@ -45,6 +45,8 @@ class CommonTapeRecorder {
 
     TestTape<int> totalItemCount();
 
+    TestTape<int> totalHirelings();
+
     TestTape<bool> hasItem(ItemId itemId);
 
     TestTape<int> gold();

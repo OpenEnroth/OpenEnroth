@@ -4,6 +4,8 @@
 #include <compare>
 #include <type_traits>
 
+class RandomEngine;
+
 struct CivilDuration {
     int days = 0;
     int hours = 0;
@@ -59,6 +61,15 @@ class Duration {
     [[nodiscard]] constexpr int64_t toRealtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
     [[nodiscard]] constexpr int64_t toRealtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
     [[nodiscard]] constexpr float toFloatRealtimeSeconds() const { return ticks() / static_cast<float>(TICKS_PER_REALTIME_SECOND); }
+
+    // Unlike with RandomEngine::randomInSegment, two-arg functions below generate a duration in [lo, hi) open interval,
+    // not in [lo, hi] segment.
+
+    [[nodiscard]] static Duration random(RandomEngine *rng, Duration hi);
+    [[nodiscard]] static Duration randomRealtimeMilliseconds(RandomEngine *rng, int64_t hi);
+    [[nodiscard]] static Duration randomRealtimeMilliseconds(RandomEngine *rng, int64_t lo, int64_t hi);
+    [[nodiscard]] static Duration randomRealtimeSeconds(RandomEngine *rng, int64_t hi);
+    [[nodiscard]] static Duration randomRealtimeSeconds(RandomEngine *rng, int64_t lo, int64_t hi);
 
     [[nodiscard]] constexpr CivilDuration toCivilDuration() const {
         CivilDuration result;

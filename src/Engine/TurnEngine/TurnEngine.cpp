@@ -90,7 +90,7 @@ void stru262_TurnBased::SortTurnQueue() {
         if (pQueue[i].uPackedID.type() ==
             OBJECT_Character)  // set recovery times
             pParty->pCharacters[pQueue[i].uPackedID.id()].timeToRecovery =
-                Duration::fromTicks((double)pQueue[i].actor_initiative * 0.46875);
+                Duration::fromTicks((double)pQueue[i].actor_initiative / flt_debugrecmod3); // Was * 0.46875, 0.46875 = 1 / 2.133333333333333.
     }
 }
 //----- (0040471C) --------------------------------------------------------
@@ -127,8 +127,8 @@ void stru262_TurnBased::Start() {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Character, pl_id);
             element.AI_action_type = TE_AI_PURSUE;
-            element.uActionLength = Duration::zero();
-            pParty->pTurnBasedCharacterRecoveryTimes[this->pQueue.size() - 1] = Duration::zero();
+            element.uActionLength = 0_ticks;
+            pParty->pTurnBasedCharacterRecoveryTimes[this->pQueue.size() - 1] = 0_ticks;
         }
     }
 
@@ -147,7 +147,7 @@ void stru262_TurnBased::Start() {
                 TurnBased_QueueElem &element = this->pQueue.emplace_back();
                 element.uPackedID = Pid(OBJECT_Actor, ai_near_actors_ids[i]);
                 element.AI_action_type = TE_AI_PURSUE;
-                element.uActionLength = Duration::zero();
+                element.uActionLength = 0_ticks;
             }
         }
     }
@@ -265,8 +265,8 @@ void stru262_TurnBased::AITurnBasedAction() {
                 v15 = v6;
                 v14 = v15;
                 if (curr_actor->aiState == Dying) {
-                    curr_actor->currentActionTime = Duration::zero();
-                    curr_actor->currentActionLength = Duration::zero();
+                    curr_actor->currentActionTime = 0_ticks;
+                    curr_actor->currentActionLength = 0_ticks;
                     curr_actor->aiState = Dead;
                     curr_actor->UpdateAnimation();
                 } else if ((curr_actor->aiState > Removed) &&
@@ -279,7 +279,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     if (turn_stage == TE_WAIT) {
         if (ai_turn_timer == 64_ticks) {
             ActorAISetMovementDecision();
-        } else if (ai_turn_timer > Duration::zero()) {
+        } else if (ai_turn_timer > 0_ticks) {
             ActorAIDoAdditionalMove();
         } else {
             ActorAIStopMovement();
@@ -328,7 +328,7 @@ void stru262_TurnBased::StartTurn() {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Character, player_num);
             element.actor_initiative = 100;
-            element.uActionLength = Duration::zero();
+            element.uActionLength = 0_ticks;
             element.AI_action_type = TE_AI_STAND;
         }
     }
@@ -343,7 +343,7 @@ void stru262_TurnBased::StartTurn() {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Actor, ai_near_actors_ids[actor_num]);
             element.actor_initiative = 1;
-            element.uActionLength = Duration::zero();
+            element.uActionLength = 0_ticks;
             element.AI_action_type = TE_AI_STAND;
         }
     }
@@ -398,8 +398,8 @@ void stru262_TurnBased::NextTurn() {
                     v13 = 1;
                 } else if (pActors[monster_id].aiState == Dying) {  // Dying
                     pActors[monster_id].aiState = Dead;
-                    pActors[monster_id].currentActionTime = Duration::zero();
-                    pActors[monster_id].currentActionLength = Duration::zero();
+                    pActors[monster_id].currentActionTime = 0_ticks;
+                    pActors[monster_id].currentActionLength = 0_ticks;
                     pActors[monster_id].UpdateAnimation();
                 } else {
                     if (pActors[monster_id].aiState == Stunned)  // Stunned
@@ -425,7 +425,7 @@ void stru262_TurnBased::NextTurn() {
                 (pActors[monster_id].aiState != Removed) &&
                 (pActors[monster_id].aiState != Summoned) &&
                 (pActors[monster_id].aiState != Disabled)) {
-                pQueue[i].uActionLength = Duration::zero();
+                pQueue[i].uActionLength = 0_ticks;
                 Actor::AI_StandOrBored(monster_id,
                                        ai_near_actors_targets_pid[monster_id],
                                        32_ticks, nullptr);
@@ -463,7 +463,7 @@ bool stru262_TurnBased::StepTurnQueue() {
                         for (j = 0; j < this->pQueue.size(); ++j) {
                             --pQueue[j].actor_initiative;
                             if (pQueue[j].actor_initiative == 0)
-                                pQueue[j].uActionLength = Duration::zero();
+                                pQueue[j].uActionLength = 0_ticks;
                         }
                         --turn_initiative;
                         if (turn_initiative == 0) return true;
@@ -484,7 +484,7 @@ void stru262_TurnBased::_406457(int a2) {
         v4 = pQueue[a2].uPackedID.id();
         if (pParty->pTurnBasedCharacterRecoveryTimes[v4]) {
             v6 = pParty->pTurnBasedCharacterRecoveryTimes[v4];
-            pParty->pTurnBasedCharacterRecoveryTimes[v4] = Duration::zero();
+            pParty->pTurnBasedCharacterRecoveryTimes[v4] = 0_ticks;
         } else {
             v6 = pParty->pCharacters[v4].GetAttackRecoveryTime(false);
         }
@@ -505,7 +505,7 @@ void stru262_TurnBased::_406457(int a2) {
     while ((pQueue[0].actor_initiative > 0) && (turn_initiative > 0)) {
         for (i = 0; i < this->pQueue.size(); ++i) {
             --pQueue[i].actor_initiative;
-            if (pQueue[i].actor_initiative == 0) pQueue[i].uActionLength = Duration::zero();
+            if (pQueue[i].actor_initiative == 0) pQueue[i].uActionLength = 0_ticks;
         }
         --turn_initiative;
     }
@@ -545,7 +545,7 @@ void stru262_TurnBased::_4065B0() {
             if ((pQueue[i].uPackedID.type() == OBJECT_Character) ||
                 (pQueue[i].actor_initiative > 0))
                 break;
-            if ((pQueue[i].uActionLength <= Duration::zero()) &&
+            if ((pQueue[i].uActionLength <= 0_ticks) &&
                 (pQueue[i].uPackedID.type() == OBJECT_Actor))
                 AI_Action_(i);
         }
@@ -599,8 +599,8 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case Dying:
-                        pActors[actor_id].currentActionTime = Duration::zero();
-                        pActors[actor_id].currentActionLength = Duration::zero();
+                        pActors[actor_id].currentActionTime = 0_ticks;
+                        pActors[actor_id].currentActionLength = 0_ticks;
                         pActors[actor_id].aiState = Dead;
                         pActors[actor_id].UpdateAnimation();
                         break;
@@ -643,7 +643,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     AIDirection v18;        // [sp+28h] [bp-28h]@10
     Pid v22;         // [sp+58h] [bp+8h]@10
 
-    pQueue[queue_index].uActionLength = Duration::zero();
+    pQueue[queue_index].uActionLength = 0_ticks;
     if (pQueue[queue_index].uPackedID.type() == OBJECT_Actor) {
         actor_id = pQueue[queue_index].uPackedID.id();
         if (!(pActors[actor_id].aiState == Dying ||
@@ -782,7 +782,7 @@ void stru262_TurnBased::ActorAIStopMovement() {
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
             Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32_ticks, &v7);
             pQueue[i].AI_action_type = TE_AI_STAND;
-            pQueue[i].uActionLength = Duration::zero();
+            pQueue[i].uActionLength = 0_ticks;
         }
     }
     turn_stage = TE_ATTACK;
@@ -817,8 +817,8 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                     if (pActors[monster_id].currentActionTime >
                         pActors[monster_id].currentActionLength) {
                         if (pActors[monster_id].aiState == Dying) {
-                            pActors[monster_id].currentActionTime = Duration::zero();
-                            pActors[monster_id].currentActionLength = Duration::zero();
+                            pActors[monster_id].currentActionTime = 0_ticks;
+                            pActors[monster_id].currentActionLength = 0_ticks;
                             pActors[monster_id].aiState = Dead;
                             pActors[monster_id].UpdateAnimation();
                         }
@@ -996,8 +996,8 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
                 if (curr_acror->currentActionTime >
                     curr_acror->currentActionLength) {
                     if (curr_acror->aiState == Dying) {
-                        curr_acror->currentActionTime = Duration::zero();
-                        curr_acror->currentActionLength = Duration::zero();
+                        curr_acror->currentActionTime = 0_ticks;
+                        curr_acror->currentActionLength = 0_ticks;
                         curr_acror->aiState = Dead;
                         curr_acror->UpdateAnimation();
                         break;

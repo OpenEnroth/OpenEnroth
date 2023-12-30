@@ -289,7 +289,7 @@ struct Party {
     Time _6FC_water_lava_timer;
     int uFallStartZ;
     unsigned int bFlying;
-    uint8_t hirelingScrollPosition;
+    int hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
 
     // TODO(captainurist): #time drop all of these?

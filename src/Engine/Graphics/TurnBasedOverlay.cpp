@@ -37,7 +37,7 @@ void TurnBasedOverlay::update(Duration dt, TurnEngineStep newStep) {
     if (_state == TURN_BASED_OVERLAY_NONE) {
         assert(newStep == TE_WAIT);
         _state = TURN_BASED_OVERLAY_INITIAL;
-        _currentTime = Duration::zero();
+        _currentTime = 0_ticks;
         _currentEnd = pIconsFrameTable->GetIcon(_initialIconId)->GetAnimLength();
         return;
     }

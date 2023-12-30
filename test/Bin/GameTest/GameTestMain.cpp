@@ -43,7 +43,7 @@ int platformMain(int argc, char **argv) {
 
         int exitCode = 0;
         starter.runInstrumented([&] (EngineController *game) {
-            TestController test(game, opts.testPath);
+            TestController test(game, opts.testPath, opts.speed);
             GameTest::init(game, &test);
             exitCode = RUN_ALL_TESTS();
         });

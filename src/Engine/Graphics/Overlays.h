@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Engine/Pid.h"
+#include "Engine/Time/Duration.h"
 
 #include "Utility/Memory/Blob.h"
 
@@ -26,7 +27,7 @@ struct ActiveOverlay {
 
 struct ActiveOverlayList {
     void Reset();
-    int _4418B6(int uOverlayID, Pid pid, int animLength, int fpDamageMod, int16_t projSize);
+    int _4418B6(int uOverlayID, Pid pid, Duration animLength, int fpDamageMod, int16_t projSize);
 
     std::array<ActiveOverlay, 50> pOverlays;
 };

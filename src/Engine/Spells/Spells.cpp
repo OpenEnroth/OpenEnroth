@@ -567,7 +567,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
             spell_sprites.uSectorID = pIndoor->GetSector(from);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
-            spell_sprites.uSpriteFrameID = Duration::zero();
+            spell_sprites.timeSinceCreated = 0_ticks;
             spell_sprites.spell_caster_pid = Pid(OBJECT_Item, 1000); // 8000 | OBJECT_Item;
             spell_sprites.uSoundID = 0;
             break;
@@ -817,10 +817,10 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
 }
 
 void armageddonProgress() {
-    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pParty->armageddon_timer > Duration::zero());
+    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pParty->armageddon_timer > 0_ticks);
 
     if (pParty->armageddon_timer > 417_ticks) {
-        pParty->armageddon_timer = Duration::zero();
+        pParty->armageddon_timer = 0_ticks;
         return; // TODO(captainurist): wtf? Looks like a quick hack for some bug.
     }
 
@@ -830,7 +830,7 @@ void armageddonProgress() {
 
     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->randomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
     pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->randomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
-    pParty->armageddon_timer = std::max(Duration::zero(), pParty->armageddon_timer - pEventTimer->uTimeElapsed); // Was pMiscTimer
+    pParty->armageddon_timer = std::max(0_ticks, pParty->armageddon_timer - pEventTimer->uTimeElapsed); // Was pMiscTimer
 
     // TODO(pskelton): ignore if pEventTimer->uTimeElapsed is zero?
     // TODO(captainurist): See the logic in Outdoor.cpp, right now the force is applied in fixed amounts per frame,

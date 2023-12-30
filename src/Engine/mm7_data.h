@@ -130,17 +130,16 @@ extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 
 /** Recovery multiplier for non-combat actions, e.g. receiving fall damage, casting buffs,
  * and receiving damage from monsters. */
-extern float debug_non_combat_recovery_mul;
+constexpr float debug_non_combat_recovery_mul = 1.0f;
 
 /** Recovery multiplier for combat actions, e.g. hand-to-hand and ranged attacks and combat spells. */
-extern float debug_combat_recovery_mul;
+constexpr float debug_combat_recovery_mul = 1.0f;
 
 /** Speed multiplier for monsters in turn-based mode. It does affect actual move distance, but setting a high value
  * doesn't make monsters dart like crazy because monster speed is capped at 1000. Doh. */
-extern float debug_turn_based_monster_movespeed_mul;
+constexpr float debug_turn_based_monster_movespeed_mul = 1.666666666666667f;
 
-// 2.1333
-extern float flt_debugrecmod3;
+constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
 extern std::string s_SavedMapName;
 extern char bNoNPCHiring;

@@ -654,17 +654,17 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // copy actor info if different
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
+        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
         actionLen = Duration::fromTicks(vrng->random(256) + 128);
         pMonsterInfoUI_Doll.currentActionLength = actionLen;
     }
 
     if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.currentActionTime = Duration::zero();
+        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
         if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.currentActionLength = Duration::fromTicks(vrng->random(128) + 128);
+            pMonsterInfoUI_Doll.currentActionLength = Duration::randomRealtimeSeconds(vrng, 1, 2);
         } else {
             // rand();
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
@@ -1723,7 +1723,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     window->DrawText(assets->pFontArrus.get(), {14, 114}, colorTable.White, active_spells);
 }
 
-void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
+void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
     NPCData *pNPC;           // eax@16
     std::string pText;       // eax@18
     int a2;                  // [sp+60h] [bp-Ch]@16
@@ -1732,8 +1732,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
         FlatHirelings buf;
         buf.Prepare();
 
-        if ((int64_t)((char *)_this + pParty->hirelingScrollPosition) < buf.Size()) {
-            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int64_t)_this;
+        if (_this + pParty->hirelingScrollPosition < buf.Size()) {
+            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - _this;
             pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
             if (pNPC) {
                 if (a2 == 57)
@@ -1882,7 +1882,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                                (int)pY < 156 || (int)pY > 229) {  // NPC zone
                         if (!((signed int)pX < 566 || (signed int)pX > 629 ||
                               (signed int)pY < 156 || (signed int)pY > 229)) {
-                            GameUI_DrawNPCPopup((void *)1);  // NPC 2
+                            GameUI_DrawNPCPopup(1);  // NPC 2
                         }
                     } else {
                         GameUI_DrawNPCPopup(0);  // NPC 1

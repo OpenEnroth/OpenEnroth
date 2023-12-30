@@ -155,14 +155,14 @@ void Party::Zero() {
 
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
-    armageddon_timer = Duration::zero();
+    armageddon_timer = 0_ticks;
     armageddonDamage = 0;
-    pTurnBasedCharacterRecoveryTimes.fill(Duration::zero());
+    pTurnBasedCharacterRecoveryTimes.fill(0_ticks);
     InTheShopFlags.fill(0);
     uFine = 0;
     TorchLightLastIntensity = 0.0f;
 
-    _roundingDt = Duration::zero();
+    _roundingDt = 0_ticks;
 
     // players
     for (Character &player : this->pCharacters) {
@@ -248,7 +248,7 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
     if (hasActiveCharacter() && this->pCharacters[_activeCharacter - 1].CanAct() &&
-        this->pCharacters[_activeCharacter - 1].timeToRecovery <= Duration::zero())
+        this->pCharacters[_activeCharacter - 1].timeToRecovery <= 0_ticks)
         return;
 
     if (pParty->bTurnBasedModeOn) {
@@ -266,7 +266,7 @@ void Party::switchToNextActiveCharacter() {
 
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (!this->pCharacters[i].CanAct() ||
-            this->pCharacters[i].timeToRecovery > Duration::zero()) {
+            this->pCharacters[i].timeToRecovery > 0_ticks) {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
@@ -511,7 +511,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             }
         }
 
-        pCharacter.uExpressionTimePassed = Duration::zero();
+        pCharacter.uExpressionTimePassed = 0_ticks;
 
         if (bDebugGiveItems) {
             Dst.Reset();
@@ -660,7 +660,7 @@ void Party::Reset() {
     pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
     for (Character &player : this->pCharacters) {
-        player.timeToRecovery = Duration::zero();
+        player.timeToRecovery = 0_ticks;
         player.conditions.ResetAll();
 
         for (SpellBuff &buff : player.pCharacterBuffs) {
@@ -668,8 +668,8 @@ void Party::Reset() {
         }
 
         player.expression = CHARACTER_EXPRESSION_NORMAL;
-        player.uExpressionTimePassed = Duration::zero();
-        player.uExpressionTimeLength = Duration::fromTicks(vrng->random(256) + 128);
+        player.uExpressionTimePassed = 0_ticks;
+        player.uExpressionTimeLength = Duration::randomRealtimeSeconds(vrng, 1, 3);
     }
 
     for (SpellBuff &buff : this->pPartyBuffs) {
@@ -751,8 +751,8 @@ void Party::resetCharacterEmotions() {
             player.uExpressionTimeLength = 32_ticks;
             player.expression = CHARACTER_EXPRESSION_NORMAL;
         } else {
-            player.uExpressionTimeLength = Duration::zero();
-            player.uExpressionTimePassed = Duration::zero();
+            player.uExpressionTimeLength = 0_ticks;
+            player.uExpressionTimePassed = 0_ticks;
             player.expression = expressionForCondition(condition);
         }
     }
@@ -771,10 +771,10 @@ void Party::updateCharactersAndHirelingsEmotions() {
             if (player.uExpressionTimePassed < player.uExpressionTimeLength)
                 continue;
 
-            player.uExpressionTimePassed = Duration::zero();
+            player.uExpressionTimePassed = 0_ticks;
             if (player.expression != CHARACTER_EXPRESSION_NORMAL || vrng->random(5)) {
                 player.expression = CHARACTER_EXPRESSION_NORMAL;
-                player.uExpressionTimeLength = Duration::fromTicks(vrng->random(256) + 32);
+                player.uExpressionTimeLength = Duration::randomRealtimeMilliseconds(vrng, 250, 2250);
             } else {
                 int randomVal = vrng->random(100);
                 if (randomVal < 25)
@@ -816,8 +816,8 @@ void Party::updateCharactersAndHirelingsEmotions() {
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
                    player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
                    player.uExpressionTimePassed >= player.uExpressionTimeLength) {
-            player.uExpressionTimeLength = Duration::zero();
-            player.uExpressionTimePassed = Duration::zero();
+            player.uExpressionTimeLength = 0_ticks;
+            player.uExpressionTimePassed = 0_ticks;
             player.expression = expressionForCondition(condition);
         }
     }
@@ -864,7 +864,7 @@ void Party::restAndHeal() {
         pPlayer->conditions.Reset(CONDITION_SLEEP);
         pPlayer->conditions.Reset(CONDITION_WEAK);
 
-        pPlayer->timeToRecovery = Duration::zero();
+        pPlayer->timeToRecovery = 0_ticks;
         pPlayer->health = pPlayer->GetMaxHealth();
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
@@ -931,7 +931,7 @@ void restAndHeal(Duration restTime) {
     pParty->restAndHeal();
 
     for (Character &player : pParty->pCharacters) {
-        player.timeToRecovery = Duration::zero();
+        player.timeToRecovery = 0_ticks;
         player.uNumDivineInterventionCastsThisDay = 0;
         player.uNumArmageddonCasts = 0;
         player.uNumFireSpikeCasts = 0;
@@ -951,7 +951,7 @@ void Party::restOneFrame() {
     if (restTick) {
         Rest(restTick);
         remainingRestTime -= restTick;
-        assert(remainingRestTime >= Duration::zero());
+        assert(remainingRestTime >= 0_ticks);
         OutdoorLocation::LoadActualSkyFrame();
     }
 
@@ -1070,7 +1070,7 @@ void Party::dropHeldItem() {
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;
     sprite.uSectorID = pBLVRenderParams->uPartyEyeSectorID;
-    sprite.uSpriteFrameID = Duration::zero();
+    sprite.timeSinceCreated = 0_ticks;
     sprite.containing_item = pPickedItem;
 
     // extern int UnprojectX(int);

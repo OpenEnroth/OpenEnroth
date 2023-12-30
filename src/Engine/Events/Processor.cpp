@@ -134,7 +134,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                 }
             }
 
-            assert(timer.interval > Duration::zero());
+            assert(timer.interval > 0_ticks);
         }
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;

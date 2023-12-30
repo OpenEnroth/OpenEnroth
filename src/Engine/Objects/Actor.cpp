@@ -258,7 +258,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
-            sprite.uSpriteFrameID = Duration::zero();
+            sprite.timeSinceCreated = 0_ticks;
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.spell_target_pid = Pid();
             sprite.field_60_distance_related_prolly_lod = distancemod;
@@ -337,7 +337,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
-                sprite.uSpriteFrameID = Duration::zero();
+                sprite.timeSinceCreated = 0_ticks;
                 sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
                 sprite.spell_target_pid = Pid();
                 sprite.uFacing = yaw;
@@ -388,7 +388,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
-            sprite.uSpriteFrameID = Duration::zero();
+            sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
             sprite.field_60_distance_related_prolly_lod = 3;
 
@@ -641,7 +641,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
-            sprite.uSpriteFrameID = Duration::zero();
+            sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
             sprite.field_60_distance_related_prolly_lod = 3;
 
@@ -800,7 +800,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = Duration::zero();
+    a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
     if (pDir->uDistance < 307.2)
@@ -852,7 +852,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-    a1.uSpriteFrameID = Duration::zero();
+    a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
     a1.field_60_distance_related_prolly_lod = 3;
@@ -1000,7 +1000,7 @@ void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID,
         }
 
         pActors[uActorID].yawAngle = Dir_Out->uYawAngle;
-        pActors[uActorID].currentActionTime = Duration::zero();
+        pActors[uActorID].currentActionTime = 0_ticks;
         pActors[uActorID].speed.z = 0;
         pActors[uActorID].speed.y = 0;
         pActors[uActorID].speed.x = 0;
@@ -1037,10 +1037,10 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
 
     pActors[uActorID].aiState = Standing;
     if (!uActionLength)
-        pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(256) + 256);  // от 256 до 256 + 256
+        pActors[uActorID].currentActionLength = Duration::randomRealtimeSeconds(grng, 2, 4);
     else
         pActors[uActorID].currentActionLength = uActionLength;
-    pActors[uActorID].currentActionTime = Duration::zero();
+    pActors[uActorID].currentActionTime = 0_ticks;
     pActors[uActorID].yawAngle = a4->uYawAngle;
     pActors[uActorID].pitchAngle = a4->uPitchAngle;
     pActors[uActorID].speed.z = 0;
@@ -1051,8 +1051,8 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
 
 //----- (00403E61) --------------------------------------------------------
 void Actor::StandAwhile(unsigned int uActorID) {
-    pActors[uActorID].currentActionLength = Duration::fromTicks(grng->random(128) + 128);
-    pActors[uActorID].currentActionTime = Duration::zero();
+    pActors[uActorID].currentActionLength = Duration::randomRealtimeSeconds(grng, 1, 2);
+    pActors[uActorID].currentActionTime = 0_ticks;
     pActors[uActorID].aiState = Standing;
     pActors[uActorID].speed.z = 0;
     pActors[uActorID].speed.y = 0;
@@ -1113,7 +1113,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
             pSpriteFrameTable
                 ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_AtkMelee]]
                 .uAnimLength;
-        pActors[uActorID].currentActionTime = Duration::zero();
+        pActors[uActorID].currentActionTime = 0_ticks;
         pActors[uActorID].aiState = AttackingMelee;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         v25 = pMonsterStats->infos[pActors[uActorID].monsterInfo.id]
@@ -1167,41 +1167,41 @@ void Actor::AddOnDamageOverlay(unsigned int uActorID, int overlayType, signed in
     switch (overlayType) {
         case 1:
             if (damage)
-                pActiveOverlayList->_4418B6(904, actorPID, 0,
+                pActiveOverlayList->_4418B6(904, actorPID, 0_ticks,
                                            (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 2:
             if (damage)
-                pActiveOverlayList->_4418B6(905, actorPID, 0,
+                pActiveOverlayList->_4418B6(905, actorPID, 0_ticks,
                                            (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 3:
             if (damage)
-                pActiveOverlayList->_4418B6(906, actorPID, 0,
+                pActiveOverlayList->_4418B6(906, actorPID, 0_ticks,
                                            (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 4:
             if (damage)
-                pActiveOverlayList->_4418B6(907, actorPID, 0,
+                pActiveOverlayList->_4418B6(907, actorPID, 0_ticks,
                                            (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 5:
-            pActiveOverlayList->_4418B6(901, actorPID, 0, 0, 0); // 4th param was actorPID.
+            pActiveOverlayList->_4418B6(901, actorPID, 0_ticks, 0, 0); // 4th param was actorPID.
             return;
         case 6:
-            pActiveOverlayList->_4418B6(902, actorPID, 0, 0, 0); // 4th param was actorPID.
+            pActiveOverlayList->_4418B6(902, actorPID, 0_ticks, 0, 0); // 4th param was actorPID.
             return;
         case 7:
-            pActiveOverlayList->_4418B6(903, actorPID, 0, 0, 0); // 4th param was actorPID.
+            pActiveOverlayList->_4418B6(903, actorPID, 0_ticks, 0, 0); // 4th param was actorPID.
             return;
         case 8:
-            pActiveOverlayList->_4418B6(900, actorPID, 0, 0, 0); // 4th param was actorPID.
+            pActiveOverlayList->_4418B6(900, actorPID, 0_ticks, 0, 0); // 4th param was actorPID.
             return;
         case 9:
-            pActiveOverlayList->_4418B6(909, actorPID, 0, 0, 0); // 4th param was actorPID.
+            pActiveOverlayList->_4418B6(909, actorPID, 0_ticks, 0, 0); // 4th param was actorPID.
             return;
         case 10:
-            pActiveOverlayList->_4418B6(908, actorPID, 0, 0, 0); // 4th param was actorPID.
+            pActiveOverlayList->_4418B6(908, actorPID, 0_ticks, 0, 0); // 4th param was actorPID.
             return;
         default:
             return;
@@ -1345,7 +1345,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
         v3->currentActionLength = v13;
-        v3->currentActionTime = Duration::zero();
+        v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged4;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1360,7 +1360,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         v3->speed.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell2Id)) {
             v3->currentActionLength = 64_ticks;
-            v3->currentActionTime = Duration::zero();
+            v3->currentActionTime = 0_ticks;
             v3->aiState = Fidgeting;
             v3->UpdateAnimation();
             v3->aiState = AttackingRanged4;
@@ -1419,7 +1419,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
         v3->currentActionLength = v13;
-        v3->currentActionTime = Duration::zero();
+        v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged3;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1435,7 +1435,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         v3->speed.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell1Id)) {
             v3->currentActionLength = 64_ticks;
-            v3->currentActionTime = Duration::zero();
+            v3->currentActionTime = 0_ticks;
             v3->aiState = Fidgeting;
             v3->UpdateAnimation();
             v3->aiState = AttackingRanged3;
@@ -1494,7 +1494,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
         v3->currentActionLength = v13;
-        v3->currentActionTime = Duration::zero();
+        v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged2;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1565,7 +1565,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v14 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
                   .uAnimLength;
         v3->currentActionLength = v14;
-        v3->currentActionTime = Duration::zero();
+        v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged1;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->infos[v3->monsterInfo.id].recoveryTime;
@@ -1635,8 +1635,8 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
         pActors[uActor_id].currentActionLength = Duration::fromTicks(
             32 * absx / pActors[uActor_id].moveSpeed);
     else
-        pActors[uActor_id].currentActionLength = Duration::zero();
-    pActors[uActor_id].currentActionTime = Duration::zero();
+        pActors[uActor_id].currentActionLength = 0_ticks;
+    pActors[uActor_id].currentActionTime = 0_ticks;
     pActors[uActor_id].aiState = Tethered;
     if (vrng->random(100) < 2) {
         Actor::playSound(uActor_id, ACTOR_BORED_SOUND);
@@ -1734,7 +1734,7 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
         v7 = pSpriteFrameTable
                  ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_GotHit]]
                  .uAnimLength;
-        pActors[uActorID].currentActionTime = Duration::zero();
+        pActors[uActorID].currentActionTime = 0_ticks;
         pActors[uActorID].aiState = Stunned;
         pActors[uActorID].currentActionLength = v7;
         Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
@@ -1768,7 +1768,7 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
         Actor::AI_Stand(uActorID, uObjID, actor->currentActionLength, a4);
     } else {  // facing player - play bored anim
         actor->aiState = Fidgeting;
-        actor->currentActionTime = Duration::zero();
+        actor->currentActionTime = 0_ticks;
         actor->yawAngle = a4->uYawAngle;
         actor->speed.z = 0;
         actor->speed.y = 0;
@@ -1784,7 +1784,7 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
 void Actor::resurrect(unsigned int uActorID) {
     assert(uActorID < pActors.size());
     Actor *pActor = &pActors[uActorID];
-    pActor->currentActionTime = Duration::zero();
+    pActor->currentActionTime = 0_ticks;
     pActor->aiState = Resurrected;
     pActor->currentActionAnimation = ANIM_Dying;
     pActor->currentActionLength =
@@ -1813,7 +1813,7 @@ void Actor::resurrect(unsigned int uActorID) {
 void Actor::Die(unsigned int uActorID) {
     Actor *actor = &pActors[uActorID];
 
-    actor->currentActionTime = Duration::zero();
+    actor->currentActionTime = 0_ticks;
     actor->aiState = Dying;
     actor->currentActionAnimation = ANIM_Dying;
     actor->currentHP = 0;
@@ -1954,14 +1954,14 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
                 v5->currentActionLength = Duration::fromTicks(
                     (signed int)(a4->uDistanceXZ << 7) / v5->moveSpeed);
             else
-                v5->currentActionLength = Duration::zero();
+                v5->currentActionLength = 0_ticks;
             if (v5->currentActionLength > 256_ticks) v5->currentActionLength = 256_ticks;
             v5->yawAngle =
                 (short)TrigLUT.uIntegerHalfPi + (short)a4->uYawAngle;
             v5->yawAngle =
                 (short)TrigLUT.uDoublePiMask &
                 (v5->yawAngle + grng->random(TrigLUT.uIntegerPi));
-            v5->currentActionTime = Duration::zero();
+            v5->currentActionTime = 0_ticks;
             v5->pitchAngle = (short)a4->uPitchAngle;
             v5->aiState = Fleeing;
             v5->UpdateAnimation();
@@ -2014,12 +2014,12 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
             v7->currentActionLength = Duration::fromTicks(
                 (signed int)(v10->uDistanceXZ << 7) / v13);
         else
-            v7->currentActionLength = Duration::zero();
+            v7->currentActionLength = 0_ticks;
         if (v7->currentActionLength > 32_ticks) v7->currentActionLength = 32_ticks;
     }
     v7->yawAngle = (short)v10->uYawAngle;
     v14 = (short)v10->uPitchAngle;
-    v7->currentActionTime = Duration::zero();
+    v7->currentActionTime = 0_ticks;
     v7->pitchAngle = v14;
     v7->aiState = Pursuing;
     v7->UpdateAnimation();
@@ -2060,13 +2060,13 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
     if (uActionLength) {
-        v6->currentActionLength = uActionLength + Duration::fromTicks(grng->random(uActionLength.ticks()));
+        v6->currentActionLength = uActionLength + Duration::random(grng, uActionLength);
     } else {
         v12 = v6->moveSpeed;
         if (v12)
             v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ << 7) / v12);
         else
-            v6->currentActionLength = Duration::zero();
+            v6->currentActionLength = 0_ticks;
         if (v6->currentActionLength > 128_ticks) v6->currentActionLength = 128_ticks;
     }
     v14 = (short)a4->uYawAngle;
@@ -2076,7 +2076,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         v14 -= 256;
     v6->yawAngle = v14;
     v16 = (short)a4->uPitchAngle;
-    v6->currentActionTime = Duration::zero();
+    v6->currentActionTime = 0_ticks;
     v6->pitchAngle = v16;
     v6->aiState = Pursuing;
     if (vrng->random(100) < 2) {
@@ -2503,7 +2503,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->PrepareSprites(0);
     actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     actor->ally = v19;
-    actor->currentActionTime = Duration::zero();
+    actor->currentActionTime = 0_ticks;
     actor->group = this->group;
     actor->aiState = Summoned;
     actor->currentActionLength = 256_ticks;
@@ -2607,8 +2607,8 @@ void Actor::UpdateActorAI() {
             pActor->aiState = Standing;
         }
 
-        pActor->currentActionTime = Duration::zero();
-        pActor->currentActionLength = Duration::zero();
+        pActor->currentActionTime = 0_ticks;
+        pActor->currentActionLength = 0_ticks;
         pActor->UpdateAnimation();
     }
 
@@ -2767,7 +2767,7 @@ void Actor::UpdateActorAI() {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
                     if (pActor->monsterInfo.attack1MissileType) {
-                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
+                        if (pActor->monsterInfo.recoveryTime <= 0_ticks) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
@@ -2790,7 +2790,7 @@ void Actor::UpdateActorAI() {
                                 // follow player
                                 Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             // monsters
@@ -2804,7 +2804,7 @@ void Actor::UpdateActorAI() {
                     else
                         v46 = pActor->monsterInfo.spell2Id;
                     if (v46 != SPELL_NONE) {
-                        if (pActor->monsterInfo.recoveryTime <= Duration::zero()) {
+                        if (pActor->monsterInfo.recoveryTime <= 0_ticks) {
                             if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
@@ -2825,7 +2825,7 @@ void Actor::UpdateActorAI() {
                                 v70 = (radiusMultiplier * 307.2);
                                 Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
-                        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+                        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
@@ -2861,12 +2861,12 @@ void Actor::UpdateActorAI() {
                     v70 = (radiusMultiplier * 307.2);
                     Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                 }
-            } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+            } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             } else {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
-        } else if (pActor->monsterInfo.recoveryTime > Duration::zero()) {
+        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
             if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else
@@ -4264,7 +4264,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
     actor->ally = MONSTER_TYPE_9999;
     actor->group = 0;
-    actor->currentActionTime = Duration::zero();
+    actor->currentActionTime = 0_ticks;
     actor->aiState = Summoned;
     actor->currentActionLength = 256_ticks;
     actor->UpdateAnimation();
