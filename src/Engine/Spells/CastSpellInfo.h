@@ -63,7 +63,7 @@ struct CastSpellInfo {
     SpellId uSpellID = SPELL_NONE; // Spell being cast.
     int casterCharacterIndex = -1; // 0-based index of the character who cast the spell.
     int targetCharacterIndex = -1; // 0-based index of the target character, if any.
-                                   // TODO(captainurist): also hireling index for dark sacrifice.
+                                   // TODO(captainurist): also pParty->hirelingScrollPosition-based hireling index for dark sacrifice.
     SpellCastFlags flags = 0;
     CombinedSkillValue overrideSkillValue; // If set - skill value to use for casting.
     Pid targetPid; // Target pid, if any.
