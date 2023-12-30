@@ -61,7 +61,7 @@ var searchData=
   ['hireling1name_58',['hireling1Name',['../structParty__MM7.html#a1dd3982ef8a6deea910ee022709d6da0',1,'Party_MM7']]],
   ['hireling2name_59',['hireling2Name',['../structParty__MM7.html#a79f96e2caf15f53d2a7256813abb47dc',1,'Party_MM7']]],
   ['hirelings_60',['hirelings',['../structParty__MM7.html#a09c83f1c4da2bd6b4b785b66ab56c897',1,'Party_MM7']]],
-  ['hirelingscrollposition_61',['hirelingScrollPosition',['../structParty__MM7.html#a1483a976f8306f33339dc3d5d416c29f',1,'Party_MM7::hirelingScrollPosition()'],['../structParty.html#a9c7d0f2cdf2357565052b81d024ce813',1,'Party::hirelingScrollPosition()']]],
+  ['hirelingscrollposition_61',['hirelingScrollPosition',['../structParty__MM7.html#a1483a976f8306f33339dc3d5d416c29f',1,'Party_MM7::hirelingScrollPosition()'],['../structParty.html#a9b4e759e196a4a3466d568cabf6b34d8',1,'Party::hirelingScrollPosition()']]],
   ['history_62',['History',['../classGameConfig_1_1Gamepad.html#ab3725727f0e56fef65505bea54dbcaa9',1,'GameConfig::Gamepad::History()'],['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca16d2b386b2034b9488996466aaae0b57',1,'Io::History()'],['../classGameConfig_1_1Keybindings.html#a12abf38fbd23e9bac01aa623b2779ba1',1,'GameConfig::Keybindings::History()']]],
   ['historyeventtimes_63',['historyEventTimes',['../structPartyTimeStruct__MM7.html#a11c859425e939c784bc99fdbcae43d30',1,'PartyTimeStruct_MM7']]],
   ['historyeventtimes_64',['HistoryEventTimes',['../structPartyTimeStruct.html#a474dec9ca4348488085a1c9a7057459e',1,'PartyTimeStruct']]],

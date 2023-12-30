@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d14dd8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;952e7a4</span>
    </div>
   </td>
  </tr>
@@ -149,6 +149,16 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a7836b528f9482c39803124be22163b23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af659e160f232ea8460b8f2c34021ee33"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#af659e160f232ea8460b8f2c34021ee33">fromRealtimeMilliseconds</a> (int64_t msec)</td></tr>
 <tr class="separator:af659e160f232ea8460b8f2c34021ee33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c81abb97678c525f738170cbf2e5351"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#a6c81abb97678c525f738170cbf2e5351">random</a> (<a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, <a class="el" href="classDuration.html">Duration</a> hi)</td></tr>
+<tr class="separator:a6c81abb97678c525f738170cbf2e5351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6005a4dd3da50b8dfd8fd783257dcb4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#af6005a4dd3da50b8dfd8fd783257dcb4">randomRealtimeMilliseconds</a> (<a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, int64_t hi)</td></tr>
+<tr class="separator:af6005a4dd3da50b8dfd8fd783257dcb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30f1b014a6faf02b5f31579ea8111e12"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#a30f1b014a6faf02b5f31579ea8111e12">randomRealtimeMilliseconds</a> (<a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, int64_t lo, int64_t hi)</td></tr>
+<tr class="separator:a30f1b014a6faf02b5f31579ea8111e12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecc18825210bce83509978a305f1af43"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#aecc18825210bce83509978a305f1af43">randomRealtimeSeconds</a> (<a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, int64_t hi)</td></tr>
+<tr class="separator:aecc18825210bce83509978a305f1af43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e0fbf08786df05a8e7833825af7adf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#a42e0fbf08786df05a8e7833825af7adf">randomRealtimeSeconds</a> (<a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, int64_t lo, int64_t hi)</td></tr>
+<tr class="separator:a42e0fbf08786df05a8e7833825af7adf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c45d1cc69ecf64cd63180ea2b1eddae"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDuration.html#a3c45d1cc69ecf64cd63180ea2b1eddae">zero</a> ()</td></tr>
 <tr class="separator:a3c45d1cc69ecf64cd63180ea2b1eddae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -645,6 +655,198 @@ requires std::is_arithmetic_v&lt;R&gt;</div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c81abb97678c525f738170cbf2e5351" name="a6c81abb97678c525f738170cbf2e5351"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c81abb97678c525f738170cbf2e5351">&#9670;&#160;</a></span>random()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDuration.html">Duration</a> Duration::random </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
+          <td class="paramname"><em>rng</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classDuration.html">Duration</a>&#160;</td>
+          <td class="paramname"><em>hi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af6005a4dd3da50b8dfd8fd783257dcb4" name="af6005a4dd3da50b8dfd8fd783257dcb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6005a4dd3da50b8dfd8fd783257dcb4">&#9670;&#160;</a></span>randomRealtimeMilliseconds() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDuration.html">Duration</a> Duration::randomRealtimeMilliseconds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
+          <td class="paramname"><em>rng</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>hi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a30f1b014a6faf02b5f31579ea8111e12" name="a30f1b014a6faf02b5f31579ea8111e12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30f1b014a6faf02b5f31579ea8111e12">&#9670;&#160;</a></span>randomRealtimeMilliseconds() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDuration.html">Duration</a> Duration::randomRealtimeMilliseconds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
+          <td class="paramname"><em>rng</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>lo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>hi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aecc18825210bce83509978a305f1af43" name="aecc18825210bce83509978a305f1af43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecc18825210bce83509978a305f1af43">&#9670;&#160;</a></span>randomRealtimeSeconds() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDuration.html">Duration</a> Duration::randomRealtimeSeconds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
+          <td class="paramname"><em>rng</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>hi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a42e0fbf08786df05a8e7833825af7adf" name="a42e0fbf08786df05a8e7833825af7adf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e0fbf08786df05a8e7833825af7adf">&#9670;&#160;</a></span>randomRealtimeSeconds() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDuration.html">Duration</a> Duration::randomRealtimeSeconds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
+          <td class="paramname"><em>rng</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>lo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>hi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1366,8 +1568,9 @@ requires std::is_arithmetic_v&lt;R&gt;</div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/Engine/Time/<a class="el" href="Duration_8h.html">Duration.h</a></li>
+<li>src/Engine/Time/<a class="el" href="Duration_8cpp.html">Duration.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
