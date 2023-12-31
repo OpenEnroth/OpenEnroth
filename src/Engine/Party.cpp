@@ -694,7 +694,6 @@ void Party::Reset() {
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    _494035_timed_effects__water_walking_damage__etc(); // TODO(captainurist): this totally doesn't belong here.
     pEventTimer->setPaused(true);
 
     this->pPickedItem.uItemID = ITEM_NULL;
