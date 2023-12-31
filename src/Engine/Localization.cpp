@@ -205,33 +205,25 @@ void Localization::InitializeNpcProfessionNames() {
 }
 
 void Localization::InitializeCharacterConditionNames() {
-    this->character_conditions[0] = this->localization_strings[52];  // Cursed
-    this->character_conditions[1] = this->localization_strings[241];
-    this->character_conditions[2] = this->localization_strings[14];   // Asleep
-    this->character_conditions[3] = this->localization_strings[4];    // Fear
-    this->character_conditions[4] = this->localization_strings[69];   // Drunk
-    this->character_conditions[5] = this->localization_strings[117];  // Insane
-    this->character_conditions[6] =
-        this->localization_strings[166];                             // Poisoned
-    this->character_conditions[7] = this->localization_strings[65];  // Diseased
-    this->character_conditions[8] =
-        this->localization_strings[166];                             // Poisoned
-    this->character_conditions[9] = this->localization_strings[65];  // Diseased
-    this->character_conditions[10] =
-        this->localization_strings[166];  // Poisoned
-    this->character_conditions[11] =
-        this->localization_strings[65];  // Diseased
-    this->character_conditions[12] =
-        this->localization_strings[162];  // Paralyzed
-    this->character_conditions[13] =
-        this->localization_strings[231];  // Unconcious
-    this->character_conditions[14] = this->localization_strings[58];  // Dead
-    this->character_conditions[15] =
-        this->localization_strings[220];  // Petrified
-    this->character_conditions[16] =
-        this->localization_strings[76];  // Eradicated
-    this->character_conditions[17] = this->localization_strings[601];  // Zombie
-    this->character_conditions[18] = this->localization_strings[98];   // Good
+    this->character_conditions[CONDITION_CURSED]            = this->localization_strings[52];
+    this->character_conditions[CONDITION_WEAK]              = this->localization_strings[241];
+    this->character_conditions[CONDITION_SLEEP]             = this->localization_strings[14];
+    this->character_conditions[CONDITION_FEAR]              = this->localization_strings[4];
+    this->character_conditions[CONDITION_DRUNK]             = this->localization_strings[69];
+    this->character_conditions[CONDITION_INSANE]            = this->localization_strings[117];
+    this->character_conditions[CONDITION_POISON_WEAK]       = this->localization_strings[166];
+    this->character_conditions[CONDITION_DISEASE_WEAK]      = this->localization_strings[65];
+    this->character_conditions[CONDITION_POISON_MEDIUM]     = this->localization_strings[166];
+    this->character_conditions[CONDITION_DISEASE_MEDIUM]    = this->localization_strings[65];
+    this->character_conditions[CONDITION_POISON_SEVERE]     = this->localization_strings[166];
+    this->character_conditions[CONDITION_DISEASE_SEVERE]    = this->localization_strings[65];
+    this->character_conditions[CONDITION_PARALYZED]         = this->localization_strings[162];
+    this->character_conditions[CONDITION_UNCONSCIOUS]       = this->localization_strings[231];
+    this->character_conditions[CONDITION_DEAD]              = this->localization_strings[58];
+    this->character_conditions[CONDITION_PETRIFIED]         = this->localization_strings[220];
+    this->character_conditions[CONDITION_ERADICATED]        = this->localization_strings[76];
+    this->character_conditions[CONDITION_ZOMBIE]            = this->localization_strings[601];
+    this->character_conditions[CONDITION_GOOD]              = this->localization_strings[98];
 }
 
 void Localization::InitializeSkillNames() {

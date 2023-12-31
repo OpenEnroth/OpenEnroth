@@ -122,7 +122,6 @@ class Character {
      * @offset 0x4680ED
      */
     void useItem(int targetCharacter, bool isPortraitClick);
-    bool AddItem(ItemGen *pItem);
     int GetActualAttribute(CharacterAttributeType attrId,
                            unsigned short Character::*attrValue,
                            unsigned short Character::*attrBonus) const;

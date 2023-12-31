@@ -363,7 +363,8 @@ struct Player_MM7 {
     /* 1928 */ int32_t prevFace;
     /* 192C */ int32_t field_192C;
     /* 1930 */ int32_t field_1930;
-    /* 1934 */ uint16_t timeToRecovery;
+    /* 1934 */ int16_t timeToRecovery; // Time left for the character to recover, in game ticks. Will overflow if
+                                       // recovery is around 1 in-game hour, which never happens.
     /* 1936 */ char field_1936;
     /* 1937 */ char field_1937;
     /* 1938 */ uint32_t skillPoints;

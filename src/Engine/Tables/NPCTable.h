@@ -6,6 +6,7 @@
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
+#include "Engine/Time/Duration.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/UI/UIHouseEnums.h"
@@ -56,6 +57,12 @@ struct NPCData {  // 4Ch
     CharacterSex uSex = SEX_MALE;       // 40
     int bHasUsedTheAbility = 0;  // 44
     int news_topic = 0;          // 48
+};
+
+struct NPCSacrificeStatus {
+    bool inProgress = false; // Dark sacrifice is in progress for this hired NPC?
+    Duration elapsedTime; // Time elapsed since the spell was cast.
+    Duration endTime; // Total time of the animation - NPC will be removed once this time is reached.
 };
 
 struct NPCProfession {

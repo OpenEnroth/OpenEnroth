@@ -655,7 +655,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
         pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
-        actionLen = Duration::fromTicks(vrng->random(256) + 128);
+        actionLen = Duration::randomRealtimeSeconds(vrng, 1, 3);
         pMonsterInfoUI_Doll.currentActionLength = actionLen;
     }
 

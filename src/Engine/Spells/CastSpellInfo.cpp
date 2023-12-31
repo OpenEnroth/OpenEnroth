@@ -2797,20 +2797,19 @@ void CastSpellInfoHelpers::castSpell() {
 
                     // TODO(captainurist): reimplement this in a saner way.
                     int flatHirelingId = pParty->hirelingScrollPosition + pCastSpell->targetCharacterIndex;
+                    NPCSacrificeStatus *sacrifice = buf.GetSacrificeStatus(flatHirelingId);
 
-                    if (buf.IsFollower(flatHirelingId) || buf.Get(flatHirelingId)->dialogue_1_evt_id == 1) {
+                    if (buf.IsFollower(flatHirelingId) || (sacrifice && sacrifice->inProgress)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
 
-                    NPCData *npcData = buf.Get(flatHirelingId);
-                    npcData->dialogue_1_evt_id = 1;
-                    npcData->dialogue_2_evt_id = 0;
-                    // TODO(captainurist): #time that's the timer for dark sacrifice.
-                    //                     It's processed in Party::updateCharactersAndHirelingsEmotions. Redo properly?
-                    npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength().ticks();
+                    sacrifice->inProgress = true;
+                    sacrifice->elapsedTime = 0_ticks;
+                    sacrifice->endTime = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();
                         character.mana = character.GetMaxMana();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 #include <compare>
 #include <type_traits>
 
@@ -29,13 +30,13 @@ class Duration {
 
     constexpr Duration() = default;
     constexpr Duration(int seconds, int minutes, int hours, int days, int weeks, int months, int years) {
-        value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
-        value = value * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
+        _ticks = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
+        _ticks = _ticks * TICKS_PER_REALTIME_SECOND / GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
     [[nodiscard]] constexpr static Duration fromTicks(int64_t ticks) {
         Duration result;
-        result.value = ticks;
+        result._ticks = ticks;
         return result;
     }
 
@@ -46,8 +47,8 @@ class Duration {
     [[nodiscard]] constexpr static Duration fromMonths(int months) { return Duration(0, 0, 0, 0, 0, months, 0); }
     [[nodiscard]] constexpr static Duration fromYears(int years) { return Duration(0, 0, 0, 0, 0, 0, years); }
 
-    [[nodiscard]] constexpr int64_t ticks() const { return value; }
-    [[nodiscard]] constexpr int64_t toSeconds() const { return value * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr int64_t ticks() const { return _ticks; }
+    [[nodiscard]] constexpr int64_t toSeconds() const { return _ticks * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
     [[nodiscard]] constexpr int64_t toMinutes() const { return toSeconds() / 60; }
     [[nodiscard]] constexpr int64_t toHours() const { return toMinutes() / 60; }
     [[nodiscard]] constexpr int toDays() const { return toHours() / 24; }
@@ -91,60 +92,82 @@ class Duration {
         return result;
     }
 
-    [[nodiscard]] constexpr friend Duration operator+(const Duration &l, const Duration &r) {
-        return Duration::fromTicks(l.value + r.value);
+    // TODO(captainurist): #time add unit tests.
+
+    [[nodiscard]] constexpr Duration roundedUp(Duration period) const {
+        assert(period.ticks() > 0);
+
+        int64_t t = ticks();
+        int64_t p = period.ticks();
+        return Duration::fromTicks((t + p - 1) / p * p);
     }
 
-    [[nodiscard]] constexpr friend Duration operator-(const Duration &l, const Duration &r) {
-        return Duration::fromTicks(l.value - r.value);
+    [[nodiscard]] constexpr Duration roundedDown(Duration period) const {
+        assert(period.ticks() > 0);
+
+        int64_t t = ticks();
+        int64_t p = period.ticks();
+        return Duration::fromTicks(t / p * p);
+    }
+
+    [[nodiscard]] constexpr friend Duration operator+(Duration l, Duration r) {
+        return Duration::fromTicks(l._ticks + r._ticks);
+    }
+
+    [[nodiscard]] constexpr friend Duration operator-(Duration l, Duration r) {
+        return Duration::fromTicks(l._ticks - r._ticks);
     }
 
     template<class L> requires std::is_arithmetic_v<L>
-    [[nodiscard]] constexpr friend Duration operator*(L l, const Duration &r) {
-        return Duration::fromTicks(l * r.value);
+    [[nodiscard]] constexpr friend Duration operator*(L l, Duration r) {
+        return Duration::fromTicks(l * r._ticks);
     }
 
     template<class R> requires std::is_arithmetic_v<R>
-    [[nodiscard]] constexpr friend Duration operator*(const Duration &l, R r) {
-        return Duration::fromTicks(l.value * r);
+    [[nodiscard]] constexpr friend Duration operator*(Duration l, R r) {
+        return Duration::fromTicks(l._ticks * r);
     }
 
     template<class R> requires std::is_arithmetic_v<R>
-    [[nodiscard]] constexpr friend Duration operator/(const Duration &l, R r) {
-        return Duration::fromTicks(l.value / r);
+    [[nodiscard]] constexpr friend Duration operator/(Duration l, R r) {
+        return Duration::fromTicks(l._ticks / r);
     }
 
-    [[nodiscard]] constexpr friend Duration operator%(const Duration &l, const Duration &r) {
-        return Duration::fromTicks(l.value % r.value);
+    [[nodiscard]] constexpr friend int64_t operator/(Duration l, Duration r) {
+        return l._ticks / r._ticks;
     }
 
-    constexpr Duration &operator+=(const Duration &rhs) {
-        value += rhs.value;
+    [[nodiscard]] constexpr friend Duration operator%(Duration l, Duration r) {
+        return Duration::fromTicks(l._ticks % r._ticks);
+    }
+
+    constexpr Duration &operator+=(Duration rhs) {
+        _ticks += rhs._ticks;
         return *this;
     }
 
-    constexpr Duration &operator-=(const Duration &rhs) {
-        value -= rhs.value;
+    constexpr Duration &operator-=(Duration rhs) {
+        _ticks -= rhs._ticks;
         return *this;
     }
 
     template<class R> requires std::is_arithmetic_v<R>
     constexpr Duration &operator*=(R r) {
-        value *= r;
+        _ticks *= r;
         return *this;
     }
 
     template<class R> requires std::is_arithmetic_v<R>
     constexpr Duration &operator/=(R r) {
-        value /= r;
+        _ticks /= r;
         return *this;
     }
 
-    [[nodiscard]] constexpr friend bool operator==(const Duration &l, const Duration &r) = default;
-    [[nodiscard]] constexpr friend auto operator<=>(const Duration &l, const Duration &r) = default;
+    [[nodiscard]] constexpr friend bool operator==(Duration l, Duration r) = default;
+    [[nodiscard]] constexpr friend auto operator<=>(Duration l, Duration r) = default;
 
     [[nodiscard]] constexpr explicit operator bool() const {
-        return value != 0;
+        return _ticks != 0;
     }
 
     [[nodiscard]] constexpr static Duration zero() {
@@ -152,7 +175,7 @@ class Duration {
     }
 
  private:
-    int64_t value = 0;
+    int64_t _ticks = 0;
 };
 
 constexpr Duration operator""_ticks(unsigned long long ticks) {

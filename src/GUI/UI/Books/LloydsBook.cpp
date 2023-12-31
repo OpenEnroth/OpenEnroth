@@ -115,17 +115,16 @@ void GUIWindow_LloydsBook::Update() {
             pWindow.uFrameY -= 6 + pTextHeight;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3);
 
-            // TODO(captainurist): #time honestly these d.days + 1 below make no sense.
             pWindow.uFrameY = lloydsBeaconsPreviewYs[beaconId];
             Duration remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
             CivilDuration d = remainingTime.toCivilDuration();
             std::string str;
-            if (d.days > 1) {
-                str = fmt::format("{} {}", d.days + 1, localization->GetString(LSTR_DAYS));
-            } else if (d.hours + 1 <= 23) {
-                str = fmt::format("{} {}", d.hours + 1, localization->GetString((d.hours < 1) ? LSTR_HOUR : LSTR_HOURS));
+            if (d.days > 0) {
+                str = fmt::format("{} {}", d.days, localization->GetString(d.days == 1 ? LSTR_DAY_CAPITALIZED : LSTR_DAYS));
+            } else if (d.hours > 0) {
+                str = fmt::format("{} {}", d.hours, localization->GetString(d.hours == 1 ? LSTR_HOUR : LSTR_HOURS));
             } else {
-                str = fmt::format("{} {}", d.days + 1, localization->GetString(LSTR_DAY_CAPITALIZED));
+                str = fmt::format("{} {}", d.minutes, localization->GetString(d.minutes == 1 ? LSTR_MINUTE : LSTR_MINUTES));
             }
             pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3);
@@ -185,7 +184,6 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
 
-    // TODO(captainurist): #time drop .ticks()
     Duration sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
     if (pParty->bTurnBasedModeOn) {
         pParty->pTurnBasedCharacterRecoveryTimes[_casterId] = sRecoveryTime;

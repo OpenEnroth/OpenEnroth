@@ -272,7 +272,7 @@ struct Party {
     int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     Time playing_time;  // uint64_t uTimePlayed;
-    Time last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
+    Time last_regenerated; // Timestamp when HP/MP regeneration was done last time.
     PartyTimeStruct PartyTimes;
     Vec3f pos;
     Vec3f speed; // Party speed, negative z => falling, positive z => jumping.
@@ -324,6 +324,7 @@ struct Party {
     IndexedArray<SpellBuff, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> pPartyBuffs;
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
+    std::array<NPCSacrificeStatus, 2> pHirelingsSacrifice;
     ItemGen pPickedItem;
     PartyFlags uFlags;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;

@@ -10,6 +10,7 @@
 
 GraphicsImage *ODMFace::GetTexture() {
     if (this->IsTextureFrameTable()) {
+        // TODO(captainurist): probably should be pMiscTimer, not pEventTimer.
         return pTextureFrameTable->GetFrameTexture(
             (int64_t)this->resource, pEventTimer->time());
     } else {

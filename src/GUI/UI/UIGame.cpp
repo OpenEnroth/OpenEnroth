@@ -1695,39 +1695,26 @@ void GameUI_DrawTorchlightAndWizardEye() {
 
 //----- (00491F87) --------------------------------------------------------
 void GameUI_DrawHiredNPCs() {
-    unsigned int v13;               // eax@23
     signed int uFrameID;            // [sp+24h] [bp-18h]@19
-    int v22;                        // [sp+34h] [bp-8h]@2
-    uint8_t pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
 
     if (bNoNPCHiring != 1) {
         FlatHirelings buf;
         buf.Prepare();
 
-        pNPC_limit_ID = 0;
-
-        for (int i = pParty->hirelingScrollPosition; i < buf.Size() && pNPC_limit_ID < 2; i++) {
+        for (int i = pParty->hirelingScrollPosition, count = 0; i < buf.Size() && count < 2; i++, count++) {
             std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->uPortraitID);
             render->DrawTextureNew(
-                    pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
-                    pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
+                    pHiredNPCsIconsOffsetsX[count] / 640.0f,
+                    pHiredNPCsIconsOffsetsY[count] / 480.0f,
                     assets->getImage_ColorKey(pContainer));
 
-            if (!buf.IsFollower(i) && buf.Get(i)->dialogue_1_evt_id == 1) {
-                uFrameID = buf.Get(i)->dialogue_2_evt_id;
-                v13 = 0;
-                if (!pIconsFrameTable->pIcons.empty()) {
-                    for (v13 = 0; v13 < pIconsFrameTable->pIcons.size(); ++v13) {
-                        if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
-                            break;
-                    }
-                }
+            // Dark sacrifice animation.
+            if (!buf.IsFollower(i) && buf.GetSacrificeStatus(i)->inProgress) {
                 render->DrawTextureNew(
-                    pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
-                    pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    pIconsFrameTable->GetFrame(v13, Duration::fromTicks(uFrameID))->GetTexture());
+                    pHiredNPCsIconsOffsetsX[count] / 640.0f,
+                    pHiredNPCsIconsOffsetsY[count] / 480.0f,
+                    pIconsFrameTable->GetFrame(pIconsFrameTable->FindIcon("spell96"), buf.GetSacrificeStatus(i)->elapsedTime)->GetTexture());
             }
-            ++pNPC_limit_ID;
         }
     }
 }
@@ -1836,7 +1823,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugShowFPS = CreateButton({354, 248}, {width, height}, 1, 0, UIMSG_DebugShowFPS, 0, Io::InputAction::Invalid, "DEBUG TOGGLE SHOW FPS");
 
     GUIButton *pBtn_DebugSeasonsChange = CreateButton({13, 275}, {width, height}, 1, 0, UIMSG_DebugSeasonsChange, 0, Io::InputAction::Invalid, "DEBUG TOGGLE SEASONS CHANGE");
-    GUIButton *pBtn_DebugVerboseLogging = CreateButton({127, 275}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, Io::InputAction::Invalid, "DEBUG unused0");
+    GUIButton *pBtn_DebugVerboseLogging = CreateButton({127, 275}, {width, height}, 1, 0, UIMSG_DebugLich, 0, Io::InputAction::Invalid, "DEBUG LICH");
     GUIButton *pBtn_DebugGenItem = CreateButton({241, 275}, {width, height}, 1, 0, UIMSG_DebugGenItem, 0, Io::InputAction::Invalid, "DEBUG GENERATE RANDOM ITEM");
     GUIButton *pBtn_DebugSpecialItem = CreateButton({354, 275}, {width, height}, 1, 0, UIMSG_DebugSpecialItem, 0, Io::InputAction::Invalid, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
@@ -1895,7 +1882,7 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(354, 248, "Show FPS", engine->config->debug.ShowFPS.value());
 
     buttonbox(13, 275, "Seasons", engine->config->graphics.SeasonsChange.value());
-    buttonbox(127, 275, "Unused0", 2);
+    buttonbox(127, 275, "Lich", 2);
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
 

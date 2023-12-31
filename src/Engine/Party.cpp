@@ -187,6 +187,7 @@ void Party::Zero() {
 
     // hirelings
     pHirelings.fill(NPCData());
+    pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
     playerAlreadyPicked.fill(false); // TODO(captainurist): belongs in a different place?
 }
@@ -430,6 +431,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     pHireling2Name[0] = 0;
     this->hirelingScrollPosition = 0;
     pHirelings.fill(NPCData());
+    pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
     this->pCharacters[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
     this->pCharacters[0].uPrevFace = 17;
@@ -823,17 +825,13 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (int i = 0; i < 2; ++i) {
-        NPCData *hireling = &pParty->pHirelings[i];
-        if (!hireling->dialogue_3_evt_id) continue;
+        if (!pHirelingsSacrifice[i].inProgress)
+            continue;
 
-        hireling->dialogue_2_evt_id += pMiscTimer->dt().ticks();
-        if (hireling->dialogue_2_evt_id >= hireling->dialogue_3_evt_id) {
-            hireling->dialogue_1_evt_id = 0;
-            hireling->dialogue_2_evt_id = 0;
-            hireling->dialogue_3_evt_id = 0;
-
-            *hireling = NPCData();
-
+        pHirelingsSacrifice[i].elapsedTime += pMiscTimer->dt();
+        if (pHirelingsSacrifice[i].elapsedTime >= pHirelingsSacrifice[i].endTime) {
+            pHirelings[i] = NPCData();
+            pHirelingsSacrifice[i] = NPCSacrificeStatus();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
         }

@@ -311,3 +311,13 @@ NPCData *FlatHirelings::Get(size_t index) const {
     else
         return &pNPCStats->pNewNPCData[id - 2];
 }
+
+NPCSacrificeStatus *FlatHirelings::GetSacrificeStatus(size_t index) const {
+    assert(index < count);
+
+    uint8_t id = ids[index];
+    if (id < 2)
+        return &pParty->pHirelingsSacrifice[id];
+    else
+        return nullptr;
+}

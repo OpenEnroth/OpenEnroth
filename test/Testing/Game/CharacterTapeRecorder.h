@@ -49,6 +49,7 @@ class CharacterTapeRecorder {
 
     TestMultiTape<int> skillLevels(CharacterSkillType skill);
 
+    TestTape<Condition> condition(int characterIndex);
     TestMultiTape<Condition> conditions();
 
     TestMultiTape<int> resistances(CharacterAttributeType resistance);

@@ -21,13 +21,21 @@ class Time {
  public:
     Time() = default;
     Time(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
-        value = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
-        value = value * Duration::TICKS_PER_REALTIME_SECOND / Duration::GAME_SECONDS_IN_REALTIME_SECOND;
+        _ticks = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
+        _ticks = _ticks * Duration::TICKS_PER_REALTIME_SECOND / Duration::GAME_SECONDS_IN_REALTIME_SECOND;
+    }
+
+    Duration toDurationSinceSilence() const {
+        return Duration::fromYears(game_starting_year) + Duration::fromTicks(_ticks);
+    }
+
+    static Time fromDurationSinceSilence(Duration duration) {
+        return Time::fromTicks((duration - Duration::fromYears(game_starting_year)).ticks());
     }
 
     static Time fromTicks(int64_t ticks) {
         Time result;
-        result.value = ticks;
+        result._ticks = ticks;
         return result;
     }
 
@@ -38,8 +46,8 @@ class Time {
     static Time fromMonths(int months) { return Time(0, 0, 0, 0, 0, months, 0); }
     static Time fromYears(int years) { return Time(0, 0, 0, 0, 0, 0, years); }
 
-    int64_t ticks() const { return value; }
-    int64_t toSeconds() const { return value * Duration::GAME_SECONDS_IN_REALTIME_SECOND / Duration::TICKS_PER_REALTIME_SECOND; }
+    int64_t ticks() const { return _ticks; }
+    int64_t toSeconds() const { return _ticks * Duration::GAME_SECONDS_IN_REALTIME_SECOND / Duration::TICKS_PER_REALTIME_SECOND; }
     int64_t toMinutes() const { return toSeconds() / 60; }
     int64_t toHours() const { return toMinutes() / 60; }
     int toDays() const { return toHours() / 24; }
@@ -60,45 +68,45 @@ class Time {
         return result;
     }
 
-    // TODO(captainurist): doesn't belong to GameTime.
-    void SetExpired() { value = -1;  }
-    bool Expired() const { return value < 0; }
+    // TODO(captainurist): #time doesn't belong to GameTime.
+    void SetExpired() { _ticks = -1;  }
+    bool Expired() const { return _ticks < 0; }
 
-    // TODO(captainurist): This is something to look at, we have comparisons with GameTime() in the code, they are not
+    // TODO(captainurist): #time This is something to look at, we have comparisons with GameTime() in the code, they are not
     //                     the same as Valid().
-    bool isValid() const { return value > 0; }
+    bool isValid() const { return _ticks > 0; }
 
-    Time &operator+=(const Duration &rhs) {
-        value += rhs.ticks();
+    Time &operator+=(Duration rhs) {
+        _ticks += rhs.ticks();
         return *this;
     }
 
-    Time &operator-=(const Duration &rhs) {
-        value -= rhs.ticks();
+    Time &operator-=(Duration rhs) {
+        _ticks -= rhs.ticks();
         return *this;
     }
 
-    friend bool operator==(const Time &l, const Time &r) = default;
-    friend auto operator<=>(const Time &l, const Time &r) = default;
+    friend bool operator==(Time l, Time r) = default;
+    friend auto operator<=>(Time l, Time r) = default;
 
     explicit operator bool() const {
         return isValid();
     }
 
  private:
-    int64_t value = 0;
+    int64_t _ticks = 0;
 };
 
-inline Time operator+(const Time &l, const Duration &r) {
+inline Time operator+(Time l, Duration r) {
     return Time::fromTicks(l.ticks() + r.ticks());
 }
 
 // We don't provide operator+(Duration, Time)
 
-inline Time operator-(const Time &l, const Duration &r) {
+inline Time operator-(Time l, Duration r) {
     return Time::fromTicks(l.ticks() - r.ticks());
 }
 
-inline Duration operator-(const Time &l, const Time &r) {
+inline Duration operator-(Time l, Time r) {
     return Duration::fromTicks(l.ticks() - r.ticks());
 }

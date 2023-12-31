@@ -10,6 +10,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 
 struct NPCData;
+struct NPCSacrificeStatus;
 
 enum class NpcType {
     NPC_TYPE_QUEST = 1,
@@ -61,6 +62,12 @@ class FlatHirelings {
      * @return                          Associated `NPCData`.
      */
     NPCData *Get(size_t index) const;
+
+    /**
+     * @param index                     Hireling index.
+     * @return                          Associated `NPCDarkSacrificeStatus`. Returns null for followers.
+     */
+    NPCSacrificeStatus *GetSacrificeStatus(size_t index) const;
 
  private:
     /** Hireling / follower NPC ids.

@@ -7,6 +7,7 @@
 
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Party.h"
@@ -14,6 +15,13 @@
 #include "Engine/PriceCalculator.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+static bool characterHasJar(int charIndex, int jarIndex) {
+    for (const ItemGen &item : pParty->pCharacters[charIndex].pInventoryItemList)
+        if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == jarIndex)
+            return true;
+    return false;
+}
 
 // 1000
 
@@ -89,7 +97,7 @@ GAME_TEST(Issues, Issue1093) {
     auto statusTape = tapes.statusBar();
     test.playTraceFromTestData("issue_1093.mm7", "issue_1093.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME));
-    EXPECT_EQ(manaTape, tape(355)); // Character's mana didn't change.
+    EXPECT_EQ(manaTape, tape(355, 356)); // +1 mana from mana regen, no mana spent on spells.
     EXPECT_TRUE(statusTape.contains("Cast Town Portal"));
     EXPECT_TRUE(statusTape.contains("Spell failed"));
 }
@@ -473,6 +481,49 @@ GAME_TEST(Issues, Issue1383) {
 
 // 1400
 
+GAME_TEST(Issues, Issue1429a) {
+    // Lich regen is broken. Check that having a lich jar regens SP.
+    auto mpTape = charTapes.mp(3);
+    auto hpTape = charTapes.hp(3);
+    auto timeTape = tapes.time();
+    test.playTraceFromTestData("issue_1429a.mm7", "issue_1429a.json", [] {
+        EXPECT_TRUE(characterHasJar(3, 3)); // Has own jar.
+    });
+    EXPECT_GE(timeTape.delta(), Duration::fromHours(3));
+    EXPECT_EQ(mpTape.delta(), +36); // Wait three hours => +36 sp.
+    EXPECT_EQ(hpTape.delta(), 0);
+}
+
+GAME_TEST(Issues, Issue1429b) {
+    // Lich regen is broken. Check that having another char's lich jar doesn't help with regen.
+    auto mpTape = charTapes.mp(3);
+    auto hpTape = charTapes.hp(3);
+    auto timeTape = tapes.time();
+    test.playTraceFromTestData("issue_1429b.mm7", "issue_1429b.json", [] {
+        EXPECT_TRUE(!characterHasJar(3, 3)); // Doesn't have own jar.
+        EXPECT_TRUE(characterHasJar(3, 2)); // Has #2's jar.
+        EXPECT_TRUE(characterHasJar(2, 3)); // #2 has #3's jar.
+    });
+    EXPECT_GE(timeTape.delta(), Duration::fromHours(1));
+    EXPECT_EQ(mpTape.delta(), -24); // Wait an hour => -24 sp.
+    EXPECT_EQ(hpTape.delta(), -24); // Wait an hour => -24 hp.
+}
+
+GAME_TEST(Issues, Issue1429c) {
+    // Lich regen is broken. HP/MP is drained down to half of max HP/MP if the char doesn't have his/her own jar.
+    auto mpTape = charTapes.mp(3);
+    auto hpTape = charTapes.hp(3);
+    auto timeTape = tapes.time();
+    auto jarsTape = tapes.hasItem(ITEM_QUEST_LICH_JAR_FULL);
+    test.playTraceFromTestData("issue_1429c.mm7", "issue_1429c.json");
+    EXPECT_EQ(jarsTape, tape(false)); // No jars.
+    EXPECT_GE(timeTape.delta(), Duration::fromHours(23));
+    EXPECT_EQ(mpTape.front(), pParty->pCharacters[3].GetMaxMana());
+    EXPECT_EQ(mpTape.back(), pParty->pCharacters[3].GetMaxMana() / 2);
+    EXPECT_EQ(hpTape.front(), pParty->pCharacters[3].GetMaxHealth());
+    EXPECT_EQ(hpTape.back(), pParty->pCharacters[3].GetMaxHealth() / 2);
+}
+
 GAME_TEST(Prs, Pr1440) {
     // Frame table search is off by 1 tick.
     TextureFrameTable table;
@@ -553,4 +604,20 @@ GAME_TEST(Issues, Issue1467) {
     test.playTraceFromTestData("issue_1467.mm7", "issue_1467.json");
     EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
     EXPECT_EQ(statusTape, tape("", "Select Target", "", "Select Target", "")); // Sacrifice was cast twice. Also, no "Spell Failed".
+}
+
+GAME_TEST(Issues, Issue1475) {
+    // Warlock mana regen from Baby Dragon regens mana for dead characters.
+    auto timeTape = tapes.time();
+    auto conditionTape = charTapes.condition(3);
+    auto hpTape = charTapes.hp(3);
+    auto mpTape = charTapes.mp(3);
+    test.playTraceFromTestData("issue_1475.mm7", "issue_1475.json", [] {
+        EXPECT_EQ(pParty->pCharacters[3].classType, CLASS_WARLOCK);
+        EXPECT_TRUE(PartyHasDragon()); // Dragon provides mana regen.
+    });
+    EXPECT_GT(timeTape.delta(), Duration::fromHours(1));
+    EXPECT_EQ(conditionTape, tape(CONDITION_DEAD));
+    EXPECT_EQ(hpTape, tape(-44)); // Very dead.
+    EXPECT_EQ(mpTape, tape(0)); // No mana regen.
 }
