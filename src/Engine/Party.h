@@ -339,14 +339,14 @@ struct Party {
     int armageddonForceCount{ 0 };
     std::array<Duration, 4> pTurnBasedCharacterRecoveryTimes;
     IndexedArray<int, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> InTheShopFlags;
-    int uFine;
-    float TorchLightLastIntensity;
+    int uFine = 0;
+    float TorchLightLastIntensity = 0.0f;
 
     Duration _roundingDt;  // keeps track of rounding remainder for recovery
 
     Duration _delayedReactionTimer;
-    CharacterSpeech _delayedReactionSpeech;
-    int _delayedReactionCharacterId;
+    CharacterSpeech _delayedReactionSpeech = SPEECH_NONE;
+    int _delayedReactionCharacterId = -1;
 
     /**
      * @return                          1-based index of currently active character. Zero means that there is no
@@ -374,7 +374,7 @@ struct Party {
 
  private:
      // TODO(pskelton): change to signed int - make 0 based with -1 for none??
-     unsigned int _activeCharacter;  // which character is active - 1 based; 0 for none
+     unsigned int _activeCharacter = 0;  // which character is active - 1 based; 0 for none
 };
 
 extern Party *pParty;  // idb
