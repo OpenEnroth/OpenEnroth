@@ -69,7 +69,7 @@ int Party::CountHirelings() {  // non hired followers
     cNonHireFollowers = 0;
 
     for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        NPCData *npc = &pNPCStats->pNewNPCData[i];
+        NPCData *npc = &pNPCStats->pNPCData[i];
         if (npc->Hired() && npc->name != pHirelings[0].name && npc->name != pHirelings[1].name)
             ++cNonHireFollowers;
     }
@@ -694,9 +694,9 @@ void Party::Reset() {
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    pNPCStats->pNewNPCData = pNPCStats->pNPCData;
+    pNPCStats->pNPCData = pNPCStats->pOriginalNPCData;
     pNPCStats->pGroups_copy = pNPCStats->pGroups;
-    pNPCStats->pNewNPCData[3].uFlags |= NPC_HIRED;  //|= 0x80u; Lady Margaret
+    pNPCStats->pNPCData[3].uFlags |= NPC_HIRED;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc(); // TODO(captainurist): this totally doesn't belong here.
     pEventTimer->setPaused(true);
 

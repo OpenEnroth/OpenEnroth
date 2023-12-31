@@ -682,7 +682,7 @@ void Game::processQueuedMessages() {
                                     pMediaPlayer->Unload();
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
-                                        pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
+                                        pNPCStats->pNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
                                         pParty->CountHirelings();
                                         npcIdToDismissAfterDialogue = 0;
                                     }
@@ -692,7 +692,7 @@ void Game::processQueuedMessages() {
                                 case SCREEN_NPC_DIALOGUE:  // click escape
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
-                                        pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
+                                        pNPCStats->pNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
                                         pParty->CountHirelings();
                                         npcIdToDismissAfterDialogue = 0;
                                     }
@@ -1989,8 +1989,8 @@ void Game::gameLoop() {
                 pParty->pHirelings[0] = NPCData();
                 pParty->pHirelings[1] = NPCData();
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
-                    if (pNPCStats->pNewNPCData[i].field_24)
-                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
+                    if (pNPCStats->pNPCData[i].field_24)
+                        pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
                 }
                 pMediaPlayer->PlayFullscreenMovie("losegame");
                 if (pMovie_Track)

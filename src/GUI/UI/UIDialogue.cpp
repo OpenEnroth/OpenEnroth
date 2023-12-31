@@ -381,8 +381,8 @@ void selectNPCDialogueOption(DialogueId option) {
             dialogue_show_profession_details = false;
         } else {
             for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNewNPCData[i].name)
-                    pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
+                if (pNPCStats->pNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNPCData[i].name)
+                    pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
             }
             if (iequals(pParty->pHirelings[0].name, speakingNPC->name))
                 pParty->pHirelings[0] = NPCData();

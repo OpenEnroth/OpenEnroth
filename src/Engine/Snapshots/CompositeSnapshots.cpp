@@ -531,7 +531,7 @@ void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst) {
     snapshot(*pParty, &dst->party);
     snapshot(*pEventTimer, &dst->eventTimer);
     snapshot(*pActiveOverlayList, &dst->overlays);
-    snapshot(pNPCStats->pNewNPCData, &dst->npcData);
+    snapshot(pNPCStats->pNPCData, &dst->npcData);
     snapshot(pNPCStats->pGroups_copy, &dst->npcGroup);
 }
 
@@ -540,7 +540,7 @@ void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst) {
     reconstruct(src.party, pParty);
     reconstruct(src.eventTimer, pEventTimer);
     reconstruct(src.overlays, pActiveOverlayList);
-    reconstruct(src.npcData, &pNPCStats->pNewNPCData);
+    reconstruct(src.npcData, &pNPCStats->pNPCData);
     reconstruct(src.npcGroup, &pNPCStats->pGroups_copy);
 }
 

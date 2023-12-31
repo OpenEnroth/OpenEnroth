@@ -1202,7 +1202,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 
         for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-            pNPCStats->pNewNPCData[i].bHasUsedTheAbility = false;
+            pNPCStats->pNPCData[i].bHasUsedTheAbility = false;
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {

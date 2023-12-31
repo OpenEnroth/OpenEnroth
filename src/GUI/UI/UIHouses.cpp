@@ -408,21 +408,21 @@ void prepareHouse(HouseId house) {
 
     // NPCs of this house
     for (int i = 1; i < pNPCStats->uNumNewNPCs; ++i) {
-        if (pNPCStats->pNewNPCData[i].Location2D == house) {
-            if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
+        if (pNPCStats->pNPCData[i].Location2D == house) {
+            if (!(pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
-                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].name);
-                desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNewNPCData[i].uPortraitID));
-                desc.npc = &pNPCStats->pNewNPCData[i];
+                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
+                desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNPCData[i].uPortraitID));
+                desc.npc = &pNPCStats->pNPCData[i];
 
                 houseNpcs.push_back(desc);
-                if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_GREETED_SECOND)) {
-                    if (pNPCStats->pNewNPCData[i].uFlags & NPC_GREETED_FIRST) {
-                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_GREETED_FIRST;
-                        pNPCStats->pNewNPCData[i].uFlags |= NPC_GREETED_SECOND;
+                if (!(pNPCStats->pNPCData[i].uFlags & NPC_GREETED_SECOND)) {
+                    if (pNPCStats->pNPCData[i].uFlags & NPC_GREETED_FIRST) {
+                        pNPCStats->pNPCData[i].uFlags &= ~NPC_GREETED_FIRST;
+                        pNPCStats->pNPCData[i].uFlags |= NPC_GREETED_SECOND;
                     } else {
-                        pNPCStats->pNewNPCData[i].uFlags |= NPC_GREETED_FIRST;
+                        pNPCStats->pNPCData[i].uFlags |= NPC_GREETED_FIRST;
                     }
                 }
             }

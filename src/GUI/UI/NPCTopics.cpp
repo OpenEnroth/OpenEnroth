@@ -794,8 +794,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         if (npcData->Hired()) {
             if (pNPCStats->uNumNewNPCs > 0) {
                 for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-                    if (pNPCStats->pNewNPCData[i].Hired() && npcData->name == pNPCStats->pNewNPCData[i].name) {
-                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
+                    if (pNPCStats->pNPCData[i].Hired() && npcData->name == pNPCStats->pNPCData[i].name) {
+                        pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
                     }
                 }
             }

@@ -106,8 +106,8 @@ struct NPCStats {
     void setNPCNamesOnLoad();
     const std::string &sub_495366_MispronounceName(uint8_t firstLetter, CharacterSex genderId);
 
-    std::array<NPCData, 501> pNPCData;     // 0 - 94BCh count from 1
-    std::array<NPCData, 501> pNewNPCData;  // 94BCh- 12978h count from 1
+    std::array<NPCData, 501> pOriginalNPCData; // NPC data as read from npcdata.txt.
+    std::array<NPCData, 501> pNPCData; // NPC data used during the game.
     std::array<IndexedArray<std::string, SEX_FIRST, SEX_LAST>, 540> pNPCNames = {};
     IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};  // count from 1
     std::array<NPCData, 100> pAdditionalNPC = {{}};

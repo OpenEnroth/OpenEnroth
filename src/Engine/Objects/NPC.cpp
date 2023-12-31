@@ -34,7 +34,7 @@ NPCData *GetNPCData(signed int npcid) {
             if (npcid >= 501) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
-            return &pNPCStats->pNewNPCData[npcid];  // - 1];
+            return &pNPCStats->pNPCData[npcid];  // - 1];
         }
         return &pNPCStats->pAdditionalNPC[npcid - 5000];
     }
@@ -61,7 +61,7 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
             *npc_indx = npcid;
-            return &pNPCStats->pNewNPCData[npcid];
+            return &pNPCStats->pNPCData[npcid];
         }
         *npc_indx = npcid - 5000;
         return &pNPCStats->pAdditionalNPC[npcid - 5000];
@@ -83,7 +83,7 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
 }
 
 //----- (00476387) --------------------------------------------------------
-bool PartyHasDragon() { return pNPCStats->pNewNPCData[57].Hired(); }
+bool PartyHasDragon() { return pNPCStats->pNPCData[57].Hired(); }
 
 //----- (00476395) --------------------------------------------------------
 // 0x26 Wizard eye at skill level 2
@@ -91,8 +91,8 @@ bool CheckHiredNPCSpeciality(NpcProfession prof) {
     if (bNoNPCHiring == 1) return false;
 
     for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        if (pNPCStats->pNewNPCData[i].profession == prof &&
-            (pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
+        if (pNPCStats->pNPCData[i].profession == prof &&
+            (pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
             return true;
         }
     }
@@ -283,7 +283,7 @@ void FlatHirelings::Prepare() {
             ids[count++] = i;
 
     for (size_t i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        NPCData *npc = &pNPCStats->pNewNPCData[i];
+        NPCData *npc = &pNPCStats->pNPCData[i];
         if (npc->Hired()) {
             assert(!npc->name.empty()); // Important for the checks below.
 
@@ -309,7 +309,7 @@ NPCData *FlatHirelings::Get(size_t index) const {
     if (id < 2)
         return &pParty->pHirelings[id];
     else
-        return &pNPCStats->pNewNPCData[id - 2];
+        return &pNPCStats->pNPCData[id - 2];
 }
 
 NPCSacrificeStatus *FlatHirelings::GetSacrificeStatus(size_t index) const {

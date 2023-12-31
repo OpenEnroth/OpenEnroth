@@ -143,7 +143,7 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
 // TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
 void NPCStats::setNPCNamesOnLoad() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
-        pNewNPCData[i].name = pNPCUnicNames[i - 1];
+        pNPCData[i].name = pNPCUnicNames[i - 1];
 
     if (!pParty->pHirelings[0].name.empty())
         pParty->pHirelings[0].name = pParty->pHireling1Name;
@@ -183,40 +183,40 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                 switch (decode_step) {
                     case 1:
                         pNPCUnicNames[i] = removeQuotes(test_string);
-                        pNPCData[i + 1].name = pNPCUnicNames[i];
+                        pOriginalNPCData[i + 1].name = pNPCUnicNames[i];
                         break;
                     case 2:
-                        pNPCData[i + 1].uPortraitID = atoi(test_string);
+                        pOriginalNPCData[i + 1].uPortraitID = atoi(test_string);
                         break;
                     case 6:
-                        pNPCData[i + 1].Location2D = static_cast<HouseId>(atoi(test_string));
+                        pOriginalNPCData[i + 1].Location2D = static_cast<HouseId>(atoi(test_string));
                         break;
                     case 7:
-                        pNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
+                        pOriginalNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
                         break;
                     case 8:
-                        pNPCData[i + 1].greet = atoi(test_string);
+                        pOriginalNPCData[i + 1].greet = atoi(test_string);
                         break;
                     case 9:
-                        pNPCData[i + 1].is_joinable = (*test_string == 'y') ? 1 : 0;
+                        pOriginalNPCData[i + 1].is_joinable = (*test_string == 'y') ? 1 : 0;
                         break;
                     case 10:
-                        pNPCData[i + 1].dialogue_1_evt_id = atoi(test_string);
+                        pOriginalNPCData[i + 1].dialogue_1_evt_id = atoi(test_string);
                         break;
                     case 11:
-                        pNPCData[i + 1].dialogue_2_evt_id = atoi(test_string);
+                        pOriginalNPCData[i + 1].dialogue_2_evt_id = atoi(test_string);
                         break;
                     case 12:
-                        pNPCData[i + 1].dialogue_3_evt_id = atoi(test_string);
+                        pOriginalNPCData[i + 1].dialogue_3_evt_id = atoi(test_string);
                         break;
                     case 13:
-                        pNPCData[i + 1].dialogue_4_evt_id = atoi(test_string);
+                        pOriginalNPCData[i + 1].dialogue_4_evt_id = atoi(test_string);
                         break;
                     case 14:
-                        pNPCData[i + 1].dialogue_5_evt_id = atoi(test_string);
+                        pOriginalNPCData[i + 1].dialogue_5_evt_id = atoi(test_string);
                         break;
                     case 15:
-                        pNPCData[i + 1].dialogue_6_evt_id = atoi(test_string);
+                        pOriginalNPCData[i + 1].dialogue_6_evt_id = atoi(test_string);
                         break;
                 }
             }
@@ -341,7 +341,7 @@ void NPCStats::InitializeNPCNews(const Blob &npcNews) {
 
 //----- (0047702F) --------------------------------------------------------
 void NPCStats::Initialize(GameResourceManager *resourceManager) {
-    pNPCData.fill(NPCData());
+    pOriginalNPCData.fill(NPCData());
     InitializeNPCData(resourceManager->getEventsFile("npcdata.txt"));
     InitializeNPCGreets(resourceManager->getEventsFile("npcgreet.txt"));
     InitializeNPCGroups(resourceManager->getEventsFile("npcgroup.txt"));
