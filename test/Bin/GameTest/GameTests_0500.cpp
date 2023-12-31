@@ -337,8 +337,8 @@ GAME_TEST(Issues, Issue661) {
     test.playTraceFromTestData("issue_661.mm7", "issue_661.json");
     // two hour wait period is 24 blocks of 5 mins
     // one item that heals hp, three items heal mana
-    EXPECT_EQ(healthTape.delta(), +24);
-    EXPECT_EQ(manaTape.delta(), +3 * 24);
+    EXPECT_EQ(healthTape.delta(), +12);
+    EXPECT_EQ(manaTape.delta(), +3 * 12);
 }
 
 GAME_TEST(Issues, Issue662) {
