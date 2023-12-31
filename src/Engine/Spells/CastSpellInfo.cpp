@@ -2798,7 +2798,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // TODO(captainurist): reimplement this in a saner way.
                     int flatHirelingId = pParty->hirelingScrollPosition + pCastSpell->targetCharacterIndex;
 
-                    if (buf.IsFollower(flatHirelingId)) {
+                    if (buf.IsFollower(flatHirelingId) || buf.Get(flatHirelingId)->dialogue_1_evt_id == 1) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);

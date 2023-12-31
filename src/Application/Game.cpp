@@ -948,8 +948,19 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             }
+            case UIMSG_CastSpell_Hireling: {
+                FlatHirelings buf;
+                buf.Prepare();
+                int flatHirelingId = pParty->hirelingScrollPosition + uMessageParam;
+                if (flatHirelingId >= buf.Size())
+                    continue; // Can't cast sacrifice on an empty slot.
+
+                engine->_messageQueue->clear();
+                spellTargetPicked(Pid(), uMessageParam);
+                closeTargetedSpellWindow();
+                continue;
+            }
             case UIMSG_CastSpell_TargetCharacter:
-            case UIMSG_CastSpell_Hireling:
                 engine->_messageQueue->clear();
                 if (IsEnchantingInProgress) {
                     // Change character while enchanting is active

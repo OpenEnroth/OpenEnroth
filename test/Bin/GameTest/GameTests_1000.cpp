@@ -527,12 +527,30 @@ GAME_TEST(Issues, Issue1457) {
     EXPECT_EQ(mapItemsTape.size(), 1);
 }
 
+GAME_TEST(Issues, Issue1462) {
+    // Can dark sacrifice the same npc 4 times.
+    auto hirelingsTape = tapes.totalHirelings();
+    auto statusTape = tapes.statusBar();
+    test.playTraceFromTestData("issue_1462.mm7", "issue_1462.json");
+    EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
+    EXPECT_EQ(statusTape, tape("", "Select Target", "", "Select Target", "Spell failed")); // Sacrifice was cast twice, second cast failed.
+}
+
 GAME_TEST(Issues, Issue1464) {
     // Can talk to the npc being dark-sacrificed.
     // Talking to the last NPC while he's being dark-sacrificed asserts.
     auto screenTape = tapes.screen();
     auto hirelingsTape = tapes.totalHirelings();
-    test.playTraceFromTestData("issue_1464.mm7", "issue_1464.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    test.playTraceFromTestData("issue_1464.mm7", "issue_1464.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME)); // No SCREEN_NPC_DIALOG.
     EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
+}
+
+GAME_TEST(Issues, Issue1467) {
+    // Dark sacrificing an empty npc slot asserts.
+    auto hirelingsTape = tapes.totalHirelings();
+    auto statusTape = tapes.statusBar();
+    test.playTraceFromTestData("issue_1467.mm7", "issue_1467.json");
+    EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
+    EXPECT_EQ(statusTape, tape("", "Select Target", "", "Select Target", "")); // Sacrifice was cast twice. Also, no "Spell Failed".
 }
