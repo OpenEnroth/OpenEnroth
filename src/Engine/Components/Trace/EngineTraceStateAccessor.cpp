@@ -11,7 +11,6 @@
 
 #include "Library/Trace/EventTrace.h"
 
-#include "Utility/Exception.h"
 #include "Utility/String.h"
 
 static bool shouldSkip(const GameConfig *config, const ConfigSection *section, const AnyConfigEntry *entry) {
@@ -22,7 +21,8 @@ static bool shouldSkip(const GameConfig *config, const ConfigSection *section, c
         entry == &config->settings.VoiceLevel ||
         entry == &config->settings.SoundLevel ||
         entry == &config->debug.LogLevel ||
-        entry == &config->debug.NoVideo;
+        entry == &config->debug.NoVideo ||
+        entry == &config->gameplay.QuickSavesCount;
 }
 
 static bool shouldTake(const GameConfig *config, const ConfigSection *section, const AnyConfigEntry *entry) {
