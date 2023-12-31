@@ -215,6 +215,7 @@ enum UIMessageType : uint32_t {
 
     UIMSG_DebugSpecialItem = 971,
     UIMSG_DebugGenItem = 972,
+    UIMSG_DebugLich = 973,
     UIMSG_DebugSeasonsChange = 974,
     UIMSG_DebugShowFPS = 975,
     UIMSG_DebugPickedFace = 976,

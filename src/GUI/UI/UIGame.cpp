@@ -1823,7 +1823,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugShowFPS = CreateButton({354, 248}, {width, height}, 1, 0, UIMSG_DebugShowFPS, 0, Io::InputAction::Invalid, "DEBUG TOGGLE SHOW FPS");
 
     GUIButton *pBtn_DebugSeasonsChange = CreateButton({13, 275}, {width, height}, 1, 0, UIMSG_DebugSeasonsChange, 0, Io::InputAction::Invalid, "DEBUG TOGGLE SEASONS CHANGE");
-    GUIButton *pBtn_DebugVerboseLogging = CreateButton({127, 275}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, Io::InputAction::Invalid, "DEBUG unused0");
+    GUIButton *pBtn_DebugVerboseLogging = CreateButton({127, 275}, {width, height}, 1, 0, UIMSG_DebugLich, 0, Io::InputAction::Invalid, "DEBUG LICH");
     GUIButton *pBtn_DebugGenItem = CreateButton({241, 275}, {width, height}, 1, 0, UIMSG_DebugGenItem, 0, Io::InputAction::Invalid, "DEBUG GENERATE RANDOM ITEM");
     GUIButton *pBtn_DebugSpecialItem = CreateButton({354, 275}, {width, height}, 1, 0, UIMSG_DebugSpecialItem, 0, Io::InputAction::Invalid, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
@@ -1882,7 +1882,7 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(354, 248, "Show FPS", engine->config->debug.ShowFPS.value());
 
     buttonbox(13, 275, "Seasons", engine->config->graphics.SeasonsChange.value());
-    buttonbox(127, 275, "Unused0", 2);
+    buttonbox(127, 275, "Lich", 2);
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
 

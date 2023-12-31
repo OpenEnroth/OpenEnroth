@@ -1693,7 +1693,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             }
-            case UIMSG_DebugGenItem: {
+            case UIMSG_DebugGenItem:
                 if (!pParty->hasActiveCharacter())
                     continue;
 
@@ -1709,6 +1709,21 @@ void Game::processQueuedMessages() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+                continue;
+            case UIMSG_DebugLich: {
+                if (!pParty->hasActiveCharacter())
+                    continue;
+
+                Character &character = pParty->activeCharacter();
+                if (character.classType == CLASS_LICH)
+                    continue;
+
+                character.classType = CLASS_LICH;
+
+                ItemGen jar;
+                jar.uItemID = ITEM_QUEST_LICH_JAR_FULL;
+                jar.uHolderPlayer = character.getCharacterIndex();
+                character.AddItem2(-1, &jar);
                 continue;
             }
             case UIMSG_DebugKillChar:
