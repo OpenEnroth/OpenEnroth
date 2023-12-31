@@ -1610,13 +1610,9 @@ void RegeneratePartyHealthMana() {
 }
 
 Duration timeUntilDawn() {
-    const Duration dawnHour = Duration::fromHours(5);
-    Duration currentTimeInDay = Duration::fromHours(pParty->uCurrentHour) + Duration::fromMinutes(pParty->uCurrentMinute);
-
-    if (currentTimeInDay < dawnHour) {
-        return dawnHour - currentTimeInDay;
-    }
-    return Duration::fromDays(1) + dawnHour - currentTimeInDay;
+    Time now = pParty->GetPlayingTime();
+    Time next5am = Time::fromDurationSinceSilence((now.toDurationSinceSilence() - Duration::fromHours(5) + 1_ticks).roundedUp(Duration::fromDays(1)) + Duration::fromHours(5));
+    return next5am - now;
 }
 
 void initLevelStrings(const Blob &blob) {
