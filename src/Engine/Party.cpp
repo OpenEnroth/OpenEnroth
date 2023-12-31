@@ -621,13 +621,13 @@ void Party::Reset() {
     SetUserInterface(alignment, true);
 
     // game begins at 9 am
-    this->playing_time = Time(0, 0, 9);
-    this->last_regenerated = Time(0, 0, 9);
-    this->uCurrentHour = 9;
+    playing_time = Time(0, 0, 9);
+    last_regenerated = Time(0, 0, 9);
+    uCurrentHour = 9;
 
     bTurnBasedModeOn = false;
 
-    pParty->_activeCharacter = 1;
+    _activeCharacter = 1;
 
     pCharacters[0].Reset(CLASS_KNIGHT);
     pCharacters[0].uCurrentFace = 17;
@@ -683,12 +683,12 @@ void Party::Reset() {
     _autonoteBits.reset();
 
     _questBits.reset();
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
 
     pIsArtifactFound.fill(false);
 
