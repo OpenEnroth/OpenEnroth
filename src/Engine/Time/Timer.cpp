@@ -16,16 +16,7 @@ Duration Timer::platformTime() {
 
 //----- (004263B7) --------------------------------------------------------
 void Timer::tick() {
-    // Timer *v1; // esi@1
-    // unsigned int v2; // eax@2
-    // signed int v3; // eax@3
-    // char v4; // zf@5
-
     Duration new_time = platformTime();
-
-    // TODO(captainurist): I had to comment the line below because it's now hooking into platform, and platform
-    // code return the same tick count on every call when playing back an event trace.
-    // while (new_time <= uStartTime) new_time = Time();
 
     // TODO(captainurist): this magically works with EventTracer because of how Time() is written:
     // it sets uStartTime to zero if it's larger than current time. And TickCount() in EventTracer starts at zero.
