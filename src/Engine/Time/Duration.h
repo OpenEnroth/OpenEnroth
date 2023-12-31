@@ -110,39 +110,39 @@ class Duration {
         return Duration::fromTicks(t / p * p);
     }
 
-    [[nodiscard]] constexpr friend Duration operator+(const Duration &l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator+(Duration l, Duration r) {
         return Duration::fromTicks(l._ticks + r._ticks);
     }
 
-    [[nodiscard]] constexpr friend Duration operator-(const Duration &l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator-(Duration l, Duration r) {
         return Duration::fromTicks(l._ticks - r._ticks);
     }
 
     template<class L> requires std::is_arithmetic_v<L>
-    [[nodiscard]] constexpr friend Duration operator*(L l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator*(L l, Duration r) {
         return Duration::fromTicks(l * r._ticks);
     }
 
     template<class R> requires std::is_arithmetic_v<R>
-    [[nodiscard]] constexpr friend Duration operator*(const Duration &l, R r) {
+    [[nodiscard]] constexpr friend Duration operator*(Duration l, R r) {
         return Duration::fromTicks(l._ticks * r);
     }
 
     template<class R> requires std::is_arithmetic_v<R>
-    [[nodiscard]] constexpr friend Duration operator/(const Duration &l, R r) {
+    [[nodiscard]] constexpr friend Duration operator/(Duration l, R r) {
         return Duration::fromTicks(l._ticks / r);
     }
 
-    [[nodiscard]] constexpr friend Duration operator%(const Duration &l, const Duration &r) {
+    [[nodiscard]] constexpr friend Duration operator%(Duration l, Duration r) {
         return Duration::fromTicks(l._ticks % r._ticks);
     }
 
-    constexpr Duration &operator+=(const Duration &rhs) {
+    constexpr Duration &operator+=(Duration rhs) {
         _ticks += rhs._ticks;
         return *this;
     }
 
-    constexpr Duration &operator-=(const Duration &rhs) {
+    constexpr Duration &operator-=(Duration rhs) {
         _ticks -= rhs._ticks;
         return *this;
     }
@@ -159,8 +159,8 @@ class Duration {
         return *this;
     }
 
-    [[nodiscard]] constexpr friend bool operator==(const Duration &l, const Duration &r) = default;
-    [[nodiscard]] constexpr friend auto operator<=>(const Duration &l, const Duration &r) = default;
+    [[nodiscard]] constexpr friend bool operator==(Duration l, Duration r) = default;
+    [[nodiscard]] constexpr friend auto operator<=>(Duration l, Duration r) = default;
 
     [[nodiscard]] constexpr explicit operator bool() const {
         return _ticks != 0;

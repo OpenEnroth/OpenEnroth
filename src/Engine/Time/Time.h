@@ -76,18 +76,18 @@ class Time {
     //                     the same as Valid().
     bool isValid() const { return _ticks > 0; }
 
-    Time &operator+=(const Duration &rhs) {
+    Time &operator+=(Duration rhs) {
         _ticks += rhs.ticks();
         return *this;
     }
 
-    Time &operator-=(const Duration &rhs) {
+    Time &operator-=(Duration rhs) {
         _ticks -= rhs.ticks();
         return *this;
     }
 
-    friend bool operator==(const Time &l, const Time &r) = default;
-    friend auto operator<=>(const Time &l, const Time &r) = default;
+    friend bool operator==(Time l, Time r) = default;
+    friend auto operator<=>(Time l, Time r) = default;
 
     explicit operator bool() const {
         return isValid();
@@ -97,16 +97,16 @@ class Time {
     int64_t _ticks = 0;
 };
 
-inline Time operator+(const Time &l, const Duration &r) {
+inline Time operator+(Time l, Duration r) {
     return Time::fromTicks(l.ticks() + r.ticks());
 }
 
 // We don't provide operator+(Duration, Time)
 
-inline Time operator-(const Time &l, const Duration &r) {
+inline Time operator-(Time l, Duration r) {
     return Time::fromTicks(l.ticks() - r.ticks());
 }
 
-inline Duration operator-(const Time &l, const Time &r) {
+inline Duration operator-(Time l, Time r) {
     return Duration::fromTicks(l.ticks() - r.ticks());
 }
