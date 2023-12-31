@@ -1593,12 +1593,13 @@ void RegeneratePartyHealthMana() {
         // for lich
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
-            for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; ++idx) {
-                if (character.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
+            for (const ItemGen &item : character.pInventoryItemList)
+                if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == character.getCharacterIndex())
                     lich_has_jar = true;
-            }
 
-            if (character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+            if (lich_has_jar) {
+                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+            } else if (character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                 if (character.health > character.GetMaxHealth() / 2) {
                     character.health = std::max(character.GetMaxHealth() / 2, character.health - 2 * ticks5);
                 }
@@ -1606,9 +1607,6 @@ void RegeneratePartyHealthMana() {
                     character.mana = std::max(character.GetMaxMana() / 2, character.mana - 2 * ticks5);
                 }
             }
-
-            if (lich_has_jar)
-                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
         }
 
         // for zombie

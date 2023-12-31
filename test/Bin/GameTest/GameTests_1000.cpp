@@ -15,6 +15,13 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+static bool characterHasJar(int charIndex, int jarIndex) {
+    for (const ItemGen &item : pParty->pCharacters[charIndex].pInventoryItemList)
+        if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == jarIndex)
+            return true;
+    return false;
+}
+
 // 1000
 
 GAME_TEST(Issues, Issues1004) {
@@ -472,6 +479,49 @@ GAME_TEST(Issues, Issue1383) {
 }
 
 // 1400
+
+GAME_TEST(Issues, Issue1429a) {
+    // Lich regen is broken. Check that having a lich jar regens SP.
+    auto mpTape = charTapes.mp(3);
+    auto hpTape = charTapes.hp(3);
+    auto timeTape = tapes.time();
+    test.playTraceFromTestData("issue_1429a.mm7", "issue_1429a.json", [] {
+        EXPECT_TRUE(characterHasJar(3, 3)); // Has own jar.
+    });
+    EXPECT_GE(timeTape.delta(), Duration::fromHours(3));
+    EXPECT_EQ(mpTape.delta(), +36); // Wait three hours => +36 sp.
+    EXPECT_EQ(hpTape.delta(), 0);
+}
+
+GAME_TEST(Issues, Issue1429b) {
+    // Lich regen is broken. Check that having another char's lich jar doesn't help with regen.
+    auto mpTape = charTapes.mp(3);
+    auto hpTape = charTapes.hp(3);
+    auto timeTape = tapes.time();
+    test.playTraceFromTestData("issue_1429b.mm7", "issue_1429b.json", [] {
+        EXPECT_TRUE(!characterHasJar(3, 3)); // Doesn't have own jar.
+        EXPECT_TRUE(characterHasJar(3, 2)); // Has #2's jar.
+        EXPECT_TRUE(characterHasJar(2, 3)); // #2 has #3's jar.
+    });
+    EXPECT_GE(timeTape.delta(), Duration::fromHours(1));
+    EXPECT_EQ(mpTape.delta(), -24); // Wait an hour => -24 sp.
+    EXPECT_EQ(hpTape.delta(), -24); // Wait an hour => -24 hp.
+}
+
+GAME_TEST(Issues, Issue1429c) {
+    // Lich regen is broken. HP/MP is drained down to half of max HP/MP if the char doesn't have his/her own jar.
+    auto mpTape = charTapes.mp(3);
+    auto hpTape = charTapes.hp(3);
+    auto timeTape = tapes.time();
+    auto jarsTape = tapes.hasItem(ITEM_QUEST_LICH_JAR_FULL);
+    test.playTraceFromTestData("issue_1429c.mm7", "issue_1429c.json");
+    EXPECT_EQ(jarsTape, tape(false)); // No jars.
+    EXPECT_GE(timeTape.delta(), Duration::fromHours(23));
+    EXPECT_EQ(mpTape.front(), pParty->pCharacters[3].GetMaxMana());
+    EXPECT_EQ(mpTape.back(), pParty->pCharacters[3].GetMaxMana() / 2);
+    EXPECT_EQ(hpTape.front(), pParty->pCharacters[3].GetMaxHealth());
+    EXPECT_EQ(hpTape.back(), pParty->pCharacters[3].GetMaxHealth() / 2);
+}
 
 GAME_TEST(Prs, Pr1440) {
     // Frame table search is off by 1 tick.
