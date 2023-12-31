@@ -237,7 +237,6 @@ static void checkTimer(MapTimer &timer) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
                 timer.alarmTime = Time() + timer.timeInsideDay;
             }
-            // TODO(captainurist): #time
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
                 timer.alarmTime += timer.interval;
             }
