@@ -42,11 +42,6 @@ Party *pParty = nullptr;
 
 struct ActionQueue *pPartyActionQueue = new ActionQueue;
 
-std::array<bool, 4> playerAlreadyPicked;  // byte_AE3368_
-char PickedPlayer2_unused;                // byte_AE3369_
-char PickedPlayer3_unused;                // byte_AE336A_
-char PickedPlayer4_unused;                // byte_AE336B_
-
 struct {
     UIAnimation _pUIAnim_Food;
     UIAnimation _pUIAnim_Gold;
@@ -189,7 +184,7 @@ void Party::Zero() {
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
-    playerAlreadyPicked.fill(false); // TODO(captainurist): belongs in a different place?
+    playerAlreadyPicked.fill(false);
 }
 
 // inlined

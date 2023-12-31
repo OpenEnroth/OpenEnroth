@@ -348,6 +348,8 @@ struct Party {
     CharacterSpeech _delayedReactionSpeech = SPEECH_NONE;
     int _delayedReactionCharacterId = -1;
 
+    std::array<bool, 4> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.
+
     /**
      * @return                          1-based index of currently active character. Zero means that there is no
      *                                  active character.
