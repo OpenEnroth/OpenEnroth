@@ -133,6 +133,10 @@ class Duration {
         return Duration::fromTicks(l._ticks / r);
     }
 
+    [[nodiscard]] constexpr friend int64_t operator/(Duration l, Duration r) {
+        return l._ticks / r._ticks;
+    }
+
     [[nodiscard]] constexpr friend Duration operator%(Duration l, Duration r) {
         return Duration::fromTicks(l._ticks % r._ticks);
     }

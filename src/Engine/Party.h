@@ -272,7 +272,7 @@ struct Party {
     int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     Time playing_time;  // uint64_t uTimePlayed;
-    Time last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
+    Time last_regenerated; // Timestamp when HP/MP regeneration was done last time.
     PartyTimeStruct PartyTimes;
     Vec3f pos;
     Vec3f speed; // Party speed, negative z => falling, positive z => jumping.

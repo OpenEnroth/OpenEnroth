@@ -89,7 +89,7 @@ GAME_TEST(Issues, Issue1093) {
     auto statusTape = tapes.statusBar();
     test.playTraceFromTestData("issue_1093.mm7", "issue_1093.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME));
-    EXPECT_EQ(manaTape, tape(355)); // Character's mana didn't change.
+    EXPECT_EQ(manaTape, tape(355, 356)); // +1 mana from mana regen, no mana spent on spells.
     EXPECT_TRUE(statusTape.contains("Cast Town Portal"));
     EXPECT_TRUE(statusTape.contains("Spell failed"));
 }

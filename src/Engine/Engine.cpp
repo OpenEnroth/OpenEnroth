@@ -1,4 +1,5 @@
 #include <cstring>
+#include <algorithm>
 #include <memory>
 
 #include "Engine/Engine.h"
@@ -1374,262 +1375,258 @@ void updatePartyDeathState() {
 }
 
 void RegeneratePartyHealthMana() {
-    constexpr int MINUTES_BETWEEN_REGEN = 5;
-    int cur_minutes = pParty->GetPlayingTime().toMinutes();
-    int last_minutes = pParty->last_regenerated.toMinutes();
+    Duration newTime = pParty->GetPlayingTime().toDurationSinceSilence();
+    Duration oldTime = pParty->last_regenerated.toDurationSinceSilence();
 
-    if (cur_minutes == last_minutes) {
+    // This used to trigger if:
+    // - Current time is at a 5-min mark (time.toMinutes() % 5 == 0),
+    // - Or if at least 5 mins have passed.
+    //
+    // And then there was a loop that went in 5-min increments to do regen several times if for example 15 minutes have
+    // passed.
+    //
+    // New logic is:
+    // - Calculate the number of 5-min ticks that have passed. E.g. there is only one 5-min tick between 1 and 9.
+    // - Do a single run of the logic below.
+
+    auto ticksBetween = [](Duration lo, Duration hi, Duration interval) {
+        // Calculate # of interval-spaced ticks in [lo, hi).
+        Duration loUp = lo.roundedUp(interval);
+        Duration hiDn = (hi - 1_ticks).roundedDown(interval);
+        return (hiDn - loUp) / interval + 1;
+    };
+
+    int ticks5 = ticksBetween(oldTime, newTime, Duration::fromMinutes(5));
+    if (ticks5 <= 0)
         return;
+
+    // TODO: actually this looks like it never triggers.
+    // we get cursed_times, which is a time the character was cursed since the start of the game (a very large number),
+    // and compare it with times_triggered, which is a small number
+
+    // See #123 for discussion about this logic.
+    // Curse processing seems to be broken here.
+#if 0
+    // chance to flight break due to a curse
+    if (pParty->FlyActive()) {
+        if (pParty->bFlying) {
+            if (!(pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1)) {
+                // uPower is 0 for GM, 1 for every other skill level
+                unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
+
+                int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
+                GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
+                if (cursed_times.Valid() && cursed_times.value < spell_power) {
+                    // TODO: cursed_times was a pointer before, and we had cursed_times = 0 here,
+                    // was this meant to cancel the curse?
+                    pParty->uFlags &= 0xFFFFFFBF;
+                    pParty->bFlying = false;
+                }
+            }
+        }
+    }
+#endif
+
+    // See #123 for discussion about this logic.
+    // And also current code seems to be broken because it plainly curses Water Walk caster.
+#if 0
+    // chance to waterwalk drowning due to a curse
+    if (pParty->WaterWalkActive()) {
+        if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
+            if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
+                int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
+                GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
+                cursed_times.value -= times_triggered;
+                if (cursed_times.value <= 0) {
+                    cursed_times.value = 0;
+                    pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
+                }
+                pParty->pCharacters[caster].conditions.Set(CONDITION_CURSED, cursed_times);
+            }
+        }
+    }
+#endif
+
+    // Mana drain from flying
+    // GM does not drain
+    if (!engine->config->debug.AllMagic.value() && pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff) {
+        if (pParty->bFlying) {
+            int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
+            pParty->pCharacters[caster].mana = std::max(0, pParty->pCharacters[caster].mana - ticks5);
+        }
     }
 
-    bool tickover = last_minutes + MINUTES_BETWEEN_REGEN <= cur_minutes;
+    // Mana drain from water walk
+    // GM does not drain
+    if (!engine->config->debug.AllMagic.value() && pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
+        if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
+            int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
 
-    if ((cur_minutes % MINUTES_BETWEEN_REGEN) == 0 || tickover) {
-        // repeat for missed intervals
-        while (last_minutes + MINUTES_BETWEEN_REGEN <= cur_minutes) {
-            // TODO: actually this looks like it never triggers.
-            // we get cursed_times, which is a time the character was cursed since the start of the game (a very large number),
-            // and compare it with times_triggered, which is a small number
+            int ticksW = ticks5;
+            // Vanilla bug: Water Walk drains mana with the same speed as Fly.
+            if (engine->config->gameplay.FixWaterWalkManaDrain.value())
+                ticksW = ticksBetween(oldTime, newTime, Duration::fromMinutes(20));
 
-            // See #123 for discussion about this logic.
-            // Curse processing seems to be broken here.
-#if 0
-        // chance to flight break due to a curse
-            if (pParty->FlyActive()) {
-                if (pParty->bFlying) {
-                    if (!(pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1)) {
-                        // uPower is 0 for GM, 1 for every other skill level
-                        unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
+            pParty->pCharacters[caster].mana = std::max(0, pParty->pCharacters[caster].mana - ticksW);
+        }
+    }
 
-                        int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
-                        GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
-                        if (cursed_times.Valid() && cursed_times.value < spell_power) {
-                            // TODO: cursed_times was a pointer before, and we had cursed_times = 0 here,
-                            // was this meant to cancel the curse?
-                            pParty->uFlags &= 0xFFFFFFBF;
-                            pParty->bFlying = false;
-                        }
+    // Immolation fire spell aura damage.
+    // Note that immolation hits only once, even if we have more than 1 tick. This is intentional, because why would you
+    // care about immolation if you're traveling, or if you're in jail? You won't be getting several ticks here during
+    // normal gameplay.
+    if (pParty->ImmolationActive()) {
+        Vec3i cords;
+
+        SpriteObject spellSprite;
+        spellSprite.containing_item.Reset();
+        spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].power;
+        spellSprite.spell_skill = pParty->ImmolationSkillLevel();
+        spellSprite.uType = SPRITE_SPELL_FIRE_IMMOLATION;
+        spellSprite.uSpellID = SPELL_FIRE_IMMOLATION;
+        spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
+        spellSprite.field_60_distance_related_prolly_lod = 0;
+        spellSprite.uAttributes = 0;
+        spellSprite.uSectorID = 0;
+        spellSprite.timeSinceCreated = 0_ticks;
+        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
+        spellSprite.uFacing = 0;
+        spellSprite.uSoundID = 0;
+
+        int actorsAffectedByImmolation[100];
+        size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
+        for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
+            int actorID = actorsAffectedByImmolation[idx];
+            spellSprite.vPosition.x = pActors[actorID].pos.x;
+            spellSprite.vPosition.y = pActors[actorID].pos.y;
+            spellSprite.vPosition.z = pActors[actorID].pos.z;
+            spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
+            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
+        }
+    }
+
+    // HP/SP regeneration and HP deterioration.
+    for (Character &character : pParty->pCharacters) {
+        for (ItemSlot idx : allItemSlots()) {
+            bool recovery_HP = false;
+            bool decrease_HP = false;
+            bool recovery_SP = false;
+            if (character.HasItemEquipped(idx)) {
+                unsigned _idx = character.pEquipment[idx];
+                ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
+                if (!isRegular(equppedItem.uItemID)) {
+                    if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
+                        decrease_HP = true;
                     }
-                }
-            }
-#endif
-
-            // See #123 for discussion about this logic.
-            // And also current code seems to be broken because it plainly curses Water Walk caster.
-#if 0
-        // chance to waterwalk drowning due to a curse
-            if (pParty->WaterWalkActive()) {
-                if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
-                    if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
-                        int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
-                        GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
-                        cursed_times.value -= times_triggered;
-                        if (cursed_times.value <= 0) {
-                            cursed_times.value = 0;
-                            pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
-                        }
-                        pParty->pCharacters[caster].conditions.Set(CONDITION_CURSED, cursed_times);
+                    if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                        recovery_HP = true;
+                        recovery_SP = true;
                     }
-                }
-            }
-#endif
-
-            // Mana drain from flying
-            // GM does not drain
-            if (pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff) {
-                if (pParty->bFlying) {
-                    int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
-                    assert(caster >= 0);
-                    if (pParty->pCharacters[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
-                        pParty->pCharacters[caster].mana -= 1;
+                    if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
+                        recovery_SP = true;
                     }
-                }
-            }
-
-            // Mana drain from water walk
-            // GM does not drain
-            if (pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
-                if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
-                    int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
-                    int mana_drain = 1;
-                    assert(caster >= 0);
-                    // Vanilla bug: Water Walk drains mana with the same speed as Fly
-                    if (engine->config->gameplay.FixWaterWalkManaDrain.value() && ((cur_minutes % 20) != 0)) {
-                        mana_drain = 0;
+                    if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
+                        recovery_HP = true;
                     }
-                    if (pParty->pCharacters[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
-                        pParty->pCharacters[caster].mana -= mana_drain;
+                } else {
+                    ItemEnchantment special_enchantment = equppedItem.special_enchantment;
+                    if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
+                        || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
+                        || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
+                        || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
+                        recovery_HP = true;
                     }
-                }
-            }
 
-            // immolation fire spell aura damage
-            if (pParty->ImmolationActive()) {
-                Vec3i cords;
-                cords.x = 0;
-                cords.y = 0;
-                cords.z = 0;
+                    if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
+                        || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
+                        || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
+                        recovery_SP = true;
+                    }
 
-                SpriteObject spellSprite;
-                spellSprite.containing_item.Reset();
-                spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].power;
-                spellSprite.spell_skill = pParty->ImmolationSkillLevel();
-                spellSprite.uType = SPRITE_SPELL_FIRE_IMMOLATION;
-                spellSprite.uSpellID = SPELL_FIRE_IMMOLATION;
-                spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
-                spellSprite.field_60_distance_related_prolly_lod = 0;
-                spellSprite.uAttributes = 0;
-                spellSprite.uSectorID = 0;
-                spellSprite.timeSinceCreated = 0_ticks;
-                spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
-                spellSprite.uFacing = 0;
-                spellSprite.uSoundID = 0;
-
-                int actorsAffectedByImmolation[100];
-                size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
-                for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
-                    int actorID = actorsAffectedByImmolation[idx];
-                    spellSprite.vPosition.x = pActors[actorID].pos.x;
-                    spellSprite.vPosition.y = pActors[actorID].pos.y;
-                    spellSprite.vPosition.z = pActors[actorID].pos.z;
-                    spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
-                }
-            }
-
-            // HP/SP regeneration and HP deterioration
-            for (Character &character : pParty->pCharacters) {
-                for (ItemSlot idx : allItemSlots()) {
-                    bool recovery_HP = false;
-                    bool decrease_HP = false;
-                    bool recovery_SP = false;
-                    if (character.HasItemEquipped(idx)) {
-                        unsigned _idx = character.pEquipment[idx];
-                        ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
-                        if (!isRegular(equppedItem.uItemID)) {
-                            if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
-                                decrease_HP = true;
-                            }
-                            if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
-                                recovery_HP = true;
-                                recovery_SP = true;
-                            }
-                            if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
-                                recovery_SP = true;
-                            }
-                            if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
-                                recovery_HP = true;
-                            }
-                        } else {
-                            ItemEnchantment special_enchantment = equppedItem.special_enchantment;
-                            if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
-                                || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
-                                || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
-                                || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
-                                recovery_HP = true;
-                            }
-
-                            if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
-                                || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
-                                || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
-                                recovery_SP = true;
-                            }
-
-                            if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
-                                recovery_HP = true;
-                                recovery_SP = true;
-                            }
-                        }
-
-                        if (recovery_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                            if (character.health < character.GetMaxHealth()) {
-                                character.health++;
-                            }
-                            if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
-                                character.conditions.Reset(CONDITION_UNCONSCIOUS);
-                            }
-                        }
-
-                        if (recovery_SP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                            if (character.mana < character.GetMaxMana()) {
-                                character.mana++;
-                            }
-                        }
-
-                        if (decrease_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                            character.health--;
-                            if (!(character.conditions.Has(CONDITION_UNCONSCIOUS)) && character.health < 0) {
-                                character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
-                            }
-                            if (character.health < 1) {
-                                int enduranceCheck = character.health + character.uEndurance + character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
-                                if (enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
-                                    character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
-                                } else if (!character.conditions.Has(CONDITION_DEAD)) {
-                                    character.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
-                                }
-                            }
-                        }
+                    if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
+                        recovery_HP = true;
+                        recovery_SP = true;
                     }
                 }
 
-                // regeneration buff
-                if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active() && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                    character.health += 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
-                    if (character.health > character.GetMaxHealth()) {
-                        character.health = character.GetMaxHealth();
-                    }
+                if (recovery_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
                     if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
                         character.conditions.Reset(CONDITION_UNCONSCIOUS);
                     }
                 }
 
-                // for warlock
-                if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
-                    if (character.mana < character.GetMaxMana()) {
-                        character.mana++;
-                    }
+                if (recovery_SP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
                 }
 
-                // for lich
-                if (character.classType == CLASS_LICH) {
-                    bool lich_has_jar = false;
-                    for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; ++idx) {
-                        if (character.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
-                            lich_has_jar = true;
+                if (decrease_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    character.health -= ticks5;
+                    if (!(character.conditions.Has(CONDITION_UNCONSCIOUS)) && character.health < 0) {
+                        character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
                     }
-
-                    if (character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                        if (character.health > (character.GetMaxHealth() / 2)) {
-                            character.health = character.health - 2;
+                    if (character.health < 1) {
+                        int enduranceCheck = character.health + character.uEndurance + character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+                        if (enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
+                            character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
+                        } else if (!character.conditions.Has(CONDITION_DEAD)) {
+                            character.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
                         }
-                        if (character.mana > (character.GetMaxMana() / 2)) {
-                            character.mana = character.mana - 2;
-                        }
-                    }
-
-                    if (lich_has_jar) {
-                        if (character.mana < character.GetMaxMana()) {
-                            character.mana++;
-                        }
-                    }
-                }
-
-                // for zombie
-                if (character.conditions.Has(CONDITION_ZOMBIE) &&
-                    character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                    if (character.health > (character.GetMaxHealth() / 2)) {
-                        character.health = character.health--;
-                    }
-                    if (character.mana > 0) {
-                        character.mana = character.mana--;
                     }
                 }
             }
-            last_minutes += MINUTES_BETWEEN_REGEN;
         }
-        pParty->last_regenerated = Time::fromMinutes(last_minutes);
+
+        // regeneration buff
+        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active() && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+            character.health = std::min(character.GetMaxHealth(), ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
+            if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
+                character.conditions.Reset(CONDITION_UNCONSCIOUS);
+            }
+        }
+
+        // for warlock
+        if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
+            character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+        }
+
+        // for lich
+        if (character.classType == CLASS_LICH) {
+            bool lich_has_jar = false;
+            for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; ++idx) {
+                if (character.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
+                    lich_has_jar = true;
+            }
+
+            if (character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                if (character.health > character.GetMaxHealth() / 2) {
+                    character.health = std::max(character.GetMaxHealth() / 2, character.health - 2 * ticks5);
+                }
+                if (character.mana > character.GetMaxMana() / 2) {
+                    character.mana = std::max(character.GetMaxMana() / 2, character.mana - 2 * ticks5);
+                }
+            }
+
+            if (lich_has_jar) {
+                if (character.mana < character.GetMaxMana()) {
+                    character.mana++;
+                }
+            }
+        }
+
+        // for zombie
+        if (character.conditions.Has(CONDITION_ZOMBIE) &&
+            character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+            if (character.health > (character.GetMaxHealth() / 2)) {
+                character.health = character.health--;
+            }
+            if (character.mana > 0) {
+                character.mana = character.mana--;
+            }
+        }
     }
+
+    pParty->last_regenerated = pParty->GetPlayingTime();
 }
 
 Duration timeUntilDawn() {
