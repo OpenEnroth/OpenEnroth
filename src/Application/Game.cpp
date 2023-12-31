@@ -212,25 +212,6 @@ bool Game::loop() {
         } else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
             uGameState = GAME_STATE_PLAYING;
             gameLoop();
-        } else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
-            mouse->ChangeActivation(0);
-            pParty->Reset();
-            pParty->createDefaultParty(true);
-
-            assert(false);
-            /*extern void CreateDefaultBLVLevel();
-            CreateDefaultBLVLevel();
-
-            OPENFILENAMEA ofn;
-            if ( !GetOpenFileNameA((LPOPENFILENAMEA)&ofn) )
-            {
-            pMouse->ChangeActivation(1);
-            break;
-            }
-            _chdir("..\\");
-            strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
-            mouse->ChangeActivation(1);
-            gameLoop();
         }
         if (uGameState == GAME_STATE_LOADING_GAME) {
             SetCurrentMenuID(MENU_5);
