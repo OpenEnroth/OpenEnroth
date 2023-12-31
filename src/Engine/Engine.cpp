@@ -1607,22 +1607,17 @@ void RegeneratePartyHealthMana() {
                 }
             }
 
-            if (lich_has_jar) {
-                if (character.mana < character.GetMaxMana()) {
-                    character.mana++;
-                }
-            }
+            if (lich_has_jar)
+                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
         }
 
         // for zombie
         if (character.conditions.Has(CONDITION_ZOMBIE) &&
             character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-            if (character.health > (character.GetMaxHealth() / 2)) {
-                character.health = character.health--;
+            if (character.health > character.GetMaxHealth() / 2) {
+                character.health = std::max(character.GetMaxHealth() / 2, character.health - ticks5);
             }
-            if (character.mana > 0) {
-                character.mana = character.mana--;
-            }
+            character.mana = std::max(0, character.mana - ticks5);
         }
     }
 
