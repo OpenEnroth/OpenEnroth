@@ -694,9 +694,6 @@ void Party::Reset() {
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    pNPCStats->pNPCData = pNPCStats->pOriginalNPCData;
-    pNPCStats->pGroups = pNPCStats->pOriginalGroups;
-    pNPCStats->pNPCData[3].uFlags |= NPC_HIRED;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc(); // TODO(captainurist): this totally doesn't belong here.
     pEventTimer->setPaused(true);
 
