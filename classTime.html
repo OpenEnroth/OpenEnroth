@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cad4ea8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;23cead3</span>
    </div>
   </td>
  </tr>
@@ -87,6 +87,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0eedb4e626b8e3fdcaf63519b86ea778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5fdbc33e26a8d818180f054d9bdb393"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#ab5fdbc33e26a8d818180f054d9bdb393">Time</a> (int seconds, int minutes, int hours=0, int days=0, int weeks=0, int months=0, int years=0)</td></tr>
 <tr class="separator:ab5fdbc33e26a8d818180f054d9bdb393"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d2e144f33e1af6bc1600374a929c77b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a0d2e144f33e1af6bc1600374a929c77b">toDurationSinceSilence</a> () const</td></tr>
+<tr class="separator:a0d2e144f33e1af6bc1600374a929c77b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a106fe07af5b070b3e5240a59871a1104"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a106fe07af5b070b3e5240a59871a1104">ticks</a> () const</td></tr>
 <tr class="separator:a106fe07af5b070b3e5240a59871a1104"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7198f0730ed29917dc460a38569d9abb"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a7198f0730ed29917dc460a38569d9abb">toSeconds</a> () const</td></tr>
@@ -111,15 +113,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a70112d5bff247fd08cd02f73226c33b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8184c385a50f43a4dc05723b2eba60f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#aa8184c385a50f43a4dc05723b2eba60f">isValid</a> () const</td></tr>
 <tr class="separator:aa8184c385a50f43a4dc05723b2eba60f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2398843c6811ce0356d47264845cc583"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTime.html">Time</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a2398843c6811ce0356d47264845cc583">operator+=</a> (const <a class="el" href="classDuration.html">Duration</a> &amp;rhs)</td></tr>
-<tr class="separator:a2398843c6811ce0356d47264845cc583"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27f97c1e078497a2eba902cb762befbf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTime.html">Time</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a27f97c1e078497a2eba902cb762befbf">operator-=</a> (const <a class="el" href="classDuration.html">Duration</a> &amp;rhs)</td></tr>
-<tr class="separator:a27f97c1e078497a2eba902cb762befbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80056e70295492571c1984e23cee3966"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTime.html">Time</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a80056e70295492571c1984e23cee3966">operator+=</a> (<a class="el" href="classDuration.html">Duration</a> rhs)</td></tr>
+<tr class="separator:a80056e70295492571c1984e23cee3966"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9230b2c0e6836d905204e9195e556660"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTime.html">Time</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a9230b2c0e6836d905204e9195e556660">operator-=</a> (<a class="el" href="classDuration.html">Duration</a> rhs)</td></tr>
+<tr class="separator:a9230b2c0e6836d905204e9195e556660"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5693b056952952baf4866bc93507b22"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#ab5693b056952952baf4866bc93507b22">operator bool</a> () const</td></tr>
 <tr class="separator:ab5693b056952952baf4866bc93507b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ae4af0fde8fce5a253f76b359e9f5a89a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classTime.html">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#ae4af0fde8fce5a253f76b359e9f5a89a">fromDurationSinceSilence</a> (<a class="el" href="classDuration.html">Duration</a> duration)</td></tr>
+<tr class="separator:ae4af0fde8fce5a253f76b359e9f5a89a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5430416547982e0311d95285feb17dc3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classTime.html">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a5430416547982e0311d95285feb17dc3">fromTicks</a> (int64_t <a class="el" href="classTime.html#a106fe07af5b070b3e5240a59871a1104">ticks</a>)</td></tr>
 <tr class="separator:a5430416547982e0311d95285feb17dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29447dd4c76870f54fcb5d3ff57edf5c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classTime.html">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a29447dd4c76870f54fcb5d3ff57edf5c">fromSeconds</a> (int seconds)</td></tr>
@@ -137,15 +141,15 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a353986f16881c8b5b95e8a7a4b90a2bd"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a353986f16881c8b5b95e8a7a4b90a2bd">value</a> = 0</td></tr>
-<tr class="separator:a353986f16881c8b5b95e8a7a4b90a2bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ef945c2a60211bb23d53175ef484beb"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a7ef945c2a60211bb23d53175ef484beb">_ticks</a> = 0</td></tr>
+<tr class="separator:a7ef945c2a60211bb23d53175ef484beb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a36677bc68aa321e32d6a3917f6d2afcf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a36677bc68aa321e32d6a3917f6d2afcf">operator==</a> (const <a class="el" href="classTime.html">Time</a> &amp;l, const <a class="el" href="classTime.html">Time</a> &amp;r)=default</td></tr>
-<tr class="separator:a36677bc68aa321e32d6a3917f6d2afcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3fa5f2c8b1ae9e0df4116cdaf04882f"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#ab3fa5f2c8b1ae9e0df4116cdaf04882f">operator&lt;=&gt;</a> (const <a class="el" href="classTime.html">Time</a> &amp;l, const <a class="el" href="classTime.html">Time</a> &amp;r)=default</td></tr>
-<tr class="separator:ab3fa5f2c8b1ae9e0df4116cdaf04882f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c846911bf1594e164cc5ab1c68e53ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#a8c846911bf1594e164cc5ab1c68e53ec">operator==</a> (<a class="el" href="classTime.html">Time</a> l, <a class="el" href="classTime.html">Time</a> r)=default</td></tr>
+<tr class="separator:a8c846911bf1594e164cc5ab1c68e53ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8834a2485a36437a00e95b05b5a4913"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTime.html#ab8834a2485a36437a00e95b05b5a4913">operator&lt;=&gt;</a> (<a class="el" href="classTime.html">Time</a> l, <a class="el" href="classTime.html">Time</a> r)=default</td></tr>
+<tr class="separator:ab8834a2485a36437a00e95b05b5a4913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0eedb4e626b8e3fdcaf63519b86ea778" name="a0eedb4e626b8e3fdcaf63519b86ea778"></a>
@@ -279,6 +283,32 @@ Friends</h2></td></tr>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>days</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae4af0fde8fce5a253f76b359e9f5a89a" name="ae4af0fde8fce5a253f76b359e9f5a89a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4af0fde8fce5a253f76b359e9f5a89a">&#9670;&#160;</a></span>fromDurationSinceSilence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classTime.html">Time</a> Time::fromDurationSinceSilence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classDuration.html">Duration</a>&#160;</td>
+          <td class="paramname"><em>duration</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -497,8 +527,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a2398843c6811ce0356d47264845cc583" name="a2398843c6811ce0356d47264845cc583"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2398843c6811ce0356d47264845cc583">&#9670;&#160;</a></span>operator+=()</h2>
+<a id="a80056e70295492571c1984e23cee3966" name="a80056e70295492571c1984e23cee3966"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80056e70295492571c1984e23cee3966">&#9670;&#160;</a></span>operator+=()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -509,7 +539,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classTime.html">Time</a> &amp; Time::operator+= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classDuration.html">Duration</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classDuration.html">Duration</a>&#160;</td>
           <td class="paramname"><em>rhs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -523,8 +553,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a27f97c1e078497a2eba902cb762befbf" name="a27f97c1e078497a2eba902cb762befbf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a27f97c1e078497a2eba902cb762befbf">&#9670;&#160;</a></span>operator-=()</h2>
+<a id="a9230b2c0e6836d905204e9195e556660" name="a9230b2c0e6836d905204e9195e556660"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9230b2c0e6836d905204e9195e556660">&#9670;&#160;</a></span>operator-=()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -535,7 +565,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classTime.html">Time</a> &amp; Time::operator-= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classDuration.html">Duration</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classDuration.html">Duration</a>&#160;</td>
           <td class="paramname"><em>rhs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -635,6 +665,31 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int Time::toDays </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0d2e144f33e1af6bc1600374a929c77b" name="a0d2e144f33e1af6bc1600374a929c77b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d2e144f33e1af6bc1600374a929c77b">&#9670;&#160;</a></span>toDurationSinceSilence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDuration.html">Duration</a> Time::toDurationSinceSilence </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -800,8 +855,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="ab3fa5f2c8b1ae9e0df4116cdaf04882f" name="ab3fa5f2c8b1ae9e0df4116cdaf04882f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3fa5f2c8b1ae9e0df4116cdaf04882f">&#9670;&#160;</a></span>operator&lt;=&gt;</h2>
+<a id="ab8834a2485a36437a00e95b05b5a4913" name="ab8834a2485a36437a00e95b05b5a4913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8834a2485a36437a00e95b05b5a4913">&#9670;&#160;</a></span>operator&lt;=&gt;</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -812,13 +867,13 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">auto operator&lt;=&gt; </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classTime.html">Time</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classTime.html">Time</a>&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classTime.html">Time</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classTime.html">Time</a>&#160;</td>
           <td class="paramname"><em>r</em>&#160;</td>
         </tr>
         <tr>
@@ -836,8 +891,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a36677bc68aa321e32d6a3917f6d2afcf" name="a36677bc68aa321e32d6a3917f6d2afcf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36677bc68aa321e32d6a3917f6d2afcf">&#9670;&#160;</a></span>operator==</h2>
+<a id="a8c846911bf1594e164cc5ab1c68e53ec" name="a8c846911bf1594e164cc5ab1c68e53ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c846911bf1594e164cc5ab1c68e53ec">&#9670;&#160;</a></span>operator==</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -848,13 +903,13 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">bool operator== </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classTime.html">Time</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classTime.html">Time</a>&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classTime.html">Time</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classTime.html">Time</a>&#160;</td>
           <td class="paramname"><em>r</em>&#160;</td>
         </tr>
         <tr>
@@ -873,8 +928,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a353986f16881c8b5b95e8a7a4b90a2bd" name="a353986f16881c8b5b95e8a7a4b90a2bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a353986f16881c8b5b95e8a7a4b90a2bd">&#9670;&#160;</a></span>value</h2>
+<a id="a7ef945c2a60211bb23d53175ef484beb" name="a7ef945c2a60211bb23d53175ef484beb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ef945c2a60211bb23d53175ef484beb">&#9670;&#160;</a></span>_ticks</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -883,7 +938,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int64_t Time::value = 0</td>
+          <td class="memname">int64_t Time::_ticks = 0</td>
         </tr>
       </table>
   </td>
