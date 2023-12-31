@@ -88,23 +88,25 @@ void GUIWindow_CalendarBook::Update() {
     calendar_window.uFrameW = game_viewport_w;
     calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->GetString(LSTR_TIME_IN_ERATHIA), 3);
 
+    CivilTime time = pParty->GetPlayingTime().toCivilTime();
+
     std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), hour,
-                                  pParty->uCurrentMinute, localization->GetAmPm(am), getDayPart());
+                                  time.minute, localization->GetAmPm(am), getDayPart());
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 55}, ui_book_calendar_time_color, str);
 
-    str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1,
-                      localization->GetDayName(pParty->uCurrentDayOfMonth % 7));
+    str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_DAY_CAPITALIZED), time.day,
+                      localization->GetDayName(time.dayOfWeek - 1));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 2 * assets->pFontBookCalendar->GetHeight() + 49}, ui_book_calendar_day_color, str);
 
-    str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1,
-                      localization->GetMonthName(pParty->uCurrentMonth));
+    str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_MONTH), time.month,
+                      localization->GetMonthName(time.month - 1));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 4 * assets->pFontBookCalendar->GetHeight() + 43}, ui_book_calendar_month_color, str);
 
-    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
+    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_YEAR), time.year);
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 6 * assets->pFontBookCalendar->GetHeight() + 37}, ui_book_calendar_year_color, str);
 
-    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_MOON), localization->GetMoonPhaseName(pDayMoonPhase[pParty->uCurrentDayOfMonth]));
-    calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 8 * (unsigned char)assets->pFontBookCalendar->GetHeight() + 31}, ui_book_calendar_moon_color, str);
+    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_MOON), localization->GetMoonPhaseName(pDayMoonPhase[time.day - 1]));
+    calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 8 * assets->pFontBookCalendar->GetHeight() + 31}, ui_book_calendar_moon_color, str);
 
     MapId pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     std::string pMapName;
