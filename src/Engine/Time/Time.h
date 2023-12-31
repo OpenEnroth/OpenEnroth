@@ -25,6 +25,14 @@ class Time {
         _ticks = _ticks * Duration::TICKS_PER_REALTIME_SECOND / Duration::GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
+    Duration toDurationSinceSilence() const {
+        return Duration::fromYears(game_starting_year) + Duration::fromTicks(_ticks);
+    }
+
+    static Time fromDurationSinceSilence(Duration duration) {
+        return Time::fromTicks((duration - Duration::fromYears(game_starting_year)).ticks());
+    }
+
     static Time fromTicks(int64_t ticks) {
         Time result;
         result._ticks = ticks;

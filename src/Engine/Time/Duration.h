@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 #include <compare>
 #include <type_traits>
 
@@ -89,6 +90,24 @@ class Duration {
         result.minutes = toMinutes() % 60;
         result.seconds = toSeconds() % 60;
         return result;
+    }
+
+    // TODO(captainurist): #time add unit tests.
+
+    [[nodiscard]] constexpr Duration roundedUp(Duration period) const {
+        assert(period.ticks() > 0);
+
+        int64_t t = ticks();
+        int64_t p = period.ticks();
+        return Duration::fromTicks((t + p - 1) / p * p);
+    }
+
+    [[nodiscard]] constexpr Duration roundedDown(Duration period) const {
+        assert(period.ticks() > 0);
+
+        int64_t t = ticks();
+        int64_t p = period.ticks();
+        return Duration::fromTicks(t / p * p);
     }
 
     [[nodiscard]] constexpr friend Duration operator+(const Duration &l, const Duration &r) {

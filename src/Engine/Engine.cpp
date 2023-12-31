@@ -1181,7 +1181,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int old_hour = pParty->uCurrentHour;
     int old_year = pParty->uCurrentYear;
 
-    pParty->GetPlayingTime() += pEventTimer->dt();
+    Time oldTime = pParty->GetPlayingTime();
+    Time newTime = oldTime + pEventTimer->dt();
+    pParty->GetPlayingTime() = newTime;
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
     pParty->uCurrentTimeSecond = time.second;
@@ -1192,10 +1194,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
     pParty->uCurrentMonth = time.month - 1;
     pParty->uCurrentYear = time.year;
 
-    // New day dawns
-    // TODO(pskelton): ticks over at 3 in the morning?? check
-    // TODO(pskelton): store GetDays() somewhere for a neater check here
-    if ((pParty->uCurrentYear > old_year) || pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {
+    // New day dawns at 3am.
+    Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) + Duration::fromHours(3));
+    if (oldTime < next3am && newTime >= next3am) {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 
