@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <utility>
 
@@ -544,7 +545,7 @@ class Localization {
     }
 
     const char *GetCharacterConditionName(Condition index) const {
-        return this->character_conditions[std::to_underlying(index)];
+        return this->character_conditions[index];
     }
 
     const char *GetAmPm(unsigned int index) const {
@@ -658,10 +659,10 @@ class Localization {
     std::string attribute_desc_raw;
     std::string skill_desc_raw;
 
-    const char *mm6_item_categories[14]{};
-    const char *month_names[12]{};
-    const char *day_names[7]{};
-    const char *moon_phase_names[5]{};
+    std::array<const char *, 14> mm6_item_categories = {{}};
+    std::array<const char *, 12> month_names = {{}};
+    std::array<const char *, 7> day_names = {{}};
+    std::array<const char *, 5> moon_phase_names = {{}};
     IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spell_school_names = {{}};
     IndexedArray<const char *, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names = {{}};
     IndexedArray<const char *, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names = {{}};
@@ -675,7 +676,7 @@ class Localization {
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_expert = {{}};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_master = {{}};
     IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_grand = {{}};
-    const char *character_conditions[19]{};
+    IndexedArray<const char *, CONDITION_FIRST, CONDITION_LAST> character_conditions = {{}};
     IndexedArray<const char *, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names = {{}};
     const char *hp_description{};
     const char *sp_description{};
