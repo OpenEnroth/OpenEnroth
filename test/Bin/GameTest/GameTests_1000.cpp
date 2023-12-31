@@ -7,6 +7,7 @@
 
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Party.h"
@@ -603,4 +604,20 @@ GAME_TEST(Issues, Issue1467) {
     test.playTraceFromTestData("issue_1467.mm7", "issue_1467.json");
     EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
     EXPECT_EQ(statusTape, tape("", "Select Target", "", "Select Target", "")); // Sacrifice was cast twice. Also, no "Spell Failed".
+}
+
+GAME_TEST(Issues, Issue1475) {
+    // Warlock mana regen from Baby Dragon regens mana for dead characters.
+    auto timeTape = tapes.time();
+    auto conditionTape = charTapes.condition(3);
+    auto hpTape = charTapes.hp(3);
+    auto mpTape = charTapes.mp(3);
+    test.playTraceFromTestData("issue_1475.mm7", "issue_1475.json", [] {
+        EXPECT_EQ(pParty->pCharacters[3].classType, CLASS_WARLOCK);
+        EXPECT_TRUE(PartyHasDragon()); // Dragon provides mana regen.
+    });
+    EXPECT_GT(timeTape.delta(), Duration::fromHours(1));
+    EXPECT_EQ(conditionTape, tape(CONDITION_DEAD));
+    EXPECT_EQ(hpTape, tape(-44)); // Very dead.
+    EXPECT_EQ(mpTape, tape(0)); // No mana regen.
 }

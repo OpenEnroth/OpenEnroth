@@ -1586,7 +1586,7 @@ void RegeneratePartyHealthMana() {
         }
 
         // for warlock
-        if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
+        if (PartyHasDragon() && character.classType == CLASS_WARLOCK && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
             character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
         }
 
