@@ -254,9 +254,9 @@ void InteractWithActor(unsigned int id) {
     if (pActors[id].npcId) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_StartNPCDialogue, id, 0);
     } else {
-        if (pNPCStats->pGroups_copy[pActors[id].group]) {
-            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]].empty()) {
-                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]];
+        if (pNPCStats->pGroups[pActors[id].group]) {
+            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
+                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
                 startBranchlessDialogue(0, 0, EVENT_Invalid);
             }
         }

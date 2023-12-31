@@ -472,7 +472,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_SetNPCGroupNews:
-            pNPCStats->pGroups_copy[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
+            pNPCStats->pGroups[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
             break;
         case EVENT_SetActorGroup:
             // TODO: enconunter and process

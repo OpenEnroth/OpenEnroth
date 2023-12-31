@@ -532,7 +532,7 @@ void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst) {
     snapshot(*pEventTimer, &dst->eventTimer);
     snapshot(*pActiveOverlayList, &dst->overlays);
     snapshot(pNPCStats->pNPCData, &dst->npcData);
-    snapshot(pNPCStats->pGroups_copy, &dst->npcGroup);
+    snapshot(pNPCStats->pGroups, &dst->npcGroups);
 }
 
 void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst) {
@@ -541,7 +541,7 @@ void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst) {
     reconstruct(src.eventTimer, pEventTimer);
     reconstruct(src.overlays, pActiveOverlayList);
     reconstruct(src.npcData, &pNPCStats->pNPCData);
-    reconstruct(src.npcGroup, &pNPCStats->pGroups_copy);
+    reconstruct(src.npcGroups, &pNPCStats->pGroups);
 }
 
 void serialize(const SaveGame_MM7 &src, LodWriter *dst) {
@@ -550,7 +550,7 @@ void serialize(const SaveGame_MM7 &src, LodWriter *dst) {
     dst->write("clock.bin", toBlob(src.eventTimer));
     dst->write("overlay.bin", toBlob(src.overlays));
     dst->write("npcdata.bin", toBlob(src.npcData));
-    dst->write("npcgroup.bin", toBlob(src.npcGroup));
+    dst->write("npcgroup.bin", toBlob(src.npcGroups));
 }
 
 void deserialize(const LodReader &src, SaveGame_MM7 *dst) {
@@ -559,7 +559,7 @@ void deserialize(const LodReader &src, SaveGame_MM7 *dst) {
     deserialize(src.read("clock.bin"), &dst->eventTimer);
     deserialize(src.read("overlay.bin"), &dst->overlays);
     deserialize(src.read("npcdata.bin"), &dst->npcData);
-    deserialize(src.read("npcgroup.bin"), &dst->npcGroup);
+    deserialize(src.read("npcgroup.bin"), &dst->npcGroups);
 }
 
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {

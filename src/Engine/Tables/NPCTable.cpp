@@ -295,7 +295,7 @@ void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
             *tmp_pos = 0;
             if (temp_str_len) {  // i+1
                 if (decode_step == 1) {
-                    pGroups[i] = atoi(test_string);
+                    pOriginalGroups[i] = atoi(test_string);
                 }
             }
             ++decode_step;

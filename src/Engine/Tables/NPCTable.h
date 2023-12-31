@@ -117,8 +117,8 @@ struct NPCStats {
     int field_17884 = 0;
     int field_17888 = 0;
     NPCGreeting pNPCGreetings[206];
-    std::array<uint16_t, 51> pGroups = {{}};
-    std::array<uint16_t, 51> pGroups_copy = {{}};
+    std::array<uint16_t, 51> pOriginalGroups = {{}}; // NPC groups as read from npcgroup.txt.
+    std::array<uint16_t, 51> pGroups = {{}}; // NPC groups used during the game.
     unsigned int uNewlNPCBufPos{};
     unsigned int uNumNewNPCs{};
     int field_17FC8 = 0;
