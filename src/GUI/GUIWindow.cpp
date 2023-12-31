@@ -63,7 +63,7 @@ GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 bool bGameOverWindowCheckExit{ false }; // TODO(pskelton): contain
 GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue; // branchless dialougue
 
-enum WindowType current_character_screen_window;
+enum WindowType current_character_screen_window = WINDOW_CharacterWindow_Stats;
 std::list<GUIWindow*> lWindowList;
 
 MenuType sCurrentMenuID;
