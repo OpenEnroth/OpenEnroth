@@ -1507,6 +1507,9 @@ void RegeneratePartyHealthMana() {
 
     // HP/SP regeneration and HP deterioration.
     for (Character &character : pParty->pCharacters) {
+        if (character.conditions.HasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
+            continue; // No HP/MP regen/drain for dead characters.
+
         for (ItemSlot idx : allItemSlots()) {
             bool recovery_HP = false;
             bool decrease_HP = false;
@@ -1549,18 +1552,18 @@ void RegeneratePartyHealthMana() {
                     }
                 }
 
-                if (recovery_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                if (recovery_HP) {
                     character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
                     if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
                         character.conditions.Reset(CONDITION_UNCONSCIOUS);
                     }
                 }
 
-                if (recovery_SP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                if (recovery_SP) {
                     character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
                 }
 
-                if (decrease_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                if (decrease_HP) {
                     character.health -= ticks5;
                     if (!(character.conditions.Has(CONDITION_UNCONSCIOUS)) && character.health < 0) {
                         character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
@@ -1578,7 +1581,7 @@ void RegeneratePartyHealthMana() {
         }
 
         // regeneration buff
-        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active() && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active()) {
             character.health = std::min(character.GetMaxHealth(), ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
             if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
                 character.conditions.Reset(CONDITION_UNCONSCIOUS);
@@ -1586,7 +1589,7 @@ void RegeneratePartyHealthMana() {
         }
 
         // for warlock
-        if (PartyHasDragon() && character.classType == CLASS_WARLOCK && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+        if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
             character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
         }
 
@@ -1599,7 +1602,7 @@ void RegeneratePartyHealthMana() {
 
             if (lich_has_jar) {
                 character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
-            } else if (character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+            } else {
                 if (character.health > character.GetMaxHealth() / 2) {
                     character.health = std::max(character.GetMaxHealth() / 2, character.health - 2 * ticks5);
                 }
@@ -1610,8 +1613,7 @@ void RegeneratePartyHealthMana() {
         }
 
         // for zombie
-        if (character.conditions.Has(CONDITION_ZOMBIE) &&
-            character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+        if (character.conditions.Has(CONDITION_ZOMBIE)) {
             if (character.health > character.GetMaxHealth() / 2) {
                 character.health = std::max(character.GetMaxHealth() / 2, character.health - ticks5);
             }
