@@ -250,6 +250,7 @@ void CreateParty_EventLoop() {
 
 bool PartyCreationUI_Loop() {
     pAudioPlayer->MusicStop();
+    pEventTimer->setPaused(true);
 
     pParty->Reset();
     pParty->createDefaultParty();

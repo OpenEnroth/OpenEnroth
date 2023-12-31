@@ -694,9 +694,7 @@ void Party::Reset() {
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    pEventTimer->setPaused(true);
-
-    this->pPickedItem.uItemID = ITEM_NULL;
+    pPickedItem.uItemID = ITEM_NULL;
 }
 
 void Party::yell() {
