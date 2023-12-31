@@ -17,6 +17,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Random/Random.h"
 
 #include "Engine/Objects/SpriteObject.h"
 
@@ -57,9 +58,12 @@ void LoadGame(unsigned int uSlot) {
     pSavegameList->selectedSlot = uSlot;
     pSavegameList->lastLoadedSave = pSavegameList->pFileList[uSlot];
 
-    pParty->Reset();
+    // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
+    current_character_screen_window = WINDOW_CharacterWindow_Stats;
 
-    // uCurrentlyLoadedLevelType = LEVEL_NULL;
+    // TODO(captainurist): remained from Party::Reset, retrace & drop.
+    for (int i = 0; i < 8; i++)
+        grng->random(10);
 
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
     std::string to_file_path = makeDataPath("data", "new.lod");

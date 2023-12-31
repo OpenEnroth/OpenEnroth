@@ -565,6 +565,8 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 }
 
 void reconstruct(const Party_MM7 &src, Party *dst) {
+    dst->Zero();
+
     dst->height = src.partyHeight;
     dst->eyeLevel = src.eyeLevel;
     dst->radius = src.radius;
