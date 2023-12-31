@@ -1178,10 +1178,6 @@ void back_to_game() {
 
 //----- (00494035) --------------------------------------------------------
 void _494035_timed_effects__water_walking_damage__etc() {
-    int old_day = pParty->uCurrentDayOfMonth;
-    int old_hour = pParty->uCurrentHour;
-    int old_year = pParty->uCurrentYear;
-
     Time oldTime = pParty->GetPlayingTime();
     Time newTime = oldTime + pEventTimer->dt();
     pParty->GetPlayingTime() = newTime;
