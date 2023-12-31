@@ -296,7 +296,7 @@ void Game_StartHirelingDialogue(int hireling_id) {
 
     int index = hireling_id + pParty->hirelingScrollPosition;
     if (index < buf.Size()) {
-        if (!buf.IsFollower(index) && buf.Get(index)->dialogue_1_evt_id == 1)
+        if (buf.GetSacrificeStatus(index) && buf.GetSacrificeStatus(index)->inProgress)
             return; // Hireling is being dark sacrificed.
 
         Actor actor;

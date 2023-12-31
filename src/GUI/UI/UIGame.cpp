@@ -1695,39 +1695,26 @@ void GameUI_DrawTorchlightAndWizardEye() {
 
 //----- (00491F87) --------------------------------------------------------
 void GameUI_DrawHiredNPCs() {
-    unsigned int v13;               // eax@23
     signed int uFrameID;            // [sp+24h] [bp-18h]@19
-    int v22;                        // [sp+34h] [bp-8h]@2
-    uint8_t pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
 
     if (bNoNPCHiring != 1) {
         FlatHirelings buf;
         buf.Prepare();
 
-        pNPC_limit_ID = 0;
-
-        for (int i = pParty->hirelingScrollPosition; i < buf.Size() && pNPC_limit_ID < 2; i++) {
+        for (int i = pParty->hirelingScrollPosition, count = 0; i < buf.Size() && count < 2; i++, count++) {
             std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->uPortraitID);
             render->DrawTextureNew(
-                    pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
-                    pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
+                    pHiredNPCsIconsOffsetsX[count] / 640.0f,
+                    pHiredNPCsIconsOffsetsY[count] / 480.0f,
                     assets->getImage_ColorKey(pContainer));
 
-            if (!buf.IsFollower(i) && buf.Get(i)->dialogue_1_evt_id == 1) {
-                uFrameID = buf.Get(i)->dialogue_2_evt_id;
-                v13 = 0;
-                if (!pIconsFrameTable->pIcons.empty()) {
-                    for (v13 = 0; v13 < pIconsFrameTable->pIcons.size(); ++v13) {
-                        if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
-                            break;
-                    }
-                }
+            // Dark sacrifice animation.
+            if (!buf.IsFollower(i) && buf.GetSacrificeStatus(i)->inProgress) {
                 render->DrawTextureNew(
-                    pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
-                    pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    pIconsFrameTable->GetFrame(v13, Duration::fromTicks(uFrameID))->GetTexture());
+                    pHiredNPCsIconsOffsetsX[count] / 640.0f,
+                    pHiredNPCsIconsOffsetsY[count] / 480.0f,
+                    pIconsFrameTable->GetFrame(pIconsFrameTable->FindIcon("spell96"), buf.GetSacrificeStatus(i)->elapsedTime)->GetTexture());
             }
-            ++pNPC_limit_ID;
         }
     }
 }

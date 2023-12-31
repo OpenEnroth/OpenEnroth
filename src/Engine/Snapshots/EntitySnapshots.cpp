@@ -533,6 +533,15 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.pCharacters, &dst->players);
     snapshot(src.pHirelings, &dst->hirelings);
 
+    // Vanilla stored NPC sacrifice status in NPC evt values.
+    for (int i = 0; i < 2; i++) {
+        if (src.pHirelingsSacrifice[i].inProgress) {
+            dst->hirelings[i].evt_A = 1;
+            dst->hirelings[i].evt_B = src.pHirelingsSacrifice[i].elapsedTime.ticks();
+            dst->hirelings[i].evt_C = src.pHirelingsSacrifice[i].endTime.ticks();
+        }
+    }
+
     snapshot(src.pPickedItem, &dst->pickedItem);
 
     dst->flags = std::to_underlying(src.uFlags);
@@ -638,6 +647,18 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
     reconstruct(src.players, &dst->pCharacters);
     reconstruct(src.hirelings, &dst->pHirelings);
+
+    // Vanilla stored NPC sacrifice status in NPC evt values.
+    for (int i = 0; i < 2; i++) {
+        if (src.hirelings[i].evt_A) {
+            dst->pHirelings[i].dialogue_1_evt_id = 0;
+            dst->pHirelings[i].dialogue_2_evt_id = 0;
+            dst->pHirelings[i].dialogue_3_evt_id = 0;
+            dst->pHirelingsSacrifice[i].inProgress = true;
+            dst->pHirelingsSacrifice[i].elapsedTime = Duration::fromTicks(src.hirelings[i].evt_B);
+            dst->pHirelingsSacrifice[i].endTime = Duration::fromTicks(src.hirelings[i].evt_C);
+        }
+    }
 
     reconstruct(src.pickedItem, &dst->pPickedItem);
 
