@@ -660,3 +660,15 @@ GAME_TEST(Issues, Issue1479) {
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MONSTER_ID).mastery(), CHARACTER_SKILL_MASTERY_GRANDMASTER);
     EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_47)); // Reaction to strong monster id.
 }
+
+GAME_TEST(Issues, Issue1482) {
+    // Regeneration sets HP to 15.
+    auto regenTape = charTapes.hasBuff(0, CHARACTER_BUFF_REGENERATION);
+    auto hpTape = charTapes.hp(0);
+    auto timeTape = tapes.time();
+    test.playTraceFromTestData("issue_1482.mm7", "issue_1482.json");
+    EXPECT_EQ(regenTape, tape(true));
+    EXPECT_EQ(hpTape.delta(), +50); // +50 hp every 5min from GM regeneration buff.
+    EXPECT_GT(timeTape.delta(), Duration::fromMinutes(5));
+    EXPECT_LT(timeTape.delta(), Duration::fromMinutes(10));
+}

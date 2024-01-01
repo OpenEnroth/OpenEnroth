@@ -644,7 +644,7 @@ GAME_TEST(Issues, Issue427b_528) {
 
 GAME_TEST(Issues, Issue442) {
     // Test that regular UI is blocked on spell cast.
-    auto blessTape = tapes.custom([] { return pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active(); });
+    auto blessTape = charTapes.hasBuff(1, CHARACTER_BUFF_BLESS);
     test.playTraceFromTestData("issue_442.mm7", "issue_442.json");
     EXPECT_EQ(blessTape, tape(false, true));
 }

@@ -1562,7 +1562,7 @@ void RegeneratePartyHealthMana() {
 
         // Regeneration buff.
         if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active())
-            character.health = std::min(character.GetMaxHealth(), ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
+            character.health = std::min(character.GetMaxHealth(), character.health + ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
 
         // Warlock mana regen.
         if (PartyHasDragon() && character.classType == CLASS_WARLOCK)
