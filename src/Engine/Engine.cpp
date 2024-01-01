@@ -808,8 +808,6 @@ void Engine::SecondaryInitialization() {
         pUIAnims[i]->y = _4E98D0[i][2];
     }
 
-    UI_Create();
-
     spell_fx_renedrer->LoadAnimations();
 
     for (unsigned i = 0; i < 7; ++i) {

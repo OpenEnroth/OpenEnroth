@@ -567,6 +567,10 @@ void GUI_UpdateWindows() {
 
 //----- (004226EF) --------------------------------------------------------
 void SetUserInterface(PartyAlignment align) {
+    static std::optional<PartyAlignment> intAlign;
+    if (intAlign == align) return;
+    intAlign = align;
+
     extern void set_default_ui_skin_colors();
     set_default_ui_skin_colors();
 
@@ -724,6 +728,8 @@ void SetUserInterface(PartyAlignment align) {
     } else {
         assert(false);
     }
+
+    UI_Create();
 }
 
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, Duration remaining_time, GUIFont *Font) {
@@ -1072,6 +1078,8 @@ void UI_Create() {
     ui_buttdesc2 = assets->getImage_Alpha("BUTTESC2");
     dialogue_ui_x_ok_u = assets->getImage_ColorKey("x_ok_u");
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
+
+    if (pPrimaryWindow) pPrimaryWindow->Release();
 
     nuklear->Create(WINDOW_GameUI);
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
