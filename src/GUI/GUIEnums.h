@@ -262,7 +262,7 @@ enum class MenuType {
     MENU_NAMEPANELESC = 7,
     MENU_CREDITSPROC = 8,
     MENU_LoadingProcInMainMenu = 9,
-    MENU_DebugBLVLevel = 10,
+    MENU_DebugBLVLevel = 10, // Was used to open a debug blv level in vanilla, not used in OE.
     MENU_CREDITSCLOSE = 11,
     MENU_MMT_MAIN_MENU = 12,
     MENU_NONE = -1,

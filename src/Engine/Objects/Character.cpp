@@ -4399,7 +4399,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PlayerBits:
             return this->_characterEventBits[pValue];
         case VAR_NPCs2:
-            return pNPCStats->pNewNPCData[pValue].Hired();
+            return pNPCStats->pNPCData[pValue].Hired();
         case VAR_IsFlying:
             if (pParty->bFlying && pParty->pPartyBuffs[PARTY_BUFF_FLY].Active())
                 return true;
@@ -4873,7 +4873,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
-            pNPCStats->pNewNPCData[var_value].uFlags |= NPC_HIRED;
+            pNPCStats->pNPCData[var_value].uFlags |= NPC_HIRED;
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
@@ -5472,7 +5472,7 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
-            pNPCStats->pNewNPCData[val].uFlags |= NPC_HIRED;
+            pNPCStats->pNPCData[val].uFlags |= NPC_HIRED;
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
@@ -6161,14 +6161,14 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             } else {
                 npcIdToDismissAfterDialogue = 0;
                 pParty->hirelingScrollPosition = 0;
-                pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
+                pNPCStats->pNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 pParty->CountHirelings();
             }
             return;
         case VAR_HiredNPCHasSpeciality:
             for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
-                if (pNPCStats->pNewNPCData[i].profession == (NpcProfession)pValue) {
-                    pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
+                if (pNPCStats->pNPCData[i].profession == (NpcProfession)pValue) {
+                    pNPCStats->pNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 }
             }
             if (pParty->pHirelings[0].profession == (NpcProfession)pValue) {

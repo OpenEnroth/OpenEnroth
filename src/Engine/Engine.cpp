@@ -621,7 +621,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->SetUnderwater(Is_out15odm_underwater());
 
-    pParty->floor_face_id = 0;
+    pParty->floor_face_id = 0; // TODO(captainurist): drop?
     if (iequals(mapExt, "blv"))
         PrepareToLoadBLV(bLoading);
     else
@@ -1178,10 +1178,6 @@ void back_to_game() {
 
 //----- (00494035) --------------------------------------------------------
 void _494035_timed_effects__water_walking_damage__etc() {
-    int old_day = pParty->uCurrentDayOfMonth;
-    int old_hour = pParty->uCurrentHour;
-    int old_year = pParty->uCurrentYear;
-
     Time oldTime = pParty->GetPlayingTime();
     Time newTime = oldTime + pEventTimer->dt();
     pParty->GetPlayingTime() = newTime;
@@ -1202,7 +1198,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 
         for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-            pNPCStats->pNewNPCData[i].bHasUsedTheAbility = false;
+            pNPCStats->pNPCData[i].bHasUsedTheAbility = false;
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {

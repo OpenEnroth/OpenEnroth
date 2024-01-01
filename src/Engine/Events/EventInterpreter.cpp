@@ -402,7 +402,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             return -1;
         case EVENT_SetNPCTopic:
         {
-            NPCData *npc = &pNPCStats->pNewNPCData[ir.data.npc_topic_descr.npc_id];
+            NPCData *npc = &pNPCStats->pNPCData[ir.data.npc_topic_descr.npc_id];
             if (ir.data.npc_topic_descr.index == 0) npc->dialogue_1_evt_id = ir.data.npc_topic_descr.event_id;
             if (ir.data.npc_topic_descr.index == 1) npc->dialogue_2_evt_id = ir.data.npc_topic_descr.event_id;
             if (ir.data.npc_topic_descr.index == 2) npc->dialogue_3_evt_id = ir.data.npc_topic_descr.event_id;
@@ -422,7 +422,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_MoveNPC:
-            pNPCStats->pNewNPCData[ir.data.npc_move_descr.npc_id].Location2D = ir.data.npc_move_descr.location_id;
+            pNPCStats->pNPCData[ir.data.npc_move_descr.npc_id].Location2D = ir.data.npc_move_descr.location_id;
             // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
             if (window_SpeakInHouse) {
@@ -472,7 +472,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_SetNPCGroupNews:
-            pNPCStats->pGroups_copy[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
+            pNPCStats->pGroups[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
             break;
         case EVENT_SetActorGroup:
             // TODO: enconunter and process
@@ -488,9 +488,9 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             npcSetItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);
             break;
         case EVENT_SetNPCGreeting:
-            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_FIRST;
-            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_SECOND;
-            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].greet = ir.data.npc_descr.greeting;
+            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_FIRST;
+            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_SECOND;
+            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].greet = ir.data.npc_descr.greeting;
             break;
         case EVENT_IsActorKilled:
             if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {

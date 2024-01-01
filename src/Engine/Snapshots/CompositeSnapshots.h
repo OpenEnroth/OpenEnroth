@@ -129,7 +129,7 @@ struct SaveGame_MM7 {
     Timer_MM7 eventTimer; // In clock.bin.
     ActiveOverlayList_MM7 overlays; // In overlay.bin.
     std::array<NPCData_MM7, 501> npcData; // in npcdata.bin.
-    std::array<uint16_t, 51> npcGroup; // in npcgroup.bin.
+    std::array<uint16_t, 51> npcGroups; // in npcgroup.bin.
 };
 
 // TODO(captainurist): header here is essentially the whole savegame. Redo properly.

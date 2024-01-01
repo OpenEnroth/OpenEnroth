@@ -250,9 +250,14 @@ void CreateParty_EventLoop() {
 
 bool PartyCreationUI_Loop() {
     pAudioPlayer->MusicStop();
+    pEventTimer->setPaused(true);
 
     pParty->Reset();
     pParty->createDefaultParty();
+
+    pNPCStats->pNPCData = pNPCStats->pOriginalNPCData;
+    pNPCStats->pGroups = pNPCStats->pOriginalGroups;
+    pNPCStats->pNPCData[3].uFlags |= NPC_HIRED; // Lady Margaret.
 
     pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
     return !PartyCreationUI_LoopInternal();

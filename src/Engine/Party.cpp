@@ -42,11 +42,6 @@ Party *pParty = nullptr;
 
 struct ActionQueue *pPartyActionQueue = new ActionQueue;
 
-std::array<bool, 4> playerAlreadyPicked;  // byte_AE3368_
-char PickedPlayer2_unused;                // byte_AE3369_
-char PickedPlayer3_unused;                // byte_AE336A_
-char PickedPlayer4_unused;                // byte_AE336B_
-
 struct {
     UIAnimation _pUIAnim_Food;
     UIAnimation _pUIAnim_Gold;
@@ -69,7 +64,7 @@ int Party::CountHirelings() {  // non hired followers
     cNonHireFollowers = 0;
 
     for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        NPCData *npc = &pNPCStats->pNewNPCData[i];
+        NPCData *npc = &pNPCStats->pNPCData[i];
         if (npc->Hired() && npc->name != pHirelings[0].name && npc->name != pHirelings[1].name)
             ++cNonHireFollowers;
     }
@@ -189,7 +184,7 @@ void Party::Zero() {
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
-    playerAlreadyPicked.fill(false); // TODO(captainurist): belongs in a different place?
+    playerAlreadyPicked.fill(false);
 }
 
 // inlined
@@ -621,13 +616,13 @@ void Party::Reset() {
     SetUserInterface(alignment, true);
 
     // game begins at 9 am
-    this->playing_time = Time(0, 0, 9);
-    this->last_regenerated = Time(0, 0, 9);
-    this->uCurrentHour = 9;
+    playing_time = Time(0, 0, 9);
+    last_regenerated = Time(0, 0, 9);
+    uCurrentHour = 9;
 
     bTurnBasedModeOn = false;
 
-    pParty->_activeCharacter = 1;
+    _activeCharacter = 1;
 
     pCharacters[0].Reset(CLASS_KNIGHT);
     pCharacters[0].uCurrentFace = 17;
@@ -683,24 +678,18 @@ void Party::Reset() {
     _autonoteBits.reset();
 
     _questBits.reset();
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
+    _questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
 
     pIsArtifactFound.fill(false);
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    pNPCStats->pNewNPCData = pNPCStats->pNPCData;
-    pNPCStats->pGroups_copy = pNPCStats->pGroups;
-    pNPCStats->pNewNPCData[3].uFlags |= NPC_HIRED;  //|= 0x80u; Lady Margaret
-    _494035_timed_effects__water_walking_damage__etc(); // TODO(captainurist): this totally doesn't belong here.
-    pEventTimer->setPaused(true);
-
-    this->pPickedItem.uItemID = ITEM_NULL;
+    pPickedItem.uItemID = ITEM_NULL;
 }
 
 void Party::yell() {
