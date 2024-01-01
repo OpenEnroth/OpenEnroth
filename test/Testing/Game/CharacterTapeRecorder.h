@@ -54,6 +54,9 @@ class CharacterTapeRecorder {
 
     TestMultiTape<int> resistances(CharacterAttributeType resistance);
 
+    TestTape<bool> hasBuff(int characterIndex, CharacterBuff buff);
+    TestMultiTape<bool> haveBuffs(CharacterBuff buff);
+
  private:
     static std::span<Character> characters();
 

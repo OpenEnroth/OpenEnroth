@@ -78,3 +78,11 @@ TestMultiTape<Condition> CharacterTapeRecorder::conditions() {
 TestMultiTape<int> CharacterTapeRecorder::resistances(CharacterAttributeType resistance) {
     return custom(std::bind(&Character::GetActualResistance, _1, resistance));
 }
+
+TestTape<bool> CharacterTapeRecorder::hasBuff(int characterIndex, CharacterBuff buff) {
+    return custom(characterIndex, [=](const Character &character) { return character.pCharacterBuffs[buff].Active(); });
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::haveBuffs(CharacterBuff buff) {
+    return custom([=](const Character &character) { return character.pCharacterBuffs[buff].Active(); });
+}
