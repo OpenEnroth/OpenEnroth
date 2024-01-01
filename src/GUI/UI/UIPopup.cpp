@@ -903,23 +903,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, acStr);
     pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
 
-    IndexedArray<std::string, DAMAGE_FIRST, DAMAGE_LAST> attackTypes = {
-        {DAMAGE_FIRE,       localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE)},
-        {DAMAGE_AIR,        localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR)},
-        {DAMAGE_WATER,      localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER)},
-        {DAMAGE_EARTH,      localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH)},
-        {DAMAGE_PHYSICAL,   localization->GetString(LSTR_PHYSICAL)},
-        {DAMAGE_MAGIC,      localization->GetString(LSTR_MAGIC)},
-        {DAMAGE_SPIRIT,     localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT)},
-        {DAMAGE_MIND,       localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND)},
-        {DAMAGE_BODY,       localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY)},
-        {DAMAGE_LIGHT,      localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT)},
-        {DAMAGE_DARK,       localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK)}
-    };
-
     std::string attackStr, damageStr;
     if (expert_level) {
-        attackStr = attackTypes[pActors[uActorID].monsterInfo.attack1Type];
+        attackStr = displayNameForDamageType(pActors[uActorID].monsterInfo.attack1Type, localization);
         if (pActors[uActorID].monsterInfo.attack1DamageBonus) {
             damageStr = fmt::format("{}d{}+{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides,
                                     pActors[uActorID].monsterInfo.attack1DamageBonus);

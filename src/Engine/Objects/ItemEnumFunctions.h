@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <string>
 #include <initializer_list>
 
 #include "Engine/Objects/CharacterEnums.h"
@@ -11,6 +12,14 @@
 
 #include "CharacterEnumFunctions.h"
 #include "ItemEnums.h"
+
+class Localization;
+
+//
+// DamageType
+//
+
+std::string displayNameForDamageType(DamageType damageType, Localization *localization);
 
 
 //

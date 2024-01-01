@@ -1,6 +1,30 @@
 #include "ItemEnumFunctions.h"
 
+#include <cassert>
+
+#include "Engine/Localization.h"
+
 #include "Utility/IndexedArray.h"
+
+std::string displayNameForDamageType(DamageType damageType, Localization *localization) {
+    switch (damageType) {
+    case DAMAGE_FIRE:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE);
+    case DAMAGE_AIR:        return localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR);
+    case DAMAGE_WATER:      return localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER);
+    case DAMAGE_EARTH:      return localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH);
+    case DAMAGE_PHYSICAL:   return localization->GetString(LSTR_PHYSICAL);
+    case DAMAGE_MAGIC:      return localization->GetString(LSTR_MAGIC);
+    case DAMAGE_SPIRIT:     return localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT);
+    case DAMAGE_MIND:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND);
+    case DAMAGE_BODY:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY);
+    case DAMAGE_LIGHT:      return localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT);
+    case DAMAGE_DARK:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK);
+    case DAMAGE_ENERGY:     return localization->GetString(LSTR_ENERGY);
+    default:
+        assert(false);
+        return {};
+    }
+}
 
 static constexpr IndexedArray<SpellId, ITEM_FIRST_WAND, ITEM_LAST_WAND> spellByWand = {
     {ITEM_WAND_OF_FIRE,                SPELL_FIRE_FIRE_BOLT},

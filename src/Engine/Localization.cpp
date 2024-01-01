@@ -74,6 +74,8 @@ bool Localization::Initialize() {
         this->localization_strings[LSTR_RECOVERY_TIME_NA] = "Recovery time: N/A";
     if (!this->localization_strings[LSTR_WAND_ALREADY_CHARGED])
         this->localization_strings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
+    if (!this->localization_strings[LSTR_ENERGY])
+        this->localization_strings[LSTR_ENERGY] = "Energy";
 
     InitializeMm6ItemCategories();
 
