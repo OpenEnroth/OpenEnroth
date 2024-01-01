@@ -4,6 +4,7 @@
 
 #include "Library/LodFormats/LodFormats.h"
 
+#include "Library/Logger/Logger.h"
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
@@ -57,6 +58,7 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
     if (useDummyOnError) {
         return loadTexture("pending", false);
     } else {
+        logger->trace(fmt::format("Failed to load texture: {}", name));
         return nullptr;
     }
 }
