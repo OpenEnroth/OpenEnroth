@@ -4,6 +4,9 @@
 
 #include "Utility/Flags.h"
 
+/**
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L666
+ */
 enum class DamageType : unsigned int {
     DAMAGE_FIRE = 0,
     DAMAGE_AIR = 1,
@@ -16,9 +19,7 @@ enum class DamageType : unsigned int {
     DAMAGE_BODY = 8,
     DAMAGE_LIGHT = 9,
     DAMAGE_DARK = 10,
-
-    DAMAGE_FIRST = DAMAGE_FIRE,
-    DAMAGE_LAST = DAMAGE_DARK
+    DAMAGE_ENERGY = 12,
 };
 using enum DamageType;
 

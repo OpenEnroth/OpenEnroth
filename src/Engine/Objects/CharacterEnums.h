@@ -349,6 +349,7 @@ enum class CharacterExpressionID : uint16_t {
     // ?
 
     CHARACTER_EXPRESSION_SCARED = 46,  // like falling
+    CHARACTER_EXPRESSION_47 = 47,
 
     CHARACTER_EXPRESSION_54 = 54,
     CHARACTER_EXPRESSION_55 = 55,

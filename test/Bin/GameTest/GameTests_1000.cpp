@@ -621,3 +621,11 @@ GAME_TEST(Issues, Issue1475) {
     EXPECT_EQ(hpTape, tape(-44)); // Very dead.
     EXPECT_EQ(mpTape, tape(0)); // No mana regen.
 }
+
+GAME_TEST(Issues, Issue1479) {
+    // Crash when identifying Chaos Hydra with ID Monster skill.
+    auto expressionTape = charTapes.expression(2);
+    test.playTraceFromTestData("issue_1479.mm7", "issue_1479.json");
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MONSTER_ID).mastery(), CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_47)); // Reaction to strong monster id.
+}
