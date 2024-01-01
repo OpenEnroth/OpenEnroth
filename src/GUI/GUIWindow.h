@@ -266,7 +266,7 @@ class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
 void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     Duration remaining_time, GUIFont *Font);
-void SetUserInterface(PartyAlignment alignment, bool bReplace);
+void SetUserInterface(PartyAlignment alignment);
 void CreateMsgScrollWindow(ItemId mscroll_id);
 void CreateScrollWindow();
 void OnPaperdollLeftClick();

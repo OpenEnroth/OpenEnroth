@@ -174,7 +174,7 @@ enum class PartyAction : uint32_t {
 };
 using enum PartyAction;
 
-enum class PartyAlignment: int32_t {
+enum class PartyAlignment : int32_t {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2

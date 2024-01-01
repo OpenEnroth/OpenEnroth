@@ -261,10 +261,10 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
 
             if (!movieName.compare("arbiter good")) { // change alignment to good
                 pParty->alignment = PartyAlignment::PartyAlignment_Good;
-                SetUserInterface(pParty->alignment, true);
+                SetUserInterface(pParty->alignment);
             } else if (!movieName.compare("arbiter evil")) { // change alignment to evil
                 pParty->alignment = PartyAlignment::PartyAlignment_Evil;
-                SetUserInterface(pParty->alignment, true);
+                SetUserInterface(pParty->alignment);
             } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
                 Rest(Duration::fromDays(7));
                 pParty->restAndHeal();

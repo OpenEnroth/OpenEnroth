@@ -808,6 +808,7 @@ void Engine::SecondaryInitialization() {
         pUIAnims[i]->y = _4E98D0[i][2];
     }
 
+    // TODO(pskelton): dropping this causes std::bad_alloc in headless mode
     UI_Create();
 
     spell_fx_renedrer->LoadAnimations();

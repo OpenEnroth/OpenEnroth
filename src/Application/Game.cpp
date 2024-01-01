@@ -754,7 +754,7 @@ void Game::processQueuedMessages() {
             case UIMSG_ScrollNPCPanel:  // Right and Left button for
                                         // NPCPanel
                 if (uMessageParam) {
-                    new OnButtonClick2({626, 179}, {0, 0}, pBtn_NPCRight);
+                    new OnButtonClick2({626, 179 + 2 * (pParty->alignment == PartyAlignment::PartyAlignment_Evil) }, {0, 0}, pBtn_NPCRight);
                     v37 = (!pParty->pHirelings[0].name.empty()) +
                           (!pParty->pHirelings[1].name.empty()) +
                           (uint8_t)pParty->cNonHireFollowers - 2;
@@ -1731,7 +1731,7 @@ void Game::processQueuedMessages() {
                 if (pParty->alignment == PartyAlignment::PartyAlignment_Good) pParty->alignment = PartyAlignment::PartyAlignment_Neutral;
                 else if (pParty->alignment == PartyAlignment::PartyAlignment_Neutral) pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                 else if (pParty->alignment == PartyAlignment::PartyAlignment_Evil) pParty->alignment = PartyAlignment::PartyAlignment_Good;
-                SetUserInterface(pParty->alignment, true);
+                SetUserInterface(pParty->alignment);
                 continue;
             case UIMSG_DebugTakeFood:
                 pParty->SetFood(0);

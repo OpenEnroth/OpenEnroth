@@ -613,7 +613,7 @@ void Party::Reset() {
     uNumFoodRations = engine->config->gameplay.NewGameFood.value();
 
     alignment = PartyAlignment::PartyAlignment_Neutral;
-    SetUserInterface(alignment, true);
+    SetUserInterface(alignment);
 
     // game begins at 9 am
     playing_time = Time(0, 0, 9);

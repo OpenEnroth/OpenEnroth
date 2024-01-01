@@ -394,7 +394,7 @@ bool GUIWindow::Contains(unsigned int x, unsigned int y) {
 }
 
 void GUIWindow::InitializeGUI() {
-    SetUserInterface(PartyAlignment::PartyAlignment_Neutral, false);
+    SetUserInterface(PartyAlignment::PartyAlignment_Neutral);
     MainMenuUI_LoadFontsAndSomeStuff();
 }
 
@@ -566,258 +566,170 @@ void GUI_UpdateWindows() {
 }
 
 //----- (004226EF) --------------------------------------------------------
-void SetUserInterface(PartyAlignment align, bool bReplace) {
-    extern void set_default_ui_skin();
-    set_default_ui_skin();
+void SetUserInterface(PartyAlignment align) {
+    static std::optional<PartyAlignment> intAlign;
+    if (intAlign == align) return;
+    intAlign = align;
+
+    extern void set_default_ui_skin_colors();
+    set_default_ui_skin_colors();
 
     if (!parchment) {
         parchment = assets->getImage_ColorKey("parchment");
     }
 
     if (align == PartyAlignment::PartyAlignment_Evil) {
-        if (bReplace) {
-            game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-C.pcx");
-            game_ui_bottomframe =
-                assets->getImage_PCXFromIconsLOD("ib-b-C.pcx");
-            game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-C.pcx");
-            game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-C.pcx");
-            game_ui_statusbar =
-                assets->getImage_PCXFromIconsLOD("IB-Foot-c.pcx");
+        game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-C.pcx");
+        game_ui_bottomframe = assets->getImage_PCXFromIconsLOD("ib-b-C.pcx");
+        game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-C.pcx");
+        game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-C.pcx");
+        game_ui_statusbar = assets->getImage_PCXFromIconsLOD("IB-Foot-c.pcx");
 
-            game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-C");
+        game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-C");
+        game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-c");
+        game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-C");
 
-            game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-c");
-            game_ui_minimap_compass =
-                assets->getImage_ColorKey("IB-COMP-C");
+        game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-c");
+        game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-c");
+        game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-c");
 
-            game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-c");
-            game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-c");
-            game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-c");
+        ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-C");
+        ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-C");
+        game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-C");
+        game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-C");
+        game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-C");
+        game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-c");
+        game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-c");
+        game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-c");
+        game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-c");
+        ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-c");
 
-            ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-C");
-            ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-C");
-            game_ui_btn_zoomin = assets->getImage_Alpha("ib-autout-C");
-            game_ui_btn_zoomout = assets->getImage_Alpha("ib-autin-C");
-            game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-C");
-            game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-c");
-            game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-c");
-            game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-c");
-            game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-c");
+        game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-c");
+        game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-c");
+        game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-c");
+        game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-c");
 
-            game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-c");
-            game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-c");
-            game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-c");
-            game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-c");
+        pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
+        pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
 
-            pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
+        game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-c");
+        ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-c");
 
-            pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
+        messagebox_corner_y = assets->getImage_Alpha("cornr_ll-c");
+        messagebox_corner_w = assets->getImage_Alpha("cornr_lr-c");
+        messagebox_corner_x = assets->getImage_Alpha("cornr_ul-c");
+        messagebox_corner_z = assets->getImage_Alpha("cornr_ur-c");
+        messagebox_border_bottom = assets->getImage_Alpha("edge_btm-c");
+        messagebox_border_left = assets->getImage_Alpha("edge_lf-c");
+        messagebox_border_right = assets->getImage_Alpha("edge_rt-c");
+        messagebox_border_top = assets->getImage_Alpha("edge_top-c");
+        _591428_endcap = assets->getImage_ColorKey("endcap-c");
 
-            ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-c");
-
-            game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-c");
-            ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-c");
-            messagebox_corner_y = assets->getImage_Alpha("cornr_ll-c");
-            messagebox_corner_w = assets->getImage_Alpha("cornr_lr-c");
-            messagebox_corner_x = assets->getImage_Alpha("cornr_ul-c");
-            messagebox_corner_z = assets->getImage_Alpha("cornr_ur-c");
-            messagebox_border_bottom = assets->getImage_Alpha("edge_btm-c");
-            messagebox_border_left = assets->getImage_Alpha("edge_lf-c");
-            messagebox_border_right = assets->getImage_Alpha("edge_rt-c");
-            messagebox_border_top = assets->getImage_Alpha("edge_top-c");
-            _591428_endcap = assets->getImage_ColorKey("endcap-c");
-        } else {
-            game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-C.pcx");
-            game_ui_bottomframe =
-                assets->getImage_PCXFromIconsLOD("ib-b-c.pcx");
-            game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-C.pcx");
-            game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-C.pcx");
-            game_ui_statusbar =
-                assets->getImage_PCXFromIconsLOD("IB-Foot-c.pcx");
-
-            game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-C");
-            game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-c");
-            game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-C");
-            game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-c");
-            game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-c");
-            game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-c");
-
-            ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-C");
-            ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-C");
-            game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-C");
-            game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-C");
-            game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-C");
-            game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-c");
-            game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-c");
-            game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-c");
-            game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-c");
-            ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-c");
-
-            game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-c");
-            game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-c");
-            game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-c");
-            game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-c");
-
-            game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-c");
-            ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
-
-            pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
-
-            pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
-        }
         uGameUIFontMain = colorTable.MediumRed;
         uGameUIFontShadow = colorTable.Diesel;
     } else if (align == PartyAlignment::PartyAlignment_Neutral) {
-        if (bReplace) {
-            game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-a.pcx");
-            game_ui_bottomframe =
-                assets->getImage_PCXFromIconsLOD("ib-b-a.pcx");
-            game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-a.pcx");
-            game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-a.pcx");
-            game_ui_statusbar =
-                assets->getImage_PCXFromIconsLOD("IB-Foot-a.pcx");
+        game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-A.pcx");
+        game_ui_bottomframe = assets->getImage_PCXFromIconsLOD("ib-b-A.pcx");
+        game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-A.pcx");
+        game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-A.pcx");
+        game_ui_statusbar = assets->getImage_PCXFromIconsLOD("IB-Foot-a.pcx");
 
-            game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-a");
-            game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-a");
-            game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-a");
-            game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-a");
-            game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-a");
-            game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-a");
+        game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-A");
+        game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-a");
+        game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-A");
 
-            ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-a");
-            ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-a");
-            game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-a");
-            game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-a");
-            game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-a");
-            game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-a");
-            game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-a");
-            game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-a");
-            game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-a");
+        game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-a");
+        game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-a");
+        game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-a");
 
-            game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-a");
-            game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-a");
-            game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-a");
-            game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-a");
+        ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-A");
+        ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-A");
+        game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-A");
+        game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-a");
+        game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-a");
+        game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-a");
+        game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-a");
+        game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-a");
+        game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-a");
+        ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-a");
 
-            pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
-            pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
+        game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-a");
+        game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-a");
+        game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-a");
+        game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-a");
 
-            ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-a");
+        pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
+        pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
 
-            game_ui_evtnpc = assets->getImage_ColorKey("evtnpc");
-            ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
-            messagebox_corner_y = assets->getImage_Alpha("cornr_ll");
-            messagebox_corner_w = assets->getImage_Alpha("cornr_lr");
-            messagebox_corner_x = assets->getImage_Alpha("cornr_ul");
-            messagebox_corner_z = assets->getImage_Alpha("cornr_ur");
-            messagebox_border_bottom = assets->getImage_Alpha("edge_btm");
-            messagebox_border_left = assets->getImage_Alpha("edge_lf");
-            messagebox_border_right = assets->getImage_Alpha("edge_rt");
-            messagebox_border_top = assets->getImage_Alpha("edge_top");
-            _591428_endcap = assets->getImage_ColorKey("endcap");
-        } else {
-            game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-A.pcx");
-            game_ui_bottomframe =
-                assets->getImage_PCXFromIconsLOD("ib-b-A.pcx");
-            game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-A.pcx");
-            game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-A.pcx");
-            game_ui_statusbar =
-                assets->getImage_PCXFromIconsLOD("IB-Foot-a.pcx");
+        game_ui_evtnpc = assets->getImage_ColorKey("evtnpc");
+        ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
 
-            game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-A");
-            game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-a");
-            game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-A");
-            game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-a");
-            game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-a");
-            game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-a");
+        messagebox_corner_y = assets->getImage_Alpha("cornr_ll");
+        messagebox_corner_w = assets->getImage_Alpha("cornr_lr");
+        messagebox_corner_x = assets->getImage_Alpha("cornr_ul");
+        messagebox_corner_z = assets->getImage_Alpha("cornr_ur");
+        messagebox_border_bottom = assets->getImage_Alpha("edge_btm");
+        messagebox_border_left = assets->getImage_Alpha("edge_lf");
+        messagebox_border_right = assets->getImage_Alpha("edge_rt");
+        messagebox_border_top = assets->getImage_Alpha("edge_top");
+        _591428_endcap = assets->getImage_ColorKey("endcap");
 
-            ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-A");
-            ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-A");
-            game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-A");
-            game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-a");
-            game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-a");
-            game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-a");
-            game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-a");
-            game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-a");
-            game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-a");
-            ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-a");
-
-            game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-a");
-            game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-a");
-            game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-a");
-            game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-a");
-
-            game_ui_evtnpc = assets->getImage_ColorKey("evtnpc");
-            ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
-
-            pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
-            pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
-
-            messagebox_corner_y = assets->getImage_Alpha("cornr_ll");
-            messagebox_corner_w = assets->getImage_Alpha("cornr_lr");
-            messagebox_corner_x = assets->getImage_Alpha("cornr_ul");
-            messagebox_corner_z = assets->getImage_Alpha("cornr_ur");
-            messagebox_border_bottom = assets->getImage_Alpha("edge_btm");
-            messagebox_border_left = assets->getImage_Alpha("edge_lf");
-            messagebox_border_right = assets->getImage_Alpha("edge_rt");
-            messagebox_border_top = assets->getImage_Alpha("edge_top");
-            _591428_endcap = assets->getImage_ColorKey("endcap");
-        }
         uGameUIFontMain = colorTable.Diesel;
         uGameUIFontShadow = colorTable.StarkWhite;
     } else if (align == PartyAlignment::PartyAlignment_Good) {
-        if (bReplace) {
-            game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-B.pcx");
-            game_ui_bottomframe =
-                assets->getImage_PCXFromIconsLOD("ib-b-B.pcx");
-            game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-B.pcx");
-            game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-B.pcx");
-            game_ui_statusbar =
-                assets->getImage_PCXFromIconsLOD("IB-Foot-b.pcx");
+        game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-B.pcx");
+        game_ui_bottomframe = assets->getImage_PCXFromIconsLOD("ib-b-B.pcx");
+        game_ui_topframe = assets->getImage_PCXFromIconsLOD("ib-t-B.pcx");
+        game_ui_leftframe = assets->getImage_PCXFromIconsLOD("ib-l-B.pcx");
+        game_ui_statusbar = assets->getImage_PCXFromIconsLOD("IB-Foot-b.pcx");
 
-            game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-B");
-            game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-b");
-            game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-B");
-            game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-b");
-            game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-b");
-            game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-b");
+        game_ui_right_panel_frame = assets->getImage_Alpha("ib-mb-B");
+        game_ui_minimap_frame = assets->getImage_Alpha("ib-autmask-b");
+        game_ui_minimap_compass = assets->getImage_ColorKey("IB-COMP-B");
 
-            ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-B");
-            ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-B");
-            game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-B");
-            game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-B");
-            game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-B");
-            game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-b");
-            game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-b");
-            game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-b");
-            game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-b");
+        game_ui_player_alert_green = assets->getImage_Alpha("IB-InitG-b");
+        game_ui_player_alert_yellow = assets->getImage_Alpha("IB-InitY-b");
+        game_ui_player_alert_red = assets->getImage_Alpha("IB-InitR-b");
 
-            game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-b");
-            game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-b");
-            game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-b");
-            game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-b");
+        ui_btn_npc_left = assets->getImage_ColorKey("IB-NPCLD-B");
+        ui_btn_npc_right = assets->getImage_ColorKey("IB-NPCRD-B");
+        game_ui_btn_zoomin = assets->getImage_ColorKey("ib-autout-B");
+        game_ui_btn_zoomout = assets->getImage_ColorKey("ib-autin-B");
+        game_ui_player_selection_frame = assets->getImage_ColorKey("IB-selec-B");
+        game_ui_btn_cast = assets->getImage_Alpha("ib-m1d-b");
+        game_ui_btn_rest = assets->getImage_Alpha("ib-m2d-b");
+        game_ui_btn_quickref = assets->getImage_Alpha("ib-m3d-b");
+        game_ui_btn_settings = assets->getImage_Alpha("ib-m4d-b");
+        ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-b");
 
-            pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeB");
-            pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchB");
+        game_ui_playerbuff_bless = assets->getImage_ColorKey("isg-01-b");
+        game_ui_playerbuff_preservation = assets->getImage_ColorKey("isg-02-b");
+        game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-b");
+        game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-b");
 
-            ui_exit_cancel_button_background = assets->getImage_ColorKey("ib-bcu-b");
-            game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-b");
-            ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-b");
-            messagebox_corner_y = assets->getImage_Alpha("cornr_ll-b");
-            messagebox_corner_w = assets->getImage_Alpha("cornr_lr-b");
-            messagebox_corner_x = assets->getImage_Alpha("cornr_ul-b");
-            messagebox_corner_z = assets->getImage_Alpha("cornr_ur-b");
-            messagebox_border_bottom = assets->getImage_Alpha("edge_btm-b");
-            messagebox_border_left = assets->getImage_Alpha("edge_lf-b");
-            messagebox_border_right = assets->getImage_Alpha("edge_rt-b");
-            messagebox_border_top = assets->getImage_Alpha("edge_top-b");
-            _591428_endcap = assets->getImage_ColorKey("endcap-b");
-        }
+        pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeB");
+        pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchB");
+
+        game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-b");
+        ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-b");
+
+        messagebox_corner_y = assets->getImage_Alpha("cornr_ll-b");
+        messagebox_corner_w = assets->getImage_Alpha("cornr_lr-b");
+        messagebox_corner_x = assets->getImage_Alpha("cornr_ul-b");
+        messagebox_corner_z = assets->getImage_Alpha("cornr_ur-b");
+        messagebox_border_bottom = assets->getImage_Alpha("edge_btm-b");
+        messagebox_border_left = assets->getImage_Alpha("edge_lf-b");
+        messagebox_border_right = assets->getImage_Alpha("edge_rt-b");
+        messagebox_border_top = assets->getImage_Alpha("edge_top-b");
+        _591428_endcap = assets->getImage_ColorKey("endcap-b");
+
         uGameUIFontMain = colorTable.MediumBlue;
         uGameUIFontShadow = colorTable.White;
     } else {
         assert(false);
     }
+
+    UI_Create();
 }
 
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, Duration remaining_time, GUIFont *Font) {
@@ -1166,6 +1078,8 @@ void UI_Create() {
     ui_buttdesc2 = assets->getImage_Alpha("BUTTESC2");
     dialogue_ui_x_ok_u = assets->getImage_ColorKey("x_ok_u");
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
+
+    if (pPrimaryWindow) pPrimaryWindow->Release();
 
     nuklear->Create(WINDOW_GameUI);
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
