@@ -23,9 +23,10 @@ var searchData=
   ['eventir_20',['EventIR',['../classEventIR.html',1,'']]],
   ['eventmap_21',['EventMap',['../classEventMap.html',1,'']]],
   ['eventtrace_22',['EventTrace',['../structEventTrace.html',1,'']]],
-  ['eventtracegamestate_23',['EventTraceGameState',['../structEventTraceGameState.html',1,'']]],
-  ['eventtraceheader_24',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
-  ['eventtrigger_25',['EventTrigger',['../structEventTrigger.html',1,'']]],
-  ['exception_26',['Exception',['../classException.html',1,'']]],
-  ['explosion_5feffect_5fstruct_27',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['eventtracecharacterstate_23',['EventTraceCharacterState',['../structEventTraceCharacterState.html',1,'']]],
+  ['eventtracegamestate_24',['EventTraceGameState',['../structEventTraceGameState.html',1,'']]],
+  ['eventtraceheader_25',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
+  ['eventtrigger_26',['EventTrigger',['../structEventTrigger.html',1,'']]],
+  ['exception_27',['Exception',['../classException.html',1,'']]],
+  ['explosion_5feffect_5fstruct_28',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
