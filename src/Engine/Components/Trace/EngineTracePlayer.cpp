@@ -82,7 +82,7 @@ void EngineTracePlayer::checkAfterLoadRng(int expectedRandomState) {
     if (_flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS)
         return;
 
-    int randomState = grng->peek(1024);
+    int randomState = grng->peek(1024 * 1024);
     if (randomState != expectedRandomState) {
         throw Exception("Random state desynchronized after loading a save for trace '{}': expected {}, got {}",
                         _tracePath, expectedRandomState, randomState);

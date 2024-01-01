@@ -32,7 +32,7 @@ void EngineTraceSimpleRecorder::swapBuffers() {
         std::unique_ptr<PaintEvent> e = std::make_unique<PaintEvent>();
         e->type = EVENT_PAINT;
         e->tickCount = application()->platform()->tickCount();
-        e->randomState = grng->peek(1024);
+        e->randomState = grng->peek(1024 * 1024);
         _events.push_back(std::move(e));
     }
 

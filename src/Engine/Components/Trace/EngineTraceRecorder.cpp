@@ -53,7 +53,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     game->loadGame(savePath);
-    _trace->header.afterLoadRandomState = grng->peek(1024);
+    _trace->header.afterLoadRandomState = grng->peek(1024 * 1024);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();

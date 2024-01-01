@@ -62,7 +62,7 @@ void EngineTraceSimplePlayer::checkRng(const PaintEvent *paintEvent) {
     if (_flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS)
         return;
 
-    int randomState = grng->peek(1024);
+    int randomState = grng->peek(1024 * 1024);
     int64_t tickCount = application()->platform()->tickCount();
     if (randomState != paintEvent->randomState) {
         throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
