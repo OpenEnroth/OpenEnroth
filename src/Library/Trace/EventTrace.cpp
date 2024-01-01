@@ -186,9 +186,15 @@ static void from_json(const Json &json, ConfigPatch &patch) {
     patch = ConfigPatch::fromEntries(std::move(entries));
 }
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceCharacterState, (
+    (hp, "hp"),
+    (mp, "mp")
+))
+
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceGameState, (
     (locationName, "locationName"),
-    (partyPosition, "partyPosition")
+    (partyPosition, "partyPosition"),
+    (characters, "characters")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceHeader, (
