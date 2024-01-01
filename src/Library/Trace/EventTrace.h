@@ -11,9 +11,15 @@
 
 // TODO(captainurist): this should go to Core/, not Library/,
 
+struct EventTraceCharacterState {
+    int hp = 0;
+    int mp = 0;
+};
+
 struct EventTraceGameState {
     std::string locationName;
     Vec3i partyPosition;
+    std::vector<EventTraceCharacterState> characters;
 };
 
 struct EventTraceHeader {

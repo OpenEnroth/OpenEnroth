@@ -64,5 +64,10 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
     EventTraceGameState result;
     result.locationName = toLower(pCurrentMapName);
     result.partyPosition = pParty->pos.toInt();
+    for (const Character &character : pParty->pCharacters) {
+        EventTraceCharacterState &traceCharacter = result.characters.emplace_back();
+        traceCharacter.hp = character.health;
+        traceCharacter.mp = character.mana;
+    }
     return result;
 }

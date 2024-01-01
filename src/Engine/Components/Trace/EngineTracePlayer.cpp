@@ -106,4 +106,18 @@ void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, boo
                         expectedState.partyPosition.x, expectedState.partyPosition.y, expectedState.partyPosition.z,
                         state.partyPosition.x, state.partyPosition.y, state.partyPosition.z);
     }
+    if (state.characters.size() != expectedState.characters.size()) {
+        throw Exception("Unexpected number of characters at the {} of trace '{}': expected {}, got {}",
+                        where, _tracePath, expectedState.characters.size(), state.characters.size());
+    }
+    for (size_t i = 0; i < state.characters.size(); i++) {
+        if (state.characters[i].hp != expectedState.characters[i].hp) {
+            throw Exception("Unexpected hp of character #{} at the {} of trace '{}': expected {}, got {}",
+                            i, where, _tracePath, expectedState.characters[i].hp, state.characters[i].hp);
+        }
+        if (state.characters[i].mp != expectedState.characters[i].mp) {
+            throw Exception("Unexpected mp of character #{} at the {} of trace '{}': expected {}, got {}",
+                            i, where, _tracePath, expectedState.characters[i].mp, state.characters[i].mp);
+        }
+    }
 }
