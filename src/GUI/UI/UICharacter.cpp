@@ -114,7 +114,7 @@ Color ui_game_dialogue_option_normal_color;
 
 Color ui_house_player_cant_interact_color;
 
-void set_default_ui_skin() {
+void set_default_ui_skin_colors() {
     ui_mainmenu_copyright_color = colorTable.White;
 
     ui_character_tooltip_header_default_color = colorTable.PaleCanary;

@@ -1731,7 +1731,7 @@ void Game::processQueuedMessages() {
                 if (pParty->alignment == PartyAlignment::PartyAlignment_Good) pParty->alignment = PartyAlignment::PartyAlignment_Neutral;
                 else if (pParty->alignment == PartyAlignment::PartyAlignment_Neutral) pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                 else if (pParty->alignment == PartyAlignment::PartyAlignment_Evil) pParty->alignment = PartyAlignment::PartyAlignment_Good;
-                SetUserInterface(pParty->alignment, true);
+                SetUserInterface(pParty->alignment);
                 continue;
             case UIMSG_DebugTakeFood:
                 pParty->SetFood(0);

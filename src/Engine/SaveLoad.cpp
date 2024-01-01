@@ -124,7 +124,7 @@ void LoadGame(unsigned int uSlot) {
 */
     current_screen_type = SCREEN_GAME;
 
-    SetUserInterface(pParty->alignment, true);
+    SetUserInterface(pParty->alignment);
 
     pEventTimer->setPaused(false);
     pEventTimer->setTurnBased(false);
