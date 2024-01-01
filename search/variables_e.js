@@ -52,7 +52,7 @@ var searchData=
   ['npc_5fprofession_5fnames_49',['npc_profession_names',['../classLocalization.html#a2c9a91de9d1d5bcdb24e553ceb95b75d',1,'Localization']]],
   ['npc_5ftopic_5fdescr_50',['npc_topic_descr',['../classEventIR.html#a33388fbdf1391ddb0346caaca7ead502',1,'EventIR']]],
   ['npcdata_51',['npcData',['../structSaveGame__MM7.html#a35f8b5ff3e4eb43008a8abfcb73ae314',1,'SaveGame_MM7']]],
-  ['npcgroup_52',['npcGroup',['../structSaveGame__MM7.html#ad00eabf059e03faecc90c92d7b0f7fc8',1,'SaveGame_MM7']]],
+  ['npcgroups_52',['npcGroups',['../structSaveGame__MM7.html#ad6be0c5275de1b43a2ff93fd591b98f3',1,'SaveGame_MM7']]],
   ['npcid_53',['npcId',['../classActor.html#a1b495266be78d0cd15f9cef7ead88ed9',1,'Actor']]],
   ['npcidtodismissafterdialogue_54',['npcIdToDismissAfterDialogue',['../mm7__data_8cpp.html#a0e85dc697836d609e7088228044261c1',1,'npcIdToDismissAfterDialogue():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a0e85dc697836d609e7088228044261c1',1,'npcIdToDismissAfterDialogue():&#160;mm7_data.cpp']]],
   ['nplanes_55',['nplanes',['../structPCXHeader.html#a572675c585b4118bea678c1468504203',1,'PCXHeader']]],
