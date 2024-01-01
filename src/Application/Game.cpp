@@ -754,7 +754,7 @@ void Game::processQueuedMessages() {
             case UIMSG_ScrollNPCPanel:  // Right and Left button for
                                         // NPCPanel
                 if (uMessageParam) {
-                    new OnButtonClick2({626, 179}, {0, 0}, pBtn_NPCRight);
+                    new OnButtonClick2({626, 179 + 2 * (pParty->alignment == PartyAlignment::PartyAlignment_Evil) }, {0, 0}, pBtn_NPCRight);
                     v37 = (!pParty->pHirelings[0].name.empty()) +
                           (!pParty->pHirelings[1].name.empty()) +
                           (uint8_t)pParty->cNonHireFollowers - 2;
