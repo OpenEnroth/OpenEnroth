@@ -859,8 +859,12 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         for (unsigned j = 0; j < 100; ++j) {
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
-            for (int k = 0; k < pActors.size(); ++k)
-                CollideWithActor(k, 0);
+            // TODO(captainurist): why there is no call to _46ED8A_collide_against_sprite_objects?
+            //                     See ProcessPartyCollisionsODM.
+            if (!engine->config->gameplay.NoPartyActorCollisions.value()) {
+                for (int k = 0; k < pActors.size(); ++k)
+                    CollideWithActor(k, 0);
+            }
             if (CollideIndoorWithPortals())
                 break; // No portal collisions => can break.
         }
@@ -991,8 +995,10 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
         _46ED8A_collide_against_sprite_objects(Pid::character(0));
-        for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
-            CollideWithActor(actor_id, 0);
+        if (!engine->config->gameplay.NoPartyActorCollisions.value()) {
+            for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
+                CollideWithActor(actor_id, 0);
+        }
 
         Vec3f newPosLow = {};
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
