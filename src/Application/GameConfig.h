@@ -86,7 +86,7 @@ class GameConfig : public Config {
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
 
-        ConfigEntry<RandomEngineType> TraceRandomEngine = {this, "trace_random_engine", RANDOM_ENGINE_SEQUENTIAL,
+        ConfigEntry<RandomEngineType> TraceRandomEngine = {this, "trace_random_engine", RANDOM_ENGINE_MERSENNE_TWISTER,
                                                            "Random engine to use for trace recording, 'sequential' or 'mersenne_twister'."};
 
         Bool TraceNoVideo = {this, "trace_no_video", true, "Don't play movies when recording traces."};
