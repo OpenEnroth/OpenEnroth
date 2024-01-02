@@ -31,10 +31,8 @@ static bool shouldTake(const GameConfig *config, const ConfigSection *section, c
         entry->string() != entry->defaultString() ||
         entry == &config->debug.TraceFrameTimeMs ||
         entry == &config->debug.TraceRandomEngine ||
-        entry == &config->debug.TraceNoVideo;
-
-// TODO(captainurist): uncomment & retrace.
-//        entry == &config->debug.TraceNoPartyActorCollisions;
+        entry == &config->debug.TraceNoVideo ||
+        entry == &config->debug.TraceNoPartyActorCollisions;
 }
 
 void EngineTraceStateAccessor::prepareForRecording(GameConfig *config, ConfigPatch *patch) {
