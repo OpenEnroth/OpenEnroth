@@ -127,3 +127,12 @@ TestTape<HouseId> CommonTapeRecorder::house() {
         return window_SpeakInHouse ? window_SpeakInHouse->houseId() : HOUSE_INVALID;
     });
 }
+
+TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
+    return custom([] {
+        AccessibleVector<SpriteId> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            result.push_back(sprite.uType);
+        return result;
+    });
+}
