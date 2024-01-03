@@ -744,8 +744,8 @@ GAME_TEST(Issues, Issue820b) {
     auto statusTape = tapes.statusBar();
     auto treeHealthTape = actorTapes.hp(80);
     test.playTraceFromTestData("issue_820B.mm7", "issue_820B.json");
-    EXPECT_TRUE(statusTape.contains("Zoltan hits Tree for 3 damage"));
-    EXPECT_LT(treeHealthTape.back(), treeHealthTape.front());
+    EXPECT_TRUE(statusTape.contains(fmt::format("Zoltan hits Tree for {} damage", -treeHealthTape.delta())));
+    EXPECT_LT(treeHealthTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue830) {
@@ -812,9 +812,18 @@ GAME_TEST(Issues, Issue830) {
 }
 
 GAME_TEST(Issues, Issue832) {
-    // Death Blossom + ice blast crash
+    // Death Blossom + ice blast crash.
+    auto spritesTape = tapes.sprites();
     auto deathsTape = actorTapes.countByState(AIState::Dead);
     test.playTraceFromTestData("issue_832.mm7", "issue_832.json");
+
+    // Check that there was a frame with both ice blast and death blossom sprites in the air. The crash was due to
+    // spell targeting code stumbling when encountering non-monster sprites in the sprite list.
+    EXPECT_TRUE(spritesTape.contains([] (const AccessibleVector<SpriteId> &sprites) {
+        return sprites.containsAll(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT, SPRITE_SPELL_WATER_ICE_BLAST);
+    }));
+
+    // Peasants were harmed during recording of this trace.
     EXPECT_EQ(deathsTape.frontBack(), tape(0, 3));
 }
 

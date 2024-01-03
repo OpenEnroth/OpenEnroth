@@ -83,6 +83,8 @@ class GameConfig : public Config {
         ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_ERROR,
                                             "Default log level. One of 'trace', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
+        // TODO(captainurist): move all Trace* options into a separate section.
+
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
 
@@ -90,6 +92,9 @@ class GameConfig : public Config {
                                                            "Random engine to use for trace recording, 'sequential' or 'mersenne_twister'."};
 
         Bool TraceNoVideo = {this, "trace_no_video", true, "Don't play movies when recording traces."};
+
+        Bool TraceNoPartyActorCollisions = {this, "trace_no_party_actor_collisions", false,
+                                            "Disable collisions between the party and monsters on the map when recording traces."};
 
         Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
 
@@ -193,6 +198,9 @@ class GameConfig : public Config {
         Int QuickSavesCount = { this, "quick_saves_count", 4, &ValidateQuickSaveCount,
                                 "How many quick saves have currently been used."
                                 "This will rotate back to 0 when 5 saves has been reached" };
+
+        Bool NoPartyActorCollisions = {this, "no_party_actor_collisions", false,
+                                       "Disable collisions between the party and monsters on the map. Mainly useful for debugging and tests."};
 
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {

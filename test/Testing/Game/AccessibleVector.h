@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
+#include <type_traits>
 
 template<class Base>
 class Accessible;
@@ -138,6 +139,16 @@ class Accessible : public Base {
 
     bool contains(const value_type &value) const {
         return std::find(begin(), end(), value) != end();
+    }
+
+    template<class... Args>
+    bool containsAll(const Args &... args) const {
+        return (contains(static_cast<value_type>(args)) && ...);
+    }
+
+    template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
+    bool contains(Predicate predicate) const {
+        return std::find_if(begin(), end(), std::move(predicate)) != end();
     }
 };
 

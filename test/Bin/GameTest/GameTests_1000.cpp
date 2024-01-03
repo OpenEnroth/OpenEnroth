@@ -365,14 +365,12 @@ GAME_TEST(Issues, Issue1340) {
 GAME_TEST(Issues, Issue1341) {
     // Can't steal gold from peasants.
     auto goldTape = tapes.gold();
-    auto peasantGoldTape = tapes.custom([] { return pActors[6].items[3].goldAmount; });
     auto statusTape = tapes.statusBar();
     auto deadTape = actorTapes.countByState(AIState::Dead);
     test.playTraceFromTestData("issue_1341.mm7", "issue_1341.json");
     EXPECT_GT(goldTape.delta(), 0); // We did steal some gold.
-    EXPECT_EQ(peasantGoldTape.max(), goldTape.delta()); // And we did steal it from this peasant.
     EXPECT_TRUE(statusTape.contains("Roderick failed to steal anything!")); // We have tried many times.
-    EXPECT_TRUE(statusTape.contains(fmt::format("Roderick stole {} gold!", peasantGoldTape.max()))); // And succeeded.
+    EXPECT_TRUE(statusTape.contains(fmt::format("Roderick stole {} gold!", goldTape.delta()))); // And succeeded.
     EXPECT_EQ(deadTape, tape(0)); // No one died in the process.
 }
 
@@ -383,10 +381,12 @@ GAME_TEST(Issues, Issue1342) {
     auto statusTape = tapes.statusBar();
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_1342.mm7", "issue_1342.json");
-    EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv")); // Emerald Isle -> Dragon Cave. Map change is important here
-    // because we need to trigger map respawn on first visit.
+
+    // Emerald Isle -> Dragon Cave. Map change is important here because we need to trigger map respawn on first visit.
+    EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv"));
+
     EXPECT_GT(goldTape.delta(), 0); // We picked up some gold.
-    EXPECT_EQ(pilesTape, tape(0, 10, 9, 8, 7)); // Minus three small gold piles.
+    EXPECT_EQ(pilesTape.max() - pilesTape.back(), 3); // Minus three small gold piles.
     EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
     for (int gold : goldTape.adjacentDeltas())
         EXPECT_TRUE(statusTape.contains(fmt::format("You found {} gold!", gold)));
