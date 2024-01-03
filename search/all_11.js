@@ -74,15 +74,15 @@ var searchData=
   ['quarry_5fbonus_71',['quarry_bonus',['../Arcomage_8cpp.html#a06d1a04207275f162cc5ee67fc747ee3',1,'Arcomage.cpp']]],
   ['quarry_5flevel_72',['quarry_level',['../structArcomageStartConditions.html#aadcccc0544042fcbb6714943a76039a9',1,'ArcomageStartConditions::quarry_level()'],['../structArcomagePlayer.html#a9cb6d7ca78930519c9afcda3b7a980a1',1,'ArcomagePlayer::quarry_level()']]],
   ['quartermaster_73',['QuarterMaster',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aeaae82ea307385abe07c7e4e34b788197e',1,'NPCEnums.h']]],
-  ['queryregistry_74',['queryRegistry',['../classWinEnvironment.html#aa57af65555300ca3ea813f7d038595ea',1,'WinEnvironment::queryRegistry()'],['../classPosixEnvironment.html#aa83d7bf780c03ce0b647eac609451df5',1,'PosixEnvironment::queryRegistry()'],['../classEnvironment.html#a0811fcfdd1d8af4062182e7a6eb4a79d',1,'Environment::queryRegistry()'],['../classAndroidEnvironment.html#a91593072ba23c3ab3c34c3f2abab45b9',1,'AndroidEnvironment::queryRegistry()']]],
-  ['quest_75',['Quest',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca07bf513a88c3df282a30cb374f8a933d',1,'Io::Quest()'],['../classGameConfig_1_1Keybindings.html#a21dc4e7f62a0818c87d8ca40e5bc2b6c',1,'GameConfig::Keybindings::Quest()'],['../classGameConfig_1_1Gamepad.html#a66ff1247e5d439a910f64c01429e528e',1,'GameConfig::Gamepad::Quest()']]],
+  ['queryregistry_74',['queryRegistry',['../classAndroidEnvironment.html#a91593072ba23c3ab3c34c3f2abab45b9',1,'AndroidEnvironment::queryRegistry()'],['../classEnvironment.html#a0811fcfdd1d8af4062182e7a6eb4a79d',1,'Environment::queryRegistry()'],['../classWinEnvironment.html#aa57af65555300ca3ea813f7d038595ea',1,'WinEnvironment::queryRegistry()'],['../classPosixEnvironment.html#aa83d7bf780c03ce0b647eac609451df5',1,'PosixEnvironment::queryRegistry()']]],
+  ['quest_75',['Quest',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca07bf513a88c3df282a30cb374f8a933d',1,'Io::Quest()'],['../classGameConfig_1_1Gamepad.html#a66ff1247e5d439a910f64c01429e528e',1,'GameConfig::Gamepad::Quest()'],['../classGameConfig_1_1Keybindings.html#a21dc4e7f62a0818c87d8ca40e5bc2b6c',1,'GameConfig::Keybindings::Quest()']]],
   ['questbit_76',['QuestBit',['../PartyEnums_8h.html#aab0780fca5f3ce09b3a361f3eec4460a',1,'PartyEnums.h']]],
   ['questbits_77',['questBits',['../structParty__MM7.html#ac61ad1b73a8295dc70ab9db0ae3ae554',1,'Party_MM7']]],
   ['questbook_2ecpp_78',['QuestBook.cpp',['../QuestBook_8cpp.html',1,'']]],
   ['questbook_2eh_79',['QuestBook.h',['../QuestBook_8h.html',1,'']]],
   ['questtable_2ecpp_80',['QuestTable.cpp',['../QuestTable_8cpp.html',1,'']]],
   ['questtable_2eh_81',['QuestTable.h',['../QuestTable_8h.html',1,'']]],
-  ['queue_82',['queue',['../classAVStreamWrapper.html#af9d5d3c4fd13d03aa706aebc202bda05',1,'AVStreamWrapper::queue()'],['../classAudioBaseDataSource.html#ae0206ad424147bdd5ecd47b95abb2042',1,'AudioBaseDataSource::queue()']]],
+  ['queue_82',['queue',['../classAudioBaseDataSource.html#ae0206ad424147bdd5ecd47b95abb2042',1,'AudioBaseDataSource::queue()'],['../classAVStreamWrapper.html#af9d5d3c4fd13d03aa706aebc202bda05',1,'AVStreamWrapper::queue()']]],
   ['quickload_83',['QuickLoad',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9a2691007df3673842172269e98d6ed5',1,'Io::QuickLoad()'],['../classGameConfig_1_1Keybindings.html#a07764c42697b6fa4a337ef456e73f97b',1,'GameConfig::Keybindings::QuickLoad()'],['../classGameConfig_1_1Gamepad.html#a3173e207823ae9b2ec843485269bba1b',1,'GameConfig::Gamepad::QuickLoad()']]],
   ['quickloadgame_84',['QuickLoadGame',['../SaveLoad_8h.html#a03bbbe134f08767194337a05316439cc',1,'QuickLoadGame():&#160;SaveLoad.cpp'],['../SaveLoad_8cpp.html#a03bbbe134f08767194337a05316439cc',1,'QuickLoadGame():&#160;SaveLoad.cpp']]],
   ['quickref_85',['QuickRef',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caaac7cd14cb9bedf69f4ed5dc53360cd5',1,'Io']]],
@@ -91,6 +91,7 @@ var searchData=
   ['quicksavegame_88',['QuickSaveGame',['../SaveLoad_8h.html#ad73be4fc4c1b5b157e35ce88af02d5b8',1,'QuickSaveGame():&#160;SaveLoad.cpp'],['../SaveLoad_8cpp.html#ad73be4fc4c1b5b157e35ce88af02d5b8',1,'QuickSaveGame():&#160;SaveLoad.cpp']]],
   ['quicksavename_89',['QuickSaveName',['../classGameConfig_1_1Gameplay.html#a85a41f1cc8c6adf5cfd6f8139a8610b4',1,'GameConfig::Gameplay']]],
   ['quicksavescount_90',['QuickSavesCount',['../classGameConfig_1_1Gameplay.html#ab0b99938dc819fff4a2a5285c68e6ca7',1,'GameConfig::Gameplay']]],
-  ['quickspell_91',['quickSpell',['../structPlayer__MM7.html#ace707a23551d85cf6529a015267c3a9e',1,'Player_MM7']]],
-  ['quit_92',['quit',['../classPlatformEventLoop.html#a86243e0d297d5c8d74e10eccb65679b3',1,'PlatformEventLoop::quit()'],['../classNullEventLoop.html#a89ede41dcc2d2fe3607f3244fdab9020',1,'NullEventLoop::quit()'],['../classProxyEventLoop.html#a16ecbd3804189d6ea5907b08c379f8e0',1,'ProxyEventLoop::quit()'],['../classSdlEventLoop.html#ad83ec550f07d9bf2d4c187879beac6c9',1,'SdlEventLoop::quit()']]]
+  ['quickspell_91',['quickSpell',['../structPlayer__MM7.html#ace707a23551d85cf6529a015267c3a9e',1,'Player_MM7::quickSpell()'],['../classCharacterTapeRecorder.html#add4d15a39dcf2346a22ca41f06869c35',1,'CharacterTapeRecorder::quickSpell(int characterIndex)']]],
+  ['quickspells_92',['quickSpells',['../classCharacterTapeRecorder.html#a37082af2544a643f7eb578bef77970e0',1,'CharacterTapeRecorder']]],
+  ['quit_93',['quit',['../classPlatformEventLoop.html#a86243e0d297d5c8d74e10eccb65679b3',1,'PlatformEventLoop::quit()'],['../classNullEventLoop.html#a89ede41dcc2d2fe3607f3244fdab9020',1,'NullEventLoop::quit()'],['../classProxyEventLoop.html#a16ecbd3804189d6ea5907b08c379f8e0',1,'ProxyEventLoop::quit()'],['../classSdlEventLoop.html#ad83ec550f07d9bf2d4c187879beac6c9',1,'SdlEventLoop::quit()']]]
 ];
