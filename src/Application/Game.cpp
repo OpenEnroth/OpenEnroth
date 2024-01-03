@@ -1758,11 +1758,11 @@ void Game::processQueuedMessages() {
                 for (Character &character : pParty->pCharacters) {
                     character.uSkillPoints += 50;
                 }
-                pParty->pCharacters[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
+                pParty->pCharacters[std::max(pParty->activeCharacterIndex(), 1) - 1].PlayAwardSound_Anim();
                 continue;
             case UIMSG_DebugGiveEXP:
                 pParty->GivePartyExp(20000);
-                pParty->pCharacters[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
+                pParty->pCharacters[std::max(pParty->activeCharacterIndex(), 1) - 1].PlayAwardSound_Anim();
                 continue;
             case UIMSG_DebugGiveGold:
                 pParty->AddGold(10000);
