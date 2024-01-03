@@ -6,7 +6,7 @@
 void GameUI_LoadPlayerPortraintsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
-void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID);  // idb
+void GameUI_OnPlayerPortraitLeftClick(int uPlayerID);  // idb
 void buttonbox(int x, int y, const std::string &text, int col);
 void GameUI_handleHintMessage(UIMessageType type, int param);
 

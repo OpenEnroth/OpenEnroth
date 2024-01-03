@@ -7055,7 +7055,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shotting_laser = true;
         pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
                                 pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0,
-                                pParty->activeCharacterIndex() + 8);
+                                pParty->activeCharacterIndex() + 8); // TODO(captainurist): +8???
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
@@ -7138,7 +7138,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 }
 
 //----- (0042FA66) --------------------------------------------------------
-void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, signed int actchar) {
+void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, int actchar) {
         // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     // a5 is range?

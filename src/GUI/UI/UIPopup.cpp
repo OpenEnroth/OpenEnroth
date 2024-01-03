@@ -1026,7 +1026,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   * @param uPlayerID                     Character identifier.
   * @param uPlayerSkillType              Skill type identifier.
   */
-std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillType uPlayerSkillType) {
+std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlayerSkillType) {
     size_t line_width = std::max({
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
