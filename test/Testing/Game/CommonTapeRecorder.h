@@ -81,6 +81,8 @@ class CommonTapeRecorder {
 
     TestMultiTape<SpriteId> sprites();
 
+    TestTape<int> activeCharacterIndex(); // Remember that 0 means none!
+
  private:
     TestController *_controller = nullptr;
 };

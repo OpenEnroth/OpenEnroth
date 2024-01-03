@@ -110,7 +110,7 @@ GAME_TEST(Issues, Issue520) {
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
     auto healthTape = tapes.totalHp();
-    auto activeCharTape = tapes.custom([] { return pParty->activeCharacterIndex(); });
+    auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
     EXPECT_LT(healthTape.delta(), 0); // Party took fall damage.
     EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
@@ -224,13 +224,18 @@ GAME_TEST(Issues, Issue613b) {
     EXPECT_EQ(foodTape, tape(13, 14));
 }
 
-GAME_TEST(Issues, Issue615) {
-    // test 1 - ensure that clicking between active portraits changes active character.
-    test.playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->activeCharacterIndex(), 1); });
-    EXPECT_EQ(pParty->activeCharacterIndex(), 3);
-    // Assert when clicking on character portrait when no active character is present
-    test.playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->activeCharacterIndex(), 1); });
-    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+GAME_TEST(Issues, Issue615a) {
+    // Ensure that clicking between active portraits changes active character.
+    auto activeCharTape = tapes.activeCharacterIndex();
+    test.playTraceFromTestData("issue_615a.mm7", "issue_615a.json");
+    EXPECT_EQ(activeCharTape.frontBack(), tape(1, 3));
+}
+
+GAME_TEST(Issues, Issue615b) {
+    // Assert when clicking on character portrait when no active character is present.
+    auto activeCharTape = tapes.activeCharacterIndex();
+    test.playTraceFromTestData("issue_615b.mm7", "issue_615b.json");
+    EXPECT_EQ(activeCharTape.frontBack(), tape(1, 4));
 }
 
 GAME_TEST(Issues, Issue625) {
