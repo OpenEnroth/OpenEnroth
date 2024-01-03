@@ -43,38 +43,38 @@ class Logger {
     }
 
     template<class... Args>
-    void log(const LogCategory &category, LogLevel level, fmt::format_string<Args...> fmt, Args&&... args) {
+    void log(const LogCategory &category, LogLevel level, fmt::format_string<Args...> fmt, Args &&... args) {
         if (shouldLog(category, level))
-            logV(category, level, fmt, fmt::make_format_args(std::forward<Args>(args)...));
+            logV(category, level, fmt, fmt::make_format_args(args...));
     }
 
     template<class... Args>
-    void trace(const LogCategory &category, fmt::format_string<Args...> fmt, Args&&... args) {
+    void trace(const LogCategory &category, fmt::format_string<Args...> fmt, Args &&... args) {
         log(category, LOG_TRACE, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void debug(const LogCategory &category, fmt::format_string<Args...> fmt, Args&&... args) {
+    void debug(const LogCategory &category, fmt::format_string<Args...> fmt, Args &&... args) {
         log(category, LOG_DEBUG, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void info(const LogCategory &category, fmt::format_string<Args...> fmt, Args&&... args) {
+    void info(const LogCategory &category, fmt::format_string<Args...> fmt, Args &&... args) {
         log(category, LOG_INFO, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void warning(const LogCategory &category, fmt::format_string<Args...> fmt, Args&&... args) {
+    void warning(const LogCategory &category, fmt::format_string<Args...> fmt, Args &&... args) {
         log(category, LOG_WARNING, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void error(const LogCategory &category, fmt::format_string<Args...> fmt, Args&&... args) {
+    void error(const LogCategory &category, fmt::format_string<Args...> fmt, Args &&... args) {
         log(category, LOG_ERROR, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void critical(const LogCategory &category, fmt::format_string<Args...> fmt, Args&&... args) {
+    void critical(const LogCategory &category, fmt::format_string<Args...> fmt, Args &&... args) {
         log(category, LOG_CRITICAL, fmt, std::forward<Args>(args)...);
     }
 
@@ -85,22 +85,22 @@ class Logger {
     }
 
     template<class... Args>
-    void log(LogLevel level, fmt::format_string<Args...> fmt, Args&&... args) {
+    void log(LogLevel level, fmt::format_string<Args...> fmt, Args &&... args) {
         log(_defaultCategory, level, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void trace(fmt::format_string<Args...> fmt, Args&&... args) {
+    void trace(fmt::format_string<Args...> fmt, Args &&... args) {
         trace(_defaultCategory, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void debug(fmt::format_string<Args...> fmt, Args&&... args) {
+    void debug(fmt::format_string<Args...> fmt, Args &&... args) {
         debug(_defaultCategory, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void info(fmt::format_string<Args...> fmt, Args&&... args) {
+    void info(fmt::format_string<Args...> fmt, Args &&... args) {
         info(_defaultCategory, fmt, std::forward<Args>(args)...);
     }
 
@@ -110,12 +110,12 @@ class Logger {
     }
 
     template<class... Args>
-    void error(fmt::format_string<Args...> fmt, Args&&... args) {
+    void error(fmt::format_string<Args...> fmt, Args &&... args) {
         error(_defaultCategory, fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void critical(fmt::format_string<Args...> fmt, Args&&... args) {
+    void critical(fmt::format_string<Args...> fmt, Args &&... args) {
         critical(_defaultCategory, fmt, std::forward<Args>(args)...);
     }
 
