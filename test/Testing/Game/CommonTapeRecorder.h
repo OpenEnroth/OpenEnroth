@@ -7,6 +7,7 @@
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time/Time.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
@@ -77,6 +78,8 @@ class CommonTapeRecorder {
     TestTape<int> mapItemCount(ItemId itemId);
 
     TestTape<HouseId> house();
+
+    TestMultiTape<SpriteId> sprites();
 
  private:
     TestController *_controller = nullptr;
