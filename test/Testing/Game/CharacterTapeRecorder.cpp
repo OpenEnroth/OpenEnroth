@@ -86,3 +86,11 @@ TestTape<bool> CharacterTapeRecorder::hasBuff(int characterIndex, CharacterBuff 
 TestMultiTape<bool> CharacterTapeRecorder::haveBuffs(CharacterBuff buff) {
     return custom([=](const Character &character) { return character.pCharacterBuffs[buff].Active(); });
 }
+
+TestTape<SpellId> CharacterTapeRecorder::quickSpell(int characterIndex) {
+    return custom(characterIndex, std::bind(&Character::uQuickSpell, _1));
+}
+
+TestMultiTape<SpellId> CharacterTapeRecorder::quickSpells() {
+    return custom(std::bind(&Character::uQuickSpell, _1));
+}
