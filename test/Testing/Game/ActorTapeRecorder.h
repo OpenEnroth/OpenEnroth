@@ -30,6 +30,8 @@ class ActorTapeRecorder {
         });
     }
 
+    TestTape<int> totalHp();
+
     TestTape<int> countByState(AIState state);
 
     TestTape<int> countByBuff(ActorBuff buff);

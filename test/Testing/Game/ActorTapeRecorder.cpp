@@ -1,6 +1,7 @@
 #include "ActorTapeRecorder.h"
 
 #include <cassert>
+#include <algorithm>
 #include <functional>
 
 using namespace std::placeholders; // NOLINT
@@ -11,6 +12,15 @@ ActorTapeRecorder::ActorTapeRecorder(TestController *controller) : _controller(c
 
 std::span<Actor> ActorTapeRecorder::actors() {
     return pActors;
+}
+
+TestTape<int> ActorTapeRecorder::totalHp() {
+    return _controller->recordTape([] {
+        int result = 0;
+        for (const Actor &actor : pActors)
+            result += std::max(0, static_cast<int>(actor.currentHP));
+        return result;
+    });
 }
 
 TestTape<int> ActorTapeRecorder::countByState(AIState state) {
