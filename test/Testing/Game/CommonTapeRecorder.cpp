@@ -136,3 +136,7 @@ TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
         return result;
     });
 }
+
+TestTape<int> CommonTapeRecorder::activeCharacterIndex() {
+    return custom([] { return pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0; });
+}

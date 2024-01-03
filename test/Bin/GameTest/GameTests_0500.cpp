@@ -110,7 +110,7 @@ GAME_TEST(Issues, Issue520) {
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
     auto healthTape = tapes.totalHp();
-    auto activeCharTape = tapes.custom([] { return pParty->activeCharacterIndex(); });
+    auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
     EXPECT_LT(healthTape.delta(), 0); // Party took fall damage.
     EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
@@ -224,13 +224,18 @@ GAME_TEST(Issues, Issue613b) {
     EXPECT_EQ(foodTape, tape(13, 14));
 }
 
-GAME_TEST(Issues, Issue615) {
-    // test 1 - ensure that clicking between active portraits changes active character.
-    test.playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->activeCharacterIndex(), 1); });
-    EXPECT_EQ(pParty->activeCharacterIndex(), 3);
-    // Assert when clicking on character portrait when no active character is present
-    test.playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->activeCharacterIndex(), 1); });
-    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+GAME_TEST(Issues, Issue615a) {
+    // Ensure that clicking between active portraits changes active character.
+    auto activeCharTape = tapes.activeCharacterIndex();
+    test.playTraceFromTestData("issue_615a.mm7", "issue_615a.json");
+    EXPECT_EQ(activeCharTape.frontBack(), tape(1, 3));
+}
+
+GAME_TEST(Issues, Issue615b) {
+    // Assert when clicking on character portrait when no active character is present.
+    auto activeCharTape = tapes.activeCharacterIndex();
+    test.playTraceFromTestData("issue_615b.mm7", "issue_615b.json");
+    EXPECT_EQ(activeCharTape.frontBack(), tape(1, 4));
 }
 
 GAME_TEST(Issues, Issue625) {
@@ -827,13 +832,27 @@ GAME_TEST(Issues, Issue832) {
     EXPECT_EQ(deathsTape.frontBack(), tape(0, 3));
 }
 
-GAME_TEST(Issues, Issue833) {
-    // Test that quick spell castable on Shift and no crash with Shift+Click when quick spell is not set
-    auto mana0Tape = charTapes.mp(0);
-    auto mana1Tape = charTapes.mp(1);
-    test.playTraceFromTestData("issue_833.mm7", "issue_833.json");
-    EXPECT_EQ(mana0Tape.delta(), -2);
-    EXPECT_EQ(mana1Tape.delta(), 0);
+GAME_TEST(Issues, Issue833a) {
+    // Test that quick spell is castable on Shift+click.
+    auto manaTape = charTapes.mp(0);
+    auto quickSpellTape = charTapes.quickSpell(0);
+    auto spritesTape = tapes.sprites();
+    test.playTraceFromTestData("issue_833a.mm7", "issue_833a.json");
+    EXPECT_EQ(manaTape.delta(), -2);
+    EXPECT_EQ(quickSpellTape, tape(SPELL_FIRE_FIRE_BOLT));
+    EXPECT_TRUE(spritesTape.flattened().contains(SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT)); // Fire bolt was cast by 1st character.
+}
+
+GAME_TEST(Issues, Issue833b) {
+    // Test that shift+clicking when no quick spell is set doesn't assert.
+    auto manaTape = charTapes.mp(0);
+    auto quickSpellTape = charTapes.quickSpell(0);
+    auto actorsHpTape = actorTapes.totalHp();
+    test.playTraceFromTestData("issue_833b.mm7", "issue_833b.json");
+    EXPECT_EQ(manaTape.delta(), 0);
+    EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
+    EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
+    // TODO(captainurist): test that error sound was played?
 }
 
 GAME_TEST(Issues, Issue840) {

@@ -354,7 +354,7 @@ struct Party {
      * @return                          1-based index of currently active character. Zero means that there is no
      *                                  active character.
      */
-    inline unsigned int activeCharacterIndex() const {
+    int activeCharacterIndex() const {
         assert(hasActiveCharacter());
         return _activeCharacter;
     }
@@ -362,21 +362,21 @@ struct Party {
     /**
      * @param id                        1-based index of currently active character. Pass zero to make no one active.
      */
-    inline void setActiveCharacterIndex(unsigned int id) {
+    void setActiveCharacterIndex(int id) {
         assert(id >= 0 && id <= pCharacters.size());
         _activeCharacter = id;
     }
-    inline bool hasActiveCharacter() const {
+    bool hasActiveCharacter() const {
         return _activeCharacter > 0;
     }
-    inline Character &activeCharacter() {
+    Character &activeCharacter() {
         assert(hasActiveCharacter());
         return pCharacters[_activeCharacter - 1];
     }
 
  private:
-     // TODO(pskelton): change to signed int - make 0 based with -1 for none??
-     unsigned int _activeCharacter = 0;  // which character is active - 1 based; 0 for none
+     // TODO(pskelton): make 0-based with -1 for none??
+     int _activeCharacter = 0;  // which character is active - 1 based; 0 for none
 };
 
 extern Party *pParty;  // idb

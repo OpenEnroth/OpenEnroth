@@ -752,7 +752,7 @@ Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkill
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
+std::string BuildDialogueString(const std::string &str, int uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     std::string pText;     // esi@7

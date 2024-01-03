@@ -49,7 +49,7 @@ void WetsuitOn(unsigned int uPlayerID);
  * @param uPlayerID     ID of player, 1-based.
  * @offset 0x43F0BD
  */
-void WetsuitOff(unsigned int uPlayerID);
+void WetsuitOff(int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
 
@@ -544,7 +544,7 @@ int savedInventoryLeftClickButtonZ;
 int savedInventoryLeftClickButtonY;
 int savedInventoryLeftClickButtonX;
 
-GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(unsigned int uActiveCharacter, ScreenType screen)
+GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, ScreenType screen)
     : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions()) {
     pEventTimer->setPaused(true);
     bRingsShownInCharScreen = false;
@@ -1705,7 +1705,7 @@ void WetsuitOn(unsigned int uPlayerID) {
     }
 }
 
-void WetsuitOff(unsigned int uPlayerID) {
+void WetsuitOff(int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
         Character *player = &pParty->pCharacters[playerId0];

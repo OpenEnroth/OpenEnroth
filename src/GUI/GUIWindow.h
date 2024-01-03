@@ -280,7 +280,7 @@ bool isHoldingMouseRightButton();
 /**
  * @offset 0x495461
  */
-std::string BuildDialogueString(const std::string &str, uint8_t uPlayerID,
+std::string BuildDialogueString(const std::string &str, int uPlayerID,
                                 ItemGen *a3 = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 Time *a6 = nullptr);
 

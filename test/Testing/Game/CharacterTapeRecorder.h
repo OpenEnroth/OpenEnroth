@@ -57,6 +57,9 @@ class CharacterTapeRecorder {
     TestTape<bool> hasBuff(int characterIndex, CharacterBuff buff);
     TestMultiTape<bool> haveBuffs(CharacterBuff buff);
 
+    TestTape<SpellId> quickSpell(int characterIndex);
+    TestMultiTape<SpellId> quickSpells();
+
  private:
     static std::span<Character> characters();
 

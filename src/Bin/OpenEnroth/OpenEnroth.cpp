@@ -28,7 +28,13 @@
 
 static std::string readTextFile(const std::string &path) {
     // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
-    return replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
+    std::string result = replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
+
+    // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
+    while (result.ends_with('\n'))
+        result.pop_back();
+
+    return result;
 }
 
 static void printLines(const std::vector<std::string_view> &lines, ssize_t line, ssize_t delta) {

@@ -607,7 +607,7 @@ void GUIWindow_GameOptions::Update() {
         options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.value()]);
 }
 
-void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
+void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
     Character *player = &pParty->pCharacters[uPlayerID - 1];
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
