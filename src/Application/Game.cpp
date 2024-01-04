@@ -1839,7 +1839,7 @@ void Game::processQueuedMessages() {
                 QuickLoadGame();
                 continue;
             default:
-                logger->warning("Game::processQueuedMessages - Unhandled message type: {}", uMessage);
+                logger->warning("Game::processQueuedMessages - Unhandled message type: {}", static_cast<int>(uMessage));
                 continue;
         }
     }
