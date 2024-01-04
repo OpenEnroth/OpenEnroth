@@ -43,13 +43,13 @@ class SpellData {
               int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
               int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
               int16_t inMasterLevelRecovery, int16_t inMagisterLevelRecovery,
-              int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats,
+              int8_t inBaseDamage, int8_t inBonusSkillDamage, SpellFlags inStats,
               CharacterSkillMastery inSkillMastery);
     IndexedArray<uint16_t, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> mana_per_skill;
     IndexedArray<Duration, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> recovery_per_skill;
     int8_t baseDamage;
     int8_t bonusSkillDamage;
-    int16_t stats; // TODO(captainurist): #enum flags.
+    SpellFlags flags;
     CharacterSkillMastery skillMastery;
     // char field_12;
     // char field_13;
