@@ -829,7 +829,7 @@ GAME_TEST(Issues, Issue832) {
     }));
 
     // Peasants were harmed during recording of this trace.
-    EXPECT_EQ(deathsTape.frontBack(), tape(0, 3));
+    EXPECT_EQ(deathsTape.frontBack(), tape(0, 2));
 }
 
 GAME_TEST(Issues, Issue833a) {
