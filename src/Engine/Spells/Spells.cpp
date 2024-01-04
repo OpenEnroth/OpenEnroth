@@ -150,7 +150,7 @@ SpellData::SpellData(int16_t inNormalMana,
                      int16_t inMagisterLevelRecovery,
                      int8_t inBaseDamage,
                      int8_t inBonusSkillDamage,
-                     int16_t inStats,
+                     SpellFlags inFlags,
                      CharacterSkillMastery inSkillMastery) {
     mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] = inNormalMana;
     mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT] = inExpertLevelMana;
@@ -162,7 +162,7 @@ SpellData::SpellData(int16_t inNormalMana,
     recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER] = Duration::fromTicks(inMagisterLevelRecovery);
     baseDamage = inBaseDamage;
     bonusSkillDamage = inBonusSkillDamage;
-    stats = inStats;
+    flags = inFlags;
     skillMastery = inSkillMastery;
 }
 
@@ -179,7 +179,7 @@ SpellData::SpellData(int16_t inNormalMana,
  *                                                 |   |   |   |     |     |     |     Recovery Grandmaster
  *                                                 |   |   |   |     |     |     |     |   Base Damage
  *                                                 |   |   |   |     |     |     |     |   |   Bonus Skill Damage
- *                                                 |   |   |   |     |     |     |     |   |   |  Stats
+ *                                                 |   |   |   |     |     |     |     |   |   |  Flags
  *                                                 |   |   |   |     |     |     |     |   |   |  |  Required skill mastery
  *                                                 |   |   |   |     |     |     |     |   |   |  |  |
  */
@@ -509,10 +509,10 @@ void SpellStats::Initialize(const Blob &spells) {
         pInfos[uSpellID].pExpertSkillDesc = removeQuotes(tokens[7]);
         pInfos[uSpellID].pMasterSkillDesc = removeQuotes(tokens[8]);
         pInfos[uSpellID].pGrandmasterSkillDesc = removeQuotes(tokens[9]);
-        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
-        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
-        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
-        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
+        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
+        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
+        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
+        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? SPELL_FLAG_8 : SpellFlag();
     }
 }
 
@@ -783,7 +783,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
 }
 
 bool IsSpellQuickCastableOnShiftClick(SpellId uSpellID) {
-    return (pSpellDatas[uSpellID].stats & 0xC) != 0;
+    return pSpellDatas[uSpellID].flags & (SPELL_SHIFT_CLICK_CASTABLE | SPELL_FLAG_8);
 }
 
 int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp) {

@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Utility/Flags.h"
+
 enum class SpellId {
     SPELL_NONE = 0,
 
@@ -148,3 +150,24 @@ enum class MagicSchool {
     MAGIC_SCHOOL_LAST = MAGIC_SCHOOL_DARK
 };
 using enum MagicSchool;
+
+/**
+ * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L1785C15-L1785C28
+ */
+enum class SpellFlag {
+    /** 'M' in spells.txt. Flag seems to be properly set, but is never used by the engine. */
+    SPELL_CASTABLE_BY_MONSTER = 0x1,
+
+    /** 'E' in spells.txt. Also seems to be properly set, but is never used by the engine. */
+    SPELL_CASTABLE_BY_EVENT = 0x2,
+
+    /** 'C' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
+     * castable (because it targets a character, not an actor), while fire bolt is. */
+    SPELL_SHIFT_CLICK_CASTABLE = 0x4,
+
+    /** 'X' in spells.txt, only it's not set for any of the MM7 spells. MMExtension name is `SpecialDamage`. */
+    SPELL_FLAG_8 = 0x8,
+};
+using enum SpellFlag;
+MM_DECLARE_FLAGS(SpellFlags, SpellFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SpellFlags)
