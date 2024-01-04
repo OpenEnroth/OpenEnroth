@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;75c11be</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbec39b</span>
    </div>
   </td>
  </tr>
@@ -79,6 +79,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -241,6 +242,12 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a2906cf412f4a8ce5dfc642a72e4b85f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f11b45c2b57ace0141fe42c0e05c65c"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65c">SpellFlag</a> { <a class="el" href="SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65ca3c17c77998bd2d6770cc1d726998f7e4">SPELL_CASTABLE_BY_MONSTER</a> = 0x1
+, <a class="el" href="SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65cae451d72d0c58fa3f3a6e7cbc92047d55">SPELL_CASTABLE_BY_EVENT</a> = 0x2
+, <a class="el" href="SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65caca7fa6bb9d7d5aca9f3c007de10266dc">SPELL_SHIFT_CLICK_CASTABLE</a> = 0x4
+, <a class="el" href="SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65ca5b8eb16957c36d3892a9353a3f78794f">SPELL_FLAG_8</a> = 0x8
+ }</td></tr>
+<tr class="separator:a3f11b45c2b57ace0141fe42c0e05c65c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a2906cf412f4a8ce5dfc642a72e4b85f4" name="a2906cf412f4a8ce5dfc642a72e4b85f4"></a>
@@ -275,6 +282,39 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a2906cf412f4a8ce5dfc642a72e4b85f4a92568703d2f268d92d2c168afdd7d2c2" name="a2906cf412f4a8ce5dfc642a72e4b85f4a92568703d2f268d92d2c168afdd7d2c2"></a>MAGIC_SCHOOL_DARK&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2906cf412f4a8ce5dfc642a72e4b85f4a4ac5c733c2b29eefbda4fec1b8acae9e" name="a2906cf412f4a8ce5dfc642a72e4b85f4a4ac5c733c2b29eefbda4fec1b8acae9e"></a>MAGIC_SCHOOL_FIRST&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2906cf412f4a8ce5dfc642a72e4b85f4ab5e39716633c2184fdd7f5a0e6a0ecd7" name="a2906cf412f4a8ce5dfc642a72e4b85f4ab5e39716633c2184fdd7f5a0e6a0ecd7"></a>MAGIC_SCHOOL_LAST&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a3f11b45c2b57ace0141fe42c0e05c65c" name="a3f11b45c2b57ace0141fe42c0e05c65c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f11b45c2b57ace0141fe42c0e05c65c">&#9670;&#160;</a></span>SpellFlag</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65c">SpellFlag</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section see"><dt>See also</dt><dd><a href="https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L1785C15-L1785C28">https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Structs/01%20common%20structs.lua#L1785C15-L1785C28</a> </dd></dl>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3f11b45c2b57ace0141fe42c0e05c65ca3c17c77998bd2d6770cc1d726998f7e4" name="a3f11b45c2b57ace0141fe42c0e05c65ca3c17c77998bd2d6770cc1d726998f7e4"></a>SPELL_CASTABLE_BY_MONSTER&#160;</td><td class="fielddoc"><p >'M' in spells.txt. Flag seems to be properly set, but is never used by the engine. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3f11b45c2b57ace0141fe42c0e05c65cae451d72d0c58fa3f3a6e7cbc92047d55" name="a3f11b45c2b57ace0141fe42c0e05c65cae451d72d0c58fa3f3a6e7cbc92047d55"></a>SPELL_CASTABLE_BY_EVENT&#160;</td><td class="fielddoc"><p >'E' in spells.txt. Also seems to be properly set, but is never used by the engine. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3f11b45c2b57ace0141fe42c0e05c65caca7fa6bb9d7d5aca9f3c007de10266dc" name="a3f11b45c2b57ace0141fe42c0e05c65caca7fa6bb9d7d5aca9f3c007de10266dc"></a>SPELL_SHIFT_CLICK_CASTABLE&#160;</td><td class="fielddoc"><p >'C' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click castable (because it targets a character, not an actor), while fire bolt is. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3f11b45c2b57ace0141fe42c0e05c65ca5b8eb16957c36d3892a9353a3f78794f" name="a3f11b45c2b57ace0141fe42c0e05c65ca5b8eb16957c36d3892a9353a3f78794f"></a>SPELL_FLAG_8&#160;</td><td class="fielddoc"><p >'X' in spells.txt, only it's not set for any of the MM7 spells. MMExtension name is <code>SpecialDamage</code>. </p>
+</td></tr>
 </table>
 
 </div>

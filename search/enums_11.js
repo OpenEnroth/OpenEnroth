@@ -9,9 +9,10 @@ var searchData=
   ['soundtype_6',['SoundType',['../SoundEnums_8h.html#ad2af16bf27c1b83797f1c32686caf1a3',1,'SoundEnums.h']]],
   ['specialattacktype_7',['SpecialAttackType',['../MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240',1,'MonsterEnums.h']]],
   ['spellcastflag_8',['SpellCastFlag',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022f',1,'CastSpellInfo.h']]],
-  ['spellid_9',['SpellId',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90',1,'SpellEnums.h']]],
-  ['spriteattribute_10',['SpriteAttribute',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteEnums.h']]],
-  ['spriteid_11',['SpriteId',['../SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4',1,'SpriteEnums.h']]],
-  ['stealresult_12',['StealResult',['../Character_8h.html#a51f13cd67eab73d698e32f940c0ba824',1,'Character.h']]],
-  ['subcommand_13',['Subcommand',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226',1,'CodeGenOptions::Subcommand()'],['../structLodToolOptions.html#abcc21db1b7bbfbf2f3e735e81958863b',1,'LodToolOptions::Subcommand()'],['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions::Subcommand()']]]
+  ['spellflag_9',['SpellFlag',['../SpellEnums_8h.html#a3f11b45c2b57ace0141fe42c0e05c65c',1,'SpellEnums.h']]],
+  ['spellid_10',['SpellId',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90',1,'SpellEnums.h']]],
+  ['spriteattribute_11',['SpriteAttribute',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteEnums.h']]],
+  ['spriteid_12',['SpriteId',['../SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4',1,'SpriteEnums.h']]],
+  ['stealresult_13',['StealResult',['../Character_8h.html#a51f13cd67eab73d698e32f940c0ba824',1,'Character.h']]],
+  ['subcommand_14',['Subcommand',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions::Subcommand()'],['../structLodToolOptions.html#abcc21db1b7bbfbf2f3e735e81958863b',1,'LodToolOptions::Subcommand()'],['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226',1,'CodeGenOptions::Subcommand()']]]
 ];
