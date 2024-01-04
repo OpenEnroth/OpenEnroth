@@ -61,10 +61,6 @@ void LoadGame(unsigned int uSlot) {
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
 
-    // TODO(captainurist): remained from Party::Reset, retrace & drop.
-    for (int i = 0; i < 8; i++)
-        grng->random(10);
-
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
     std::string to_file_path = makeDataPath("data", "new.lod");
 
