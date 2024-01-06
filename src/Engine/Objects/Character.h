@@ -105,6 +105,7 @@ class Character {
     static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH * INVENTORY_SLOTS_HEIGHT;
 
     Character();
+    void Zero();
 
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 

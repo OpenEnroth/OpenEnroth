@@ -159,25 +159,9 @@ void Party::Zero() {
 
     _roundingDt = 0_ticks;
 
-    // players
+    // Characters
     for (Character &player : this->pCharacters) {
-        player.resetTempBonuses();
-        player.sResFireBase = 0;
-        player.sResAirBase = 0;
-        player.sResWaterBase = 0;
-        player.sResEarthBase = 0;
-        player.sResPhysicalBase = 0;
-        player.sResMagicBase = 0;
-        player.sResSpiritBase = 0;
-        player.sResMindBase = 0;
-        player.sResBodyBase = 0;
-        player.sResLightBase = 0;
-        player.sResDarkBase = 0;
-
-        for (int z = 0; z < player.vBeacons.size(); z++) {
-            player.vBeacons[z].image->Release();
-        }
-        player.vBeacons.clear();
+        player.Zero();
     }
 
     // hirelings

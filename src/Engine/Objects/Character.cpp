@@ -7358,19 +7358,17 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
 
 //----- (0048C6AF) --------------------------------------------------------
 Character::Character() {
-    pEquipment.fill(0);
-    pInventoryMatrix.fill(0);
-    for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
-
-    for (auto &buf : pCharacterBuffs) {
-        buf.Reset();
+    Zero();
     }
 
-    name[0] = 0;
-    uCurrentFace = 0;
-    uVoiceID = 0;
-    conditions.ResetAll();
-
+void Character::Zero() {
+    name = std::string();
+    uSex = SEX_MALE;
+    classType = CLASS_KNIGHT;
+    uCurrentFace = uPrevFace = 0;
+    uVoiceID = uPrevVoiceID = 0;
+    uSkillPoints = 0;
+    // Stats
     uMight = uMightBonus = 0;
     uIntelligence = uIntelligenceBonus = 0;
     uPersonality = uPersonalityBonus = 0;
@@ -7378,11 +7376,68 @@ Character::Character() {
     uSpeed = uSpeedBonus = 0;
     uAccuracy = uAccuracyBonus = 0;
     uLuck = uLuckBonus = 0;
-    uLevel = sLevelModifier = 0;
-    sAgeModifier = 0;
+    // HP MP AC
+    health = uFullHealthBonus = _health_related = 0;
+    mana = uFullManaBonus = _mana_related = 0;
     sACModifier = 0;
 
-    //  memset(field_1F5, 0, 30);
+    conditions.ResetAll();
+
+    uBirthYear = sAgeModifier = 0;
+    uLevel = sLevelModifier = 0;
+    experience = 0;
+    
+    _some_attack_bonus = 0;
+    _melee_dmg_bonus = 0;
+    _ranged_atk_bonus = 0;
+    _ranged_dmg_bonus = 0;
+    timeToRecovery = 0_ticks;
+    // Resistances
+    sResFireBase = sResFireBonus = 0;
+    sResAirBase = sResAirBonus = 0;
+    sResWaterBase = sResWaterBonus = 0;
+    sResEarthBase = sResEarthBonus = 0;
+    sResPhysicalBase = sResPhysicalBonus = 0;
+    sResMagicBase = sResMagicBonus = 0;
+    sResSpiritBase = sResSpiritBonus = 0;
+    sResMindBase = sResMindBonus = 0;
+    sResBodyBase = sResBodyBonus = 0;
+    sResLightBase = sResLightBonus = 0;
+    sResDarkBase = sResDarkBonus = 0;
+    // Skills
+    pActiveSkills.fill(CombinedSkillValue());
+    pActiveSkills[CHARACTER_SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
+    pActiveSkills[CHARACTER_SKILL_MISC] = CombinedSkillValue::novice();
+    // Inventory
+    pEquipment.fill(0);
+    pInventoryMatrix.fill(0);
+    for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
+    // Buffs
+    for (auto& buf : pCharacterBuffs) {
+        buf.Reset();
+    }
+    // Spells
+    bHaveSpell.fill(false);
+    lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
+    uQuickSpell = SPELL_NONE;
+    uNumDivineInterventionCastsThisDay = 0;
+    uNumArmageddonCasts = 0;
+    uNumFireSpikeCasts = 0; // TODO(pskelton): firespike meant to remain permanantly??
+    for (int z = 0; z < vBeacons.size(); z++) {
+        vBeacons[z].image->Release();
+    }
+    vBeacons.clear();
+    // Character bits
+    _characterEventBits.reset();
+    _achievedAwardsBits.reset();
+    // Expression
+    expression = CHARACTER_EXPRESSION_INVALID;
+    uExpressionTimePassed = 0_ticks;
+    uExpressionTimeLength = 0_ticks;
+    uExpressionImageIndex = 0;
+    _expression21_animtime = 0_ticks;
+    _expression21_frameset = 0;
+    // Black potions
     pure_luck_used = 0;
     pure_speed_used = 0;
     pure_intellect_used = 0;
@@ -7390,51 +7445,6 @@ Character::Character() {
     pure_personality_used = 0;
     pure_accuracy_used = 0;
     pure_might_used = 0;
-
-    sResFireBase = sResFireBonus = 0;
-    sResAirBase = sResAirBonus = 0;
-    sResWaterBase = sResWaterBonus = 0;
-    sResEarthBase = sResEarthBonus = 0;
-    sResMagicBase = sResMagicBonus = 0;
-    sResSpiritBase = sResSpiritBonus = 0;
-    sResMindBase = sResMindBonus = 0;
-    sResBodyBase = sResBodyBonus = 0;
-    sResLightBase = sResLightBonus = 0;
-    sResDarkBase = sResDarkBonus = 0;
-
-    timeToRecovery = 0_ticks;
-
-    uSkillPoints = 0;
-
-    health = 0;
-    uFullHealthBonus = 0;
-    _health_related = 0;
-
-    mana = 0;
-    uFullManaBonus = 0;
-    _mana_related = 0;
-
-    uQuickSpell = SPELL_NONE;
-
-    _some_attack_bonus = 0;
-    _melee_dmg_bonus = 0;
-    _ranged_atk_bonus = 0;
-    _ranged_dmg_bonus = 0;
-
-    expression = CHARACTER_EXPRESSION_INVALID;
-    uExpressionTimePassed = 0_ticks;
-    uExpressionTimeLength = 0_ticks;
-
-    uNumDivineInterventionCastsThisDay = 0;
-    uNumArmageddonCasts = 0;
-    uNumFireSpikeCasts = 0;
-
-    _characterEventBits.reset();
-
-    _expression21_animtime = 0_ticks;
-    _expression21_frameset = 0;
-
-    lastOpenedSpellbookPage = MAGIC_SCHOOL_FIRE;
 }
 
 bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
