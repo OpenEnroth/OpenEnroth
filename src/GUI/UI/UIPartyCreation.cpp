@@ -54,18 +54,16 @@ static const int ARROW_SPIN_PERIOD_MS = 475;
 bool PartyCreationUI_LoopInternal();
 
 bool PlayerCreation_Choose4Skills() {
-    int skills_count;
-
-    for (unsigned j = 0; j < 4; ++j) {
-        skills_count = 0;
-        for (CharacterSkillType i : allSkills()) {
-            if (pParty->pCharacters[j].pActiveSkills[i])
+    for (const auto& character : pParty->pCharacters) {
+        int skills_count = 0;
+        for (CharacterSkillType i : allVisibleSkills()) {
+            if (character.pActiveSkills[i])
                 ++skills_count;
         }
-        if (skills_count < 4) {
-            return false;
-        }
+
+        if (skills_count != 4) return false;
     }
+
     return true;
 }
 
