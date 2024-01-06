@@ -3279,39 +3279,19 @@ void Character::SetSexByVoice() {
 }
 
 //----- (0049024A) --------------------------------------------------------
-void Character::Reset(CharacterClass cls) {
-    sLevelModifier = 0;
-    sAgeModifier = 0;
-
+void Character::ChangeClass(CharacterClass cls) {
     classType = cls;
-    uLuckBonus = 0;
-    uSpeedBonus = 0;
-    uAccuracyBonus = 0;
-    uEnduranceBonus = 0;
-    uPersonalityBonus = 0;
-    uIntelligenceBonus = 0;
-    uMightBonus = 0;
     uLevel = 1;
     experience = 251ll + grng->random(100);
-    uSkillPoints = 0;
     uBirthYear = 1147 - grng->random(6);
-    pActiveSkills.fill(CombinedSkillValue());
-    pActiveSkills[CHARACTER_SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
-    pActiveSkills[CHARACTER_SKILL_MISC] = CombinedSkillValue::novice();
-    _achievedAwardsBits.reset();
-    bHaveSpell.fill(false);
-    uQuickSpell = SPELL_NONE;
-
-    for (CharacterSkillType i : allSkills()) {
-        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != CLASS_SKILL_PRIMARY)
-            continue;
-
-        setSkillValue(i, CombinedSkillValue::novice());
+    
+    for (CharacterSkillType i : allVisibleSkills()) {
+        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != CLASS_SKILL_PRIMARY) {
+            setSkillValue(i, CombinedSkillValue());
+        } else {
+            setSkillValue(i, CombinedSkillValue::novice());
+        }
     }
-
-    pEquipment.fill(0);
-    pInventoryMatrix.fill(0);
-    for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
 
     health = GetMaxHealth();
     mana = GetMaxMana();
@@ -7359,7 +7339,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
 //----- (0048C6AF) --------------------------------------------------------
 Character::Character() {
     Zero();
-    }
+}
 
 void Character::Zero() {
     name = std::string();
@@ -7380,7 +7360,7 @@ void Character::Zero() {
     health = uFullHealthBonus = _health_related = 0;
     mana = uFullManaBonus = _mana_related = 0;
     sACModifier = 0;
-
+    
     conditions.ResetAll();
 
     uBirthYear = sAgeModifier = 0;

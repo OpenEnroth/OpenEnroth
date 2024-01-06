@@ -608,7 +608,7 @@ void Party::Reset() {
 
     _activeCharacter = 1;
 
-    pCharacters[0].Reset(CLASS_KNIGHT);
+    pCharacters[0].ChangeClass(CLASS_KNIGHT);
     pCharacters[0].uCurrentFace = 17;
     pCharacters[0].uPrevVoiceID = 17;
     pCharacters[0].uVoiceID = 17;
@@ -616,7 +616,7 @@ void Party::Reset() {
     pCharacters[0].uSex = pCharacters[0].GetSexByVoice();
     pCharacters[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
 
-    pCharacters[1].Reset(CLASS_THIEF);
+    pCharacters[1].ChangeClass(CLASS_THIEF);
     pCharacters[1].uCurrentFace = 3;
     pCharacters[1].uPrevVoiceID = 3;
     pCharacters[1].uVoiceID = 3;
@@ -624,7 +624,7 @@ void Party::Reset() {
     pCharacters[1].uSex = pCharacters[1].GetSexByVoice();
     pCharacters[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
 
-    pCharacters[2].Reset(CLASS_CLERIC);
+    pCharacters[2].ChangeClass(CLASS_CLERIC);
     pCharacters[2].uCurrentFace = 14;
     pCharacters[2].uPrevVoiceID = 14;
     pCharacters[2].uVoiceID = 14;
@@ -632,7 +632,7 @@ void Party::Reset() {
     pCharacters[2].uSex = pCharacters[3].GetSexByVoice();
     pCharacters[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
 
-    pCharacters[3].Reset(CLASS_SORCERER);
+    pCharacters[3].ChangeClass(CLASS_SORCERER);
     pCharacters[3].uCurrentFace = 10;
     pCharacters[3].uPrevVoiceID = 10;
     pCharacters[3].uVoiceID = 10;

@@ -183,8 +183,7 @@ void CreateParty_EventLoop() {
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             break;
         case UIMSG_PlayerCreationSelectClass:
-            pPlayer[uPlayerCreationUI_SelectedCharacter].Reset(
-                (CharacterClass)param);
+            pPlayer[uPlayerCreationUI_SelectedCharacter].ChangeClass((CharacterClass)param);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             break;
         case UIMSG_PlayerCreationClickOK:

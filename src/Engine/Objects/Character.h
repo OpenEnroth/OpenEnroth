@@ -203,7 +203,7 @@ class Character {
     CharacterSex GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
-    void Reset(CharacterClass classType);
+    void ChangeClass(CharacterClass classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(CharacterAttributeType eAttribute);
     void IncreaseAttribute(CharacterAttributeType eAttribute);
