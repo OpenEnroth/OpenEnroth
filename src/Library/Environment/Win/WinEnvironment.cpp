@@ -77,7 +77,7 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
     }
 }
 
-std::string WinEnvironment::queryRegistry(const std::string &path) const {
+std::string WinEnvironment::queryRegistry(std::string_view path) const {
     return win::toUtf8(OS_GetAppStringRecursive(NULL, win::toUtf16(path).c_str(), 0));
 }
 
@@ -89,7 +89,7 @@ std::string WinEnvironment::path(EnvironmentPath path) const {
     }
 }
 
-std::string WinEnvironment::getenv(const std::string &key) const {
+std::string WinEnvironment::getenv(std::string_view key) const {
     const wchar_t *result = _wgetenv(win::toUtf16(key).c_str());
     if (result)
         return win::toUtf8(result);

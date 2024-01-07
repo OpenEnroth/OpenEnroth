@@ -31,7 +31,7 @@ class Environment {
      * @param path                      UTF8-encoded registry path to query.
      * @return                          UTF8-encoded value at the given path, or an empty string in case of an error.
      */
-    virtual std::string queryRegistry(const std::string &path) const = 0;
+    virtual std::string queryRegistry(std::string_view path) const = 0;
 
     /**
      * Accessor for various system paths.
@@ -53,5 +53,5 @@ class Environment {
      * @param key                       UTF8-encoded name of the environment variable to query.
      * @return                          UTF8-encoded value of the environment variable.
      */
-    virtual std::string getenv(const std::string &key) const = 0;
+    virtual std::string getenv(std::string_view key) const = 0;
 };
