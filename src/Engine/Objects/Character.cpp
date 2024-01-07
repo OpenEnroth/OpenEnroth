@@ -132,7 +132,7 @@ static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipT
     {ITEM_TYPE_HELMET,         ITEM_SLOT_HELMET},
     {ITEM_TYPE_BELT,           ITEM_SLOT_BELT},
     {ITEM_TYPE_CLOAK,          ITEM_SLOT_CLOAK},
-    {ITEM_TYPE_GAUNTLETS,      ITEM_SLOT_GAUTNLETS},
+    {ITEM_TYPE_GAUNTLETS,      ITEM_SLOT_GAUNTLETS},
     {ITEM_TYPE_BOOTS,          ITEM_SLOT_BOOTS},
     {ITEM_TYPE_RING,           ITEM_SLOT_RING1},
     {ITEM_TYPE_AMULET,         ITEM_SLOT_AMULET},
@@ -6882,8 +6882,8 @@ const ItemGen *Character::GetBeltItem() const { return GetItem(ITEM_SLOT_BELT); 
 ItemGen *Character::GetCloakItem() { return GetItem(ITEM_SLOT_CLOAK); }
 const ItemGen *Character::GetCloakItem() const { return GetItem(ITEM_SLOT_CLOAK); }
 
-ItemGen *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUTNLETS); }
-const ItemGen *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUTNLETS); }
+ItemGen *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUNTLETS); }
+const ItemGen *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUNTLETS); }
 
 ItemGen *Character::GetBootItem() { return GetItem(ITEM_SLOT_BOOTS); }
 const ItemGen *Character::GetBootItem() const { return GetItem(ITEM_SLOT_BOOTS); }

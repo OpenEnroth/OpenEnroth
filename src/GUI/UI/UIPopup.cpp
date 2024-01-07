@@ -2132,7 +2132,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
             if (mouse->uMouseX >= glovex && mouse->uMouseX <= (glovex + slotSize) &&
                 mouse->uMouseY >= glovey && mouse->uMouseY <= (glovey + 2 * slotSize)) {
-                pos = ITEM_SLOT_GAUTNLETS;
+                pos = ITEM_SLOT_GAUNTLETS;
             }
 
             for (int i = 0; i < 6; ++i) {

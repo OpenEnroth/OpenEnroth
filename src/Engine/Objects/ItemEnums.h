@@ -1060,7 +1060,7 @@ enum class ItemSlot : uint8_t {
     ITEM_SLOT_HELMET = 5,
     ITEM_SLOT_BELT = 6,
     ITEM_SLOT_CLOAK = 7,
-    ITEM_SLOT_GAUTNLETS = 8,
+    ITEM_SLOT_GAUNTLETS = 8,
     ITEM_SLOT_BOOTS = 9,
     ITEM_SLOT_AMULET = 10,
     ITEM_SLOT_RING1 = 11,
