@@ -677,13 +677,13 @@ int Character::CreateItemInInventory(unsigned int uSlot, ItemId uItemID) {
 }
 
 //----- (00492700) --------------------------------------------------------
-int Character::HasSkill(CharacterSkillType skill) const {
+bool Character::HasSkill(CharacterSkillType skill) const {
     if (this->pActiveSkills[skill]) {
-        return 1;
+        return true;
     } else {
         // TODO(captainurist): this doesn't belong to a getter!!!
         engine->_statusBar->setEvent(LSTR_FMT_S_DOES_NOT_HAVE_SKILL, this->name);
-        return 0;
+        return false;
     }
 }
 

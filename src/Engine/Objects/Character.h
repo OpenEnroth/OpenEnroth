@@ -235,7 +235,7 @@ class Character {
      */
     int findFreeInventoryListSlot() const;
     int CreateItemInInventory(unsigned int uSlot, ItemId uItemID);
-    int HasSkill(CharacterSkillType skill) const;
+    bool HasSkill(CharacterSkillType skill) const;
     void WearItem(ItemId uItemID);
     int AddItem(int uSlot, ItemId uItemID);
     int AddItem2(int uSlot, ItemGen *Src);
