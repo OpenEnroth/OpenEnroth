@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <memory>
 
-std::string PosixEnvironment::queryRegistry(const std::string &path) const {
+std::string PosixEnvironment::queryRegistry(std::string_view path) const {
     return {};
 }
 
@@ -15,7 +15,7 @@ std::string PosixEnvironment::path(EnvironmentPath path) const {
     }
 }
 
-std::string PosixEnvironment::getenv(const std::string &key) const {
+std::string PosixEnvironment::getenv(std::string_view key) const {
     const char *result = std::getenv(key.c_str());
     if (result)
         return result;

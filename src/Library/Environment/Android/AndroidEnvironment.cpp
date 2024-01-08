@@ -2,7 +2,7 @@
 
 #include <SDL.h>
 
-std::string AndroidEnvironment::queryRegistry(const std::string &path) const {
+std::string AndroidEnvironment::queryRegistry(std::string_view path) const {
     return {};
 }
 
@@ -21,7 +21,7 @@ std::string AndroidEnvironment::path(EnvironmentPath path) const {
     return {};
 }
 
-std::string AndroidEnvironment::getenv(const std::string &key) const {
+std::string AndroidEnvironment::getenv(std::string_view key) const {
     const char *result = SDL_getenv(key.c_str());
     if (result)
         return result;
