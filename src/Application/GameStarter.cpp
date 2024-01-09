@@ -52,7 +52,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     Engine::LogEngineBuildInfo();
 
     // Init paths.
-    resolvePaths(_environment.get(), &_options, _logger.get());
+    resolvePaths(*_environment, &_options, _logger.get());
 
     // Init config - needs data paths initialized.
     _config = std::make_shared<GameConfig>();
@@ -155,7 +155,7 @@ GameStarter::~GameStarter() {
     ::openGLContext = nullptr;
 }
 
-void GameStarter::resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger) {
+void GameStarter::resolvePaths(const Environment &environment, GameStarterOptions* options, Logger *logger) {
     if (options->dataPath.empty()) {
         std::vector<std::string> candidates = resolveMm7Paths(environment);
         assert(!candidates.empty());

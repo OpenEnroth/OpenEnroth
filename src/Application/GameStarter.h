@@ -36,7 +36,7 @@ class GameStarter {
     void runInstrumented(std::function<void(EngineController *)> controlRoutine);
 
  private:
-    static void resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger);
+    static void resolvePaths(const Environment &environment, GameStarterOptions* options, Logger *logger);
 
  private:
     GameStarterOptions _options;

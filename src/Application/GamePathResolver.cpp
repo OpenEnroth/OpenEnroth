@@ -8,8 +8,10 @@
 namespace {
 
 struct PathResolutionConfig {
+    using RegistryKeys = std::initializer_list<std::string_view>;
+
     std::string_view overrideEnvKey;
-    std::initializer_list<std::string_view> registryKeys;
+    RegistryKeys registryKeys;
 };
 
 
@@ -116,14 +118,14 @@ std::vector<std::string> resolvePaths(const Environment &environment, const Path
 }
 } // namespace
 
-std::vector<std::string> resolveMm6Paths(Environment *environment) {
-    return resolvePaths(*environment, mm6Config);
+std::vector<std::string> resolveMm6Paths(const Environment &environment) {
+    return resolvePaths(environment, mm6Config);
 }
 
-std::vector<std::string> resolveMm7Paths(Environment *environment) {
-    return resolvePaths(*environment, mm7Config);
+std::vector<std::string> resolveMm7Paths(const Environment &environment) {
+    return resolvePaths(environment, mm7Config);
 }
 
-std::vector<std::string> resolveMm8Paths(Environment *environment) {
-    return resolvePaths(*environment, mm8Config);
+std::vector<std::string> resolveMm8Paths(const Environment &environment) {
+    return resolvePaths(environment, mm8Config);
 }
