@@ -6,6 +6,7 @@
 
 class GraphicsImage;
 
+bool PlayerCreation_Choose4Skills();
 bool PartyCreationUI_Loop();
 
 class GUIWindow_PartyCreation : public GUIWindow {

@@ -3284,7 +3284,7 @@ void Character::ChangeClass(CharacterClass cls) {
     uLevel = 1;
     experience = 251ll + grng->random(100);
     uBirthYear = 1147 - grng->random(6);
-    
+
     for (CharacterSkillType i : allVisibleSkills()) {
         if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != CLASS_SKILL_PRIMARY) {
             setSkillValue(i, CombinedSkillValue());
@@ -7360,13 +7360,13 @@ void Character::Zero() {
     health = uFullHealthBonus = _health_related = 0;
     mana = uFullManaBonus = _mana_related = 0;
     sACModifier = 0;
-    
+
     conditions.ResetAll();
 
     uBirthYear = sAgeModifier = 0;
     uLevel = sLevelModifier = 0;
     experience = 0;
-    
+
     _some_attack_bonus = 0;
     _melee_dmg_bonus = 0;
     _ranged_atk_bonus = 0;
