@@ -16,7 +16,7 @@ std::string PosixEnvironment::path(EnvironmentPath path) const {
 }
 
 std::string PosixEnvironment::getenv(std::string_view key) const {
-    const char *result = std::getenv(key.c_str());
+    const char *result = std::getenv(key.data());
     if (result)
         return result;
     return {};

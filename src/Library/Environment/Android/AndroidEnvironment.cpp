@@ -22,7 +22,7 @@ std::string AndroidEnvironment::path(EnvironmentPath path) const {
 }
 
 std::string AndroidEnvironment::getenv(std::string_view key) const {
-    const char *result = SDL_getenv(key.c_str());
+    const char *result = SDL_getenv(key.data());
     if (result)
         return result;
     return {};

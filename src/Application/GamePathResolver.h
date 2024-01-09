@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 
-class Environment;
+#include "Library/Environment/Interface/Environment.h"
 
-constexpr char mm6PathOverrideKey[] = "OPENENROTH_MM6_PATH";
-constexpr char mm7PathOverrideKey[] = "OPENENROTH_MM7_PATH";
-constexpr char mm8PathOverrideKey[] = "OPENENROTH_MM8_PATH";
+constexpr std::string_view mm6PathOverrideKey{ "OPENENROTH_MM6_PATH" };
+constexpr std::string_view mm7PathOverrideKey{ "OPENENROTH_MM7_PATH" };
+constexpr std::string_view mm8PathOverrideKey{ "OPENENROTH_MM8_PATH" };
 
 std::vector<std::string> resolveMm6Paths(Environment *environment);
 std::vector<std::string> resolveMm7Paths(Environment *environment);

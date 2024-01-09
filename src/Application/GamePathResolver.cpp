@@ -3,7 +3,10 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
 
+#include "filesystem"
+
 namespace {
+
 struct PathResolutionConfig {
     std::string_view overrideEnvKey;
     std::initializer_list<std::string_view> registryKeys;
@@ -47,44 +50,68 @@ constexpr PathResolutionConfig mm8Config {
 };
 
 
-std::vector<std::string> resolvePaths(const Environment &environment, const PathResolutionConfig& config) {
+std::vector<std::string> resolvePaths(const Environment &environment, const PathResolutionConfig &config) {
     // If we have a path override then it'll be the only path we'll check.
-    std::string envPath = environment.getenv(config.overrideEnvKey);
-    if (!envPath.empty()) {
-        logger->info("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
+    std::string_view envKey = config.overrideEnvKey;
+    if (std::string envPath = environment.getenv(envKey); !envPath.empty()) {
+        logger->info("Path override provided, '{}={}'.", envKey, envPath);
         return { envPath };
     }
 
     std::vector<std::string> result;
+#ifdef _WIN32
+    std::size_t pathSize = config.registryKeys.size() + 1;
+#endif
 
-    // Otherwise we check PWD first.
-    result.push_back(".");
+#ifdef __linux__
+    std::size_t pathSize = 1;
+#endif
 
+#ifdef __APPLE__
+    std::size_t pathSize = 2;
+#endif
+
+#ifdef __ANDROID__
+    std::size_t pathSize = 3;
+#endif
+
+    result.reserve(pathSize);
+
+#ifdef _WIN32
     // Then we check paths from registry on Windows,...
     for (const auto& registryKey : config.registryKeys) {
-        std::string registryPath = environment.queryRegistry(registryKey);
-        if (!registryPath.empty())
-            result.push_back(registryPath);
+        if (std::string registryPath = environment.queryRegistry(registryKey); !registryPath.empty()) {
+            result.emplace_back(registryPath);
+        }
     }
+#endif
 
+#ifdef __linux__
+    // ???
+#endif
+
+#ifdef __APPLE__
+    std::string home = environment.path(PATH_HOME);
+    if (!home.empty())
+        result.emplace_back(home + "/Library/Application Support/OpenEnroth");
+#endif
+
+#ifdef __ANDROID__
     // ...Android storage paths on Android,...
-    std::string externalPath = environment.path(PATH_ANDROID_STORAGE_EXTERNAL);
-    if (!externalPath.empty())
-        result.push_back(externalPath);
-    std::string internalPath = environment.path(PATH_ANDROID_STORAGE_INTERNAL);
-    if (!internalPath.empty())
-        result.push_back(internalPath);
+    if (std::string path = environment.path(PATH_ANDROID_STORAGE_EXTERNAL); !path.empty())
+        result.emplace_back(path);
+
+    if (std::string path = environment.path(PATH_ANDROID_STORAGE_INTERNAL); !path.empty())
+        result.emplace_back(path);
+
     // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
 
     // ...or Library/Application Support in home on macOS.
-#ifdef __APPLE__
-    std::string home = environment.path(PATH_HOME);
-    if (!home.empty())
-        result.push_back(home + "/Library/Application Support/OpenEnroth");
 #endif
 
+    result.emplace_back(std::filesystem::current_path().string());
     return result;
 }
 } // namespace
