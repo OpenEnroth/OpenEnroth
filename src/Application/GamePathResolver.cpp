@@ -65,10 +65,6 @@ std::vector<std::string> resolvePaths(const Environment &environment, const Path
     std::size_t pathSize = config.registryKeys.size() + 1;
 #endif
 
-#ifdef __linux__
-    std::size_t pathSize = 1;
-#endif
-
 #ifdef __APPLE__
     std::size_t pathSize = 2;
 #endif
@@ -86,10 +82,6 @@ std::vector<std::string> resolvePaths(const Environment &environment, const Path
             result.emplace_back(registryPath);
         }
     }
-#endif
-
-#ifdef __linux__
-    // ???
 #endif
 
 #ifdef __APPLE__
