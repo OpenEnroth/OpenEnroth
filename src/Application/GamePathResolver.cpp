@@ -63,14 +63,12 @@ std::vector<std::string> resolvePaths(const Environment &environment, const Path
     std::vector<std::string> result;
 #ifdef _WIN32
     std::size_t pathSize = config.registryKeys.size() + 1;
-#endif
-
-#ifdef __APPLE__
-    std::size_t pathSize = 2;
-#endif
-
-#ifdef __ANDROID__
-    std::size_t pathSize = 3;
+#elif __APPLE__
+    constexpr std::size_t pathSize = 2;
+#elif __ANDROID__
+    constexpr std::size_t pathSize = 3;
+#else
+    constexpr std::size_t pathSize = 1;
 #endif
 
     result.reserve(pathSize);
@@ -82,15 +80,11 @@ std::vector<std::string> resolvePaths(const Environment &environment, const Path
             result.emplace_back(registryPath);
         }
     }
-#endif
-
-#ifdef __APPLE__
+#elif __APPLE__
     std::string home = environment.path(PATH_HOME);
     if (!home.empty())
         result.emplace_back(home + "/Library/Application Support/OpenEnroth");
-#endif
-
-#ifdef __ANDROID__
+#elif __ANDROID__
     // ...Android storage paths on Android,...
     if (std::string path = environment.path(PATH_ANDROID_STORAGE_EXTERNAL); !path.empty())
         result.emplace_back(path);
