@@ -19,7 +19,7 @@ var searchData=
   ['hasnone_16',['HasNone',['../classCharacterConditions.html#a24fc74d321043ff56c6de7bc224940a2',1,'CharacterConditions']]],
   ['hasplaying_17',['hasPlaying',['../classAudioSamplePool.html#a7812571d8ad051a8f37406398c0a5841',1,'AudioSamplePool']]],
   ['hasshortersolution_18',['hasShorterSolution',['../Collisions_8h.html#a79cb91294a01902b2ab5974bb077f1cc',1,'hasShorterSolution(const float a, const float b, const float c, const float curSoln, float *outNewSoln, bool inside=false):&#160;Collisions.cpp'],['../Collisions_8cpp.html#a5a1991dd77dbbc7c8abc4ac48722580b',1,'hasShorterSolution(const float a, const float b, const float c, const float curSoln, float *outNewSoln, bool inside):&#160;Collisions.cpp']]],
-  ['hasskill_19',['HasSkill',['../classCharacter.html#ad487cd821e6f87e5057c984a1b03cd2c',1,'Character']]],
+  ['hasskill_19',['HasSkill',['../classCharacter.html#a835d3ac3222a0f78ed2b18a9194f4379',1,'Character']]],
   ['hassprite_20',['HasSprite',['../structSpriteObject.html#a0637a976da5ca21e412bf7e12df85d37',1,'SpriteObject']]],
   ['hasunderwatersuitequipped_21',['hasUnderwaterSuitEquipped',['../classCharacter.html#a6e3ea273e8cb8ef5bf49dd22d61fc229',1,'Character']]],
   ['havebuffs_22',['haveBuffs',['../classCharacterTapeRecorder.html#a756a5094244b7e240318df668a4a54f2',1,'CharacterTapeRecorder']]],

@@ -778,7 +778,7 @@ var searchData=
   ['item_5fslot_5fbow_775',['ITEM_SLOT_BOW',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351a86ba3139bb1f105886f75e1866f9e491',1,'ItemEnums.h']]],
   ['item_5fslot_5fcloak_776',['ITEM_SLOT_CLOAK',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351add2c245f3b5a85f3b46e52929877bb2e',1,'ItemEnums.h']]],
   ['item_5fslot_5ffirst_5fvalid_777',['ITEM_SLOT_FIRST_VALID',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351aee78af8db5e75dff9ca8768ad4df534f',1,'ItemEnums.h']]],
-  ['item_5fslot_5fgautnlets_778',['ITEM_SLOT_GAUTNLETS',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351a2a6bba14bce527cba4e2b4d8c51c3a37',1,'ItemEnums.h']]],
+  ['item_5fslot_5fgauntlets_778',['ITEM_SLOT_GAUNTLETS',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351a480910bafdd00c71824450f62370978e',1,'ItemEnums.h']]],
   ['item_5fslot_5fhelmet_779',['ITEM_SLOT_HELMET',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351ab849eea55223bfa28a66a2cc6fdf76cb',1,'ItemEnums.h']]],
   ['item_5fslot_5finvalid_780',['ITEM_SLOT_INVALID',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351a6d1622261c59a80efd13c444a2420654',1,'ItemEnums.h']]],
   ['item_5fslot_5flast_5fvalid_781',['ITEM_SLOT_LAST_VALID',['../ItemEnums_8h.html#a1802cee34436e71f014395b507c72351aaf21a9d3a4747dcfd86ccb83e1049d31',1,'ItemEnums.h']]],
