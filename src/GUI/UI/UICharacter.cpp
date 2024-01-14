@@ -1358,9 +1358,9 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
     if (player->pEquipment[ITEM_SLOT_AMULET])
         CharacterUI_DrawItem(493, 91, player->GetAmuletItem(),
                              player->pEquipment[ITEM_SLOT_AMULET]);
-    if (player->pEquipment[ITEM_SLOT_GAUTNLETS])
+    if (player->pEquipment[ITEM_SLOT_GAUNTLETS])
         CharacterUI_DrawItem(586, 88, player->GetGloveItem(),
-                             player->pEquipment[ITEM_SLOT_GAUTNLETS]);
+                             player->pEquipment[ITEM_SLOT_GAUNTLETS]);
 }
 
 //----- (0043BCA7) --------------------------------------------------------
@@ -2102,7 +2102,7 @@ void OnPaperdollLeftClick() {
             mousey <= (glovey + 2 * slot)) {
             // glove
             // pitem = pParty->activeCharacter().GetGloveItem(); //7
-            pos = ITEM_SLOT_GAUTNLETS;
+            pos = ITEM_SLOT_GAUNTLETS;
         }
 
         for (int i = 0; i < 6; ++i) {

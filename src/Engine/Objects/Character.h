@@ -105,6 +105,7 @@ class Character {
     static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH * INVENTORY_SLOTS_HEIGHT;
 
     Character();
+    void Zero();
 
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 
@@ -202,7 +203,7 @@ class Character {
     CharacterSex GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
-    void Reset(CharacterClass classType);
+    void ChangeClass(CharacterClass classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(CharacterAttributeType eAttribute);
     void IncreaseAttribute(CharacterAttributeType eAttribute);
@@ -234,7 +235,7 @@ class Character {
      */
     int findFreeInventoryListSlot() const;
     int CreateItemInInventory(unsigned int uSlot, ItemId uItemID);
-    int HasSkill(CharacterSkillType skill) const;
+    bool HasSkill(CharacterSkillType skill) const;
     void WearItem(ItemId uItemID);
     int AddItem(int uSlot, ItemId uItemID);
     int AddItem2(int uSlot, ItemGen *Src);

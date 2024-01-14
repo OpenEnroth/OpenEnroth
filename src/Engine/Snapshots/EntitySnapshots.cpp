@@ -813,6 +813,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
 }
 
 void reconstruct(const Player_MM7 &src, Character *dst) {
+    dst->Zero();
     reconstruct(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;

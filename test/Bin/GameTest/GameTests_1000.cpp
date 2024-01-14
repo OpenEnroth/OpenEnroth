@@ -685,3 +685,31 @@ GAME_TEST(Issues, Issue1482) {
     EXPECT_GT(timeTape.delta(), Duration::fromMinutes(5));
     EXPECT_LT(timeTape.delta(), Duration::fromMinutes(10));
 }
+
+GAME_TEST(Issues, Issue1489) {
+    // Cannot equip amulets or gauntlets
+    auto bootTape = tapes.custom([] { auto item = pParty->pCharacters[0].GetBootItem(); if (!item) return ITEM_NULL; return item->uItemID; });
+    auto helmetTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetHelmItem(); if (!item) return ITEM_NULL; return item->uItemID; });
+    auto beltTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetBeltItem(); if (!item) return ITEM_NULL; return item->uItemID; });
+    auto cloakTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetCloakItem(); if (!item) return ITEM_NULL; return item->uItemID; });
+    auto gauntletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetGloveItem(); if (!item) return ITEM_NULL; return item->uItemID;; });
+    auto amuletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetAmuletItem(); if (!item) return ITEM_NULL; return item->uItemID;; });
+    test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
+
+    for (const auto& character : pParty->pCharacters) {
+        EXPECT_TRUE(character.HasSkill(CHARACTER_SKILL_MISC));
+    }
+    // Check items were removed and re-equipped
+    EXPECT_EQ(bootTape.front(), bootTape.back());
+    EXPECT_TRUE(bootTape.contains(ITEM_NULL));
+    EXPECT_EQ(helmetTape.front(), helmetTape.back());
+    EXPECT_TRUE(helmetTape.contains(ITEM_NULL));
+    EXPECT_EQ(beltTape.front(), beltTape.back());
+    EXPECT_TRUE(beltTape.contains(ITEM_NULL));
+    EXPECT_EQ(cloakTape.front(), cloakTape.back());
+    EXPECT_TRUE(cloakTape.contains(ITEM_NULL));
+    EXPECT_EQ(gauntletTape.front(), gauntletTape.back());
+    EXPECT_TRUE(gauntletTape.contains(ITEM_NULL));
+    EXPECT_EQ(amuletTape.front(), amuletTape.back());
+    EXPECT_TRUE(amuletTape.contains(ITEM_NULL));
+}
