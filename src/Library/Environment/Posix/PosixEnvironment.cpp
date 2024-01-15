@@ -3,10 +3,6 @@
 #include <cstdlib>
 #include <memory>
 
-std::string PosixEnvironment::queryRegistry(std::string_view path) const {
-    return {};
-}
-
 std::string PosixEnvironment::path(EnvironmentPath path) const {
     if (path == PATH_HOME) {
         return getenv("HOME");
@@ -24,4 +20,10 @@ std::string PosixEnvironment::getenv(std::string_view key) const {
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
     return std::make_unique<PosixEnvironment>();
+}
+
+Environment::GamePaths GamePaths PosixEnvironment::getGamePaths(const PathResolutionConfig& /*config*/) const {
+    std::string home = path(PATH_HOME);
+    if home.empty() ? return {}
+                    : { home + "/Library/Application Support/OpenEnroth" };
 }

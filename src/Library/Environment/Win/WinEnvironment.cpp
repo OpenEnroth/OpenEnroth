@@ -9,12 +9,13 @@
 
 #include "Utility/Win/Unicode.h"
 
+namespace {
 // TODO(captainurist): revisit this code once I'm on a win machine.
-static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, int flags) {
+std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t* path, int flags) {
     wchar_t current_key[256];
     wchar_t path_tail[4096];
 
-    const wchar_t *delimiter = wcsstr(path, L"/");
+    const wchar_t* delimiter = wcsstr(path, L"/");
     if (delimiter) {
         wcsncpy(current_key, path, delimiter - path);
         current_key[delimiter - path] = L'\0';
@@ -41,7 +42,8 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
                 current_key[delimiter - path_tail] = L'\0';
 
                 wcscpy(path_tail, delimiter + 1);
-            } else {
+            }
+            else {
                 return {};
             }
         }
@@ -58,8 +60,9 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
         }
 
         return {};
-    } else {
-        std::array<wchar_t, 8192> buffer = {{}};
+    }
+    else {
+        std::array<wchar_t, 8192> buffer = { {} };
         DWORD regNumBytesRead = sizeof(buffer);
         LSTATUS status = RegGetValueW(
             parent_key,
@@ -77,24 +80,37 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
     }
 }
 
-std::string WinEnvironment::queryRegistry(std::string_view path) const {
+
+std::string QueryRegistry(std::string_view path) {
     return win::toUtf8(OS_GetAppStringRecursive(NULL, win::toUtf16(path).c_str(), 0));
 }
+} //namespace
 
-std::string WinEnvironment::path(EnvironmentPath path) const {
-    if (path == PATH_HOME) {
-        return getenv("USERPROFILE");
-    } else {
-        return {};
-    }
-}
 
 std::string WinEnvironment::getenv(std::string_view key) const {
-    const wchar_t *result = _wgetenv(win::toUtf16(key).c_str());
-    if (result)
-        return win::toUtf8(result);
-    return {};
+    const wchar_t* result = _wgetenv(win::toUtf16(key).c_str());
+    return result ? win::toUtf8(result)
+                  : std::string{};
 }
+
+
+std::string WinEnvironment::path(EnvironmentPath path) const {
+    return PATH_HOME == path ? getenv("USERPROFILE")
+                             : std::string{};
+}
+
+
+Environment::GamePaths WinEnvironment::getGamePaths(const PathResolutionConfig& config) const {
+    Environment::GamePaths result;
+    result.reserve(config.registryKeys.size());
+    for (const auto& registryKey : config.registryKeys) {
+        if (std::string registryPath = QueryRegistry(registryKey); !registryPath.empty()) {
+            result.emplace_back(registryPath);
+        }
+    }
+    return result;
+}
+
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
     return std::make_unique<WinEnvironment>();

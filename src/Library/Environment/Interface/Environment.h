@@ -1,9 +1,12 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <memory>
+#include <vector>
 
 #include "EnvironmentEnums.h"
+#include "PathResolutionConfig.h"
 
 /**
  * Base class akin to `Platform` that provides an abstraction for the process's environment.
@@ -17,30 +20,15 @@
  *   then we'd still drag SDL with it (and into our unit tests).
  */
 class Environment {
- public:
+public:
+    using GamePaths = std::vector<std::string>;
     virtual ~Environment() = default;
 
     /**
      * @return                          Newly created standard `Environment` instance.
      */
     static std::unique_ptr<Environment> createStandardEnvironment();
-
-    /**
-     * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
-     *
-     * @param path                      UTF8-encoded registry path to query.
-     * @return                          UTF8-encoded value at the given path, or an empty string in case of an error.
-     */
-    virtual std::string queryRegistry(std::string_view path) const = 0;
-
-    /**
-     * Accessor for various system paths.
-     *
-     * @param path                      Path to get.
-     * @return                          UTF8-encoded path, or an empty string in case of an error.
-     */
-    virtual std::string path(EnvironmentPath path) const = 0;
-
+    GamePaths resolveGamePath(const PathResolutionConfig& config) const;
     /**
      * Same as `std::getenv`, but takes & returns UTF8-encoded keys and values on all platforms.
      *
@@ -54,4 +42,14 @@ class Environment {
      * @return                          UTF8-encoded value of the environment variable.
      */
     virtual std::string getenv(std::string_view key) const = 0;
+
+protected:
+    /**
+     * Accessor for various system paths.
+     *
+     * @param path                      Path to get.
+     * @return                          UTF8-encoded path, or an empty string in case of an error.
+     */
+    virtual std::string path(EnvironmentPath path) const = 0;
+    virtual std::vector<std::string> getGamePaths(const PathResolutionConfig& config) const = 0;
 };

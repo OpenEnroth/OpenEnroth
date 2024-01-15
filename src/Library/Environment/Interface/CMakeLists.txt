@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
-set(LIBRARY_ENVIRONMENT_INTERFACE_SOURCES)
+set(LIBRARY_ENVIRONMENT_INTERFACE_SOURCES
+        Environment.cpp)
 
 set(LIBRARY_ENVIRONMENT_INTERFACE_HEADERS
+        PathResolutionConfig.h
         Environment.h
         EnvironmentEnums.h)
 
