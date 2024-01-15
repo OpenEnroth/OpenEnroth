@@ -141,11 +141,7 @@ void main() {
     float alpha = 0.0;
 
     if (fog.fogmiddle > fog.fogstart) {
-        if (fog.fogmiddle / 2.0 > dist) {
-            alpha = 1.0;
-        } else {
-            alpha = (fog.fogmiddle - dist) / (fog.fogmiddle / 2.0);
-        }
+        alpha = smoothstep(fog.fogend, (fog.fogend + fog.fogmiddle) / 2.0, dist);
     }
 
     vec4 inter = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
@@ -157,7 +153,7 @@ void main() {
 float getFogRatio(FogParam fogpar, float dist) {
     float result = 0.0;
     if (fogpar.fogstart < fogpar.fogmiddle) {
-        result = 0.25 + smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist) * 0.75;
+        result = 0.25 + smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist) * 0.60 + smoothstep(fogpar.fogmiddle, fogpar.fogend, dist) * 0.15;
     } else {
         result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
     }
