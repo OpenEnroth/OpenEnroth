@@ -1003,8 +1003,10 @@ WindowManager windowManager;
 void WindowManager::DeleteAllVisibleWindows() {
     while (lWindowList.size() > 1) {
         GUIWindow *pWindow = lWindowList.front();
-        // game ui should never be released
-        if (pWindow->eWindowType == WINDOW_GameUI) continue;
+        // game ui should never be released and should always be at the back of the window list
+        if (pWindow->eWindowType == WINDOW_GameUI) {
+            assert(false && "WINDOW_GameUI is not at back of lWindowList");
+        }
         pWindow->Release();
         delete pWindow;
     }
