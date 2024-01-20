@@ -153,7 +153,6 @@ void Menu::EventLoop() {
                         pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
                         isLoadSlotClicked = true;
                     } else {
-                        engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveLoadBtn, 0, 0);
                         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
                     }
                 }

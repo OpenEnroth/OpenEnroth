@@ -356,9 +356,7 @@ void MainMenuLoad_EventLoop() {
                 keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
             assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
             if (isLoadSlotClicked && pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveLoadBtn, 0, 0);
-                // Breaks UI interaction after save load
-                // engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
             } else {
                 pSavegameList->selectedSlot = param + pSavegameList->saveListPosition;
                 isLoadSlotClicked = true;
