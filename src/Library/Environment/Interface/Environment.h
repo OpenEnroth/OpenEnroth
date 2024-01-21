@@ -21,7 +21,7 @@
  *   then we'd still drag SDL with it (and into our unit tests).
  */
 class Environment {
-public:
+ public:
     using GamePaths = std::vector<std::string>;
     virtual ~Environment() = default;
 
@@ -60,7 +60,7 @@ public:
         return result;
     }
 
-private:
+ private:
     /**
      * Accessor for various system paths.
      *
@@ -68,8 +68,6 @@ private:
      * @return                          UTF8-encoded path, or an empty string in case of an error.
      */
     virtual std::string path(EnvironmentPath path) const = 0;
-
-    
 
     virtual std::vector<std::string> getGamePaths(const PathResolutionConfig& config) const = 0;
 };

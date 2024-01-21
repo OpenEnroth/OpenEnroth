@@ -42,8 +42,7 @@ std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t* path, int 
                 current_key[delimiter - path_tail] = L'\0';
 
                 wcscpy(path_tail, delimiter + 1);
-            }
-            else {
+            } else {
                 return {};
             }
         }
@@ -60,8 +59,7 @@ std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t* path, int 
         }
 
         return {};
-    }
-    else {
+    } else {
         std::array<wchar_t, 8192> buffer = { {} };
         DWORD regNumBytesRead = sizeof(buffer);
         LSTATUS status = RegGetValueW(
