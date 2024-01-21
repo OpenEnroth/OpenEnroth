@@ -11,14 +11,15 @@ static const char16_t *u16prefix = u"\u0444\u0430\u0439\u043B";
 static_assert(sizeof(char16_t) == sizeof(wchar_t));
 #endif
 
-UNIT_TEST(Environment, getenv_empty) {
+
+UNIT_TEST(EnvironmentTest, getenv_empty) {
     std::unique_ptr<Environment> environment = Environment::createStandardEnvironment();
 
     std::string result = environment->getenv("_ABCDEFG_123456_"); // Getting a non-existent var should work.
     EXPECT_TRUE(result.empty());
 }
 
-UNIT_TEST(Environment, getenv) {
+UNIT_TEST(EnvironmentTest, getenv) {
     std::unique_ptr<Environment> environment = Environment::createStandardEnvironment();
 
     const char *name = "_SOME_VAR_12345";

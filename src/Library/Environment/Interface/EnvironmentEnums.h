@@ -5,4 +5,3 @@ enum class EnvironmentPath {
     PATH_ANDROID_STORAGE_INTERNAL,
     PATH_ANDROID_STORAGE_EXTERNAL
 };
-using enum EnvironmentPath;

@@ -6,7 +6,8 @@ set(LIBRARY_ENVIRONMENT_INTERFACE_SOURCES
 set(LIBRARY_ENVIRONMENT_INTERFACE_HEADERS
         PathResolutionConfig.h
         Environment.h
-        EnvironmentEnums.h)
+        EnvironmentEnums.h
+        utils.h)
 
 add_library(library_environment_interface INTERFACE ${LIBRARY_ENVIRONMENT_INTERFACE_SOURCES} ${LIBRARY_ENVIRONMENT_INTERFACE_HEADERS})
 target_check_style(library_environment_interface)

@@ -1,7 +1,5 @@
 #include "GamePathResolver.h"
 
-#include "Library/Environment/Interface/Environment.h"
-
 namespace {
 constexpr PathResolutionConfig mm6Config {
     mm6PathOverrideKey,
@@ -40,14 +38,14 @@ constexpr PathResolutionConfig mm8Config {
 };
 } // namespace
 
-std::vector<std::string> resolveMm6Paths(const Environment &environment) {
+Environment::GamePaths resolveMm6Paths(const Environment &environment) {
     return environment.resolveGamePath(mm6Config);
 }
 
-std::vector<std::string> resolveMm7Paths(const Environment &environment) {
+Environment::GamePaths resolveMm7Paths(const Environment &environment) {
     return environment.resolveGamePath(mm7Config);
 }
 
-std::vector<std::string> resolveMm8Paths(const Environment &environment) {
+Environment::GamePaths resolveMm8Paths(const Environment &environment) {
     return environment.resolveGamePath(mm8Config);
 }

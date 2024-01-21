@@ -41,21 +41,61 @@
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
 
-GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
-    // Init environment.
-    _environment = Environment::createStandardEnvironment();
+namespace {
+void ResolveGamePath(const Environment& environment, GameStarterOptions& options, Logger& logger) {
+    auto& optPath = options.dataPath;
+    if (optPath.empty()) {
+        std::vector<std::string> candidates = resolveMm7Paths(environment);
+        assert(!candidates.empty());
+
+        if (candidates.size() > 1) {
+            for (int i = 0; i < candidates.size(); i++) {
+                std::string missingFile;
+                const auto &candidate = candidates[i];
+                if (!std::filesystem::exists(candidate)) {
+                    logger.info("Data path candidate #{} ('{}') doesn't exist.", i + 1, candidate);
+
+                } else if (!validateDataPath(candidate, &missingFile)) {
+                    logger.info("Data path candidate #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
+
+                } else {
+                    logger.info("Data path candidate #{} ('{}') is OK!", i + 1, candidate);
+                    optPath = candidate;
+                    break;
+                }
+            }
+        }
+
+        if (optPath.empty()) {  // Only one candidate, or no valid candidates? Use the last one & re-check it later.
+            optPath = candidates.back();
+        }
+    }
+
+    assert(!optPath.empty());
+    logger.info("Using data path '{}'.", optPath);
+
+    if (options.useConfig && options.configPath.empty()) {
+        options.configPath = optPath + "/openenroth.ini";
+    }
+}
+
+} // namespace
+
+GameStarter::GameStarter(GameStarterOptions options)
+    : _options{ std::move(options) }
+    , _environment{ Environment::createStandardEnvironment() }
+    , _bufferLogSink{ std::make_unique<BufferLogSink>() }
+    , _defaultLogSink{ LogSink::createDefaultSink() }
+    , _logger{ std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get()) }
+    , _config{ std::make_shared<GameConfig>() } {
 
     // Init logger.
-    _bufferLogSink = std::make_unique<BufferLogSink>();
-    _defaultLogSink = LogSink::createDefaultSink();
-    _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
 
     // Init paths.
-    resolvePaths(*_environment, &_options, _logger.get());
+    ResolveGamePath(*_environment, _options, *_logger);
 
     // Init config - needs data paths initialized.
-    _config = std::make_shared<GameConfig>();
     if (_options.useConfig) {
         if (std::filesystem::exists(_options.configPath)) {
             _config->load(_options.configPath);
@@ -153,37 +193,6 @@ GameStarter::~GameStarter() {
     ::window = nullptr;
     ::eventHandler = nullptr;
     ::openGLContext = nullptr;
-}
-
-void GameStarter::resolvePaths(const Environment &environment, GameStarterOptions* options, Logger *logger) {
-    if (options->dataPath.empty()) {
-        std::vector<std::string> candidates = resolveMm7Paths(environment);
-        assert(!candidates.empty());
-
-        if (candidates.size() > 1) {
-            for (int i = 0; i < candidates.size(); i++) {
-                std::string missingFile;
-                if (!std::filesystem::exists(candidates[i])) {
-                    logger->info("Data path candidate #{} ('{}') doesn't exist.", i + 1, candidates[i]);
-                } else if (!validateDataPath(candidates[i], &missingFile)) {
-                    logger->info("Data path candidate #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
-                } else {
-                    logger->info("Data path candidate #{} ('{}') is OK!", i + 1, candidates[i]);
-                    options->dataPath = candidates[i];
-                    break;
-                }
-            }
-        }
-
-        if (options->dataPath.empty()) // Only one candidate, or no valid candidates? Use the last one & re-check it later.
-            options->dataPath = candidates.back();
-    }
-
-    assert(!options->dataPath.empty());
-    logger->info("Using data path '{}'.", options->dataPath);
-
-    if (options->useConfig && options->configPath.empty())
-        options->configPath = options->dataPath + "/openenroth.ini";
 }
 
 void GameStarter::run() {

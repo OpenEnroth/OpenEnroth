@@ -80,23 +80,21 @@ std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t* path, int 
     }
 }
 
-
 std::string QueryRegistry(std::string_view path) {
     return win::toUtf8(OS_GetAppStringRecursive(NULL, win::toUtf16(path).c_str(), 0));
 }
 } //namespace
 
 
+std::string WinEnvironment::path(EnvironmentPath path) const {
+    return EnvironmentPath::PATH_HOME == path ? getenv("USERPROFILE")
+                                              : std::string{};
+}
+
 std::string WinEnvironment::getenv(std::string_view key) const {
     const wchar_t* result = _wgetenv(win::toUtf16(key).c_str());
     return result ? win::toUtf8(result)
                   : std::string{};
-}
-
-
-std::string WinEnvironment::path(EnvironmentPath path) const {
-    return PATH_HOME == path ? getenv("USERPROFILE")
-                             : std::string{};
 }
 
 

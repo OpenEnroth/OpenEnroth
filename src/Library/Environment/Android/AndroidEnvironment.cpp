@@ -1,27 +1,27 @@
 #include "AndroidEnvironment.h"
 
+#include "Environment/Interface/utils.h"
+
 #include <SDL.h>
 
-std::string AndroidEnvironment::path(EnvironmentPath path) const {
-    const char *result = nullptr;
-    if (path == PATH_ANDROID_STORAGE_INTERNAL) {
+
+std::string AndroidEnvironment::path(EnvironmentPath env_path) const {
+    const char* result = nullptr;
+    switch (env_path) {
+    case EnvironmentPath::PATH_ANDROID_STORAGE_INTERNAL: {
         result = SDL_AndroidGetInternalStoragePath();
-    } else if (path == PATH_ANDROID_STORAGE_EXTERNAL) {
-        result = SDL_AndroidGetExternalStoragePath();
+        break;
     }
-
-    // Each application on Android is executed under dedicated user so PATH_HOME is useless.
-
-    if (result)
-        return result;
-    return {};
+    case EnvironmentPath::PATH_ANDROID_STORAGE_EXTERNAL: {
+        result = SDL_AndroidGetExternalStoragePath();
+        break;
+    }
+    }
+    return getStringOr(result);
 }
 
 std::string AndroidEnvironment::getenv(std::string_view key) const {
-    const char *result = SDL_getenv(key.data());
-    if (result)
-        return result;
-    return {};
+    return getStringOr(SDL_getenv(key.data()));
 }
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
@@ -32,12 +32,15 @@ Environment::GamePaths AndroidEnvironment::getGamePaths(const PathResolutionConf
     Environment::GamePaths result;
     result.reserve(2);
     // ...Android storage paths on Android,...
-    if (std::string path = path(PATH_ANDROID_STORAGE_EXTERNAL); !path.empty())
-        result.emplace_back(path);
+    if (std::string path_item = path(EnvironmentPath::PATH_ANDROID_STORAGE_EXTERNAL); !path_item.empty()) {
+        result.emplace_back(path_item);
+    }
+        
 
-    if (std::string path = path(PATH_ANDROID_STORAGE_INTERNAL); !path.empty())
-        result.emplace_back(path);
-
+    if (std::string path_item = path(EnvironmentPath::PATH_ANDROID_STORAGE_INTERNAL); !path_item.empty()) {
+        result.emplace_back(path_item);
+    }
+        
     // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");

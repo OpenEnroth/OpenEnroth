@@ -1,9 +1,9 @@
 #pragma once
 
+#include <vector>
 #include <string>
 #include <string_view>
 #include <memory>
-#include <vector>
 
 #include "EnvironmentEnums.h"
 #include "PathResolutionConfig.h"
@@ -28,7 +28,7 @@ public:
      * @return                          Newly created standard `Environment` instance.
      */
     static std::unique_ptr<Environment> createStandardEnvironment();
-    GamePaths resolveGamePath(const PathResolutionConfig& config) const;
+
     /**
      * Same as `std::getenv`, but takes & returns UTF8-encoded keys and values on all platforms.
      *
@@ -43,7 +43,9 @@ public:
      */
     virtual std::string getenv(std::string_view key) const = 0;
 
-protected:
+    GamePaths resolveGamePath(const PathResolutionConfig& config) const;
+
+private:
     /**
      * Accessor for various system paths.
      *
@@ -51,5 +53,8 @@ protected:
      * @return                          UTF8-encoded path, or an empty string in case of an error.
      */
     virtual std::string path(EnvironmentPath path) const = 0;
+
+    
+
     virtual std::vector<std::string> getGamePaths(const PathResolutionConfig& config) const = 0;
 };

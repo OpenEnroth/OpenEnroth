@@ -2,12 +2,12 @@
 
 #include <filesystem>
 
-#include "Library/Logger/Logger.h"
+//#include "Library/Logger/Logger.h"
 
 Environment::GamePaths Environment::resolveGamePath(const PathResolutionConfig& config) const {
-    std::string_view envKey = config.overrideEnvKey;
-    if (std::string envPath = getenv(envKey); !envPath.empty()) {
-        logger->info("Path override provided, '{}={}'.", envKey, envPath);
+    auto envKey = config.overrideEnvKey;
+    if (auto envPath = getenv(envKey); !envPath.empty()) {
+        //logger->info("Path override provided, '{}={}'.", envKey, envPath);
         return { envPath };
     }
     std::vector<std::string> result{ std::filesystem::current_path().string() };
