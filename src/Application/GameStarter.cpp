@@ -88,7 +88,6 @@ GameStarter::GameStarter(GameStarterOptions options)
     , _defaultLogSink{ LogSink::createDefaultSink() }
     , _logger{ std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get()) }
     , _config{ std::make_shared<GameConfig>() } {
-
     // Init logger.
     Engine::LogEngineBuildInfo();
 

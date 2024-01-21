@@ -4,10 +4,10 @@ set(LIBRARY_ENVIRONMENT_INTERFACE_SOURCES
         Environment.cpp)
 
 set(LIBRARY_ENVIRONMENT_INTERFACE_HEADERS
-        PathResolutionConfig.h
         Environment.h
         EnvironmentEnums.h
+        PathResolutionConfig.h
         utils.h)
 
-add_library(library_environment_interface INTERFACE ${LIBRARY_ENVIRONMENT_INTERFACE_SOURCES} ${LIBRARY_ENVIRONMENT_INTERFACE_HEADERS})
+add_library(library_environment_interface INTERFACE ${LIBRARY_ENVIRONMENT_INTERFACE_HEADERS} ${LIBRARY_ENVIRONMENT_INTERFACE_SOURCES})
 target_check_style(library_environment_interface)

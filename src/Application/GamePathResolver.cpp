@@ -1,5 +1,7 @@
 #include "GamePathResolver.h"
 
+#include "Library/Environment/Interface/PathResolutionConfig.h"
+
 namespace {
 constexpr PathResolutionConfig mm6Config {
     mm6PathOverrideKey,

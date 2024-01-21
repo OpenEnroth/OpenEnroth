@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include <memory>
+#include <filesystem>
 
 #include "EnvironmentEnums.h"
 #include "PathResolutionConfig.h"
@@ -43,7 +44,21 @@ public:
      */
     virtual std::string getenv(std::string_view key) const = 0;
 
-    GamePaths resolveGamePath(const PathResolutionConfig& config) const;
+    GamePaths resolveGamePath(const PathResolutionConfig& config) const {
+        auto envKey = config.overrideEnvKey;
+        auto envPath = getenv(envKey);
+        if (!envPath.empty()) {
+            //logger->info("Path override provided, '{}={}'.", envKey, envPath);
+            return { envPath };
+        }
+
+        Environment::GamePaths result{ std::filesystem::current_path().string() };
+        auto specificPaths = getGamePaths(config);
+
+        result.insert(result.end(), std::make_move_iterator(specificPaths.begin()), std::make_move_iterator(specificPaths.end()));
+
+        return result;
+    }
 
 private:
     /**
