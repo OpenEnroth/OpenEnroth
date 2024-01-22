@@ -1310,6 +1310,14 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(assets->pFontComic.get(), 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
+    if (skill_mastery == CharacterSkillMastery::CHARACTER_SKILL_MASTERY_NONE) {
+        if (engine->config->debug.AllMagic.value()) {
+            skill_mastery = CharacterSkillMastery::CHARACTER_SKILL_MASTERY_GRANDMASTER;
+        } else {
+            assert(false && "Character doesnt have this magic skill!");
+        }
+    }
+
     auto str2 = fmt::format(
         "{}\n{}", localization->GetString(LSTR_SP_COST),
         pSpellDatas[spell_id].mana_per_skill[skill_mastery]);
