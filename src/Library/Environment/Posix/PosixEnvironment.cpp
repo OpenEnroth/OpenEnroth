@@ -1,9 +1,8 @@
 #include "PosixEnvironment.h"
 
-#include "Environment/Interface/utils.h"
-
 #include <cstdlib>
-#include <memory>
+
+#include "Environment/Interface/utils.h"
 
 
 std::string PosixEnvironment::path(EnvironmentPath path) const {

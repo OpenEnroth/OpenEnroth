@@ -5,9 +5,9 @@
 #include "Library/Environment/Interface/Environment.h"
 
 class AndroidEnvironment : public Environment {
-public:
+ public:
     std::string getenv(std::string_view key) const override;
-private:
+ private:
     std::string path(EnvironmentPath path) const override;
     GamePaths getGamePaths(const PathResolutionConfig& config) const override;
 };
