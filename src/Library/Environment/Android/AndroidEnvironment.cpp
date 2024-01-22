@@ -1,8 +1,8 @@
 #include "AndroidEnvironment.h"
 
-#include "Environment/Interface/utils.h"
-
 #include <SDL.h>
+
+#include "Library/Environment/Interface/utils.h"
 
 
 std::string AndroidEnvironment::path(EnvironmentPath env_path) const {
