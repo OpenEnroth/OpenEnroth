@@ -1,6 +1,7 @@
 #include "AndroidEnvironment.h"
 
 #include <SDL.h>
+#include <memory>
 
 #include "Library/Environment/Interface/utils.h"
 

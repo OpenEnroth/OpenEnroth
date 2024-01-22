@@ -1,6 +1,7 @@
 #include "PosixEnvironment.h"
 
 #include <cstdlib>
+#include <memory>
 
 #include "Library/Environment/Interface/utils.h"
 
@@ -19,10 +20,10 @@ std::string PosixEnvironment::getenv(std::string_view key) const {
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
     return std::make_unique<PosixEnvironment>();
-}
+} 
 
 Environment::GamePaths PosixEnvironment::getGamePaths(const PathResolutionConfig& /*config*/) const {
     std::string home = path(PATH_HOME);
-    return home.empty() ? {}
+    return home.empty() ? Environment::GamePaths {}
                         : { home + "/Library/Application Support/OpenEnroth" };
 }
