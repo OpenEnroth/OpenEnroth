@@ -554,7 +554,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     }
                 }
             }
-            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE, Pid(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_LIGHT_DAY_OF_PROTECTION:
