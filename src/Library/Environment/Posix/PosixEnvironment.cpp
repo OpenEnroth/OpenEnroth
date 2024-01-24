@@ -26,5 +26,5 @@ std::unique_ptr<Environment> Environment::createStandardEnvironment() {
 Environment::GamePaths PosixEnvironment::getGamePaths(const PathResolutionConfig& /*config*/) const {
     std::string home = path(EnvironmentPath::PATH_HOME);
     return home.empty() ? Environment::GamePaths {}
-                        : { std::string{ home + "/Library/Application Support/OpenEnroth" } };
+                        : Environment::GamePaths { { home + "/Library/Application Support/OpenEnroth" } };
 }
