@@ -1317,6 +1317,7 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 
 bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // true if obscurred
     Vec3f dir = (from - target).toFloat();
+    float dist = dir.length();
     dir.normalize();
 
     BBoxi bbox = BBoxi::forPoints(from, target);
@@ -1358,7 +1359,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             if (std::abs(NegFacePlaceDist) / 16384.0f <= std::abs(dirDotNormal)) {
                 float IntersectionDist = NegFacePlaceDist / dirDotNormal;
                 // less than zero means intersection is behind target point
-                if (IntersectionDist >= 0) {
+                // greater than dist means intersection is behind the caster
+                if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
                     Vec3i pos = target + (IntersectionDist * dir).toInt();
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
@@ -1373,6 +1375,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
 
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from) {  // true is obscurred
     Vec3f dir = (from - target).toFloat();
+    float dist = dir.length();
     dir.normalize();
 
     BBoxi bbox = BBoxi::forPoints(from, target);
@@ -1407,7 +1410,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     // calc how far along line interesction is
                     float IntersectionDist = NegFacePlaceDist /  dirDotNormal;
                     // less than zero means intersection is behind target point
-                    if (IntersectionDist >= 0) {
+                    // greater than dist means intersection is behind the caster
+                    if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
                         Vec3i pos = target + (IntersectionDist * dir).toInt();
                         if (face.Contains(pos, model.index)) {
                             return true;

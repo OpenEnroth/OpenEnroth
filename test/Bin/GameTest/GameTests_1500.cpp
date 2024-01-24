@@ -13,3 +13,10 @@ GAME_TEST(Issues, Issue1503) {
     EXPECT_EQ(current_screen_type, SCREEN_PARTY_CREATION);
     EXPECT_FALSE(PlayerCreation_Choose4Skills());
 }
+
+GAME_TEST(Issues, Issue1510) {
+    // Enemies not attacking the party when in melee range
+    auto partyHealth = tapes.totalHp();
+    test.playTraceFromTestData("issue_1510.mm7", "issue_1510.json");
+    EXPECT_LT(partyHealth.back(), partyHealth.front());
+}
