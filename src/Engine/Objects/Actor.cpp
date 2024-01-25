@@ -2678,6 +2678,7 @@ void Actor::UpdateActorAI() {
         pDir = &targetDirection;
         AIState uAIState = pActor->aiState;
 
+        // TODO(pskelton): magic number 307.2 to const - melee range
         // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
         // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
