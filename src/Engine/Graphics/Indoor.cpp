@@ -1285,33 +1285,48 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 //----- (00407A1C) --------------------------------------------------------
 bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from - true on clear
     int AngleToTarget = TrigLUT.atan2(from.x - target.x, from.y - target.y);
-    bool LOS_Obscurred = 0;
-    bool LOS_Obscurred2 = 0;
+    bool LOS_Obscurred = false;
+    bool LOS_Obscurred2 = false;
+    bool LOS_ObscurredStr = false;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        // offset 32 to side and check LOS
-        Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-        Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-        LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(targetmod, frommod);
+        // check straight point to point
+        LOS_ObscurredStr = Check_LOS_Obscurred_Indoors(target, from);
 
-        // offset other side and repeat check
-        targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-        frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-        LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
+        if (LOS_ObscurredStr) {
+            // offset 32 to side and check LOS
+            Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(targetmod, frommod);
+
+            if (LOS_Obscurred2) {
+                // offset other side and repeat check
+                targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
+            }
+        }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         // TODO(pskelton): Need to add check against terrain
-        // offset 32 to side and check LOS
-        Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-        Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-        LOS_Obscurred2 = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
+        // check straight point to point
+        LOS_ObscurredStr = Check_LOS_Obscurred_Outdoors_Bmodels(target, from);
 
-        // offset other side and repeat check
-        targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-        frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-        LOS_Obscurred = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
+        if (LOS_ObscurredStr) {
+            // offset 32 to side and check LOS
+            Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            LOS_Obscurred2 = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
+
+            if (LOS_Obscurred2) {
+                // offset other side and repeat check
+                targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                LOS_Obscurred = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
+            }
+        }
     }
 
-    bool result{ !LOS_Obscurred2 || !LOS_Obscurred };
+    bool result{ !LOS_Obscurred2 || !LOS_Obscurred || !LOS_ObscurredStr };
     return result;  // true if LOS clear
 }
 
@@ -1332,7 +1347,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
             BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
-            if (face->isPortal())
+            if (face->isPortal() || face->Ethereal())
                 continue;
 
             // dot product
@@ -1383,6 +1398,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
             for (ODMFace &face : model.pFaces) {
+                if (face.Ethereal()) continue;
+
                 float dirDotNormal = dot(dir, face.facePlane.normal);
                 bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
                 if (FaceIsParallel)
@@ -1414,6 +1431,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
                         Vec3i pos = target + (IntersectionDist * dir).toInt();
                         if (face.Contains(pos, model.index)) {
+                            face.uAttributes &= FaceAttribute::FACE_OUTLINED;
                             return true;
                         }
                     }

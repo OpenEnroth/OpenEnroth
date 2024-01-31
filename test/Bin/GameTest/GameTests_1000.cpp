@@ -654,6 +654,15 @@ GAME_TEST(Issues, Issue1475) {
     EXPECT_EQ(mpTape, tape(0)); // No mana regen.
 }
 
+GAME_TEST(Issues, Issue1476) {
+    // Fireball self-damage doesn't always work
+    auto hpTape = tapes.totalHp();
+    auto exprTape = tapes.custom([] { return pParty->_delayedReactionSpeech; });
+    test.playTraceFromTestData("issue_1476.mm7", "issue_1476.json");
+    EXPECT_TRUE(exprTape.contains(SPEECH_DAMAGED_PARTY));
+    EXPECT_LT(hpTape.back(), hpTape.front());
+}
+
 GAME_TEST(Issues, Issue1478) {
     // Invalid sprites are used for hireling left/right buttons in pressed state in dark skin.
     test.loadGameFromTestData("issue_1478.mm7");
