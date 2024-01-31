@@ -1431,7 +1431,6 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
                         Vec3i pos = target + (IntersectionDist * dir).toInt();
                         if (face.Contains(pos, model.index)) {
-                            face.uAttributes &= FaceAttribute::FACE_OUTLINED;
                             return true;
                         }
                     }
