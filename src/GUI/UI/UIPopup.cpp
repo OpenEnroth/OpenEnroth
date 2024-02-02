@@ -1720,7 +1720,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
 void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
     NPCData *pNPC;           // eax@16
     std::string pText;       // eax@18
-    int a2;                  // [sp+60h] [bp-Ch]@16
+    int a2 = 0;                  // [sp+60h] [bp-Ch]@16
 
     if (bNoNPCHiring != 1) {
         FlatHirelings buf;
@@ -1730,7 +1730,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
             sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - _this;
             pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
             if (pNPC) {
-                if (a2 == 57)
+                if (pNPC->name == "Baby Dragon")
                     pText = pNPCTopics[512].pText;  // Baby dragon
                 else
                     pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
