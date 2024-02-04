@@ -29,7 +29,9 @@ bool AudioSamplePool::playUniquePid(PAudioSample sample, PAudioDataSource source
     update();
     for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.pid == pid) {
-            return true;
+            if (entry.samplePtr == sample) {
+                return true;
+            }
         }
     }
     if (!sample->Open(source)) {
