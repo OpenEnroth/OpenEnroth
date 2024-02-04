@@ -141,6 +141,8 @@ constexpr float debug_turn_based_monster_movespeed_mul = 1.666666666666667f;
 
 constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
+constexpr float meleeRange = 307.2f;
+
 extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
 
