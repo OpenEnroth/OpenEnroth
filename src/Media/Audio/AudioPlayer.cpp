@@ -270,7 +270,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pActors[object_id].pos.y,
                                     pActors[object_id].pos.z, MAX_SOUND_DIST);
 
-                result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
+                result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID, true);
 
                 break;
             }

@@ -6415,8 +6415,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos,
         } else {
             soundToPlay = vrng->randomSample({SOUND_metal_armor_strike1, SOUND_metal_armor_strike2, SOUND_metal_armor_strike3, SOUND_metal_vs_metal01h});
         }
-        // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->playSound(soundToPlay, SOUND_MODE_PID, Pid(OBJECT_Character, targetchar));
+        pAudioPlayer->playNonResetableSound(soundToPlay);
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
