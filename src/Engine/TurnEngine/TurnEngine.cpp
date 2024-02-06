@@ -673,7 +673,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 v10 = HOSTILITY_LONG;
             switch (v10) {
                 case HOSTILITY_CLOSE:
-                    if ((double)(signed int)v9 < 307.2)
+                    if ((double)(signed int)v9 < meleeRange)
                         pActors[actor_id].monsterInfo.hostilityType =
                             HOSTILITY_LONG;
                     break;
@@ -729,7 +729,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                         assert(false && "Unreachable");
                 }
 
-                if ((double)v9 < 307.2) {
+                if ((double)v9 < meleeRange) {
                     Actor::AI_MeleeAttack(actor_id, v22, &v18);
                     pQueue[queue_index].AI_action_type = TE_AI_MELEE_ATTACK;
                 } else if (pQueue[queue_index].AI_action_type == TE_AI_STAND) {
@@ -809,7 +809,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                 Actor::GetDirectionInfo(pQueue[i].uPackedID, v13, &v9, 0);
                 if (pActors[monster_id].aiState == Pursuing ||
                     pActors[monster_id].aiState == Tethered) {
-                    if ((double)(signed int)v9.uDistance < 307.2)
+                    if ((double)(signed int)v9.uDistance < meleeRange)
                         Actor::AI_Stand(pQueue[i].uPackedID.id(), v13, 32_ticks,
                                         &v9);
                 } else {
@@ -863,7 +863,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
     pHostileType = pActors[uActorID].monsterInfo.hostilityType;
     switch (pHostileType) {
         case HOSTILITY_CLOSE:
-            if ((double)v11 < 307.2)
+            if ((double)v11 < meleeRange)
                 pActors[uActorID].monsterInfo.hostilityType =
                     HOSTILITY_LONG;
             break;
@@ -932,7 +932,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                 }
             }
         }
-        if ((double)(signed int)v11 < 307.2) return 0;
+        if ((double)(signed int)v11 < meleeRange) return 0;
         if ((signed int)v11 < 5120) {
             if (pActors[uActorID].monsterInfo.attack1MissileType &&
                 (signed int)v11 < 1024)

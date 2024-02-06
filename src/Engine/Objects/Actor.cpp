@@ -224,7 +224,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
     static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
 
-    if (pDir->uDistance < 307.2) {
+    if (pDir->uDistance < meleeRange) {
         distancemod = 0;
     } else if (pDir->uDistance < 1024) {
         distancemod = 1;
@@ -803,7 +803,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
-    if (pDir->uDistance < 307.2)
+    if (pDir->uDistance < meleeRange)
         a1.field_60_distance_related_prolly_lod = 0;
     else if (pDir->uDistance < 1024)
         a1.field_60_distance_related_prolly_lod = 1;
@@ -1902,7 +1902,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
         Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
-    if (v10->uDistance < 307.2) {
+    if (v10->uDistance < meleeRange) {
         if (!uActionLength) uActionLength = 256_ticks;
         Actor::AI_Stand(uActorID, a2, uActionLength, v10);
         return;
@@ -1946,7 +1946,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         Actor::GetDirectionInfo(v7, Pid::character(0), &v10, 0);
         v13 = &v10;
         if (supertypeForMonsterId(v5->monsterInfo.id) == MONSTER_SUPERTYPE_TREANT ||
-            sTargetPid.type() == OBJECT_Actor && v13->uDistance < 307.2) {
+            sTargetPid.type() == OBJECT_Actor && v13->uDistance < meleeRange) {
             if (!uActionLength) uActionLength = 256_ticks;
             Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
@@ -2055,7 +2055,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
         if (!uActionLength) uActionLength = 256_ticks;
         return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
-    if (a4->uDistance < 307.2) {
+    if (a4->uDistance < meleeRange) {
         if (!uActionLength) uActionLength = 256_ticks;
         return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
@@ -2678,12 +2678,11 @@ void Actor::UpdateActorAI() {
         pDir = &targetDirection;
         AIState uAIState = pActor->aiState;
 
-        // TODO(pskelton): magic number 307.2 to const - melee range
-        // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
+         // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
         // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.recoveryTime > 0_ticks ||
-            radiusMultiplier * 307.2 < pDir->uDistance ||
+            radiusMultiplier * meleeRange < pDir->uDistance ||
             uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.attack1MissileType ||
             uAIState != Stunned) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
@@ -2773,19 +2772,19 @@ void Actor::UpdateActorAI() {
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
-                            if (radiusMultiplier * 307.2 > v81)
+                            if (radiusMultiplier * meleeRange > v81)
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             else
                                 Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
                         }
                     } else {
-                        if (v81 >= radiusMultiplier * 307.2) {
+                        if (v81 >= radiusMultiplier * meleeRange) {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {  // monsters
                                 Actor::AI_Pursue3(actor_id, target_pid, 0_ticks, pDir);
                             } else {
-                                v70 = (radiusMultiplier * 307.2);
+                                v70 = (radiusMultiplier * meleeRange);
                                 // monsters
                                 // guard after player runs away
                                 // follow player
@@ -2810,20 +2809,20 @@ void Actor::UpdateActorAI() {
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
                                 Actor::AI_SpellAttack2(actor_id, target_pid, pDir);
-                        } else if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                        } else if (radiusMultiplier * meleeRange > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
                         }
                     } else {
                         // v45 == ABILITY_ATTACK2
-                        if (v81 >= radiusMultiplier * 307.2) {
+                        if (v81 >= radiusMultiplier * meleeRange) {
                             if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {
                                 Actor::AI_Pursue3(actor_id, target_pid, 256_ticks, pDir);
                             } else {
-                                v70 = (radiusMultiplier * 307.2);
+                                v70 = (radiusMultiplier * meleeRange);
                                 Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                             }
                         } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
@@ -2853,13 +2852,13 @@ void Actor::UpdateActorAI() {
                 Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
             }
         } else if (!pActor->monsterInfo.attack2MissileType) {
-            if (v81 >= radiusMultiplier * 307.2) {
+            if (v81 >= radiusMultiplier * meleeRange) {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                 } else if (v81 >= 1024) {
                     Actor::AI_Pursue3(actor_id, target_pid, 256_ticks, pDir);
                 } else {
-                    v70 = (radiusMultiplier * 307.2);
+                    v70 = (radiusMultiplier * meleeRange);
                     Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
                 }
             } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
@@ -2868,7 +2867,7 @@ void Actor::UpdateActorAI() {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
         } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
-            if (radiusMultiplier * 307.2 > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
+            if (radiusMultiplier * meleeRange > v81 || pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else
                 Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
@@ -4001,7 +4000,7 @@ int Actor::MakeActorAIList_BLV() {
             actor.ResetHostile();
             if (actor.ActorEnemy() || actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
                 actor.attributes |= ACTOR_HOSTILE;
-                if (!(pParty->GetRedAlert()) && (double)distance < 307.2)
+                if (!(pParty->GetRedAlert()) && (double)distance < meleeRange)
                     pParty->SetRedAlert();
                 if (!(pParty->GetYellowAlert()) && distance < 5120)
                     pParty->SetYellowAlert();

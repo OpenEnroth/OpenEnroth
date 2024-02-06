@@ -885,7 +885,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     float dist = (pActors[monster_id].pos.toFloat() - pParty->pos).length();
-                    if (dist <= 307.2) {
+                    if (dist <= meleeRange) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos - Vec3i(0, 0, pActors[monster_id].height * -0.8);

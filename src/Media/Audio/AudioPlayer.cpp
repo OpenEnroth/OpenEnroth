@@ -270,7 +270,9 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pActors[object_id].pos.y,
                                     pActors[object_id].pos.z, MAX_SOUND_DIST);
 
-                result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
+                // TODO(pskelton): Vanilla sounds like it does unique id but as exclusives
+                // Actors play unique sounds between them. Avoids issues where in a real time mob you are hit with a cacophony of overlapping attack noises.
+                result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID, true);
 
                 break;
             }
