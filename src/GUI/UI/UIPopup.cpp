@@ -1122,7 +1122,7 @@ void CharacterUI_StatsTab_ShowHint() {
             break;
         case 10:  // Character Condition
         {
-            std::string str = std::string(localization->getArmourClassDescription()) + "\n";
+            std::string str = std::string(localization->getCharacterConditionDescription()) + "\n";
 
             for (Condition condition : conditionImportancyTable()) {
                 if (pParty->activeCharacter().conditions.Has(condition)) {
