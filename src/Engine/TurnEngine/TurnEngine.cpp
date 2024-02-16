@@ -435,8 +435,7 @@ void stru262_TurnBased::NextTurn() {
 
     // turn tick
     turn_stage = TE_MOVEMENT;
-    pParty->GetPlayingTime() += 213_ticks;
-    _494035_timed_effects__water_walking_damage__etc();
+    _494035_timed_effects__water_walking_damage__etc(213_ticks);
     uActionPointsLeft = 130;
 }
 
