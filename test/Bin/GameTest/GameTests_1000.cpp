@@ -638,6 +638,16 @@ GAME_TEST(Issues, Issue1467) {
     EXPECT_EQ(statusTape, tape("", "Select Target", "", "Select Target", "")); // Sacrifice was cast twice. Also, no "Spell Failed".
 }
 
+GAME_TEST(Issues, Issue1471) {
+    // Waiting until dawn doesn't recharge Armageddon.
+    auto armageddonTape = tapes.custom([] { return pParty->pCharacters[0].uNumArmageddonCasts; });
+    auto timeTape = tapes.time();
+    test.playTraceFromTestData("issue_1471.mm7", "issue_1471.json");
+    EXPECT_EQ(armageddonTape, tape(4, 0, 1)); // blocked/ reset/ cast
+    EXPECT_GT(timeTape.front().toCivilTime().day, timeTape.back().toCivilTime().day); // Time should have passed 3am reset time
+    EXPECT_GT(timeTape.back().toCivilTime().hour, 3);
+}
+
 GAME_TEST(Issues, Issue1475) {
     // Warlock mana regen from Baby Dragon regens mana for dead characters.
     auto timeTape = tapes.time();
