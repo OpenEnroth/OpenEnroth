@@ -1529,10 +1529,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x)) << 16) - uZoom * pParty->pos.x) >> 16);
-            int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->pos.y) >> 16);
-            int pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->pos.x) >> 16);
-            int pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->pos.y) >> 16);
+            int pX = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x - (int)pParty->pos.x);
+            int pY = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y - (int)pParty->pos.y);
+            int pZ = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x - (int)pParty->pos.x);
+            int pW = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y - (int)pParty->pos.y);
             render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
         }
     }
