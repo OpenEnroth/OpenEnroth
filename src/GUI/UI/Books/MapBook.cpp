@@ -179,6 +179,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
         // nearest neiborhood scaling
         // if (texture8_data)
+        // TODO(pskelton): stretch texture dont scale it
         {
             for (unsigned i = 0; i < screenHeight; ++i) {
                 int map_tile_Y = (scaled_posY - 80) / 4;
