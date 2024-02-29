@@ -1225,7 +1225,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uActorHeight = src.height;
     dst->uMovementSpeed = src.moveSpeed;
     snapshot(src.pos, &dst->vPosition);
-    snapshot(src.speed, &dst->vVelocity);
+    snapshot(src.velocity, &dst->vVelocity);
     dst->uYawAngle = src.yawAngle;
     dst->uPitchAngle = src.pitchAngle;
     dst->uSectorID = src.sectorId;
@@ -1319,7 +1319,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->height = src.uActorHeight;
     dst->moveSpeed = src.uMovementSpeed;
     reconstruct(src.vPosition, &dst->pos);
-    reconstruct(src.vVelocity, &dst->speed);
+    reconstruct(src.vVelocity, &dst->velocity);
     dst->yawAngle = src.uYawAngle;
     dst->pitchAngle = src.uPitchAngle;
     dst->sectorId = src.uSectorID;

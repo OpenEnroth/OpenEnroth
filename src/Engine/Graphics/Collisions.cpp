@@ -587,7 +587,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         collision_state.position_lo = actor.pos.toFloat() + Vec3f(0, 0, actor.radius + 1);
         collision_state.position_hi = actor.pos.toFloat() + Vec3f(0, 0, actor.height - actor.radius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
-        collision_state.velocity = actor.speed.toFloat();
+        collision_state.velocity = actor.velocity.toFloat();
         collision_state.uSectorID = actor.sectorId;
         if (collision_state.PrepareAndCheckIfStationary())
             break;
@@ -661,8 +661,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Character) {
             if (actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
-                actor.speed.y = 0;
-                actor.speed.x = 0;
+                actor.velocity.y = 0;
+                actor.velocity.x = 0;
 
                 if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
@@ -673,10 +673,10 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = integer_sqrt(actor.speed.x * actor.speed.x + actor.speed.y * actor.speed.y);
+            int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
-            actor.speed.x = TrigLUT.cos(angle) * speed;
-            actor.speed.y = TrigLUT.sin(angle) * speed;
+            actor.velocity.x = TrigLUT.cos(angle) * speed;
+            actor.velocity.y = TrigLUT.sin(angle) * speed;
         }
 
         if (type == OBJECT_Face) {
@@ -684,31 +684,31 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             collision_state.ignored_face_id = collision_state.pid.id();
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
-                actor.speed.z = 0;
+                actor.velocity.z = 0;
                 actor.pos.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;
-                if (actor.speed.lengthSqr() < 400) {
-                    actor.speed.x = 0;
-                    actor.speed.y = 0;
+                if (actor.velocity.lengthSqr() < 400) {
+                    actor.velocity.x = 0;
+                    actor.velocity.y = 0;
                     continue; // TODO(captainurist): drop this continue
                 }
             } else {
-                float velocityDotNormal = dot(face->facePlane.normal, actor.speed.toFloat());
+                float velocityDotNormal = dot(face->facePlane.normal, actor.velocity.toFloat());
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
-                actor.speed += (velocityDotNormal * face->facePlane.normal).toInt();
+                actor.velocity += (velocityDotNormal * face->facePlane.normal).toInt();
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
                     float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos.toFloat());
                     if (overshoot > 0)
                         actor.pos += (overshoot * pIndoor->pFaces[id].facePlane.normal).toInt();
-                    actor.yawAngle = TrigLUT.atan2(actor.speed.x, actor.speed.y);
+                    actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
                 }
             }
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
         }
 
-        actor.speed.x = fixpoint_mul(58500, actor.speed.x);
-        actor.speed.y = fixpoint_mul(58500, actor.speed.y);
-        actor.speed.z = fixpoint_mul(58500, actor.speed.z);
+        actor.velocity.x = fixpoint_mul(58500, actor.velocity.x);
+        actor.velocity.y = fixpoint_mul(58500, actor.velocity.y);
+        actor.velocity.z = fixpoint_mul(58500, actor.velocity.z);
     }
 }
 
@@ -725,7 +725,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         collision_state.position_lo = actor.pos.toFloat() + Vec3f(0, 0, actorRadius + 1);
         collision_state.position_hi = actor.pos.toFloat() + Vec3f(0, 0, actor.height - actorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
-        collision_state.velocity = actor.speed.toFloat();
+        collision_state.velocity = actor.velocity.toFloat();
         collision_state.uSectorID = 0;
         if (collision_state.PrepareAndCheckIfStationary())
             break;
@@ -783,8 +783,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         if (type == OBJECT_Character) {
             if (actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY) {
-                actor.speed.y = 0;
-                actor.speed.x = 0;
+                actor.velocity.y = 0;
+                actor.velocity.x = 0;
 
                 if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
@@ -795,10 +795,10 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = integer_sqrt(actor.speed.x * actor.speed.x + actor.speed.y * actor.speed.y);
+            int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y);
-            actor.speed.x = TrigLUT.cos(angle) * speed;
-            actor.speed.y = TrigLUT.sin(angle) * speed;
+            actor.velocity.x = TrigLUT.cos(angle) * speed;
+            actor.velocity.y = TrigLUT.sin(angle) * speed;
         }
 
         if (type == OBJECT_Face) {
@@ -806,32 +806,32 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
-                    actor.speed.z = 0;
+                    actor.velocity.z = 0;
                     actor.pos.z = pOutdoor->model(collision_state.pid).pVertices[face->pVertexIDs[0]].z + 1;
-                    if (actor.speed.lengthSqr() < 400) {
-                        actor.speed.y = 0;
-                        actor.speed.x = 0;
+                    if (actor.velocity.lengthSqr() < 400) {
+                        actor.velocity.y = 0;
+                        actor.velocity.x = 0;
                     }
                 } else {
-                    float velocityDotNormal = dot(face->facePlane.normal, actor.speed.toFloat());
+                    float velocityDotNormal = dot(face->facePlane.normal, actor.velocity.toFloat());
                     // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces.
                     // Note that not all copies of this code have std::abs. Why?
                     velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
 
-                    actor.speed += (velocityDotNormal * face->facePlane.normal).toInt();
+                    actor.velocity += (velocityDotNormal * face->facePlane.normal).toInt();
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
                         float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos.toFloat());
                         if (overshoot > 0)
                             actor.pos += (overshoot * face->facePlane.normal).toInt();
-                        actor.yawAngle = TrigLUT.atan2(actor.speed.x, actor.speed.y);
+                        actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
                     }
                 }
             }
         }
 
-        actor.speed.x = fixpoint_mul(58500, actor.speed.x);
-        actor.speed.y = fixpoint_mul(58500, actor.speed.y);
-        actor.speed.z = fixpoint_mul(58500, actor.speed.z);
+        actor.velocity.x = fixpoint_mul(58500, actor.velocity.x);
+        actor.velocity.y = fixpoint_mul(58500, actor.velocity.y);
+        actor.velocity.z = fixpoint_mul(58500, actor.velocity.z);
     }
 }
 

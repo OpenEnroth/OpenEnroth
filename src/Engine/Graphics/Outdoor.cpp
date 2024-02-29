@@ -1213,9 +1213,9 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                     (pActors[i].currentHP == 0 ||
                      pActors[i].monsterInfo.hp == 0))
                     pActors[i].aiState = AIState::Dead;
-                pActors[i].speed.x = 0;
-                pActors[i].speed.y = 0;
-                pActors[i].speed.z = 0;
+                pActors[i].velocity.x = 0;
+                pActors[i].velocity.y = 0;
+                pActors[i].velocity.z = 0;
                 pActors[i].UpdateAnimation();
                 pActors[i].monsterInfo.hostilityType =
                     HOSTILITY_FRIENDLY;
@@ -1237,9 +1237,9 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                 (pActors[i].currentHP == 0 ||
                  pActors[i].monsterInfo.hp == 0))
                 pActors[i].aiState = AIState::Dead;
-            pActors[i].speed.x = 0;
-            pActors[i].speed.y = 0;
-            pActors[i].speed.z = 0;
+            pActors[i].velocity.x = 0;
+            pActors[i].velocity.y = 0;
+            pActors[i].velocity.z = 0;
             pActors[i].UpdateAnimation();
             pActors[i].monsterInfo.hostilityType =
                 HOSTILITY_FRIENDLY;
@@ -2359,22 +2359,22 @@ void UpdateActors_ODM() {
             if (Actor_Speed > 1000)
                 Actor_Speed = 1000;
 
-            pActors[Actor_ITR].speed.x = TrigLUT.cos(pActors[Actor_ITR].yawAngle) * Actor_Speed;
-            pActors[Actor_ITR].speed.y = TrigLUT.sin(pActors[Actor_ITR].yawAngle) * Actor_Speed;
+            pActors[Actor_ITR].velocity.x = TrigLUT.cos(pActors[Actor_ITR].yawAngle) * Actor_Speed;
+            pActors[Actor_ITR].velocity.y = TrigLUT.sin(pActors[Actor_ITR].yawAngle) * Actor_Speed;
             if (uIsFlying) {
-                pActors[Actor_ITR].speed.z = TrigLUT.sin(pActors[Actor_ITR].pitchAngle) * Actor_Speed;
+                pActors[Actor_ITR].velocity.z = TrigLUT.sin(pActors[Actor_ITR].pitchAngle) * Actor_Speed;
             }
         } else {
-            pActors[Actor_ITR].speed.x = fixpoint_mul(55000, pActors[Actor_ITR].speed.x);
-            pActors[Actor_ITR].speed.y = fixpoint_mul(55000, pActors[Actor_ITR].speed.y);
+            pActors[Actor_ITR].velocity.x = fixpoint_mul(55000, pActors[Actor_ITR].velocity.x);
+            pActors[Actor_ITR].velocity.y = fixpoint_mul(55000, pActors[Actor_ITR].velocity.y);
             if (uIsFlying)
-                pActors[Actor_ITR].speed.z = fixpoint_mul(55000, pActors[Actor_ITR].speed.z);
+                pActors[Actor_ITR].velocity.z = fixpoint_mul(55000, pActors[Actor_ITR].velocity.z);
         }
 
         // BELOW FLOOR - POP UPWARDS
         if (pActors[Actor_ITR].pos.z < Floor_Level) {
             pActors[Actor_ITR].pos.z = Floor_Level;
-            pActors[Actor_ITR].speed.z = uIsFlying != 0 ? 0x14 : 0;
+            pActors[Actor_ITR].velocity.z = uIsFlying != 0 ? 0x14 : 0;
         }
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
@@ -2384,25 +2384,25 @@ void UpdateActors_ODM() {
                 ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
                 uint16_t Gravity = GetGravityStrength();
 
-                pActors[Actor_ITR].speed.z += -16 * pEventTimer->dt().ticks() * Gravity;
-                int v73 = std::abs(Terrain_Norm.x * pActors[Actor_ITR].speed.x +
-                              Terrain_Norm.z * pActors[Actor_ITR].speed.z +
-                              Terrain_Norm.y * pActors[Actor_ITR].speed.y) >> 15;
+                pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity;
+                int v73 = std::abs(Terrain_Norm.x * pActors[Actor_ITR].velocity.x +
+                              Terrain_Norm.z * pActors[Actor_ITR].velocity.z +
+                              Terrain_Norm.y * pActors[Actor_ITR].velocity.y) >> 15;
 
-                pActors[Actor_ITR].speed.x += fixpoint_mul(v73, Terrain_Norm.x);
-                pActors[Actor_ITR].speed.y += fixpoint_mul(v73, Terrain_Norm.y);
+                pActors[Actor_ITR].velocity.x += fixpoint_mul(v73, Terrain_Norm.x);
+                pActors[Actor_ITR].velocity.y += fixpoint_mul(v73, Terrain_Norm.y);
                 pActors[Actor_ITR].yawAngle -= 32;
                 // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }
         } else {
-            pActors[Actor_ITR].speed.z -= pEventTimer->dt().ticks() * GetGravityStrength();
+            pActors[Actor_ITR].velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
         // ARMAGEDDON PANIC
         if (pParty->armageddon_timer && pActors[Actor_ITR].CanAct() && pParty->armageddonForceCount > 0) {
-            pActors[Actor_ITR].speed.x += grng->random(100) - 50;
-            pActors[Actor_ITR].speed.y += grng->random(100) - 50;
-            pActors[Actor_ITR].speed.z += grng->random(100) - 20;
+            pActors[Actor_ITR].velocity.x += grng->random(100) - 50;
+            pActors[Actor_ITR].velocity.y += grng->random(100) - 50;
+            pActors[Actor_ITR].velocity.z += grng->random(100) - 20;
             pActors[Actor_ITR].aiState = Stunned;
             pActors[Actor_ITR].yawAngle += grng->random(32) - 16;
             pActors[Actor_ITR].UpdateAnimation();
@@ -2410,9 +2410,9 @@ void UpdateActors_ODM() {
 
         // TODO(pskelton): this cancels out the above - is this intended
         // MOVING TOO SLOW
-        if (pActors[Actor_ITR].speed.xy().lengthSqr() < 400 && Slope_High == 0) {
-            pActors[Actor_ITR].speed.y = 0;
-            pActors[Actor_ITR].speed.x = 0;
+        if (pActors[Actor_ITR].velocity.xy().lengthSqr() < 400 && Slope_High == 0) {
+            pActors[Actor_ITR].velocity.y = 0;
+            pActors[Actor_ITR].velocity.x = 0;
         }
 
         // COLLISIONS
@@ -2423,8 +2423,8 @@ void UpdateActors_ODM() {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
             tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y) & TILE_DESC_WATER);
-            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x + pActors[Actor_ITR].speed.x,
-                                                         pActors[Actor_ITR].pos.y + pActors[Actor_ITR].speed.y) & TILE_DESC_WATER);
+            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x + pActors[Actor_ITR].velocity.x,
+                                                         pActors[Actor_ITR].pos.y + pActors[Actor_ITR].velocity.y) & TILE_DESC_WATER);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {

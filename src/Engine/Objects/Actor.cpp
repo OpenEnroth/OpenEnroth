@@ -1001,9 +1001,9 @@ void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID,
 
         pActors[uActorID].yawAngle = Dir_Out->uYawAngle;
         pActors[uActorID].currentActionTime = 0_ticks;
-        pActors[uActorID].speed.z = 0;
-        pActors[uActorID].speed.y = 0;
-        pActors[uActorID].speed.x = 0;
+        pActors[uActorID].velocity.z = 0;
+        pActors[uActorID].velocity.y = 0;
+        pActors[uActorID].velocity.x = 0;
         pActors[uActorID].pitchAngle = Dir_Out->uPitchAngle;
         pActors[uActorID].currentActionLength = Duration::fromRealtimeSeconds(2);
         pActors[uActorID].aiState = Interacting;
@@ -1043,9 +1043,9 @@ void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
     pActors[uActorID].currentActionTime = 0_ticks;
     pActors[uActorID].yawAngle = a4->uYawAngle;
     pActors[uActorID].pitchAngle = a4->uPitchAngle;
-    pActors[uActorID].speed.z = 0;
-    pActors[uActorID].speed.y = 0;
-    pActors[uActorID].speed.x = 0;
+    pActors[uActorID].velocity.z = 0;
+    pActors[uActorID].velocity.y = 0;
+    pActors[uActorID].velocity.x = 0;
     pActors[uActorID].UpdateAnimation();
 }
 
@@ -1054,9 +1054,9 @@ void Actor::StandAwhile(unsigned int uActorID) {
     pActors[uActorID].currentActionLength = Duration::randomRealtimeSeconds(grng, 1, 2);
     pActors[uActorID].currentActionTime = 0_ticks;
     pActors[uActorID].aiState = Standing;
-    pActors[uActorID].speed.z = 0;
-    pActors[uActorID].speed.y = 0;
-    pActors[uActorID].speed.x = 0;
+    pActors[uActorID].velocity.z = 0;
+    pActors[uActorID].velocity.y = 0;
+    pActors[uActorID].velocity.x = 0;
     pActors[uActorID].UpdateAnimation();
 }
 
@@ -1124,9 +1124,9 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         } else {
             pActors[uActorID].monsterInfo.recoveryTime = v25;
         }
-        pActors[uActorID].speed.z = 0;
-        pActors[uActorID].speed.y = 0;
-        pActors[uActorID].speed.x = 0;
+        pActors[uActorID].velocity.z = 0;
+        pActors[uActorID].velocity.y = 0;
+        pActors[uActorID].velocity.x = 0;
         pActors[uActorID].UpdateAnimation();
     } else {
         Actor::AI_Pursue1(uActorID, sTargetPid, grng->random(2), 64_ticks, arg0);
@@ -1355,9 +1355,9 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         } else {
             v3->monsterInfo.recoveryTime = v3->currentActionLength + debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         }
-        v3->speed.z = 0;
-        v3->speed.y = 0;
-        v3->speed.x = 0;
+        v3->velocity.z = 0;
+        v3->velocity.y = 0;
+        v3->velocity.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell2Id)) {
             v3->currentActionLength = 64_ticks;
             v3->currentActionTime = 0_ticks;
@@ -1430,9 +1430,9 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
             v3->monsterInfo.recoveryTime = v3->currentActionLength + debug_combat_recovery_mul * flt_debugrecmod3 * pDira;
         }
         v16 = v3->monsterInfo.spell1Id;
-        v3->speed.z = 0;
-        v3->speed.y = 0;
-        v3->speed.x = 0;
+        v3->velocity.z = 0;
+        v3->velocity.y = 0;
+        v3->velocity.x = 0;
         if (ShouldMonsterPlayAttackAnim(v3->monsterInfo.spell1Id)) {
             v3->currentActionLength = 64_ticks;
             v3->currentActionTime = 0_ticks;
@@ -1504,9 +1504,9 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         } else {
             v3->monsterInfo.recoveryTime = pDira;
         }
-        v3->speed.z = 0;
-        v3->speed.y = 0;
-        v3->speed.x = 0;
+        v3->velocity.z = 0;
+        v3->velocity.y = 0;
+        v3->velocity.x = 0;
         v3->UpdateAnimation();
     } else {
         Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
@@ -1575,9 +1575,9 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         } else {
             v3->monsterInfo.recoveryTime = v3->currentActionLength + flt_debugrecmod3 * debug_combat_recovery_mul * pDira;
         }
-        v3->speed.z = 0;
-        v3->speed.y = 0;
-        v3->speed.x = 0;
+        v3->velocity.z = 0;
+        v3->velocity.y = 0;
+        v3->velocity.x = 0;
         v3->UpdateAnimation();
     } else {
         Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64_ticks, pDir);
@@ -1770,9 +1770,9 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
         actor->aiState = Fidgeting;
         actor->currentActionTime = 0_ticks;
         actor->yawAngle = a4->uYawAngle;
-        actor->speed.z = 0;
-        actor->speed.y = 0;
-        actor->speed.x = 0;
+        actor->velocity.z = 0;
+        actor->velocity.y = 0;
+        actor->velocity.x = 0;
         if (vrng->random(100) < 5) {
             Actor::playSound(uActorID, ACTOR_BORED_SOUND);
         }
@@ -2406,11 +2406,11 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                             (int32_t)fixpoint_mul(pushDistance, pVelocity->y);
                         pVelocity->z =
                             (int32_t)fixpoint_mul(pushDistance, pVelocity->z);
-                        pActors[actor_id].speed.x =
+                        pActors[actor_id].velocity.x =
                             50 * (short)pVelocity->x;
-                        pActors[actor_id].speed.y =
+                        pActors[actor_id].velocity.y =
                             50 * (short)pVelocity->y;
-                        pActors[actor_id].speed.z =
+                        pActors[actor_id].velocity.z =
                             50 * (short)pVelocity->z;
                     }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
@@ -3272,9 +3272,9 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
         pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
         pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
         pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
-        pMonster->speed.x = 50 * (short)pVelocity->x;
-        pMonster->speed.y = 50 * (short)pVelocity->y;
-        pMonster->speed.z = 50 * (short)pVelocity->z;
+        pMonster->velocity.x = 50 * (short)pVelocity->x;
+        pMonster->velocity.y = 50 * (short)pVelocity->y;
+        pMonster->velocity.z = 50 * (short)pVelocity->z;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
@@ -4699,11 +4699,11 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                         pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
                         pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
                         pVelocity->z = fixpoint_mul(a2a, pVelocity->z);
-                        pActors[uActorID].speed.x =
+                        pActors[uActorID].velocity.x =
                             50 * (short)pVelocity->x;
-                        pActors[uActorID].speed.y =
+                        pActors[uActorID].velocity.y =
                             50 * (short)pVelocity->y;
-                        pActors[uActorID].speed.z =
+                        pActors[uActorID].velocity.z =
                             50 * (short)pVelocity->z;
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);

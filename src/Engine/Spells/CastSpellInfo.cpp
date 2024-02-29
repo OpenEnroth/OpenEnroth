@@ -560,8 +560,8 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
-                        pActors[monster_id].speed.x = 0;
-                        pActors[monster_id].speed.y = 0;
+                        pActors[monster_id].velocity.x = 0;
+                        pActors[monster_id].velocity.y = 0;
                         spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], Color()); // TODO(captainurist): why transparent black?
                     }
                     break;
