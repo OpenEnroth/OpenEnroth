@@ -1120,7 +1120,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     pParty->uFlags |= PARTY_FLAG_JUMPING;
-                    pParty->speed.z = 1000;
+                    pParty->velocity.z = 1000;
                     pParty->pos.z += 5;
                     break;
                 }

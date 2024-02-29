@@ -1013,7 +1013,7 @@ void Game::processQueuedMessages() {
                 SaveGame(1, 0);
 
                 pParty->pos = Vec3f(-17331, 12547, 465); // respawn point in Harmondale
-                pParty->speed = Vec3f();
+                pParty->velocity = Vec3f();
                 pParty->_viewYaw = 0;
                 pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
@@ -2034,7 +2034,7 @@ void Game::gameLoop() {
                 Source = pLocationName;
                 pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
-                pParty->speed = Vec3f();
+                pParty->velocity = Vec3f();
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;

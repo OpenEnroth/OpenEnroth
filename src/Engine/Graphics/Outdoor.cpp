@@ -1690,7 +1690,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // set params before input
-    Vec3f partyInputSpeed = Vec3f(0, 0, pParty->speed.z);
+    Vec3f partyInputSpeed = Vec3f(0, 0, pParty->velocity.z);
     if (pParty->bFlying) {
         partyInputSpeed.z = 0;
     }
@@ -1720,7 +1720,7 @@ void ODM_ProcessPartyActions() {
                     (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
-                        pParty->speed.z = 0;
+                        pParty->velocity.z = 0;
                         noFlightBob = true;
                         pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
                         if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
@@ -2062,7 +2062,7 @@ void ODM_ProcessPartyActions() {
         pParty->pos.x = partyNewPos.x;
         pParty->pos.y = partyNewPos.y;
 
-        pParty->speed.z = partyInputSpeed.z;
+        pParty->velocity.z = partyInputSpeed.z;
 
         pParty->pos.z = partyNewPos.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
@@ -2108,7 +2108,7 @@ void ODM_ProcessPartyActions() {
         }
 
         pParty->pos.z = partyNewPos.z;
-        pParty->speed.z = partyInputSpeed.z;
+        pParty->velocity.z = partyInputSpeed.z;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
@@ -2138,7 +2138,7 @@ void ODM_ProcessPartyActions() {
         (eventProcessor(triggerID, Pid(), 1), pParty->pos.x == partyNewPos.x) &&
         pParty->pos.y == partyNewPos.y && pParty->pos.z == partyNewPos.z) {
         if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && partyInputSpeed.z < 0)) {
-            pParty->speed.z = 0;
+            pParty->velocity.z = 0;
             if (!partyHasHitModel)
                 pParty->pos.z = newGroundLevel;
             if (pParty->uFallStartZ - partyNewPos.z > 512 && !partyHasFeatherFall &&
@@ -2810,7 +2810,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->pos = pLevelDecorations[i].vPosition.toFloat();
-                    pParty->speed = Vec3f();
+                    pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;
                     if (pLevelDecorations[i]._yawAngle)

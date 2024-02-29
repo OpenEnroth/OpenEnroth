@@ -242,7 +242,7 @@ DialogueId arenaMainDialogue() {
                 return DIALOGUE_ARENA_REWARD;
             } else {
                 pParty->pos = Vec3f(3849, 5770, 1);
-                pParty->speed = Vec3f();
+                pParty->velocity = Vec3f();
                 pParty->uFallStartZ = 1;
                 pParty->_viewYaw = 512;
                 pParty->_viewPitch = 0;
@@ -282,7 +282,7 @@ void prepareArenaFight(DialogueId dialogue) {
     render->Present();
 
     pParty->pos = Vec3f(3849, 5770, 1); // TODO(pskelton) :: extract this common teleport to func
-    pParty->speed = Vec3f();
+    pParty->velocity = Vec3f();
     pParty->uFallStartZ = 1;
     pParty->_viewYaw = 512;
     pParty->_viewPitch = 0;

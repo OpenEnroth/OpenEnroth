@@ -846,7 +846,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     for (unsigned i = 0; i < 5; i++) {
         collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
-        collision_state.velocity = pParty->speed;
+        collision_state.velocity = pParty->velocity;
 
         collision_state.uSectorID = sectorId;
         Duration dt; // zero means use actual dt
@@ -915,7 +915,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             }
 
             // Set party to move along this new sliding vector
-            pParty->speed = newDirection * dot(newDirection, pParty->speed);
+            pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
             // Skip reducing party speed
             continue;
         }
@@ -947,10 +947,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             // Push away from the surface and add a touch down for better slide
             if (bFaceSlopeTooSteep)
-                pParty->speed += Vec3f(pFace->facePlane.normal.x, pFace->facePlane.normal.y, -2) * 10;
+                pParty->velocity += Vec3f(pFace->facePlane.normal.x, pFace->facePlane.normal.y, -2) * 10;
 
             // set movement speed along sliding plane
-            pParty->speed = newDirection * dot(newDirection, pParty->speed);
+            pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
 
             if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
                 *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
@@ -964,7 +964,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         // ~0.9x reduce party speed and try again
-        pParty->speed *= 0.89263916f; // was 58500 fp
+        pParty->velocity *= 0.89263916f; // was 58500 fp
     }
 }
 
