@@ -163,10 +163,11 @@ float flt_4D84E8 = 0.0f;
 
 unsigned int uGammaPos = 0;
 
-std::array<int, 6> dword_4E4560;
-std::array<int, 6> dword_4E4578;
-std::array<int, 6> dword_4E4590;
-std::array<int, 6> dword_4E45A8;
+std::array<int, 6> teleportX;
+std::array<int, 6> teleportY;
+std::array<int, 6> teleportZ;
+std::array<int, 6> teleportYaw;
+
 std::array<float, 10> flt_4E4A80 = {{
     0.050000001f, 0.1f,  0.30000001f, 0.5f,
     0.60000002f,  1.0f,  6.0f,        25.0f,
