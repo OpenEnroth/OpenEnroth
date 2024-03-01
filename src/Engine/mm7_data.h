@@ -38,10 +38,11 @@ extern float flt_4D84E8;
 
 extern unsigned int uGammaPos;
 
-extern std::array<int, 6> dword_4E4560;
-extern std::array<int, 6> dword_4E4578;
-extern std::array<int, 6> dword_4E4590;
-extern std::array<int, 6> dword_4E45A8;
+extern std::array<int, 6> teleportX;
+extern std::array<int, 6> teleportY;
+extern std::array<int, 6> teleportZ;
+extern std::array<int, 6> teleportYaw;
+
 extern std::array<float, 10> flt_4E4A80;
 
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_x;  // 004E5E50

@@ -966,7 +966,7 @@ void Game::processQueuedMessages() {
                 v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3i(dword_4E4560[v54], dword_4E4578[v54], dword_4E4590[v54]), dword_4E45A8[v54], 0, 0);
+                    engine->_teleportPoint.setTeleportTarget(Vec3i(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
