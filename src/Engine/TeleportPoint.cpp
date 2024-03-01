@@ -19,7 +19,7 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
     assert(_teleportValid);
 
     Vec3f newPos = pParty->pos;
-    Vec3f newSpeed = pParty->speed;
+    Vec3f newSpeed = pParty->velocity;
     int newFallStart = pParty->uFallStartZ;
     int newPitch = pParty->_viewPitch;
 
@@ -48,7 +48,7 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
     }
 
     pParty->pos = newPos;
-    pParty->speed = newSpeed;
+    pParty->velocity = newSpeed;
     pParty->uFallStartZ = newFallStart;
     if (_yaw != -1) {
         pParty->_viewYaw = _yaw;

@@ -483,7 +483,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->viewPrevYaw = src._viewPrevYaw;
     dst->viewPrevPitch = src._viewPrevPitch;
     dst->prevEyeLevel = src.lastEyeLevel;
-    dst->fallSpeed = src.speed.z;
+    dst->fallSpeed = src.velocity.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
     dst->waterLavaTimer = src._6FC_water_lava_timer.ticks(); // Can overflow and that's OK.
     dst->fallStartZ = src.uFallStartZ;
@@ -592,7 +592,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
     dst->lastEyeLevel = src.prevEyeLevel;
-    dst->speed = Vec3f(0, 0, src.fallSpeed);
+    dst->velocity = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->_6FC_water_lava_timer = Time::fromTicks(src.waterLavaTimer);
     dst->uFallStartZ = src.fallStartZ;
@@ -1225,7 +1225,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uActorHeight = src.height;
     dst->uMovementSpeed = src.moveSpeed;
     snapshot(src.pos, &dst->vPosition);
-    snapshot(src.speed, &dst->vVelocity);
+    snapshot(src.velocity, &dst->vVelocity);
     dst->uYawAngle = src.yawAngle;
     dst->uPitchAngle = src.pitchAngle;
     dst->uSectorID = src.sectorId;
@@ -1319,7 +1319,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->height = src.uActorHeight;
     dst->moveSpeed = src.uMovementSpeed;
     reconstruct(src.vPosition, &dst->pos);
-    reconstruct(src.vVelocity, &dst->speed);
+    reconstruct(src.vVelocity, &dst->velocity);
     dst->yawAngle = src.uYawAngle;
     dst->pitchAngle = src.uPitchAngle;
     dst->sectorId = src.uSectorID;

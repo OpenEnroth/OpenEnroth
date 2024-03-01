@@ -275,7 +275,7 @@ struct Party {
     Time last_regenerated; // Timestamp when HP/MP regeneration was done last time.
     PartyTimeStruct PartyTimes;
     Vec3f pos;
-    Vec3f speed; // Party speed, negative z => falling, positive z => jumping.
+    Vec3f velocity; // Party speed, negative z => falling, positive z => jumping.
                  // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
     int _viewYaw; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
     int _viewPitch; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.

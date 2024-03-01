@@ -834,38 +834,38 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            actor.speed.x = TrigLUT.cos(actor.yawAngle) * moveSpeed;
-            actor.speed.y = TrigLUT.sin(actor.yawAngle) * moveSpeed;
+            actor.velocity.x = TrigLUT.cos(actor.yawAngle) * moveSpeed;
+            actor.velocity.y = TrigLUT.sin(actor.yawAngle) * moveSpeed;
             if (isFlying)
-                actor.speed.z = TrigLUT.sin(actor.pitchAngle) * moveSpeed;
+                actor.velocity.z = TrigLUT.sin(actor.pitchAngle) * moveSpeed;
         } else {
             // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
-            actor.speed.x = fixpoint_mul(55000, actor.speed.x);
-            actor.speed.y = fixpoint_mul(55000, actor.speed.y);
+            actor.velocity.x = fixpoint_mul(55000, actor.velocity.x);
+            actor.velocity.y = fixpoint_mul(55000, actor.velocity.y);
             if (isFlying)
-                actor.speed.z = fixpoint_mul(55000, actor.speed.z);
+                actor.velocity.z = fixpoint_mul(55000, actor.velocity.z);
         }
 
         if (actor.pos.z <= floorZ) {
             actor.pos.z = floorZ + 1;
             if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
-                if (actor.speed.z < 0)
-                    actor.speed.z = 0;
+                if (actor.velocity.z < 0)
+                    actor.velocity.z = 0;
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
-                    actor.speed.z -= pEventTimer->dt().ticks() * GetGravityStrength();
+                    actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
         } else {
             if (isAboveGround && !isFlying)
-                actor.speed.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
+                actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
-        if (actor.speed.lengthSqr() >= 400) {
+        if (actor.velocity.lengthSqr() >= 400) {
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
-            actor.speed = Vec3i(0, 0, 0);
+            actor.velocity = Vec3i(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
@@ -1048,7 +1048,7 @@ void PrepareToLoadBLV(bool bLoading) {
         pParty->_viewPitch = 0;
         pParty->_viewYaw = 0;
         pParty->pos = Vec3f();
-        pParty->speed = Vec3f();
+        pParty->velocity = Vec3f();
         pParty->uFallStartZ = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
         pBLVRenderParams->Reset();
@@ -1623,7 +1623,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int rotation =
         pEventTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
 
-    pParty->speed = Vec3f(0, 0, pParty->speed.z);
+    pParty->velocity = Vec3f(0, 0, pParty->velocity.z);
 
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
@@ -1655,38 +1655,38 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_StrafeLeft:
-                pParty->speed.x -= TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->speed.y += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x -= TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                pParty->speed.y -= TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->speed.x += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y -= TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                pParty->speed.x += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->speed.y += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                pParty->speed.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->speed.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                pParty->speed.x += TrigLUT.cos(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->speed.y += TrigLUT.sin(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                pParty->speed.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->speed.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
@@ -1711,9 +1711,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_Jump:
-                if ((!isAboveGround || pParty->pos.z <= floorZ + 6 && pParty->speed.z <= 0) && pParty->jump_strength) {
+                if ((!isAboveGround || pParty->pos.z <= floorZ + 6 && pParty->velocity.z <= 0) && pParty->jump_strength) {
                     isAboveGround = true;
-                    pParty->speed.z += pParty->jump_strength * 96;
+                    pParty->velocity.z += pParty->jump_strength * 96;
                 }
                 break;
             default:
@@ -1722,8 +1722,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (isAboveGround) {
-        pParty->speed.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
-        if (pParty->speed.z < -500) {
+        pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
+        if (pParty->velocity.z < -500) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                     !character.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {  // was 8
@@ -1733,34 +1733,34 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     } else {
         if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
-            pParty->speed.z -= 1.0f * pEventTimer->dt().ticks() * GetGravityStrength();
+            pParty->velocity.z -= 1.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         } else {
             if (!(pParty->uFlags & PARTY_FLAG_LANDING))
-                pParty->speed.z = 0;
+                pParty->velocity.z = 0;
         }
     }
 
-    if (!isAboveGround || pParty->speed.z > 0)
+    if (!isAboveGround || pParty->velocity.z > 0)
         pParty->uFallStartZ = pParty->pos.z;
 
     // If party movement delta is lower then this number then the party remains stationary.
     int64_t elapsed_time_bounded = std::min(pEventTimer->dt().ticks(), static_cast<std::int64_t>(10000));
     int min_party_move_delta_sqr = 400 * elapsed_time_bounded * elapsed_time_bounded / 8;
 
-    if (pParty->speed.xy().lengthSqr() < min_party_move_delta_sqr) {
-        pParty->speed.x = 0;
-        pParty->speed.y = 0;
+    if (pParty->velocity.xy().lengthSqr() < min_party_move_delta_sqr) {
+        pParty->velocity.x = 0;
+        pParty->velocity.y = 0;
     }
 
     Vec3f oldPos = pParty->pos;
-    Vec3f savedspeed = pParty->speed;
+    Vec3f savedspeed = pParty->velocity;
 
     // horizontal
-    pParty->speed.z = 0;
+    pParty->velocity.z = 0;
     ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
     // vertical -  only when horizonal motion hasnt caused height gain
     if (pParty->pos.z <= oldPos.z) {
-        pParty->speed = Vec3f(0, 0, savedspeed.z);
+        pParty->velocity = Vec3f(0, 0, savedspeed.z);
         ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
     }
 

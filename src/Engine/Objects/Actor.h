@@ -211,7 +211,7 @@ class Actor {
     uint16_t height = 128;
     uint16_t moveSpeed = 200;
     Vec3i pos;
-    Vec3i speed; // TODO(captainurist): velocity is a better name for this, speed = ||velocity||
+    Vec3i velocity;
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;
     int sectorId = 0;
