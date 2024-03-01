@@ -172,7 +172,7 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on);
  * @offset 0x44882F
  */
 void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName);  // idb
-void _494035_timed_effects__water_walking_damage__etc();
+void _494035_timed_effects__water_walking_damage__etc(Duration dt);
 void maybeWakeSoloSurvivor();
 void updatePartyDeathState();
 

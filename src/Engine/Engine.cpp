@@ -1178,9 +1178,9 @@ void back_to_game() {
 }
 
 //----- (00494035) --------------------------------------------------------
-void _494035_timed_effects__water_walking_damage__etc() {
+void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     Time oldTime = pParty->GetPlayingTime();
-    Time newTime = oldTime + pEventTimer->dt();
+    Time newTime = oldTime + dt;
     pParty->GetPlayingTime() = newTime;
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
@@ -1230,10 +1230,14 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
 
-        for (Character &character : pParty->pCharacters)
+        for (Character &character : pParty->pCharacters) {
             character.uNumDivineInterventionCastsThisDay = 0;
+            character.uNumArmageddonCasts = 0;
+            character.uNumFireSpikeCasts = 0; // TODO(pskelton): adding this here for now but behaviour around firespike permanence needs checking
+        }
     }
 
+    // TODO(pskelton): do water and lava damage need to be more accurate to dt?
     // water damage
     if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
@@ -1244,10 +1248,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
-                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-                    if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) {
-                        engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
-                    }
+                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
+                    engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                 } else {
                     character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
                 }
@@ -1261,16 +1263,14 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-            if (pParty->uFlags & PARTY_FLAG_BURNING) {
-                engine->_statusBar->setEventShort(LSTR_ON_FIRE);
-            }
         }
+        engine->_statusBar->setEventShort(LSTR_ON_FIRE);
     }
 
     RegeneratePartyHealthMana();
 
     // TODO(captainurist): #time drop once we move to msecs in duration.
-    Duration recoveryTimeDt = pEventTimer->dt();
+    Duration recoveryTimeDt = dt;
     recoveryTimeDt += pParty->_roundingDt;
     pParty->_roundingDt = 0_ticks;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0_ticks) {  // half recovery speed if party is running
