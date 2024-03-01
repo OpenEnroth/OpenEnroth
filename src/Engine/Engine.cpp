@@ -369,58 +369,6 @@ bool Engine::draw_debug_outlines() {
     return true;
 }
 
-//----- (0044EC23) --------------------------------------------------------
-int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
-    double v4;  // st7@4
-    // double v5; // ST00_8@4
-    signed int v6;  // eax@5
-    // double v7; // ST00_8@6
-    signed int result;  // eax@8
-    // double v9; // ST00_8@9
-    // double v10; // ST00_8@11
-    float a2a;  // [sp+14h] [bp+8h]@4
-    float a3a;  // [sp+18h] [bp+Ch]@4
-    float a3b;  // [sp+18h] [bp+Ch]@6
-    float a4a;  // [sp+1Ch] [bp+10h]@9
-    float a4b;  // [sp+1Ch] [bp+10h]@11
-
-    if (engine->IsSaturateFaces() && a2->field_59 == 5 &&
-        a2->pODMFace->uAttributes & FACE_IsSecret) {
-        v4 = (double)a4;
-        a2a = v4;
-        *a3 |= 2u;
-        a3a = (1.0 - this->fSaturation) * v4;
-        // v5 = a3a + 6.7553994e15;
-        // if ( SLODWORD(v5) >= 0 )
-        if (floorf(a3a + 0.5f) >= 0) {
-            a3b = (1.0 - this->fSaturation) * a2a;
-            // v7 = a3b + 6.7553994e15;
-            // v6 = LODWORD(v7);
-            v6 = floorf(a3b + 0.5f);
-        } else {
-            v6 = 0;
-        }
-        if (a4 >= v6) {
-            a4a = (1.0 - fSaturation) * a2a;
-            // v9 = a4a + 6.7553994e15;
-            // if ( SLODWORD(v9) >= 0 )
-            if (floorf(a4a + 0.5f) >= 0) {
-                a4b = (1.0 - fSaturation) * a2a;
-                // v10 = a4b + 6.7553994e15;
-                // result = LODWORD(v10);
-                result = floorf(a4b + 0.5f);
-            } else {
-                result = 0;
-            }
-        } else {
-            result = a4;
-        }
-    } else {
-        result = -1;
-    }
-    return result;
-}
-
 //----- (0044ED0A) --------------------------------------------------------
 int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     double v4;  // st7@3

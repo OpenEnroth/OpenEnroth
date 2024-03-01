@@ -141,8 +141,8 @@ void PrepareBspRenderList_BLV() {
     pBspRenderer->num_faces = 0;
 
     if (pBLVRenderParams->uPartySectorID) {
-        // set node 0 to current sector
-        pBspRenderer->nodes[0].uSectorID = pBLVRenderParams->uPartySectorID;
+        // set node 0 to current sector - using eye sector here because feet can be in other sector on horizontal portal
+        pBspRenderer->nodes[0].uSectorID = pBLVRenderParams->uPartyEyeSectorID;
         // set furstum to cam frustum
         for (int loop = 0; loop < 4; loop++) {
             pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;

@@ -1529,10 +1529,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x)) << 16) - uZoom * pParty->pos.x) >> 16);
-            int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->pos.y) >> 16);
-            int pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->pos.x) >> 16);
-            int pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->pos.y) >> 16);
+            int pX = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x - (int)pParty->pos.x);
+            int pY = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y - (int)pParty->pos.y);
+            int pZ = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x - (int)pParty->pos.x);
+            int pW = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y - (int)pParty->pos.y);
             render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
         }
     }
@@ -1645,19 +1645,19 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw arrow on the minimap(include. Ritor1)
     unsigned arrow_idx;
-    unsigned int rotate = pParty->_viewYaw & TrigLUT.uDoublePiMask;
-    if ((signed int)rotate <= 1920) arrow_idx = 6;
-    if ((signed int)rotate < 1664) arrow_idx = 5;
-    if ((signed int)rotate <= 1408) arrow_idx = 4;
-    if ((signed int)rotate < 1152) arrow_idx = 3;
-    if ((signed int)rotate <= 896) arrow_idx = 2;
-    if ((signed int)rotate < 640) arrow_idx = 1;
-    if ((signed int)rotate <= 384) arrow_idx = 0;
-    if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
+    int rotate = pParty->_viewYaw & TrigLUT.uDoublePiMask;
+    if (rotate <= 1920) arrow_idx = 6;
+    if (rotate < 1664) arrow_idx = 5;
+    if (rotate <= 1408) arrow_idx = 4;
+    if (rotate < 1152) arrow_idx = 3;
+    if (rotate <= 896) arrow_idx = 2;
+    if (rotate < 640) arrow_idx = 1;
+    if (rotate <= 384) arrow_idx = 0;
+    if (rotate < 128 || rotate > 1920) arrow_idx = 7;
     render->DrawTextureNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     render->SetUIClipRect(541, 0, 567, 480);
-    render->DrawTextureNew((floorf(((double)pParty->_viewYaw * 0.1171875) + 0.5f) + 285) / 640.0f,
+    render->DrawTextureNew((floorf((pParty->_viewYaw * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_minimap_frame);
