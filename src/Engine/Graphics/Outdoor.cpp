@@ -2812,8 +2812,6 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     pParty->pos = pLevelDecorations[i].vPosition.toFloat();
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
-                    pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;
-                    if (pLevelDecorations[i]._yawAngle)
                         pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
                     pParty->_viewPitch = 0;
                 }

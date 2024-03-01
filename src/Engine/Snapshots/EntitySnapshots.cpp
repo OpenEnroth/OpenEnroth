@@ -1631,11 +1631,13 @@ void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
     dst->uDecorationDescID = src.uDecorationDescID;
     dst->uFlags = LevelDecorationFlags(src.uFlags);
     dst->vPosition = src.vPosition;
+    dst->_yawAngle = (TrigLUT.uIntegerHalfPi * src.field_1A) / 90;
+    // src.field_1A - actually yaw angle in degrees, used when _yawAngle is not set.
+    if (src._yawAngle)
     dst->_yawAngle = src._yawAngle;
     dst->uCog = src.uCog;
     dst->uEventID = src.uEventID;
     dst->uTriggerRange = src.uTriggerRange;
-    dst->field_1A = src.field_1A;
     dst->eventVarId = src.eventVarId - 75; // Was changed because all current usages are without this 75 shift
 }
 
