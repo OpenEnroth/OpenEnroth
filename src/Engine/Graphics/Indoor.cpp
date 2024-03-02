@@ -974,7 +974,7 @@ void PrepareToLoadBLV(bool bLoading) {
             if (!decoration->DontDraw()) {
                 if (decoration->uLightRadius) {
                     Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
-                    pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.toFloat() +
+                    pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
                         Vec3f(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, color, _4E94D0_light_type);
                 }

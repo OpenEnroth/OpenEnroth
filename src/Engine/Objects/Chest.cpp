@@ -74,7 +74,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             if (chest->position) {
                 objectPos = *chest->position;
             } else if (objectPid.type() == OBJECT_Decoration) {
-                objectPos = pLevelDecorations[objId].vPosition +
+                objectPos = pLevelDecorations[objId].vPosition.toInt() +
                     Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {

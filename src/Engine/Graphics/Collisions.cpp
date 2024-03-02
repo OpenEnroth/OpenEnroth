@@ -358,7 +358,7 @@ static void CollideWithDecoration(int id) {
     if (desc->CanMoveThrough())
         return;
 
-    CollideWithCylinder(decor->vPosition.toFloat(), desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
+    CollideWithCylinder(decor->vPosition, desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
 }
 
 
@@ -900,7 +900,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             if (collision_state.adjusted_move_distance > 0.0f) {
                 // Create new sliding plane from collision
                 Vec3f slidePlaneOrigin = collision_state.collisionPos;
-                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slidePlaneOrigin;
+                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
                 Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
                 slidePlaneNormal.normalize();
 
@@ -1070,7 +1070,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             if (collision_state.adjusted_move_distance > 0.0f) {
                 // Create new sliding plane from collision
                 Vec3f slidePlaneOrigin = collision_state.collisionPos;
-                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slidePlaneOrigin;
+                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
                 Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
                 slidePlaneNormal.normalize();
 
