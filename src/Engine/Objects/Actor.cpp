@@ -913,7 +913,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Decoration: {
-            out1 = pLevelDecorations[id1].vPosition;
+            out1 = pLevelDecorations[id1].vPosition.toInt();
             break;
         }
         case OBJECT_Face: {
@@ -945,7 +945,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Decoration: {
-            out2 = pLevelDecorations[id2].vPosition;
+            out2 = pLevelDecorations[id2].vPosition.toInt();
             break;
         }
         case OBJECT_Face: {
@@ -4069,7 +4069,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
     switch (uObjID.type()) {
         case OBJECT_Decoration:
-            pos1 = pLevelDecorations[obj1_pid].vPosition;
+            pos1 = pLevelDecorations[obj1_pid].vPosition.toInt();
             obj1_sector = pIndoor->GetSector(pos1);
             break;
         case OBJECT_Actor:
@@ -4091,7 +4091,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
     switch (uObj2ID.type()) {
         case OBJECT_Decoration:
-            pos2 = pLevelDecorations[obj2_pid].vPosition;
+            pos2 = pLevelDecorations[obj2_pid].vPosition.toInt();
             obj2_sector = pIndoor->GetSector(pos2);
             break;
         case OBJECT_Character:

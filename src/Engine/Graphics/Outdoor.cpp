@@ -2809,10 +2809,10 @@ void TeleportToStartingPoint(MapStartPoint point) {
         if (!pLevelDecorations.empty()) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
-                    pParty->pos = pLevelDecorations[i].vPosition.toFloat();
+                    pParty->pos = pLevelDecorations[i].vPosition;
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
-                        pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
+                    pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
                     pParty->_viewPitch = 0;
                 }
             }

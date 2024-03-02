@@ -29,7 +29,7 @@ struct LevelDecoration {
 
     uint16_t uDecorationDescID;
     LevelDecorationFlags uFlags;
-    Vec3i vPosition;
+    Vec3f vPosition;
     int32_t _yawAngle; // Only used for party spawn points, see `MapStartPoint`.
     uint16_t uCog;
     uint16_t uEventID;

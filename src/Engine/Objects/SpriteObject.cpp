@@ -332,7 +332,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
         pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
     }
-    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
+    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.toInt().xy();
     int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr());
     int velRotXY = TrigLUT.atan2(deltaXY.x, deltaXY.y);
 
@@ -442,7 +442,7 @@ LABEL_25:
 
             int pidId = collision_state.pid.id();
             if (collision_state.pid.type() == OBJECT_Decoration) {
-                Vec2i deltaXY = pSpriteObject->vPosition.xy() - pLevelDecorations[pidId].vPosition.xy();
+                Vec2i deltaXY = pSpriteObject->vPosition.xy() - pLevelDecorations[pidId].vPosition.toInt().xy();
                 int velXYLen = integer_sqrt(pSpriteObject->vVelocity.xy().lengthSqr());
                 int velXYRot = TrigLUT.atan2(deltaXY.x, deltaXY.y);
                 pSpriteObject->vVelocity.x = TrigLUT.cos(velXYRot) * velXYLen;
