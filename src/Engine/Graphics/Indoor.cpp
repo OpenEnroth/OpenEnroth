@@ -2000,10 +2000,10 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i p
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
-    a1.vPosition = pos;
+    a1.vPosition = pos.toFloat();
     a1.uFacing = facing;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition.toInt());
     a1.timeSinceCreated = 0_ticks;
     return a1.Create(0, 0, 0, 0);
 }
@@ -2043,7 +2043,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uAttributes = 0;
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
-    a1a.vPosition = a2->vPosition;
+    a1a.vPosition = a2->vPosition.toFloat();
     a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;

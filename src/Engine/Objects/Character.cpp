@@ -7129,7 +7129,7 @@ void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, int a
     a1a.spell_level = 8;
     a1a.spell_skill = CHARACTER_SKILL_MASTERY_MASTER;
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-    a1a.vPosition = pos;
+    a1a.vPosition = pos.toFloat();
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(pos);
     a1a.timeSinceCreated = 0_ticks;
@@ -7146,7 +7146,7 @@ void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, int a
 
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1) {
-        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
+        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition.toInt(), ABILITY_ATTACK1);
     }
 }
 

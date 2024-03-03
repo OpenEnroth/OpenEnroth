@@ -1493,7 +1493,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
 
     dst->uType = std::to_underlying(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toInt();
     snapshot(src.vVelocity, &dst->vVelocity);
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
@@ -1517,7 +1517,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->uType = static_cast<SpriteId>(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toFloat();
     reconstruct(src.vVelocity, &dst->vVelocity);
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;

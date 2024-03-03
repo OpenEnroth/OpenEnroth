@@ -132,7 +132,7 @@ void BaseRenderer::DrawSpriteObjects() {
             }
             if (!onlist) continue;
         } else {
-            if (!IsCylinderInFrustum(object->vPosition.toFloat(), 512.0f)) continue;
+            if (!IsCylinderInFrustum(object->vPosition, 512.0f)) continue;
         }
 
         // render as sprte 500 - 9081
@@ -176,7 +176,7 @@ void BaseRenderer::DrawSpriteObjects() {
             if (color.g == 0) color.g = 0xFF;
             if (color.b == 0) color.b = 0xFF;
             if (lightradius) {
-                pMobileLightsStack->AddLight(object->vPosition.toFloat(),
+                pMobileLightsStack->AddLight(object->vPosition,
                                              object->uSectorID, lightradius, color, _4E94D3_light_type);
             }
 

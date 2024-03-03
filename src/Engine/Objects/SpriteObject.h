@@ -68,7 +68,7 @@ struct SpriteObject {
     SpriteId uType = SPRITE_NULL;
     // unsigned __int16 uType;
     uint16_t uObjectDescID = 0; // Index into pObjectList->pObjects. Zero means free slot, can reuse.
-    Vec3i vPosition;
+    Vec3f vPosition;
     Vec3i vVelocity;
     uint16_t uFacing = 0;
     uint16_t uSoundID = 0;
