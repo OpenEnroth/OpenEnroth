@@ -86,7 +86,7 @@ struct SpriteObject {
     Pid spell_target_pid;
     char field_60_distance_related_prolly_lod = 0;
     ActorAbility spellCasterAbility = ABILITY_ATTACK1;
-    Vec3i initialPosition;
+    Vec3f initialPosition;
     Duration _lastParticleTime;
     Duration _ticksPerParticle = 2_ticks; // how many ticks between particles
 };

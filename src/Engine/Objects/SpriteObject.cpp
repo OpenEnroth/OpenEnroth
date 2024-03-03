@@ -69,7 +69,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set initial position
-    initialPosition = vPosition.toInt();
+    initialPosition = vPosition;
 
     // set start timer for particle emmission
     _lastParticleTime = pMiscTimer->time();
