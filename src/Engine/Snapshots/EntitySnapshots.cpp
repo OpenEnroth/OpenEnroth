@@ -1531,7 +1531,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->spell_target_pid = src.spell_target_pid.packed();
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = std::to_underlying(src.spellCasterAbility);
-    dst->initialPosition = src.initialPosition;
+    dst->initialPosition = src.initialPosition.toInt();
 }
 
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
@@ -1555,7 +1555,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = static_cast<ActorAbility>(src.spellCasterAbility);
-    dst->initialPosition = src.initialPosition;
+    dst->initialPosition = src.initialPosition.toFloat();
 }
 
 void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
