@@ -60,7 +60,7 @@ struct SpriteObject {
      * @param item           Containing item of sprite (may be null).
      * @offset 0x42F7EB
      */
-    static bool dropItemAt(SpriteId spriteType, Vec3i pos, int speed, int count = 1,
+    static bool dropItemAt(SpriteId spriteType, Vec3f pos, int speed, int count = 1,
                            bool randomRotate = false, SpriteAttributes attributes = 0, ItemGen *item = nullptr);
     static void createSplashObject(Vec3i pos);
     static void InitializeSpriteObjects();
