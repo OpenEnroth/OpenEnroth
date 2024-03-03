@@ -131,6 +131,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
             // this can happen when we are already closer than the radius
             return false;
         }
+        if (move_distance > 65536.0f) return false; // moving almost parallal - TODO(pskelton): should probably tweak EPS when finished moving to floats
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
