@@ -1969,7 +1969,7 @@ void ODM_ProcessPartyActions() {
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
         if (partyIsOnWater && !fuzzyIsNull(partyInputSpeed.z))
-            SpriteObject::createSplashObject(partyNewPos.toInt());
+            SpriteObject::createSplashObject(partyNewPos);
         partyInputSpeed.z = 0;
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewPos.z;
