@@ -154,7 +154,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (bmodelPid) {
             splashZ = level + 30;
         }
-        createSplashObject(Vec3i(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
+        createSplashObject(Vec3f(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
         SpriteObject::OnInteraction(uLayingItemID);
     }
 
@@ -259,7 +259,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (collisionBmodelPid) {
                 splashZ = collisionLevel + 30;
             }
-            createSplashObject(Vec3i(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
+            createSplashObject(Vec3f(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
             SpriteObject::OnInteraction(uLayingItemID);
             return;
         }
@@ -684,13 +684,13 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
 }
 
 // splash on water
-void SpriteObject::createSplashObject(Vec3i pos) {
+void SpriteObject::createSplashObject(Vec3f pos) {
     SpriteObject sprite;
     sprite.containing_item.Reset();
     sprite.uType = SPRITE_WATER_SPLASH;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
-    sprite.vPosition = pos.toFloat();
-    sprite.uSectorID = pIndoor->GetSector(pos);
+    sprite.vPosition = pos;
+    sprite.uSectorID = pIndoor->GetSector(pos.toInt());
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
         pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Item, objID));
