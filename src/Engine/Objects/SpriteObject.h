@@ -62,7 +62,7 @@ struct SpriteObject {
      */
     static bool dropItemAt(SpriteId spriteType, Vec3f pos, int speed, int count = 1,
                            bool randomRotate = false, SpriteAttributes attributes = 0, ItemGen *item = nullptr);
-    static void createSplashObject(Vec3i pos);
+    static void createSplashObject(Vec3f pos);
     static void InitializeSpriteObjects();
 
     SpriteId uType = SPRITE_NULL;

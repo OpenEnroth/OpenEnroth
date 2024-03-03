@@ -753,7 +753,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
                     actor.aiState == Removed || actor.aiState == Disabled) {
-                    SpriteObject::createSplashObject(Vec3i(actor.pos.x, actor.pos.y, modelPid ? newFloorZ + 30 : newFloorZ + 60));
+                    SpriteObject::createSplashObject(Vec3f(actor.pos.x, actor.pos.y, modelPid ? newFloorZ + 30 : newFloorZ + 60));
                     actor.aiState = Removed;
                     break;
                 }
