@@ -253,11 +253,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos.toFloat() + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
-            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition.toInt());
             sprite.timeSinceCreated = 0_ticks;
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.spell_target_pid = Pid();
@@ -333,7 +333,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
                 sprite.spell_level = uSkillMastery.level();
                 sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-                sprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, originHeight + 2500);
+                sprite.vPosition = pParty->pos + Vec3f(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
@@ -382,11 +382,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = SPELL_AIR_SPARKS;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos.toFloat() + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
-            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition.toInt());
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
@@ -635,11 +635,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos.toFloat() + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
-            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition.toInt());
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
@@ -799,7 +799,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition.toInt());
     a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
@@ -851,7 +851,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uFacing = 0;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition.toInt());
     a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
@@ -890,7 +890,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
     int id2 = uObj2ID.id();
     switch (uObj1ID.type()) {
         case OBJECT_Item: {
-            out1 = pSpriteObjects[id1].vPosition;
+            out1 = pSpriteObjects[id1].vPosition.toInt();
             break;
         }
         case OBJECT_Actor: {
@@ -930,7 +930,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
 
     switch (uObj2ID.type()) {
         case OBJECT_Item: {
-            out2 = pSpriteObjects[id2].vPosition;
+            out2 = pSpriteObjects[id2].vPosition.toInt();
             break;
         }
         case OBJECT_Actor: {
@@ -4077,7 +4077,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
         case OBJECT_Item:
-            pos1 = pSpriteObjects[obj1_pid].vPosition;
+            pos1 = pSpriteObjects[obj1_pid].vPosition.toInt();
             obj1_sector = pSpriteObjects[obj1_pid].uSectorID;
             break;
         default:
@@ -4103,7 +4103,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
         case OBJECT_Item:
-            pos2 = pSpriteObjects[obj2_pid].vPosition;
+            pos2 = pSpriteObjects[obj2_pid].vPosition.toInt();
             obj2_sector = pSpriteObjects[obj2_pid].uSectorID;
             break;
         default:

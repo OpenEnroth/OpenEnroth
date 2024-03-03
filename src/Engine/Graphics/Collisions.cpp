@@ -545,7 +545,7 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition.toFloat(), object->uRadius, object->uHeight);
+        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition, object->uRadius, object->uHeight);
         if (!collision_state.bbox.intersects(bbox))
             continue;
 

@@ -118,7 +118,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             } else {
                 pOut -= Vec3i(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
             }
-            pSpellObject.vPosition = pOut;
+            pSpellObject.vPosition = pOut.toFloat();
 
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;

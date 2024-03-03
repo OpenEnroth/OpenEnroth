@@ -1035,7 +1035,7 @@ void Party::dropHeldItem() {
     sprite.uType = pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
-    sprite.vPosition = pos.toInt() + Vec3i(0, 0, eyeLevel);
+    sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
     sprite.uSoundID = 0;
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;

@@ -74,7 +74,7 @@ void checkDecorationEvents() {
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
             for (int i = 0; i < pSpriteObjects.size(); i++) {
-                if ((decoration.vPosition.toInt() - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
+                if ((decoration.vPosition - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
                     eventProcessor(decoration.uEventID, Pid(), 1);
                 }
             }
