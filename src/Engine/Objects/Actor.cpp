@@ -1838,7 +1838,7 @@ void Actor::Die(unsigned int uActorID) {
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
-                                 actor->pos + Vec3i(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
+                                 actor->pos.toFloat() + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
     if (actor->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {

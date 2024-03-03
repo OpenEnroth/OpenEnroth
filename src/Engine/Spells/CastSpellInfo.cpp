@@ -2914,7 +2914,7 @@ void CastSpellInfoHelpers::castSpell() {
                         bool bOnWater = false;
                         int terr_height = GetTerrainHeightsAroundParty2(rand_x + pParty->pos.x, rand_y + pParty->pos.y, &bOnWater, 0);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand_x + static_cast<int>(pParty->pos.x), rand_y + static_cast<int>(pParty->pos.y), terr_height + 16}, grng->random(500) + 500);
+                                                 {rand_x + pParty->pos.x, rand_y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
                     }
                     break;
                 }
