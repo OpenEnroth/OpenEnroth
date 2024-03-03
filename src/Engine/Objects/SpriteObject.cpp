@@ -834,7 +834,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
-                    pSpriteObjects[uLayingItemID].vPosition.toInt(), ABILITY_ATTACK1);
+                    pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(object->vPosition.x, object->vPosition.y, object->vPosition.z,
                                                                 objectDesc->uParticleTrailColor);
@@ -951,7 +951,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
-                    pSpriteObjects[uLayingItemID].vPosition.toInt(), ABILITY_ATTACK1);
+                    pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
             //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1003,7 +1003,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
-                    pSpriteObjects[uLayingItemID].vPosition.toInt(), object->spellCasterAbility);
+                    pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
             //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1226,7 +1226,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
-                    pSpriteObjects[uLayingItemID].vPosition.toInt(), object->spellCasterAbility);
+                    pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,

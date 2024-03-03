@@ -7146,7 +7146,7 @@ void Character::_42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, int a
 
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1) {
-        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition.toInt(), ABILITY_ATTACK1);
+        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
     }
 }
 

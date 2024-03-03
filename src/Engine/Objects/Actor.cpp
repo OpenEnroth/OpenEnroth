@@ -2688,7 +2688,7 @@ void Actor::UpdateActorAI() {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
             } else if (pActor->aiState == AttackingMelee) {
-                pushMeleeAttack(actorPid, pActor->pos + Vec3i(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
+                pushMeleeAttack(actorPid, pActor->pos.toFloat() + Vec3f(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
             } else if (pActor->aiState == AttackingRanged1) {
                 Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.attack1MissileType, ABILITY_ATTACK1);  // light missile
             } else if (pActor->aiState == AttackingRanged2) {
@@ -4557,20 +4557,20 @@ void evaluateAoeDamage() {
 
             if (targetType != OBJECT_Actor) {
                 if (targetType == OBJECT_Character) {  // party damage from monsters
-                    int distanceSq = (pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
+                    int distanceSq = (pParty->pos + Vec3f(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
                     int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
+                        if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos.toInt())) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
-                    Vec3i distanceVec = actor->pos + Vec3i(0, 0, actor->height / 2) - attack.pos;
+                    Vec3i distanceVec = actor->pos + Vec3i(0, 0, actor->height / 2) - attack.pos.toInt();
                     int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + actor->radius;
                     int attackRangeSq = attackRange * attackRange;
@@ -4579,7 +4579,7 @@ void evaluateAoeDamage() {
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(actor->pos + Vec3i(0, 0, 50), attack.pos)) {
+                        if (Check_LineOfSight(actor->pos + Vec3i(0, 0, 50), attack.pos.toInt())) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             Actor::ActorDamageFromMonster(attack.pid, targetId, &attackVector, attack.attackSpecial);
                         }
@@ -4587,13 +4587,13 @@ void evaluateAoeDamage() {
                 }
             }
         } else {  // damage from AOE spells
-            int distanceSq = (pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
+            int distanceSq = (pParty->pos + Vec3f(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
             int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
             // check spell in range of party
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
-                if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
+                if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos.toInt())) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++) {
                         if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
@@ -4604,7 +4604,7 @@ void evaluateAoeDamage() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    Vec3i distanceVec = pActors[actorID].pos + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos;
+                    Vec3i distanceVec = pActors[actorID].pos + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos.toInt();
                     int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + pActors[actorID].radius;
                     int attackRangeSq = attackRange * attackRange;
@@ -4614,7 +4614,7 @@ void evaluateAoeDamage() {
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pActors[actorID].pos + Vec3i(0, 0, 50), attack.pos)) {
+                        if (Check_LineOfSight(pActors[actorID].pos + Vec3i(0, 0, 50), attack.pos.toInt())) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
                                 case OBJECT_Character:

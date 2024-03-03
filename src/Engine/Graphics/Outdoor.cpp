@@ -2129,8 +2129,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // new ground level
-    int newFloorLevel = ODM_GetFloorLevel(Vec3i(partyNewPos.x, partyNewPos.y, partyNewPos.z), pParty->height,
-                                          &partyIsOnWater, &floorFaceId, waterWalkActive);
+    int newFloorLevel = ODM_GetFloorLevel(partyNewPos.toInt(), pParty->height, &partyIsOnWater, &floorFaceId, waterWalkActive);
     int newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
