@@ -253,7 +253,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos.toFloat() + Vec3f(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
@@ -382,7 +382,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = SPELL_AIR_SPARKS;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos.toFloat() + Vec3f(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
@@ -635,7 +635,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos.toFloat() + Vec3f(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
@@ -894,7 +894,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Actor: {
-            out1 = (pActors[id1].pos.toFloat() + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
+            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
             break;
         }
         case OBJECT_Character: {
@@ -934,7 +934,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Actor: {
-            out2 = (pActors[id2].pos.toFloat() + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
+            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
             break;
         }
         case OBJECT_Character: {
@@ -1838,7 +1838,7 @@ void Actor::Die(unsigned int uActorID) {
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
-                                 actor->pos.toFloat() + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
+                                 actor->pos + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
     if (actor->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {
@@ -2440,7 +2440,7 @@ void Actor::SummonMinion(int summonerId) {
 
     actorSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        actorSector = pIndoor->GetSector(this->pos);
+        actorSector = pIndoor->GetSector(this->pos.toInt());
 
     v19 = this->ally;
     if (this->ally == MONSTER_TYPE_INVALID) {
@@ -2688,7 +2688,7 @@ void Actor::UpdateActorAI() {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
             } else if (pActor->aiState == AttackingMelee) {
-                pushMeleeAttack(actorPid, pActor->pos.toFloat() + Vec3f(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
+                pushMeleeAttack(actorPid, pActor->pos + Vec3f(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
             } else if (pActor->aiState == AttackingRanged1) {
                 Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.attack1MissileType, ABILITY_ATTACK1);  // light missile
             } else if (pActor->aiState == AttackingRanged2) {
@@ -3297,7 +3297,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     actor->height = pMonsterList->monsters[monster_id].monsterHeight;
     actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
-    actor->pos = pos;
+    actor->pos = pos.toFloat();
     actor->attributes |= ACTOR_AGGRESSOR;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
@@ -4073,7 +4073,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj1_sector = pIndoor->GetSector(pos1);
             break;
         case OBJECT_Actor:
-            pos1 = pActors[obj1_pid].pos + Vec3i(0, 0, pActors[obj1_pid].height * 0.69999999);
+            pos1 = pActors[obj1_pid].pos.toInt() + Vec3i(0, 0, pActors[obj1_pid].height * 0.69999999);
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
         case OBJECT_Item:
@@ -4099,7 +4099,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
-            pos2 = pActors[obj2_pid].pos + Vec3i(0, 0, pActors[obj2_pid].height * 0.69999999);
+            pos2 = pActors[obj2_pid].pos.toInt() + Vec3i(0, 0, pActors[obj2_pid].height * 0.69999999);
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
         case OBJECT_Item:
@@ -4257,7 +4257,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
-    actor->pos = actor->initialPosition;
+    actor->pos = actor->initialPosition.toFloat();
     actor->tetherDistance = 256;
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
@@ -4269,12 +4269,12 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->currentActionLength = 256_ticks;
     actor->UpdateAnimation();
 
-    int sectorId = pIndoor->GetSector(actor->pos);
+    int sectorId = pIndoor->GetSector(actor->pos.toInt());
     int zlevel;
     int zdiff;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
             sectorId == partySectorId &&
-            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
+            (zlevel = BLV_GetFloorLevel(actor->pos.toInt(), sectorId), zlevel != -30000) &&
             (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
@@ -4570,7 +4570,7 @@ void evaluateAoeDamage() {
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
-                    Vec3i distanceVec = actor->pos + Vec3i(0, 0, actor->height / 2) - attack.pos.toInt();
+                    Vec3i distanceVec = actor->pos.toInt() + Vec3i(0, 0, actor->height / 2) - attack.pos.toInt();
                     int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + actor->radius;
                     int attackRangeSq = attackRange * attackRange;
@@ -4579,7 +4579,7 @@ void evaluateAoeDamage() {
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(actor->pos + Vec3i(0, 0, 50), attack.pos.toInt())) {
+                        if (Check_LineOfSight(actor->pos.toInt() + Vec3i(0, 0, 50), attack.pos.toInt())) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             Actor::ActorDamageFromMonster(attack.pid, targetId, &attackVector, attack.attackSpecial);
                         }
@@ -4604,7 +4604,7 @@ void evaluateAoeDamage() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    Vec3i distanceVec = pActors[actorID].pos + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos.toInt();
+                    Vec3i distanceVec = pActors[actorID].pos.toInt() + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos.toInt();
                     int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + pActors[actorID].radius;
                     int attackRangeSq = attackRange * attackRange;
@@ -4614,7 +4614,7 @@ void evaluateAoeDamage() {
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pActors[actorID].pos + Vec3i(0, 0, 50), attack.pos.toInt())) {
+                        if (Check_LineOfSight(pActors[actorID].pos.toInt() + Vec3i(0, 0, 50), attack.pos.toInt())) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
                                 case OBJECT_Character:

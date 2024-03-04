@@ -19,7 +19,7 @@ GAME_TEST(Issues, Issue1503) {
 GAME_TEST(Issues, Issue1510) {
     // Enemies not attacking the party when in melee range
     auto partyHealth = tapes.totalHp();
-    auto actorDistTape = actorTapes.custom(2, [](const Actor& a) { return (a.pos.toFloat() - pParty->pos).length(); });
+    auto actorDistTape = actorTapes.custom(2, [](const Actor& a) { return (a.pos - pParty->pos).length(); });
     test.playTraceFromTestData("issue_1510.mm7", "issue_1510.json");
     EXPECT_LT(partyHealth.back(), partyHealth.front());
     EXPECT_LE(actorDistTape.max(), meleeRange);

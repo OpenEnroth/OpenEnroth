@@ -630,7 +630,7 @@ bool SpriteObject::applyShrinkRayAoe() {
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
-            int distanceSq = (actor.pos - this->vPosition.toInt() + Vec3i(0, 0, actor.height / 2)).lengthSqr();
+            int distanceSq = (actor.pos.toInt() - this->vPosition.toInt() + Vec3i(0, 0, actor.height / 2)).lengthSqr();
             int checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
 
             if (distanceSq <= checkDistanceSq) {
@@ -1286,7 +1286,7 @@ void UpdateObjects() {
                 if (actorId > pActors.size()) {
                     continue;
                 }
-                pSpriteObjects[i].vPosition = pActors[actorId].pos.toFloat() + Vec3f(0, 0, pActors[actorId].height);
+                pSpriteObjects[i].vPosition = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height);
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
