@@ -55,7 +55,7 @@ struct Chest {
 
     // Chest position, OE addition. Recalculated on level load in UpdateChestPositions. It's used to display
     // trap explosions in the same place regardless of which chest face was clicked.
-    std::optional<Vec3i> position;
+    std::optional<Vec3f> position;
 };
 
 void RemoveItemAtChestIndex(int index);
