@@ -462,7 +462,7 @@ class Character {
     char uNumFireSpikeCasts;
 };
 
-void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int a4);
+void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3f *pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int CharacterCreation_GetUnspentAttributePointCount();

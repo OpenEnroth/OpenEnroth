@@ -1251,15 +1251,15 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 }
 
 void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
-    Vec3i velocity;
+    Vec3f velocity;
 
     if (pid.type() == OBJECT_Character) {
-        velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
-        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        velocity.normalize();
         DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
     } else if (pid.type() == OBJECT_Actor) {
-        velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
-        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        velocity.normalize();
         switch (pSpriteObjects[uLayingItemID].spell_caster_pid.type()) {
             case OBJECT_Actor:
                 Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity, pSpriteObjects[uLayingItemID].spellCasterAbility);

@@ -2329,7 +2329,7 @@ void Actor::Remove() { this->aiState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(Pid attacker_id,
-                                   unsigned int actor_id, Vec3i *pVelocity,
+                                   unsigned int actor_id, Vec3f *pVelocity,
                                    ActorAbility a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
@@ -2400,18 +2400,8 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                         20 * finalDmg / pActors[actor_id].monsterInfo.hp;
                     if (pushDistance > 10) pushDistance = 10;
                     if (supertypeForMonsterId(pActors[actor_id].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->x);
-                        pVelocity->y =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->y);
-                        pVelocity->z =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->z);
-                        pActors[actor_id].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[actor_id].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[actor_id].velocity.z =
-                            50 * (short)pVelocity->z;
+                        *pVelocity *= pushDistance;
+                        pActors[actor_id].velocity = *pVelocity * 50;
                     }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
@@ -3011,8 +3001,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                   Vec3i *pVelocity) {
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3269,25 +3258,21 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-        pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
-        pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
-        pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
-        pMonster->velocity.x = 50 * (short)pVelocity->x;
-        pMonster->velocity.y = 50 * (short)pVelocity->y;
-        pMonster->velocity.z = 50 * (short)pVelocity->z;
+        *pVelocity *= knockbackValue;
+        pMonster->velocity = *pVelocity * 50;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
+void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
 
     int v16 = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        v16 = pIndoor->GetSector(pos);
+        v16 = pIndoor->GetSector(pos.toInt());
 
     actor->name = pMonsterStats->infos[monster_id].name;
     actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
@@ -3297,7 +3282,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     actor->height = pMonsterList->monsters[monster_id].monsterHeight;
     actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
-    actor->pos = pos.toFloat();
+    actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
@@ -4257,7 +4242,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
-    actor->pos = actor->initialPosition.toFloat();
+    actor->pos = actor->initialPosition;
     actor->tetherDistance = 256;
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
@@ -4541,7 +4526,7 @@ void evaluateAoeDamage() {
     for (AttackDescription &attack : attackList) {
         ObjectType attackerType = attack.pid.type();
         int attackerId = attack.pid.id();
-        Vec3i attackVector = Vec3i(0, 0, 0);
+        Vec3f attackVector;
 
         // attacker is an item (sprite)
         if (attackerType == OBJECT_Item) {
@@ -4574,13 +4559,13 @@ void evaluateAoeDamage() {
                     int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + actor->radius;
                     int attackRangeSq = attackRange * attackRange;
-                    attackVector = Vec3i(distanceVec.x, distanceVec.y, actor->pos.z);
+                    attackVector = Vec3f(distanceVec.x, distanceVec.y, actor->pos.z);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(actor->pos.toInt() + Vec3i(0, 0, 50), attack.pos.toInt())) {
-                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
+                            attackVector.normalize();
                             Actor::ActorDamageFromMonster(attack.pid, targetId, &attackVector, attack.attackSpecial);
                         }
                     }
@@ -4609,13 +4594,13 @@ void evaluateAoeDamage() {
                     int attackRange = attack.attackRange + pActors[actorID].radius;
                     int attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
-                    attackVector = Vec3i(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                    attackVector = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pActors[actorID].pos.toInt() + Vec3i(0, 0, 50), attack.pos.toInt())) {
-                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
+                            attackVector.normalize();
                             switch (attackerType) {
                                 case OBJECT_Character:
                                     Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
@@ -4668,7 +4653,7 @@ double sub_43AE12(signed int a1) {
 
 //----- (0043B057) --------------------------------------------------------
 void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity) {
+                         Vec3f *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4
     int a2a;     // [sp+Ch] [bp-4h]@8
@@ -4696,15 +4681,8 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                         10)
                         a2a = 10;
                     if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
-                        pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
-                        pVelocity->z = fixpoint_mul(a2a, pVelocity->z);
-                        pActors[uActorID].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[uActorID].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[uActorID].velocity.z =
-                            50 * (short)pVelocity->z;
+                        *pVelocity *= a2a;
+                        pActors[uActorID].velocity = *pVelocity * 50;
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {

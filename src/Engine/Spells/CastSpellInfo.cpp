@@ -403,7 +403,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    Vec3f spell_velocity;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height / 2);
                     pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
@@ -422,7 +422,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
+                        Vec3f spell_velocity;
                         pActors[monster_id].massDistortionTime = pMiscTimer->time();
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos;
@@ -444,7 +444,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // v730 = spell_targeted_at >> 3;
                     // HIDWORD(spellduration) = (int)&pActors[spell_targeted_at.id()];
                     int monster_id = spell_targeted_at.id();
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    Vec3f spell_velocity;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
@@ -887,7 +887,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int monster_id = spell_targeted_at.id();
                     float dist = (pActors[monster_id].pos - pParty->pos).length();
                     if (dist <= meleeRange) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
+                        Vec3f spell_velocity;
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos - Vec3f(0, 0, pActors[monster_id].height * -0.8);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -1028,7 +1028,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     for (Actor *actor : render->getActorsInViewport(4096)) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
+                        Vec3f spell_velocity;
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
@@ -2498,7 +2498,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    Vec3f spell_velocity;
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
@@ -2856,7 +2856,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SOULDRINKER:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    Vec3f spell_velocity;
                     std::vector<Actor*> actorsInViewport = render->getActorsInViewport(pCamera3D->GetMouseInfoDepth());
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
