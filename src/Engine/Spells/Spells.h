@@ -8,6 +8,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time/Duration.h"
+#include "Library/Geometry/Vec.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -82,7 +83,6 @@ bool IsSpellQuickCastableOnShiftClick(SpellId uSpellID);
 /**
  * Function for processing spells cast from game scripts.
  */
-void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
-                    int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
+void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, Vec3f from, Vec3f to);  // sub_448DF8
 
 void armageddonProgress();
