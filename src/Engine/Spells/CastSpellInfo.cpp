@@ -2406,7 +2406,6 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-
                     // Spell damage processing was removed because Dispel Magic does not do damage
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
