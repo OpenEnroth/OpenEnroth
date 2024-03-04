@@ -2364,10 +2364,10 @@ void UpdateActors_ODM() {
                 pActors[Actor_ITR].velocity.z = TrigLUT.sin(pActors[Actor_ITR].pitchAngle) * Actor_Speed;
             }
         } else {
-            pActors[Actor_ITR].velocity.x = fixpoint_mul(55000, pActors[Actor_ITR].velocity.x);
-            pActors[Actor_ITR].velocity.y = fixpoint_mul(55000, pActors[Actor_ITR].velocity.y);
+            pActors[Actor_ITR].velocity.x *= 0.83923339843f;
+            pActors[Actor_ITR].velocity.y *= 0.83923339843f;
             if (uIsFlying)
-                pActors[Actor_ITR].velocity.z = fixpoint_mul(55000, pActors[Actor_ITR].velocity.z);
+                pActors[Actor_ITR].velocity.z *= 0.83923339843f;
         }
 
         // BELOW FLOOR - POP UPWARDS
@@ -2381,15 +2381,14 @@ void UpdateActors_ODM() {
                 Vec3i Terrain_Norm;
                 pActors[Actor_ITR].pos.z = Floor_Level;
                 ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
-                uint16_t Gravity = GetGravityStrength();
+                Vec3f normf = Terrain_Norm.toFloatFromFixpoint();
+                int Gravity = GetGravityStrength();
 
-                pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity;
-                int v73 = std::abs(Terrain_Norm.x * pActors[Actor_ITR].velocity.x +
-                              Terrain_Norm.z * pActors[Actor_ITR].velocity.z +
-                              Terrain_Norm.y * pActors[Actor_ITR].velocity.y) >> 15;
+                pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
+                float v73 = std::abs(dot(normf, pActors[Actor_ITR].velocity)) * 2.0f;
 
-                pActors[Actor_ITR].velocity.x += fixpoint_mul(v73, Terrain_Norm.x);
-                pActors[Actor_ITR].velocity.y += fixpoint_mul(v73, Terrain_Norm.y);
+                pActors[Actor_ITR].velocity.x += v73 * normf.x;
+                pActors[Actor_ITR].velocity.y += v73 * normf.y;
                 pActors[Actor_ITR].yawAngle -= 32;
                 // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }

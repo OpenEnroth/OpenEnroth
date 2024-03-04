@@ -589,7 +589,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         collision_state.position_lo = actor.pos + Vec3f(0, 0, actor.radius + 1);
         collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actor.radius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
-        collision_state.velocity = actor.velocity.toFloat();
+        collision_state.velocity = actor.velocity;
         collision_state.uSectorID = actor.sectorId;
         if (collision_state.PrepareAndCheckIfStationary())
             break;
@@ -694,9 +694,9 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                     continue; // TODO(captainurist): drop this continue
                 }
             } else {
-                float velocityDotNormal = dot(face->facePlane.normal, actor.velocity.toFloat());
+                float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
-                actor.velocity += (velocityDotNormal * face->facePlane.normal).toInt();
+                actor.velocity += velocityDotNormal * face->facePlane.normal;
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
                     float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                     if (overshoot > 0)
@@ -708,9 +708,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
         }
 
-        actor.velocity.x = fixpoint_mul(58500, actor.velocity.x);
-        actor.velocity.y = fixpoint_mul(58500, actor.velocity.y);
-        actor.velocity.z = fixpoint_mul(58500, actor.velocity.z);
+        actor.velocity *= 0.89263916f; // was 58500 fp
     }
 }
 
@@ -727,7 +725,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         collision_state.position_lo = actor.pos + Vec3f(0, 0, actorRadius + 1);
         collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
-        collision_state.velocity = actor.velocity.toFloat();
+        collision_state.velocity = actor.velocity;
         collision_state.uSectorID = 0;
         if (collision_state.PrepareAndCheckIfStationary())
             break;
@@ -815,12 +813,12 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                         actor.velocity.x = 0;
                     }
                 } else {
-                    float velocityDotNormal = dot(face->facePlane.normal, actor.velocity.toFloat());
+                    float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
                     // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces.
                     // Note that not all copies of this code have std::abs. Why?
                     velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
 
-                    actor.velocity += (velocityDotNormal * face->facePlane.normal).toInt();
+                    actor.velocity += velocityDotNormal * face->facePlane.normal;
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
                         float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                         if (overshoot > 0)
@@ -831,9 +829,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             }
         }
 
-        actor.velocity.x = fixpoint_mul(58500, actor.velocity.x);
-        actor.velocity.y = fixpoint_mul(58500, actor.velocity.y);
-        actor.velocity.z = fixpoint_mul(58500, actor.velocity.z);
+        actor.velocity *= 0.89263916f; // was 58500 fp
     }
 }
 

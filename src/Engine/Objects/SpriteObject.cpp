@@ -164,11 +164,12 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         } else if (isHighSlope) {
             Vec3i norm;
             ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &norm);
+            Vec3f normf = norm.toFloatFromFixpoint();
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
-            float dotFix = std::abs(dot(norm.toFloat(), pSpriteObjects[uLayingItemID].vVelocity));
-            pSpriteObjects[uLayingItemID].vVelocity += dotFix * norm.toFloat();
+            float dotFix = std::abs(dot(normf, pSpriteObjects[uLayingItemID].vVelocity));
+            pSpriteObjects[uLayingItemID].vVelocity += dotFix * normf;
         } else {
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
