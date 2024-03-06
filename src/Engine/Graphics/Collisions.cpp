@@ -160,7 +160,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     for (int i = 0; i < face->uNumVertices; ++i) {
         Vec3f vertPos;
         if (model_idx == MODEL_INDOOR) {
-            vertPos = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pIndoor->pVertices[face->pVertexIDs[i]];
         } else {
             vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
         }
@@ -180,8 +180,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         Vec3f vert1, vert2;
         int i2 = (i + 1) % face->uNumVertices;
         if (model_idx == MODEL_INDOOR) {
-            vert1 = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
-            vert2 = pIndoor->pVertices[face->pVertexIDs[i2]].toFloat();
+            vert1 = pIndoor->pVertices[face->pVertexIDs[i]];
+            vert2 = pIndoor->pVertices[face->pVertexIDs[i2]];
         } else {
             vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
             vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]].toFloat();

@@ -4052,19 +4052,19 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 1 info
     int obj1_pid = uObjID.id();
     int obj1_sector;
-    Vec3i pos1;
+    Vec3f pos1;
 
     switch (uObjID.type()) {
         case OBJECT_Decoration:
-            pos1 = pLevelDecorations[obj1_pid].vPosition.toInt();
-            obj1_sector = pIndoor->GetSector(pos1);
+            pos1 = pLevelDecorations[obj1_pid].vPosition;
+            obj1_sector = pIndoor->GetSector(pos1.toInt());
             break;
         case OBJECT_Actor:
-            pos1 = pActors[obj1_pid].pos.toInt() + Vec3i(0, 0, pActors[obj1_pid].height * 0.69999999);
+            pos1 = pActors[obj1_pid].pos + Vec3f(0, 0, pActors[obj1_pid].height * 0.69999999);
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
         case OBJECT_Item:
-            pos1 = pSpriteObjects[obj1_pid].vPosition.toInt();
+            pos1 = pSpriteObjects[obj1_pid].vPosition;
             obj1_sector = pSpriteObjects[obj1_pid].uSectorID;
             break;
         default:
@@ -4074,23 +4074,23 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 2 info
     int obj2_pid = uObj2ID.id();
     int obj2_sector;
-    Vec3i pos2;
+    Vec3f pos2;
 
     switch (uObj2ID.type()) {
         case OBJECT_Decoration:
-            pos2 = pLevelDecorations[obj2_pid].vPosition.toInt();
-            obj2_sector = pIndoor->GetSector(pos2);
+            pos2 = pLevelDecorations[obj2_pid].vPosition;
+            obj2_sector = pIndoor->GetSector(pos2.toInt());
             break;
         case OBJECT_Character:
-            pos2 = pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel);
+            pos2 = pParty->pos + Vec3f(0, 0, pParty->eyeLevel);
             obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
-            pos2 = pActors[obj2_pid].pos.toInt() + Vec3i(0, 0, pActors[obj2_pid].height * 0.69999999);
+            pos2 = pActors[obj2_pid].pos + Vec3f(0, 0, pActors[obj2_pid].height * 0.69999999);
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
         case OBJECT_Item:
-            pos2 = pSpriteObjects[obj2_pid].vPosition.toInt();
+            pos2 = pSpriteObjects[obj2_pid].vPosition;
             obj2_sector = pSpriteObjects[obj2_pid].uSectorID;
             break;
         default:
@@ -4117,14 +4117,14 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     float rayznorm = dist_z / dist_3d;
 
     // extents for boundary checks
-    BBoxi bbox = BBoxi::forPoints(pos1, pos2);
+    BBoxf bbox = BBoxf::forPoints(pos1, pos2);
 
     // search starts for object
     int sectors_visited = 0;
     int current_sector = obj1_sector;
     int next_sector = 0;
     BLVFace *portalface;
-    Vec3i *portalverts;
+    Vec3f *portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
@@ -4132,7 +4132,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
         portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
 
         // ray ob1 to portal dot normal
-        float obj1portaldot = dot(portalface->facePlane.normal, (*portalverts - pos1).toFloat());
+        float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
 
         // flip norm if we are not looking out from current sector
         if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
@@ -4155,7 +4155,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
         float facenotparallel = v32 + v33 + v34;
         if (facenotparallel) {
             // point to plance distance
-            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1.toFloat());
+            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1);
 
             // epsilon check?
             if (std::abs(pointplanedist) / 16384.0 > std::abs(facenotparallel)) continue;

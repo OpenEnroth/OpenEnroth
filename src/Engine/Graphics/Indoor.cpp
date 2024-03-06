@@ -729,8 +729,8 @@ void BLV_UpdateDoors() {
 
         for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            const Vec3i &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
+            const Vec3f &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+            face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
             face->zCalc.init(face->facePlane);
 
             Vec3f v;
@@ -745,7 +745,7 @@ void BLV_UpdateDoors() {
             float maxU = std::numeric_limits<float>::min();
             float maxV = std::numeric_limits<float>::min();
             for (unsigned k = 0; k < face->uNumVertices; ++k) {
-                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
+                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
                 float pointU = dot(point, u);
                 float pointV = dot(point, v);
                 minU = std::min(minU, pointU);
