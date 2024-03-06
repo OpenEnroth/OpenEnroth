@@ -226,7 +226,7 @@ struct IndoorLocation {
 
     std::string filename;
     unsigned int bLoaded = 0;
-    std::vector<Vec3i> pVertices;
+    std::vector<Vec3f> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
     std::vector<BLVSector> pSectors;

@@ -24,7 +24,11 @@
 #include "Library/Lod/LodReader.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
-    reconstruct(src.vertices, &dst->pVertices);
+    //reconstruct(src.vertices, &dst->pVertices);
+    for (const auto& vert : src.vertices) {
+        dst->pVertices.emplace_back(vert.toFloat());
+    }
+    
     reconstruct(src.faces, &dst->pFaces);
     reconstruct(src.faceData, &dst->pLFaces);
 
