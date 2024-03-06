@@ -61,8 +61,8 @@ struct BLVMapOutline {  // 0C
 };
 
 struct FlatFace {
-    std::array<int32_t, 104> u;
-    std::array<int32_t, 104> v;
+    std::array<float, 104> u;
+    std::array<float, 104> v;
 };
 
 /*   93 */
@@ -121,7 +121,7 @@ struct BLVFace {  // 60h
      * @return                          Whether the point lies inside this polygon, if projected on the face's
      *                                  primary plane.
      */
-    bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
+    bool Contains(const Vec3f &pos, int model_idx, float slack = 0, FaceAttributes override_plane = 0) const;
 
     Planef facePlane;
     PlaneZCalcf zCalc;
@@ -203,11 +203,7 @@ struct IndoorLocation {
      * @param sZ                        Z coordinate.
      * @return                          Sector id at (X,Y,Z), or zero if (X,Y,Z) is outside the level bounds.
      */
-    int GetSector(int sX, int sY, int sZ);
-
-    int GetSector(const Vec3i &pos) {
-        return GetSector(pos.x, pos.y, pos.z);
-    }
+    int GetSector(const Vec3f& pos);
 
     void Release();
     void Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned);
@@ -292,7 +288,7 @@ void BLV_UpdateUserInputAndOther();
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
-int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID = nullptr);
+int BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID = nullptr);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -323,7 +319,7 @@ void FindBillboardsLightLevels_BLV();
  * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
  *                                      level boundaries.
  */
-int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
+int GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @offset 0x0047272C.
@@ -333,7 +329,7 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
  *
  * @see GetIndoorFloorZ
  */
-int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
+int GetApproximateIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @param target                         Vec3i of position to check line of sight to
@@ -341,7 +337,7 @@ int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = 
  *
  * @return                              True if line of sight clear to target
  */
-bool Check_LineOfSight(const Vec3i &target, const Vec3i &from);
+bool Check_LineOfSight(const Vec3f &target, const Vec3f &from);
 
 
 /**
@@ -350,7 +346,7 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from);
  *
  * @return                              True if line of sight obscurred by level geometery
  */
-bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
+bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from);
 
 /**
  * @param target                         Vec3i of position to check line of sight to
@@ -358,6 +354,6 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
  *
  * @return                              True if line of sight obscurred by outdoor models
  */
-bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from);
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from);
 
 extern struct BspRenderer *pBspRenderer;

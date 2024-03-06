@@ -115,7 +115,7 @@ struct OutdoorLocation {
     void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();
-    int getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos);
+    int getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos);
     void SetFog();
     void Draw();
 
@@ -202,7 +202,7 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pOnWater,
+int ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pOnWater,
                       int *faceId, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);

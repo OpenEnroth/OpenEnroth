@@ -147,7 +147,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y);
     int bmodelPid = 0;
     bool onWater = false;
-    int level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uHeight, &onWater, &bmodelPid, 0);
+    int level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
         int splashZ = level + 60;
@@ -252,7 +252,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
-        Vec3i collisionPos = collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1);
+        Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
         int collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
@@ -347,7 +347,7 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     }
 
     int uFaceID;
-    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition.toInt(), &pSpriteObject->uSectorID, &uFaceID);
+    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &pSpriteObject->uSectorID, &uFaceID);
     if (floor_lvl <= -30000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
@@ -654,7 +654,7 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
     pSpellObject.vPosition = pos;
     pSpellObject.uAttributes = attributes;
-    pSpellObject.uSectorID = pIndoor->GetSector(pos.toInt());
+    pSpellObject.uSectorID = pIndoor->GetSector(pos);
     pSpellObject.containing_item.Reset();
     if (item) {
         pSpellObject.containing_item = *item;
@@ -691,7 +691,7 @@ void SpriteObject::createSplashObject(Vec3f pos) {
     sprite.uType = SPRITE_WATER_SPLASH;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.vPosition = pos;
-    sprite.uSectorID = pIndoor->GetSector(pos.toInt());
+    sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
         pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Item, objID));

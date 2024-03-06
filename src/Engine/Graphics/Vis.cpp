@@ -481,7 +481,7 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sM
         return false;
 
     // sModelID == -1 means we're indoor, and -1 == MODEL_INDOOR, so this call just works.
-    if (!pFace->Contains(IntersectPoint.toInt(), sModelID))
+    if (!pFace->Contains(IntersectPoint, sModelID))
         return false;
 
     if (engine->config->debug.ShowPickedFace.value())

@@ -1056,7 +1056,7 @@ void Game::processQueuedMessages() {
                     int y = atoi(frameTableTxtLine.pProperties[1]);
                     int z = atoi(frameTableTxtLine.pProperties[2]);
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        if (pIndoor->GetSector(x, y, z)) {
+                        if (pIndoor->GetSector(Vec3f(x, y, z))) {
                             pParty->pos = Vec3f(x, y, z);
                             pParty->uFallStartZ = z;
                             continue;
