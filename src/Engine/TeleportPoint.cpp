@@ -7,12 +7,12 @@ void TeleportPoint::invalidate() {
 }
 
 void TeleportPoint::setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed) {
-    _pos = pos;
+    _pos = pos.toFloat();
     _yaw = yaw;
     _pitch = pitch;
     _zSpeed = zSpeed;
 
-    _teleportValid = !!(_pos.x | _pos.y | _pos.z | (_yaw != -1) | _pitch | _zSpeed);
+    _teleportValid = !!(pos.x | pos.y | pos.z | (_yaw != -1) | _pitch | _zSpeed);
 }
 
 void TeleportPoint::doTeleport(bool keepOnZero) {
@@ -41,7 +41,7 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
             newPitch = _pitch;
         }
     } else {
-        newPos = _pos.toFloat();
+        newPos = _pos;
         newSpeed = Vec3f(0, 0, _zSpeed);
         newFallStart = _pos.z;
         newPitch = _pitch;

@@ -58,7 +58,7 @@ class TeleportPoint {
  private:
     bool _teleportValid = false;
     std::string _targetMap;
-    Vec3i _pos;
+    Vec3f _pos;
     int _yaw;
     int _pitch;
     int _zSpeed;
