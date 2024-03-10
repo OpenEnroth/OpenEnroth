@@ -11,9 +11,11 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 
+#include "Engine/Engine.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
@@ -114,6 +116,10 @@ void EngineController::goToMainMenu() {
         if (++counter >= 128)
             throw Exception("Couldn't return to main menu");
     };
+
+    // Clear the spell/message queue to fix #1535
+    CastSpellInfoHelpers::clearSpellQueue(); // TODO(pskelton): move me somewhere more appropriate?
+    engine->_messageQueue->clear();
 
     // Skip movies.
     while (current_screen_type == SCREEN_VIDEO) {

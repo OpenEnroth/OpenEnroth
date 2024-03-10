@@ -113,6 +113,12 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
     pPlayer->playReaction(SPEECH_CAST_SPELL);
 }
 
+void CastSpellInfoHelpers::clearSpellQueue() {
+    for (CastSpellInfo& spellInfo : pCastSpellInfo) {  // cycle through spell queue
+        spellInfo = CastSpellInfo();
+    }
+}
+
 void CastSpellInfoHelpers::castSpell() {
     CharacterSkillType which_skill;
     AIDirection target_direction;
