@@ -26,9 +26,9 @@
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     //reconstruct(src.vertices, &dst->pVertices);
     for (const auto& vert : src.vertices) {
-        dst->pVertices.emplace_back(vert.toFloat());
+        dst->pVertices.push_back(vert.toFloat());
     }
-    
+
     reconstruct(src.faces, &dst->pFaces);
     reconstruct(src.faceData, &dst->pLFaces);
 
@@ -321,7 +321,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->field_40 = srcData.field_40;
     dst->sCenterX = srcData.sCenterX;
     dst->sCenterY = srcData.sCenterY;
-    dst->vPosition = srcData.vPosition;
+    dst->vPosition = srcData.vPosition.toFloat();
     dst->pBoundingBox.x1 = srcData.sMinX;
     dst->pBoundingBox.y1 = srcData.sMinY;
     dst->pBoundingBox.z1 = srcData.sMinZ;
@@ -334,10 +334,14 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->sSomeOtherMaxX = srcData.sSomeOtherMaxX;
     dst->sSomeOtherMaxY = srcData.sSomeOtherMaxY;
     dst->sSomeOtherMaxZ = srcData.sSomeOtherMaxZ;
-    dst->vBoundingCenter = srcData.vBoundingCenter;
+    dst->vBoundingCenter = srcData.vBoundingCenter.toFloat();
     dst->sBoundingRadius = srcData.sBoundingRadius;
 
-    dst->pVertices = srcExtras.vertices;
+    //dst->pVertices = srcExtras.vertices;
+    for (const auto& vert : srcExtras.vertices) {
+        dst->pVertices.push_back(vert.toFloat());
+    }
+
     reconstruct(srcExtras.faces, &dst->pFaces);
 
     for (size_t i = 0; i < dst->pFaces.size(); i++)
@@ -390,7 +394,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
         model.vBoundingCenter = model.pBoundingBox.center();
-        model.sBoundingRadius = model.pBoundingBox.size().toFloat().length() / 2.0f;
+        model.sBoundingRadius = model.pBoundingBox.size().length() / 2.0f;
     }
 
     reconstruct(src.decorations, &pLevelDecorations);

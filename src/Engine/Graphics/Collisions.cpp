@@ -162,7 +162,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         if (model_idx == MODEL_INDOOR) {
             vertPos = pIndoor->pVertices[face->pVertexIDs[i]];
         } else {
-            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
         }
 
         b = 2.0f * (dot(dir, pos - vertPos));
@@ -183,8 +183,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
             vert1 = pIndoor->pVertices[face->pVertexIDs[i]];
             vert2 = pIndoor->pVertices[face->pVertexIDs[i2]];
         } else {
-            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
-            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]].toFloat();
+            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
+            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]];
         }
 
         // collide with line between the two verts

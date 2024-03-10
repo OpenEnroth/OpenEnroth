@@ -18,7 +18,7 @@
 struct IndoorLocation;
 
 struct BLVLight {
-    Vec3i vPosition;
+    Vec3f vPosition;
     int16_t uRadius = 0;
     char uRed = 0;
     char uGreen = 0;
@@ -32,7 +32,7 @@ struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
     uint32_t uDoorID;
     Duration uTimeSinceTriggered;
-    Vec3i vDirection; // Fixpoint direction vector
+    Vec3f vDirection; // Fixpoint direction vector
     int32_t uMoveLength;
     int32_t uCloseSpeed; // In map units per real-time second.
     int32_t uOpenSpeed; // In map units per real-time second.
@@ -301,7 +301,7 @@ int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
-int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing);
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing);
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2);
 
 void FindBillboardsLightLevels_BLV();
@@ -332,8 +332,8 @@ int GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 int GetApproximateIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight clear to target
  */
@@ -341,16 +341,16 @@ bool Check_LineOfSight(const Vec3f &target, const Vec3f &from);
 
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight obscurred by level geometery
  */
 bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from);
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight obscurred by outdoor models
  */

@@ -3491,7 +3491,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]].toFloat();
+                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]];
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = 0;

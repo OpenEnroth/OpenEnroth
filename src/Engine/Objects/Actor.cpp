@@ -882,80 +882,80 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
-    Vec3i out1;
-    Vec3i out2;
+    Vec3f out1;
+    Vec3f out2;
     float a4a;        // [sp+58h] [bp+Ch]@45
 
     int id1 = uObj1ID.id();
     int id2 = uObj2ID.id();
     switch (uObj1ID.type()) {
         case OBJECT_Item: {
-            out1 = pSpriteObjects[id1].vPosition.toInt();
+            out1 = pSpriteObjects[id1].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
+            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
-            out1 = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
+            out1 = pParty->pos + Vec3f(0, 0, pParty->height / 3);
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 3) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 2) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 1) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             }
             break;
         }
         case OBJECT_Decoration: {
-            out1 = pLevelDecorations[id1].vPosition.toInt();
+            out1 = pLevelDecorations[id1].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center();
+                out1 = pIndoor->pFaces[id1].pBounding.center().toFloat();
             }
             break;
         }
         default: {
-            out1 = Vec3i();
+            out1 = Vec3f();
             break;
         }
     }
 
     switch (uObj2ID.type()) {
         case OBJECT_Item: {
-            out2 = pSpriteObjects[id2].vPosition.toInt();
+            out2 = pSpriteObjects[id2].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
+            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
             if (!PreferedZ)
                 PreferedZ = pParty->eyeLevel;
 
-            out2 = pParty->pos.toInt() + Vec3i(0, 0, PreferedZ);
+            out2 = pParty->pos + Vec3f(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
-            out2 = pLevelDecorations[id2].vPosition.toInt();
+            out2 = pLevelDecorations[id2].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center();
+                out2 = pIndoor->pFaces[id2].pBounding.center().toFloat();
             }
             break;
         }
         default: {
-            out2 = Vec3i();
+            out2 = Vec3f();
             break;
         }
     }
@@ -1550,7 +1550,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
     v7.y = v3->pos.y;
     v7.x = v3->pos.x;
     if (Check_LineOfSight(Vec3f(xpos, ypos, zpos), v7)
-        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))
+        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3f(xpos, ypos, zpos))
         ) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, uActorID), sTargetPid,
@@ -4553,10 +4553,10 @@ void evaluateAoeDamage() {
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
-                    Vec3i distanceVec = actor->pos.toInt() + Vec3i(0, 0, actor->height / 2) - attack.pos.toInt();
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + actor->radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = actor->pos + Vec3f(0, 0, actor->height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + actor->radius;
+                    float attackRangeSq = attackRange * attackRange;
                     attackVector = Vec3f(distanceVec.x, distanceVec.y, actor->pos.z);
 
                     // check range
@@ -4587,10 +4587,10 @@ void evaluateAoeDamage() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    Vec3i distanceVec = pActors[actorID].pos.toInt() + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos.toInt();
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + pActors[actorID].radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = pActors[actorID].pos + Vec3f(0, 0, pActors[actorID].height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + pActors[actorID].radius;
+                    float attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
                     attackVector = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
 

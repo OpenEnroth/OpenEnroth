@@ -718,11 +718,11 @@ void BLV_UpdateDoors() {
         // adjust verts to how open the door is
         for (int j = 0; j < door->uNumVertices; ++j) {
             pIndoor->pVertices[door->pVertexIDs[j]].x =
-                fixpoint_mul(door->vDirection.x, openDistance) + door->pXOffsets[j];
+                (door->vDirection.x * openDistance) + door->pXOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].y =
-                fixpoint_mul(door->vDirection.y, openDistance) + door->pYOffsets[j];
+                (door->vDirection.y * openDistance) + door->pYOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].z =
-                fixpoint_mul(door->vDirection.z, openDistance) + door->pZOffsets[j];
+                (door->vDirection.z * openDistance) + door->pZOffsets[j];
         }
 
         for (int j = 0; j < door->uNumFaces; ++j) {
@@ -767,8 +767,8 @@ void BLV_UpdateDoors() {
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                float udot = dot(door->vDirection.toFloatFromFixpoint(), u);
-                float vdot = dot(door->vDirection.toFloatFromFixpoint(), v);
+                float udot = dot(door->vDirection, u);
+                float vdot = dot(door->vDirection, v);
                 extras->sTextureDeltaU = -udot * openDistance + door->pDeltaUs[j];
                 extras->sTextureDeltaV = -vdot * openDistance + door->pDeltaVs[j];
             }
@@ -1994,12 +1994,12 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing) {
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
-    a1.vPosition = pos.toFloat();
+    a1.vPosition = pos;
     a1.uFacing = facing;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
@@ -2025,7 +2025,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition.toInt(), 0);
+            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition, 0);
             return;
         }
 
