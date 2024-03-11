@@ -121,7 +121,17 @@ void EventMap::dump(int eventId) const {
     if (events) {
         logger->trace("Event: {}", eventId);
         for (const EventIR &ir : *events) {
-            logger->trace("{}", ir.toString());
+            // TODO(pskelton): I have no idea why this has become an issue - hacky workaround for now
+            std::string eventString = ir.toString();
+            std::string find = "…"; // spdlog falls over on these
+            std::string replace = "...";
+            auto pos = eventString.find(find);
+            while (pos != std::string::npos) {
+                eventString.replace(pos, find.size(), replace);
+                pos = eventString.find(find, pos + replace.size());
+            }
+
+            logger->trace("{}", eventString);
         }
     } else {
         logger->trace("Event {} not found", eventId);

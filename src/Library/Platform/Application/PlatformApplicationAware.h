@@ -20,6 +20,7 @@ class PlatformApplicationAware {
 
     template<class T>
     T *component() {
+        if (!_application) __debugbreak();
         assert(_application); // Should be installed.
         return _componentStorage->require<T>();
     }
