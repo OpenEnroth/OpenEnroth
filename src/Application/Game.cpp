@@ -126,14 +126,6 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
 Game::~Game() = default;
 
 int Game::run() {
-    // TODO(captainurist): this belongs to GameStarter?
-    /* TODO: We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
-     * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken.
-     * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
-     * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
-     * Hack below with render reinitialization is a temporary workaround. */
-    _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
-    render->Reinitialize();
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
@@ -154,10 +146,6 @@ int Game::run() {
         if (!loop()) {
             break;
         }
-    }
-
-    if (window) {
-        _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
     }
 
     return 0;
