@@ -44,8 +44,6 @@ static Sizei outputRender = {0, 0};
 static Sizei outputPresent = {0, 0};
 
 bool BaseRenderer::Initialize() {
-    window->resize({config->window.Width.value(), config->window.Height.value()});
-
     return true;
 }
 
