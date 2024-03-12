@@ -492,7 +492,8 @@ struct Party_MM7 {
     /* 00765 */ std::array<uint8_t, 64> questBits;
     /* 007A5 */ std::array<bool, 13> arcomageWins;
                 std::array<bool, 3> arcomageWinsUnused; // Original array was 16 elements long, but we only have 13 taverns.
-    /* 007B5 */ char field_7B5_in_arena_quest;
+    /* 007B5 */ int8_t field_7B5_in_arena_quest; // -1 for a win, 0 for initial state, otherwise dialogue id for the
+                                                 // arena level being fought.
     /* 007B6 */ std::array<uint8_t, 4> numArenaWins;
     /* 007BA */ std::array<bool, 29> isArtifactFound;  // 7ba
     /* 007D7 */ std::array<char, 39> field_7d7;

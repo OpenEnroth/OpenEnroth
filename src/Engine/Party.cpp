@@ -122,7 +122,8 @@ void Party::Zero() {
     days_played_without_rest = 0;
     _questBits.reset();
     pArcomageWins.fill(0);
-    field_7B5_in_arena_quest = 0;
+    arenaState = ARENA_STATE_INITIAL;
+    arenaLevel = ARENA_LEVEL_INVALID;
     uNumArenaWins.fill(0);
     pIsArtifactFound.fill(false);
     _autonoteBits.reset();

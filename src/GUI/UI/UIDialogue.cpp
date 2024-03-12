@@ -282,7 +282,7 @@ void GUIWindow_Dialogue::Update() {
             pButton->msg_param = 0;
         }
 
-        if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1) {
+        if (pParty->arenaState == ARENA_STATE_FIGHTING) {
             int num_dead_actors = 0;
             for (int i = 0; i < pActors.size(); ++i) {
                 if (pActors[i].aiState == Dead ||
