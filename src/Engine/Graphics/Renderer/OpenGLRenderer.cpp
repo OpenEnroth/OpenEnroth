@@ -4815,11 +4815,7 @@ bool OpenGLRenderer::InitShaders() {
 }
 
 bool OpenGLRenderer::Reinitialize(bool firstInit) {
-    outputPresent = window->size();
-    if (config->graphics.RenderFilter.value() != 0)
-        outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
-    else
-        outputRender = outputPresent;
+    BaseRenderer::Reinitialize(firstInit);
 
     if (!firstInit) {
         game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
@@ -4839,9 +4835,6 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
                             viewparams->uScreen_BttmR_X,
                             viewparams->uScreen_BttmR_Y);
     }
-
-    // pViewport->ResetScreen();
-    CreateZBuffer();
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
     glClearDepthf(1.0f);

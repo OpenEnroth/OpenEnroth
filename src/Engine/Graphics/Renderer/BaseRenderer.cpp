@@ -39,6 +39,8 @@
 #include "Utility/DataPath.h"
 
 bool BaseRenderer::Initialize() {
+    updateRenderDimensions();
+    CreateZBuffer();
     return true;
 }
 
@@ -804,15 +806,8 @@ void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int z
 }
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
-    // TODO(captainurist): code copied from RenderOpenGL
-    outputPresent = window->size();
-    if (config->graphics.RenderFilter.value() != 0)
-        outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
-    else
-        outputRender = outputPresent;
-
+    updateRenderDimensions();
     CreateZBuffer();
-
     return true;
 }
 
@@ -832,4 +827,12 @@ void BaseRenderer::SaveWinnersCertificate(const std::string &filePath) {
 
     // reverse input and save to texture for later
     assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
+}
+
+void BaseRenderer::updateRenderDimensions() {
+    outputPresent = window->size();
+    if (config->graphics.RenderFilter.value() != 0)
+        outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
+    else
+        outputRender = outputPresent;
 }
