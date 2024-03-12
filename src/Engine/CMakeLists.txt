@@ -25,6 +25,8 @@ set(ENGINE_SOURCES
         mm7text_ru.cpp)
 
 set(ENGINE_HEADERS
+        ArenaEnumFunctions.h
+        ArenaEnums.h
         AssetsManager.h
         AttackList.h
         Conditions.h

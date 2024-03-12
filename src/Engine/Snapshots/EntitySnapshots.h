@@ -493,7 +493,7 @@ struct Party_MM7 {
     /* 007A5 */ std::array<bool, 13> arcomageWins;
                 std::array<bool, 3> arcomageWinsUnused; // Original array was 16 elements long, but we only have 13 taverns.
     /* 007B5 */ char field_7B5_in_arena_quest;
-    /* 007B6 */ std::array<char, 4> numArenaWins;
+    /* 007B6 */ std::array<uint8_t, 4> numArenaWins;
     /* 007BA */ std::array<bool, 29> isArtifactFound;  // 7ba
     /* 007D7 */ std::array<char, 39> field_7d7;
     /* 007FE */ std::array<uint8_t, 26> autonoteBits;

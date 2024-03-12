@@ -877,16 +877,16 @@ std::string GUIWindow_CharacterRecord::getAchievedAwardsString(int idx) {
     // TODO(captainurist): fmt can throw
     switch (_achievedAwardsList[idx]) {
       case Award_Arena_PageWins:
-        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[0]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_PAGE]);
         break;
       case Award_Arena_SquireWins:
-        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[1]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE]);
         break;
       case Award_Arena_KnightWins:
-        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[2]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT]);
         break;
       case Award_Arena_LordWins:
-        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[3]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_LORD]);
         break;
       case Award_ArcomageWins:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArcomageWins);

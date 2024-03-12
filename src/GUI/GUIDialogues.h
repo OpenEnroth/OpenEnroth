@@ -9,8 +9,7 @@
 
 #define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  (36 + std::to_underlying(skill))
 
-// TODO(captainurist): #enum
-enum DialogueId : int32_t {
+enum class DialogueId : int32_t {
     DIALOGUE_NULL = 0,
     DIALOGUE_MAIN = 1,
     DIALOGUE_SHOP_BUY_STANDARD = 2,
@@ -116,6 +115,7 @@ enum DialogueId : int32_t {
     DIALOGUE_LEARN_FIRST = DIALOGUE_LEARN_STAFF,
     DIALOGUE_LEARN_LAST = DIALOGUE_LEARN_CLUB, // Doesn't include DIALOGUE_LEARN_MISC, which makes sense, but is a bit weird.
 };
+using enum DialogueId;
 
 #undef SKILL_TO_LEARNING_DIALOGUE_ID
 

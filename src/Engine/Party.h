@@ -15,6 +15,7 @@
 #include "Media/Audio/SoundEnums.h"
 #include "Utility/IndexedBitset.h"
 
+#include "ArenaEnums.h"
 #include "PartyEnums.h"
 
 class RandomEngine;
@@ -313,7 +314,7 @@ struct Party {
     IndexedBitset<QBIT_FIRST, QBIT_LAST> _questBits;
     IndexedArray<bool, HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN> pArcomageWins;
     int8_t field_7B5_in_arena_quest; // 0, DIALOGUE_ARENA_SELECT_PAGE..DIALOGUE_ARENA_SELECT_CHAMPION, or -1 for win
-    std::array<char, 4> uNumArenaWins; // 0=page, 1=squire, 2=knight, 3=lord
+    IndexedArray<uint8_t, ARENA_LEVEL_FIRST, ARENA_LEVEL_LAST> uNumArenaWins;
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     IndexedBitset<1, 208> _autonoteBits;
     int uNumArcomageWins;

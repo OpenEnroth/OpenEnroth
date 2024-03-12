@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "Engine/ArenaEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Sprites.h"
@@ -232,7 +233,7 @@ DialogueId arenaMainDialogue() {
                 }
             }
             if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
-                pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
+                pParty->uNumArenaWins[arenaLevelForDialogue(static_cast<DialogueId>(pParty->field_7B5_in_arena_quest))]++; // TODO(captainurist): #enum get rid of static_cast.
                 for (Character &player : pParty->pCharacters) {
                     player.SetVariable(VAR_Award, (uint8_t)pParty->field_7B5_in_arena_quest + 3);
                 }
@@ -260,7 +261,7 @@ DialogueId arenaMainDialogue() {
  * @offset 0x4BC109
  */
 void prepareArenaFight(DialogueId dialogue) {
-    pParty->field_7B5_in_arena_quest = dialogue;
+    pParty->field_7B5_in_arena_quest = std::to_underlying(dialogue); // TODO(captainurist): #enum
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
