@@ -68,8 +68,6 @@ RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
 
-static Sizei outputRender = {0, 0};
-static Sizei outputPresent = {0, 0};
 static GLuint framebuffer = 0;
 static GLuint framebufferTextures[2] = {0, 0};
 static bool OpenGLES = false;

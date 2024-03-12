@@ -62,4 +62,11 @@ class BaseRenderer : public Renderer {
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);
+
+ protected:
+    Sizei outputRender = {0, 0};
+    Sizei outputPresent = {0, 0};
+
+ private:
+    void updateRenderDimensions();
 };

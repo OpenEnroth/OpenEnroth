@@ -38,11 +38,6 @@
 #include "Utility/Memory/MemSet.h"
 #include "Utility/DataPath.h"
 
-#include "Engine/Graphics/ImageLoader.h"
-
-static Sizei outputRender = {0, 0};
-static Sizei outputPresent = {0, 0};
-
 bool BaseRenderer::Initialize() {
     return true;
 }
