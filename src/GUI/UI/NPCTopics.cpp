@@ -306,7 +306,7 @@ void prepareArenaFight(DialogueId dialogue) {
         monsterMaxLevel = characterMaxLevel * 1.5;
         break;
       case DIALOGUE_ARENA_SELECT_KNIGHT:
-      case DIALOGUE_ARENA_SELECT_CHAMPION:
+      case DIALOGUE_ARENA_SELECT_LORD:
         monsterMaxLevel = characterMaxLevel * 2;
         break;
       default:
@@ -352,7 +352,7 @@ void prepareArenaFight(DialogueId dialogue) {
     } else if (dialogue == DIALOGUE_ARENA_SELECT_KNIGHT) {
         baseReward = 200;
         monstersNum = grng->random(11) + 10; // [10:19] monsters
-    } else if (dialogue == DIALOGUE_ARENA_SELECT_CHAMPION) {
+    } else if (dialogue == DIALOGUE_ARENA_SELECT_LORD) {
         baseReward = 500;
         monstersNum = 20;
     }
@@ -606,7 +606,7 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
         return masteryTeacherOptionString();
       case DIALOGUE_MAGIC_GUILD_JOIN:
         return joinGuildOptionString();
-      case DIALOGUE_ARENA_SELECT_CHAMPION:
+      case DIALOGUE_ARENA_SELECT_LORD:
         return localization->GetString(LSTR_ARENA_DIFFICULTY_LORD);
       case DIALOGUE_ARENA_SELECT_KNIGHT:
         return localization->GetString(LSTR_ARENA_DIFFICULTY_KNIGHT);
@@ -707,7 +707,7 @@ std::vector<DialogueId> listNPCDialogueOptions(DialogueId topic) {
       case DIALOGUE_MASTERY_TEACHER_OFFER:
         return {DIALOGUE_MASTERY_TEACHER_LEARN};
       case DIALOGUE_ARENA_WELCOME:
-        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_CHAMPION};
+        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_LORD};
       default:
         return {};
     }
@@ -772,7 +772,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         }
     } else if (topic == DIALOGUE_PROFESSION_DETAILS) {
         dialogue_show_profession_details = ~dialogue_show_profession_details;
-    } else if (topic >= DIALOGUE_ARENA_SELECT_PAGE && topic <= DIALOGUE_ARENA_SELECT_CHAMPION) {
+    } else if (topic >= DIALOGUE_ARENA_SELECT_PAGE && topic <= DIALOGUE_ARENA_SELECT_LORD) {
         prepareArenaFight(topic);
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;

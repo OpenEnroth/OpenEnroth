@@ -113,7 +113,7 @@ GAME_TEST(Issues, Issue1115) {
     auto levelTape = charTapes.levels();
     test.playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
     EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
-    EXPECT_TRUE(dialogueTape.contains(DIALOGUE_ARENA_SELECT_CHAMPION));
+    EXPECT_TRUE(dialogueTape.contains(DIALOGUE_ARENA_SELECT_LORD));
     EXPECT_EQ(levelTape, tape({21, 21, 21, 21}));
 }
 
