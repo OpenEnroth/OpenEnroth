@@ -72,8 +72,7 @@ class GUIFont {
                        Color color, const std::string &text, int rect_width,
                        int reverse_text);
 
-    std::string FitTextInAWindow(const std::string &inString, unsigned int width, int uX,
-                            bool return_on_carriage = false);
+    std::string FitTextInAWindow(const std::string &inString, int width, int uX, bool return_on_carriage = false);
 
     // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,

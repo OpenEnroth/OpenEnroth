@@ -353,7 +353,9 @@ int GUIFont::AlignText_Center(int width, const std::string &pString) {
     return (position < 0) ? 0 : position;
 }
 
-std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int width, int uX, bool return_on_carriage) {
+std::string GUIFont::FitTextInAWindow(const std::string &inString, int width, int uX, bool return_on_carriage) {
+    assert(uX < width);
+
     if (inString.empty()) {
         return "";
     }
