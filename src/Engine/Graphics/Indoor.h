@@ -198,10 +198,8 @@ struct IndoorLocation {
     }
 
     /**
-     * @param sX                        X coordinate.
-     * @param sY                        Y coordinate.
-     * @param sZ                        Z coordinate.
-     * @return                          Sector id at (X,Y,Z), or zero if (X,Y,Z) is outside the level bounds.
+     * @param pos                       Vec3f coordinates.
+     * @return                          Sector id at pos, or zero if pos is outside the level bounds.
      */
     int GetSector(const Vec3f& pos);
 
