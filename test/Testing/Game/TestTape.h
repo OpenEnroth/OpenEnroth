@@ -50,11 +50,6 @@ class TestTapeBase {
         return _state->values().end();
     }
 
-    friend void PrintTo(const TestTapeBase &tape, std::ostream* stream) { // gtest printers support.
-        using namespace testing; // NOLINT
-        *stream << PrintToString(tape.values());
-    }
-
  private:
     std::shared_ptr<detail::TestTapeState<T>> _state;
 };
