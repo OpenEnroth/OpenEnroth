@@ -30,6 +30,10 @@ namespace CastSpellInfoHelpers {
     * Clear queue
     */
     void clearSpellQueue();
+    /**
+    * Test for spells in queue
+    */
+    bool hasQueuedSpells();
 };  // namespace CastSpellInfoHelpers
 
 class GUIWindow;

@@ -11,6 +11,7 @@
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -80,6 +81,11 @@ void TestController::prepareForNextTestInternal() {
     _tapeCallbacks.clear();
     ::application->component<GameKeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+
+    // Clear the spell/message queue to fix #1535
+    CastSpellInfoHelpers::clearSpellQueue();
+    engine->_messageQueue->clear();
+
     _controller->goToMainMenu();
 }
 

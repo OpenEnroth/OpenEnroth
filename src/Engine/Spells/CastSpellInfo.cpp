@@ -119,6 +119,14 @@ void CastSpellInfoHelpers::clearSpellQueue() {
     }
 }
 
+bool CastSpellInfoHelpers::hasQueuedSpells() {
+    for (const CastSpellInfo& spellInfo : pCastSpellInfo) {  // cycle through spell queue
+        if (spellInfo.uSpellID != SPELL_NONE)
+            return true;
+    }
+    return false;
+}
+
 void CastSpellInfoHelpers::castSpell() {
     CharacterSkillType which_skill;
     AIDirection target_direction;
