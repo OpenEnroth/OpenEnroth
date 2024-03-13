@@ -78,9 +78,9 @@ bool Chest::open(int uChestID, Pid objectPid) {
                     Vec3f(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    objectPos = pOutdoor->face(objectPid).pBoundingBox.center().toFloat();
+                    objectPos = pOutdoor->face(objectPid).pBoundingBox.center();
                 } else {
-                    objectPos = pIndoor->pFaces[objId].pBounding.center().toFloat();
+                    objectPos = pIndoor->pFaces[objId].pBounding.center();
                 }
             }
 
@@ -595,12 +595,12 @@ void UpdateChestPositions() {
         for (const BSPModel &model : pOutdoor->pBModels)
             for (const ODMFace &face : model.pFaces)
                 if (face.sCogTriggeredID)
-                    processEvent(face.sCogTriggeredID, face.pBoundingBox.center().toFloat());
+                    processEvent(face.sCogTriggeredID, face.pBoundingBox.center());
     } else {
         for (const BLVFace &face : pIndoor->pFaces)
             if (face.uFaceExtraID)
                 if (int eventId = pIndoor->pFaceExtras[face.uFaceExtraID].uEventID)
-                    processEvent(eventId, face.pBounding.center().toFloat());
+                    processEvent(eventId, face.pBounding.center());
     }
 
     for (const auto &[chestId, points] : pointsByChestId) {

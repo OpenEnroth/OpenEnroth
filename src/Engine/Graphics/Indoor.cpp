@@ -590,7 +590,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, float slack, FaceAttribu
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
     // TODO(captainurist): uncomment this
-    // float d = std::abs(this->facePlane.signedDistanceTo(pos.toFloat()));
+    // float d = std::abs(this->facePlane.signedDistanceTo(pos));
     // assert(d < 0.01f);
 
     if (this->uNumVertices < 3)

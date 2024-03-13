@@ -918,7 +918,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center().toFloat();
+                out1 = pIndoor->pFaces[id1].pBounding.center();
             }
             break;
         }
@@ -950,7 +950,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center().toFloat();
+                out2 = pIndoor->pFaces[id2].pBounding.center();
             }
             break;
         }

@@ -477,7 +477,7 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
 
 //----- (004C1D2B) --------------------------------------------------------
 bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sModelID) {
-    if (!pFace->pBounding.contains(IntersectPoint.toInt()))
+    if (!pFace->pBounding.contains(IntersectPoint))
         return false;
 
     // sModelID == -1 means we're indoor, and -1 == MODEL_INDOOR, so this call just works.

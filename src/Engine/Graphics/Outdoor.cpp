@@ -98,7 +98,6 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         pCamera3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;*/
 
     // if (bRedraw || true /*render->pRenderD3D*/) {
-        // pODMRenderParams->RotationToInts();
         // sub_481ED9_MessWithODMRenderParams();
 
         // inlined
@@ -2515,7 +2514,6 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     pWeather->Initialize();
     pCamera3D->_viewYaw = pParty->_viewYaw;
     pCamera3D->_viewPitch = pParty->_viewPitch;
-    // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
 
     for (int i = 0; i < 20000; ++i) {
