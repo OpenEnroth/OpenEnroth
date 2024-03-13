@@ -56,7 +56,8 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
         assert(false);  // whacky condition - fix
         short *v6 = nullptr;
         if (false) {
-            // TODO(captainurist): what are these checks? MM6 remnants?
+            // TODO(captainurist): #mm6 this is MM6 legacy, and this decompiled code doesn't look sane.
+            //                     Reimplement properly once we get to MM6.
             // if ( !*(&byte_4ED94C[37 * v1->uClass / 3] + dword_F8B19C)
             //|| (v6 = (short *)(&pParty->activeCharacter().uIntelligence + _currentDialogue),
             //    *(short *)v6))
