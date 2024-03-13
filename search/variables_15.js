@@ -348,7 +348,7 @@ var searchData=
   ['unumactions_345',['uNumActions',['../structActionQueue.html#a16c5dddc29c4eae25254742899af3ab3',1,'ActionQueue']]],
   ['unumarcomageloses_346',['uNumArcomageLoses',['../structParty.html#acaee43e052ee7f1805c19f39c3148efc',1,'Party']]],
   ['unumarcomagewins_347',['uNumArcomageWins',['../structParty.html#ae6bcb3b90834d4d3f15c5669db05da29',1,'Party']]],
-  ['unumarenawins_348',['uNumArenaWins',['../structParty.html#aeaf12465d37d33c4a65ff123bad087fd',1,'Party']]],
+  ['unumarenawins_348',['uNumArenaWins',['../structParty.html#a9bb7a5349fa512ce80123eefe19f6059',1,'Party']]],
   ['unumarmageddoncasts_349',['uNumArmageddonCasts',['../classCharacter.html#abc0f18b6f8c10b7930d79b2592c13b07',1,'Character']]],
   ['unumbillboards_350',['uNumBillboards',['../structODMRenderParams.html#a3c5668a315610cc788f06fa06be6f707',1,'ODMRenderParams']]],
   ['unumbillboardstodraw_351',['uNumBillboardsToDraw',['../Renderer_8h.html#a6febe181f878f6fbcaff79909f3cd767',1,'uNumBillboardsToDraw():&#160;OpenGLRenderer.cpp'],['../OpenGLRenderer_8cpp.html#a6febe181f878f6fbcaff79909f3cd767',1,'uNumBillboardsToDraw():&#160;OpenGLRenderer.cpp'],['../classRenderer.html#a31aabb552aa94c72768f457d83c323b3',1,'Renderer::uNumBillboardsToDraw()']]],

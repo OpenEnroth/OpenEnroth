@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;75a3748</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;adc7f3f</span>
    </div>
   </td>
  </tr>
@@ -231,7 +231,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a37da49e3b57d296cda0edcb1291ed5ea inherit pub_static_methods_classPlatform"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >This component can be used to make the engine more deterministic. It replaces the system timer with a fake one that advances by 16ms on each frame, and also resets the global random number generator.</p>
+<div class="textblock"><p >This component can be used to make the engine more deterministic. It replaces the system timer with a fake one that advances by a fixed number of milliseconds each frame, and also resets the global random number generator.</p>
 <p >Note that this component is intentionally very dumb. All the methods just do exactly what you would expect right away, so where you're calling them from becomes very important. E.g. calling <code>restart</code> from an event handler would probably make little sense. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acfcd0ad13e5d85562ca37a93c2010480" name="acfcd0ad13e5d85562ca37a93c2010480"></a>
