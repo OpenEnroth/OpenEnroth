@@ -142,7 +142,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
         optionList.push_back(DIALOGUE_HIRE_FIRE);
     }
     for (int i = 0; i < optionList.size(); i++) {
-        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
+        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(optionList[i]), Io::InputAction::Invalid, "");
     }
     setKeyboardControlGroup(optionList.size(), false, 0, 1);
 
@@ -282,7 +282,7 @@ void GUIWindow_Dialogue::Update() {
             pButton->msg_param = 0;
         }
 
-        if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1) {
+        if (pParty->arenaState == ARENA_STATE_FIGHTING) {
             int num_dead_actors = 0;
             for (int i = 0; i < pActors.size(); ++i) {
                 if (pActors[i].aiState == Dead ||
@@ -362,7 +362,7 @@ void selectNPCDialogueOption(DialogueId option) {
                                                             localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
-                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, topics[i], Io::InputAction::Invalid, "");
+                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), Io::InputAction::Invalid, "");
             }
             pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "Engine/ArenaEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -513,8 +514,16 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src._questBits, &dst->questBits, tags::reverseBits);
     snapshot(src.pArcomageWins, &dst->arcomageWins);
 
-    dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->numArenaWins = src.uNumArenaWins;
+    // We can't save in arena, but doing proper serialization here anyway.
+    if (src.arenaState == ARENA_STATE_INITIAL) {
+        dst->field_7B5_in_arena_quest = 0;
+    } else if (src.arenaState == ARENA_STATE_WON) {
+        dst->field_7B5_in_arena_quest = -1;
+    } else  {
+        dst->field_7B5_in_arena_quest = std::to_underlying(dialogueForArenaLevel(src.arenaLevel));
+    }
+
+    snapshot(src.uNumArenaWins, &dst->numArenaWins);
 
     snapshot(src.pIsArtifactFound, &dst->isArtifactFound);
     snapshot(src._autonoteBits, &dst->autonoteBits, tags::reverseBits);
@@ -621,8 +630,19 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.questBits, &dst->_questBits, tags::reverseBits);
     reconstruct(src.arcomageWins, &dst->pArcomageWins);
 
-    dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaWins = src.numArenaWins;
+    // We can't save in arena, but doing proper deserialization here anyway.
+    if (src.field_7B5_in_arena_quest == 0) {
+        dst->arenaState = ARENA_STATE_INITIAL;
+        dst->arenaLevel = ARENA_LEVEL_INVALID;
+    } else if (src.field_7B5_in_arena_quest == -1) {
+        dst->arenaState = ARENA_STATE_WON;
+        dst->arenaLevel = ARENA_LEVEL_INVALID;
+    } else  {
+        dst->arenaState = ARENA_STATE_FIGHTING;
+        dst->arenaLevel = arenaLevelForDialogue(static_cast<DialogueId>(src.field_7B5_in_arena_quest));
+    }
+
+    reconstruct(src.numArenaWins, &dst->uNumArenaWins);
 
     reconstruct(src.isArtifactFound, &dst->pIsArtifactFound);
     reconstruct(src.autonoteBits, &dst->_autonoteBits, tags::reverseBits);

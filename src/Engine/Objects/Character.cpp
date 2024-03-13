@@ -4451,13 +4451,13 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PrisonTerms:
             return pParty->uNumPrisonTerms >= pValue;
         case VAR_ArenaWinsPage:
-            return (uint8_t)pParty->uNumArenaWins[0] >= pValue;
+            return pParty->uNumArenaWins[ARENA_LEVEL_PAGE] >= pValue;
         case VAR_ArenaWinsSquire:
-            return (uint8_t)pParty->uNumArenaWins[1] >= pValue;
+            return pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE] >= pValue;
         case VAR_ArenaWinsKnight:
-            return (uint8_t)pParty->uNumArenaWins[2] >= pValue;
+            return pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT] >= pValue;
         case VAR_ArenaWinsLord:
-            return pParty->uNumArenaWins[3] >= pValue;
+            return pParty->uNumArenaWins[ARENA_LEVEL_LORD] >= pValue;
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
@@ -4892,16 +4892,16 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             pParty->uNumPrisonTerms = var_value;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaWins[0] = var_value;
+            pParty->uNumArenaWins[ARENA_LEVEL_PAGE] = var_value;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaWins[1] = var_value;
+            pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE] = var_value;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaWins[2] = var_value;
+            pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT] = var_value;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaWins[3] = var_value;
+            pParty->uNumArenaWins[ARENA_LEVEL_LORD] = var_value;
             return;
         case VAR_StaffSkill:
             pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::fromJoined(var_value);
@@ -5477,16 +5477,16 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             pParty->uNumPrisonTerms += val;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaWins[0] += val;
+            pParty->uNumArenaWins[ARENA_LEVEL_PAGE] += val;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaWins[1] += val;
+            pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE] += val;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaWins[2] += val;
+            pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT] += val;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaWins[3] += val;
+            pParty->uNumArenaWins[ARENA_LEVEL_LORD] += val;
             return;
         case VAR_StaffSkill:
             AddSkillByEvent(CHARACTER_SKILL_STAFF, val);
@@ -6190,16 +6190,16 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             pParty->uNumPrisonTerms -= (int)pValue;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaWins[0] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_PAGE] -= (char)pValue;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaWins[1] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE] -= (char)pValue;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaWins[2] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT] -= (char)pValue;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaWins[4] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_LORD] -= (char)pValue;
             return;
         default:
             return;

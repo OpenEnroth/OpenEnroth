@@ -152,7 +152,7 @@ void GUIWindow_Transport::transportDialogue() {
         return;
     }
 
-    int choice_id = _currentDialogue - DIALOGUE_TRANSPORT_SCHEDULE_1;
+    int choice_id = std::to_underlying(_currentDialogue) - std::to_underlying(DIALOGUE_TRANSPORT_SCHEDULE_1);
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {

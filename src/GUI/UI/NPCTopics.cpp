@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "Engine/ArenaEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Sprites.h"
@@ -218,49 +219,53 @@ static constexpr std::array<std::pair<QuestBit, ItemId>, 27> _4F0882_evt_VAR_Pla
 }};
 
 DialogueId arenaMainDialogue() {
-    if (pParty->field_7B5_in_arena_quest) {
-        if (pParty->field_7B5_in_arena_quest == -1) {
-            return DIALOGUE_ARENA_ALREADY_WON;
-        } else {
-            int killedMonsters = 0;
-            for (Actor &actor : pActors) {
-                if (actor.aiState == Dead ||
-                    actor.aiState == Removed ||
-                    actor.aiState == Disabled ||
-                    (actor.summonerId && actor.summonerId.type() == OBJECT_Character)) {
-                    killedMonsters++;
-                }
-            }
-            if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
-                pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
-                for (Character &player : pParty->pCharacters) {
-                    player.SetVariable(VAR_Award, (uint8_t)pParty->field_7B5_in_arena_quest + 3);
-                }
-                pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
-                pAudioPlayer->playUISound(SOUND_51heroism03);
-                pParty->field_7B5_in_arena_quest = -1;
-                return DIALOGUE_ARENA_REWARD;
-            } else {
-                pParty->pos = Vec3f(3849, 5770, 1);
-                pParty->velocity = Vec3f();
-                pParty->uFallStartZ = 1;
-                pParty->_viewYaw = 512;
-                pParty->_viewPitch = 0;
-                pAudioPlayer->playUISound(SOUND_51heroism03);
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-                return DIALOGUE_NULL;
-            }
-        }
-    } else {
+    if (pParty->arenaState == ARENA_STATE_INITIAL)
         return DIALOGUE_ARENA_WELCOME;
+
+    if (pParty->arenaState == ARENA_STATE_WON)
+        return DIALOGUE_ARENA_ALREADY_WON;
+
+    assert(pParty->arenaState == ARENA_STATE_FIGHTING);
+
+    int killedMonsters = 0;
+    for (Actor &actor : pActors) {
+        if (actor.aiState == Dead ||
+            actor.aiState == Removed ||
+            actor.aiState == Disabled ||
+            (actor.summonerId && actor.summonerId.type() == OBJECT_Character)) {
+            killedMonsters++;
+        }
+    }
+
+    if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
+        pParty->uNumArenaWins[pParty->arenaLevel]++;
+        for (Character &player : pParty->pCharacters) {
+            player.SetVariable(VAR_Award, awardTypeForArenaLevel(pParty->arenaLevel));
+        }
+        pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
+        pAudioPlayer->playUISound(SOUND_51heroism03);
+        pParty->arenaState = ARENA_STATE_WON;
+        pParty->arenaLevel = ARENA_LEVEL_INVALID;
+        return DIALOGUE_ARENA_REWARD;
+    } else {
+        pParty->pos = Vec3f(3849, 5770, 1);
+        pParty->velocity = Vec3f();
+        pParty->uFallStartZ = 1;
+        pParty->_viewYaw = 512;
+        pParty->_viewPitch = 0;
+        pAudioPlayer->playUISound(SOUND_51heroism03);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+        return DIALOGUE_NULL;
     }
 }
 
 /**
  * @offset 0x4BC109
  */
-void prepareArenaFight(DialogueId dialogue) {
-    pParty->field_7B5_in_arena_quest = dialogue;
+void prepareArenaFight(ArenaLevel level) {
+    pParty->arenaState = ARENA_STATE_FIGHTING;
+    pParty->arenaLevel = level;
+
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
@@ -298,18 +303,18 @@ void prepareArenaFight(DialogueId dialogue) {
     int monsterMaxLevel = characterMaxLevel;
     int monsterMinLevel = characterMaxLevel / 2;
 
-    switch(dialogue) {
-      case DIALOGUE_ARENA_SELECT_PAGE:
+    switch(level) {
+    case ARENA_LEVEL_PAGE:
         monsterMaxLevel = characterMaxLevel;
         break;
-      case DIALOGUE_ARENA_SELECT_SQUIRE:
+    case ARENA_LEVEL_SQUIRE:
         monsterMaxLevel = characterMaxLevel * 1.5;
         break;
-      case DIALOGUE_ARENA_SELECT_KNIGHT:
-      case DIALOGUE_ARENA_SELECT_CHAMPION:
+    case ARENA_LEVEL_KNIGHT:
+    case ARENA_LEVEL_LORD:
         monsterMaxLevel = characterMaxLevel * 2;
         break;
-      default:
+    default:
         assert(false);
     }
 
@@ -343,16 +348,16 @@ void prepareArenaFight(DialogueId dialogue) {
 
     int baseReward = 0, monstersNum = 0;
 
-    if (dialogue == DIALOGUE_ARENA_SELECT_PAGE) {
+    if (level == ARENA_LEVEL_PAGE) {
         baseReward = 50;
         monstersNum = grng->random(3) + 6; // [6:8] monsters
-    } else if (dialogue == DIALOGUE_ARENA_SELECT_SQUIRE) {
+    } else if (level == ARENA_LEVEL_SQUIRE) {
         baseReward = 100;
         monstersNum = grng->random(7) + 6; // [6:12] monsters
-    } else if (dialogue == DIALOGUE_ARENA_SELECT_KNIGHT) {
+    } else if (level == ARENA_LEVEL_KNIGHT) {
         baseReward = 200;
         monstersNum = grng->random(11) + 10; // [10:19] monsters
-    } else if (dialogue == DIALOGUE_ARENA_SELECT_CHAMPION) {
+    } else if (level == ARENA_LEVEL_LORD) {
         baseReward = 500;
         monstersNum = 20;
     }
@@ -606,7 +611,7 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
         return masteryTeacherOptionString();
       case DIALOGUE_MAGIC_GUILD_JOIN:
         return joinGuildOptionString();
-      case DIALOGUE_ARENA_SELECT_CHAMPION:
+      case DIALOGUE_ARENA_SELECT_LORD:
         return localization->GetString(LSTR_ARENA_DIFFICULTY_LORD);
       case DIALOGUE_ARENA_SELECT_KNIGHT:
         return localization->GetString(LSTR_ARENA_DIFFICULTY_KNIGHT);
@@ -707,7 +712,7 @@ std::vector<DialogueId> listNPCDialogueOptions(DialogueId topic) {
       case DIALOGUE_MASTERY_TEACHER_OFFER:
         return {DIALOGUE_MASTERY_TEACHER_LEARN};
       case DIALOGUE_ARENA_WELCOME:
-        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_CHAMPION};
+        return {DIALOGUE_ARENA_SELECT_PAGE, DIALOGUE_ARENA_SELECT_SQUIRE, DIALOGUE_ARENA_SELECT_KNIGHT, DIALOGUE_ARENA_SELECT_LORD};
       default:
         return {};
     }
@@ -772,8 +777,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         }
     } else if (topic == DIALOGUE_PROFESSION_DETAILS) {
         dialogue_show_profession_details = ~dialogue_show_profession_details;
-    } else if (topic >= DIALOGUE_ARENA_SELECT_PAGE && topic <= DIALOGUE_ARENA_SELECT_CHAMPION) {
-        prepareArenaFight(topic);
+    } else if (topic >= DIALOGUE_ARENA_SELECT_PAGE && topic <= DIALOGUE_ARENA_SELECT_LORD) {
+        prepareArenaFight(arenaLevelForDialogue(topic));
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
         for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {

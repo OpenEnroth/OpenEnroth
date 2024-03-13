@@ -462,12 +462,12 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
     if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
-            UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
+            UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_PROFESSION_DETAILS), Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
+        UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_HIRE_FIRE), Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->setKeyboardControlGroup(v0 + 1, false, 0, 2);
     window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
@@ -997,7 +997,7 @@ void GUIWindow_House::initializeProprietorDialogue() {
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
-            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectProprietorDialogueOption, optionList[i], Io::InputAction::Invalid, "");
+            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectProprietorDialogueOption, std::to_underlying(optionList[i]), Io::InputAction::Invalid, "");
         }
         pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     }
@@ -1015,7 +1015,7 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
 void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DialogueId> optionList) {
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
-            pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
+            pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(optionList[i]), Io::InputAction::Invalid, "");
         }
         pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     }

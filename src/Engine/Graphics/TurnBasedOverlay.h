@@ -8,11 +8,11 @@
 class Icon;
 
 enum class TurnBasedOverlayState {
-    TURN_BASED_OVERLAY_NONE,
-    TURN_BASED_OVERLAY_INITIAL,
-    TURN_BASED_OVERLAY_ATTACK,
-    TURN_BASED_OVERLAY_MOVEMENT,
-    TURN_BASED_OVERLAY_WAIT,
+    TURN_BASED_OVERLAY_NONE, // No overlay.
+    TURN_BASED_OVERLAY_INITIAL, // Initial phase - opening hand animation.
+    TURN_BASED_OVERLAY_ATTACK, // Attack phase - open hand.
+    TURN_BASED_OVERLAY_MOVEMENT, // Party movement - fist turning into an open hand, one finger at a time.
+    TURN_BASED_OVERLAY_WAIT, // Monster turn - animated hourglass.
 };
 using enum TurnBasedOverlayState;
 
@@ -36,10 +36,10 @@ class TurnBasedOverlay {
 
  private:
     TurnBasedOverlayState _state = TURN_BASED_OVERLAY_NONE;
-    Duration _currentTime;
-    Duration _currentEnd;
+    Duration _currentTime; // Current animation progress.
 
     int _initialIconId = 0; // Opening hand animation.
+    Duration _initialAnimationLength; // Duration of the opening hand animation.
     int _attackIconId = 0; // Open hand.
     std::array<int, 5> _movementIconIds = {{}}; // Fingers.
     int _waitIconId = 0; // Hourglass animation.

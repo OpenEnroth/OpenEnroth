@@ -110,6 +110,9 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->installComponent(std::make_unique<EngineRandomComponent>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
+    // Init main window. Should happen before the renderer init, which depends on window dimensions & mode.
+    _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
+
     // Init renderer.
     _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);
     ::render = _renderer.get();
@@ -190,6 +193,7 @@ void GameStarter::run() {
     _game->run();
 
     if (_options.useConfig) {
+        _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->save(_options.configPath);
         logger->info("Configuration file '{}' saved!", _options.configPath);
     }

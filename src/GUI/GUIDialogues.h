@@ -9,8 +9,7 @@
 
 #define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  (36 + std::to_underlying(skill))
 
-// TODO(captainurist): #enum
-enum DialogueId : int32_t {
+enum class DialogueId : int32_t {
     DIALOGUE_NULL = 0,
     DIALOGUE_MAIN = 1,
     DIALOGUE_SHOP_BUY_STANDARD = 2,
@@ -89,7 +88,7 @@ enum DialogueId : int32_t {
     DIALOGUE_ARENA_SELECT_PAGE = 85,
     DIALOGUE_ARENA_SELECT_SQUIRE = 86,
     DIALOGUE_ARENA_SELECT_KNIGHT = 87,
-    DIALOGUE_ARENA_SELECT_CHAMPION = 88,  // TODO(pskelton): Text says Lord, rename?
+    DIALOGUE_ARENA_SELECT_LORD = 88,
     DIALOGUE_ARENA_WELCOME = 89,
     DIALOGUE_ARENA_FIGHT_NOT_OVER_YET = 90,
     DIALOGUE_ARENA_REWARD = 91,
@@ -116,6 +115,7 @@ enum DialogueId : int32_t {
     DIALOGUE_LEARN_FIRST = DIALOGUE_LEARN_STAFF,
     DIALOGUE_LEARN_LAST = DIALOGUE_LEARN_CLUB, // Doesn't include DIALOGUE_LEARN_MISC, which makes sense, but is a bit weird.
 };
+using enum DialogueId;
 
 #undef SKILL_TO_LEARNING_DIALOGUE_ID
 

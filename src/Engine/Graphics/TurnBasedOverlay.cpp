@@ -10,13 +10,14 @@
 //
 // Note that turn-based combat in vanilla starts with a 0.5s monster turn - supposedly to let the monsters end their
 // current actions. The same timer was used for this turn and for the opening hand animation, and this is why the
-// animation was cut short. We're using different timers on OE.
+// animation was cut short. We're using separate timers in OE.
 static constexpr int TURN_BASED_INITIAL_ACCELERATION = 3;
 
 TurnBasedOverlay turnBasedOverlay;
 
 void TurnBasedOverlay::loadIcons() {
     _initialIconId = pIconsFrameTable->FindIcon("turnstart");
+    _initialAnimationLength = pIconsFrameTable->GetIcon(_initialIconId)->GetAnimLength();
     _attackIconId = pIconsFrameTable->FindIcon("turnstop");
     _waitIconId = pIconsFrameTable->FindIcon("turnhour");
 
@@ -38,13 +39,12 @@ void TurnBasedOverlay::update(Duration dt, TurnEngineStep newStep) {
         assert(newStep == TE_WAIT);
         _state = TURN_BASED_OVERLAY_INITIAL;
         _currentTime = 0_ticks;
-        _currentEnd = pIconsFrameTable->GetIcon(_initialIconId)->GetAnimLength();
         return;
     }
 
     if (_state == TURN_BASED_OVERLAY_INITIAL) {
         _currentTime += dt * TURN_BASED_INITIAL_ACCELERATION;
-        if (_currentTime < _currentEnd)
+        if (_currentTime < _initialAnimationLength)
             return;
     }
 
