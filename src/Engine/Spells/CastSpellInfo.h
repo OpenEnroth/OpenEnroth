@@ -25,6 +25,15 @@ namespace CastSpellInfoHelpers {
      * @offset 0x00427D48
      */
     void cancelSpellCastInProgress();
+
+    /**
+    * Clear queue
+    */
+    void clearSpellQueue();
+    /**
+    * Test for spells in queue
+    */
+    bool hasQueuedSpells();
 };  // namespace CastSpellInfoHelpers
 
 class GUIWindow;

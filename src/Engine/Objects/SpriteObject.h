@@ -35,7 +35,7 @@ struct SpriteObject {
 
     inline void spellSpriteStop() {
         timeSinceCreated = 0_ticks;
-        vVelocity = Vec3i(0, 0, 0);
+        vVelocity = Vec3f(0, 0, 0);
     }
 
     /**
@@ -60,16 +60,16 @@ struct SpriteObject {
      * @param item           Containing item of sprite (may be null).
      * @offset 0x42F7EB
      */
-    static bool dropItemAt(SpriteId spriteType, Vec3i pos, int speed, int count = 1,
+    static bool dropItemAt(SpriteId spriteType, Vec3f pos, int speed, int count = 1,
                            bool randomRotate = false, SpriteAttributes attributes = 0, ItemGen *item = nullptr);
-    static void createSplashObject(Vec3i pos);
+    static void createSplashObject(Vec3f pos);
     static void InitializeSpriteObjects();
 
     SpriteId uType = SPRITE_NULL;
     // unsigned __int16 uType;
     uint16_t uObjectDescID = 0; // Index into pObjectList->pObjects. Zero means free slot, can reuse.
-    Vec3i vPosition;
-    Vec3i vVelocity;
+    Vec3f vPosition;
+    Vec3f vVelocity;
     uint16_t uFacing = 0;
     uint16_t uSoundID = 0;
     SpriteAttributes uAttributes = 0;
@@ -86,7 +86,7 @@ struct SpriteObject {
     Pid spell_target_pid;
     char field_60_distance_related_prolly_lod = 0;
     ActorAbility spellCasterAbility = ABILITY_ATTACK1;
-    Vec3i initialPosition;
+    Vec3f initialPosition;
     Duration _lastParticleTime;
     Duration _ticksPerParticle = 2_ticks; // how many ticks between particles
 };

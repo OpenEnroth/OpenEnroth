@@ -516,23 +516,20 @@ void SpellStats::Initialize(const Blob &spells) {
     }
 }
 
-void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
-                    int fromy, int fromz, int tox, int toy, int toz) {
+void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, Vec3f from, Vec3f to) {
     // For bug catching
     assert(skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && skillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER);
 
-    Vec3i from(fromx, fromy, fromz);
-    Vec3i to(tox, toy, toz);
-    Vec3i coord_delta;
-    if (tox || toy || toz) {
+    Vec3f coord_delta;
+    if (to.lengthSqr() > 1.0f) {
         coord_delta = to - from;
     } else {
-        coord_delta = pParty->pos.toInt() - from + Vec3i(0, 0, pParty->eyeLevel);
+        coord_delta = pParty->pos - from + Vec3f(0, 0, pParty->eyeLevel);
     }
 
     int yaw = 0;
     int pitch = 0;
-    float distance_to_target = coord_delta.toFloat().length();
+    float distance_to_target = coord_delta.length();
     if (distance_to_target <= 1.0) {
         distance_to_target = 1;
     } else {

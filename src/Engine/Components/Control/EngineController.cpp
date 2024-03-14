@@ -11,6 +11,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 
+#include "Engine/Engine.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"

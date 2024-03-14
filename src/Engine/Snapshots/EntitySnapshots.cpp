@@ -177,6 +177,19 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->z = src.z;
 }
 
+void snapshot(const Vec3f& src, Vec3s* dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
+void reconstruct(const Vec3s& src, Vec3f* dst) {
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x1 = src.x1;
@@ -188,6 +201,25 @@ void snapshot(const BBoxi &src, BBoxs_MM7 *dst) {
 }
 
 void reconstruct(const BBoxs_MM7 &src, BBoxi *dst) {
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+void snapshot(const BBoxf& src, BBoxs_MM7* dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+void reconstruct(const BBoxs_MM7 &src, BBoxf *dst) {
     dst->x1 = src.x1;
     dst->x2 = src.x2;
     dst->y1 = src.y1;
@@ -1373,7 +1405,7 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
-    dst->vDirection = src.vDirection;
+    dst->vDirection = src.vDirection.toFixpoint();
     dst->uMoveLength = src.uMoveLength;
     dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
@@ -1388,7 +1420,7 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
-    dst->vDirection = src.vDirection;
+    dst->vDirection = src.vDirection.toFloatFromFixpoint();
     dst->uMoveLength = src.uMoveLength;
     dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
@@ -1493,7 +1525,7 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toFloat();
     dst->uRadius = src.uRadius;
     dst->uKind = static_cast<ObjectType>(src.uKind);
     if (dst->uKind == OBJECT_Actor) {
@@ -1513,7 +1545,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
 
     dst->uType = std::to_underlying(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toInt();
     snapshot(src.vVelocity, &dst->vVelocity);
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
@@ -1531,13 +1563,13 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->spell_target_pid = src.spell_target_pid.packed();
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = std::to_underlying(src.spellCasterAbility);
-    dst->initialPosition = src.initialPosition;
+    dst->initialPosition = src.initialPosition.toInt();
 }
 
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->uType = static_cast<SpriteId>(src.uType);
     dst->uObjectDescID = src.uObjectDescID;
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toFloat();
     reconstruct(src.vVelocity, &dst->vVelocity);
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
@@ -1555,7 +1587,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = static_cast<ActorAbility>(src.spellCasterAbility);
-    dst->initialPosition = src.initialPosition;
+    dst->initialPosition = src.initialPosition.toFloat();
 }
 
 void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
@@ -1650,12 +1682,14 @@ void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
     dst->uDecorationDescID = src.uDecorationDescID;
     dst->uFlags = LevelDecorationFlags(src.uFlags);
-    dst->vPosition = src.vPosition;
-    dst->_yawAngle = src._yawAngle;
+    dst->vPosition = src.vPosition.toFloat();
+    dst->_yawAngle = (TrigLUT.uIntegerHalfPi * src.field_1A) / 90;
+    // src.field_1A - actually yaw angle in degrees, used when _yawAngle is not set.
+    if (src._yawAngle)
+        dst->_yawAngle = src._yawAngle;
     dst->uCog = src.uCog;
     dst->uEventID = src.uEventID;
     dst->uTriggerRange = src.uTriggerRange;
-    dst->field_1A = src.field_1A;
     dst->eventVarId = src.eventVarId - 75; // Was changed because all current usages are without this 75 shift
 }
 

@@ -69,7 +69,7 @@ void GUIWindow_Transition::Release() {
 
 //----- (00444839) --------------------------------------------------------
 GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exit_pic_id,
-                                           Vec3i pos, int yaw,
+                                           Vec3f pos, int yaw,
                                            int pitch, int zspeed,
                                            const std::string &locationName)
     : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions()) {

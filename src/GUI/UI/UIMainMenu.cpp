@@ -6,6 +6,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -20,6 +21,8 @@ GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
+    engine->_messageQueue->clear();
+
     nuklear->Create(WINDOW_MainMenu);
     if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
         return;

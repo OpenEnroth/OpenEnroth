@@ -22,21 +22,19 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(LevelDecorationFlags)
 
 
 struct LevelDecoration {
-    LevelDecoration();
+    LevelDecoration() = default;
     int GetGlobalEvent();
     bool IsInteractive();
     bool IsObeliskChestActive();
 
-    uint16_t uDecorationDescID;
-    LevelDecorationFlags uFlags;
-    Vec3i vPosition;
-    int32_t _yawAngle; // Only used for party spawn points, see `MapStartPoint`.
-    uint16_t uCog;
-    uint16_t uEventID;
-    uint16_t uTriggerRange;
-    int16_t field_1A; // TODO(captainurist): actually yaw angle in degrees, used when _yawAngle is not set.
-                      // Handle this in snapshots code & drop this field.
-    int16_t eventVarId;
+    uint16_t uDecorationDescID = 0;
+    LevelDecorationFlags uFlags = 0;
+    Vec3f vPosition;
+    int32_t _yawAngle = 0; // Only used for party spawn points, see `MapStartPoint`.
+    uint16_t uCog = 0;
+    uint16_t uEventID = 0;
+    uint16_t uTriggerRange = 0;
+    int16_t eventVarId = 0;
 };
 
 extern std::vector<LevelDecoration> pLevelDecorations;

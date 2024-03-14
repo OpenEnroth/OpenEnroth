@@ -422,7 +422,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12042, 11779, 912));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 908));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -553,7 +553,7 @@ GAME_TEST(Issues, Issue730) {
     // Thrown items are throwing a party of their own
     test.playTraceFromTestData("issue_730.mm7", "issue_730.json");
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
-        EXPECT_EQ(pSpriteObjects[i].vVelocity, Vec3i(0, 0, 0));
+        EXPECT_EQ(pSpriteObjects[i].vVelocity.toInt(), Vec3i(0, 0, 0));
     }
 }
 

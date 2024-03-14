@@ -68,7 +68,7 @@ static bool checkSeason(Season season) {
  * @offset 0x448CF4
  */
 static void spawnMonsters(int16_t typeindex, int16_t level, int count,
-                          Vec3i pos, int group, unsigned int uUniqueName) {
+                          Vec3f pos, int group, unsigned int uUniqueName) {
     MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
     SpawnPoint pSpawnPoint;
 
@@ -191,13 +191,13 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         {
             if (ir.data.move_map_descr.house_id != HOUSE_INVALID || ir.data.move_map_descr.exit_pic_id) {
                 pDialogueWindow = new GUIWindow_Transition(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                           Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+                                                           Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                            ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
                 return -1;
             }
-            engine->_teleportPoint.setTeleportTarget(Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+            engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                      (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
             if (ir.str[0] == '0') { // teleport within map
@@ -317,13 +317,13 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
-                          Vec3i(ir.data.monster_descr.x, ir.data.monster_descr.y, ir.data.monster_descr.z),
+                          Vec3f(ir.data.monster_descr.x, ir.data.monster_descr.y, ir.data.monster_descr.z),
                           ir.data.monster_descr.group, ir.data.monster_descr.name_id);
             break;
         case EVENT_CastSpell:
             eventCastSpell(ir.data.spell_descr.spell_id, ir.data.spell_descr.spell_mastery, ir.data.spell_descr.spell_level,
-                           ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz,
-                           ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz);
+                         Vec3f(ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz),
+                         Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz));
             break;
         case EVENT_SpeakNPC:
             if (_canShowMessages) {
@@ -386,7 +386,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
             return -1;
         case EVENT_SummonItem:
-            SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3i(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
+            SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
                                      ir.data.summon_item_descr.speed, ir.data.summon_item_descr.count, ir.data.summon_item_descr.random_rotate);
             break;
         case EVENT_ForPartyMember:

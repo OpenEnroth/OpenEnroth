@@ -954,7 +954,7 @@ void Game::processQueuedMessages() {
                 v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3i(dword_4E4560[v54], dword_4E4578[v54], dword_4E4590[v54]), dword_4E45A8[v54], 0, 0);
+                    engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -1008,7 +1008,7 @@ void Game::processQueuedMessages() {
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
-                engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -1044,7 +1044,7 @@ void Game::processQueuedMessages() {
                     int y = atoi(frameTableTxtLine.pProperties[1]);
                     int z = atoi(frameTableTxtLine.pProperties[2]);
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        if (pIndoor->GetSector(x, y, z)) {
+                        if (pIndoor->GetSector(Vec3f(x, y, z))) {
                             pParty->pos = Vec3f(x, y, z);
                             pParty->uFallStartZ = z;
                             continue;
@@ -2026,7 +2026,7 @@ void Game::gameLoop() {
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
-                    engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                    engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
                 pMiscTimer->setPaused(false);

@@ -253,7 +253,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
@@ -333,7 +333,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
                 sprite.spell_level = uSkillMastery.level();
                 sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-                sprite.vPosition = pParty->pos.toInt() + Vec3i(0, 0, originHeight + 2500);
+                sprite.vPosition = pParty->pos + Vec3f(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
@@ -382,7 +382,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = SPELL_AIR_SPARKS;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
@@ -635,7 +635,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
             sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
-            sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
@@ -882,8 +882,8 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
-    Vec3i out1;
-    Vec3i out2;
+    Vec3f out1;
+    Vec3f out2;
     float a4a;        // [sp+58h] [bp+Ch]@45
 
     int id1 = uObj1ID.id();
@@ -894,21 +894,21 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Actor: {
-            out1 = (pActors[id1].pos.toFloat() + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
+            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
-            out1 = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
+            out1 = pParty->pos + Vec3f(0, 0, pParty->height / 3);
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 3) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 2) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 1) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             }
             break;
         }
@@ -923,7 +923,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         default: {
-            out1 = Vec3i();
+            out1 = Vec3f();
             break;
         }
     }
@@ -934,14 +934,14 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Actor: {
-            out2 = (pActors[id2].pos.toFloat() + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
+            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
             if (!PreferedZ)
                 PreferedZ = pParty->eyeLevel;
 
-            out2 = pParty->pos.toInt() + Vec3i(0, 0, PreferedZ);
+            out2 = pParty->pos + Vec3f(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
@@ -955,7 +955,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         default: {
-            out2 = Vec3i();
+            out2 = Vec3f();
             break;
         }
     }
@@ -1063,14 +1063,14 @@ void Actor::StandAwhile(unsigned int uActorID) {
 //----- (00403C6C) --------------------------------------------------------
 void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                            struct AIDirection *arg0) {
-    int16_t v6;        // esi@6
-    int16_t v7;        // edi@6
+    float v6;        // esi@6
+    float v7;        // edi@6
     signed int v8;     // eax@7
-    Vec3i v10;     // ST04_12@9
+    Vec3f v10;     // ST04_12@9
     AIDirection *v12;  // eax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@12
     AIDirection v20;   // [sp+28h] [bp-2Ch]@12
-    int v23;           // [sp+4Ch] [bp-8h]@6
+    float v23;           // [sp+4Ch] [bp-8h]@6
     Duration v25;  // [sp+5Ch] [bp+8h]@13
 
     assert(uActorID < pActors.size());
@@ -1085,7 +1085,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         v8 = sTargetPid.id();
         v6 = pActors[v8].pos.x;
         v7 = pActors[v8].pos.y;
-        v23 = (int)(pActors[v8].height * 0.75 + pActors[v8].pos.z);
+        v23 = pActors[v8].height * 0.75 + pActors[v8].pos.z;
     } else if (sTargetPid.type() == OBJECT_Character) {
         v6 = pParty->pos.x;
         v7 = pParty->pos.y;
@@ -1097,10 +1097,9 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
 
     v10.x = pActors[uActorID].pos.x;
     v10.y = pActors[uActorID].pos.y;
-    v10.z = (int32_t)(pActors[uActorID].height * 0.75 +
-                      pActors[uActorID].pos.z);
+    v10.z = pActors[uActorID].height * 0.75 + pActors[uActorID].pos.z;
 
-    if (Check_LineOfSight(Vec3i(v6, v7, v23), v10)) {
+    if (Check_LineOfSight(Vec3f(v6, v7, v23), v10)) {
         if (arg0 != nullptr) {
             v12 = arg0;
         } else {
@@ -1301,27 +1300,26 @@ void Actor::StealFrom(unsigned int uActorID) {
 //----- (00403A60) --------------------------------------------------------
 void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
                             AIDirection *pDir) {
-    Actor *v3;           // ebx@1
-    int16_t v4;          // esi@3
-    int16_t v5;          // edi@3
+    float v4;          // esi@3
+    float v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3i v7;        // ST04_12@6
+    Vec3f v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     Duration v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
     Pid a2;       // [sp+48h] [bp-Ch]@1
-    int v21;             // [sp+4Ch] [bp-8h]@3
+    float v21;             // [sp+4Ch] [bp-8h]@3
     Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
-    v3 = &pActors[uActorID];
+    Actor* v3 = &pActors[uActorID];
     a2 = edx0;
     if (edx0.type() == OBJECT_Actor) {
         v6 = edx0.id();
         v4 = pActors[v6].pos.x;
         v5 = pActors[v6].pos.y;
-        v21 = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
+        v21 = pActors[v6].height * 0.75 + pActors[v6].pos.z;
     } else if (edx0.type() == OBJECT_Character) {
         v4 = pParty->pos.x;
         v5 = pParty->pos.y;
@@ -1334,7 +1332,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
     v7.z = v3->pos.z + (v19 * 0.75);
     v7.y = v3->pos.y;
     v7.x = v3->pos.x;
-    if (Check_LineOfSight(Vec3i(v4, v5, v21), v7)) {
+    if (Check_LineOfSight(Vec3f(v4, v5, v21), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, uActorID), a2, &a3, 0);
             v9 = &a3;
@@ -1376,17 +1374,17 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
 void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
                             AIDirection *pDir) {
     Actor *v3;           // ebx@1
-    int16_t v4;          // esi@3
-    int16_t v5;          // edi@3
+    float v4;          // esi@3
+    float v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3i v7;        // ST04_12@6
+    Vec3f v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     Duration v13;         // ax@10
     SpellId v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
-    int v21;             // [sp+4Ch] [bp-8h]@3
+    float v21;             // [sp+4Ch] [bp-8h]@3
     Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
@@ -1407,7 +1405,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
     v7.z = v3->pos.z + (v19 * 0.75);
     v7.y = v3->pos.y;
     v7.x = v3->pos.x;
-    if (Check_LineOfSight(Vec3i(v4, v5, v21), v7)) {
+    if (Check_LineOfSight(Vec3f(v4, v5, v21), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1452,16 +1450,16 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
 void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;           // ebx@1
-    int16_t v4;          // esi@3
-    int16_t v5;          // edi@3
+    float v4;          // esi@3
+    float v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3i v7;        // ST04_12@6
+    Vec3f v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     Duration v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v17;     // [sp+28h] [bp-2Ch]@9
     int v18;             // [sp+44h] [bp-10h]@6
-    int v20;             // [sp+4Ch] [bp-8h]@3
+    float v20;             // [sp+4Ch] [bp-8h]@3
     Duration pDira;  // [sp+5Ch] [bp+8h]@10
 
     v3 = &pActors[uActorID];
@@ -1469,7 +1467,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         v6 = sTargetPid.id();
         v4 = pActors[v6].pos.x;
         v5 = pActors[v6].pos.y;
-        v20 = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
+        v20 = (pActors[v6].height * 0.75 + pActors[v6].pos.z);
     } else if (sTargetPid.type() == OBJECT_Character) {
         v4 = pParty->pos.x;
         v5 = pParty->pos.y;
@@ -1482,7 +1480,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
     v7.z = v3->pos.z + (v18 * 0.75);
     v7.y = v3->pos.y;
     v7.x = v3->pos.x;
-    if (Check_LineOfSight(Vec3i(v4, v5, v20), v7)) {
+    if (Check_LineOfSight(Vec3f(v4, v5, v20), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1517,17 +1515,17 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
 void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;         // ebx@1
-    int xpos;            // esi@3
-    int ypos;            // edi@3
+    float xpos;            // esi@3
+    float ypos;            // edi@3
     signed int v6;     // eax@4
-    Vec3i v7;      // ST04_12@6
+    Vec3f v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
     Duration v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
     //int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
-    int zpos = 0;             // [sp+50h] [bp-4h]@3
+    float zpos = 0;             // [sp+50h] [bp-4h]@3
     Duration pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
@@ -1536,7 +1534,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         v6 = sTargetPid.id();
         xpos = pActors[v6].pos.x;
         ypos = pActors[v6].pos.y;
-        zpos = (int)(pActors[v6].height * 0.75 + pActors[v6].pos.z);
+        zpos = (pActors[v6].height * 0.75 + pActors[v6].pos.z);
     } else {
         if (sTargetPid.type() == OBJECT_Character) {
             xpos = pParty->pos.x;
@@ -1551,8 +1549,8 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
     v7.z = v3->pos.z + (v3->height * 0.75);
     v7.y = v3->pos.y;
     v7.x = v3->pos.x;
-    if (Check_LineOfSight(Vec3i(xpos, ypos, zpos), v7)
-        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))
+    if (Check_LineOfSight(Vec3f(xpos, ypos, zpos), v7)
+        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3f(xpos, ypos, zpos))
         ) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, uActorID), sTargetPid,
@@ -1838,7 +1836,7 @@ void Actor::Die(unsigned int uActorID) {
 
     if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
-                                 actor->pos + Vec3i(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
+                                 actor->pos + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
     if (actor->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {
@@ -2329,7 +2327,7 @@ void Actor::Remove() { this->aiState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(Pid attacker_id,
-                                   unsigned int actor_id, Vec3i *pVelocity,
+                                   unsigned int actor_id, Vec3f *pVelocity,
                                    ActorAbility a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
@@ -2400,18 +2398,8 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                         20 * finalDmg / pActors[actor_id].monsterInfo.hp;
                     if (pushDistance > 10) pushDistance = 10;
                     if (supertypeForMonsterId(pActors[actor_id].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->x);
-                        pVelocity->y =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->y);
-                        pVelocity->z =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->z);
-                        pActors[actor_id].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[actor_id].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[actor_id].velocity.z =
-                            50 * (short)pVelocity->z;
+                        *pVelocity *= pushDistance;
+                        pActors[actor_id].velocity = *pVelocity * 50;
                     }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
@@ -2452,9 +2440,9 @@ void Actor::SummonMinion(int summonerId) {
     v17 = TrigLUT.sin(v13) * v27 + this->pos.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        int sectorId = pIndoor->GetSector(v15, v17, this->pos.z);
+        int sectorId = pIndoor->GetSector(Vec3f(v15, v17, this->pos.z));
         if (sectorId != actorSector) return;
-        int z = BLV_GetFloorLevel(Vec3i(v15, v17, v27), sectorId);
+        int z = BLV_GetFloorLevel(Vec3f(v15, v17, v27), sectorId);
         if (z != -30000) return;
         if (std::abs(z - v27) > 1024) return;
     }
@@ -2688,7 +2676,7 @@ void Actor::UpdateActorAI() {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
             } else if (pActor->aiState == AttackingMelee) {
-                pushMeleeAttack(actorPid, pActor->pos + Vec3i(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
+                pushMeleeAttack(actorPid, pActor->pos + Vec3f(0, 0, pActor->height / 2), pActor->special_ability_use_check(actor_id));
             } else if (pActor->aiState == AttackingRanged1) {
                 Actor::AI_RangedAttack(actor_id, pDir, pActor->monsterInfo.attack1MissileType, ABILITY_ATTACK1);  // light missile
             } else if (pActor->aiState == AttackingRanged2) {
@@ -3011,8 +2999,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                   Vec3i *pVelocity) {
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3269,18 +3256,14 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-        pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
-        pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
-        pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
-        pMonster->velocity.x = 50 * (short)pVelocity->x;
-        pMonster->velocity.y = 50 * (short)pVelocity->y;
-        pMonster->velocity.z = 50 * (short)pVelocity->z;
+        *pVelocity *= knockbackValue;
+        pMonster->velocity = *pVelocity * 50;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
+void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
@@ -4065,7 +4048,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 1 info
     int obj1_pid = uObjID.id();
     int obj1_sector;
-    Vec3i pos1;
+    Vec3f pos1;
 
     switch (uObjID.type()) {
         case OBJECT_Decoration:
@@ -4073,7 +4056,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj1_sector = pIndoor->GetSector(pos1);
             break;
         case OBJECT_Actor:
-            pos1 = pActors[obj1_pid].pos + Vec3i(0, 0, pActors[obj1_pid].height * 0.69999999);
+            pos1 = pActors[obj1_pid].pos + Vec3f(0, 0, pActors[obj1_pid].height * 0.69999999);
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
         case OBJECT_Item:
@@ -4087,7 +4070,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 2 info
     int obj2_pid = uObj2ID.id();
     int obj2_sector;
-    Vec3i pos2;
+    Vec3f pos2;
 
     switch (uObj2ID.type()) {
         case OBJECT_Decoration:
@@ -4095,11 +4078,11 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             obj2_sector = pIndoor->GetSector(pos2);
             break;
         case OBJECT_Character:
-            pos2 = pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel);
+            pos2 = pParty->pos + Vec3f(0, 0, pParty->eyeLevel);
             obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
-            pos2 = pActors[obj2_pid].pos + Vec3i(0, 0, pActors[obj2_pid].height * 0.69999999);
+            pos2 = pActors[obj2_pid].pos + Vec3f(0, 0, pActors[obj2_pid].height * 0.69999999);
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
         case OBJECT_Item:
@@ -4130,14 +4113,14 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     float rayznorm = dist_z / dist_3d;
 
     // extents for boundary checks
-    BBoxi bbox = BBoxi::forPoints(pos1, pos2);
+    BBoxf bbox = BBoxf::forPoints(pos1, pos2);
 
     // search starts for object
     int sectors_visited = 0;
     int current_sector = obj1_sector;
     int next_sector = 0;
     BLVFace *portalface;
-    Vec3i *portalverts;
+    Vec3f *portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
@@ -4145,7 +4128,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
         portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
 
         // ray ob1 to portal dot normal
-        float obj1portaldot = dot(portalface->facePlane.normal, (*portalverts - pos1).toFloat());
+        float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
 
         // flip norm if we are not looking out from current sector
         if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
@@ -4168,7 +4151,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
         float facenotparallel = v32 + v33 + v34;
         if (facenotparallel) {
             // point to plance distance
-            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1.toFloat());
+            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1);
 
             // epsilon check?
             if (std::abs(pointplanedist) / 16384.0 > std::abs(facenotparallel)) continue;
@@ -4180,7 +4163,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             if (intersect < 0) continue;
 
             // check if point along ray is in portal face
-            Vec3i pos = Vec3i(pos1.x + (rayxnorm * intersect) + 0.5,
+            Vec3f pos = Vec3f(pos1.x + (rayxnorm * intersect) + 0.5,
                 pos1.y + (rayynorm * intersect) + 0.5,
                 pos1.z + (rayznorm * intersect) + 0.5);
             if (!portalface->Contains(pos, MODEL_INDOOR)) {
@@ -4512,9 +4495,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
                 pMonster->attributes |= ACTOR_AGGRESSOR;
             continue;
         }
-        v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
+        v37 = pIndoor->GetSector(Vec3f(pPosX, a4, spawn->vPosition.z));
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37);
+            v38 = BLV_GetFloorLevel(Vec3f(pPosX, a4, a3), v37);
             v39 = v38;
             if (v38 != -30000) {
                 if (std::abs(v38 - a3) <= 1024) {
@@ -4541,7 +4524,7 @@ void evaluateAoeDamage() {
     for (AttackDescription &attack : attackList) {
         ObjectType attackerType = attack.pid.type();
         int attackerId = attack.pid.id();
-        Vec3i attackVector = Vec3i(0, 0, 0);
+        Vec3f attackVector;
 
         // attacker is an item (sprite)
         if (attackerType == OBJECT_Item) {
@@ -4557,43 +4540,43 @@ void evaluateAoeDamage() {
 
             if (targetType != OBJECT_Actor) {
                 if (targetType == OBJECT_Character) {  // party damage from monsters
-                    int distanceSq = (pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
+                    int distanceSq = (pParty->pos + Vec3f(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
                     int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
+                        if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
-                    Vec3i distanceVec = actor->pos + Vec3i(0, 0, actor->height / 2) - attack.pos;
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + actor->radius;
-                    int attackRangeSq = attackRange * attackRange;
-                    attackVector = Vec3i(distanceVec.x, distanceVec.y, actor->pos.z);
+                    Vec3f distanceVec = actor->pos + Vec3f(0, 0, actor->height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + actor->radius;
+                    float attackRangeSq = attackRange * attackRange;
+                    attackVector = Vec3f(distanceVec.x, distanceVec.y, actor->pos.z);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(actor->pos + Vec3i(0, 0, 50), attack.pos)) {
-                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
+                        if (Check_LineOfSight(actor->pos + Vec3f(0, 0, 50), attack.pos)) {
+                            attackVector.normalize();
                             Actor::ActorDamageFromMonster(attack.pid, targetId, &attackVector, attack.attackSpecial);
                         }
                     }
                 }
             }
         } else {  // damage from AOE spells
-            int distanceSq = (pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
+            int distanceSq = (pParty->pos + Vec3f(0, 0, pParty->height / 2) - attack.pos).lengthSqr();
             int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
             // check spell in range of party
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
-                if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos)) {
+                if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++) {
                         if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
@@ -4604,18 +4587,18 @@ void evaluateAoeDamage() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    Vec3i distanceVec = pActors[actorID].pos + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos;
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + pActors[actorID].radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = pActors[actorID].pos + Vec3f(0, 0, pActors[actorID].height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + pActors[actorID].radius;
+                    float attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
-                    attackVector = Vec3i(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                    attackVector = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pActors[actorID].pos + Vec3i(0, 0, 50), attack.pos)) {
-                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
+                        if (Check_LineOfSight(pActors[actorID].pos + Vec3f(0, 0, 50), attack.pos)) {
+                            attackVector.normalize();
                             switch (attackerType) {
                                 case OBJECT_Character:
                                     Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
@@ -4668,7 +4651,7 @@ double sub_43AE12(signed int a1) {
 
 //----- (0043B057) --------------------------------------------------------
 void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity) {
+                         Vec3f *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4
     int a2a;     // [sp+Ch] [bp-4h]@8
@@ -4696,15 +4679,8 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                         10)
                         a2a = 10;
                     if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
-                        pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
-                        pVelocity->z = fixpoint_mul(a2a, pVelocity->z);
-                        pActors[uActorID].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[uActorID].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[uActorID].velocity.z =
-                            50 * (short)pVelocity->z;
+                        *pVelocity *= a2a;
+                        pActors[uActorID].velocity = *pVelocity * 50;
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {

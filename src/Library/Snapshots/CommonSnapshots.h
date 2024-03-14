@@ -87,6 +87,8 @@ void snapshot(const Src &src, Dst *dst, const Tags &... tags) {
 
 template<ResizableContiguousContainer Src, ResizableContiguousContainer Dst, class... Tags> requires DifferentElementTypes<Src, Dst>
 void reconstruct(const Src &src, Dst *dst, const Tags &... tags) {
+    // TODO(pskelton): adding this here to make sure std::optional position is cleared in chests - move
+    dst->clear();
     dst->resize(src.size());
 
     std::span srcSpan(src.data(), src.size());

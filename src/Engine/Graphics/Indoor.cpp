@@ -177,8 +177,8 @@ void PrepareDrawLists_BLV() {
 
 //----- (004407D9) --------------------------------------------------------
 void BLVRenderParams::Reset() {
-    this->uPartySectorID = pIndoor->GetSector(pParty->pos.toInt());
-    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel));
+    this->uPartySectorID = pIndoor->GetSector(pParty->pos);
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos + Vec3f(0, 0, pParty->eyeLevel));
 
     if (!this->uPartySectorID) {
         assert(false);  // shouldnt happen, please provide savegame
@@ -374,7 +374,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
 }
 
 //----- (0049AC17) --------------------------------------------------------
-int IndoorLocation::GetSector(int sX, int sY, int sZ) {
+int IndoorLocation::GetSector(const Vec3f &pos) {
     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR)
         return 0;
 
@@ -396,7 +396,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         BLVSector *pSector = &pSectors[i];
 
-        if (!pSector->pBounding.intersectsCuboid(Vec3i(sX, sY, sZ), Vec3i(5, 5, 64)))
+        if (!pSector->pBounding.intersectsCuboid(pos, Vec3f(5, 5, 64)))
             continue;  // outside sector bounding
 
         if (!backupboundingsector) backupboundingsector = i;
@@ -427,7 +427,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+            if (pFace->Contains(Vec3f(pos.x, pos.y, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break; // TODO(captainurist): we do get here sometimes (e.g. in dragon cave), increase limit?
@@ -444,7 +444,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     // No face found - outside of level
     if (!NumFoundFaceStore) {
         if (!backupboundingsector) {
-            logger->warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
+            logger->warning("GetSector fail: {}, {}, {}", pos.x, pos.y, pos.z);
             return 0;
         } else {
             logger->warning("GetSector: Returning backup sector bounding!");
@@ -454,15 +454,15 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // when multiple possibilities are found - cycle through and use the closer one to party
     int pSectorID = 0, backupID = 0;
-    int MinZDist = INT32_MAX, backupDist = INT32_MAX;
+    float MinZDist = INT32_MAX, backupDist = INT32_MAX;
     if (NumFoundFaceStore > 0) {
-        int CalcZDist = MinZDist;
+        float CalcZDist = MinZDist;
         for (int s = 0; s < NumFoundFaceStore; ++s) {
             // calc distance between this face and party
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
-                CalcZDist = sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z;
+                CalcZDist = pos.z - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z;
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = sZ - this->pFaces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
+                CalcZDist = pos.z - this->pFaces[FoundFaceStore[s]].zCalc.calculate(pos.x, pos.y);
             }
 
             // use this face if its smaller than the current min - prefer faces below party
@@ -585,12 +585,12 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
     }
 }
 
-bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+bool BLVFace::Contains(const Vec3f &pos, int model_idx, float slack, FaceAttributes override_plane) const {
     assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
     // TODO(captainurist): uncomment this
-    // float d = std::abs(this->facePlane.signedDistanceTo(pos.toFloat()));
+    // float d = std::abs(this->facePlane.signedDistanceTo(pos));
     // assert(d < 0.01f);
 
     if (this->uNumVertices < 3)
@@ -603,8 +603,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     FlatFace points;
     Flatten(&points, model_idx, plane);
 
-    int u;
-    int v;
+    float u, v;
     if (plane & FACE_XY_PLANE) {
         u = pos.x;
         v = pos.y;
@@ -634,19 +633,19 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
     for (int i = 0, j = this->uNumVertices - 1; i < this->uNumVertices; j = i++) {
-        int a_u = points.u[j] - points.u[i];
-        int a_v = points.v[j] - points.v[i];
-        int b_u = u - points.u[i];
-        int b_v = v - points.v[i];
-        int cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
+        float a_u = points.u[j] - points.u[i];
+        float a_v = points.v[j] - points.v[i];
+        float b_u = u - points.u[i];
+        float b_v = v - points.v[i];
+        float cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
         if (cross_product == 0)
             continue;
 
         if (slack > 0) {
             // distance(point, line) = (a x b) / |a|,
             // so the condition below just checks that distance is less than slack.
-            int64_t a_len_sqr = a_u * a_u + a_v * a_v;
-            if (static_cast<int64_t>(cross_product) * cross_product < a_len_sqr * slack * slack)
+            float a_len_sqr = a_u * a_u + a_v * a_v;
+            if (cross_product * cross_product < a_len_sqr * slack * slack)
                 continue;
         }
 
@@ -719,17 +718,17 @@ void BLV_UpdateDoors() {
         // adjust verts to how open the door is
         for (int j = 0; j < door->uNumVertices; ++j) {
             pIndoor->pVertices[door->pVertexIDs[j]].x =
-                fixpoint_mul(door->vDirection.x, openDistance) + door->pXOffsets[j];
+                (door->vDirection.x * openDistance) + door->pXOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].y =
-                fixpoint_mul(door->vDirection.y, openDistance) + door->pYOffsets[j];
+                (door->vDirection.y * openDistance) + door->pYOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].z =
-                fixpoint_mul(door->vDirection.z, openDistance) + door->pZOffsets[j];
+                (door->vDirection.z * openDistance) + door->pZOffsets[j];
         }
 
         for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            const Vec3i &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
+            const Vec3f &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+            face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
             face->zCalc.init(face->facePlane);
 
             Vec3f v;
@@ -744,7 +743,7 @@ void BLV_UpdateDoors() {
             float maxU = std::numeric_limits<float>::min();
             float maxV = std::numeric_limits<float>::min();
             for (unsigned k = 0; k < face->uNumVertices; ++k) {
-                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
+                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
                 float pointU = dot(point, u);
                 float pointV = dot(point, v);
                 minU = std::min(minU, pointU);
@@ -768,8 +767,8 @@ void BLV_UpdateDoors() {
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                float udot = dot(door->vDirection.toFloatFromFixpoint(), u);
-                float vdot = dot(door->vDirection.toFloatFromFixpoint(), v);
+                float udot = dot(door->vDirection, u);
+                float vdot = dot(door->vDirection, v);
                 extras->sTextureDeltaU = -udot * openDistance + door->pDeltaUs[j];
                 extras->sTextureDeltaV = -vdot * openDistance + door->pDeltaVs[j];
             }
@@ -841,10 +840,10 @@ void UpdateActors_BLV() {
         } else {
             // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
-            actor.velocity.x = fixpoint_mul(55000, actor.velocity.x);
-            actor.velocity.y = fixpoint_mul(55000, actor.velocity.y);
+            actor.velocity.x *= 0.83923339843f;
+            actor.velocity.y *= 0.83923339843f;
             if (isFlying)
-                actor.velocity.z = fixpoint_mul(55000, actor.velocity.z);
+                actor.velocity.z *= 0.83923339843f;
         }
 
         if (actor.pos.z <= floorZ) {
@@ -865,7 +864,7 @@ void UpdateActors_BLV() {
         if (actor.velocity.lengthSqr() >= 400) {
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
-            actor.velocity = Vec3i(0, 0, 0);
+            actor.velocity = Vec3f(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
@@ -974,7 +973,7 @@ void PrepareToLoadBLV(bool bLoading) {
             if (!decoration->DontDraw()) {
                 if (decoration->uLightRadius) {
                     Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
-                    pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.toFloat() +
+                    pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
                         Vec3f(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, color, _4E94D0_light_type);
                 }
@@ -1067,7 +1066,7 @@ void PrepareToLoadBLV(bool bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
+int BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
     int blv_floor_z[5] = { 0 };
@@ -1283,7 +1282,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 }
 
 //----- (00407A1C) --------------------------------------------------------
-bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from - true on clear
+bool Check_LineOfSight(const Vec3f &target, const Vec3f &from) {  // target from - true on clear
     int AngleToTarget = TrigLUT.atan2(from.x - target.x, from.y - target.y);
     bool LOS_Obscurred = false;
     bool LOS_Obscurred2 = false;
@@ -1295,14 +1294,14 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 
         if (LOS_ObscurredStr) {
             // offset 32 to side and check LOS
-            Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-            Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f targetmod = target + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f frommod = from + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
             LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(targetmod, frommod);
 
             if (LOS_Obscurred2) {
                 // offset other side and repeat check
-                targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-                frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                targetmod = target + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                frommod = from + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
                 LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
             }
         }
@@ -1313,14 +1312,14 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 
         if (LOS_ObscurredStr) {
             // offset 32 to side and check LOS
-            Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-            Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f targetmod = target + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f frommod = from + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
             LOS_Obscurred2 = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
 
             if (LOS_Obscurred2) {
                 // offset other side and repeat check
-                targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-                frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                targetmod = target + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                frommod = from + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
                 LOS_Obscurred = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
             }
         }
@@ -1330,12 +1329,12 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
     return result;  // true if LOS clear
 }
 
-bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // true if obscurred
-    Vec3f dir = (from - target).toFloat();
+bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // true if obscurred
+    Vec3f dir = from - target;
     float dist = dir.length();
     dir.normalize();
 
-    BBoxi bbox = BBoxi::forPoints(from, target);
+    BBoxf bbox = BBoxf::forPoints(from, target);
 
     for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
         int SectargetrID = 0;
@@ -1360,7 +1359,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             if (!bbox.intersects(face->pBounding))
                 continue;
 
-            float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target.toFloat());
+            float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target);
             // are we on same side of plane
             if (dirDotNormal <= 0) {
                 if (NegFacePlaceDist > 0)
@@ -1376,7 +1375,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                 // less than zero means intersection is behind target point
                 // greater than dist means intersection is behind the caster
                 if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
-                    Vec3i pos = target + (IntersectionDist * dir).toInt();
+                    Vec3f pos = target + (IntersectionDist * dir);
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
                     }
@@ -1388,12 +1387,12 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
     return false;
 }
 
-bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from) {  // true is obscurred
-    Vec3f dir = (from - target).toFloat();
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from) {  // true is obscurred
+    Vec3f dir = (from - target);
     float dist = dir.length();
     dir.normalize();
 
-    BBoxi bbox = BBoxi::forPoints(from, target);
+    BBoxf bbox = BBoxf::forPoints(from, target);
 
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
@@ -1410,7 +1409,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     continue;
 
                 // point target plane distacne
-                float NegFacePlaceDist = -face.facePlane.signedDistanceTo(target.toFloat());
+                float NegFacePlaceDist = -face.facePlane.signedDistanceTo(target);
 
                 // are we on same side of plane
                 if (dirDotNormal <= 0) {
@@ -1429,7 +1428,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     // less than zero means intersection is behind target point
                     // greater than dist means intersection is behind the caster
                     if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
-                        Vec3i pos = target + (IntersectionDist * dir).toInt();
+                        Vec3f pos = target + (IntersectionDist * dir);
                         if (face.Contains(pos, model.index)) {
                             return true;
                         }
@@ -1556,13 +1555,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    int floorZ = GetIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, pParty->radius), &sectorId, &faceId);
+    int floorZ = GetIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floorZ == -30000 || faceId == -1) {
-        floorZ = GetApproximateIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, pParty->radius), &sectorId, &faceId);
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             assert(false);  // level built with errors
             return;
@@ -1995,7 +1994,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing) {
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
@@ -2067,7 +2066,7 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
-int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
+int GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
@@ -2085,17 +2084,17 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
 }
 
 //----- (0047272C) --------------------------------------------------------
-int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
-    std::array<Vec3i, 5> attempts = {{
-        pos + Vec3i(-2, 0, 40),
-        pos + Vec3i(2, 0, 40),
-        pos + Vec3i(0, -2, 40),
-        pos + Vec3i(0, 2, 40),
-        pos + Vec3i(0, 0, 140)
+int GetApproximateIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID) {
+    std::array<Vec3f, 5> attempts = {{
+        pos + Vec3f(-2, 0, 40),
+        pos + Vec3f(2, 0, 40),
+        pos + Vec3f(0, -2, 40),
+        pos + Vec3f(0, 2, 40),
+        pos + Vec3f(0, 0, 140)
     }};
 
     int result;
-    for (const Vec3i &attempt : attempts) {
+    for (const Vec3f &attempt : attempts) {
         *pSectorID = 0; // Make sure GetIndoorFloorZ recalculates sector id from provided coordinates.
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
         if (result != -30000)

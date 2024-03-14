@@ -30,7 +30,7 @@ struct stru319 {
 extern stru319 stru_50C198;  // idb
 
 struct AIDirection {
-    Vec3i vDirection{};
+    Vec3f vDirection{};
     unsigned int uDistance = 0;
     unsigned int uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
@@ -38,7 +38,7 @@ struct AIDirection {
 };
 
 struct ActorJob {
-    Vec3i vPos;
+    Vec3f vPos;
     uint16_t uAttributes = 0;
     uint8_t uAction = 0;
     uint8_t uHour = 0;
@@ -133,7 +133,7 @@ class Actor {
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
-                                       Vec3i *pVelocity, ActorAbility a4);
+                                       Vec3f *pVelocity, ActorAbility a4);
 
     static unsigned short GetObjDescId(SpellId spellId);
 
@@ -155,9 +155,8 @@ class Actor {
     int _43B3E0_CalcDamage(ActorAbility dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(MonsterId monster_id, Vec3i pos);
-    static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                       Vec3i *pVelocity);
+    static void Arena_summon_actor(MonsterId monster_id, Vec3f pos);
+    static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -210,14 +209,14 @@ class Actor {
     uint16_t radius = 32;
     uint16_t height = 128;
     uint16_t moveSpeed = 200;
-    Vec3i pos;
-    Vec3i velocity;
+    Vec3f pos;
+    Vec3f velocity;
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;
     int sectorId = 0;
     Duration currentActionLength = 0_ticks;
-    Vec3i initialPosition;
-    Vec3i guardingPosition;
+    Vec3f initialPosition;
+    Vec3f guardingPosition;
     uint16_t tetherDistance = 256;
     AIState aiState = Standing;
     ActorAnimation currentActionAnimation = ANIM_Standing;
@@ -262,7 +261,7 @@ void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4,
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity);
+                         Vec3f *pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
 // appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside

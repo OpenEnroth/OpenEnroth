@@ -12,8 +12,18 @@ std::vector<LevelDecoration> pLevelDecorations;
 std::vector<int> decorationsWithSound;
 LevelDecoration *activeLevelDecoration;
 
-//----- (004583B0) --------------------------------------------------------
-LevelDecoration::LevelDecoration() { memset(this, 0, sizeof(*this)); }
+////----- (004583B0) --------------------------------------------------------
+//LevelDecoration::LevelDecoration() {
+//uint16_t uDecorationDescID;
+//    LevelDecorationFlags uFlags;
+//    Vec3f vPosition;
+//    int32_t _yawAngle; // Only used for party spawn points, see `MapStartPoint`.
+//    uint16_t uCog;
+//    uint16_t uEventID;
+//    uint16_t uTriggerRange;
+//    int16_t eventVarId;
+//    memset(this, 0, sizeof(*this));
+//}
 
 //----- (00450929) --------------------------------------------------------
 int LevelDecoration::GetGlobalEvent() {
