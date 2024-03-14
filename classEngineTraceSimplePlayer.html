@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;00c9d20</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fea12af</span>
    </div>
   </td>
  </tr>
@@ -96,8 +96,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4f732ab96e034772f751c8b8a5c57f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a971c42f8793a12ee76e03dfe7a0c9b9c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceSimplePlayer.html#a971c42f8793a12ee76e03dfe7a0c9b9c">~EngineTraceSimplePlayer</a> ()</td></tr>
 <tr class="separator:a971c42f8793a12ee76e03dfe7a0c9b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98d90dc859baf048f667cc7a1932c91e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceSimplePlayer.html#a98d90dc859baf048f667cc7a1932c91e">playTrace</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, std::vector&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt; events, const std::string &amp;tracePath, EngineTracePlaybackFlags flags, std::function&lt; void()&gt; tickCallback={})</td></tr>
-<tr class="separator:a98d90dc859baf048f667cc7a1932c91e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a996cea5a10027cec11395bad865c178b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceSimplePlayer.html#a996cea5a10027cec11395bad865c178b">playTrace</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, std::vector&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt; events, const std::string &amp;tracePath, EngineTracePlaybackFlags flags)</td></tr>
+<tr class="separator:a996cea5a10027cec11395bad865c178b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5a44a2d98cfc28e230dc8b6b7597181"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceSimplePlayer.html#ae5a44a2d98cfc28e230dc8b6b7597181">isPlaying</a> () const</td></tr>
 <tr class="separator:ae5a44a2d98cfc28e230dc8b6b7597181"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -267,8 +267,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a98d90dc859baf048f667cc7a1932c91e" name="a98d90dc859baf048f667cc7a1932c91e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98d90dc859baf048f667cc7a1932c91e">&#9670;&#160;</a></span>playTrace()</h2>
+<a id="a996cea5a10027cec11395bad865c178b" name="a996cea5a10027cec11395bad865c178b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a996cea5a10027cec11395bad865c178b">&#9670;&#160;</a></span>playTrace()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -295,13 +295,7 @@ Friends</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
-          <td class="paramname"><em>flags</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
-          <td class="paramname"><em>tickCallback</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -316,7 +310,6 @@ Friends</h2></td></tr>
     <tr><td class="paramname">events</td><td>Vector of events to play. Passed vector is consumed by this function. </td></tr>
     <tr><td class="paramname">tracePath</td><td>Path to trace file that the events were loaded from. Used only for error reporting. </td></tr>
     <tr><td class="paramname">flags</td><td>Playback flags. </td></tr>
-    <tr><td class="paramname">tickCallback</td><td>Callback to run at the end of every frame &amp; also once at the start and at the end of the trace. </td></tr>
   </table>
   </dd>
 </dl>
