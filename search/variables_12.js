@@ -26,7 +26,7 @@ var searchData=
   ['redraw_23',['redraw',['../structActiveOverlayList__MM7.html#a49dfb438e1d8ef1c117dbeebf9ac9a1e',1,'ActiveOverlayList_MM7']]],
   ['reef_24',['Reef',['../classColorTable.html#a6dafe0e791f0192a6ccbbe419ae16403',1,'ColorTable']]],
   ['reference_5fdist_25',['REFERENCE_DIST',['../OpenALSoundProvider_8h.html#adb93d84878098656e3fe5efd007b898e',1,'OpenALSoundProvider.h']]],
-  ['registrykeys_26',['registryKeys',['../structPathResolutionConfig.html#a15e5118ef2df95f74c5e38612d99c205',1,'PathResolutionConfig']]],
+  ['registrykeys_26',['registryKeys',['../structPathResolutionConfig.html#aa01585c686acd71bb69b8f88022456d0',1,'PathResolutionConfig']]],
   ['regularbonusmap_27',['regularBonusMap',['../Items_8cpp.html#a771c21123b6e053ec27ac6a80f7d8612',1,'Items.cpp']]],
   ['relations_28',['relations',['../structFactionTable.html#a7a7f7e8b9498d82b88213a22e632ec6e',1,'FactionTable']]],
   ['reloadshaders_29',['ReloadShaders',['../classGameConfig_1_1Gamepad.html#afc8601c0ff812feefebe81ad56a86ba1',1,'GameConfig::Gamepad::ReloadShaders()'],['../classGameConfig_1_1Keybindings.html#a35384b2e922e937a0fdfd52dd274c9ed',1,'GameConfig::Keybindings::ReloadShaders()']]],

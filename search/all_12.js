@@ -132,7 +132,7 @@ var searchData=
   ['registersection_129',['registerSection',['../classConfig.html#aea19f0968da21dcd2c97a8948570a780',1,'Config']]],
   ['registertimertriggers_130',['registerTimerTriggers',['../Processor_8cpp.html#a11522256028bcaf836cd64e95d83b69f',1,'Processor.cpp']]],
   ['registerwindow_131',['registerWindow',['../classSdlPlatformSharedState.html#a793dc108d1f2c553fbc269cc7f872816',1,'SdlPlatformSharedState']]],
-  ['registrykeys_132',['registryKeys',['../structPathResolutionConfig.html#a15e5118ef2df95f74c5e38612d99c205',1,'PathResolutionConfig']]],
+  ['registrykeys_132',['registryKeys',['../structPathResolutionConfig.html#aa01585c686acd71bb69b8f88022456d0',1,'PathResolutionConfig']]],
   ['regularbinarizable_133',['RegularBinarizable',['../conceptRegularBinarizable.html',1,'']]],
   ['regularbinarysink_134',['RegularBinarySink',['../conceptRegularBinarySink.html',1,'']]],
   ['regularbinarysource_135',['RegularBinarySource',['../conceptRegularBinarySource.html',1,'']]],
