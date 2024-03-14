@@ -40,6 +40,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/EngineCallObserver.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
@@ -2749,10 +2750,10 @@ void OpenGLRenderer::BeginScene2D() {
 
 // TODO(pskelton): use alpha from mask too
 void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
-    if (!tex) {
-        logger->trace("Null texture passed to DrawTextureNew");
-        return;
-    }
+    assert(tex);
+
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
 
     Colorf cf = colourmask.toColorf();
 
@@ -2855,11 +2856,11 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
 }
 
 // TODO(pskelton): add optional colour32
-void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, class GraphicsImage *img, int custom_height) {
-    if (!img) {
-        logger->trace("Null texture passed to DrawTextureCustomHeight");
-        return;
-    }
+void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int custom_height) {
+    assert(img);
+
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->GetName());
 
     Colorf cf(1.0f, 1.0f, 1.0f);
 

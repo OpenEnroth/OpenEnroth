@@ -10,8 +10,6 @@
 
 #include "AccessibleVector.h"
 
-namespace testing {} // Forward-declare gtest namespace.
-
 namespace detail {
 template<class T>
 class TestTapeState {

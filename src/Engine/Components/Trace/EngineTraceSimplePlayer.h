@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <functional>
 
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
@@ -32,11 +31,9 @@ class EngineTraceSimplePlayer : private PlatformApplicationAware {
      * @param tracePath                 Path to trace file that the events were loaded from. Used only for error
      *                                  reporting.
      * @param flags                     Playback flags.
-     * @param tickCallback              Callback to run at the end of every frame & also once at the start and at the
-     *                                  end of the trace.
      */
     void playTrace(EngineController *game, std::vector<std::unique_ptr<PlatformEvent>> events,
-                   const std::string &tracePath, EngineTracePlaybackFlags flags, std::function<void()> tickCallback = {});
+                   const std::string &tracePath, EngineTracePlaybackFlags flags);
 
     bool isPlaying() const {
         return _playing;

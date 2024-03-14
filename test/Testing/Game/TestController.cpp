@@ -16,11 +16,52 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
-TestController::TestController(EngineController *controller, const std::string &testDataPath, float playbackSpeed):
-    _controller(controller),
-    _testDataPath(testDataPath),
-    _playbackSpeed(playbackSpeed)
-{}
+class TestControllerTickCallback : public ProxyOpenGLContext {
+ public:
+    virtual void swapBuffers() override {
+        // This code goes first because we FIRST write the tapes, THEN jump into the control thread, and return
+        // from EngineController::tick().
+        if (_controller && _controller->isTaping())
+            for (const auto &callback : _controller->_tapeCallbacks)
+                callback();
+
+        ProxyOpenGLContext::swapBuffers();
+    }
+
+    void setController(TestController *controller) {
+        _controller = controller;
+    }
+
+    TestController *controller() const {
+        return _controller;
+    }
+
+ private:
+    TestController *_controller = nullptr;
+};
+
+TestController::TestController(EngineController *controller, const std::string &testDataPath, float playbackSpeed) {
+    _controller = controller;
+    _testDataPath = testDataPath;
+    _playbackSpeed = playbackSpeed;
+
+    assert(engine->callObserver == nullptr);
+    engine->callObserver = &_callObserver;
+
+    std::unique_ptr<TestControllerTickCallback> tickCallback = std::make_unique<TestControllerTickCallback>();
+    tickCallback->setController(this);
+    _tickCallback = tickCallback.get();
+    application->installComponent(std::move(tickCallback));
+}
+
+TestController::~TestController() {
+    _callObserver.reset();
+    assert(engine->callObserver == &_callObserver);
+    engine->callObserver = nullptr;
+
+    // Application is alive at this point, thus tick callback is also alive.
+    _tickCallback->setController(nullptr);
+}
 
 std::string TestController::fullPathInTestData(const std::string &fileName) {
     return (_testDataPath / fileName).string();
@@ -47,16 +88,11 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
             if (postLoadCallback)
                 postLoadCallback();
 
-            // FPS are unlimited by default, and speed over x1000 isn't really distinguishable from unlimited FPS.
-            if (_playbackSpeed < 1000.0f) {
-                int fps = _playbackSpeed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
-                engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
-            }
-        },
-        [this] {
-            runTapeCallbacks();
+            adjustMaxFps();
+            startTaping();
         }
     );
+    stopTaping();
 }
 
 void TestController::prepareForNextTest() {
@@ -73,17 +109,37 @@ void TestController::prepareForNextTest(int frameTimeMs, RandomEngineType rngTyp
     prepareForNextTestInternal();
 }
 
+bool TestController::isTaping() const {
+    return _callObserver.isEnabled();
+}
+
+void TestController::startTaping() {
+    assert(!isTaping());
+    _callObserver.setEnabled(true);
+}
+
+void TestController::stopTaping() {
+    assert(isTaping());
+    _callObserver.setEnabled(false);
+}
+
 void TestController::prepareForNextTestInternal() {
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
+    _callObserver.reset();
     _tapeCallbacks.clear();
     ::application->component<GameKeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+
     _controller->goToMainMenu();
+    adjustMaxFps(); // Set max fps AFTER going to the main menu, so that the latter one is done quickly.
 }
 
-void TestController::runTapeCallbacks() {
-    for (const auto &callback : _tapeCallbacks)
-        callback();
+void TestController::adjustMaxFps() {
+    // FPS are unlimited by default, and speed over x1000 isn't really distinguishable from unlimited FPS.
+    if (_playbackSpeed < 1000.0f) {
+        int fps = _playbackSpeed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
+        engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
+    }
 }

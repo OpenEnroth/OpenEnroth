@@ -31,6 +31,7 @@ set(ENGINE_HEADERS
         AttackList.h
         Conditions.h
         Engine.h
+        EngineCallObserver.h
         EngineGlobals.h
         EngineIocContainer.h
         LOD.h

@@ -9,6 +9,7 @@
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time/Time.h"
+#include "Media/Audio/SoundEnums.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 #include "GUI/UI/UIHouseEnums.h"
@@ -82,6 +83,10 @@ class CommonTapeRecorder {
     TestMultiTape<SpriteId> sprites();
 
     TestTape<int> activeCharacterIndex(); // Remember that 0 means none!
+
+    TestMultiTape<SoundId> sounds();
+
+    TestMultiTape<std::string> hudTextures();
 
  private:
     TestController *_controller = nullptr;

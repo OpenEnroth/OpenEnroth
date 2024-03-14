@@ -62,9 +62,9 @@ class NullRenderer : public BaseRenderer {
                                unsigned int uZ, unsigned int uW) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, class GraphicsImage *, Color colourmask = colorTable.White) override;
+    virtual void DrawTextureNew(float u, float v, GraphicsImage *, Color colourmask = colorTable.White) override;
 
-    virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
+    virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *,
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;

@@ -37,6 +37,7 @@ struct stru10;
 class GUIMessageQueue;
 class GameResourceManager;
 class StatusBar;
+class EngineCallObserver;
 struct IndoorLocation;
 struct OutdoorLocation;
 struct LightsStack_StationaryLight_;
@@ -115,6 +116,7 @@ class Engine {
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
+    EngineCallObserver *callObserver = nullptr;
     std::shared_ptr<Io::Mouse> mouse;
     std::shared_ptr<Nuklear> nuklear;
     std::shared_ptr<ParticleEngine> particle_engine;

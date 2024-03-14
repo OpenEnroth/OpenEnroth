@@ -30,6 +30,7 @@
 #include "OpenALSample16.h"
 #include "OpenALAudioDataSource.h"
 #include "OpenALSoundProvider.h"
+#include "Engine/EngineCallObserver.h"
 
 std::unique_ptr<AudioPlayer> pAudioPlayer;
 
@@ -187,6 +188,9 @@ void AudioPlayer::resumeSounds() {
 }
 
 void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_PLAY_SOUND, eSoundID);
+
     if (!bPlayerReady)
         return;
 
