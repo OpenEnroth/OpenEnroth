@@ -5,10 +5,13 @@
 
 struct PathResolutionConfig {
     const char *overrideEnvKey = nullptr;
-    std::initializer_list<const char *> registryKeys;
+    const std::vector<const char *> registryKeys;
+
+    constexpr PathResolutionConfig(const char* overrideEnvKey, std::initializer_list<const char*> registryKeys)
+        : overrideEnvKey(overrideEnvKey), registryKeys(registryKeys) {}
 };
 
-static constexpr PathResolutionConfig mm6Config = {
+static const PathResolutionConfig mm6Config = {
     mm6PathOverrideKey,
     {
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207661253/PATH",
@@ -20,7 +23,7 @@ static constexpr PathResolutionConfig mm6Config = {
     }
 };
 
-static constexpr PathResolutionConfig mm7Config = {
+static const PathResolutionConfig mm7Config = {
     mm7PathOverrideKey,
     {
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207658916/Path",
@@ -32,7 +35,7 @@ static constexpr PathResolutionConfig mm7Config = {
     }
 };
 
-static constexpr PathResolutionConfig mm8Config = {
+static const PathResolutionConfig mm8Config = {
     mm8PathOverrideKey,
     {
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM8/PATH",
@@ -57,9 +60,11 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {
-        std::string registryPath = environment->queryRegistry(registryKey);
-        if (!registryPath.empty())
-            result.push_back(registryPath);
+        if (registryKey) {
+            std::string registryPath = environment->queryRegistry(registryKey);
+            if (!registryPath.empty())
+                result.push_back(registryPath);
+        }
     }
 
     // ...Android storage paths on Android,...
