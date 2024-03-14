@@ -7,6 +7,8 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/AssetsManager.h"
 
+static std::string globalEmptyString;
+
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 
 GraphicsImage::~GraphicsImage() = default;
@@ -57,10 +59,8 @@ const GrayscaleImage &GraphicsImage::indexed() {
     return _indexedImage;
 }
 
-std::string *GraphicsImage::GetName() {
-    assert(_loader);
-
-    return _loader->GetResourceNamePtr();
+const std::string &GraphicsImage::GetName() {
+    return _loader ? _loader->GetResourceName() : globalEmptyString;
 }
 
 void GraphicsImage::Release() {

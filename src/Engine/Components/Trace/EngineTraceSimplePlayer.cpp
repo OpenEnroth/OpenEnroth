@@ -16,7 +16,7 @@ EngineTraceSimplePlayer::EngineTraceSimplePlayer() = default;
 EngineTraceSimplePlayer::~EngineTraceSimplePlayer() = default;
 
 void EngineTraceSimplePlayer::playTrace(EngineController *game, std::vector<std::unique_ptr<PlatformEvent>> events,
-                                        const std::string &tracePath, EngineTracePlaybackFlags flags, std::function<void()> tickCallback) {
+                                        const std::string &tracePath, EngineTracePlaybackFlags flags) {
     assert(!isPlaying());
 
     _playing = true;
@@ -25,15 +25,9 @@ void EngineTraceSimplePlayer::playTrace(EngineController *game, std::vector<std:
     _tracePath = tracePath;
     _flags = flags;
 
-    if (tickCallback)
-        tickCallback();
-
     for (std::unique_ptr<PlatformEvent> &event : events) {
         if (event->type == EVENT_PAINT) {
             game->tick(1);
-
-            if (tickCallback)
-                tickCallback();
 
             const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
             checkTime(paintEvent);
@@ -42,9 +36,6 @@ void EngineTraceSimplePlayer::playTrace(EngineController *game, std::vector<std:
             game->postEvent(std::move(event));
         }
     }
-
-    if (tickCallback)
-        tickCallback();
 }
 
 void EngineTraceSimplePlayer::checkTime(const PaintEvent *paintEvent) {

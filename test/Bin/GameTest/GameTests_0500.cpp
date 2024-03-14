@@ -848,11 +848,12 @@ GAME_TEST(Issues, Issue833b) {
     auto manaTape = charTapes.mp(0);
     auto quickSpellTape = charTapes.quickSpell(0);
     auto actorsHpTape = actorTapes.totalHp();
+    auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_833b.mm7", "issue_833b.json");
     EXPECT_EQ(manaTape.delta(), 0);
     EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
     EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
-    // TODO(captainurist): test that error sound was played?
+    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_error));
 }
 
 GAME_TEST(Issues, Issue840) {

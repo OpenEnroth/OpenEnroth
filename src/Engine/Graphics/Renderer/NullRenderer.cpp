@@ -3,6 +3,9 @@
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Engine/EngineGlobals.h"
+#include "Engine/Engine.h"
+#include "Engine/EngineCallObserver.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
@@ -97,10 +100,16 @@ void NullRenderer::SetUIClipRect(unsigned int uX, unsigned int uY,
                                  unsigned int uZ, unsigned int uW) {}
 void NullRenderer::ResetUIClipRect() {}
 
-void NullRenderer::DrawTextureNew(float u, float v, class GraphicsImage *, Color colourmask) {}
+void NullRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+}
 
-void NullRenderer::DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
-                                           int height) {}
+void NullRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *tex, int height) {
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+}
+
 void NullRenderer::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                      GraphicsImage *) {}
 void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, unsigned int paletteid, Color colourmask) {}

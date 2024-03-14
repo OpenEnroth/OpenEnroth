@@ -13,6 +13,7 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Time/Timer.h"
 
@@ -248,6 +249,10 @@ void CreateParty_EventLoop() {
 bool PartyCreationUI_Loop() {
     pAudioPlayer->MusicStop();
     pEventTimer->setPaused(true);
+
+    // This call is here b/c otherwise Character::timeToRecovery will be overwritten in the main loop from the
+    // turn-based queue if we're currently in turn-based combat.
+    pTurnEngine->End(false);
 
     pParty->Reset();
     pParty->createDefaultParty();

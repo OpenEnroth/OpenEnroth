@@ -3,8 +3,11 @@
 #include <cassert>
 #include <string>
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Control/EngineControlState.h"
+
+#include "Library/Platform/Application/PlatformApplication.h"
 
 #include "Utility/Format.h"
 
@@ -51,6 +54,11 @@ void GameTest::runTestBody(TestBodyFunction testBody) {
     };
 
     try {
+        game->runGameRoutine([] {
+            const testing::TestInfo *info = testing::UnitTest::GetInstance()->current_test_info();
+            ::application->window()->setTitle(fmt::format("{}.{}", info->test_suite_name(), info->name()));
+        });
+
         CommonTapeRecorder tapes(test);
         CharacterTapeRecorder charTapes(test);
         ActorTapeRecorder actorTapes(test);

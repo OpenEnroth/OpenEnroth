@@ -29,8 +29,7 @@ EngineTracePlayer::~EngineTracePlayer() {
 }
 
 void EngineTracePlayer::playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
-                                  EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback,
-                                  std::function<void()> tickCallback) {
+                                  EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     assert(!isPlaying());
 
     _tracePath = tracePath;
@@ -66,7 +65,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
         postLoadCallback();
 
     checkState(_trace->header.startState, true);
-    component<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), _tracePath, _flags, std::move(tickCallback));
+    component<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), _tracePath, _flags);
     checkState(_trace->header.endState, false);
 }
 

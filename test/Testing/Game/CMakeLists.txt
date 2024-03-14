@@ -14,6 +14,7 @@ if(OE_BUILD_TESTS)
             CommonTapeRecorder.h
             GameTest.h
             TestTape.h
+            TestCallObserver.h
             TestController.h
             AccessibleVector.h)
 

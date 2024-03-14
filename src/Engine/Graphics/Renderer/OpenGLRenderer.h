@@ -84,7 +84,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual void DrawTextureNew(float u, float v, class GraphicsImage *, Color colourmask = colorTable.White) override;
 
-        virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
+    virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;

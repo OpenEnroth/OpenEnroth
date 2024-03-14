@@ -14,7 +14,7 @@ class LodReader;
 class ImageLoader {
  public:
     virtual ~ImageLoader() = default;
-    virtual std::string GetResourceName() const { return this->resource_name; }
+    virtual const std::string &GetResourceName() const { return this->resource_name; }
     virtual std::string *GetResourceNamePtr() { return &this->resource_name; }
 
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) = 0;

@@ -140,3 +140,15 @@ TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
 TestTape<int> CommonTapeRecorder::activeCharacterIndex() {
     return custom([] { return pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0; });
 }
+
+TestMultiTape<SoundId> CommonTapeRecorder::sounds() {
+    return _controller->recordFunctionTape<SoundId>(CALL_PLAY_SOUND);
+}
+
+TestMultiTape<std::string> CommonTapeRecorder::hudTextures() {
+    return _controller->recordFunctionTape<std::string>(CALL_DRAW_2D_TEXTURE);
+}
+
+TestMultiTape<std::string> CommonTapeRecorder::messageBoxes() {
+    return _controller->recordFunctionTape<std::string>(CALL_DRAW_MESSAGE_BOX);
+}

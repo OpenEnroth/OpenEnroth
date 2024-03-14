@@ -251,6 +251,16 @@ GAME_TEST(Issues, Issue1273) {
     EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN));
 }
 
+GAME_TEST(Issues, Issue1274) {
+    // Right clicking in guild when not member brings up skill tooltips
+    auto screenTape = tapes.screen();
+    auto messageBoxesTape = tapes.messageBoxes();
+    test.playTraceFromTestData("issue_1274.mm7", "issue_1274.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE)); // Entered a house.
+    EXPECT_EQ(messageBoxesTape.size(), 1);
+    EXPECT_TRUE(messageBoxesTape.front().empty()); // No message boxes.
+}
+
 GAME_TEST(Issues, Issue1277) {
     // Crash when press enter on character skills tab
     test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
@@ -587,6 +597,43 @@ GAME_TEST(Issues, Issue1447C) {
     EXPECT_GT(particlesTape.max(), 10);
 }
 
+GAME_TEST(Issues, Issue1449) {
+    // Turn-based overlays are broken. Opening hand isn't animated, hourglass isn't animated.
+    test.prepareForNextTest(20, RANDOM_ENGINE_MERSENNE_TWISTER); // 50fps, so that we see the animations.
+    auto iconsTape = tapes.hudTextures();
+    game.startNewGame();
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_RETURN); // Enter turn-based mode.
+    game.tick();
+    game.releaseKey(PlatformKey::KEY_RETURN);
+    game.tick(1000 / 20); // Wait 1s.
+    for (int i = 0; i < 4; i++) {
+        game.pressKey(PlatformKey::KEY_A); // Attack with each char.
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_A);
+        game.tick();
+    }
+    game.pressKey(PlatformKey::KEY_DOWN); // Walk.
+    game.tick(500 / 20);
+    game.releaseKey(PlatformKey::KEY_DOWN);
+    game.tick(500 / 20); // Wait 0.5s.
+    test.stopTaping();
+
+    // This is a test for the taping framework itself. The first & last elements in a tape recorded from a call observer
+    // shouldn't be empty.
+    EXPECT_FALSE(iconsTape.front().empty());
+    EXPECT_FALSE(iconsTape.back().empty());
+
+    // Then we just check that the necessary animation frames were actually displayed.
+    auto flatIcons = iconsTape.flattened();
+    EXPECT_TRUE(flatIcons.containsAll("ia01-001", "ia01-002", "ia01-003", "ia01-004", "ia01-005", "ia01-006",
+                                      "ia01-007", "ia01-008", "ia01-009", "ia01-010")); // Opening hand animation.
+    EXPECT_TRUE(flatIcons.containsAll("ia01-011", "ia01-012", "ia01-013", "ia01-014")); // Fingers.
+
+    // Hourglass animation is 10 frames long, we only see the first 5 frames.
+    EXPECT_TRUE(flatIcons.containsAll("ia02-001", "ia02-002", "ia02-003", "ia02-004", "ia02-005"));
+}
+
 GAME_TEST(Issues, Issue1454) {
     // Map hotkey doesn't close the map
     game.startNewGame();
@@ -680,9 +727,9 @@ GAME_TEST(Issues, Issue1478) {
     EXPECT_EQ(pParty->alignment, PartyAlignment_Evil);
     // Check buttons have correct texture set.
     const auto quickRefButton = std::ranges::find_if(pPrimaryWindow->vButtons, [](const GUIButton* but) { return but->msg == UIMSG_QuickReference; });
-    EXPECT_EQ(*(*quickRefButton)->vTextures[0]->GetName(), "ib-m3d-c");
+    EXPECT_EQ((*quickRefButton)->vTextures[0]->GetName(), "ib-m3d-c");
     const auto npcLeftButton = std::ranges::find_if(pPrimaryWindow->vButtons, [](const GUIButton* but) { return but->msg == UIMSG_ScrollNPCPanel && but->msg_param == 0; });
-    EXPECT_EQ(*(*npcLeftButton)->vTextures[0]->GetName(), "ib-npcld-c");
+    EXPECT_EQ((*npcLeftButton)->vTextures[0]->GetName(), "ib-npcld-c");
 }
 
 GAME_TEST(Issues, Issue1479) {

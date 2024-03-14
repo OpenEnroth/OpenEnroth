@@ -10,8 +10,6 @@
 
 #include "AccessibleVector.h"
 
-namespace testing {} // Forward-declare gtest namespace.
-
 namespace detail {
 template<class T>
 class TestTapeState {
@@ -48,11 +46,6 @@ class TestTapeBase {
 
     auto end() const {
         return _state->values().end();
-    }
-
-    friend void PrintTo(const TestTapeBase &tape, std::ostream* stream) { // gtest printers support.
-        using namespace testing; // NOLINT
-        *stream << PrintToString(tape.values());
     }
 
  private:

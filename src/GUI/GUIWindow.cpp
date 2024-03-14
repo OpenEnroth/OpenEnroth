@@ -7,6 +7,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/EngineCallObserver.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
@@ -21,7 +22,6 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Time/Timer.h"
@@ -34,7 +34,6 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"
-#include "GUI/UI/UIStatusBar.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
@@ -205,6 +204,9 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
 }
 
 void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, sHint);
+
     int x = 0;
     int y = 0;
     int z, w;
