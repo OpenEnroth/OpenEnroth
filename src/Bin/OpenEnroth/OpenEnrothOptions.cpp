@@ -76,5 +76,8 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         }
     }
 
+    if (result.subcommand == SUBCOMMAND_PLAY)
+        result.useConfig = false; // Don't use external config if playing a trace.
+
     return result;
 }
