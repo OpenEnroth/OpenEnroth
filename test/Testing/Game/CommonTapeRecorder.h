@@ -88,6 +88,8 @@ class CommonTapeRecorder {
 
     TestMultiTape<std::string> hudTextures();
 
+    TestMultiTape<std::string> messageBoxes();
+
  private:
     TestController *_controller = nullptr;
 };

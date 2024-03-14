@@ -520,6 +520,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     auto screenTape = tapes.screen();
     auto mapTape = tapes.map();
     auto certTape = tapes.custom([] { return assets->winnerCert; });
+    auto messageBoxesTape = tapes.messageBoxes();
     test.playTraceFromTestData("issue_408.mm7", "issue_408.json");
     // we should return to game screen
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAMEOVER_WINDOW, SCREEN_GAME));
@@ -529,6 +530,10 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     EXPECT_GT(certTape.size(), 1);
     // we should be teleported to harmondale
     EXPECT_EQ(mapTape, tape("d30.blv", "out02.odm"));
+    // ending message box was displayed.
+    auto flatMessageBoxes = messageBoxesTape.flattened();
+    EXPECT_EQ(flatMessageBoxes.size(), 1);
+    EXPECT_TRUE(flatMessageBoxes.front().starts_with("Congratulations Adventurer"));
 
     // #970: Armor Class is wrong.
     // #939: Quick reference doesnt match vanilla.

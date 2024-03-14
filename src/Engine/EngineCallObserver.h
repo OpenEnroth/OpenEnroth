@@ -5,9 +5,10 @@
 enum class EngineCall {
     CALL_PLAY_SOUND,
     CALL_DRAW_2D_TEXTURE,
+    CALL_DRAW_MESSAGE_BOX,
 
     CALL_FIRST = CALL_PLAY_SOUND,
-    CALL_LAST = CALL_DRAW_2D_TEXTURE
+    CALL_LAST = CALL_DRAW_MESSAGE_BOX
 };
 using enum EngineCall;
 

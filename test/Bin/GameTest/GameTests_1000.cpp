@@ -251,6 +251,16 @@ GAME_TEST(Issues, Issue1273) {
     EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN));
 }
 
+GAME_TEST(Issues, Issue1274) {
+    // Right clicking in guild when not member brings up skill tooltips
+    auto screenTape = tapes.screen();
+    auto messageBoxesTape = tapes.messageBoxes();
+    test.playTraceFromTestData("issue_1274.mm7", "issue_1274.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE)); // Entered a house.
+    EXPECT_EQ(messageBoxesTape.size(), 1);
+    EXPECT_TRUE(messageBoxesTape.front().empty()); // No message boxes.
+}
+
 GAME_TEST(Issues, Issue1277) {
     // Crash when press enter on character skills tab
     test.playTraceFromTestData("issue_1277.mm7", "issue_1277.json");
