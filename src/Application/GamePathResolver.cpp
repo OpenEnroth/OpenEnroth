@@ -11,7 +11,7 @@ struct PathResolutionConfig {
         : overrideEnvKey(overrideEnvKey), registryKeys(registryKeys) {}
 };
 
-static PathResolutionConfig mm6Config = {
+static const PathResolutionConfig mm6Config = {
     mm6PathOverrideKey,
     {
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207661253/PATH",
@@ -23,7 +23,7 @@ static PathResolutionConfig mm6Config = {
     }
 };
 
-static PathResolutionConfig mm7Config = {
+static const PathResolutionConfig mm7Config = {
     mm7PathOverrideKey,
     {
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/Games/1207658916/Path",
@@ -35,7 +35,7 @@ static PathResolutionConfig mm7Config = {
     }
 };
 
-static PathResolutionConfig mm8Config = {
+static const PathResolutionConfig mm8Config = {
     mm8PathOverrideKey,
     {
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM8/PATH",
