@@ -680,9 +680,9 @@ GAME_TEST(Issues, Issue1478) {
     EXPECT_EQ(pParty->alignment, PartyAlignment_Evil);
     // Check buttons have correct texture set.
     const auto quickRefButton = std::ranges::find_if(pPrimaryWindow->vButtons, [](const GUIButton* but) { return but->msg == UIMSG_QuickReference; });
-    EXPECT_EQ(*(*quickRefButton)->vTextures[0]->GetName(), "ib-m3d-c");
+    EXPECT_EQ((*quickRefButton)->vTextures[0]->GetName(), "ib-m3d-c");
     const auto npcLeftButton = std::ranges::find_if(pPrimaryWindow->vButtons, [](const GUIButton* but) { return but->msg == UIMSG_ScrollNPCPanel && but->msg_param == 0; });
-    EXPECT_EQ(*(*npcLeftButton)->vTextures[0]->GetName(), "ib-npcld-c");
+    EXPECT_EQ((*npcLeftButton)->vTextures[0]->GetName(), "ib-npcld-c");
 }
 
 GAME_TEST(Issues, Issue1479) {

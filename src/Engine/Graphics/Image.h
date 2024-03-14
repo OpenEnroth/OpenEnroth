@@ -31,7 +31,7 @@ class GraphicsImage {
 
     const GrayscaleImage &indexed();
 
-    std::string *GetName();
+    const std::string &GetName();
 
     void Release();
 

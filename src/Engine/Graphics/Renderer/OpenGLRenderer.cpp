@@ -817,7 +817,7 @@ void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img
     static std::array<int, 14> cachetime { -1 };
 
     if (img) {
-        std::string_view tempstr{ *img->GetName() };
+        std::string_view tempstr{ img->GetName() };
         int number = tempstr[4] - 48;
         int number2 = tempstr[5] - 48;
 
@@ -3291,7 +3291,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
                         GraphicsImage *tex = face.GetTexture();
-                        std::string *texname = tex->GetName();
+                        std::string texname = tex->GetName();
 
                         Duration animLength;
                         Duration frame;
@@ -3324,19 +3324,19 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         // loop while running down animlength with frame animtimes
                         do {
                             // check if tile->name is already in list
-                            auto mapiter = outbuildtexmap.find(*texname);
+                            auto mapiter = outbuildtexmap.find(texname);
                             if (mapiter != outbuildtexmap.end()) {
                                 // if so, extract unit and layer
                                 int unitlayer = mapiter->second;
                                 texlayer = unitlayer & 0xFF;
                                 texunit = (unitlayer & 0xFF00) >> 8;
-                            } else if (*texname == "wtrtyl") {
+                            } else if (texname == "wtrtyl") {
                                 // water tile
                                 texunit = 0;
                                 texlayer = 0;
                             } else {
                                 // else need to add it
-                                auto thistexture = assets->getBitmap(*texname);
+                                auto thistexture = assets->getBitmap(texname);
                                 int width = thistexture->width();
                                 int height = thistexture->height();
                                 // check size to see what unit it needs
@@ -3363,7 +3363,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                     if (numoutbuildtexloaded[i] < 256) {
                                         // intsert into tex map
-                                        outbuildtexmap.insert(std::make_pair(*texname, encode));
+                                        outbuildtexmap.insert(std::make_pair(texname, encode));
                                         numoutbuildtexloaded[i]++;
                                     } else {
                                         logger->warning("Texture layer full - draw building!");
@@ -3505,8 +3505,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 if (texlayer == -1) { // texture has been reset - see if its in the map
                                     GraphicsImage *tex = face.GetTexture();
-                                    std::string *texname = tex->GetName();
-                                    auto mapiter = bsptexmap.find(*texname);
+                                    std::string texname = tex->GetName();
+                                    auto mapiter = bsptexmap.find(texname);
                                     if (mapiter != bsptexmap.end()) {
                                         // if so, extract unit and layer
                                         int unitlayer = mapiter->second;
@@ -3909,7 +3909,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
                 GraphicsImage *tex = face->GetTexture();
-                std::string *texname = tex->GetName();
+                std::string texname = tex->GetName();
 
                 Duration animLength;
                 Duration frame;
@@ -3942,20 +3942,20 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 // loop while running down animlength with frame animtimes
                 do {
                     // check if tile->name is already in list
-                    auto mapiter = bsptexmap.find(*texname);
+                    auto mapiter = bsptexmap.find(texname);
                     if (mapiter != bsptexmap.end()) {
                         // if so, extract unit and layer
                         int unitlayer = mapiter->second;
                         // TODO(pskelton): make this a pair/struct rather than encoding
                         texlayer = unitlayer & 0xFF;
                         texunit = (unitlayer & 0xFF00) >> 8;
-                    } else if (*texname == "wtrtyl") {
+                    } else if (texname == "wtrtyl") {
                         // water tile
                         texunit = 0;
                         texlayer = 0;
                     } else {
                         // else need to add it
-                        auto thistexture = assets->getBitmap(*texname);
+                        auto thistexture = assets->getBitmap(texname);
                         int width = thistexture->width();
                         int height = thistexture->height();
                         // check size to see what unit it needs
@@ -3982,7 +3982,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                             if (bsptexloaded[i] < 256) {
                                 // intsert into tex map
-                                bsptexmap.insert(std::make_pair(*texname, encode));
+                                bsptexmap.insert(std::make_pair(texname, encode));
                                 bsptexloaded[i]++;
                             } else {
                                 logger->warning("Texture layer full - draw indoor faces!");
@@ -4188,8 +4188,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                             if (texlayer == -1) { // texture has been reset - see if its in the map
                                 GraphicsImage *tex = face->GetTexture();
-                                std::string *texname = tex->GetName();
-                                auto mapiter = bsptexmap.find(*texname);
+                                std::string texname = tex->GetName();
+                                auto mapiter = bsptexmap.find(texname);
                                 if (mapiter != bsptexmap.end()) {
                                     // if so, extract unit and layer
                                     int unitlayer = mapiter->second;
