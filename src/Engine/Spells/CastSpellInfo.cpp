@@ -2987,6 +2987,12 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
     }
 }
 
+void CastSpellInfoHelpers::clearSpellQueue() {
+    for (CastSpellInfo& spellInfo : pCastSpellInfo) {  // cycle through spell queue
+        spellInfo = CastSpellInfo();
+    }
+}
+
 void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
