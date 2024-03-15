@@ -133,9 +133,8 @@ void TestController::prepareForNextTestInternal() {
     ::application->component<GameKeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
-    // Clear the spell/message queue, otherwise spells can roll over between test runs.
+    // Clear the message queue, otherwise spells can roll over between test runs.
     // TODO(captainurist): this should really happen somewhere in the main loop. When new game is started, or a save is loaded.
-    CastSpellInfoHelpers::clearSpellQueue();
     engine->_messageQueue->clear();
 
     _controller->goToMainMenu();

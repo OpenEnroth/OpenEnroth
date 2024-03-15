@@ -7,6 +7,12 @@ void GUIFrameMessageQueue::clear() {
 }
 
 void GUIFrameMessageQueue::popMessage(UIMessageType *msg, int *param, int *param2) {
+    peekMessage(msg, param, param2);
+    if (!messageQueue.empty())
+        messageQueue.pop();
+}
+
+void GUIFrameMessageQueue::peekMessage(UIMessageType *msg, int *param, int *param2) {
     assert(msg != nullptr);
 
     *msg = UIMSG_Invalid;
@@ -21,8 +27,7 @@ void GUIFrameMessageQueue::popMessage(UIMessageType *msg, int *param, int *param
         return;
     }
 
-    GUIMessage message = messageQueue.front();
-    messageQueue.pop();
+    const GUIMessage &message = messageQueue.front();
 
     *msg = message.type;
     if (param) {
