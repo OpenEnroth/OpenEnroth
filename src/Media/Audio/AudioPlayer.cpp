@@ -188,15 +188,13 @@ void AudioPlayer::resumeSounds() {
 }
 
 void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
-    if (engine->callObserver)
-        engine->callObserver->notify(CALL_PLAY_SOUND, eSoundID);
-
     if (!bPlayerReady)
         return;
 
     //logger->Info("AudioPlayer: trying to load sound id {}", eSoundID);
 
-    if (engine->config->settings.SoundLevel.value() < 1 || (eSoundID == SOUND_Invalid)) {
+    // TODO(pskelton): do we need to reinstate this optimisation? dropped to allow better sound tracing
+    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ (eSoundID == SOUND_Invalid)) {
         return;
     }
 
@@ -325,6 +323,10 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
             logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
         }
     } else {
+        // Only log sounds that actually play
+        if (engine->callObserver)
+            engine->callObserver->notify(CALL_PLAY_SOUND, eSoundID);
+
         if (si->sName.empty()) {
             logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
         } else {
