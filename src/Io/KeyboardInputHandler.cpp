@@ -82,12 +82,16 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
         PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
-        if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress) {
+
+        switch (GetToggleType(action)) {
+        default: assert(false); [[fallthrough]];
+        case KeyToggleType::TOGGLE_OneTimePress:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
-        } else if (GetToggleType(action) == KeyToggleType::TOGGLE_Continuously) {
+            break;
+        case KeyToggleType::TOGGLE_Continuously:
             isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
-        } else {
-            // delay press
+            break;
+        case KeyToggleType::TOGGLE_DelayContinuous:
             if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
                 resettimer = false;
                 if (!this->keydelaytimer) {
@@ -100,6 +104,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                     this->keydelaytimer -= DELAY_TOGGLE_TIME_PERIOD;
                 }
             }
+            break;
         }
 
         if (!isTriggered) {
