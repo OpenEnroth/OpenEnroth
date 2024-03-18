@@ -11,9 +11,6 @@
 
 class GUIWindow;
 
-constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500);
-constexpr Duration DELAY_TOGGLE_TIME_AFTER = Duration::fromRealtimeMilliseconds(67); // 1/15th of a second.
-
 enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_NONE = 0,
     WINDOW_INPUT_IN_PROGRESS = 1,
