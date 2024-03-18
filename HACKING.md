@@ -42,7 +42,7 @@ This project uses the [CMake](https://cmake.org) build system.  Use the followin
 ```
 $ git clone https://github.com/OpenEnroth/OpenEnroth.git
 $ cd OpenEnroth
-$ cmake -B build -S .
+$ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
 $ cmake --build build
 ```
 
