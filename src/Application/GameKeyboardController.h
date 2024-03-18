@@ -21,5 +21,5 @@ class GameKeyboardController: public Io::IKeyboardController, public PlatformEve
 
  private:
     IndexedArray<bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST> isKeyDown_ = {{}};
-    IndexedArray<bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST> isKeyDownReported_ = {{}};
+    IndexedArray<bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST> isKeyDownReportPending_ = {{}};
 };
