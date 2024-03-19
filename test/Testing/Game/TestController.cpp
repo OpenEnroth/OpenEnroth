@@ -9,6 +9,7 @@
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
+#include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 
@@ -131,6 +132,10 @@ void TestController::prepareForNextTestInternal() {
     _tapeCallbacks.clear();
     ::application->component<GameKeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
+
+    // Clear the message queue, otherwise spells can roll over between test runs.
+    // TODO(captainurist): this should really happen somewhere in the main loop. When new game is started, or a save is loaded.
+    engine->_messageQueue->clear();
 
     _controller->goToMainMenu();
     adjustMaxFps(); // Set max fps AFTER going to the main menu, so that the latter one is done quickly.
