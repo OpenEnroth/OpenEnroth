@@ -226,3 +226,11 @@ enum class SoundPlaybackMode {
     SOUND_MODE_HOUSE_SPEECH,
 };
 using enum SoundPlaybackMode;
+
+enum class SoundPlaybackResult {
+    SOUND_PLAYBACK_INVALID,
+    SOUND_PLAYBACK_FAILED,
+    SOUND_PLAYBACK_SKIPPED,
+    SOUND_PLAYBACK_SUCCEEDED
+};
+using enum SoundPlaybackResult;

@@ -210,7 +210,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     PAudioSample sample = CreateAudioSample();
 
-    bool result = true;
+    SoundPlaybackResult result = SOUND_PLAYBACK_INVALID;
     sample->SetVolume(uMasterVolume);
 
     if (mode == SOUND_MODE_UI) {
@@ -316,22 +316,36 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
         }
     }
 
-    if (!result) {
-        if (si->sName.empty()) {
-            logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->sName);
-        } else {
-            logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
-        }
-    } else {
-        // Only log sounds that actually play
+    if (result == SOUND_PLAYBACK_FAILED || result == SOUND_PLAYBACK_SUCCEEDED) {
+        // Only log sounds that actually play or tried to play
         if (engine->callObserver)
             engine->callObserver->notify(CALL_PLAY_SOUND, eSoundID);
+    }
 
-        if (si->sName.empty()) {
-            logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
-        } else {
-            logger->trace("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
-        }
+    switch (result) {
+        case SoundPlaybackResult::SOUND_PLAYBACK_FAILED:
+            if (si->sName.empty()) {
+                logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->sName);
+            } else {
+                logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
+            }
+            break;
+        case SoundPlaybackResult::SOUND_PLAYBACK_SKIPPED:
+            if (si->sName.empty()) {
+                logger->trace("AudioPlayer: skipped playing sound {}", std::to_underlying(eSoundID));
+            } else {
+                logger->trace("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
+            }
+            break;
+        case SoundPlaybackResult::SOUND_PLAYBACK_SUCCEEDED:
+            if (si->sName.empty()) {
+                logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
+            } else {
+                logger->trace("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
+            }
+            break;
+        default:
+            break;
     }
 }
 
@@ -426,7 +440,7 @@ float AudioPlayer::getSoundLength(SoundId eSoundID) {
         // then force the sample to load/play to save codec info
         PAudioSample sample = CreateAudioSample();
         sample->SetVolume(0);
-        bool result = _regularSoundPool.playNew(sample, si->dataSource);
+        _regularSoundPool.playNew(sample, si->dataSource);
     }
 
      return si->dataSource->GetDuration();

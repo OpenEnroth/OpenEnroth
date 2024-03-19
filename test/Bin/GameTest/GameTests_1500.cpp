@@ -38,7 +38,7 @@ GAME_TEST(Issues, Issue1515) {
     EXPECT_TRUE(soundsTape.flattened().contains(SOUND_RechargeItem)); // dispel magic
 }
 
-GAME_TEST(Issues, Issue1515_1524) {
+GAME_TEST(Issues, Issue1524) {
     // More enemy spells without sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1524.mm7", "issue_1524.json");
