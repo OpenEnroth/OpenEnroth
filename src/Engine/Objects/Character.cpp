@@ -7005,6 +7005,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = target_pid.type();
     int target_id = target_pid.id();
+    if (target_id >= pActors.size()) return;
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = target_pid.type();
