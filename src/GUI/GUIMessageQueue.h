@@ -18,6 +18,7 @@ struct GUIFrameMessageQueue {
     void clear();
     bool empty() { return messageQueue.empty(); }
     void popMessage(UIMessageType *msg, int *param, int *param2);
+    void peekMessage(UIMessageType *msg, int *param, int *param2);
     void addGUIMessage(UIMessageType msg, int param, int param2);
 
     std::queue<GUIMessage> messageQueue;
@@ -55,6 +56,10 @@ class GUIMessageQueue {
 
     void popMessage(UIMessageType *msg, int *param, int *param2) {
         _currentFrameQueue.popMessage(msg, param, param2);
+    }
+
+    void peekMessage(UIMessageType *msg, int *param, int *param2) {
+        _currentFrameQueue.peekMessage(msg, param, param2);
     }
 
  private:

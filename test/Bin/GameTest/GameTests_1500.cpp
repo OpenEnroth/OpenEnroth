@@ -1,11 +1,17 @@
 #include <unordered_set>
+#include <ranges>
 
 #include "Testing/Game/GameTest.h"
 
+#include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
+#include "Engine/Objects/SpriteObject.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UIStatusBar.h"
 
 // 1500
 
@@ -23,4 +29,52 @@ GAME_TEST(Issues, Issue1510) {
     test.playTraceFromTestData("issue_1510.mm7", "issue_1510.json");
     EXPECT_LT(partyHealth.back(), partyHealth.front());
     EXPECT_LE(actorDistTape.max(), meleeRange);
+}
+
+GAME_TEST(Issues, Issue1532) {
+    // Can cast too many firespikes
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    engine->config->debug.NoActors.setValue(true);
+    auto statusTape = tapes.statusBar();
+
+    // keep casting till the spell fails
+    while (engine->_statusBar->get() != "Spell failed") {
+        if (pParty->pCharacters[0].CanAct())
+            pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER), 0, 0);
+        game.tick(1);
+    }
+
+    // count should be 9 for gm
+    EXPECT_EQ(9, std::ranges::count_if(pSpriteObjects, [](const SpriteObject& object) {
+        return object.uType != SPRITE_NULL &&
+            object.uObjectDescID != 0 && // exploded fire spikes have no DescID
+            object.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
+            object.spell_caster_pid == Pid(OBJECT_Character, 0);
+        })
+    );
+}
+
+GAME_TEST(Issues, Issue1535) {
+    // Queued messages stay in the event queue and roll over between tests.
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+
+    game.pressGuiButton("Game_CastSpell");
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell8"); // 8 is meteor shower.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell8"); // Confirm.
+    game.tick(1);
+
+    // Should have put the spell cast message to queue.
+    UIMessageType message = UIMSG_Invalid;
+    int spell = 0;
+    engine->_messageQueue->peekMessage(&message, &spell, nullptr);
+    EXPECT_EQ(message, UIMSG_CastSpellFromBook);
+    EXPECT_EQ(spell, std::to_underlying(SPELL_FIRE_METEOR_SHOWER));
+
+    // Then we start a new test.
+    test.prepareForNextTest(); // This call used to assert.
+    EXPECT_FALSE(engine->_messageQueue->haveMessages()); // Please don't roll over the messages between tests!
 }
