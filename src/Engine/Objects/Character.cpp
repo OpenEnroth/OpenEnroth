@@ -7005,28 +7005,30 @@ void Character::_42ECB5_CharacterAttacksActor() {
     Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = target_pid.type();
     int target_id = target_pid.id();
-    if (target_id >= pActors.size()) return;
+    Actor* actor = nullptr;
+    int actor_distance = 0;
+    
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = target_pid.type();
         target_id = target_pid.id();
     }
 
-    Actor *actor = nullptr;
-    if (target_id < 500) {
-        actor = &pActors[target_id];  // prevent crash
-    }
+    if (target_id < pActors.size()) {
+        if (target_id < 500) {
+            actor = &pActors[target_id];  // prevent crash
+        }
 
-    int actor_distance = 0;
-    if (target_type == OBJECT_Actor) {
-        int distance_x = actor->pos.x - pParty->pos.x,
-            distance_y = actor->pos.y - pParty->pos.y,
-            distance_z = actor->pos.z - pParty->pos.z;
-        actor_distance =
-            integer_sqrt(distance_x * distance_x + distance_y * distance_y +
-                         distance_z * distance_z) -
-            actor->radius;
-        if (actor_distance < 0) actor_distance = 0;
+        if (target_type == OBJECT_Actor) {
+            int distance_x = actor->pos.x - pParty->pos.x,
+                distance_y = actor->pos.y - pParty->pos.y,
+                distance_z = actor->pos.z - pParty->pos.z;
+            actor_distance =
+                integer_sqrt(distance_x * distance_x + distance_y * distance_y +
+                    distance_z * distance_z) -
+                actor->radius;
+            if (actor_distance < 0) actor_distance = 0;
+        }
     }
 
     bool shooting_bow = false, shotting_laser = false, shooting_wand = false,
@@ -7045,7 +7047,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
         if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;
-    } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
+    } else if (target_type == OBJECT_Actor && actor_distance <= 407.2 && actor != nullptr) {
         melee_attack = true;
 
         Vec3i a3 = actor->pos - pParty->pos.toInt();
