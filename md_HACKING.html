@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bcad037</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e000859</span>
    </div>
   </td>
  </tr>
@@ -102,7 +102,7 @@ Building on *nix platforms</h1>
 <p >This project uses the <a href="https://cmake.org">CMake</a> build system. Use the following commands to clone the repository and build OpenEnroth:</p>
 <div class="fragment"><div class="line">$ git clone https://github.com/OpenEnroth/OpenEnroth.git</div>
 <div class="line">$ cd OpenEnroth</div>
-<div class="line">$ cmake -B build -S .</div>
+<div class="line">$ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug</div>
 <div class="line">$ cmake --build build</div>
 </div><!-- fragment --><p >To cross-compile for 32-bit x86, you can pass <code>-m32</code> via compiler flags to cmake. In the snipped above that would mean running <code>export CFLAGS="-m32" CXXFLAGS="-m32"</code> first.</p>
 <p >You can also select platform dependent <a href="https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html">generator</a> for your favorite IDE.</p>
