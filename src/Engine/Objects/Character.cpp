@@ -7007,7 +7007,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     int target_id = target_pid.id();
     Actor* actor = nullptr;
     int actor_distance = 0;
-    
+
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = target_pid.type();
