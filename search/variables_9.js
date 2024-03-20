@@ -65,7 +65,7 @@ var searchData=
   ['isgmbuff_62',['isGMBuff',['../structSpellBuff.html#a64220ef41c029b19e9e7c36c3e9bcb2c',1,'SpellBuff']]],
   ['ishisturn_63',['IsHisTurn',['../structArcomagePlayer.html#a03b280aeaaf6239d3a33ead04bd56efd',1,'ArcomagePlayer']]],
   ['iskeydown_5f_64',['isKeyDown_',['../classGameKeyboardController.html#ae3930e3ee9a19cfe9218deeb073ee794',1,'GameKeyboardController']]],
-  ['iskeydownreported_5f_65',['isKeyDownReported_',['../classGameKeyboardController.html#ae661a8368b88acc60b58f587b85a1f94',1,'GameKeyboardController']]],
+  ['iskeydownreportpending_5f_65',['isKeyDownReportPending_',['../classGameKeyboardController.html#ab8a4f95210c70e4b5603fc5f9c83b77d',1,'GameKeyboardController']]],
   ['isloadslotclicked_66',['isLoadSlotClicked',['../UISaveLoad_8cpp.html#a66f26ef6c2a72f5f4990c7c68f9473cd',1,'isLoadSlotClicked():&#160;UISaveLoad.cpp'],['../GameMenu_8cpp.html#a66f26ef6c2a72f5f4990c7c68f9473cd',1,'isLoadSlotClicked():&#160;GameMenu.cpp']]],
   ['ismelee_67',['isMelee',['../structAttackDescription.html#adc4a06d6b1ff5eb526c0caf0feea92e0',1,'AttackDescription']]],
   ['istreamindex_68',['iStreamIndex',['../classAudioBaseDataSource.html#a975642e6b538e7407a2ce15b380e44cd',1,'AudioBaseDataSource']]],

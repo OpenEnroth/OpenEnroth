@@ -348,7 +348,7 @@ var searchData=
   ['isinteractive_345',['IsInteractive',['../structLevelDecoration.html#a58aa21750c6f9643197b6168802ce303',1,'LevelDecoration']]],
   ['iskeydown_346',['IsKeyDown',['../classGameKeyboardController.html#a5023e0a2082d84971da2a1b945814c5d',1,'GameKeyboardController::IsKeyDown()'],['../classIo_1_1IKeyboardController.html#a34453ff37ad888cbe4f6745889cae1be',1,'Io::IKeyboardController::IsKeyDown()']]],
   ['iskeydown_5f_347',['isKeyDown_',['../classGameKeyboardController.html#ae3930e3ee9a19cfe9218deeb073ee794',1,'GameKeyboardController']]],
-  ['iskeydownreported_5f_348',['isKeyDownReported_',['../classGameKeyboardController.html#ae661a8368b88acc60b58f587b85a1f94',1,'GameKeyboardController']]],
+  ['iskeydownreportpending_5f_348',['isKeyDownReportPending_',['../classGameKeyboardController.html#ab8a4f95210c70e4b5603fc5f9c83b77d',1,'GameKeyboardController']]],
   ['iskeyheld_349',['IsKeyHeld',['../classIo_1_1KeyboardInputHandler.html#af7149ecc5dc2f990d6435702871e8748',1,'Io::KeyboardInputHandler']]],
   ['iskeymatchaction_350',['IsKeyMatchAction',['../classIo_1_1KeyboardActionMapping.html#af924b069b9d2092f83412491b3cbf2a7',1,'Io::KeyboardActionMapping']]],
   ['isloadslotclicked_351',['isLoadSlotClicked',['../GameMenu_8cpp.html#a66f26ef6c2a72f5f4990c7c68f9473cd',1,'isLoadSlotClicked():&#160;GameMenu.cpp'],['../UISaveLoad_8cpp.html#a66f26ef6c2a72f5f4990c7c68f9473cd',1,'isLoadSlotClicked():&#160;UISaveLoad.cpp']]],
