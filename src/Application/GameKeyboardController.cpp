@@ -12,10 +12,10 @@ bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
     if (!isKeyDown_[key])
         return false;
 
-    if (isKeyDownReported_[key])
+    if (!isKeyDownReportPending_[key])
         return false;
 
-    isKeyDownReported_[key] = true;
+    isKeyDownReportPending_[key] = false;
     return true;
 }
 
@@ -28,7 +28,7 @@ bool GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
         return false; // Auto repeat
 
     isKeyDown_[event->key] = true;
-    isKeyDownReported_[event->key] = false;
+    isKeyDownReportPending_[event->key] = true;
     return false;
 }
 
@@ -39,5 +39,5 @@ bool GameKeyboardController::keyReleaseEvent(const PlatformKeyEvent *event) {
 
 void GameKeyboardController::reset() {
     isKeyDown_.fill(false);
-    isKeyDownReported_.fill(false);
+    isKeyDownReportPending_.fill(false);
 }

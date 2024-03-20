@@ -13,6 +13,9 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 
+static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500); // Delayed keyrepeat registers after 500ms.
+static constexpr Duration DELAY_TOGGLE_TIME_PERIOD = Duration::fromRealtimeMilliseconds(67); // Then every 1/15th of a second.
+
 std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler = nullptr;
 
 extern Io::InputAction currently_selected_action_for_binding;  // 506E68
@@ -79,12 +82,16 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
         PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
-        if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress) {
+
+        switch (GetToggleType(action)) {
+        default: assert(false); [[fallthrough]];
+        case KeyToggleType::TOGGLE_OneTimePress:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
-        } else if (GetToggleType(action) == KeyToggleType::TOGGLE_Continuously) {
+            break;
+        case KeyToggleType::TOGGLE_Continuously:
             isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
-        } else {
-            // delay press
+            break;
+        case KeyToggleType::TOGGLE_DelayContinuous:
             if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
                 resettimer = false;
                 if (!this->keydelaytimer) {
@@ -94,9 +101,10 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 // big delay after first press then small delay
                 if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
                     isTriggered = true;
-                    this->keydelaytimer -= DELAY_TOGGLE_TIME_AFTER;
+                    this->keydelaytimer -= DELAY_TOGGLE_TIME_PERIOD;
                 }
             }
+            break;
         }
 
         if (!isTriggered) {
