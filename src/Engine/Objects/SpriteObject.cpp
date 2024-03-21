@@ -1345,15 +1345,17 @@ void UpdateObjects() {
                     } else {
                         SpriteObject::updateObjectODM(i);
                     }
-                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) { // TODO(captainurist): wtf is this (pSpriteObjects[i].uSectorID & 4) ???
+                    if (!pParty->bTurnBasedModeOn || !(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                         continue;
                     }
                     if ((pParty->pos.toInt() - pSpriteObjects[i].vPosition).length() <= 5120) {
                         continue;
                     }
+                    // Temporary object in turn based mode that gets too far from party
                     SpriteObject::OnInteraction(i);
                     continue;
                 }
+                // Lifetime expired
                 if (!(object->uFlags & OBJECT_DESC_INTERACTABLE)) {
                     SpriteObject::OnInteraction(i);
                     continue;
