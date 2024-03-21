@@ -92,6 +92,9 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
             break;
         case KeyToggleType::TOGGLE_DelayContinuous:
+            // TODO(captainurist): This logic breaks down if we press & release a key every frame.
+            //                     Better way to implement this would be to generate the input actions from inside
+            //                     the event handler.
             if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
                 resettimer = false;
                 if (!this->keydelaytimer) {

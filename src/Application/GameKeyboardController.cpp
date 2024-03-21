@@ -8,9 +8,9 @@ bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
     if (key == PlatformKey::KEY_NONE)
         return false;
 
-    // TODO(captainurist): this is false if we have received press & release events inside a single frame.
-    if (!isKeyDown_[key])
-        return false;
+    // Note that we're not checking for isKeyDown_[key] here, and this is intentional. This becomes relevant if both
+    // key press and key release events happen inside a single frame, and thus even though the player has pressed the
+    // key, it's not held down when we get around to actually handling it.
 
     if (!isKeyDownReportPending_[key])
         return false;
