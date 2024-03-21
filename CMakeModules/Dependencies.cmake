@@ -1,5 +1,5 @@
 
-function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
+function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR OUT_STATUS_VAR)
     set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
     set(TARGET_PATH "${TARGET_DIR}/${FILE_NAME}")
     message(STATUS "Downloading ${SOURCE_URL} to ${TARGET_PATH}...")
@@ -12,11 +12,13 @@ function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
 
     list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
     list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
-    if(${STATUS_CODE} EQUAL 0)
+    if(STATUS_CODE EQUAL 0)
         message(STATUS "Downloaded ${SOURCE_URL}!")
     else()
         file(REMOVE "${TARGET_PATH}")
-        message(FATAL_ERROR "Could not download ${SOURCE_URL}: ${ERROR_MESSAGE}")
+        message(WARNING "Could not download ${SOURCE_URL}: ${ERROR_MESSAGE}")
+        set(${OUT_STATUS_VAR} 1 PARENT_SCOPE)
+        return()
     endif()
 
     message(STATUS "Extracting ${TARGET_PATH} to ${TARGET_DIR}")
@@ -26,8 +28,12 @@ function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR)
             COMMAND_ECHO STDOUT)
 
     if (UNPACK_STATUS)
-        message(FATAL_ERROR "Could not unpack ${TARGET_PATH}: ${UNPACK_STATUS}")
+        message(WARNING "Could not unpack ${TARGET_PATH}: ${UNPACK_STATUS}")
+        set(${OUT_STATUS_VAR} 1 PARENT_SCOPE)
+        return()
     endif()
+
+    set(${OUT_STATUS_VAR} 0 PARENT_SCOPE)
 endfunction()
 
 #TODO: all prebuilt dependency artifacts should be built and packaged in the same unified way.
@@ -48,7 +54,10 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
         set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
-            download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}")
+            download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}" DOWNLOAD_STATUS)
+            if(NOT DOWNLOAD_STATUS EQUAL 0)
+                message(FATAL_ERROR "Downloading prebuilt dependencies failed, consider rerunning cmake with -DOE_USE_PREBUILT_DEPENDENCIES=OFF.")
+            endif()
         endif()
 
         # Android sets CMAKE_FIND_ROOT_PATH and this breaks find_package for us. So we hack.
@@ -60,6 +69,9 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             list(APPEND CMAKE_MODULE_PATH "${PREBUILT_DEPS_DIR}")
             list(APPEND CMAKE_PREFIX_PATH "${PREBUILT_DEPS_DIR}")
         endif()
+
+        # Prebuilt zlib is static, so we instruct the find_package to look for the static one.
+        set(ZLIB_USE_STATIC_LIBS ON)
     else()
         message(STATUS "Not using prebuilt dependencies")
     endif()
@@ -75,7 +87,6 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         set(SDL2_FOUND ON)
     else()
         # Prebuilt & user-supplied deps are resolved using the same code here.
-        set(ZLIB_USE_STATIC_LIBS ON)
         find_package(ZLIB REQUIRED)
         find_package(FFmpeg REQUIRED)
 
