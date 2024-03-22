@@ -261,8 +261,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y);
 void GUI_UpdateWindows();
 Color GetConditionDrawColor(Condition uConditionIdx);  // idb
 Color UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos);
-unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
+int GetSizeInInventorySlots(int uNumPixels);
+GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
 void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     Duration remaining_time, GUIFont *Font);

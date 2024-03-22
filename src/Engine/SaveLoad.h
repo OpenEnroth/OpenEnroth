@@ -5,7 +5,7 @@
 
 #include "Engine/Time/Time.h"
 
-constexpr unsigned int MAX_SAVE_SLOTS = 45;
+constexpr int MAX_SAVE_SLOTS = 45;
 
 struct SaveGameHeader {
     std::string name; // Save name, as displayed in the save list in-game.
@@ -30,9 +30,9 @@ struct SavegameList {
     std::string lastLoadedSave{};
 };
 
-void LoadGame(unsigned int uSlot);
+void LoadGame(int uSlot);
 SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &title = {});
-void DoSavegame(unsigned int uSlot);
+void DoSavegame(int uSlot);
 bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
 

@@ -160,11 +160,11 @@ struct ArcomageGame {
     // static bool LoadBackground();
     static bool LoadSprites();
     static bool MsgLoop(int a1, ArcomageGame_InputMSG *a2);
-    static void playSound(unsigned int event_id);
+    static void playSound(int event_id);
     static void onKeyPress(PlatformKey key);
     static void OnMouseClick(char right_left, bool bDown);
     static void OnMouseMove(int x, int y);
-    static void GetCardRect(unsigned int uCardID, Recti *pCardRect);
+    static void GetCardRect(int uCardID, Recti *pCardRect);
     static void PrepareArcomage();
     // static void DoBlt_Copy(uint16_t *pPixels);  // idb
 

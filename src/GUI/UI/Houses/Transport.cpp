@@ -25,7 +25,7 @@
 struct TransportInfo {
     MapId uMapInfoID;
     std::array<unsigned char, 7> pSchedule;
-    unsigned int uTravelTime; // In days.
+    int uTravelTime; // In days.
     Vec3i arrivalPos;
     int arrival_view_yaw;
     QuestBit uQuestBit;  // quest bit required to set for this travel option to be enabled; otherwise 0

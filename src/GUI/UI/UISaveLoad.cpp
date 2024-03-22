@@ -35,10 +35,10 @@ using Io::TextInputType;
 
 static void UI_DrawSaveLoad(bool save);
 
-std::array<unsigned int, 2> saveload_dlg_xs = {{82, 0}};
-std::array<unsigned int, 2> saveload_dlg_ys = {{60, 0}};
-std::array<unsigned int, 2> saveload_dlg_zs = {{460, 640}};
-std::array<unsigned int, 2> saveload_dlg_ws = {{344, 480}};
+std::array<int, 2> saveload_dlg_xs = {{82, 0}};
+std::array<int, 2> saveload_dlg_ys = {{60, 0}};
+std::array<int, 2> saveload_dlg_zs = {{460, 640}};
+std::array<int, 2> saveload_dlg_ws = {{344, 480}};
 
 GraphicsImage *saveload_ui_ls_saved = nullptr;
 GraphicsImage *saveload_ui_x_d = nullptr;
@@ -57,7 +57,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
     pSavegameList->Initialize();
 
     LodReader pLODFile;
-    for (unsigned i = 0; i < MAX_SAVE_SLOTS; ++i) {
+    for (int i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // std::string file_name = pSavegameList->pFileList[i];
         std::string file_name = fmt::format("save{:03}.mm7", i);
         if (file_name.empty()) {
@@ -156,7 +156,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     pSavegameList->Initialize();
 
     LodReader pLODFile;
-    for (unsigned i = 0; i < pSavegameList->numSavegameFiles; ++i) {
+    for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
         std::string str = makeDataPath("saves", pSavegameList->pFileList[i]);
         if (!std::filesystem::exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;

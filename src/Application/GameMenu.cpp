@@ -440,7 +440,7 @@ void Menu::EventLoop() {
                         pAudioPlayer->playUISound(SOUND_error);
                         break; // deny to exit options until all key conflicts are solved
                     } else {
-                        for (unsigned i = 0; i < 5; i++) {
+                        for (int i = 0; i < 5; i++) {
                             if (game_ui_options_controls[i]) {
                                 game_ui_options_controls[i]->Release();
                                 game_ui_options_controls[i] = nullptr;
