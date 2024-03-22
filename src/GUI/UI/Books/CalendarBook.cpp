@@ -117,5 +117,5 @@ void GUIWindow_CalendarBook::Update() {
     }
 
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_LOCATION), pMapName);
-    calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 10 * (unsigned char)assets->pFontBookCalendar->GetHeight() + 25}, ui_book_calendar_location_color, str);
+    calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 10 * assets->pFontBookCalendar->GetHeight() + 25}, ui_book_calendar_location_color, str);
 }
