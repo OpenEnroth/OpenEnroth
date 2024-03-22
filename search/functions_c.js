@@ -28,7 +28,7 @@ var searchData=
   ['loadfont_25',['LoadFont',['../classGUIFont.html#a3dce4d203c6398e60756bd87aae28c96',1,'GUIFont']]],
   ['loadfromfile_26',['loadFromFile',['../structEventTrace.html#a4486050e3ff37e2e7c8be1805333ecd3',1,'EventTrace']]],
   ['loadfromlod_27',['LoadFromLOD',['../classMovie.html#a4362f25679d3f41aaf7afcc9fdd6ab05',1,'Movie']]],
-  ['loadgame_28',['LoadGame',['../SaveLoad_8h.html#aec4ea4d9c15c927eed9a2a9227c4b16c',1,'LoadGame(unsigned int uSlot):&#160;SaveLoad.cpp'],['../SaveLoad_8cpp.html#aec4ea4d9c15c927eed9a2a9227c4b16c',1,'LoadGame(unsigned int uSlot):&#160;SaveLoad.cpp']]],
+  ['loadgame_28',['LoadGame',['../SaveLoad_8h.html#a4624a5ffa8c0619a2fd547e03cb15428',1,'LoadGame(int uSlot):&#160;SaveLoad.cpp'],['../SaveLoad_8cpp.html#a4624a5ffa8c0619a2fd547e03cb15428',1,'LoadGame(int uSlot):&#160;SaveLoad.cpp']]],
   ['loadgame_29',['loadGame',['../classEngineController.html#a0bdb1191241dded8c4c7491afd149764',1,'EngineController']]],
   ['loadgamefromtestdata_30',['loadGameFromTestData',['../classTestController.html#ab9cf2cbb66782c69eedd470e76139429',1,'TestController']]],
   ['loadicons_31',['loadIcons',['../classTurnBasedOverlay.html#a1e34a39ee12a38119b0e6f1e2f74a8a4',1,'TurnBasedOverlay']]],

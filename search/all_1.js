@@ -296,7 +296,7 @@ var searchData=
   ['applybloodsplat_5foutdoorface_293',['ApplyBloodSplat_OutdoorFace',['../structDecalBuilder.html#addfbb7a18569b72ad34eec3607b3a333',1,'DecalBuilder']]],
   ['applybloodsplatdecals_5findoorface_294',['ApplyBloodsplatDecals_IndoorFace',['../structDecalBuilder.html#a407f2431709ba2390074cfbf3840cbe8',1,'DecalBuilder']]],
   ['applybloodsplattoterrain_295',['ApplyBloodSplatToTerrain',['../structDecalBuilder.html#ab962b93d1c0bc02158e7f8e093633cb1',1,'DecalBuilder']]],
-  ['applycardtoplayer_296',['ApplyCardToPlayer',['../Arcomage_8cpp.html#ade405a947de12828dbb9889158aff519',1,'Arcomage.cpp']]],
+  ['applycardtoplayer_296',['ApplyCardToPlayer',['../Arcomage_8cpp.html#a11015486162e3f2cfb60acfa33e59ff6',1,'Arcomage.cpp']]],
   ['applydamagetobuildings_297',['ApplyDamageToBuildings',['../Arcomage_8cpp.html#afc7cb047f9c91dc5375e83e4f25aff20',1,'Arcomage.cpp']]],
   ['applyfineforkillingpeasant_298',['ApplyFineForKillingPeasant',['../classActor.html#a73e25bd23c0650a92999a32a747cc2c1',1,'Actor']]],
   ['applymerchantdiscount_299',['applyMerchantDiscount',['../classPriceCalculator.html#ace1ed1e070ed9d199af47d48637705e6',1,'PriceCalculator::applyMerchantDiscount(const Character *player, float goldAmount)'],['../classPriceCalculator.html#adbb2f2a14521a89bca7e5139948b6bfd',1,'PriceCalculator::applyMerchantDiscount(const Character *player, int goldAmount)']]],

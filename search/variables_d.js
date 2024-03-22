@@ -35,7 +35,7 @@ var searchData=
   ['max_5flifespan_32',['max_lifespan',['../structexplosion__effect__struct.html#a921fcc18de713364729d5f5ac3edc7d9',1,'explosion_effect_struct::max_lifespan()'],['../structeffect__params__struct.html#a5df819c0457a87932a00d6c1e3d8b273',1,'effect_params_struct::max_lifespan()']]],
   ['max_5fresources_33',['max_resources',['../structArcomageStartConditions.html#ab9632b7b9f82b721a482d21404fb71d4',1,'ArcomageStartConditions']]],
   ['max_5fresources_5famount_34',['max_resources_amount',['../Arcomage_8cpp.html#a9417d1d8255bdf83a40adb06140a7db3',1,'Arcomage.cpp']]],
-  ['max_5fsave_5fslots_35',['MAX_SAVE_SLOTS',['../SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3',1,'SaveLoad.h']]],
+  ['max_5fsave_5fslots_35',['MAX_SAVE_SLOTS',['../SaveLoad_8h.html#ab69a4569f0310b41d56e3083b3ed297f',1,'SaveLoad.h']]],
   ['max_5fsound_5fdist_36',['MAX_SOUND_DIST',['../OpenALSoundProvider_8h.html#afa02feaa48b0386dbedebf95a64f1260',1,'OpenALSoundProvider.h']]],
   ['max_5fterrain_5fdimming_5flevel_37',['max_terrain_dimming_level',['../structOutdoorLocation.html#abfd93ad2b2058a45bfee987c06156423',1,'OutdoorLocation']]],
   ['max_5ftower_38',['max_tower',['../structArcomageStartConditions.html#acb2e89547f6fa439ef67c043cc44ca9c',1,'ArcomageStartConditions']]],

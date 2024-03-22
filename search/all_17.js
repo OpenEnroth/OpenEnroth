@@ -28,7 +28,7 @@ var searchData=
   ['weather_2eh_25',['Weather.h',['../Weather_8h.html',1,'']]],
   ['week_26',['week',['../structCivilTime.html#a6813141b1b3ded3e238745976d565415',1,'CivilTime']]],
   ['wetsuitoff_27',['WetsuitOff',['../UICharacter_8cpp.html#aeef3d486e39493ad4387fab527048f6f',1,'UICharacter.cpp']]],
-  ['wetsuiton_28',['WetsuitOn',['../UICharacter_8cpp.html#ad5c64f8a520c6a5e1aec82f3923ba9dc',1,'UICharacter.cpp']]],
+  ['wetsuiton_28',['WetsuitOn',['../UICharacter_8cpp.html#af327c22f94105c762c6f128c54a51286',1,'UICharacter.cpp']]],
   ['wheelevent_29',['wheelEvent',['../classGameWindowHandler.html#a5f80b8a600f2253aebfe25f9a6d5b5d6',1,'GameWindowHandler::wheelEvent()'],['../classNuklearEventHandler.html#a256c5ccadffa2df441eeeaef3558a52a',1,'NuklearEventHandler::wheelEvent()'],['../classPlatformEventFilter.html#a6d2ceb2951b04d99b1b100eb1ddb926e',1,'PlatformEventFilter::wheelEvent()'],['../classPlatformEventHandler.html#a6c234c5588cda7f556991d4cdb0174ec',1,'PlatformEventHandler::wheelEvent()']]],
   ['which_5fplayer_5fto_5fattack_30',['which_player_to_attack',['../structstru319.html#a933b24bd5d5d683b7c1604d2a0d929d0',1,'stru319']]],
   ['whichsplatsonthisface_31',['WhichSplatsOnThisFace',['../structDecalBuilder.html#a5a4ac6d3c1624d8501b38015507c4650',1,'DecalBuilder']]],

@@ -8,7 +8,7 @@ var searchData=
   ['wearsitem_5',['WearsItem',['../classCharacter.html#aa91b1e1de344fe8824a148ced4e5db38',1,'Character']]],
   ['wearsitemanywhere_6',['wearsItemAnywhere',['../classCharacter.html#a86de488f63b48ead2b8d6440069acd03',1,'Character::wearsItemAnywhere()'],['../structParty.html#a84a1331427738065ded93352a683c66f',1,'Party::wearsItemAnywhere()']]],
   ['wetsuitoff_7',['WetsuitOff',['../UICharacter_8cpp.html#aeef3d486e39493ad4387fab527048f6f',1,'UICharacter.cpp']]],
-  ['wetsuiton_8',['WetsuitOn',['../UICharacter_8cpp.html#ad5c64f8a520c6a5e1aec82f3923ba9dc',1,'UICharacter.cpp']]],
+  ['wetsuiton_8',['WetsuitOn',['../UICharacter_8cpp.html#af327c22f94105c762c6f128c54a51286',1,'UICharacter.cpp']]],
   ['wheelevent_9',['wheelEvent',['../classGameWindowHandler.html#a5f80b8a600f2253aebfe25f9a6d5b5d6',1,'GameWindowHandler::wheelEvent()'],['../classNuklearEventHandler.html#a256c5ccadffa2df441eeeaef3558a52a',1,'NuklearEventHandler::wheelEvent()'],['../classPlatformEventFilter.html#a6d2ceb2951b04d99b1b100eb1ddb926e',1,'PlatformEventFilter::wheelEvent()'],['../classPlatformEventHandler.html#a6c234c5588cda7f556991d4cdb0174ec',1,'PlatformEventHandler::wheelEvent()']]],
   ['which_5fplayer_5fto_5fattack_10',['which_player_to_attack',['../structstru319.html#a933b24bd5d5d683b7c1604d2a0d929d0',1,'stru319']]],
   ['width_11',['width',['../classdetail_1_1ImageBase.html#a5f879dd409493908028eea79cf5d58a0',1,'detail::ImageBase::width()'],['../classGraphicsImage.html#a80f399fe757a76a6b91e0bc5fef429f4',1,'GraphicsImage::width()']]],
