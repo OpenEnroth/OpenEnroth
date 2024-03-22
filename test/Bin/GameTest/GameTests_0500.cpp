@@ -898,6 +898,14 @@ GAME_TEST(Issues, Issue878) {
     EXPECT_EQ(bankTape, tape(0, 123));
 }
 
+GAME_TEST(Issues, Issue880) {
+    // Arcomage deck missing from white cliff caves
+    auto objectsTape = tapes.custom( [] { return std::ranges::count_if(pSpriteObjects, [](const SpriteObject& obj) {return obj.uObjectDescID != 0; }); });
+    test.playTraceFromTestData("issue_880.mm7", "issue_880.json");
+    EXPECT_EQ(objectsTape.front(), objectsTape.back());
+    EXPECT_EQ(pSpriteObjects[0].containing_item.uItemID, ITEM_QUEST_ARCOMAGE_DECK);
+}
+
 GAME_TEST(Issues, Issue895) {
     // Test that entering magic guild does not shift date
     auto timeTape = tapes.time();
