@@ -980,11 +980,11 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
 }
 
 //----- (0041A2C1) --------------------------------------------------------
-unsigned int GetSizeInInventorySlots(unsigned int uNumPixels) {
-    if ((signed int)uNumPixels < 14)
+int GetSizeInInventorySlots(int uNumPixels) {
+    if (uNumPixels < 14)
         uNumPixels = 14;
 
-    return ((signed int)(uNumPixels - 14) >> 5) + 1;
+    return ((uNumPixels - 14) >> 5) + 1;
 }
 
 //----- (0041A556) --------------------------------------------------------

@@ -630,14 +630,14 @@ void Character::SetCondition(Condition condition, int blockable) {
 
 bool Character::canFitItem(unsigned int uSlot, ItemId uItemID) const {
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
-    unsigned int slotWidth = GetSizeInInventorySlots(img->width());
-    unsigned int slotHeight = GetSizeInInventorySlots(img->height());
+    int slotWidth = GetSizeInInventorySlots(img->width());
+    int slotHeight = GetSizeInInventorySlots(img->height());
 
     assert(slotHeight > 0 && slotWidth > 0 && "Items should have nonzero dimensions");
     if ((slotWidth + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
         (slotHeight + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
-        for (unsigned int x = 0; x < slotWidth; x++) {
-            for (unsigned int y = 0; y < slotHeight; y++) {
+        for (int x = 0; x < slotWidth; x++) {
+            for (int y = 0; y < slotHeight; y++) {
                 if (pInventoryMatrix[y * INVENTORY_SLOTS_WIDTH + x + uSlot] != 0) {
                     return false;
                 }
@@ -771,12 +771,12 @@ void Character::PutItemArInventoryIndex(
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
-    unsigned int slot_width = GetSizeInInventorySlots(img->width());
-    unsigned int slot_height = GetSizeInInventorySlots(img->height());
+    int slot_width = GetSizeInInventorySlots(img->width());
+    int slot_height = GetSizeInInventorySlots(img->height());
 
     if (slot_width > 0) {
         int *pInvPos = &pInventoryMatrix[index];
-        for (unsigned int i = 0; i < slot_height; i++) {
+        for (int i = 0; i < slot_height; i++) {
             memset32(pInvPos, -1 - index,
                      slot_width);  // TODO(_): try to come up with a better
                                    // solution. negative values are used when
@@ -793,8 +793,8 @@ void Character::RemoveItemAtInventoryIndex(unsigned int index) {
     ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
-    unsigned int slot_width = GetSizeInInventorySlots(img->width());
-    unsigned int slot_height = GetSizeInInventorySlots(img->height());
+    int slot_width = GetSizeInInventorySlots(img->width());
+    int slot_height = GetSizeInInventorySlots(img->height());
 
     item_in_slot->Reset();  // must get img details before reset
 
@@ -805,7 +805,7 @@ void Character::RemoveItemAtInventoryIndex(unsigned int index) {
 
     if (slot_width > 0) {
         int *pInvPos = &pInventoryMatrix[index];
-        for (unsigned int i = 0; i < slot_height; i++) {
+        for (int i = 0; i < slot_height; i++) {
             memset32(pInvPos, 0, slot_width);
             pInvPos += INVENTORY_SLOTS_WIDTH;
         }
