@@ -155,7 +155,6 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     assert(IsAutoSAve || !title.empty());
     assert(pCurrentMapName != "d05.blv" || IsAutoSAve); // No manual saves in Arena.
 
-    s_SavedMapName = pCurrentMapName;
     if (pCurrentMapName == "d05.blv") { // arena
         return {};
     }

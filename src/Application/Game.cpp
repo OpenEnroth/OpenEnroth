@@ -775,8 +775,11 @@ void Game::processQueuedMessages() {
                 if (engine->_teleportPoint.isValid()) {
                     if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
+                        bool leavingArena = iequals(pCurrentMapName, "d05.blv");
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
+                        if (leavingArena)
+                            pParty->GetPlayingTime() += Duration::fromDays(4);
                     } else {
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();
@@ -784,8 +787,6 @@ void Game::processQueuedMessages() {
                 } else {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
-                if (iequals(s_SavedMapName.data(), "d05.blv"))
-                    pParty->GetPlayingTime() += Duration::fromDays(4);
 
                 PlayButtonClickSound();
                 DialogueEnding();
