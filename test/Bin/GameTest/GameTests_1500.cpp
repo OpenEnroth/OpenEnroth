@@ -78,3 +78,15 @@ GAME_TEST(Issues, Issue1535) {
     test.prepareForNextTest(); // This call used to assert.
     EXPECT_FALSE(engine->_messageQueue->haveMessages()); // Please don't roll over the messages between tests!
 }
+
+GAME_TEST(Issues, Issue1547) {
+    // Turn-based overlays are broken. Opening hand isn't animated, hourglass isn't animated.
+    test.prepareForNextTest(20, RANDOM_ENGINE_MERSENNE_TWISTER); // 50fps, so that we see the animations.
+    auto iconsTape = tapes.hudTextures();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    for (int i = 0; i < 4; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick(20);
+    }
+}
