@@ -7005,8 +7005,6 @@ void Character::_42ECB5_CharacterAttacksActor() {
     Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = target_pid.type();
     int target_id = target_pid.id();
-    Actor* actor = nullptr;
-    int actor_distance = 0;
 
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
@@ -7014,10 +7012,10 @@ void Character::_42ECB5_CharacterAttacksActor() {
         target_id = target_pid.id();
     }
 
-    if (target_id < pActors.size()) {
-        if (target_id < 500) {
-            actor = &pActors[target_id];  // prevent crash
-        }
+    Actor* actor = nullptr;
+    int actor_distance = 0;
+    if (target_type == OBJECT_Actor) {
+        actor = &pActors[target_id];  // prevent crash
 
         if (target_type == OBJECT_Actor) {
             int distance_x = actor->pos.x - pParty->pos.x,
