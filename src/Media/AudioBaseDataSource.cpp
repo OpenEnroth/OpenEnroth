@@ -3,15 +3,9 @@
 #include <utility>
 
 extern "C" {
-#if LIBAVFORMAT_VERSION_MAJOR >= 58
 #include <libavcodec/avcodec.h> // NOLINT: not a C system header.
 #include <libavformat/avformat.h> // NOLINT: not a C system header.
 #include <libswresample/swresample.h> // NOLINT: not a C system header.
-#else
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswresample/swresample.h>
-#endif
 }
 
 #include "Library/Logger/Logger.h"
