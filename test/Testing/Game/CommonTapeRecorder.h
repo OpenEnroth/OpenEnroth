@@ -90,6 +90,8 @@ class CommonTapeRecorder {
 
     TestMultiTape<std::string> messageBoxes();
 
+    TestMultiTape<std::string> messageBoxesText();
+
  private:
     TestController *_controller = nullptr;
 };

@@ -152,3 +152,7 @@ TestMultiTape<std::string> CommonTapeRecorder::hudTextures() {
 TestMultiTape<std::string> CommonTapeRecorder::messageBoxes() {
     return _controller->recordFunctionTape<std::string>(CALL_DRAW_MESSAGE_BOX);
 }
+
+TestMultiTape<std::string> CommonTapeRecorder::messageBoxesText() {
+    return _controller->recordFunctionTape<std::string>(CALL_DRAW_MESSAGE_BOX_TEXT);
+}

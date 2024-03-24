@@ -100,6 +100,10 @@ class GUIWindow {
     std::vector<GUIButton*> vButtons;
 
     std::shared_ptr<Io::Mouse> mouse = nullptr;
+
+    // TODO(pskelton): message box as child type?
+    bool _isMessageBox = false;
+    bool _observerNotified = false;
 };
 
 class OnButtonClick : public GUIWindow {
