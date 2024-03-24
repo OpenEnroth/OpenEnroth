@@ -204,8 +204,11 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
 }
 
 void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
-    if (engine->callObserver)
+    _isMessageBox = true;
+    if (engine->callObserver && !sHint.empty()) {
         engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, sHint);
+        _observerNotified = true;
+    }
 
     int x = 0;
     int y = 0;
@@ -324,6 +327,11 @@ void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
 
 //----- (0044D406) --------------------------------------------------------
 void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing) {
+    if (engine->callObserver && _isMessageBox && !_observerNotified) {
+        engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, text);
+        _observerNotified = true;
+    }
+
     int width = this->uFrameWidth - horizontalMargin;
     std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
@@ -340,6 +348,9 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
 
 //----- (0044CE08) --------------------------------------------------------
 void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
+    if (_isMessageBox && engine->callObserver) {
+        engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX_TEXT, text);
+    }
     font->DrawText(this, position, color, text, maxHeight, shadowColor);
 }
 
