@@ -74,7 +74,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             if (chest->position) {
                 objectPos = *chest->position;
             } else if (objectPid.type() == OBJECT_Decoration) {
-                objectPos = pLevelDecorations[objId].vPosition +
+                objectPos = pLevelDecorations[objId].vPosition.toInt() +
                     Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -118,7 +118,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             } else {
                 pOut -= Vec3i(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
             }
-            pSpellObject.vPosition = pOut;
+            pSpellObject.vPosition = pOut.toFloat();
 
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;

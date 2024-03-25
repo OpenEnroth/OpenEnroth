@@ -131,6 +131,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
             // this can happen when we are already closer than the radius
             return false;
         }
+        if (move_distance > 65536.0f) return false; // moving almost parallal - TODO(pskelton): should probably tweak EPS when finished moving to floats
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
@@ -358,7 +359,7 @@ static void CollideWithDecoration(int id) {
     if (desc->CanMoveThrough())
         return;
 
-    CollideWithCylinder(decor->vPosition.toFloat(), desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
+    CollideWithCylinder(decor->vPosition, desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
 }
 
 
@@ -545,7 +546,7 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition.toFloat(), object->uRadius, object->uHeight);
+        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition, object->uRadius, object->uHeight);
         if (!collision_state.bbox.intersects(bbox))
             continue;
 
@@ -752,7 +753,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
                     actor.aiState == Removed || actor.aiState == Disabled) {
-                    SpriteObject::createSplashObject(Vec3i(actor.pos.x, actor.pos.y, modelPid ? newFloorZ + 30 : newFloorZ + 60));
+                    SpriteObject::createSplashObject(Vec3f(actor.pos.x, actor.pos.y, modelPid ? newFloorZ + 30 : newFloorZ + 60));
                     actor.aiState = Removed;
                     break;
                 }
@@ -900,7 +901,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             if (collision_state.adjusted_move_distance > 0.0f) {
                 // Create new sliding plane from collision
                 Vec3f slidePlaneOrigin = collision_state.collisionPos;
-                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slidePlaneOrigin;
+                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
                 Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
                 slidePlaneNormal.normalize();
 
@@ -1070,7 +1071,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             if (collision_state.adjusted_move_distance > 0.0f) {
                 // Create new sliding plane from collision
                 Vec3f slidePlaneOrigin = collision_state.collisionPos;
-                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition.toFloat() - slidePlaneOrigin;
+                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
                 Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
                 slidePlaneNormal.normalize();
 
