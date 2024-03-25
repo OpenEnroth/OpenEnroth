@@ -41,7 +41,7 @@ void CharacterUI_LoadPaperdollTextures();
  * @param uPlayerID     ID of player, 1-based.
  * @offset 0x43EF2B
  */
-void WetsuitOn(unsigned int uPlayerID);
+void WetsuitOn(int uPlayerID);
 
 /**
  * Prepare textures of character doll with wetsuit off.
@@ -980,11 +980,11 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
 }
 
 //----- (0041A2C1) --------------------------------------------------------
-unsigned int GetSizeInInventorySlots(unsigned int uNumPixels) {
-    if ((signed int)uNumPixels < 14)
+int GetSizeInInventorySlots(int uNumPixels) {
+    if (uNumPixels < 14)
         uNumPixels = 14;
 
-    return ((signed int)(uNumPixels - 14) >> 5) + 1;
+    return ((uNumPixels - 14) >> 5) + 1;
 }
 
 //----- (0041A556) --------------------------------------------------------
@@ -1680,7 +1680,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     }
 }
 
-void WetsuitOn(unsigned int uPlayerID) {
+void WetsuitOn(int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
         Character *player = &pParty->pCharacters[playerId0];

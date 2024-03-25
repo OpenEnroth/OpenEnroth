@@ -217,8 +217,7 @@ KeyToggleType GetToggleType(InputAction action) {
     if (action == Io::InputAction::Attack || action == Io::InputAction::CastReady)
         return KeyToggleType::TOGGLE_DelayContinuous;
 
-    int i = (int)action;
-    if (i > 3)
+    if (action > Io::InputAction::TurnRight)
         return KeyToggleType::TOGGLE_OneTimePress;
     else
         return KeyToggleType::TOGGLE_Continuously;

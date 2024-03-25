@@ -127,7 +127,7 @@ void BaseRenderer::DrawSpriteObjects() {
             }
             if (!onlist) continue;
         } else {
-            if (!IsCylinderInFrustum(object->vPosition.toFloat(), 512.0f)) continue;
+            if (!IsCylinderInFrustum(object->vPosition, 512.0f)) continue;
         }
 
         // render as sprte 500 - 9081
@@ -171,7 +171,7 @@ void BaseRenderer::DrawSpriteObjects() {
             if (color.g == 0) color.g = 0xFF;
             if (color.b == 0) color.b = 0xFF;
             if (lightradius) {
-                pMobileLightsStack->AddLight(object->vPosition.toFloat(),
+                pMobileLightsStack->AddLight(object->vPosition,
                                              object->uSectorID, lightradius, color, _4E94D3_light_type);
             }
 
@@ -243,7 +243,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
         }
 
         // view cull
-        if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition.toFloat(), 512.0f)) continue;
+        if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition, 512.0f)) continue;
 
         // LevelDecoration *decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
@@ -296,7 +296,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                                 color = colorTable.White;
                             }
                         }
-                        pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.toFloat() +
+                        pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
                             Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, color, _4E94D0_light_type);
                     }  // for light

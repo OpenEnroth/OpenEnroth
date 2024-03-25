@@ -48,7 +48,7 @@ int DrawCardsRectangles(int player_num);
 bool DiscardCard(int player_num, int card_slot_index);
 bool PlayCard(int player_num, int card_slot_num);
 bool CanCardBePlayed(int player_num, int hand_card_indx);
-void ApplyCardToPlayer(int player_num, unsigned int uCardID);
+void ApplyCardToPlayer(int player_num, int uCardID);
 int new_explosion_effect(Pointi *startXY, int effect_value);
 int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
@@ -465,7 +465,7 @@ void DrawSparks() {
     }
 }
 
-void ArcomageGame::playSound(unsigned int event_id) {
+void ArcomageGame::playSound(int event_id) {
     SoundId play_sound_id;
 
     switch (event_id) {
@@ -1986,7 +1986,7 @@ void DrawCardAnimation(int animation_stage) {
     // end play card anim
 }
 
-void ArcomageGame::GetCardRect(unsigned int uCardID, Recti *pCardRect) {
+void ArcomageGame::GetCardRect(int uCardID, Recti *pCardRect) {
     // get card image position from layout
     // slot encoded as 'YX' eg 76 = yslot 7 and xslot 6
     int xslot = pCards[uCardID].slot % 10;
@@ -2153,7 +2153,7 @@ bool CanCardBePlayed(int player_num, int hand_card_indx) {
     return result;
 }
 
-void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
+void ApplyCardToPlayer(int player_num, int uCardID) {
 #define APPLY_TO_PLAYER(PLAYER, ENEMY, FIELD, VAL, RES)   \
     if (VAL != 0) {                                       \
         if (VAL == 99) {                                  \
@@ -2705,7 +2705,7 @@ void GameResultsApply() {
     int victory_type;         // edi@1
     int pl_resource;          // edx@25
     int en_resource;          // eax@28
-    unsigned int tavern_num;  // eax@54
+    int tavern_num;  // eax@54
 
     winner = -1;
     victory_type = -1;

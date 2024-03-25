@@ -1,43 +1,43 @@
 #include "AudioSamplePool.h"
 
-bool AudioSamplePool::playNew(PAudioSample sample, PAudioDataSource source, bool positional) {
+SoundPlaybackResult AudioSamplePool::playNew(PAudioSample sample, PAudioDataSource source, bool positional) {
     update();
     if (!sample->Open(source)) {
-        return false;
+        return SOUND_PLAYBACK_FAILED;
     }
     sample->Play(_looping, positional);
     _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, Pid()));
-    return true;
+    return SOUND_PLAYBACK_SUCCEEDED;
 }
 
-bool AudioSamplePool::playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundId id, bool positional) {
+SoundPlaybackResult AudioSamplePool::playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundId id, bool positional) {
     update();
     for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.id == id) {
-            return true;
+            return SOUND_PLAYBACK_SKIPPED;
         }
     }
     if (!sample->Open(source)) {
-        return false;
+        return SOUND_PLAYBACK_FAILED;
     }
     sample->Play(_looping, positional);
     _samplePool.push_back(AudioSamplePoolEntry(sample, id, Pid()));
-    return true;
+    return SOUND_PLAYBACK_SUCCEEDED;
 }
 
-bool AudioSamplePool::playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional) {
+SoundPlaybackResult AudioSamplePool::playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional) {
     update();
     for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.pid == pid) {
-            return true;
+            return SOUND_PLAYBACK_SKIPPED;
         }
     }
     if (!sample->Open(source)) {
-        return false;
+        return SOUND_PLAYBACK_FAILED;
     }
     sample->Play(_looping, positional);
     _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, pid));
-    return true;
+    return SOUND_PLAYBACK_SUCCEEDED;
 }
 
 void AudioSamplePool::pause() {

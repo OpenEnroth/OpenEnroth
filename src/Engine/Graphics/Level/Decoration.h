@@ -29,13 +29,11 @@ struct LevelDecoration {
 
     uint16_t uDecorationDescID;
     LevelDecorationFlags uFlags;
-    Vec3i vPosition;
+    Vec3f vPosition;
     int32_t _yawAngle; // Only used for party spawn points, see `MapStartPoint`.
     uint16_t uCog;
     uint16_t uEventID;
     uint16_t uTriggerRange;
-    int16_t field_1A; // TODO(captainurist): actually yaw angle in degrees, used when _yawAngle is not set.
-                      // Handle this in snapshots code & drop this field.
     int16_t eventVarId;
 };
 

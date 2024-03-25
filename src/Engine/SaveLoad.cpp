@@ -49,7 +49,7 @@ static LodInfo makeSaveLodInfo() {
     return result;
 }
 
-void LoadGame(unsigned int uSlot) {
+void LoadGame(int uSlot) {
     if (!pSavegameList->pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->playUISound(SOUND_error);
         logger->warning("LoadGame: slot {} is empty", uSlot);
@@ -95,14 +95,14 @@ void LoadGame(unsigned int uSlot) {
     pParty->setActiveToFirstCanAct();
 
 /*
-    for (unsigned i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
         if (pParty->pCharacters[i].uQuickSpell) {
             AA1058_PartyQuickSpellSound[i].AddPartySpellSound(
                 pParty->pCharacters[i].uQuickSpell, i + 1);
         }
 
-        for (unsigned j = 0; j < 2; ++j) {
-            unsigned uEquipIdx = pParty->pCharacters[i].pEquipment[j];
+        for (int j = 0; j < 2; ++j) {
+            int uEquipIdx = pParty->pCharacters[i].pEquipment[j];
             if (uEquipIdx) {
                 int pItemID = pParty->pCharacters[i]
                                   .pInventoryItemList[uEquipIdx - 1]
@@ -267,7 +267,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     return save_header;
 }
 
-void DoSavegame(unsigned int uSlot) {
+void DoSavegame(int uSlot) {
     assert(pCurrentMapName != "d05.blv"); // Not Arena.
 
     pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);

@@ -31,6 +31,20 @@ GAME_TEST(Issues, Issue1510) {
     EXPECT_LE(actorDistTape.max(), meleeRange);
 }
 
+GAME_TEST(Issues, Issue1515) {
+    // No dispel magic sound
+    auto soundsTape = tapes.sounds();
+    test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
+    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_RechargeItem)); // dispel magic
+}
+
+GAME_TEST(Issues, Issue1524) {
+    // More enemy spells without sound
+    auto soundsTape = tapes.sounds();
+    test.playTraceFromTestData("issue_1524.mm7", "issue_1524.json");
+    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_Sacrifice2)); // pain reflection sound
+}
+
 GAME_TEST(Issues, Issue1532) {
     // Can cast too many firespikes
     game.startNewGame();

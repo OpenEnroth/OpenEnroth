@@ -134,6 +134,7 @@ enum class SoundId : int16_t {
     SOUND_Bless = 14010,
     SOUND_Fate = 14020,
     SOUND_51heroism03 = 14060,
+    SOUND_RechargeItem = 17020,
     SOUND_94dayofprotection03 = 17070,
     SOUND_9armageddon01 = 17080,
     SOUND_Sacrifice2 = 18060,
@@ -225,3 +226,11 @@ enum class SoundPlaybackMode {
     SOUND_MODE_HOUSE_SPEECH,
 };
 using enum SoundPlaybackMode;
+
+enum class SoundPlaybackResult {
+    SOUND_PLAYBACK_INVALID,
+    SOUND_PLAYBACK_FAILED,
+    SOUND_PLAYBACK_SKIPPED,
+    SOUND_PLAYBACK_SUCCEEDED
+};
+using enum SoundPlaybackResult;

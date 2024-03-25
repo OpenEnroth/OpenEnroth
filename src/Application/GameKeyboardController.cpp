@@ -8,14 +8,14 @@ bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
     if (key == PlatformKey::KEY_NONE)
         return false;
 
-    // TODO(captainurist): this is false if we have received press & release events inside a single frame.
-    if (!isKeyDown_[key])
+    // Note that we're not checking for isKeyDown_[key] here, and this is intentional. This becomes relevant if both
+    // key press and key release events happen inside a single frame, and thus even though the player has pressed the
+    // key, it's not held down when we get around to actually handling it.
+
+    if (!isKeyDownReportPending_[key])
         return false;
 
-    if (isKeyDownReported_[key])
-        return false;
-
-    isKeyDownReported_[key] = true;
+    isKeyDownReportPending_[key] = false;
     return true;
 }
 
@@ -28,7 +28,7 @@ bool GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
         return false; // Auto repeat
 
     isKeyDown_[event->key] = true;
-    isKeyDownReported_[event->key] = false;
+    isKeyDownReportPending_[event->key] = true;
     return false;
 }
 
@@ -39,5 +39,5 @@ bool GameKeyboardController::keyReleaseEvent(const PlatformKeyEvent *event) {
 
 void GameKeyboardController::reset() {
     isKeyDown_.fill(false);
-    isKeyDownReported_.fill(false);
+    isKeyDownReportPending_.fill(false);
 }

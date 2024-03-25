@@ -245,7 +245,7 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
 
 GraphicsImage *gamma_preview_image = nullptr;  // 506E40
 
-void Game_StartDialogue(unsigned int actor_id) {
+void Game_StartDialogue(int actor_id) {
     if (pParty->hasActiveCharacter()) {
         engine->_messageQueue->clear();
 
@@ -331,7 +331,7 @@ void Game::processQueuedMessages() {
     int pPlayerNum;             // edx@611
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
-    unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
+    int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
     std::string pOut;                // [sp+BCh] [bp-540h]@370
@@ -954,7 +954,7 @@ void Game::processQueuedMessages() {
                 v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3i(dword_4E4560[v54], dword_4E4578[v54], dword_4E4590[v54]), dword_4E45A8[v54], 0, 0);
+                    engine->_teleportPoint.setTeleportTarget(Vec3i(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);

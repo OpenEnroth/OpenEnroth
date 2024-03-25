@@ -47,10 +47,10 @@ class Mouse {
     void UI_OnMouseLeftClick();
 
     Pid uPointingObjectID;
-    unsigned int bActive = 0;
+    int bActive = 0;
     int field_8 = 0;
     int field_C = 0;
-    unsigned int bInitialized = 0;
+    int bInitialized = 0;
     int field_18 = 0;
     int field_1C = 0;
     int field_20 = 0;
@@ -93,8 +93,8 @@ class Mouse {
     std::string cursor_name;
     int field_100 = 0;
     int field_104 = 0;
-    unsigned int uMouseX = 0;
-    unsigned int uMouseY = 0;
+    int uMouseX = 0;
+    int uMouseY = 0;
 };
 }  // namespace Io
 

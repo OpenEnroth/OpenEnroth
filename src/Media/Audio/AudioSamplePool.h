@@ -20,9 +20,9 @@ class AudioSamplePool {
  public:
     explicit AudioSamplePool(bool looping):_looping(looping) {}
 
-    bool playNew(PAudioSample sample, PAudioDataSource source, bool positional = false);
-    bool playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundId id, bool positional = false);
-    bool playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional = false);
+    SoundPlaybackResult playNew(PAudioSample sample, PAudioDataSource source, bool positional = false);
+    SoundPlaybackResult playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundId id, bool positional = false);
+    SoundPlaybackResult playUniquePid(PAudioSample sample, PAudioDataSource source, Pid pid, bool positional = false);
     void pause();
     void resume();
     void stop();
