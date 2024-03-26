@@ -69,7 +69,7 @@ macro(find_component _component _pkgconfig _library _header)
 
   find_path(${_component}_INCLUDE_DIRS ${_header}
     PATHS
-	  "${PROJECT_SOURCE_DIR}/thirdparty/ffmpeg/include"
+      "${PROJECT_SOURCE_DIR}/thirdparty/ffmpeg/include"
     HINTS
       ${PC_LIB${_component}_INCLUDEDIR}
       ${PC_LIB${_component}_INCLUDE_DIRS}
@@ -79,7 +79,7 @@ macro(find_component _component _pkgconfig _library _header)
 
   find_library(${_component}_LIBRARIES NAMES ${_library}
     PATHS
-	  "${PROJECT_SOURCE_DIR}/thirdparty/ffmpeg/lib"	  
+      "${PROJECT_SOURCE_DIR}/thirdparty/ffmpeg/lib"	  
     HINTS
       ${PC_LIB${_component}_LIBDIR}
       ${PC_LIB${_component}_LIBRARY_DIRS}
