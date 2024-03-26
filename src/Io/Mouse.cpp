@@ -123,7 +123,7 @@ void Io::Mouse::Initialize() {
     // this->field_8 = 0;//Ritor1: result incorrect uMouseX,
     // this->uMouseY in _469AE4()
     this->uCursorBitmapPitch = 0;  // Ritor1: it's include
-    for (unsigned i = 0; i < 13; i++) this->field_5C[i] = 0;
+    for (int i = 0; i < 13; i++) this->field_5C[i] = 0;
 
     this->pCursorBitmapPos.x = 0;
     this->pCursorBitmapPos.y = 0;

@@ -553,7 +553,7 @@ GAME_TEST(Issues, Issue730) {
     // Thrown items are throwing a party of their own
     test.playTraceFromTestData("issue_730.mm7", "issue_730.json");
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
-        EXPECT_EQ(pSpriteObjects[i].vVelocity, Vec3i(0, 0, 0));
+        EXPECT_EQ(pSpriteObjects[i].vVelocity.toInt(), Vec3i(0, 0, 0));
     }
 }
 
@@ -896,6 +896,14 @@ GAME_TEST(Issues, Issue878) {
     auto bankTape = tapes.custom([] { return pParty->uNumGoldInBank; });
     test.playTraceFromTestData("issue_878.mm7", "issue_878.json");
     EXPECT_EQ(bankTape, tape(0, 123));
+}
+
+GAME_TEST(Issues, Issue880) {
+    // Arcomage deck missing from white cliff caves
+    auto objectsTape = tapes.custom( [] { return std::ranges::count_if(pSpriteObjects, [](const SpriteObject& obj) {return obj.uObjectDescID != 0; }); });
+    test.playTraceFromTestData("issue_880.mm7", "issue_880.json");
+    EXPECT_EQ(objectsTape.front(), objectsTape.back());
+    EXPECT_EQ(pSpriteObjects[0].containing_item.uItemID, ITEM_QUEST_ARCOMAGE_DECK);
 }
 
 GAME_TEST(Issues, Issue895) {

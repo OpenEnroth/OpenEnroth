@@ -111,7 +111,7 @@ void GUIWindow_LloydsBook::Update() {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId];
             render->DrawTextureNew(lloydsBeaconsPreviewXs[beaconId] / 640.0f, lloydsBeaconsPreviewYs[beaconId] / 480.0f, beacon.image);
             std::string Str = pMapStats->pInfos[beacon.mapId].name;
-            unsigned int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
+            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
             pWindow.uFrameY -= 6 + pTextHeight;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3);
 
@@ -129,7 +129,7 @@ void GUIWindow_LloydsBook::Update() {
             pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3);
         } else {
-            unsigned int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
+            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, colorTable.Black, localization->GetString(LSTR_AVAILABLE), 3);
         }
     }

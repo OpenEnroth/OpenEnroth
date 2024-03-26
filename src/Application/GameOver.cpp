@@ -77,11 +77,10 @@ void CreateWinnerCertificate() {
     );
     uint64_t v23 = 0ull;
     int v20 = 0;
-    for (unsigned i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         pWindow.DrawTitleText(
             pFont.get(), 1,
-            i * ((unsigned char)pFont->GetHeight() - 2) +
-            (unsigned char)pFont->GetHeight() + 46,
+            i * (pFont->GetHeight() - 2) + pFont->GetHeight() + 46,
             colorTable.Black,
             localization->FormatString(
                 LSTR_FMT_S_THE_LEVEL_D_S,
