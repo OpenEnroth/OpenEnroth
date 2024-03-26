@@ -86,14 +86,17 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
         set(SDL2_FOUND ON)
     else()
+        #search in thirdparty for libs
+        list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/zlib")
+        list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/sdl2")
+        list(APPEND CMAKE_PREFIX_PATH "${FFMPEG_ROOT}")
+        list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/openal")
+	#windows zlib install location
+        if (WIN32)
+            list(APPEND CMAKE_PREFIX_PATH "C:\\Program Files (x86)\\GnuWin32")
+        endif ()
+
         # Prebuilt & user-supplied deps are resolved using the same code here.
-		list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/zlib")
-		list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/sdl2")
-		list(APPEND CMAKE_PREFIX_PATH "${FFMPEG_ROOT}")
-		list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/openal")
-		if (WIN32)
-			list(APPEND CMAKE_PREFIX_PATH "C:\\Program Files (x86)\\GnuWin32")
-		endif ()
         find_package(ZLIB REQUIRED)
         find_package(FFmpeg REQUIRED)
 
