@@ -91,7 +91,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
 		list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/sdl2")
 		list(APPEND CMAKE_PREFIX_PATH "${FFMPEG_ROOT}")
 		list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/thirdparty/openal")
-		if (NOT WIN32)
+		if (WIN32)
 			list(APPEND CMAKE_PREFIX_PATH "C:\Program Files (x86)\GnuWin32")
 		endif ()
         find_package(ZLIB REQUIRED)
