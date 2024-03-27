@@ -116,7 +116,7 @@ var searchData=
   ['attack2type_113',['attack2Type',['../structMonsterInfo.html#a55e1fe9ef844061a5d4269b16efe0674',1,'MonsterInfo::attack2Type()'],['../structMonsterInfo__MM7.html#a2a37bb93f1684f8c28df501052797c66',1,'MonsterInfo_MM7::attack2Type()']]],
   ['attacklist_114',['attackList',['../AttackList_8h.html#aea5e81cb3334117c90c7b8e6700a3884',1,'attackList():&#160;AttackList.cpp'],['../AttackList_8cpp.html#aea5e81cb3334117c90c7b8e6700a3884',1,'attackList():&#160;AttackList.cpp']]],
   ['attackpreferences_115',['attackPreferences',['../structMonsterInfo.html#ab2622808ff25180875ef44db1e734000',1,'MonsterInfo::attackPreferences()'],['../structMonsterInfo__MM7.html#aadd30ca58ad63bb5c62cd4bbef291d76',1,'MonsterInfo_MM7::attackPreferences()']]],
-  ['attackrange_116',['attackRange',['../structAttackDescription.html#abebb3f3286ce93118fc6f67ba1078baa',1,'AttackDescription']]],
+  ['attackrange_116',['attackRange',['../structAttackDescription.html#a6f24126aadcb609ebc234e48e879c780',1,'AttackDescription']]],
   ['attackspecial_117',['attackSpecial',['../structAttackDescription.html#a344e1167fdcc3ec1ad0adc025b3f81ea',1,'AttackDescription']]],
   ['attr_118',['attr',['../classEventIR.html#ab0b12266eb6c473e40c5241b6adbbed4',1,'EventIR']]],
   ['attrib_5fcol_119',['attrib_col',['../structnk__device.html#a48afbffc59146849b53b46b5fceb303a',1,'nk_device']]],
