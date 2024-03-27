@@ -590,7 +590,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                 switch (pActors[actor_id].aiState) {
                     case AttackingMelee:
                         v19 = pActors[actor_id].special_ability_use_check(actor_id);
-                        pushMeleeAttack(pQueue[queue_index].uPackedID, pActors[actor_id].pos + Vec3i(0, 0, pActors[actor_id].height / 2), v19);
+                        pushMeleeAttack(pQueue[queue_index].uPackedID, pActors[actor_id].pos.toFloat() + Vec3f(0, 0, pActors[actor_id].height / 2), v19);
                         Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case AttackingRanged1:
