@@ -51,7 +51,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             set(PREBUILT_DEPS_BUILD_TYPE "Release")
         endif()
 
-        set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
+        set(PREBUILT_DEPS_FILENAME "${OE_BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${OE_BUILD_ARCHITECTURE}.zip")
         set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
             download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}" DOWNLOAD_STATUS)
@@ -112,7 +112,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
 
     # On Android we somehow get OpenGL available by default, despite it not being findable by find_package. So we
     # just create a dummy lib.
-    if(OE_USE_DUMMY_DEPENDENCIES OR BUILD_PLATFORM STREQUAL "android")
+    if(OE_USE_DUMMY_DEPENDENCIES OR OE_BUILD_PLATFORM STREQUAL "android")
         add_library(OpenGL_GL INTERFACE)
         add_library(OpenGL::GL ALIAS OpenGL_GL)
     else()
