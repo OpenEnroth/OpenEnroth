@@ -51,12 +51,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
             set(PREBUILT_DEPS_BUILD_TYPE "Release")
         endif()
 
-        #OSX cross compile support 
-        if(APPLE)
-            set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${CMAKE_OSX_ARCHITECTURES}.zip")
-        else()
-            set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
-        endif()
+        set(PREBUILT_DEPS_FILENAME "${BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${BUILD_ARCHITECTURE}.zip")
         set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
             download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}" DOWNLOAD_STATUS)
