@@ -87,6 +87,7 @@ jobs:
             cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=x86_64
           else
             echo "Building arm64"
+            export MACOSX_DEPLOYMENT_TARGET="11"
             cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=arm64
           fi
                   
