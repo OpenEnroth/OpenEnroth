@@ -18,6 +18,7 @@ target_link_libraries(engine_graphics_level
         library_image
         glm::glm
         OpenGL::GL
+        engine_graphics
         PRIVATE
         libluajit
         glad
