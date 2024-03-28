@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
+add_subdirectory(Level)
+add_subdirectory(Renderer)
+
 set(ENGINE_GRAPHICS_SOURCES
         BSPModel.cpp
         BspRenderer.cpp
