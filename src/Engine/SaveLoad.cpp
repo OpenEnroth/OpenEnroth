@@ -151,7 +151,7 @@ void LoadGame(int uSlot) {
     bFlashHistoryBook = false;
 }
 
-SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &title) {
+SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &title) {
     assert(IsAutoSAve || !title.empty());
     assert(pCurrentMapName != "d05.blv" || IsAutoSAve); // No manual saves in Arena.
 
@@ -221,11 +221,17 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
         }
     }
 
-    Blob uncompressed;
-    if (!NotSaveWorld) {  // autosave for change location
+    if (resetWorld) {
+        // New game - copy ddm & dlv files.
+        for (const std::string &name : pGames_LOD->ls())
+            if (name.ends_with(".ddm") || name.ends_with(".dlv"))
+                lodWriter.write(name, pGames_LOD->read(name));
+    } else {
+        // Location change - save current map delta.
         currentLocationTime().last_visit = pParty->GetPlayingTime();
         CompactLayingItemsList();
 
+        Blob uncompressed;
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>);
         } else {
@@ -338,25 +344,7 @@ void SavegameList::Reset() {
 }
 
 void SaveNewGame() {
-    std::string file_path = makeDataPath("data", "new.lod");
-    pSave_LOD->close();
-    std::filesystem::remove(file_path);
-
-    LodWriter lodWriter(file_path, makeSaveLodInfo());
-
-    // Copy ddm & dlv files.
-    for (const std::string &name : pGames_LOD->ls())
-        if (name.ends_with(".ddm") || name.ends_with(".dlv"))
-            lodWriter.write(name, pGames_LOD->read(name));
-
-    pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
-
-    // TODO(captainurist): encapsulate
-    SaveGameHeader_MM7 headerMm7;
-    snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
-    lodWriter.write("header.bin", Blob::view(&headerMm7, sizeof(headerMm7)));
-    lodWriter.close();
-
+    pCurrentMapName = "out01.odm";
     pParty->lastPos.x = 12552;
     pParty->lastPos.y = 800;
     pParty->lastPos.z = 193;
