@@ -151,9 +151,9 @@ void LoadGame(int uSlot) {
     bFlashHistoryBook = false;
 }
 
-SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &title) {
-    assert(IsAutoSAve || !title.empty());
-    assert(pCurrentMapName != "d05.blv" || IsAutoSAve); // No manual saves in Arena.
+SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &title) {
+    assert(isAutoSave || !title.empty());
+    assert(pCurrentMapName != "d05.blv" || isAutoSave); // No manual saves in Arena.
 
     if (pCurrentMapName == "d05.blv") { // arena
         return {};
@@ -187,13 +187,7 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &tit
     //    render->Present();
     //}
 
-    pSave_LOD->close();
     LodWriter lodWriter(makeDataPath("data", "new.lod"), makeSaveLodInfo());
-
-    LodReader lodReader(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
-    for (const std::string &name : lodReader.ls())
-        lodWriter.write(name, lodReader.read(name));
-    lodReader.close();
 
     if (resetWorld) {
         // New game - copy ddm & dlv files.
@@ -201,7 +195,11 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &tit
             if (name.ends_with(".ddm") || name.ends_with(".dlv"))
                 lodWriter.write(name, pGames_LOD->read(name));
     } else {
-        // Location change - save current map delta.
+        // Location change - copy map data from the old save & serialize current location delta.
+        //LodReader lodReader(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
+        for (const std::string &name : pSave_LOD->ls())
+            lodWriter.write(name, pSave_LOD->read(name));
+
         currentLocationTime().last_visit = pParty->GetPlayingTime();
         CompactLayingItemsList();
 
@@ -250,9 +248,10 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &tit
     // Our code doesn't support duplicate entries, so we just add a dummy entry
     lodWriter.write("z.bin", Blob::fromString("dummy"));
 
+    pSave_LOD->close();
     lodWriter.close();
 
-    if (IsAutoSAve) {
+    if (isAutoSave) {
         std::string src = makeDataPath("data", "new.lod");
         std::string dst = makeDataPath("saves", "autosave.mm7");
         std::error_code ec;
