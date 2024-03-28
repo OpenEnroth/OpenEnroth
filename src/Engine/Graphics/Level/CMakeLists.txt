@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
-set(ENGINE_RENDERER_LEVEL_SOURCES
+set(ENGINE_GRAPHICS_LEVEL_SOURCES
         Decoration.cpp)
 
-set(ENGINE_RENDERER_LEVEL_HEADERS
+set(ENGINE_GRAPHICS_LEVEL_HEADERS
         Decoration.h)
 
-add_library(engine_renderer_level_sources STATIC ${ENGINE_RENDERER_LEVEL_SOURCES} ${ENGINE_RENDERER_LEVEL_HEADERS})
-target_check_style(engine_renderer_level_sources)
+add_library(engine_graphics_level_sources STATIC ${ENGINE_GRAPHICS_LEVEL_SOURCES} ${ENGINE_GRAPHICS_LEVEL_HEADERS})
+target_check_style(engine_graphics_level)
 
-target_link_libraries(engine_renderer_level
+target_link_libraries(engine_graphics_level
         PUBLIC
         engine
         utility
