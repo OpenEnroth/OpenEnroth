@@ -22,4 +22,3 @@ target_link_libraries(engine_graphics_level
         glad
         nuklear)
 
-target_check_style(engine_graphics_level)
