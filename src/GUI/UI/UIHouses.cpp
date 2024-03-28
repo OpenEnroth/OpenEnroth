@@ -737,9 +737,7 @@ void GUIWindow_House::houseNPCDialogue() {
 
     house_window.uFrameWidth -= 10;
     house_window.uFrameZ -= 10;
-    NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
-
-    house_window.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
+    NPCData* pNPC = houseNpcs[currentHouseNpc].npc;
 
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
         if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
@@ -974,6 +972,8 @@ void GUIWindow_House::houseDialogManager() {
     }
     if (currentHouseNpc || houseNpcs[0].type != HOUSE_PROPRIETOR) {
         // Dialogue with NPC in house
+        NPCData* pNPC = houseNpcs[currentHouseNpc].npc;
+        pWindow.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
         houseNPCDialogue();
     } else {
         std::string nameAndTitle = NameAndTitle(buildingTable[houseId()].pProprieterName, buildingTable[houseId()].pProprieterTitle);
