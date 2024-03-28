@@ -42,6 +42,7 @@ jobs:
           - Release
         architecture:
           - x86_64
+          - arm64
     steps:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -80,10 +81,14 @@ jobs:
       - name: Configure
         run: |
           export MACOSX_DEPLOYMENT_TARGET="11"
-          if [[ "$BUILD_ARCH" = x86_64 ]]; then
+          if [[ "${{matrix.architecture}}" = x86_64 ]]; then
+            echo "Building x86_64"
             export MACOSX_DEPLOYMENT_TARGET="10.15"
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=x86_64
+          else
+            echo "Building arm64"
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=arm64
           fi
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
                   
       - name: Build
         working-directory: build
