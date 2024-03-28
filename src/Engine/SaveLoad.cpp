@@ -195,32 +195,6 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &tit
         lodWriter.write(name, lodReader.read(name));
     lodReader.close();
 
-    lodWriter.write("image.pcx", render->PackScreenshot(150, 112));
-
-    SaveGameHeader save_header;
-    save_header.name = title;
-    save_header.locationName = pCurrentMapName;
-    save_header.playingTime = pParty->GetPlayingTime();
-
-    serialize(save_header, &lodWriter, tags::via<SaveGame_MM7>);
-
-    // TODO(captainurist): incapsulate this too
-    for (size_t i = 0; i < 4; ++i) {  // 4 - players
-        Character *player = &pParty->pCharacters[i];
-        for (size_t j = 0; j < 5; ++j) {  // 5 - images
-            if (j >= player->vBeacons.size()) {
-                continue;
-            }
-            LloydBeacon *beacon = &player->vBeacons[j];
-            GraphicsImage *image = beacon->image;
-            if ((beacon->uBeaconTime.isValid()) && (image != nullptr)) {
-                assert(image->rgba());
-                std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                lodWriter.write(str, pcx::encode(image->rgba()));
-            }
-        }
-    }
-
     if (resetWorld) {
         // New game - copy ddm & dlv files.
         for (const std::string &name : pGames_LOD->ls())
@@ -243,6 +217,31 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool resetWorld, const std::string &tit
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
         lodWriter.write(file_name, lod::encodeCompressed(uncompressed));
+    }
+
+    lodWriter.write("image.pcx", render->PackScreenshot(150, 112));
+
+    SaveGameHeader save_header;
+    save_header.name = title;
+    save_header.locationName = pCurrentMapName;
+    save_header.playingTime = pParty->GetPlayingTime();
+    serialize(save_header, &lodWriter, tags::via<SaveGame_MM7>);
+
+    // TODO(captainurist): incapsulate this too
+    for (size_t i = 0; i < 4; ++i) {  // 4 - players
+        Character *player = &pParty->pCharacters[i];
+        for (size_t j = 0; j < 5; ++j) {  // 5 - images
+            if (j >= player->vBeacons.size()) {
+                continue;
+            }
+            LloydBeacon *beacon = &player->vBeacons[j];
+            GraphicsImage *image = beacon->image;
+            if ((beacon->uBeaconTime.isValid()) && (image != nullptr)) {
+                assert(image->rgba());
+                std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
+                lodWriter.write(str, pcx::encode(image->rgba()));
+            }
+        }
     }
 
     // Apparently vanilla had two bugs canceling each other out:
