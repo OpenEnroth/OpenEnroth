@@ -38,6 +38,7 @@ env:
 
 jobs:
   build_android:
+    timeout-minutes: 60
     name: Build Android Client
     runs-on: ubuntu-22.04
     strategy:
