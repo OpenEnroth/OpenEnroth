@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;141e539</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;63b5520</span>
    </div>
   </td>
  </tr>
@@ -88,13 +88,10 @@ Discord</h1>
 Getting Started on Windows</h1>
 <ol type="1">
 <li>You will need a GoG or any other version of Might and Magic VII. Just run the installer and install the game into default location.</li>
-<li>Build OpenEnroth as described in <a class="el" href="md_HACKING.html">HACKING.md</a>. Alternatively, you can use the prebuilt releases.</li>
-<li><p class="startli">Copy OpenEnroth-specific resources from the <code>resources</code> folder of the repo to the folder where the game was installed:</p>
-<p class="startli"><code>xcopy "resources\shaders" "C:\Program Files (x86)\GOG Galaxy\Games\Might and Magic 7"</code></p>
-<p class="startli">Or just use your mouse like a good Windows user.</p>
-</li>
-<li>It is recommended to set <code>OPENENROTH_MM7_PATH</code> env variable to point to the game installation folder. OpenEnroth might work by reading the paths from registry, but this is not guaranteed.</li>
-<li>Run the freshly built <code>OpenEnroth.exe</code> binary. If you forget to copy content of <code>resources</code> subfolder, or if <code>OPENENROTH_MM7_PATH</code> points into the wrong folder, you will see errors in the console.</li>
+<li>Download the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a> and unzip the files.</li>
+<li>From the <code>dist</code> folder inside the zip file copy the OpenEnroth .exe and the <code>shaders</code> folder to the folder where the game is installed.</li>
+<li>You can also set <code>OPENENROTH_MM7_PATH</code> env variable to point to the game installation folder. OpenEnroth might work by reading the paths from registry, but this is not guaranteed.</li>
+<li>Run the freshly built <code>OpenEnroth.exe</code> binary. If you forget to copy content of <code>shaders</code> subfolder, or if <code>OPENENROTH_MM7_PATH</code> points into the wrong folder, you will see errors in the console.</li>
 </ol>
 <h1><a class="anchor" id="autotoc_md13"></a>
 Getting Started on Linux or Mac</h1>
