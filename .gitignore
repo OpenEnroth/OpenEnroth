@@ -49,3 +49,9 @@ dist
 .gradle
 .cxx
 local.properties
+
+# third party ffmpeg
+thirdparty/ffmpeg
+thirdparty/zlib
+thirdparty/sdl2
+thirdparty/openal
