@@ -266,6 +266,10 @@ SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &t
     return save_header;
 }
 
+void AutoSave() {
+    SaveGame(true, false);
+}
+
 void DoSavegame(int uSlot) {
     assert(pCurrentMapName != "d05.blv"); // Not Arena.
 
