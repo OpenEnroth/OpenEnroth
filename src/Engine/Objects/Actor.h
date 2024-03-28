@@ -38,7 +38,7 @@ struct AIDirection {
 };
 
 struct ActorJob {
-    Vec3i vPos;
+    Vec3f vPos;
     uint16_t uAttributes = 0;
     uint8_t uAction = 0;
     uint8_t uHour = 0;
