@@ -273,7 +273,7 @@ void AutoSave() {
 void DoSavegame(int uSlot) {
     assert(pCurrentMapName != "d05.blv"); // Not Arena.
 
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, pSavegameList->pSavegameHeader[uSlot].name);
 
     std::string src = makeDataPath("data", "new.lod");
     std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
@@ -373,7 +373,7 @@ void SaveNewGame() {
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 
-    SaveGame(1, 1);
+    SaveGame(true, true);
 }
 
 void QuickSaveGame() {
@@ -411,7 +411,7 @@ void QuickSaveGame() {
     }
 
     pSavegameList->pSavegameHeader[uSlot].name = "Quicksave";
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(0, 0, pSavegameList->pSavegameHeader[uSlot].name);
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, pSavegameList->pSavegameHeader[uSlot].name);
 
     std::string src = makeDataPath("data", "new.lod");
     std::string dst = makeDataPath("saves", quickSaveName);
