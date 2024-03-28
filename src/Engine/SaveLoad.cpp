@@ -17,13 +17,11 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Random/Random.h"
 
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -32,14 +30,13 @@
 
 #include "Library/Snapshots/SnapshotSerialization.h"
 #include "Library/Image/PCX.h"
-#include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Lod/LodWriter.h"
 
 #include "Utility/DataPath.h"
 
-struct SavegameList *pSavegameList = new SavegameList;
+SavegameList *pSavegameList = new SavegameList;
 
 static LodInfo makeSaveLodInfo() {
     LodInfo result;
@@ -62,15 +59,9 @@ void LoadGame(int uSlot) {
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
 
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
-    std::string to_file_path = makeDataPath("data", "new.lod");
 
     pSave_LOD->close();
-
-    std::error_code ec;
-    if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
-        logger->error("Failed to copy: {}", filename);
-
-    pSave_LOD->open(to_file_path, LOD_ALLOW_DUPLICATES);
+    pSave_LOD->open(Blob::copy(Blob::fromFile(filename)), filename, LOD_ALLOW_DUPLICATES);
 
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
@@ -151,7 +142,7 @@ void LoadGame(int uSlot) {
     bFlashHistoryBook = false;
 }
 
-SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &title) {
+SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &path, const std::string &title) {
     assert(isAutoSave || !title.empty());
     assert(pCurrentMapName != "d05.blv" || isAutoSave); // No manual saves in Arena.
 
@@ -159,6 +150,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &tit
         return {};
     }
 
+    // TODO(captainurist): why do we need to save & restore party position in this function?
     int pPositionX = pParty->pos.x;
     int pPositionY = pParty->pos.y;
     int pPositionZ = pParty->pos.z;
@@ -187,7 +179,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &tit
     //    render->Present();
     //}
 
-    LodWriter lodWriter(makeDataPath("data", "new.lod"), makeSaveLodInfo());
+    LodWriter lodWriter(path, makeSaveLodInfo());
 
     if (resetWorld) {
         // New game - copy ddm & dlv files.
@@ -196,7 +188,6 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &tit
                 lodWriter.write(name, pGames_LOD->read(name));
     } else {
         // Location change - copy map data from the old save & serialize current location delta.
-        //LodReader lodReader(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
         for (const std::string &name : pSave_LOD->ls())
             lodWriter.write(name, pSave_LOD->read(name));
 
@@ -250,14 +241,8 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &tit
 
     pSave_LOD->close();
     lodWriter.close();
+    pSave_LOD->open(Blob::copy(Blob::fromFile(path)), path, LOD_ALLOW_DUPLICATES);
 
-    if (isAutoSave) {
-        std::string src = makeDataPath("data", "new.lod");
-        std::string dst = makeDataPath("saves", "autosave.mm7");
-        std::error_code ec;
-        if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
-            logger->warning("Copying of autosave.mm7 failed");
-    }
     pParty->pos.x = pPositionX;
     pParty->pos.y = pPositionY;
     pParty->pos.z = pPositionZ;
@@ -265,25 +250,18 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &tit
     pParty->_viewYaw = partyViewYaw;
     pParty->_viewPitch = partyViewPitch;
 
-    pSave_LOD->open(makeDataPath("data", "new.lod"), LOD_ALLOW_DUPLICATES);
-
     return save_header;
 }
 
 void AutoSave() {
-    SaveGame(true, false);
+    SaveGame(true, false, makeDataPath("saves", "autosave.mm7"));
 }
 
 void DoSavegame(int uSlot) {
     assert(pCurrentMapName != "d05.blv"); // Not Arena.
 
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, pSavegameList->pSavegameHeader[uSlot].name);
-
-    std::string src = makeDataPath("data", "new.lod");
-    std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
-    std::error_code ec;
-    if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
-        logger->error("Failed to copy: {}", src);
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot)),
+                                                     pSavegameList->pSavegameHeader[uSlot].name);
 
     pSavegameList->selectedSlot = uSlot;
 
@@ -359,7 +337,7 @@ void SaveNewGame() {
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 
-    SaveGame(true, true);
+    SaveGame(true, true, makeDataPath("saves", "autosave.mm7"));
 }
 
 void QuickSaveGame() {
@@ -397,19 +375,10 @@ void QuickSaveGame() {
     }
 
     pSavegameList->pSavegameHeader[uSlot].name = "Quicksave";
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, pSavegameList->pSavegameHeader[uSlot].name);
-
-    std::string src = makeDataPath("data", "new.lod");
-    std::string dst = makeDataPath("saves", quickSaveName);
-    std::error_code ec;
-    if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec)) {
-        logger->error("Failed to copy: {}", src);
-        engine->config->gameplay.QuickSavesCount.cycleDecrement();
-        pAudioPlayer->playUISound(SOUND_error);
-    } else {
-        engine->_statusBar->setEvent(LSTR_GAME_SAVED);
-        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, makeDataPath("saves", quickSaveName),
+                                                     pSavegameList->pSavegameHeader[uSlot].name);
+    engine->_statusBar->setEvent(LSTR_GAME_SAVED);
+    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
 
 void QuickLoadGame() {
@@ -439,5 +408,5 @@ void QuickLoadGame() {
 }
 
 std::string GetCurrentQuickSave() {
-    return fmt::format( "{}{}.mm7", engine->config->gameplay.QuickSaveName.value(), engine->config->gameplay.QuickSavesCount.value());
+    return fmt::format("{}{}.mm7", engine->config->gameplay.QuickSaveName.value(), engine->config->gameplay.QuickSavesCount.value());
 }
