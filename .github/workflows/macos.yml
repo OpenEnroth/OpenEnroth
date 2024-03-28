@@ -33,6 +33,7 @@ on:
 
 jobs:
   build_macos:
+    timeout-minutes: 60
     runs-on: macos-14
     strategy:
       fail-fast: false
