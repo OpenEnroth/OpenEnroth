@@ -78,7 +78,7 @@ target_link_libraries(engine
 target_compile_definitions(engine PRIVATE
         PROJECT_VERSION="${PROJECT_VERSION}"
         BUILD_COMPILER="${BUILD_COMPILER}"
-        BUILD_PLATFORM="${BUILD_PLATFORM}"
+        OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
         BUILD_ARCHITECTURE="${BUILD_ARCHITECTURE}")
 
 add_subdirectory(Components)

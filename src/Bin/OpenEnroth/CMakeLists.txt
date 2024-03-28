@@ -7,7 +7,7 @@ set(BIN_OPENENROTH_SOURCES
 set(BIN_OPENENROTH_HEADERS
         OpenEnrothOptions.h)
 
-if(BUILD_PLATFORM STREQUAL "android")
+if(OE_BUILD_PLATFORM STREQUAL "android")
     add_library(main SHARED)
     target_sources(main PUBLIC ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
     target_check_style(main)

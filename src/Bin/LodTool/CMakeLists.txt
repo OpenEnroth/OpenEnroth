@@ -7,7 +7,7 @@ set(BIN_LODTOOL_SOURCES
 set(BIN_LODTOOL_HEADERS
         LodToolOptions.h)
 
-if(NOT BUILD_PLATFORM STREQUAL "android")
+if(NOT OE_BUILD_PLATFORM STREQUAL "android")
     add_executable(LodTool ${BIN_LODTOOL_SOURCES} ${BIN_LODTOOL_HEADERS})
     target_link_libraries(LodTool PUBLIC library_lod library_lod_formats library_cli)
     target_check_style(LodTool)

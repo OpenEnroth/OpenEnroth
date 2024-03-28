@@ -104,7 +104,7 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
         # 2. Generate a bunch of relocations in the .text segment.
         # Default is #1, so we need to instruct it not to choke. Note that LLD behaves differently from GNU LD here,
         # which picks #2 by default.
-        if (BUILD_PLATFORM STREQUAL "linux")
+        if (OE_BUILD_PLATFORM STREQUAL "linux")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld -Wl,-z,notext")
         endif ()
     elseif(OE_USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
@@ -168,7 +168,7 @@ endif()
 
 # We're getting linker errors on Android if we don't pass -Bsymbolic.
 # See https://github.com/google/ExoPlayer/issues/9933#issuecomment-1029775358.
-if(BUILD_PLATFORM STREQUAL "android")
+if(OE_BUILD_PLATFORM STREQUAL "android")
     add_link_options("-Wl,-Bsymbolic")
 endif()
 
