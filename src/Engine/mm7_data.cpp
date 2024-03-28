@@ -2451,7 +2451,6 @@ std::string pCurrentMapName;
 MapId uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 
-std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;

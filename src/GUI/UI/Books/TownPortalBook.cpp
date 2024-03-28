@@ -114,7 +114,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
     }
 
     // begin TP
-    SaveGame(1, 0);
+    AutoSave();
     // if in current map
     // TODO(Nik-RE-dev): need separate function for teleportation to other maps
     if (pMapStats->GetMapInfo(pCurrentMapName) == townPortalList[townId].mapInfoID) {

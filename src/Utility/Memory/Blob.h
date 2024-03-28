@@ -79,7 +79,13 @@ class Blob final {
      * @param size                      Memory region size.
      * @return                          Blob that owns a copy of the provided memory region.
      */
-    [[nodiscard]] static Blob copy(const void *data, size_t size); // NOLINT: this is not std::copy
+    [[nodiscard]] static Blob copy(const void *data, size_t size); // NOLINT: this is not std::copy.
+
+    /**
+     * @param other                     Blob to copy.
+     * @return                          Copy of the provided `Blob` in `malloc`-allocated memory.
+     */
+    [[nodiscard]] static Blob copy(const Blob &other); // NOLINT: this is not std::copy.
 
     /**
      * @param data                      Memory region pointer.

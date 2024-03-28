@@ -70,6 +70,10 @@ Blob Blob::copy(const void *data, size_t size) { // NOLINT: this is not std::cop
     return fromMalloc(std::move(memory), size);
 }
 
+Blob Blob::copy(const Blob &other) { // NOLINT: this is not std::copy.
+    return copy(other.data(), other.size()); // NOLINT: seriously, this is not std::copy.
+}
+
 Blob Blob::view(const void *data, size_t size) {
     Blob result;
     result._data = data;
