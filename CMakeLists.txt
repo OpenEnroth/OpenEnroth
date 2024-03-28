@@ -114,7 +114,7 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
         message(STATUS "Fallback to default linker.")
     endif()
 
-    if(BUILD_ARCHITECTURE STREQUAL "x86")
+    if(OE_BUILD_ARCHITECTURE STREQUAL "x86")
         add_compile_options(-msse2 -mfpmath=sse -march=pentium4) # Don't use x87 fpu in 32-bit builds.
     endif()
 
@@ -147,7 +147,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_link_options(/OPT:REF) # Eliminate unreferenced data & functions.
     add_link_options(/OPT:ICF) # Enable COMDAT folding, should decrease binary sizes?
-    if (BUILD_ARCHITECTURE STREQUAL "x86")
+    if (OE_BUILD_ARCHITECTURE STREQUAL "x86")
         add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
         add_link_options(/SAFESEH:NO) # /SAFESEH is x86-only, don't produce safe exception handler tables
     endif()
