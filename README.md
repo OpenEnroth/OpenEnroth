@@ -28,9 +28,9 @@ Getting Started on Windows
 
 1. You will need a GoG or any other version of Might and Magic VII. Just run the installer and install the game into default location.
 
-2. Download the prebuilt releases [here](releases) and unzip the files.
+2. Download the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 
-3. Copy the OpenEnroth .exe and the `shaders` folder to the folder where the game is installed from the `dist` folder from the zip file.
+3. From the `dist` folder inside the zip file copy the OpenEnroth .exe and the `shaders` folder to the folder where the game is installed.
 
 4. You can also set `OPENENROTH_MM7_PATH` env variable to point to the game installation folder. OpenEnroth might work by reading the paths from registry, but this is not guaranteed.
 
