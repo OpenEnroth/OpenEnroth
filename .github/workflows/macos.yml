@@ -80,7 +80,6 @@ jobs:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
       - name: Configure
         run: |
-          export MACOSX_DEPLOYMENT_TARGET="11"
           if [[ "${{matrix.architecture}}" = x86_64 ]]; then
             echo "Building x86_64"
             export MACOSX_DEPLOYMENT_TARGET="10.15"
