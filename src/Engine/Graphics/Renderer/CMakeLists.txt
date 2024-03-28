@@ -21,7 +21,8 @@ set(ENGINE_GRAPHICS_RENDERER_HEADERS
         TextureRenderId.h
         )
 
-add_library(engine_graphics_renderer_sources STATIC ${ENGINE_GRAPHICS_RENDERER_SOURCES} ${ENGINE_GRAPHICS_RENDERER_HEADERS})
+add_library(engine_graphics_renderer STATIC ${ENGINE_GRAPHICS_RENDERER_SOURCES} ${ENGINE_GRAPHICS_RENDERER_HEADERS})
+target_check_style(engine_graphics_renderer)
 
 target_link_libraries(engine_graphics_renderer
         PUBLIC
@@ -37,4 +38,4 @@ target_link_libraries(engine_graphics_renderer
         glad
         nuklear)
 
-target_check_style(engine_graphics_renderer)
+
