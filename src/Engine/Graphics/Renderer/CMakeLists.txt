@@ -1,10 +1,25 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(ENGINE_GRAPHICS_RENDERER_SOURCES
-        Decoration.cpp)
+        BaseRenderer.cpp
+        NullRenderer.cpp
+        OpenGLRenderer.cpp
+        OpenGLShader.cpp
+        Renderer.cpp
+        RendererEnums.cpp
+        RendererFactory.cpp
+        )
 
 set(ENGINE_GRAPHICS_RENDERER_HEADERS
-        Decoration.h)
+        BaseRenderer.h
+        NullRenderer.h
+        OpenGLRenderer.h
+        OpenGLShader.h
+        Renderer.h
+        RendererEnums.h
+        RendererFactory.h
+        TextureRenderId.h
+        )
 
 add_library(engine_graphics_renderer_sources STATIC ${ENGINE_GRAPHICS_RENDERER_SOURCES} ${ENGINE_GRAPHICS_RENDERER_HEADERS})
 target_check_style(engine_graphics_renderer)
