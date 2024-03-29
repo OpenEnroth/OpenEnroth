@@ -775,8 +775,11 @@ void Game::processQueuedMessages() {
                 if (engine->_teleportPoint.isValid()) {
                     if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
+                        bool leavingArena = iequals(pCurrentMapName, "d05.blv");
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
+                        if (leavingArena)
+                            pParty->GetPlayingTime() += Duration::fromDays(4);
                     } else {
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();
@@ -784,8 +787,6 @@ void Game::processQueuedMessages() {
                 } else {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
-                if (iequals(s_SavedMapName.data(), "d05.blv"))
-                    pParty->GetPlayingTime() += Duration::fromDays(4);
 
                 PlayButtonClickSound();
                 DialogueEnding();
@@ -830,7 +831,7 @@ void Game::processQueuedMessages() {
                     pEventTimer->setPaused(true);
                     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                     pGameLoadingUI_ProgressBar->Progress();
-                    SaveGame(1, 0);
+                    AutoSave();
                     pGameLoadingUI_ProgressBar->Progress();
                     restAndHeal(Duration::fromDays(getTravelTime()));
                     if (pParty->GetFood() > 0) {
@@ -945,7 +946,7 @@ void Game::processQueuedMessages() {
                 assert(false);
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                SaveGame(1, 0);
+                AutoSave();
                 pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].fileName;
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -998,7 +999,7 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_OnGameOverWindowClose:
                 pAudioPlayer->stopSounds();
-                SaveGame(1, 0);
+                AutoSave();
 
                 pParty->pos = Vec3f(-17331, 12547, 465); // respawn point in Harmondale
                 pParty->velocity = Vec3f();

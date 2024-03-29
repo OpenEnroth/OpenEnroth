@@ -31,7 +31,8 @@ struct SavegameList {
 };
 
 void LoadGame(int uSlot);
-SaveGameHeader SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &title = {});
+SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &path, const std::string &title = {});
+void AutoSave();
 void DoSavegame(int uSlot);
 bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
