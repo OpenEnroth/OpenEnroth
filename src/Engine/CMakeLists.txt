@@ -77,7 +77,7 @@ target_link_libraries(engine
 
 target_compile_definitions(engine PRIVATE
         PROJECT_VERSION="${PROJECT_VERSION}"
-        BUILD_COMPILER="${BUILD_COMPILER}"
+        OE_BUILD_COMPILER="${OE_BUILD_COMPILER}"
         OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
         OE_BUILD_ARCHITECTURE="${OE_BUILD_ARCHITECTURE}")
 

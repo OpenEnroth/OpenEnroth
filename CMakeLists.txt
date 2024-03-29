@@ -64,29 +64,29 @@ check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
 check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 
 # Set up warnings-as-errors for all compilers.
-if (BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
+if (OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function. This is an error on MSVC.
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute.
     add_compile_options(-Werror=unused-value) # Expression result unused.
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'.
 endif ()
-if(BUILD_COMPILER STREQUAL "gcc")
+if(OE_BUILD_COMPILER STREQUAL "gcc")
     add_compile_options(-Werror=return-local-addr) # Returning reference to temporary.
-elseif(BUILD_COMPILER STREQUAL "clang")
+elseif(OE_BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-stack-address) # Returning reference to temporary.
     add_compile_options(-Werror=unused-comparison) # Comparison result unused.
     add_compile_options(-Werror=inconsistent-missing-override) # 'override' only used on some of the overridden functions.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     add_compile_options(-Werror=delete-abstract-non-virtual-dtor) # delete called on 'x' that is abstract but has non-virtual destructor.
-elseif(BUILD_COMPILER STREQUAL "msvc")
+elseif(OE_BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute.
     add_compile_options(/we4172) # Returning address of local variable or temporary.
     add_compile_options(/we26433) # Function should be marked with 'override'.
 endif()
 
 # Set compiler options. We do a lot of tweaks here.
-if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
+if(OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
     # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0.
     string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -127,11 +127,11 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     # Clang & gcc implementations of fp-contract differ, and we are getting diffs in tests. Better to disable it.
     add_compile_options(-ffp-contract=off)
 endif()
-if(BUILD_COMPILER STREQUAL "gcc")
+if(OE_BUILD_COMPILER STREQUAL "gcc")
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
-elseif(BUILD_COMPILER STREQUAL "clang")
+elseif(OE_BUILD_COMPILER STREQUAL "clang")
     add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_ENABLE_ASSERTIONS=1>) # Enable assertions in libcxx.
-elseif(BUILD_COMPILER STREQUAL "msvc")
+elseif(OE_BUILD_COMPILER STREQUAL "msvc")
     # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
     #             itself is still generated.
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
