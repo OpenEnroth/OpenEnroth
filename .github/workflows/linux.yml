@@ -38,6 +38,7 @@ on:
 
 jobs:
   build_linux:
+    timeout-minutes: 60
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
