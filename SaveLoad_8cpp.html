@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b48a02b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a2f8edb</span>
    </div>
   </td>
  </tr>
@@ -95,17 +95,14 @@ $(function() {
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Renderer_8h.html">Engine/Graphics/Renderer/Renderer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Random_8h.html">Engine/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CompositeSnapshots_8h.html">Engine/Snapshots/CompositeSnapshots.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIGame_8h.html">GUI/UI/UIGame.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SnapshotSerialization_8h.html">Library/Snapshots/SnapshotSerialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PCX_8h.html">Library/Image/PCX.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Compression_8h.html">Library/Compression/Compression.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodFormats_8h.html">Library/LodFormats/LodFormats.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodWriter_8h.html">Library/Lod/LodWriter.h</a>&quot;</code><br />
@@ -117,8 +114,10 @@ Functions</h2></td></tr>
 <tr class="separator:a59eca2472eb9c320c2acc2d8527e3dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4624a5ffa8c0619a2fd547e03cb15428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a4624a5ffa8c0619a2fd547e03cb15428">LoadGame</a> (int uSlot)</td></tr>
 <tr class="separator:a4624a5ffa8c0619a2fd547e03cb15428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cdc40f14abc00c32965c2c1825b29a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a1cdc40f14abc00c32965c2c1825b29a6">SaveGame</a> (bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title)</td></tr>
-<tr class="separator:a1cdc40f14abc00c32965c2c1825b29a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae73c41ecd9b7f2bba032fb7c234ace9e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#ae73c41ecd9b7f2bba032fb7c234ace9e">SaveGame</a> (bool isAutoSave, bool resetWorld, const std::string &amp;path, const std::string &amp;title)</td></tr>
+<tr class="separator:ae73c41ecd9b7f2bba032fb7c234ace9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d696d7aae29bcc73c41974e78db95b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a0d696d7aae29bcc73c41974e78db95b8">AutoSave</a> ()</td></tr>
+<tr class="separator:a0d696d7aae29bcc73c41974e78db95b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dde6af8c013f767d15f2fc43e25095f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a8dde6af8c013f767d15f2fc43e25095f">DoSavegame</a> (int uSlot)</td></tr>
 <tr class="separator:a8dde6af8c013f767d15f2fc43e25095f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab496492a832e3fe2f04f9a23bdf3dd2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#ab496492a832e3fe2f04f9a23bdf3dd2a">SaveNewGame</a> ()</td></tr>
@@ -132,10 +131,27 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:af77ad39a7afaff97a0912f094c676a05"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structSavegameList.html">SavegameList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#af77ad39a7afaff97a0912f094c676a05">pSavegameList</a> = new <a class="el" href="structSavegameList.html">SavegameList</a></td></tr>
-<tr class="separator:af77ad39a7afaff97a0912f094c676a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a142206282ee1132c47d5785c21ad8f3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSavegameList.html">SavegameList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a142206282ee1132c47d5785c21ad8f3c">pSavegameList</a> = new <a class="el" href="structSavegameList.html">SavegameList</a></td></tr>
+<tr class="separator:a142206282ee1132c47d5785c21ad8f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a0d696d7aae29bcc73c41974e78db95b8" name="a0d696d7aae29bcc73c41974e78db95b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d696d7aae29bcc73c41974e78db95b8">&#9670;&#160;</a></span>AutoSave()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AutoSave </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a8dde6af8c013f767d15f2fc43e25095f" name="a8dde6af8c013f767d15f2fc43e25095f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8dde6af8c013f767d15f2fc43e25095f">&#9670;&#160;</a></span>DoSavegame()</h2>
 
@@ -248,8 +264,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1cdc40f14abc00c32965c2c1825b29a6" name="a1cdc40f14abc00c32965c2c1825b29a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cdc40f14abc00c32965c2c1825b29a6">&#9670;&#160;</a></span>SaveGame()</h2>
+<a id="ae73c41ecd9b7f2bba032fb7c234ace9e" name="ae73c41ecd9b7f2bba032fb7c234ace9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae73c41ecd9b7f2bba032fb7c234ace9e">&#9670;&#160;</a></span>SaveGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -258,13 +274,19 @@ Variables</h2></td></tr>
           <td class="memname"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> SaveGame </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>IsAutoSAve</em>, </td>
+          <td class="paramname"><em>isAutoSave</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>NotSaveWorld</em>, </td>
+          <td class="paramname"><em>resetWorld</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -300,14 +322,14 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="af77ad39a7afaff97a0912f094c676a05" name="af77ad39a7afaff97a0912f094c676a05"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af77ad39a7afaff97a0912f094c676a05">&#9670;&#160;</a></span>pSavegameList</h2>
+<a id="a142206282ee1132c47d5785c21ad8f3c" name="a142206282ee1132c47d5785c21ad8f3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a142206282ee1132c47d5785c21ad8f3c">&#9670;&#160;</a></span>pSavegameList</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structSavegameList.html">SavegameList</a>* pSavegameList = new <a class="el" href="structSavegameList.html">SavegameList</a></td>
+          <td class="memname"><a class="el" href="structSavegameList.html">SavegameList</a>* pSavegameList = new <a class="el" href="structSavegameList.html">SavegameList</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

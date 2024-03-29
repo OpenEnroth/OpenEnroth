@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b48a02b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a2f8edb</span>
    </div>
   </td>
  </tr>
@@ -95,8 +95,10 @@ Classes</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a4624a5ffa8c0619a2fd547e03cb15428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a4624a5ffa8c0619a2fd547e03cb15428">LoadGame</a> (int uSlot)</td></tr>
 <tr class="separator:a4624a5ffa8c0619a2fd547e03cb15428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5567a232747f355a59dcf1ccb5703142"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a5567a232747f355a59dcf1ccb5703142">SaveGame</a> (bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title={})</td></tr>
-<tr class="separator:a5567a232747f355a59dcf1ccb5703142"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c2ce1c5716797be1ec5f12574c05ed4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a4c2ce1c5716797be1ec5f12574c05ed4">SaveGame</a> (bool isAutoSave, bool resetWorld, const std::string &amp;path, const std::string &amp;title={})</td></tr>
+<tr class="separator:a4c2ce1c5716797be1ec5f12574c05ed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d696d7aae29bcc73c41974e78db95b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a0d696d7aae29bcc73c41974e78db95b8">AutoSave</a> ()</td></tr>
+<tr class="separator:a0d696d7aae29bcc73c41974e78db95b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dde6af8c013f767d15f2fc43e25095f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a8dde6af8c013f767d15f2fc43e25095f">DoSavegame</a> (int uSlot)</td></tr>
 <tr class="separator:a8dde6af8c013f767d15f2fc43e25095f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5f6c27c016c3c4c5cc60702a578c538"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ac5f6c27c016c3c4c5cc60702a578c538">Initialize_GamesLOD_NewLOD</a> ()</td></tr>
@@ -118,6 +120,23 @@ Variables</h2></td></tr>
 <tr class="separator:af77ad39a7afaff97a0912f094c676a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a0d696d7aae29bcc73c41974e78db95b8" name="a0d696d7aae29bcc73c41974e78db95b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d696d7aae29bcc73c41974e78db95b8">&#9670;&#160;</a></span>AutoSave()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AutoSave </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a8dde6af8c013f767d15f2fc43e25095f" name="a8dde6af8c013f767d15f2fc43e25095f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8dde6af8c013f767d15f2fc43e25095f">&#9670;&#160;</a></span>DoSavegame()</h2>
 
@@ -222,8 +241,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5567a232747f355a59dcf1ccb5703142" name="a5567a232747f355a59dcf1ccb5703142"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5567a232747f355a59dcf1ccb5703142">&#9670;&#160;</a></span>SaveGame()</h2>
+<a id="a4c2ce1c5716797be1ec5f12574c05ed4" name="a4c2ce1c5716797be1ec5f12574c05ed4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c2ce1c5716797be1ec5f12574c05ed4">&#9670;&#160;</a></span>SaveGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -232,13 +251,19 @@ Variables</h2></td></tr>
           <td class="memname"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> SaveGame </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>IsAutoSAve</em>, </td>
+          <td class="paramname"><em>isAutoSave</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>NotSaveWorld</em>, </td>
+          <td class="paramname"><em>resetWorld</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

@@ -120,7 +120,7 @@ var searchData=
   ['am_5fdrawtext_117',['am_DrawText',['../Arcomage_8cpp.html#afd1d9b9cff02426ea89dc75c412901be',1,'Arcomage.cpp']]],
   ['anyconfigentry_118',['AnyConfigEntry',['../classAnyConfigEntry.html#af5c7701aff861d5c6c561c893e8bf291',1,'AnyConfigEntry']]],
   ['appendwrapper_119',['AppendWrapper',['../structdetail_1_1AppendWrapper.html#ac6e20540187903e6d52631ddc163cdcd',1,'detail::AppendWrapper']]],
-  ['application_120',['application',['../classGameStarter.html#aac6d635d220336c3d3fec9d866109004',1,'GameStarter::application()'],['../classPlatformApplicationAware.html#aed85e21801a9f13b1e04f168fac59001',1,'PlatformApplicationAware::application()']]],
+  ['application_120',['application',['../classPlatformApplicationAware.html#aed85e21801a9f13b1e04f168fac59001',1,'PlatformApplicationAware::application()'],['../classGameStarter.html#aac6d635d220336c3d3fec9d866109004',1,'GameStarter::application()']]],
   ['applicationproxy_121',['ApplicationProxy',['../classApplicationProxy.html#ab935029fd11a03fb5517b0b774d7127b',1,'ApplicationProxy']]],
   ['apply_122',['Apply',['../structSpellBuff.html#a0bc454acb6b03dc44a302931a2fba5de',1,'SpellBuff']]],
   ['apply_123',['apply',['../classConfigPatch.html#ad63a43aa90aa4d00d17a556dd5e0f51f',1,'ConfigPatch']]],
@@ -165,6 +165,7 @@ var searchData=
   ['auraeffectgreen_162',['AuraEffectGreen',['../structItemGen.html#a01993a32aa349ea11fe9f1c69ea7e925',1,'ItemGen']]],
   ['auraeffectpurple_163',['AuraEffectPurple',['../structItemGen.html#ab8df6976055ead2e23e59a4f74e15a48',1,'ItemGen']]],
   ['auraeffectred_164',['AuraEffectRed',['../structItemGen.html#a46143c7c9a9dbc33d1d5dd13fa9438ac',1,'ItemGen']]],
-  ['avstreamwrapper_165',['AVStreamWrapper',['../classAVStreamWrapper.html#ac1b913e7ef16e9da6e7bffbfb5aec591',1,'AVStreamWrapper']]],
-  ['awardtypeforarenalevel_166',['awardTypeForArenaLevel',['../ArenaEnumFunctions_8h.html#a2d5df2aad26ef7874cf6137000a3cebf',1,'ArenaEnumFunctions.h']]]
+  ['autosave_165',['AutoSave',['../SaveLoad_8cpp.html#a0d696d7aae29bcc73c41974e78db95b8',1,'AutoSave():&#160;SaveLoad.cpp'],['../SaveLoad_8h.html#a0d696d7aae29bcc73c41974e78db95b8',1,'AutoSave():&#160;SaveLoad.cpp']]],
+  ['avstreamwrapper_166',['AVStreamWrapper',['../classAVStreamWrapper.html#ac1b913e7ef16e9da6e7bffbfb5aec591',1,'AVStreamWrapper']]],
+  ['awardtypeforarenalevel_167',['awardTypeForArenaLevel',['../ArenaEnumFunctions_8h.html#a2d5df2aad26ef7874cf6137000a3cebf',1,'ArenaEnumFunctions.h']]]
 ];

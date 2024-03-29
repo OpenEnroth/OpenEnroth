@@ -4,7 +4,7 @@ var searchData=
   ['s_5fseek_1',['s_seek',['../classMovie.html#a821810e7747ea2f9ddff3f850f310790',1,'Movie']]],
   ['salesprocess_2',['SalesProcess',['../classCharacter.html#a2873ed6706397bd4ec958f7a56b18bc3',1,'Character']]],
   ['save_3',['save',['../classConfig.html#a92a2b4b4eed6458d07387655f4cb3c44',1,'Config']]],
-  ['savegame_4',['SaveGame',['../SaveLoad_8cpp.html#a1cdc40f14abc00c32965c2c1825b29a6',1,'SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title):&#160;SaveLoad.cpp'],['../SaveLoad_8h.html#a5567a232747f355a59dcf1ccb5703142',1,'SaveGame(bool IsAutoSAve, bool NotSaveWorld, const std::string &amp;title={}):&#160;SaveLoad.cpp']]],
+  ['savegame_4',['SaveGame',['../SaveLoad_8cpp.html#ae73c41ecd9b7f2bba032fb7c234ace9e',1,'SaveGame(bool isAutoSave, bool resetWorld, const std::string &amp;path, const std::string &amp;title):&#160;SaveLoad.cpp'],['../SaveLoad_8h.html#a4c2ce1c5716797be1ec5f12574c05ed4',1,'SaveGame(bool isAutoSave, bool resetWorld, const std::string &amp;path, const std::string &amp;title={}):&#160;SaveLoad.cpp']]],
   ['savegame_5',['saveGame',['../classEngineController.html#a467c57dbccf4e431322e8df28bd25679',1,'EngineController']]],
   ['savegamelist_6',['SavegameList',['../structSavegameList.html#aae508c1b56dd1083c75f2ba6a731667a',1,'SavegameList']]],
   ['savenewgame_7',['SaveNewGame',['../SaveLoad_8cpp.html#ab496492a832e3fe2f04f9a23bdf3dd2a',1,'SaveNewGame():&#160;SaveLoad.cpp'],['../SaveLoad_8h.html#ab496492a832e3fe2f04f9a23bdf3dd2a',1,'SaveNewGame():&#160;SaveLoad.cpp']]],
