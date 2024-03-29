@@ -88,9 +88,19 @@ class CommonTapeRecorder {
 
     TestMultiTape<std::string> hudTextures();
 
+    /**
+     * Return a tape object of strings listing all the hints whenever a pop up message box was called.
+     *
+     * @return                          Tape object.
+     */
     TestMultiTape<std::string> messageBoxes();
-
-    TestMultiTape<std::string> messageBoxesText();
+    /**
+     * Return a tape object of strings listing all the text drawn by GUIWindow::DrawText.
+     * TODO(pskelton): Tape will be spammy as it is recording everything.
+     * 
+     * @return                          Tape object.
+     */
+    TestMultiTape<std::string> allGUIWindowsText();
 
  private:
     TestController *_controller = nullptr;

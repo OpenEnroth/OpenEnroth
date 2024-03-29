@@ -343,7 +343,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
 //----- (0044CE08) --------------------------------------------------------
 void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
     if (engine->callObserver) {
-        engine->callObserver->notify(CALL_DRAW_GUIWindow_TEXT, text);
+        engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, text);
     }
     font->DrawText(this, position, color, text, maxHeight, shadowColor);
 }

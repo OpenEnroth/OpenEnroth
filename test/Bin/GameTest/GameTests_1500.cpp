@@ -41,7 +41,7 @@ GAME_TEST(Issues, Issue1515) {
 GAME_TEST(Issues, Issue1519) {
     // Baby Dragon NPC description missing
     auto messageBoxesTape = tapes.messageBoxes();
-    auto messageBoxesBody = tapes.messageBoxesText();
+    auto messageBoxesBody = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1519.mm7", "issue_1519.json");
     // message box body text was displayed.
     auto flatMessageBoxes = messageBoxesTape.flattened();

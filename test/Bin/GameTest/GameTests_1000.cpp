@@ -679,7 +679,7 @@ GAME_TEST(Issues, Issue1464) {
 GAME_TEST(Issues, Issue1466) {
     // Assert in spellbook popups
     auto messageBoxesTape = tapes.messageBoxes();
-    auto messageBoxesBody = tapes.messageBoxesText();
+    auto messageBoxesBody = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1466.mm7", "issue_1466.json");
     // message box body text was displayed.
     auto flatMessageBoxes = messageBoxesTape.flattened();
