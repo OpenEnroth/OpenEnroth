@@ -127,7 +127,7 @@ OpenEnroth code is broken up as follows:
 * The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.
 
 Our basic guidelines for code organization are:
-* One `CMakeLists.txt` file per folder. There are exceptions, but those are not yet codified.
+* One `CMakeLists.txt` file per folder. Exceptions are /android, /CMakeModules and /resources.
 * One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.
 
 
