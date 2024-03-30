@@ -18,7 +18,7 @@ add_subdirectory(glob)
 # fmt
 add_subdirectory(fmt)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
-if(BUILD_COMPILER STREQUAL "msvc")
+if(OE_BUILD_COMPILER STREQUAL "msvc")
     target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
 endif()
 
@@ -50,9 +50,9 @@ if(OE_BUILD_TESTS)
 endif()
 
 # backward
-if(NOT BUILD_PLATFORM STREQUAL "android")
+if(NOT OE_BUILD_PLATFORM STREQUAL "android")
     add_subdirectory(backward_cpp)
-    if (BUILD_PLATFORM STREQUAL "linux" AND NOT OE_USE_DUMMY_DEPENDENCIES)
+    if (OE_BUILD_PLATFORM STREQUAL "linux" AND NOT OE_USE_DUMMY_DEPENDENCIES)
         string(FIND "${BACKWARD_DEFINITIONS}" "BACKWARD_HAS_DWARF=1" DWARF_POS)
         if (${DWARF_POS} EQUAL -1)
             message(WARNING "libdwarf is required for backward-cpp on linux.")

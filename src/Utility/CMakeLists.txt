@@ -48,7 +48,7 @@ set(UTILITY_HEADERS
         Unaligned.h
         UnicodeCrt.h)
 
-if(BUILD_PLATFORM STREQUAL "windows")
+if(OE_BUILD_PLATFORM STREQUAL "windows")
     list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
 endif()
 

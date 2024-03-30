@@ -33,8 +33,8 @@ on:
 
 jobs:
   build_macos:
+    runs-on: macos-14
     timeout-minutes: 60
-    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
@@ -43,6 +43,7 @@ jobs:
           - Release
         architecture:
           - x86_64
+          - arm64
     steps:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -80,11 +81,14 @@ jobs:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
       - name: Configure
         run: |
-          export MACOSX_DEPLOYMENT_TARGET="11"
-          if [[ "$BUILD_ARCH" = x86_64 ]]; then
+          if [[ "${{matrix.architecture}}" = x86_64 ]]; then
+            echo "Building x86_64"
             export MACOSX_DEPLOYMENT_TARGET="10.15"
+          else
+            echo "Building arm64"
+            export MACOSX_DEPLOYMENT_TARGET="11"
           fi
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
                   
       - name: Build
         working-directory: build
