@@ -735,7 +735,7 @@ void GUIWindow_House::houseNPCDialogue() {
         return;
     }
 
-    NPCData* pNPC = houseNpcs[currentHouseNpc].npc;
+    NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
     drawNpcHouseNameAndTitle(house_window, pNPC);
     drawNpcHouseGreetingMessage(pNPC);
     drawNpcHouseDialogueOptions(pNPC);
@@ -776,7 +776,7 @@ void GUIWindow_House::drawNpcHouseDialogueOptions(NPCData* npcData) const {
 
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
-        GUIButton* pButton = pDialogueWindow->GetControl(i);
+        GUIButton *pButton = pDialogueWindow->GetControl(i);
         DialogueId topic = (DialogueId)pButton->msg_param;
         std::string str = npcDialogueOptionString(topic, npcData);
         if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
@@ -794,7 +794,7 @@ void GUIWindow_House::drawNpcHouseDialogueResponse() {
     if (current_npc_text.length() > 0) {
         int frameWidth = 458;
         int frameZ = 457;
-        GUIFont* pTextFont = assets->pFontArrus.get();
+        GUIFont *pTextFont = assets->pFontArrus.get();
         int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, frameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
             pTextFont = assets->pFontCreate.get();
