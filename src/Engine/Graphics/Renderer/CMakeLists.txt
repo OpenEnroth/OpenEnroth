@@ -27,6 +27,7 @@ target_check_style(engine_graphics_renderer)
 target_link_libraries(engine_graphics_renderer
         PUBLIC
         engine
+        engine_graphics
         utility
         library_serialization
         library_color
