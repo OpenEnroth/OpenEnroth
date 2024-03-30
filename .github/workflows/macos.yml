@@ -104,7 +104,7 @@ jobs:
           make UnitTest
 
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.architecture == "x86_64"
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.architecture == 'x86_64'
         working-directory: build
         run: |
           make GameTest_Headless
@@ -112,7 +112,7 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release' && matrix.architecture == "x86_64"
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release' && matrix.architecture == 'x86_64'
         working-directory: build
         run: |
           make RetraceTest_Headless
