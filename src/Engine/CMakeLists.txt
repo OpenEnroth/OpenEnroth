@@ -59,8 +59,6 @@ target_check_style(engine)
 target_link_libraries(engine
         PUBLIC
         engine_graphics
-        engine_graphics_level
-        engine_graphics_renderer
         engine_objects
         engine_serialization
         engine_spells
