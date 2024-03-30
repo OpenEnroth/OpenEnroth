@@ -59,6 +59,8 @@ target_check_style(engine)
 target_link_libraries(engine
         PUBLIC
         engine_graphics
+        engine_graphics_level
+        engine_graphics_renderer
         engine_objects
         engine_serialization
         engine_spells
@@ -77,9 +79,9 @@ target_link_libraries(engine
 
 target_compile_definitions(engine PRIVATE
         PROJECT_VERSION="${PROJECT_VERSION}"
-        BUILD_COMPILER="${BUILD_COMPILER}"
-        BUILD_PLATFORM="${BUILD_PLATFORM}"
-        BUILD_ARCHITECTURE="${BUILD_ARCHITECTURE}")
+        OE_BUILD_COMPILER="${OE_BUILD_COMPILER}"
+        OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
+        OE_BUILD_ARCHITECTURE="${OE_BUILD_ARCHITECTURE}")
 
 add_subdirectory(Components)
 add_subdirectory(Events)

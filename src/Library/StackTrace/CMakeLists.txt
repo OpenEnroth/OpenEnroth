@@ -13,6 +13,6 @@ target_link_libraries(library_stack_trace PUBLIC utility)
 target_check_style(library_stack_trace)
 
 # backward-cpp doesn't support Android...
-if (NOT BUILD_PLATFORM STREQUAL "android")
+if (NOT OE_BUILD_PLATFORM STREQUAL "android")
     target_link_libraries(library_stack_trace PRIVATE Backward::Backward)
 endif ()

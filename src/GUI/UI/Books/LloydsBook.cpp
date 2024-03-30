@@ -196,7 +196,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     if (_recallingBeacon) {
         if (toLower(pCurrentMapName) != toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName)) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
-            SaveGame(1, 0);
+            AutoSave();
             onMapLeave();
             pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;

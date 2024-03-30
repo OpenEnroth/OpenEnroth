@@ -6,7 +6,7 @@ set(LIBRARY_ENVIRONMENT_POSIX_SOURCES
 set(LIBRARY_ENVIRONMENT_POSIX_HEADERS
         PosixEnvironment.h)
 
-if(NOT BUILD_PLATFORM STREQUAL "windows" AND NOT BUILD_PLATFORM STREQUAL "android")
+if(NOT OE_BUILD_PLATFORM STREQUAL "windows" AND NOT OE_BUILD_PLATFORM STREQUAL "android")
     add_library(library_environment_posix STATIC ${LIBRARY_ENVIRONMENT_POSIX_SOURCES} ${LIBRARY_ENVIRONMENT_POSIX_HEADERS})
     target_check_style(library_environment_posix)
     target_link_libraries(library_environment_posix PUBLIC library_environment_interface)

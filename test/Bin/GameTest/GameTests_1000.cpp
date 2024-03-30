@@ -676,6 +676,20 @@ GAME_TEST(Issues, Issue1464) {
     EXPECT_EQ(hirelingsTape, tape(1, 0)); // We did sacrifice the last one.
 }
 
+GAME_TEST(Issues, Issue1466) {
+    // Assert in spellbook popups
+    auto messageBoxesTape = tapes.messageBoxes();
+    auto messageBoxesBody = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1466.mm7", "issue_1466.json");
+    // message box body text was displayed.
+    auto flatMessageBoxes = messageBoxesTape.flattened();
+    auto flatMessageBoxesBody = messageBoxesBody.flattened();
+    EXPECT_GT(flatMessageBoxes.size(), 0);
+    EXPECT_GT(flatMessageBoxesBody.filtered([](const auto& s) { return s.starts_with("Inferno burns all"); }).size(), 0);
+    EXPECT_FALSE(pParty->pCharacters[0].HasSkill(CHARACTER_SKILL_FIRE));
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
+}
+
 GAME_TEST(Issues, Issue1467) {
     // Dark sacrificing an empty npc slot asserts.
     auto hirelingsTape = tapes.totalHirelings();

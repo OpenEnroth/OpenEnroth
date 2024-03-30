@@ -451,7 +451,7 @@ Engine::~Engine() {
 
 void Engine::LogEngineBuildInfo() {
     logger->info("OpenEnroth, revision {} built on {}", gitRevision(), buildTime());
-    logger->info("Extra build information: {}/{}/{} {}", BUILD_PLATFORM, BUILD_ARCHITECTURE, BUILD_COMPILER, PROJECT_VERSION);
+    logger->info("Extra build information: {}/{}/{} {}", OE_BUILD_PLATFORM, OE_BUILD_ARCHITECTURE, OE_BUILD_COMPILER, PROJECT_VERSION);
 }
 
 //----- (0044EA5E) --------------------------------------------------------
@@ -1596,7 +1596,7 @@ void Transition_StopSound_Autosave(const std::string &pMapName,
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
     if (pCurrentMapName != pMapName) {
-        SaveGame(1, 0);
+        AutoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
