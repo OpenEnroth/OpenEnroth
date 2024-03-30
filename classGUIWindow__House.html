@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2d87099</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e2c5543</span>
    </div>
   </td>
  </tr>
@@ -73,6 +73,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classGUIWindow__House-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GUIWindow_House Class Reference</div></div>
 </div><!--header-->
@@ -133,8 +134,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4ef36770bd3f9c0679d370c5a4aea2e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc524a6d55f900bbb60e20f28cee985c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#abc524a6d55f900bbb60e20f28cee985c">checkIfPlayerCanInteract</a> ()</td></tr>
 <tr class="separator:abc524a6d55f900bbb60e20f28cee985c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac6bbc55c8e5763b27d780784e6c8c9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#aac6bbc55c8e5763b27d780784e6c8c9b">drawOptions</a> (std::vector&lt; std::string &gt; &amp;optionsText, <a class="el" href="structColor.html">Color</a> selectColor, int topOptionShift=0, bool denseSpacing=false)</td></tr>
-<tr class="separator:aac6bbc55c8e5763b27d780784e6c8c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a032805a07d9e321b085dca6524b4f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#a5a032805a07d9e321b085dca6524b4f0">drawOptions</a> (std::vector&lt; std::string &gt; &amp;optionsText, <a class="el" href="structColor.html">Color</a> selectColor, int topOptionShift=0, bool denseSpacing=false) const</td></tr>
+<tr class="separator:a5a032805a07d9e321b085dca6524b4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8aa35ed98120fc519a726018be80837e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#a8aa35ed98120fc519a726018be80837e">houseDialogueOptionSelected</a> (<a class="el" href="GUIDialogues_8h.html#a5351d2555183e79b94e2c0fe6ca4e9a7">DialogueId</a> option)</td></tr>
 <tr class="separator:a8aa35ed98120fc519a726018be80837e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abab2f443cee1a46a0e9be4d64139fa80"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#abab2f443cee1a46a0e9be4d64139fa80">houseSpecificDialogue</a> ()</td></tr>
@@ -198,6 +199,17 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a0fcf8b6e4273d0d8e983c755ff2ba99a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29bad33be9187fc357b03571b3236957"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#a29bad33be9187fc357b03571b3236957">_transactionPerformed</a> = false</td></tr>
 <tr class="separator:a29bad33be9187fc357b03571b3236957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a6c7b3d518a9428834119d50851fa4e8a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#a6c7b3d518a9428834119d50851fa4e8a">drawNpcHouseNameAndTitle</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> &amp;<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, <a class="el" href="structNPCData.html">NPCData</a> *npcData)</td></tr>
+<tr class="separator:a6c7b3d518a9428834119d50851fa4e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a320c216fa6c3ce88558248e22d07fe56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#a320c216fa6c3ce88558248e22d07fe56">drawNpcHouseGreetingMessage</a> (<a class="el" href="structNPCData.html">NPCData</a> *npcData)</td></tr>
+<tr class="separator:a320c216fa6c3ce88558248e22d07fe56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b26ffc0eb9502c35fc83ce9db8e08b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#a3b26ffc0eb9502c35fc83ce9db8e08b0">drawNpcHouseDialogueOptions</a> (<a class="el" href="structNPCData.html">NPCData</a> *npcData) const</td></tr>
+<tr class="separator:a3b26ffc0eb9502c35fc83ce9db8e08b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff4e5f57ead53be1161aa73283810464"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__House.html#aff4e5f57ead53be1161aa73283810464">drawNpcHouseDialogueResponse</a> ()</td></tr>
+<tr class="separator:aff4e5f57ead53be1161aa73283810464"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -337,8 +349,121 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="aac6bbc55c8e5763b27d780784e6c8c9b" name="aac6bbc55c8e5763b27d780784e6c8c9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac6bbc55c8e5763b27d780784e6c8c9b">&#9670;&#160;</a></span>drawOptions()</h2>
+<a id="a3b26ffc0eb9502c35fc83ce9db8e08b0" name="a3b26ffc0eb9502c35fc83ce9db8e08b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b26ffc0eb9502c35fc83ce9db8e08b0">&#9670;&#160;</a></span>drawNpcHouseDialogueOptions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow_House::drawNpcHouseDialogueOptions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structNPCData.html">NPCData</a> *&#160;</td>
+          <td class="paramname"><em>npcData</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aff4e5f57ead53be1161aa73283810464" name="aff4e5f57ead53be1161aa73283810464"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff4e5f57ead53be1161aa73283810464">&#9670;&#160;</a></span>drawNpcHouseDialogueResponse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow_House::drawNpcHouseDialogueResponse </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a320c216fa6c3ce88558248e22d07fe56" name="a320c216fa6c3ce88558248e22d07fe56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a320c216fa6c3ce88558248e22d07fe56">&#9670;&#160;</a></span>drawNpcHouseGreetingMessage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow_House::drawNpcHouseGreetingMessage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structNPCData.html">NPCData</a> *&#160;</td>
+          <td class="paramname"><em>npcData</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c7b3d518a9428834119d50851fa4e8a" name="a6c7b3d518a9428834119d50851fa4e8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c7b3d518a9428834119d50851fa4e8a">&#9670;&#160;</a></span>drawNpcHouseNameAndTitle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow_House::drawNpcHouseNameAndTitle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classGUIWindow.html">GUIWindow</a> &amp;&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structNPCData.html">NPCData</a> *&#160;</td>
+          <td class="paramname"><em>npcData</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5a032805a07d9e321b085dca6524b4f0" name="a5a032805a07d9e321b085dca6524b4f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a032805a07d9e321b085dca6524b4f0">&#9670;&#160;</a></span>drawOptions()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -370,7 +495,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
