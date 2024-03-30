@@ -38,6 +38,18 @@ GAME_TEST(Issues, Issue1515) {
     EXPECT_TRUE(soundsTape.flattened().contains(SOUND_RechargeItem)); // dispel magic
 }
 
+GAME_TEST(Issues, Issue1519) {
+    // Baby Dragon NPC description missing
+    auto messageBoxesTape = tapes.messageBoxes();
+    auto messageBoxesBody = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1519.mm7", "issue_1519.json");
+    // message box body text was displayed.
+    auto flatMessageBoxes = messageBoxesTape.flattened();
+    auto flatMessageBoxesBody = messageBoxesBody.flattened();
+    EXPECT_GT(flatMessageBoxes.size(), 0);
+    EXPECT_GT(flatMessageBoxesBody.filtered([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
+}
+
 GAME_TEST(Issues, Issue1524) {
     // More enemy spells without sound
     auto soundsTape = tapes.sounds();
