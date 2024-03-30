@@ -13,6 +13,7 @@ target_link_libraries(engine_graphics_level
         PUBLIC
         engine
         engine_graphics
+        engine_graphics_renderer
         utility
         library_serialization
         library_color
