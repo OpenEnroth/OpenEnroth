@@ -36,9 +36,6 @@ function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR OUT_STATUS_VAR)
     set(${OUT_STATUS_VAR} 0 PARENT_SCOPE)
 endfunction()
 
-#TODO: all prebuilt dependency artifacts should be built and packaged in the same unified way.
-#      so all code below could be drastically simplified and we wouldn't have per-platform blocks.
-
 macro(resolve_dependencies) # Intentionally a macro - we want set() to work in parent scope.
     if(OE_USE_PREBUILT_DEPENDENCIES)
         # "r2" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
