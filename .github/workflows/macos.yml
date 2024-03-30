@@ -33,7 +33,6 @@ on:
 
 jobs:
   build_macos:
-    runs-on: macos-14
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -41,9 +40,13 @@ jobs:
         configuration:
           - Debug
           - Release
-        architecture:
-          - x86_64
-          - arm64
+        target:
+          - darwin_arm64
+          - darwin_x86_64
+        include:
+          - {target: darwin_arm64,      platform: darwin,   architecture: arm64,      os: macos-14,     shell: bash}
+          - {target: darwin_x86_64,     platform: darwin,   architecture: x86_64,     os: macos-13,     shell: bash}
+    runs-on: ${{matrix.os}}
     steps:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -101,7 +104,7 @@ jobs:
           make UnitTest
 
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.architecture == x86_64
         working-directory: build
         run: |
           make GameTest_Headless
@@ -109,7 +112,7 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release' && matrix.architecture == x86_64
         working-directory: build
         run: |
           make RetraceTest_Headless
