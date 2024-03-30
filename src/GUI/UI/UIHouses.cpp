@@ -714,7 +714,7 @@ void playHouseSound(HouseId houseID, HouseSoundType type) {
 }
 
 void GUIWindow_House::houseNPCDialogue() {
-    GUIWindow house_window = *pDialogueWindow;
+    GUIWindow house_window = *this;
     if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
         MapId id = houseNpcs[currentHouseNpc].targetMapID;
         house_window.uFrameX = 493;
@@ -735,46 +735,50 @@ void GUIWindow_House::houseNPCDialogue() {
         return;
     }
 
-    house_window.uFrameWidth -= 10;
-    house_window.uFrameZ -= 10;
     NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
+    drawNpcHouseNameAndTitle(house_window, pNPC);
+    drawNpcHouseGreetingMessage(pNPC);
+    drawNpcHouseDialogueOptions(pNPC);
+    drawNpcHouseDialogueResponse();
+}
 
-    house_window.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
+void GUIWindow_House::drawNpcHouseNameAndTitle(GUIWindow& window, NPCData* npcData) {
+    window.uFrameWidth -= 10;
+    window.uFrameZ -= 10;
+    window.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(npcData), 3);
+}
 
+void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData* npcData) {
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
         if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
-            if (pNPC->greet) {
+            if (npcData->greet) {
                 std::string greetString;
 
-                house_window.uFrameWidth = game_viewport_width;
-                house_window.uFrameZ = 452;
-                if (pNPC->uFlags & NPC_GREETED_SECOND) {
-                    greetString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
+                int uFrameWidth = game_viewport_width;
+                int uFrameZ = 452;
+                if (npcData->uFlags & NPC_GREETED_SECOND) {
+                    greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting2;
                 } else {
-                    greetString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+                    greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting1;
                 }
 
-                int textHeight = assets->pFontArrus->CalcTextHeight(greetString, house_window.uFrameWidth, 13) + 7;
+                int textHeight = assets->pFontArrus->CalcTextHeight(greetString, uFrameWidth, 13) + 7;
                 render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
                 render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, assets->pFontArrus->FitTextInAWindow(greetString, house_window.uFrameWidth, 13));
+                DrawText(assets->pFontArrus.get(), { 13, 354 - textHeight }, colorTable.White, assets->pFontArrus->FitTextInAWindow(greetString, uFrameWidth, 13));
             }
         }
     }
+}
 
-    // for right panel
-    GUIWindow right_panel_window = *pDialogueWindow;
-    right_panel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    right_panel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    right_panel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
+void GUIWindow_House::drawNpcHouseDialogueOptions(NPCData* npcData) const {
     std::vector<std::string> optionsText;
 
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
-        GUIButton *pButton = right_panel_window.GetControl(i);
+        GUIButton *pButton = pDialogueWindow->GetControl(i);
         DialogueId topic = (DialogueId)pButton->msg_param;
-        std::string str = npcDialogueOptionString(topic, pNPC);
+        std::string str = npcDialogueOptionString(topic, npcData);
         if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
             pButton->msg_param = 0;
         }
@@ -784,21 +788,21 @@ void GUIWindow_House::houseNPCDialogue() {
     if (optionsText.size()) {
         drawOptions(optionsText, colorTable.Sunflower);
     }
+}
 
+void GUIWindow_House::drawNpcHouseDialogueResponse() {
     if (current_npc_text.length() > 0) {
-        GUIWindow win;
-
-        win.uFrameWidth = 458;
-        win.uFrameZ = 457;
+        int frameWidth = 458;
+        int frameZ = 457;
         GUIFont *pTextFont = assets->pFontArrus.get();
-        int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
+        int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, frameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
             pTextFont = assets->pFontCreate.get();
-            pTextHeight = assets->pFontCreate->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
+            pTextHeight = assets->pFontCreate->CalcTextHeight(current_npc_text, frameZ, 13) + 7;
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.White, pTextFont->FitTextInAWindow(current_npc_text, win.uFrameWidth, 13));
+        DrawText(pTextFont, { 13, 354 - pTextHeight }, colorTable.White, pTextFont->FitTextInAWindow(current_npc_text, frameWidth, 13));
     }
 }
 
@@ -840,7 +844,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
 }
 
 // TODO(Nik-RE-dev): maybe need to unify selectColor for all dialogue
-void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color selectColor, int topOptionShift, bool denseSpacing) {
+void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color selectColor, int topOptionShift, bool denseSpacing) const {
     GUIWindow window = *this;
     window.uFrameX = SIDE_TEXT_BOX_POS_X;
     window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
