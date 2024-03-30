@@ -157,7 +157,7 @@ void GUIWindow_Transport::transportDialogue() {
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
         if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].fileName) {
-            SaveGame(1, 0);
+            AutoSave();
             pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].fileName;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
