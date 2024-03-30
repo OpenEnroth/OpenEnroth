@@ -116,7 +116,7 @@ class GUIWindow_House : public GUIWindow {
     virtual void playHouseGoodbyeSpeech();
 
  private:
-    void drawNpcHouseNameAndTitle(GUIWindow& window, NPCData *npcData);
+    void drawNpcHouseNameAndTitle(NPCData *npcData);
     void drawNpcHouseGreetingMessage(NPCData *npcData);
     void drawNpcHouseDialogueOptions(NPCData *npcData) const;
     void drawNpcHouseDialogueResponse();
