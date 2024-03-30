@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a2f8edb</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;217fbea</span>
    </div>
   </td>
  </tr>
@@ -173,7 +173,7 @@ Code Organization</h1>
 <li>The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.</li>
 </ul>
 <p >Our basic guidelines for code organization are:</p><ul>
-<li>One <code>CMakeLists.txt</code> file per folder. There are exceptions, but those are not yet codified.</li>
+<li>One <code>CMakeLists.txt</code> file per folder. Exceptions are /android, /CMakeModules and /resources.</li>
 <li>One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md6"></a>
