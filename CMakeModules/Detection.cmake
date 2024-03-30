@@ -48,7 +48,7 @@ if(CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
     set(OE_BUILD_ARCHITECTURE "arm64")
 elseif(CMAKE_OSX_ARCHITECTURES STREQUAL "x86_64")
     set(OE_BUILD_ARCHITECTURE "x86_64")
-elseif(NOT CMAKE_OSX_ARCHITECTURES STREQUAL "")
+elseif(NOT "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "")
     message(WARNING "Value of CMAKE_OSX_ARCHITECTURES (${CMAKE_OSX_ARCHITECTURES}) not recognized. Are you trying a multi-architecture build? This is not supported.")
 endif()
 
