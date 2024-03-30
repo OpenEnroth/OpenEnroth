@@ -23,6 +23,7 @@ using enum EngineCall;
  * are handled for examples.
  *
  * @see TestCallObserver
+ * @see CommonTapeRecorder::sounds
  */
 class EngineCallObserver {
  public:
