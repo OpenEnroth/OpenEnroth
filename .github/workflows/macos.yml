@@ -81,11 +81,10 @@ jobs:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
       - name: Configure
         run: |
-          if [[ "${{matrix.architecture}}" = x86_64 ]]; then
-            echo "Building x86_64"
+          if [ "${{matrix.architecture}}" = "x86_64" ]; then
             export MACOSX_DEPLOYMENT_TARGET="10.15"
-          else
-            echo "Building arm64"
+          fi
+          if [ "${{matrix.architecture}}" = "arm64" ]; then
             export MACOSX_DEPLOYMENT_TARGET="11"
           fi
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
