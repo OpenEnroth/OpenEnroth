@@ -12,6 +12,7 @@ target_check_style(engine_graphics_level)
 target_link_libraries(engine_graphics_level
         PUBLIC
         engine
+        engine_graphics
         utility
         library_serialization
         library_color
