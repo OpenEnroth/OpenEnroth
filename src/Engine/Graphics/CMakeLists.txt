@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
+add_subdirectory(Level)
+add_subdirectory(Renderer)
+
 set(ENGINE_GRAPHICS_SOURCES
         BSPModel.cpp
         BspRenderer.cpp
@@ -12,7 +15,6 @@ set(ENGINE_GRAPHICS_SOURCES
         Image.cpp
         ImageLoader.cpp
         Indoor.cpp
-        Level/Decoration.cpp
         LightmapBuilder.cpp
         LightsStack.cpp
         LocationFunctions.cpp
@@ -23,13 +25,6 @@ set(ENGINE_GRAPHICS_SOURCES
         PaletteManager.cpp
         ParticleEngine.cpp
         PortalFunctions.cpp
-        Renderer/BaseRenderer.cpp
-        Renderer/NullRenderer.cpp
-        Renderer/OpenGLRenderer.cpp
-        Renderer/OpenGLShader.cpp
-        Renderer/Renderer.cpp
-        Renderer/RendererEnums.cpp
-        Renderer/RendererFactory.cpp
         Sprites.cpp
         TextureFrameTable.cpp
         Texture_MM7.cpp
@@ -51,7 +46,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Image.h
         ImageLoader.h
         Indoor.h
-        Level/Decoration.h
         LightmapBuilder.h
         LightsStack.h
         LocationFunctions.h
@@ -66,14 +60,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Polygon.h
         PortalFunctions.h
         RenderEntities.h
-        Renderer/BaseRenderer.h
-        Renderer/NullRenderer.h
-        Renderer/OpenGLRenderer.h
-        Renderer/OpenGLShader.h
-        Renderer/Renderer.h
-        Renderer/RendererEnums.h
-        Renderer/RendererFactory.h
-        Renderer/TextureRenderId.h
         Sprites.h
         TextureFrameTable.h
         Texture_MM7.h
@@ -88,6 +74,8 @@ target_check_style(engine_graphics)
 target_link_libraries(engine_graphics
         PUBLIC
         engine
+        engine_graphics_level
+        engine_graphics_renderer        
         utility
         library_serialization
         library_color
