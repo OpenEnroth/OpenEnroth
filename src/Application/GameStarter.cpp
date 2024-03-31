@@ -82,7 +82,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _platform = Platform::createStandardPlatform(_logger.get());
     }
 
-    // Prepare OpenAL settings.
+    // Prepare OpenAL settings. If we don't do this, game tests in GH action on macos-14 hang for 9 min on init.
     if (options.headless) {
         // TODO(captainurist): this is so questionable. Is there a better way to implement it?
 #ifdef _WINDOWS
