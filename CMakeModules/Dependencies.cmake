@@ -36,8 +36,17 @@ function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR OUT_STATUS_VAR)
     set(${OUT_STATUS_VAR} 0 PARENT_SCOPE)
 endfunction()
 
-#TODO: all prebuilt dependency artifacts should be built and packaged in the same unified way.
-#      so all code below could be drastically simplified and we wouldn't have per-platform blocks.
+function(print_library_found_message LIBRARY TARGET_NAME INCLUDE_DIR)
+    if(NOT "${TARGET_NAME}" STREQUAL "")
+        get_target_property(TARGET_INCLUDE_DIR "${TARGET_NAME}" INTERFACE_INCLUDE_DIRECTORIES)
+    endif()
+    if("${TARGET_INCLUDE_DIR}" STREQUAL "")
+        set(TARGET_INCLUDE_DIR "${INCLUDE_DIR}")
+    endif()
+    if(NOT "${TARGET_INCLUDE_DIR}" STREQUAL "")
+        message(STATUS "${LIBRARY} found: ${TARGET_INCLUDE_DIR}")
+    endif()
+endfunction()
 
 macro(resolve_dependencies) # Intentionally a macro - we want set() to work in parent scope.
     if(OE_USE_PREBUILT_DEPENDENCIES)
@@ -83,6 +92,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(OpenAL INTERFACE)
         add_library(OpenAL::OpenAL ALIAS OpenAL)
         add_library(SDL2OE INTERFACE)
+        add_library(SDL2::SDL2 ALIAS SDL2OE)
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
         set(SDL2_FOUND ON)
     else()
@@ -106,7 +116,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         #   should be linking to `Frameworks/OpenAL.framework/OpenAL.tbd`.
         # - OpenEnroth doesn't support OpenAL that ships with MacOS. As in, sound barely works.
         #
-        # If you're getting an error here, try passing something like -DOpenAL_ROOT=/opt/homebrew/opt/openal-soft to cmake.
+        # If you're getting an error here, try passing something like -DOPENAL_ROOT=/opt/homebrew/opt/openal-soft to cmake.
         find_package(OpenAL CONFIG REQUIRED)
     endif()
 
@@ -118,4 +128,10 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
     else()
         find_package(OpenGL REQUIRED)
     endif()
+
+    print_library_found_message(OpenAL OpenAL::OpenAL "")
+    print_library_found_message(ZLIB ZLIB::ZLIB "")
+    print_library_found_message(FFmpeg "" "${AVCODEC_INCLUDE_DIRS}")
+    print_library_found_message(SDL2 SDL2::SDL2 "")
+    print_library_found_message(OpenGL OpenGL::GL "")
 endmacro()

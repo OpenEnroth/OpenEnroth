@@ -6,7 +6,6 @@
 #include <type_traits>
 
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time/Time.h"
 #include "Media/Audio/SoundEnums.h"
