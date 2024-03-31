@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21.1)
+cmake_minimum_required(VERSION 3.27)
 
 set(LIBRARY_CLI_SOURCES
         CliApp.cpp)
