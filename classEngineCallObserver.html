@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e2c5543</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;46d013e</span>
    </div>
   </td>
  </tr>
@@ -101,7 +101,13 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ab16f16a1249d9b5bca2b84c29545a95d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineCallObserver.html#ab16f16a1249d9b5bca2b84c29545a95d">notify</a> (<a class="el" href="EngineCallObserver_8h.html#a3cc8583ac3231b2dc2ae069f7ce0f797">EngineCall</a> call, const std::type_info &amp;type, const void *data)=0</td></tr>
 <tr class="separator:ab16f16a1249d9b5bca2b84c29545a95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >An interface that's used to implement poor man's gmock for recording calls into different engine functions. Currently it's used by the testing framework to check that the calls that the testing framework expects to be made are actually made.</p>
+<p >When adding new calls to <code>EngineCall</code>, please make sure you don't add any complex logic around them. Otherwise we'll end up with test code spilling over into the engine, and we generally want to avoid that. See how existing calls are handled for examples.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classTestCallObserver.html">TestCallObserver</a> </dd>
+<dd>
+<a class="el" href="classCommonTapeRecorder.html#a300c974e49bdf39d884641c2140143f8">CommonTapeRecorder::sounds</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad37d0277b116a7289ad4c3c5a9a3d207" name="ad37d0277b116a7289ad4c3c5a9a3d207"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad37d0277b116a7289ad4c3c5a9a3d207">&#9670;&#160;</a></span>~EngineCallObserver()</h2>
 
