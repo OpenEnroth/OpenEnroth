@@ -32,9 +32,7 @@ Getting Started on Windows
 
 3. From the `dist` folder inside the zip file copy the `OpenEnroth.exe` and the `shaders` folder to the folder where the game is installed.
 
-4. You can also set `OPENENROTH_MM7_PATH` env variable to point to the game installation folder. OpenEnroth might work by reading MM7 installation path from registry, but this is not guaranteed.
-
-5. Run the `OpenEnroth.exe` binary. If you forget to copy the `shaders` folder, or if `OPENENROTH_MM7_PATH` points into the wrong folder, you will see errors in the console.
+4. Run `OpenEnroth.exe`. If you forget to copy the `shaders` folder, you will see errors in the console.
 
 
 Getting Started on Linux or Mac
