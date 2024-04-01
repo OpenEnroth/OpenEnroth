@@ -6,7 +6,6 @@
 #include <type_traits>
 
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time/Time.h"
 #include "Media/Audio/SoundEnums.h"
@@ -88,7 +87,19 @@ class CommonTapeRecorder {
 
     TestMultiTape<std::string> hudTextures();
 
+    /**
+     * Return a tape object of strings listing all the hints whenever a pop up message box was called.
+     *
+     * @return                          Tape object.
+     */
     TestMultiTape<std::string> messageBoxes();
+    /**
+     * Return a tape object of strings listing all the text drawn by GUIWindow::DrawText.
+     * TODO(pskelton): Tape will be spammy as it is recording everything.
+     * 
+     * @return                          Tape object.
+     */
+    TestMultiTape<std::string> allGUIWindowsText();
 
  private:
     TestController *_controller = nullptr;

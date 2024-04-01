@@ -106,7 +106,7 @@ class GUIWindow_House : public GUIWindow {
     bool checkIfPlayerCanInteract();
 
     void drawOptions(std::vector<std::string> &optionsText, Color selectColor,
-                     int topOptionShift = 0, bool denseSpacing = false);
+                     int topOptionShift = 0, bool denseSpacing = false) const;
 
     virtual void houseDialogueOptionSelected(DialogueId option);
     virtual void houseSpecificDialogue();
@@ -114,6 +114,12 @@ class GUIWindow_House : public GUIWindow {
     virtual void updateDialogueOnEscape();
     virtual void houseScreenClick();
     virtual void playHouseGoodbyeSpeech();
+
+ private:
+    void drawNpcHouseNameAndTitle(NPCData *npcData);
+    void drawNpcHouseGreetingMessage(NPCData *npcData);
+    void drawNpcHouseDialogueOptions(NPCData *npcData) const;
+    void drawNpcHouseDialogueResponse();
 
  protected:
     void learnSkillsDialogue(Color selectColor);

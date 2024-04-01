@@ -204,8 +204,10 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
 }
 
 void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
-    if (engine->callObserver)
+    // TODO(pskelton): Derived Messagebox types for different kinds of popup boxes
+    if (engine->callObserver) {
         engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, sHint);
+    }
 
     int x = 0;
     int y = 0;
@@ -340,6 +342,9 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
 
 //----- (0044CE08) --------------------------------------------------------
 void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
+    if (engine->callObserver) {
+        engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, text);
+    }
     font->DrawText(this, position, color, text, maxHeight, shadowColor);
 }
 
