@@ -56,6 +56,7 @@
 #include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/UISpellbook.h"
 #include "GUI/UI/UIBooks.h"
+#include "GUI/UI/UIDebugConsoleWindow.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIDialogue.h"
@@ -84,6 +85,7 @@
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
+#include "GameCommands.h"
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
@@ -505,7 +507,11 @@ void Game::processQueuedMessages() {
                 }
                 if (current_screen_type != SCREEN_GAME) continue;
                     // pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
+                if (engine->config->debug.NewDebugConsole.value()) {
+                    pGUIWindow_CurrentMenu = new GUIWindow_DebugConsoleMenu();
+                } else {
+                    pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
+                }
                 current_screen_type = SCREEN_DEBUG;
                 continue;
             case UIMSG_Escape:  // нажатие Escape and return to game
@@ -1816,6 +1822,13 @@ void Game::processQueuedMessages() {
                 render->ReloadShaders();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
+            case UIMSG_DebugConsoleEdit:
+                keyboardInputHandler->StartTextInput(Io::TextInputType::Text, 100, pGUIWindow_CurrentMenu);
+                continue;
+            case UIMSG_DebugConsoleConfirm:
+                engine->commandManager->execute(keyboardInputHandler->GetTextInput());
+                keyboardInputHandler->StartTextInput(Io::TextInputType::Text, 100, pGUIWindow_CurrentMenu);
+                continue;
             case UIMSG_QuickSave:
                 if (pCurrentMapName == "d05.blv") {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
@@ -1871,6 +1884,8 @@ void Game::gameLoop() {
     GameUI_LoadPlayerPortraintsAndVoices();
     pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
+
+    GameCommands::addCommands();
 
     while (true) {
         engine->_messageQueue->clear();

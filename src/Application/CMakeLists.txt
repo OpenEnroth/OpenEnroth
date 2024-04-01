@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(APPLICATION_SOURCES
         Game.cpp
+        GameCommands.cpp
         GameConfig.cpp
         GameKeyboardController.cpp
         GameMenu.cpp
@@ -14,6 +15,7 @@ set(APPLICATION_SOURCES
 
 set(APPLICATION_HEADERS
         Game.h
+        GameCommands.h
         GameConfig.h
         GameKeyboardController.h
         GameMenu.h
@@ -39,6 +41,7 @@ target_link_libraries(application
         engine_graphics_renderer        
         gui
         io
+        library_commands
         library_config
         library_lod
         media

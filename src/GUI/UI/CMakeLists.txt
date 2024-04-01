@@ -8,6 +8,7 @@ set(GUI_UI_SOURCES
         UICharacter.cpp
         UIChest.cpp
         UICredits.cpp
+        UIDebugConsoleWindow.cpp
         UIDialogue.cpp
         UIBranchlessDialogue.cpp
         UIGame.cpp
@@ -30,6 +31,7 @@ set(GUI_UI_HEADERS
         NPCTopics.h
         UISpellbook.h
         UIBooks.h
+        UIDebugConsoleWindow.h
         UICharacter.h
         UIChest.h
         UICredits.h

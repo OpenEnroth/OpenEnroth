@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <algorithm>
 
 #include "Engine/Graphics/Renderer/RendererEnums.h"
@@ -97,6 +98,8 @@ class GameConfig : public Config {
                                             "Disable collisions between the party and monsters on the map when recording traces."};
 
         Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
+
+        Bool NewDebugConsole = { this, "new_debug_console", false, "Use new debug console instead of debug view" };
 
      private:
         static int ValidateFrameTime(int frameTime) {
@@ -602,5 +605,33 @@ class GameConfig : public Config {
     };
 
     Window window{ this };
+
+    class Commands : public ConfigSection {
+     public:
+        explicit Commands(GameConfig* config) : ConfigSection(config, "commands") {
+            const char* defaultCommands[10] = {
+                "money 10",
+                "money 20",
+                "money 30",
+                "money 40",
+                "money 50",
+                "money 60",
+                "money 70",
+                "money 80",
+                "money 90",
+                "money 100",
+            };
+
+            for (auto i = 0; i < 10; ++i) {
+                DevCommands.push_back(new String(
+                    this, "dev_command" + std::to_string(i), defaultCommands[i], ""
+                ));
+            }
+        }
+
+        std::vector<String*> DevCommands;
+    };
+
+    Commands commands{ this };
 };
 

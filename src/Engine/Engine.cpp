@@ -421,6 +421,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 //----- (0044E4B7) --------------------------------------------------------
 Engine::Engine(std::shared_ptr<GameConfig> config) {
     this->config = config;
+    this->commandManager = std::make_unique<CommandManager>();
     this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
     this->spell_fx_renedrer = EngineIocContainer::ResolveSpellFxRenderer();

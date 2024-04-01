@@ -243,7 +243,9 @@ enum UIMessageType : uint32_t {
     UIMSG_DebugTownPortal = 998,
     UIMSG_OpenDebugMenu = 999,
     UIMSG_DebugReloadShader = 1000,
-    UIMSG_DebugUnused = 1001,
+    UIMSG_DebugConsoleEdit = 1001,
+    UIMSG_DebugConsoleConfirm = 1002,
+    UIMSG_DebugUnused = 1003,
 
     UIMSG_QuickSave = 2000,
     UIMSG_QuickLoad = 2001,
