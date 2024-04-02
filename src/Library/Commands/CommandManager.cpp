@@ -98,3 +98,7 @@ void CommandManager::adjustDefaultParameters(std::vector<std::string> &parameter
         }
     }
 }
+
+const std::unordered_map<std::string, CommandManager::CommandEntry>& CommandManager::getCommands() const {
+    return _commands;
+}

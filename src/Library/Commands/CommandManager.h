@@ -31,6 +31,13 @@ class CommandManager {
     int onCommandExecuted(CommandExecutedCallback callback);
     void removeOnCommandExecutedCallback(int handle);
 
+    struct CommandEntry {
+        std::unique_ptr<ICommand> command;
+        std::vector<std::string> defaultValues;
+    };
+
+    const std::unordered_map<std::string, CommandEntry>& getCommands() const;
+
  private:
     std::tuple<std::string, std::vector<std::string>> parseCommandLine(const std::string &str);
     void adjustDefaultParameters(std::vector<std::string> &parameters, const std::vector<std::string> &defaultValues);
@@ -39,11 +46,6 @@ class CommandManager {
     std::unique_ptr<ICommand> make_command_func(Func &&func, Ret(Class::*)(Args...) const) {
         return std::make_unique<TCommandFunc<Func, Args...>>(std::forward<Func>(func));
     }
-
-    struct CommandEntry {
-        std::unique_ptr<ICommand> command;
-        std::vector<std::string> defaultValues;
-    };
 
     std::unordered_map<std::string, CommandEntry> _commands;
     std::unordered_map<int, CommandExecutedCallback> _onCommandExecutedCallbacks;

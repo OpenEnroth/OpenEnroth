@@ -108,4 +108,15 @@ void GameCommands::addCommands() {
     addCommand("allmagic", []() {
         return toggleBooleanConfig("All Magic", engine->config->debug.AllMagic);
     });
+
+    addCommand("help", []() {
+        std::string result = "All Commands:\n";
+        const auto& commands = engine->commandManager->getCommands();
+        int index = 0;
+        for (auto&& commandEntryPair : commands) {
+            result += "- " + commandEntryPair.first + (index < commands.size() - 1 ? "\n" : "");
+            ++index;
+        }
+        return commandSuccess(result);
+    });
 }

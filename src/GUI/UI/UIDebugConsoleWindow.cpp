@@ -87,7 +87,7 @@ void GUIWindow_DebugConsoleMenu::drawCommandLinePrompt() {
 
 void GUIWindow_DebugConsoleMenu::onKeyboardInputInProgress(const Recti &rect) {
     const auto& textInput = keyboardInputHandler->GetTextInput();
-    const int marginPromptPrefix = getFont()->GetLineWidth(PROMPT_PREFIX) + 8;
+    const int marginPromptPrefix = getFont()->GetLineWidth(PROMPT_PREFIX) + rect.x;
     const int textInputSize = getFont()->GetLineWidth(textInput);
     DrawText(getFont(), { marginPromptPrefix, rect.y }, colorTable.White, textInput);
     DrawFlashingInputCursor(textInputSize + marginPromptPrefix, rect.y, getFont());
@@ -105,13 +105,19 @@ void GUIWindow_DebugConsoleMenu::onKeyboardInputConfirmed() {
 
 void GUIWindow_DebugConsoleMenu::drawTextHistory() {
     auto windowRect = getWindowRect();
-    auto lineHeight = getFont()->GetHeight() - 2;
+    auto font = getFont();
     auto offset = 4;
-    auto maxLines = ((windowRect.h - offset) / lineHeight) - 1;
-    for (int i = std::min((int)_consoleState->historyLines.size() - 1, maxLines); i >= 0; --i) {
+    auto currentHeight = 0;
+    for (int i = 0; i < (int)_consoleState->historyLines.size(); ++i) {
         const auto& line = _consoleState->historyLines[i];
-        const auto y = (windowRect.h - (lineHeight * (i + 1))) - offset;
-        DrawText(getFont(), { windowRect.x + 2, y }, line.color, line.text);
+        auto height = font->CalcTextHeight(line.text, windowRect.w, 2, true);
+        currentHeight += height + offset;
+        if (windowRect.h >= currentHeight) {
+            const auto y = (windowRect.h - currentHeight) + windowRect.y - offset;
+            DrawText(font, { windowRect.x + 2, y }, line.color, font->FitTextInAWindow(line.text, windowRect.w, 2, true));
+        } else {
+            break;
+        }
     }
 }
 
@@ -128,12 +134,12 @@ GUIFont* GUIWindow_DebugConsoleMenu::getFont() const {
 }
 
 Recti GUIWindow_DebugConsoleMenu::getWindowRect() const {
-    return Rect(8, 8, 460, 350 - getFont()->GetHeight());
+    return Rect(8, 8, 460, (353 - 8) - getFont()->GetHeight());
 }
 
 Recti GUIWindow_DebugConsoleMenu::getCommandLineRect() const {
     auto height = getFont()->GetHeight();
-    return Rect(8, 350 - height, 460, height);
+    return Rect(8, 353 - height, 460, height);
 }
 
 void ConsoleState::addToHistory(const std::string& text, const Color& color) {
