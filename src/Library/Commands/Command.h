@@ -4,6 +4,9 @@
 #include <vector>
 #include <sstream>
 #include <utility>
+#include <tuple>
+
+typedef std::tuple<std::string, bool> ExecuteResult;
 
 template<typename T>
 class ParseCommandParameter {
@@ -18,24 +21,26 @@ class ParseCommandParameter {
 class ICommand {
  public:
     virtual ~ICommand() = default;
-    virtual std::string run(const std::vector<std::string> &parameters) = 0;
+    virtual ExecuteResult run(const std::vector<std::string> &parameters) = 0;
 };
 
 template<typename ...Properties>
 class TCommandN : public ICommand {
-    std::string run(const std::vector<std::string> &parameters) override {
+    ExecuteResult run(const std::vector<std::string> &parameters) override {
         constexpr auto NUM_ARGS{ sizeof...(Properties) };
         if (parameters.size() >= NUM_ARGS) {
             return unpackAndCallFunction<NUM_ARGS, 0>(parameters, Properties()...);
+        } else {
+            return { "Invalid arguments number. Expected: " + std::to_string(NUM_ARGS) + " - Provided: " + std::to_string(parameters.size()), false };
         }
-
-        return "";
     }
 
     template<int SIZE, int INDEX, typename T, typename ...Args>
-    std::string unpackAndCallFunction(const std::vector<std::string> &vec, T first, Args &&... args) {
+    ExecuteResult unpackAndCallFunction(const std::vector<std::string> &vec, T first, Args &&... args) {
         typename std::decay<T>::type value{};
-        ParseCommandParameter<T>::parse(vec[INDEX], value);
+        if (INDEX < vec.size()) {
+            ParseCommandParameter<T>::parse(vec[INDEX], value);
+        }
 
         if constexpr (INDEX < SIZE - 1) {
             return unpackAndCallFunction<SIZE, INDEX + 1>(vec, args..., value);
@@ -45,11 +50,11 @@ class TCommandN : public ICommand {
     }
 
     template<int SIZE, int INDEX>
-    std::string unpackAndCallFunction(const std::vector<std::string>& vec) {
+    ExecuteResult unpackAndCallFunction(const std::vector<std::string>& vec) {
         return run();
     }
 
-    virtual std::string run(Properties...) = 0;
+    virtual ExecuteResult run(Properties...) = 0;
 };
 
 template<typename Func, typename ...Properties>
@@ -58,7 +63,7 @@ class TCommandFunc : public TCommandN<Properties...> {
     explicit TCommandFunc(Func &&func) : _func(std::forward<Func>(func)) {
     }
 
-    std::string run(Properties... props) override {
+    ExecuteResult run(Properties... props) override {
         return _func(props...);
     }
 
@@ -68,5 +73,5 @@ class TCommandFunc : public TCommandN<Properties...> {
 
 class ChangeMoneyCommand : public TCommandN<int, float, std::string> {
  public:
-    std::string run(int money, float f, std::string t) override;
+     ExecuteResult run(int money, float f, std::string t) override;
 };

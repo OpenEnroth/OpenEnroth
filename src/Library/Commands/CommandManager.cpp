@@ -6,41 +6,68 @@
 
 void test() {
     CommandManager cm;
-    cm.addCommand("money1", std::make_unique<ChangeMoneyCommand>());
+    cm.addCommand("money1", std::make_unique<ChangeMoneyCommand>(), {});
     cm.addFunction("money2", [](int money) {
         if (pParty != nullptr) {
             pParty->SetGold(money);
         }
-        return "";
-    });
+        return commandSuccess();
+    }, {});
     cm.addFunction("money3", []() {
         if (pParty != nullptr) {
             pParty->SetGold(2000);
         }
-        return "";
-    });
+        return commandSuccess();
+    }, {});
     cm.execute("money 100");
 }
 
-std::string ChangeMoneyCommand::run(int money, float f, std::string t) {
+ExecuteResult ChangeMoneyCommand::run(int money, float f, std::string t) {
     if (pParty != nullptr) {
         pParty->SetGold(money + f);
-        return t;
+        return { t, true };
     }
-    return "";
+    return { "", true };
 }
 
-void CommandManager::addCommand(const std::string& commandName, std::unique_ptr<ICommand> command) {
-    _commands.emplace(std::make_pair(commandName, std::move(command)));
+ExecuteResult commandSuccess(const std::string& message) {
+    return std::make_tuple(message, true);
 }
 
-std::string CommandManager::execute(const std::string & commandLine) {
+ExecuteResult commandFailure(const std::string& message) {
+    return std::make_tuple(message, false);
+}
+
+void CommandManager::addCommand(const std::string& commandName, std::unique_ptr<ICommand> command, const std::vector<std::string> &defaultValues) {
+    _commands.emplace(std::make_pair(commandName, CommandEntry{ std::move(command), defaultValues }));
+}
+
+int CommandManager::onCommandExecuted(CommandExecutedCallback callback) {
+    static int handle = 0;
+    _onCommandExecutedCallbacks.insert(std::make_pair(++handle, callback));
+    return handle;
+}
+
+void CommandManager::removeOnCommandExecutedCallback(int handle) {
+    if (auto itr = _onCommandExecutedCallbacks.find(handle); itr != _onCommandExecutedCallbacks.end()) {
+        _onCommandExecutedCallbacks.erase(itr);
+    }
+}
+
+ExecuteResult CommandManager::execute(const std::string &commandLine) {
+    ExecuteResult result;
     auto commandInfo = parseCommandLine(commandLine);
     if (const auto itr = _commands.find(std::get<0>(commandInfo)); itr != _commands.end()) {
-        return (itr->second)->run(std::get<1>(commandInfo));
+        adjustDefaultParameters(std::get<1>(commandInfo), itr->second.defaultValues);
+        result = (itr->second.command)->run(std::get<1>(commandInfo));
+    } else {
+        result = commandFailure("Can't find command: " + std::get<0>(commandInfo));
     }
 
-    return "Can't find command: " + std::get<0>(commandInfo);
+    for (auto&& callbackPair : _onCommandExecutedCallbacks) {
+        callbackPair.second(std::get<0>(result), commandLine, std::get<1>(result));
+    }
+    return result;
 }
 
 std::tuple<std::string, std::vector<std::string>> CommandManager::parseCommandLine(const std::string &str) {
@@ -60,4 +87,14 @@ std::tuple<std::string, std::vector<std::string>> CommandManager::parseCommandLi
     }
 
     return result;
+}
+
+void CommandManager::adjustDefaultParameters(std::vector<std::string> &parameters, const std::vector<std::string> &defaultValues) {
+    for (int i = 0; i < defaultValues.size(); ++i) {
+        if (i >= parameters.size()) {
+            parameters.push_back(defaultValues[i]);
+        } else if(parameters[i].empty()) {
+            parameters[i] = defaultValues[i];
+        }
+    }
 }
