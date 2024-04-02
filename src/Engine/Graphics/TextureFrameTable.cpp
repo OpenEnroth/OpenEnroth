@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 
+#include "Library/Logger/Logger.h"
 #include "Utility/String.h"
 
 struct TextureFrameTable *pTextureFrameTable;
@@ -23,8 +24,12 @@ int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
 }
 
 GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, Duration offset) {
-    Duration animationDuration = textures[frameId].animationDuration;
+    if (frameId < 0 || frameId >= textures.size()) {
+        logger->warning("Failed to retreive OOB frameID '{}' from TextureFrameTable::GetFrameTexture", frameId);
+        return nullptr;
+    }
 
+    Duration animationDuration = textures[frameId].animationDuration;
     if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animationDuration) {
         offset = offset % animationDuration;
         while (offset >= textures[frameId].frameDuration) {
@@ -33,6 +38,7 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, Duration offset) 
         }
     }
 
+    assert(frameId < textures.size() && "TextureFrameTable::GetFrameTexture animated frame OOB");
     return textures[frameId].GetTexture();
 }
 
