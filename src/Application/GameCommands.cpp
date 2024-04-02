@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <iostream>
 
 template<typename TFunc>
 void addCommand(const char* commandName, TFunc&& func, std::vector<std::string> defaultValues = {}) {
@@ -107,6 +108,18 @@ void GameCommands::addCommands() {
 
     addCommand("allmagic", []() {
         return toggleBooleanConfig("All Magic", engine->config->debug.AllMagic);
+    });
+
+    addCommand("config", [](std::string configVariableName, std::string action) {
+        auto configVariable = engine->config->debug.entry(configVariableName);
+        if (configVariable != nullptr) {
+            if (action == "toggle") {
+                return commandSuccess();
+            }
+        } else {
+            return commandFailure("Invalid config variable. Can't find a variable of name: " + configVariableName);
+        }
+        return commandSuccess();
     });
 
     addCommand("help", []() {
