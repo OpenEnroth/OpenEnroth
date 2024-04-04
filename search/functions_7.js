@@ -168,7 +168,7 @@ var searchData=
   ['getframeidbyexpression_165',['GetFrameIdByExpression',['../structPlayerFrameTable.html#a085461abdf127d04e55d158f6dceb850',1,'PlayerFrameTable']]],
   ['getframerate_166',['GetFrameRate',['../classIVideoDataSource.html#a539457ad1fb5c3d3f7c81ff364a8d2fe',1,'IVideoDataSource']]],
   ['getframereversed_167',['GetFrameReversed',['../structSpriteFrameTable.html#af461a4b639a82a02ce68ae604e32ddcc',1,'SpriteFrameTable']]],
-  ['getframetexture_168',['GetFrameTexture',['../structTextureFrameTable.html#ab508bc5460f6af57987431a203267bbc',1,'TextureFrameTable']]],
+  ['getframetexture_168',['GetFrameTexture',['../structTextureFrameTable.html#a3cfa8da85a10afa20a378926f4ebff50',1,'TextureFrameTable']]],
   ['getgamepadkey_169',['GetGamepadKey',['../classIo_1_1KeyboardActionMapping.html#a2d2f5f4a72e1f282415627646a036a04',1,'Io::KeyboardActionMapping']]],
   ['getgamma_170',['GetGamma',['../classBaseRenderer.html#aca342b8debb3b6aa1669c5ef38c7e951',1,'BaseRenderer::GetGamma()'],['../classRenderer.html#a16788612dd3fdb46fc30fd8460410b17',1,'Renderer::GetGamma()']]],
   ['getgender_171',['GetGender',['../mm7text__ru_8cpp.html#a3b1651c73512b95aad130c9090a7cd3c',1,'mm7text_ru.cpp']]],
