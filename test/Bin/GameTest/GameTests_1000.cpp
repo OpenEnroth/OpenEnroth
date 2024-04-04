@@ -218,6 +218,20 @@ GAME_TEST(Issues, Issue1251b) {
     EXPECT_EQ(charmedActors.delta(), 3);
 }
 
+GAME_TEST(Issues, Issue1253) {
+    // Right clicking on a hireling asserts if there is no active character
+    auto messageBoxesTape = tapes.messageBoxes();
+    auto messageBoxesBody = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1253.mm7", "issue_1253.json");
+    // message box text was displayed.
+    auto flatMessageBoxes = messageBoxesTape.flattened();
+    auto flatMessageBoxesBody = messageBoxesBody.flattened();
+    EXPECT_GT(flatMessageBoxes.size(), 0);
+    EXPECT_GT(flatMessageBoxesBody.filtered([](const auto& s) { return s.starts_with("Perception skill is increased by"); }).size(), 0);
+    EXPECT_FALSE(pParty->hasActiveCharacter());
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
+}
+
 GAME_TEST(Issues, Issue1255) {
     // Cant buy green wand
     auto wandTape = tapes.hasItem(ITEM_FAIRY_WAND_OF_LASHING);
