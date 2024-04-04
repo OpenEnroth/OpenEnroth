@@ -717,6 +717,7 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     PUSH_STYLE(style.props, window, spacing, lua_nk_style_type_vec2);
     lua_nk_styles.push_back(style);
 
+    wins[WINDOW_null].tmpl = "";
     wins[WINDOW_MainMenu].tmpl = "mainmenu";
     wins[WINDOW_MainMenu_Load].tmpl = "mainmenu_load";
     wins[WINDOW_GameUI].tmpl = "gameui";
@@ -734,6 +735,16 @@ bool Nuklear::Create(WindowType winType) {
     return LuaLoadTemplate(winType);
 }
 
+bool lua_error_check(WindowType winType, lua_State* L, int err) {
+    if (err != 0) {
+        logger->error("Nuklear: [{}] LUA error: {}\n", wins[winType].tmpl, lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return true;
+    }
+
+    return false;
+}
+
 int Nuklear::KeyEvent(PlatformKey key) {
     for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
         struct hotkey hk = *it;
@@ -749,8 +760,10 @@ int Nuklear::KeyEvent(PlatformKey key) {
 
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
             lua_pushlightuserdata(lua, (void *)&wins[hk.winType]);
-            lua_pcall(lua, 1, 0, 0);
-
+            int err = lua_pcall(lua, 1, 0, 0);
+            if (lua_error_check(hk.winType, lua, err)) {
+                wins[hk.winType].state = WINDOW_TEMPLATE_ERROR;
+            }
             return 1;
         }
     }
@@ -764,16 +777,6 @@ int lua_handle_error(lua_State *L) {
     lua_remove(L, -2);
 
     return 1;
-}
-
-bool lua_error_check(WindowType winType, lua_State *L, int err) {
-    if (err != 0) {
-        logger->error("Nuklear: [{}] LUA error: {}\n", wins[winType].tmpl, lua_tostring(L, -1));
-        lua_pop(L, 1);
-        return true;
-    }
-
-    return false;
 }
 
 void Nuklear::Release(WindowType winType, bool is_reload) {
@@ -886,6 +889,13 @@ Nuklear::NUKLEAR_MODE Nuklear::Mode(WindowType winType) {
     return wins[winType].mode;
 }
 
+static int lua_check_args_count(lua_State *L, bool condition) {
+    if (!condition)
+        return luaL_argerror(L, -2, lua_pushfstring(L, "invalid arguments count"));
+
+    return 0;
+}
+
 static int lua_check_args(lua_State *L, bool condition) {
     if (lua_gettop(L) == 0)
         return luaL_argerror(L, 1, lua_pushfstring(L, "context is absent"));
@@ -893,10 +903,7 @@ static int lua_check_args(lua_State *L, bool condition) {
     if (!lua_isuserdata(L, 1))
         return luaL_argerror(L, 1, lua_pushfstring(L, "context is invalid"));
 
-    if (!condition)
-        return luaL_argerror(L, -2, lua_pushfstring(L, "invalid arguments count"));
-
-    return 0;
+    return lua_check_args_count(L, condition);
 }
 
 static void lua_dumptable(lua_State *L, int i) {
@@ -1022,7 +1029,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     int err = lua_pcall(lua, 1, 0, 0);
     if (lua_error_check(winType, lua, err)) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->warning("Nuklear: [{}] error loading template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->warning("Nuklear: [{}] error loading template: {}", wins[winType].tmpl);
         return false;
     }
 
@@ -1031,7 +1038,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     err = lua_pcall(lua, 1, 1, 0);
     if (lua_error_check(winType, lua, err)) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->warning("Nuklear: [{}] error executing template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->warning("Nuklear: error executing template: {}", wins[winType].tmpl);
         return false;
     }
 
@@ -1059,7 +1066,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
 
     if (wins[winType].ui_draw < 0 || wins[winType].ui_release < 0) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->warning("Nuklear: [{}] error executing template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->warning("Nuklear: error executing template: {}", wins[winType].tmpl);
         return false;
     }
 
@@ -1601,6 +1608,30 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
     return 0;
 }
 
+static int lua_nk_parse_edit_string_options(lua_State* L, int idx, nk_flags* flags) {
+    *flags = NK_EDIT_FIELD;
+
+    if (lua_istable(L, idx)) {
+        lua_foreach(L, idx) {
+            const char *flag = luaL_checkstring(L, -1);
+            if (!strcmp(flag, "multiline"))
+                *flags |= NK_EDIT_MULTILINE;
+            else if (!strcmp(flag, "no_cursor"))
+                *flags |= NK_EDIT_NO_CURSOR;
+            else if (!strcmp(flag, "selectable"))
+                *flags |= NK_EDIT_SELECTABLE;
+            else if (!strcmp(flag, "goto_end_on_activate"))
+                *flags |= NK_EDIT_GOTO_END_ON_ACTIVATE;
+            else
+                return luaL_argerror(L, idx, lua_pushfstring(L, "unrecognized edit string option '%s'", flag));
+        }
+    } else {
+        return luaL_argerror(L, idx, lua_pushfstring(L, "wrong edit string option argument"));
+    }
+
+    return 0;
+}
+
 static int lua_nk_parse_window_flags(lua_State *L, int idx, nk_flags *flags) {
     *flags = NK_WINDOW_NO_SCROLLBAR;
 
@@ -1634,6 +1665,32 @@ static int lua_nk_parse_window_flags(lua_State *L, int idx, nk_flags *flags) {
         }
     } else {
         return luaL_argerror(L, idx, lua_pushfstring(L, "wrong window flag argument"));
+    }
+
+    return 0;
+}
+
+static int lua_nk_parse_scroll(lua_State* L, int idx, nk_scroll* scroll) {
+    if (lua_istable(L, idx)) {
+        lua_pushvalue(L, idx);
+        lua_pushnil(L);
+        while (lua_next(L, -2)) {
+            lua_pushvalue(L, -2);
+            int i = luaL_checkinteger(L, -1);
+            switch (i) {
+            case(1):
+                scroll->x = (float)luaL_checknumber(L, -2);
+                break;
+            case(2):
+                scroll->y = (float)luaL_checknumber(L, -2);
+                break;
+            }
+            lua_pop(L, 2);
+        }
+
+        lua_pop(L, 1);
+    } else {
+        return luaL_argerror(L, idx, lua_pushfstring(L, "scroll format is wrong"));
     }
 
     return 0;
@@ -1697,6 +1754,12 @@ static int lua_nk_parse_tree_type(lua_State *L, int idx, nk_tree_type *type) {
         return luaL_argerror(L, idx, lua_pushfstring(L, "type '%s' is unknown", strtype));
 
     return 0;
+}
+
+static nk_scroll* lua_nk_check_scroll(lua_State* L, int idx) {
+    void* userdata = luaL_checkudata(L, idx, "nk_scroll_mt");
+    luaL_argcheck(L, userdata != nullptr, idx, "nk_scroll value expected");
+    return (nk_scroll*)userdata;
 }
 
 static int lua_nk_begin(lua_State *L) {
@@ -2149,6 +2212,31 @@ static int lua_nk_combo_end(lua_State *L) {
     return 0;
 }
 
+static int lua_nk_edit_string(lua_State *L) {
+    /*
+    * Very temp buffer solution, but easy to use on the lua side
+    * edit_string is expecting a buffer which would require lua to provide
+    */
+    static const int MAX_BUFFER_SIZE = 1024;
+    static char buffer[MAX_BUFFER_SIZE] = { 0 };
+
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    nk_flags flags = 0;
+    lua_check_ret(lua_nk_parse_edit_string_options(L, 2, &flags));
+    const char* text = lua_tostring(lua, 3);
+    size_t len = NK_CLAMP(0, strlen(text), MAX_BUFFER_SIZE - 1);
+    memcpy(buffer, text, len);
+    buffer[len] = '\0';
+    int bufferLength = strlen(buffer);
+
+    nk_edit_string_zero_terminated(nuklear->ctx, flags, buffer, MAX_BUFFER_SIZE - 1, nk_filter_default);
+
+    lua_pushstring(lua, buffer);
+
+    return 1;
+}
+
 static int lua_nk_end(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
@@ -2176,6 +2264,46 @@ static int lua_nk_group_end(lua_State *L) {
 
     nk_group_end(nuklear->ctx);
 
+    return 0;
+}
+
+static int lua_nk_group_scrolled_begin(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
+
+    nk_scroll* scroll = lua_nk_check_scroll(L, 2);
+    const char* title = luaL_checkstring(L, 3);
+    nk_flags flags;
+    lua_check_ret(lua_nk_parse_window_flags(L, 4, &flags));
+
+    bool ret = nk_group_scrolled_begin(nuklear->ctx, scroll, title, flags);
+
+    lua_pushboolean(L, ret);
+
+    return 1;
+}
+
+static int lua_nk_group_scrolled_end(lua_State* L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+
+    nk_group_scrolled_end(nuklear->ctx);
+
+    return 0;
+}
+
+static int lua_nk_group_set_scroll(lua_State* L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
+
+    const char* id = luaL_checkstring(L, 2);
+    size_t xoffset = luaL_checkinteger(L, 3);
+    size_t yoffset = luaL_checkinteger(L, 4);
+    nk_group_set_scroll(nuklear->ctx, id, xoffset, yoffset);
+
+    return 0;
+}
+
+static int lua_nk_layout_reset_min_row_height(lua_State* L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+    nk_layout_reset_min_row_height(nuklear->ctx);
     return 0;
 }
 
@@ -3138,6 +3266,17 @@ static int lua_nk_window_is_closed(lua_State *L) {
     return 1;
 }
 
+static int lua_nk_window_get_size(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+
+    struct nk_vec2 size = nk_window_get_size(nuklear->ctx);
+
+    lua_pushnumber(L, size.x);
+    lua_pushnumber(L, size.y);
+
+    return 2;
+}
+
 static int lua_nk_load_image(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) >= 3 && lua_gettop(L) <= 5));
 
@@ -3436,6 +3575,48 @@ static int lua_load_raw_from_lod(lua_State *L) {
     return 1;
 }
 
+static int lua_nk_scroll_new(lua_State* L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 3));
+
+    int x = 0, y = 0;
+    if (lua_gettop(L) >= 2) {
+        x = luaL_checkint(L, 2);
+    }
+    if (lua_gettop(L) >= 3) {
+        y = luaL_checkint(L, 3);
+    }
+    nk_scroll* scroll = (nk_scroll*)lua_newuserdata(L, sizeof(nk_scroll));
+    scroll->x = x;
+    scroll->y = y;
+    luaL_getmetatable(L, "nk_scroll_mt");
+    lua_setmetatable(L, -2);
+    return 1;
+}
+
+static int lua_nk_scroll_set(lua_State* L) {
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 3));
+
+    nk_scroll* scroll = lua_nk_check_scroll(L, 1);
+    scroll->x = luaL_checkint(L, 2);
+    scroll->y = luaL_checkint(L, 3);
+    return 0;
+}
+
+static int lua_console_run_command(lua_State* L) {
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1));
+
+    const char* command = luaL_checkstring(L, 1);
+
+    ExecuteResult result = engine->commandManager->execute(command);
+    const std::string& message = std::get<0>(result);
+    bool success = std::get<1>(result);
+
+    lua_pushstring(L, message.c_str());
+    lua_pushboolean(L, success);
+
+    return 2;
+}
+
 static bool lua_load_init() {
     int status = luaL_loadfile(lua, makeDataPath("ui", "init.lua").c_str());
     if (status) {
@@ -3508,9 +3689,13 @@ bool Nuklear::LuaInit() {
         { "nk_combo_item_label", lua_nk_combo_item_label },
         { "nk_combo_item_symbol", lua_nk_combo_item_symbol },
         { "nk_combo_end", lua_nk_combo_end },
+        { "nk_edit_string", lua_nk_edit_string },
         { "nk_end", lua_nk_end },
         { "nk_group_begin", lua_nk_group_begin },
         { "nk_group_end", lua_nk_group_end },
+        { "nk_group_scrolled_begin", lua_nk_group_scrolled_begin },
+        { "nk_group_scrolled_end", lua_nk_group_scrolled_end },
+        { "nk_group_set_scroll", lua_nk_group_set_scroll },
         { "nk_image_dimensions", lua_nk_image_dimensions },
         { "nk_label", lua_nk_label },
         { "nk_label_colored", lua_nk_label_colored },
@@ -3525,6 +3710,7 @@ bool Nuklear::LuaInit() {
         { "nk_layout_space_begin", lua_nk_layout_space_begin},
         { "nk_layout_space_end", lua_nk_layout_space_end },
         { "nk_layout_space_push", lua_nk_layout_space_push },
+        { "nk_layout_reset_min_row_height", lua_nk_layout_reset_min_row_height },
         { "nk_menu_begin_image", lua_nk_menu_begin_image },
         { "nk_menu_begin_label", lua_nk_menu_begin_label },
         { "nk_menu_begin_symbol", lua_nk_menu_begin_symbol },
@@ -3566,6 +3752,7 @@ bool Nuklear::LuaInit() {
         { "nk_tree_state_pop", lua_nk_tree_state_pop },
         { "nk_tree_state_push", lua_nk_tree_state_push },
         { "nk_window_is_closed", lua_nk_window_is_closed },
+        { "nk_window_get_size", lua_nk_window_get_size },
         { NULL, NULL }
     };
     luaL_newlib(lua, ui);
@@ -3593,6 +3780,28 @@ bool Nuklear::LuaInit() {
     };
     luaL_newlib(lua, window);
     lua_setglobal(lua, "window");
+
+    static const luaL_Reg console[] = {
+        { "run_command", lua_console_run_command },
+        { NULL, NULL }
+    };
+    luaL_newlib(lua, console);
+    lua_setglobal(lua, "console");
+
+    static const luaL_Reg nk_scroll[] = {
+        { "new", lua_nk_scroll_new },
+        { "set", lua_nk_scroll_set },
+        { NULL, NULL }
+    };
+    luaL_newlib(lua, nk_scroll);
+    lua_setglobal(lua, "nk_scroll");
+
+    luaL_newmetatable(lua, "nk_scroll_mt");
+    lua_pushstring(lua, "__index");
+    lua_pushvalue(lua, -2);
+    lua_settable(lua, -3);
+    luaL_openlib(lua, nullptr, nk_scroll, 0);
+    lua_pop(lua, -1);
 
     lua_pushinteger(lua, NUKLEAR_STAGE_PRE);
     lua_setglobal(lua, "NUKLEAR_STAGE_PRE");

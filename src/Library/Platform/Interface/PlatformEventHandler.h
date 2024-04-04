@@ -30,4 +30,5 @@ class PlatformEventHandler {
     virtual void gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event);
     virtual void gamepadAxisEvent(const PlatformGamepadAxisEvent *event);
     virtual void nativeEvent(const PlatformNativeEvent *event);
+    virtual void textInputEvent(const PlatformTextInputEvent *event);
 };

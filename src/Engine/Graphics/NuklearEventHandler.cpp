@@ -111,3 +111,10 @@ bool NuklearEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(nuklear->ctx, nk_vec2(event->angleDelta.x, event->angleDelta.y));
     return false;
 }
+
+bool NuklearEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
+    nk_glyph glyph;
+    memcpy(glyph, event->text, NK_UTF_SIZE);
+    nk_input_glyph(nuklear->ctx, glyph);
+    return false;
+}

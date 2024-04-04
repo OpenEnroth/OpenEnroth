@@ -99,8 +99,6 @@ class GameConfig : public Config {
 
         Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
 
-        Bool NewDebugConsole = { this, "new_debug_console", false, "Use new debug console instead of debug view" };
-
      private:
         static int ValidateFrameTime(int frameTime) {
             return std::max(frameTime, 1);

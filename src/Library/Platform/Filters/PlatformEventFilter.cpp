@@ -47,6 +47,8 @@ bool PlatformEventFilter::event(const PlatformEvent *event) {
         return gamepadAxisEvent(static_cast<const PlatformGamepadAxisEvent *>(event));
     case EVENT_NATIVE:
         return nativeEvent(static_cast<const PlatformNativeEvent *>(event));
+    case EVENT_TEXT_INPUT:
+        return textInputEvent(static_cast<const PlatformTextInputEvent *>(event));
     default:
         return false;
     }
@@ -109,5 +111,9 @@ bool PlatformEventFilter::gamepadAxisEvent(const PlatformGamepadAxisEvent *) {
 }
 
 bool PlatformEventFilter::nativeEvent(const PlatformNativeEvent *) {
+    return false;
+}
+
+bool PlatformEventFilter::textInputEvent(const PlatformTextInputEvent *) {
     return false;
 }

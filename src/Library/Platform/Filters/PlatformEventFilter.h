@@ -36,6 +36,7 @@ class PlatformEventFilter {
     virtual bool gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event);
     virtual bool gamepadAxisEvent(const PlatformGamepadAxisEvent *event);
     virtual bool nativeEvent(const PlatformNativeEvent *event);
+    virtual bool textInputEvent(const PlatformTextInputEvent *event);
 
  private:
     std::vector<PlatformEventType> _eventTypes;

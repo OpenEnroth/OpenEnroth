@@ -106,6 +106,9 @@ void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
     case SDL_CONTROLLERAXISMOTION:
         dispatchGamepadAxisEvent(eventHandler, &event->caxis);
         break;
+    case SDL_TEXTINPUT:
+        dispatchTextInputEvent(eventHandler, &event->text);
+        break;
     default:
         break;
     }
@@ -339,6 +342,15 @@ void SdlEventLoop::dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, 
 
     if (!e.gamepad || e.axis == PlatformKey::KEY_NONE)
         return;
+
+    dispatchEvent(eventHandler, &e);
+}
+
+void SdlEventLoop::dispatchTextInputEvent(PlatformEventHandler* eventHandler, const SDL_TextInputEvent* event) {
+    PlatformTextInputEvent e;
+    e.type = EVENT_TEXT_INPUT;
+    e.window = _state->window(event->windowID);
+    e.text = event->text;
 
     dispatchEvent(eventHandler, &e);
 }

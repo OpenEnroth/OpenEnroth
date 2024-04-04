@@ -72,3 +72,9 @@ class PlatformNativeEvent: public PlatformEvent {
  public:
     const void *nativeEvent = nullptr; // Pointer to a native event, in our case this is `SDL_Event`. Never `nullptr`.
 };
+
+class PlatformTextInputEvent : public PlatformEvent {
+ public:
+    PlatformWindow *window = nullptr;
+    const char *text = nullptr;
+};
