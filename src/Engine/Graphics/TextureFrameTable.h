@@ -33,20 +33,20 @@ class TextureFrame {
 };
 
 struct TextureFrameTable {
-    GraphicsImage *GetFrameTexture(int frameId, Duration offset);
+    GraphicsImage *GetFrameTexture(int64_t frameId, Duration offset);
 
     /**
      * @param frameID                   Texture index in this table.
      * @return                          Total duration of the corresponding animation. Passed frame must be the first
      *                                  one in a sequence.
      */
-    Duration textureFrameAnimLength(int frameID);
+    Duration textureFrameAnimLength(int64_t frameID);
 
     /**
      * @param frameID                   Texture index in this table.
      * @return                          Dwell time of this texture.
      */
-    Duration textureFrameAnimTime(int frameID);
+    Duration textureFrameAnimTime(int64_t frameID);
 
     int64_t FindTextureByName(const std::string &Str2);
 
