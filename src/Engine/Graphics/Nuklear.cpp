@@ -3304,6 +3304,15 @@ static int lua_nk_window_is_hidden(lua_State *L) {
     return 1;
 }
 
+static int lua_nk_window_is_hovered(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+    bool ret = nk_window_is_hovered(nuklear->ctx);
+
+    lua_pushboolean(L, ret);
+
+    return 1;
+}
+
 static int lua_nk_window_get_size(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
@@ -3313,6 +3322,42 @@ static int lua_nk_window_get_size(lua_State *L) {
     lua_pushnumber(L, size.y);
 
     return 2;
+}
+
+static int lua_nk_window_set_size(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char* name = lua_tostring(L, 2);
+    struct nk_vec2 size;
+    lua_check_ret(lua_nk_parse_vec2(L, 3, &size));
+
+    nk_window_set_size(nuklear->ctx, name, size);
+
+    return 0;
+}
+
+static int lua_nk_window_set_position(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char* name = lua_tostring(L, 2);
+    struct nk_vec2 size;
+    lua_check_ret(lua_nk_parse_vec2(L, 3, &size));
+
+    nk_window_set_size(nuklear->ctx, name, size);
+
+    return 0;
+}
+
+static int lua_nk_window_set_bounds(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char* name = lua_tostring(L, 2);
+    struct nk_rect bounds;
+    lua_check_ret(lua_nk_parse_rect(L, 3, &bounds));
+
+    nk_window_set_bounds(nuklear->ctx, name, bounds);
+
+    return 0;
 }
 
 static int lua_nk_window_get_position(lua_State *L) {
@@ -3704,8 +3749,12 @@ bool Nuklear::LuaInit() {
         { "nk_tree_state_push", lua_nk_tree_state_push },
         { "nk_window_is_closed", lua_nk_window_is_closed },
         { "nk_window_is_hidden", lua_nk_window_is_hidden },
+        { "nk_window_is_hovered", lua_nk_window_is_hovered },
         { "nk_window_get_size", lua_nk_window_get_size },
+        { "nk_window_set_size", lua_nk_window_set_size },
         { "nk_window_get_position", lua_nk_window_get_position },
+        { "nk_window_set_position", lua_nk_window_set_position },
+        { "nk_window_set_bounds", lua_nk_window_set_bounds },
         { NULL, NULL }
     };
     luaL_newlib(lua, ui);
