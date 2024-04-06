@@ -1836,12 +1836,6 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugEradicate = CreateButton({127, 329}, {width, height}, 1, 0, UIMSG_DebugEradicate, 0, Io::InputAction::Invalid, "DEBUG ERADICATE SELECTED CHARACTER");
     GUIButton *pBtn_DebugNoDamage = CreateButton({241, 329}, {width, height}, 1, 0, UIMSG_DebugNoDamage, 0, Io::InputAction::Invalid, "DEBUG TOGGLE NO DAMAGE");
     GUIButton *pBtn_DebugFullHeal = CreateButton({354, 329}, {width, height}, 1, 0, UIMSG_DebugFullHeal, 0, Io::InputAction::Invalid, "DEBUG FULLY HEAL SELECTED CHARACTER");
-
-    nuklear->Create(WINDOW_DebugMenu);
-}
-
-void GUIWindow_DebugMenu::Release() {
-    GUIWindow::Release();
 }
 
 void GUIWindow_DebugMenu::Update() {
@@ -1907,8 +1901,6 @@ void GUIWindow_DebugMenu::Update() {
 
     //render->DrawTwodVerts();
     //render->EndLines2D();
-
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 
 void buttonbox(int x, int y, const std::string &text, int col) {

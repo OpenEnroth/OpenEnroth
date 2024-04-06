@@ -50,7 +50,6 @@ class GUIWindow_DebugMenu : public GUIWindow {
      virtual ~GUIWindow_DebugMenu() {}
 
      virtual void Update() override;
-     virtual void Release() override;
 };
 
 class GraphicsImage;
