@@ -6,6 +6,8 @@
 
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
+#include "NuklearUtils.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -67,7 +69,7 @@ struct context {
     Nuklear::NUKLEAR_MODE mode;
 };
 
-struct context wins[WINDOW_DebugMenu] = {};
+struct context wins[WINDOW_DebugMenu + 1] = {};
 
 enum lua_nk_color_type {
     LUA_COLOR_ANY,
@@ -106,8 +108,6 @@ struct lua_nk_style {
 
 std::vector<struct lua_nk_style> lua_nk_styles;
 
-#define lua_foreach(_lua, _idx) for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))
-#define lua_check_ret(_func) { int _ret = _func; if (_ret) return _ret; }
 #define PUSH_STYLE(element, component, property, type) element.push_back({ #property, &nuklear->ctx->style.component.property, type});
 #define PUSH_BUTTON_STYLE(element, style, property, type) element.push_back({ #property, &style->property, type});
 
@@ -210,22 +210,22 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     /* combo button */
     {
         /* button background */
-        PUSH_STYLE(style.props, combo.button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, combo.button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, combo.button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, combo.button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, combo, button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, combo, button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, combo, button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, combo, button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, combo.button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, combo.button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, combo.button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, combo.button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, combo.button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, combo, button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, combo, button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, combo, button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, combo, button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, combo, button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, combo.button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, combo.button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, combo.button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, combo.button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, combo.button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, combo, button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, combo, button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, combo, button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, combo, button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, combo, button.touch_padding, lua_nk_style_type_vec2);
     }
     PUSH_STYLE(style.props, combo, sym_active, lua_nk_style_type_symbol);
     PUSH_STYLE(style.props, combo, sym_hover, lua_nk_style_type_symbol);
@@ -241,72 +241,72 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
 
     style.component = "edit";
     /* edit background */
-    PUSH_STYLE(style.props, combo, active, lua_nk_style_type_item);
+    PUSH_STYLE(style.props, edit, active, lua_nk_style_type_item);
     PUSH_STYLE(style.props, edit, border_color, lua_nk_style_type_color);
     PUSH_STYLE(style.props, edit, hover, lua_nk_style_type_item);
     PUSH_STYLE(style.props, edit, normal, lua_nk_style_type_item);
     /* edit scrollbar */
     {
-        PUSH_STYLE(style.props, edit.scrollbar, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, edit.scrollbar, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, edit.scrollbar, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, edit.scrollbar, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, edit, scrollbar.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, edit, scrollbar.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, edit, scrollbar.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, edit, scrollbar.normal, lua_nk_style_type_item);
 
         /* cursor */
-        PUSH_STYLE(style.props, edit.scrollbar, cursor_active, lua_nk_style_type_cursor);
-        PUSH_STYLE(style.props, edit.scrollbar, cursor_border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, edit.scrollbar, cursor_hover, lua_nk_style_type_cursor);
-        PUSH_STYLE(style.props, edit.scrollbar, cursor_normal, lua_nk_style_type_cursor);
+        PUSH_STYLE(style.props, edit, scrollbar.cursor_active, lua_nk_style_type_cursor);
+        PUSH_STYLE(style.props, edit, scrollbar.cursor_border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, edit, scrollbar.cursor_hover, lua_nk_style_type_cursor);
+        PUSH_STYLE(style.props, edit, scrollbar.cursor_normal, lua_nk_style_type_cursor);
 
         /* properties */
-        PUSH_STYLE(style.props, edit.scrollbar, border_cursor, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, edit.scrollbar, rounding_cursor, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, edit.scrollbar, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, edit.scrollbar, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, edit.scrollbar, rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, edit, scrollbar.border_cursor, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, edit, scrollbar.rounding_cursor, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, edit, scrollbar.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, edit, scrollbar.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, edit, scrollbar.rounding, lua_nk_style_type_float);
 
         /* optional buttons */
         PUSH_STYLE(style.props, edit.scrollbar, show_buttons, lua_nk_style_type_integer);
         {
             /* button background */
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, active, lua_nk_style_type_item);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, border_color, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, hover, lua_nk_style_type_item);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, normal, lua_nk_style_type_item);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.active, lua_nk_style_type_item);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.border_color, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.hover, lua_nk_style_type_item);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.normal, lua_nk_style_type_item);
             /* button text */
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, text_active, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, text_alignment, lua_nk_style_type_align_text);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, text_background, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, text_hover, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, text_normal, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.text_active, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.text_alignment, lua_nk_style_type_align_text);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.text_background, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.text_hover, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.text_normal, lua_nk_style_type_color);
             /* button properties */
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, border, lua_nk_style_type_float);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, image_padding, lua_nk_style_type_vec2);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, padding, lua_nk_style_type_vec2);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, rounding, lua_nk_style_type_float);
-            PUSH_STYLE(style.props, edit.scrollbar.dec_button, touch_padding, lua_nk_style_type_vec2);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.border, lua_nk_style_type_float);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.image_padding, lua_nk_style_type_vec2);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.padding, lua_nk_style_type_vec2);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.rounding, lua_nk_style_type_float);
+            PUSH_STYLE(style.props, edit, scrollbar.dec_button.touch_padding, lua_nk_style_type_vec2);
         }
-        PUSH_STYLE(style.props, edit.scrollbar, dec_symbol, lua_nk_style_type_symbol);
+        PUSH_STYLE(style.props, edit, scrollbar.dec_symbol, lua_nk_style_type_symbol);
         {
             /* button background */
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, active, lua_nk_style_type_item);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, border_color, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, hover, lua_nk_style_type_item);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, normal, lua_nk_style_type_item);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.active, lua_nk_style_type_item);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.border_color, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.hover, lua_nk_style_type_item);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.normal, lua_nk_style_type_item);
             /* button text */
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, text_active, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, text_alignment, lua_nk_style_type_align_text);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, text_background, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, text_hover, lua_nk_style_type_color);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, text_normal, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.text_active, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.text_alignment, lua_nk_style_type_align_text);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.text_background, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.text_hover, lua_nk_style_type_color);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.text_normal, lua_nk_style_type_color);
             /* button properties */
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, border, lua_nk_style_type_float);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, image_padding, lua_nk_style_type_vec2);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, padding, lua_nk_style_type_vec2);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, rounding, lua_nk_style_type_float);
-            PUSH_STYLE(style.props, edit.scrollbar.inc_button, touch_padding, lua_nk_style_type_vec2);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.border, lua_nk_style_type_float);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.image_padding, lua_nk_style_type_vec2);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.padding, lua_nk_style_type_vec2);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.rounding, lua_nk_style_type_float);
+            PUSH_STYLE(style.props, edit, scrollbar.inc_button.touch_padding, lua_nk_style_type_vec2);
         }
-        PUSH_STYLE(style.props, edit.scrollbar, inc_symbol, lua_nk_style_type_symbol);
+        PUSH_STYLE(style.props, edit, scrollbar.inc_symbol, lua_nk_style_type_symbol);
     }
     /* edit cursor */
     PUSH_STYLE(style.props, edit, cursor_hover, lua_nk_style_type_cursor);
@@ -473,42 +473,42 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     /* dec_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, slider.dec_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, slider.dec_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.dec_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, slider.dec_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, slider, dec_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, slider, dec_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, dec_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, slider, dec_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, slider.dec_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.dec_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, slider.dec_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.dec_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.dec_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, dec_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, dec_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, slider, dec_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, dec_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, dec_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, slider.dec_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, slider.dec_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, slider.dec_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, slider.dec_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, slider.dec_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, slider, dec_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, slider, dec_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, slider, dec_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, slider, dec_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, slider, dec_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* inc_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, slider.inc_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, slider.inc_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.inc_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, slider.inc_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, slider, inc_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, slider, inc_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, inc_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, slider, inc_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, slider.inc_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.inc_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, slider.inc_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.inc_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, slider.inc_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, inc_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, inc_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, slider, inc_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, inc_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, slider, inc_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, slider.inc_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, slider.inc_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, slider.inc_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, slider.inc_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, slider.inc_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, slider, inc_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, slider, inc_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, slider, inc_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, slider, inc_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, slider, inc_button.touch_padding, lua_nk_style_type_vec2);
     }
 
     /* properties */
@@ -529,82 +529,82 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     /* node_maximize_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, tab.node_maximize_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.node_maximize_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_maximize_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.node_maximize_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, node_maximize_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, node_maximize_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_maximize_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, node_maximize_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, tab.node_maximize_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_maximize_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, tab.node_maximize_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_maximize_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_maximize_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_maximize_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_maximize_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, tab, node_maximize_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_maximize_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_maximize_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, tab.node_maximize_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.node_maximize_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.node_maximize_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.node_maximize_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.node_maximize_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, node_maximize_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, node_maximize_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, node_maximize_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, node_maximize_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, node_maximize_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* node_minimize_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, tab.node_minimize_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.node_minimize_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_minimize_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.node_minimize_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, node_minimize_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, node_minimize_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_minimize_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, node_minimize_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, tab.node_minimize_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_minimize_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, tab.node_minimize_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_minimize_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.node_minimize_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_minimize_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_minimize_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, tab, node_minimize_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_minimize_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, node_minimize_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, tab.node_minimize_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.node_minimize_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.node_minimize_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.node_minimize_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.node_minimize_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, node_minimize_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, node_minimize_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, node_minimize_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, node_minimize_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, node_minimize_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* tab_maximize_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, tab.tab_maximize_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, tab.tab_maximize_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, tab.tab_maximize_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.tab_maximize_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, tab_maximize_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* tab_minimize_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, tab.tab_minimize_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, tab.tab_minimize_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, tab.tab_minimize_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, tab.tab_minimize_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, tab, tab_minimize_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* symbol */
     PUSH_STYLE(style.props, tab, sym_maximize, lua_nk_style_type_symbol);
@@ -627,42 +627,42 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     /* close_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, window.header.close_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, window.header.close_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.close_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, window.header.close_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, window.header, close_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, window.header, close_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, close_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, window.header, close_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, window.header.close_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.close_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, window.header.close_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.close_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.close_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, close_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, close_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, window.header, close_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, close_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, close_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, window.header.close_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, window.header.close_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, window.header.close_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, window.header.close_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, window.header.close_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, window.header, close_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, window.header, close_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, window.header, close_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, window.header, close_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, window.header, close_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* minimize_button */
     {
         /* button background */
-        PUSH_STYLE(style.props, window.header.minimize_button, active, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, window.header.minimize_button, border_color, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.minimize_button, hover, lua_nk_style_type_item);
-        PUSH_STYLE(style.props, window.header.minimize_button, normal, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, window.header, minimize_button.active, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, window.header, minimize_button.border_color, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, minimize_button.hover, lua_nk_style_type_item);
+        PUSH_STYLE(style.props, window.header, minimize_button.normal, lua_nk_style_type_item);
         /* button text */
-        PUSH_STYLE(style.props, window.header.minimize_button, text_active, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.minimize_button, text_alignment, lua_nk_style_type_align_text);
-        PUSH_STYLE(style.props, window.header.minimize_button, text_background, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.minimize_button, text_hover, lua_nk_style_type_color);
-        PUSH_STYLE(style.props, window.header.minimize_button, text_normal, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, minimize_button.text_active, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, minimize_button.text_alignment, lua_nk_style_type_align_text);
+        PUSH_STYLE(style.props, window.header, minimize_button.text_background, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, minimize_button.text_hover, lua_nk_style_type_color);
+        PUSH_STYLE(style.props, window.header, minimize_button.text_normal, lua_nk_style_type_color);
         /* button properties */
-        PUSH_STYLE(style.props, window.header.minimize_button, border, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, window.header.minimize_button, image_padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, window.header.minimize_button, padding, lua_nk_style_type_vec2);
-        PUSH_STYLE(style.props, window.header.minimize_button, rounding, lua_nk_style_type_float);
-        PUSH_STYLE(style.props, window.header.minimize_button, touch_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, window.header, minimize_button.border, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, window.header, minimize_button.image_padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, window.header, minimize_button.padding, lua_nk_style_type_vec2);
+        PUSH_STYLE(style.props, window.header, minimize_button.rounding, lua_nk_style_type_float);
+        PUSH_STYLE(style.props, window.header, minimize_button.touch_padding, lua_nk_style_type_vec2);
     }
     /* symbol */
     PUSH_STYLE(style.props, window.header, close_symbol, lua_nk_style_type_symbol);
@@ -721,6 +721,7 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     wins[WINDOW_MainMenu].tmpl = "mainmenu";
     wins[WINDOW_MainMenu_Load].tmpl = "mainmenu_load";
     wins[WINDOW_GameUI].tmpl = "gameui";
+    wins[WINDOW_DebugMenu].tmpl = "ui_debug_hud";
 
     return result;
 }
@@ -760,11 +761,11 @@ int Nuklear::KeyEvent(PlatformKey key) {
 
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
             lua_pushlightuserdata(lua, (void *)&wins[hk.winType]);
-            int err = lua_pcall(lua, 1, 0, 0);
+            int err = lua_pcall(lua, 1, 1, 0);
             if (lua_error_check(hk.winType, lua, err)) {
                 wins[hk.winType].state = WINDOW_TEMPLATE_ERROR;
             }
-            return 1;
+            return lua_toboolean(lua, -1) != 0;
         }
     }
 
@@ -887,23 +888,6 @@ void Nuklear::Destroy() {
 
 Nuklear::NUKLEAR_MODE Nuklear::Mode(WindowType winType) {
     return wins[winType].mode;
-}
-
-static int lua_check_args_count(lua_State *L, bool condition) {
-    if (!condition)
-        return luaL_argerror(L, -2, lua_pushfstring(L, "invalid arguments count"));
-
-    return 0;
-}
-
-static int lua_check_args(lua_State *L, bool condition) {
-    if (lua_gettop(L) == 0)
-        return luaL_argerror(L, 1, lua_pushfstring(L, "context is absent"));
-
-    if (!lua_isuserdata(L, 1))
-        return luaL_argerror(L, 1, lua_pushfstring(L, "context is invalid"));
-
-    return lua_check_args_count(L, condition);
 }
 
 static void lua_dumptable(lua_State *L, int i) {
@@ -1154,8 +1138,9 @@ static int lua_nk_parse_rect(lua_State *L, int idx, struct nk_rect *rect) {
         lua_pushnil(L);
         while (lua_next(L, -2)) {
             lua_pushvalue(L, -2);
-            int i = luaL_checkinteger(L, -1);
-            switch (i) {
+            if (lua_isnumber(L, -1)) {
+                int i = luaL_checkinteger(L, -1);
+                switch (i) {
                 case(1):
                     rect->x = (float)luaL_checknumber(L, -2);
                     break;
@@ -1168,6 +1153,24 @@ static int lua_nk_parse_rect(lua_State *L, int idx, struct nk_rect *rect) {
                 case(4):
                     rect->h = (float)luaL_checknumber(L, -2);
                     break;
+                }
+            } else {
+                const char* key = lua_tostring(L, -1);
+                float* val = &rect->x;
+                if (!strcmp(key, "x")) {
+                    val = &rect->x;
+                } else if (!strcmp(key, "y")) {
+                    val = &rect->y;
+                } else if (!strcmp(key, "w")) {
+                    val = &rect->w;
+                } else if (!strcmp(key, "h")) {
+                    val = &rect->h;
+                }
+
+                if (!val) {
+                    return luaL_argerror(L, idx, lua_pushfstring(L, "rect format is wrong"));
+                }
+                *val = (float)luaL_checknumber(L, -2);
             }
             lua_pop(L, 2);
         }
@@ -1618,6 +1621,8 @@ static int lua_nk_parse_edit_string_options(lua_State* L, int idx, nk_flags* fla
                 *flags |= NK_EDIT_MULTILINE;
             else if (!strcmp(flag, "no_cursor"))
                 *flags |= NK_EDIT_NO_CURSOR;
+            else if (!strcmp(flag, "commit_on_enter"))
+                *flags |= NK_EDIT_SIG_ENTER;
             else if (!strcmp(flag, "selectable"))
                 *flags |= NK_EDIT_SELECTABLE;
             else if (!strcmp(flag, "goto_end_on_activate"))
@@ -2212,10 +2217,30 @@ static int lua_nk_combo_end(lua_State *L) {
     return 0;
 }
 
+static void lua_nk_push_edit_string_result_flag(lua_State* L, nk_flags flags) {
+    static const auto EDIT_STRING_RESULTS = std::array{
+        NK_EDIT_ACTIVE,
+        NK_EDIT_INACTIVE,
+        NK_EDIT_ACTIVATED,
+        NK_EDIT_DEACTIVATED,
+        NK_EDIT_COMMITED,
+    };
+    lua_newtable(L);
+    for (int i = 0; i < EDIT_STRING_RESULTS.size(); ++i) {
+        const auto& flag = EDIT_STRING_RESULTS[i];
+        if (flags & flag) {
+            lua_pushinteger(L, flag);
+            lua_pushboolean(L, true);
+            lua_rawset(L, -3);
+        }
+    }
+}
+
 static int lua_nk_edit_string(lua_State *L) {
     /*
     * Very temp buffer solution, but easy to use on the lua side
     * edit_string is expecting a buffer which would require lua to provide
+    * new ways to instantiate a buffer
     */
     static const int MAX_BUFFER_SIZE = 1024;
     static char buffer[MAX_BUFFER_SIZE] = { 0 };
@@ -2230,11 +2255,12 @@ static int lua_nk_edit_string(lua_State *L) {
     buffer[len] = '\0';
     int bufferLength = strlen(buffer);
 
-    nk_edit_string_zero_terminated(nuklear->ctx, flags, buffer, MAX_BUFFER_SIZE - 1, nk_filter_default);
+    nk_flags resultFlags = nk_edit_string_zero_terminated(nuklear->ctx, flags, buffer, MAX_BUFFER_SIZE - 1, nk_filter_default);
 
     lua_pushstring(lua, buffer);
+    lua_nk_push_edit_string_result_flag(L, resultFlags);
 
-    return 1;
+    return 2;
 }
 
 static int lua_nk_end(lua_State *L) {
@@ -3266,10 +3292,33 @@ static int lua_nk_window_is_closed(lua_State *L) {
     return 1;
 }
 
+static int lua_nk_window_is_hidden(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
+
+    const char *title = luaL_checkstring(L, 2);
+
+    bool ret = nk_window_is_hidden(nuklear->ctx, title);
+
+    lua_pushboolean(L, ret);
+
+    return 1;
+}
+
 static int lua_nk_window_get_size(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     struct nk_vec2 size = nk_window_get_size(nuklear->ctx);
+
+    lua_pushnumber(L, size.x);
+    lua_pushnumber(L, size.y);
+
+    return 2;
+}
+
+static int lua_nk_window_get_position(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+
+    struct nk_vec2 size = nk_window_get_position(nuklear->ctx);
 
     lua_pushnumber(L, size.x);
     lua_pushnumber(L, size.y);
@@ -3338,15 +3387,6 @@ static int lua_window_dimensions(lua_State *L) {
     lua_pushnumber(L, size.h);
     lua_pushnumber(L, renderSize.w);
     lua_pushnumber(L, renderSize.h);
-
-    return 4;
-}
-
-static int lua_set_game_current_menu(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
-
-    int id = luaL_checkinteger(L, 2);
-    SetCurrentMenuID(MenuType(id));
 
     return 4;
 }
@@ -3434,156 +3474,15 @@ static int lua_unset_hotkeys(lua_State *L) {
     return 0;
 }
 
-static int lua_party_get(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
-
-    const char *name = luaL_checkstring(L, 1);
-    int value;
-
-    if (!strcmp(name, "food"))
-        value = pParty->GetFood();
-    else if (!strcmp(name, "gold"))
-        value = pParty->GetGold();
-    else
-        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
-
-    lua_pushinteger(L, value);
-
-    return 1;
-}
-
-static int lua_party_give(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
-
-    const char *name = luaL_checkstring(L, 1);
-    int value = luaL_checknumber(L, 2);
-
-    if (!strcmp(name, "food"))
-        pParty->GiveFood(value);
-    else if (!strcmp(name, "gold"))
-        pParty->AddGold(value);
-    else
-        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
-
-    return 0;
-}
-
-static int lua_party_set(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
-
-    const char *name = luaL_checkstring(L, 1);
-    int value = luaL_checknumber(L, 2);
-
-    if (!strcmp(name, "food"))
-        pParty->SetFood(value);
-    else if (!strcmp(name, "gold"))
-        pParty->SetGold(value);
-    else
-        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
-
-    return 0;
-}
-
-static int lua_party_take(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
-
-    const char *name = luaL_checkstring(L, 1);
-    int value = luaL_checknumber(L, 2);
-
-    if (!strcmp(name, "food"))
-        pParty->TakeFood(value);
-    else if (!strcmp(name, "gold"))
-        pParty->TakeGold(value);
-    else
-        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
-
-    return 0;
-}
-
-static int lua_party_member_get(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
-
-    int playerID = luaL_checkinteger(L, 1);
-    const char *name = luaL_checkstring(L, 2);
-    int actual = 0, base = 0, modifier = 0;
-
-    if (playerID < 1 || playerID > 4)
-        return luaL_argerror(L, 2, lua_pushfstring(L, "member id '%d' is invalid", playerID));
-
-    Character player = pParty->pCharacters[playerID - 1];
-    if (!strcmp(name, "age")) {
-        actual = player.GetActualAge();
-        base = player.GetBaseAge();
-        modifier = player.sAgeModifier;
-    } else if (!strcmp(name, "accuracy")) {
-        actual = player.GetActualAccuracy();
-        base = player.GetBaseAccuracy();
-        modifier = player.uAccuracyBonus;
-    } else if (!strcmp(name, "armor_class")) {
-        actual = player.GetActualAC();
-        base = player.GetBaseAC();
-        modifier = player.sACModifier;
-    } else if (!strcmp(name, "attack_damage_melee")) {
-        actual = player.GetActualAttack(false);
-    } else if (!strcmp(name, "attack_damage_missle")) {
-        actual = player.GetActualAttack(true);
-    } else if (!strcmp(name, "attribute_endurance")) {
-        actual = player.GetActualEndurance();
-        base = player.GetBaseEndurance();
-        modifier = player.uEnduranceBonus;
-    } else {
-        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
-    }
-
-    lua_newtable(L);
-    lua_pushliteral(L, "actual");
-    lua_pushinteger(L, actual);
-    lua_rawset(L, -3);
-    lua_pushliteral(L, "base");
-    lua_pushinteger(L, base);
-    lua_rawset(L, -3);
-    lua_pushliteral(L, "modifier");
-    lua_pushinteger(L, modifier);
-    lua_rawset(L, -3);
-
-    return 1;
-}
-
-static int lua_load_raw_from_lod(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
-
-    const char *lod_name = luaL_checkstring(L, 1);
-    const char *resource = luaL_checkstring(L, 2);
-    Blob content;
-
-    if (!strcmp(lod_name, "bitmaps"))
-        content = pBitmaps_LOD->LoadCompressedTexture(resource);
-    else if (!strcmp(lod_name, "events"))
-        content = engine->_gameResourceManager->getEventsFile(resource);
-    // else if (!strcmp(lod_name, "games"))
-    //     content = pGames_LOD->LoadCompressedTexture(resource); // TODO(captainurist): temporarily commented out.
-    else if (!strcmp(lod_name, "icons"))
-        content = pIcons_LOD->LoadCompressedTexture(resource);
-    // else if (!strcmp(lod_name, "sprites"))
-    //    content = pSprites_LOD->LoadCompressedTexture(resource); // TODO(captainurist): temporarily commented out.
-
-    if (!content)
-        return luaL_argerror(L, 2, lua_pushfstring(L, "resource '%s' couldn't be loaded", resource));
-
-    lua_pushstring(L, std::string(content.string_view()).data());
-
-    return 1;
-}
-
 static int lua_nk_scroll_new(lua_State* L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 3));
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
 
     int x = 0, y = 0;
-    if (lua_gettop(L) >= 2) {
-        x = luaL_checkint(L, 2);
+    if (lua_gettop(L) >= 1) {
+        x = luaL_checkint(L, 1);
     }
-    if (lua_gettop(L) >= 3) {
-        y = luaL_checkint(L, 3);
+    if (lua_gettop(L) >= 2) {
+        y = luaL_checkint(L, 2);
     }
     nk_scroll* scroll = (nk_scroll*)lua_newuserdata(L, sizeof(nk_scroll));
     scroll->x = x;
@@ -3602,23 +3501,66 @@ static int lua_nk_scroll_set(lua_State* L) {
     return 0;
 }
 
-static int lua_console_run_command(lua_State* L) {
-    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1));
+static int lua_dev_config_set(lua_State *L) {
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 3));
 
-    const char* command = luaL_checkstring(L, 1);
+    const char* sectionName = luaL_checkstring(L, 1);
+    const char* configName = luaL_checkstring(L, 2);
 
-    ExecuteResult result = engine->commandManager->execute(command);
-    const std::string& message = std::get<0>(result);
-    bool success = std::get<1>(result);
+    ConfigSection* section = engine->config->section(sectionName);
+    if (section != nullptr) {
+        AnyConfigEntry* configEntry = section->entry(configName);
+        if (configEntry != nullptr) {
+            if (configEntry->type() == typeid(bool)) {
+                ((ConfigEntry<bool>*)configEntry)->setValue(lua_toboolean(L, 3));
+            } else if (configEntry->type() == typeid(float)) {
+                ((ConfigEntry<float>*)configEntry)->setValue(luaL_checknumber(L, 3));
+            } else if (configEntry->type() == typeid(int)) {
+                ((ConfigEntry<int>*)configEntry)->setValue(luaL_checkinteger(L, 3));
+            } else if (configEntry->type() == typeid(std::string)) {
+                ((ConfigEntry<std::string>*)configEntry)->setValue(luaL_checkstring(L, 3));
+            }
+        } else {
+            return luaL_argerror(L, 2, lua_pushfstring(L, "invalid section name: '%s'", sectionName));
+        }
+    } else {
+        return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
+    }
 
-    lua_pushstring(L, message.c_str());
-    lua_pushboolean(L, success);
-
-    return 2;
+    return 0;
 }
 
-static bool lua_load_init() {
-    int status = luaL_loadfile(lua, makeDataPath("ui", "init.lua").c_str());
+static int lua_dev_config_get(lua_State* L) {
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 2));
+
+    const char* sectionName = luaL_checkstring(L, 1);
+    const char* configName = luaL_checkstring(L, 2);
+
+    ConfigSection* section = engine->config->section(sectionName);
+    if (section != nullptr) {
+        AnyConfigEntry* configEntry = section->entry(configName);
+        if (configEntry != nullptr) {
+            if (configEntry->type() == typeid(bool)) {
+                lua_pushboolean(L, std::any_cast<bool>(configEntry->value()));
+            } else if (configEntry->type() == typeid(float)) {
+                lua_pushnumber(L, std::any_cast<float>(configEntry->value()));
+            } else if (configEntry->type() == typeid(int)) {
+                lua_pushinteger(L, std::any_cast<int>(configEntry->value()));
+            } else if (configEntry->type() == typeid(std::string)) {
+                lua_pushstring(L, std::any_cast<std::string>(configEntry->value()).c_str());
+            }
+        } else {
+            return luaL_argerror(L, 2, lua_pushfstring(L, "invalid section name: '%s'", sectionName));
+        }
+    } else {
+        return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
+    }
+
+    return 1;
+}
+
+static bool load_init_lua_file(const char* file) {
+    int status = luaL_loadfile(lua, makeDataPath("ui", file).c_str());
     if (status) {
         logger->warning("Nuklear: couldn't load init template: {}", lua_tostring(lua, -1));
         lua_pop(lua, 1);
@@ -3632,7 +3574,7 @@ static bool lua_load_init() {
     }
 
     lua_getfield(lua, LUA_GLOBALSINDEX, "ui_init");
-    lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
+    lua_pushlightuserdata(lua, (void*)&wins[WINDOW_null]);
     err = lua_pcall(lua, 1, 0, 0);
     if (lua_error_check(WINDOW_null, lua, err)) {
         logger->warning("Nuklear: error executing init template: {}", lua_tostring(lua, -1));
@@ -3640,6 +3582,15 @@ static bool lua_load_init() {
     }
 
     return true;
+}
+
+static bool lua_init_lua_files(const std::vector<std::string> &files) {
+    bool result = true;
+    for (auto&& file : files) {
+        result &= load_init_lua_file(file.c_str());
+    }
+
+    return result;
 }
 
 bool Nuklear::LuaInit() {
@@ -3752,27 +3703,13 @@ bool Nuklear::LuaInit() {
         { "nk_tree_state_pop", lua_nk_tree_state_pop },
         { "nk_tree_state_push", lua_nk_tree_state_push },
         { "nk_window_is_closed", lua_nk_window_is_closed },
+        { "nk_window_is_hidden", lua_nk_window_is_hidden },
         { "nk_window_get_size", lua_nk_window_get_size },
+        { "nk_window_get_position", lua_nk_window_get_position },
         { NULL, NULL }
     };
     luaL_newlib(lua, ui);
     lua_setglobal(lua, "ui");
-
-    static const luaL_Reg game[] = {
-        { "load_raw_from_lod", lua_load_raw_from_lod },
-        { "party_get", lua_party_get },
-        { "party_give", lua_party_give },
-        { "party_set", lua_party_set },
-        { "party_take", lua_party_take },
-        { "party_member_get", lua_party_member_get },
-        { "set_current_menu", lua_set_game_current_menu },
-        { "set_hotkey", lua_set_hotkey },
-        { "unset_hotkey", lua_unset_hotkey },
-        { "unset_hotkeys", lua_unset_hotkeys },
-        { NULL, NULL }
-    };
-    luaL_newlib(lua, game);
-    lua_setglobal(lua, "game");
 
     static const luaL_Reg window[] = {
         { "dimensions", lua_window_dimensions },
@@ -3781,12 +3718,13 @@ bool Nuklear::LuaInit() {
     luaL_newlib(lua, window);
     lua_setglobal(lua, "window");
 
-    static const luaL_Reg console[] = {
-        { "run_command", lua_console_run_command },
+    static const luaL_Reg dev[] = {
+        { "config_set", lua_dev_config_set },
+        { "config_get", lua_dev_config_get },
         { NULL, NULL }
     };
-    luaL_newlib(lua, console);
-    lua_setglobal(lua, "console");
+    luaL_newlib(lua, dev);
+    lua_setglobal(lua, "dev");
 
     static const luaL_Reg nk_scroll[] = {
         { "new", lua_nk_scroll_new },
@@ -3803,6 +3741,19 @@ bool Nuklear::LuaInit() {
     luaL_openlib(lua, nullptr, nk_scroll, 0);
     lua_pop(lua, -1);
 
+    static const luaL_Reg hotkeys[] = {
+        { "set_hotkey", lua_set_hotkey },
+        { "unset_hotkey", lua_unset_hotkey },
+        { "unset_hotkeys", lua_unset_hotkeys },
+        { NULL, NULL }
+    };
+    luaL_newlib(lua, hotkeys);
+    lua_setglobal(lua, "hotkeys");
+
+    for (auto&& callback : _init_lua_lib_callbacks) {
+        callback(lua);
+    }
+
     lua_pushinteger(lua, NUKLEAR_STAGE_PRE);
     lua_setglobal(lua, "NUKLEAR_STAGE_PRE");
     lua_pushinteger(lua, NUKLEAR_STAGE_POST);
@@ -3813,5 +3764,24 @@ bool Nuklear::LuaInit() {
     lua_pushinteger(lua, NUKLEAR_MODE_EXCLUSIVE);
     lua_setglobal(lua, "NUKLEAR_MODE_EXCLUSIVE");
 
-    return lua_load_init();
+    lua_pushinteger(lua, NK_EDIT_ACTIVE);
+    lua_setglobal(lua, "NK_EDIT_ACTIVE");
+    lua_pushinteger(lua, NK_EDIT_INACTIVE);
+    lua_setglobal(lua, "NK_EDIT_INACTIVE");
+    lua_pushinteger(lua, NK_EDIT_ACTIVATED);
+    lua_setglobal(lua, "NK_EDIT_ACTIVATED");
+    lua_pushinteger(lua, NK_EDIT_DEACTIVATED);
+    lua_setglobal(lua, "NK_EDIT_DEACTIVATED");
+    lua_pushinteger(lua, NK_EDIT_COMMITED);
+    lua_setglobal(lua, "NK_EDIT_COMMITED");
+
+    return lua_init_lua_files(_init_lua_files);
+}
+
+void Nuklear::addInitLuaFile(const char* lua_file) {
+    _init_lua_files.push_back(lua_file);
+}
+
+void Nuklear::addInitLuaLibs(std::function<void(lua_State*)> callback) {
+    _init_lua_lib_callbacks.push_back(callback);
 }

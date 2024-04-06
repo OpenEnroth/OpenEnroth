@@ -110,6 +110,8 @@ struct Party {
     int CountHirelings();
 
     void GivePartyExp(unsigned int pEXPNum);
+    void SetCharacterXP(Character& player, int xp);
+
     int GetPartyReputation();
 
     /**

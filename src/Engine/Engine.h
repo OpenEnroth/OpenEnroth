@@ -14,7 +14,6 @@
 #include "Engine/Time/Time.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Library/Commands/CommandManager.h"
 
 #include "GUI/GUIMessageQueue.h"
 
@@ -111,7 +110,6 @@ class Engine {
     bool is_fog = false; // keeps track of whether fog enabled in d3d
 
     std::shared_ptr<GameConfig> config;
-    std::unique_ptr<CommandManager> commandManager;
     int uNumStationaryLights_in_pStationaryLightsStack;
     float fSaturation;
     stru10 *pStru10Instance;

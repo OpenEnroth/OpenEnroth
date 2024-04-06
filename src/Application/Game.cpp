@@ -84,7 +84,6 @@
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
-#include "GameCommands.h"
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
@@ -505,9 +504,7 @@ void Game::processQueuedMessages() {
                     break;
                 }
                 if (current_screen_type != SCREEN_GAME) continue;
-
                 pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
-
                 current_screen_type = SCREEN_DEBUG;
                 continue;
             case UIMSG_Escape:  // нажатие Escape and return to game
@@ -1818,6 +1815,10 @@ void Game::processQueuedMessages() {
                 render->ReloadShaders();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
+            case UIMSG_DebugConsole:
+                engine->config->debug.ShowConsole.toggle();
+                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+                continue;
             case UIMSG_QuickSave:
                 if (pCurrentMapName == "d05.blv") {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
@@ -1874,8 +1875,7 @@ void Game::gameLoop() {
     pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
-    GameCommands::addCommands();
-
+    nuklear->Create(WINDOW_DebugMenu);
     while (true) {
         engine->_messageQueue->clear();
 
@@ -2063,4 +2063,5 @@ void Game::gameLoop() {
         break;
     }
     current_screen_type = SCREEN_VIDEO;
+    nuklear->Release(WINDOW_DebugMenu);
 }

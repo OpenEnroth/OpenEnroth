@@ -40,6 +40,7 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
+#include "GameLuaBindings.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -124,8 +125,11 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_nuklear)
         logger->error("Nuklear failed to initialize");
     ::nuklear = _nuklear.get();
-    if (_nuklear)
+    if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
+        _nuklear->addInitLuaFile("init.lua");
+        _nuklear->addInitLuaLibs(GameLuaBindings::init);
+    }
 
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;

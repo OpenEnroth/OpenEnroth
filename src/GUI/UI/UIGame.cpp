@@ -1828,7 +1828,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugSpecialItem = CreateButton({354, 275}, {width, height}, 1, 0, UIMSG_DebugSpecialItem, 0, Io::InputAction::Invalid, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
     GUIButton *pBtn_DebugReloadShaders = CreateButton({13, 302}, {width, height}, 1, 0, UIMSG_DebugReloadShader, 0, Io::InputAction::ReloadShaders, "DEBUG RELOAD SHADERS");
-    GUIButton *pBtn_DebugUnused1 = CreateButton({127, 302}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, Io::InputAction::Invalid, "DEBUG unused1");
+    GUIButton *pBtn_DebugUnused1 = CreateButton({127, 302}, {width, height}, 1, 0, UIMSG_DebugConsole, 0, Io::InputAction::Invalid, "DEBUG TOGGLE CONSOLE");
     GUIButton *pBtn_DebugUnused2 = CreateButton({241, 302}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, Io::InputAction::Invalid, "DEBUG unused2");
     GUIButton *pBtn_DebugUnused3 = CreateButton({354, 302}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, Io::InputAction::Invalid, "DEBUG unused3");
 
@@ -1836,6 +1836,12 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugEradicate = CreateButton({127, 329}, {width, height}, 1, 0, UIMSG_DebugEradicate, 0, Io::InputAction::Invalid, "DEBUG ERADICATE SELECTED CHARACTER");
     GUIButton *pBtn_DebugNoDamage = CreateButton({241, 329}, {width, height}, 1, 0, UIMSG_DebugNoDamage, 0, Io::InputAction::Invalid, "DEBUG TOGGLE NO DAMAGE");
     GUIButton *pBtn_DebugFullHeal = CreateButton({354, 329}, {width, height}, 1, 0, UIMSG_DebugFullHeal, 0, Io::InputAction::Invalid, "DEBUG FULLY HEAL SELECTED CHARACTER");
+
+    nuklear->Create(WINDOW_DebugMenu);
+}
+
+void GUIWindow_DebugMenu::Release() {
+    GUIWindow::Release();
 }
 
 void GUIWindow_DebugMenu::Update() {
@@ -1887,7 +1893,7 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(354, 275, "Special Item", 2);
 
     buttonbox(13, 302, "HOT Shaders", 2);
-    buttonbox(127, 302, "Unused1", 2);
+    buttonbox(127, 302, "Console", engine->config->debug.ShowConsole.value());
     buttonbox(241, 302, "Unused2", 2);
     buttonbox(354, 302, "Unused3", 2);
 
@@ -1901,6 +1907,8 @@ void GUIWindow_DebugMenu::Update() {
 
     //render->DrawTwodVerts();
     //render->EndLines2D();
+
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 
 void buttonbox(int x, int y, const std::string &text, int col) {
