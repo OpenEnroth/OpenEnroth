@@ -469,7 +469,7 @@ void PlayLevelMusic() {
     }
 }
 
-Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
+Blob AudioPlayer::LoadSound(std::string_view pSoundName) {
     if (!_sndReader.exists(pSoundName)) {
         logger->warning("AudioPlayer: {} can't load sound header!", pSoundName);
         return Blob();

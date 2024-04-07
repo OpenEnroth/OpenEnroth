@@ -11,7 +11,7 @@
  * @param home                          Home path as a string.
  * @return                              Path as `std::filesystem::path`.
  */
-std::filesystem::path expandUserPath(const std::string &path, const std::string &home);
+std::filesystem::path expandUserPath(std::string_view path, std::string_view home);
 
 /**
  * This function emulates the behavior of a case-insensitive filesystem. You pass in a path, this function traverses

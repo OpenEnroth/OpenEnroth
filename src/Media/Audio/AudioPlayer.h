@@ -29,7 +29,7 @@ class AudioPlayer {
     void Initialize();
     void UpdateVolumeFromConfig();
 
-    Blob LoadSound(const std::string &pSoundName);
+    Blob LoadSound(std::string_view pSoundName);
 
     void SetMasterVolume(int level);
     void SetVoiceVolume(int level);

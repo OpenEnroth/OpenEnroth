@@ -212,7 +212,7 @@ bool OpenALTrack16::Update() {
     return true;
 }
 
-PAudioTrack CreateAudioTrack(const std::string &file_path) {
+PAudioTrack CreateAudioTrack(std::string_view file_path) {
     PAudioTrack track = std::make_shared<OpenALTrack16>();
 
     PAudioDataSource source = CreateAudioFileDataSource(file_path);

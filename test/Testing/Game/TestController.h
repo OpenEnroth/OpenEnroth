@@ -19,14 +19,14 @@ class TestControllerTickCallback;
 
 class TestController {
  public:
-    TestController(EngineController *controller, const std::string &testDataPath, float playbackSpeed);
+    TestController(EngineController *controller, std::string_view testDataPath, float playbackSpeed);
     ~TestController();
 
-    std::string fullPathInTestData(const std::string &fileName);
+    std::string fullPathInTestData(std::string_view fileName);
 
-    void loadGameFromTestData(const std::string &name);
-    void playTraceFromTestData(const std::string &saveName, const std::string &traceName, std::function<void()> postLoadCallback = {});
-    void playTraceFromTestData(const std::string &saveName, const std::string &traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});
+    void loadGameFromTestData(std::string_view name);
+    void playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback = {});
+    void playTraceFromTestData(std::string_view saveName, std::string_view traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});
 
     void prepareForNextTest();
     void prepareForNextTest(int frameTimeMs, RandomEngineType rngType);
