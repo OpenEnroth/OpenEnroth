@@ -18,10 +18,10 @@ class ConfigEntry : public AnyConfigEntry {
     ConfigEntry(ConfigEntry &&other) = delete; // non-movable
 
     template<class TypedValidator>
-    ConfigEntry(ConfigSection *section, const std::string &name, T defaultValue, TypedValidator validator, const std::string &description) :
+    ConfigEntry(ConfigSection *section, std::string_view name, T defaultValue, TypedValidator validator, std::string_view description) :
         AnyConfigEntry(section, name, description, AnyHandler::forType<T>(), defaultValue, wrapValidator(std::move(validator))) {}
 
-    ConfigEntry(ConfigSection *section, const std::string &name, T defaultValue, const std::string &description) :
+    ConfigEntry(ConfigSection *section, std::string_view name, T defaultValue, std::string_view description) :
         AnyConfigEntry(section, name, description, AnyHandler::forType<T>(), defaultValue, nullptr) {}
 
     const T &defaultValue() const {

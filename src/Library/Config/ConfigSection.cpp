@@ -6,7 +6,7 @@
 
 #include "Config.h"
 
-ConfigSection::ConfigSection(Config *config, const std::string &name): _config(config), _name(name) {
+ConfigSection::ConfigSection(Config *config, std::string_view name): _config(config), _name(name) {
     assert(config);
     assert(!name.empty());
 
@@ -20,7 +20,7 @@ void ConfigSection::registerEntry(AnyConfigEntry *entry) {
     _entryByName.emplace(entry->name(), entry);
 }
 
-AnyConfigEntry *ConfigSection::entry(const std::string &name) const {
+AnyConfigEntry *ConfigSection::entry(std::string_view name) const {
     return valueOr(_entryByName, name, nullptr);
 }
 
