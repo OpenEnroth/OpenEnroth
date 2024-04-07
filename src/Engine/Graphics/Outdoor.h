@@ -64,7 +64,7 @@ struct OutdoorLocation {
     void PrepareActorsDrawList();
     void CreateDebugLocation();
     void Release();
-    void Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
+    void Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
     int getTileIdByTileMapId(signed int a2);
 
     /**
@@ -107,7 +107,7 @@ struct OutdoorLocation {
      */
     TileDesc *getTileDescByGrid(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
-    bool Initialize(const std::string &filename, int days_played,
+    bool Initialize(std::string_view filename, int days_played,
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);
     // bool Release2();
@@ -212,7 +212,7 @@ void ODM_ProcessPartyActions();
 char Is_out15odm_underwater();
 void SetUnderwaterFog();
 void sub_487DA9();
-void ODM_LoadAndInitialize(const std::string &pLevelFilename,
+void ODM_LoadAndInitialize(std::string_view pLevelFilename,
                            struct ODMRenderParams *thisa);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
