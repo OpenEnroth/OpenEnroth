@@ -5,6 +5,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIHouses.h"
 
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Objects/Actor.h"
@@ -150,6 +151,15 @@ GAME_TEST(Issues, Issue1164) {
     EXPECT_GE(ticks, 144_ticks - frameTicks);
 }
 
+GAME_TEST(Issues, Issue1175) {
+    // Enemies not using ranged attacks in turn based mode indoors
+    auto healthTape = tapes.totalHp();
+    auto turnTape = tapes.turnBasedMode();
+    test.playTraceFromTestData("issue_1175.mm7", "issue_1175.json");
+    EXPECT_LT(healthTape.back(), healthTape.front());
+    EXPECT_TRUE(turnTape.back());
+}
+
 GAME_TEST(Issues, Issue1191) {
     auto foodTape = tapes.food();
     test.playTraceFromTestData("issue_1191.mm7", "issue_1191.json");
@@ -273,6 +283,18 @@ GAME_TEST(Issues, Issue1274) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE)); // Entered a house.
     EXPECT_EQ(messageBoxesTape.size(), 1);
     EXPECT_TRUE(messageBoxesTape.front().empty()); // No message boxes.
+}
+
+GAME_TEST(Issues, Issue1275) {
+    // Clicking a store button while holding item causes black screen
+    auto heldTape = tapes.custom([] {return pParty->pPickedItem.uItemID; });
+    auto dialoTape = tapes.custom([] {if (window_SpeakInHouse != nullptr) return window_SpeakInHouse->getCurrentDialogue(); return DIALOGUE_NULL; });
+    test.playTraceFromTestData("issue_1275.mm7", "issue_1275.json");
+    // make sure item is returned to inventory
+    EXPECT_EQ(heldTape.frontBack(), tape(ITEM_NULL, ITEM_NULL));
+    EXPECT_TRUE(heldTape.contains(ITEM_LEATHER_ARMOR));
+    // and we reach sell dialog
+    EXPECT_TRUE(dialoTape.contains(DIALOGUE_SHOP_SELL));
 }
 
 GAME_TEST(Issues, Issue1277) {
