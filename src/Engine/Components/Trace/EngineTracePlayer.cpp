@@ -28,7 +28,7 @@ EngineTracePlayer::~EngineTracePlayer() {
     assert(!application()); // We're uninstalled.
 }
 
-void EngineTracePlayer::playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
+void EngineTracePlayer::playTrace(EngineController *game, std::string_view savePath, std::string_view tracePath,
                                   EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     assert(!isPlaying());
 
