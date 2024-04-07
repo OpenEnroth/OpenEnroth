@@ -645,15 +645,15 @@ bool SpriteObject::applyShrinkRayAoe() {
     return isApplied;
 }
 
-bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
+bool SpriteObject::dropItemAt(SpriteId sprite, Vec3i pos, int speed, int count,
                               bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
-    pSpellObject.vPosition = pos;
+    pSpellObject.vPosition = pos.toFloat();
     pSpellObject.uAttributes = attributes;
-    pSpellObject.uSectorID = pIndoor->GetSector(pos.toInt());
+    pSpellObject.uSectorID = pIndoor->GetSector(pos);
     pSpellObject.containing_item.Reset();
     if (item) {
         pSpellObject.containing_item = *item;
