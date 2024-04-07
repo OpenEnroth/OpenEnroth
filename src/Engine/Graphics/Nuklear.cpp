@@ -737,7 +737,7 @@ bool Nuklear::Create(WindowType winType) {
     return LuaLoadTemplate(winType);
 }
 
-bool lua_error_check(WindowType winType, lua_State* L, int err) {
+bool lua_error_check(WindowType winType, lua_State *L, int err) {
     if (err != 0) {
         logger->error("Nuklear: [{}] LUA error: {}\n", wins[winType].tmpl, lua_tostring(L, -1));
         lua_pop(L, 1);
@@ -747,7 +747,7 @@ bool lua_error_check(WindowType winType, lua_State* L, int err) {
     return false;
 }
 
-bool lua_error_check(lua_State* L, int err) {
+bool lua_error_check(lua_State *L, int err) {
     if (err != 0) {
         logger->error("Nuklear: LUA error: {}\n", lua_tostring(L, -1));
         lua_pop(L, 1);
@@ -773,9 +773,7 @@ int Nuklear::KeyEvent(PlatformKey key) {
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
             lua_pushlightuserdata(lua, (void *)&wins[hk.winType]);
             int err = lua_pcall(lua, 1, 1, 0);
-            if (lua_error_check(hk.winType, lua, err)) {
-                wins[hk.winType].state = WINDOW_TEMPLATE_ERROR;
-            }
+            lua_error_check(hk.winType, lua, err);
             return lua_toboolean(lua, -1) != 0;
         }
     }
@@ -969,9 +967,7 @@ bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
             lua_pushlightuserdata(lua, (void *)&wins[winType]);
             lua_pushinteger(lua, stage);
             int err = lua_pcall(lua, 2, 0, 0);
-            if (lua_error_check(winType, lua, err)) {
-                //wins[winType].state = WINDOW_TEMPLATE_ERROR;
-            }
+            lua_error_check(winType, lua, err);
         } else {
             wins[winType].state = WINDOW_TEMPLATE_ERROR;
         }
@@ -1631,7 +1627,7 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
     return 0;
 }
 
-static int lua_nk_parse_edit_string_options(lua_State* L, int idx, nk_flags* flags) {
+static int lua_nk_parse_edit_string_options(lua_State *L, int idx, nk_flags *flags) {
     *flags = NK_EDIT_FIELD;
 
     if (lua_istable(L, idx)) {
@@ -1695,7 +1691,7 @@ static int lua_nk_parse_window_flags(lua_State *L, int idx, nk_flags *flags) {
     return 0;
 }
 
-static int lua_nk_parse_scroll(lua_State* L, int idx, nk_scroll* scroll) {
+static int lua_nk_parse_scroll(lua_State *L, int idx, nk_scroll *scroll) {
     if (lua_istable(L, idx)) {
         lua_pushvalue(L, idx);
         lua_pushnil(L);
@@ -1781,7 +1777,7 @@ static int lua_nk_parse_tree_type(lua_State *L, int idx, nk_tree_type *type) {
     return 0;
 }
 
-static nk_scroll* lua_nk_check_scroll(lua_State* L, int idx) {
+static nk_scroll* lua_nk_check_scroll(lua_State *L, int idx) {
     void* userdata = luaL_checkudata(L, idx, "nk_scroll_mt");
     luaL_argcheck(L, userdata != nullptr, idx, "nk_scroll value expected");
     return (nk_scroll*)userdata;
@@ -2237,7 +2233,7 @@ static int lua_nk_combo_end(lua_State *L) {
     return 0;
 }
 
-static void lua_nk_push_edit_string_result_flag(lua_State* L, nk_flags flags) {
+static void lua_nk_push_edit_string_result_flag(lua_State *L, nk_flags flags) {
     static const auto EDIT_STRING_RESULTS = std::array{
         NK_EDIT_ACTIVE,
         NK_EDIT_INACTIVE,
@@ -2328,7 +2324,7 @@ static int lua_nk_group_scrolled_begin(lua_State *L) {
     return 1;
 }
 
-static int lua_nk_group_scrolled_end(lua_State* L) {
+static int lua_nk_group_scrolled_end(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_group_scrolled_end(nuklear->ctx);
@@ -2336,7 +2332,7 @@ static int lua_nk_group_scrolled_end(lua_State* L) {
     return 0;
 }
 
-static int lua_nk_group_set_scroll(lua_State* L) {
+static int lua_nk_group_set_scroll(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     const char* id = luaL_checkstring(L, 2);
@@ -2347,7 +2343,7 @@ static int lua_nk_group_set_scroll(lua_State* L) {
     return 0;
 }
 
-static int lua_nk_layout_reset_min_row_height(lua_State* L) {
+static int lua_nk_layout_reset_min_row_height(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
     nk_layout_reset_min_row_height(nuklear->ctx);
     return 0;
@@ -3539,7 +3535,7 @@ static int lua_unset_hotkeys(lua_State *L) {
     return 0;
 }
 
-static int lua_nk_scroll_new(lua_State* L) {
+static int lua_nk_scroll_new(lua_State *L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
 
     int x = 0, y = 0;
@@ -3557,7 +3553,7 @@ static int lua_nk_scroll_new(lua_State* L) {
     return 1;
 }
 
-static int lua_nk_scroll_set(lua_State* L) {
+static int lua_nk_scroll_set(lua_State *L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 3));
 
     nk_scroll* scroll = lua_nk_check_scroll(L, 1);
@@ -3609,7 +3605,7 @@ static int lua_dev_config_set(lua_State *L) {
     return 0;
 }
 
-static int lua_dev_config_get(lua_State* L) {
+static int lua_dev_config_get(lua_State *L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
 
     const char* configName{};
@@ -3878,7 +3874,7 @@ void Nuklear::addInitLuaFile(const char* lua_file) {
     _init_lua_files.push_back(lua_file);
 }
 
-void Nuklear::addInitLuaLibs(std::function<void(lua_State*)> callback) {
+void Nuklear::addInitLuaLibs(std::function<void(lua_State *)> callback) {
     _init_lua_lib_callbacks.push_back(callback);
 }
 
@@ -3889,36 +3885,28 @@ bool Nuklear::isInitialized(WindowType winType) const {
 class NuklearLogSink : public LogSink {
  public:
     void write(const LogCategory &category, LogLevel level, std::string_view message) override {
-        _logs.push_back(0);
         if (_isLogging) {
-            return; //early return to avoid potential infinite recursion if someone is logging inside lua logger
+            return; //early return to avoid potential infinite recursion if another log message is raised from lua
         }
         _isLogging = true;
 
-        do {
-            lua_getfield(lua, LUA_GLOBALSINDEX, "logsink");
-            if (lua_isnil(lua, -1)) {
-                lua_pop(lua, 1);
-                break;
-            }
-            std::string serializedLevel;
-            serialize(level, &serializedLevel);
-            lua_pushstring(lua, serializedLevel.c_str());
-            lua_pushstring(lua, message.data());
-            int error = lua_pcall(lua, 2, 0, 0);
-            if (lua_error_check(lua, error)) {
-                _logs.clear();
-                break;
-            }
-            _logs.erase(_logs.begin());
-        } while(!_logs.empty());
-
+        lua_getfield(lua, LUA_GLOBALSINDEX, "logsink");
+        if (lua_isnil(lua, -1)) {
+            lua_pop(lua, 1);
+            _isLogging = false;
+            return;
+        }
+        std::string serializedLevel;
+        serialize(level, &serializedLevel);
+        lua_pushstring(lua, serializedLevel.c_str());
+        lua_pushstring(lua, message.data());
+        int error = lua_pcall(lua, 2, 0, 0);
+        lua_error_check(lua, error);
         _isLogging = false;
     }
 
  private:
      bool _isLogging{};
-     std::vector<int> _logs;
 };
 
 std::unique_ptr<LogSink> Nuklear::createNuklearLogSink() {
