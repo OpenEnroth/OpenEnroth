@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2cefa30</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
    </div>
   </td>
  </tr>
@@ -200,9 +200,21 @@ Testing</h1>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
 <p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
+Console Commands</h1>
+<p >The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:</p>
+<ol type="1">
+<li>Copy the <code>resources/ui</code> folder to the game's installation directory.</li>
+<li>Launch the game.</li>
+<li>Begin by loading an existing game or creating a new one.</li>
+<li>Once in-game, press the <code>~</code> key to open the DebugView.</li>
+<li>If the Lua scripts have been loaded correctly, you'll find a button labeled <code>Console</code>.</li>
+<li>Click on the <code>Console</code> button to reveal the command-line interface at the bottom left corner of the screen.</li>
+</ol>
+<p >Currently, the console is only available while in-game.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Support</h1>
 <p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a> </p>
 </div></div><!-- contents -->
