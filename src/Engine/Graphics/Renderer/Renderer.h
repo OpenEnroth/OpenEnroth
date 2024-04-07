@@ -23,7 +23,11 @@ struct SoftwareBillboard;
 struct DecalBuilder;
 class ParticleEngine;
 struct SpellFxRenderer;
+struct SpellFX_Billboard;
 class Vis;
+struct Lightmap;
+struct Decal;
+struct Polygon;
 
 bool PauseGameDrawing();
 
@@ -75,7 +79,7 @@ class Renderer {
     virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
     virtual void BeginScene3D() = 0;
 
-    virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
+    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) = 0;
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
@@ -85,7 +89,7 @@ class Renderer {
     virtual float GetGamma() = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
-    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) = 0;
+    virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -163,12 +167,12 @@ class Renderer {
     virtual void EndLightmaps() = 0;
     virtual void BeginLightmaps2() = 0;
     virtual void EndLightmaps2() = 0;
-    virtual bool DrawLightmap(struct Lightmap *pLightmap,
+    virtual bool DrawLightmap(Lightmap *pLightmap,
                               Vec3f *pColorMult, float z_bias) = 0;
 
     virtual void BeginDecals() = 0;
     virtual void EndDecals() = 0;
-    virtual void DrawDecal(struct Decal *pDecal, float z_bias) = 0;
+    virtual void DrawDecal(Decal *pDecal, float z_bias) = 0;
 
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) = 0;
 

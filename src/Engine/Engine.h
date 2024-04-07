@@ -23,6 +23,8 @@ class KeyboardInputHandler;
 class KeyboardActionMapping;
 } // namespace Io
 
+struct BLVFace;
+struct ODMRenderParams;
 struct Vis_PIDAndDepth;
 struct Vis_SelectionFilter;
 struct Polygon;
@@ -85,7 +87,7 @@ class Engine {
      * @offset 0x42213C
      */
     void onGameViewportClick();
-    int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
+    int _44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
     void StackPartyTorchLight();
     void DrawParticles();
@@ -155,7 +157,7 @@ void FinalInitialization();
 void MM6_Initialize();
 void MM7Initialization();
 
-void PrepareToLoadODM(bool bLoading, struct ODMRenderParams *a2);
+void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2);
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
 

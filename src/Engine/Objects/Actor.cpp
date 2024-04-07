@@ -736,7 +736,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
 }
 
 //----- (00404874) --------------------------------------------------------
-void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
+void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
                             int type, ActorAbility a4) {
     char specAb;  // al@1
     int v13;      // edx@28
@@ -878,7 +878,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // // but compiler converts functions returning structures by value in the such
 // way
 void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
-                             struct AIDirection *pOut, int PreferedZ) {
+                             AIDirection *pOut, int PreferedZ) {
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
@@ -1062,7 +1062,7 @@ void Actor::StandAwhile(unsigned int uActorID) {
 
 //----- (00403C6C) --------------------------------------------------------
 void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
-                           struct AIDirection *arg0) {
+                           AIDirection *arg0) {
     int16_t v6;        // esi@6
     int16_t v7;        // edi@6
     signed int v8;     // eax@7

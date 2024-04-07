@@ -34,13 +34,13 @@ class BaseRenderer : public Renderer {
     virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) override;
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) override;
 
-    virtual void DrawMasked(float u, float v, class GraphicsImage *img,
+    virtual void DrawMasked(float u, float v, GraphicsImage *img,
         unsigned int color_dimming_level, Color mask = colorTable.White) override;
-    virtual void DrawTextureGrayShade(float u, float v, class GraphicsImage *a4) override;
-    virtual void DrawTransparentRedShade(float u, float v, class GraphicsImage *a4) override;
-    virtual void DrawTransparentGreenShade(float u, float v, class GraphicsImage *pTexture) override;
+    virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) override;
+    virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) override;
+    virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) override;
     virtual void ClearBlack() override;
-    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) override;
+    virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) override;
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;

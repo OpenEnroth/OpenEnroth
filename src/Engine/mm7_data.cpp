@@ -142,10 +142,10 @@ std::array<int32_t, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sph
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
 #include "Engine/Tables/IconFrameTable.h"
-struct IconFrameTable *pIconsFrameTable;
+IconFrameTable *pIconsFrameTable;
 
 #include "Engine/Tables/CharacterFrameTable.h"
-struct PlayerFrameTable *pPlayerFrameTable;  // idb
+PlayerFrameTable *pPlayerFrameTable;  // idb
 
 //-------------------------------------------------------------------------
 // Data declarations
@@ -2421,7 +2421,7 @@ Duration AfterEnchClickEventTimeout;
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 
-std::array<class GraphicsImage *, 14> party_buff_icons;
+std::array<GraphicsImage *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 

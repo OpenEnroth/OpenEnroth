@@ -12,8 +12,8 @@
 #include "Sprites.h"
 
 
-struct ActiveOverlayList *pActiveOverlayList = new ActiveOverlayList;  // idb
-struct OverlayList *pOverlayList = new OverlayList;
+ActiveOverlayList *pActiveOverlayList = new ActiveOverlayList;  // idb
+OverlayList *pOverlayList = new OverlayList;
 
 // inlined
 //----- (mm6c::0045BD50) --------------------------------------------------

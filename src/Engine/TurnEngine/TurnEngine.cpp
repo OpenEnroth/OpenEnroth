@@ -23,7 +23,7 @@
 #include "Engine/Party.h"
 #include "Engine/AttackList.h"
 
-struct stru262_TurnBased *pTurnEngine = new stru262_TurnBased;
+stru262_TurnBased *pTurnEngine = new stru262_TurnBased;
 
 //----- (00404544) --------------------------------------------------------
 void stru262_TurnBased::SortTurnQueue() {

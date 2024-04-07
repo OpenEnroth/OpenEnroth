@@ -22,4 +22,4 @@ struct StorylineText {
     // int field_4[87];
 };
 
-extern struct StorylineText *pStorylineText;
+extern StorylineText *pStorylineText;

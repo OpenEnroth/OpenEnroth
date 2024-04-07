@@ -5,7 +5,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-struct FactionTable *pFactionTable;
+FactionTable *pFactionTable;
 
 //----- (004547E4) --------------------------------------------------------
 void FactionTable::Initialize(const Blob &factions) {

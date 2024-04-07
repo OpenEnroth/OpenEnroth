@@ -12,8 +12,8 @@
 #include "Utility/String.h"
 #include "Utility/Exception.h"
 
-struct MonsterStats *pMonsterStats;
-struct MonsterList *pMonsterList;
+MonsterStats *pMonsterStats;
+MonsterList *pMonsterList;
 
 void ParseDamage(char *damage_str, uint8_t *dice_rolls,
                  uint8_t *dice_sides, uint8_t *dmg_bonus);
@@ -21,7 +21,7 @@ int ParseMissleAttackType(const char *missle_attack_str);
 int ParseSpecialAttack(const char *spec_att_str);
 
 //----- (004548E2) --------------------------------------------------------
-SpellId ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
+SpellId ParseSpellType(FrameTableTxtLine *tbl, int *next_token) {
     if (!tbl->pProperties[0]) {
         ++*next_token;
         return SPELL_NONE;

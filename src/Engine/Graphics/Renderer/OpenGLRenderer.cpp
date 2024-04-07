@@ -940,7 +940,7 @@ void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     }
 }
 
-void OpenGLRenderer::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
+void OpenGLRenderer::DrawIndoorSkyPolygon(signed int uNumVertices, Polygon *pSkyPolygon) {
     int texid = pSkyPolygon->texture->renderId().value();
 
     Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
@@ -1040,7 +1040,7 @@ void OpenGLRenderer::BeginLightmaps() { return; }
 void OpenGLRenderer::EndLightmaps() { return; }
 void OpenGLRenderer::BeginLightmaps2() { return; }
 void OpenGLRenderer::EndLightmaps2() { return; }
-bool OpenGLRenderer::DrawLightmap(struct Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
+bool OpenGLRenderer::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
     return true;
 }
 
@@ -1174,7 +1174,7 @@ void OpenGLRenderer::EndDecals() {
 
 
 
-void OpenGLRenderer::DrawDecal(struct Decal *pDecal, float z_bias) {
+void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
     if (pDecal->uNumVertices < 3) {
         logger->warning("Decal has < 3 vertices");
         return;
@@ -1957,7 +1957,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
+                Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
                 pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
                 unsigned norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
@@ -2002,7 +2002,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 }
 
 // TODO(pskelton): drop - this is now obselete with shader terrain drawing
-void OpenGLRenderer::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
+void OpenGLRenderer::DrawTerrainPolygon(Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
 
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawOutdoorSky() {
@@ -2133,7 +2133,7 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
 
 //----- (004A2DA3) --------------------------------------------------------
-void OpenGLRenderer::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
+void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
     auto texture = pSkyPolygon->texture;
     auto texid = texture->renderId().value();
 
@@ -3800,7 +3800,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 continue;
             }
 
-            struct Polygon *poly = &array_77EC08[pODMRenderParams->uNumPolygons];
+            Polygon *poly = &array_77EC08[pODMRenderParams->uNumPolygons];
             poly->flags = 0;
             poly->field_32 = 0;
 

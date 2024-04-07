@@ -8,15 +8,18 @@
 
 #include "Library/Geometry/Plane.h"
 
+struct ODMFace;
+struct BLVFace;
+
 struct Camera3D {
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
-    void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
+    void ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices);
 
     bool ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y,
                   int *transformed_z, bool dont_show = false);
 
     void Project(int x, int y, int z, int *screenspace_x, int *screenspace_y);
-    void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices,
+    void Project(RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
 
     bool CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
@@ -24,30 +27,30 @@ struct Camera3D {
         RenderVertexSoft *pVertices,
         signed int NumFrustumPlanes);
 
-    float GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
+    float GetPolygonMaxZ(RenderVertexSoft *pVertex,
                           unsigned int uStripType);
-    float GetPolygonMinZ(struct RenderVertexSoft *pVertices,
+    float GetPolygonMinZ(RenderVertexSoft *pVertices,
                           unsigned int uStripType);
 
-    void LightmapNeerClip(struct RenderVertexSoft *pInVertices,
+    void LightmapNeerClip(RenderVertexSoft *pInVertices,
                           int uNumInVertices,
-                          struct RenderVertexSoft *pOutVertices,
+                          RenderVertexSoft *pOutVertices,
                           unsigned int *pOutNumVertices);
-    void LightmapFarClip(struct RenderVertexSoft *pInVertices,
+    void LightmapFarClip(RenderVertexSoft *pInVertices,
                          int uNumInVertices,
-                         struct RenderVertexSoft *pOutVertices,
+                         RenderVertexSoft *pOutVertices,
                          unsigned int *pOutNumVertices);
     void LightmapProject(unsigned int uNumInVertices,
-                 struct RenderVertexSoft *pOutVertices,
-                 struct RenderVertexSoft *pInVertices,
+                 RenderVertexSoft *pOutVertices,
+                 RenderVertexSoft *pInVertices,
                  signed int *pOutNumVertices);
-    bool CullFaceToFrustum(struct RenderVertexSoft *a1,
+    bool CullFaceToFrustum(RenderVertexSoft *a1,
                          unsigned int *pOutNumVertices,
-                         struct RenderVertexSoft *pVertices, signed int uNumVertices);
+                         RenderVertexSoft *pVertices, signed int uNumVertices);
 
-    bool CullFaceToFrustum(struct RenderVertexSoft *inVerts,
+    bool CullFaceToFrustum(RenderVertexSoft *inVerts,
         unsigned int *pOutNumVertices,
-        struct RenderVertexSoft *pOutVertices, Planef *frustum, signed int uNumPlanes);
+        RenderVertexSoft *pOutVertices, Planef *frustum, signed int uNumPlanes);
 
     bool ClipFaceToFrustum(RenderVertexSoft *pInVertices,
                            unsigned int *pOutNumVertices,
@@ -59,21 +62,21 @@ struct Camera3D {
     void BuildViewFrustum();
     void CreateViewMatrixAndProjectionScale();
 
-    void debug_outline_sw(struct RenderVertexSoft *a2,
+    void debug_outline_sw(RenderVertexSoft *a2,
                           unsigned int uNumVertices, Color uDiffuse32,
                           float a5);
 
-    void do_draw_debug_line_sw(struct RenderVertexSoft *pLineBegin,
+    void do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                Color sStartDiffuse32,
-                               struct RenderVertexSoft *pLineEnd,
+                               RenderVertexSoft *pLineEnd,
                                Color sEndDiffuse32,
                                unsigned int uOutNumVertices, float z_stuff);
-    bool is_face_faced_to_cameraBLV(struct BLVFace *pFace);
-    bool is_face_faced_to_cameraODM(struct ODMFace *pFace, struct RenderVertexSoft *a2);
+    bool is_face_faced_to_cameraBLV(BLVFace *pFace);
+    bool is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2);
     static void GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV);
 
-    void CullByNearClip(struct RenderVertexSoft *pverts, unsigned int *unumverts);
-    void CullByFarClip(struct RenderVertexSoft *pverts, unsigned int *unumverts);
+    void CullByNearClip(RenderVertexSoft *pverts, unsigned int *unumverts);
+    void CullByFarClip(RenderVertexSoft *pverts, unsigned int *unumverts);
 
     float GetMouseInfoDepth();
 

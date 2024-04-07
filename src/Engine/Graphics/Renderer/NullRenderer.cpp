@@ -78,7 +78,7 @@ void NullRenderer::BeginScene3D() {
     uNumBillboardsToDraw = 0;
 }
 
-void NullRenderer::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {}
+void NullRenderer::DrawTerrainPolygon(Polygon *a4, bool transparent, bool clampAtTextureBorders) {}
 
 void NullRenderer::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                   float dstX, float dstY, float a7, float a8,
@@ -144,13 +144,13 @@ void NullRenderer::BeginLightmaps() {}
 void NullRenderer::EndLightmaps() {}
 void NullRenderer::BeginLightmaps2() {}
 void NullRenderer::EndLightmaps2() {}
-bool NullRenderer::DrawLightmap(struct Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
+bool NullRenderer::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
     return true;
 }
 
 void NullRenderer::BeginDecals() {}
 void NullRenderer::EndDecals() {}
-void NullRenderer::DrawDecal(struct Decal *pDecal, float z_bias) {}
+void NullRenderer::DrawDecal(Decal *pDecal, float z_bias) {}
 
 void NullRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
                                        int blend_mode) {}

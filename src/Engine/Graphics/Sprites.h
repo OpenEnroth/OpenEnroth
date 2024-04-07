@@ -6,8 +6,6 @@
 
 #include "Engine/Time/Duration.h"
 
-#include "Utility/Memory/Blob.h"
-
 struct LODSprite;
 struct DecorationDesc;
 class GraphicsImage;
@@ -75,6 +73,6 @@ struct SpriteFrameTable {
     std::vector<uint16_t> pSpriteEFrames;
 };
 
-extern struct SpriteFrameTable *pSpriteFrameTable;
+extern SpriteFrameTable *pSpriteFrameTable;
 
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, Duration t, int month);

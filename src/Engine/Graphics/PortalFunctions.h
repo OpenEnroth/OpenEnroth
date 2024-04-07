@@ -3,23 +3,26 @@
 #include "Library/Geometry/Vec.h"
 #include "Library/Geometry/Plane.h"
 
+struct BLVFace;
+struct RenderVertexSoft;
+
 struct stru10 {
     stru10();
     virtual ~stru10();
-    bool CalcPortalShapePoly(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
+    bool CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
                  unsigned int *pNumVertices, Planef *a5,
-                 struct RenderVertexSoft *pOutBounding);
-    bool CalcPortalFrustum(struct RenderVertexSoft *pFaceBounding, Planef *pPortalDataFrustum);
-    bool CalcPortalFrustumPlane(struct RenderVertexSoft *pFaceBounding1,
-                                struct RenderVertexSoft *pFaceBounding2,
+                 RenderVertexSoft *pOutBounding);
+    bool CalcPortalFrustum(RenderVertexSoft *pFaceBounding, Planef *pPortalDataFrustum);
+    bool CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
+                                RenderVertexSoft *pFaceBounding2,
                                 Vec3f *pRayStart,
                                 Planef *pPortalDataFrustum);
-    bool CalcFaceBounding(struct BLVFace *pFace,
-                          struct RenderVertexSoft *pFaceLimits,
+    bool CalcFaceBounding(BLVFace *pFace,
+                          RenderVertexSoft *pFaceLimits,
                           unsigned int uNumVertices,
-                          struct RenderVertexSoft *pOutBounding);
-    void CalcPolygonLimits(struct BLVFace *pFace,
-                           struct RenderVertexSoft pOutVertices[4]);
-    void _49CE9E(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
+                          RenderVertexSoft *pOutBounding);
+    void CalcPolygonLimits(BLVFace *pFace,
+                           RenderVertexSoft pOutVertices[4]);
+    void _49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
                  unsigned int uNumVertices, RenderVertexSoft *pOutLimits);
 };

@@ -24,4 +24,4 @@ struct PlayerFrameTable {
     std::vector<PlayerFrame> pFrames;
 };
 
-extern struct PlayerFrameTable *pPlayerFrameTable;  // idb
+extern PlayerFrameTable *pPlayerFrameTable;  // idb

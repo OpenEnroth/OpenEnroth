@@ -62,7 +62,7 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginScene3D() override;
 
-    virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
+    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -82,9 +82,9 @@ class OpenGLRenderer : public BaseRenderer {
                                unsigned int uZ, unsigned int uW) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, class GraphicsImage *, Color colourmask = colorTable.White) override;
+    virtual void DrawTextureNew(float u, float v, GraphicsImage *, Color colourmask = colorTable.White) override;
 
-    virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
+    virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *,
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;
@@ -116,12 +116,12 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void EndLightmaps() override;
     virtual void BeginLightmaps2() override;
     virtual void EndLightmaps2() override;
-    virtual bool DrawLightmap(struct Lightmap *pLightmap,
+    virtual bool DrawLightmap(Lightmap *pLightmap,
                               Vec3f *pColorMult, float z_bias) override;
 
     virtual void BeginDecals() override;
     virtual void EndDecals() override;
-    virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
+    virtual void DrawDecal(Decal *pDecal, float z_bias) override;
 
     virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
                                int blend_mode) override;
@@ -141,9 +141,9 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
-    void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
+    void DrawOutdoorSkyPolygon(Polygon *pSkyPolygon);
     void DrawIndoorSkyPolygon(signed int uNumVertices,
-                              struct Polygon *pSkyPolygon);
+                              Polygon *pSkyPolygon);
     void DrawForcePerVerts();
 
     void SetFogParametersGL();

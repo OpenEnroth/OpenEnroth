@@ -67,6 +67,6 @@ class DecorationList {
     std::vector<DecorationDesc> pDecorations;
 };
 
-extern class DecorationList *pDecorationList;
+extern DecorationList *pDecorationList;
 
 void RespawnGlobalDecorations();

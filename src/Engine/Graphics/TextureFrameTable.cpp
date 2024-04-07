@@ -5,7 +5,7 @@
 #include "Library/Logger/Logger.h"
 #include "Utility/String.h"
 
-struct TextureFrameTable *pTextureFrameTable;
+TextureFrameTable *pTextureFrameTable;
 
 GraphicsImage *TextureFrame::GetTexture() {
     if (!this->tex) {

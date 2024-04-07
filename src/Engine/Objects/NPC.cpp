@@ -52,7 +52,7 @@ NPCData *GetNPCData(signed int npcid) {
 }
 
 //----- (00445B2C) --------------------------------------------------------
-struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
+NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
     NPCData *result;
 
     if (npcid >= 0) {

@@ -4,6 +4,8 @@
 
 #include "Engine/Pid.h"
 
+struct LevelDecoration;
+
 /**
  * @offset 0x4613C4
  */
@@ -25,4 +27,4 @@ void onTimer();
 
 extern int savedEventID;
 extern int savedEventStep;
-extern struct LevelDecoration *savedDecoration;
+extern LevelDecoration *savedDecoration;
