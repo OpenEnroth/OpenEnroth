@@ -353,11 +353,11 @@ int GUIFont::AlignText_Center(int width, const std::string &pString) {
     return (position < 0) ? 0 : position;
 }
 
-std::string GUIFont::FitTextInAWindow(const std::string &inString, int width, int uX, bool return_on_carriage) {
+std::string GUIFont::FitTextInAWindow(std::string_view inString, int width, int uX, bool return_on_carriage) {
     assert(uX < width);
 
     if (inString.empty()) {
-        return "";
+        return {};
     }
 
     int lineWidth = uX;
@@ -382,7 +382,8 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, int width, in
               case '\n': // Line Feed
                 lineWidth = uX;
                 newlinePos = -1;
-                out += inString.substr(lastCopyPos, i - lastCopyPos) + "\n";
+                out += inString.substr(lastCopyPos, i - lastCopyPos);
+                out += "\n";
                 lastCopyPos = i + 1;
                 break;
               case '\f': // Form Feed, page eject
@@ -390,7 +391,7 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, int width, in
                 break;
               case '\r': // Carriage Return
                 if (!return_on_carriage) {
-                    return inString;
+                    return std::string(inString); // TODO(captainurist): this return is very sus.
                 }
                 break;
               case ' ': // Space
@@ -407,11 +408,13 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, int width, in
                 } else {
                     lineWidth = uX;
                     if (newlinePos >= 0) {
-                        out += inString.substr(lastCopyPos, newlinePos - lastCopyPos) + "\n";
+                        out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
+                        out += "\n";
                         i = newlinePos;
                         lastCopyPos = i + 1;
                     } else {
-                        out += inString.substr(lastCopyPos, i - lastCopyPos) + "\n";
+                        out += inString.substr(lastCopyPos, i - lastCopyPos);
+                        out += "\n";
                         lastCopyPos = i;
                         i--;
                     }
@@ -428,7 +431,7 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, int width, in
     return out;
 }
 
-void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
+void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, std::string_view text, int maxHeight, Color shadowColor) {
     assert(color.a > 0);
 
     int left_margin = 0;
@@ -446,7 +449,7 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const st
         position.x = 12;
     }
 
-    std::string string_begin = text;
+    std::string string_begin = std::string(text);
     if (maxHeight == 0) {
         string_begin = FitTextInAWindow(text, window->uFrameWidth, position.x);
     }

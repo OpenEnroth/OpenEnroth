@@ -67,12 +67,12 @@ class GUIFont {
      * @return                              Color that was used to draw text at the end of the line.
      */
     Color DrawTextLine(const std::string &text, Color color, Color defaultColor, Pointi position, int max_len_pix);
-    void DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor);
+    void DrawText(GUIWindow *window, Pointi position, Color color, std::string_view text, int maxHeight, Color shadowColor);
     int DrawTextInRect(GUIWindow *window, Pointi position,
                        Color color, const std::string &text, int rect_width,
                        int reverse_text);
 
-    std::string FitTextInAWindow(const std::string &inString, int width, int uX, bool return_on_carriage = false);
+    std::string FitTextInAWindow(std::string_view inString, int width, int uX, bool return_on_carriage = false);
 
     // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
