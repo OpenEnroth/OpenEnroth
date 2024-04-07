@@ -49,10 +49,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init logger.
     _bufferLogSink = std::make_unique<BufferLogSink>();
-    auto compositeLogSink = std::make_unique<LogSinkComposite>();
-    auto compositeLogSinkPtr = compositeLogSink.get();
-    compositeLogSink->addLogSink(LogSink::createDefaultSink());
-    _defaultLogSink = std::move(compositeLogSink);
+    _defaultLogSink = std::make_unique<LogSinkComposite>();
+    _defaultLogSink->addLogSink(LogSink::createDefaultSink());
     _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
 
@@ -143,7 +141,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
         _nuklear->addInitLuaLibs(GameLuaBindings::init);
-        compositeLogSinkPtr->addLogSink(Nuklear::createNuklearLogSink());
+        _defaultLogSink->addLogSink(Nuklear::createNuklearLogSink());
     }
 
     // Init io.
