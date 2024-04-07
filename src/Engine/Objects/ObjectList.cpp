@@ -2,7 +2,7 @@
 
 #include "Engine/Graphics/Sprites.h"
 
-struct ObjectList *pObjectList;
+ObjectList *pObjectList;
 
 unsigned int ObjectList::ObjectIDByItemID(SpriteId uItemID) {
     for (size_t i = 0; i < pObjects.size(); i++)

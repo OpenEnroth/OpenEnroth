@@ -2425,7 +2425,7 @@ std::array<class GraphicsImage *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 
-struct Actor *pDialogue_SpeakingActor;
+Actor *pDialogue_SpeakingActor;
 int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string branchless_dialogue_str;

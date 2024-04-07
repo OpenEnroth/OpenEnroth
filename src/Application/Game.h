@@ -9,7 +9,7 @@
 using Io::Mouse;
 
 class Engine;
-class DecalBuilder;
+struct DecalBuilder;
 class PlatformApplication;
 class Platform;
 class Menu;

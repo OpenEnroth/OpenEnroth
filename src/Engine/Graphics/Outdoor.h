@@ -17,8 +17,8 @@
 #include "LocationTime.h"
 #include "LocationFunctions.h"
 
-class DecalBuilder;
-class SpellFxRenderer;
+struct DecalBuilder;
+struct SpellFxRenderer;
 class TileDesc;
 
 struct OutdoorLocationTileType {

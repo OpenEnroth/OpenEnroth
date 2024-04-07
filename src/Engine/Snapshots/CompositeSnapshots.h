@@ -21,7 +21,7 @@ struct OutdoorLocation;
 struct SpriteFrameTable;
 class LodReader;
 class LodWriter;
-class FontData;
+struct FontData;
 
 struct IndoorLocation_MM7 {
     BLVHeader_MM7 header;

@@ -9,8 +9,8 @@
 #include "EngineTraceEnums.h"
 
 class EngineController;
-class EventTrace;
-class EventTraceGameState;
+struct EventTrace;
+struct EventTraceGameState;
 
 /**
  * Component that exposes a trace playback interface.

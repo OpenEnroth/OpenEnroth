@@ -9,7 +9,7 @@
 #include "Utility/Memory/Blob.h"
 
 struct LODSprite;
-class DecorationDesc;
+struct DecorationDesc;
 class GraphicsImage;
 
 class Sprite {

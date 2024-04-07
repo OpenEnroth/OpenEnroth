@@ -38,7 +38,7 @@ class GUIWindow_Chest;
 class GUIWindow_MessageScroll;
 class GUIWindow_BranchlessDialogue;
 class Character;
-class NPCData;
+struct NPCData;
 class GraphicsImage;
 class TargetedSpellUI;
 struct ItemGen;
