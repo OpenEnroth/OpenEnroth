@@ -1,6 +1,7 @@
 #include "NuklearUtils.h"
 
 #include <string>
+#include <cstring>
 
 int lua_check_args_count(lua_State * L, bool condition) {
     if (!condition)
