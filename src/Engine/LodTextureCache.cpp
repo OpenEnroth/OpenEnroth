@@ -23,7 +23,7 @@ LodTextureCache::~LodTextureCache() {
         texture.Release();
 }
 
-void LodTextureCache::open(const std::string &pFilename) {
+void LodTextureCache::open(std::string_view pFilename) {
     _reader.open(pFilename);
 }
 
@@ -40,7 +40,7 @@ void LodTextureCache::releaseUnreserved() {
     }
 }
 
-Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool useDummyOnError) {
+Texture_MM7 *LodTextureCache::loadTexture(std::string_view pContainer, bool useDummyOnError) {
     std::string name = toLower(pContainer);
 
     Texture_MM7 *result = valuePtr(_textureByName, name);
@@ -61,11 +61,11 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
     }
 }
 
-Blob LodTextureCache::LoadCompressedTexture(const std::string &pContainer) {
+Blob LodTextureCache::LoadCompressedTexture(std::string_view pContainer) {
     return lod::decodeCompressed(_reader.read(pContainer));
 }
 
-bool LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer) {
+bool LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, std::string_view pContainer) {
     if (!_reader.exists(pContainer))
         return false;
 
