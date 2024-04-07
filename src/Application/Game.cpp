@@ -504,6 +504,7 @@ void Game::processQueuedMessages() {
                     break;
                 }
                 if (current_screen_type != SCREEN_GAME) continue;
+                    // pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
                 current_screen_type = SCREEN_DEBUG;
                 continue;
