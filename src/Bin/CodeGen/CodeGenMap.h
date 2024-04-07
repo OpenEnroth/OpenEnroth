@@ -41,7 +41,7 @@ class CodeGenMap {
         }
     }
 
-    void dump(FILE *file, const std::string &prefix) {
+    void dump(FILE *file, std::string_view prefix) {
         std::vector<std::array<std::string, 2>> linesAndComments;
         for (const auto &[value, name] : _nameByValue) {
             std::string comment = _commentByValue[value];

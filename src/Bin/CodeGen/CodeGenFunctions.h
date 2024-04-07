@@ -10,7 +10,7 @@
 
 #include "Utility/Format.h"
 
-inline std::string toUpperCaseEnum(const std::string &string) {
+inline std::string toUpperCaseEnum(std::string_view string) {
     std::string result;
     for (char c : trim(string)) {
         if (std::isalnum(c)) {
