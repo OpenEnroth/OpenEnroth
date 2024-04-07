@@ -30,7 +30,7 @@ UnicodeCrt::UnicodeCrt(int &argc, char **&argv) {
     // Convert command line first.
     //
     // Note on SDL interop. SDL runs basically the same code before calling into SDL_main, and thus if we get here from
-    // platformMain, argc and argv are already UTF8-encoded. However, SDL doesn't add/remove arguments, so it's safe
+    // platformMain, argc and argv are already UTF8-encoded. However, SDL doesn't add/remove arguments, so it's safe to
     // run the same code again.
     //
     // CommandLineToArgvW can return NULL when out of memory, which should never happen. We don't handle errors here.
