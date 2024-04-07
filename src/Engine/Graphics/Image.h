@@ -45,6 +45,7 @@ class GraphicsImage {
     bool _lazyInitialization = false;
     bool _initialized = false;
     std::unique_ptr<ImageLoader> _loader;
+    std::string _name;
 
     RgbaImage _rgbaImage;
     GrayscaleImage _indexedImage;
