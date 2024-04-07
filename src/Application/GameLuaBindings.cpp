@@ -282,9 +282,7 @@ static int lua_set_alignment(lua_State* L) {
 }
 
 static int lua_get_alignment(lua_State* L) {
-    std::string alignmentStr;
-    serialize(pParty->alignment, &alignmentStr);
-    lua_pushstring(L, alignmentStr.c_str());
+    lua_pushstring(L, toString(pParty->alignment).c_str());
     return 1;
 }
 
