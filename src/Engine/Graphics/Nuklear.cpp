@@ -1087,15 +1087,6 @@ static int lua_log_warning(lua_State *L) {
     return 0;
 }
 
-static int lua_log_set_callback(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
-
-    const char *str = lua_tostring(lua, 2);
-    logger->warning("Nuklear LUA: {}", str);
-
-    return 0;
-}
-
 static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec) {
     if (lua_istable(L, idx)) {
         lua_pushvalue(L, idx);
@@ -1171,7 +1162,7 @@ static int lua_nk_parse_rect(lua_State *L, int idx, struct nk_rect *rect) {
                     break;
                 }
             } else {
-                const char* key = lua_tostring(L, -1);
+                const char *key = lua_tostring(L, -1);
                 float* val = &rect->x;
                 if (!strcmp(key, "x")) {
                     val = &rect->x;
@@ -2265,7 +2256,7 @@ static int lua_nk_edit_string(lua_State *L) {
 
     nk_flags flags = 0;
     lua_check_ret(lua_nk_parse_edit_string_options(L, 2, &flags));
-    const char* text = lua_tostring(lua, 3);
+    const char *text = lua_tostring(lua, 3);
     size_t len = NK_CLAMP(0, strlen(text), MAX_BUFFER_SIZE - 1);
     memcpy(buffer, text, len);
     buffer[len] = '\0';
@@ -2313,7 +2304,7 @@ static int lua_nk_group_scrolled_begin(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_scroll* scroll = lua_nk_check_scroll(L, 2);
-    const char* title = luaL_checkstring(L, 3);
+    const char *title = luaL_checkstring(L, 3);
     nk_flags flags;
     lua_check_ret(lua_nk_parse_window_flags(L, 4, &flags));
 
@@ -2335,7 +2326,7 @@ static int lua_nk_group_scrolled_end(lua_State *L) {
 static int lua_nk_group_set_scroll(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
-    const char* id = luaL_checkstring(L, 2);
+    const char *id = luaL_checkstring(L, 2);
     size_t xoffset = luaL_checkinteger(L, 3);
     size_t yoffset = luaL_checkinteger(L, 4);
     nk_group_set_scroll(nuklear->ctx, id, xoffset, yoffset);
@@ -3343,7 +3334,7 @@ static int lua_nk_window_get_size(lua_State *L) {
 static int lua_nk_window_set_size(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char* name = lua_tostring(L, 2);
+    const char *name = lua_tostring(L, 2);
     struct nk_vec2 size;
     lua_check_ret(lua_nk_parse_vec2(L, 3, &size));
 
@@ -3355,7 +3346,7 @@ static int lua_nk_window_set_size(lua_State *L) {
 static int lua_nk_window_set_position(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char* name = lua_tostring(L, 2);
+    const char *name = lua_tostring(L, 2);
     struct nk_vec2 size;
     lua_check_ret(lua_nk_parse_vec2(L, 3, &size));
 
@@ -3367,7 +3358,7 @@ static int lua_nk_window_set_position(lua_State *L) {
 static int lua_nk_window_set_bounds(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char* name = lua_tostring(L, 2);
+    const char *name = lua_tostring(L, 2);
     struct nk_rect bounds;
     lua_check_ret(lua_nk_parse_rect(L, 3, &bounds));
 
@@ -3566,10 +3557,10 @@ static int lua_dev_config_set(lua_State *L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 3));
 
     int valueIndex = 3;
-    const char* configName{};
+    const char *configName{};
     AnyConfigEntry* configEntry{};
     if (lua_gettop(L) > 2) {
-        const char* sectionName = luaL_checkstring(L, 1);
+        const char *sectionName = luaL_checkstring(L, 1);
         configName = luaL_checkstring(L, 2);
         ConfigSection* section = engine->config->section(sectionName);
         if (section != nullptr) {
@@ -3608,10 +3599,10 @@ static int lua_dev_config_set(lua_State *L) {
 static int lua_dev_config_get(lua_State *L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
 
-    const char* configName{};
+    const char *configName{};
     AnyConfigEntry* configEntry{};
     if (lua_gettop(L) > 1) {
-        const char* sectionName = luaL_checkstring(L, 1);
+        const char *sectionName = luaL_checkstring(L, 1);
         configName = luaL_checkstring(L, 2);
         ConfigSection* section = engine->config->section(sectionName);
         if (section != nullptr) {
@@ -3646,7 +3637,7 @@ static int lua_dev_config_get(lua_State *L) {
     return 1;
 }
 
-static bool load_init_lua_file(const char* file) {
+static bool load_init_lua_file(const char *file) {
     int status = luaL_loadfile(lua, makeDataPath("ui", file).c_str());
     if (status) {
         logger->warning("Nuklear: couldn't load init template: {}", lua_tostring(lua, -1));
@@ -3697,7 +3688,6 @@ bool Nuklear::LuaInit() {
     static const luaL_Reg log[] = {
         { "info", lua_log_info },
         { "warning", lua_log_warning },
-        { "set_callback", lua_log_set_callback },
         { NULL, NULL }
     };
 
@@ -3870,7 +3860,7 @@ bool Nuklear::LuaInit() {
     return lua_init_lua_files(_init_lua_files);
 }
 
-void Nuklear::addInitLuaFile(const char* lua_file) {
+void Nuklear::addInitLuaFile(const char *lua_file) {
     _init_lua_files.push_back(lua_file);
 }
 

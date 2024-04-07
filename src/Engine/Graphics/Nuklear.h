@@ -43,7 +43,7 @@ class Nuklear {
      void Release(WindowType winType);
      void Destroy();
      void addInitLuaLibs(std::function<void(lua_State *)> callback);
-     void addInitLuaFile(const char* lua_file);
+     void addInitLuaFile(const char *lua_file);
      bool isInitialized(WindowType winType) const;
      enum NUKLEAR_MODE Mode(WindowType winType);
 

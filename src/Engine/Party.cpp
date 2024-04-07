@@ -980,7 +980,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
     }
 }
 
-void Party::SetCharacterXP(Character& player, int xp) {
+void Party::SetCharacterXP(Character &player, int xp) {
     if (xp > 4000000000 || xp < 0) {
         xp = 0;
     }

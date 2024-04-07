@@ -2,7 +2,7 @@
 
 #include <utility>
 
-void LogSinkComposite::write(const LogCategory& category, LogLevel level, std::string_view message) {
+void LogSinkComposite::write(const LogCategory &category, LogLevel level, std::string_view message) {
     for (auto&& logSink : _logSinks) {
         logSink->write(category, level, message);
     }
