@@ -714,8 +714,8 @@ void playHouseSound(HouseId houseID, HouseSoundType type) {
 }
 
 void GUIWindow_House::houseNPCDialogue() {
-    GUIWindow house_window = *this;
     if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
+        GUIWindow house_window = *this;
         MapId id = houseNpcs[currentHouseNpc].targetMapID;
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
@@ -736,19 +736,20 @@ void GUIWindow_House::houseNPCDialogue() {
     }
 
     NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
-    drawNpcHouseNameAndTitle(house_window, pNPC);
+    drawNpcHouseNameAndTitle(pNPC);
     drawNpcHouseGreetingMessage(pNPC);
     drawNpcHouseDialogueOptions(pNPC);
     drawNpcHouseDialogueResponse();
 }
 
-void GUIWindow_House::drawNpcHouseNameAndTitle(GUIWindow& window, NPCData* npcData) {
+void GUIWindow_House::drawNpcHouseNameAndTitle(NPCData *npcData) {
+    GUIWindow window = *this;
     window.uFrameWidth -= 10;
     window.uFrameZ -= 10;
     window.DrawTitleText(assets->pFontCreate.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(npcData), 3);
 }
 
-void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData* npcData) {
+void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData *npcData) {
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
         if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
             if (npcData->greet) {

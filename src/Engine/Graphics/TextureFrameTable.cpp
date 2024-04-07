@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 
+#include "Library/Logger/Logger.h"
 #include "Utility/String.h"
 
 struct TextureFrameTable *pTextureFrameTable;
@@ -22,9 +23,13 @@ int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
     return -1;
 }
 
-GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, Duration offset) {
-    Duration animationDuration = textures[frameId].animationDuration;
+GraphicsImage *TextureFrameTable::GetFrameTexture(int64_t frameId, Duration offset) {
+    if (frameId < 0 || frameId >= textures.size()) {
+        logger->error("Failed to retreive OOB frameID '{}' from TextureFrameTable::GetFrameTexture", frameId);
+        return nullptr;
+    }
 
+    Duration animationDuration = textures[frameId].animationDuration;
     if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animationDuration) {
         offset = offset % animationDuration;
         while (offset >= textures[frameId].frameDuration) {
@@ -33,16 +38,25 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, Duration offset) 
         }
     }
 
+    assert(frameId < textures.size() && "TextureFrameTable::GetFrameTexture animated frame OOB");
     return textures[frameId].GetTexture();
 }
 
-Duration TextureFrameTable::textureFrameAnimLength(int frameID) {
+Duration TextureFrameTable::textureFrameAnimLength(int64_t frameID) {
+    if (frameID < 0 || frameID >= textures.size()) {
+        logger->error("Failed to retreive OOB frameID '{}' from TextureFrameTable::textureFrameAnimLength", frameID);
+        return 1_ticks;
+    }
     Duration result = textures[frameID].animationDuration;
     if ((textures[frameID].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && result)
         return result;
     return 1_ticks;
 }
 
-Duration TextureFrameTable::textureFrameAnimTime(int frameID) {
+Duration TextureFrameTable::textureFrameAnimTime(int64_t frameID) {
+    if (frameID < 0 || frameID >= textures.size()) {
+        logger->error("Failed to retreive OOB frameID '{}' from TextureFrameTable::textureFrameAnimTime", frameID);
+        return 1_ticks;
+    }
     return textures[frameID].frameDuration;
 }

@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
+
+cmake_policy(SET CMP0144 NEW) # Use upper-case <PACKAGENAME>_ROOT variables in find_package().
 
 project("OpenEnroth")
 

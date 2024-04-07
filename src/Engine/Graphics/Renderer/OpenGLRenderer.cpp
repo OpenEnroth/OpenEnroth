@@ -3291,7 +3291,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
+                        if (!face.GetTexture()) continue;
                         GraphicsImage *tex = face.GetTexture();
+
                         std::string texname = tex->GetName();
 
                         Duration animLength;
@@ -3378,6 +3380,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 // TODO(pskelton): any instances where animTime is not consistent would need checking
                                 frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face.resource);
                                 tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
+                                if (!tex) break;
                                 texname = tex->GetName();
                             }
                         } while (animLength > frame);
@@ -3997,6 +4000,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         // TODO(pskelton): any instances where animTime is not consistent would need checking
                         frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face->resource);
                         tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
+                        if (!tex) break;
                         texname = tex->GetName();
                     }
                 } while (animLength > frame);
