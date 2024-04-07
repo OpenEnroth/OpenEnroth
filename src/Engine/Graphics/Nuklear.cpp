@@ -3603,15 +3603,7 @@ static int lua_dev_config_get(lua_State *L) {
     }
 
     if (configEntry != nullptr) {
-        if (configEntry->type() == typeid(bool)) {
-            lua_pushboolean(L, std::any_cast<bool>(configEntry->value()));
-        } else if (configEntry->type() == typeid(float)) {
-            lua_pushnumber(L, std::any_cast<float>(configEntry->value()));
-        } else if (configEntry->type() == typeid(int)) {
-            lua_pushinteger(L, std::any_cast<int>(configEntry->value()));
-        } else if (configEntry->type() == typeid(std::string)) {
-            lua_pushstring(L, configEntry->string().c_str());
-        }
+        lua_pushstring(L, configEntry->string().c_str());
     } else {
         return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
     }
