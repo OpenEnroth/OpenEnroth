@@ -17,9 +17,11 @@
 #include "LocationTime.h"
 #include "LocationFunctions.h"
 
-class DecalBuilder;
-class SpellFxRenderer;
+struct DecalBuilder;
+struct SpellFxRenderer;
 class TileDesc;
+struct RenderVertexSoft;
+struct ODMRenderParams;
 
 struct OutdoorLocationTileType {
     Tileset tileset;
@@ -119,8 +121,8 @@ struct OutdoorLocation {
     void SetFog();
     void Draw();
 
-    double GetPolygonMaxZ(struct RenderVertexSoft *pVertex, unsigned int unumverts);
-    double GetPolygonMinZ(struct RenderVertexSoft *pVertices, unsigned int unumverts);
+    double GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int unumverts);
+    double GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts);
 
     static void LoadActualSkyFrame();
 
@@ -213,7 +215,7 @@ char Is_out15odm_underwater();
 void SetUnderwaterFog();
 void sub_487DA9();
 void ODM_LoadAndInitialize(std::string_view pLevelFilename,
-                           struct ODMRenderParams *thisa);
+                           ODMRenderParams *thisa);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);

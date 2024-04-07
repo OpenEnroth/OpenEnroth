@@ -384,7 +384,7 @@ struct Party {
 
 extern Party *pParty;  // idb
 
-extern struct ActionQueue *pPartyActionQueue;
+extern ActionQueue *pPartyActionQueue;
 
 bool TestPartyQuestBit(QuestBit bit);
 

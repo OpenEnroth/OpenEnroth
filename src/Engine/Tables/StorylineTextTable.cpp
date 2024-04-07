@@ -3,7 +3,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
-struct StorylineText *pStorylineText;
+StorylineText *pStorylineText;
 
 //----- (00453E6D) --------------------------------------------------------
 void StorylineText::Initialize(const Blob &history) {

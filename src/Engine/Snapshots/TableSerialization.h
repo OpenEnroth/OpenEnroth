@@ -5,6 +5,7 @@
 class ChestDescList;
 class DecorationList;
 class ObjectList;
+class SoundList;
 struct IconFrameTable;
 struct MonsterList;
 struct OverlayList;
@@ -59,3 +60,5 @@ void deserialize(const TriBlob &src, TextureFrameTable *dst);
  * @offset 0x00488000
  */
 void deserialize(const TriBlob &src, TileTable *dst);
+
+void deserialize(const TriBlob &src, SoundList *dst);

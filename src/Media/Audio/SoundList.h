@@ -2,19 +2,18 @@
 
 #include <unordered_map>
 
-#include "Utility/Memory/Blob.h"
-
 #include "SoundInfo.h"
 
-class SoundList {
- public:
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
+#include "Library/Snapshots/RawSnapshots.h"
 
-    // TODO(captainurist): should be const
-    SoundInfo *soundInfo(SoundId soundId);
-
- private:
+struct RawSoundList {
     std::unordered_map<SoundId, SoundInfo> _mapSounds;
+};
+
+class SoundList : private RawSoundList {
+    MM_DECLARE_RAW_PRIVATE_BASE(RawSoundList)
+ public:
+    SoundInfo *soundInfo(SoundId soundId); // TODO(captainurist): should be const
 };
 
 extern SoundList *pSoundList;

@@ -19,7 +19,7 @@
 
 ItemGen *ptr_50C9A4_ItemToEnchant;
 
-struct ItemTable *pItemTable;  // 005D29E0
+ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
 static std::map<ItemEnchantment, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;

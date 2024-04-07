@@ -39,7 +39,7 @@ struct Chest {
 
     static bool CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID);
     static int FindFreeItemSlot(int uChestID);
-    static int PutItemInChest(int a1, struct ItemGen *a2, int uChestID);
+    static int PutItemInChest(int a1, ItemGen *a2, int uChestID);
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
     static void PlaceItems(int uChestID);
     static bool open(int uChestID, Pid objectPid);

@@ -130,4 +130,4 @@ struct NPCStats {
 };
 
 extern std::array<NPCTopic, 789> pNPCTopics;
-extern struct NPCStats *pNPCStats;
+extern NPCStats *pNPCStats;

@@ -10,6 +10,7 @@
 
 struct ODMFace;
 struct Planef;
+struct stru314;
 
 enum class DecalFlag : int {
     DecalFlagsNone = 0x0,
@@ -82,7 +83,7 @@ struct DecalBuilder {
                              RenderVertexSoft *FaceVerts, char ClipFlags, int uSectorID);
     bool Build_Decal_Geometry(
         int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
-        Color uColorMultiplier, float DecalDotDist, struct stru314 *FacetNormals, int numfaceverts,
+        Color uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, int numfaceverts,
         RenderVertexSoft *faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(int uFaceID);
     bool ApplyBloodSplat_OutdoorFace(ODMFace *pFace);

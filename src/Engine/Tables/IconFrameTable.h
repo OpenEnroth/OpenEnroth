@@ -55,7 +55,7 @@ struct IconFrameTable {
 
 class UIAnimation {
  public:
-    class Icon *icon;
+    Icon *icon;
 
     int16_t uAnimTime;
     Duration uAnimLength;
@@ -63,7 +63,7 @@ class UIAnimation {
     int16_t y;
 };
 
-extern struct IconFrameTable *pIconsFrameTable;
+extern IconFrameTable *pIconsFrameTable;
 
 extern UIAnimation *pUIAnim_Food;
 extern UIAnimation *pUIAnim_Gold;

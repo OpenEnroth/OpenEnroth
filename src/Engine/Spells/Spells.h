@@ -61,7 +61,7 @@ struct SpellBookIconPos {
     int32_t Ypos;
 };
 
-extern struct SpellStats *pSpellStats;
+extern SpellStats *pSpellStats;
 
 extern IndexedArray<std::array<struct SpellBookIconPos, 12>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> pIconPos;
 

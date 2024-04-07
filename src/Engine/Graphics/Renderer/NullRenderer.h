@@ -42,7 +42,7 @@ class NullRenderer : public BaseRenderer {
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginScene3D() override;
 
-    virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
+    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -96,12 +96,12 @@ class NullRenderer : public BaseRenderer {
     virtual void EndLightmaps() override;
     virtual void BeginLightmaps2() override;
     virtual void EndLightmaps2() override;
-    virtual bool DrawLightmap(struct Lightmap *pLightmap,
+    virtual bool DrawLightmap(Lightmap *pLightmap,
                               Vec3f *pColorMult, float z_bias) override;
 
     virtual void BeginDecals() override;
     virtual void EndDecals() override;
-    virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
+    virtual void DrawDecal(Decal *pDecal, float z_bias) override;
 
     virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
                                      int blend_mode) override;

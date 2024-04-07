@@ -14,7 +14,7 @@
 
 #include "Utility/String.h"
 
-struct SpriteFrameTable *pSpriteFrameTable;
+SpriteFrameTable *pSpriteFrameTable;
 
 void Sprite::Release() {
     this->sprite_header->Release();

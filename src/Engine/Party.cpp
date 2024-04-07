@@ -40,7 +40,7 @@ using Io::Mouse;
 
 Party *pParty = nullptr;
 
-struct ActionQueue *pPartyActionQueue = new ActionQueue;
+ActionQueue *pPartyActionQueue = new ActionQueue;
 
 struct {
     UIAnimation _pUIAnim_Food;
@@ -54,7 +54,7 @@ UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
 UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
 UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
 
-std::array<class UIAnimation *, 4>
+std::array<UIAnimation *, 4>
     pUIAnims =  // was struct byt defined as class
     {&_uianim._pUIAnim_Food, &_uianim._pUIAnim_Gold,
      &_uianim._pUIAnum_Torchlight, &_uianim._pUIAnim_WizardEye};

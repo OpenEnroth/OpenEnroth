@@ -20,6 +20,7 @@
 class Actor;
 class Vis;
 struct SpawnPoint;
+struct MapInfo;
 
 struct stru319 {
     int which_player_to_attack(Actor *pActor);
@@ -87,15 +88,15 @@ class Actor {
     static void _SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                               bool can_target_party);
     static void AI_Pursue3(unsigned int uActorID, Pid a2,
-                           Duration uActionLength, struct AIDirection *a4);
+                           Duration uActionLength, AIDirection *a4);
     static void AI_Pursue2(unsigned int uActorID, Pid a2,
-                           Duration uActionLength, struct AIDirection *pDir,
+                           Duration uActionLength, AIDirection *pDir,
                            int a5);
     static void AI_Flee(unsigned int uActorID, Pid edx0,
-                        Duration uActionLength, struct AIDirection *a4);
+                        Duration uActionLength, AIDirection *a4);
     static void AI_Pursue1(unsigned int uActorID, Pid a2,
                            signed int arg0, Duration uActionLength,
-                           struct AIDirection *pDir);
+                           AIDirection *pDir);
     /**
      * @offset 0x402CED
      */
@@ -103,34 +104,34 @@ class Actor {
     static void Die(unsigned int uActorID);
     static void resurrect(unsigned int uActorID);
     static void AI_Bored(unsigned int uActorID, Pid uObjID,
-                         struct AIDirection *a4);
+                         AIDirection *a4);
     static void AI_Stun(unsigned int uActorID, Pid edx0, int arg0);
     static char _4031C1_update_job_never_gets_called(unsigned int uActorID,
                                                      signed int a2, int a3);
     static void AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
                               int radius, Duration uActionLength);
     static void AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
-                                  struct AIDirection *pDir);
+                                  AIDirection *pDir);
     static void AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
-                                  struct AIDirection *pDir);
+                                  AIDirection *pDir);
     static void AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
-                                struct AIDirection *pDir);
+                                AIDirection *pDir);
     static void AI_SpellAttack2(unsigned int uActorID, Pid sTargetPid,
-                                struct AIDirection *pDir);
+                                AIDirection *pDir);
     static void AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
-                               struct AIDirection *arg0);
+                               AIDirection *arg0);
     static void StandAwhile(unsigned int uActorID);
     static void AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
-                         Duration uActionLength, struct AIDirection *a4);
+                         Duration uActionLength, AIDirection *a4);
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
-                                Duration uActionLength, struct AIDirection *a4);
-    static void AI_FaceObject(unsigned int uActorID, Pid uObjID, struct AIDirection *Dir_In);
+                                Duration uActionLength, AIDirection *a4);
+    static void AI_FaceObject(unsigned int uActorID, Pid uObjID, AIDirection *Dir_In);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
-                                 struct AIDirection *pOut, int a4);
+                                 AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);
-    static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
+    static void AI_RangedAttack(unsigned int uActorID, AIDirection *a2,
                                 int type, ActorAbility a4);
-    static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
+    static void AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
                                        Vec3i *pVelocity, ActorAbility a4);
@@ -255,7 +256,7 @@ void npcSetItem(int npc, ItemId item, int a3);
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID);
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, Duration duration);
-void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
 /**
  * @offset 0x438F8F
  */

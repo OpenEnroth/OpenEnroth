@@ -15,7 +15,9 @@
 #include "LocationFunctions.h"
 #include "FaceEnums.h"
 
+struct BspRenderer;
 struct IndoorLocation;
+struct MapInfo;
 
 struct BLVLight {
     Vec3i vPosition;
@@ -68,7 +70,7 @@ struct FlatFace {
 /*   93 */
 struct BLVFace {  // 60h
     void _get_normals(Vec3f *outU, Vec3f *outV);
-    void FromODM(struct ODMFace *face);
+    void FromODM(ODMFace *face);
 
     void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture();
@@ -280,7 +282,7 @@ struct BLVRenderParams {
 extern BLVRenderParams *pBLVRenderParams;
 
 char DoInteractionWithTopmostZObject(Pid pid);
-// int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
+// int sub_4AAEA6_transform(RenderVertexSoft *a1);
 void BLV_UpdateUserInputAndOther();
 
 /**
@@ -304,7 +306,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
-int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
+int SpawnEncounterMonsters(MapInfo *a1, int a2);
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing);
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2);
 
@@ -360,4 +362,4 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
  */
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from);
 
-extern struct BspRenderer *pBspRenderer;
+extern BspRenderer *pBspRenderer;

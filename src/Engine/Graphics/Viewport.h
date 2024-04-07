@@ -35,7 +35,7 @@ struct Viewport {
     int uScreenCenterY;
 };
 
-extern struct Viewport *pViewport;
+extern Viewport *pViewport;
 
 struct ViewingParams {
     inline ViewingParams() {
@@ -86,4 +86,4 @@ struct ViewingParams {
     Color pPalette[256] {};
 };
 
-extern struct ViewingParams *viewparams;
+extern ViewingParams *viewparams;

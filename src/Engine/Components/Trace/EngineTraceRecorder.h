@@ -9,7 +9,7 @@
 #include "EngineTraceEnums.h"
 
 class EngineController;
-class EventTrace;
+struct EventTrace;
 class ConfigPatch;
 
 /**
