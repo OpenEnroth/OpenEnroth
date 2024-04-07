@@ -38,7 +38,7 @@ class TeleportPoint {
      *
      * @param mapName  Name of the target map.
      */
-    void setTeleportMap(const std::string &mapName) { _targetMap = mapName; }
+    void setTeleportMap(std::string_view mapName) { _targetMap = mapName; }
 
     /**
      * Get target map name.
