@@ -600,14 +600,14 @@ void BaseRenderer::SavePCXScreenshot() {
     SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
 }
 
-void BaseRenderer::SavePCXImage32(const std::string &filename, RgbaImageView image) {
+void BaseRenderer::SavePCXImage32(std::string_view filename, RgbaImageView image) {
     // TODO(pskelton): add "Screenshots" folder?
     FileOutputStream output(makeDataPath(filename));
     output.write(pcx::encode(image).string_view());
     output.close();
 }
 
-void BaseRenderer::SaveScreenshot(const std::string &filename, const unsigned int width, const unsigned int height) {
+void BaseRenderer::SaveScreenshot(std::string_view filename, const unsigned int width, const unsigned int height) {
     SavePCXImage32(filename, render->MakeScreenshot32(width, height));
 }
 
@@ -819,7 +819,7 @@ Sizei BaseRenderer::GetPresentDimensions() {
     return outputPresent;
 }
 
-void BaseRenderer::SaveWinnersCertificate(const std::string &filePath) {
+void BaseRenderer::SaveWinnersCertificate(std::string_view filePath) {
     RgbaImage sPixels = flipVertically(ReadScreenPixels());
 
     // save to disk

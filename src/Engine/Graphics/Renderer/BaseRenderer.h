@@ -29,8 +29,8 @@ class BaseRenderer : public Renderer {
     virtual float GetGamma() override;
 
     virtual void SavePCXScreenshot() override;
-    virtual void SavePCXImage32(const std::string &filename, RgbaImageView image);
-    virtual void SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) override;
+    virtual void SavePCXImage32(std::string_view filename, RgbaImageView image);
+    virtual void SaveScreenshot(std::string_view filename, unsigned int width, unsigned int height) override;
     virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) override;
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) override;
 
@@ -57,7 +57,7 @@ class BaseRenderer : public Renderer {
     virtual Sizei GetRenderDimensions() override;
     virtual Sizei GetPresentDimensions() override;
 
-    virtual void SaveWinnersCertificate(const std::string &filePath) override;
+    virtual void SaveWinnersCertificate(std::string_view filePath) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
