@@ -25,10 +25,6 @@ class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
 
-namespace LOD {
-class File;
-}
-
 bool PauseGameDrawing();
 
 // TODO(captainurist): rename Renderer
