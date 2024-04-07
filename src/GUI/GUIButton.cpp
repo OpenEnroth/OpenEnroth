@@ -93,7 +93,7 @@ void GUIButton::Release() {
     delete this;
 }
 
-void GUIButton::DrawLabel(const std::string &text, GUIFont *font, Color color, Color shadowColor) {
+void GUIButton::DrawLabel(std::string_view text, GUIFont *font, Color color, Color shadowColor) {
     return pParent->DrawText(font,
                              {this->uX + (int)(this->uWidth - font->GetLineWidth(text)) / 2, this->uY + (int)(this->uHeight - font->GetHeight()) / 2},
                              color, text, 0, shadowColor);
