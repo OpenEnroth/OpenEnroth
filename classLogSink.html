@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97caf6f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2cefa30</span>
    </div>
   </td>
  </tr>
@@ -85,7 +85,7 @@ Inheritance diagram for LogSink:</div>
   <img src="classLogSink.png" usemap="#LogSink_map" alt=""/>
   <map id="LogSink_map" name="LogSink_map">
 <area href="classBufferLogSink.html" alt="BufferLogSink" shape="rect" coords="0,56,151,80"/>
-<area href="classLogSinkComposite.html" alt="LogSinkComposite" shape="rect" coords="161,56,312,80"/>
+<area href="classDistLogSink.html" alt="DistLogSink" shape="rect" coords="161,56,312,80"/>
 <area href="classNuklearLogSink.html" alt="NuklearLogSink" shape="rect" coords="322,56,473,80"/>
 <area href="classSpdlogSink.html" alt="SpdlogSink&lt; BaseSink &gt;" shape="rect" coords="483,56,634,80"/>
   </map>
@@ -103,7 +103,11 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a932ffa9e1cc7ab05c812742bc088b969"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSink.html#a932ffa9e1cc7ab05c812742bc088b969">createDefaultSink</a> ()</td></tr>
 <tr class="separator:a932ffa9e1cc7ab05c812742bc088b969"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Log sink interface.</p>
+<p >Log level handling &amp; log formatting are done in <code><a class="el" href="classLogger.html">Logger</a></code>. <code><a class="el" href="classLogSink.html">LogSink</a></code> implementations are expected to just dump the log message &amp; do nothing else.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classLogger.html#ac35f33ded4c7365c4cf2fbd7def1b73d">Logger::setSink</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5aaba54701c520132113f5c94fccc81a" name="a5aaba54701c520132113f5c94fccc81a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5aaba54701c520132113f5c94fccc81a">&#9670;&#160;</a></span>~LogSink()</h2>
 
@@ -152,7 +156,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Default sink for the current platform. Returned sink is thread-safe. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Default sink for the current platform. </dd></dl>
 
 </div>
 </div>
@@ -195,8 +199,18 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Writes out the log message.</p>
+<p >Calls into <code>write</code> from the <code><a class="el" href="classLogger.html">Logger</a></code> instance are guaranteed to be serialized with a mutex, so you don't need to do any locking in your implementation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">category</td><td>Log category. </td></tr>
+    <tr><td class="paramname">level</td><td>Log level. </td></tr>
+    <tr><td class="paramname">message</td><td>Log message. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Implemented in <a class="el" href="classNuklearLogSink.html#ac83185dbb360c1ffed0721a0f7b01adf">NuklearLogSink</a>, <a class="el" href="classBufferLogSink.html#a53acea79cc64848dafbad5fc79bc3a7d">BufferLogSink</a>, <a class="el" href="classSpdlogSink.html#a6ed09ccb575debe5e4e25cae5388c6b0">SpdlogSink&lt; BaseSink &gt;</a>, and <a class="el" href="classLogSinkComposite.html#ab9d684861024fc906d5406ddfac5eb8a">LogSinkComposite</a>.</p>
+<p>Implemented in <a class="el" href="classNuklearLogSink.html#ac83185dbb360c1ffed0721a0f7b01adf">NuklearLogSink</a>, <a class="el" href="classBufferLogSink.html#a53acea79cc64848dafbad5fc79bc3a7d">BufferLogSink</a>, <a class="el" href="classDistLogSink.html#a7c33d798ad168a3233b555021b3dc5aa">DistLogSink</a>, and <a class="el" href="classSpdlogSink.html#a6ed09ccb575debe5e4e25cae5388c6b0">SpdlogSink&lt; BaseSink &gt;</a>.</p>
 
 </div>
 </div>

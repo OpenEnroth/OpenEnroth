@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: LogSinkComposite Class Reference</title>
+<title>OpenEnroth: DistLogSink Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97caf6f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2cefa30</span>
    </div>
   </td>
  </tr>
@@ -72,30 +72,28 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
-<a href="classLogSinkComposite-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">LogSinkComposite Class Reference</div></div>
+<a href="classDistLogSink-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">DistLogSink Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;LogSinkComposite.h&gt;</code></p>
+<p><code>#include &lt;DistLogSink.h&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for LogSinkComposite:</div>
+Inheritance diagram for DistLogSink:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classLogSinkComposite.png" usemap="#LogSinkComposite_map" alt=""/>
-  <map id="LogSinkComposite_map" name="LogSinkComposite_map">
-<area href="classLogSink.html" alt="LogSink" shape="rect" coords="0,0,115,24"/>
+  <img src="classDistLogSink.png" usemap="#DistLogSink_map" alt=""/>
+  <map id="DistLogSink_map" name="DistLogSink_map">
+<area href="classLogSink.html" alt="LogSink" shape="rect" coords="0,0,78,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab7d425258346dc34773284738f7cdafe"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSinkComposite.html#ab7d425258346dc34773284738f7cdafe">~LogSinkComposite</a> ()=default</td></tr>
-<tr class="separator:ab7d425258346dc34773284738f7cdafe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9d684861024fc906d5406ddfac5eb8a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSinkComposite.html#ab9d684861024fc906d5406ddfac5eb8a">write</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, std::string_view message) override</td></tr>
-<tr class="separator:ab9d684861024fc906d5406ddfac5eb8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad745f84f44cb3830abd1ae719f950893"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSinkComposite.html#ad745f84f44cb3830abd1ae719f950893">addLogSink</a> (std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt; logSink)</td></tr>
-<tr class="separator:ad745f84f44cb3830abd1ae719f950893"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c33d798ad168a3233b555021b3dc5aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDistLogSink.html#a7c33d798ad168a3233b555021b3dc5aa">write</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, std::string_view message) override</td></tr>
+<tr class="separator:a7c33d798ad168a3233b555021b3dc5aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c51900f3a2e9f2234ea9973a9b7613b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDistLogSink.html#a6c51900f3a2e9f2234ea9973a9b7613b">addLogSink</a> (std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt; logSink)</td></tr>
+<tr class="separator:a6c51900f3a2e9f2234ea9973a9b7613b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classLogSink"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classLogSink')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classLogSink.html">LogSink</a></td></tr>
 <tr class="memitem:a5aaba54701c520132113f5c94fccc81a inherit pub_methods_classLogSink"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSink.html#a5aaba54701c520132113f5c94fccc81a">~LogSink</a> ()=default</td></tr>
 <tr class="separator:a5aaba54701c520132113f5c94fccc81a inherit pub_methods_classLogSink"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,8 +102,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ae6eee69f92e9a40f9424e116d23cd255"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSinkComposite.html#ae6eee69f92e9a40f9424e116d23cd255">_logSinks</a></td></tr>
-<tr class="separator:ae6eee69f92e9a40f9424e116d23cd255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a922fe8b41812faa86004e1688dc87340"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDistLogSink.html#a922fe8b41812faa86004e1688dc87340">_logSinks</a></td></tr>
+<tr class="separator:a922fe8b41812faa86004e1688dc87340"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -113,41 +111,15 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a932ffa9e1cc7ab05c812742bc088b969 inherit pub_static_methods_classLogSink"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSink.html#a932ffa9e1cc7ab05c812742bc088b969">createDefaultSink</a> ()</td></tr>
 <tr class="separator:a932ffa9e1cc7ab05c812742bc088b969 inherit pub_static_methods_classLogSink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ab7d425258346dc34773284738f7cdafe" name="ab7d425258346dc34773284738f7cdafe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7d425258346dc34773284738f7cdafe">&#9670;&#160;</a></span>~LogSinkComposite()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual LogSinkComposite::~LogSinkComposite </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad745f84f44cb3830abd1ae719f950893" name="ad745f84f44cb3830abd1ae719f950893"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad745f84f44cb3830abd1ae719f950893">&#9670;&#160;</a></span>addLogSink()</h2>
+<a id="a6c51900f3a2e9f2234ea9973a9b7613b" name="a6c51900f3a2e9f2234ea9973a9b7613b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c51900f3a2e9f2234ea9973a9b7613b">&#9670;&#160;</a></span>addLogSink()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void LogSinkComposite::addLogSink </td>
+          <td class="memname">void DistLogSink::addLogSink </td>
           <td>(</td>
           <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td>
           <td class="paramname"><em>logSink</em></td><td>)</td>
@@ -158,8 +130,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ab9d684861024fc906d5406ddfac5eb8a" name="ab9d684861024fc906d5406ddfac5eb8a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9d684861024fc906d5406ddfac5eb8a">&#9670;&#160;</a></span>write()</h2>
+<a id="a7c33d798ad168a3233b555021b3dc5aa" name="a7c33d798ad168a3233b555021b3dc5aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c33d798ad168a3233b555021b3dc5aa">&#9670;&#160;</a></span>write()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -168,7 +140,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LogSinkComposite::write </td>
+          <td class="memname">void DistLogSink::write </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td>
           <td class="paramname"><em>category</em>, </td>
@@ -197,14 +169,24 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Writes out the log message.</p>
+<p >Calls into <code>write</code> from the <code><a class="el" href="classLogger.html">Logger</a></code> instance are guaranteed to be serialized with a mutex, so you don't need to do any locking in your implementation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">category</td><td>Log category. </td></tr>
+    <tr><td class="paramname">level</td><td>Log level. </td></tr>
+    <tr><td class="paramname">message</td><td>Log message. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classLogSink.html#a431885462a3683eacfcc184639a1eec0">LogSink</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ae6eee69f92e9a40f9424e116d23cd255" name="ae6eee69f92e9a40f9424e116d23cd255"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6eee69f92e9a40f9424e116d23cd255">&#9670;&#160;</a></span>_logSinks</h2>
+<a id="a922fe8b41812faa86004e1688dc87340" name="a922fe8b41812faa86004e1688dc87340"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a922fe8b41812faa86004e1688dc87340">&#9670;&#160;</a></span>_logSinks</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -213,7 +195,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::unique_ptr&lt;<a class="el" href="classLogSink.html">LogSink</a>&gt; &gt; LogSinkComposite::_logSinks</td>
+          <td class="memname">std::vector&lt;std::unique_ptr&lt;<a class="el" href="classLogSink.html">LogSink</a>&gt; &gt; DistLogSink::_logSinks</td>
         </tr>
       </table>
   </td>
@@ -226,8 +208,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/Library/Logger/<a class="el" href="LogSinkComposite_8h.html">LogSinkComposite.h</a></li>
-<li>src/Library/Logger/<a class="el" href="LogSinkComposite_8cpp.html">LogSinkComposite.cpp</a></li>
+<li>src/Library/Logger/<a class="el" href="DistLogSink_8h.html">DistLogSink.h</a></li>
+<li>src/Library/Logger/<a class="el" href="DistLogSink_8cpp.html">DistLogSink.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

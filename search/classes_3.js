@@ -7,7 +7,8 @@ var searchData=
   ['decorationdesc_5fmm6_4',['DecorationDesc_MM6',['../structDecorationDesc__MM6.html',1,'']]],
   ['decorationdesc_5fmm7_5',['DecorationDesc_MM7',['../structDecorationDesc__MM7.html',1,'']]],
   ['decorationlist_6',['DecorationList',['../classDecorationList.html',1,'']]],
-  ['dmap_7',['DMap',['../structDMap.html',1,'']]],
-  ['dummy_8',['Dummy',['../structFlags_1_1Dummy.html',1,'Flags']]],
-  ['duration_9',['Duration',['../classDuration.html',1,'']]]
+  ['distlogsink_7',['DistLogSink',['../classDistLogSink.html',1,'']]],
+  ['dmap_8',['DMap',['../structDMap.html',1,'']]],
+  ['dummy_9',['Dummy',['../structFlags_1_1Dummy.html',1,'Flags']]],
+  ['duration_10',['Duration',['../classDuration.html',1,'']]]
 ];

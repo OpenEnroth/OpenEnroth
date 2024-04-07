@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97caf6f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2cefa30</span>
    </div>
   </td>
  </tr>
@@ -183,6 +183,16 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Writes out the log message.</p>
+<p >Calls into <code>write</code> from the <code><a class="el" href="classLogger.html">Logger</a></code> instance are guaranteed to be serialized with a mutex, so you don't need to do any locking in your implementation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">category</td><td>Log category. </td></tr>
+    <tr><td class="paramname">level</td><td>Log level. </td></tr>
+    <tr><td class="paramname">message</td><td>Log message. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classLogSink.html#a431885462a3683eacfcc184639a1eec0">LogSink</a>.</p>
 
