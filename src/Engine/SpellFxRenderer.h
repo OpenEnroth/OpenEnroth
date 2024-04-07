@@ -12,6 +12,9 @@
 class Actor;
 class GraphicsImage;
 class ParticleEngine;
+struct SpriteObject;
+struct stru16x;
+struct stru160;
 
 struct SpellFX_Billboard {
     /**
@@ -48,9 +51,9 @@ struct SpellFX_Billboard {
 
     // for spheres
     unsigned int uNumVec4sInArray1;
-    struct stru16x *pArray1;
+    stru16x *pArray1;
     unsigned int uNumVec3sInArray2;
-    struct stru160 *pArray2;
+    stru160 *pArray2;
 
     // spellfx verts
     int uNumVertices;
@@ -115,28 +118,28 @@ struct SpellFxRenderer {
                          float dstY, float dstZ, GraphicsImage *);
     void DrawProjectiles();
     void _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-        struct SpriteObject *a2, Color uDiffuse, GraphicsImage *texture);
-    void _4A75CC_single_spell_collision_particle(struct SpriteObject *a1,
+        SpriteObject *a2, Color uDiffuse, GraphicsImage *texture);
+    void _4A75CC_single_spell_collision_particle(SpriteObject *a1,
                                                  Color uDiffuse,
                                                  GraphicsImage *texture);
-    void _4A7688_fireball_collision_particle(struct SpriteObject *a2);
-    void _4A77FD_implosion_particle_d3d(struct SpriteObject *a1);
-    void _4A7948_mind_blast_after_effect(struct SpriteObject *a1);
-    bool AddMobileLight(struct SpriteObject *a1, Color uDiffuse,
+    void _4A7688_fireball_collision_particle(SpriteObject *a2);
+    void _4A77FD_implosion_particle_d3d(SpriteObject *a1);
+    void _4A7948_mind_blast_after_effect(SpriteObject *a1);
+    bool AddMobileLight(SpriteObject *a1, Color uDiffuse,
                         int uRadius);
     void
     _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
         SpriteObject *a1, Color uDiffuse, GraphicsImage *texture, float a4);
-    void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
-    void AddProjectile(struct SpriteObject *a2, int a3, GraphicsImage *);
+    void _4A7C07_stun_spell_fx(SpriteObject *a2);
+    void AddProjectile(SpriteObject *a2, int a3, GraphicsImage *);
     /**
      * @offset 0x4A7E89
      */
     void sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiffuse);
     void _4A7F74(int x, int y, int z);
     float _4A806F_get_mass_distortion_value(Actor *pActor);
-    // void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);
-    bool RenderAsSprite(struct SpriteObject *a2);
+    // void _4A80DC_implosion_particle_sw(SpriteObject *a2);
+    bool RenderAsSprite(SpriteObject *a2);
     void SetPlayerBuffAnim(SpellId uSpellID, uint16_t uPlayerID);
     void SetPartyBuffAnim(SpellId uSpellID);
     void FadeScreen__like_Turn_Undead_and_mb_Armageddon(Color uDiffuseColor, Duration uFadeTime);

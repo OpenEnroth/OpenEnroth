@@ -13,6 +13,8 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 
+#include "Media/Audio/SoundList.h"
+
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/Exception.h"
@@ -125,4 +127,21 @@ void deserialize(const TriBlob &src, TileTable *dst) {
     deserialize(src.mm7, &dst->tiles, tags::append, tags::via<TileDesc_MM7>);
 
     assert(!dst->tiles.empty());
+}
+
+void deserialize(const TriBlob &src, SoundList *dst) {
+    std::vector<SoundInfo> sounds;
+
+    if (src.mm6)
+        deserialize(src.mm6, &sounds, tags::append, tags::via<SoundInfo_MM6>);
+    if (src.mm7)
+        deserialize(src.mm7, &sounds, tags::append, tags::via<SoundInfo_MM7>);
+    if (src.mm8)
+        deserialize(src.mm8, &sounds, tags::append, tags::via<SoundInfo_MM7>);
+
+    assert(!sounds.empty());
+
+    // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
+    for (const SoundInfo &sound : sounds)
+        raw(*dst)._mapSounds[sound.uSoundID] = sound;
 }

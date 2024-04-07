@@ -140,7 +140,7 @@ struct HouseAnimDescr {
     uint16_t padding_e;
 };
 
-extern class GraphicsImage *_591428_endcap;
+extern GraphicsImage *_591428_endcap;
 
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 

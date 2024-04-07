@@ -9,7 +9,7 @@
 #include "Utility/String.h"
 
 std::array<NPCTopic, 789> pNPCTopics;
-struct NPCStats *pNPCStats = nullptr;
+NPCStats *pNPCStats = nullptr;
 
 int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
 int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;

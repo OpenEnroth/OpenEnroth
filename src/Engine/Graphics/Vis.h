@@ -110,8 +110,8 @@ class Vis {
     bool isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filter);
     bool isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_SelectionFilter *filter);
 
-    Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face, Pid pid, float pick_depth);
-    bool IsPolygonOccludedByBillboard(struct RenderVertexSoft *vertices,
+    Vis_ObjectInfo *DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth);
+    bool IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
                                       int num_vertices, float x, float y);
     /**
     * @param test_x                        Screen x position of ray.
@@ -125,10 +125,10 @@ class Vis {
     void GetPolygonCenter(RenderVertexD3D3 *pVertices,
                           unsigned int uNumVertices, float *pCenterX,
                           float *pCenterY);
-    void GetPolygonScreenSpaceCenter(struct RenderVertexSoft *vertices,
+    void GetPolygonScreenSpaceCenter(RenderVertexSoft *vertices,
                                      int num_vertices, float *out_center_x,
                                      float *out_center_y);
-    bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *billboard, float x,
+    bool IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x,
                                    float y);
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
     Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
@@ -137,13 +137,13 @@ class Vis {
                             signed int pBModelID);
     bool CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID);
     void CastPickRay(float fMouseX, float fMouseY, float fPickDepth, Vec3f *origin, Vec3f *step);
-    void SortVerticesByX(struct RenderVertexD3D3 *pArray, unsigned int uStart,
+    void SortVerticesByX(RenderVertexD3D3 *pArray, unsigned int uStart,
                          unsigned int uEnd);
-    void SortVerticesByY(struct RenderVertexD3D3 *pArray, unsigned int uStart,
+    void SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart,
                          unsigned int uEnd);
-    void SortByScreenSpaceX(struct RenderVertexSoft *pArray, int start,
+    void SortByScreenSpaceX(RenderVertexSoft *pArray, int start,
                             int end);
-    void SortByScreenSpaceY(struct RenderVertexSoft *pArray, int start,
+    void SortByScreenSpaceY(RenderVertexSoft *pArray, int start,
                             int end);
 
  private:

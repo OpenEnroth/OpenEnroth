@@ -3,7 +3,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Random/Random.h"
 
-struct TileTable *pTileTable;
+TileTable *pTileTable;
 
 GraphicsImage *TileDesc::GetTexture() {
     if (!this->texture) {

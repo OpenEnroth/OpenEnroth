@@ -699,13 +699,8 @@ void Engine::MM7_Initialize() {
     pOverlayList = new OverlayList;
     deserialize(triLoad("doverlay.bin"), pOverlayList);
 
-    // TODO(captainurist): move to TableSnapshots.h/cpp
-    Blob sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : Blob();
-    Blob sounds_mm8;
-    Blob sounds_mm7 = engine->_gameResourceManager->getEventsFile("dsounds.bin");
-
     pSoundList = new SoundList;
-    pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
+    deserialize(triLoad("dsounds.bin"), pSoundList);
 
     if (!config->debug.NoSound.value())
         pAudioPlayer->Initialize();

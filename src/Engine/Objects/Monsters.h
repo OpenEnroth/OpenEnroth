@@ -108,5 +108,5 @@ struct MonsterList {
     IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> monsters;
 };
 
-extern struct MonsterStats *pMonsterStats;
-extern struct MonsterList *pMonsterList;
+extern MonsterStats *pMonsterStats;
+extern MonsterList *pMonsterList;

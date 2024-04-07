@@ -45,5 +45,5 @@ struct OverlayList {
     std::vector<OverlayDesc> pOverlays;
 };
 
-extern struct ActiveOverlayList *pActiveOverlayList;
-extern struct OverlayList *pOverlayList;
+extern ActiveOverlayList *pActiveOverlayList;
+extern OverlayList *pOverlayList;

@@ -646,7 +646,7 @@ void BaseRenderer::ClearBlack() {  // used only at start and in game over win
 }
 
 //----- (004A4CC9) ---------------------------------------
-void BaseRenderer::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) {
+void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) {
     // fireball / implosion sphere
     // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
 

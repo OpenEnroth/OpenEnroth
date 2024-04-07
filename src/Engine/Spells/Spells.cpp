@@ -22,7 +22,7 @@
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-struct SpellStats *pSpellStats = nullptr;
+SpellStats *pSpellStats = nullptr;
 
 /**
  * @offset 0x4E3ACC

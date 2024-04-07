@@ -7,14 +7,12 @@
 #include <utility>
 
 #include "Engine/Pid.h"
-#include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Time/Duration.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIEnums.h"
-#include "GUI/GUIDialogues.h"
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
@@ -23,6 +21,7 @@
 
 class GUIButton;
 class Actor;
+class GraphicsImage;
 
 //-------------------------------------------------------------------------
 // Data declarations
@@ -86,7 +85,7 @@ extern Duration AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterE
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 
-extern std::array<class GraphicsImage *, 14> party_buff_icons;
+extern std::array<GraphicsImage *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 

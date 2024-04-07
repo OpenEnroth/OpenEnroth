@@ -352,8 +352,8 @@ bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
 // used for culling to supplied portal frustums
 // very sloppy check when using early break - different points could be passing plane checks
 // NB only reliable where size of face is small in relation to size frustum
-bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft *a1, unsigned int *pOutNumVertices,
-                    struct RenderVertexSoft *pVertices, Planef *frustum,
+bool Camera3D::CullFaceToFrustum(RenderVertexSoft *a1, unsigned int *pOutNumVertices,
+                    RenderVertexSoft *pVertices, Planef *frustum,
                     signed int NumFrustumPlanes) {
     if (NumFrustumPlanes <= 0) return false;
     if (*pOutNumVertices <= 0) return false;

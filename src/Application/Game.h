@@ -9,7 +9,7 @@
 using Io::Mouse;
 
 class Engine;
-class DecalBuilder;
+struct DecalBuilder;
 class PlatformApplication;
 class Platform;
 class Menu;
@@ -39,4 +39,4 @@ class Game {
 
 void initDataPath(Platform *platform, std::string_view dataPath);
 
-extern class GraphicsImage *gamma_preview_image;  // 506E40
+extern GraphicsImage *gamma_preview_image;  // 506E40

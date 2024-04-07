@@ -5,6 +5,8 @@
 
 #include "Engine/Time/Time.h"
 
+class GraphicsImage;
+
 constexpr int MAX_SAVE_SLOTS = 45;
 
 struct SaveGameHeader {
@@ -22,7 +24,7 @@ struct SavegameList {
     std::array<std::string, MAX_SAVE_SLOTS> pFileList;
     std::array<bool, MAX_SAVE_SLOTS> pSavegameUsedSlots;
     std::array<SaveGameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
-    std::array<class GraphicsImage *, MAX_SAVE_SLOTS> pSavegameThumbnails;
+    std::array<GraphicsImage *, MAX_SAVE_SLOTS> pSavegameThumbnails;
 
     int numSavegameFiles = 0;
     int selectedSlot = 0;
@@ -41,4 +43,4 @@ void QuickSaveGame();
 void QuickLoadGame();
 std::string GetCurrentQuickSave();
 
-extern struct SavegameList *pSavegameList;
+extern SavegameList *pSavegameList;

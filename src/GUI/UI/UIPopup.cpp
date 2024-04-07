@@ -294,7 +294,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 }
 
 //----- (0041D895) --------------------------------------------------------
-void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
+void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     unsigned int frameXpos;     // eax@3
     int v34;             // esi@81
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2

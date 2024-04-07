@@ -56,4 +56,4 @@ struct MapStats {
     IndexedArray<MapInfo, MAP_FIRST, MAP_LAST> pInfos;
 };
 
-extern struct MapStats *pMapStats;
+extern MapStats *pMapStats;

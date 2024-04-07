@@ -12,7 +12,7 @@ struct Polygon {
     // int _479295();
     // void _48276F_sr();
     // void _normalize_v_18();
-    // void Create_48607B(struct SkyBillboardStruct *a2);
+    // void Create_48607B(SkyBillboardStruct *a2);
 
     inline bool IsWater() const { return this->flags & TILE_DESC_WATER; }
     inline bool IsWaterAnimDisabled() const {
@@ -33,7 +33,7 @@ struct Polygon {
     TILE_DESC_FLAGS flags = 0;
     int16_t field_32 = 0;
     int field_34 = 0;
-    struct SkyBillboardStruct *ptr_38 = nullptr;
+    SkyBillboardStruct *ptr_38 = nullptr;
     GraphicsImage *texture = nullptr;  // struct Texture_MM7 *pTexture;
     Span *_unused_prolly_head = nullptr;
     Span *_unused_prolly_tail = nullptr;

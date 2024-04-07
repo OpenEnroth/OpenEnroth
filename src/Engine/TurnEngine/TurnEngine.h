@@ -59,4 +59,4 @@ struct stru262_TurnBased {
     std::vector<TurnBased_QueueElem> pQueue;  // 20
 };
 
-extern struct stru262_TurnBased *pTurnEngine;
+extern stru262_TurnBased *pTurnEngine;

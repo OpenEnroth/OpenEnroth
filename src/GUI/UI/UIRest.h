@@ -27,8 +27,8 @@ enum class RestType {
 };
 using enum RestType;
 
-extern class GraphicsImage *rest_ui_sky_frame_current;
-extern class GraphicsImage *rest_ui_hourglass_frame_current;
+extern GraphicsImage *rest_ui_sky_frame_current;
+extern GraphicsImage *rest_ui_hourglass_frame_current;
 
 extern int foodRequiredToRest;
 extern Duration remainingRestTime;
