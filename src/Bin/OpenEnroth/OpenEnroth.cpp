@@ -26,7 +26,7 @@
 
 #include "OpenEnrothOptions.h"
 
-static std::string readTextFile(const std::string &path) {
+static std::string readTextFile(std::string_view path) {
     // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
     std::string result = replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
 
@@ -42,7 +42,7 @@ static void printLines(const std::vector<std::string_view> &lines, ssize_t line,
         fmt::println(stderr, "{:>5}: {}", i + 1, lines[i]);
 }
 
-static void printTraceDiff(const std::string &current, const std::string &canonical) {
+static void printTraceDiff(std::string_view current, std::string_view canonical) {
     assert(canonical != current);
 
     size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) { return canonical[i] != current[i]; });
