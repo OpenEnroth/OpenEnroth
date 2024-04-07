@@ -25,8 +25,8 @@ var searchData=
   ['lodinfo_22',['LodInfo',['../structLodInfo.html',1,'']]],
   ['lodreader_23',['LodReader',['../classLodReader.html',1,'']]],
   ['lodregion_24',['LodRegion',['../structLodReader_1_1LodRegion.html',1,'LodReader']]],
-  ['lodsprite_25',['LODSprite',['../structLODSprite.html',1,'']]],
-  ['lodsprite_26',['LodSprite',['../structLodSprite.html',1,'']]],
+  ['lodsprite_25',['LodSprite',['../structLodSprite.html',1,'']]],
+  ['lodsprite_26',['LODSprite',['../structLODSprite.html',1,'']]],
   ['lodspritecache_27',['LodSpriteCache',['../classLodSpriteCache.html',1,'']]],
   ['lodspriteheader_5fmm6_28',['LodSpriteHeader_MM6',['../structLodSpriteHeader__MM6.html',1,'']]],
   ['lodspriteline_5fmm6_29',['LodSpriteLine_MM6',['../structLodSpriteLine__MM6.html',1,'']]],
@@ -37,9 +37,10 @@ var searchData=
   ['logger_34',['Logger',['../classLogger.html',1,'']]],
   ['logmessage_35',['LogMessage',['../structBufferLogSink_1_1LogMessage.html',1,'BufferLogSink']]],
   ['logsink_36',['LogSink',['../classLogSink.html',1,'']]],
-  ['logsource_37',['LogSource',['../classLogSource.html',1,'']]],
-  ['logstate_38',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
-  ['longcivilduration_39',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
-  ['lua_5fnk_5fproperty_40',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
-  ['lua_5fnk_5fstyle_41',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
+  ['logsinkcomposite_37',['LogSinkComposite',['../classLogSinkComposite.html',1,'']]],
+  ['logsource_38',['LogSource',['../classLogSource.html',1,'']]],
+  ['logstate_39',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
+  ['longcivilduration_40',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
+  ['lua_5fnk_5fproperty_41',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
+  ['lua_5fnk_5fstyle_42',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
 ];

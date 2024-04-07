@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c117744</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97caf6f</span>
    </div>
   </td>
  </tr>
@@ -87,6 +87,7 @@ $(function() {
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;lua.hpp&gt;</code><br />
 <code>#include &lt;nuklear_config.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="NuklearUtils_8h.html">NuklearUtils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
@@ -101,6 +102,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="PlatformEnums_8h.html">Library/Platform/Interface/PlatformEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Serialization_8h.html">Library/Serialization/Serialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LogSink_8h.html">Library/Logger/LogSink.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DataPath_8h.html">Utility/DataPath.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -118,10 +120,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ae7c1ec4a95f8b65957124ca9aac05c6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ae7c1ec4a95f8b65957124ca9aac05c6e">lua_foreach</a>(_lua,  _idx)&#160;&#160;&#160;for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))</td></tr>
-<tr class="separator:ae7c1ec4a95f8b65957124ca9aac05c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a866e79e85e70be1fb6fe49e708f21b63"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a866e79e85e70be1fb6fe49e708f21b63">lua_check_ret</a>(_func)&#160;&#160;&#160;{ int _ret = _func; if (_ret) return _ret; }</td></tr>
-<tr class="separator:a866e79e85e70be1fb6fe49e708f21b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a490cd12bf8b674234597e901e4125896"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a490cd12bf8b674234597e901e4125896">PUSH_STYLE</a>(element,  component,  property,  type)&#160;&#160;&#160;<a class="el" href="Json__ut_8cpp.html#af19d1c5cd4d9f162a9fbacd6a02c9241">element.push_back</a>({ #property, &amp;<a class="el" href="Nuklear_8cpp.html#a42ad0e46621e49c3eeb3e1d16d0aa4e1">nuklear</a>-&gt;ctx-&gt;style.component.property, type});</td></tr>
 <tr class="separator:a490cd12bf8b674234597e901e4125896"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f5a6c5cc1842c3640a4cb0a0dc76854"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a5f5a6c5cc1842c3640a4cb0a0dc76854">PUSH_BUTTON_STYLE</a>(element,  style,  property,  type)&#160;&#160;&#160;<a class="el" href="Json__ut_8cpp.html#af19d1c5cd4d9f162a9fbacd6a02c9241">element.push_back</a>({ #property, &amp;style-&gt;property, type});</td></tr>
@@ -167,12 +165,10 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aac180b908cc05041705299d928a6cd67"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aac180b908cc05041705299d928a6cd67">lua_handle_error</a> (lua_State *L)</td></tr>
-<tr class="separator:aac180b908cc05041705299d928a6cd67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe3ee03e91e4c93ce3ee14287d15c6b2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#abe3ee03e91e4c93ce3ee14287d15c6b2">lua_error_check</a> (<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a> winType, lua_State *L, int err)</td></tr>
 <tr class="separator:abe3ee03e91e4c93ce3ee14287d15c6b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d0856dde15a5f6786285db123795054"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a8d0856dde15a5f6786285db123795054">lua_check_args</a> (lua_State *L, bool condition)</td></tr>
-<tr class="separator:a8d0856dde15a5f6786285db123795054"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac180b908cc05041705299d928a6cd67"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aac180b908cc05041705299d928a6cd67">lua_handle_error</a> (lua_State *L)</td></tr>
+<tr class="separator:aac180b908cc05041705299d928a6cd67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9913b2fba9af03aa21540e731cfe7e85"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a9913b2fba9af03aa21540e731cfe7e85">lua_dumptable</a> (lua_State *L, int <a class="el" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a>)</td></tr>
 <tr class="separator:a9913b2fba9af03aa21540e731cfe7e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a818db1f2744a6c8823b85b8926747ab9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a818db1f2744a6c8823b85b8926747ab9">lua_dumpstack</a> (lua_State *L)</td></tr>
@@ -215,14 +211,20 @@ Functions</h2></td></tr>
 <tr class="separator:a5a70159b4af4b3573b9fc148c3381185"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28abbfe58e7f569dcdb009f394d924ba"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a28abbfe58e7f569dcdb009f394d924ba">lua_nk_parse_style_button</a> (struct <a class="el" href="structcontext.html">context</a> *<a class="el" href="EventTrace_8cpp.html#aad57484016654da87125db86f4227ea3">w</a>, lua_State *L, int idx, nk_style_button *style)</td></tr>
 <tr class="separator:a28abbfe58e7f569dcdb009f394d924ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae159ddc0ddc970e8e9742da48a45001a"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ae159ddc0ddc970e8e9742da48a45001a">lua_nk_parse_edit_string_options</a> (lua_State *L, int idx, nk_flags *flags)</td></tr>
+<tr class="separator:ae159ddc0ddc970e8e9742da48a45001a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacd0d17d77fe3f2dff5d6ea51457c38c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aacd0d17d77fe3f2dff5d6ea51457c38c">lua_nk_parse_window_flags</a> (lua_State *L, int idx, nk_flags *flags)</td></tr>
 <tr class="separator:aacd0d17d77fe3f2dff5d6ea51457c38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a219a4e597e37b31477aec50bae837460"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a219a4e597e37b31477aec50bae837460">lua_nk_parse_scroll</a> (lua_State *L, int idx, nk_scroll *scroll)</td></tr>
+<tr class="separator:a219a4e597e37b31477aec50bae837460"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50582f827b25af3cfcc6baaafa7e97cf"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a50582f827b25af3cfcc6baaafa7e97cf">lua_nk_parse_symbol</a> (lua_State *L, int idx, nk_symbol_type *symbol)</td></tr>
 <tr class="separator:a50582f827b25af3cfcc6baaafa7e97cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8615e1eb7fef4eca38012e1d51a191b"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ab8615e1eb7fef4eca38012e1d51a191b">lua_nk_parse_collapse_states</a> (lua_State *L, int idx, nk_collapse_states *states)</td></tr>
 <tr class="separator:ab8615e1eb7fef4eca38012e1d51a191b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade1cafa180df57cd619c1a2c0caa48c3"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ade1cafa180df57cd619c1a2c0caa48c3">lua_nk_parse_tree_type</a> (lua_State *L, int idx, nk_tree_type *type)</td></tr>
 <tr class="separator:ade1cafa180df57cd619c1a2c0caa48c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef93fc6bb2fe7e22cbc6037683b3cef3"><td class="memItemLeft" align="right" valign="top">static nk_scroll *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aef93fc6bb2fe7e22cbc6037683b3cef3">lua_nk_check_scroll</a> (lua_State *L, int idx)</td></tr>
+<tr class="separator:aef93fc6bb2fe7e22cbc6037683b3cef3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee154894f0a897fbe4fceff5c772d983"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aee154894f0a897fbe4fceff5c772d983">lua_nk_begin</a> (lua_State *L)</td></tr>
 <tr class="separator:aee154894f0a897fbe4fceff5c772d983"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa7e28a6942ce3f6879d70cbb5b4eda1"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#afa7e28a6942ce3f6879d70cbb5b4eda1">lua_nk_button_color</a> (lua_State *L)</td></tr>
@@ -269,12 +271,24 @@ Functions</h2></td></tr>
 <tr class="separator:a6c6d2e71fa3e0df431c2267a056608db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1a31dd57c533ab8e073dda8557fe1ad"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aa1a31dd57c533ab8e073dda8557fe1ad">lua_nk_combo_end</a> (lua_State *L)</td></tr>
 <tr class="separator:aa1a31dd57c533ab8e073dda8557fe1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab679b2303948c19505d544dbd72fbb7e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ab679b2303948c19505d544dbd72fbb7e">lua_nk_push_edit_string_result_flag</a> (lua_State *L, nk_flags flags)</td></tr>
+<tr class="separator:ab679b2303948c19505d544dbd72fbb7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3daa05fc992827ee4fa8dc69c8d0538"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ae3daa05fc992827ee4fa8dc69c8d0538">lua_nk_edit_string</a> (lua_State *L)</td></tr>
+<tr class="separator:ae3daa05fc992827ee4fa8dc69c8d0538"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4692bd54738ba05bc200471693e07c00"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a4692bd54738ba05bc200471693e07c00">lua_nk_end</a> (lua_State *L)</td></tr>
 <tr class="separator:a4692bd54738ba05bc200471693e07c00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad759ea3d2812076e30df5bfe42290888"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ad759ea3d2812076e30df5bfe42290888">lua_nk_group_begin</a> (lua_State *L)</td></tr>
 <tr class="separator:ad759ea3d2812076e30df5bfe42290888"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc0a5a43e0a19c995009100fd1c7df24"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#adc0a5a43e0a19c995009100fd1c7df24">lua_nk_group_end</a> (lua_State *L)</td></tr>
 <tr class="separator:adc0a5a43e0a19c995009100fd1c7df24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a94c4e72da5477b2d26cd7348bfe3ba"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a5a94c4e72da5477b2d26cd7348bfe3ba">lua_nk_group_scrolled_begin</a> (lua_State *L)</td></tr>
+<tr class="separator:a5a94c4e72da5477b2d26cd7348bfe3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8ab1f70079d86abe7c1cbd30ac0859f"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ac8ab1f70079d86abe7c1cbd30ac0859f">lua_nk_group_scrolled_end</a> (lua_State *L)</td></tr>
+<tr class="separator:ac8ab1f70079d86abe7c1cbd30ac0859f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e7593382071b1136f059c7ab3b3c42c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a8e7593382071b1136f059c7ab3b3c42c">lua_nk_group_set_scroll</a> (lua_State *L)</td></tr>
+<tr class="separator:a8e7593382071b1136f059c7ab3b3c42c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03a969c5861acb6690e561e476a9e66d"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a03a969c5861acb6690e561e476a9e66d">lua_nk_layout_reset_min_row_height</a> (lua_State *L)</td></tr>
+<tr class="separator:a03a969c5861acb6690e561e476a9e66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1da34b2df457161d7648628d99abd94c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a1da34b2df457161d7648628d99abd94c">lua_nk_load_font_from_file</a> (lua_State *L)</td></tr>
 <tr class="separator:a1da34b2df457161d7648628d99abd94c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bb6c7a9f09d2bf4266e1a6babd6f192"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a3bb6c7a9f09d2bf4266e1a6babd6f192">lua_nk_label</a> (lua_State *L)</td></tr>
@@ -381,32 +395,42 @@ Functions</h2></td></tr>
 <tr class="separator:aa0a19125ff5ed3c74430c711789787b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae46779628477bc5ea82c91fbfde94e30"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ae46779628477bc5ea82c91fbfde94e30">lua_nk_window_is_closed</a> (lua_State *L)</td></tr>
 <tr class="separator:ae46779628477bc5ea82c91fbfde94e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34069aa7eed2baaf1948c8a342f9dbdc"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a34069aa7eed2baaf1948c8a342f9dbdc">lua_nk_window_is_hidden</a> (lua_State *L)</td></tr>
+<tr class="separator:a34069aa7eed2baaf1948c8a342f9dbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab06dbb4cabdfbbd2adcbdb37d76bf344"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ab06dbb4cabdfbbd2adcbdb37d76bf344">lua_nk_window_is_hovered</a> (lua_State *L)</td></tr>
+<tr class="separator:ab06dbb4cabdfbbd2adcbdb37d76bf344"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65d86bf6d1934a6b22310ba56ed942de"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a65d86bf6d1934a6b22310ba56ed942de">lua_nk_window_get_size</a> (lua_State *L)</td></tr>
+<tr class="separator:a65d86bf6d1934a6b22310ba56ed942de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ed92ccb0f561301233add36e52c4010"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a5ed92ccb0f561301233add36e52c4010">lua_nk_window_set_size</a> (lua_State *L)</td></tr>
+<tr class="separator:a5ed92ccb0f561301233add36e52c4010"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5f6b085460d44d32b4fae413f001661"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ac5f6b085460d44d32b4fae413f001661">lua_nk_window_set_position</a> (lua_State *L)</td></tr>
+<tr class="separator:ac5f6b085460d44d32b4fae413f001661"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72add30d5b1ef93fefc8aa4b35a4ce96"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a72add30d5b1ef93fefc8aa4b35a4ce96">lua_nk_window_set_bounds</a> (lua_State *L)</td></tr>
+<tr class="separator:a72add30d5b1ef93fefc8aa4b35a4ce96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b9ebab355af56b069c28e3dd359d7f1"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a4b9ebab355af56b069c28e3dd359d7f1">lua_nk_window_get_position</a> (lua_State *L)</td></tr>
+<tr class="separator:a4b9ebab355af56b069c28e3dd359d7f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f1092145855fe916aa7c60e3d93619d"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a9f1092145855fe916aa7c60e3d93619d">lua_nk_load_image</a> (lua_State *L)</td></tr>
 <tr class="separator:a9f1092145855fe916aa7c60e3d93619d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c74f0879990bc46424f465946bd60f"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a80c74f0879990bc46424f465946bd60f">lua_window_dimensions</a> (lua_State *L)</td></tr>
 <tr class="separator:a80c74f0879990bc46424f465946bd60f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95565851e4c3c6f1053dde5fe0d74e39"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a95565851e4c3c6f1053dde5fe0d74e39">lua_set_game_current_menu</a> (lua_State *L)</td></tr>
-<tr class="separator:a95565851e4c3c6f1053dde5fe0d74e39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac051f72febac143e44513dc633662c84"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ac051f72febac143e44513dc633662c84">lua_set_hotkey</a> (lua_State *L)</td></tr>
 <tr class="separator:ac051f72febac143e44513dc633662c84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0738e76d43b8977b844b4377d7fdb47"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ac0738e76d43b8977b844b4377d7fdb47">lua_unset_hotkey</a> (lua_State *L)</td></tr>
 <tr class="separator:ac0738e76d43b8977b844b4377d7fdb47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4c871bbe5e6d787cdced2f12726a489"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ad4c871bbe5e6d787cdced2f12726a489">lua_unset_hotkeys</a> (lua_State *L)</td></tr>
 <tr class="separator:ad4c871bbe5e6d787cdced2f12726a489"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00334338cb2e95ee572635e8240e9623"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a00334338cb2e95ee572635e8240e9623">lua_party_get</a> (lua_State *L)</td></tr>
-<tr class="separator:a00334338cb2e95ee572635e8240e9623"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e5742caf571a9ffe996570a4165d8eb"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a1e5742caf571a9ffe996570a4165d8eb">lua_party_give</a> (lua_State *L)</td></tr>
-<tr class="separator:a1e5742caf571a9ffe996570a4165d8eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61b1d5cd6e3677b81eb656823a994401"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a61b1d5cd6e3677b81eb656823a994401">lua_party_set</a> (lua_State *L)</td></tr>
-<tr class="separator:a61b1d5cd6e3677b81eb656823a994401"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acef0bc07232b2f252276f5a51ce3381c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#acef0bc07232b2f252276f5a51ce3381c">lua_party_take</a> (lua_State *L)</td></tr>
-<tr class="separator:acef0bc07232b2f252276f5a51ce3381c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d5608c5aae0376660c42d7a8e3d1dbb"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a1d5608c5aae0376660c42d7a8e3d1dbb">lua_party_member_get</a> (lua_State *L)</td></tr>
-<tr class="separator:a1d5608c5aae0376660c42d7a8e3d1dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed93d72c0e63094f4f52160966eb4822"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aed93d72c0e63094f4f52160966eb4822">lua_load_raw_from_lod</a> (lua_State *L)</td></tr>
-<tr class="separator:aed93d72c0e63094f4f52160966eb4822"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24b6ac41c0a2bd456c33f6cf92ed4454"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a24b6ac41c0a2bd456c33f6cf92ed4454">lua_load_init</a> ()</td></tr>
-<tr class="separator:a24b6ac41c0a2bd456c33f6cf92ed4454"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad775619fbd3df25798e09e4faa3b8a66"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ad775619fbd3df25798e09e4faa3b8a66">lua_nk_scroll_new</a> (lua_State *L)</td></tr>
+<tr class="separator:ad775619fbd3df25798e09e4faa3b8a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5871c4d67120daeddb8daaafd471b253"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a5871c4d67120daeddb8daaafd471b253">lua_nk_scroll_set</a> (lua_State *L)</td></tr>
+<tr class="separator:a5871c4d67120daeddb8daaafd471b253"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7b2d6fe81f24864bcf0b1a763b82d92"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ad7b2d6fe81f24864bcf0b1a763b82d92">lua_dev_config_set</a> (lua_State *L)</td></tr>
+<tr class="separator:ad7b2d6fe81f24864bcf0b1a763b82d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae69b31325bf068875961264ca8a573fb"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#ae69b31325bf068875961264ca8a573fb">lua_dev_config_get</a> (lua_State *L)</td></tr>
+<tr class="separator:ae69b31325bf068875961264ca8a573fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c02cf784666c710c078df0e24bb1045"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a4c02cf784666c710c078df0e24bb1045">load_init_lua_file</a> (const char *file)</td></tr>
+<tr class="separator:a4c02cf784666c710c078df0e24bb1045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01277e4a658e052557c5443043598b1c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a01277e4a658e052557c5443043598b1c">lua_init_lua_files</a> (const std::vector&lt; std::string &gt; &amp;files)</td></tr>
+<tr class="separator:a01277e4a658e052557c5443043598b1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -418,58 +442,12 @@ Variables</h2></td></tr>
 <tr class="separator:ae620a4040b064f7239f3a1a1825ca840"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47d7359ae2b6b4e1cef094ac9838bb5e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; struct <a class="el" href="structhotkey.html">hotkey</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a47d7359ae2b6b4e1cef094ac9838bb5e">hotkeys</a></td></tr>
 <tr class="separator:a47d7359ae2b6b4e1cef094ac9838bb5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a702c632a67022953484b487b5d0686e5"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structcontext.html">context</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a702c632a67022953484b487b5d0686e5">wins</a> [<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509ad9e4cd8085776d120fb0273ac43abb60">WINDOW_DebugMenu</a>] = {}</td></tr>
-<tr class="separator:a702c632a67022953484b487b5d0686e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40de59bbb34d2debf5d14417b2f1d7f3"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structcontext.html">context</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#a40de59bbb34d2debf5d14417b2f1d7f3">wins</a> [<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509ad9e4cd8085776d120fb0273ac43abb60">WINDOW_DebugMenu</a>+1] = {}</td></tr>
+<tr class="separator:a40de59bbb34d2debf5d14417b2f1d7f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba640bab8a361262101e379321bb3fb1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; struct <a class="el" href="structlua__nk__style.html">lua_nk_style</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8cpp.html#aba640bab8a361262101e379321bb3fb1">lua_nk_styles</a></td></tr>
 <tr class="separator:aba640bab8a361262101e379321bb3fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a866e79e85e70be1fb6fe49e708f21b63" name="a866e79e85e70be1fb6fe49e708f21b63"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a866e79e85e70be1fb6fe49e708f21b63">&#9670;&#160;</a></span>lua_check_ret</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define lua_check_ret</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_func</td><td>)</td>
-          <td>&#160;&#160;&#160;{ int _ret = _func; if (_ret) return _ret; }</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae7c1ec4a95f8b65957124ca9aac05c6e" name="ae7c1ec4a95f8b65957124ca9aac05c6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7c1ec4a95f8b65957124ca9aac05c6e">&#9670;&#160;</a></span>lua_foreach</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define lua_foreach</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_lua, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_idx&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a5f5a6c5cc1842c3640a4cb0a0dc76854" name="a5f5a6c5cc1842c3640a4cb0a0dc76854"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5f5a6c5cc1842c3640a4cb0a0dc76854">&#9670;&#160;</a></span>PUSH_BUTTON_STYLE</h2>
 
@@ -621,8 +599,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a8d0856dde15a5f6786285db123795054" name="a8d0856dde15a5f6786285db123795054"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d0856dde15a5f6786285db123795054">&#9670;&#160;</a></span>lua_check_args()</h2>
+<a id="a4c02cf784666c710c078df0e24bb1045" name="a4c02cf784666c710c078df0e24bb1045"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c02cf784666c710c078df0e24bb1045">&#9670;&#160;</a></span>load_init_lua_file()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -631,21 +609,63 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int lua_check_args </td>
+          <td class="memname">static bool load_init_lua_file </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>file</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae69b31325bf068875961264ca8a573fb" name="ae69b31325bf068875961264ca8a573fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae69b31325bf068875961264ca8a573fb">&#9670;&#160;</a></span>lua_dev_config_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_dev_config_get </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
-          <td class="paramname"><em>L</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>L</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>condition</em>&#160;</td>
         </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad7b2d6fe81f24864bcf0b1a763b82d92" name="ad7b2d6fe81f24864bcf0b1a763b82d92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7b2d6fe81f24864bcf0b1a763b82d92">&#9670;&#160;</a></span>lua_dev_config_set()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
         <tr>
+          <td class="memname">static int lua_dev_config_set </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -771,8 +791,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a24b6ac41c0a2bd456c33f6cf92ed4454" name="a24b6ac41c0a2bd456c33f6cf92ed4454"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24b6ac41c0a2bd456c33f6cf92ed4454">&#9670;&#160;</a></span>lua_load_init()</h2>
+<a id="a01277e4a658e052557c5443043598b1c" name="a01277e4a658e052557c5443043598b1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01277e4a658e052557c5443043598b1c">&#9670;&#160;</a></span>lua_init_lua_files()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -781,35 +801,10 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool lua_load_init </td>
+          <td class="memname">static bool lua_init_lua_files </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aed93d72c0e63094f4f52160966eb4822" name="aed93d72c0e63094f4f52160966eb4822"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed93d72c0e63094f4f52160966eb4822">&#9670;&#160;</a></span>lua_load_raw_from_lod()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int lua_load_raw_from_lod </td>
-          <td>(</td>
-          <td class="paramtype">lua_State *&#160;</td>
-          <td class="paramname"><em>L</em></td><td>)</td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>files</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1097,6 +1092,42 @@ Variables</h2></td></tr>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aef93fc6bb2fe7e22cbc6037683b3cef3" name="aef93fc6bb2fe7e22cbc6037683b3cef3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef93fc6bb2fe7e22cbc6037683b3cef3">&#9670;&#160;</a></span>lua_nk_check_scroll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static nk_scroll * lua_nk_check_scroll </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>idx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -1446,6 +1477,32 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="ae3daa05fc992827ee4fa8dc69c8d0538" name="ae3daa05fc992827ee4fa8dc69c8d0538"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3daa05fc992827ee4fa8dc69c8d0538">&#9670;&#160;</a></span>lua_nk_edit_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_edit_string </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4692bd54738ba05bc200471693e07c00" name="a4692bd54738ba05bc200471693e07c00"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4692bd54738ba05bc200471693e07c00">&#9670;&#160;</a></span>lua_nk_end()</h2>
 
@@ -1509,6 +1566,84 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">static int lua_nk_group_end </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5a94c4e72da5477b2d26cd7348bfe3ba" name="a5a94c4e72da5477b2d26cd7348bfe3ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a94c4e72da5477b2d26cd7348bfe3ba">&#9670;&#160;</a></span>lua_nk_group_scrolled_begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_group_scrolled_begin </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac8ab1f70079d86abe7c1cbd30ac0859f" name="ac8ab1f70079d86abe7c1cbd30ac0859f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8ab1f70079d86abe7c1cbd30ac0859f">&#9670;&#160;</a></span>lua_nk_group_scrolled_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_group_scrolled_end </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8e7593382071b1136f059c7ab3b3c42c" name="a8e7593382071b1136f059c7ab3b3c42c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e7593382071b1136f059c7ab3b3c42c">&#9670;&#160;</a></span>lua_nk_group_set_scroll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_group_set_scroll </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -1613,6 +1748,32 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">static int lua_nk_label_colored </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a03a969c5861acb6690e561e476a9e66d" name="a03a969c5861acb6690e561e476a9e66d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03a969c5861acb6690e561e476a9e66d">&#9670;&#160;</a></span>lua_nk_layout_reset_min_row_height()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_layout_reset_min_row_height </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -2390,6 +2551,48 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="ae159ddc0ddc970e8e9742da48a45001a" name="ae159ddc0ddc970e8e9742da48a45001a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae159ddc0ddc970e8e9742da48a45001a">&#9670;&#160;</a></span>lua_nk_parse_edit_string_options()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_parse_edit_string_options </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>idx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nk_flags *&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa75efcc034440d0d49bfa7741e7dfdcd" name="aa75efcc034440d0d49bfa7741e7dfdcd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa75efcc034440d0d49bfa7741e7dfdcd">&#9670;&#160;</a></span>lua_nk_parse_image()</h2>
 
@@ -2680,6 +2883,48 @@ Variables</h2></td></tr>
           <td></td>
           <td class="paramtype">struct nk_rect *&#160;</td>
           <td class="paramname"><em>rect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a219a4e597e37b31477aec50bae837460" name="a219a4e597e37b31477aec50bae837460"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a219a4e597e37b31477aec50bae837460">&#9670;&#160;</a></span>lua_nk_parse_scroll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_parse_scroll </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>idx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nk_scroll *&#160;</td>
+          <td class="paramname"><em>scroll</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3235,6 +3480,94 @@ Variables</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab679b2303948c19505d544dbd72fbb7e" name="ab679b2303948c19505d544dbd72fbb7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab679b2303948c19505d544dbd72fbb7e">&#9670;&#160;</a></span>lua_nk_push_edit_string_result_flag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void lua_nk_push_edit_string_result_flag </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nk_flags&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad775619fbd3df25798e09e4faa3b8a66" name="ad775619fbd3df25798e09e4faa3b8a66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad775619fbd3df25798e09e4faa3b8a66">&#9670;&#160;</a></span>lua_nk_scroll_new()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_scroll_new </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5871c4d67120daeddb8daaafd471b253" name="a5871c4d67120daeddb8daaafd471b253"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5871c4d67120daeddb8daaafd471b253">&#9670;&#160;</a></span>lua_nk_scroll_set()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_scroll_set </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -3818,6 +4151,58 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a4b9ebab355af56b069c28e3dd359d7f1" name="a4b9ebab355af56b069c28e3dd359d7f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b9ebab355af56b069c28e3dd359d7f1">&#9670;&#160;</a></span>lua_nk_window_get_position()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_window_get_position </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a65d86bf6d1934a6b22310ba56ed942de" name="a65d86bf6d1934a6b22310ba56ed942de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65d86bf6d1934a6b22310ba56ed942de">&#9670;&#160;</a></span>lua_nk_window_get_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int lua_nk_window_get_size </td>
+          <td>(</td>
+          <td class="paramtype">lua_State *&#160;</td>
+          <td class="paramname"><em>L</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae46779628477bc5ea82c91fbfde94e30" name="ae46779628477bc5ea82c91fbfde94e30"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae46779628477bc5ea82c91fbfde94e30">&#9670;&#160;</a></span>lua_nk_window_is_closed()</h2>
 
@@ -3844,8 +4229,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a00334338cb2e95ee572635e8240e9623" name="a00334338cb2e95ee572635e8240e9623"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a00334338cb2e95ee572635e8240e9623">&#9670;&#160;</a></span>lua_party_get()</h2>
+<a id="a34069aa7eed2baaf1948c8a342f9dbdc" name="a34069aa7eed2baaf1948c8a342f9dbdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34069aa7eed2baaf1948c8a342f9dbdc">&#9670;&#160;</a></span>lua_nk_window_is_hidden()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3854,7 +4239,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int lua_party_get </td>
+          <td class="memname">static int lua_nk_window_is_hidden </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -3870,8 +4255,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1e5742caf571a9ffe996570a4165d8eb" name="a1e5742caf571a9ffe996570a4165d8eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e5742caf571a9ffe996570a4165d8eb">&#9670;&#160;</a></span>lua_party_give()</h2>
+<a id="ab06dbb4cabdfbbd2adcbdb37d76bf344" name="ab06dbb4cabdfbbd2adcbdb37d76bf344"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab06dbb4cabdfbbd2adcbdb37d76bf344">&#9670;&#160;</a></span>lua_nk_window_is_hovered()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3880,7 +4265,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int lua_party_give </td>
+          <td class="memname">static int lua_nk_window_is_hovered </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -3896,8 +4281,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1d5608c5aae0376660c42d7a8e3d1dbb" name="a1d5608c5aae0376660c42d7a8e3d1dbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d5608c5aae0376660c42d7a8e3d1dbb">&#9670;&#160;</a></span>lua_party_member_get()</h2>
+<a id="a72add30d5b1ef93fefc8aa4b35a4ce96" name="a72add30d5b1ef93fefc8aa4b35a4ce96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72add30d5b1ef93fefc8aa4b35a4ce96">&#9670;&#160;</a></span>lua_nk_window_set_bounds()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3906,7 +4291,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int lua_party_member_get </td>
+          <td class="memname">static int lua_nk_window_set_bounds </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -3922,8 +4307,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a61b1d5cd6e3677b81eb656823a994401" name="a61b1d5cd6e3677b81eb656823a994401"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61b1d5cd6e3677b81eb656823a994401">&#9670;&#160;</a></span>lua_party_set()</h2>
+<a id="ac5f6b085460d44d32b4fae413f001661" name="ac5f6b085460d44d32b4fae413f001661"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5f6b085460d44d32b4fae413f001661">&#9670;&#160;</a></span>lua_nk_window_set_position()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3932,7 +4317,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int lua_party_set </td>
+          <td class="memname">static int lua_nk_window_set_position </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -3948,8 +4333,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="acef0bc07232b2f252276f5a51ce3381c" name="acef0bc07232b2f252276f5a51ce3381c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acef0bc07232b2f252276f5a51ce3381c">&#9670;&#160;</a></span>lua_party_take()</h2>
+<a id="a5ed92ccb0f561301233add36e52c4010" name="a5ed92ccb0f561301233add36e52c4010"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ed92ccb0f561301233add36e52c4010">&#9670;&#160;</a></span>lua_nk_window_set_size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3958,33 +4343,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int lua_party_take </td>
-          <td>(</td>
-          <td class="paramtype">lua_State *&#160;</td>
-          <td class="paramname"><em>L</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a95565851e4c3c6f1053dde5fe0d74e39" name="a95565851e4c3c6f1053dde5fe0d74e39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95565851e4c3c6f1053dde5fe0d74e39">&#9670;&#160;</a></span>lua_set_game_current_menu()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int lua_set_game_current_menu </td>
+          <td class="memname">static int lua_nk_window_set_size </td>
           <td>(</td>
           <td class="paramtype">lua_State *&#160;</td>
           <td class="paramname"><em>L</em></td><td>)</td>
@@ -4175,14 +4534,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a702c632a67022953484b487b5d0686e5" name="a702c632a67022953484b487b5d0686e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a702c632a67022953484b487b5d0686e5">&#9670;&#160;</a></span>wins</h2>
+<a id="a40de59bbb34d2debf5d14417b2f1d7f3" name="a40de59bbb34d2debf5d14417b2f1d7f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40de59bbb34d2debf5d14417b2f1d7f3">&#9670;&#160;</a></span>wins</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structcontext.html">context</a> wins[<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509ad9e4cd8085776d120fb0273ac43abb60">WINDOW_DebugMenu</a>] = {}</td>
+          <td class="memname">struct <a class="el" href="structcontext.html">context</a> wins[<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509ad9e4cd8085776d120fb0273ac43abb60">WINDOW_DebugMenu</a>+1] = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">

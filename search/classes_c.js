@@ -14,11 +14,12 @@ var searchData=
   ['npctopic_11',['NPCTopic',['../structNPCTopic.html',1,'']]],
   ['nuklear_12',['Nuklear',['../classNuklear.html',1,'']]],
   ['nukleareventhandler_13',['NuklearEventHandler',['../classNuklearEventHandler.html',1,'']]],
-  ['nulleventloop_14',['NullEventLoop',['../classNullEventLoop.html',1,'']]],
-  ['nullopenglcontext_15',['NullOpenGLContext',['../classNullOpenGLContext.html',1,'']]],
-  ['nullplatform_16',['NullPlatform',['../classNullPlatform.html',1,'']]],
-  ['nullplatformoptions_17',['NullPlatformOptions',['../structNullPlatformOptions.html',1,'']]],
-  ['nullplatformsharedstate_18',['NullPlatformSharedState',['../classNullPlatformSharedState.html',1,'']]],
-  ['nullrenderer_19',['NullRenderer',['../classNullRenderer.html',1,'']]],
-  ['nullwindow_20',['NullWindow',['../classNullWindow.html',1,'']]]
+  ['nuklearlogsink_14',['NuklearLogSink',['../classNuklearLogSink.html',1,'']]],
+  ['nulleventloop_15',['NullEventLoop',['../classNullEventLoop.html',1,'']]],
+  ['nullopenglcontext_16',['NullOpenGLContext',['../classNullOpenGLContext.html',1,'']]],
+  ['nullplatform_17',['NullPlatform',['../classNullPlatform.html',1,'']]],
+  ['nullplatformoptions_18',['NullPlatformOptions',['../structNullPlatformOptions.html',1,'']]],
+  ['nullplatformsharedstate_19',['NullPlatformSharedState',['../classNullPlatformSharedState.html',1,'']]],
+  ['nullrenderer_20',['NullRenderer',['../classNullRenderer.html',1,'']]],
+  ['nullwindow_21',['NullWindow',['../classNullWindow.html',1,'']]]
 ];

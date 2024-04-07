@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c117744</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97caf6f</span>
    </div>
   </td>
  </tr>
@@ -116,6 +116,8 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:ab0f095cc0c4410ea25e7cf6070a6b5a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a256c5ccadffa2df441eeeaef3558a52a"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklearEventHandler.html#a256c5ccadffa2df441eeeaef3558a52a">wheelEvent</a> (const <a class="el" href="classPlatformWheelEvent.html">PlatformWheelEvent</a> *<a class="el" href="classPlatformEventFilter.html#a20f3364e0560c2df3e3199e61673bcc8">event</a>) override</td></tr>
 <tr class="separator:a256c5ccadffa2df441eeeaef3558a52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0dd8150c7e6b12b054ebdba46df11a4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklearEventHandler.html#af0dd8150c7e6b12b054ebdba46df11a4">textInputEvent</a> (const <a class="el" href="classPlatformTextInputEvent.html">PlatformTextInputEvent</a> *<a class="el" href="classPlatformEventFilter.html#a20f3364e0560c2df3e3199e61673bcc8">event</a>) override</td></tr>
+<tr class="separator:af0dd8150c7e6b12b054ebdba46df11a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab81d25b54261688e2b0963814cf2423d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklearEventHandler.html#ab81d25b54261688e2b0963814cf2423d">KeyEvent</a> (<a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key, PlatformModifiers mods, bool down)</td></tr>
 <tr class="separator:ab81d25b54261688e2b0963814cf2423d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145f63b44b520b082444b1b5b7609a15"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklearEventHandler.html#a145f63b44b520b082444b1b5b7609a15">MouseEvent</a> (<a class="el" href="PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558">PlatformMouseButton</a> button, const <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> &amp;pos, bool down)</td></tr>
@@ -154,6 +156,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a582bc6c932d6854290a45cdf64413829 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc0e9729abd8e04280a54ec3324a7e6c inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#abc0e9729abd8e04280a54ec3324a7e6c">nativeEvent</a> (const <a class="el" href="classPlatformNativeEvent.html">PlatformNativeEvent</a> *<a class="el" href="classPlatformEventFilter.html#a20f3364e0560c2df3e3199e61673bcc8">event</a>)</td></tr>
 <tr class="separator:abc0e9729abd8e04280a54ec3324a7e6c inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad0bf5cf3bacbda09994f5731207648a inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#aad0bf5cf3bacbda09994f5731207648a">textInputEvent</a> (const <a class="el" href="classPlatformTextInputEvent.html">PlatformTextInputEvent</a> *<a class="el" href="classPlatformEventFilter.html#a20f3364e0560c2df3e3199e61673bcc8">event</a>)</td></tr>
+<tr class="separator:aad0bf5cf3bacbda09994f5731207648a inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a97f0003547164885c1d2a39437516313" name="a97f0003547164885c1d2a39437516313"></a>
@@ -395,6 +399,34 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classPlatformEventFilter.html#a307e5111dac751451392e06c9ff98c5e">PlatformEventFilter</a>.</p>
+
+</div>
+</div>
+<a id="af0dd8150c7e6b12b054ebdba46df11a4" name="af0dd8150c7e6b12b054ebdba46df11a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0dd8150c7e6b12b054ebdba46df11a4">&#9670;&#160;</a></span>textInputEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool NuklearEventHandler::textInputEvent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classPlatformTextInputEvent.html">PlatformTextInputEvent</a> *&#160;</td>
+          <td class="paramname"><em>event</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPlatformEventFilter.html#aad0bf5cf3bacbda09994f5731207648a">PlatformEventFilter</a>.</p>
 
 </div>
 </div>
