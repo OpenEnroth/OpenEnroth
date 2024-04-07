@@ -1,3 +1,5 @@
+--- Module that takes care of all the commands being parsed and executed
+
 require "utils"
 
 local command_list = {}
@@ -20,7 +22,7 @@ local parse_command_line = function(command_line)
 end
 
 local help_command = function(command_name)
-    message = ""
+    local message = ""
     if command_name == nil then
         for key, command in pairs(command_list) do
             message = message..key..": "..command.description.."\n"
@@ -55,10 +57,10 @@ local commands = {
         local index = 1
         local callback = command.callback;
         while type(callback) == "table" do
-            local par = table.getn(params) > 0 and params[1] or "default"
+            local par = #params > 0 and params[1] or "default"
             local new_callback = callback[par]
             if new_callback == nil then
-                message = "Invalid parameter at position "..index.." - Here's a list of valid values:\n"
+                local message = "Invalid parameter at position "..index.." - Here's a list of valid values:\n"
                 for key, _ in pairs(callback) do
                     if key ~= "default" then
                         message = message..key.."\n"

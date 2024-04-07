@@ -161,6 +161,18 @@ To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to
 
 Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command.
 
+Console Commands
+-----------------
+The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:
+
+1. Copy the `resources/ui` folder to the game's installation directory.
+2. Launch the game.
+3. Begin by loading an existing game or creating a new one.
+4. Once in-game, press the `~` key to open the DebugView.
+5. If the Lua scripts have been loaded correctly, you'll find a button labeled `Console`.
+6. Click on the `Console` button to reveal the command-line interface at the bottom left corner of the screen.
+
+Currently, the console is only available while in-game.
 
 Additional Resources
 --------------------

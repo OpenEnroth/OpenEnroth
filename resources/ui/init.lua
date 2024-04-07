@@ -1,5 +1,4 @@
 local commands = require "commands"
-local logger = require "logger"
 
 local config_commands
 local gold_commands
@@ -9,6 +8,7 @@ local food_commands
 local alignment_commands
 
 function ui_init()
+    --- Register all the commands used in the console ( all these commands could probably be moved to a game_commands.lua script to clean up things )
     commands.register("config", "Change any gameconfig value.", "Usage:\n\nconfig <action> [args]", config_commands)
     commands.register("gold", "Change the amount of gold.", "Usage:\n\ngold <action> [args]", gold_commands)
     commands.register("xp", "Change the amount of experience points for the party.", "Usage:\n\nxp <action> [args]", xp_commands)
@@ -17,9 +17,23 @@ function ui_init()
     commands.register("alignment", "Change the alignment of the party.", "Usage:\n\nalignment <action> [args]", alignment_commands)
 end
 
--- UTILITIES
+-- COMMAND UTILITIES
+---@enum op_type
+local OP_TYPE = {
+	set = 1,
+	rem = 2,
+	add = 3
+}
 
-local change_char_property = function(key, action, play_award)
+--- Utility factory-function that generate a new function used as command to update one property/stat for a character
+--- Example that generate a command used to add experience points to a character:
+---     change_char_property("xp", ACTION_TYPE.add, true)
+---
+---@param key string            - field referring to the character_info table ( "xp", "age", "sp", etc... )
+---@param op op_type            - the operation to execute on the variable
+---@param play_award boolean    - play the award effect after the operation has been executed
+---@return function
+local change_char_property = function(key, op, play_award)
     return function(char_index, value)
         local get = game.get_character_info
         local set = game.set_character_info
@@ -27,15 +41,15 @@ local change_char_property = function(key, action, play_award)
         local info = get(char_index)
         local newData = {}
         local message = ""
-        if action == "set" then
+        if op == OP_TYPE.set then
             newData[key] = value
             set(char_index, newData)
             message = "Set "..value.." "..key.." for "..info.name
-        elseif action == "rem" then
+        elseif op == OP_TYPE.rem then
             newData[key] = info[key] - value
             set(char_index, newData)
             message = info.name.." lost "..value.." "..key..". Current "..key..": "..get(char_index)[key]
-        elseif action == "add" then
+        elseif op == OP_TYPE.add then
             newData[key] = info[key] + value
             set(char_index, newData)
             message = info.name.." gained "..value.." "..key..". Current "..key..": "..get(char_index)[key]
@@ -48,6 +62,12 @@ local change_char_property = function(key, action, play_award)
     end
 end
 
+--- Utility factory-function that generate a new function used as command to show one property/stat for each member of the party
+--- Example that generate a command that shows the skils points of each character:
+---     show_chars_property("sp")
+---
+---@param key string field referring to the character_info table
+---@return function
 local show_chars_property = function(key)
     return function()
         local count = game.get_party_size()
@@ -60,17 +80,26 @@ local show_chars_property = function(key)
     end
 end
 
-local change_property = function(get, set, action, prop_name)
+--- Utility factory-function that generate a new function used as command to update a value retrieved by callbacks
+--- Example of a command that remove golds from the party:
+---     change_property(game.get_gold, game.set_gold, ACTION_TYPE.rem, "gold")
+---
+---@param get function      - getter function used to retrieve the current value
+---@param set function      - setter function used to update the current value
+---@param op op_type        - the operation to execute on the variable
+---@param prop_name string  - name of the property. Used only for prompting, it's not used to retrieve the value
+---@return function
+local change_property = function(get, set, op, prop_name)
     return function(value)
         local message = ""
-        if action == "set" then
+        if op == OP_TYPE.set then
             set(value)
             message = "Set "..value.." "..prop_name
-        elseif action == "add" then
+        elseif op == OP_TYPE.add then
             local total = get() + value
             set(total)
             message = "Added "..value.." "..prop_name..". Current: "..get()
-        elseif action == "rem" then
+        elseif op == OP_TYPE.rem then
             local total = get() - value
             set(total)
             message = "Removed "..value.." "..prop_name..". Current: "..get()
@@ -79,6 +108,12 @@ local change_property = function(get, set, action, prop_name)
     end
 end
 
+--- Utility factory-function that generate a new function used as command to show a value
+--- Example of a function generating a command showing the current alignment:
+---     show_property(game.get_alignment, "alignment")
+---@param get function      getter function used to retrieve the current value
+---@param prop_name string  name of the property. Used only for prompting, it's not used to retrieve the value
+---@return function
 local show_property = function(get, prop_name)
     return function()
         return "Current "..prop_name..": "..get(), true
@@ -86,17 +121,20 @@ local show_property = function(get, prop_name)
 end
 
 -- GOLD COMMANDS
-
 gold_commands = {
     get = show_property(game.get_gold, "gold"),
-    set = change_property(game.get_gold, game.set_gold, "set", "gold"),
-    add = change_property(game.get_gold, game.set_gold, "add", "gold"),
-    rem = change_property(game.get_gold, game.set_gold, "rem", "gold"),
+    set = change_property(game.get_gold, game.set_gold, OP_TYPE.set, "gold"),
+    add = change_property(game.get_gold, game.set_gold, OP_TYPE.add, "gold"),
+    rem = change_property(game.get_gold, game.set_gold, OP_TYPE.rem, "gold"),
     default = show_property(game.get_gold, "gold")
 }
 
 -- XP COMMANDS
 
+---Function that gives to the party a "xp" amount of Experience points and play the award animation on all characters
+---@param xp integer - number of experience points to give to the party
+---@return string    - the message sent back to the console
+---@return boolean   - flag that tells if the command has been successful
 local give_party_xp = function(xp)
     game.give_party_xp(xp)
     game.play_all_characters_award_sound()
@@ -105,9 +143,9 @@ end
 
 xp_commands = {
     get = show_chars_property("xp"),
-    rem = change_char_property("xp", "rem", true),
-    add = change_char_property("xp", "add", true),
-    set = change_char_property("xp", "set", true),
+    rem = change_char_property("xp", OP_TYPE.rem, true),
+    add = change_char_property("xp", OP_TYPE.add, true),
+    set = change_char_property("xp", OP_TYPE.set, true),
     party = give_party_xp,
     default = show_chars_property("xp")
 }
@@ -116,9 +154,9 @@ xp_commands = {
 
 sp_commands = {
     get = show_chars_property("sp"),
-    rem = change_char_property("sp", "rem", true),
-    add = change_char_property("sp", "add", true),
-    set = change_char_property("sp", "set", true),
+    rem = change_char_property("sp", OP_TYPE.rem, true),
+    add = change_char_property("sp", OP_TYPE.add, true),
+    set = change_char_property("sp", OP_TYPE.set, true),
     default = show_chars_property("sp")
 }
 
@@ -126,9 +164,9 @@ sp_commands = {
 
 food_commands = {
     get = show_property(game.get_food, "food"),
-    set = change_property(game.get_food, game.set_food, "set", "food"),
-    add = change_property(game.get_food, game.set_food, "add", "food"),
-    rem = change_property(game.get_food, game.set_food, "rem", "food"),
+    set = change_property(game.get_food, game.set_food, OP_TYPE.set, "food"),
+    add = change_property(game.get_food, game.set_food, OP_TYPE.add, "food"),
+    rem = change_property(game.get_food, game.set_food, OP_TYPE.rem, "food"),
     default = show_property(game.get_food, "food")
 }
 
@@ -136,12 +174,17 @@ food_commands = {
 
 alignment_commands = {
     get = show_property(game.get_alignment, "alignment"),
-    set = change_property(game.get_alignment, game.set_alignment, "set", "alignment"),
+    set = change_property(game.get_alignment, game.set_alignment, OP_TYPE.set, "alignment"),
     default = show_property(game.get_alignment, "alignment")
 }
 
 -- CONFIG COMMANDS
 
+---Get the value of a configEntry
+---@param config_name string    - config entry name
+---@param section_name? string  - section of the config entry 
+---@return string               - the message sent back to the console
+---@return boolean              - flag that tells if the command has been successful
 local function get_config(config_name, section_name)
     local value
     local message
@@ -155,6 +198,12 @@ local function get_config(config_name, section_name)
     return message..tostring(value), true
 end
 
+---Change the value of the configEntry
+---@param config_name string - name of the configEntry
+---@param param2 string      - section of the config entry. If param3 is nil param2 represents the value instead 
+---@param param3? string     - new value to apply
+---@return string            - the message sent back to the console
+---@return boolean           - flag that tells if the command has been successful
 local function set_config(config_name, param2, param3)
     local value
     local message
