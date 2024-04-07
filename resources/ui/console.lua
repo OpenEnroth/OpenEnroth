@@ -1,3 +1,5 @@
+--- Module that takes care of the state of the debug console
+
 local commands = require "commands"
 local logger = require "logger"
 
@@ -10,6 +12,7 @@ local CRITICAL_COLOR = { 255, 128, 0, 255 }
 local PLACEHOLDER_COLOR = { 255, 255, 255, 128 }
 local EDIT_TEXT_COLOR = { 255, 255, 255, 255 }
 
+-- The console table contains the state of the console. From position to the number of messages
 local console = {
     rect = {
         x = 8, 
@@ -17,23 +20,23 @@ local console = {
         w = 600,
         h = 480
     },
-    edit_tb = {
-        text = "",
-        state = {},
-        placeholder_text = "Write something here...",
-        show_placeholder = false,
+    edit_tb = {  -- state of the text box where the user type the command
+        text = "",  -- current command being typed
+        state = {}, -- state of the text box element ( active, deactivated and so on... )
+        placeholder_text = "Write something here...", -- the placeholder text shown when the text box is empty
+        show_placeholder = false, -- flag that tells if we need to show the placeholder during the current draw
         text_color = EDIT_TEXT_COLOR
     },
-    messages = {},
-    history = {},
-    history_index = 1,
-    scroll = nk_scroll.new(0, 0),
-    is_expanded = true,
+    messages = {}, -- each message being sent to the console is stored in this table
+    history = {}, -- the history of commands being executed. Useful to navigate back to previously written commands
+    history_index = 1, -- utility index which tells us the command we're navigating back to
+    scroll = nk_scroll.new(0, 0), -- the scrollbar position
+    is_expanded = true, -- flag telling us if the console has been expanded or not ( width is increased )
     padding = 5,
-    footer_height = 50,
-    log_enabled = false,
-    max_messages_count = 400,
-    max_history_count = 40,
+    footer_height = 50, -- the footer is the section containing the bottom part of the console ( command line + send button )
+    log_enabled = false, -- flag that tells if the log messages should be displayed in the console
+    max_messages_count = 400, -- to avoid storing all the messages we can set a limit
+    max_history_count = 40, -- to avoid storing all the commands history we can set a limit
     character_width = 7.3, --hack for a lacking text wrapping support in nuklear
     separate_every_n_characters = 50, --hack for a lacking text wrapping support in nuklear
 }
@@ -48,9 +51,9 @@ end
 
 console.add_history = function(console, text)
     table.insert(console.history, text)
-    console.history_index = table.getn(console.history) + 1
+    console.history_index = #console.history + 1
     
-    local count = table.getn(console.history) - console.max_history_count
+    local count = #console.history - console.max_history_count
     if count > 0 then
         for i = 1, count do
             table.remove(console.history, 1)
@@ -65,7 +68,7 @@ console.add_message = function(console, text, color, source)
         table.insert(console.messages, { text=s, col=color, source=source })
     end
 
-    local count = table.getn(console.messages) - console.max_messages_count
+    local count = #console.messages - console.max_messages_count
     if count > 0 then
         for i = 1, count do
             table.remove(console.messages, 1)
@@ -76,7 +79,7 @@ end
 
 console.scroll_to_end = function(console)
     --  little hack to put the scrollbar at the bottom whenever we insert a new message
-    console.scroll:set(0, table.getn(console.messages) * 100)
+    console.scroll:set(0, #console.messages * 100)
 end
 
 console.execute = function(console)
@@ -90,7 +93,7 @@ end
 
 console.navigate_history = function(console, step)
     local index = console.history_index
-    local size = table.getn(console.history)
+    local size = #console.history
 
     index = index + step
     if index < 1 then
