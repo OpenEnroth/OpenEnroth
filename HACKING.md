@@ -168,7 +168,7 @@ The game features a console capable of executing various Lua script commands. To
 1. Copy the `resources/ui` folder to the game's installation directory.
 2. Launch the game.
 3. Begin by loading an existing game or creating a new one.
-4. Once in-game, press the `\` (backslash) key to open the DebugView.
+4. Once in-game, press the `~` key to open the DebugView.
 5. If the Lua scripts have been loaded correctly, you'll find a button labeled `Console`.
 6. Click on the `Console` button to reveal the command-line interface at the bottom left corner of the screen.
 
