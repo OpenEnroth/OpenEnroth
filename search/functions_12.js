@@ -74,7 +74,7 @@ var searchData=
   ['removenotify_71',['removeNotify',['../classEngineRandomComponent.html#a251568c03abf581260a61cf2e92d15c4',1,'EngineRandomComponent::removeNotify()'],['../classPlatformApplicationAware.html#a37fc00d6c4be85dadf00248ff2b620be',1,'PlatformApplicationAware::removeNotify()'],['../classEngineDeterministicComponent.html#a1b7a682ea737044cfd216a973ca75738',1,'EngineDeterministicComponent::removeNotify()'],['../classEngineControlComponent.html#ae57de400e0ebdf456d52e0d47b1b769e',1,'EngineControlComponent::removeNotify()']]],
   ['removequotes_72',['removeQuotes',['../String_8h.html#a7e6142eae5662acb65bb68719b5dbb61',1,'String.h']]],
   ['removetypedproxy_73',['removeTypedProxy',['../PlatformApplication_8cpp.html#a25bb327c870ac609cfa52ddfa7658597',1,'PlatformApplication.cpp']]],
-  ['renderassprite_74',['RenderAsSprite',['../structSpellFxRenderer.html#a4d4e6cec055e8183f26c2853f3b052ea',1,'SpellFxRenderer']]],
+  ['renderassprite_74',['RenderAsSprite',['../structSpellFxRenderer.html#a0b71c048d95aa3ecbdf01551d6a6ff6a',1,'SpellFxRenderer']]],
   ['renderbillboardd3d_75',['RenderBillboardD3D',['../structRenderBillboardD3D.html#a639ab80926b4db1f3614c2e57c4db5f2',1,'RenderBillboardD3D']]],
   ['renderer_76',['Renderer',['../classRenderer.html#a8bb387e9dbd5ee264f7cb1fcb81dfefe',1,'Renderer']]],
   ['renderid_77',['renderId',['../classGraphicsImage.html#ab3146a2a671455129659a4ec0d3a8d64',1,'GraphicsImage']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e24112</span>
    </div>
   </td>
  </tr>
@@ -124,8 +124,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:afca35026c61b1b0d4e3840a9459cbf85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >A single stop shop to read <a class="el" href="namespaceLOD.html">LOD</a> files. Even though LODs support a multi-directory structure, in reality vanilla games only ever had a single directory each.</p>
-<p >Given that we don't plan to expand the <a class="el" href="namespaceLOD.html">LOD</a> format support, when resolving the files this class always looks into the first available directory, which is consistent with the vanilla behaviour. </p>
+<div class="textblock"><p >A single stop shop to read LOD files. Even though LODs support a multi-directory structure, in reality vanilla games only ever had a single directory each.</p>
+<p >Given that we don't plan to expand the LOD format support, when resolving the files this class always looks into the first available directory, which is consistent with the vanilla behaviour. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a46ee75c86528c4542f245d6b4af4357f" name="a46ee75c86528c4542f245d6b4af4357f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a46ee75c86528c4542f245d6b4af4357f">&#9670;&#160;</a></span>LodReader() <span class="overload">[1/3]</span></h2>
@@ -246,7 +246,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Closes this <a class="el" href="namespaceLOD.html">LOD</a> reader &amp; frees all associated resources. </p>
+<p >Closes this LOD reader &amp; frees all associated resources. </p>
 
 </div>
 </div>
@@ -267,11 +267,11 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filename</td><td>Name of the <a class="el" href="namespaceLOD.html">LOD</a> file entry. </td></tr>
+    <tr><td class="paramname">filename</td><td>Name of the LOD file entry. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Whether the file exists inside the <a class="el" href="namespaceLOD.html">LOD</a>. The check is case-insensitive. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the file exists inside the LOD. The check is case-insensitive. </dd></dl>
 
 </div>
 </div>
@@ -289,7 +289,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="namespaceLOD.html">LOD</a> info, containing <a class="el" href="namespaceLOD.html">LOD</a> version, description of this <a class="el" href="namespaceLOD.html">LOD</a> file as specified in the <a class="el" href="namespaceLOD.html">LOD</a> header, and a name of the single folder inside this <a class="el" href="namespaceLOD.html">LOD</a> file. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>LOD info, containing LOD version, description of this LOD file as specified in the LOD header, and a name of the single folder inside this LOD file. </dd></dl>
 
 </div>
 </div>
@@ -332,7 +332,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>List of all files in a <a class="el" href="namespaceLOD.html">LOD</a>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>List of all files in a LOD. </dd></dl>
 
 </div>
 </div>
@@ -369,15 +369,15 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">blob</td><td><a class="el" href="namespaceLOD.html">LOD</a> data. </td></tr>
-    <tr><td class="paramname">path</td><td><a class="el" href="namespaceLOD.html">LOD</a> path, for error reporting. Actual data is read from <code>blob</code>. </td></tr>
+    <tr><td class="paramname">blob</td><td>LOD data. </td></tr>
+    <tr><td class="paramname">path</td><td>LOD path, for error reporting. Actual data is read from <code>blob</code>. </td></tr>
     <tr><td class="paramname">openFlags</td><td>Open flags. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there are errors in the provided <a class="el" href="namespaceLOD.html">LOD</a> file. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there are errors in the provided LOD file. </td></tr>
   </table>
   </dd>
 </dl>
@@ -411,14 +411,14 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Path to the <a class="el" href="namespaceLOD.html">LOD</a> file to open for reading. </td></tr>
+    <tr><td class="paramname">path</td><td>Path to the LOD file to open for reading. </td></tr>
     <tr><td class="paramname">openFlags</td><td>Open flags. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If the <a class="el" href="namespaceLOD.html">LOD</a> couldn't be opened - e.g., if the file doesn't exist, or if it's not a <a class="el" href="namespaceLOD.html">LOD</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If the LOD couldn't be opened - e.g., if the file doesn't exist, or if it's not a LOD. </td></tr>
   </table>
   </dd>
 </dl>
@@ -442,14 +442,14 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filename</td><td>Name of the <a class="el" href="namespaceLOD.html">LOD</a> file entry. </td></tr>
+    <tr><td class="paramname">filename</td><td>Name of the LOD file entry. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Contents of the file inside the <a class="el" href="namespaceLOD.html">LOD</a> as a <code><a class="el" href="classBlob.html">Blob</a></code>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Contents of the file inside the LOD as a <code><a class="el" href="classBlob.html">Blob</a></code>. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If file doesn't exist inside the <a class="el" href="namespaceLOD.html">LOD</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If file doesn't exist inside the LOD. </td></tr>
   </table>
   </dd>
 </dl>

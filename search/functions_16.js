@@ -38,7 +38,7 @@ var searchData=
   ['viewingparams_35',['ViewingParams',['../structViewingParams.html#a3e14ff3b831e0e7a77d6113cd0090465',1,'ViewingParams']]],
   ['viewport_36',['Viewport',['../structViewport.html#a9fde8f966d9802dd42254acf0ed05386',1,'Viewport']]],
   ['viewproject_5ftrueifstillvisible_5fblv_37',['ViewProject_TrueIfStillVisible_BLV',['../classParticleEngine.html#ad63c7069319085019cf0c086e38cce06',1,'ParticleEngine']]],
-  ['viewtransform_38',['ViewTransform',['../structCamera3D.html#a396badc1e3335dc188a2c88d61f8a7f6',1,'Camera3D::ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices)'],['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)']]],
+  ['viewtransform_38',['ViewTransform',['../structCamera3D.html#ab3c08c9e2fe1391ce8a21fb5ae8ae504',1,'Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)'],['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)']]],
   ['visible_39',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
   ['visit_40',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
   ['visitinternal_41',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
