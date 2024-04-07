@@ -41,7 +41,7 @@ class TestControllerTickCallback : public ProxyOpenGLContext {
     TestController *_controller = nullptr;
 };
 
-TestController::TestController(EngineController *controller, const std::string &testDataPath, float playbackSpeed) {
+TestController::TestController(EngineController *controller, std::string_view testDataPath, float playbackSpeed) {
     _controller = controller;
     _testDataPath = testDataPath;
     _playbackSpeed = playbackSpeed;
@@ -64,19 +64,19 @@ TestController::~TestController() {
     _tickCallback->setController(nullptr);
 }
 
-std::string TestController::fullPathInTestData(const std::string &fileName) {
+std::string TestController::fullPathInTestData(std::string_view fileName) {
     return (_testDataPath / fileName).string();
 }
 
-void TestController::loadGameFromTestData(const std::string &name) {
+void TestController::loadGameFromTestData(std::string_view name) {
     _controller->loadGame(fullPathInTestData(name));
 }
 
-void TestController::playTraceFromTestData(const std::string &saveName, const std::string &traceName, std::function<void()> postLoadCallback) {
+void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback) {
     playTraceFromTestData(saveName, traceName, 0, std::move(postLoadCallback));
 }
 
-void TestController::playTraceFromTestData(const std::string &saveName, const std::string &traceName,
+void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName,
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     // TODO(captainurist): we need to overhaul our usage of path::string, path::u8string, path::generic_string,
     // pick one, and spell it out explicitly in HACKING

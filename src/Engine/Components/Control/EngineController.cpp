@@ -185,14 +185,14 @@ void EngineController::skipLoadingScreen() {
         tick(1);
 }
 
-void EngineController::saveGame(const std::string &path) {
+void EngineController::saveGame(std::string_view path) {
     // AutoSave makes a screenshot and needs the opengl context that's bound in game thread, so we cannot call it from
     // the control thread. One option is to unbind every time we switch to control thread, but this is slow, and not
     // needed 99% of the time. So we just call back into the game thread.
     runGameRoutine([&] { SaveGame(true, false, path); });
 }
 
-void EngineController::loadGame(const std::string &path) {
+void EngineController::loadGame(std::string_view path) {
     std::string saveName = "!!!test.mm7";
     std::string dst = makeDataPath("saves", saveName);
     std::filesystem::copy_file(path, dst, std::filesystem::copy_options::overwrite_existing); // This might throw.

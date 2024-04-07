@@ -325,7 +325,7 @@ void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
 }
 
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing) {
+void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing) {
     int width = this->uFrameWidth - horizontalMargin;
     std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
@@ -341,16 +341,16 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
 }
 
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxHeight, Color shadowColor) {
     if (engine->callObserver) {
-        engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, text);
+        engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
     font->DrawText(this, position, color, text, maxHeight, shadowColor);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
-                              Color uColor, const std::string &text, int rect_width,
+                              Color uColor, std::string_view text, int rect_width,
                               int reverse_text) {
     return pFont->DrawTextInRect(this, position, uColor, text, rect_width, reverse_text);
 }
@@ -358,7 +358,7 @@ int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
 GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
                                    int uButtonType, int uData, UIMessageType msg,
                                    unsigned int msg_param, Io::InputAction action,
-                                   const std::string &label,
+                                   std::string_view label,
                                    const std::vector<GraphicsImage *> &textures) {
     GUIButton *pButton = new GUIButton();
 
@@ -389,7 +389,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
 }
 
 GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
-                        UIMessageType msg, unsigned int msg_param, Io::InputAction action, const std::string &label,
+                        UIMessageType msg, unsigned int msg_param, Io::InputAction action, std::string_view label,
                         const std::vector<GraphicsImage *> &textures) {
     GUIButton *result = CreateButton(position, dimensions, uButtonType, uData, msg, msg_param, action, label, textures);
     result->id = std::move(id);
@@ -416,7 +416,7 @@ GUIWindow::GUIWindow() {
     this->mouse = EngineIocContainer::ResolveMouse();
 }
 
-GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, const std::string &hint): eWindowType(windowType) {
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
 
     logger->trace("New window: {}", toString(windowType));
@@ -759,7 +759,7 @@ Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkill
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(const std::string &str, int uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
+std::string BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     std::string pText;     // esi@7
@@ -1175,12 +1175,12 @@ void UI_Create() {
 }
 
 
-std::string NameAndTitle(const std::string &name, const std::string &title) {
+std::string NameAndTitle(std::string_view name, std::string_view title) {
     return localization->FormatString(LSTR_FMT_S_THE_S, name, title);
 }
 
 
-std::string NameAndTitle(const std::string &name, CharacterClass class_type) {
+std::string NameAndTitle(std::string_view name, CharacterClass class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)
@@ -1188,7 +1188,7 @@ std::string NameAndTitle(const std::string &name, CharacterClass class_type) {
 }
 
 
-std::string NameAndTitle(const std::string &name, NpcProfession profession) {
+std::string NameAndTitle(std::string_view name, NpcProfession profession) {
     return NameAndTitle(
         name,
         localization->GetNpcProfessionName(profession)

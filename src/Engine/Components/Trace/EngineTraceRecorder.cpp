@@ -26,7 +26,7 @@ EngineTraceRecorder::~EngineTraceRecorder() {
     assert(!application()); // We're uninstalled.
 }
 
-void EngineTraceRecorder::startRecording(EngineController *game, const std::string &savePath, const std::string &tracePath, EngineTraceRecordingFlags flags) {
+void EngineTraceRecorder::startRecording(EngineController *game, std::string_view savePath, std::string_view tracePath, EngineTraceRecordingFlags flags) {
     assert(!savePath.empty() && !tracePath.empty());
     assert(!isRecording());
 

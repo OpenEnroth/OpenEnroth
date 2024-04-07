@@ -441,7 +441,7 @@ const std::string &Io::KeyboardInputHandler::GetTextInput() const {
     return pPressedKeysBuffer;
 }
 
-void Io::KeyboardInputHandler::SetTextInput(const std::string &text) {
+void Io::KeyboardInputHandler::SetTextInput(std::string_view text) {
     pPressedKeysBuffer = text;
 }
 

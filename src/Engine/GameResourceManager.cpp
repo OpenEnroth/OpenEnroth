@@ -15,6 +15,6 @@ void GameResourceManager::openGameResources() {
     // but we can't use localization object here cause it's not yet initialized.
 }
 
-Blob GameResourceManager::getEventsFile(const std::string &filename) {
+Blob GameResourceManager::getEventsFile(std::string_view filename) {
     return lod::decodeCompressed(_eventsLodReader.read(filename));
 }

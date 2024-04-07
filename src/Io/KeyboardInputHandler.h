@@ -56,7 +56,7 @@ class KeyboardInputHandler {
     void EndTextInput();
 
     const std::string &GetTextInput() const;
-    void SetTextInput(const std::string &text);
+    void SetTextInput(std::string_view text);
 
  private:
     void GeneratePausedActions();

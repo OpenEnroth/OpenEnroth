@@ -24,15 +24,15 @@ class LodSpriteCache {
     LodSpriteCache();
     ~LodSpriteCache();
 
-    bool open(const std::string &pFilename);
+    bool open(std::string_view pFilename);
 
     void reserveLoadedSprites();
     void releaseUnreserved();
 
-    Sprite *loadSprite(const std::string &pContainerName);
+    Sprite *loadSprite(std::string_view pContainerName);
 
  private:
-    bool LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
+    bool LoadSpriteFromFile(LODSprite *pSpriteHeader, std::string_view pContainer);
 
  private:
     LodReader _reader;

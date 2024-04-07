@@ -133,13 +133,13 @@ void LodReader::close() {
     _files = {};
 }
 
-bool LodReader::exists(const std::string &filename) const {
+bool LodReader::exists(std::string_view filename) const {
     assert(isOpen());
 
     return _files.contains(toLower(filename));
 }
 
-Blob LodReader::read(const std::string &filename) const {
+Blob LodReader::read(std::string_view filename) const {
     assert(isOpen());
 
     const auto pos = _files.find(toLower(filename));

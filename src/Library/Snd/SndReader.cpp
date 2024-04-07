@@ -54,13 +54,13 @@ void SndReader::close() {
     _files = {};
 }
 
-bool SndReader::exists(const std::string &filename) const {
+bool SndReader::exists(std::string_view filename) const {
     assert(isOpen());
 
     return _files.contains(toLower(filename));
 }
 
-Blob SndReader::read(const std::string &filename) const {
+Blob SndReader::read(std::string_view filename) const {
     assert(isOpen());
 
     const auto pos = _files.find(toLower(filename));

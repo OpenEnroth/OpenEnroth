@@ -5,11 +5,11 @@
 #include <string>
 #include <string_view>
 #include <vector>
-#include <functional>
 #include <utility>
 #include <type_traits>
 
 #include "Utility/Flags.h"
+#include "Utility/TransparentFunctors.h"
 
 enum class CaseSensitivity {
     CASE_SENSITIVE,
@@ -38,14 +38,10 @@ class EnumSerializationTable {
     void insert(uint64_t value, std::string_view name);
     void polish();
 
-    struct HeterogeneousStringHash : std::hash<std::string_view> {
-        using is_transparent = void;
-    };
-
  private:
     CaseSensitivity _caseSensitivity;
     std::unordered_map<uint64_t, std::string> _stringByEnum;
-    std::unordered_map<std::string, uint64_t, HeterogeneousStringHash, std::equal_to<>> _enumByString;
+    std::unordered_map<std::string, uint64_t, TransparentStringHash, TransparentStringEquals> _enumByString;
     std::vector<std::pair<uint64_t, std::string>> _sortedEnumStrings;
 };
 

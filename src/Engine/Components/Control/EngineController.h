@@ -11,8 +11,6 @@
 class GUIButton;
 class PlatformEvent;
 
-// TODO(captainurist): std::string vs std::string_view in interfaces? Spell this out in HACKING.
-
 /**
  * This is the interface to be used from a control routine to control the game thread.
  *
@@ -75,7 +73,7 @@ class EngineController {
      * @param path                      Path to the savegame file to use.
      * @throws std::runtime_error       On OS error, e.g. if the disk is full.
      */
-    void saveGame(const std::string &path);
+    void saveGame(std::string_view path);
 
     /**
      * Loads the game by opening up the load game menu and actually clicking all the buttons.
@@ -83,7 +81,7 @@ class EngineController {
      * @param path                      Path to the savegame to load. Note that it doesn't have to be in the saves folder.
      * @throws std::runtime_error       On OS error, e.g. if the file doesn't exist.
      */
-    void loadGame(const std::string &path);
+    void loadGame(std::string_view path);
 
     /**
      * Runs the provided routine in game thread and returns once it's finished. This is mainly for running OpenGL code

@@ -244,7 +244,7 @@ GraphicsImage *BLVFace::GetTexture() {
         return static_cast<GraphicsImage *>(this->resource);
 }
 
-void BLVFace::SetTexture(const std::string &filename) {
+void BLVFace::SetTexture(std::string_view filename) {
     if (this->IsTextureFrameTable()) {
         this->resource = (void *)pTextureFrameTable->FindTextureByName(filename);
         if (this->resource != (void *)-1) {
@@ -283,9 +283,9 @@ void IndoorLocation::Release() {
 
 //----- (00444810) --------------------------------------------------------
 // index of special transfer message, 0 otherwise
-unsigned int IndoorLocation::GetLocationIndex(const std::string &locationName) {
+unsigned int IndoorLocation::GetLocationIndex(std::string_view locationName) {
     for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
-        if (iequals(locationName, _4E6BDC_loc_names[i]))
+        if (noCaseEquals(locationName, _4E6BDC_loc_names[i]))
             return i + 1;
     return 0;
 }
@@ -301,7 +301,7 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 }
 
 //----- (00498E0A) --------------------------------------------------------
-void IndoorLocation::Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
+void IndoorLocation::Load(std::string_view filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
     decal_builder->Reset(0);
 
     assert(!bLoaded); // BLV is already loaded!
@@ -319,8 +319,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     deserialize(lod::decodeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
     reconstruct(location, this);
 
-    std::string dlv_filename = filename;
-    dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
+    std::string dlv_filename = fmt::format("{}.dlv", filename.substr(0, filename.size() - 4));
 
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?

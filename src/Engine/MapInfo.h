@@ -52,7 +52,7 @@ struct MapInfo {
 
 struct MapStats {
     void Initialize(const Blob &mapStats);
-    MapId GetMapInfo(const std::string &Str2);
+    MapId GetMapInfo(std::string_view Str2);
     IndexedArray<MapInfo, MAP_FIRST, MAP_LAST> pInfos;
 };
 

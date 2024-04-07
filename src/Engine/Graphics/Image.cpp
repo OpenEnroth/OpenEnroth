@@ -7,8 +7,6 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/AssetsManager.h"
 
-static std::string globalEmptyString;
-
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 
 GraphicsImage::~GraphicsImage() = default;
@@ -28,6 +26,7 @@ GraphicsImage *GraphicsImage::Create(ssize_t width, ssize_t height) {
 
 GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     GraphicsImage *img = new GraphicsImage();
+    img->_name = loader->GetResourceName();
     img->_loader = std::move(loader);
     return img;
 }
@@ -60,7 +59,7 @@ const GrayscaleImage &GraphicsImage::indexed() {
 }
 
 const std::string &GraphicsImage::GetName() {
-    return _loader ? _loader->GetResourceName() : globalEmptyString;
+    return _name;
 }
 
 void GraphicsImage::Release() {

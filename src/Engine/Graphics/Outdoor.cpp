@@ -233,7 +233,7 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
 }
 
 //----- (00488F5C) --------------------------------------------------------
-bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
+bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,
                                  bool *outdoors_was_respawned) {
     decal_builder->Reset(0);
@@ -828,7 +828,7 @@ void OutdoorLocation::Release() {
     viewparams->location_minimap = nullptr;
 }
 
-void OutdoorLocation::Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
+void OutdoorLocation::Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
     //if (engine->IsUnderwater()) {
     //    pPaletteManager->pPalette_tintColor[0] = 0x10;
     //    pPaletteManager->pPalette_tintColor[1] = 0xC2;
@@ -846,7 +846,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     //    }
     //}
 
-    std::string minimap_filename = filename.substr(0, filename.length() - 4);
+    std::string_view minimap_filename = filename.substr(0, filename.length() - 4);
     if (viewparams->location_minimap)
         viewparams->location_minimap->Release();
     viewparams->location_minimap = assets->getImage_Solid(minimap_filename);
@@ -860,8 +860,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
 
     // ****************.ddm file*********************//
 
-    std::string ddm_filename = filename;
-    ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
+    std::string ddm_filename = fmt::format("{}.ddm", filename.substr(0, filename.length() - 4));
 
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
@@ -2470,7 +2469,7 @@ void UpdateActors_ODM() {
 }
 
 //----- (0047A384) --------------------------------------------------------
-void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa) {
+void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     MapInfo *map_info;            // edi@4
     // size_t v7;              // eax@19
 

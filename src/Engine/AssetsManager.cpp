@@ -31,7 +31,7 @@ void AssetsManager::releaseAllTextures() {
     ReloadFonts();
 }
 
-bool AssetsManager::releaseImage(const std::string &name) {
+bool AssetsManager::releaseImage(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -44,7 +44,7 @@ bool AssetsManager::releaseImage(const std::string &name) {
     return true;
 }
 
-GraphicsImage *AssetsManager::getImage_Paletted(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_Paletted(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -58,7 +58,7 @@ GraphicsImage *AssetsManager::getImage_Paletted(const std::string &name) {
 }
 
 
-GraphicsImage *AssetsManager::getImage_ColorKey(const std::string &name, Color colorkey) {
+GraphicsImage *AssetsManager::getImage_ColorKey(std::string_view name, Color colorkey) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -73,7 +73,7 @@ GraphicsImage *AssetsManager::getImage_ColorKey(const std::string &name, Color c
 
 
 
-GraphicsImage *AssetsManager::getImage_Solid(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_Solid(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -86,7 +86,7 @@ GraphicsImage *AssetsManager::getImage_Solid(const std::string &name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getImage_Alpha(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_Alpha(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -99,7 +99,7 @@ GraphicsImage *AssetsManager::getImage_Alpha(const std::string &name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -112,7 +112,7 @@ GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) 
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getImage_PCXFromFile(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_PCXFromFile(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -125,7 +125,7 @@ GraphicsImage *AssetsManager::getImage_PCXFromFile(const std::string &name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getBitmap(const std::string &name) {
+GraphicsImage *AssetsManager::getBitmap(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = bitmaps.find(filename);
@@ -138,7 +138,7 @@ GraphicsImage *AssetsManager::getBitmap(const std::string &name) {
     return i->second;
 }
 
-bool AssetsManager::releaseBitmap(const std::string &name) {
+bool AssetsManager::releaseBitmap(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = bitmaps.find(filename);
@@ -151,7 +151,7 @@ bool AssetsManager::releaseBitmap(const std::string &name) {
     return true;
 }
 
-GraphicsImage *AssetsManager::getSprite(const std::string &name) {
+GraphicsImage *AssetsManager::getSprite(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = sprites.find(filename);
@@ -164,7 +164,7 @@ GraphicsImage *AssetsManager::getSprite(const std::string &name) {
     return i->second;
 }
 
-bool AssetsManager::releaseSprite(const std::string &name) {
+bool AssetsManager::releaseSprite(std::string_view name) {
     std::string filename = toLower(name);
 
     auto i = sprites.find(filename);

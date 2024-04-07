@@ -72,7 +72,7 @@ class GUIWindow_Book : public GUIWindow {
 
 class GUIWindow_BooksButtonOverlay : public GUIWindow {
  public:
-    GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string());
+    GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {});
 
     virtual void Update() override;
 

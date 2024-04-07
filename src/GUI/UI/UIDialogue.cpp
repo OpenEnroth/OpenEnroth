@@ -384,9 +384,9 @@ void selectNPCDialogueOption(DialogueId option) {
                 if (pNPCStats->pNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNPCData[i].name)
                     pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
             }
-            if (iequals(pParty->pHirelings[0].name, speakingNPC->name))
+            if (noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name))
                 pParty->pHirelings[0] = NPCData();
-            else if (iequals(pParty->pHirelings[1].name, speakingNPC->name))
+            else if (noCaseEquals(pParty->pHirelings[1].name, speakingNPC->name))
                 pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

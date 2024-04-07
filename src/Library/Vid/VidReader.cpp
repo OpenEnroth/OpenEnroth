@@ -64,13 +64,13 @@ void VidReader::close() {
     _files = {};
 }
 
-bool VidReader::exists(const std::string &filename) const {
+bool VidReader::exists(std::string_view filename) const {
     assert(isOpen());
 
     return _files.contains(toLower(filename));
 }
 
-Blob VidReader::read(const std::string &filename) const {
+Blob VidReader::read(std::string_view filename) const {
     assert(isOpen());
 
     const auto pos = _files.find(toLower(filename));

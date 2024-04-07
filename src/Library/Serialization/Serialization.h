@@ -31,7 +31,7 @@ struct StringDeserializer {
 /**
  * Ranges-friendly serialization object.
  *
- * Can be used as `range | std::views::transform(ToString)`. Or directly, as `return ToString(some_integer);`.
+ * Can be used as `range | std::views::transform(toString)`. Or directly, as `return toString(some_integer);`.
  *
  * Under the hood it's just calling the `serialize` function using argument-dependent lookup.
  *
@@ -42,7 +42,7 @@ constexpr detail::StringSerializer toString;
 /**
  * Ranges-friendly deserialization object.
  *
- * Can be used as `range | std::views::transform(FromString<int>)`. Or directly, as `return FromString<int>(some_string)`.
+ * Can be used as `range | std::views::transform(fromString<int>)`. Or directly, as `return fromString<int>(some_string)`.
  *
  * Under the hood it's just calling the `deserialize` function using argument-dependent lookup.
  *

@@ -19,16 +19,16 @@ Icon *IconFrameTable::GetIcon(unsigned int idx) {
 
 Icon *IconFrameTable::GetIcon(const char *pIconName) {
     for (unsigned int i = 0; i < pIcons.size(); i++) {
-        if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
+        if (noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
             return &this->pIcons[i];
     }
     return nullptr;
 }
 
 //----- (00494F3A) --------------------------------------------------------
-unsigned int IconFrameTable::FindIcon(const std::string &pIconName) {
+unsigned int IconFrameTable::FindIcon(std::string_view pIconName) {
     for (size_t i = 0; i < pIcons.size(); i++) {
-        if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
+        if (noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
             return i;
     }
     return 0;

@@ -2,45 +2,61 @@
 
 #include "Utility/String.h"
 
+UNIT_TEST(String, toLowerUpper) {
+    EXPECT_EQ(toLower("123"), "123");
+    EXPECT_EQ(toLower("ABCd"), "abcd");
+    EXPECT_EQ(toLower("z"), "z");
+    EXPECT_EQ(toUpper("123"), "123");
+    EXPECT_EQ(toUpper("ABCd"), "ABCD");
+    EXPECT_EQ(toUpper("Z"), "Z");
+
+    // toLower/toUpper should do nothing for non-ascii chars.
+    for (int i = 128; i < 255; i++) {
+        const char string[2] = { static_cast<char>(i), 0 };
+        EXPECT_EQ(toLower(string), string);
+        EXPECT_EQ(toUpper(string), string);
+    }
+}
+
 UNIT_TEST(String, iequals) {
-    EXPECT_FALSE(iequals("abc", "abcd"));
-    EXPECT_FALSE(iequals("abd", "abc"));
-    EXPECT_TRUE(iequals("abc\0\0", "abc"));
-    EXPECT_TRUE(iequals("ABC", "abc"));
-    EXPECT_TRUE(iequals("Abc", "abC"));
-    EXPECT_TRUE(iequals("123ab..?z", "123Ab..?Z"));
-    EXPECT_TRUE(iequals("", ""));
-    EXPECT_FALSE(iequals("", "Z"));
-    EXPECT_FALSE(iequals("@", "`")); // \x40 vs \x60
+    EXPECT_FALSE(noCaseEquals("abc", "abcd"));
+    EXPECT_FALSE(noCaseEquals("abd", "abc"));
+    EXPECT_TRUE(noCaseEquals("abc\0\0", "abc"));
+    EXPECT_TRUE(noCaseEquals("ABC", "abc"));
+    EXPECT_TRUE(noCaseEquals("Abc", "abC"));
+    EXPECT_TRUE(noCaseEquals("123ab..?z", "123Ab..?Z"));
+    EXPECT_TRUE(noCaseEquals("", ""));
+    EXPECT_FALSE(noCaseEquals("", "Z"));
+    EXPECT_FALSE(noCaseEquals("@", "`")); // \x40 vs \x60
 }
 
 UNIT_TEST(String, iless) {
-    EXPECT_TRUE(iless("A", "AB"));
-    EXPECT_FALSE(iless("AB", "A"));
-    EXPECT_TRUE(iless("a", "B"));
-    EXPECT_FALSE(iless("B", "a"));
-    EXPECT_FALSE(iless("b", "B"));
-    EXPECT_FALSE(iless("B", "b"));
-    EXPECT_TRUE(iless("@", "`"));
+    EXPECT_TRUE(noCaseLess("A", "AB"));
+    EXPECT_FALSE(noCaseLess("AB", "A"));
+    EXPECT_TRUE(noCaseLess("a", "B"));
+    EXPECT_FALSE(noCaseLess("B", "a"));
+    EXPECT_FALSE(noCaseLess("b", "B"));
+    EXPECT_FALSE(noCaseLess("B", "b"));
+    EXPECT_TRUE(noCaseLess("@", "`"));
 }
 
-UNIT_TEST(String, Printable) {
+UNIT_TEST(String, toPrintable) {
     EXPECT_EQ(toPrintable("123\xFF", '.'), "123.");
 }
 
-UNIT_TEST(String, HexDump) {
+UNIT_TEST(String, toHexDump) {
     EXPECT_EQ(toHexDump("1234", 2), "3132 3334");
     EXPECT_EQ(toHexDump("0000"), "30303030");
 }
 
-UNIT_TEST(String, ReplaceAll) {
+UNIT_TEST(String, replaceAll) {
     EXPECT_EQ(replaceAll("123", "1", "123"), "12323");
     EXPECT_EQ(replaceAll("123", "10", "100"), "123");
     EXPECT_EQ(replaceAll("ab123ab", "ab", "zz"), "zz123zz");
     EXPECT_EQ(replaceAll("AAAA", "AA", "AAZAA"), "AAZAAAAZAA");
 }
 
-UNIT_TEST(String, Split) {
+UNIT_TEST(String, split) {
     std::vector<std::string_view> v;
 
     splitString("aa;bb;cc", ';', &v);

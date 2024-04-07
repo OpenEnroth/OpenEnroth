@@ -186,7 +186,7 @@ uint64_t GetExperienceRequiredForLevel(int level);
 /**
  * @offset 0x4179BC
  */
-static void CharacterUI_DrawTooltip(const std::string &title, std::string &content) {
+static void CharacterUI_DrawTooltip(std::string_view title, std::string_view content) {
     Pointi pt = mouse->GetCursorPos();
 
     GUIWindow popup_window;
@@ -210,12 +210,6 @@ static void CharacterUI_DrawTooltip(const std::string &title, std::string &conte
         "{::}{}\f00000\n", ui_character_tooltip_header_default_color.tag(), title);
     popup_window.DrawTitleText(assets->pFontCreate.get(), 0, 0, colorTable.White, colored_title, 3);
     popup_window.DrawText(assets->pFontSmallnum.get(), {1, assets->pFontLucida->GetHeight()}, colorTable.White, content);  // popup_window.uFrameY + popup_window.uFrameHeight
-}
-
-// TODO(Nik-RE-dev): use std::string in localization and then remove this function
-void CharacterUI_DrawTooltip(const std::string &title, const char *content) {
-    std::string content_str = std::string(content);
-    CharacterUI_DrawTooltip(title, content_str);
 }
 
 //----- (004151D9) --------------------------------------------------------

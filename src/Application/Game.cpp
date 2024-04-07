@@ -90,7 +90,7 @@
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
-void initDataPath(Platform *platform, const std::string &dataPath) {
+void initDataPath(Platform *platform, std::string_view dataPath) {
     std::string missing_file;
 
     if (validateDataPath(dataPath, &missing_file)) {
@@ -775,7 +775,7 @@ void Game::processQueuedMessages() {
                 if (engine->_teleportPoint.isValid()) {
                     if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        bool leavingArena = iequals(pCurrentMapName, "d05.blv");
+                        bool leavingArena = noCaseEquals(pCurrentMapName, "d05.blv");
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                         if (leavingArena)

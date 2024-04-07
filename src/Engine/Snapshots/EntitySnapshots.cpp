@@ -261,7 +261,7 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
     reconstruct(src.tileName, &dst->name);
     dst->name = toLower(dst->name);
 
-    if (istarts_with(dst->name, "wtrdr"))
+    if (noCaseStartsWith(dst->name, "wtrdr"))
         dst->name.insert(0, "h");  // mm7 uses hd water tiles with legacy names
 
     dst->uTileID = src.tileId;

@@ -38,15 +38,16 @@ inline std::string_view trim(std::string_view s) {
     return s.substr(l, r - l);
 }
 
-bool istarts_with(std::string_view s, std::string_view prefix);
-bool iequals(std::string_view a, std::string_view b);
-bool iless(std::string_view a, std::string_view b);
-bool iequalsAscii(std::u8string_view a, std::u8string_view b);
-bool ilessAscii(std::u8string_view a, std::u8string_view b);
+bool noCaseStartsWith(std::string_view s, std::string_view prefix);
+bool noCaseEquals(std::string_view a, std::string_view b);
+bool noCaseLess(std::string_view a, std::string_view b);
+bool noCaseEqualsAscii(std::u8string_view a, std::u8string_view b);
+bool noCaseLessAscii(std::u8string_view a, std::u8string_view b);
 
-struct ILess {
+struct NoCaseLess {
+    using is_transparent = void; // This is a transparent comparator.
     bool operator()(std::string_view a, std::string_view b) const {
-        return iless(a, b);
+        return noCaseLess(a, b);
     }
 };
 

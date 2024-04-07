@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <string>
+#include <string_view>
 
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
@@ -37,6 +37,6 @@ class Game {
     Menu *_menu = nullptr;
 };
 
-void initDataPath(Platform *platform, const std::string &dataPath);
+void initDataPath(Platform *platform, std::string_view dataPath);
 
 extern class GraphicsImage *gamma_preview_image;  // 506E40

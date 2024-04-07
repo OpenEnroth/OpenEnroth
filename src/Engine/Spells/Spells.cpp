@@ -476,7 +476,7 @@ bool SpellBuff::Apply(Time expire_time, CharacterSkillMastery uSkillMastery,
 }
 
 void SpellStats::Initialize(const Blob &spells) {
-    std::map<std::string, DamageType, ILess> spellSchoolMaps;
+    std::map<std::string, DamageType, NoCaseLess> spellSchoolMaps;
     spellSchoolMaps["fire"] = DAMAGE_FIRE;
     spellSchoolMaps["air"] = DAMAGE_AIR;
     spellSchoolMaps["water"] = DAMAGE_WATER;

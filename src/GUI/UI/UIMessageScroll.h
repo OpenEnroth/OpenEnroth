@@ -8,7 +8,7 @@
 
 class GUIWindow_MessageScroll : public GUIWindow {
  public:
-    GUIWindow_MessageScroll(Pointi position, Sizei dimensions, ItemId scroll_type, const std::string &hint = std::string()) :
+    GUIWindow_MessageScroll(Pointi position, Sizei dimensions, ItemId scroll_type, std::string_view hint = {}) :
         GUIWindow(WINDOW_Scroll, position, dimensions, hint) {
         assert(isMessageScroll(scroll_type));
 

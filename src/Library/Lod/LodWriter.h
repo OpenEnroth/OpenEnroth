@@ -26,8 +26,8 @@ class LodWriter {
         return _stream != nullptr;
     }
 
-    void write(const std::string &filename, const Blob &data);
-    void write(const std::string &filename, Blob &&data);
+    void write(std::string_view filename, const Blob &data);
+    void write(std::string_view filename, Blob &&data);
 
  private:
     std::unique_ptr<OutputStream> _ownedStream;

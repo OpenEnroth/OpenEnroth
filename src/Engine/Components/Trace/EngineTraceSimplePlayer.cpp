@@ -16,7 +16,7 @@ EngineTraceSimplePlayer::EngineTraceSimplePlayer() = default;
 EngineTraceSimplePlayer::~EngineTraceSimplePlayer() = default;
 
 void EngineTraceSimplePlayer::playTrace(EngineController *game, std::vector<std::unique_ptr<PlatformEvent>> events,
-                                        const std::string &tracePath, EngineTracePlaybackFlags flags) {
+                                        std::string_view tracePath, EngineTracePlaybackFlags flags) {
     assert(!isPlaying());
 
     _playing = true;

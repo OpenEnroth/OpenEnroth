@@ -163,14 +163,14 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 //----- (0044D813) --------------------------------------------------------
 int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
     auto cmp = [this] (uint16_t index, std::string_view name) {
-        return iless(pSpriteSFrames[index].icon_name, name);
+        return noCaseLess(pSpriteSFrames[index].icon_name, name);
     };
 
     auto pos = std::lower_bound(pSpriteEFrames.begin(), pSpriteEFrames.end(), pSpriteName, cmp);
     if (pos == pSpriteEFrames.end())
         return 0;
 
-    return iequals(pSpriteSFrames[*pos].icon_name, pSpriteName) ? *pos : 0;
+    return noCaseEquals(pSpriteSFrames[*pos].icon_name, pSpriteName) ? *pos : 0;
 }
 
 //----- (0044D8D0) --------------------------------------------------------

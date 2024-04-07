@@ -33,7 +33,7 @@ class EngineTraceSimplePlayer : private PlatformApplicationAware {
      * @param flags                     Playback flags.
      */
     void playTrace(EngineController *game, std::vector<std::unique_ptr<PlatformEvent>> events,
-                   const std::string &tracePath, EngineTracePlaybackFlags flags);
+                   std::string_view tracePath, EngineTracePlaybackFlags flags);
 
     bool isPlaying() const {
         return _playing;

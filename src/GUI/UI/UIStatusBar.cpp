@@ -28,7 +28,7 @@ void StatusBar::draw() {
     }
 }
 
-void StatusBar::drawForced(const std::string &str, Color color) {
+void StatusBar::drawForced(std::string_view str, Color color) {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     pPrimaryWindow->DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str);
 }
@@ -40,7 +40,7 @@ void StatusBar::update() {
     }
 }
 
-void StatusBar::setPermanent(const std::string &str) {
+void StatusBar::setPermanent(std::string_view str) {
     if (str.length() > 0) {
         if (_eventStatusExpireTime == 0) {
             _statusString = str;
@@ -57,12 +57,12 @@ void StatusBar::clearAll() {
     clearEvent();
 }
 
-void StatusBar::setEvent(const std::string &str) {
+void StatusBar::setEvent(std::string_view str) {
     _eventStatusString = str;
     _eventStatusExpireTime = platform->tickCount() + EVENT_DURATION;
 }
 
-void StatusBar::setEventShort(const std::string &str) {
+void StatusBar::setEventShort(std::string_view str) {
     _eventStatusString = str;
     _eventStatusExpireTime = platform->tickCount() + EVENT_DURATION_SHORT;
 }

@@ -782,7 +782,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
         for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
-            if (iequals(pParty->pHirelings[hirelingId].name, npcData->name)) {
+            if (noCaseEquals(pParty->pHirelings[hirelingId].name, npcData->name)) {
                 break;
             }
         }
@@ -804,9 +804,9 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
                     }
                 }
             }
-            if (iequals(pParty->pHirelings[0].name, npcData->name)) {
+            if (noCaseEquals(pParty->pHirelings[0].name, npcData->name)) {
                 pParty->pHirelings[0] = NPCData();
-            } else if (iequals(pParty->pHirelings[1].name, npcData->name)) {
+            } else if (noCaseEquals(pParty->pHirelings[1].name, npcData->name)) {
                 pParty->pHirelings[1] = NPCData();
             }
             pParty->hirelingScrollPosition = 0;

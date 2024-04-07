@@ -281,7 +281,7 @@ void GUIWindow_PartyCreation::Update() {
     size_t pLenText;                // eax@72
     signed int v104;                // ecx@72
     signed int pBonusNum;           // edi@82
-    char pText[200];                // [sp+10h] [bp-160h]@14
+    std::string pText;                // [sp+10h] [bp-160h]@14
     int v126;                       // [sp+148h] [bp-28h]@25
     int pIntervalY;                 // [sp+150h] [bp-20h]@14
     int pX_Numbers;                 // [sp+154h] [bp-1Ch]@18
@@ -338,10 +338,9 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[arrowAnimTextureNum]);
     render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[arrowAnimTextureNum]);
 
-    memset(pText, 0, sizeof(pText));
-    strcpy(pText, localization->GetString(LSTR_SKILLS));
-    for (int i = strlen(pText) - 1; i >= 0; i--)
-        pText[i] = toupper((uint8_t)pText[i]);
+    pText = localization->GetString(LSTR_SKILLS);
+    for (int i = pText.size() - 1; i >= 0; i--)
+        pText[i] = toupper(pText[i]); // TODO(captainurist): #unicode this won't work with a Russian localization.
 
     pIntervalX = 18;
     pIntervalY = assets->pFontCreate->GetHeight() - 2;
@@ -452,9 +451,9 @@ void GUIWindow_PartyCreation::Update() {
         uX += 158;
     }
 
-    strcpy(pText, localization->GetString(LSTR_CLASS));
-    for (int i = strlen(pText) - 1; i >= 0; i--)
-        pText[i] = toupper((uint8_t)pText[i]);
+    pText = localization->GetString(LSTR_CLASS);
+    for (int i = pText.size() - 1; i >= 0; i--)
+        pText[i] = toupper(pText[i]); // TODO(captainurist): #unicode this won't work for Russian localization.
 
     uClassType = pParty->pCharacters[uPlayerCreationUI_SelectedCharacter].classType;
     pTextCenter = assets->pFontCreate->AlignText_Center(193, pText);
@@ -526,22 +525,13 @@ void GUIWindow_PartyCreation::Update() {
     pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 37, 395}, colorTable.Tacha, localization->GetString(LSTR_AVAILABLE_SKILLS));
     for (int i = 0; i < 9; ++i) {
         pSkillId = pParty->pCharacters[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(i + 4);
-        strcpy(pText, localization->GetSkillName(pSkillId));
-        pLenText = strlen(pText);
+        pText = localization->GetSkillName(pSkillId);
         // trim skills that are too long
-        if (pLenText > 13) pText[12] = '\0';
+        if (pText.size() > 13)
+            pText.resize(12);
+        if (pText.starts_with(' '))
+            pText.clear();
 
-        v104 = 0;
-        if ((signed int)pLenText > 0) {
-            if (pText[v104] == 32) {
-                pText[v104] = 0;
-            } else {
-                while (pText[v104] != 32) {
-                    ++v104;
-                    if (v104 >= (signed int)pLenText) break;
-                }
-            }
-        }
         pCorrective = -10;             // -5
         //if ((signed int)pLenText < 8)  // if ( (signed int)v124 > 2 )
         //    pCorrective = 0;

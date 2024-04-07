@@ -573,7 +573,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     engine->SetUnderwater(Is_out15odm_underwater());
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
-    if (iequals(mapExt, "blv"))
+    if (noCaseEquals(mapExt, "blv"))
         PrepareToLoadBLV(bLoading);
     else
         PrepareToLoadODM(bLoading, 0);
@@ -662,7 +662,7 @@ void Engine::MM7_Initialize() {
     localization = new Localization();
     localization->Initialize();
 
-    auto triLoad = [](const std::string &name) {
+    auto triLoad = [](std::string_view name) {
         TriBlob result;
         result.mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture(name) : Blob();
         result.mm7 = engine->_gameResourceManager->getEventsFile(name);
@@ -1030,7 +1030,7 @@ unsigned int GetGravityStrength() {
 }
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
-                                   const std::string &filename) {
+                                   std::string_view filename) {
     for (unsigned i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
@@ -1041,7 +1041,7 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
 }
 
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
-                                    const std::string &filename) {
+                                    std::string_view filename) {
     for (BSPModel &model : pOutdoor->pBModels) {
         for (ODMFace &face : model.pFaces) {
             if (face.sCogNumber == uFaceCog) {
@@ -1051,7 +1051,7 @@ void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
     }
 }
 
-void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
+void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
     if (uFaceCog) {
         // unsigned int texture = pBitmaps_LOD->LoadTexture(pFilename);
         // if (texture != -1)
@@ -1097,7 +1097,7 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     }
 }
 
-void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName) {
+void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) {
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (!pFileName.empty() && pFileName != "0") {
@@ -1576,10 +1576,10 @@ void initLevelStrings(const Blob &blob) {
     }
 }
 
-void Level_LoadEvtAndStr(const std::string &pLevelName) {
-    initLevelStrings(engine->_gameResourceManager->getEventsFile(pLevelName + ".str"));
+void Level_LoadEvtAndStr(std::string_view pLevelName) {
+    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", pLevelName)));
 
-    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(pLevelName + ".evt"));
+    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", pLevelName)));
 }
 
 bool _44100D_should_alter_right_panel() {
@@ -1592,7 +1592,7 @@ bool _44100D_should_alter_right_panel() {
            current_screen_type == SCREEN_CASTING;
 }
 
-void Transition_StopSound_Autosave(const std::string &pMapName,
+void Transition_StopSound_Autosave(std::string_view pMapName,
                                    MapStartPoint start_point) {
     pAudioPlayer->stopSounds();
 

@@ -33,7 +33,7 @@
 #include "CodeGenMap.h"
 
 // TODO(captainurist): use std::string::contains once Android have full C++23 support.
-static auto contains = [](const std::string &haystack, const std::string &needle) {
+static auto contains = [](std::string_view haystack, std::string_view needle) {
     return haystack.find(needle) != std::string::npos;
 };
 
@@ -163,9 +163,9 @@ int runMapIdCodeGen(const CodeGenOptions &options, GameResourceManager *resource
     return 0;
 }
 
-const MapInfo &mapInfoByFileName(const MapStats &mapStats, const std::string &fileName) {
+const MapInfo &mapInfoByFileName(const MapStats &mapStats, std::string_view fileName) {
     auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-        return toLower(mapInfo.fileName) == toLower(fileName);
+        return noCaseEquals(mapInfo.fileName, fileName);
     });
     if (pos == mapStats.pInfos.end())
         throw Exception("Unrecognized map '{}'", fileName);

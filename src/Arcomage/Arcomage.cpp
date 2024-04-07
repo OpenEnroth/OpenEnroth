@@ -35,10 +35,10 @@ void DrawGameUI(int animation_stage);
 void DrawSparks();
 void DrawRectanglesForText();
 void DrawPlayersText();
-void DrawPlayerLevels(const std::string &str, Pointi *pXY);
-void DrawBricksCount(const std::string &str, Pointi *pXY);
-void DrawGemsCount(const std::string &str, Pointi *pXY);
-void DrawBeastsCount(const std::string &str, Pointi *pXY);
+void DrawPlayerLevels(std::string_view str, Pointi *pXY);
+void DrawBricksCount(std::string_view str, Pointi *pXY);
+void DrawGemsCount(std::string_view str, Pointi *pXY);
+void DrawBeastsCount(std::string_view str, Pointi *pXY);
 void DrawPlayersTowers();
 void DrawPlayersWall();
 void DrawCards();
@@ -53,7 +53,7 @@ int new_explosion_effect(Pointi *startXY, int effect_value);
 int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
-void am_DrawText(const std::string &str, Pointi *pXY);
+void am_DrawText(std::string_view str, Pointi *pXY);
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill);
 
 struct ArcomageStartConditions {
@@ -1533,17 +1533,17 @@ void DrawPlayersText() {
     DrawBeastsCount(toString(am_Players[1].resource_beasts), &text_position);
 }
 
-void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
+void DrawPlayerLevels(std::string_view str, Pointi *pXY) {
     Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
-    for (auto i = str.begin(); i != str.end(); ++i) {
+    for (char i : str) {
         // get each digit
-        if (*i) {
+        if (i) {
             // calc position in sprite layout
-            int v7 = 22 * *i;
+            int v7 = 22 * i;
             pSrcRect.x = v7 - 864;
             pSrcRect.y = 190;
             pSrcRect.w = v7 - 842 - pSrcRect.x;
@@ -1555,17 +1555,17 @@ void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
     }
 }
 
-void DrawBricksCount(const std::string &str, Pointi *pXY) {
+void DrawBricksCount(std::string_view str, Pointi *pXY) {
     Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
-    for (auto i = str.begin(); i != str.end(); ++i) {
+    for (char i : str) {
         // get each digit
-        if (*i) {
+        if (i) {
             // calc position in sprite layout
-            int v7 = 13 * *i;
+            int v7 = 13 * i;
             pSrcRect.x = v7 - 370;
             pSrcRect.y = 128;
             pSrcRect.w = v7 - 357 - pSrcRect.x;
@@ -1577,17 +1577,17 @@ void DrawBricksCount(const std::string &str, Pointi *pXY) {
     }
 }
 
-void DrawGemsCount(const std::string &str, Pointi *pXY) {
+void DrawGemsCount(std::string_view str, Pointi *pXY) {
     Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
-    for (auto i = str.begin(); i != str.end(); ++i) {
+    for (char i : str) {
         // get each digit
-        if (*i) {
+        if (i) {
             // calc position in sprite layout
-            int  v7 = 13 * *i;
+            int  v7 = 13 * i;
             pSrcRect.x = v7 - 370;
             pSrcRect.y = 138;
             pSrcRect.w = v7 - 357 - pSrcRect.x;
@@ -1599,17 +1599,17 @@ void DrawGemsCount(const std::string &str, Pointi *pXY) {
     }
 }
 
-void DrawBeastsCount(const std::string &str, Pointi *pXY) {
+void DrawBeastsCount(std::string_view str, Pointi *pXY) {
     Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
-    for (auto i = str.begin(); i != str.end(); ++i) {
+    for (char i : str) {
         // get each digit
-        if (*i) {
+        if (i) {
             // calc position in sprite layout
-            int x_offset = 13 * *i;
+            int x_offset = 13 * i;
             pSrcRect.x = x_offset - 370;
             pSrcRect.y = 148;
             pSrcRect.w = x_offset - 357 - pSrcRect.x;
@@ -2954,7 +2954,7 @@ void SetStartConditions() {
     zoo_bonus = 1;
 }
 
-void am_DrawText(const std::string &str, Pointi *pXY) {
+void am_DrawText(std::string_view str, Pointi *pXY) {
     pPrimaryWindow->DrawText(assets->pFontComic.get(), {pXY->x, pXY->y - ((assets->pFontComic->GetHeight() - 3) / 2) + 3}, colorTable.White, str);
 }
 

@@ -31,7 +31,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
 })
 } // namespace detail_name
 
-int OpenGLShader::build(const std::string &name, const std::string &filename, bool OpenGLES, bool reload) {
+int OpenGLShader::build(std::string_view name, std::string_view filename, bool OpenGLES, bool reload) {
     // 1. retrieve the vertex/fragment source code from filePath
     GLuint vertex = load(name, filename, GL_VERTEX_SHADER, OpenGLES);
     if (vertex == 0)
@@ -73,7 +73,7 @@ int OpenGLShader::build(const std::string &name, const std::string &filename, bo
     return 0;
 }
 
-bool OpenGLShader::reload(const std::string &name, bool OpenGLES) {
+bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
     int tryreload = build(name, sFilename, OpenGLES, true);
 
     if (tryreload) {
@@ -102,7 +102,7 @@ std::string OpenGLShader::shaderTypeToName(int type) {
     return result;
 }
 
-bool OpenGLShader::checkCompileErrors(int shader, const std::string &name, const std::string &type) {
+bool OpenGLShader::checkCompileErrors(int shader, std::string_view name, std::string_view type) {
     GLint success;
     GLchar infoLog[1024];
     if (type != "program") {
@@ -123,10 +123,10 @@ bool OpenGLShader::checkCompileErrors(int shader, const std::string &name, const
     return true;
 }
 
-int OpenGLShader::load(const std::string &name, const std::string &filename, int type, bool OpenGLES, bool nonFatal) {
+int OpenGLShader::load(std::string_view name, std::string_view filename, int type, bool OpenGLES, bool nonFatal) {
     std::string directory = "shaders";
     std::string typeName = shaderTypeToName(type);
-    std::string path = makeDataPath(directory, filename + "." + shaderTypeToExtension(type));
+    std::string path = makeDataPath(directory, fmt::format("{}.{}", filename, shaderTypeToExtension(type)));
 
     try {
         std::string shaderString;

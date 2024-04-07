@@ -26,95 +26,95 @@ SpellId ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
         ++*next_token;
         return SPELL_NONE;
     }
-    if (iequals(tbl->pProperties[0], "Dispel")) {  // dispel magic
+    if (noCaseEquals(tbl->pProperties[0], "Dispel")) {  // dispel magic
         ++*next_token;
         return SPELL_LIGHT_DISPEL_MAGIC;
-    } else if (iequals(tbl->pProperties[0], "Day")) {  // day of protection
+    } else if (noCaseEquals(tbl->pProperties[0], "Day")) {  // day of protection
         *next_token += 2;
         return SPELL_LIGHT_DAY_OF_PROTECTION;
-    } else if (iequals(tbl->pProperties[0], "Hour")) {  // hour  of power
+    } else if (noCaseEquals(tbl->pProperties[0], "Hour")) {  // hour  of power
         *next_token += 2;
         return SPELL_LIGHT_HOUR_OF_POWER;
-    } else if (iequals(tbl->pProperties[0], "Shield")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Shield")) {
         return SPELL_AIR_SHIELD;
-    } else if (iequals(tbl->pProperties[0], "Spirit")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Spirit")) {
         ++*next_token;
         return SPELL_SPIRIT_SPIRIT_LASH;
-    } else if (iequals(tbl->pProperties[0], "Power")) {  // power cure
+    } else if (noCaseEquals(tbl->pProperties[0], "Power")) {  // power cure
         ++*next_token;
         return SPELL_BODY_POWER_CURE;
-    } else if (iequals(tbl->pProperties[0], "Meteor")) {  // meteot shower
+    } else if (noCaseEquals(tbl->pProperties[0], "Meteor")) {  // meteot shower
         ++*next_token;
         return SPELL_FIRE_METEOR_SHOWER;
-    } else if (iequals(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
+    } else if (noCaseEquals(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
         ++*next_token;
         return SPELL_AIR_LIGHTNING_BOLT;
-    } else if (iequals(tbl->pProperties[0], "Implosion")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Implosion")) {
         return SPELL_AIR_IMPLOSION;
-    } else if (iequals(tbl->pProperties[0], "Stone")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Stone")) {
         ++*next_token;
         return SPELL_EARTH_STONESKIN;
-    } else if (iequals(tbl->pProperties[0], "Haste")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Haste")) {
         return SPELL_FIRE_HASTE;
-    } else if (iequals(tbl->pProperties[0], "Heroism")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Heroism")) {
         return SPELL_SPIRIT_HEROISM;
-    } else if (iequals(tbl->pProperties[0], "Pain")) {  // pain reflection
+    } else if (noCaseEquals(tbl->pProperties[0], "Pain")) {  // pain reflection
         ++*next_token;
         return SPELL_DARK_PAIN_REFLECTION;
-    } else if (iequals(tbl->pProperties[0], "Sparks")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Sparks")) {
         return SPELL_AIR_SPARKS;
-    } else if (iequals(tbl->pProperties[0], "Light")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Light")) {
         ++*next_token;
         return SPELL_LIGHT_LIGHT_BOLT;
-    } else if (iequals(tbl->pProperties[0], "Toxic")) {  // toxic cloud
+    } else if (noCaseEquals(tbl->pProperties[0], "Toxic")) {  // toxic cloud
         ++*next_token;
         return SPELL_DARK_TOXIC_CLOUD;
-    } else if (iequals(tbl->pProperties[0], "ShrapMetal")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "ShrapMetal")) {
         return SPELL_DARK_SHARPMETAL;
-    } else if (iequals(tbl->pProperties[0], "Paralyze")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Paralyze")) {
         return SPELL_LIGHT_PARALYZE;
-    } else if (iequals(tbl->pProperties[0], "Fireball")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Fireball")) {
         return SPELL_FIRE_FIREBALL;
-    } else if (iequals(tbl->pProperties[0], "Incinerate")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Incinerate")) {
         return SPELL_FIRE_INCINERATE;
-    } else if (iequals(tbl->pProperties[0], "Fire")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Fire")) {
         ++*next_token;
         return SPELL_FIRE_FIRE_BOLT;
-    } else if (iequals(tbl->pProperties[0], "Rock")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Rock")) {
         ++*next_token;
         return SPELL_EARTH_ROCK_BLAST;
-    } else if (iequals(tbl->pProperties[0], "Mass")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Mass")) {
         ++*next_token;
         return SPELL_EARTH_MASS_DISTORTION;
-    } else if (iequals(tbl->pProperties[0], "Ice")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Ice")) {
         ++*next_token;
         return SPELL_WATER_ICE_BOLT;
-    } else if (iequals(tbl->pProperties[0], "Acid")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Acid")) {
         ++*next_token;
         return SPELL_WATER_ACID_BURST;
-    } else if (iequals(tbl->pProperties[0], "Bless")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Bless")) {
         return SPELL_SPIRIT_BLESS;
-    } else if (iequals(tbl->pProperties[0], "Dragon")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Dragon")) {
         ++*next_token;
         return SPELL_DARK_DRAGON_BREATH;
-    } else if (iequals(tbl->pProperties[0], "Reanimate")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Reanimate")) {
         return SPELL_DARK_REANIMATE;
-    } else if (iequals(tbl->pProperties[0], "Summon")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Summon")) {
         ++*next_token;
         return SPELL_LIGHT_SUMMON_ELEMENTAL;
-    } else if (iequals(tbl->pProperties[0], "Fate")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Fate")) {
         return SPELL_SPIRIT_FATE;
-    } else if (iequals(tbl->pProperties[0], "Harm")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Harm")) {
         return SPELL_BODY_HARM;
-    } else if (iequals(tbl->pProperties[0], "Mind")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Mind")) {
         ++*next_token;
         return SPELL_MIND_MIND_BLAST;
-    } else if (iequals(tbl->pProperties[0], "Blades")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Blades")) {
         return SPELL_EARTH_BLADES;
-    } else if (iequals(tbl->pProperties[0], "Psychic")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Psychic")) {
         ++*next_token;
         return SPELL_MIND_PSYCHIC_SHOCK;
-    } else if (iequals(tbl->pProperties[0], "Hammerhands")) {
+    } else if (noCaseEquals(tbl->pProperties[0], "Hammerhands")) {
         return SPELL_BODY_HAMMERHANDS;
     } else {
         logger->warning("Unknown monster spell {}", tbl->pProperties[0]);
@@ -205,29 +205,29 @@ void ParseDamage(char *damage_str, uint8_t *dice_rolls,
 
 //----- (00454E3A) --------------------------------------------------------
 int ParseMissleAttackType(const char *missle_attack_str) {
-    if (iequals(missle_attack_str, "ARROW"))
+    if (noCaseEquals(missle_attack_str, "ARROW"))
         return 1;
-    else if (iequals(missle_attack_str, "ARROWF"))
+    else if (noCaseEquals(missle_attack_str, "ARROWF"))
         return 2;
-    else if (iequals(missle_attack_str, "FIRE"))
+    else if (noCaseEquals(missle_attack_str, "FIRE"))
         return 3;
-    else if (iequals(missle_attack_str, "AIR"))
+    else if (noCaseEquals(missle_attack_str, "AIR"))
         return 4;
-    else if (iequals(missle_attack_str, "WATER"))
+    else if (noCaseEquals(missle_attack_str, "WATER"))
         return 5;
-    else if (iequals(missle_attack_str, "EARTH"))
+    else if (noCaseEquals(missle_attack_str, "EARTH"))
         return 6;
-    else if (iequals(missle_attack_str, "SPIRIT"))
+    else if (noCaseEquals(missle_attack_str, "SPIRIT"))
         return 7;
-    else if (iequals(missle_attack_str, "MIND"))
+    else if (noCaseEquals(missle_attack_str, "MIND"))
         return 8;
-    else if (iequals(missle_attack_str, "BODY"))
+    else if (noCaseEquals(missle_attack_str, "BODY"))
         return 9;
-    else if (iequals(missle_attack_str, "LIGHT"))
+    else if (noCaseEquals(missle_attack_str, "LIGHT"))
         return 10;
-    else if (iequals(missle_attack_str, "DARK"))
+    else if (noCaseEquals(missle_attack_str, "DARK"))
         return 11;
-    else if (iequals(missle_attack_str, "ENER"))
+    else if (noCaseEquals(missle_attack_str, "ENER"))
         return 13;
     else
         return 0;
@@ -289,9 +289,9 @@ int ParseSpecialAttack(char *spec_att_str) {
 }
 
 //----- (004563FF) --------------------------------------------------------
-MonsterId MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
+MonsterId MonsterStats::FindMonsterByTextureName(std::string_view monster_textr_name) {
     for (MonsterId i : infos.indices()) {
-        if (!infos[i].name.empty() && iequals(infos[i].textureName, monster_textr_name))
+        if (!infos[i].name.empty() && noCaseEquals(infos[i].textureName, monster_textr_name))
             return i;
     }
     return MONSTER_INVALID;
@@ -502,55 +502,55 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                 ItemTreasureLevel(test_string[str_pos + 1] - '0');
                             item_name = &test_string[str_pos + 2];
                             if (*item_name) {
-                                if (iequals(item_name, "WEAPON"))
+                                if (noCaseEquals(item_name, "WEAPON"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_WEAPON;
-                                else if (iequals(item_name, "ARMOR"))
+                                else if (noCaseEquals(item_name, "ARMOR"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_ARMOR;
-                                else if (iequals(item_name, "MISC"))
+                                else if (noCaseEquals(item_name, "MISC"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_MICS;
-                                else if (iequals(item_name, "SWORD"))
+                                else if (noCaseEquals(item_name, "SWORD"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_SWORD;
-                                else if (iequals(item_name, "DAGGER"))
+                                else if (noCaseEquals(item_name, "DAGGER"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_DAGGER;
-                                else if (iequals(item_name, "AXE"))
+                                else if (noCaseEquals(item_name, "AXE"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_AXE;
-                                else if (iequals(item_name, "SPEAR"))
+                                else if (noCaseEquals(item_name, "SPEAR"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_SPEAR;
-                                else if (iequals(item_name, "BOW"))
+                                else if (noCaseEquals(item_name, "BOW"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_BOW;
-                                else if (iequals(item_name, "MACE"))
+                                else if (noCaseEquals(item_name, "MACE"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_MACE;
-                                else if (iequals(item_name, "CLUB"))
+                                else if (noCaseEquals(item_name, "CLUB"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_CLUB;
-                                else if (iequals(item_name, "STAFF"))
+                                else if (noCaseEquals(item_name, "STAFF"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_STAFF;
-                                else if (iequals(item_name, "LEATHER"))
+                                else if (noCaseEquals(item_name, "LEATHER"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_LEATHER_ARMOR;
-                                else if (iequals(item_name, "CHAIN"))
+                                else if (noCaseEquals(item_name, "CHAIN"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_CHAIN_ARMOR;
-                                else if (iequals(item_name, "PLATE"))
+                                else if (noCaseEquals(item_name, "PLATE"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_PLATE_ARMOR;
-                                else if (iequals(item_name, "SHIELD"))
+                                else if (noCaseEquals(item_name, "SHIELD"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_SHIELD;
-                                else if (iequals(item_name, "HELM"))
+                                else if (noCaseEquals(item_name, "HELM"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_HELMET;
-                                else if (iequals(item_name, "BELT"))
+                                else if (noCaseEquals(item_name, "BELT"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_BELT;
-                                else if (iequals(item_name, "CAPE"))
+                                else if (noCaseEquals(item_name, "CAPE"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_CLOAK;
-                                else if (iequals(item_name, "GAUNTLETS"))
+                                else if (noCaseEquals(item_name, "GAUNTLETS"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_GAUNTLETS;
-                                else if (iequals(item_name, "BOOTS"))
+                                else if (noCaseEquals(item_name, "BOOTS"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_BOOTS;
-                                else if (iequals(item_name, "RING"))
+                                else if (noCaseEquals(item_name, "RING"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_RING;
-                                else if (iequals(item_name, "AMULET"))
+                                else if (noCaseEquals(item_name, "AMULET"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_AMULET;
-                                else if (iequals(item_name, "WAND"))
+                                else if (noCaseEquals(item_name, "WAND"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_WAND;
-                                else if (iequals(item_name, "SCROLL"))
+                                else if (noCaseEquals(item_name, "SCROLL"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_SPELL_SCROLL;
-                                else if (iequals(item_name, "GEM"))
+                                else if (noCaseEquals(item_name, "GEM"))
                                     infos[curr_rec_num].treasureType = RANDOM_ITEM_GEM;
                             }
                         }
@@ -562,7 +562,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                     } break;
                     case 9: {
                         infos[curr_rec_num].flying = false;
-                        if (!iequals(test_string, "n")) // "Y"/"N"
+                        if (!noCaseEquals(test_string, "n")) // "Y"/"N"
                             infos[curr_rec_num].flying = true;
                     } break;
                     case 10: {
@@ -868,13 +868,13 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         if (parsed_field.uPropCount) {
                             //      v74 = v94.field_0;
                             if (parsed_field.uPropCount < 10) {
-                                if (iequals(parsed_field.pProperties[0], "shot")) {
+                                if (noCaseEquals(parsed_field.pProperties[0], "shot")) {
                                     infos[curr_rec_num].specialAbilityType = MONSTER_SPECIAL_ABILITY_SHOT;
                                     infos[curr_rec_num]
                                         .specialAbilityDamageDiceBonus = atoi(
                                         (char *)(parsed_field.pProperties[1] +
                                                  1));
-                                } else if (iequals(parsed_field.pProperties[0], "summon")) {
+                                } else if (noCaseEquals(parsed_field.pProperties[0], "summon")) {
                                     infos[curr_rec_num].specialAbilityType = MONSTER_SPECIAL_ABILITY_SUMMON;
                                     if (parsed_field.uPropCount > 1) {
                                         str = parsed_field.pProperties[2];
@@ -932,7 +932,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                         }
                                         infos[curr_rec_num]
                                             .specialAbilityDamageDiceSides = 0;
-                                        if (iequals(parsed_field.pProperties[1], "ground"))
+                                        if (noCaseEquals(parsed_field.pProperties[1], "ground"))
                                             infos[curr_rec_num]
                                                 .specialAbilityDamageDiceSides =
                                                 1;
@@ -941,7 +941,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                             -1)
                                             infos[curr_rec_num].specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
                                     }
-                                } else if (iequals(parsed_field.pProperties[0], "explode")) {
+                                } else if (noCaseEquals(parsed_field.pProperties[0], "explode")) {
                                     infos[curr_rec_num].specialAbilityType = MONSTER_SPECIAL_ABILITY_EXPLODE;
                                     ParseDamage(
                                         (char *)parsed_field.pProperties[1],
@@ -969,9 +969,9 @@ void MonsterStats::Initialize(const Blob &monsters) {
 }
 
 //----- (0044FA08) --------------------------------------------------------
-MonsterId MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
+MonsterId MonsterList::GetMonsterIDByName(std::string_view pMonsterName) {
     for (MonsterId i : monsters.indices()) {
-        if (iequals(monsters[i].monsterName, pMonsterName))
+        if (noCaseEquals(monsters[i].monsterName, pMonsterName))
             return i;
     }
     logger->error("Monster not found: {}", pMonsterName);

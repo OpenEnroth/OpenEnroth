@@ -14,8 +14,7 @@ class LodReader;
 class ImageLoader {
  public:
     virtual ~ImageLoader() = default;
-    virtual const std::string &GetResourceName() const { return this->resource_name; }
-    virtual std::string *GetResourceNamePtr() { return &this->resource_name; }
+    const std::string &GetResourceName() const { return this->resource_name; }
 
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) = 0;
 
@@ -25,7 +24,7 @@ class ImageLoader {
 
 class Paletted_Img_Loader : public ImageLoader {
  public:
-    inline Paletted_Img_Loader(LodTextureCache *lod, const std::string &filename) {
+    inline Paletted_Img_Loader(LodTextureCache *lod, std::string_view filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -38,8 +37,7 @@ class Paletted_Img_Loader : public ImageLoader {
 
 class ColorKey_LOD_Loader : public ImageLoader {
  public:
-    inline ColorKey_LOD_Loader(LodTextureCache *lod,
-                               const std::string &filename, Color colorkey) {
+    inline ColorKey_LOD_Loader(LodTextureCache *lod, std::string_view filename, Color colorkey) {
         this->resource_name = filename;
         this->colorkey = colorkey;
         this->lod = lod;
@@ -54,8 +52,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
 
 class Image16bit_LOD_Loader : public ImageLoader {
  public:
-    inline Image16bit_LOD_Loader(LodTextureCache *lod,
-                                 const std::string &filename) {
+    inline Image16bit_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -68,7 +65,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
 
 class Alpha_LOD_Loader : public ImageLoader {
  public:
-    inline Alpha_LOD_Loader(LodTextureCache *lod, const std::string &filename) {
+    inline Alpha_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -86,7 +83,7 @@ class PCX_Loader : public ImageLoader {
 
 class PCX_File_Loader : public PCX_Loader {
  public:
-    explicit inline PCX_File_Loader(const std::string &filename) {
+    explicit inline PCX_File_Loader(std::string_view filename) {
         this->resource_name = filename;
     }
 
@@ -97,7 +94,7 @@ class PCX_File_Loader : public PCX_Loader {
 
 class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Raw_Loader(LodReader *lod, const std::string &filename) {
+    inline PCX_LOD_Raw_Loader(LodReader *lod, std::string_view filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -112,7 +109,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
  public:
     // TODO(captainurist): this is the next level of ugly, redo.
     template<class Lod>
-    inline PCX_LOD_Compressed_Loader(Lod *lod, const std::string &filename) {
+    inline PCX_LOD_Compressed_Loader(Lod *lod, std::string_view filename) {
         resource_name = filename;
         blob_func = [this, lod] {
             return lod->LoadCompressedTexture(resource_name);
@@ -127,7 +124,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LodTextureCache *lod, const std::string &filename) {
+    inline Bitmaps_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -140,7 +137,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
-    inline Sprites_LOD_Loader(LodSpriteCache *lod, const std::string &filename) {
+    inline Sprites_LOD_Loader(LodSpriteCache *lod, std::string_view filename) {
         this->resource_name = filename;
         this->lod = lod;
     }

@@ -49,7 +49,7 @@ class EngineTraceRecorder : private PlatformApplicationAware {
      * @param tracePath                 Path to trace file.
      * @param flags                     Recording flags.
      */
-    void startRecording(EngineController *game, const std::string &savePath, const std::string &tracePath, EngineTraceRecordingFlags flags = 0);
+    void startRecording(EngineController *game, std::string_view savePath, std::string_view tracePath, EngineTraceRecordingFlags flags = 0);
 
     /**
      * Finishes trace recording & saves the trace file.

@@ -26,7 +26,7 @@ LodSpriteCache::~LodSpriteCache() {
         sprite.Release();
 }
 
-bool LodSpriteCache::open(const std::string &pFilename) {
+bool LodSpriteCache::open(std::string_view pFilename) {
     _reader.open(pFilename);
     return true;
 }
@@ -44,7 +44,7 @@ void LodSpriteCache::releaseUnreserved() {
     }
 }
 
-Sprite *LodSpriteCache::loadSprite(const std::string &pContainerName) {
+Sprite *LodSpriteCache::loadSprite(std::string_view pContainerName) {
     std::string name = toLower(pContainerName);
 
     Sprite *result = valuePtr(_spriteByName, name);
@@ -65,7 +65,7 @@ Sprite *LodSpriteCache::loadSprite(const std::string &pContainerName) {
     return &sprite;
 }
 
-bool LodSpriteCache::LoadSpriteFromFile(LODSprite *pSprite, const std::string &pContainer) {
+bool LodSpriteCache::LoadSpriteFromFile(LODSprite *pSprite, std::string_view pContainer) {
     if (!_reader.exists(pContainer))
         return false;
 

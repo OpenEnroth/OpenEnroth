@@ -16,7 +16,7 @@ class Icon {
  public:
     inline Icon() : img(nullptr) {}
 
-    inline void SetAnimationName(const std::string &name) {
+    inline void SetAnimationName(std::string_view name) {
         anim_name = name;
     }
     inline const std::string &GetAnimationName() const { return anim_name; }
@@ -47,7 +47,7 @@ class Icon {
 struct IconFrameTable {
     Icon *GetIcon(unsigned int idx);
     Icon *GetIcon(const char *pIconName);
-    unsigned int FindIcon(const std::string &pIconName);
+    unsigned int FindIcon(std::string_view pIconName);
     Icon *GetFrame(unsigned int uIconID, Duration frame_time);
 
     std::vector<Icon> pIcons;

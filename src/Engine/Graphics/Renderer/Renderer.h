@@ -58,7 +58,7 @@ class Renderer {
     virtual void PresentBlackScreen() = 0;
 
     virtual RgbaImage ReadScreenPixels() = 0;
-    virtual void SaveWinnersCertificate(const std::string &filePath) = 0;
+    virtual void SaveWinnersCertificate(std::string_view filePath) = 0;
     virtual void ClearTarget(Color uColor) = 0;
     virtual void Present() = 0;
 
@@ -150,7 +150,7 @@ class Renderer {
     virtual bool AreRenderSurfacesOk() = 0;
 
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) = 0;
-    virtual void SaveScreenshot(const std::string &filename, unsigned int width,
+    virtual void SaveScreenshot(std::string_view filename, unsigned int width,
                                 unsigned int height) = 0;
 
     /**

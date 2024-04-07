@@ -16,20 +16,20 @@ class AssetsManager {
     void releaseAllTextures();
 
     // TODO(captainurist): These are called back from GraphicsImage::Release, which is a questionable design.
-    bool releaseImage(const std::string &name);
-    bool releaseSprite(const std::string &name);
-    bool releaseBitmap(const std::string &name);
+    bool releaseImage(std::string_view name);
+    bool releaseSprite(std::string_view name);
+    bool releaseBitmap(std::string_view name);
 
-    GraphicsImage *getImage_ColorKey(const std::string &name, Color colorkey = colorTable.TealMask);
-    GraphicsImage *getImage_Paletted(const std::string &name);
-    GraphicsImage *getImage_Solid(const std::string &name);
-    GraphicsImage *getImage_Alpha(const std::string &name);
+    GraphicsImage *getImage_ColorKey(std::string_view name, Color colorkey = colorTable.TealMask);
+    GraphicsImage *getImage_Paletted(std::string_view name);
+    GraphicsImage *getImage_Solid(std::string_view name);
+    GraphicsImage *getImage_Alpha(std::string_view name);
 
-    GraphicsImage *getImage_PCXFromFile(const std::string &name);
-    GraphicsImage *getImage_PCXFromIconsLOD(const std::string &name);
+    GraphicsImage *getImage_PCXFromFile(std::string_view name);
+    GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name);
 
-    GraphicsImage *getBitmap(const std::string &name);
-    GraphicsImage *getSprite(const std::string &name);
+    GraphicsImage *getBitmap(std::string_view name);
+    GraphicsImage *getSprite(std::string_view name);
 
     // TODO(pskelton): Contain better
     // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also

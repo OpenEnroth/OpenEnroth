@@ -142,7 +142,7 @@ void LoadGame(int uSlot) {
     bFlashHistoryBook = false;
 }
 
-SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, const std::string &path, const std::string &title) {
+SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
     assert(isAutoSave || !title.empty());
     assert(pCurrentMapName != "d05.blv" || isAutoSave); // No manual saves in Arena.
 

@@ -14,7 +14,7 @@ GraphicsImage *TextureFrame::GetTexture() {
     return this->tex;
 }
 
-int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
+int64_t TextureFrameTable::FindTextureByName(std::string_view Str2) {
     std::string name = toLower(Str2);
 
     for (size_t i = 0; i < textures.size(); ++i)

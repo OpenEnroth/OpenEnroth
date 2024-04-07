@@ -71,7 +71,7 @@ void GUIWindow_Transition::Release() {
 GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exit_pic_id,
                                            Vec3i pos, int yaw,
                                            int pitch, int zspeed,
-                                           const std::string &locationName)
+                                           std::string_view locationName)
     : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions()) {
     engine->_teleportPoint.setTeleportTarget(pos, yaw, pitch, zspeed);
     engine->_teleportPoint.setTeleportMap(locationName);
@@ -91,7 +91,7 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exi
         if (!IndoorLocation::GetLocationIndex(locationName))
             pMediaPlayer->OpenHouseMovie(pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].video_name, 1);
 
-        std::string v15 = locationName;
+        std::string v15 = std::string(locationName);
         if (locationName[0] == '0') {
             v15 = pCurrentMapName;
         }

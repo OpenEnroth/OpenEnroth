@@ -70,7 +70,7 @@ struct BLVFace {  // 60h
     void _get_normals(Vec3f *outU, Vec3f *outV);
     void FromODM(struct ODMFace *face);
 
-    void SetTexture(const std::string &filename);
+    void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture();
 
     inline bool Invisible() const {
@@ -210,7 +210,7 @@ struct IndoorLocation {
     }
 
     void Release();
-    void Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned);
+    void Load(std::string_view filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned);
     void Draw();
 
     /**
@@ -218,7 +218,7 @@ struct IndoorLocation {
      */
     void toggleLight(signed int uLightID, unsigned int bToggle);
 
-    static unsigned int GetLocationIndex(const std::string &locationName);
+    static unsigned int GetLocationIndex(std::string_view locationName);
     void DrawIndoorFaces(bool bD3D);
     void PrepareActorRenderList_BLV();
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID);

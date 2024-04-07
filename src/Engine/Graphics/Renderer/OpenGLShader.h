@@ -18,9 +18,9 @@ class OpenGLShader {
 
     // TODO(pskelton): consider map for uniform locations
 
-    int build(const std::string &name, const std::string &filename, bool OpenGLES = false, bool reload = false);
+    int build(std::string_view name, std::string_view filename, bool OpenGLES = false, bool reload = false);
 
-    bool reload(const std::string &name, bool OpenGLES);
+    bool reload(std::string_view name, bool OpenGLES);
 
     // activate the shader
     void use();
@@ -30,7 +30,7 @@ class OpenGLShader {
     static std::string shaderTypeToName(int type);
 
     // utility function for checking shader compilation/linking errors.
-    bool checkCompileErrors(int shader, const std::string &name, const std::string &type);
+    bool checkCompileErrors(int shader, std::string_view name, std::string_view type);
 
-    int load(const std::string &name, const std::string &filename, int type, bool OpenGLES, bool nonFatal = false);
+    int load(std::string_view name, std::string_view filename, int type, bool OpenGLES, bool nonFatal = false);
 };

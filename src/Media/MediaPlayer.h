@@ -26,9 +26,9 @@ class MPlayer {
     void Initialize();
     void Unload();
 
-    void PlayFullscreenMovie(const std::string &pMovieName);
+    void PlayFullscreenMovie(std::string_view pMovieName);
 
-    void OpenHouseMovie(const std::string &pMovieName, bool bLoop);
+    void OpenHouseMovie(std::string_view pMovieName, bool bLoop);
     void HouseMovieLoop();
 
     bool IsMoviePlaying() const;
@@ -40,7 +40,7 @@ class MPlayer {
     VidReader magic_list;
     std::string sInHouseMovie;
 
-    Blob LoadMovie(const std::string &video_name);
+    Blob LoadMovie(std::string_view video_name);
 };
 
 extern MPlayer *pMediaPlayer;

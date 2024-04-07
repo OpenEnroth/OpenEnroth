@@ -761,7 +761,7 @@ TargetedSpellUI *CastSpellInfo::GetCastSpellInInventoryWindow() {
 }
 
 static int drawSkillTable(Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
-                          int right_margin, const std::string &skill_group_name) {
+                          int right_margin, std::string_view skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
 
