@@ -46,25 +46,25 @@ struct ItemGen;
 class GUIWindow {
  public:
     GUIWindow();
-    GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, const std::string &hint = std::string());
+    GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint = {});
     virtual ~GUIWindow() = default;
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, const std::string &label = {},
+                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
     GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, const std::string &label = {},
+                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
-    int DrawTextInRect(GUIFont *font, Pointi position, Color color, const std::string &text, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string_view text, int rect_width, int reverse_text);
 
     void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxHeight = 0, Color shadowColor = colorTable.Black);
 
-    void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing);
+    void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing);
 
     void DrawShops_next_generation_time_string(Duration time);
     void DrawMessageBox(bool inside_game_viewport);
@@ -104,7 +104,7 @@ class GUIWindow {
 
 class OnButtonClick : public GUIWindow {
  public:
-    OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string(), bool playSound = true) :
+    OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool playSound = true) :
         GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, hint),
         _playSound(playSound),
         _button(button)
@@ -119,7 +119,7 @@ class OnButtonClick : public GUIWindow {
 
 class OnButtonClick2 : public GUIWindow {
  public:
-    OnButtonClick2(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
+    OnButtonClick2(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool play_sound = true) :
         GUIWindow(WINDOW_PressedButton2, position, dimensions, hint),
         _playSound(play_sound),
         _button(button)
@@ -134,7 +134,7 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+    OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
         GUIWindow(windowType, position, dimensions, hint),
         _button(button)
     {}
@@ -148,7 +148,7 @@ class OnButtonClick3 : public GUIWindow {
 // something debug? not really sure, unused
 class OnButtonClick4 : public GUIWindow {
  public:
-    OnButtonClick4(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+    OnButtonClick4(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
         GUIWindow(WINDOW_59, position, dimensions, hint),
         _button(button)
     {}
@@ -161,7 +161,7 @@ class OnButtonClick4 : public GUIWindow {
 
 class OnSaveLoad : public GUIWindow {
  public:
-    OnSaveLoad(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+    OnSaveLoad(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
         GUIWindow(WINDOW_SaveLoadBtn, position, dimensions, hint),
         _button(button)
     {}
@@ -174,7 +174,7 @@ class OnSaveLoad : public GUIWindow {
 
 class OnCancel : public GUIWindow {
  public:
-    OnCancel(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+    OnCancel(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
         GUIWindow(WINDOW_GenericCancel, position, dimensions, hint),
         _button(button)
     {}
@@ -187,7 +187,7 @@ class OnCancel : public GUIWindow {
 
 class OnCancel2 : public GUIWindow {
  public:
-    OnCancel2(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+    OnCancel2(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
         GUIWindow(WINDOW_ExitCharacterWindow, position, dimensions, hint),
         _button(button)
     {}
@@ -200,7 +200,7 @@ class OnCancel2 : public GUIWindow {
 
 class OnCancel3 : public GUIWindow {
  public:
-    OnCancel3(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+    OnCancel3(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
         GUIWindow(WINDOW_LoadGame_CancelBtn, position, dimensions, hint),
         _button(button)
     {}
@@ -280,14 +280,14 @@ bool isHoldingMouseRightButton();
 /**
  * @offset 0x495461
  */
-std::string BuildDialogueString(const std::string &str, int uPlayerID,
+std::string BuildDialogueString(std::string_view str, int uPlayerID,
                                 ItemGen *a3 = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 Time *a6 = nullptr);
 
 
-std::string NameAndTitle(const std::string &name, const std::string &title);
-std::string NameAndTitle(const std::string &name, CharacterClass class_type);
-std::string NameAndTitle(const std::string &name, NpcProfession profession);
+std::string NameAndTitle(std::string_view name, std::string_view title);
+std::string NameAndTitle(std::string_view name, CharacterClass class_type);
+std::string NameAndTitle(std::string_view name, NpcProfession profession);
 std::string NameAndTitle(NPCData *npc);
 
 std::string GetDisplayName(Actor *actor);
