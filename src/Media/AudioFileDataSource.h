@@ -7,7 +7,7 @@
 
 class AudioFileDataSource : public AudioBaseDataSource {
  public:
-    explicit AudioFileDataSource(const std::string &file_name);
+    explicit AudioFileDataSource(std::string_view file_name);
     virtual ~AudioFileDataSource() {}
 
     virtual bool Open() override;
@@ -16,4 +16,4 @@ class AudioFileDataSource : public AudioBaseDataSource {
     std::string sFileName;
 };
 
-PAudioDataSource CreateAudioFileDataSource(const std::string &file_name);
+PAudioDataSource CreateAudioFileDataSource(std::string_view file_name);

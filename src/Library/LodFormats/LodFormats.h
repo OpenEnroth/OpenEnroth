@@ -23,7 +23,7 @@ struct LodImage {
 
 namespace lod {
 
-LodFileFormat magic(const Blob &blob, const std::string &fileName);
+LodFileFormat magic(const Blob &blob, std::string_view fileName);
 
 /**
  * This functions processes `LOD_FILE_COMPRESSED`, `LOD_FILE_PSEUDO_IMAGE` and `LOD_FILE_RAW` formats, returning

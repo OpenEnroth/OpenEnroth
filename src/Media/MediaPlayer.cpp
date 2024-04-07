@@ -647,7 +647,7 @@ void MPlayer::Initialize() {
     magic_list.open(makeDataPath("anims", "magic7.vid"));
 }
 
-void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
+void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
     if (IsMoviePlaying()) {
         return;
     }
@@ -712,7 +712,7 @@ void MPlayer::HouseMovieLoop() {
     }
 }
 
-void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
+void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
     if (engine->config->debug.NoVideo.value()) {
         return;
     }
@@ -797,9 +797,9 @@ bool MPlayer::StopMovie() {
     return false;
 }
 
-Blob MPlayer::LoadMovie(const std::string &video_name) {
-    std::string pVideoNameBik = video_name + ".bik";
-    std::string pVideoNameSmk = video_name + ".smk";
+Blob MPlayer::LoadMovie(std::string_view video_name) {
+    std::string pVideoNameBik = fmt::format("{}.bik", video_name);
+    std::string pVideoNameSmk = fmt::format("{}.smk", video_name);
 
     if (might_list.isOpen()) {
         if (might_list.exists(pVideoNameBik)) {

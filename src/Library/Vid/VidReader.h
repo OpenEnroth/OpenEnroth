@@ -36,14 +36,14 @@ class VidReader {
      * @param filename                  Name of the VID file entry.
      * @return                          Whether the file exists inside the VID. The check is case-insensitive.
      */
-    [[nodiscard]] bool exists(const std::string &filename) const;
+    [[nodiscard]] bool exists(std::string_view filename) const;
 
     /**
      * @param filename                  Name of the VID file entry.
      * @return                          Contents of the file inside the VID as a `Blob`.
      * @throws Exception                If file doesn't exist inside the VID.
      */
-    [[nodiscard]] Blob read(const std::string &filename) const;
+    [[nodiscard]] Blob read(std::string_view filename) const;
 
     /**
      * @return                          List of all files in the VID.

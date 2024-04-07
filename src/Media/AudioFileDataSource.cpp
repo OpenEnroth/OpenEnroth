@@ -8,7 +8,7 @@ extern "C" {
 
 #include "Library/Logger/Logger.h"
 
-AudioFileDataSource::AudioFileDataSource(const std::string &file_name) {
+AudioFileDataSource::AudioFileDataSource(std::string_view file_name) {
     sFileName = file_name;
 }
 
@@ -30,7 +30,7 @@ bool AudioFileDataSource::Open() {
     return AudioBaseDataSource::Open();
 }
 
-PAudioDataSource CreateAudioFileDataSource(const std::string &file_name) {
+PAudioDataSource CreateAudioFileDataSource(std::string_view file_name) {
     std::shared_ptr<AudioFileDataSource> source =
         std::make_shared<AudioFileDataSource>(file_name);
     return std::dynamic_pointer_cast<IAudioDataSource, AudioFileDataSource>(

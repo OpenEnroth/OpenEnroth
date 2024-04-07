@@ -39,7 +39,7 @@ static std::optional<LodFileFormat> checkCompressed(const Blob &blob) {
     return {};
 }
 
-static std::optional<LodFileFormat> checkImage(const Blob &blob, const std::string &fileName) {
+static std::optional<LodFileFormat> checkImage(const Blob &blob, std::string_view fileName) {
     if (blob.size() < sizeof(LodImageHeader_MM6))
         return {};
 
@@ -73,7 +73,7 @@ static std::optional<LodFileFormat> checkImage(const Blob &blob, const std::stri
     return {};
 }
 
-static std::optional<LodFileFormat> checkSprite(const Blob &blob, const std::string &fileName) {
+static std::optional<LodFileFormat> checkSprite(const Blob &blob, std::string_view fileName) {
     if (blob.size() < sizeof(LodSpriteHeader_MM6))
         return {};
 
@@ -94,7 +94,7 @@ static std::optional<LodFileFormat> checkSprite(const Blob &blob, const std::str
     return {};
 }
 
-LodFileFormat lod::magic(const Blob &blob, const std::string &fileName) {
+LodFileFormat lod::magic(const Blob &blob, std::string_view fileName) {
     if (auto result = checkCompressed(blob))
         return *result;
     if (auto result = checkImage(blob, fileName))
