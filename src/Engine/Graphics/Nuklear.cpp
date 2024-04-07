@@ -1020,7 +1020,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     int err = lua_pcall(lua, 1, 0, 0);
     if (lua_error_check(winType, lua, err)) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->warning("Nuklear: [{}] error loading template: {}", wins[winType].tmpl);
+        logger->warning("Nuklear: error loading template: {}", wins[winType].tmpl);
         return false;
     }
 
