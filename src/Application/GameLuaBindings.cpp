@@ -24,12 +24,12 @@ static int lua_check_character_index(lua_State* L, int idx, Character *&value) {
 static int lua_party_get(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
-    const char *name = luaL_checkstring(L, 1);
+    std::string_view name = luaL_checkstring(L, 1);
     int value;
 
-    if (!strcmp(name, "food"))
+    if (name == "food")
         value = pParty->GetFood();
-    else if (!strcmp(name, "gold"))
+    else if (name == "gold")
         value = pParty->GetGold();
     else
         return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
@@ -42,12 +42,12 @@ static int lua_party_get(lua_State *L) {
 static int lua_party_give(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char *name = luaL_checkstring(L, 1);
+    std::string_view name = luaL_checkstring(L, 1);
     int value = luaL_checknumber(L, 2);
 
-    if (!strcmp(name, "food"))
+    if (name == "food")
         pParty->GiveFood(value);
-    else if (!strcmp(name, "gold"))
+    else if (name == "gold")
         pParty->AddGold(value);
     else
         return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
@@ -58,12 +58,12 @@ static int lua_party_give(lua_State *L) {
 static int lua_party_set(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char *name = luaL_checkstring(L, 1);
+    std::string_view name = luaL_checkstring(L, 1);
     int value = luaL_checknumber(L, 2);
 
-    if (!strcmp(name, "food"))
+    if (name == "food")
         pParty->SetFood(value);
-    else if (!strcmp(name, "gold"))
+    else if (name == "gold")
         pParty->SetGold(value);
     else
         return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
@@ -74,12 +74,12 @@ static int lua_party_set(lua_State *L) {
 static int lua_party_take(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char *name = luaL_checkstring(L, 1);
+    std::string_view name = luaL_checkstring(L, 1);
     int value = luaL_checknumber(L, 2);
 
-    if (!strcmp(name, "food"))
+    if (name == "food")
         pParty->TakeFood(value);
-    else if (!strcmp(name, "gold"))
+    else if (name == "gold")
         pParty->TakeGold(value);
     else
         return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
@@ -91,30 +91,30 @@ static int lua_party_member_get(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     int playerID = luaL_checkinteger(L, 1);
-    const char *name = luaL_checkstring(L, 2);
+    std::string_view name = luaL_checkstring(L, 2);
     int actual = 0, base = 0, modifier = 0;
 
     if (playerID < 1 || playerID > 4)
         return luaL_argerror(L, 2, lua_pushfstring(L, "member id '%d' is invalid", playerID));
 
     Character player = pParty->pCharacters[playerID - 1];
-    if (!strcmp(name, "age")) {
+    if (name == "age") {
         actual = player.GetActualAge();
         base = player.GetBaseAge();
         modifier = player.sAgeModifier;
-    } else if (!strcmp(name, "accuracy")) {
+    } else if (name == "accuracy") {
         actual = player.GetActualAccuracy();
         base = player.GetBaseAccuracy();
         modifier = player.uAccuracyBonus;
-    } else if (!strcmp(name, "armor_class")) {
+    } else if (name == "armor_class") {
         actual = player.GetActualAC();
         base = player.GetBaseAC();
         modifier = player.sACModifier;
-    } else if (!strcmp(name, "attack_damage_melee")) {
+    } else if (name == "attack_damage_melee") {
         actual = player.GetActualAttack(false);
-    } else if (!strcmp(name, "attack_damage_missle")) {
+    } else if (name == "attack_damage_missile") {
         actual = player.GetActualAttack(true);
-    } else if (!strcmp(name, "attribute_endurance")) {
+    } else if (name == "attribute_endurance") {
         actual = player.GetActualEndurance();
         base = player.GetBaseEndurance();
         modifier = player.uEnduranceBonus;
@@ -139,17 +139,17 @@ static int lua_party_member_get(lua_State *L) {
 static int lua_load_raw_from_lod(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
-    const char *lod_name = luaL_checkstring(L, 1);
-    const char *resource = luaL_checkstring(L, 2);
+    std::string_view lod_name = luaL_checkstring(L, 1);
+    const char* resource = luaL_checkstring(L, 2);
     Blob content;
 
-    if (!strcmp(lod_name, "bitmaps"))
+    if (lod_name == "bitmaps")
         content = pBitmaps_LOD->LoadCompressedTexture(resource);
-    else if (!strcmp(lod_name, "events"))
+    else if (lod_name == "events")
         content = engine->_gameResourceManager->getEventsFile(resource);
     // else if (!strcmp(lod_name, "games"))
     //     content = pGames_LOD->LoadCompressedTexture(resource); // TODO(captainurist): temporarily commented out.
-    else if (!strcmp(lod_name, "icons"))
+    else if (lod_name == "icons")
         content = pIcons_LOD->LoadCompressedTexture(resource);
     // else if (!strcmp(lod_name, "sprites"))
     //    content = pSprites_LOD->LoadCompressedTexture(resource); // TODO(captainurist): temporarily commented out.
@@ -230,10 +230,10 @@ static int lua_set_character_info(lua_State *L) {
     if (lua_istable(L, 2)) {
         lua_pushnil(L);
         while (lua_next(L, 2)) {
-            const char* key = lua_tostring(L, -2);
-            if (!strcmp(key, "xp")) {
+            std::string_view key = lua_tostring(L, -2);
+            if (key, "xp") {
                 pParty->SetCharacterXP(*character, lua_tointeger(L, -1));
-            } else if (!strcmp(key, "sp")) {
+            } else if (key == "sp") {
                 auto val = lua_tointeger(L, -1);
                 character->uSkillPoints = val < 0 ? 0 : val;
             } else {
@@ -270,7 +270,7 @@ static int lua_get_party_size(lua_State *L) {
 
 static int lua_set_alignment(lua_State* L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) == 1));
-    const char* alignmentStr = lua_tostring(L, 1);
+    std::string_view alignmentStr = lua_tostring(L, 1);
     PartyAlignment alignment;
     if (tryDeserialize(alignmentStr, &alignment)) {
         pParty->alignment = alignment;
