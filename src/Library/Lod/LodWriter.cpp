@@ -96,11 +96,11 @@ void LodWriter::close() {
     _info = {};
 }
 
-void LodWriter::write(const std::string &filename, const Blob &data) {
+void LodWriter::write(std::string_view filename, const Blob &data) {
     write(filename, Blob::share(data));
 }
 
-void LodWriter::write(const std::string &filename, Blob &&data) {
+void LodWriter::write(std::string_view filename, Blob &&data) {
     assert(isOpen());
 
     _files.insert_or_assign(toLower(filename), std::move(data));

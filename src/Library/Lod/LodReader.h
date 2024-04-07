@@ -54,14 +54,14 @@ class LodReader final {
      * @param filename                  Name of the LOD file entry.
      * @return                          Whether the file exists inside the LOD. The check is case-insensitive.
      */
-    [[nodiscard]] bool exists(const std::string &filename) const;
+    [[nodiscard]] bool exists(std::string_view filename) const;
 
     /**
      * @param filename                  Name of the LOD file entry.
      * @return                          Contents of the file inside the LOD as a `Blob`.
      * @throws Exception                If file doesn't exist inside the LOD.
      */
-    [[nodiscard]] Blob read(const std::string &filename) const;
+    [[nodiscard]] Blob read(std::string_view filename) const;
 
     /**
      * @return                          List of all files in a LOD.
