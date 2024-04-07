@@ -7,3 +7,4 @@
 
 int lua_check_args_count(lua_State *L, bool condition);
 int lua_check_args(lua_State *L, bool condition);
+bool lua_to_boolean(lua_State *L, int idx);

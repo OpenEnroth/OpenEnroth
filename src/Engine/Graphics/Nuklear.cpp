@@ -25,6 +25,7 @@
 
 #include "Library/Serialization/Serialization.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Logger/LogSink.h"
 
 #include "Utility/DataPath.h"
 
@@ -746,6 +747,16 @@ bool lua_error_check(WindowType winType, lua_State* L, int err) {
     return false;
 }
 
+bool lua_error_check(lua_State* L, int err) {
+    if (err != 0) {
+        logger->error("Nuklear: LUA error: {}\n", lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return true;
+    }
+
+    return false;
+}
+
 int Nuklear::KeyEvent(PlatformKey key) {
     for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
         struct hotkey hk = *it;
@@ -959,7 +970,7 @@ bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
             lua_pushinteger(lua, stage);
             int err = lua_pcall(lua, 2, 0, 0);
             if (lua_error_check(winType, lua, err)) {
-                wins[winType].state = WINDOW_TEMPLATE_ERROR;
+                //wins[winType].state = WINDOW_TEMPLATE_ERROR;
             }
         } else {
             wins[winType].state = WINDOW_TEMPLATE_ERROR;
@@ -1072,6 +1083,15 @@ static int lua_log_info(lua_State *L) {
 }
 
 static int lua_log_warning(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
+
+    const char *str = lua_tostring(lua, 2);
+    logger->warning("Nuklear LUA: {}", str);
+
+    return 0;
+}
+
+static int lua_log_set_callback(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
 
     const char *str = lua_tostring(lua, 2);
@@ -3547,26 +3567,40 @@ static int lua_nk_scroll_set(lua_State* L) {
 }
 
 static int lua_dev_config_set(lua_State *L) {
-    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 3));
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 3));
 
-    const char* sectionName = luaL_checkstring(L, 1);
-    const char* configName = luaL_checkstring(L, 2);
-
-    ConfigSection* section = engine->config->section(sectionName);
-    if (section != nullptr) {
-        AnyConfigEntry* configEntry = section->entry(configName);
-        if (configEntry != nullptr) {
-            if (configEntry->type() == typeid(bool)) {
-                ((ConfigEntry<bool>*)configEntry)->setValue(lua_toboolean(L, 3));
-            } else if (configEntry->type() == typeid(float)) {
-                ((ConfigEntry<float>*)configEntry)->setValue(luaL_checknumber(L, 3));
-            } else if (configEntry->type() == typeid(int)) {
-                ((ConfigEntry<int>*)configEntry)->setValue(luaL_checkinteger(L, 3));
-            } else if (configEntry->type() == typeid(std::string)) {
-                ((ConfigEntry<std::string>*)configEntry)->setValue(luaL_checkstring(L, 3));
-            }
+    int valueIndex = 3;
+    const char* configName{};
+    AnyConfigEntry* configEntry{};
+    if (lua_gettop(L) > 2) {
+        const char* sectionName = luaL_checkstring(L, 1);
+        configName = luaL_checkstring(L, 2);
+        ConfigSection* section = engine->config->section(sectionName);
+        if (section != nullptr) {
+            configEntry = section->entry(configName);
         } else {
             return luaL_argerror(L, 2, lua_pushfstring(L, "invalid section name: '%s'", sectionName));
+        }
+    } else {
+        configName = luaL_checkstring(L, 1);
+        for (auto&& section : engine->config->sections()) {
+            configEntry = section->entry(configName);
+            if (configEntry != nullptr) {
+                break;
+            }
+        }
+        valueIndex = 2;
+    }
+
+    if (configEntry != nullptr) {
+        if (configEntry->type() == typeid(bool)) {
+            ((ConfigEntry<bool>*)configEntry)->setValue(lua_to_boolean(L, valueIndex));
+        } else if (configEntry->type() == typeid(float)) {
+            ((ConfigEntry<float>*)configEntry)->setValue(luaL_checknumber(L, valueIndex));
+        } else if (configEntry->type() == typeid(int)) {
+            ((ConfigEntry<int>*)configEntry)->setValue(luaL_checkinteger(L, valueIndex));
+        } else if (configEntry->type() == typeid(std::string)) {
+            ((ConfigEntry<std::string>*)configEntry)->setValue(luaL_checkstring(L, valueIndex));
         }
     } else {
         return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
@@ -3576,26 +3610,38 @@ static int lua_dev_config_set(lua_State *L) {
 }
 
 static int lua_dev_config_get(lua_State* L) {
-    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 2));
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
 
-    const char* sectionName = luaL_checkstring(L, 1);
-    const char* configName = luaL_checkstring(L, 2);
-
-    ConfigSection* section = engine->config->section(sectionName);
-    if (section != nullptr) {
-        AnyConfigEntry* configEntry = section->entry(configName);
-        if (configEntry != nullptr) {
-            if (configEntry->type() == typeid(bool)) {
-                lua_pushboolean(L, std::any_cast<bool>(configEntry->value()));
-            } else if (configEntry->type() == typeid(float)) {
-                lua_pushnumber(L, std::any_cast<float>(configEntry->value()));
-            } else if (configEntry->type() == typeid(int)) {
-                lua_pushinteger(L, std::any_cast<int>(configEntry->value()));
-            } else if (configEntry->type() == typeid(std::string)) {
-                lua_pushstring(L, std::any_cast<std::string>(configEntry->value()).c_str());
-            }
+    const char* configName{};
+    AnyConfigEntry* configEntry{};
+    if (lua_gettop(L) > 1) {
+        const char* sectionName = luaL_checkstring(L, 1);
+        configName = luaL_checkstring(L, 2);
+        ConfigSection* section = engine->config->section(sectionName);
+        if (section != nullptr) {
+            configEntry = section->entry(configName);
         } else {
             return luaL_argerror(L, 2, lua_pushfstring(L, "invalid section name: '%s'", sectionName));
+        }
+    } else {
+        configName = luaL_checkstring(L, 1);
+        for (auto&& section : engine->config->sections()) {
+            configEntry = section->entry(configName);
+            if (configEntry != nullptr) {
+                break;
+            }
+        }
+    }
+
+    if (configEntry != nullptr) {
+        if (configEntry->type() == typeid(bool)) {
+            lua_pushboolean(L, std::any_cast<bool>(configEntry->value()));
+        } else if (configEntry->type() == typeid(float)) {
+            lua_pushnumber(L, std::any_cast<float>(configEntry->value()));
+        } else if (configEntry->type() == typeid(int)) {
+            lua_pushinteger(L, std::any_cast<int>(configEntry->value()));
+        } else if (configEntry->type() == typeid(std::string)) {
+            lua_pushstring(L, std::any_cast<std::string>(configEntry->value()).c_str());
         }
     } else {
         return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
@@ -3655,6 +3701,7 @@ bool Nuklear::LuaInit() {
     static const luaL_Reg log[] = {
         { "info", lua_log_info },
         { "warning", lua_log_warning },
+        { "set_callback", lua_log_set_callback },
         { NULL, NULL }
     };
 
@@ -3833,4 +3880,47 @@ void Nuklear::addInitLuaFile(const char* lua_file) {
 
 void Nuklear::addInitLuaLibs(std::function<void(lua_State*)> callback) {
     _init_lua_lib_callbacks.push_back(callback);
+}
+
+bool Nuklear::isInitialized(WindowType winType) const {
+    return wins[winType].state == WIN_STATE::WINDOW_INITIALIZED;
+}
+
+class NuklearLogSink : public LogSink {
+ public:
+    void write(const LogCategory &category, LogLevel level, std::string_view message) override {
+        _logs.push_back(0);
+        if (_isLogging) {
+            return; //early return to avoid potential infinite recursion if someone is logging inside lua logger
+        }
+        _isLogging = true;
+
+        do {
+            lua_getfield(lua, LUA_GLOBALSINDEX, "logsink");
+            if (lua_isnil(lua, -1)) {
+                lua_pop(lua, 1);
+                break;
+            }
+            std::string serializedLevel;
+            serialize(level, &serializedLevel);
+            lua_pushstring(lua, serializedLevel.c_str());
+            lua_pushstring(lua, message.data());
+            int error = lua_pcall(lua, 2, 0, 0);
+            if (lua_error_check(lua, error)) {
+                _logs.clear();
+                break;
+            }
+            _logs.erase(_logs.begin());
+        } while(!_logs.empty());
+
+        _isLogging = false;
+    }
+
+ private:
+     bool _isLogging{};
+     std::vector<int> _logs;
+};
+
+std::unique_ptr<LogSink> Nuklear::createNuklearLogSink() {
+    return std::make_unique<NuklearLogSink>();
 }

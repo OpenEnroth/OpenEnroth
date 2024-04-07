@@ -27,6 +27,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
+#include "Library/Logger/LogSinkComposite.h"
 #include "Library/Logger/BufferLogSink.h"
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
@@ -48,7 +49,10 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init logger.
     _bufferLogSink = std::make_unique<BufferLogSink>();
-    _defaultLogSink = LogSink::createDefaultSink();
+    auto compositeLogSink = std::make_unique<LogSinkComposite>();
+    auto compositeLogSinkPtr = compositeLogSink.get();
+    compositeLogSink->addLogSink(LogSink::createDefaultSink());
+    _defaultLogSink = std::move(compositeLogSink);
     _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
 
@@ -129,6 +133,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
         _nuklear->addInitLuaLibs(GameLuaBindings::init);
+        compositeLogSinkPtr->addLogSink(Nuklear::createNuklearLogSink());
     }
 
     // Init io.
