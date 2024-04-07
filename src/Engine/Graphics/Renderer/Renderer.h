@@ -27,7 +27,6 @@ class Vis;
 
 bool PauseGameDrawing();
 
-// TODO(captainurist): rename Renderer
 class Renderer {
  public:
     Renderer(
