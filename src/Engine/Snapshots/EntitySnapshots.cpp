@@ -177,19 +177,6 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->z = src.z;
 }
 
-void snapshot(const Vec3f& src, Vec3s* dst) {
-    // TODO(captainurist): do we need to check for overflows here?
-    dst->x = src.x;
-    dst->y = src.y;
-    dst->z = src.z;
-}
-
-void reconstruct(const Vec3s& src, Vec3f* dst) {
-    dst->x = src.x;
-    dst->y = src.y;
-    dst->z = src.z;
-}
-
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x1 = src.x1;
