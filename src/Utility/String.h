@@ -45,6 +45,7 @@ bool iequalsAscii(std::u8string_view a, std::u8string_view b);
 bool ilessAscii(std::u8string_view a, std::u8string_view b);
 
 struct ILess {
+    using is_transparent = void; // This is a transparent comparator.
     bool operator()(std::string_view a, std::string_view b) const {
         return iless(a, b);
     }

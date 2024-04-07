@@ -2,6 +2,22 @@
 
 #include "Utility/String.h"
 
+UNIT_TEST(String, toLowerUpper) {
+    EXPECT_EQ(toLower("123"), "123");
+    EXPECT_EQ(toLower("ABCd"), "abcd");
+    EXPECT_EQ(toLower("z"), "z");
+    EXPECT_EQ(toUpper("123"), "123");
+    EXPECT_EQ(toUpper("ABCd"), "ABCD");
+    EXPECT_EQ(toUpper("Z"), "Z");
+
+    // toLower/toUpper should do nothing for non-ascii chars.
+    for (int i = 128; i < 255; i++) {
+        const char string[2] = { static_cast<char>(i), 0 };
+        EXPECT_EQ(toLower(string), string);
+        EXPECT_EQ(toUpper(string), string);
+    }
+}
+
 UNIT_TEST(String, iequals) {
     EXPECT_FALSE(iequals("abc", "abcd"));
     EXPECT_FALSE(iequals("abd", "abc"));
@@ -24,23 +40,23 @@ UNIT_TEST(String, iless) {
     EXPECT_TRUE(iless("@", "`"));
 }
 
-UNIT_TEST(String, Printable) {
+UNIT_TEST(String, toPrintable) {
     EXPECT_EQ(toPrintable("123\xFF", '.'), "123.");
 }
 
-UNIT_TEST(String, HexDump) {
+UNIT_TEST(String, toHexDump) {
     EXPECT_EQ(toHexDump("1234", 2), "3132 3334");
     EXPECT_EQ(toHexDump("0000"), "30303030");
 }
 
-UNIT_TEST(String, ReplaceAll) {
+UNIT_TEST(String, replaceAll) {
     EXPECT_EQ(replaceAll("123", "1", "123"), "12323");
     EXPECT_EQ(replaceAll("123", "10", "100"), "123");
     EXPECT_EQ(replaceAll("ab123ab", "ab", "zz"), "zz123zz");
     EXPECT_EQ(replaceAll("AAAA", "AA", "AAZAA"), "AAZAAAAZAA");
 }
 
-UNIT_TEST(String, Split) {
+UNIT_TEST(String, split) {
     std::vector<std::string_view> v;
 
     splitString("aa;bb;cc", ';', &v);

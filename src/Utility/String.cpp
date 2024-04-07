@@ -10,6 +10,10 @@ static inline unsigned char asciiToLower(unsigned char c) {
     return ((((c) >= 'A') && ((c) <= 'Z')) ? ((c) - 'A' + 'a') : (c));
 }
 
+static inline unsigned char asciiToUpper(unsigned char c) {
+    return ((((c) >= 'a') && ((c) <= 'z')) ? ((c) - 'a' + 'A') : (c));
+}
+
 static int asciiCaseInsensitiveCompare(const char *l, const char *r, size_t size) {
     // There is no C api for ascii-only strnicmp, so we have to roll out our own.
     // The difference from the original strnicmp is that we don't check for null terminators.
@@ -44,13 +48,13 @@ std::vector<char *> tokenize(char *input, const char separator) {
 
 std::string toLower(std::string_view text) {
     std::string result(text);
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    std::transform(result.begin(), result.end(), result.begin(), &asciiToLower);
     return result;
 }
 
 std::string toUpper(std::string_view text) {
     std::string result(text);
-    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    std::transform(result.begin(), result.end(), result.begin(), &asciiToUpper);
     return result;
 }
 
