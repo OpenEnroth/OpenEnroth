@@ -1,6 +1,7 @@
 #include "NuklearEventHandler.h"
 
 #include <nuklear_config.h>
+#include <cstring>
 
 #include "Nuklear.h"
 
