@@ -5,7 +5,7 @@ function tobool(value)
     return value ~= "false" and value ~= "0"
 end
 
----Convert a variable ( most of the time a string ) to a number. in case of failure the default_value is returned
+---Convert a variable to a number. in case of failure the default_value is returned
 ---@param amount any
 ---@param default_value number
 ---@return number
