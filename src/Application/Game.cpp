@@ -90,7 +90,7 @@
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
-void initDataPath(Platform *platform, const std::string &dataPath) {
+void initDataPath(Platform *platform, std::string_view dataPath) {
     std::string missing_file;
 
     if (validateDataPath(dataPath, &missing_file)) {
