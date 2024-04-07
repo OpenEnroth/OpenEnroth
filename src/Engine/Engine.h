@@ -162,7 +162,7 @@ unsigned int GetGravityStrength();
 /**
  * @offset 0x44861E
  */
-void setTexture(unsigned int uFaceCog, const std::string &pFilename);
+void setTexture(unsigned int uFaceCog, std::string_view pFilename);
 
 /**
  * @offset 0x44892E
@@ -172,7 +172,7 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on);
 /**
  * @offset 0x44882F
  */
-void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName);  // idb
+void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc(Duration dt);
 void maybeWakeSoloSurvivor();
 void updatePartyDeathState();
@@ -194,7 +194,7 @@ Duration timeUntilDawn();
  * @offset 0x443E31
  */
 void initLevelStrings(const Blob &blob);
-void Level_LoadEvtAndStr(const std::string &pLevelName);
+void Level_LoadEvtAndStr(std::string_view pLevelName);
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const std::string &pMapName, MapStartPoint point);  // sub_44987B idb
 

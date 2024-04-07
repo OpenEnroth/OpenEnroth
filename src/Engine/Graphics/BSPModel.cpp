@@ -18,7 +18,7 @@ GraphicsImage *ODMFace::GetTexture() {
     }
 }
 
-void ODMFace::SetTexture(const std::string &filename) {
+void ODMFace::SetTexture(std::string_view filename) {
     if (this->IsTextureFrameTable()) {
         this->resource = (void *)pTextureFrameTable->FindTextureByName(filename);
         if (this->resource != (void *)-1) {

@@ -1038,7 +1038,7 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
 }
 
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
-                                    const std::string &filename) {
+                                    std::string_view filename) {
     for (BSPModel &model : pOutdoor->pBModels) {
         for (ODMFace &face : model.pFaces) {
             if (face.sCogNumber == uFaceCog) {
@@ -1048,7 +1048,7 @@ void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
     }
 }
 
-void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
+void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
     if (uFaceCog) {
         // unsigned int texture = pBitmaps_LOD->LoadTexture(pFilename);
         // if (texture != -1)
@@ -1094,7 +1094,7 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     }
 }
 
-void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName) {
+void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) {
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (!pFileName.empty() && pFileName != "0") {
@@ -1573,10 +1573,10 @@ void initLevelStrings(const Blob &blob) {
     }
 }
 
-void Level_LoadEvtAndStr(const std::string &pLevelName) {
-    initLevelStrings(engine->_gameResourceManager->getEventsFile(pLevelName + ".str"));
+void Level_LoadEvtAndStr(std::string_view pLevelName) {
+    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", pLevelName)));
 
-    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(pLevelName + ".evt"));
+    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", pLevelName)));
 }
 
 bool _44100D_should_alter_right_panel() {

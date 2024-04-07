@@ -48,7 +48,7 @@ struct ODMFace {
                                 : this->uAttributes | FACE_TEXTURE_FRAME;
     }
 
-    void SetTexture(const std::string &filename);
+    void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture();
 
     // TODO: does this really have to be two separate functions?
