@@ -12,15 +12,6 @@
 
 #include "GUI/GUIWindow.h"
 
-std::string alignmentToString(PartyAlignment alignment) {
-    switch (alignment) {
-    case PartyAlignment::PartyAlignment_Neutral: return "Neutral";
-    case PartyAlignment::PartyAlignment_Good: return "Good";
-    case PartyAlignment::PartyAlignment_Evil: return "Evil";
-    }
-    return "None";
-}
-
 static int lua_check_character_index(lua_State* L, int idx, Character *&value) {
     int characterIndex = lua_tointeger(L, idx);
     if (characterIndex - 1 >= pParty->pCharacters.size() || characterIndex - 1 < 0) {
@@ -277,6 +268,26 @@ static int lua_get_party_size(lua_State *L) {
     return 1;
 }
 
+static int lua_set_alignment(lua_State* L) {
+    lua_check_ret(lua_check_args_count(L, lua_gettop(L) == 1));
+    const char* alignmentStr = lua_tostring(L, 1);
+    PartyAlignment alignment;
+    if (tryDeserialize(alignmentStr, &alignment)) {
+        pParty->alignment = alignment;
+        SetUserInterface(pParty->alignment);
+    } else {
+        return luaL_argerror(L, 1, lua_pushfstring(L, "Invalid alignment value: '%s'", alignmentStr));
+    }
+    return 0;
+}
+
+static int lua_get_alignment(lua_State* L) {
+    std::string alignmentStr;
+    serialize(pParty->alignment, &alignmentStr);
+    lua_pushstring(L, alignmentStr.c_str());
+    return 1;
+}
+
 void GameLuaBindings::init(lua_State *lua) {
     static const luaL_Reg game[] = {
         { "load_raw_from_lod", lua_load_raw_from_lod },
@@ -297,46 +308,10 @@ void GameLuaBindings::init(lua_State *lua) {
         { "set_character_info", lua_set_character_info },
         { "play_character_award_sound", lua_play_character_award_sound },
         { "play_all_characters_award_sound", lua_play_all_characters_award_sound },
+        { "set_alignment", lua_set_alignment },
+        { "get_alignment", lua_get_alignment },
         { NULL, NULL }
     };
     luaL_newlib(lua, game);
     lua_setglobal(lua, "game");
-    /*
-
-    addCommand("skills", []() {
-        for (auto&& character : pParty->pCharacters) {
-            for (CharacterSkillType skill : allSkills()) {
-                // if class can learn this skill
-                if (skillMaxMasteryPerClass[character.classType][skill] > CHARACTER_SKILL_MASTERY_NONE) {
-                    if (character.getSkillValue(skill) == CombinedSkillValue::none()) {
-                        character.setSkillValue(skill, CombinedSkillValue::novice());
-                    }
-                }
-            }
-        }
-        return commandSuccess("Added all available skills to every character.");
-    });
-
-    addCommand("align", [](std::string alignment) {
-        if (alignment.empty()) {
-            return commandSuccess("Current alignment: " + alignmentToString(pParty->alignment));
-        } else {
-            if (alignment == "evil") { pParty->alignment = PartyAlignment::PartyAlignment_Evil;
-            } else if (alignment == "good") { pParty->alignment = PartyAlignment::PartyAlignment_Good;
-            } else if (alignment == "neutral") { pParty->alignment = PartyAlignment::PartyAlignment_Neutral;
-            } else if (alignment == "cycle") {
-                auto alignmentIndex = static_cast<int>(pParty->alignment);
-                if (++alignmentIndex > static_cast<int>(PartyAlignment::PartyAlignment_Evil)) {
-                    alignmentIndex = 0;
-                }
-                pParty->alignment = static_cast<PartyAlignment>(alignmentIndex);
-            } else {
-                return commandFailure("Invalid command. Choose any of: evil, good, neutral");
-            }
-        }
-
-        SetUserInterface(pParty->alignment);
-        return commandSuccess("Alignment changed to: " + alignmentToString(pParty->alignment));
-    }, { "" });
-    */
 }

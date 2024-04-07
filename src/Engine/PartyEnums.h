@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Library/Serialization/SerializationFwd.h"
+
 #include "Utility/Flags.h"
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
@@ -180,6 +182,7 @@ enum class PartyAlignment : int32_t {
     PartyAlignment_Evil = 2
 };
 using enum PartyAlignment;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(PartyAlignment);
 
 /**
  * Controls gold receiving mechanics.
