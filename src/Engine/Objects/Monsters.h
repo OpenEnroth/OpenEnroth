@@ -85,7 +85,7 @@ struct MonsterInfo {
 struct MonsterStats {
     void Initialize(const Blob &monsters);
     void InitializePlacements(const Blob &placements);
-    MonsterId FindMonsterByTextureName(const std::string &Str2);
+    MonsterId FindMonsterByTextureName(std::string_view Str2);
 
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> infos;
     std::array<std::string, 31> uniqueNames; // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused.
@@ -103,7 +103,7 @@ struct MonsterDesc {
 };
 
 struct MonsterList {
-    MonsterId GetMonsterIDByName(const std::string &pMonsterName);
+    MonsterId GetMonsterIDByName(std::string_view pMonsterName);
 
     IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> monsters;
 };

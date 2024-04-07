@@ -289,7 +289,7 @@ int ParseSpecialAttack(char *spec_att_str) {
 }
 
 //----- (004563FF) --------------------------------------------------------
-MonsterId MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
+MonsterId MonsterStats::FindMonsterByTextureName(std::string_view monster_textr_name) {
     for (MonsterId i : infos.indices()) {
         if (!infos[i].name.empty() && noCaseEquals(infos[i].textureName, monster_textr_name))
             return i;
@@ -969,7 +969,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
 }
 
 //----- (0044FA08) --------------------------------------------------------
-MonsterId MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
+MonsterId MonsterList::GetMonsterIDByName(std::string_view pMonsterName) {
     for (MonsterId i : monsters.indices()) {
         if (noCaseEquals(monsters[i].monsterName, pMonsterName))
             return i;
