@@ -232,7 +232,7 @@ static int lua_set_character_info(lua_State *L) {
         while (lua_next(L, 2)) {
             std::string_view key = lua_tostring(L, -2);
             if (key, "xp") {
-                pParty->SetCharacterXP(*character, lua_tointeger(L, -1));
+                character->setXP(lua_tointeger(L, -1));
             } else if (key == "sp") {
                 auto val = lua_tointeger(L, -1);
                 character->uSkillPoints = val < 0 ? 0 : val;

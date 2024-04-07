@@ -973,18 +973,11 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
                 if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     pLearningPercent = player.getLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
-                    SetCharacterXP(player, player.experience + playermodexp);
+                    player.setXP(player.experience + playermodexp);
                 }
             }
         }
     }
-}
-
-void Party::SetCharacterXP(Character &player, int xp) {
-    if (xp > 4000000000 || xp < 0) {
-        xp = 0;
-    }
-    player.experience = xp;
 }
 
 void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {

@@ -368,6 +368,8 @@ class Character {
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
     void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 
+    void setXP(int xp);
+
     CharacterConditions conditions;
     uint64_t experience;
     std::string name;
