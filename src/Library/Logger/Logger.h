@@ -2,6 +2,7 @@
 
 #include <string_view>
 #include <utility>
+#include <mutex>
 
 #include "Utility/Format.h"
 
@@ -38,7 +39,7 @@ class Logger {
 
     // LogCategory API.
 
-    bool shouldLog(const LogCategory &category, LogLevel level) const {
+    [[nodiscard]] bool shouldLog(const LogCategory &category, LogLevel level) const {
         return level >= (category._level ? *category._level : *_defaultCategory._level);
     }
 
@@ -121,21 +122,22 @@ class Logger {
 
     // Log level handling. NOT thread-safe.
 
-    LogLevel level() const;
+    [[nodiscard]] LogLevel level() const;
     void setLevel(LogLevel level);
 
-    std::optional<LogLevel> level(const LogCategory &category) const;
+    [[nodiscard]] std::optional<LogLevel> level(const LogCategory &category) const;
     void setLevel(LogCategory &category, std::optional<LogLevel> level);
 
     // Sink handling. NOT thread-safe.
 
-    LogSink *sink() const;
+    [[nodiscard]] LogSink *sink() const;
     void setSink(LogSink *sink);
 
  private:
     void logV(const LogCategory &category, LogLevel level, fmt::string_view fmt, fmt::format_args args);
 
  private:
+    std::mutex _mutex;
     LogCategory _defaultCategory = LogCategory({});
     LogSink *_sink = nullptr;
 };

@@ -1,7 +1,6 @@
 #include "LogSink.h"
 
 #include <cassert>
-#include <mutex>
 #include <utility>
 #include <string>
 #include <vector>
@@ -46,11 +45,9 @@ class SpdlogSink : public LogSink {
 };
 
 #ifdef __ANDROID__
-class AndroidSinkMt : public LogSink {
+class AndroidSinkSt : public LogSink {
  public:
     virtual void write(const LogCategory &category, LogLevel level, std::string_view message) override {
-        auto guard = std::lock_guard(_mutex);
-
         auto pos = _sinkByCategory.find(category.name());
         if (pos == _sinkByCategory.end()) {
             pos = _sinkByCategory.emplace(std::piecewise_construct,
@@ -62,22 +59,21 @@ class AndroidSinkMt : public LogSink {
     }
 
  private:
-    std::mutex _mutex;
     std::unordered_map<std::string_view, spdlog::sinks::android_sink_st> _sinkByCategory;
 };
 #endif
 
 std::unique_ptr<LogSink> LogSink::createDefaultSink() {
 #if defined(__ANDROID__)
-    return std::make_unique<AndroidSinkMt>();
+    return std::make_unique<AndroidSinkSt>();
 #elif defined(_WINDOWS)
     std::vector<std::shared_ptr<spdlog::sinks::sink>> sinks = {
         std::make_shared<spdlog::sinks::msvc_sink_st>(/*check_debugger_present=*/true),
         std::make_shared<spdlog::sinks::stderr_color_sink_st>()
     };
-    return std::make_unique<SpdlogSink<spdlog::sinks::dist_sink_mt>>(std::move(sinks));
+    return std::make_unique<SpdlogSink<spdlog::sinks::dist_sink_st>>(std::move(sinks));
 #else
-    return std::make_unique<SpdlogSink<spdlog::sinks::stderr_color_sink_mt>>();
+    return std::make_unique<SpdlogSink<spdlog::sinks::stderr_color_sink_st>>();
 #endif
 }
 

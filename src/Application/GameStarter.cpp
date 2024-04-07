@@ -28,7 +28,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
-#include "Library/Logger/LogSinkComposite.h"
+#include "Library/Logger/DistLogSink.h"
 #include "Library/Logger/BufferLogSink.h"
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
@@ -50,7 +50,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init logger.
     _bufferLogSink = std::make_unique<BufferLogSink>();
-    _defaultLogSink = std::make_unique<LogSinkComposite>();
+    _defaultLogSink = std::make_unique<DistLogSink>();
     _defaultLogSink->addLogSink(LogSink::createDefaultSink());
     _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
