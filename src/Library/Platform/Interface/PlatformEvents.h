@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include "Library/Geometry/Point.h"
 #include "Library/Geometry/Size.h"
@@ -76,5 +77,5 @@ class PlatformNativeEvent: public PlatformEvent {
 class PlatformTextInputEvent : public PlatformEvent {
  public:
     PlatformWindow *window = nullptr;
-    const char *text = nullptr;
+    std::string text;
 };

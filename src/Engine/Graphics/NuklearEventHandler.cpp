@@ -115,7 +115,7 @@ bool NuklearEventHandler::wheelEvent(const PlatformWheelEvent *event) {
 
 bool NuklearEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
     nk_glyph glyph;
-    memcpy(glyph, event->text, NK_UTF_SIZE);
+    memcpy(glyph, event->text.c_str(), NK_UTF_SIZE);
     nk_input_glyph(nuklear->ctx, glyph);
     return nk_item_is_any_active(nuklear->ctx);
 }
