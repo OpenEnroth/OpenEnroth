@@ -244,7 +244,7 @@ GraphicsImage *BLVFace::GetTexture() {
         return static_cast<GraphicsImage *>(this->resource);
 }
 
-void BLVFace::SetTexture(const std::string &filename) {
+void BLVFace::SetTexture(std::string_view filename) {
     if (this->IsTextureFrameTable()) {
         this->resource =
             (void *)pTextureFrameTable->FindTextureByName(filename);

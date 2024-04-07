@@ -70,7 +70,7 @@ struct BLVFace {  // 60h
     void _get_normals(Vec3f *outU, Vec3f *outV);
     void FromODM(struct ODMFace *face);
 
-    void SetTexture(const std::string &filename);
+    void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture();
 
     inline bool Invisible() const {

@@ -48,7 +48,7 @@ struct TextureFrameTable {
      */
     Duration textureFrameAnimTime(int frameID);
 
-    int64_t FindTextureByName(const std::string &Str2);
+    int64_t FindTextureByName(std::string_view Str2);
 
     std::vector<TextureFrame> textures;
 };

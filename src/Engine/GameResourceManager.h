@@ -14,7 +14,7 @@ class GameResourceManager {
 
     void openGameResources();
 
-    Blob getEventsFile(const std::string &filename);
+    Blob getEventsFile(std::string_view filename);
 
  private:
     LodReader _eventsLodReader;

@@ -659,7 +659,7 @@ void Engine::MM7_Initialize() {
     localization = new Localization();
     localization->Initialize();
 
-    auto triLoad = [](const std::string &name) {
+    auto triLoad = [](std::string_view name) {
         TriBlob result;
         result.mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture(name) : Blob();
         result.mm7 = engine->_gameResourceManager->getEventsFile(name);
@@ -1027,7 +1027,7 @@ unsigned int GetGravityStrength() {
 }
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
-                                   const std::string &filename) {
+                                   std::string_view filename) {
     for (unsigned i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
