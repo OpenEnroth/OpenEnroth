@@ -1589,7 +1589,7 @@ bool _44100D_should_alter_right_panel() {
            current_screen_type == SCREEN_CASTING;
 }
 
-void Transition_StopSound_Autosave(const std::string &pMapName,
+void Transition_StopSound_Autosave(std::string_view pMapName,
                                    MapStartPoint start_point) {
     pAudioPlayer->stopSounds();
 

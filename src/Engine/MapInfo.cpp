@@ -202,7 +202,7 @@ void MapStats::Initialize(const Blob &mapStats) {
     }
 }
 
-MapId MapStats::GetMapInfo(const std::string &Str2) {
+MapId MapStats::GetMapInfo(std::string_view Str2) {
     std::string map_name = toLower(Str2);
 
     for (MapId i : pInfos.indices()) {

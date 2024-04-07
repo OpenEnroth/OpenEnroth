@@ -196,7 +196,7 @@ Duration timeUntilDawn();
 void initLevelStrings(const Blob &blob);
 void Level_LoadEvtAndStr(std::string_view pLevelName);
 bool _44100D_should_alter_right_panel();
-void Transition_StopSound_Autosave(const std::string &pMapName, MapStartPoint point);  // sub_44987B idb
+void Transition_StopSound_Autosave(std::string_view pMapName, MapStartPoint point);  // sub_44987B idb
 
 void TeleportToNWCDungeon();
 
