@@ -252,6 +252,7 @@ void BLVFace::SetTexture(const std::string &filename) {
         }
 
         // Failed to find animated texture so disable
+        this->resource = nullptr;
         this->ToggleIsTextureFrameTable();
     }
 

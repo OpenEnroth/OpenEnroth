@@ -204,7 +204,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         BLVFace *pFace = &dst->pFaces[i];
         BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
 
-        pFace->uAttributes = FaceAttributes(src.faceAttributes[i]);
+        // Do not re toggle TextureFrameTable when restoring attribute flags
+        pFace->uAttributes = (pFace->uAttributes & FACE_TEXTURE_FRAME) | FaceAttributes((src.faceAttributes[i] & ~std::to_underlying(FACE_TEXTURE_FRAME)));
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
