@@ -14,15 +14,15 @@ class StatusBar {
 
     const std::string &get();
     void draw();
-    void drawForced(const std::string &str, Color color);
+    void drawForced(std::string_view str, Color color);
     void update();
     void clearAll();
 
-    void setPermanent(const std::string &str);
+    void setPermanent(std::string_view str);
     void clearPermanent();
 
-    void setEvent(const std::string &str);
-    void setEventShort(const std::string &str);
+    void setEvent(std::string_view str);
+    void setEventShort(std::string_view str);
     void clearEvent();
 
     template<class... Args> void setPermanent(int locId, Args &&... args) {

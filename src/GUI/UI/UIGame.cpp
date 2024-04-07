@@ -1903,7 +1903,7 @@ void GUIWindow_DebugMenu::Update() {
     //render->EndLines2D();
 }
 
-void buttonbox(int x, int y, const std::string &text, int col) {
+void buttonbox(int x, int y, std::string_view text, int col) {
     int width = 108;
     int height = 20;
     render->FillRectFast(x, y, width+1, height+1, colorTable.GunmetalGray);

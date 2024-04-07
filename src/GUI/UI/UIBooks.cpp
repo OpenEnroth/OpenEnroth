@@ -104,7 +104,7 @@ void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
     _bookButtonAction = action;
 }
 
-GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint) :
+GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint) :
     GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, hint),
     _button(button)
 {}
