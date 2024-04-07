@@ -58,21 +58,21 @@ std::string toUpper(std::string_view text) {
     return result;
 }
 
-bool istarts_with(std::string_view s, std::string_view prefix) {
+bool noCaseStartsWith(std::string_view s, std::string_view prefix) {
     if (s.size() < prefix.size())
         return false;
 
     return asciiCaseInsensitiveCompare(s.data(), prefix.data(), prefix.size()) == 0;
 }
 
-bool iequals(std::string_view a, std::string_view b) {
+bool noCaseEquals(std::string_view a, std::string_view b) {
     if (a.size() != b.size())
         return false;
 
     return asciiCaseInsensitiveCompare(a.data(), b.data(), a.size()) == 0;
 }
 
-bool iless(std::string_view a, std::string_view b) {
+bool noCaseLess(std::string_view a, std::string_view b) {
     int result = asciiCaseInsensitiveCompare(a.data(), b.data(), std::min(a.size(), b.size()));
     if (result < 0)
         return true;
@@ -81,12 +81,12 @@ bool iless(std::string_view a, std::string_view b) {
     return a.size() < b.size();
 }
 
-bool iequalsAscii(std::u8string_view a, std::u8string_view b) {
-    return iequals(toCharStringView(a), toCharStringView(b));
+bool noCaseEqualsAscii(std::u8string_view a, std::u8string_view b) {
+    return noCaseEquals(toCharStringView(a), toCharStringView(b));
 }
 
-bool ilessAscii(std::u8string_view a, std::u8string_view b) {
-    return iless(toCharStringView(a), toCharStringView(b));
+bool noCaseLessAscii(std::u8string_view a, std::u8string_view b) {
+    return noCaseLess(toCharStringView(a), toCharStringView(b));
 }
 
 std::string toPrintable(std::string_view s, char placeholder) {

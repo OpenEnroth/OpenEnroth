@@ -27,7 +27,7 @@ static void strtokSkipLines(int n) {
 
 //----- (00456D84) --------------------------------------------------------
 void ItemTable::Initialize(GameResourceManager *resourceManager) {
-    std::map<std::string, ItemType, ILess> equipStatMap;
+    std::map<std::string, ItemType, NoCaseLess> equipStatMap;
     equipStatMap["weapon"] = ITEM_TYPE_SINGLE_HANDED;
     equipStatMap["weapon2"] = ITEM_TYPE_TWO_HANDED;
     equipStatMap["weapon1or2"] = ITEM_TYPE_SINGLE_HANDED;
@@ -52,7 +52,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     equipStatMap["gold"] = ITEM_TYPE_GOLD;
     equipStatMap["gem"] = ITEM_TYPE_GEM;
 
-    std::map<std::string, CharacterSkillType, ILess> equipSkillMap;
+    std::map<std::string, CharacterSkillType, NoCaseLess> equipSkillMap;
     equipSkillMap["staff"] = CHARACTER_SKILL_STAFF;
     equipSkillMap["sword"] = CHARACTER_SKILL_SWORD;
     equipSkillMap["dagger"] = CHARACTER_SKILL_DAGGER;
@@ -67,7 +67,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     equipSkillMap["plate"] = CHARACTER_SKILL_PLATE;
     equipSkillMap["club"] = CHARACTER_SKILL_CLUB;
 
-    std::map<std::string, ItemRarity, ILess> materialMap;
+    std::map<std::string, ItemRarity, NoCaseLess> materialMap;
     materialMap["artifact"] = RARITY_ARTIFACT;
     materialMap["relic"] = RARITY_RELIC;
     materialMap["special"] = RARITY_SPECIAL;
@@ -170,14 +170,14 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter]._bonus_type = {};
         if (pItems[item_counter].uMaterial == RARITY_SPECIAL) {
             for (CharacterAttributeType ii : allEnchantableAttributes()) {
-                if (iequals(tokens[12], standardEnchantments[ii].pOfName)) {
+                if (noCaseEquals(tokens[12], standardEnchantments[ii].pOfName)) {
                     pItems[item_counter]._bonus_type = ii;
                     break;
                 }
             }
             if (!pItems[item_counter]._bonus_type) {
                 for (ItemEnchantment ii : pSpecialEnchantments.indices()) {
-                    if (iequals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) {
+                    if (noCaseEquals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) {
                         pItems[item_counter]._additional_value = ii;
                     }
                 }

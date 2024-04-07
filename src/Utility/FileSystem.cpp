@@ -25,7 +25,7 @@ std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
         std::error_code error;
         for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
             std::u8string entryName = entry.path().filename().u8string();
-            if (iequalsAscii(entryName, part.u8string())) {
+            if (noCaseEqualsAscii(entryName, part.u8string())) {
                 foundPart = entryName;
                 break;
             }

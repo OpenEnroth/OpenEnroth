@@ -36,23 +36,23 @@ void initializeAutonotes(const Blob &autonotes) {
                         pAutonoteTxt[i].pText = removeQuotes(test_string);
                         break;
                     case 2: {
-                        if (iequals(test_string, "potion")) {
+                        if (noCaseEquals(test_string, "potion")) {
                             pAutonoteTxt[i].eType = AUTONOTE_POTION_RECIPE;
                             break;
                         }
-                        if (iequals(test_string, "stat")) {
+                        if (noCaseEquals(test_string, "stat")) {
                             pAutonoteTxt[i].eType = AUTONOTE_STAT_HINT;
                             break;
                         }
-                        if (iequals(test_string, "seer")) {
+                        if (noCaseEquals(test_string, "seer")) {
                             pAutonoteTxt[i].eType = AUTONOTE_SEER;
                             break;
                         }
-                        if (iequals(test_string, "obelisk")) {
+                        if (noCaseEquals(test_string, "obelisk")) {
                             pAutonoteTxt[i].eType = AUTONOTE_OBELISK;
                             break;
                         }
-                        if (iequals(test_string, "teacher")) {
+                        if (noCaseEquals(test_string, "teacher")) {
                             pAutonoteTxt[i].eType = AUTONOTE_TEACHER;
                             break;
                         }

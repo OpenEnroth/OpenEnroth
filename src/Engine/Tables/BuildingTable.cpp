@@ -35,100 +35,100 @@ void initializeBuildings(const Blob &buildings) {
                 switch (decode_step) {
                 case 2:
                 {
-                    if (istarts_with(test_string, "wea")) {
+                    if (noCaseStartsWith(test_string, "wea")) {
                         buildingTable[houseId].uType = BUILDING_WEAPON_SHOP;
                         break;
                     }
-                    if (istarts_with(test_string, "arm")) {
+                    if (noCaseStartsWith(test_string, "arm")) {
                         buildingTable[houseId].uType = BUILDING_ARMOR_SHOP;
                         break;
                     }
-                    if (istarts_with(test_string, "mag")) {
+                    if (noCaseStartsWith(test_string, "mag")) {
                         buildingTable[houseId].uType = BUILDING_MAGIC_SHOP;
                         break;
                     }
-                    if (istarts_with(test_string, "alc")) {
+                    if (noCaseStartsWith(test_string, "alc")) {
                         buildingTable[houseId].uType = BUILDING_ALCHEMY_SHOP;
                         break;
                     }
-                    if (istarts_with(test_string, "sta")) {
+                    if (noCaseStartsWith(test_string, "sta")) {
                         buildingTable[houseId].uType = BUILDING_STABLE;
                         break;
                     }
-                    if (istarts_with(test_string, "boa")) {
+                    if (noCaseStartsWith(test_string, "boa")) {
                         buildingTable[houseId].uType = BUILDING_BOAT;
                         break;
                     }
-                    if (istarts_with(test_string, "tem")) {
+                    if (noCaseStartsWith(test_string, "tem")) {
                         buildingTable[houseId].uType = BUILDING_TEMPLE;
                         break;
                     }
-                    if (istarts_with(test_string, "tra")) {
+                    if (noCaseStartsWith(test_string, "tra")) {
                         buildingTable[houseId].uType = BUILDING_TRAINING_GROUND;
                         break;
                     }
-                    if (istarts_with(test_string, "tow")) {
+                    if (noCaseStartsWith(test_string, "tow")) {
                         buildingTable[houseId].uType = BUILDING_TOWN_HALL;
                         break;
                     }
 
-                    if (istarts_with(test_string, "tav")) {
+                    if (noCaseStartsWith(test_string, "tav")) {
                         buildingTable[houseId].uType = BUILDING_TAVERN;
                         break;
                     }
-                    if (istarts_with(test_string, "ban")) {
+                    if (noCaseStartsWith(test_string, "ban")) {
                         buildingTable[houseId].uType = BUILDING_BANK;
                         break;
                     }
-                    if (istarts_with(test_string, "fir")) {
+                    if (noCaseStartsWith(test_string, "fir")) {
                         buildingTable[houseId].uType = BUILDING_FIRE_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "air")) {
+                    if (noCaseStartsWith(test_string, "air")) {
                         buildingTable[houseId].uType = BUILDING_AIR_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "wat")) {
+                    if (noCaseStartsWith(test_string, "wat")) {
                         buildingTable[houseId].uType = BUILDING_WATER_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "ear")) {
+                    if (noCaseStartsWith(test_string, "ear")) {
                         buildingTable[houseId].uType = BUILDING_EARTH_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "spi")) {
+                    if (noCaseStartsWith(test_string, "spi")) {
                         buildingTable[houseId].uType = BUILDING_SPIRIT_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "min")) {
+                    if (noCaseStartsWith(test_string, "min")) {
                         buildingTable[houseId].uType = BUILDING_MIND_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "bod")) {
+                    if (noCaseStartsWith(test_string, "bod")) {
                         buildingTable[houseId].uType = BUILDING_BODY_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "lig")) {
+                    if (noCaseStartsWith(test_string, "lig")) {
                         buildingTable[houseId].uType = BUILDING_LIGHT_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "dar")) {
+                    if (noCaseStartsWith(test_string, "dar")) {
                         buildingTable[houseId].uType = BUILDING_DARK_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "ele")) { // "Element Guild" from mm6
+                    if (noCaseStartsWith(test_string, "ele")) { // "Element Guild" from mm6
                         buildingTable[houseId].uType = BUILDING_ELEMENTAL_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "sel")) {
+                    if (noCaseStartsWith(test_string, "sel")) {
                         buildingTable[houseId].uType = BUILDING_SELF_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "mir")) {
+                    if (noCaseStartsWith(test_string, "mir")) {
                         buildingTable[houseId].uType = BUILDING_MIRRORED_PATH_GUILD;
                         break;
                     }
-                    if (istarts_with(test_string, "mer")) { // "Thieves Guild" from mm6
+                    if (noCaseStartsWith(test_string, "mer")) { // "Thieves Guild" from mm6
                         buildingTable[houseId].uType = BUILDING_TOWN_HALL; //TODO: Is this right and not Merc Guild (18)?
                         break;
                     }
