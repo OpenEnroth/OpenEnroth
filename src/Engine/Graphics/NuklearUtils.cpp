@@ -10,7 +10,7 @@ int lua_check_args_count(lua_State * L, bool condition) {
     return 0;
 }
 
-int lua_check_args(lua_State * L, bool condition) {
+int lua_check_args(lua_State *L, bool condition) {
     if (lua_gettop(L) == 0)
         return luaL_argerror(L, 1, lua_pushfstring(L, "context is absent"));
 
@@ -20,15 +20,15 @@ int lua_check_args(lua_State * L, bool condition) {
     return lua_check_args_count(L, condition);
 }
 
-bool lua_to_boolean(lua_State* L, int idx) {
+bool lua_to_boolean(lua_State *L, int idx) {
     bool value{};
-    if (lua_isboolean(L, idx)) {
+    if (lua_isnil(L, idx)) {
+        return false;
+    } else if (lua_isboolean(L, idx)) {
         value = lua_toboolean(L, idx);
     } else {
-        const char* strVal = lua_tostring(L, idx);
-        if (strVal != nullptr) {
-            value = strcmp(strVal, "false") != 0 && strcmp(strVal, "0") != 0;
-        }
+        std::string_view strVal = lua_tostring(L, idx);
+        value = strVal != "false" && strVal != "0";
     }
 
     return value;

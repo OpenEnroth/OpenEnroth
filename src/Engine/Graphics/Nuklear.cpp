@@ -2225,7 +2225,7 @@ static int lua_nk_combo_end(lua_State *L) {
 }
 
 static void lua_nk_push_edit_string_result_flag(lua_State *L, nk_flags flags) {
-    static const auto EDIT_STRING_RESULTS = std::array{
+    static const auto editStringResults = std::array{
         NK_EDIT_ACTIVE,
         NK_EDIT_INACTIVE,
         NK_EDIT_ACTIVATED,
@@ -2233,8 +2233,8 @@ static void lua_nk_push_edit_string_result_flag(lua_State *L, nk_flags flags) {
         NK_EDIT_COMMITED,
     };
     lua_newtable(L);
-    for (int i = 0; i < EDIT_STRING_RESULTS.size(); ++i) {
-        const auto& flag = EDIT_STRING_RESULTS[i];
+    for (int i = 0; i < editStringResults.size(); ++i) {
+        const auto& flag = editStringResults[i];
         if (flags & flag) {
             lua_pushinteger(L, flag);
             lua_pushboolean(L, true);
@@ -3832,7 +3832,7 @@ bool Nuklear::LuaInit() {
     luaL_newlib(lua, hotkeys);
     lua_setglobal(lua, "hotkeys");
 
-    for (auto&& callback : _init_lua_lib_callbacks) {
+    for (auto&& callback : _initLuaLibCallbacks) {
         callback(lua);
     }
 
@@ -3857,15 +3857,15 @@ bool Nuklear::LuaInit() {
     lua_pushinteger(lua, NK_EDIT_COMMITED);
     lua_setglobal(lua, "NK_EDIT_COMMITED");
 
-    return lua_init_lua_files(_init_lua_files);
+    return lua_init_lua_files(_initLuaFiles);
 }
 
 void Nuklear::addInitLuaFile(const char *lua_file) {
-    _init_lua_files.push_back(lua_file);
+    _initLuaFiles.push_back(lua_file);
 }
 
 void Nuklear::addInitLuaLibs(std::function<void(lua_State *)> callback) {
-    _init_lua_lib_callbacks.push_back(callback);
+    _initLuaLibCallbacks.push_back(callback);
 }
 
 bool Nuklear::isInitialized(WindowType winType) const {

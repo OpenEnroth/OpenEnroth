@@ -57,8 +57,8 @@ class Nuklear {
      void LuaRelease();
      bool LuaLoadTemplate(WindowType winType);
 
-     std::vector<std::string> _init_lua_files;
-     std::vector<std::function<void(lua_State *)>> _init_lua_lib_callbacks;
+     std::vector<std::string> _initLuaFiles;
+     std::vector<std::function<void(lua_State *)>> _initLuaLibCallbacks;
 
  protected:
 };
