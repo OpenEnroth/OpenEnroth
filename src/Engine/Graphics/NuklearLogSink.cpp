@@ -1,10 +1,12 @@
 #include "NuklearLogSink.h"
 
-#include <string>
-#include <lua.hpp>
-
 #include "NuklearUtils.h"
 #include "Nuklear.h"
+
+#include <Library/Serialization/Serialization.h>
+
+#include <string>
+#include <lua.hpp>
 
 void NuklearLogSink::write(const LogCategory& category, LogLevel level, std::string_view message) {
     if (_isLogging) {
@@ -20,9 +22,7 @@ void NuklearLogSink::write(const LogCategory& category, LogLevel level, std::str
         _isLogging = false;
         return;
     }
-    std::string serializedLevel;
-    serialize(level, &serializedLevel);
-    lua_pushstring(lua, serializedLevel.c_str());
+    lua_pushstring(lua, toString(level).c_str());
     lua_pushstring(lua, message.data());
     int error = lua_pcall(lua, 2, 0, 0);
     lua_error_check(lua, error);
