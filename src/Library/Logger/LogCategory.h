@@ -35,11 +35,11 @@ class LogCategory {
     LogCategory(const LogCategory &) = delete;
     LogCategory(LogCategory &&) = default;
 
-    std::string_view name() const {
+    [[nodiscard]] std::string_view name() const {
         return _name;
     }
 
-    LogSource *source() const {
+    [[nodiscard]] LogSource *source() const {
         return _source;
     }
 

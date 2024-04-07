@@ -23,6 +23,7 @@ Logger::~Logger() {
 }
 
 void Logger::logV(const LogCategory &category, LogLevel level, fmt::string_view fmt, fmt::format_args args) {
+    auto guard = std::lock_guard(_mutex);
     _sink->write(category, level, fmt::vformat(fmt, args));
 }
 

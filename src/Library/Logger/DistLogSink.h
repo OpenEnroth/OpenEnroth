@@ -5,9 +5,8 @@
 
 #include "LogSink.h"
 
-class LogSinkComposite : public LogSink {
+class DistLogSink : public LogSink {
  public:
-    virtual ~LogSinkComposite() = default;
     void write(const LogCategory &category, LogLevel level, std::string_view message) override;
 
     void addLogSink(std::unique_ptr<LogSink> logSink);

@@ -10,11 +10,13 @@
 
 void NuklearLogSink::write(const LogCategory& category, LogLevel level, std::string_view message) {
     if (_isLogging) {
-        return; //early return to avoid potential infinite recursion if another log message is raised from lua
+        return; // Early return to avoid potential infinite recursion if another log message is raised from lua.
     }
     _isLogging = true;
 
     lua_State* lua = Nuklear::getLuaState();
+    if (!lua)
+        return;
 
     lua_getfield(lua, LUA_GLOBALSINDEX, "logsink");
     if (lua_isnil(lua, -1)) {

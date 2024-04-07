@@ -5,7 +5,7 @@ set(LIBRARY_LOGGER_SOURCES
         LogEnums.cpp
         Logger.cpp
         LogSink.cpp
-        LogSinkComposite.cpp)
+        DistLogSink.cpp)
 
 set(LIBRARY_LOGGER_HEADERS
         BufferLogSink.h
@@ -13,7 +13,7 @@ set(LIBRARY_LOGGER_HEADERS
         LogEnums.h
         Logger.h
         LogSink.h
-        LogSinkComposite.h
+        DistLogSink.h
         LogSource.h)
 
 add_library(library_logger STATIC ${LIBRARY_LOGGER_SOURCES} ${LIBRARY_LOGGER_HEADERS})
