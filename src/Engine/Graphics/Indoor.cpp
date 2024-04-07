@@ -283,7 +283,7 @@ void IndoorLocation::Release() {
 
 //----- (00444810) --------------------------------------------------------
 // index of special transfer message, 0 otherwise
-unsigned int IndoorLocation::GetLocationIndex(const std::string &locationName) {
+unsigned int IndoorLocation::GetLocationIndex(std::string_view locationName) {
     for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
         if (noCaseEquals(locationName, _4E6BDC_loc_names[i]))
             return i + 1;
