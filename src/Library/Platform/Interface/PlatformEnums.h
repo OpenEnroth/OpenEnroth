@@ -60,6 +60,9 @@ enum class PlatformEventType {
     /** Gamepad axis event, sent as `PlatformGamepadAxisEvent`. */
     EVENT_GAMEPAD_AXIS,
 
+    /** Gamepad axis event, sent as `PlatformTextInputEvent`. */
+    EVENT_TEXT_INPUT,
+
     /** Native event, sent as `PlatformNativeEvent` only when platform was built with
      * `MM_PLATFORM_SEND_NATIVE_EVENTS` defined. */
     EVENT_NATIVE,

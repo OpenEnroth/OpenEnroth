@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(APPLICATION_SOURCES
         Game.cpp
+        GameLuaBindings.cpp
         GameConfig.cpp
         GameKeyboardController.cpp
         GameMenu.cpp
@@ -14,6 +15,7 @@ set(APPLICATION_SOURCES
 
 set(APPLICATION_HEADERS
         Game.h
+        GameLuaBindings.h
         GameConfig.h
         GameKeyboardController.h
         GameMenu.h
@@ -45,4 +47,6 @@ target_link_libraries(application
         library_platform_null
         library_platform_implementation
         library_environment_implementation
-        utility)
+        utility
+	PRIVATE
+	libluajit)

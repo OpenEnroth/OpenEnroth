@@ -80,6 +80,8 @@ class GameConfig : public Config {
 
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
+        Bool ShowConsole = {this, "show_console", false, "Toggle console visibility."};
+
         ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_ERROR,
                                             "Default log level. One of 'trace', 'debug', 'info', 'warning', 'error' and 'critical'."};
 

@@ -16,6 +16,7 @@ set(ENGINE_SOURCES
         MapInfo.cpp
         OurMath.cpp
         Party.cpp
+        PartyEnums.cpp
         PriceCalculator.cpp
         SaveLoad.cpp
         SpellFxRenderer.cpp

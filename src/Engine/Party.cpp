@@ -973,10 +973,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
                 if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     pLearningPercent = player.getLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
-                    player.experience += playermodexp;
-                    if (player.experience > 4000000000) {
-                        player.experience = 0;
-                    }
+                    player.setXP(player.experience + playermodexp);
                 }
             }
         }

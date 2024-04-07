@@ -49,6 +49,9 @@ void PlatformEventHandler::event(const PlatformEvent *event) {
     case EVENT_NATIVE:
         nativeEvent(static_cast<const PlatformNativeEvent *>(event));
         return;
+    case EVENT_TEXT_INPUT:
+        textInputEvent(static_cast<const PlatformTextInputEvent *>(event));
+        return;
     default:
         return;
     }
@@ -69,3 +72,4 @@ void PlatformEventHandler::gamepadKeyPressEvent(const PlatformGamepadKeyEvent *)
 void PlatformEventHandler::gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *) {}
 void PlatformEventHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *) {}
 void PlatformEventHandler::nativeEvent(const PlatformNativeEvent *) {}
+void PlatformEventHandler::textInputEvent(const PlatformTextInputEvent *) {}

@@ -7158,6 +7158,13 @@ void Character::setSkillValue(CharacterSkillType skill, const CombinedSkillValue
     pActiveSkills[skill] = value;
 }
 
+void Character::setXP(int xp) {
+    if (xp > 4000000000 || xp < 0) {
+        xp = 0;
+    }
+    experience = xp;
+}
+
 void Character::playReaction(CharacterSpeech speech, int a3) {
     int speechCount = 0;
     int expressionCount = 0;

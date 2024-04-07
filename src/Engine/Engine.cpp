@@ -182,6 +182,8 @@ void Engine::drawWorld() {
 void Engine::drawHUD() {
     // 2d from now on
     render->BeginScene2D();
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_DebugMenu, 1);
+
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
     if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
         nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
@@ -197,7 +199,8 @@ void Engine::drawHUD() {
     mouse->DrawCursor();
     mouse->Activate();
 
-    engine->nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 
 //----- (0044103C) --------------------------------------------------------

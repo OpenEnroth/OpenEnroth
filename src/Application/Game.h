@@ -28,6 +28,7 @@ class Game {
     void closeTargetedSpellWindow();
     void onEscape();
     void onPressSpace();
+    void registerInGameCommands();
 
  private:
     PlatformApplication *_application = nullptr;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include "Library/Geometry/Point.h"
 #include "Library/Geometry/Size.h"
@@ -71,4 +72,10 @@ class PlatformGamepadAxisEvent: public PlatformGamepadEvent {
 class PlatformNativeEvent: public PlatformEvent {
  public:
     const void *nativeEvent = nullptr; // Pointer to a native event, in our case this is `SDL_Event`. Never `nullptr`.
+};
+
+class PlatformTextInputEvent : public PlatformEvent {
+ public:
+    PlatformWindow *window = nullptr;
+    std::string text;
 };

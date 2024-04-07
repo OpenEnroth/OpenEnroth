@@ -20,6 +20,8 @@ set(ENGINE_GRAPHICS_SOURCES
         LocationFunctions.cpp
         Nuklear.cpp
         NuklearEventHandler.cpp
+        NuklearLogSink.cpp
+        NuklearUtils.cpp
         Outdoor.cpp
         Overlays.cpp
         PaletteManager.cpp
@@ -53,6 +55,8 @@ set(ENGINE_GRAPHICS_HEADERS
         LocationTime.h
         Nuklear.h
         NuklearEventHandler.h
+        NuklearLogSink.h
+        NuklearUtils.h
         Outdoor.h
         Overlays.h
         PaletteManager.h

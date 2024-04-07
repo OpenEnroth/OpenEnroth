@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/NuklearLogSink.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
@@ -27,6 +28,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
+#include "Library/Logger/LogSinkComposite.h"
 #include "Library/Logger/BufferLogSink.h"
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
@@ -40,6 +42,7 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
+#include "GameLuaBindings.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -47,7 +50,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init logger.
     _bufferLogSink = std::make_unique<BufferLogSink>();
-    _defaultLogSink = LogSink::createDefaultSink();
+    _defaultLogSink = std::make_unique<LogSinkComposite>();
+    _defaultLogSink->addLogSink(LogSink::createDefaultSink());
     _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
 
@@ -134,8 +138,12 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_nuklear)
         logger->error("Nuklear failed to initialize");
     ::nuklear = _nuklear.get();
-    if (_nuklear)
+    if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
+        _nuklear->addInitLuaFile("init.lua");
+        _nuklear->addInitLuaLibs(GameLuaBindings::init);
+        _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
+    }
 
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <string>
+#include <vector>
+#include <functional>
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 
@@ -8,6 +11,9 @@
 
 #define NUKLEAR_MAX_VERTEX_MEMORY 512 * 1024
 #define NUKLEAR_MAX_ELEMENT_MEMORY 128 * 1024
+
+struct lua_State;
+class LogSink;
 
 class Nuklear {
  public:
@@ -36,7 +42,12 @@ class Nuklear {
      bool Reload();
      void Release(WindowType winType);
      void Destroy();
+     void addInitLuaLibs(std::function<void(lua_State *)> callback);
+     void addInitLuaFile(const char *lua_file);
+     bool isInitialized(WindowType winType) const;
      enum NUKLEAR_MODE Mode(WindowType winType);
+
+     static lua_State* getLuaState();
 
      struct nk_context *ctx = nullptr;
 
@@ -45,6 +56,9 @@ class Nuklear {
      bool LuaInit();
      void LuaRelease();
      bool LuaLoadTemplate(WindowType winType);
+
+     std::vector<std::string> _initLuaFiles;
+     std::vector<std::function<void(lua_State *)>> _initLuaLibCallbacks;
 
  protected:
 };

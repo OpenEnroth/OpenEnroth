@@ -1,6 +1,7 @@
 #include "NuklearEventHandler.h"
 
 #include <nuklear_config.h>
+#include <cstring>
 
 #include "Nuklear.h"
 
@@ -76,12 +77,12 @@ bool NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool
         else
             nk_input_key(nuklear->ctx, NK_KEY_RIGHT, down);
     }
-    return false;
+    return nk_item_is_any_active(nuklear->ctx);
 }
 
 bool NuklearEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     nk_input_motion(nuklear->ctx, event->pos.x, event->pos.y);
-    return false;
+    return nk_item_is_any_active(nuklear->ctx);
 }
 
 bool NuklearEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
@@ -104,10 +105,17 @@ bool NuklearEventHandler::MouseEvent(PlatformMouseButton button, const Pointi &p
     } else if (button == BUTTON_RIGHT) {
         nk_input_button(nuklear->ctx, NK_BUTTON_RIGHT, pos.x, pos.y, down);
     }
-    return false;
+    return nk_item_is_any_active(nuklear->ctx);
 }
 
 bool NuklearEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(nuklear->ctx, nk_vec2(event->angleDelta.x, event->angleDelta.y));
-    return false;
+    return nk_item_is_any_active(nuklear->ctx);
+}
+
+bool NuklearEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
+    nk_glyph glyph;
+    memcpy(glyph, event->text.c_str(), NK_UTF_SIZE);
+    nk_input_glyph(nuklear->ctx, glyph);
+    return nk_item_is_any_active(nuklear->ctx);
 }

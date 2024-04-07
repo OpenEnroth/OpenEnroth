@@ -110,6 +110,7 @@ struct Party {
     int CountHirelings();
 
     void GivePartyExp(unsigned int pEXPNum);
+
     int GetPartyReputation();
 
     /**

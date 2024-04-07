@@ -35,6 +35,7 @@ class SdlEventLoop: public PlatformEventLoop {
     void dispatchGamepadDisconnectedEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event);
     void dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event);
     void dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_ControllerAxisEvent *event);
+    void dispatchTextInputEvent(PlatformEventHandler *eventHandler, const SDL_TextInputEvent *event);
 
  private:
     SdlPlatformSharedState *_state = nullptr;
