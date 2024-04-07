@@ -11,6 +11,8 @@
  */
 class LogSource {
  public:
-    virtual LogLevel level() const = 0;
+    virtual ~LogSource() = default;
+
+    [[nodiscard]] virtual LogLevel level() const = 0;
     virtual void setLevel(LogLevel level) = 0;
 };
