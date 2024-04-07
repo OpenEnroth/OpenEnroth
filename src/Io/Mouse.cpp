@@ -44,7 +44,7 @@ void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
 
 void Io::Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }
 
-void Io::Mouse::SetCursorImage(const std::string &name) {
+void Io::Mouse::SetCursorImage(std::string_view name) {
     if (!this->bInitialized) {
         return;
     }

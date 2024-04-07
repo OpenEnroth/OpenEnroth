@@ -6,7 +6,7 @@
 #include "ConfigSection.h"
 #include "AnyHandler.h"
 
-AnyConfigEntry::AnyConfigEntry(ConfigSection *section, const std::string &name, const std::string &description, AnyHandler *handler,
+AnyConfigEntry::AnyConfigEntry(ConfigSection *section, std::string_view name, std::string_view description, AnyHandler *handler,
                                std::any defaultValue, Validator validator) {
     assert(section);
     assert(handler);
@@ -43,6 +43,6 @@ std::string AnyConfigEntry::string() const {
     return _handler->serialize(_value);
 }
 
-void AnyConfigEntry::setString(const std::string &value) {
+void AnyConfigEntry::setString(std::string_view value) {
     setValue(_handler->deserialize(value));
 }

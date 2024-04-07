@@ -10,11 +10,11 @@
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
 
-void Config::load(const std::string &path) {
+void Config::load(std::string_view path) {
     if (!std::filesystem::exists(path))
         throw Exception("config file '{}' doesn't exist", path);
 
-    mINI::INIFile file(path);
+    mINI::INIFile file = mINI::INIFile(std::string(path));
     mINI::INIStructure ini;
     if (!file.read(ini))
         throw Exception("Couldn't read config file '{}'", path);
@@ -26,8 +26,8 @@ void Config::load(const std::string &path) {
                     entry->setString(iniValue);
 }
 
-void Config::save(const std::string &path) const {
-    mINI::INIFile file(path);
+void Config::save(std::string_view path) const {
+    mINI::INIFile file = mINI::INIFile(std::string(path));
     mINI::INIStructure ini;
 
     for (ConfigSection *section : sections())
@@ -51,7 +51,7 @@ void Config::registerSection(ConfigSection *section) {
     _sectionByName.emplace(section->name(), section);
 }
 
-ConfigSection *Config::section(const std::string &name) const {
+ConfigSection *Config::section(std::string_view name) const {
     return valueOr(_sectionByName, name, nullptr);
 }
 

@@ -27,7 +27,7 @@ class Mouse {
     void RemoveHoldingItem();
     void SetCursorBitmapFromItemID(ItemId uItemID);
     void SetCurrentCursorBitmap();
-    void SetCursorImage(const std::string &name);
+    void SetCursorImage(std::string_view name);
     void _469AE4();
     void ClearCursor();
     void AllocCursorSystemMem();

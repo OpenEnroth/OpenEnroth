@@ -11,7 +11,7 @@ class AnyConfigEntry {
  public:
     using Validator = std::function<std::any(std::any)>;
 
-    AnyConfigEntry(ConfigSection *section, const std::string &name, const std::string &description, AnyHandler *handler,
+    AnyConfigEntry(ConfigSection *section, std::string_view name, std::string_view description, AnyHandler *handler,
                    std::any defaultValue, Validator validator);
     virtual ~AnyConfigEntry() = default;
 
@@ -37,7 +37,7 @@ class AnyConfigEntry {
 
     std::string string() const;
 
-    void setString(const std::string &value);
+    void setString(std::string_view value);
 
     ConfigSection *section() const {
         return _section;
