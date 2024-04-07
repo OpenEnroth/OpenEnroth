@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['magic_0',['magic',['../namespacelod.html#aa895083c20da7f8ce0199a999a1424c6',1,'lod']]],
+  ['magic_0',['magic',['../namespacelod.html#ac0c29cc2b3c1b68ffb44a3b51fce2e30',1,'lod']]],
   ['magicschoolforspell_1',['magicSchoolForSpell',['../SpellEnumFunctions_8h.html#a54a7350c1e9d3ca5821798a1850c7aca',1,'SpellEnumFunctions.h']]],
   ['main_2',['main',['../UnitTestMain_8cpp.html#a7f83bdc516d2cb86e20235d94ddf055a',1,'main(int argc, char **argv):&#160;UnitTestMain.cpp'],['../SdlMain_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;SdlMain.cpp'],['../LodTool_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;LodTool.cpp']]],
   ['maindialogue_3',['mainDialogue',['../classGUIWindow__MagicGuild.html#aef87fdc6d001620d870b47413c4e5b9e',1,'GUIWindow_MagicGuild::mainDialogue()'],['../classGUIWindow__Bank.html#a00db919c4e73c8d4541b94e2578464a7',1,'GUIWindow_Bank::mainDialogue()'],['../classGUIWindow__Training.html#a3e284ffb69de51f96c1366a34629bd2c',1,'GUIWindow_Training::mainDialogue()'],['../classGUIWindow__TownHall.html#a0fb72e654ddbf561d9853bcb9c6086e6',1,'GUIWindow_TownHall::mainDialogue()'],['../classGUIWindow__Temple.html#a0c4b457159fc924842ef5198c21e9cd6',1,'GUIWindow_Temple::mainDialogue()'],['../classGUIWindow__Tavern.html#a64ace88886cbd36373ea9c5c1bd15bc6',1,'GUIWindow_Tavern::mainDialogue()'],['../classGUIWindow__Shop.html#a8747c2ed1c58751a9ef7c2660224fd65',1,'GUIWindow_Shop::mainDialogue()'],['../classGUIWindow__Transport.html#a63da744663c7d2a308de2cba4560ed0f',1,'GUIWindow_Transport::mainDialogue()']]],
@@ -24,7 +24,7 @@ var searchData=
   ['mapdefaultkey_21',['MapDefaultKey',['../classIo_1_1KeyboardActionMapping.html#ad92d303beda804214880271c87c5bba8',1,'Io::KeyboardActionMapping']]],
   ['mapgamepadkey_22',['MapGamepadKey',['../classIo_1_1KeyboardActionMapping.html#a509359bea43841bfcf319a405b427e1f',1,'Io::KeyboardActionMapping']]],
   ['mapidenumname_23',['mapIdEnumName',['../CodeGen_8cpp.html#aa883fe1ae82f43fcfe2360711465b8a4',1,'CodeGen.cpp']]],
-  ['mapinfobyfilename_24',['mapInfoByFileName',['../CodeGen_8cpp.html#a85d67a438bff59090878bab1225c7fc4',1,'CodeGen.cpp']]],
+  ['mapinfobyfilename_24',['mapInfoByFileName',['../CodeGen_8cpp.html#ad4801e9c4c36584439d6149b7b461b4f',1,'CodeGen.cpp']]],
   ['mapitemcount_25',['mapItemCount',['../classCommonTapeRecorder.html#af56c6e713d4d19aedf0b5b14aa7a12b9',1,'CommonTapeRecorder::mapItemCount()'],['../classCommonTapeRecorder.html#ac95b03d7c55115a2ca321edbff19b212',1,'CommonTapeRecorder::mapItemCount(ItemId itemId)']]],
   ['mapkey_26',['MapKey',['../classIo_1_1KeyboardActionMapping.html#a2982f379a003e4fc99a9891d577ee248',1,'Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key)'],['../classIo_1_1KeyboardActionMapping.html#a5f34666332dcdfc295d8cdf3fc389b8c',1,'Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key, KeyToggleType type)']]],
   ['maptorender_27',['MapToRender',['../classGameWindowHandler.html#a85bcb10daa161a0f0809d4753632eecd',1,'GameWindowHandler']]],

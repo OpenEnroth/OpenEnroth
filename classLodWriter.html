@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -97,10 +97,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aed569dfc6d2b0d7cf15bed24d5fca9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56f0aceec09eecb7d3a4258b2fc6beb6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodWriter.html#a56f0aceec09eecb7d3a4258b2fc6beb6">isOpen</a> () const</td></tr>
 <tr class="separator:a56f0aceec09eecb7d3a4258b2fc6beb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f9fcf3fdb5ec2b4f23b8109d4d796c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodWriter.html#a5f9fcf3fdb5ec2b4f23b8109d4d796c8">write</a> (const std::string &amp;filename, const <a class="el" href="classBlob.html">Blob</a> &amp;data)</td></tr>
-<tr class="separator:a5f9fcf3fdb5ec2b4f23b8109d4d796c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfcd8546cfd80adeeca547bbacc75c78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodWriter.html#abfcd8546cfd80adeeca547bbacc75c78">write</a> (const std::string &amp;filename, <a class="el" href="classBlob.html">Blob</a> &amp;&amp;data)</td></tr>
-<tr class="separator:abfcd8546cfd80adeeca547bbacc75c78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5db5191c04e273932d3cfddc45f832bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodWriter.html#a5db5191c04e273932d3cfddc45f832bd">write</a> (std::string_view filename, const <a class="el" href="classBlob.html">Blob</a> &amp;data)</td></tr>
+<tr class="separator:a5db5191c04e273932d3cfddc45f832bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade64180ce2aab87eabf16238fd35e9a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodWriter.html#ade64180ce2aab87eabf16238fd35e9a9">write</a> (std::string_view filename, <a class="el" href="classBlob.html">Blob</a> &amp;&amp;data)</td></tr>
+<tr class="separator:ade64180ce2aab87eabf16238fd35e9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -317,8 +317,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="abfcd8546cfd80adeeca547bbacc75c78" name="abfcd8546cfd80adeeca547bbacc75c78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abfcd8546cfd80adeeca547bbacc75c78">&#9670;&#160;</a></span>write() <span class="overload">[1/2]</span></h2>
+<a id="ade64180ce2aab87eabf16238fd35e9a9" name="ade64180ce2aab87eabf16238fd35e9a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade64180ce2aab87eabf16238fd35e9a9">&#9670;&#160;</a></span>write() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -326,7 +326,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void LodWriter::write </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -345,8 +345,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5f9fcf3fdb5ec2b4f23b8109d4d796c8" name="a5f9fcf3fdb5ec2b4f23b8109d4d796c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f9fcf3fdb5ec2b4f23b8109d4d796c8">&#9670;&#160;</a></span>write() <span class="overload">[2/2]</span></h2>
+<a id="a5db5191c04e273932d3cfddc45f832bd" name="a5db5191c04e273932d3cfddc45f832bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5db5191c04e273932d3cfddc45f832bd">&#9670;&#160;</a></span>write() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -354,7 +354,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void LodWriter::write </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>

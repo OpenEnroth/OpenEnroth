@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -155,6 +155,7 @@ Coding style</h1>
 <li>Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take <code>std::unique_ptr</code> by value. If it allocates its result and passes ownership to the caller, then it should return <code>std::unique_ptr</code>.</li>
 <li>Use an <code>int</code> unless you need something else. Don’t try to avoid negative values by using <code>unsigned</code>, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic">core guidelines</a> for more info. However, don't overdo it, use <code>size_t</code> for indexing into STL containers.</li>
 <li>We generally refrain from using namespaces, and we consider the approach where namespace hierarchy follows the directory structure an antipattern that might make sense in other languages (e.g. Java), but not in C++. Besides, OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. <a class="el" href="classException.html">Exception</a> to this rule is <code>namespace detail</code> that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.</li>
+<li>For string function parameters, use <code>std::string_view</code> passed by value. In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an <code>std::string</code> or passing it by const reference, the performance benefits are almost always negligible. But feel free to use <code>std::string</code> or <code>const std::string &amp;</code> where it makes your code simpler (e.g. by avoiding jumping through hoops when converting from <code>std::string_view</code> to <code>std::string</code>).</li>
 </ul>
 <p >Error handling:</p><ul>
 <li>Use <code>assert</code>s to check for coding errors and conditions that must never be false, no matter how the program is run.</li>
@@ -192,7 +193,7 @@ Testing</h1>
 <li>Rename them into something more suiting (e.g. <code>issue_XXX.json</code> and <code>issue_XXX.mm7</code>) and create a PR to the <a href="https://github.com/OpenEnroth/OpenEnroth_TestData">OpenEnroth_TestData</a> repo.</li>
 <li>Once it's merged update the reference tag in the corresponding <a href="https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt">CMakeLists.txt</a> in the main repo.</li>
 <li>Create a new test case in one of the game test files in <a href="https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest">the game tests folder</a>.</li>
-<li>Use <code><a class="el" href="classTestController.html#aa95b8bebe6e4b34a470d20c3ef0688bb">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it.</li>
+<li>Use <code><a class="el" href="classTestController.html#af9fcbb7e65a9e0c5c0798c3f09790011">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it.</li>
 </ul>
 <p >If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set <code>debug.trace_frame_time_ms</code> config value before starting OpenEnroth for recording.</p>
 <p >By default, traces are recorded with a random number generator that's just returning a sequence of natural numbers. If you want to record a trace using the default Mersenne Twister random number generator, set <code>debug.trace_random_engine</code> config value to <code>mersenne_twister</code> before starting OpenEnroth for recording.</p>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -120,8 +120,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8d7c66b0c5ab290ca7eb83b694b652c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e4d3d76974d6cd87902de36237afffe"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd">RgbaImage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a8e4d3d76974d6cd87902de36237afffe">ReadScreenPixels</a> ()=0</td></tr>
 <tr class="separator:a8e4d3d76974d6cd87902de36237afffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a231c341912cdfd0c1b7058fdedf19ba3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a231c341912cdfd0c1b7058fdedf19ba3">SaveWinnersCertificate</a> (const std::string &amp;filePath)=0</td></tr>
-<tr class="separator:a231c341912cdfd0c1b7058fdedf19ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a8015d1800b8c2fda1226a62ffaa625"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a7a8015d1800b8c2fda1226a62ffaa625">SaveWinnersCertificate</a> (std::string_view filePath)=0</td></tr>
+<tr class="separator:a7a8015d1800b8c2fda1226a62ffaa625"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1b2dbc5a3fd7c0026227abf547a5352"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ae1b2dbc5a3fd7c0026227abf547a5352">ClearTarget</a> (<a class="el" href="structColor.html">Color</a> uColor)=0</td></tr>
 <tr class="separator:ae1b2dbc5a3fd7c0026227abf547a5352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd128b290109807b63df2bff566fef11"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#acd128b290109807b63df2bff566fef11">Present</a> ()=0</td></tr>
@@ -230,8 +230,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab1cc6c3b7c2cf0a0b6f828c5021c7d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba3bed0b9b008ae7c7f6c5e2dad5f467"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#aba3bed0b9b008ae7c7f6c5e2dad5f467">TakeScreenshot</a> (unsigned int width, unsigned int height)=0</td></tr>
 <tr class="separator:aba3bed0b9b008ae7c7f6c5e2dad5f467"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa88a582b45196f8d54190045d56789e0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#aa88a582b45196f8d54190045d56789e0">SaveScreenshot</a> (const std::string &amp;filename, unsigned int width, unsigned int height)=0</td></tr>
-<tr class="separator:aa88a582b45196f8d54190045d56789e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a8461831d2afacd13dcec88e7746c57"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a3a8461831d2afacd13dcec88e7746c57">SaveScreenshot</a> (std::string_view filename, unsigned int width, unsigned int height)=0</td></tr>
+<tr class="separator:a3a8461831d2afacd13dcec88e7746c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4724e403c5cf30e4f1269956c37d948"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ad4724e403c5cf30e4f1269956c37d948">PackScreenshot</a> (unsigned int width, unsigned int height)=0</td></tr>
 <tr class="separator:ad4724e403c5cf30e4f1269956c37d948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93e4217b6991c629afefa3f8d1936a9c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a93e4217b6991c629afefa3f8d1936a9c">SavePCXScreenshot</a> ()=0</td></tr>
@@ -3173,8 +3173,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa88a582b45196f8d54190045d56789e0" name="aa88a582b45196f8d54190045d56789e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa88a582b45196f8d54190045d56789e0">&#9670;&#160;</a></span>SaveScreenshot()</h2>
+<a id="a3a8461831d2afacd13dcec88e7746c57" name="a3a8461831d2afacd13dcec88e7746c57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a8461831d2afacd13dcec88e7746c57">&#9670;&#160;</a></span>SaveScreenshot()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3185,7 +3185,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void Renderer::SaveScreenshot </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -3213,12 +3213,12 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classBaseRenderer.html#a7688c000afcfb51d3fad684f304858bf">BaseRenderer</a>.</p>
+<p>Implemented in <a class="el" href="classBaseRenderer.html#ae83d1b986467e683874462550be08f48">BaseRenderer</a>.</p>
 
 </div>
 </div>
-<a id="a231c341912cdfd0c1b7058fdedf19ba3" name="a231c341912cdfd0c1b7058fdedf19ba3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a231c341912cdfd0c1b7058fdedf19ba3">&#9670;&#160;</a></span>SaveWinnersCertificate()</h2>
+<a id="a7a8015d1800b8c2fda1226a62ffaa625" name="a7a8015d1800b8c2fda1226a62ffaa625"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a8015d1800b8c2fda1226a62ffaa625">&#9670;&#160;</a></span>SaveWinnersCertificate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3229,7 +3229,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual void Renderer::SaveWinnersCertificate </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filePath</em></td><td>)</td>
           <td></td>
         </tr>
@@ -3241,7 +3241,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classBaseRenderer.html#a985e16751b9952e97014e5e53d958fa6">BaseRenderer</a>.</p>
+<p>Implemented in <a class="el" href="classBaseRenderer.html#af5a9e487df62141e307615dffb6b0955">BaseRenderer</a>.</p>
 
 </div>
 </div>

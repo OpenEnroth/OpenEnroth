@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -93,10 +93,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adcc04da93237f0c3e78e69b5bea5e02a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed0c10bc4f4f0210a62b7a450b110aa8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#aed0c10bc4f4f0210a62b7a450b110aa8">isOpen</a> () const</td></tr>
 <tr class="separator:aed0c10bc4f4f0210a62b7a450b110aa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69814e265640c089bb14ead40e5dcd72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a69814e265640c089bb14ead40e5dcd72">exists</a> (const std::string &amp;filename) const</td></tr>
-<tr class="separator:a69814e265640c089bb14ead40e5dcd72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85d2562e7146c012324fe02c1d49bec8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a85d2562e7146c012324fe02c1d49bec8">read</a> (const std::string &amp;filename) const</td></tr>
-<tr class="separator:a85d2562e7146c012324fe02c1d49bec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e7e2cc830f1522f1f553d527d0f8376"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a1e7e2cc830f1522f1f553d527d0f8376">exists</a> (std::string_view filename) const</td></tr>
+<tr class="separator:a1e7e2cc830f1522f1f553d527d0f8376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae030449c18a0d2c3f40e075cd16809f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#ae030449c18a0d2c3f40e075cd16809f0">read</a> (std::string_view filename) const</td></tr>
+<tr class="separator:ae030449c18a0d2c3f40e075cd16809f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac695138114e6d8f62f144a35cd3e9d46"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#ac695138114e6d8f62f144a35cd3e9d46">ls</a> () const</td></tr>
 <tr class="separator:ac695138114e6d8f62f144a35cd3e9d46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -208,8 +208,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a69814e265640c089bb14ead40e5dcd72" name="a69814e265640c089bb14ead40e5dcd72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69814e265640c089bb14ead40e5dcd72">&#9670;&#160;</a></span>exists()</h2>
+<a id="a1e7e2cc830f1522f1f553d527d0f8376" name="a1e7e2cc830f1522f1f553d527d0f8376"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e7e2cc830f1522f1f553d527d0f8376">&#9670;&#160;</a></span>exists()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,7 +217,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">bool SndReader::exists </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -306,8 +306,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a85d2562e7146c012324fe02c1d49bec8" name="a85d2562e7146c012324fe02c1d49bec8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85d2562e7146c012324fe02c1d49bec8">&#9670;&#160;</a></span>read()</h2>
+<a id="ae030449c18a0d2c3f40e075cd16809f0" name="ae030449c18a0d2c3f40e075cd16809f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae030449c18a0d2c3f40e075cd16809f0">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,7 +315,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classBlob.html">Blob</a> SndReader::read </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
           <td> const</td>
         </tr>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -90,8 +90,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2b8a7bb54dbb3b910c7599e74ef93b46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a434f734c26e701f5890b89fa2d59aea7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a434f734c26e701f5890b89fa2d59aea7">Release</a> ()</td></tr>
 <tr class="separator:a434f734c26e701f5890b89fa2d59aea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a467c746f5f869f3aae334255ad590575"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a467c746f5f869f3aae334255ad590575">Load</a> (const std::string &amp;<a class="el" href="structIndoorLocation.html#a4b52e226da9bd5ab94583142f01397f5">filename</a>, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned)</td></tr>
-<tr class="separator:a467c746f5f869f3aae334255ad590575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ef2ccb426ae1d7e79db3831c3aa6859"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a3ef2ccb426ae1d7e79db3831c3aa6859">Load</a> (std::string_view <a class="el" href="structIndoorLocation.html#a4b52e226da9bd5ab94583142f01397f5">filename</a>, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned)</td></tr>
+<tr class="separator:a3ef2ccb426ae1d7e79db3831c3aa6859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ae5b2800115059413e4baf166a91859"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a9ae5b2800115059413e4baf166a91859">Draw</a> ()</td></tr>
 <tr class="separator:a9ae5b2800115059413e4baf166a91859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bcb7eb78bc5317b9508c98f2e446150"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a1bcb7eb78bc5317b9508c98f2e446150">toggleLight</a> (signed int uLightID, unsigned int bToggle)</td></tr>
@@ -107,8 +107,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a4aabcafb02b29de26377eea959e0acac"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a4aabcafb02b29de26377eea959e0acac">GetLocationIndex</a> (const std::string &amp;locationName)</td></tr>
-<tr class="separator:a4aabcafb02b29de26377eea959e0acac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad83375771ac21956f12ab748b8543d0c"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#ad83375771ac21956f12ab748b8543d0c">GetLocationIndex</a> (std::string_view locationName)</td></tr>
+<tr class="separator:ad83375771ac21956f12ab748b8543d0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -219,8 +219,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4aabcafb02b29de26377eea959e0acac" name="a4aabcafb02b29de26377eea959e0acac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4aabcafb02b29de26377eea959e0acac">&#9670;&#160;</a></span>GetLocationIndex()</h2>
+<a id="ad83375771ac21956f12ab748b8543d0c" name="ad83375771ac21956f12ab748b8543d0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad83375771ac21956f12ab748b8543d0c">&#9670;&#160;</a></span>GetLocationIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +231,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">unsigned int IndoorLocation::GetLocationIndex </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>locationName</em></td><td>)</td>
           <td></td>
         </tr>
@@ -314,8 +314,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a467c746f5f869f3aae334255ad590575" name="a467c746f5f869f3aae334255ad590575"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a467c746f5f869f3aae334255ad590575">&#9670;&#160;</a></span>Load()</h2>
+<a id="a3ef2ccb426ae1d7e79db3831c3aa6859" name="a3ef2ccb426ae1d7e79db3831c3aa6859"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ef2ccb426ae1d7e79db3831c3aa6859">&#9670;&#160;</a></span>Load()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -323,7 +323,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void IndoorLocation::Load </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>

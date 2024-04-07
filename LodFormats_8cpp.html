@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -99,10 +99,10 @@ Functions</h2></td></tr>
 <tr class="separator:a9b888c1f97abd1e6943a6bf4d6ff6858"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d9ebfd182480da2c88fd806e6552470"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55">LodFileFormat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodFormats_8cpp.html#a0d9ebfd182480da2c88fd806e6552470">checkCompressed</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
 <tr class="separator:a0d9ebfd182480da2c88fd806e6552470"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a887538ca974997c772007ccc1e2fdf24"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55">LodFileFormat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodFormats_8cpp.html#a887538ca974997c772007ccc1e2fdf24">checkImage</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob, const std::string &amp;fileName)</td></tr>
-<tr class="separator:a887538ca974997c772007ccc1e2fdf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb4779999daf09f72886ce2dee327f91"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55">LodFileFormat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodFormats_8cpp.html#aeb4779999daf09f72886ce2dee327f91">checkSprite</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob, const std::string &amp;fileName)</td></tr>
-<tr class="separator:aeb4779999daf09f72886ce2dee327f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc331bd42d1f44ca7f61a3d3485737d1"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55">LodFileFormat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodFormats_8cpp.html#adc331bd42d1f44ca7f61a3d3485737d1">checkImage</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob, std::string_view fileName)</td></tr>
+<tr class="separator:adc331bd42d1f44ca7f61a3d3485737d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3df85c5e92b3b8017b0eb28b18d65444"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55">LodFileFormat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodFormats_8cpp.html#a3df85c5e92b3b8017b0eb28b18d65444">checkSprite</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob, std::string_view fileName)</td></tr>
+<tr class="separator:a3df85c5e92b3b8017b0eb28b18d65444"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a0d9ebfd182480da2c88fd806e6552470" name="a0d9ebfd182480da2c88fd806e6552470"></a>
@@ -131,8 +131,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a887538ca974997c772007ccc1e2fdf24" name="a887538ca974997c772007ccc1e2fdf24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a887538ca974997c772007ccc1e2fdf24">&#9670;&#160;</a></span>checkImage()</h2>
+<a id="adc331bd42d1f44ca7f61a3d3485737d1" name="adc331bd42d1f44ca7f61a3d3485737d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc331bd42d1f44ca7f61a3d3485737d1">&#9670;&#160;</a></span>checkImage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -149,7 +149,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>fileName</em>&#160;</td>
         </tr>
         <tr>
@@ -167,8 +167,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aeb4779999daf09f72886ce2dee327f91" name="aeb4779999daf09f72886ce2dee327f91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb4779999daf09f72886ce2dee327f91">&#9670;&#160;</a></span>checkSprite()</h2>
+<a id="a3df85c5e92b3b8017b0eb28b18d65444" name="a3df85c5e92b3b8017b0eb28b18d65444"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3df85c5e92b3b8017b0eb28b18d65444">&#9670;&#160;</a></span>checkSprite()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +185,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>fileName</em>&#160;</td>
         </tr>
         <tr>

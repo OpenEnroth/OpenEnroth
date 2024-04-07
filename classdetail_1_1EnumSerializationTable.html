@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
@@ -85,11 +84,6 @@ $(function() {
 
 <p><code>#include &lt;EnumSerializer.h&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1EnumSerializationTable_1_1HeterogeneousStringHash.html">HeterogeneousStringHash</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9d767abdcf85570fa657dd062c0efeff"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
@@ -119,8 +113,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:aa0821cf62fcaf222992ac60530b5a0e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0aec3e4e7519aa3d130b29d10c20c494"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; uint64_t, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1EnumSerializationTable.html#a0aec3e4e7519aa3d130b29d10c20c494">_stringByEnum</a></td></tr>
 <tr class="separator:a0aec3e4e7519aa3d130b29d10c20c494"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3e9c5c94bf457bdb1225e16dc680b59"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, uint64_t, <a class="el" href="structdetail_1_1EnumSerializationTable_1_1HeterogeneousStringHash.html">HeterogeneousStringHash</a>, std::equal_to&lt;&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1EnumSerializationTable.html#aa3e9c5c94bf457bdb1225e16dc680b59">_enumByString</a></td></tr>
-<tr class="separator:aa3e9c5c94bf457bdb1225e16dc680b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcb5ca937478b8a39a7587c4ba3a1f5f"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, uint64_t, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1EnumSerializationTable.html#adcb5ca937478b8a39a7587c4ba3a1f5f">_enumByString</a></td></tr>
+<tr class="separator:adcb5ca937478b8a39a7587c4ba3a1f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7055a6b049fa19262ff65ca0cf7e77a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; uint64_t, std::string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1EnumSerializationTable.html#a7055a6b049fa19262ff65ca0cf7e77a3">_sortedEnumStrings</a></td></tr>
 <tr class="separator:a7055a6b049fa19262ff65ca0cf7e77a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -377,8 +371,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="aa3e9c5c94bf457bdb1225e16dc680b59" name="aa3e9c5c94bf457bdb1225e16dc680b59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3e9c5c94bf457bdb1225e16dc680b59">&#9670;&#160;</a></span>_enumByString</h2>
+<a id="adcb5ca937478b8a39a7587c4ba3a1f5f" name="adcb5ca937478b8a39a7587c4ba3a1f5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcb5ca937478b8a39a7587c4ba3a1f5f">&#9670;&#160;</a></span>_enumByString</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,7 +381,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;std::string, uint64_t, <a class="el" href="structdetail_1_1EnumSerializationTable_1_1HeterogeneousStringHash.html">HeterogeneousStringHash</a>, std::equal_to&lt;&gt; &gt; detail::EnumSerializationTable::_enumByString</td>
+          <td class="memname">std::unordered_map&lt;std::string, uint64_t, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a>&gt; detail::EnumSerializationTable::_enumByString</td>
         </tr>
       </table>
   </td>

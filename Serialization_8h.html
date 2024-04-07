@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -128,7 +128,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >Ranges-friendly deserialization object.</p>
-<p >Can be used as <code>range | std::views::transform(FromString&lt;int&gt;)</code>. Or directly, as <code>return FromString&lt;int&gt;(some_string)</code>.</p>
+<p >Can be used as <code>range | std::views::transform(fromString&lt;int&gt;)</code>. Or directly, as <code>return fromString&lt;int&gt;(some_string)</code>.</p>
 <p >Under the hood it's just calling the <code>deserialize</code> function using argument-dependent lookup.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="Serialization_8h.html#a3dd1e68442220c005341b2550b33680d">toString</a> </dd></dl>
 
@@ -154,7 +154,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >Ranges-friendly serialization object.</p>
-<p >Can be used as <code>range | std::views::transform(ToString)</code>. Or directly, as <code>return ToString(some_integer);</code>.</p>
+<p >Can be used as <code>range | std::views::transform(toString)</code>. Or directly, as <code>return <a class="el" href="Serialization_8h.html#a3dd1e68442220c005341b2550b33680d">toString(some_integer)</a>;</code>.</p>
 <p >Under the hood it's just calling the <code>serialize</code> function using argument-dependent lookup.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="Serialization_8h.html#a9d3214714aab77b8055d88bfb5d0811d">fromString</a> </dd></dl>
 

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f58f62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bbe9de6</span>
    </div>
   </td>
  </tr>
@@ -200,7 +200,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Return a tape object of strings listing all the text drawn by <a class="el" href="classGUIWindow.html#a2b11eddd2128cd6424feddcaa87fb483">GUIWindow::DrawText</a>. TODO(pskelton): Tape will be spammy as it is recording everything.</p>
+<p >Return a tape object of strings listing all the text drawn by <a class="el" href="classGUIWindow.html#aa9ba8aa0240cfe550f91aa7b505d9932">GUIWindow::DrawText</a>. TODO(pskelton): Tape will be spammy as it is recording everything.</p>
 <dl class="section return"><dt>Returns</dt><dd>Tape object. </dd></dl>
 
 </div>
@@ -260,7 +260,7 @@ template&lt;class Callback , class T  = std::decay_t&lt;std::invoke_result_t&lt;
 </div><div class="memdoc">
 <p >Creates a tape object that will record changes in a value computed by the provided callback throughout the execution of a trace.</p>
 <p >The callback is called on every frame, and also before and after running the trace, and unique values are stored on a tape. This effectively means that if, for example, the provided callback always returns the same value, then you'll get a tape of size 1.</p>
-<p >A typical use case is to create a tape, call <code><a class="el" href="classTestController.html#aa95b8bebe6e4b34a470d20c3ef0688bb">TestController::playTraceFromTestData</a></code> to play a trace, then check the data stored on the tape.</p>
+<p >A typical use case is to create a tape, call <code><a class="el" href="classTestController.html#af9fcbb7e65a9e0c5c0798c3f09790011">TestController::playTraceFromTestData</a></code> to play a trace, then check the data stored on the tape.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">callback</td><td>Callback that will calculate the values to store on a tape. </td></tr>
