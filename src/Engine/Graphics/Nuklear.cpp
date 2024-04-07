@@ -747,16 +747,6 @@ bool lua_error_check(WindowType winType, lua_State *L, int err) {
     return false;
 }
 
-bool lua_error_check(lua_State *L, int err) {
-    if (err != 0) {
-        logger->error("Nuklear: LUA error: {}\n", lua_tostring(L, -1));
-        lua_pop(L, 1);
-        return true;
-    }
-
-    return false;
-}
-
 int Nuklear::KeyEvent(PlatformKey key) {
     for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
         struct hotkey hk = *it;
@@ -3620,7 +3610,7 @@ static int lua_dev_config_get(lua_State *L) {
         } else if (configEntry->type() == typeid(int)) {
             lua_pushinteger(L, std::any_cast<int>(configEntry->value()));
         } else if (configEntry->type() == typeid(std::string)) {
-            lua_pushstring(L, std::any_cast<std::string>(configEntry->value()).c_str());
+            lua_pushstring(L, configEntry->string().c_str());
         }
     } else {
         return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
@@ -3644,7 +3634,7 @@ static bool load_init_lua_file(const char *file) {
     }
 
     lua_getfield(lua, LUA_GLOBALSINDEX, "ui_init");
-    lua_pushlightuserdata(lua, (void*)&wins[WINDOW_null]);
+    lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
     err = lua_pcall(lua, 1, 0, 0);
     if (lua_error_check(WINDOW_null, lua, err)) {
         logger->warning("Nuklear: error executing init template: {}", lua_tostring(lua, -1));
@@ -3864,33 +3854,6 @@ bool Nuklear::isInitialized(WindowType winType) const {
     return wins[winType].state == WIN_STATE::WINDOW_INITIALIZED;
 }
 
-class NuklearLogSink : public LogSink {
- public:
-    void write(const LogCategory &category, LogLevel level, std::string_view message) override {
-        if (_isLogging) {
-            return; //early return to avoid potential infinite recursion if another log message is raised from lua
-        }
-        _isLogging = true;
-
-        lua_getfield(lua, LUA_GLOBALSINDEX, "logsink");
-        if (lua_isnil(lua, -1)) {
-            lua_pop(lua, 1);
-            _isLogging = false;
-            return;
-        }
-        std::string serializedLevel;
-        serialize(level, &serializedLevel);
-        lua_pushstring(lua, serializedLevel.c_str());
-        lua_pushstring(lua, message.data());
-        int error = lua_pcall(lua, 2, 0, 0);
-        lua_error_check(lua, error);
-        _isLogging = false;
-    }
-
- private:
-     bool _isLogging{};
-};
-
-std::unique_ptr<LogSink> Nuklear::createNuklearLogSink() {
-    return std::make_unique<NuklearLogSink>();
+lua_State* Nuklear::getLuaState() {
+    return lua;
 }

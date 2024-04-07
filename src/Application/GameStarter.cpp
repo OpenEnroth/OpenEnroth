@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/NuklearLogSink.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
@@ -141,7 +142,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
         _nuklear->addInitLuaLibs(GameLuaBindings::init);
-        _defaultLogSink->addLogSink(Nuklear::createNuklearLogSink());
+        _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
     // Init io.

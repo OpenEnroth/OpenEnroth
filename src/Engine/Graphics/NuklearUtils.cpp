@@ -3,6 +3,8 @@
 #include <string>
 #include <cstring>
 
+#include "Library/Logger/Logger.h"
+
 int lua_check_args_count(lua_State * L, bool condition) {
     if (!condition)
         return luaL_argerror(L, -2, lua_pushfstring(L, "invalid arguments count"));
@@ -32,4 +34,14 @@ bool lua_to_boolean(lua_State *L, int idx) {
     }
 
     return value;
+}
+
+bool lua_error_check(lua_State* L, int err) {
+    if (err != 0) {
+        logger->error("Nuklear: LUA error: {}\n", lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return true;
+    }
+
+    return false;
 }

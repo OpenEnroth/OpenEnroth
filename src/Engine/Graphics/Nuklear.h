@@ -47,9 +47,9 @@ class Nuklear {
      bool isInitialized(WindowType winType) const;
      enum NUKLEAR_MODE Mode(WindowType winType);
 
-     struct nk_context *ctx = nullptr;
+     static lua_State* getLuaState();
 
-     static std::unique_ptr<LogSink> createNuklearLogSink();
+     struct nk_context *ctx = nullptr;
 
  private:
      void Release(WindowType winType, bool reload);
