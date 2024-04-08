@@ -54,4 +54,12 @@ class Environment {
      * @return                          UTF8-encoded value of the environment variable.
      */
     [[nodiscard]] virtual std::string getenv(const std::string &key) const = 0;
+
+    /**
+     * Same as POSIX `setenv(key, value, 1)`. Takes UTF8-encoded keys and values on all platforms.
+     *
+     * @param key                       UTF8-encoded name of the environment variable to set.
+     * @param value                     UTF8-encoded value of the environment variable.
+     */
+    virtual void setenv(const std::string &key, const std::string &value) const = 0;
 };

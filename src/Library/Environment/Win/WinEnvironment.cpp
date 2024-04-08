@@ -96,6 +96,10 @@ std::string WinEnvironment::getenv(const std::string &key) const {
     return {};
 }
 
+void WinEnvironment::setenv(const std::string &key, const std::string &value) const {
+    _wputenv_s(win::toUtf16(key).c_str(), win::toUtf16(value).c_str()); // Errors are ignored.
+}
+
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
     return std::make_unique<WinEnvironment>();
 }

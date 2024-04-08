@@ -28,6 +28,10 @@ std::string AndroidEnvironment::getenv(const std::string &key) const {
     return {};
 }
 
+void AndroidEnvironment::setenv(const std::string &key, const std::string &value) const {
+    SDL_setenv(key.c_str(), value.c_str(), 1); // Errors are ignored.
+}
+
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
     return std::make_unique<AndroidEnvironment>();
 }

@@ -86,15 +86,10 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _platform = Platform::createStandardPlatform(_logger.get());
     }
 
-    // Prepare OpenAL settings. If we don't do this, game tests in GH action on macos-14 hang for 9 min on init.
-    if (options.headless) {
-        // TODO(captainurist): this is so questionable. Is there a better way to implement it?
-#ifdef _WINDOWS
-        _wputenv_s(L"ALSOFT_DRIVERS", L"null");
-#else
-        setenv("ALSOFT_DRIVERS", "null", 1);
-#endif
-    }
+    // Prepare OpenAL settings. Unfortunately the only way to do this is by manipulating the env variables.
+    // If we don't do this, game tests in GH action on macos-14 will hang for 9 min on init.
+    if (options.headless)
+        _environment->setenv("ALSOFT_DRIVERS", "null");
 
     // Init global data path.
     initDataPath(_platform.get(), _options.dataPath);
