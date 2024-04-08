@@ -173,9 +173,10 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
 
     snapshot(src._visible_outlines, &dst->visibleOutlines);
 
+    // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->pFaces)
-        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes));
+        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_TEXTURE_FRAME)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -200,12 +201,13 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
             pVertex->uFlags |= 1;
     }
 
+    // Not all of the attributes need to be restored.
     for (size_t i = 0; i < dst->pFaces.size(); ++i) {
         BLVFace *pFace = &dst->pFaces[i];
         BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
 
-        // Do not re toggle TextureFrameTable when restoring attribute flags
-        pFace->uAttributes = (pFace->uAttributes & FACE_TEXTURE_FRAME) | FaceAttributes((src.faceAttributes[i] & ~std::to_underlying(FACE_TEXTURE_FRAME)));
+        pFace->uAttributes &= FACE_TEXTURE_FRAME | FACE_HAS_EVENT;
+        pFace->uAttributes |= FaceAttributes(src.faceAttributes[i]) & ~(FACE_HAS_EVENT | FACE_TEXTURE_FRAME);
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
