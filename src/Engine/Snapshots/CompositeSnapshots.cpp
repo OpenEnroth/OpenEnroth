@@ -202,19 +202,10 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     }
 
     // Not all of the attributes need to be restored.
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
-        BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
-
-        pFace->uAttributes &= FACE_TEXTURE_FRAME | FACE_HAS_EVENT;
-        pFace->uAttributes |= FaceAttributes(src.faceAttributes[i]) & ~(FACE_HAS_EVENT | FACE_TEXTURE_FRAME);
-
-        if (pFaceExtra->uEventID) {
-            if (pFaceExtra->HasEventHint())
-                pFace->uAttributes |= FACE_HAS_EVENT;
-            else
-                pFace->uAttributes &= ~FACE_HAS_EVENT;
-        }
+    size_t attributeIndex = 0;
+    for (BLVFace &face : dst->pFaces) {
+        face.uAttributes &= FACE_TEXTURE_FRAME | FACE_HAS_EVENT;
+        face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_TEXTURE_FRAME);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
@@ -449,10 +440,11 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     snapshot(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
     snapshot(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
 
+    // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
         for (const ODMFace &face : model.pFaces)
-            dst->faceAttributes.push_back(std::to_underlying(face.uAttributes));
+            dst->faceAttributes.push_back(std::to_underlying(face.uAttributes & ~FACE_HAS_EVENT));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -470,19 +462,12 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
     reconstruct(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
 
+    // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
-        for (ODMFace &face : model.pFaces)
-            face.uAttributes = FaceAttributes(src.faceAttributes[attributeIndex++]);
-
         for (ODMFace &face : model.pFaces) {
-            if (face.sCogTriggeredID) {
-                if (face.HasEventHint()) {
-                    face.uAttributes |= FACE_HAS_EVENT;
-                } else {
-                    face.uAttributes &= ~FACE_HAS_EVENT;
-                }
-            }
+            face.uAttributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
+            face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
         }
     }
 
