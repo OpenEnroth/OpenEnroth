@@ -71,7 +71,8 @@ if(OE_BUILD_TESTS)
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp
             Tests/String_ut.cpp
-            Tests/UnicodeCrt_ut.cpp)
+            Tests/UnicodeCrt_ut.cpp
+            Tests/TransparentFunctors_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)
