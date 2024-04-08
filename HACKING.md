@@ -105,8 +105,14 @@ Language features:
 * It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
 * Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
 * Use an `int` unless you need something else. Don’t try to avoid negative values by using `unsigned`, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in [core guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic) for more info. However, don't overdo it, use `size_t` for indexing into STL containers.
-* For string function parameters, use `std::string_view` passed by value. In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an `std::string` or passing it by const reference, the performance benefits are almost always negligible. But feel free to use `std::string` or `const std::string &` where it makes your code simpler (e.g. by avoiding jumping through hoops when converting from `std::string_view` to `std::string`). 
-* We generally refrain from using namespaces because OpenEnroth is a relatively small codebase, and we don't need the measures advocated by the Google style guide to prevent name clashes. Exception to this rule is `namespace detail` that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace. We also sometimes use namespaces to group related functions, e.g. see `namespace lod`.
+* For string function parameters, use `std::string_view` passed by value. 
+  * In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an `std::string` or passing it by const reference, the performance benefits are almost always negligible.
+  * Use `TransparentString*` classes if you need to index into a string map using `std::string_view` keys.
+  * However, feel free to use `std::string` or `const std::string &` parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate `std::string` object anyway). 
+* We generally refrain from using namespaces because OpenEnroth is a relatively small codebase, and we don't need the measures advocated by the Google style guide to prevent name clashes.
+  * We don't put user-facing classes into namespaces because it ultimately leads to code where you have `ns1::Context` and `ns2::Context`, and when coupled with a bit of `using` here and there this makes the code harder to read and reason about. Please spend some time coming up with good names for your classes instead.
+  * We sometimes use namespaces to group related functions, e.g. see `namespace lod`.
+  * Exception is `namespace detail` that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.
 
 Error handling:
 * Use `assert`s to check for coding errors and conditions that must never be false, no matter how the program is run.
