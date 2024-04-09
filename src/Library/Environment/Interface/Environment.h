@@ -31,7 +31,7 @@ class Environment {
      * @param path                      UTF8-encoded registry path to query.
      * @return                          UTF8-encoded value at the given path, or an empty string in case of an error.
      */
-    virtual std::string queryRegistry(const std::string &path) const = 0;
+    [[nodiscard]] virtual std::string queryRegistry(const std::string &path) const = 0;
 
     /**
      * Accessor for various system paths.
@@ -39,7 +39,7 @@ class Environment {
      * @param path                      Path to get.
      * @return                          UTF8-encoded path, or an empty string in case of an error.
      */
-    virtual std::string path(EnvironmentPath path) const = 0;
+    [[nodiscard]] virtual std::string path(EnvironmentPath path) const = 0;
 
     /**
      * Same as `std::getenv`, but takes & returns UTF8-encoded keys and values on all platforms.
@@ -53,5 +53,13 @@ class Environment {
      * @param key                       UTF8-encoded name of the environment variable to query.
      * @return                          UTF8-encoded value of the environment variable.
      */
-    virtual std::string getenv(const std::string &key) const = 0;
+    [[nodiscard]] virtual std::string getenv(const std::string &key) const = 0;
+
+    /**
+     * Same as POSIX `setenv(key, value, 1)`. Takes UTF8-encoded keys and values on all platforms.
+     *
+     * @param key                       UTF8-encoded name of the environment variable to set.
+     * @param value                     UTF8-encoded value of the environment variable.
+     */
+    virtual void setenv(const std::string &key, const std::string &value) const = 0;
 };
