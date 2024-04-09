@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7935f6e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8bb877e</span>
    </div>
   </td>
  </tr>
@@ -81,9 +81,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2678db700838d68bc4d532dab6a66ce0"><td class="memTemplParams" colspan="2">template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf22e868d091">Enum</a> &gt; </td></tr>
-<tr class="memitem:a2678db700838d68bc4d532dab6a66ce0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#a2678db700838d68bc4d532dab6a66ce0">insert</a> (<a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf22e868d091">Enum</a> enumValue, const std::string &amp;name, const std::string &amp;comment)</td></tr>
-<tr class="separator:a2678db700838d68bc4d532dab6a66ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72926d16bbadecab58c1337e755d89dd"><td class="memTemplParams" colspan="2">template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf22e868d091">Enum</a> &gt; </td></tr>
+<tr class="memitem:a72926d16bbadecab58c1337e755d89dd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#a72926d16bbadecab58c1337e755d89dd">insert</a> (<a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf22e868d091">Enum</a> enumValue, std::string_view name, std::string_view comment)</td></tr>
+<tr class="separator:a72926d16bbadecab58c1337e755d89dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1070a1cc41adb0d392609f606c2da4f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#a1070a1cc41adb0d392609f606c2da4f3">dump</a> (FILE *file, std::string_view prefix)</td></tr>
 <tr class="separator:a1070a1cc41adb0d392609f606c2da4f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -93,10 +93,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:abc2745bfcbced6fbc2989df4cf90541a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0ca2d7060889eb1a768c099daf61b19"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#ad0ca2d7060889eb1a768c099daf61b19">_commentByValue</a></td></tr>
 <tr class="separator:ad0ca2d7060889eb1a768c099daf61b19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad54a47b73c4c24695ecc6ae131e9c55d"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#ad54a47b73c4c24695ecc6ae131e9c55d">_valueByName</a></td></tr>
-<tr class="separator:ad54a47b73c4c24695ecc6ae131e9c55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a022cc2357dcef5dd960eb46800d6ec97"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#a022cc2357dcef5dd960eb46800d6ec97">_countByName</a></td></tr>
-<tr class="separator:a022cc2357dcef5dd960eb46800d6ec97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0611a3ab67764ccc01e397291b64b9a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="classTransparentString.html">TransparentString</a>, int, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#aa0611a3ab67764ccc01e397291b64b9a">_valueByName</a></td></tr>
+<tr class="separator:aa0611a3ab67764ccc01e397291b64b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad67ea3c668f36d6d107b8fb130ac0c11"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="classTransparentString.html">TransparentString</a>, int, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCodeGenMap.html#ad67ea3c668f36d6d107b8fb130ac0c11">_countByName</a></td></tr>
+<tr class="separator:ad67ea3c668f36d6d107b8fb130ac0c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1070a1cc41adb0d392609f606c2da4f3" name="a1070a1cc41adb0d392609f606c2da4f3"></a>
@@ -135,8 +135,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2678db700838d68bc4d532dab6a66ce0" name="a2678db700838d68bc4d532dab6a66ce0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2678db700838d68bc4d532dab6a66ce0">&#9670;&#160;</a></span>insert()</h2>
+<a id="a72926d16bbadecab58c1337e755d89dd" name="a72926d16bbadecab58c1337e755d89dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72926d16bbadecab58c1337e755d89dd">&#9670;&#160;</a></span>insert()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,13 +155,13 @@ template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>comment</em>&#160;</td>
         </tr>
         <tr>
@@ -202,8 +202,8 @@ template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf
 
 </div>
 </div>
-<a id="a022cc2357dcef5dd960eb46800d6ec97" name="a022cc2357dcef5dd960eb46800d6ec97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a022cc2357dcef5dd960eb46800d6ec97">&#9670;&#160;</a></span>_countByName</h2>
+<a id="ad67ea3c668f36d6d107b8fb130ac0c11" name="ad67ea3c668f36d6d107b8fb130ac0c11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad67ea3c668f36d6d107b8fb130ac0c11">&#9670;&#160;</a></span>_countByName</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -212,7 +212,7 @@ template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;std::string, int&gt; CodeGenMap::_countByName</td>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="classTransparentString.html">TransparentString</a>, int, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a>&gt; CodeGenMap::_countByName</td>
         </tr>
       </table>
   </td>
@@ -246,8 +246,8 @@ template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf
 
 </div>
 </div>
-<a id="ad54a47b73c4c24695ecc6ae131e9c55d" name="ad54a47b73c4c24695ecc6ae131e9c55d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad54a47b73c4c24695ecc6ae131e9c55d">&#9670;&#160;</a></span>_valueByName</h2>
+<a id="aa0611a3ab67764ccc01e397291b64b9a" name="aa0611a3ab67764ccc01e397291b64b9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0611a3ab67764ccc01e397291b64b9a">&#9670;&#160;</a></span>_valueByName</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -256,7 +256,7 @@ template&lt;class <a class="el" href="Json__ut_8cpp.html#a8150b7776c2a1749101acf
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;std::string, int&gt; CodeGenMap::_valueByName</td>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="classTransparentString.html">TransparentString</a>, int, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a>&gt; CodeGenMap::_valueByName</td>
         </tr>
       </table>
   </td>
