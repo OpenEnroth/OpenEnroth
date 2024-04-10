@@ -2,6 +2,7 @@
 
 #include <numeric>
 #include <unordered_map>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"

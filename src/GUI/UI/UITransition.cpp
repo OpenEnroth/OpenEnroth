@@ -1,4 +1,7 @@
+#include "UITransition.h"
+
 #include <cstdlib>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -15,7 +18,6 @@
 #include "Engine/mm7_data.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"

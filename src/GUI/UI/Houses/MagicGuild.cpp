@@ -1,6 +1,7 @@
-#include "GUI/UI/Houses/MagicGuild.h"
+#include "MagicGuild.h"
 
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"

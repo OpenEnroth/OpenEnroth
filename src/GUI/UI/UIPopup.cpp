@@ -1198,7 +1198,7 @@ void CharacterUI_StatsTab_ShowHint() {
             if (hasBow || hasBlaster) {
                 // Blaster takes precendence in the event both are equipped
                 Duration missRecov = pParty->activeCharacter().GetAttackRecoveryTime(!hasBlaster);
-                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov.ticks());
+                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov.ticks()); // NOLINT: this is not ::sprintf.
             } else {
                 description = localization->GetString(LSTR_RECOVERY_TIME_NA);
             }

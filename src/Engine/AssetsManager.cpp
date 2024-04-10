@@ -1,6 +1,7 @@
 #include "Engine/AssetsManager.h"
 
 #include <memory>
+#include <string>
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"

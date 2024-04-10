@@ -1,12 +1,15 @@
 #include "NuklearLogSink.h"
 
-#include "NuklearUtils.h"
-#include "Nuklear.h"
-
-#include <Library/Serialization/Serialization.h>
-
 #include <string>
+#include <memory>
+
 #include <lua.hpp>
+
+#include "Library/Serialization/Serialization.h"
+
+#include "Nuklear.h"
+#include "NuklearUtils.h"
+
 
 void NuklearLogSink::write(const LogCategory& category, LogLevel level, std::string_view message) {
     if (_isLogging) {

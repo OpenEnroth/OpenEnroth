@@ -3,6 +3,7 @@
 #include <cassert>
 #include <utility>
 #include <memory>
+#include <vector>
 
 #include "Engine/Random/Random.h"
 

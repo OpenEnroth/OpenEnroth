@@ -1,4 +1,7 @@
-#include "Engine/AttackList.h"
+#include "AttackList.h"
+
+#include <vector>
+
 #include "Engine/Engine.h"
 
 std::vector<AttackDescription> attackList;

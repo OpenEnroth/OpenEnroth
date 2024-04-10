@@ -1,5 +1,7 @@
 #include "StackTrace.h"
 
+#include <cstdio>
+
 #ifndef __ANDROID__
 #   include <backward.hpp>
 #endif

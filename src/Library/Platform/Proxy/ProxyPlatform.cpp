@@ -1,5 +1,9 @@
 #include "ProxyPlatform.h"
 
+#include <memory>
+#include <vector>
+#include <string>
+
 #include "Library/Platform/Interface/PlatformWindow.h"
 #include "Library/Platform/Interface/PlatformEventLoop.h"
 

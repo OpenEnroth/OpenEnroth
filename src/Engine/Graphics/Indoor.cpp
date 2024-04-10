@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <ranges>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"

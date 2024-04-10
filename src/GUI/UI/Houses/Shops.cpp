@@ -1,7 +1,10 @@
+#include "Shops.h"
+
 #include <cstdlib>
 #include <algorithm>
 #include <string>
 #include <array>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
@@ -19,10 +22,8 @@
 #include "Engine/Tables/ItemTable.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIButton.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/Houses/Shops.h"
 
 #include "Io/Mouse.h"
 

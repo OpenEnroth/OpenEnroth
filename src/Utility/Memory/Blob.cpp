@@ -1,6 +1,9 @@
 #include "Blob.h"
 
+#include <cstdio>
 #include <string>
+#include <memory>
+#include <utility>
 
 #include <mio/mmap.hpp>
 

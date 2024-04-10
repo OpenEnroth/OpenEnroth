@@ -1,3 +1,6 @@
+#include <string>
+#include <vector>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/String.h"

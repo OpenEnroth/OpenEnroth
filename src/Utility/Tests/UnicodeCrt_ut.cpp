@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
+#include <string>
 
 #include "Testing/Unit/UnitTest.h"
 

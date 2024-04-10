@@ -4,6 +4,7 @@
 #include <climits>
 #include <algorithm>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"

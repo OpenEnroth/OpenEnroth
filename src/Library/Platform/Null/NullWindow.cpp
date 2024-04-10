@@ -1,6 +1,8 @@
 #include "NullWindow.h"
 
 #include <cassert>
+#include <string>
+#include <memory>
 
 #include "NullPlatformSharedState.h"
 #include "NullOpenGLContext.h"

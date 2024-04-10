@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <string>
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/Workaround/ToUnderlying.h"

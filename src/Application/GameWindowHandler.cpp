@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <tuple>
 
 #include "Arcomage/Arcomage.h"
 

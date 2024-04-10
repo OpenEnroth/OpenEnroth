@@ -1,6 +1,8 @@
 #include "SdlPlatformSharedState.h"
 
 #include <cassert>
+#include <memory>
+#include <vector>
 
 #include "Library/Logger/Logger.h"
 

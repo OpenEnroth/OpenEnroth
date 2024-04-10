@@ -1,6 +1,7 @@
 #include "LodToolOptions.h"
 
 #include <cstdio>
+#include <string>
 
 #include "Library/Lod/LodReader.h"
 #include "Library/LodFormats/LodFormats.h"

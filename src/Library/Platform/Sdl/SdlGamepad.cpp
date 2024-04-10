@@ -1,6 +1,7 @@
 #include "SdlGamepad.h"
 
 #include <cassert>
+#include <string>
 
 #include "SdlPlatformSharedState.h"
 

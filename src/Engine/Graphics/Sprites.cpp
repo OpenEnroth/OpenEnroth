@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <string>
 
 #include "Engine/OurMath.h"
 #include "Engine/Graphics/DecorationList.h"

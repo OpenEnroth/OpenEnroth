@@ -1,4 +1,5 @@
 #include <cstring>
+#include <string>
 #include <algorithm>
 #include <memory>
 
@@ -27,7 +28,6 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PortalFunctions.h"
-#include "Engine/Graphics/Polygon.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"

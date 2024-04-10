@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <utility>
 #include <thread>
+#include <memory>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"

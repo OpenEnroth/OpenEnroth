@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <utility>
+#include <vector>
+#include <memory>
 
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Random/Random.h"

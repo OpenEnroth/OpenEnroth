@@ -1,6 +1,7 @@
 #include "DistLogSink.h"
 
 #include <utility>
+#include <memory>
 
 void DistLogSink::write(const LogCategory &category, LogLevel level, std::string_view message) {
     for (auto &&logSink : _logSinks) {

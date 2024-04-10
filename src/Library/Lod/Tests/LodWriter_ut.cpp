@@ -1,4 +1,7 @@
 #include <filesystem>
+#include <string>
+#include <vector>
+#include <utility>
 
 #include "Testing/Unit/UnitTest.h"
 

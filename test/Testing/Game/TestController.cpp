@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <utility>
+#include <memory>
+#include <string>
 
 #include "Application/GameKeyboardController.h"
 

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <memory>
+
 Renderer *render = nullptr;
 
 Renderer::Renderer(

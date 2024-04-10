@@ -1,5 +1,7 @@
 #include "Key.h"
 
+#include <string>
+
 #include "Library/Serialization/EnumSerialization.h"
 
 // TODO(captainurist): recheck that ALL keys are actually serializable

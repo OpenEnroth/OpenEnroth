@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <utility>
 #include <thread>
+#include <string>
+#include <memory>
 
 #include "Arcomage/Arcomage.h"
 

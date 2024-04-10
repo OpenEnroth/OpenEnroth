@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Serialization/Serialization.h"

@@ -1,6 +1,8 @@
 #include "KeyboardActionMapping.h"
 
 #include <string>
+#include <map>
+#include <memory>
 
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Spells/CastSpellInfo.h"

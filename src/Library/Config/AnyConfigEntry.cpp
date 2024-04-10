@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <utility>
+#include <string>
 
 #include "ConfigSection.h"
 #include "AnyHandler.h"

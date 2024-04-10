@@ -1,4 +1,7 @@
 #include <unordered_set>
+#include <string>
+#include <algorithm>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
