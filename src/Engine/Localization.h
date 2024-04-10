@@ -10,7 +10,6 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/PartyEnums.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/Format.h"
 
