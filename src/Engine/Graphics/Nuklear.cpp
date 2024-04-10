@@ -763,7 +763,9 @@ int Nuklear::KeyEvent(PlatformKey key) {
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
             lua_pushlightuserdata(lua, (void *)&wins[hk.winType]);
             int err = lua_pcall(lua, 1, 1, 0);
-            lua_error_check(hk.winType, lua, err);
+            if (lua_error_check(hk.winType, lua, err)) {
+                return false;
+            }
             return lua_toboolean(lua, -1) != 0;
         }
     }
@@ -3620,16 +3622,14 @@ static bool load_init_lua_file(const char *file) {
     }
 
     int err = lua_pcall(lua, 0, 0, 0);
-    if (lua_error_check(WINDOW_null, lua, err)) {
-        logger->warning("Nuklear: error loading init template: {}", lua_tostring(lua, -1));
+    if (lua_error_check(lua, err)) {
         return false;
     }
 
     lua_getfield(lua, LUA_GLOBALSINDEX, "ui_init");
     lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
     err = lua_pcall(lua, 1, 0, 0);
-    if (lua_error_check(WINDOW_null, lua, err)) {
-        logger->warning("Nuklear: error executing init template: {}", lua_tostring(lua, -1));
+    if (lua_error_check(lua, err)) {
         return false;
     }
 

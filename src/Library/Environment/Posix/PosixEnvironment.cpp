@@ -22,6 +22,10 @@ std::string PosixEnvironment::getenv(const std::string &key) const {
     return {};
 }
 
+void PosixEnvironment::setenv(const std::string &key, const std::string &value) const {
+    ::setenv(key.c_str(), value.c_str(), 1); // Errors are ignored.
+}
+
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
     return std::make_unique<PosixEnvironment>();
 }
