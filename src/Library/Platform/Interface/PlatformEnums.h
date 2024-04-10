@@ -178,6 +178,17 @@ enum class PlatformKey : int {
     KEY_GAMEPAD_L2,
     KEY_GAMEPAD_R2,
 
+    KEY_CAPSLOCK,
+    KEY_PAUSE,
+    KEY_HELP,
+    KEY_CLEAR,
+    KEY_DIVIDE,
+    KEY_EQUALS,
+    KEY_MULTIPLY,
+    KEY_MINUS,
+    KEY_SCROLLLOCK,
+    KEY_NUMLOCKCLEAR,
+
     KEY_NONE,
 
     KEY_FIRST = KEY_CHAR,

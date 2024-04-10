@@ -116,7 +116,7 @@ void initDataPath(Platform *platform, std::string_view dataPath) {
     }
 }
 
-Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
+Game::Game(PlatformApplication *application, UiSystem &uiSystem, std::shared_ptr<GameConfig> config) : _uiSystem(uiSystem) {
     _application = application;
     _config = config;
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
@@ -129,18 +129,18 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    ShowMM7IntroVideo_and_LoadingScreen();
+    //ShowMM7IntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
-    GUIWindow_MainMenu::drawCopyrightAndInit([&] {
-        engine->SecondaryInitialization();
-        FinalInitialization();
-    });
+    //GUIWindow_MainMenu::drawCopyrightAndInit([&] {
+    //})
+    engine->SecondaryInitialization();
+    FinalInitialization();
 
     // logger->Warning("MM: entering main loop");
     while (true) {
-        GUIWindow_MainMenu::loop();
+        GUIWindow_MainMenu::loop(_uiSystem);
         uGameState = GAME_STATE_PLAYING;
 
         if (!loop()) {

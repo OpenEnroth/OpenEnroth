@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+#include "RmlUi/Core.h"
+#include "RmlUi/Debugger.h"
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
@@ -23,6 +26,8 @@
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
+
+#include "GUI/NewSystem/UiSystem.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -133,6 +138,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
+    _uiSystem = std::make_unique<UiSystem>(*_application, *_renderer.get(), true, "ui");
+
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
     if (!_nuklear)
@@ -158,7 +165,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _engine->Initialize();
 
     // Init game.
-    _game = std::make_unique<Game>(_application.get(), _config);
+    _game = std::make_unique<Game>(_application.get(), *_uiSystem.get(), _config);
 }
 
 GameStarter::~GameStarter() {

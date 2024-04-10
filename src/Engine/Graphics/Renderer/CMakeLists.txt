@@ -36,9 +36,11 @@ target_link_libraries(engine_graphics_renderer
         glm::glm
         OpenGL::GL
         engine_graphics
+	RmlCore
         PRIVATE
         libluajit
         glad
-        nuklear)
+        nuklear
+	ui_new_system)
 
 

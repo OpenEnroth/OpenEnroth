@@ -48,5 +48,6 @@ target_link_libraries(application
         library_platform_implementation
         library_environment_implementation
         utility
+	ui_new_system
 	PRIVATE
 	libluajit)

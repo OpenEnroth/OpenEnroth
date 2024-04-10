@@ -1,5 +1,8 @@
 #include "GUI/UI/UIMainMenu.h"
 
+#include <RmlUi/Core.h>
+#include <RmlUi/Debugger.h>
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -10,6 +13,11 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
+#include "GUI/NewSystem/UiSystem.h"
+
+#include "Utility/DataPath.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Io/Mouse.h"
 
@@ -188,7 +196,7 @@ void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {
     nuklear->Release(WINDOW_MainMenu_Load);
 }
 
-void GUIWindow_MainMenu::loop() {
+void GUIWindow_MainMenu::loop(UiSystem &uiSystem) {
     pAudioPlayer->stopSounds();
     pAudioPlayer->MusicPlayTrack(MUSIC_MAIN_MENU);
 
@@ -201,16 +209,30 @@ void GUIWindow_MainMenu::loop() {
     SetCurrentMenuID(MENU_MAIN);
     // window->Activate();
 
+    auto mainMenuHandle = uiSystem.loadScreen("main_menu.rml");
+
     while (GetCurrentMenuID() == MENU_MAIN) {
         MessageLoopWithWait();
+
+        uiSystem.update();
+
+        if (engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_A)) {
+            uiSystem.unloadScreen(mainMenuHandle);
+            mainMenuHandle = uiSystem.loadScreen("main_menu.rml");
+        }
 
         render->BeginScene2D();
         {
             pWindow_MainMenu->EventLoop();
+
             GUI_UpdateWindows();
         }
+
         render->Present();
+        //rmlRenderer->Clear();
     }
+
+    uiSystem.unloadScreen(mainMenuHandle);
 
     nuklear->Release(WINDOW_MainMenu);
     pWindow_MainMenu->Release();

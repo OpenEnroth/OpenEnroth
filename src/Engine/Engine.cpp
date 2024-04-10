@@ -200,7 +200,7 @@ void Engine::drawHUD() {
     mouse->Activate();
 
     nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
+    //nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 
 //----- (0044103C) --------------------------------------------------------

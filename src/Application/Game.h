@@ -13,10 +13,11 @@ struct DecalBuilder;
 class PlatformApplication;
 class Platform;
 class Menu;
+class UiSystem;
 
 class Game {
  public:
-    Game(PlatformApplication *application, std::shared_ptr<GameConfig> config);
+    Game(PlatformApplication *application, UiSystem &uiSystem, std::shared_ptr<GameConfig> config);
     ~Game();
 
     int run();
@@ -35,6 +36,7 @@ class Game {
     std::shared_ptr<GameConfig> _config;
     DecalBuilder *_decalBuilder = nullptr;
     Menu *_menu = nullptr;
+    UiSystem &_uiSystem;
 };
 
 void initDataPath(Platform *platform, std::string_view dataPath);

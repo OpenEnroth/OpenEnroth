@@ -8,6 +8,8 @@ SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *wi
     assert(state);
     assert(window);
     assert(context);
+
+    bind();
 }
 
 SdlOpenGLContext::~SdlOpenGLContext() {}

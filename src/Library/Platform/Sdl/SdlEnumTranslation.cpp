@@ -121,6 +121,17 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     case SDL_SCANCODE_KP_9:             return PlatformKey::KEY_NUMPAD_9;
     case SDL_SCANCODE_KP_ENTER:         return PlatformKey::KEY_RETURN;
 
+    case SDL_SCANCODE_CAPSLOCK:         return PlatformKey::KEY_CAPSLOCK;
+    case SDL_SCANCODE_PAUSE:            return PlatformKey::KEY_PAUSE;
+    case SDL_SCANCODE_HELP:             return PlatformKey::KEY_HELP;
+    case SDL_SCANCODE_CLEAR:            return PlatformKey::KEY_CLEAR;
+    case SDL_SCANCODE_KP_DIVIDE:        return PlatformKey::KEY_DIVIDE;
+    case SDL_SCANCODE_KP_EQUALS:        return PlatformKey::KEY_EQUALS;
+    case SDL_SCANCODE_KP_MULTIPLY:      return PlatformKey::KEY_MULTIPLY;
+    case SDL_SCANCODE_MINUS:            return PlatformKey::KEY_MINUS;
+    case SDL_SCANCODE_SCROLLLOCK:       return PlatformKey::KEY_SCROLLLOCK;
+    case SDL_SCANCODE_NUMLOCKCLEAR:     return PlatformKey::KEY_NUMLOCKCLEAR;
+
     default:                            return PlatformKey::KEY_NONE;
     }
 }

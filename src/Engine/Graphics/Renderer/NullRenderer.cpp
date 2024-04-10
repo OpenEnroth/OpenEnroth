@@ -165,3 +165,5 @@ void NullRenderer::DrawTwodVerts() {}
 void NullRenderer::ReloadShaders() {}
 
 void NullRenderer::DoRenderBillboards_D3D() {}
+
+void NullRenderer::setUiRenderer(UiRenderer *) {}

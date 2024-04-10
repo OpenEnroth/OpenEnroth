@@ -41,3 +41,6 @@
 [submodule "thirdparty/glob"]
 	path = thirdparty/glob
 	url = https://github.com/p-ranav/glob.git
+[submodule "thirdparty/RmlUi"]
+	path = thirdparty/RmlUi
+	url = https://github.com/mikke89/RmlUi.git

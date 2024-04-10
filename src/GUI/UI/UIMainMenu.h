@@ -4,6 +4,8 @@
 
 #include "GUI/GUIWindow.h"
 
+class UiSystem;
+
 class GUIWindow_MainMenu : public GUIWindow {
  public:
     GUIWindow_MainMenu();
@@ -19,7 +21,7 @@ class GUIWindow_MainMenu : public GUIWindow {
      * @param initFunc     Pointer to code which is executed while copyright window is showed.
      */
     static void drawCopyrightAndInit(std::function<void()> initFunc);
-    static void loop();
+    static void loop(UiSystem &uiSystem);
 
  protected:
     static void drawMM7CopyrightWindow();

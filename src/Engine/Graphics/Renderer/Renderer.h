@@ -28,6 +28,7 @@ class Vis;
 struct Lightmap;
 struct Decal;
 struct Polygon;
+class UiRenderer;
 
 bool PauseGameDrawing();
 
@@ -192,6 +193,8 @@ class Renderer {
     virtual bool Reinitialize(bool firstInit = false) = 0;
     virtual void ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
+
+    virtual void setUiRenderer(UiRenderer *uiRenderer) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;

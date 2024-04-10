@@ -6,6 +6,8 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 # Note that setting a CMAKE_POLICY_* variable is the intended way to pass this policy to a subproject.
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+set(BUILD_TESTING OFF)
+
 add_subdirectory(fast_float)
 add_subdirectory(glm)
 add_subdirectory(magic_enum)
@@ -48,6 +50,10 @@ if(OE_BUILD_TESTS)
     set(BUILD_GMOCK OFF)
     add_subdirectory(googletest)
 endif()
+
+set(BUILD_SHARED_LIBS OFF)
+add_subdirectory(RmlUi)
+set(BUILD_SHARED_LIBS OFF)
 
 # backward
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
