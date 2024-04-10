@@ -24,7 +24,7 @@
 #include "Engine/Random/Random.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 

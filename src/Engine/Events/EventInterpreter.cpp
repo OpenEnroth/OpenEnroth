@@ -24,6 +24,7 @@
 #include "Utility/Math/TrigLut.h"
 
 #include "GUI/GUIProgressBar.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"

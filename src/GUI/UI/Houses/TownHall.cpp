@@ -13,9 +13,10 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Engine.h"
 
-#include "GUI/UI/UIHouses.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIFont.h"
+#include "GUI/UI/UIHouses.h"
 
 #include "Io/KeyboardActionMapping.h"
 

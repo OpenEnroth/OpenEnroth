@@ -18,6 +18,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
 

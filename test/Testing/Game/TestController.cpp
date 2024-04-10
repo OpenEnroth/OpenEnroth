@@ -15,6 +15,8 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 
+#include "GUI/GUIMessageQueue.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
