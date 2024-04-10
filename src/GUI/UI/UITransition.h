@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Engine/MapEnums.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouseEnums.h"
 

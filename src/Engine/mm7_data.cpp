@@ -1,5 +1,8 @@
 #include "Engine/mm7_data.h"
 
+#include <string>
+#include <vector>
+
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
 #include "OurMath.h"

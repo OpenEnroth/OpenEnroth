@@ -1,6 +1,7 @@
 #include "ConfigSection.h"
 
 #include <cassert>
+#include <vector>
 
 #include "Utility/MapAccess.h"
 

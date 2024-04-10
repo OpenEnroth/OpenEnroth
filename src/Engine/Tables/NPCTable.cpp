@@ -1,5 +1,7 @@
 #include "NPCTable.h"
 
+#include <string>
+
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"

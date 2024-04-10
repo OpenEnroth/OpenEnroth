@@ -1,4 +1,7 @@
-#include "Io/InputAction.h"
+#include "InputAction.h"
+
+#include <string>
+#include <vector>
 
 #include "Library/Serialization/EnumSerialization.h"
 

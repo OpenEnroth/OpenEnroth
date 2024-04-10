@@ -1,5 +1,7 @@
 #include "TextureFrameTable.h"
 
+#include <string>
+
 #include "Engine/AssetsManager.h"
 
 #include "Library/Logger/Logger.h"

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"

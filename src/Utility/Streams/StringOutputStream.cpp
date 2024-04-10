@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <string>
 
 StringOutputStream::StringOutputStream(std::string *target) : _target(target) {
     assert(target);

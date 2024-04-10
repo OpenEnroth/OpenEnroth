@@ -1,5 +1,7 @@
 #include "LOD.h"
 
+#include <memory>
+
 #include "Utility/DataPath.h"
 
 std::unique_ptr<LodReader> pSave_LOD;

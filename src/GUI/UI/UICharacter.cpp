@@ -1,5 +1,6 @@
 #include "UICharacter.h"
 
+#include <cstdio>
 #include <algorithm>
 #include <vector>
 #include <string>

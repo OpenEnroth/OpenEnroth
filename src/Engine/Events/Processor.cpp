@@ -1,4 +1,7 @@
+#include "Processor.h"
+
 #include <vector>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -11,7 +14,6 @@
 #include "Engine/Events/EventMap.h"
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventInterpreter.h"
-#include "Engine/Events/Processor.h"
 #include "Engine/Party.h"
 
 #include "GUI/UI/UIStatusBar.h"

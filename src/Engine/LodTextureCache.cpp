@@ -1,10 +1,10 @@
 #include "LodTextureCache.h"
 
 #include <utility>
+#include <string>
 
 #include "Library/LodFormats/LodFormats.h"
 
-#include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
 

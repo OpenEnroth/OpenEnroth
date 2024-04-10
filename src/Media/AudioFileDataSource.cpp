@@ -1,9 +1,11 @@
 #include "AudioFileDataSource.h"
 
+#include <memory>
+
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswresample/swresample.h>
+#include <libavcodec/avcodec.h> // NOLINT: not a C system header.
+#include <libavformat/avformat.h> // NOLINT: not a C system header.
+#include <libswresample/swresample.h> // NOLINT: not a C system header.
 }
 
 #include "Library/Logger/Logger.h"

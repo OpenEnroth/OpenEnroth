@@ -2,6 +2,7 @@
 
 #include <string>
 #include <algorithm>
+#include <tuple>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"

@@ -1,6 +1,7 @@
 #include <map>
 #include <unordered_map>
 #include <type_traits>
+#include <string>
 
 #include "Testing/Unit/UnitTest.h"
 

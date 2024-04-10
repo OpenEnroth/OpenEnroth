@@ -1,6 +1,8 @@
-#include "GUI/UI/NPCTopics.h"
+#include "NPCTopics.h"
 
 #include <utility>
+#include <string>
+#include <vector>
 
 #include "Engine/ArenaEnumFunctions.h"
 #include "Engine/AssetsManager.h"
@@ -22,12 +24,11 @@
 #include "Engine/Random/Random.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
 
 int membershipOrTrainingApproved;
 int topicEventId; // event id of currently viewed scripted NPC event
@@ -399,7 +400,7 @@ void oracleDialogue() {
     if (item_id != ITEM_NULL) {
         pParty->pCharacters[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // TODO(captainurist): what if fmt throws?
-        current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
+        current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful" // NOLINT: this is not ::sprintf.
                                         fmt::format("{::}{}\f00000", colorTable.Sunflower.tag(),
                                                     pItemTable->pItems[item_id].pUnidentifiedName));
     }

@@ -1,6 +1,7 @@
 #include "EngineControlComponent.h"
 
 #include <utility>
+#include <memory>
 
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 

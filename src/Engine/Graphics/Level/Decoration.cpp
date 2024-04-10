@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <vector>
 
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"

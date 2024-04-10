@@ -1,11 +1,11 @@
-#include <string>
+#include "Temple.h"
 
-#include "GUI/UI/Houses/Temple.h"
+#include <string>
+#include <vector>
 
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/GUIFont.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 
 #include "Engine/Localization.h"

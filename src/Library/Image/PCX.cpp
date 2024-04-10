@@ -1,9 +1,10 @@
 #include "PCX.h"
 
-#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
+#include <memory>
 
 #include "Utility/Exception.h"
 

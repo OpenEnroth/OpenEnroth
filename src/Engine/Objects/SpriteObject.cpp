@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"

@@ -1,6 +1,8 @@
 #include "FileOutputStream.h"
 
 #include <cassert>
+#include <cstdio>
+#include <string>
 
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"

@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <ranges>
+#include <memory>
+#include <utility>
 
 #include "Library/Platform/Proxy/ProxyPlatform.h"
 #include "Library/Platform/Proxy/ProxyEventLoop.h"

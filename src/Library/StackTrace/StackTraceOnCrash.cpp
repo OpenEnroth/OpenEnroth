@@ -1,5 +1,7 @@
 #include "StackTraceOnCrash.h"
 
+#include <memory>
+
 #ifndef __ANDROID__
 #   include <backward.hpp>
 #endif

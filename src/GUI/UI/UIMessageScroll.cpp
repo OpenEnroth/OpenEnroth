@@ -1,3 +1,7 @@
+#include "UIMessageScroll.h"
+
+#include <string>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Tables/ItemTable.h"
@@ -5,7 +9,6 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 
 #include "GUI/GUIFont.h"
-#include "GUI/UI/UIMessageScroll.h"
 
 void CreateMsgScrollWindow(ItemId mscroll_id) {
     if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id)) {

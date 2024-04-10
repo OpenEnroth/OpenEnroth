@@ -1,5 +1,8 @@
 #include "GamePathResolver.h"
 
+#include <string>
+#include <vector>
+
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
 

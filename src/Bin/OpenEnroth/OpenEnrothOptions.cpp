@@ -3,6 +3,8 @@
 #include <memory>
 #include <utility>
 #include <ranges>
+#include <vector>
+#include <string>
 
 #include <glob/glob.h> // NOLINT: not a C system include.
 

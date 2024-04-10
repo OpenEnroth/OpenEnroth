@@ -2,9 +2,11 @@
 
 #include <string>
 
+#include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/ItemEnumFunctions.h"
+
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIWindow.h"
-#include "Engine/Objects/ItemEnums.h"
 
 class GUIWindow_MessageScroll : public GUIWindow {
  public:

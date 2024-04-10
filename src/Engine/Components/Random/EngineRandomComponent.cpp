@@ -1,6 +1,7 @@
 #include "EngineRandomComponent.h"
 
 #include <cassert>
+#include <memory>
 
 #include "Engine/Random/Random.h"
 

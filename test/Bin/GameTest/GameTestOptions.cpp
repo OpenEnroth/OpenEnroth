@@ -1,11 +1,9 @@
 #include "GameTestOptions.h"
 
 #include <memory>
+#include <string>
 
 #include "Library/Cli/CliApp.h"
-
-#include "Application/GamePathResolver.h"
-
 
 GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     GameTestOptions result;

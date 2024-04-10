@@ -2,17 +2,18 @@
 #include <cassert>
 #include <utility>
 #include <ranges>
+#include <vector>
+#include <string>
+#include <algorithm>
 
 #include "Application/GameStarter.h"
 
-#include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"

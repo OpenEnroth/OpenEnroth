@@ -1,6 +1,7 @@
-#include <string>
+#include "Tavern.h"
 
-#include "GUI/UI/Houses/Tavern.h"
+#include <string>
+#include <vector>
 
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIFont.h"

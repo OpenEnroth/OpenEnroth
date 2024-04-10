@@ -1,3 +1,5 @@
+#include "TownPortalBook.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -11,7 +13,7 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
 
-#include "GUI/UI/Books/TownPortalBook.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
 

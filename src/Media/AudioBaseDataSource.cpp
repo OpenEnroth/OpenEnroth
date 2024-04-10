@@ -1,6 +1,7 @@
 #include "AudioBaseDataSource.h"
 
 #include <utility>
+#include <memory>
 
 extern "C" {
 #include <libavcodec/avcodec.h> // NOLINT: not a C system header.

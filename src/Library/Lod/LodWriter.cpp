@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include "Library/Serialization/Serialization.h"
 #include "Library/Snapshots/SnapshotSerialization.h"

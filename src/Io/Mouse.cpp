@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <list>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"

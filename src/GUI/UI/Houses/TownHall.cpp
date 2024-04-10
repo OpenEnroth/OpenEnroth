@@ -1,6 +1,8 @@
-#include <cassert>
+#include "TownHall.h"
 
-#include "GUI/UI/Houses/TownHall.h"
+#include <cassert>
+#include <vector>
+#include <string>
 
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -11,10 +13,10 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Engine.h"
 
-#include "GUI/UI/UIHouses.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/UI/UIHouses.h"
 
 #include "Io/KeyboardActionMapping.h"
 
@@ -194,5 +196,5 @@ std::string GUIWindow_TownHall::bountyHuntingText() {
 
     // TODO(captainurist): what do we do with exceptions inside fmt?
     std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->infos[_bountyHuntMonsterId].name, colorTable.White.tag());
-    return fmt::sprintf(_bountyHuntText, name, 100 * pMonsterStats->infos[_bountyHuntMonsterId].level);
+    return fmt::sprintf(_bountyHuntText, name, 100 * pMonsterStats->infos[_bountyHuntMonsterId].level); // NOLINT: this is not ::sprintf.
 }

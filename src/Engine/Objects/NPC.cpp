@@ -1,5 +1,7 @@
 #include "Engine/Objects/NPC.h"
 
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"

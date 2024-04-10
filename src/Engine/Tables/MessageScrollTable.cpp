@@ -1,5 +1,7 @@
 #include "MessageScrollTable.h"
 
+#include <string>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 

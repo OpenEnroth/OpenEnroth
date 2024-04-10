@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"

@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <ranges>
+#include <string>
 
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/Actor.h"
