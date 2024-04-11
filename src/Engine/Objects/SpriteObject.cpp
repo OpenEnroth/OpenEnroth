@@ -98,11 +98,11 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set blank velocity
-    vVelocity = Vec3f(0, 0, 0);
+    vVelocity = Vec3i(0, 0, 0);
 
     // calcualte angle velocity
     if (speed) {
-        vVelocity = Vec3f::fromPolar(speed, yaw, pitch);
+        vVelocity = Vec3i::fromPolar(speed, yaw, pitch);
     }
 
     // copy sprite object into slot
@@ -155,7 +155,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (bmodelPid) {
             splashZ = level + 30;
         }
-        createSplashObject(Vec3f(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
+        createSplashObject(Vec3i(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
         SpriteObject::OnInteraction(uLayingItemID);
     }
 
@@ -168,8 +168,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
-            float dotFix = std::abs(dot(norm.toFloat(), pSpriteObjects[uLayingItemID].vVelocity));
-            pSpriteObjects[uLayingItemID].vVelocity += dotFix * norm.toFloat();
+            int dotFix = std::abs(dot(norm, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
+            // v60 = ((uint64_t)(v56 * (int64_t)v51.x) >> 16);
+            // v60 = ((uint64_t)(v56 * (int64_t)v51.y) >> 16);
+            // v60 = ((uint64_t)(v56 * (int64_t)v51.z) >> 16);
+            pSpriteObjects[uLayingItemID].vVelocity.x += fixpoint_mul(dotFix, norm.x);
+            pSpriteObjects[uLayingItemID].vVelocity.y += fixpoint_mul(dotFix, norm.y);
+            pSpriteObjects[uLayingItemID].vVelocity.z += fixpoint_mul(dotFix, norm.z);
         } else {
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
@@ -190,7 +195,9 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 pSpriteObjects[uLayingItemID].vVelocity.z = 0;
             }
 
-            pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
+            pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
+            pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
+            pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
             if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() < 400) {
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
@@ -221,7 +228,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         collision_state.uSectorID = 0;
         collision_state.position_lo = pSpriteObjects[uLayingItemID].vPosition + Vec3f(0, 0, collision_state.radius_lo + 1);
         collision_state.position_hi = collision_state.position_lo;
-        collision_state.velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        collision_state.velocity = pSpriteObjects[uLayingItemID].vVelocity.toFloat();
         if (collision_state.PrepareAndCheckIfStationary()) {
             return;
         }
@@ -260,7 +267,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (collisionBmodelPid) {
                 splashZ = collisionLevel + 30;
             }
-            createSplashObject(Vec3f(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
+            createSplashObject(Vec3i(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
             SpriteObject::OnInteraction(uLayingItemID);
             return;
         }
@@ -301,10 +308,10 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                         eventProcessor(face->sCogTriggeredID, Pid(), 1);
                     }
                 } else {
-                    pSpriteObjects[uLayingItemID].vVelocity = Vec3f(0, 0, 0);
+                    pSpriteObjects[uLayingItemID].vVelocity = Vec3i(0, 0, 0);
                 }
             } else {
-                float dotFix = std::abs(dot(face->facePlane.normal, pSpriteObjects[uLayingItemID].vVelocity));
+                float dotFix = std::abs(dot(face->facePlane.normal, pSpriteObjects[uLayingItemID].vVelocity.toFloat()));
                 dotFix = std::max(dotFix, collision_state.speed / 8);
                 float newZVel = dotFix * face->facePlane.normal.z;
                 pSpriteObjects[uLayingItemID].vVelocity.x += 2 * dotFix * face->facePlane.normal.x;
@@ -322,7 +329,9 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             }
         }
         //LABEL_74:
-        pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
+        pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
+        pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
+        pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
     }
     Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.toInt().xy() - pLevelDecorations[collision_state.pid.id()].vPosition.toInt().xy();
     int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr());
@@ -370,7 +379,7 @@ LABEL_25:
         for (int loop = 0; loop < 100; loop++) {
             collision_state.position_hi = pSpriteObject->vPosition + Vec3f(0, 0, collision_state.radius_lo + 1);
             collision_state.position_lo = collision_state.position_hi;
-            collision_state.velocity = pSpriteObject->vVelocity;
+            collision_state.velocity = pSpriteObject->vVelocity.toFloat();
             collision_state.uSectorID = pSpriteObject->uSectorID;
             if (collision_state.PrepareAndCheckIfStationary()) {
                 return;
@@ -444,7 +453,7 @@ LABEL_25:
                 collision_state.ignored_face_id = collision_state.pid.id();
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
-                    float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity));
+                    float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity.toFloat()));
                     dotFix = std::max(dotFix, collision_state.speed / 8);
                     pSpriteObject->vVelocity.x += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.x;
                     pSpriteObject->vVelocity.y += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.y;
@@ -459,7 +468,9 @@ LABEL_25:
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
                         eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
-                    pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
+                    pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+                    pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+                    pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
                 if (pObject->uFlags & OBJECT_DESC_BOUNCE) {
@@ -470,7 +481,9 @@ LABEL_25:
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
                         eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
-                    pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
+                    pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+                    pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+                    pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
                 pSpriteObject->vVelocity.z = 0;
@@ -478,13 +491,17 @@ LABEL_25:
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
                         eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
-                    pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
+                    pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+                    pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+                    pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
-                pSpriteObject->vVelocity = Vec3f(0, 0, 0);
+                pSpriteObject->vVelocity = Vec3i(0, 0, 0);
                 pSpriteObject->vPosition.z = pIndoor->pVertices[*pIndoor->pFaces[pidId].pVertexIDs].z + 1;
             }
-            pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
+            pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+            pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+            pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         }
         // end loop
     }
@@ -498,9 +515,11 @@ LABEL_25:
                 pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
         }
-        pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
+        pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+        pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+        pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         if (pSpriteObject->vVelocity.xy().lengthSqr() < 400) {
-            pSpriteObject->vVelocity = Vec3f(0, 0, 0);
+            pSpriteObject->vVelocity = Vec3i(0, 0, 0);
             if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) {
                 return;
             }
@@ -646,15 +665,15 @@ bool SpriteObject::applyShrinkRayAoe() {
     return isApplied;
 }
 
-bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
+bool SpriteObject::dropItemAt(SpriteId sprite, Vec3i pos, int speed, int count,
                               bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
-    pSpellObject.vPosition = pos;
+    pSpellObject.vPosition = pos.toFloat();
     pSpellObject.uAttributes = attributes;
-    pSpellObject.uSectorID = pIndoor->GetSector(pos.toInt());
+    pSpellObject.uSectorID = pIndoor->GetSector(pos);
     pSpellObject.containing_item.Reset();
     if (item) {
         pSpellObject.containing_item = *item;
@@ -685,13 +704,13 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
 }
 
 // splash on water
-void SpriteObject::createSplashObject(Vec3f pos) {
+void SpriteObject::createSplashObject(Vec3i pos) {
     SpriteObject sprite;
     sprite.containing_item.Reset();
     sprite.uType = SPRITE_WATER_SPLASH;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
-    sprite.vPosition = pos;
-    sprite.uSectorID = pIndoor->GetSector(pos.toInt());
+    sprite.vPosition = pos.toFloat();
+    sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
         pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Item, objID));
@@ -897,7 +916,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
-            object->vVelocity = Vec3f(0, 0, 0);
+            object->vVelocity = Vec3i(0, 0, 0);
             int iceParticles = (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER) ? 9 : 7;
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             SpriteObject temp = *object;
@@ -972,7 +991,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
-            object->vVelocity = Vec3f(0, 0, 0);
+            object->vVelocity = Vec3i(0, 0, 0);
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             SpriteObject temp = *object;
             for (int i = 0; i < 8; i++) {
@@ -1254,11 +1273,11 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     Vec3i velocity;
 
     if (pid.type() == OBJECT_Character) {
-        velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
     } else if (pid.type() == OBJECT_Actor) {
-        velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         switch (pSpriteObjects[uLayingItemID].spell_caster_pid.type()) {
             case OBJECT_Actor:
