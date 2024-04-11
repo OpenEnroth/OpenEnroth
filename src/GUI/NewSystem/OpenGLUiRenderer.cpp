@@ -1122,7 +1122,7 @@ Rml::TextureHandle OpenGLUiRenderer::LoadTexture(Rml::Vector2i &texture_dimensio
         auto handle = graphicsImage->renderId().value();
         // I don't like this approach that much but RmlUi tell us when to release a texture by giving us the handle as the only information
         // On the other end our asset/engine system prefer to receive a Release on the GraphicsImage class so I'm keeping these things tight in this map
-        _graphicsImageMap.insert({ handle, graphicsImage });
+        _graphicsImageMap.insert({ handle, { graphicsImage, false } });
         texture_dimensions.x = graphicsImage->width();
         texture_dimensions.y = graphicsImage->height();
         return handle;
@@ -1130,9 +1130,18 @@ Rml::TextureHandle OpenGLUiRenderer::LoadTexture(Rml::Vector2i &texture_dimensio
         std::filesystem::path path(source);
         GraphicsImage *graphicsImage = assets->getImage_ColorKey(path.stem().string());
         auto handle = graphicsImage->renderId().value();
-        _graphicsImageMap.insert({ handle, graphicsImage });
+        _graphicsImageMap.insert({ handle, { graphicsImage, false } });
         texture_dimensions.x = graphicsImage->width();
         texture_dimensions.y = graphicsImage->height();
+        return handle;
+    } else if (extensionName == "fnt") {
+        //Fonts are loaded externally right now.
+        std::filesystem::path path(source);
+        GUIFont* font = assets->getFont(path.filename().string());
+        auto handle = font->fonttex->renderId().value();
+        _graphicsImageMap.insert({ handle, { font->fonttex, true } });
+        texture_dimensions.x = font->fonttex->width();
+        texture_dimensions.y = font->fonttex->height();
         return handle;
     } else if (extensionName == "tga") {
         Rml::FileInterface *file_interface = Rml::GetFileInterface();
@@ -1393,7 +1402,10 @@ void OpenGLUiRenderer::RenderBlur(float sigma, const Gfx::FramebufferData &sourc
 
 void OpenGLUiRenderer::ReleaseTexture(Rml::TextureHandle texture_handle) {
     if (auto itr = _graphicsImageMap.find(texture_handle); itr != _graphicsImageMap.end()) {
-        itr->second->releaseRenderId();
+        // Release render id only if the texture if not a font
+        if (std::get<1>(itr->second)) {
+            std::get<0>(itr->second)->releaseRenderId();
+        }
         _graphicsImageMap.erase(itr);
     } else {
         glDeleteTextures(1, (GLuint *)&texture_handle);

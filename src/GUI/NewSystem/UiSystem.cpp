@@ -3,6 +3,7 @@
 #include "OpenGLUiRenderer.h"
 #include "RmlEventListenerInstancer.h"
 #include "RmlFileInterface.h"
+#include "RmlFontEngineInterface.h"
 #include "RmlSystemInterface.h"
 #include "UiEventHandler.h"
 
@@ -22,6 +23,7 @@ UiSystem::UiSystem(PlatformApplication &platformApplication, Renderer &renderer,
     , _debugContextEnabled(debugContextEnabled) {
     _createRenderer();
     _createFileInterface();
+    _createFontEngineInterface();
     _createSystemInterface();
     _createEventListenerInstancer();
 
@@ -70,6 +72,11 @@ void UiSystem::_createRenderer() {
 void UiSystem::_createFileInterface() {
     _fileInterface = std::make_unique<RmlFileInterface>();
     Rml::SetFileInterface(_fileInterface.get());
+}
+
+void UiSystem::_createFontEngineInterface() {
+    _fontEngineInterface = std::make_unique<RmlFontEngineInterface>();
+    Rml::SetFontEngineInterface(_fontEngineInterface.get());
 }
 
 void UiSystem::_createSystemInterface() {

@@ -61,7 +61,7 @@ GUIFont::~GUIFont() {
 
 std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile, std::string_view pFontPalette) {
     std::unique_ptr<GUIFont> result = std::make_unique<GUIFont>();
-
+    result->fontFile = pFontFile;
     deserialize(pIcons_LOD->LoadCompressedTexture(pFontFile), &result->pData, tags::via<FontData_MM7>);
 
     Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);

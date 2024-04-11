@@ -4,6 +4,7 @@
 #include <RmlUi/Core/Types.h>
 #include <bitset>
 #include <unordered_map>
+#include <tuple>
 
 #include "UiRenderer.h"
 
@@ -154,7 +155,7 @@ class OpenGLUiRenderer : public UiRenderer, public Rml::RenderInterface {
     };
 
     RenderLayerStack render_layers;
-    std::unordered_map<intptr_t, GraphicsImage*> _graphicsImageMap;
+    std::unordered_map<intptr_t, std::tuple<GraphicsImage*, bool>> _graphicsImageMap;
 
     struct GLStateBackup {
         bool enable_cull_face;

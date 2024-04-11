@@ -7,6 +7,7 @@ class PlatformApplication;
 class Renderer;
 class RmlFileInterface;
 class RmlEventListenerInstancer;
+class RmlFontEngineInterface;
 class RmlSystemInterface;
 class UiRenderer;
 
@@ -29,6 +30,7 @@ class UiSystem {
  private:
     void _createSystemInterface();
     void _createEventListenerInstancer();
+    void _createFontEngineInterface();
     void _createFileInterface();
     void _createRenderer();
     void _createMainContext();
@@ -37,6 +39,7 @@ class UiSystem {
     std::unique_ptr<UiRenderer> _uiRenderer;
     std::unique_ptr<RmlSystemInterface> _systemInterface;
     std::unique_ptr<RmlFileInterface> _fileInterface;
+    std::unique_ptr<RmlFontEngineInterface> _fontEngineInterface;
     std::unique_ptr<RmlEventListenerInstancer> _eventListenerInstancer;
     Renderer &_renderer;
     Rml::Context *_mainContext{};

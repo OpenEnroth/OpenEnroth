@@ -83,6 +83,7 @@ class GUIFont {
                          GUIWindow *pWindow, int startX, int a6);
 
     int maxcharwidth = 0;
+    std::string fontFile;
     GraphicsImage *fonttex = nullptr;
     GraphicsImage *fontshadow = nullptr;
 

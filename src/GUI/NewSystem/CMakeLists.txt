@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(UI_NEW_SYSTEM_SOURCES
     OpenGLUiRenderer.cpp
     RmlEventListenerInstancer.cpp
+    RmlFontEngineInterface.cpp
     RmlSystemInterface.cpp
     RmlFileInterface.cpp
     UiEventHandler.cpp
@@ -11,6 +12,7 @@ set(UI_NEW_SYSTEM_SOURCES
 set(UI_NEW_SYSTEM_HEADERS
     OpenGLUiRenderer.h
     RmlEventListenerInstancer.h
+    RmlFontEngineInterface.h
     RmlSystemInterface.h
     RmlFileInterface.h
     UiRenderer.h

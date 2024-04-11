@@ -30,6 +30,7 @@ class AssetsManager {
 
     GraphicsImage *getBitmap(std::string_view name);
     GraphicsImage *getSprite(std::string_view name);
+    GUIFont *getFont(std::string_view name) const;
 
     // TODO(pskelton): Contain better
     // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also
