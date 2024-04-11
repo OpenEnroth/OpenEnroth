@@ -362,21 +362,25 @@ GAME_TEST(Issues, Issue1331) {
     // "of David" enchanted bows should do double damage against Titans.
     auto hpsTape = actorTapes.hps({31, 33});
     auto deadTape = actorTapes.indicesByState(AIState::Dead);
+    auto rngTape = tapes.config(engine->config->debug.TraceRandomEngine);
     test.playTraceFromTestData("issue_1331.mm7", "issue_1331.json");
-    EXPECT_EQ(deadTape.frontBack(), tape(std::initializer_list<int>{}, {31, 33})); // Check that titans are dead.
+    EXPECT_EQ(deadTape.frontBack(), tape(std::initializer_list<int>{}, {33})); // One of the titans is dead.
 
-    // Damage as stated in the character sheet is 41-45. Crossbow is 4d2+7. Because of how non-random engine works,
-    // 4d2+7 will always roll 13, and thus the 41-45 range is effectively compressed into 43-43.
+    // Damage as stated in the character sheet is 41-45. Crossbow is 4d2+7. We're using sequential rng, so
+    // 4d2+7 will always roll 13, and thus the 41-45 range is effectively compressed into 43-43. With the "of David"
+    // enchantment, the 4d2+7 part of the damage is doubled, so max damage is now 43+13=56. And then we also have to
+    // multiply the damage by two because the character shoots two arrows at a time.
     //
-    // With the "of David" enchantment, the 4d2+7 part of the damage is doubled, so max damage is now 43+13=56.
-    //
-    // Min damage is so low because titans have physical resistance. And then we also have to multiply the damage by
-    // two because the character shoots two arrows at a time.
+    // Min damage is so low because titans have physical resistance. Min damage can change between 2 and 3 on retrace.
+    // This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two
+    // times in a row.
+    EXPECT_EQ(rngTape, tape(RANDOM_ENGINE_SEQUENTIAL));
     EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->special_enchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
-    // 2 -> 3 change here can happen. This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two times in a row.
-    EXPECT_EQ(damageRange, tape(/*1 * 2*/ 3, (/*43/45*/44 + 13) * 2));
+    EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
+    auto totalDamages = hpsTape.frontBack().reversed().adjacentDeltas().flattened();
+    EXPECT_TRUE(std::ranges::all_of(totalDamages, [](int damage) { return damage > 300; })); // Both titans are now pin cushions.
 }
 
 GAME_TEST(Issues, Issue1338) {
