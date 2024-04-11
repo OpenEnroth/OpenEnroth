@@ -3181,7 +3181,12 @@ void OpenGLRenderer::Present() {
     EndLines2D();
     EndTextNew();
 
-    Recti uiRect{0, 0, outputRender.w, outputRender.h};
+    // Render new ui system
+    if (_uiRenderer) {
+        _uiRenderer->setViewport(outputRender.w, outputRender.h);
+        _uiRenderer->render(outputRender != outputPresent ? framebuffer : 0);
+    }
+
     if (outputRender != outputPresent) {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glDisable(GL_SCISSOR_TEST);
@@ -3204,11 +3209,6 @@ void OpenGLRenderer::Present() {
         rect.w = w;
         rect.h = h;
 
-        uiRect.w = outputPresent.w;
-        uiRect.h = outputPresent.h;
-        uiRect.x = rect.x;
-        uiRect.y = rect.y;
-
         GLenum filter = config->graphics.RenderFilter.value() == 1 ? GL_LINEAR : GL_NEAREST;
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
         glBlitFramebuffer(0, 0, outputRender.w, outputRender.h, rect.x, rect.y, rect.w + rect.x, rect.h + rect.y, GL_COLOR_BUFFER_BIT, filter);
@@ -3222,13 +3222,6 @@ void OpenGLRenderer::Present() {
 
         glEnable(GL_SCISSOR_TEST);
         glViewport(0, 0, outputRender.w, outputRender.h);
-    }
-
-    // Render new ui system
-    if (_uiRenderer) {
-        _uiRenderer->setViewport(uiRect.w, uiRect.h);
-        _uiRenderer->setOffset(uiRect.x, uiRect.y);
-        _uiRenderer->render();
     }
 
     openGLContext->swapBuffers();

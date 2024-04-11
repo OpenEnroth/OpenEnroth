@@ -1,8 +1,10 @@
 #include "UiSystem.h"
 
-#include "RmlSystemInterface.h"
 #include "OpenGLUiRenderer.h"
-#include "UiInputEventHandler.h"
+#include "RmlEventListenerInstancer.h"
+#include "RmlFileInterface.h"
+#include "RmlSystemInterface.h"
+#include "UiEventHandler.h"
 
 #include <Engine/Graphics/Renderer/Renderer.h>
 #include <Library/Logger/Logger.h>
@@ -15,12 +17,15 @@
 #include <algorithm>
 
 UiSystem::UiSystem(PlatformApplication &platformApplication, Renderer &renderer, bool debugContextEnabled, std::string_view documentSubFolder)
-    : _documentSubFolder(documentSubFolder)
+    : _renderer(renderer)
+    , _documentSubFolder(documentSubFolder)
     , _debugContextEnabled(debugContextEnabled) {
-    _createRenderer(renderer);
+    _createRenderer();
+    _createFileInterface();
     _createSystemInterface();
+    _createEventListenerInstancer();
 
-    platformApplication.installComponent(std::make_unique<UiInputEventHandler>([this]() {
+    platformApplication.installComponent(std::make_unique<UiEventHandler>(_renderer, [this]() {
         return _mainContext;
     }));
 
@@ -55,11 +60,16 @@ void UiSystem::unloadScreen(ScreenHandle screenHandle) {
     }
 }
 
-void UiSystem::_createRenderer(Renderer &renderer) {
+void UiSystem::_createRenderer() {
     auto oglRenderer = std::make_unique<OpenGLUiRenderer>();
-    renderer.setUiRenderer(oglRenderer.get());
+    _renderer.setUiRenderer(oglRenderer.get());
     Rml::SetRenderInterface(oglRenderer.get());
     _uiRenderer = std::move(oglRenderer);
+}
+
+void UiSystem::_createFileInterface() {
+    _fileInterface = std::make_unique<RmlFileInterface>();
+    Rml::SetFileInterface(_fileInterface.get());
 }
 
 void UiSystem::_createSystemInterface() {
@@ -67,18 +77,14 @@ void UiSystem::_createSystemInterface() {
     Rml::SetSystemInterface(_systemInterface.get());
 }
 
-void UiSystem::_createMainContext() {
-    int width, height;
-    _uiRenderer->getViewport(width, height);
-    float ratio_width = (float)width / 640;
-    float ratio_height = (float)height / 480;
-    float ratio = std::min(ratio_width, ratio_height);
+void UiSystem::_createEventListenerInstancer() {
+    _eventListenerInstancer = std::make_unique<RmlEventListenerInstancer>();
+    Rml::Factory::RegisterEventListenerInstancer(_eventListenerInstancer.get());
+}
 
-    float w = 640 * ratio;
-    float h = 480 * ratio;
-    float x = (float)width / 2 - w / 2;
-    float y = (float)height / 2 - h / 2;
-    _mainContext = Rml::CreateContext("main", Rml::Vector2i(w, h));
+void UiSystem::_createMainContext() {
+    auto renderDimensions = _renderer.GetRenderDimensions();
+    _mainContext = Rml::CreateContext("main", Rml::Vector2i(renderDimensions.w, renderDimensions.h));
     if (_mainContext && _debugContextEnabled) {
         Rml::Debugger::Initialise(_mainContext);
     }

@@ -1,61 +1,60 @@
-#include "UiInputEventHandler.h"
+#include "UiEventHandler.h"
 
 #include <RmlUi/Core/Context.h>
+#include <RmlUi/Core/Core.h>
+#include <Engine/Graphics/Renderer/Renderer.h>
 #include <algorithm>
 
-float x{};
-float y{};
-UiInputEventHandler::UiInputEventHandler(const GetMainContextFunc &getMainContextFunc)
+UiEventHandler::UiEventHandler(Renderer &renderer, const GetMainContextFunc &getMainContextFunc)
     : PlatformEventFilter(EVENTS_ALL)
-    , _getMainContextFunc(getMainContextFunc) {
+    , _getMainContextFunc(getMainContextFunc)
+    , _renderer(renderer) {
 }
 
-bool UiInputEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
+bool UiEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
     Rml::Context *context = _getMainContextFunc();
     bool result = context->ProcessKeyDown(convertKey(event->key), getKeyModifierState());
     if (event->key == PlatformKey::KEY_RETURN)
         result &= context->ProcessTextInput('\n');
+    return !result;
+}
+
+bool UiEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
+    return !_getMainContextFunc()->ProcessKeyDown(convertKey(event->key), getKeyModifierState());
+}
+
+bool UiEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
+    auto point = _renderer.mapScreenPointToRender(event->pos);
+    return !_getMainContextFunc()->ProcessMouseMove(point.x, point.y, getKeyModifierState());
+}
+
+bool UiEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
+    return !_getMainContextFunc()->ProcessMouseButtonDown(convertMouseButton(event->button), getKeyModifierState());
+}
+
+bool UiEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
+    return !_getMainContextFunc()->ProcessMouseButtonUp(convertMouseButton(event->button), getKeyModifierState());
+}
+
+bool UiEventHandler::wheelEvent(const PlatformWheelEvent *event) {
+    return !_getMainContextFunc()->ProcessMouseWheel(Rml::Vector2f(event->angleDelta.x, event->angleDelta.y), getKeyModifierState());
+}
+
+bool UiEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
+    return !_getMainContextFunc()->ProcessTextInput(event->text);
+}
+
+bool UiEventHandler::resizeEvent(const PlatformResizeEvent *event) {
+    Rml::ReleaseTextures();
     return false;
 }
 
-bool UiInputEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
-    return _getMainContextFunc()->ProcessKeyDown(convertKey(event->key), getKeyModifierState());
-}
-
-bool UiInputEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
-    return _getMainContextFunc()->ProcessMouseMove(event->pos.x - x, event->pos.y - y, getKeyModifierState());
-}
-
-bool UiInputEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
-    return _getMainContextFunc()->ProcessMouseButtonDown(convertMouseButton(event->button), getKeyModifierState());
-}
-
-bool UiInputEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
-    return _getMainContextFunc()->ProcessMouseButtonUp(convertMouseButton(event->button), getKeyModifierState());
-}
-
-bool UiInputEventHandler::wheelEvent(const PlatformWheelEvent *event) {
-    return _getMainContextFunc()->ProcessMouseWheel(Rml::Vector2f(event->angleDelta.x, event->angleDelta.y), getKeyModifierState());
-}
-
-bool UiInputEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
-    return _getMainContextFunc()->ProcessTextInput(event->text);
-}
-
-bool UiInputEventHandler::resizeEvent(const PlatformResizeEvent *event) {
-    float ratio_width = (float)event->size.w / 640;
-    float ratio_height = (float)event->size.h / 480;
-    float ratio = std::min(ratio_width, ratio_height);
-
-    float w = 640 * ratio;
-    float h = 480 * ratio;
-    x = (float)event->size.w / 2 - w / 2;
-    y = (float)event->size.h / 2 - h / 2;
-    _getMainContextFunc()->SetDimensions(Rml::Vector2i(w, h));
+bool UiEventHandler::activationEvent(const PlatformWindowEvent *event) {
+    Rml::ReleaseTextures();
     return false;
 }
 
-Rml::Input::KeyIdentifier UiInputEventHandler::convertKey(PlatformKey key) {
+Rml::Input::KeyIdentifier UiEventHandler::convertKey(PlatformKey key) {
     switch (key) {
     case PlatformKey::KEY_NONE:         return Rml::Input::KI_UNKNOWN;
     case PlatformKey::KEY_ESCAPE:       return Rml::Input::KI_ESCAPE;
@@ -163,7 +162,7 @@ Rml::Input::KeyIdentifier UiInputEventHandler::convertKey(PlatformKey key) {
     return Rml::Input::KI_UNKNOWN;
 }
 
-int UiInputEventHandler::convertMouseButton(PlatformMouseButton button) {
+int UiEventHandler::convertMouseButton(PlatformMouseButton button) {
     switch (button) {
     case PlatformMouseButton::BUTTON_LEFT: return 0;
     case PlatformMouseButton::BUTTON_RIGHT: return 1;
@@ -172,7 +171,7 @@ int UiInputEventHandler::convertMouseButton(PlatformMouseButton button) {
     }
 }
 
-int UiInputEventHandler::getKeyModifierState() {
+int UiEventHandler::getKeyModifierState() {
     return 0;
 
     /*

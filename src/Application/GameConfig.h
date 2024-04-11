@@ -100,6 +100,8 @@ class GameConfig : public Config {
 
         Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
 
+        Bool UseNewUI = { this, "use_new_ui", false, "Use the new ui for some of the screens." };
+
      private:
         static int ValidateFrameTime(int frameTime) {
             return std::max(frameTime, 1);

@@ -1,4 +1,7 @@
 #include "OpenGLUiRenderer.h"
+
+#include <Engine/AssetsManager.h>
+#include <Engine/Graphics/Image.h>
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/Core.h>
 #include <RmlUi/Core/DecorationTypes.h>
@@ -8,8 +11,9 @@
 #include <RmlUi/Core/MeshUtilities.h>
 #include <RmlUi/Core/Platform.h>
 #include <RmlUi/Core/SystemInterface.h>
-#include <string.h>
+#include <string>
 #include <utility>
+#include <filesystem>
 
 #if defined(RMLUI_PLATFORM_WIN32) && !defined(__MINGW32__)
 // function call missing argument list
@@ -755,16 +759,6 @@ void OpenGLUiRenderer::setViewport(int width, int height) {
     projection = Rml::Matrix4f::ProjectOrtho(0, (float)viewport_width, (float)viewport_height, 0, -10000, 10000);
 }
 
-void OpenGLUiRenderer::setOffset(int x, int y) {
-    _renderOffsetX = x;
-    _renderOffsetY = y;
-}
-
-void OpenGLUiRenderer::getViewport(int &width, int &height) {
-    width = viewport_width;
-    height = viewport_height;
-}
-
 void OpenGLUiRenderer::beginFrame() {
     RMLUI_ASSERT(viewport_width >= 1 && viewport_height >= 1);
 
@@ -845,27 +839,27 @@ void OpenGLUiRenderer::beginFrame() {
     Gfx::CheckGLError("BeginFrame");
 }
 
-void OpenGLUiRenderer::render() {
+void OpenGLUiRenderer::render(int framebuffer) {
     beginFrame();
     //just for simpler integration purpose we're going to retrieve only this context. We'll change this later
     Rml::Context *context = Rml::GetContext("main");
     if (context) {
         context->Render();
     }
-    endFrame();
+    endFrame(framebuffer);
 }
 
-void OpenGLUiRenderer::endFrame() {
+void OpenGLUiRenderer::endFrame(int framebuffer) {
     const Gfx::FramebufferData &fb_active = render_layers.GetTopLayer();
     const Gfx::FramebufferData &fb_postprocess = render_layers.GetPostprocessPrimary();
 
     // Resolve MSAA to postprocess framebuffer.
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fb_active.framebuffer);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fb_postprocess.framebuffer);
-    glBlitFramebuffer(0, 0, fb_active.width, fb_active.height, _renderOffsetX, -_renderOffsetY, fb_postprocess.width + _renderOffsetX, fb_postprocess.height - _renderOffsetY, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, fb_active.width, fb_active.height, 0, 0, fb_postprocess.width, fb_postprocess.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     // Draw to backbuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     // Assuming we have an opaque background, we can just write to it with the premultiplied alpha blend mode and we'll get the correct result.
     // Instead, if we had a transparent destination that didn't use premultiplied alpha, we would need to perform a manual un-premultiplication step.
@@ -1120,74 +1114,99 @@ struct TGAHeader {
 #pragma pack()
 
 Rml::TextureHandle OpenGLUiRenderer::LoadTexture(Rml::Vector2i &texture_dimensions, const Rml::String &source) {
-    Rml::FileInterface *file_interface = Rml::GetFileInterface();
-    Rml::FileHandle file_handle = file_interface->Open(source);
-    if (!file_handle) {
-        return false;
-    }
-
-    file_interface->Seek(file_handle, 0, SEEK_END);
-    size_t buffer_size = file_interface->Tell(file_handle);
-    file_interface->Seek(file_handle, 0, SEEK_SET);
-
-    if (buffer_size <= sizeof(TGAHeader)) {
-        Rml::Log::Message(Rml::Log::LT_ERROR, "Texture file size is smaller than TGAHeader, file is not a valid TGA image.");
-        file_interface->Close(file_handle);
-        return false;
-    }
-
-    using Rml::byte;
-    Rml::UniquePtr<byte[]> buffer(new byte[buffer_size]);
-    file_interface->Read(buffer.get(), buffer_size, file_handle);
-    file_interface->Close(file_handle);
-
-    TGAHeader header;
-    memcpy(&header, buffer.get(), sizeof(TGAHeader));
-
-    int color_mode = header.bitsPerPixel / 8;
-    const size_t image_size = header.width * header.height * 4; // We always make 32bit textures
-
-    if (header.dataType != 2) {
-        Rml::Log::Message(Rml::Log::LT_ERROR, "Only 24/32bit uncompressed TGAs are supported.");
-        return false;
-    }
-
-    // Ensure we have at least 3 colors
-    if (color_mode < 3) {
-        Rml::Log::Message(Rml::Log::LT_ERROR, "Only 24 and 32bit textures are supported.");
-        return false;
-    }
-
-    const byte *image_src = buffer.get() + sizeof(TGAHeader);
-    Rml::UniquePtr<byte[]> image_dest_buffer(new byte[image_size]);
-    byte *image_dest = image_dest_buffer.get();
-
-    // Targa is BGR, swap to RGB, flip Y axis, and convert to premultiplied alpha.
-    for (long y = 0; y < header.height; y++) {
-        long read_index = y * header.width * color_mode;
-        long write_index = ((header.imageDescriptor & 32) != 0) ? read_index : (header.height - y - 1) * header.width * 4;
-        for (long x = 0; x < header.width; x++) {
-            image_dest[write_index] = image_src[read_index + 2];
-            image_dest[write_index + 1] = image_src[read_index + 1];
-            image_dest[write_index + 2] = image_src[read_index];
-            if (color_mode == 4) {
-                const byte alpha = image_src[read_index + 3];
-                for (size_t j = 0; j < 3; j++)
-                    image_dest[write_index + j] = byte((image_dest[write_index + j] * alpha) / 255);
-                image_dest[write_index + 3] = alpha;
-            } else {
-                image_dest[write_index + 3] = 255;
-            }
-
-            write_index += 4;
-            read_index += color_mode;
+    auto extensionName = source.substr(source.size() - 3, 3);
+    if (extensionName == "pcx") {
+        //Big temp hack, if we find pcx extension we use only the filename when trying to extract from iconsLOD
+        std::filesystem::path path(source);
+        GraphicsImage *graphicsImage = assets->getImage_PCXFromIconsLOD(path.filename().string());
+        auto handle = graphicsImage->renderId().value();
+        // I don't like this approach that much but RmlUi tell us when to release a texture by giving us the handle as the only information
+        // On the other end our asset/engine system prefer to receive a Release on the GraphicsImage class so I'm keeping these things tight in this map
+        _graphicsImageMap.insert({ handle, graphicsImage });
+        texture_dimensions.x = graphicsImage->width();
+        texture_dimensions.y = graphicsImage->height();
+        return handle;
+    } else if (extensionName == "cky") { //Other super hack. This extension doesn't exist but it's used to get the texture from ColorKey
+        std::filesystem::path path(source);
+        GraphicsImage *graphicsImage = assets->getImage_ColorKey(path.stem().string());
+        auto handle = graphicsImage->renderId().value();
+        _graphicsImageMap.insert({ handle, graphicsImage });
+        texture_dimensions.x = graphicsImage->width();
+        texture_dimensions.y = graphicsImage->height();
+        return handle;
+    } else if (extensionName == "tga") {
+        Rml::FileInterface *file_interface = Rml::GetFileInterface();
+        Rml::FileHandle file_handle = file_interface->Open(source);
+        if (!file_handle) {
+            return false;
         }
+
+        file_interface->Seek(file_handle, 0, SEEK_END);
+        size_t buffer_size = file_interface->Tell(file_handle);
+        file_interface->Seek(file_handle, 0, SEEK_SET);
+
+        if (buffer_size <= sizeof(TGAHeader)) {
+            Rml::Log::Message(Rml::Log::LT_ERROR, "Texture file size is smaller than TGAHeader, file is not a valid TGA image.");
+            file_interface->Close(file_handle);
+            return false;
+        }
+
+        using Rml::byte;
+        Rml::UniquePtr<byte[]> buffer(new byte[buffer_size]);
+        file_interface->Read(buffer.get(), buffer_size, file_handle);
+        file_interface->Close(file_handle);
+
+        TGAHeader header;
+        memcpy(&header, buffer.get(), sizeof(TGAHeader));
+
+        int color_mode = header.bitsPerPixel / 8;
+        const size_t image_size = header.width * header.height * 4; // We always make 32bit textures
+
+        if (header.dataType != 2) {
+            Rml::Log::Message(Rml::Log::LT_ERROR, "Only 24/32bit uncompressed TGAs are supported.");
+            return false;
+        }
+
+        // Ensure we have at least 3 colors
+        if (color_mode < 3) {
+            Rml::Log::Message(Rml::Log::LT_ERROR, "Only 24 and 32bit textures are supported.");
+            return false;
+        }
+
+        const byte *image_src = buffer.get() + sizeof(TGAHeader);
+        Rml::UniquePtr<byte[]> image_dest_buffer(new byte[image_size]);
+        byte *image_dest = image_dest_buffer.get();
+
+        // Targa is BGR, swap to RGB, flip Y axis, and convert to premultiplied alpha.
+        for (long y = 0; y < header.height; y++) {
+            long read_index = y * header.width * color_mode;
+            long write_index = ((header.imageDescriptor & 32) != 0) ? read_index : (header.height - y - 1) * header.width * 4;
+            for (long x = 0; x < header.width; x++) {
+                image_dest[write_index] = image_src[read_index + 2];
+                image_dest[write_index + 1] = image_src[read_index + 1];
+                image_dest[write_index + 2] = image_src[read_index];
+                if (color_mode == 4) {
+                    const byte alpha = image_src[read_index + 3];
+                    for (size_t j = 0; j < 3; j++)
+                        image_dest[write_index + j] = byte((image_dest[write_index + j] * alpha) / 255);
+                    image_dest[write_index + 3] = alpha;
+                } else {
+                    image_dest[write_index + 3] = 255;
+                }
+
+                write_index += 4;
+                read_index += color_mode;
+            }
+        }
+
+        texture_dimensions.x = header.width;
+        texture_dimensions.y = header.height;
+
+        return GenerateTexture({ image_dest, image_size }, texture_dimensions);
     }
 
-    texture_dimensions.x = header.width;
-    texture_dimensions.y = header.height;
-
-    return GenerateTexture({ image_dest, image_size }, texture_dimensions);
+    Rml::Log::Message(Rml::Log::LT_ERROR, "Texture extension is not valid.");
+    return false;
 }
 
 Rml::TextureHandle OpenGLUiRenderer::GenerateTexture(Rml::Span<const Rml::byte> source_data, Rml::Vector2i source_dimensions) {
@@ -1373,7 +1392,12 @@ void OpenGLUiRenderer::RenderBlur(float sigma, const Gfx::FramebufferData &sourc
 }
 
 void OpenGLUiRenderer::ReleaseTexture(Rml::TextureHandle texture_handle) {
-    glDeleteTextures(1, (GLuint *)&texture_handle);
+    if (auto itr = _graphicsImageMap.find(texture_handle); itr != _graphicsImageMap.end()) {
+        itr->second->releaseRenderId();
+        _graphicsImageMap.erase(itr);
+    } else {
+        glDeleteTextures(1, (GLuint *)&texture_handle);
+    }
 }
 
 void OpenGLUiRenderer::SetTransform(const Rml::Matrix4f *new_transform) {

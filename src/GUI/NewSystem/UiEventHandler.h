@@ -9,11 +9,13 @@ namespace Rml {
 class Context;
 }
 
+class Renderer;
+
 typedef std::function<Rml::Context *()> GetMainContextFunc;
 
-class UiInputEventHandler : public PlatformEventFilter {
+class UiEventHandler : public PlatformEventFilter {
  public:
-    explicit UiInputEventHandler(const GetMainContextFunc &getMainContextFunc);
+    explicit UiEventHandler(Renderer &renderer, const GetMainContextFunc &getMainContextFunc);
 
  private:
     bool keyPressEvent(const PlatformKeyEvent *event) override;
@@ -24,10 +26,13 @@ class UiInputEventHandler : public PlatformEventFilter {
     bool wheelEvent(const PlatformWheelEvent *event) override;
     bool textInputEvent(const PlatformTextInputEvent *event) override;
     bool resizeEvent(const PlatformResizeEvent *event) override;
+    bool activationEvent(const PlatformWindowEvent *event) override;
 
     static int convertMouseButton(PlatformMouseButton button);
     static int getKeyModifierState();
     static Rml::Input::KeyIdentifier convertKey(PlatformKey key);
 
     GetMainContextFunc _getMainContextFunc;
+    Renderer &_renderer;
+    Vec2i _mouseOffset;
 };

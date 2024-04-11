@@ -5,9 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "RmlUi/Core.h"
-#include "RmlUi/Debugger.h"
-
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
@@ -164,6 +161,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 }
 
 GameStarter::~GameStarter() {
+    _uiSystem = nullptr;
+
     ::engine = nullptr;
 
     ::nuklear = nullptr;

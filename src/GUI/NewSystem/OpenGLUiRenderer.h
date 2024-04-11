@@ -3,8 +3,11 @@
 #include <RmlUi/Core/RenderInterface.h>
 #include <RmlUi/Core/Types.h>
 #include <bitset>
+#include <unordered_map>
 
 #include "UiRenderer.h"
+
+class GraphicsImage;
 
 enum class ProgramId;
 enum class UniformId;
@@ -20,11 +23,9 @@ class OpenGLUiRenderer : public UiRenderer, public Rml::RenderInterface {
     ~OpenGLUiRenderer();
 
     // UiRenderer interface
-    void render() override;
+    void render(int framebuffer) override;
     // The viewport should be updated whenever the window size changes.
     void setViewport(int width, int height) override;
-    void setOffset(int x, int y) override;
-    void getViewport(int &width, int &height) override;
 
     // Returns true if the renderer was successfully constructed.
     explicit operator bool() const { return static_cast<bool>(program_data); }
@@ -73,7 +74,7 @@ class OpenGLUiRenderer : public UiRenderer, public Rml::RenderInterface {
     // Sets up OpenGL states for taking rendering commands from RmlUi.
     void beginFrame();
     // Draws the result to the backbuffer and restores OpenGL state.
-    void endFrame();
+    void endFrame(int framebuffer);
 
     void UseProgram(ProgramId program_id);
     int GetUniformLocation(UniformId uniform_id) const;
@@ -100,8 +101,6 @@ class OpenGLUiRenderer : public UiRenderer, public Rml::RenderInterface {
 
     int viewport_width = 0;
     int viewport_height = 0;
-    int _renderOffsetX{};
-    int _renderOffsetY{};
 
     Rml::CompiledGeometryHandle fullscreen_quad_geometry = {};
 
@@ -155,6 +154,7 @@ class OpenGLUiRenderer : public UiRenderer, public Rml::RenderInterface {
     };
 
     RenderLayerStack render_layers;
+    std::unordered_map<intptr_t, GraphicsImage*> _graphicsImageMap;
 
     struct GLStateBackup {
         bool enable_cull_face;

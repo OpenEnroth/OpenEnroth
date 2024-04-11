@@ -56,6 +56,7 @@ class BaseRenderer : public Renderer {
 
     virtual Sizei GetRenderDimensions() override;
     virtual Sizei GetPresentDimensions() override;
+    virtual Pointi mapScreenPointToRender(const Pointi &screenPoint) const override;
 
     virtual void SaveWinnersCertificate(std::string_view filePath) override;
 

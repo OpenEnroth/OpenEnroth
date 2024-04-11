@@ -5,6 +5,8 @@
 
 class PlatformApplication;
 class Renderer;
+class RmlFileInterface;
+class RmlEventListenerInstancer;
 class RmlSystemInterface;
 class UiRenderer;
 
@@ -26,12 +28,17 @@ class UiSystem {
 
  private:
     void _createSystemInterface();
-    void _createRenderer(Renderer& renderer);
+    void _createEventListenerInstancer();
+    void _createFileInterface();
+    void _createRenderer();
     void _createMainContext();
     void _loadFonts();
 
     std::unique_ptr<UiRenderer> _uiRenderer;
     std::unique_ptr<RmlSystemInterface> _systemInterface;
+    std::unique_ptr<RmlFileInterface> _fileInterface;
+    std::unique_ptr<RmlEventListenerInstancer> _eventListenerInstancer;
+    Renderer &_renderer;
     Rml::Context *_mainContext{};
     std::string_view _documentSubFolder;
     bool _debugContextEnabled{};
