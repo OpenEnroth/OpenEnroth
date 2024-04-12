@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <string>
 
 #include "Utility/String.h"
 

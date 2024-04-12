@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <memory>
+#include <string>
 
 std::string PosixEnvironment::queryRegistry(const std::string &path) const {
     return {};

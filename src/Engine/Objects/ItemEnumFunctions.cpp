@@ -1,6 +1,7 @@
 #include "ItemEnumFunctions.h"
 
 #include <cassert>
+#include <string>
 
 #include "Engine/Localization.h"
 

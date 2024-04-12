@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <utility>
+#include <memory>
+#include <string>
 
 #include "Application/GameKeyboardController.h"
 
@@ -12,6 +14,8 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
+
+#include "GUI/GUIMessageQueue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

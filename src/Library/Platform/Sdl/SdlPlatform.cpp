@@ -1,11 +1,11 @@
 #include "SdlPlatform.h"
 
-#include <SDL.h>
-
 #include <cassert>
 #include <memory>
+#include <vector>
+#include <string>
 
-#include "Library/Platform/Interface/PlatformEventHandler.h"
+#include <SDL.h>
 
 #include "Library/Logger/Logger.h"
 

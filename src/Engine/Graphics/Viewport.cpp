@@ -17,6 +17,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 

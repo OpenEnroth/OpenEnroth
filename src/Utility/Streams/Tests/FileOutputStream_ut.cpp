@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <string>
 
 #include "Testing/Unit/UnitTest.h"
 

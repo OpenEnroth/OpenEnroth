@@ -1,3 +1,6 @@
+#include <vector>
+#include <string>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"

@@ -1,5 +1,7 @@
 #include "UIStatusBar.h"
 
+#include <string>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"

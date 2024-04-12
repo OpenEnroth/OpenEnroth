@@ -1,8 +1,8 @@
+#include "Bank.h"
+
 #include <string>
+#include <vector>
 
-#include "GUI/UI/Houses/Bank.h"
-
-#include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"

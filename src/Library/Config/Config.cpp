@@ -1,11 +1,12 @@
 #include "Config.h"
 
-#define MINI_CASE_SENSITIVE
-#include <mini/ini.h>
-
 #include <cassert>
 #include <filesystem>
 #include <string>
+#include <vector>
+
+#define MINI_CASE_SENSITIVE
+#include <mini/ini.h> // NOLINT: this is not a C system header.
 
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"

@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <utility>
+#include <string>
+#include <memory>
 
 #include "Library/LodFormats/LodFormats.h"
 

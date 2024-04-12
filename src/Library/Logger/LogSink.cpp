@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include <spdlog/sinks/android_sink.h> // NOLINT
 #include <spdlog/sinks/dist_sink.h> // NOLINT

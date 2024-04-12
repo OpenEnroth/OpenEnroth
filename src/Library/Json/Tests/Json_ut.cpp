@@ -1,3 +1,6 @@
+#include <string>
+#include <vector>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Serialization/EnumSerialization.h"

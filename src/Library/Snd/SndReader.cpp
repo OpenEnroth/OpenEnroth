@@ -2,6 +2,9 @@
 
 #include <algorithm>
 #include <utility>
+#include <unordered_map>
+#include <string>
+#include <vector>
 
 #include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"

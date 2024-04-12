@@ -1,6 +1,7 @@
-#include <vector>
-
 #include "UIDialogue.h"
+
+#include <vector>
+#include <string>
 
 #include "Engine/Events/Processor.h"
 #include "Engine/EngineGlobals.h"

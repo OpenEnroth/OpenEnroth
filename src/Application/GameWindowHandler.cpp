@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <tuple>
 
 #include "Arcomage/Arcomage.h"
 
@@ -17,6 +18,7 @@
 #include "Engine/Time/Timer.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"

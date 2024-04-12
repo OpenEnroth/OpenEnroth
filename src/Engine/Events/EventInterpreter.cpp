@@ -24,6 +24,7 @@
 #include "Utility/Math/TrigLut.h"
 
 #include "GUI/GUIProgressBar.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
@@ -386,7 +387,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
             return -1;
         case EVENT_SummonItem:
-            SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
+            SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3i(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
                                      ir.data.summon_item_descr.speed, ir.data.summon_item_descr.count, ir.data.summon_item_descr.random_rotate);
             break;
         case EVENT_ForPartyMember:

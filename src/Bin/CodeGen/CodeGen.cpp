@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include <vector>
 #include <utility>
+#include <map>
+#include <string>
 
 #include "Application/GameStarter.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"

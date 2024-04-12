@@ -3,6 +3,9 @@
 #include <cassert>
 #include <utility>
 #include <algorithm>
+#include <unordered_map>
+#include <string>
+#include <vector>
 
 #include "Library/Compression/Compression.h"
 #include "Library/Snapshots/SnapshotSerialization.h"

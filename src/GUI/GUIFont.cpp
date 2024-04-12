@@ -1,9 +1,10 @@
-#include "GUI/GUIFont.h"
+#include "GUIFont.h"
 
 #include <sstream>
 #include <memory>
 #include <algorithm>
 #include <ranges>
+#include <string>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/LodTextureCache.h"

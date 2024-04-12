@@ -1,11 +1,13 @@
 #include "SdlWindow.h"
 
+#include <cassert>
+#include <string>
+#include <memory>
+
 #include <SDL_syswm.h>
 #ifdef None
 #undef None
 #endif
-
-#include <cassert>
 
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 

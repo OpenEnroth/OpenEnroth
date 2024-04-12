@@ -3,6 +3,7 @@
 #include <optional>
 #include <span>
 #include <vector>
+#include <string>
 
 #include "LodFormatSnapshots.h"
 

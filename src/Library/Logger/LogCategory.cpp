@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <unordered_map>
+#include <vector>
 
 static std::unordered_map<std::string_view, LogCategory *> &logCategoriesStorage() {
     static std::unordered_map<std::string_view, LogCategory *> result; // Wrapping in a function static to avoid static init order fiasco.

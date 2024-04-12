@@ -1,5 +1,7 @@
 #include "OpenGLShader.h"
 
+#include <string>
+
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 
 #include "Library/Logger/Logger.h"

@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/IndexedArray.h"

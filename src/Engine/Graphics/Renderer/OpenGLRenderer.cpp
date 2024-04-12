@@ -4,6 +4,7 @@
 #include <memory>
 #include <utility>
 #include <map>
+#include <string>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 

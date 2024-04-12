@@ -1,16 +1,5 @@
 #include "Media/MediaPlayer.h"
 
-extern "C" {
-    #include <libavcodec/avcodec.h>
-    #include <libavformat/avformat.h>
-    #include <libavutil/avutil.h>
-    #include <libavutil/imgutils.h>
-    #include <libavutil/mem.h>
-    #include <libavutil/opt.h>
-    #include <libswresample/swresample.h>
-    #include <libswscale/swscale.h>
-}
-
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -21,13 +10,25 @@ extern "C" {
 #include <vector>
 #include <thread>
 #include <utility>
+#include <string>
+
+extern "C" {
+#include <libavcodec/avcodec.h> // NOLINT: not a C system header.
+#include <libavformat/avformat.h> // NOLINT: not a C system header.
+#include <libavutil/avutil.h> // NOLINT: not a C system header.
+#include <libavutil/imgutils.h> // NOLINT: not a C system header.
+#include <libavutil/mem.h> // NOLINT: not a C system header.
+#include <libavutil/opt.h> // NOLINT: not a C system header.
+#include <libswresample/swresample.h> // NOLINT: not a C system header.
+#include <libswscale/swscale.h> // NOLINT: not a C system header.
+}
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 
-#include "Io/Mouse.h"
+#include "GUI/GUIMessageQueue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"

@@ -1,6 +1,7 @@
 #include "CombinedSkillValue.h"
 
 #include <cassert>
+#include <utility>
 
 CombinedSkillValue::CombinedSkillValue(int level, CharacterSkillMastery mastery) {
     assert(level >= 0 && level <= 63);

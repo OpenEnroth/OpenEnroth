@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <utility>
+#include <memory>
+#include <string>
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Renderer/Renderer.h"

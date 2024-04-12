@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <string>
 #include <utility>
+#include <memory>
 
 #include "Arcomage/Arcomage.h"
 
@@ -47,6 +48,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 #include "GUI/UI/Books/CalendarBook.h"
 #include "GUI/UI/Books/JournalBook.h"

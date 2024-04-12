@@ -4,6 +4,7 @@
 #include <climits>
 #include <algorithm>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -27,6 +28,7 @@
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIRest.h"
 

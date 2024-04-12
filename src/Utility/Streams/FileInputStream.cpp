@@ -1,7 +1,9 @@
 #include "FileInputStream.h"
 
 #include <cassert>
+#include <cstdio>
 #include <algorithm> // For std::min.
+#include <string>
 
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"

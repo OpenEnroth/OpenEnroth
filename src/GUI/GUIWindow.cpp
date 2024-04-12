@@ -1,8 +1,12 @@
 #include "GUI/GUIWindow.h"
 
 #include <cstdlib>
+#include <string>
 #include <sstream>
 #include <utility>
+#include <list>
+#include <memory>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"

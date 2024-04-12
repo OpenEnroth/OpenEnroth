@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <utility>
 #include <ranges>
+#include <unordered_map>
+#include <string>
+#include <vector>
 
 #include "Library/Snapshots/SnapshotSerialization.h"
 

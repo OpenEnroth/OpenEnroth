@@ -2,13 +2,13 @@
 
 #include <algorithm>
 #include <memory>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
-#include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"

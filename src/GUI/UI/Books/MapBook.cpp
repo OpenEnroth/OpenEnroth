@@ -1,3 +1,7 @@
+#include "MapBook.h"
+
+#include <string>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -12,10 +16,7 @@
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UIGame.h"
-
-#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

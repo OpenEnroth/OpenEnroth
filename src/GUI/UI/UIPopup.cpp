@@ -29,6 +29,7 @@
 #include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
@@ -1198,7 +1199,7 @@ void CharacterUI_StatsTab_ShowHint() {
             if (hasBow || hasBlaster) {
                 // Blaster takes precendence in the event both are equipped
                 Duration missRecov = pParty->activeCharacter().GetAttackRecoveryTime(!hasBlaster);
-                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov.ticks());
+                description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missRecov.ticks()); // NOLINT: this is not ::sprintf.
             } else {
                 description = localization->GetString(LSTR_RECOVERY_TIME_NA);
             }
@@ -2246,7 +2247,7 @@ void Inventory_ItemPopupAndAlchemy() {
             pAudioPlayer->playUISound(SOUND_fireBall);
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
-            Vec3f pos = pParty->pos + Vec3f(0, 0, pParty->eyeLevel) + Vec3f::fromPolar(64, pParty->_viewYaw, pParty->_viewPitch);
+            Vec3i pos = pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel) + Vec3i::fromPolar(64, pParty->_viewYaw, pParty->_viewPitch);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, pos, 0);
             if (pParty->activeCharacter().CanAct()) {
                 pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);

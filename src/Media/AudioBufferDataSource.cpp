@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <utility>
+#include <memory>
 
 extern "C" {
 #include <libavformat/avformat.h> // NOLINT: not a C system header.

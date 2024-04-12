@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -1968,7 +1969,7 @@ void ODM_ProcessPartyActions() {
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
         if (partyIsOnWater && !fuzzyIsNull(partyInputSpeed.z))
-            SpriteObject::createSplashObject(partyNewPos);
+            SpriteObject::createSplashObject(partyNewPos.toInt());
         partyInputSpeed.z = 0;
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewPos.z;

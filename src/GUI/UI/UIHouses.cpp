@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <vector>
 #include <utility>
+#include <string>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -15,12 +16,9 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
-#include "Engine/SaveLoad.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/TransitionTable.h"
-#include "Engine/Objects/NPC.h"
-#include "Engine/Events/Processor.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -48,7 +46,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Utility/String.h"
 #include "Utility/Math/TrigLut.h"
 
 using Io::TextInputType;

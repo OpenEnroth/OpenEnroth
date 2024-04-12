@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Streams/MemoryInputStream.h"

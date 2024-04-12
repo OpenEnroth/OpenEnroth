@@ -1,5 +1,7 @@
 #include "MerchantTable.h"
 
+#include <string>
+
 #include "Engine/Objects/NPCEnumFunctions.h"
 
 #include "Utility/Memory/Blob.h"

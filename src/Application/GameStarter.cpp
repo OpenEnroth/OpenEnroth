@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"

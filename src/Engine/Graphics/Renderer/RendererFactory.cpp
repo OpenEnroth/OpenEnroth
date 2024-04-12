@@ -1,6 +1,7 @@
 #include "RendererFactory.h"
 
 #include <cassert>
+#include <memory>
 
 #include "Library/Logger/Logger.h"
 

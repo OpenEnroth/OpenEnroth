@@ -4,6 +4,7 @@
 #include <tuple>
 #include <vector>
 #include <utility>
+#include <string>
 
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
