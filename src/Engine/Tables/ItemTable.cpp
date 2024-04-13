@@ -471,24 +471,28 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         if (requestedSkill == CHARACTER_SKILL_INVALID) {  // no skill for this item needed
             for (ItemId itemId : allSpawnableItems()) {
                 if (pItems[itemId].uEquipType == requestedEquip) {
-                    weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
-                    possibleItems.push_back(itemId);
-                    cumulativeWeights.push_back(weightSum);
+                    if (pItems[itemId].uChanceByTreasureLvl[treasureLevel]) {
+                        weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
+                        possibleItems.push_back(itemId);
+                        cumulativeWeights.push_back(weightSum);
+                    }
                 }
             }
         } else {  // have needed skill
             for (ItemId itemId : allSpawnableItems()) {
                 if (pItems[itemId].uSkillType == requestedSkill) {
-                    weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
-                    possibleItems.push_back(itemId);
-                    cumulativeWeights.push_back(weightSum);
+                    if (pItems[itemId].uChanceByTreasureLvl[treasureLevel]) {
+                        weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
+                        possibleItems.push_back(itemId);
+                        cumulativeWeights.push_back(weightSum);
+                    }
                 }
             }
         }
 
         if (weightSum) {
             int pickedWeight = grng->random(weightSum) + 1;
-            auto foundWeight = std::upper_bound(cumulativeWeights.begin(), cumulativeWeights.end(), pickedWeight);
+            auto foundWeight = std::lower_bound(cumulativeWeights.begin(), cumulativeWeights.end(), pickedWeight);
 
             assert(foundWeight != cumulativeWeights.end());
 
@@ -620,8 +624,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         }
     }
 
-    int pickedWeight = grng->random(weightSum);
-    auto foundWeight = std::upper_bound(cumulativeWeights.begin(), cumulativeWeights.end(), pickedWeight);
+    int pickedWeight = grng->random(weightSum) + 1;
+    auto foundWeight = std::lower_bound(cumulativeWeights.begin(), cumulativeWeights.end(), pickedWeight);
     assert(foundWeight != cumulativeWeights.end());
     outItem->special_enchantment = possibleEnchantments[std::distance(cumulativeWeights.begin(), foundWeight)];
 }
