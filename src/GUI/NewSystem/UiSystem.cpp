@@ -1,5 +1,6 @@
 #include "UiSystem.h"
 
+#include "KeyPressEventHandler.h"
 #include "OpenGLUiRenderer.h"
 #include "RmlEventListenerInstancer.h"
 #include "RmlFileInterface.h"
@@ -16,8 +17,17 @@
 
 #include <utility>
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <tuple>
+#include <vector>
 
-UiSystem::UiSystem(PlatformApplication &platformApplication, Renderer &renderer, bool debugContextEnabled, std::string_view documentSubFolder)
+UiSystem::UiSystem(
+    PlatformApplication &platformApplication,
+    Renderer &renderer,
+    bool debugContextEnabled,
+    bool enableReload,
+    std::string_view documentSubFolder)
     : _renderer(renderer)
     , _documentSubFolder(documentSubFolder)
     , _debugContextEnabled(debugContextEnabled) {
@@ -26,10 +36,7 @@ UiSystem::UiSystem(PlatformApplication &platformApplication, Renderer &renderer,
     _createFontEngineInterface();
     _createSystemInterface();
     _createEventListenerInstancer();
-
-    platformApplication.installComponent(std::make_unique<UiEventHandler>(_renderer, [this]() {
-        return _mainContext;
-    }));
+    _createEventHandler(platformApplication, enableReload);
 
     Rml::Initialise();
 
@@ -46,19 +53,55 @@ void UiSystem::update() {
     _mainContext->Update();
 }
 
-ScreenHandle UiSystem::loadScreen(std::string_view filename) {
+void UiSystem::loadScreen(std::string_view filename, std::string_view id) {
     Rml::ElementDocument *document = _mainContext->LoadDocument(makeDataPath(_documentSubFolder, filename));
     if (document) {
         document->Show();
-        return reinterpret_cast<ScreenHandle>(document); //Very temp way of dealing with handles
+        auto screen = std::make_unique<Screen>();
+        screen->filename = filename;
+        screen->document = document->GetObserverPtr();
+        _screens.insert({ id.data(), std::move(screen) });
     }
-    return 0;
 }
 
-void UiSystem::unloadScreen(ScreenHandle screenHandle) {
-    if (screenHandle != 0) {
-        auto document = reinterpret_cast<Rml::ElementDocument *>(screenHandle);
-        document->Close();
+void UiSystem::unloadScreen(std::string_view id) {
+    if (auto itr = _screens.find(id.data()); itr != _screens.end()) {
+        if (itr->second->isValid()) {
+            itr->second->asDocument()->Close();
+            _screens.erase(itr);
+        }
+    }
+}
+
+void UiSystem::_reloadAllScreens() {
+    std::vector<std::tuple<std::string, std::string>> screensToReload;
+    for (auto &&screenPair : _screens) {
+        if (screenPair.second->isValid()) {
+            screensToReload.push_back({ screenPair.second->filename, screenPair.first });
+            screenPair.second->asDocument()->Close();
+        }
+    }
+
+    _screens.clear();
+
+    for (auto &&screenToLoad : screensToReload) {
+        loadScreen(std::get<0>(screenToLoad), std::get<1>(screenToLoad));
+    }
+}
+
+void UiSystem::_hideAllScreens() {
+    for (auto &&screenPair : _screens) {
+        if (screenPair.second->isValid()) {
+            screenPair.second->asDocument()->Hide();
+        }
+    }
+}
+
+void UiSystem::_showAllScreens() {
+    for (auto &&screenPair : _screens) {
+        if (screenPair.second->isValid()) {
+            screenPair.second->asDocument()->Show();
+        }
     }
 }
 
@@ -84,6 +127,27 @@ void UiSystem::_createSystemInterface() {
     Rml::SetSystemInterface(_systemInterface.get());
 }
 
+void UiSystem::_createEventHandler(PlatformApplication &platformApplication, bool enableReload) {
+    auto eventHandler = std::make_unique<UiEventHandler>(_renderer, [this]() {
+        return _mainContext;
+    });
+    if (enableReload) {
+        eventHandler->addKeyPressEventHandler(PlatformKey::KEY_F11, [this]() {
+            _reloadAllScreens();
+        });
+        eventHandler->addKeyPressEventHandler(PlatformKey::KEY_F10, [this]() {
+            static bool bToggle = false;
+            if (bToggle) {
+                _showAllScreens();
+            } else {
+                _hideAllScreens();
+            }
+            bToggle = !bToggle;
+        });
+    }
+    platformApplication.installComponent(std::move(eventHandler));
+}
+
 void UiSystem::_createEventListenerInstancer() {
     _eventListenerInstancer = std::make_unique<RmlEventListenerInstancer>();
     Rml::Factory::RegisterEventListenerInstancer(_eventListenerInstancer.get());
@@ -99,4 +163,12 @@ void UiSystem::_createMainContext() {
 
 void UiSystem::_loadFonts() {
     Rml::LoadFontFace(makeDataPath(_documentSubFolder, "arial.ttf"));
+}
+
+bool UiSystem::Screen::isValid() const {
+    return (bool)document;
+}
+
+Rml::ElementDocument *UiSystem::Screen::asDocument() const {
+    return static_cast<Rml::ElementDocument *>(document.get());
 }

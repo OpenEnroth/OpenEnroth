@@ -82,6 +82,8 @@ class GUIFont {
     int GetStringHeight2(GUIFont *secondFont, std::string_view text_str,
                          GUIWindow *pWindow, int startX, int a6);
 
+    const FontData &getData() const;
+
     int maxcharwidth = 0;
     std::string fontFile;
     GraphicsImage *fonttex = nullptr;

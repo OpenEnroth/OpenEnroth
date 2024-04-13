@@ -51,6 +51,7 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest)
 endif()
 
+set(NO_FONT_INTERFACE_DEFAULT ON)
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(RmlUi)
 set(BUILD_SHARED_LIBS OFF)

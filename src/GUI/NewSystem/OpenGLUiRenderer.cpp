@@ -830,7 +830,7 @@ void OpenGLUiRenderer::beginFrame() {
 
     render_layers.BeginFrame(viewport_width, viewport_height);
     glBindFramebuffer(GL_FRAMEBUFFER, render_layers.GetTopLayer().framebuffer);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     UseProgram(ProgramId::None);
     program_transform_dirty.set();
@@ -858,7 +858,6 @@ void OpenGLUiRenderer::endFrame(int framebuffer) {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fb_postprocess.framebuffer);
     glBlitFramebuffer(0, 0, fb_active.width, fb_active.height, 0, 0, fb_postprocess.width, fb_postprocess.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-    // Draw to backbuffer
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     // Assuming we have an opaque background, we can just write to it with the premultiplied alpha blend mode and we'll get the correct result.

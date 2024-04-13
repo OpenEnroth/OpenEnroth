@@ -217,9 +217,8 @@ void GUIWindow_MainMenu::loop(UiSystem &uiSystem) {
     SetCurrentMenuID(MENU_MAIN);
     // window->Activate();
 
-    ScreenHandle mainMenuHandle{};
     if (engine->config->debug.UseNewUI.value()) {
-        mainMenuHandle = uiSystem.loadScreen("main_menu.rml");
+        uiSystem.loadScreen("main_menu.rml", "mainmenu");
     }
 
     while (GetCurrentMenuID() == MENU_MAIN) {
@@ -227,6 +226,7 @@ void GUIWindow_MainMenu::loop(UiSystem &uiSystem) {
 
         uiSystem.update();
         render->BeginScene2D();
+        render->ClearBlack();
         {
             pWindow_MainMenu->EventLoop();
 
@@ -236,7 +236,7 @@ void GUIWindow_MainMenu::loop(UiSystem &uiSystem) {
     }
 
     if (engine->config->debug.UseNewUI.value()) {
-        uiSystem.unloadScreen(mainMenuHandle);
+        uiSystem.unloadScreen("mainmenu");
     }
 
     nuklear->Release(WINDOW_MainMenu);

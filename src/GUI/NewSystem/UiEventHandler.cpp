@@ -1,47 +1,63 @@
 #include "UiEventHandler.h"
 
+#include "KeyPressEventHandler.h"
+
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/Core.h>
 #include <Engine/Graphics/Renderer/Renderer.h>
-#include <algorithm>
+#include <Engine/Engine.h>
 
-UiEventHandler::UiEventHandler(Renderer &renderer, const GetMainContextFunc &getMainContextFunc)
+#include <algorithm>
+#include <memory>
+
+UiEventHandler::UiEventHandler(Renderer &renderer, const GetMainContextFunc &getMainContext)
     : PlatformEventFilter(EVENTS_ALL)
-    , _getMainContextFunc(getMainContextFunc)
+    , _getMainContext(getMainContext)
     , _renderer(renderer) {
 }
 
+void UiEventHandler::addKeyPressEventHandler(PlatformKey platformKey, const std::function<void()> &callback) {
+    _keyPressEventHandlers.push_back(std::make_unique<KeyPressEventHandler>(platformKey, callback));
+}
+
 bool UiEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
-    Rml::Context *context = _getMainContextFunc();
+    Rml::Context *context = _getMainContext();
     bool result = context->ProcessKeyDown(convertKey(event->key), getKeyModifierState());
-    if (event->key == PlatformKey::KEY_RETURN)
+    if (event->key == PlatformKey::KEY_RETURN) {
         result &= context->ProcessTextInput('\n');
+    }
+
+    for (auto &&eventHandler : _keyPressEventHandlers) {
+        if (eventHandler->keyPressEvent(event)) {
+            return true;
+        }
+    }
     return !result;
 }
 
 bool UiEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
-    return !_getMainContextFunc()->ProcessKeyDown(convertKey(event->key), getKeyModifierState());
+    return !_getMainContext()->ProcessKeyDown(convertKey(event->key), getKeyModifierState());
 }
 
 bool UiEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     auto point = _renderer.mapScreenPointToRender(event->pos);
-    return !_getMainContextFunc()->ProcessMouseMove(point.x, point.y, getKeyModifierState());
+    return !_getMainContext()->ProcessMouseMove(point.x, point.y, getKeyModifierState());
 }
 
 bool UiEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
-    return !_getMainContextFunc()->ProcessMouseButtonDown(convertMouseButton(event->button), getKeyModifierState());
+    return !_getMainContext()->ProcessMouseButtonDown(convertMouseButton(event->button), getKeyModifierState());
 }
 
 bool UiEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
-    return !_getMainContextFunc()->ProcessMouseButtonUp(convertMouseButton(event->button), getKeyModifierState());
+    return !_getMainContext()->ProcessMouseButtonUp(convertMouseButton(event->button), getKeyModifierState());
 }
 
 bool UiEventHandler::wheelEvent(const PlatformWheelEvent *event) {
-    return !_getMainContextFunc()->ProcessMouseWheel(Rml::Vector2f(event->angleDelta.x, event->angleDelta.y), getKeyModifierState());
+    return !_getMainContext()->ProcessMouseWheel(Rml::Vector2f(event->angleDelta.x, event->angleDelta.y), getKeyModifierState());
 }
 
 bool UiEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
-    return !_getMainContextFunc()->ProcessTextInput(event->text);
+    return !_getMainContext()->ProcessTextInput(event->text);
 }
 
 bool UiEventHandler::resizeEvent(const PlatformResizeEvent *event) {

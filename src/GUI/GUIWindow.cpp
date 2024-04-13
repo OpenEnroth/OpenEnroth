@@ -1051,6 +1051,8 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
         assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL");
     if (!assets->pFontComic)
         assets->pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL");
+    if (!assets->pFontCChar)
+        assets->pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 }
 
 static void LoadPartyBuffIcons() {

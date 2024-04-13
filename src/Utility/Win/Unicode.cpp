@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <string>
 
 std::string win::toUtf8(std::wstring_view wstr) {
     std::string result;

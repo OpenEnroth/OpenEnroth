@@ -172,7 +172,7 @@ bool Game::loop() {
             break;
         } else if (GetCurrentMenuID() == MENU_NEWGAME) {
             pActiveOverlayList->Reset();
-            if (!PartyCreationUI_Loop()) {
+            if (!PartyCreationUI_Loop(_uiSystem)) {
                 break;
             }
 

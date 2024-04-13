@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(UI_NEW_SYSTEM_SOURCES
+    KeyPressEventHandler.cpp
     OpenGLUiRenderer.cpp
     RmlEventListenerInstancer.cpp
     RmlFontEngineInterface.cpp
@@ -10,6 +11,7 @@ set(UI_NEW_SYSTEM_SOURCES
     UiSystem.cpp)
 
 set(UI_NEW_SYSTEM_HEADERS
+    KeyPressEventHandler.h
     OpenGLUiRenderer.h
     RmlEventListenerInstancer.h
     RmlFontEngineInterface.h

@@ -824,3 +824,7 @@ int GUIFont::GetStringHeight2(GUIFont *secondFont, std::string_view text_str, GU
 
     return uAllHeght;
 }
+
+const FontData &GUIFont::getData() const {
+    return pData;
+}

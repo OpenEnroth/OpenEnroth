@@ -1,7 +1,8 @@
 #include "RmlFontEngineInterface.h"
 
-#include <RmlUi/Core/StringUtilities.h>
+#include <RmlUi/Core/MeshUtilities.h>
 #include <RmlUi/Core/RenderManager.h>
+#include <RmlUi/Core/StringUtilities.h>
 #include <Engine/AssetsManager.h>
 
 bool RmlFontEngineInterface::LoadFontFace(const Rml::String &file_name, bool fallback_face, Rml::Style::FontWeight weight) {
@@ -61,12 +62,56 @@ int RmlFontEngineInterface::GenerateString(
     const Rml::TextShapingContext &text_shaping_context,
     Rml::TexturedMeshList &mesh_list
 ) {
-    auto font = reinterpret_cast<GUIFont *>(face_handle);
-    mesh_list.resize(1);
-    mesh_list[0].texture = render_manager.LoadTexture(font->fontFile);
     //Ignore effects, opacity and text shaping atm
+
+    auto font = reinterpret_cast<GUIFont *>(face_handle);
+    //let's generate a single mesh with all the quads representing each character
+    mesh_list.resize(1);
+    Rml::TexturedMesh& texturedMesh = mesh_list[0];
+    texturedMesh.texture = render_manager.LoadTexture(font->fontFile);
+    auto &vertices = texturedMesh.mesh.vertices;
+    auto &indices = texturedMesh.mesh.indices;
+
+    vertices.reserve(str.size() * 4);
+    indices.reserve(str.size() * 6);
+
+    int width = 0;
+    Rml::Vector2f finalPosition = position.Round();
     for (auto itChar = Rml::StringIteratorU8(str); itChar; ++itChar) {
-        //font->DrawText()
+        Rml::Character character = *itChar;
+        const FontData& fontData = font->getData();
+        Rml::Character firstChar = static_cast<Rml::Character>(fontData.header.cFirstChar);
+        Rml::Character lastChar = static_cast<Rml::Character>(fontData.header.cLastChar);
+        if (character >= firstChar && character <= lastChar) {
+            uint8_t mmChar = static_cast<uint8_t>(character);
+            const GUICharMetric& charMetric = fontData.header.pMetrics[mmChar];
+
+            finalPosition.x += charMetric.uLeftSpacing;
+            width += charMetric.uLeftSpacing;
+
+            int xsq = mmChar % 16;
+            int ysq = mmChar / 16;
+            float u1 = (xsq * 32.0f) / 512.0f;
+            float u2 = (xsq * 32.0f + charMetric.uWidth) / 512.0f;
+            float v1 = (ysq * 32.0f) / 512.0f;
+            float v2 = (ysq * 32.0f + fontData.header.uFontHeight) / 512.0f;
+
+            Rml::MeshUtilities::GenerateQuad(
+                texturedMesh.mesh,
+                finalPosition.Round(),
+                { (float)charMetric.uWidth, (float)fontData.header.uFontHeight },
+                colour,
+                {u1, v1},
+                {u2, v2}
+            );
+
+            finalPosition.x += charMetric.uWidth;
+            width += charMetric.uWidth;
+
+            //We should check if this is the final character of the string
+            finalPosition.x += charMetric.uRightSpacing;
+            width += charMetric.uRightSpacing;
+        }
     }
-    return font->GetLineWidth(str);
+    return width;
 }

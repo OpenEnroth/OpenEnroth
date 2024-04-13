@@ -2,6 +2,8 @@
 
 #include <Utility/DataPath.h>
 
+#include <cstdio>
+
 RmlFileInterface::~RmlFileInterface() {
 }
 

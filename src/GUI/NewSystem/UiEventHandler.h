@@ -2,6 +2,8 @@
 
 #include <RmlUi/Core/Input.h>
 #include <functional>
+#include <memory>
+#include <vector>
 
 #include "Library/Platform/Filters/PlatformEventFilter.h"
 
@@ -9,13 +11,16 @@ namespace Rml {
 class Context;
 }
 
+class KeyPressEventHandler;
 class Renderer;
 
 typedef std::function<Rml::Context *()> GetMainContextFunc;
 
 class UiEventHandler : public PlatformEventFilter {
  public:
-    explicit UiEventHandler(Renderer &renderer, const GetMainContextFunc &getMainContextFunc);
+    explicit UiEventHandler(Renderer &renderer, const GetMainContextFunc &getMainContext);
+
+    void addKeyPressEventHandler(PlatformKey platformKey, const std::function<void()> &callback);
 
  private:
     bool keyPressEvent(const PlatformKeyEvent *event) override;
@@ -32,7 +37,8 @@ class UiEventHandler : public PlatformEventFilter {
     static int getKeyModifierState();
     static Rml::Input::KeyIdentifier convertKey(PlatformKey key);
 
-    GetMainContextFunc _getMainContextFunc;
+    GetMainContextFunc _getMainContext;
+    std::vector<std::unique_ptr<KeyPressEventHandler>> _keyPressEventHandlers;
     Renderer &_renderer;
     Vec2i _mouseOffset;
 };

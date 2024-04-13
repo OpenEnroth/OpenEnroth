@@ -5,9 +5,10 @@
 #include "GUI/GUIWindow.h"
 
 class GraphicsImage;
+class UiSystem;
 
 bool PlayerCreation_Choose4Skills();
-bool PartyCreationUI_Loop();
+bool PartyCreationUI_Loop(UiSystem &uiSystem);
 
 class GUIWindow_PartyCreation : public GUIWindow {
  public:

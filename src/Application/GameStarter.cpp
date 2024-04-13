@@ -131,7 +131,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
-    _uiSystem = std::make_unique<UiSystem>(*_application, *_renderer.get(), true, "ui");
+    _uiSystem = std::make_unique<UiSystem>(*_application, *_renderer, true, _config->debug.NewUIReload.value(), "ui");
 
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
