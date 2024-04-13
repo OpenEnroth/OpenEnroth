@@ -33,8 +33,8 @@
 #include "Utility/IndexedArray.h"
 
 struct ITEM_VARIATION {
-    ItemTreasureLevel treasure_level;
-    std::array<RandomItemType, 4> item_class;
+    ItemTreasureLevel treasureLevel;
+    std::array<RandomItemType, 4> itemClass;
 };
 
 static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandard = {{
@@ -211,7 +211,7 @@ bool isStealingModeActive() {
 }
 
 void addUniqueItemClasses(const ITEM_VARIATION &variation, std::vector<RandomItemType> &set) {
-    for (RandomItemType itemClass : variation.item_class) {
+    for (RandomItemType itemClass : variation.itemClass) {
         if (std::find(set.begin(), set.end(), itemClass) == set.end()) {
             set.push_back(itemClass);
         }
@@ -635,8 +635,8 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
     const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
-        RandomItemType itemClass = variation.item_class[grng->random(4)];
-        pItemTable->generateItem(variation.treasure_level, itemClass, &itemArray[i]);
+        RandomItemType itemClass = variation.itemClass[grng->random(4)];
+        pItemTable->generateItem(variation.treasureLevel, itemClass, &itemArray[i]);
         itemArray[i].SetIdentified();
     }
 
@@ -653,11 +653,11 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
         ItemTreasureLevel treasureLvl;
 
         if (i >= 4) {
-            treasureLvl = variationBottom.treasure_level;
-            itemClass = variationBottom.item_class[grng->random(4)];
+            treasureLvl = variationBottom.treasureLevel;
+            itemClass = variationBottom.itemClass[grng->random(4)];
         } else {
-            treasureLvl = variationTop.treasure_level;
-            itemClass = variationTop.item_class[grng->random(4)];
+            treasureLvl = variationTop.treasureLevel;
+            itemClass = variationTop.itemClass[grng->random(4)];
         }
         pItemTable->generateItem(treasureLvl, itemClass, &itemArray[i]);
         itemArray[i].SetIdentified();
