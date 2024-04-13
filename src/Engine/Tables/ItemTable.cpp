@@ -554,7 +554,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
         outItem->special_enchantment = ITEM_ENCHANTMENT_NULL;
         outItem->attributeEnchantment = {};
     }
-    // try get special enhansment
+    // try get special enchantment
     switch (outItem->GetItemEquipType()) {
         case ITEM_TYPE_SINGLE_HANDED:
         case ITEM_TYPE_TWO_HANDED:
@@ -570,7 +570,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasure_level, RandomItemType uT
         case ITEM_TYPE_CLOAK:
         case ITEM_TYPE_GAUNTLETS:
         case ITEM_TYPE_BOOTS:
-        case ITEM_TYPE_RING: {
+        case ITEM_TYPE_RING:
+        case ITEM_TYPE_AMULET: {
             if (!uBonusChanceStandart[treasure_level]) return;
             int bonusChanceRoll = grng->random(100);  // edx@86
             if (bonusChanceRoll < uBonusChanceStandart[treasure_level]) {
