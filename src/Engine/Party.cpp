@@ -1175,3 +1175,12 @@ void Party::giveFallDamage(int distance) {
         }
     }
 }
+
+Character *Party::getCharacterByIndex(int characterIndex) {
+    if (characterIndex >= 0 && characterIndex < pCharacters.size()) {
+        return &pCharacters[characterIndex];
+    }
+
+    logger->warning("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pCharacters.size());
+    return nullptr;
+}
