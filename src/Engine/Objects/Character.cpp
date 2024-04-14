@@ -3984,7 +3984,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                     static_assert(possibleResistances.size() == 6);
                     MagicSchool res = grng->randomSample(possibleResistances);
 
-                    const char *spell_school_name = localization->GetSpellSchoolName(res);
+                    std::string spell_school_name = localization->GetSpellSchoolName(res);
 
                     switch (res) {
                         case MAGIC_SCHOOL_FIRE:
