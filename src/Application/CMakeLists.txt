@@ -49,4 +49,5 @@ target_link_libraries(application
         library_environment_implementation
         utility
 	PRIVATE
-	libluajit)
+	libluajit
+    sol2)
