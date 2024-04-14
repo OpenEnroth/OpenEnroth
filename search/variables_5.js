@@ -1,7 +1,7 @@
 var searchData=
 [
   ['e_0',['e',['../Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54',1,'Json_ut.cpp']]],
-  ['earth_5fres_5fdescription_1',['earth_res_description',['../classLocalization.html#ae18835e2daff0a051c8954c8fbbfb434',1,'Localization']]],
+  ['earth_5fres_5fdescription_1',['earth_res_description',['../classLocalization.html#a32fa97386fc4947aebd935658245b2c9',1,'Localization']]],
   ['easternblue_2',['EasternBlue',['../classColorTable.html#a6b332decfa280785829a71987f91a8a0',1,'ColorTable']]],
   ['ebo_3',['ebo',['../structnk__device.html#ac3fc81e3a0967d5694055ad487779471',1,'nk_device']]],
   ['eff_5fparams_4',['eff_params',['../structam__effects__struct.html#a716b23229a701dc071a730dd03131350',1,'am_effects_struct']]],
@@ -69,7 +69,7 @@ var searchData=
   ['exit_5ftag_66',['exit_tag',['../structBLVSector.html#ab3711f64d2aef3698f2daacaccfaa041',1,'BLVSector::exit_tag()'],['../structBLVSector__MM7.html#a96f2f8c369dab5fd7788975a3f1b50b5',1,'BLVSector_MM7::exit_tag()']]],
   ['exitgame_67',['ExitGame',['../classGameConfig_1_1Gamepad.html#a12e83a743f0832a46d57d41905548b07',1,'GameConfig::Gamepad::ExitGame()'],['../classGameConfig_1_1Keybindings.html#ad63e05f05a397ed8552333b322e772b9',1,'GameConfig::Keybindings::ExitGame()']]],
   ['exp_68',['exp',['../structMonsterInfo__MM7.html#a8494de554b163e9f2fa1a2df39c7f999',1,'MonsterInfo_MM7::exp()'],['../structMonsterInfo.html#abc2325a473a763176580cca13cae63c0',1,'MonsterInfo::exp()']]],
-  ['exp_5fdescription_69',['exp_description',['../classLocalization.html#a60b5fa45d9a12615ae4923ac83805ba8',1,'Localization']]],
+  ['exp_5fdescription_69',['exp_description',['../classLocalization.html#aaa0460073fd4a2e9d26a1a6499d1e643',1,'Localization']]],
   ['experience_70',['experience',['../structPlayer__MM7.html#a4f98304770743ae318137f7e9af6f397',1,'Player_MM7::experience()'],['../classCharacter.html#a48e1e1c0150884f332453fd385a00148',1,'Character::experience()']]],
   ['expertskillmasterycost_71',['expertSkillMasteryCost',['../NPCTopics_8cpp.html#a69cb59fa9b67147d8b9459391bed602a',1,'NPCTopics.cpp']]],
   ['expiretime_72',['expireTime',['../structSpellBuff.html#a74596eec2f5b092d20712fab52c0918d',1,'SpellBuff::expireTime()'],['../structSpellBuff__MM7.html#ab74076d372df2c2543479fb8f66c91bf',1,'SpellBuff_MM7::expireTime()'],['../structItemGen__MM7.html#a525b0ebc5e05f396bf97a97df795c8a8',1,'ItemGen_MM7::expireTime()']]],

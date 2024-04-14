@@ -12,7 +12,7 @@ var searchData=
   ['wall_5fheight_9',['wall_height',['../structArcomageStartConditions.html#a9ddc9f810ab99fd7aee2efa1cf803b28',1,'ArcomageStartConditions::wall_height()'],['../structArcomagePlayer.html#a8d4f2c9409faf133875f8684bf20e87d',1,'ArcomagePlayer::wall_height()']]],
   ['wands_5fskill_5fvalue_10',['WANDS_SKILL_VALUE',['../CastSpellInfo_8h.html#a82dfcc8835f82dbaee4aee3b79f2b4c0',1,'CastSpellInfo.h']]],
   ['warning_11',['warning',['../classLogger.html#a715a684673834a3837b26fb1980a328e',1,'Logger::warning(const LogCategory &amp;category, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)'],['../classLogger.html#ae6e545f2d02dd6e58053372a4c8fb531',1,'Logger::warning(fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)']]],
-  ['water_5fres_5fdescription_12',['water_res_description',['../classLocalization.html#ac9208060d1b2ef04343445b260737d0e',1,'Localization']]],
+  ['water_5fres_5fdescription_12',['water_res_description',['../classLocalization.html#ad881c08b4ba7cbb2a3f2e52dba956286',1,'Localization']]],
   ['waterlavatimer_13',['waterLavaTimer',['../structParty__MM7.html#acad15ad3633b2feb34382513a70f75fd',1,'Party_MM7']]],
   ['watermaster_14',['WaterMaster',['../NPCEnums_8h.html#a060d039dd31dff6f434558155fbb35aea1b45fb86865a9c4357bb7be4d8db09fe',1,'NPCEnums.h']]],
   ['waterwalkactive_15',['WaterWalkActive',['../structParty.html#af73cfe796a0b14bb518a63ad56c8837b',1,'Party']]],

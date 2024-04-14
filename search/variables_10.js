@@ -79,7 +79,7 @@ var searchData=
   ['particles_5farray_5fsize_76',['PARTICLES_ARRAY_SIZE',['../classParticleEngine.html#ae3fdaf4814d763bf518dee4319aa693c',1,'ParticleEngine']]],
   ['party_77',['party',['../structSaveGame__MM7.html#a992f1fb060338fb4f9f9da68d6195182',1,'SaveGame_MM7']]],
   ['party_5fbuff_5ficons_78',['party_buff_icons',['../mm7__data_8h.html#ae92e6b3df45c8d62a595929f9acb259d',1,'party_buff_icons():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#ae92e6b3df45c8d62a595929f9acb259d',1,'party_buff_icons():&#160;mm7_data.cpp']]],
-  ['party_5fbuff_5fnames_79',['party_buff_names',['../classLocalization.html#a8976699a78eec0ea05b31cd6db2dc865',1,'Localization']]],
+  ['party_5fbuff_5fnames_79',['party_buff_names',['../classLocalization.html#a8ed907e9f131362270033c4e8fd0f27f',1,'Localization']]],
   ['partybuffs_80',['partyBuffs',['../structParty__MM7.html#a82746553d3de70d59150a798ee0f3f1c',1,'Party_MM7']]],
   ['partyeyelevel_81',['PartyEyeLevel',['../classGameConfig_1_1Gameplay.html#a75507033eee9fd428e38aeb73d4eea2d',1,'GameConfig::Gameplay']]],
   ['partyheight_82',['PartyHeight',['../classGameConfig_1_1Gameplay.html#a13eb0fb5a1a0970930ee5e84941e7058',1,'GameConfig::Gameplay']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fef541d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9e4e9cb</span>
    </div>
   </td>
  </tr>
@@ -96,8 +96,8 @@ Functions</h2></td></tr>
 <tr class="separator:a63f49adbb1a07fd289440db94b3de066"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26543b6f1052f150560045f6a091e4fe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a26543b6f1052f150560045f6a091e4fe">tokenize</a> (char *input, const char separator)</td></tr>
 <tr class="separator:a26543b6f1052f150560045f6a091e4fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e6142eae5662acb65bb68719b5dbb61"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a7e6142eae5662acb65bb68719b5dbb61">removeQuotes</a> (char *str)</td></tr>
-<tr class="separator:a7e6142eae5662acb65bb68719b5dbb61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32b8814bc1a5652c82d128b1566ba3c9"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a32b8814bc1a5652c82d128b1566ba3c9">removeQuotes</a> (std::string_view str)</td></tr>
+<tr class="separator:a32b8814bc1a5652c82d128b1566ba3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6594f254aa6d2ca44371a419dc9297d7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a6594f254aa6d2ca44371a419dc9297d7">trimRemoveQuotes</a> (std::string str)</td></tr>
 <tr class="separator:a6594f254aa6d2ca44371a419dc9297d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2db9ab35b35a37e25a506b09b6054a8d"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a2db9ab35b35a37e25a506b09b6054a8d">trim</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>)</td></tr>
@@ -122,6 +122,8 @@ Functions</h2></td></tr>
 <tr class="separator:a0bd67f930de8d6d5e6746a458ba69a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b7adfd80cc796bd24c3b7db0791d9e6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a0b7adfd80cc796bd24c3b7db0791d9e6">splitString</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)</td></tr>
 <tr class="separator:a0b7adfd80cc796bd24c3b7db0791d9e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3a1feab518664815aee47b665274976"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#ae3a1feab518664815aee47b665274976">splitString</a> (const char *<a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)</td></tr>
+<tr class="separator:ae3a1feab518664815aee47b665274976"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95a987a019dfd128c47656a03075875c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a95a987a019dfd128c47656a03075875c">splitString</a> (std::string &amp;&amp;<a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)=delete</td></tr>
 <tr class="separator:a95a987a019dfd128c47656a03075875c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -266,8 +268,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7e6142eae5662acb65bb68719b5dbb61" name="a7e6142eae5662acb65bb68719b5dbb61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e6142eae5662acb65bb68719b5dbb61">&#9670;&#160;</a></span>removeQuotes()</h2>
+<a id="a32b8814bc1a5652c82d128b1566ba3c9" name="a32b8814bc1a5652c82d128b1566ba3c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32b8814bc1a5652c82d128b1566ba3c9">&#9670;&#160;</a></span>removeQuotes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,9 +278,9 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">char * removeQuotes </td>
+          <td class="memname">std::string_view removeQuotes </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>str</em></td><td>)</td>
           <td></td>
         </tr>
@@ -289,6 +291,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>String to unquote. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String with leading &amp; trailing double quotes removed, if any. </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x00452C30 </dd></dl>
 
 </div>
 </div>
@@ -326,8 +336,44 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ae3a1feab518664815aee47b665274976" name="ae3a1feab518664815aee47b665274976"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3a1feab518664815aee47b665274976">&#9670;&#160;</a></span>splitString() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string_view &gt; splitString </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>sep</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a95a987a019dfd128c47656a03075875c" name="a95a987a019dfd128c47656a03075875c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95a987a019dfd128c47656a03075875c">&#9670;&#160;</a></span>splitString() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a95a987a019dfd128c47656a03075875c">&#9670;&#160;</a></span>splitString() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -363,7 +409,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0b7adfd80cc796bd24c3b7db0791d9e6" name="a0b7adfd80cc796bd24c3b7db0791d9e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b7adfd80cc796bd24c3b7db0791d9e6">&#9670;&#160;</a></span>splitString() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b7adfd80cc796bd24c3b7db0791d9e6">&#9670;&#160;</a></span>splitString() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -399,7 +445,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0bd67f930de8d6d5e6746a458ba69a0d" name="a0bd67f930de8d6d5e6746a458ba69a0d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bd67f930de8d6d5e6746a458ba69a0d">&#9670;&#160;</a></span>splitString() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bd67f930de8d6d5e6746a458ba69a0d">&#9670;&#160;</a></span>splitString() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

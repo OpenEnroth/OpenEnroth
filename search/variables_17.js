@@ -9,7 +9,7 @@ var searchData=
   ['walksoundtimerunused_6',['walkSoundTimerUnused',['../structParty__MM7.html#af8564f847a41efc59b86dfd3e500beff',1,'Party_MM7']]],
   ['walkspeed_7',['walkSpeed',['../structParty.html#aba44046ae2dab6b8f356312253394928',1,'Party::walkSpeed()'],['../structParty__MM7.html#a81077e662100b72b053e0b6208ace40e',1,'Party_MM7::walkSpeed()']]],
   ['wall_5fheight_8',['wall_height',['../structArcomagePlayer.html#a8d4f2c9409faf133875f8684bf20e87d',1,'ArcomagePlayer::wall_height()'],['../structArcomageStartConditions.html#a9ddc9f810ab99fd7aee2efa1cf803b28',1,'ArcomageStartConditions::wall_height()']]],
-  ['water_5fres_5fdescription_9',['water_res_description',['../classLocalization.html#ac9208060d1b2ef04343445b260737d0e',1,'Localization']]],
+  ['water_5fres_5fdescription_9',['water_res_description',['../classLocalization.html#ad881c08b4ba7cbb2a3f2e52dba956286',1,'Localization']]],
   ['waterlavatimer_10',['waterLavaTimer',['../structParty__MM7.html#acad15ad3633b2feb34382513a70f75fd',1,'Party_MM7']]],
   ['weaponshopvariationspecial_11',['weaponShopVariationSpecial',['../Shops_8cpp.html#a47a2320b0c314863ffe1d0b01176d8fc',1,'Shops.cpp']]],
   ['weaponshopvariationstandard_12',['weaponShopVariationStandard',['../Shops_8cpp.html#aaac4d0a1b62f2fcdf344abd440344683',1,'Shops.cpp']]],

@@ -131,7 +131,7 @@ var searchData=
   ['party_5fbuff_5fimmolation_128',['PARTY_BUFF_IMMOLATION',['../PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cfab38a7d30a704ca63b3588633b84bd3cb',1,'PartyEnums.h']]],
   ['party_5fbuff_5finvisibility_129',['PARTY_BUFF_INVISIBILITY',['../PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cfa4cc86fa711482c23fcad66241489a53d',1,'PartyEnums.h']]],
   ['party_5fbuff_5flast_130',['PARTY_BUFF_LAST',['../PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cfa9a921a5b789b54f864fe383a3cad428b',1,'PartyEnums.h']]],
-  ['party_5fbuff_5fnames_131',['party_buff_names',['../classLocalization.html#a8976699a78eec0ea05b31cd6db2dc865',1,'Localization']]],
+  ['party_5fbuff_5fnames_131',['party_buff_names',['../classLocalization.html#a8ed907e9f131362270033c4e8fd0f27f',1,'Localization']]],
   ['party_5fbuff_5fprotection_5ffrom_5fmagic_132',['PARTY_BUFF_PROTECTION_FROM_MAGIC',['../PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cfa142bc5dcd7a96bc1fde1f84ca1c9ffe1',1,'PartyEnums.h']]],
   ['party_5fbuff_5fresist_5fair_133',['PARTY_BUFF_RESIST_AIR',['../PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cfaf12dcaa9615ca6f21554c0926fc08d7b',1,'PartyEnums.h']]],
   ['party_5fbuff_5fresist_5fbody_134',['PARTY_BUFF_RESIST_BODY',['../PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cfada02f62df8350b64963b91bb6f375900',1,'PartyEnums.h']]],

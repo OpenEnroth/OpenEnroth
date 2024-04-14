@@ -57,7 +57,7 @@ var searchData=
   ['bnight_54',['bNight',['../classWeather.html#a6fd1f47e7bb79b6332c97880d5fd1676',1,'Weather']]],
   ['bnonpchiring_55',['bNoNPCHiring',['../mm7__data_8cpp.html#a3bbc0ef2fe0e4c5fac711da91f15ed00',1,'bNoNPCHiring():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a3bbc0ef2fe0e4c5fac711da91f15ed00',1,'bNoNPCHiring():&#160;mm7_data.cpp']]],
   ['bnosky_56',['bNoSky',['../structODMRenderParams.html#acfc6f3f022a33b17e8ec135a0b765126',1,'ODMRenderParams']]],
-  ['body_5fres_5fdescription_57',['body_res_description',['../classLocalization.html#af22bba2ef3fbe0f08ecf6b1030d1dff9',1,'Localization']]],
+  ['body_5fres_5fdescription_57',['body_res_description',['../classLocalization.html#a102c220d5d9bea00022a58ae5457a3f2',1,'Localization']]],
   ['bodyanchor_58',['bodyAnchor',['../structItemGen__MM7.html#a3b7b94835a430561a3e96d1b75576d18',1,'ItemGen_MM7']]],
   ['boltblue_59',['BoltBlue',['../classColorTable.html#a9f0180cb4d6d9c018c62b15d907555db',1,'ColorTable']]],
   ['bonusranges_60',['bonusRanges',['../structItemTable.html#a7cf820c151e066d833843dcc76580d91',1,'ItemTable']]],

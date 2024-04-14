@@ -49,7 +49,7 @@ var searchData=
   ['npc_5fid_46',['npc_id',['../classEventIR.html#a6e7f51c3bbde0bc209f63431fd1d3a04',1,'EventIR']]],
   ['npc_5fitem_5fdescr_47',['npc_item_descr',['../classEventIR.html#acde7ed414377d423bbd20c49bd6ddb17',1,'EventIR']]],
   ['npc_5fmove_5fdescr_48',['npc_move_descr',['../classEventIR.html#a9965425c7f86b99ddb11115abbcdd5f1',1,'EventIR']]],
-  ['npc_5fprofession_5fnames_49',['npc_profession_names',['../classLocalization.html#a2c9a91de9d1d5bcdb24e553ceb95b75d',1,'Localization']]],
+  ['npc_5fprofession_5fnames_49',['npc_profession_names',['../classLocalization.html#a95f066cdf49da848499a0bf767273952',1,'Localization']]],
   ['npc_5ftopic_5fdescr_50',['npc_topic_descr',['../classEventIR.html#a33388fbdf1391ddb0346caaca7ead502',1,'EventIR']]],
   ['npcdata_51',['npcData',['../structSaveGame__MM7.html#a35f8b5ff3e4eb43008a8abfcb73ae314',1,'SaveGame_MM7']]],
   ['npcgroups_52',['npcGroups',['../structSaveGame__MM7.html#ad6be0c5275de1b43a2ff93fd591b98f3',1,'SaveGame_MM7']]],
