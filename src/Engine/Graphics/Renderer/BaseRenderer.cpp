@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <utility>
+#include <algorithm>
 #include <vector>
 
 #include "Engine/Engine.h"
@@ -814,6 +815,21 @@ bool BaseRenderer::Reinitialize(bool firstInit) {
 
 Sizei BaseRenderer::GetRenderDimensions() {
     return outputRender;
+}
+
+Pointi BaseRenderer::mapScreenPointToRender(const Pointi &screenPoint) const {
+    Pointi result = screenPoint;
+    if (outputPresent != outputRender) {
+        Sizef ratioCorections = { (float)outputPresent.w / outputRender.w, (float)outputPresent.h / outputRender.h };
+        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
+
+        float w = outputRender.w * ratioCorrection;
+        float h = outputRender.h * ratioCorrection;
+
+        result.x = (float)screenPoint.x / ratioCorrection - ((float)outputPresent.w / 2 - w / 2) / ratioCorrection;
+        result.y = (float)screenPoint.y / ratioCorrection - ((float)outputPresent.h / 2 - h / 2) / ratioCorrection;
+    }
+    return result;
 }
 
 Sizei BaseRenderer::GetPresentDimensions() {

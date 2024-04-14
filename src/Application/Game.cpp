@@ -118,7 +118,7 @@ void initDataPath(Platform *platform, std::string_view dataPath) {
     }
 }
 
-Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
+Game::Game(PlatformApplication *application, UiSystem &uiSystem, std::shared_ptr<GameConfig> config) : _uiSystem(uiSystem) {
     _application = application;
     _config = config;
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
@@ -142,7 +142,7 @@ int Game::run() {
 
     // logger->Warning("MM: entering main loop");
     while (true) {
-        GUIWindow_MainMenu::loop();
+        GUIWindow_MainMenu::loop(_uiSystem);
         uGameState = GAME_STATE_PLAYING;
 
         if (!loop()) {
@@ -172,7 +172,7 @@ bool Game::loop() {
             break;
         } else if (GetCurrentMenuID() == MENU_NEWGAME) {
             pActiveOverlayList->Reset();
-            if (!PartyCreationUI_Loop()) {
+            if (!PartyCreationUI_Loop(_uiSystem)) {
                 break;
             }
 

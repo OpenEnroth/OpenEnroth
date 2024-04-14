@@ -43,6 +43,8 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
+#include "GUI/NewSystem/UiRenderer.h"
+
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Image/ImageFunctions.h"
@@ -3180,6 +3182,12 @@ void OpenGLRenderer::Present() {
     EndLines2D();
     EndTextNew();
 
+    // Render new ui system
+    if (_uiRenderer) {
+        _uiRenderer->setViewport(outputRender.w, outputRender.h);
+        _uiRenderer->render(outputRender != outputPresent ? framebuffer : 0);
+    }
+
     if (outputRender != outputPresent) {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glDisable(GL_SCISSOR_TEST);
@@ -3216,6 +3224,7 @@ void OpenGLRenderer::Present() {
         glEnable(GL_SCISSOR_TEST);
         glViewport(0, 0, outputRender.w, outputRender.h);
     }
+
     openGLContext->swapBuffers();
 
     if (engine->config->graphics.FPSLimit.value() > 0)
@@ -5476,4 +5485,9 @@ struct nk_image OpenGLRenderer::NuklearImageLoad(GraphicsImage *img) {
 
 void OpenGLRenderer::NuklearImageFree(GraphicsImage *img) {
     img->releaseRenderId();
+}
+
+void OpenGLRenderer::setUiRenderer(UiRenderer *uiRenderer) {
+    _uiRenderer = uiRenderer;
+    _uiRenderer->setViewport(outputPresent.w, outputPresent.h);
 }

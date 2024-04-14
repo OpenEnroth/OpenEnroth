@@ -165,6 +165,32 @@ GraphicsImage *AssetsManager::getSprite(std::string_view name) {
     return i->second;
 }
 
+GUIFont *AssetsManager::getFont(std::string_view name) const {
+    if (pFontBookOnlyShadow && pFontBookOnlyShadow->fontFile == name) {
+        return pFontBookOnlyShadow.get();
+    } else if(pFontBookLloyds && pFontBookLloyds->fontFile == name) {
+        return pFontBookLloyds.get();
+    } else if(pFontArrus && pFontArrus->fontFile == name) {
+        return pFontArrus.get();
+    } else if(pFontLucida && pFontLucida->fontFile == name) {
+        return pFontLucida.get();
+    } else if(pFontBookTitle && pFontBookTitle->fontFile == name) {
+        return pFontBookTitle.get();
+    } else if(pFontBookCalendar && pFontBookCalendar->fontFile == name) {
+        return pFontBookCalendar.get();
+    } else if(pFontCreate && pFontCreate->fontFile == name) {
+        return pFontCreate.get();
+    } else if(pFontCChar && pFontCChar->fontFile == name) {
+        return pFontCChar.get();
+    } else if (pFontComic && pFontComic->fontFile == name) {
+        return pFontComic.get();
+    } else if (pFontSmallnum && pFontSmallnum->fontFile == name) {
+        return pFontSmallnum.get();
+    }
+
+    return nullptr;
+}
+
 bool AssetsManager::releaseSprite(std::string_view name) {
     std::string filename = toLower(name);
 

@@ -116,4 +116,6 @@ class NullRenderer : public BaseRenderer {
     virtual void ReloadShaders() override;
 
     virtual void DoRenderBillboards_D3D() override;
+
+    void setUiRenderer(UiRenderer *uiRenderer) override;
 };

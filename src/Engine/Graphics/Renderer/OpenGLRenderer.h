@@ -16,6 +16,7 @@
 #include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
+class UiRenderer;
 struct nk_state;
 
 class OpenGLRenderer : public BaseRenderer {
@@ -137,6 +138,8 @@ class OpenGLRenderer : public BaseRenderer {
     virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
+    void setUiRenderer(UiRenderer *) override;
+
  protected:
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
@@ -234,6 +237,8 @@ class OpenGLRenderer : public BaseRenderer {
     float gamma{};
 
     std::unique_ptr<nk_state> nk;
+
+    UiRenderer *_uiRenderer{};
 };
 
 

@@ -22,6 +22,8 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
 
+#include "GUI/NewSystem/UiSystem.h"
+
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
 
@@ -52,7 +54,7 @@ static Duration errorMessageExpireTime; // expiration time (misc timer) of error
 
 static const int ARROW_SPIN_PERIOD_MS = 475;
 
-bool PartyCreationUI_LoopInternal();
+bool PartyCreationUI_LoopInternal(UiSystem &uiSystem);
 
 bool PlayerCreation_Choose4Skills() {
     for (const auto& character : pParty->pCharacters) {
@@ -246,7 +248,7 @@ void CreateParty_EventLoop() {
     }
 }
 
-bool PartyCreationUI_Loop() {
+bool PartyCreationUI_Loop(UiSystem &uiSystem) {
     pAudioPlayer->MusicStop();
     pEventTimer->setPaused(true);
 
@@ -262,7 +264,7 @@ bool PartyCreationUI_Loop() {
     pNPCStats->pNPCData[3].uFlags |= NPC_HIRED; // Lady Margaret.
 
     pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
-    return !PartyCreationUI_LoopInternal();
+    return !PartyCreationUI_LoopInternal(uiSystem);
 }
 
 //----- (00495B39) --------------------------------------------------------
@@ -719,11 +721,15 @@ GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
 }
 
 //----- (00497526) --------------------------------------------------------
-bool PartyCreationUI_LoopInternal() {
+bool PartyCreationUI_LoopInternal(UiSystem &uiSystem) {
     ItemGen item;
     bool party_not_creation_flag;
 
     party_not_creation_flag = false;
+
+    if (engine->config->debug.UseNewUI.value()) {
+        uiSystem.loadScreen("party_creation.rml", "partycreation");
+    }
 
     pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
     SetCurrentMenuID(MENU_CREATEPARTY);
@@ -735,6 +741,9 @@ bool PartyCreationUI_LoopInternal() {
         // PlayerCreationUI_Draw();
         // MainMenu_EventLoop();
         CreateParty_EventLoop();
+
+        uiSystem.update();
+
         render->BeginScene2D();
         GUI_UpdateWindows();
         render->Present();
@@ -751,6 +760,10 @@ bool PartyCreationUI_LoopInternal() {
             SetCurrentMenuID(MENU_NEWGAME);
             continue;
         }
+    }
+
+    if (engine->config->debug.UseNewUI.value()) {
+        uiSystem.unloadScreen("partycreation");
     }
 
     pGUIWindow_CurrentMenu->Release();
