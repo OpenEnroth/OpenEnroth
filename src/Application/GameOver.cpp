@@ -53,7 +53,7 @@ void CreateWinnerCertificate() {
     pWindow.uFrameW = 397;
     std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
 
-    const char *pInString = nullptr;
+    std::string pInString;
     if (pParty->isPartyGood())
         pInString = localization->GetString(LSTR_GOOD_ENDING);
     else if (pParty->isPartyEvil())
@@ -94,13 +94,13 @@ void CreateWinnerCertificate() {
     std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
 
-    const char *v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
+    std::string v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
     if (days != 1) v7 = localization->GetString(LSTR_DAYS);
 
-    const char *v8 = localization->GetString(LSTR_MONTH);
+    std::string v8 = localization->GetString(LSTR_MONTH);
     if (months != 1) v8 = localization->GetString(LSTR_MONTHS);
 
-    const char *v9 = localization->GetString(LSTR_YEAR);
+    std::string v9 = localization->GetString(LSTR_YEAR);
     if (years != 1) v9 = localization->GetString(LSTR_YEARS);
 
     pWindow.DrawTitleText(

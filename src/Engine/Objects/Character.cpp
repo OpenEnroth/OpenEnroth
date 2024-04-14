@@ -3984,7 +3984,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                     static_assert(possibleResistances.size() == 6);
                     MagicSchool res = grng->randomSample(possibleResistances);
 
-                    const char *spell_school_name = localization->GetSpellSchoolName(res);
+                    std::string spell_school_name = localization->GetSpellSchoolName(res);
 
                     switch (res) {
                         case MAGIC_SCHOOL_FIRE:
@@ -7012,12 +7012,11 @@ void Character::_42ECB5_CharacterAttacksActor() {
     }
 
     Actor *actor = nullptr;
-    if (target_id < 500) {
-        actor = &pActors[target_id];  // prevent crash
-    }
-
     int actor_distance = 0;
+
     if (target_type == OBJECT_Actor) {
+        actor = &pActors[target_id];
+
         int distance_x = actor->pos.x - pParty->pos.x,
             distance_y = actor->pos.y - pParty->pos.y,
             distance_z = actor->pos.z - pParty->pos.z;

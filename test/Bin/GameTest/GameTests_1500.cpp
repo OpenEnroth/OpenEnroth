@@ -105,3 +105,23 @@ GAME_TEST(Issues, Issue1535) {
     test.prepareForNextTest(); // This call used to assert.
     EXPECT_FALSE(engine->_messageQueue->haveMessages()); // Please don't roll over the messages between tests!
 }
+
+GAME_TEST(Issues, Issue1547) {
+    engine->config->debug.NoActors.setValue(true);
+
+    auto actorsTape = actorTapes.totalCount();
+    auto activeCharTape = tapes.activeCharacterIndex();
+    game.startNewGame();
+    test.startTaping();
+    game.tick();
+    for (int i = 0; i < 4; i++) {
+        game.pressKey(PlatformKey::KEY_A); // Attack with each char - this shouldn't crash.
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_A);
+        game.tick();
+    }
+    test.stopTaping();
+
+    EXPECT_EQ(actorsTape, tape(0));
+    EXPECT_EQ(activeCharTape, tape(1, 2, 3, 4, 0)); // All chars attacked.
+}

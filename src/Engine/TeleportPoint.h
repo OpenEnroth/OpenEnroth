@@ -43,7 +43,7 @@ class TeleportPoint {
     /**
      * Get target map name.
      */
-    std::string &getTeleportMap() { return _targetMap; }
+    const std::string &getTeleportMap() { return _targetMap; }
 
     /**
      * Perform teleportation using current valid point.
@@ -59,8 +59,8 @@ class TeleportPoint {
     bool _teleportValid = false;
     std::string _targetMap;
     Vec3i _pos;
-    int _yaw;
-    int _pitch;
-    int _zSpeed;
+    int _yaw = 0;
+    int _pitch = 0;
+    int _zSpeed = 0;
 };
 
