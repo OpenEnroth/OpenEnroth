@@ -64,7 +64,7 @@ void CreateWinnerCertificate() {
     // TODO(captainurist): Introduce a constant here, for game start time.
     Duration play_time = pParty->GetPlayingTime() - Time() -  Duration::fromHours(9); // game begins at 9 am
 
-    int totalDays = play_time.toDays();
+    int totalDays = play_time.days();
     if (!totalDays) totalDays = 1;
 
     LongCivilDuration duration = play_time.toLongCivilDuration();

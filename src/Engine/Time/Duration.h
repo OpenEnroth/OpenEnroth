@@ -48,20 +48,20 @@ class Duration {
     [[nodiscard]] constexpr static Duration fromYears(int years) { return Duration(0, 0, 0, 0, 0, 0, years); }
 
     [[nodiscard]] constexpr int64_t ticks() const { return _ticks; }
-    [[nodiscard]] constexpr int64_t toSeconds() const { return _ticks * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] constexpr int64_t toMinutes() const { return toSeconds() / 60; }
-    [[nodiscard]] constexpr int64_t toHours() const { return toMinutes() / 60; }
-    [[nodiscard]] constexpr int toDays() const { return toHours() / 24; }
-    [[nodiscard]] constexpr int toWeeks() const { return toDays() / 7; }
-    [[nodiscard]] constexpr int toMonths() const { return toWeeks() / 4; }
-    [[nodiscard]] constexpr int toYears() const { return toMonths() / 12; }
+    [[nodiscard]] constexpr int64_t seconds() const { return _ticks * GAME_SECONDS_IN_REALTIME_SECOND / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr int64_t minutes() const { return seconds() / 60; }
+    [[nodiscard]] constexpr int64_t hours() const { return minutes() / 60; }
+    [[nodiscard]] constexpr int days() const { return hours() / 24; }
+    [[nodiscard]] constexpr int weeks() const { return days() / 7; }
+    [[nodiscard]] constexpr int months() const { return weeks() / 4; }
+    [[nodiscard]] constexpr int years() const { return months() / 12; }
 
     [[nodiscard]] constexpr static Duration fromRealtimeSeconds(int64_t seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
     [[nodiscard]] constexpr static Duration fromRealtimeMilliseconds(int64_t msec) { return fromTicks(msec * TICKS_PER_REALTIME_SECOND / 1000); }
 
-    [[nodiscard]] constexpr int64_t toRealtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] constexpr int64_t toRealtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] constexpr float toFloatRealtimeSeconds() const { return ticks() / static_cast<float>(TICKS_PER_REALTIME_SECOND); }
+    [[nodiscard]] constexpr int64_t realtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr int64_t realtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr float realtimeMillisecondsFloat() const { return ticks() / static_cast<float>(TICKS_PER_REALTIME_SECOND); }
 
     // Unlike with RandomEngine::randomInSegment, two-arg functions below generate a duration in [lo, hi) open interval,
     // not in [lo, hi] segment.
@@ -74,21 +74,21 @@ class Duration {
 
     [[nodiscard]] constexpr CivilDuration toCivilDuration() const {
         CivilDuration result;
-        result.days = toDays();
-        result.hours = toHours() % 24;
-        result.minutes = toMinutes() % 60;
-        result.seconds = toSeconds() % 60;
+        result.days = days();
+        result.hours = hours() % 24;
+        result.minutes = minutes() % 60;
+        result.seconds = seconds() % 60;
         return result;
     }
 
     [[nodiscard]] constexpr LongCivilDuration toLongCivilDuration() const {
         LongCivilDuration result;
-        result.years = toYears();
-        result.months = toMonths() % 12;
-        result.days = toDays() % 28;
-        result.hours = toHours() % 24;
-        result.minutes = toMinutes() % 60;
-        result.seconds = toSeconds() % 60;
+        result.years = years();
+        result.months = months() % 12;
+        result.days = days() % 28;
+        result.hours = hours() % 24;
+        result.minutes = minutes() % 60;
+        result.seconds = seconds() % 60;
         return result;
     }
 

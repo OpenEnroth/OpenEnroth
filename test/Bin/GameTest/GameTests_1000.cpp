@@ -147,7 +147,7 @@ GAME_TEST(Issues, Issue1164) {
     // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
     // shouldn't really be there, but for now we test it the way it actually works.
     auto ticks = end->second - begin->second;
-    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + (1_ticks).toRealtimeMilliseconds() - 1 /* Round up! */);
+    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + (1_ticks).realtimeMilliseconds() - 1 /* Round up! */);
     EXPECT_GE(ticks, 144_ticks - frameTicks);
 }
 

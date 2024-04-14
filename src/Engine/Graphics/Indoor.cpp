@@ -691,7 +691,7 @@ void BLV_UpdateDoors() {
 
         int openDistance;     // [sp+60h] [bp-4h]@6
         if (door->uState == DOOR_OPENING) {
-            openDistance = door->uTimeSinceTriggered.toRealtimeMilliseconds() * door->uOpenSpeed / 1000;
+            openDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000;
 
             if (openDistance >= door->uMoveLength) {
                 openDistance = door->uMoveLength;
@@ -704,7 +704,7 @@ void BLV_UpdateDoors() {
         } else {
             assert(door->uState == DOOR_CLOSING);
 
-            int closeDistance = door->uTimeSinceTriggered.toRealtimeMilliseconds() * door->uCloseSpeed / 1000;
+            int closeDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
             if (closeDistance >= door->uMoveLength) {
                 openDistance = 0;
                 door->uState = DOOR_CLOSED;
@@ -1870,7 +1870,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
         } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_OPENING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.toRealtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
+            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
             door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
         }
         door.uState = DOOR_CLOSING;
@@ -1883,7 +1883,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
         } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_CLOSING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.toRealtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;
+            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;
             door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
         }
         door.uState = DOOR_OPENING;
