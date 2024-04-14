@@ -119,7 +119,7 @@ end
 function ui_draw(ctx, stage)
     if stage == NUKLEAR_STAGE_PRE then
         local show = dev.config_get("debug", "show_console")
-        if show then
+        if show == "true" then
             draw_console(ctx)
         end
     end
