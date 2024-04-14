@@ -170,10 +170,6 @@ class Duration {
         return _ticks != 0;
     }
 
-    [[nodiscard]] constexpr static Duration zero() {
-        return {};
-    }
-
  private:
     int64_t _ticks = 0;
 };
