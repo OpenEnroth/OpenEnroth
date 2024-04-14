@@ -8,12 +8,15 @@
 #include "RmlSystemInterface.h"
 #include "UiEventHandler.h"
 
+#include <Engine/Party.h>
+
 #include <Engine/Graphics/Renderer/Renderer.h>
 #include <Library/Logger/Logger.h>
 #include <Library/Platform/Application/PlatformApplication.h>
 #include <RmlUi/Core.h>
 #include <RmlUi/Debugger.h>
 #include <Utility/DataPath.h>
+#include <Engine/mm7_data.h>
 
 #include <utility>
 #include <algorithm>
@@ -54,6 +57,23 @@ void UiSystem::update() {
 }
 
 void UiSystem::loadScreen(std::string_view filename, std::string_view id) {
+    static bool b = false;
+    if (!b) {
+        Rml::DataModelConstructor constructor = _mainContext->CreateDataModel("party");
+        if (auto character_handle = constructor.RegisterStruct<Character>()) {
+            character_handle.RegisterMember("name", &Character::name);
+            character_handle.RegisterMember("faceId", &Character::uCurrentFace);
+        }
+        constructor.RegisterArray<decltype(pParty->pCharacters)>();
+        constructor.Bind("chars", &pParty->pCharacters);
+
+        constructor.RegisterTransformFunc("faceIdToImageSrc", [](const Rml::VariantList& variantList) {
+            auto faceId = variantList[0].GetReference<unsigned char>();
+            return Rml::Variant(fmt::format("{}01.cky", pPlayerPortraitsNames[faceId]));
+        });
+        b = true;
+    }
+
     Rml::ElementDocument *document = _mainContext->LoadDocument(makeDataPath(_documentSubFolder, filename));
     if (document) {
         document->Show();
@@ -143,6 +163,9 @@ void UiSystem::_createEventHandler(PlatformApplication &platformApplication, boo
                 _hideAllScreens();
             }
             bToggle = !bToggle;
+        });
+        eventHandler->addKeyPressEventHandler(PlatformKey::KEY_F9, [this]() {
+            Rml::Debugger::SetVisible(!Rml::Debugger::IsVisible());
         });
     }
     platformApplication.installComponent(std::move(eventHandler));
