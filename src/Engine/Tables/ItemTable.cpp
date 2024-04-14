@@ -528,8 +528,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         }
     }
     if (outItem->isPotion() && outItem->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
-        // Generate "2d4 + 2" value
-        outItem->potionPower = (grng->random(4) + grng->random(4) + 2) * std::to_underlying(treasureLevel);
+        outItem->potionPower = grng->randomDice(2, 4) * std::to_underlying(treasureLevel);
     }
 
     if (outItem->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
