@@ -15,6 +15,12 @@ GameLuaBindings::~GameLuaBindings() = default;
 void GameLuaBindings::init(lua_State *L) {
     _luaState = std::make_unique<sol::state_view>(L);
 
+    _registerGameBindings();
+    _registerAudioBindings();
+    _registerSerializationBindings();
+}
+
+void GameLuaBindings::_registerGameBindings() {
     _luaState->new_enum("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,
         "Neutral", PartyAlignment::PartyAlignment_Neutral,
@@ -87,7 +93,12 @@ void GameLuaBindings::init(lua_State *L) {
             SetCurrentMenuID(MenuType(screenIndex));
         }
     );
+}
 
+void GameLuaBindings::_registerAudioBindings() {
+}
+
+void GameLuaBindings::_registerSerializationBindings() {
     /*
     * Exposing serializations and deserializations functions to lua
     * Useful for converting command line strings to the correct types
