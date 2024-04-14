@@ -147,7 +147,7 @@ GAME_TEST(Issues, Issue1164) {
     // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
     // shouldn't really be there, but for now we test it the way it actually works.
     auto ticks = end->second - begin->second;
-    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + (1_ticks).toRealtimeMilliseconds() - 1 /* Round up! */);
+    Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + (1_ticks).realtimeMilliseconds() - 1 /* Round up! */);
     EXPECT_GE(ticks, 144_ticks - frameTicks);
 }
 
@@ -379,7 +379,7 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
-    auto totalDamages = hpsTape.frontBack().reversed().adjacentDeltas().flattened();
+    auto totalDamages = hpsTape.reversed().delta();
     EXPECT_TRUE(std::ranges::all_of(totalDamages, [](int damage) { return damage > 300; })); // Both titans are now pin cushions.
 }
 

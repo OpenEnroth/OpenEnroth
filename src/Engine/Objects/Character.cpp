@@ -374,7 +374,7 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     Time condtime = this->conditions.Get(condition);
     Duration diff = playtime - condtime;
 
-    return diff.toDays() + 1;
+    return diff.days() + 1;
 }
 
 ItemGen *Character::GetItemAtInventoryIndex(int inout_item_cell) {

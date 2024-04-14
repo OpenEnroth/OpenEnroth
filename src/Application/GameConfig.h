@@ -390,6 +390,7 @@ class GameConfig : public Config {
         Int RenderWidth = {this, "render_width", 640, &ValidateRenderWidth, "Internal rendered resolution width"};
         Int RenderHeight = {this, "render_height", 480, &ValidateRenderHeight, "Internal rendered resolution height"};
 
+        // TODO(captainurist): #enum, will need to support cycleIncrement for enums entries.
         Int RenderFilter = {this, "render_filter", 2, &ValidateRenderFilter,
                             "Filtering method when scaling rendered framebuffer to window dimensions if they differ."
                             " 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter"};

@@ -16,8 +16,12 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 
-static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500); // Delayed keyrepeat registers after 500ms.
-static constexpr Duration DELAY_TOGGLE_TIME_PERIOD = Duration::fromRealtimeMilliseconds(67); // Then every 1/15th of a second.
+// TODO(captainurist): get rid of the last -1_ticks and retrace. It's a leftover implementation artifact.
+// Delayed keyrepeat registers after 500ms.
+static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500) - 1_ticks;
+
+// Further keyrepeats happen every 1/15th of a second.
+static constexpr Duration DELAY_TOGGLE_TIME_PERIOD = Duration::fromRealtimeMilliseconds(67);
 
 std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler = nullptr;
 
@@ -102,7 +106,6 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 resettimer = false;
                 if (!this->keydelaytimer) {
                     isTriggered = true;
-                    this->keydelaytimer = 1_ticks;
                 }
                 // big delay after first press then small delay
                 if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {

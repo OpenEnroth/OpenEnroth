@@ -67,6 +67,14 @@ TestMultiTape<int> CharacterTapeRecorder::skillLevels(CharacterSkillType skill) 
     return custom(std::bind(&Character::actualSkillLevel, _1, skill));
 }
 
+TestTape<bool> CharacterTapeRecorder::hasSkill(int characterIndex, CharacterSkillType skill) {
+    return custom(characterIndex, std::bind(&Character::HasSkill, _1, skill));
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::haveSkills(CharacterSkillType skill) {
+    return custom(std::bind(&Character::HasSkill, _1, skill));
+}
+
 TestTape<Condition> CharacterTapeRecorder::condition(int characterIndex) {
     return custom(characterIndex, std::bind(&Character::GetMajorConditionIdx, _1));
 }

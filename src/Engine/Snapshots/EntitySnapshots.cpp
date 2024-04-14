@@ -289,7 +289,7 @@ void snapshot(const RawTimer &src, Timer_MM7 *dst) {
     dst->pauseTime = 0;
     dst->turnBasedTime = 0;
     dst->timeElapsed = src._dt.ticks();
-    dst->dtFixpoint = src._dt.toFloatRealtimeSeconds() * 65536.0f;
+    dst->dtFixpoint = src._dt.realtimeMillisecondsFloat() * 65536.0f;
     dst->totalGameTimeElapsed = src._time.ticks();
 }
 

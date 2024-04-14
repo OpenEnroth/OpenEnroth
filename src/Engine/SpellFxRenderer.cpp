@@ -621,7 +621,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     assert(pActor->massDistortionTime <= pMiscTimer->time());
 
     // That's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
-    float v3 = 1.0f - (pMiscTimer->time() - pActor->massDistortionTime).toFloatRealtimeSeconds();
+    float v3 = 1.0f - (pMiscTimer->time() - pActor->massDistortionTime).realtimeMillisecondsFloat();
     if (v3 > 0.5f) {
         float v2 = (v3 - 0.5f) * (v3 - 0.5f) / 0.25f;
         return 0.2f + v2 * 0.8f;
