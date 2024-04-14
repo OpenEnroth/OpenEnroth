@@ -130,9 +130,14 @@ GAME_TEST(Issues, Issue1547) {
 }
 
 GAME_TEST(Issues, Issue1569) {
-    // Armorer offer chain mail skill learning
+    // Armorer offer chain mail skill learning.
+    auto screenTape = tapes.screen();
+    auto chainTape = charTapes.hasSkill(0, CHARACTER_SKILL_CHAIN);
+    auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1569.mm7", "issue_1569.json");
-    EXPECT_TRUE(pParty->pCharacters[0].HasSkill(CHARACTER_SKILL_CHAIN));
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // Visited the shop.
+    EXPECT_EQ(chainTape, tape(false, true)); // Learned chain mail.
+    EXPECT_EQ(goldTape.delta(), -500); // And paid for it.
 }
 
 GAME_TEST(Issues, Issue1597) {
