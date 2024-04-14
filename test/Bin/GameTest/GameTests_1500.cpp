@@ -109,6 +109,7 @@ GAME_TEST(Issues, Issue1535) {
 
 
 GAME_TEST(Issues, Issue1547) {
+    // Crash when attacking when no actors are around
     engine->config->debug.NoActors.setValue(true);
 
     auto actorsTape = actorTapes.totalCount();
