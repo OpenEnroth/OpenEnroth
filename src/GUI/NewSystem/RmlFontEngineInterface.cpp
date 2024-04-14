@@ -5,7 +5,7 @@
 #include <RmlUi/Core/StringUtilities.h>
 #include <Engine/AssetsManager.h>
 
-bool RmlFontEngineInterface::LoadFontFace(const Rml::String &file_name, bool fallback_face, Rml::Style::FontWeight weight) {
+bool RmlFontEngineInterface::LoadFontFace(const Rml::String &filaName, bool fallbackFace, Rml::Style::FontWeight weight) {
     /*
     * Fonts are always loaded by the game in other context
     * so we limit ourselves to return false right now
@@ -14,8 +14,24 @@ bool RmlFontEngineInterface::LoadFontFace(const Rml::String &file_name, bool fal
     return false;
 }
 
+bool RmlFontEngineInterface::LoadFontFace(Rml::Span<const Rml::byte> data, const Rml::String &fontFamily, Rml::Style::FontStyle style, Rml::Style::FontWeight weight, bool fallbackFace) {
+    //Debugger font requested by RmlUi, we lie by telling we loaded it but we're going to use our own font later
+    if (fontFamily == "rmlui-debugger-font") {
+        return true;
+    }
+
+    return false;
+}
+
 Rml::FontFaceHandle RmlFontEngineInterface::GetFontFaceHandle(const Rml::String &family, Rml::Style::FontStyle style, Rml::Style::FontWeight weight, int size) {
-    GUIFont *font = assets->getFont(family);
+    GUIFont *font = nullptr;
+    if (family == "rmlui-debugger-font") {
+        //Let's fallback to a known font if Rml request the rmlui-debugger-font
+        font = assets->getFont("arrus.fnt");
+    } else {
+        font = assets->getFont(family);
+    }
+
     if (font != nullptr) {
         return reinterpret_cast<Rml::FontFaceHandle>(font);
     }
@@ -32,12 +48,12 @@ const Rml::FontMetrics &RmlFontEngineInterface::GetFontMetrics(Rml::FontFaceHand
     auto font = reinterpret_cast<GUIFont *>(handle);
     static Rml::FontMetrics metrics;
     metrics.ascent = 0;
-    metrics.descent = 0;
-    metrics.line_spacing = 0;
+    metrics.descent = font->GetHeight() / 2;
+    metrics.line_spacing = 20;
     metrics.size = font->GetHeight();
     metrics.underline_position = 0;
     metrics.underline_thickness = 0;
-    metrics.x_height = font->GetHeight();
+    metrics.x_height = 0;
     return metrics;
 }
 
@@ -48,7 +64,22 @@ int RmlFontEngineInterface::GetStringWidth(
     Rml::Character prior_character) {
     auto font = reinterpret_cast<GUIFont *>(handle);
     //We ignore the textShapingContext and the previous character kerning atm
-    return font->GetLineWidth(str);
+//  return font->GetLineWidth(str);
+    int width = 0;
+    for (auto itChar = Rml::StringIteratorU8(str); itChar; ++itChar) {
+        Rml::Character character = *itChar;
+        const FontData &fontData = font->getData();
+        Rml::Character firstChar = static_cast<Rml::Character>(fontData.header.cFirstChar);
+        Rml::Character lastChar = static_cast<Rml::Character>(fontData.header.cLastChar);
+        if (character >= firstChar && character <= lastChar) {
+            uint8_t mmChar = static_cast<uint8_t>(character);
+            const GUICharMetric &charMetric = fontData.header.pMetrics[mmChar];
+            width += charMetric.uLeftSpacing;
+            width += charMetric.uWidth;
+            width += charMetric.uRightSpacing;
+        }
+    }
+    return width;
 }
 
 int RmlFontEngineInterface::GenerateString(
@@ -67,7 +98,7 @@ int RmlFontEngineInterface::GenerateString(
     auto font = reinterpret_cast<GUIFont *>(face_handle);
     //let's generate a single mesh with all the quads representing each character
     mesh_list.resize(1);
-    Rml::TexturedMesh& texturedMesh = mesh_list[0];
+    Rml::TexturedMesh &texturedMesh = mesh_list[0];
     texturedMesh.texture = render_manager.LoadTexture(font->fontFile);
     auto &vertices = texturedMesh.mesh.vertices;
     auto &indices = texturedMesh.mesh.indices;
@@ -76,15 +107,16 @@ int RmlFontEngineInterface::GenerateString(
     indices.reserve(str.size() * 6);
 
     int width = 0;
+    int charIndex = 0;
     Rml::Vector2f finalPosition = position.Round();
     for (auto itChar = Rml::StringIteratorU8(str); itChar; ++itChar) {
         Rml::Character character = *itChar;
-        const FontData& fontData = font->getData();
+        const FontData &fontData = font->getData();
         Rml::Character firstChar = static_cast<Rml::Character>(fontData.header.cFirstChar);
         Rml::Character lastChar = static_cast<Rml::Character>(fontData.header.cLastChar);
         if (character >= firstChar && character <= lastChar) {
             uint8_t mmChar = static_cast<uint8_t>(character);
-            const GUICharMetric& charMetric = fontData.header.pMetrics[mmChar];
+            const GUICharMetric &charMetric = fontData.header.pMetrics[mmChar];
 
             finalPosition.x += charMetric.uLeftSpacing;
             width += charMetric.uLeftSpacing;
@@ -101,16 +133,16 @@ int RmlFontEngineInterface::GenerateString(
                 finalPosition.Round(),
                 { (float)charMetric.uWidth, (float)fontData.header.uFontHeight },
                 colour,
-                {u1, v1},
-                {u2, v2}
+                { u1, v1 },
+                { u2, v2 }
             );
 
             finalPosition.x += charMetric.uWidth;
             width += charMetric.uWidth;
 
-            //We should check if this is the final character of the string
             finalPosition.x += charMetric.uRightSpacing;
             width += charMetric.uRightSpacing;
+            ++charIndex;
         }
     }
     return width;
