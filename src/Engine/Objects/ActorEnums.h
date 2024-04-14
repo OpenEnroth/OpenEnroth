@@ -72,7 +72,7 @@ enum class AIState : uint16_t {
     Resurrected = 16,
     Summoned = 17,
     AttackingRanged4 = 18,
-    Disabled = 19,
+    Disabled = 19, // TODO(captainurist): what is this? Document properly.
 };
 using enum AIState;
 

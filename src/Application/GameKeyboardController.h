@@ -20,6 +20,11 @@ class GameKeyboardController: public Io::IKeyboardController, public PlatformEve
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
 
  private:
+    /** Whether the key is currently held down. */
     IndexedArray<bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST> isKeyDown_ = {{}};
+
+    /** Whether there was a key down event that hasn't yet been consumed with a call to `ConsumeKeyPress`.
+     * Note that the key might already be released at this point, e.g. if press & release events were received one
+     * after another. */
     IndexedArray<bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST> isKeyDownReportPending_ = {{}};
 };
