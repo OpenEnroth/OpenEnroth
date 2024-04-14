@@ -3,6 +3,7 @@
 
 #include "Testing/Game/GameTest.h"
 
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
@@ -106,6 +107,7 @@ GAME_TEST(Issues, Issue1535) {
     EXPECT_FALSE(engine->_messageQueue->haveMessages()); // Please don't roll over the messages between tests!
 }
 
+
 GAME_TEST(Issues, Issue1547) {
     engine->config->debug.NoActors.setValue(true);
 
@@ -124,4 +126,26 @@ GAME_TEST(Issues, Issue1547) {
 
     EXPECT_EQ(actorsTape, tape(0));
     EXPECT_EQ(activeCharTape, tape(1, 2, 3, 4, 0)); // All chars attacked.
+}
+
+GAME_TEST(Issues, Issue1569) {
+    // Armorer offer chain mail skill learning
+    test.playTraceFromTestData("issue_1569.mm7", "issue_1569.json");
+    EXPECT_TRUE(pParty->pCharacters[0].HasSkill(CHARACTER_SKILL_CHAIN));
+}
+
+GAME_TEST(Issues, Issue1597) {
+    // Test that generated amulets with high enough treasure level have enchantment on them
+    ItemGen item;
+    int attrEnchantmentsNum = 0;
+    int specialEnchantmentsNum = 0;
+    for (int i = 0; i < 100; i++) {
+        pItemTable->generateItem(ITEM_TREASURE_LEVEL_5, RANDOM_ITEM_AMULET, &item);
+        if (item.attributeEnchantment)
+            attrEnchantmentsNum++;
+        if (item.special_enchantment != ITEM_ENCHANTMENT_NULL)
+            specialEnchantmentsNum++;
+    }
+    EXPECT_NE(attrEnchantmentsNum, 0);
+    EXPECT_NE(specialEnchantmentsNum, 0);
 }
