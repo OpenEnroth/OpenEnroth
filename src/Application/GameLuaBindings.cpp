@@ -57,7 +57,7 @@ void GameLuaBindings::init(lua_State *L) {
         },
         "set_character_info", [](int characterIndex, const sol::object &info) {
             if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
-                const sol::table& table = info.as<sol::table>();
+                const sol::table &table = info.as<sol::table>();
                 for (auto &&val : table) {
                     std::string_view key = val.first.as<std::string_view>();
                     if (key == "xp") {
