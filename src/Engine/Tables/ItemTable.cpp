@@ -504,11 +504,10 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         // Trying to generate artifact
         if (treasureLevel == ITEM_TREASURE_LEVEL_6) {
             int artifactsFound = 0;
-            bool artifactLimitReached;
             ItemId artifactRandomId = grng->randomSample(allSpawnableArtifacts());
             for (ItemId i : allSpawnableArtifacts())
                 artifactsFound += pParty->pIsArtifactFound[i];
-            artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 && artifactsFound >= engine->config->gameplay.ArtifactLimit.value());
+            bool artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 && artifactsFound >= engine->config->gameplay.ArtifactLimit.value());
             if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] && !artifactLimitReached) {
                 pParty->pIsArtifactFound[artifactRandomId] = true;
                 outItem->uAttributes = 0;
@@ -529,7 +528,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         }
     }
     if (outItem->isPotion() && outItem->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
-        // TODO(Nik-RE-dev): why randomize twice?
+        // Generate "2d4 + 2" value
         outItem->potionPower = (grng->random(4) + grng->random(4) + 2) * std::to_underlying(treasureLevel);
     }
 
