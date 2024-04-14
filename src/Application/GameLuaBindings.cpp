@@ -15,6 +15,12 @@ GameLuaBindings::~GameLuaBindings() = default;
 void GameLuaBindings::init(lua_State *L) {
     _luaState = std::make_unique<sol::state_view>(L);
 
+    _luaState->new_enum("PartyAlignment",
+        "Good", PartyAlignment::PartyAlignment_Good,
+        "Neutral", PartyAlignment::PartyAlignment_Neutral,
+        "Evil", PartyAlignment::PartyAlignment_Evil
+    );
+
     _luaState->create_named_table(
         "game",
         "get_gold", []() {
@@ -30,14 +36,11 @@ void GameLuaBindings::init(lua_State *L) {
             pParty->SetFood(food);
         },
         "get_alignment", []() {
-            return toString(pParty->alignment);
+            return pParty->alignment;
         },
-        "set_alignment", [](std::string_view align) {
-            PartyAlignment alignment;
-            if (tryDeserialize(align, &alignment)) {
-                pParty->alignment = alignment;
-                SetUserInterface(pParty->alignment);
-            }
+        "set_alignment", [](PartyAlignment alignment) {
+            pParty->alignment = alignment;
+            SetUserInterface(pParty->alignment);
         },
         "give_party_xp", [](int amount) {
             pParty->GivePartyExp(amount);
@@ -82,6 +85,24 @@ void GameLuaBindings::init(lua_State *L) {
         },
         "go_to_screen", [](int screenIndex) {
             SetCurrentMenuID(MenuType(screenIndex));
+        }
+    );
+
+    /*
+    * Exposing serializations and deserializations functions to lua
+    * Useful for converting command line strings to the correct types
+    */
+    _luaState->create_named_table(
+        "deserialize",
+        "party_alignment", [](std::string_view alignment) {
+            return fromString<PartyAlignment>(alignment);
+        }
+    );
+
+    _luaState->create_named_table(
+        "serialize",
+        "party_alignment", [](PartyAlignment alignment) {
+            return toString(alignment);
         }
     );
 }

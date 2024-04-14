@@ -72,13 +72,14 @@ end
 ---
 ---@param key string field referring to the character_info table
 ---@return function
-local show_chars_property = function(key)
+local show_chars_property = function(key, serializer)
     return function()
         local count = game.get_party_size()
         local message = "Party "..key.."\n"
         for i = 1, count do
             local info = game.get_character_info(i)
-            message = message..info.name..": "..info[key].."\n"
+            local value = serializer and serializer(info[key]) or info[key]
+            message = message..info.name..": "..value.."\n"
         end
         return message, true
     end
@@ -93,7 +94,7 @@ end
 ---@param op op_type        - the operation to execute on the variable
 ---@param prop_name string  - name of the property. Used only for prompting, it's not used to retrieve the value
 ---@return function
-local change_property = function(get, set, op, prop_name, conversion)
+local change_property = function(get, set, op, prop_name, conversion, serializer)
     return function(value)
         if conversion then
             value = conversion(value)
@@ -102,7 +103,8 @@ local change_property = function(get, set, op, prop_name, conversion)
         local message = ""
         if op == OP_TYPE.set then
             set(value)
-            message = "Set "..value.." "..prop_name
+            local serializedValue = serializer and serializer(value) or value;
+            message = "Set "..serializedValue.." "..prop_name
         elseif op == OP_TYPE.add then
             local total = get() + value
             set(total)
@@ -122,9 +124,10 @@ end
 ---@param get function      getter function used to retrieve the current value
 ---@param prop_name string  name of the property. Used only for prompting, it's not used to retrieve the value
 ---@return function
-local show_property = function(get, prop_name)
+local show_property = function(get, prop_name, serializer)
     return function()
-        return "Current "..prop_name..": "..get(), true
+        local value = serializer and serializer(get()) or get()
+        return "Current "..prop_name..": "..value, true
     end
 end
 
@@ -181,9 +184,9 @@ food_commands = {
 -- ALIGNMENT COMMANDS
 
 alignment_commands = {
-    get = show_property(game.get_alignment, "alignment"),
-    set = change_property(game.get_alignment, game.set_alignment, OP_TYPE.set, "alignment"),
-    default = show_property(game.get_alignment, "alignment")
+    get = show_property(game.get_alignment, "alignment", serialize.party_alignment),
+    set = change_property(game.get_alignment, game.set_alignment, OP_TYPE.set, "alignment", deserialize.party_alignment, serialize.party_alignment),
+    default = show_property(game.get_alignment, "alignment", serialize.party_alignment)
 }
 
 -- CONFIG COMMANDS
