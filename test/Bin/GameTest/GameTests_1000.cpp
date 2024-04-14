@@ -379,7 +379,7 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
-    auto totalDamages = hpsTape.frontBack().reversed().adjacentDeltas().flattened();
+    auto totalDamages = hpsTape.reversed().delta();
     EXPECT_TRUE(std::ranges::all_of(totalDamages, [](int damage) { return damage > 300; })); // Both titans are now pin cushions.
 }
 
