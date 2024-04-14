@@ -23,6 +23,12 @@ TestTape<int> ActorTapeRecorder::totalHp() {
     });
 }
 
+TestTape<int> ActorTapeRecorder::totalCount() {
+    return _controller->recordTape([] {
+        return static_cast<int>(std::ranges::count_if(pActors, [] (AIState state) { return state != Removed; }, &Actor::aiState));
+    });
+}
+
 TestTape<int> ActorTapeRecorder::countByState(AIState state) {
     return _controller->recordTape([state] {
         return static_cast<int>(std::ranges::count(actors(), state, &Actor::aiState));

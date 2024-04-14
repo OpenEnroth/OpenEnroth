@@ -7012,12 +7012,11 @@ void Character::_42ECB5_CharacterAttacksActor() {
     }
 
     Actor *actor = nullptr;
-    if (target_id < 500) {
-        actor = &pActors[target_id];  // prevent crash
-    }
-
     int actor_distance = 0;
+
     if (target_type == OBJECT_Actor) {
+        actor = &pActors[target_id];
+
         int distance_x = actor->pos.x - pParty->pos.x,
             distance_y = actor->pos.y - pParty->pos.y,
             distance_z = actor->pos.z - pParty->pos.z;
