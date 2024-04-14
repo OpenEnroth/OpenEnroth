@@ -33,8 +33,12 @@ local OP_TYPE = {
 ---@param op op_type            - the operation to execute on the variable
 ---@param play_award boolean    - play the award effect after the operation has been executed
 ---@return function
-local change_char_property = function(key, op, play_award)
+local change_char_property = function(key, op, play_award, conversion)
     return function(char_index, value)
+        if conversion then
+            value = conversion(value)
+        end
+
         local get = game.get_character_info
         local set = game.set_character_info
         value = value ~= nil and value or 0
@@ -89,8 +93,12 @@ end
 ---@param op op_type        - the operation to execute on the variable
 ---@param prop_name string  - name of the property. Used only for prompting, it's not used to retrieve the value
 ---@return function
-local change_property = function(get, set, op, prop_name)
+local change_property = function(get, set, op, prop_name, conversion)
     return function(value)
+        if conversion then
+            value = conversion(value)
+        end
+
         local message = ""
         if op == OP_TYPE.set then
             set(value)
@@ -123,9 +131,9 @@ end
 -- GOLD COMMANDS
 gold_commands = {
     get = show_property(game.get_gold, "gold"),
-    set = change_property(game.get_gold, game.set_gold, OP_TYPE.set, "gold"),
-    add = change_property(game.get_gold, game.set_gold, OP_TYPE.add, "gold"),
-    rem = change_property(game.get_gold, game.set_gold, OP_TYPE.rem, "gold"),
+    set = change_property(game.get_gold, game.set_gold, OP_TYPE.set, "gold", tonumber),
+    add = change_property(game.get_gold, game.set_gold, OP_TYPE.add, "gold", tonumber),
+    rem = change_property(game.get_gold, game.set_gold, OP_TYPE.rem, "gold", tonumber),
     default = show_property(game.get_gold, "gold")
 }
 
@@ -143,9 +151,9 @@ end
 
 xp_commands = {
     get = show_chars_property("xp"),
-    rem = change_char_property("xp", OP_TYPE.rem, true),
-    add = change_char_property("xp", OP_TYPE.add, true),
-    set = change_char_property("xp", OP_TYPE.set, true),
+    rem = change_char_property("xp", OP_TYPE.rem, true, tonumber),
+    add = change_char_property("xp", OP_TYPE.add, true, tonumber),
+    set = change_char_property("xp", OP_TYPE.set, true, tonumber),
     party = give_party_xp,
     default = show_chars_property("xp")
 }
@@ -154,9 +162,9 @@ xp_commands = {
 
 sp_commands = {
     get = show_chars_property("sp"),
-    rem = change_char_property("sp", OP_TYPE.rem, true),
-    add = change_char_property("sp", OP_TYPE.add, true),
-    set = change_char_property("sp", OP_TYPE.set, true),
+    rem = change_char_property("sp", OP_TYPE.rem, true, tonumber),
+    add = change_char_property("sp", OP_TYPE.add, true, tonumber),
+    set = change_char_property("sp", OP_TYPE.set, true, tonumber),
     default = show_chars_property("sp")
 }
 
@@ -164,9 +172,9 @@ sp_commands = {
 
 food_commands = {
     get = show_property(game.get_food, "food"),
-    set = change_property(game.get_food, game.set_food, OP_TYPE.set, "food"),
-    add = change_property(game.get_food, game.set_food, OP_TYPE.add, "food"),
-    rem = change_property(game.get_food, game.set_food, OP_TYPE.rem, "food"),
+    set = change_property(game.get_food, game.set_food, OP_TYPE.set, "food", tonumber),
+    add = change_property(game.get_food, game.set_food, OP_TYPE.add, "food", tonumber),
+    rem = change_property(game.get_food, game.set_food, OP_TYPE.rem, "food", tonumber),
     default = show_property(game.get_food, "food")
 }
 
