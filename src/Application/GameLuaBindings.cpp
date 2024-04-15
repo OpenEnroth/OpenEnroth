@@ -9,12 +9,15 @@
 
 #include "GUI/GUIWindow.h"
 
+Character *getCharacterByIndex(int characterIndex);
+
 GameLuaBindings::GameLuaBindings() = default;
 GameLuaBindings::~GameLuaBindings() = default;
 
 void GameLuaBindings::init(lua_State *L) {
     _luaState = std::make_unique<sol::state_view>(L);
 
+    //TODO(captainurist): Use serialization tables to automate this.
     _luaState->new_enum("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,
         "Neutral", PartyAlignment::PartyAlignment_Neutral,
@@ -49,7 +52,7 @@ void GameLuaBindings::init(lua_State *L) {
             return pParty->pCharacters.size();
         },
         "get_character_info", [luaState = _luaState.get()](int characterIndex) {
-            if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 return luaState->create_table_with(
                     "name", character->name,
                     "xp", character->experience,
@@ -59,7 +62,7 @@ void GameLuaBindings::init(lua_State *L) {
             return luaState->create_table();
         },
         "set_character_info", [](int characterIndex, const sol::object &info) {
-            if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 const sol::table &table = info.as<sol::table>();
                 for (auto &&val : table) {
                     std::string_view key = val.first.as<std::string_view>();
@@ -79,7 +82,7 @@ void GameLuaBindings::init(lua_State *L) {
             }
         },
         "play_character_award_sound", [](int characterIndex) {
-            if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 character->PlayAwardSound_Anim();
             }
         },
@@ -88,10 +91,8 @@ void GameLuaBindings::init(lua_State *L) {
         }
     );
 
-    /*
-    * Exposing serializations and deserializations functions to lua
-    * Useful for converting command line strings to the correct types
-    */
+    //Exposing serializations and deserializations functions to lua
+    //Useful for converting command line strings to the correct types
     _luaState->create_named_table(
         "deserialize",
         "party_alignment", [](std::string_view alignment) {
@@ -105,4 +106,13 @@ void GameLuaBindings::init(lua_State *L) {
             return toString(alignment);
         }
     );
+}
+
+Character *getCharacterByIndex(int characterIndex) {
+    if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size()) {
+        return &pParty->pCharacters[characterIndex];
+    }
+
+    logger->warning("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
+    return nullptr;
 }

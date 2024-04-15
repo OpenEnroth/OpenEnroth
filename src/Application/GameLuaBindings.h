@@ -1,12 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <sol/forward.hpp>
 
 struct lua_State;
-
-namespace sol {
-class state_view;
-}
 
 class GameLuaBindings {
  public:
