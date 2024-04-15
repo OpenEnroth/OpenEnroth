@@ -723,7 +723,7 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
     wins[WINDOW_MainMenu].tmpl = "mainmenu";
     wins[WINDOW_MainMenu_Load].tmpl = "mainmenu_load";
     wins[WINDOW_GameUI].tmpl = "gameui";
-    wins[WINDOW_DebugMenu].tmpl = "ui_debug_hud";
+    wins[WINDOW_DebugMenu].tmpl = "dev/ui_debug_hud";
 
     return result;
 }
@@ -1001,7 +1001,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     }
 
     name = wins[winType].tmpl;
-    int status = luaL_loadfile(lua, makeDataPath("ui", name + ".lua").c_str());
+    int status = luaL_loadfile(lua, makeDataPath("scripts", name + ".lua").c_str());
     if (status) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
         logger->warning("Nuklear: [{}] couldn't load lua template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
@@ -3615,7 +3615,7 @@ static int lua_dev_config_get(lua_State *L) {
 }
 
 static bool load_init_lua_file(const char *file) {
-    int status = luaL_loadfile(lua, makeDataPath("ui", file).c_str());
+    int status = luaL_loadfile(lua, makeDataPath("scripts", file).c_str());
     if (status) {
         logger->warning("Nuklear: couldn't load init template: {}", lua_tostring(lua, -1));
         lua_pop(lua, 1);
@@ -3654,7 +3654,7 @@ bool Nuklear::LuaInit() {
     lua_gc(lua, LUA_GCRESTART, -1);
 
     lua_getglobal(lua, "package");
-    lua_pushfstring(lua, makeDataPath("ui", "?.lua").c_str());
+    lua_pushfstring(lua, makeDataPath("scripts", "?.lua").c_str());
     lua_setfield(lua, -2, "path");
     lua_pushstring(lua, "");
     lua_setfield(lua, -2, "cpath");

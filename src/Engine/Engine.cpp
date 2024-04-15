@@ -901,18 +901,6 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
 
 //----- (00461103) --------------------------------------------------------
 void Engine::_461103_load_level_sub() {
-    int v4;          // edx@8
-    int v6;   // esi@14
-    int v8;   // ecx@16
-    // int v12;         // esi@25
-    // int v13;         // eax@26
-    int16_t v14;     // ax@41
-    int v17;  // [sp+14h] [bp-48h]@3
-    // int v18;  // [sp+14h] [bp-48h]@23
-    MapId v19;         // [sp+18h] [bp-44h]@1
-    int v20;  // [sp+18h] [bp-44h]@14
-    int v21[16] {};     // [sp+1Ch] [bp-40h]@17
-
     if (engine->config->debug.NoActors.value())
         pActors.clear();
 
@@ -922,73 +910,29 @@ void Engine::_461103_load_level_sub() {
     pParty->arenaState = ARENA_STATE_INITIAL;
     pParty->arenaLevel = ARENA_LEVEL_INVALID;
     pNPCStats->uNewlNPCBufPos = 0;
-    v19 = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
 
-    // v15 = 0;
-    for (unsigned i = 0; i < pActors.size(); ++i) {
-        // Actor *pActor = &pActors[i];
-        // v2 = (char *)&pActors[0].uNPC_ID;
-        // do
-        //{
-        // v3 = pActors[i].pMonsterInfo.uID;
-        v17 = 0;
-        if (isPeasant(pActors[i].monsterInfo.id))
-            v17 = 1;
-        // v1 = 0;
-        v4 = (std::to_underlying(pActors[i].monsterInfo.id) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
-        if (2 == v4) {
-            if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
-        } else {
-            if (v4 != 1) {
-                if (v4 == 0 && pActors[i].npcId == 0) pActors[i].npcId = 0;
-                continue;
-            }
-        }
-        if (pActors[i].npcId > 0 && pActors[i].npcId < 5000) continue;
-        if (v17) {
+    for (size_t i = 0; i < pActors.size(); ++i) {
+        MonsterTier tier = monsterTierForMonsterId(pActors[i].monsterInfo.id);
+        if (tier == MONSTER_TIER_A)
+            continue; // Weakest peasants are just peasants.
+
+        if (pActors[i].npcId && pActors[i].npcId < 5000)
+            continue;
+
+        if (isPeasant(pActors[i].monsterInfo.id)) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.id, HOUSE_INVALID, v19);
-            v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
-            ++pNPCStats->uNewlNPCBufPos;
-            pActors[i].npcId = v14;
+                pActors[i].monsterInfo.id, HOUSE_INVALID, mapId);
+            pActors[i].npcId = pNPCStats->uNewlNPCBufPos + 5000;
+            pNPCStats->uNewlNPCBufPos++;
             continue;
         }
+
         pActors[i].npcId = 0;
-        // ++v15;
-        // v2 += 836;
-        //}
-        // while ( v15 < (signed int)uNumActors );
     }
 
     pGameLoadingUI_ProgressBar->Progress();
-
-    // v5 = uNumActors;
-    v6 = 0;
-    v20 = 0;
-    // v16 = v1;
-
-    // TODO(captainurist): can drop this code?
-#if 0
-    for (unsigned i = 0; i < pActors.size(); ++i) {
-        // v7 = (char *)&pActors[0].pMonsterInfo;
-        // do
-        //{
-        for (v8 = 0; v8 < v6; ++v8) {
-            if (v21[v8] == pActors[i].monsterInfo.uID - 1) break;
-        }
-
-        if (v8 == v6) {
-            v21[v6++] = pActors[i].monsterInfo.uID - 1;
-            v20 = v6;
-            if (v6 == 16) break;
-        }
-        // ++v16;
-        // v7 += 836;
-        //}
-        // while ( v16 < (signed int)v5 );
-    }
-#endif
 
     pGameLoadingUI_ProgressBar->Progress();
 

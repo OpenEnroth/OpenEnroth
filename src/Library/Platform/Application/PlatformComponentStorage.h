@@ -35,29 +35,53 @@ class PlatformComponentStorage {
         assert(component);
 
         std::type_index index = typeid(T);
-        assert(!_componentByType.contains(index));
+        assert(!_dataByType.contains(index));
 
-        _componentByType.emplace(index, component.get());
-        _components.emplace_back(std::move(component));
-        _cleanupRoutines.emplace_back(std::move(cleanupRoutine));
+        Data data;
+        data.component = std::unique_ptr<void, void(*)(void *)>(component.release(), &PlatformComponentStorage::destructor<T>);
+        data.cleanupRoutine = std::move(cleanupRoutine);
+        data.index = _nextIndex++;
+        _dataByType.emplace(index, std::move(data));
+    }
+
+    template<class T>
+    std::unique_ptr<T> remove() {
+        auto pos = _dataByType.find(typeid(T));
+        assert(pos != _dataByType.end());
+
+        pos->second.cleanupRoutine();
+        std::unique_ptr<T> result(static_cast<T *>(pos->second.component.release()));
+        _dataByType.erase(pos);
+        return result;
     }
 
     template<class T>
     bool contains() const {
-        return _componentByType.contains(typeid(T));
+        return _dataByType.contains(typeid(T));
     }
 
     template<class T>
     T *require() const {
-        T *result = static_cast<T *>(valueOr(_componentByType, typeid(T), nullptr));
-        assert(result);
-        return static_cast<T *>(result);
+        const Data *data = valuePtr(_dataByType, typeid(T));
+        assert(data);
+        return static_cast<T *>(data->component.get());
     }
 
     void clear();
 
  private:
-    std::unordered_map<std::type_index, void *> _componentByType;
-    std::vector<std::shared_ptr<void>> _components; // shared_ptr<void> to type-erase the destructor.
-    std::vector<std::function<void()>> _cleanupRoutines;
+    template<class T>
+    static void destructor(void *p) {
+        delete static_cast<T *>(p);
+    }
+
+    struct Data {
+        std::unique_ptr<void, void(*)(void *)> component = {nullptr, nullptr};
+        std::function<void()> cleanupRoutine;
+        int index = 0;
+    };
+
+ private:
+    std::unordered_map<std::type_index, Data> _dataByType;
+    int _nextIndex = 0;
 };
