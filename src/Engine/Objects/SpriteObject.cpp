@@ -168,8 +168,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
-            float dotFix = std::abs(dot(norm.toFloat(), pSpriteObjects[uLayingItemID].vVelocity));
-            pSpriteObjects[uLayingItemID].vVelocity += dotFix * norm.toFloat();
+            float dotFix = std::abs(dot(norm.toFloatFromFixpoint(), pSpriteObjects[uLayingItemID].vVelocity));
+            pSpriteObjects[uLayingItemID].vVelocity += dotFix * norm.toFloatFromFixpoint();
         } else {
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
