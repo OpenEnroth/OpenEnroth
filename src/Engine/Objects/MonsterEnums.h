@@ -417,6 +417,16 @@ enum class MonsterType {
 };
 using enum MonsterType;
 
+/**
+ * `MonsterId` is basically `MonsterType` x `MonsterTier`.
+ */
+enum class MonsterTier {
+    MONSTER_TIER_A,
+    MONSTER_TIER_B,
+    MONSTER_TIER_C
+};
+using enum MonsterTier;
+
 enum class MonsterSpecialAbility {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,

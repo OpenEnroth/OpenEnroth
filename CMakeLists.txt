@@ -70,7 +70,7 @@ if (OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function. This is an error on MSVC.
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute.
     add_compile_options(-Werror=unused-value) # Expression result unused.
-    add_compile_options(-Werror=mismatched-tags) # Class 'X' was previously declared as a struct.
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=mismatched-tags>) # Class 'X' was previously declared as a struct.
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'.
 endif ()
 if(OE_BUILD_COMPILER STREQUAL "gcc")

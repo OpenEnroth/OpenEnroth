@@ -71,6 +71,16 @@ UNIT_TEST(UnicodeCrt, filesystem_exists_remove) {
     EXPECT_FALSE(std::filesystem::exists(path));
 }
 
+UNIT_TEST(UnicodeCrt, filesystem_path) {
+    EXPECT_TRUE(UnicodeCrt::isInitialized());
+
+    std::u8string u8string = std::u8string(u8prefix);
+    std::filesystem::path path = u8string;
+    std::string stdString = path.string();
+
+    EXPECT_EQ(std::string(reinterpret_cast<const char *>(u8string.c_str())), stdString);
+}
+
 UNIT_TEST(UnicodeCrt, filesystem_rename) {
     EXPECT_TRUE(UnicodeCrt::isInitialized());
 

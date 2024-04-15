@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <string>
+#include <type_traits>
 
 #define MAGIC_ENUM_RANGE_MIN (-256)
 #define MAGIC_ENUM_RANGE_MAX (255)
@@ -46,10 +47,12 @@
     MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I(ENUM, CASE_SENSITIVITY, MM_PP_CAT(globalEnumSerializer, __LINE__), __VA_ARGS__)
 
 #define MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I(ENUM, CASE_SENSITIVITY, SERIALIZER, ...)                               \
+    /* Note: this is static initialization order fiasco-unsafe, so you're not expected to do any serialization in */    \
+    /* startup code. This is not checked, things will just blow up. */                                                  \
     static const ::detail::EnumSerializer<ENUM> SERIALIZER = ::detail::EnumSerializer<ENUM>(CASE_SENSITIVITY, __VA_ARGS__); \
                                                                                                                         \
-    static const ::detail::EnumSerializer<ENUM> *serializer(ENUM *) {                                                   \
-        return &SERIALIZER;                                                                                             \
+    static const ::detail::EnumSerializer<ENUM> &serializer(std::type_identity<ENUM>) {                                 \
+        return SERIALIZER;                                                                                              \
     }                                                                                                                   \
                                                                                                                         \
     bool trySerialize(const ENUM &src, std::string *dst) {                                                              \
@@ -82,16 +85,16 @@
  */
 #define MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(FLAGS)                                                                  \
     static const bool MM_PP_CAT(globalFlagsCheck, __LINE__) = [] {                                                      \
-        assert(serializer(static_cast<typename FLAGS::enumeration_type *>(nullptr))->isUsableWithFlags());              \
+        assert(serializer(std::type_identity<typename FLAGS::enumeration_type>()).isUsableWithFlags());                 \
         return true;                                                                                                    \
     }();                                                                                                                \
                                                                                                                         \
     bool trySerialize(const FLAGS &src, std::string *dst) {                                                             \
-        return serializer(static_cast<typename FLAGS::enumeration_type *>(nullptr))->trySerialize(src, dst);            \
+        return serializer(std::type_identity<typename FLAGS::enumeration_type>()).trySerialize(src, dst);               \
     }                                                                                                                   \
                                                                                                                         \
     bool tryDeserialize(std::string_view src, FLAGS *dst) {                                                             \
-        return serializer(static_cast<typename FLAGS::enumeration_type *>(nullptr))->tryDeserialize(src, dst);          \
+        return serializer(std::type_identity<typename FLAGS::enumeration_type>()).tryDeserialize(src, dst);             \
     }                                                                                                                   \
                                                                                                                         \
     MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_VIA_TRY_FUNCTIONS_I(FLAGS)

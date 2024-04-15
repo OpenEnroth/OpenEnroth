@@ -15,7 +15,6 @@
 #include "TestCallObserver.h"
 
 class EngineController;
-class TestControllerTickCallback;
 
 class TestController {
  public:
@@ -62,6 +61,5 @@ class TestController {
     std::filesystem::path _testDataPath;
     float _playbackSpeed;
     TestCallObserver _callObserver;
-    TestControllerTickCallback *_tickCallback = nullptr;
     std::vector<std::function<void()>> _tapeCallbacks;
 };
