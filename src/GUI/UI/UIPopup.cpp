@@ -1033,9 +1033,8 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlay
     int base_skill = pParty->pCharacters[uPlayerID].getSkillValue(uPlayerSkillType).level();
     int actual_skill = pParty->pCharacters[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
 
-    const char *desc = localization->GetSkillDescription(uPlayerSkillType);
-    std::string Description = desc ? desc : "";
-    if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
+    std::string Description = localization->GetSkillDescription(uPlayerSkillType);
+    if (!localization->GetSkillDescriptionNormal(uPlayerSkillType).empty()) {
         Description = fmt::format("{}\n\n", Description);
 
         for (CharacterSkillMastery mastery : allSkillMasteries()) {

@@ -1,5 +1,7 @@
 #include "Localization.h"
 
+#include <string>
+
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/GameResourceManager.h"
@@ -8,7 +10,7 @@
 
 Localization *localization = nullptr;
 
-const char *Localization::GetString(unsigned int index) const {
+const std::string &Localization::GetString(unsigned int index) const {
     return this->localization_strings[index];
 }
 
@@ -25,7 +27,7 @@ bool Localization::Initialize() {
         return false;
     }
 
-    this->localization_strings = new const char *[MAX_LOC_STRINGS]();
+    this->localization_strings.resize(MAX_LOC_STRINGS);
 
     strtok(this->localization_raw.data(), "\r");
     strtok(NULL, "\r");
@@ -60,21 +62,21 @@ bool Localization::Initialize() {
     }
 
     // TODO: should be moved to localization files eventually
-    if (!this->localization_strings[LSTR_FMT_S_STOLE_D_ITEM])
+    if (this->localization_strings[LSTR_FMT_S_STOLE_D_ITEM].empty())
         this->localization_strings[LSTR_FMT_S_STOLE_D_ITEM] = "%s stole %s!";
-    if (!this->localization_strings[LSTR_FMT_RECOVERY_TIME_D])
+    if (this->localization_strings[LSTR_FMT_RECOVERY_TIME_D].empty())
         this->localization_strings[LSTR_FMT_RECOVERY_TIME_D] = "Recovery time: %d";
-    if (!this->localization_strings[LSTR_FMT_S_U_OUT_OF_U])
+    if (this->localization_strings[LSTR_FMT_S_U_OUT_OF_U].empty())
         this->localization_strings[LSTR_FMT_S_U_OUT_OF_U] = "%s: %lu out of %lu";
-    if (!this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION])
+    if (this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION].empty())
         this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION] = "Nobody is in a condition to do anything!";
-    if (!this->localization_strings[LSTR_KEY_CONFLICT])
+    if (this->localization_strings[LSTR_KEY_CONFLICT].empty())
         this->localization_strings[LSTR_KEY_CONFLICT] = "Please resolve all key conflicts!";
-    if (!this->localization_strings[LSTR_RECOVERY_TIME_NA])
+    if (this->localization_strings[LSTR_RECOVERY_TIME_NA].empty())
         this->localization_strings[LSTR_RECOVERY_TIME_NA] = "Recovery time: N/A";
-    if (!this->localization_strings[LSTR_WAND_ALREADY_CHARGED])
+    if (this->localization_strings[LSTR_WAND_ALREADY_CHARGED].empty())
         this->localization_strings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
-    if (!this->localization_strings[LSTR_ENERGY])
+    if (this->localization_strings[LSTR_ENERGY].empty())
         this->localization_strings[LSTR_ENERGY] = "Energy";
 
     InitializeMm6ItemCategories();
@@ -420,7 +422,7 @@ void Localization::InitializeAttributeNames() {
     strtok(this->attribute_desc_raw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
-        auto tokens = tokenize(test_string, '\t');
+        auto tokens = splitString(test_string, '\t');
         assert(tokens.size() == 2 && "Invalid number of tokens");
         switch (i) {
             case 0:

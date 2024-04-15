@@ -294,7 +294,7 @@ void GUIWindow_PartyCreation::Update() {
     // move sky
     render->BeginScene2D();
     render->DrawTextureNew(0, 0, main_menu_background);
-    int sky_slider_anim_timer = std::fmod(pMiscTimer->time().toFloatRealtimeSeconds() * oldDims.w / 20, oldDims.w);
+    int sky_slider_anim_timer = std::fmod(pMiscTimer->time().realtimeMillisecondsFloat() * oldDims.w / 20, oldDims.w);
     render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
     render->DrawTextureNew((sky_slider_anim_timer - (int)oldDims.w) / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
     render->DrawTextureNew(0, 0, ui_partycreation_top);
@@ -334,7 +334,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
-    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (pMiscTimer->time().toRealtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
+    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (pMiscTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
     render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[arrowAnimTextureNum]);
     render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[arrowAnimTextureNum]);
 
