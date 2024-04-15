@@ -901,11 +901,6 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
 
 //----- (00461103) --------------------------------------------------------
 void Engine::_461103_load_level_sub() {
-    int v4;          // edx@8
-    int16_t v14;     // ax@41
-    int v17;  // [sp+14h] [bp-48h]@3
-    MapId v19;         // [sp+18h] [bp-44h]@1
-
     if (engine->config->debug.NoActors.value())
         pActors.clear();
 
@@ -915,13 +910,12 @@ void Engine::_461103_load_level_sub() {
     pParty->arenaState = ARENA_STATE_INITIAL;
     pParty->arenaLevel = ARENA_LEVEL_INVALID;
     pNPCStats->uNewlNPCBufPos = 0;
-    v19 = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
 
     for (size_t i = 0; i < pActors.size(); ++i) {
-        v17 = 0;
-        if (isPeasant(pActors[i].monsterInfo.id))
-            v17 = 1;
-        v4 = (std::to_underlying(pActors[i].monsterInfo.id) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
+        bool actorIsPeasant = isPeasant(pActors[i].monsterInfo.id);
+
+        int v4 = (std::to_underlying(pActors[i].monsterInfo.id) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
         if (2 == v4) {
             if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
         } else {
@@ -930,14 +924,14 @@ void Engine::_461103_load_level_sub() {
                 continue;
             }
         }
+
         if (pActors[i].npcId > 0 && pActors[i].npcId < 5000) continue;
-        if (v17) {
+        if (actorIsPeasant) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.id, HOUSE_INVALID, v19);
-            v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
-            ++pNPCStats->uNewlNPCBufPos;
-            pActors[i].npcId = v14;
+                pActors[i].monsterInfo.id, HOUSE_INVALID, mapId);
+            pActors[i].npcId = pNPCStats->uNewlNPCBufPos + 5000;
+            pNPCStats->uNewlNPCBufPos++;
             continue;
         }
         pActors[i].npcId = 0;
