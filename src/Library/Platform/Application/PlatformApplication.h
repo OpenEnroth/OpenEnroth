@@ -60,6 +60,12 @@ class PlatformApplication {
         _components.insert(std::move(component), std::move(cleanup));
     }
 
+    template<class T>
+    void removeComponent() {
+        // Can't delete the component here because it might be in use.
+        deleteLater(_components.remove<T>());
+    }
+
     const PlatformComponentStorage *components() const {
         return &_components;
     }
@@ -87,6 +93,8 @@ class PlatformApplication {
     void removeComponentInternal(PlatformEventFilter *eventFilter);
     void installComponentInternal(PlatformApplicationAware *aware);
     void removeComponentInternal(PlatformApplicationAware *aware);
+
+    void deleteLater(std::shared_ptr<void> component);
 
  private:
     Platform *_platform;

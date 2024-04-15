@@ -1,6 +1,10 @@
 #include "PlatformComponentStorage.h"
 
+#include <cassert>
+#include <algorithm>
 #include <ranges>
+#include <vector>
+#include <utility>
 
 PlatformComponentStorage::PlatformComponentStorage() = default;
 
@@ -9,18 +13,21 @@ PlatformComponentStorage::~PlatformComponentStorage() {
 }
 
 void PlatformComponentStorage::clear() {
-    // First call the routines in reverse order.
-    for (const auto &routine : _cleanupRoutines | std::views::reverse)
-        routine();
+    // We need to clean up everything in reverse order to how it was added.
+    std::vector<Data *> order;
+    for (auto &[_, data] : _dataByType)
+        order.push_back(&data);
+    std::ranges::sort(order, std::ranges::greater(), &Data::index);
+
+    // First call the cleanup routines in reverse order. These will call into PlatformApplicationAware::removeNotify.
+    for (Data *data : order)
+        data->cleanupRoutine();
 
     // At this point components shouldn't be able to call into storage, so clear the externally observable state.
-    _componentByType.clear();
-
-    // Then destroy cleanup routines in reverse order.
-    while (!_cleanupRoutines.empty())
-        _cleanupRoutines.pop_back();
+    auto tmp = std::move(_dataByType);
+    assert(_dataByType.empty());
 
     // Then destroy every component that we own, also in reverse order.
-    while (!_components.empty())
-        _components.pop_back();
+    for (Data *data : order)
+        data->component.reset();
 }
