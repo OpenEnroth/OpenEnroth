@@ -41,3 +41,6 @@
 [submodule "thirdparty/glob"]
 	path = thirdparty/glob
 	url = https://github.com/p-ranav/glob.git
+[submodule "thirdparty/sol2"]
+	path = thirdparty/sol2
+	url = https://github.com/ThePhD/sol2.git

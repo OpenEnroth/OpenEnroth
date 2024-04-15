@@ -129,6 +129,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
+    _gameLuaBindings = std::make_unique<GameLuaBindings>();
+
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
     if (!_nuklear)
@@ -137,7 +139,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
-        _nuklear->addInitLuaLibs(GameLuaBindings::init);
+        _nuklear->addInitLuaLibs([this](lua_State* luaState) { _gameLuaBindings->init(luaState); });
         _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
