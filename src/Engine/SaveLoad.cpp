@@ -60,6 +60,7 @@ void LoadGame(int uSlot) {
 
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
 
+    // Note that we're using Blob::copy so that the memory mapping for the savefile is not held by the LOD reader.
     pSave_LOD->close();
     pSave_LOD->open(Blob::copy(Blob::fromFile(filename)), filename, LOD_ALLOW_DUPLICATES);
 

@@ -8,13 +8,18 @@ std::string toLower(std::string_view text);
 std::string toUpper(std::string_view text);
 std::vector<char*> tokenize(char *input, const char separator);
 
-//----- (00452C30) --------------------------------------------------------
-inline char *removeQuotes(char *str) {
-    if (*str == '"') {
-        str[strlen(str) - 1] = 0;
-        return str + 1;
-    }
-    return str;
+/**
+ * @param str                           String to unquote.
+ * @return                              String with leading & trailing double quotes removed, if any.
+ * @offset 0x00452C30
+ */
+inline std::string_view removeQuotes(std::string_view str) {
+    std::string_view result = str;
+    if (result.starts_with('"'))
+        result = result.substr(1);
+    if (result.ends_with('"'))
+        result = result.substr(0, result.size() - 1);
+    return result;
 }
 
 inline std::string trimRemoveQuotes(std::string str) {
@@ -75,6 +80,10 @@ inline std::vector<std::string_view> splitString(std::string_view s, char sep) {
     std::vector<std::string_view> result;
     splitString(s, sep, &result);
     return result;
+}
+
+inline std::vector<std::string_view> splitString(const char *s, char sep) {
+    return splitString(std::string_view(s), sep);
 }
 
 std::vector<std::string_view> splitString(std::string &&s, char sep) = delete; // Don't dangle!

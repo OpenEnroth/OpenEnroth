@@ -775,7 +775,7 @@ void Game::processQueuedMessages() {
                 DialogueEnding();
 
                 if (engine->_teleportPoint.isValid()) {
-                    if (engine->_teleportPoint.getTeleportMap()[0] != '0') {
+                    if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         bool leavingArena = noCaseEquals(pCurrentMapName, "d05.blv");
                         onMapLeave();
@@ -783,6 +783,7 @@ void Game::processQueuedMessages() {
                         if (leavingArena)
                             pParty->GetPlayingTime() += Duration::fromDays(4);
                     } else {
+                        // TODO(captainurist): mm7 map names never start with '0', what is this about?
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();
                     }

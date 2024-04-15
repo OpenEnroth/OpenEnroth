@@ -207,7 +207,8 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
 
     MapId map_id = mapid;
-    if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && engine->_teleportPoint.getTeleportMap()[0] != ' ') {
+    // TODO(captainurist): mm7 map names never starts with ' ', what is this check?
+    if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && !engine->_teleportPoint.getTeleportMap().starts_with(' ')) {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
 

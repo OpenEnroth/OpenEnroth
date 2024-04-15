@@ -32,6 +32,8 @@ class ActorTapeRecorder {
 
     TestTape<int> totalHp();
 
+    TestTape<int> totalCount(); // Includes dead bodies, those are actors too!
+
     TestTape<int> countByState(AIState state);
 
     TestTape<int> countByBuff(ActorBuff buff);

@@ -3,6 +3,7 @@
 
 #include "Testing/Game/GameTest.h"
 
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
@@ -104,4 +105,53 @@ GAME_TEST(Issues, Issue1535) {
     // Then we start a new test.
     test.prepareForNextTest(); // This call used to assert.
     EXPECT_FALSE(engine->_messageQueue->haveMessages()); // Please don't roll over the messages between tests!
+}
+
+
+GAME_TEST(Issues, Issue1547) {
+    // Crash when attacking when no actors are around
+    engine->config->debug.NoActors.setValue(true);
+
+    auto actorsTape = actorTapes.totalCount();
+    auto activeCharTape = tapes.activeCharacterIndex();
+    game.startNewGame();
+    test.startTaping();
+    game.tick();
+    for (int i = 0; i < 4; i++) {
+        game.pressKey(PlatformKey::KEY_A); // Attack with each char - this shouldn't crash.
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_A);
+        game.tick();
+    }
+    test.stopTaping();
+
+    EXPECT_EQ(actorsTape, tape(0));
+    EXPECT_EQ(activeCharTape, tape(1, 2, 3, 4, 0)); // All chars attacked.
+}
+
+GAME_TEST(Issues, Issue1569) {
+    // Armorer offer chain mail skill learning.
+    auto screenTape = tapes.screen();
+    auto chainTape = charTapes.hasSkill(0, CHARACTER_SKILL_CHAIN);
+    auto goldTape = tapes.gold();
+    test.playTraceFromTestData("issue_1569.mm7", "issue_1569.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // Visited the shop.
+    EXPECT_EQ(chainTape, tape(false, true)); // Learned chain mail.
+    EXPECT_EQ(goldTape.delta(), -500); // And paid for it.
+}
+
+GAME_TEST(Issues, Issue1597) {
+    // Test that generated amulets with high enough treasure level have enchantment on them
+    ItemGen item;
+    int attrEnchantmentsNum = 0;
+    int specialEnchantmentsNum = 0;
+    for (int i = 0; i < 100; i++) {
+        pItemTable->generateItem(ITEM_TREASURE_LEVEL_5, RANDOM_ITEM_AMULET, &item);
+        if (item.attributeEnchantment)
+            attrEnchantmentsNum++;
+        if (item.special_enchantment != ITEM_ENCHANTMENT_NULL)
+            specialEnchantmentsNum++;
+    }
+    EXPECT_NE(attrEnchantmentsNum, 0);
+    EXPECT_NE(specialEnchantmentsNum, 0);
 }

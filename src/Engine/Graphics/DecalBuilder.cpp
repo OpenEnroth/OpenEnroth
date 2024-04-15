@@ -22,7 +22,7 @@ float Decal::Fade_by_time() {
 
     // splats fade
     Duration delta = fadetime - pEventTimer->time();
-    float result = (delta.toFloatRealtimeSeconds() + 30.0f) / 30.0f;
+    float result = (delta.realtimeMillisecondsFloat() + 30.0f) / 30.0f;
     if (result < 0.0f) result = 0.0f;
     return result;
 }
