@@ -913,20 +913,14 @@ void Engine::_461103_load_level_sub() {
     MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
 
     for (size_t i = 0; i < pActors.size(); ++i) {
-        bool actorIsPeasant = isPeasant(pActors[i].monsterInfo.id);
+        MonsterTier tier = monsterTierForMonsterId(pActors[i].monsterInfo.id);
+        if (tier == MONSTER_TIER_A)
+            continue; // Weakest peasants are just peasants.
 
-        int v4 = (std::to_underlying(pActors[i].monsterInfo.id) - 1) % 3; // TODO(captainurist): encapsulate monster tier calculation.
-        if (2 == v4) {
-            if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
-        } else {
-            if (v4 != 1) {
-                if (v4 == 0 && pActors[i].npcId == 0) pActors[i].npcId = 0;
-                continue;
-            }
-        }
+        if (pActors[i].npcId && pActors[i].npcId < 5000)
+            continue;
 
-        if (pActors[i].npcId > 0 && pActors[i].npcId < 5000) continue;
-        if (actorIsPeasant) {
+        if (isPeasant(pActors[i].monsterInfo.id)) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
                 pActors[i].monsterInfo.id, HOUSE_INVALID, mapId);
@@ -934,6 +928,7 @@ void Engine::_461103_load_level_sub() {
             pNPCStats->uNewlNPCBufPos++;
             continue;
         }
+
         pActors[i].npcId = 0;
     }
 
