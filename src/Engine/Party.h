@@ -239,14 +239,6 @@ struct Party {
         return character - pCharacters.data();
     }
 
-    /*
-    * Return the Character pointer based on the index
-    * 
-    * @param characterIndex     index of the character
-    * @return                   A valid character or nullptr in case the index is out of bounds.
-    */
-    Character *getCharacterByIndex(int characterIndex);
-
     Time &GetPlayingTime() { return this->playing_time; }
 
     bool isPartyEvil();
