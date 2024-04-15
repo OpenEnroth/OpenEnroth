@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;660e303</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b100a9c</span>
    </div>
   </td>
  </tr>
@@ -166,6 +166,10 @@ Coding style</h1>
 <li><a class="el" href="classException.html">Exception</a> is <code>namespace detail</code> that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.</li>
 </ul>
 </li>
+<li><code>std::string</code>s in the code are assumed to be UTF8-encoded as advised by <a href="https://utf8everywhere.org/">utf8everywhere</a>. On Windows this is ensured by the <code><a class="el" href="classUnicodeCrt.html">UnicodeCrt</a></code> class that sets up the standard library to use UTF8 encoding. Thus, you don't need to bother with <code>std::u8string</code>, and you can safely convert <code>std::filesystem::path</code> to string by calling <code>path.string()</code>.<ul>
+<li>This is not yet true for in-game strings. E.g. strings for the Russian localization are in CP1251.</li>
+</ul>
+</li>
 </ul>
 <p >Error handling:</p><ul>
 <li>Use <code>assert</code>s to check for coding errors and conditions that must never be false, no matter how the program is run.</li>
@@ -196,7 +200,8 @@ Testing</h1>
 </ul>
 <p ><a class="el" href="classGame.html">Game</a> tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.</p>
 <p >As typing out all the events to send inside the test code can be pretty tedious, we also have an event recording functionality, so that the test creation workflow usually looks as follows:</p><ul>
-<li>Load a save that reproduces the bug that you've just fixed.</li>
+<li>Fix the bug.</li>
+<li>Load a save that used to reproduce the bug that you've just fixed.</li>
 <li>Press <code>Ctrl+Shift+R</code> to start recording an event trace. Check logs to make sure that trace recording has started.</li>
 <li>Perform the steps that used to reproduce the bug.</li>
 <li>Press <code>Ctrl+Shift+R</code> again to stop trace recording. You will get two files generated in the current folder – <code>trace.json</code> and <code>trace.mm7</code>.</li>
@@ -206,9 +211,9 @@ Testing</h1>
 <li>Use <code><a class="el" href="classTestController.html#af9fcbb7e65a9e0c5c0798c3f09790011">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it.</li>
 </ul>
 <p >If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set <code>debug.trace_frame_time_ms</code> config value before starting OpenEnroth for recording.</p>
-<p >By default, traces are recorded with a random number generator that's just returning a sequence of natural numbers. If you want to record a trace using the default Mersenne Twister random number generator, set <code>debug.trace_random_engine</code> config value to <code>mersenne_twister</code> before starting OpenEnroth for recording.</p>
 <p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
+<p >If you need to look closely at the recorded trace, you can play it by running <code>OpenEnroth play --speed 0.5 &lt;path-to-trace.json&gt;</code>. Alternatively, if you already have a unit test that runs the recorded trace, you can run <code>OpenEnroth_GameTest --speed 0.5 --gtest_filter=&lt;test-suite-name&gt;.&lt;test-name&gt; --test-path &lt;path-to-test-data-folder&gt;</code>. Note that <code>--gtest_filter</code> needs that <code>=</code> and won't work if you try passing test name after a space.</p>
 <p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Console Commands</h1>
