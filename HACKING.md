@@ -151,7 +151,8 @@ Tests in OpenEnroth fall into two categories:
 Game tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.
 
 As typing out all the events to send inside the test code can be pretty tedious, we also have an event recording functionality, so that the test creation workflow usually looks as follows:
-* Load a save that reproduces the bug that you've just fixed.
+* Fix the bug.
+* Load a save that used to reproduce the bug that you've just fixed.
 * Press `Ctrl+Shift+R` to start recording an event trace. Check logs to make sure that trace recording has started.
 * Perform the steps that used to reproduce the bug.
 * Press `Ctrl+Shift+R` again to stop trace recording. You will get two files generated in the current folder – `trace.json` and `trace.mm7`.
@@ -162,11 +163,11 @@ As typing out all the events to send inside the test code can be pretty tedious,
 
 If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set `debug.trace_frame_time_ms` config value before starting OpenEnroth for recording.
 
-By default, traces are recorded with a random number generator that's just returning a sequence of natural numbers. If you want to record a trace using the default Mersenne Twister random number generator, set `debug.trace_random_engine` config value to `mersenne_twister` before starting OpenEnroth for recording.
-
 To run all unit tests locally, build a `UnitTest` cmake target, or build & run `OpenEnroth_UnitTest`.
 
 To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
+
+If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing test name after a space. 
 
 Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command.
 
