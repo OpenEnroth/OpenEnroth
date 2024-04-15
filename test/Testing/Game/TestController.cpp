@@ -82,8 +82,6 @@ void TestController::playTraceFromTestData(std::string_view saveName, std::strin
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName,
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
-    // TODO(captainurist): we need to overhaul our usage of path::string, path::u8string, path::generic_string,
-    // pick one, and spell it out explicitly in HACKING
     ::application->component<EngineTracePlayer>()->playTrace(
         _controller,
         fullPathInTestData(saveName),

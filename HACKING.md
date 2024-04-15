@@ -113,6 +113,8 @@ Language features:
   * We don't put user-facing classes into namespaces because it ultimately leads to code where you have `ns1::Context` and `ns2::Context`, and when coupled with a bit of `using` here and there this makes the code harder to read and reason about. Please spend some time coming up with good names for your classes instead.
   * We sometimes use namespaces to group related functions, e.g. see `namespace lod`.
   * Exception is `namespace detail` that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.
+* `std::string`s in the code are assumed to be UTF8-encoded as advised by [utf8everywhere](https://utf8everywhere.org/). On Windows this is ensured by the `UnicodeCrt` class that sets up the standard library to use UTF8 encoding. Thus, you don't need to bother with `std::u8string`, and you can safely convert `std::filesystem::path` to string by calling `path.string()`.
+  * This is not yet true for in-game strings. E.g. strings for the Russian localization are in CP1251.
 
 Error handling:
 * Use `assert`s to check for coding errors and conditions that must never be false, no matter how the program is run.

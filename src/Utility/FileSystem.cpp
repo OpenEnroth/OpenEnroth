@@ -1,5 +1,7 @@
 #include "FileSystem.h"
 
+#include <string>
+
 #include "String.h"
 
 std::filesystem::path expandUserPath(std::string_view path, std::string_view home) {
@@ -21,11 +23,11 @@ std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
     }
 
     for (const std::filesystem::path &part : path) {
-        std::u8string foundPart;
+        std::string foundPart;
         std::error_code error;
         for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
-            std::u8string entryName = entry.path().filename().u8string();
-            if (noCaseEqualsAscii(entryName, part.u8string())) {
+            std::string entryName = entry.path().filename().string();
+            if (noCaseEquals(entryName, part.string())) {
                 foundPart = entryName;
                 break;
             }
@@ -33,7 +35,7 @@ std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
 
         // If nothing is found then we just give up and expect the file not found error to be handled by the caller.
         if (foundPart.empty()) {
-            foundPart = part.u8string();
+            foundPart = part.string();
         }
 
         result /= foundPart;
