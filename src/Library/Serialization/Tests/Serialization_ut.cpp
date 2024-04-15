@@ -177,15 +177,10 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(NonBrokenFlag1, CASE_SENSITIVE, {
 })
 
 UNIT_TEST(Serialization, BrokenFlags) {
-    BrokenFlag0 b0;
-    BrokenFlag1 b1;
-    BrokenFlag2 b2;
-    NonBrokenFlag1 nb1;
-
-    EXPECT_FALSE(serializer(&b0)->isUsableWithFlags());
-    EXPECT_FALSE(serializer(&b1)->isUsableWithFlags());
-    EXPECT_FALSE(serializer(&b2)->isUsableWithFlags());
-    EXPECT_TRUE(serializer(&nb1)->isUsableWithFlags());
+    EXPECT_FALSE(serializer(std::type_identity<BrokenFlag0>()).isUsableWithFlags());
+    EXPECT_FALSE(serializer(std::type_identity<BrokenFlag2>()).isUsableWithFlags());
+    EXPECT_FALSE(serializer(std::type_identity<BrokenFlag2>()).isUsableWithFlags());
+    EXPECT_TRUE(serializer(std::type_identity<NonBrokenFlag1>()).isUsableWithFlags());
 }
 
 enum class MagicEnum {
