@@ -19,6 +19,8 @@ void _registerGameBindings(sol::state_view &luaState, sol::table &table);
 void _registerItemBindings(sol::state_view &luaState, sol::table &table);
 void _registerSerializationBindings(sol::state_view &luaState, sol::table &table);
 
+Character *getCharacterByIndex(int characterIndex);
+
 GameLuaBindings::GameLuaBindings() = default;
 GameLuaBindings::~GameLuaBindings() = default;
 
@@ -36,6 +38,7 @@ void GameLuaBindings::init(lua_State *L) {
 }
 
 void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
+    //TODO(captainurist): Use serialization tables to automate this.
     luaState.new_enum("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,
         "Neutral", PartyAlignment::PartyAlignment_Neutral,
@@ -78,7 +81,7 @@ void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
             }
         },
         "get_character_info", [&luaState](int characterIndex) {
-            if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 return sol::make_object(luaState, luaState.create_table_with(
                     "name", character->name,
                     "xp", character->experience,
@@ -88,7 +91,7 @@ void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
             return sol::make_object(luaState, sol::nil);
         },
         "set_character_info", [](int characterIndex, const sol::object &info) {
-            if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 const sol::table &table = info.as<sol::table>();
                 for (auto &&val : table) {
                     std::string_view key = val.first.as<std::string_view>();
@@ -114,7 +117,7 @@ void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
             }
         },
         "play_character_award_sound", [](int characterIndex) {
-            if(Character *character = pParty->getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 character->PlayAwardSound_Anim();
             }
         },
@@ -197,4 +200,13 @@ void _registerSerializationBindings(sol::state_view &luaState, sol::table &table
             return toString(alignment);
         }
     );
+}
+
+Character *getCharacterByIndex(int characterIndex) {
+    if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size()) {
+        return &pParty->pCharacters[characterIndex];
+    }
+
+    logger->warning("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
+    return nullptr;
 }

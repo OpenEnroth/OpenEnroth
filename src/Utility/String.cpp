@@ -30,10 +30,6 @@ static int asciiCaseInsensitiveCompare(const char *l, const char *r, size_t size
     return 0;
 }
 
-static std::string_view toCharStringView(std::u8string_view s) {
-    return std::string_view(reinterpret_cast<const char *>(s.data()), s.size());
-}
-
 std::vector<char *> tokenize(char *input, const char separator) {
     std::vector<char *> retVect;
     retVect.push_back(input);
@@ -80,14 +76,6 @@ bool noCaseLess(std::string_view a, std::string_view b) {
     if (result > 0)
         return false;
     return a.size() < b.size();
-}
-
-bool noCaseEqualsAscii(std::u8string_view a, std::u8string_view b) {
-    return noCaseEquals(toCharStringView(a), toCharStringView(b));
-}
-
-bool noCaseLessAscii(std::u8string_view a, std::u8string_view b) {
-    return noCaseLess(toCharStringView(a), toCharStringView(b));
 }
 
 std::string toPrintable(std::string_view s, char placeholder) {

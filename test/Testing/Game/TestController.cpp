@@ -23,22 +23,16 @@
 
 class TestControllerTickCallback : public ProxyOpenGLContext {
  public:
+    explicit TestControllerTickCallback(TestController *controller): _controller(controller) {}
+
     virtual void swapBuffers() override {
         // This code goes first because we FIRST write the tapes, THEN jump into the control thread, and return
         // from EngineController::tick().
-        if (_controller && _controller->isTaping())
+        if (_controller->isTaping())
             for (const auto &callback : _controller->_tapeCallbacks)
                 callback();
 
         ProxyOpenGLContext::swapBuffers();
-    }
-
-    void setController(TestController *controller) {
-        _controller = controller;
-    }
-
-    TestController *controller() const {
-        return _controller;
     }
 
  private:
@@ -53,10 +47,7 @@ TestController::TestController(EngineController *controller, std::string_view te
     assert(engine->callObserver == nullptr);
     engine->callObserver = &_callObserver;
 
-    std::unique_ptr<TestControllerTickCallback> tickCallback = std::make_unique<TestControllerTickCallback>();
-    tickCallback->setController(this);
-    _tickCallback = tickCallback.get();
-    application->installComponent(std::move(tickCallback));
+    application->installComponent(std::make_unique<TestControllerTickCallback>(this));
 }
 
 TestController::~TestController() {
@@ -64,8 +55,7 @@ TestController::~TestController() {
     assert(engine->callObserver == &_callObserver);
     engine->callObserver = nullptr;
 
-    // Application is alive at this point, thus tick callback is also alive.
-    _tickCallback->setController(nullptr);
+    application->removeComponent<TestControllerTickCallback>();
 }
 
 std::string TestController::fullPathInTestData(std::string_view fileName) {
@@ -82,8 +72,6 @@ void TestController::playTraceFromTestData(std::string_view saveName, std::strin
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName,
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
-    // TODO(captainurist): we need to overhaul our usage of path::string, path::u8string, path::generic_string,
-    // pick one, and spell it out explicitly in HACKING
     ::application->component<EngineTracePlayer>()->playTrace(
         _controller,
         fullPathInTestData(saveName),

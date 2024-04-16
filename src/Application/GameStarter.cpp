@@ -139,7 +139,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
-        _nuklear->addInitLuaLibs([this](auto &&luaState) { _gameLuaBindings->init(luaState); });
+        _nuklear->addInitLuaLibs([this](lua_State* luaState) { _gameLuaBindings->init(luaState); });
         _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
