@@ -37,7 +37,7 @@ local help_command = function(command_name)
     return message, true
 end
 
-local commands = {
+local command_manager = {
     register = function(name, description, details, callback)
         command_list[name] = {
             callback = callback,
@@ -84,6 +84,6 @@ local commands = {
     list = command_list
 }
 
-commands.register("help", "Show all commands", "Usage:\n\nhelp [command]", help_command)
+command_manager.register("help", "Show all commands", "Usage:\n\nhelp [command]", help_command)
 
-return commands;
+return command_manager
