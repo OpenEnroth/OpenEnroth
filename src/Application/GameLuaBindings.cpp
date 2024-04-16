@@ -6,6 +6,7 @@
 #include <sol/sol.hpp>
 
 #include "Engine/Party.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Random/Random.h"
 #include "Library/Logger/Logger.h"
@@ -15,11 +16,14 @@
 #include "GUI/GUIWindow.h"
 
 void _registerAudioBindings(sol::state_view &luaState, sol::table &table);
+void _registerRenderBindings(sol::state_view &luaState, sol::table &table);
 void _registerGameBindings(sol::state_view &luaState, sol::table &table);
 void _registerItemBindings(sol::state_view &luaState, sol::table &table);
 void _registerSerializationBindings(sol::state_view &luaState, sol::table &table);
 
 Character *getCharacterByIndex(int characterIndex);
+sol::object createCharacterInfoTable(sol::state_view &luaState, const Character& character, const sol::object& queryTable);
+sol::object createCharacterConditionTable(sol::state_view &luaState, const Character& character);
 
 GameLuaBindings::GameLuaBindings() = default;
 GameLuaBindings::~GameLuaBindings() = default;
@@ -33,6 +37,7 @@ void GameLuaBindings::init(lua_State *L) {
         _registerItemBindings(*luaState, mainTable);
         _registerAudioBindings(*luaState, mainTable);
         _registerSerializationBindings(*luaState, mainTable);
+        _registerRenderBindings(*luaState, mainTable);
         return mainTable;
     });
 }
@@ -80,13 +85,9 @@ void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
                 return 0;
             }
         },
-        "get_character_info", [&luaState](int characterIndex) {
+        "get_character_info", [&luaState](int characterIndex, const sol::object &queryTable) {
             if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-                return sol::make_object(luaState, luaState.create_table_with(
-                    "name", character->name,
-                    "xp", character->experience,
-                    "sp", character->uSkillPoints
-                ));
+                return createCharacterInfoTable(luaState, *character, queryTable);
             }
             return sol::make_object(luaState, sol::lua_nil);
         },
@@ -189,6 +190,14 @@ void _registerSerializationBindings(sol::state_view &luaState, sol::table &table
     );
 }
 
+void _registerRenderBindings(sol::state_view &luaState, sol::table &table) {
+    table["render"] = luaState.create_table_with(
+        "reload_shaders", [](std::string_view alignment) {
+            render->ReloadShaders();
+        }
+    );
+}
+
 Character *getCharacterByIndex(int characterIndex) {
     if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size()) {
         return &pParty->pCharacters[characterIndex];
@@ -196,4 +205,32 @@ Character *getCharacterByIndex(int characterIndex) {
 
     logger->warning("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
     return nullptr;
+}
+
+sol::object createCharacterInfoTable(sol::state_view &luaState, const Character &character, const sol::object &queryTable) {
+    if (!queryTable.is<sol::table>()) {
+        return sol::make_object(luaState, luaState.create_table_with(
+            "name", character.name,
+            "xp", character.experience,
+            "sp", character.uSkillPoints
+        ));
+    } else {
+        sol::table infoResult = luaState.create_table();
+        for (auto &&pair : queryTable.as<sol::table>()) {
+            auto key = pair.second.as<std::string_view>();
+            if (key == "name") {
+                infoResult["name"] = character.name;
+            } else if (key == "xp") {
+                infoResult["xp"] = character.experience;
+            } else if (key == "sp") {
+                infoResult["sp"] = character.uSkillPoints;
+            }
+        }
+        return sol::make_object(luaState, infoResult);
+    }
+}
+
+sol::table createCharacterConditionTable(sol::state_view &luaState, Character &character) {
+    sol::table result = luaState.create_table();
+    return result;
 }

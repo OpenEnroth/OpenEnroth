@@ -8,7 +8,7 @@ local add_item_to_inventory = function(item_id, character_index)
     local item = mm.items.get_item_info(item_id)
     if item then
         local result = mm.game.add_item_to_inventory(character_index, item_id)
-        local character = mm.game.get_character_info(character_index)
+        local character = mm.game.get_character_info(character_index, { "name" })
         if result then
             return character.name.." gained item: "..item.name, true
         else

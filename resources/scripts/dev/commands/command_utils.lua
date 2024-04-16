@@ -26,7 +26,7 @@ command_utilities.change_char_property = function(key, op, play_award, conversio
         local get = mm.game.get_character_info
         local set = mm.game.set_character_info
         value = value ~= nil and value or 0
-        local info = get(char_index)
+        local info = get(char_index, { key, "name" })
         local newData = {}
         local message = ""
         if op == command_utilities.OP_TYPE.set then
@@ -36,11 +36,11 @@ command_utilities.change_char_property = function(key, op, play_award, conversio
         elseif op == command_utilities.OP_TYPE.rem then
             newData[key] = info[key] - value
             set(char_index, newData)
-            message = info.name.." lost "..value.." "..key..". Current "..key..": "..get(char_index)[key]
+            message = info.name.." lost "..value.." "..key..". Current "..key..": "..get(char_index, { key })[key]
         elseif op == command_utilities.OP_TYPE.add then
             newData[key] = info[key] + value
             set(char_index, newData)
-            message = info.name.." gained "..value.." "..key..". Current "..key..": "..get(char_index)[key]
+            message = info.name.." gained "..value.." "..key..". Current "..key..": "..get(char_index, { key })[key]
         end
 
         if play_award then
@@ -61,7 +61,7 @@ command_utilities.show_chars_property = function(key, serializer)
         local count = mm.game.get_party_size()
         local message = "Party "..key.."\n"
         for i = 1, count do
-            local info = mm.game.get_character_info(i)
+            local info = mm.game.get_character_info(i, { key, "name" })
             local value = serializer and serializer(info[key]) or info[key]
             message = message..info.name..": "..value.."\n"
         end

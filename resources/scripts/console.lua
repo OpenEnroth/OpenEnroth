@@ -151,6 +151,10 @@ console.update_window_size = function(console, is_window_hovered, w, h)
     console.separate_every_n_characters = (console_width - 8) / console.character_width
 end
 
+console.clear = function(console)
+    console.messages = {}
+end
+
 local function get_color_by_log_level(level)
     if level == "trace" then return DEFAULT_COLOR
     elseif level == "debug" then return DEBUG_COLOR
