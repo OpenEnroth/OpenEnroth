@@ -37,7 +37,7 @@ void GameLuaBindings::init(lua_State *L) {
     });
 }
 
-void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
+void _registerGameBindings(sol::state_view &luaState, sol::table &table) {
     //TODO(captainurist): Use serialization tables to automate this.
     luaState.new_enum("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,
@@ -141,7 +141,7 @@ void _registerAudioBindings(sol::state_view &luaState, sol::table &table) {
 void _registerItemBindings(sol::state_view &luaState, sol::table &table) {
     typedef std::function<bool(ItemId)> FilteItemFunction;
 
-    auto createItemTable = [&luaState](const ItemDesc& itemDesc) {
+    auto createItemTable = [&luaState](const ItemDesc &itemDesc) {
         return luaState.create_table_with(
             "name", itemDesc.name,
             "level", itemDesc.uItemID_Rep_St
@@ -157,7 +157,7 @@ void _registerItemBindings(sol::state_view &luaState, sol::table &table) {
             return sol::make_object(luaState, sol::lua_nil);
         },
         // The get_random_item function accept an optional filter function to exclude some items from the randomization
-        "get_random_item", [](const FilteItemFunction& filter) {
+        "get_random_item", [](const FilteItemFunction &filter) {
             if(filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
