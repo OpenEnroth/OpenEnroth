@@ -88,7 +88,7 @@ void _registerGameBindings(sol::state_view &luaState, sol::table& table) {
                     "sp", character->uSkillPoints
                 ));
             }
-            return sol::make_object(luaState, sol::nil);
+            return sol::make_object(luaState, sol::lua_nil);
         },
         "set_character_info", [](int characterIndex, const sol::object &info) {
             if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
@@ -154,7 +154,7 @@ void _registerItemBindings(sol::state_view &luaState, sol::table &table) {
                 const ItemDesc &itemDesc = pItemTable->pItems[itemId];
                 return sol::object(luaState, createItemTable(itemDesc));
             }
-            return sol::make_object(luaState, sol::nil);
+            return sol::make_object(luaState, sol::lua_nil);
         },
         // The get_random_item function accept an optional filter function to exclude some items from the randomization
         "get_random_item", [](const FilteItemFunction& filter) {
