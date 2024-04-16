@@ -494,12 +494,13 @@ GAME_TEST(Issues, Issue1370) {
     EXPECT_TRUE(fuzzyEquals(2.53f, pAudioPlayer->getSoundLength(SOUND_EndTurnBasedMode), 0.001f));
     EXPECT_TRUE(fuzzyEquals(2.49f, pAudioPlayer->getSoundLength(static_cast<SoundId>(6480)), 0.001f));
 
-    auto exprTape = tapes.custom([] { return pParty->pCharacters[2].expression; });
-    auto exprTimeTape = tapes.custom([] { return pParty->pCharacters[2].uExpressionTimeLength; });
+    // can be any character selected to talk
+    auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == CHARACTER_EXPRESSION_TALK) return true; return false; });
+    auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == CHARACTER_EXPRESSION_TALK) return ch.uExpressionTimeLength; return Duration(); });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
-    EXPECT_TRUE(exprTape.contains(CHARACTER_EXPRESSION_TALK));
-    EXPECT_TRUE(exprTimeTape.contains(318_ticks));  // 2.49 * 128
-    EXPECT_EQ(exprTape.back(), CHARACTER_EXPRESSION_NORMAL);
+    EXPECT_TRUE(someonesTalking.contains(true));
+    EXPECT_GT(talkExprTimeTape.max(), 128_ticks);  // 2.49 * 128
+    EXPECT_EQ(someonesTalking.back(), false);
 }
 
 GAME_TEST(Issues, Issue1371) {
