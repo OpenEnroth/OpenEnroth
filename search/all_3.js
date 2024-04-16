@@ -710,7 +710,7 @@ var searchData=
   ['createrandomengine_707',['createRandomEngine',['../EngineRandomComponent_8cpp.html#a72694f3e535028ed876e8d6bd97e4ca2',1,'EngineRandomComponent.cpp']]],
   ['createrenderer_708',['createRenderer',['../classRendererFactory.html#a7de8dc2a0fb150aac0e2e26e6c5a913a',1,'RendererFactory']]],
   ['createscrollwindow_709',['CreateScrollWindow',['../GUIWindow_8h.html#a88a654d97d977e64feddb452cb78523a',1,'GUIWindow.h']]],
-  ['createsplashobject_710',['createSplashObject',['../structSpriteObject.html#aafd2a2669280ed19bab653e04304364f',1,'SpriteObject']]],
+  ['createsplashobject_710',['createSplashObject',['../structSpriteObject.html#ac04b8980ed24b22b545b5fd3334d00f1',1,'SpriteObject']]],
   ['createspritetrailparticle_711',['createSpriteTrailParticle',['../SpriteObject_8cpp.html#affd46c66294ede2653e09c2ec60a96ed',1,'SpriteObject.cpp']]],
   ['createstandardenvironment_712',['createStandardEnvironment',['../classEnvironment.html#a9ae706c0706a47452284c99594918ed6',1,'Environment']]],
   ['createstandardplatform_713',['createStandardPlatform',['../classPlatform.html#a37da49e3b57d296cda0edcb1291ed5ea',1,'Platform']]],

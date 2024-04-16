@@ -349,7 +349,7 @@ var searchData=
   ['vsync_346',['VSync',['../classGameConfig_1_1Graphics.html#aa6cd57d830e329c750d4c80235308e62',1,'GameConfig::Graphics']]],
   ['vsyncmode_347',['vsyncMode',['../structPlatformOpenGLOptions.html#a2e75d1cec97ee90c4ba935bc84827084',1,'PlatformOpenGLOptions']]],
   ['vtextures_348',['vTextures',['../classGUIButton.html#a52e9d8745a9c0dd40dce282f5d63266b',1,'GUIButton']]],
-  ['vvelocity_349',['vVelocity',['../structSpriteObject__MM7.html#a947467f827e6bd3259226ebba87b7ebd',1,'SpriteObject_MM7::vVelocity()'],['../structActor__MM7.html#a9e368552427f6acc37c2472f1213bbcd',1,'Actor_MM7::vVelocity()'],['../structSpriteObject.html#a9361395d8aca2da374ab9e29dce25741',1,'SpriteObject::vVelocity()']]],
+  ['vvelocity_349',['vVelocity',['../structSpriteObject__MM7.html#a947467f827e6bd3259226ebba87b7ebd',1,'SpriteObject_MM7::vVelocity()'],['../structActor__MM7.html#a9e368552427f6acc37c2472f1213bbcd',1,'Actor_MM7::vVelocity()'],['../structSpriteObject.html#aa349c0964890206888ba935c617a75e5',1,'SpriteObject::vVelocity()']]],
   ['vworldposition_350',['vWorldPosition',['../structRenderVertexSoft.html#a09509b3b6d6b2458ef6a321e1c42ceb1',1,'RenderVertexSoft']]],
   ['vworldviewposition_351',['vWorldViewPosition',['../structRenderVertexSoft.html#a95ee866d545f4466aea44f2a823d9f96',1,'RenderVertexSoft']]],
   ['vworldviewprojx_352',['vWorldViewProjX',['../structRenderVertexSoft.html#ad77a5f76929dfdd4fd8e9473f2d1213d',1,'RenderVertexSoft']]],
