@@ -28,7 +28,7 @@ void GameLuaBindings::init(lua_State *L) {
     _luaState = std::make_unique<sol::state_view>(L);
 
     _luaState->set_function("initMMBindings", [luaState = _luaState.get()]() {
-        sol::table mainTable = luaState->create_named_table("mm");
+        sol::table mainTable = luaState->create_table();
         _registerGameBindings(*luaState, mainTable);
         _registerItemBindings(*luaState, mainTable);
         _registerAudioBindings(*luaState, mainTable);
@@ -174,10 +174,8 @@ void _registerItemBindings(sol::state_view &luaState, sol::table &table) {
 }
 
 void _registerSerializationBindings(sol::state_view &luaState, sol::table &table) {
-    /*
-    * Exposing serializations and deserializations functions to lua
-    * Useful for converting command line strings to the correct types
-    */
+    //Exposing serializations and deserializations functions to lua
+    //Useful for converting command line strings to the correct types
     table["deserialize"] = luaState.create_table_with(
         "party_alignment", [](std::string_view alignment) {
             return fromString<PartyAlignment>(alignment);
