@@ -7,8 +7,8 @@ local function run_lua(code)
     if code and type(code) == "string" then
         local codeToRun, error = load(code, nil, nil, scoped_environment)
         if codeToRun then
-            local result = tostring(codeToRun())
-            return result and result or "", true
+            local result = codeToRun()
+            return result and codeToRun(result) or "", true
         else
             return "Invalid code: "..error, true
         end
