@@ -11,7 +11,7 @@ local give_party_xp = function(xp)
     return "Party gained "..xp.." xp", true
 end
 
-local xp_commands = {
+local subcommands = {
     get = utils.show_chars_property("xp"),
     rem = utils.change_char_property("xp", utils.OP_TYPE.rem, true, tonumber),
     add = utils.change_char_property("xp", utils.OP_TYPE.add, true, tonumber),
@@ -20,4 +20,9 @@ local xp_commands = {
     default = utils.show_chars_property("xp")
 }
 
-return xp_commands
+return {
+    name = "xp",
+    description = "Change the amount of experience points for the party.",
+    details = "",
+    callback = subcommands
+}

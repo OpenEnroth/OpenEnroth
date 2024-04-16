@@ -1,7 +1,7 @@
 local utils = require "dev.commands.command_utils"
 local mm = require "mmbindings"
 
-local food_commands = {
+local subcommands = {
     get = utils.show_property(mm.game.get_food, "food"),
     set = utils.change_property(mm.game.get_food, mm.game.set_food, utils.OP_TYPE.set, "food", tonumber),
     add = utils.change_property(mm.game.get_food, mm.game.set_food, utils.OP_TYPE.add, "food", tonumber),
@@ -9,4 +9,9 @@ local food_commands = {
     default = utils.show_property(mm.game.get_food, "food")
 }
 
-return food_commands
+return {
+    name = "food",
+    description = "Change the amount of food.",
+    details = "",
+    callback = subcommands
+}

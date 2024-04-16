@@ -45,9 +45,14 @@ local function set_config(config_name, param2, param3)
     return message..tostring(value), true
 end
 
-local config_commands = {
+local subcommands = {
     get = get_config,
     set = set_config,
 }
 
-return config_commands
+return {
+    name = "config",
+    description = "Change any gameconfig value.",
+    details = "",
+    callback = subcommands
+}

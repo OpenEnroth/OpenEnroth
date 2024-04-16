@@ -13,3 +13,12 @@ function tonumber_or(amount, default_value)
     amount = tonumber(amount)
     return amount and amount or default_value
 end
+
+function split_string(str, separator)
+    local result = {}
+    for value in str:gmatch("([^"..separator.."]+)") do
+        table.insert(result, value)
+    end
+
+    return result
+end

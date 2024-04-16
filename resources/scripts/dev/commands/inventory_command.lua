@@ -34,10 +34,15 @@ local add_random_special_item_to_inventory = function(character_index, min_level
     return add_random_item_to_inventory(character_index, filter_item_by_min_level(min_level and min_level or 6))
 end
 
-local inventory_commands = {
+local subcommands = {
     add = add_item_to_inventory,
     addrandom = add_random_item_to_inventory,
     addrandomspecial = add_random_special_item_to_inventory
 }
 
-return inventory_commands
+return {
+    name = "inventory",
+    description = "Add/Remove items from character inventory.",
+    details = "",
+    callback = subcommands
+}
