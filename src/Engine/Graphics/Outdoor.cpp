@@ -1960,7 +1960,7 @@ void ODM_ProcessPartyActions() {
         if (noFlightBob) {
             partyNewPos.z = partyOldFlightZ;
         } else {
-            partyNewPos.z = partyOldFlightZ + 4 * TrigLUT.cos(platform->tickCount());
+            partyNewPos.z = partyOldFlightZ + 4 * TrigLUT.cos(pEventTimer->time().realtimeMilliseconds());
         }
 
         if (pParty->FlyActive())
