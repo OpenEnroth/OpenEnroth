@@ -3,6 +3,7 @@
 #include <string_view>
 #include <memory>
 #include <vector>
+#include <ranges>
 #include <sol/sol.hpp>
 
 #include "Engine/Party.h"
@@ -161,10 +162,8 @@ void _registerItemBindings(sol::state_view &luaState, sol::table &table) {
             if(filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
-                for (ItemId itemId : spawnableItems) {
-                    if (filter(itemId)) {
-                        itemsToRandomizeOn.push_back(itemId);
-                    }
+                for (ItemId itemId : spawnableItems | std::views::filter(filter)) {
+                    itemsToRandomizeOn.push_back(itemId);
                 }
                 return grng->randomSample(itemsToRandomizeOn);
             }
