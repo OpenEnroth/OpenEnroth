@@ -8,6 +8,9 @@ local alignment_command = require "dev.commands.alignment_command"
 local inventory_command = require "dev.commands.inventory_command"
 local lua_command = require "dev.commands.run_lua_command"
 local clear_console_command = require "dev.commands.clear_console_command"
+local condition_command = require "dev.commands.condition_command"
+local hp_command = require "dev.commands.hp_command"
+local mana_command = require "dev.commands.mana_command"
 
 local mm = require "mmbindings"
 
@@ -16,6 +19,15 @@ local reload_shaders_command = {
     description = "Reload all shaders",
     callback = function()
         mm.render.reload_shaders()
+        return "", true
+    end
+}
+
+local reload_scripts_command = {
+    name = "reload_shaders",
+    description = "Reload all scripts",
+    callback = function()
+        mm.scripts.reload_scripts()
         return "", true
     end
 }
@@ -34,6 +46,10 @@ game_commands.register_game_commands = function()
     command_manager.register(lua_command)
     command_manager.register(clear_console_command)
     command_manager.register(reload_shaders_command)
+    command_manager.register(condition_command)
+    command_manager.register(hp_command)
+    command_manager.register(mana_command)
+    command_manager.register(reload_scripts_command)
 end
 
 return game_commands

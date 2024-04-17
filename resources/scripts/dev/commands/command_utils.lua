@@ -18,9 +18,13 @@ command_utilities.OP_TYPE = {
 ---@param play_award boolean    - play the award effect after the operation has been executed
 ---@return function
 command_utilities.change_char_property = function(key, op, play_award, conversion)
-    return function(char_index, value)
+    return function(value, char_index)
         if conversion then
             value = conversion(value)
+        end
+
+        if char_index == nil then
+            char_index = mm.game.get_active_character()
         end
 
         local get = mm.game.get_character_info

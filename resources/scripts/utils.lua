@@ -14,6 +14,10 @@ function tonumber_or(amount, default_value)
     return amount and amount or default_value
 end
 
+function isempty(s)
+    return s == nil or s == ''
+end
+
 function split_string(str, separator)
     local result = {}
     for value in str:gmatch("([^"..separator.."]+)") do
