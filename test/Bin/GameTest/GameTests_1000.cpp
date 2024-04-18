@@ -494,12 +494,12 @@ GAME_TEST(Issues, Issue1370) {
     EXPECT_TRUE(fuzzyEquals(2.53f, pAudioPlayer->getSoundLength(SOUND_EndTurnBasedMode), 0.001f));
     EXPECT_TRUE(fuzzyEquals(2.49f, pAudioPlayer->getSoundLength(static_cast<SoundId>(6480)), 0.001f));
 
-    // can be any character selected to talk
+    // Can be any character selected to talk on map change
     auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == CHARACTER_EXPRESSION_TALK) return true; return false; });
     auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == CHARACTER_EXPRESSION_TALK) return ch.uExpressionTimeLength; return Duration(); });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
     EXPECT_TRUE(someonesTalking.contains(true));
-    EXPECT_GT(talkExprTimeTape.max(), 128_ticks);  // 2.49 * 128
+    EXPECT_GT(talkExprTimeTape.max(), 128_ticks);  // Check that we have at least a second of speech to cover all
     EXPECT_EQ(someonesTalking.back(), false);
 }
 
