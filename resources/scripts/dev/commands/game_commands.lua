@@ -12,6 +12,7 @@ local condition_command = require "dev.commands.condition_command"
 local hp_command = require "dev.commands.hp_command"
 local mana_command = require "dev.commands.mana_command"
 local skills_command = require "dev.commands.skills_command"
+local class_command = require "dev.commands.class_command"
 
 local mm = require "mmbindings"
 
@@ -51,6 +52,7 @@ game_commands.register_game_commands = function()
     command_manager.register(hp_command)
     command_manager.register(mana_command)
     command_manager.register(skills_command)
+    command_manager.register(class_command)
 end
 
 return game_commands

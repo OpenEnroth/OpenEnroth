@@ -121,6 +121,8 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::tab
                         character->health = val.second.as<int>();
                     } else if(key == "mana") {
                         character->mana = val.second.as<int>();
+                    } else if (key == "class") {
+                        character->classType = val.second.as<CharacterClass>();
                     } else if (key == "condition") {
                         character->SetCondition(val.second.as<Condition>(), false);
                     } else if (key == "skill") {
@@ -142,6 +144,21 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::tab
         "add_item_to_inventory", [](int characterIndex, ItemId itemId) {
             if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 return character->AddItem(-1, itemId) != 0;
+            }
+            return false;
+        },
+        "add_custom_item_to_inventory", [](int characterIndex, sol::table itemTable) {
+            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                ItemGen item;
+                for (auto &&pair : itemTable) {
+                    std::string_view key = pair.first.as<std::string_view>();
+                    if (key == "id") {
+                        item.uItemID = pair.second.as<ItemId>();
+                    } else if(key == "holder") {
+                        item.uHolderPlayer = pair.second.as<int>() - 1; // character index in lua is 1-based
+                    }
+                }
+                return character->AddItem2(-1, &item) != 0;
             }
             return false;
         },
@@ -313,6 +330,50 @@ void GameLuaBindings::_registerEnums(sol::state_view &luaState, sol::table &tabl
         "Expert", CHARACTER_SKILL_MASTERY_EXPERT,
         "Master", CHARACTER_SKILL_MASTERY_MASTER,
         "Grandmaster", CHARACTER_SKILL_MASTERY_GRANDMASTER
+    );
+
+    table.new_enum<false>("ClassType",
+        "Knight", CLASS_KNIGHT,
+        "Cavalier", CLASS_CAVALIER,
+        "Champion", CLASS_CHAMPION,
+        "BlackKnight", CLASS_BLACK_KNIGHT,
+        "Thief", CLASS_THIEF,
+        "Rogue", CLASS_ROGUE,
+        "Spy", CLASS_SPY,
+        "Assassin", CLASS_ASSASSIN,
+        "Monk", CLASS_MONK,
+        "Initiate", CLASS_INITIATE,
+        "Master", CLASS_MASTER,
+        "Ninja", CLASS_NINJA,
+        "Paladin", CLASS_PALADIN,
+        "Crusader", CLASS_CRUSADER,
+        "Hero", CLASS_HERO,
+        "Villain", CLASS_VILLIAN,
+        "Archer", CLASS_ARCHER,
+        "WarriorMage", CLASS_WARRIOR_MAGE,
+        "MasterArcher", CLASS_MASTER_ARCHER,
+        "Sniper", CLASS_SNIPER,
+        "Ranger", CLASS_RANGER,
+        "Hunter", CLASS_HUNTER,
+        "RangerLord", CLASS_RANGER_LORD,
+        "BountyHunter", CLASS_BOUNTY_HUNTER,
+        "Cleric", CLASS_CLERIC,
+        "Priest", CLASS_PRIEST,
+        "PriestOfSun", CLASS_PRIEST_OF_SUN,
+        "PriestOfMoon", CLASS_PRIEST_OF_MOON,
+        "Druid", CLASS_DRUID,
+        "GreatDruid", CLASS_GREAT_DRUID,
+        "ArchDruid", CLASS_ARCH_DRUID,
+        "Warlock", CLASS_WARLOCK,
+        "Sorcerer", CLASS_SORCERER,
+        "Wizard", CLASS_WIZARD,
+        "Archmage", CLASS_ARCHAMGE,
+        "Lich", CLASS_LICH
+    );
+
+    // Let's not expose all the item types for now. I feel like it's too early.
+    table.new_enum<false>("ItemType",
+        "LichJarFull", ITEM_QUEST_LICH_JAR_FULL
     );
 }
 
