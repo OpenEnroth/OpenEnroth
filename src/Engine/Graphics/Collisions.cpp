@@ -630,7 +630,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         // Prevent actors from falling off ledges.
         if (actor.currentActionAnimation == ANIM_Walking && newFloorZ < actor.pos.z - 100 && !isAboveGround && !isFlying) {
-            if (grng->random(1)) { // TODO(pskelton): check this is okay
+            if (grng->randomBool()) {
                 actor.yawAngle += 100;
             } else {
                 actor.yawAngle -= 100;
