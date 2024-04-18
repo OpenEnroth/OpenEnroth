@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e16b3c9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a93d9e3</span>
    </div>
   </td>
  </tr>
@@ -81,17 +81,143 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="GameLuaBindings_8h.html">GameLuaBindings.h</a>&quot;</code><br />
 <code>#include &lt;string_view&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;ranges&gt;</code><br />
 <code>#include &lt;sol/sol.hpp&gt;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Random_8h.html">Engine/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SoundList_8h.html">Media/Audio/SoundList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a9f06a985b85168e603f77305caa857fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameLuaBindings_8cpp.html#a9f06a985b85168e603f77305caa857fc">_registerAudioBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a9f06a985b85168e603f77305caa857fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a883e8f79e214d13fd7281cd0de3749fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameLuaBindings_8cpp.html#a883e8f79e214d13fd7281cd0de3749fd">_registerGameBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a883e8f79e214d13fd7281cd0de3749fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb658b4076f8de1cb46d0418b9560385"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameLuaBindings_8cpp.html#acb658b4076f8de1cb46d0418b9560385">_registerItemBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:acb658b4076f8de1cb46d0418b9560385"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a913d1a0ad7925eea358699dc524dc39f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameLuaBindings_8cpp.html#a913d1a0ad7925eea358699dc524dc39f">_registerSerializationBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a913d1a0ad7925eea358699dc524dc39f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab048e6606bc1c5b952a53f64969d6e88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCharacter.html">Character</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameLuaBindings_8cpp.html#ab048e6606bc1c5b952a53f64969d6e88">getCharacterByIndex</a> (int characterIndex)</td></tr>
 <tr class="separator:ab048e6606bc1c5b952a53f64969d6e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a9f06a985b85168e603f77305caa857fc" name="a9f06a985b85168e603f77305caa857fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f06a985b85168e603f77305caa857fc">&#9670;&#160;</a></span>_registerAudioBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void _registerAudioBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a883e8f79e214d13fd7281cd0de3749fd" name="a883e8f79e214d13fd7281cd0de3749fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a883e8f79e214d13fd7281cd0de3749fd">&#9670;&#160;</a></span>_registerGameBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void _registerGameBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acb658b4076f8de1cb46d0418b9560385" name="acb658b4076f8de1cb46d0418b9560385"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb658b4076f8de1cb46d0418b9560385">&#9670;&#160;</a></span>_registerItemBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void _registerItemBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a913d1a0ad7925eea358699dc524dc39f" name="a913d1a0ad7925eea358699dc524dc39f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a913d1a0ad7925eea358699dc524dc39f">&#9670;&#160;</a></span>_registerSerializationBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void _registerSerializationBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab048e6606bc1c5b952a53f64969d6e88" name="ab048e6606bc1c5b952a53f64969d6e88"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab048e6606bc1c5b952a53f64969d6e88">&#9670;&#160;</a></span>getCharacterByIndex()</h2>
 
