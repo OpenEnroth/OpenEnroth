@@ -554,7 +554,7 @@ GAME_TEST(Issues, Issue730) {
     // Thrown items are throwing a party of their own
     test.playTraceFromTestData("issue_730.mm7", "issue_730.json");
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
-        EXPECT_EQ(pSpriteObjects[i].vVelocity, Vec3i(0, 0, 0));
+        EXPECT_EQ(pSpriteObjects[i].vVelocity.toInt(), Vec3i(0, 0, 0));
     }
 }
 
