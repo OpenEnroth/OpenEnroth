@@ -44,11 +44,40 @@ local function get_skills()
     return message, true
 end
 
+local function get_skill_mastery(skills, skill_id)
+    for name, skill in pairs(skills) do
+        if skill.id == skill_id then
+            return skill.mastery
+        end
+    end
+    return mm.SkillMastery.None
+end
+
+local function learn_all_skills()
+    local count = mm.party.get_party_size()
+    for char_index = 1, count do
+        local info = mm.party.get_character_info(char_index, { "skills", "class" })
+        print(info.class)
+        for skill_name, skill_id in pairs(mm.SkillType) do
+            if mm.game.can_class_learn(info.class, skill_id) then
+                if get_skill_mastery(info.skills, skill_id) == mm.SkillMastery.None then
+                    mm.party.set_character_info(char_index, {
+                        skill = { id = skill_id, mastery = mm.SkillMastery.Novice, level = 1 }
+                    })
+                end
+            end
+        end
+    end
+
+    return "", true
+end
+
 local subcommands = {
     set = set_skill,
     level = set_skill_level,
     mastery = set_skill_mastery,
     get = get_skills,
+    learn_all = learn_all_skills,
     default = get_skills
 }
 

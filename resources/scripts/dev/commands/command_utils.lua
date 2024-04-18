@@ -119,6 +119,9 @@ command_utilities.show_property = function(get, prop_name, serializer)
     end
 end
 
+--- Provide a valid character index. If the input is nil it returns the active character in the party
+---@param char_index integer
+---@return integer
 command_utilities.character_or_current = function(char_index)
     if char_index == nil then
         return mm.party.get_active_character()

@@ -15,7 +15,7 @@ local EDIT_TEXT_COLOR = { 255, 255, 255, 255 }
 -- The console table contains the state of the console. From position to the number of messages
 local console = {
     rect = {
-        x = 8, 
+        x = 8,
         y = 8,
         w = 600,
         h = 480

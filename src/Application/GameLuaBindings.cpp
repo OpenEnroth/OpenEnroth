@@ -11,6 +11,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Random/Random.h"
+#include "Engine/mm7_data.h"
 #include "Library/Logger/Logger.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/SoundList.h"
@@ -39,6 +40,7 @@ void GameLuaBindings::init(lua_State *L) {
     _characterInfoQueryTable->add("max_hp", [](auto &character) { return character.GetMaxHealth(); });
     _characterInfoQueryTable->add("condition", [this](auto &character) { return createCharacterConditionTable(*_luaState, character); });
     _characterInfoQueryTable->add("skills", [this](auto &character) { return createCharacterSkillsTable(*_luaState, character); });
+    _characterInfoQueryTable->add("class", [this](auto &character) { return character.classType; });
 
     _luaState->set_function("initMMBindings", [this, luaState = _luaState.get()]() {
         sol::table mainTable = luaState->create_table();
@@ -57,6 +59,9 @@ void GameLuaBindings::_registerGameBindings(sol::state_view &luaState, sol::tabl
     table["game"] = luaState.create_table_with(
         "go_to_screen", [](int screenIndex) {
             SetCurrentMenuID(MenuType(screenIndex));
+        },
+        "can_class_learn", [](CharacterClass classType, CharacterSkillType skillType) {
+            return skillMaxMasteryPerClass[classType][skillType] > CHARACTER_SKILL_MASTERY_NONE;
         }
     );
 }
