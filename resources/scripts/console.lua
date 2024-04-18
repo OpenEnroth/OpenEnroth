@@ -1,6 +1,6 @@
 --- Module that takes care of the state of the debug console
 
-local commands = require "commands"
+local command_manager = require "dev.commands.command_manager"
 local logger = require "logger"
 
 local SUCCESS_COLOR = { 64, 146, 222, 255 }
@@ -86,7 +86,7 @@ console.execute = function(console)
     local text = console.edit_tb.text
     console:add_history(text)
     console:add_message(text, DEFAULT_COLOR)
-    local message, is_success = commands.execute(text)
+    local message, is_success = command_manager.execute(text)
     console:add_message(message, get_color_success(is_success))
     console.edit_tb.text = ""
 end
