@@ -3,6 +3,9 @@
 #include <string_view>
 #include <memory>
 #include <vector>
+#include <ranges>
+#include <optional>
+#include <sol/sol.hpp>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -16,6 +19,7 @@
 
 Character *getCharacterByIndex(int characterIndex);
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character);
+sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character);
 
 GameLuaBindings::GameLuaBindings() = default;
 GameLuaBindings::~GameLuaBindings() = default;
@@ -34,10 +38,12 @@ void GameLuaBindings::init(lua_State *L) {
     _characterInfoQueryTable->add("hp", [](auto &character) { return character.GetHealth(); });
     _characterInfoQueryTable->add("max_hp", [](auto &character) { return character.GetMaxHealth(); });
     _characterInfoQueryTable->add("condition", [this](auto &character) { return createCharacterConditionTable(*_luaState, character); });
+    _characterInfoQueryTable->add("skills", [this](auto &character) { return createCharacterSkillsTable(*_luaState, character); });
 
     _luaState->set_function("initMMBindings", [this, luaState = _luaState.get()]() {
         sol::table mainTable = luaState->create_table();
         _registerGameBindings(*luaState, mainTable);
+        _registerPartyBindings(*luaState, mainTable);
         _registerItemBindings(*luaState, mainTable);
         _registerAudioBindings(*luaState, mainTable);
         _registerSerializationBindings(*luaState, mainTable);
@@ -49,6 +55,14 @@ void GameLuaBindings::init(lua_State *L) {
 
 void GameLuaBindings::_registerGameBindings(sol::state_view &luaState, sol::table &table) {
     table["game"] = luaState.create_table_with(
+        "go_to_screen", [](int screenIndex) {
+            SetCurrentMenuID(MenuType(screenIndex));
+        }
+    );
+}
+
+void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::table &table) {
+    table["party"] = luaState.create_table_with(
         "get_gold", []() {
             return pParty->GetGold();
         },
@@ -104,6 +118,16 @@ void GameLuaBindings::_registerGameBindings(sol::state_view &luaState, sol::tabl
                         character->mana = val.second.as<int>();
                     } else if (key == "condition") {
                         character->SetCondition(val.second.as<Condition>(), false);
+                    } else if (key == "skill") {
+                        sol::table skillValueTable = val.second.as<sol::table>();
+                        CombinedSkillValue current = character->getActualSkillValue(skillValueTable["id"]);
+                        auto level = skillValueTable.get<std::optional<int>>("level");
+                        auto mastery = skillValueTable.get<std::optional<CharacterSkillMastery>>("mastery");
+                        CombinedSkillValue skillValue(
+                            level ? *level : current.level(),
+                            mastery ? *mastery : current.mastery()
+                        );
+                        character->setSkillValue(skillValueTable["id"], skillValue);
                     } else {
                         logger->warning("Invalid key for set_character_info. Used key: {}", key);
                     }
@@ -126,8 +150,14 @@ void GameLuaBindings::_registerGameBindings(sol::state_view &luaState, sol::tabl
                 character->PlayAwardSound_Anim();
             }
         },
-        "go_to_screen", [](int screenIndex) {
-            SetCurrentMenuID(MenuType(screenIndex));
+        "clear_condition", [](int characterIndex, std::optional<Condition> conditionToClear) {
+            if(Character* character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                if (conditionToClear) {
+                    character->conditions.Reset(*conditionToClear);
+                } else {
+                    character->conditions.ResetAll();
+                }
+            }
         }
     );
 }
@@ -166,10 +196,8 @@ void GameLuaBindings::_registerItemBindings(sol::state_view &luaState, sol::tabl
             if(filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
-                for (ItemId itemId : spawnableItems) {
-                    if (filter(itemId)) {
-                        itemsToRandomizeOn.push_back(itemId);
-                    }
+                for (ItemId itemId : spawnableItems | std::views::filter(filter)) {
+                    itemsToRandomizeOn.push_back(itemId);
                 }
                 return grng->randomSample(itemsToRandomizeOn);
             }
@@ -231,6 +259,56 @@ void GameLuaBindings::_registerEnums(sol::state_view &luaState, sol::table &tabl
         "Zombie", CONDITION_ZOMBIE,
         "Good", CONDITION_GOOD
     );
+
+    table.new_enum<false>("SkillType",
+        "Staff", CHARACTER_SKILL_STAFF,
+        "Sword", CHARACTER_SKILL_SWORD,
+        "Dagger", CHARACTER_SKILL_DAGGER,
+        "Axe", CHARACTER_SKILL_AXE,
+        "Spear", CHARACTER_SKILL_SPEAR,
+        "Bow", CHARACTER_SKILL_BOW,
+        "Mace", CHARACTER_SKILL_MACE,
+        "Blaster", CHARACTER_SKILL_BLASTER,
+        "Shield", CHARACTER_SKILL_SHIELD,
+        "Leather", CHARACTER_SKILL_LEATHER,
+        "Chain", CHARACTER_SKILL_CHAIN,
+        "Plate", CHARACTER_SKILL_PLATE,
+        "Fire", CHARACTER_SKILL_FIRE,
+        "Air", CHARACTER_SKILL_AIR,
+        "Water", CHARACTER_SKILL_WATER,
+        "Earth", CHARACTER_SKILL_EARTH,
+        "Spirit", CHARACTER_SKILL_SPIRIT,
+        "Mind", CHARACTER_SKILL_MIND,
+        "Body", CHARACTER_SKILL_BODY,
+        "Light", CHARACTER_SKILL_LIGHT,
+        "Dark", CHARACTER_SKILL_DARK,
+        "Item_ID", CHARACTER_SKILL_ITEM_ID,
+        "Merchant", CHARACTER_SKILL_MERCHANT,
+        "Repair", CHARACTER_SKILL_REPAIR,
+        "Bodybuilding", CHARACTER_SKILL_BODYBUILDING,
+        "Meditation", CHARACTER_SKILL_MEDITATION,
+        "Perception", CHARACTER_SKILL_PERCEPTION,
+        "Diplomacy", CHARACTER_SKILL_DIPLOMACY,
+        "Thievery", CHARACTER_SKILL_THIEVERY,
+        "Trap_Disarm", CHARACTER_SKILL_TRAP_DISARM,
+        "Dodge", CHARACTER_SKILL_DODGE,
+        "Unarmed", CHARACTER_SKILL_UNARMED,
+        "Monster_ID", CHARACTER_SKILL_MONSTER_ID,
+        "Armsmaster", CHARACTER_SKILL_ARMSMASTER,
+        "Stealing", CHARACTER_SKILL_STEALING,
+        "Alchemy", CHARACTER_SKILL_ALCHEMY,
+        "Learning", CHARACTER_SKILL_LEARNING,
+        "Club", CHARACTER_SKILL_CLUB,
+        "Misc", CHARACTER_SKILL_MISC
+    );
+
+    table.new_enum<false>("SkillMastery",
+        "None", CHARACTER_SKILL_MASTERY_NONE,
+        "Novice", CHARACTER_SKILL_MASTERY_NOVICE,
+        "Expert", CHARACTER_SKILL_MASTERY_EXPERT,
+        "Master", CHARACTER_SKILL_MASTERY_MASTER,
+        "Grandmaster", CHARACTER_SKILL_MASTERY_GRANDMASTER
+    );
 }
 
 Character *getCharacterByIndex(int characterIndex) {
@@ -244,9 +322,25 @@ Character *getCharacterByIndex(int characterIndex) {
 
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character) {
     sol::table result = luaState.create_table();
+
+    // I would have preferred to iterate over the internal IndexedArray keeping track of all the conditions but it's private.
     for (int i = (int)Condition::CONDITION_FIRST; i < (int)Condition::CONDITION_LAST; ++i) {
-        if (character.conditions.Has((Condition)i)) {
+        if (character.conditions.Has(static_cast<Condition>(i))) {
             result[i] = true;
+        }
+    }
+    return result;
+}
+
+sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character) {
+    sol::table result = luaState.create_table();
+    for (CharacterSkillType skillType : character.pActiveSkills.indices()) {
+        if (character.HasSkill(skillType)) {
+            CombinedSkillValue skillValue = character.getActualSkillValue(skillType);
+            result[skillType] = luaState.create_table_with(
+                "level", skillValue.level(),
+                "mastery", skillValue.mastery()
+            );
         }
     }
     return result;
