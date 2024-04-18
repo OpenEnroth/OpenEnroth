@@ -20,6 +20,7 @@ class GameLuaBindings {
     void _registerAudioBindings(sol::state_view &luaState, sol::table &table);
     void _registerRenderBindings(sol::state_view &luaState, sol::table &table);
     void _registerGameBindings(sol::state_view &luaState, sol::table &table);
+    void _registerPartyBindings(sol::state_view &luaState, sol::table &table);
     void _registerItemBindings(sol::state_view &luaState, sol::table &table);
     void _registerSerializationBindings(sol::state_view &luaState, sol::table &table);
     void _registerEnums(sol::state_view &luaState, sol::table &table);

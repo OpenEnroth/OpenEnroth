@@ -1,27 +1,18 @@
 local mm = require "mmbindings"
-require "utils"
-
-local function condition_enum_to_string(value)
-    for k, v in pairs(CharacterCondition) do
-        if v == value then
-            return k
-        end
-    end
-
-    return ""
-end
+local command_utils = require "dev.commands.command_utils"
+local utils = require "utils"
 
 local function show_party_conditions()
-    local count = mm.game.get_party_size()
+    local count = mm.party.get_party_size()
     local message = "Party Conditions\n"
     for i = 1, count do
-        local info = mm.game.get_character_info(i, { "condition", "name" })
+        local info = mm.party.get_character_info(i, { "condition", "name" })
         local condition_str = ""
         for key, value in pairs(info.condition) do
-            condition_str = condition_str..condition_enum_to_string(key).." "
+            condition_str = condition_str..utils.enum_to_string(mm.CharacterCondition, key).." "
         end
 
-        if isempty(condition_str) then
+        if utils.isempty(condition_str) then
             condition_str = "None"
         end
 
@@ -30,22 +21,35 @@ local function show_party_conditions()
     return message, true
 end
 
-local function set_condition(condition, character_index)
-    print(character_index)
-    if character_index == nil then
-        character_index = mm.game.get_active_character()
-    end
+local function set_condition(condition_name, character_index)
+    character_index = command_utils.character_or_current(character_index)
 
-    mm.game.set_character_info(character_index, { condition = CharacterCondition[condition] })
-    local info = mm.game.get_character_info(character_index, { "name" })
+    mm.party.set_character_info(character_index, { condition = mm.CharacterCondition[condition_name] })
+    local info = mm.party.get_character_info(character_index, { "name" })
 
-    local message = "Set condition "..condition.." to "..info.name
+    local message = "Set condition "..condition_name.." to "..info.name
     return message, true
+end
+
+local function clear_condition(condition_name, character_index)
+    if condition_name == nil then
+        local count = mm.party.get_party_size()
+        for i = 1, count do
+            mm.party.clear_condition(i)
+        end
+        return "All conditions cleared", true
+    else
+        character_index = command_utils.character_or_current(character_index)
+        mm.party.clear_condition(character_index, mm.CharacterCondition[condition_name])
+        return "Condition "..condition_name.." cleared", true
+    end
+    
 end
 
 local subcommands = {
     get = show_party_conditions,
     set = set_condition,
+    clear = clear_condition,
     default = show_party_conditions
 }
 

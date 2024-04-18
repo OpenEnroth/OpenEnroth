@@ -11,6 +11,7 @@ local clear_console_command = require "dev.commands.clear_console_command"
 local condition_command = require "dev.commands.condition_command"
 local hp_command = require "dev.commands.hp_command"
 local mana_command = require "dev.commands.mana_command"
+local skills_command = require "dev.commands.skills_command"
 
 local mm = require "mmbindings"
 
@@ -23,12 +24,12 @@ local reload_shaders_command = {
     end
 }
 
+-- todo(Gerark) work in progress, need to expose in c++ the functionalities to reload the scripts
 local reload_scripts_command = {
     name = "reload_shaders",
     description = "Reload all scripts",
     callback = function()
-        mm.scripts.reload_scripts()
-        return "", true
+        return "Not implemented yet", false
     end
 }
 
@@ -49,7 +50,7 @@ game_commands.register_game_commands = function()
     command_manager.register(condition_command)
     command_manager.register(hp_command)
     command_manager.register(mana_command)
-    command_manager.register(reload_scripts_command)
+    command_manager.register(skills_command)
 end
 
 return game_commands
