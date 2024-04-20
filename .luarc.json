@@ -1,13 +1,9 @@
 {
     "diagnostics": {
-        // disable any diagnostics ( let's keep it empty )
         "disable": [],
         
-        // array of variables that should be treated as globals
-        // ( right now we should have only initMMBindings )
         "globals": [ "initMMBindings" ],
         
-        // we want to check "any" file for all the groups
         "groupFileStatus": {
             "ambiguity": "Any",
             "await": "Any",
