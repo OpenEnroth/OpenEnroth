@@ -1,0 +1,58 @@
+{
+    "diagnostics": {
+        // disable any diagnostics ( let's keep it empty )
+        "disable": [],
+        
+        // array of variables that should be treated as globals
+        // ( right now we should have only initMMBindings )
+        "globals": [ "initMMBindings" ],
+        
+        // we want to check "any" file for all the groups
+        "groupFileStatus": {
+            "ambiguity": "Any",
+            "await": "Any",
+            "duplicate": "Any",
+            "codestyle": "Any",
+            "global": "Any",
+            "luadoc": "Any",
+            "redefined": "Any",
+            "strict": "Any",
+            "strong": "Any",
+            "type-check": "Any",
+            "unbalanced": "Any",
+            "unused": "Any"
+        },
+        "ignoredFiles": "Opened",
+        "libraryFiles": "Disable"
+    },
+    "runtime": {
+        "version": "Lua 5.4",
+        "path": [],
+        "pathStrict": true
+    },
+    "workspace": {
+        "maxPreload": 1600,
+        "preloadFileSize": 1000,
+        "ignoreDir": [
+            "/locale/",
+            "/libs/",
+            "/3rd",
+            "/.vscode",
+            "/meta"
+        ],
+        "checkThirdParty": false
+    },
+    "typeFormat": {
+        "config": {
+            "format_line": "false"
+        }
+    },
+    "type": {
+        "castNumberToInteger": false
+    },
+    "doc": {
+        "privateName": [
+            "_*"
+        ]
+    }
+}
