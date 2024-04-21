@@ -244,7 +244,7 @@ var searchData=
   ['vbuttons_241',['vButtons',['../classGUIWindow.html#aba80b69979e2d28049eb073dde019f82',1,'GUIWindow']]],
   ['vcamerapos_242',['vCameraPos',['../structCamera3D.html#a3951b9263e6c69a751c08bafeee1172b',1,'Camera3D']]],
   ['vchests_243',['vChests',['../classChestDescList.html#ac47c7411a715a5a975681e6941e3abba',1,'ChestDescList::vChests()'],['../Chest_8cpp.html#a69b8af73220304518033692198679e17',1,'vChests():&#160;Chest.cpp'],['../Chest_8h.html#a69b8af73220304518033692198679e17',1,'vChests():&#160;Chest.cpp']]],
-  ['vdirection_244',['vDirection',['../structBLVDoor__MM7.html#afe30a3788e46ff66b014655e355f67ac',1,'BLVDoor_MM7::vDirection()'],['../structAIDirection.html#ac8f7cc46acc59e4a24bf7f39d4b716cf',1,'AIDirection::vDirection()'],['../structBLVDoor.html#abfa4a581b3ac622e796f1b35fdbfc956',1,'BLVDoor::vDirection()']]],
+  ['vdirection_244',['vDirection',['../structBLVDoor__MM7.html#afe30a3788e46ff66b014655e355f67ac',1,'BLVDoor_MM7::vDirection()'],['../structAIDirection.html#af1ba359be182a585edf2ef30db5dd9ea',1,'AIDirection::vDirection()'],['../structBLVDoor.html#abfa4a581b3ac622e796f1b35fdbfc956',1,'BLVDoor::vDirection()']]],
   ['vdpi_245',['vdpi',['../structPCXHeader.html#aa4809237389a70f5fe50ffc9d511151e',1,'PCXHeader']]],
   ['vec_2eh_246',['Vec.h',['../Vec_8h.html',1,'']]],
   ['vec2_247',['Vec2',['../structVec2.html#a37f1bc02613483405562769c246eaba2',1,'Vec2::Vec2()=default'],['../structVec2.html#ae525b2570f57095c5d75e21b2bb7e1b5',1,'Vec2::Vec2(T a, T b)'],['../structVec2.html',1,'Vec2&lt; T &gt;']]],
