@@ -1,9 +1,10 @@
 {
     "diagnostics": {
         "disable": [],
-        
-        "globals": [ "initMMBindings" ],
-        
+        "globals": [
+            "initMMBindings",
+            "logsink"
+        ],
         "groupFileStatus": {
             "ambiguity": "Any",
             "await": "Any",
@@ -79,7 +80,9 @@
     },
     "runtime": {
         "version": "Lua 5.4",
-        "path": ["./resources/scripts/?.lua"],
+        "path": [
+            "./resources/scripts/?.lua"
+        ],
         "pathStrict": false
     },
     "workspace": {
@@ -106,5 +109,9 @@
         "privateName": [
             "_*"
         ]
+    },
+    "nameStyle.config": {
+        "local_name_style": "snake_case",
+        "global_variable_name_style": "pascal_case"
     }
 }
