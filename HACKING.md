@@ -139,7 +139,6 @@ Our basic guidelines for code organization are:
 * One `CMakeLists.txt` file per folder. Exceptions are /android, /CMakeModules and /resources.
 * One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.
 
-
 Testing
 -------
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infrastructure to test game logic and small isolated classes.
@@ -170,6 +169,25 @@ To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing test name after a space. 
 
 Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command.
+
+Scripting
+---------
+We're using Lua as the scripting language, and all our scripts are currently located under the `resources/scripts` folder.
+
+#### Lua Language Server
+Script files undergo a syntax checking process during the build generation. If you intend to work with scripts, it is recommended to install the [Lua Language Server](https://github.com/LuaLS/lua-language-server) to run the style checker locally. Follow these steps to setup `LuaLS` locally:
+- Install `LuaLS` through one of the [following methods](https://luals.github.io/#other-install). Ensure that the lua-language-server executable is available in the `PATH` environment variable.
+- Generate the project.
+- The `check_style` target is now including scripting in its tests.
+
+Little note: If `LuaLS` is not found, everything still build but no checks will be run against the Lua scripts.
+
+#### Tools
+To go through a better experience while working with scripts it is strongly recommended to use [VS Code](https://code.visualstudio.com/) and [install the LuaLS extension](https://luals.github.io/#vscode-install).
+Just be sure to open the root repository folder in `VS Code`. By doing so `LuaLS` reads the correct configuration file used by the project
+
+#### Modding ?
+Scripting is currently used only for debugging purposes. Modding support is not planned for the near future. You can check the [milestones](https://github.com/OpenEnroth/OpenEnroth/milestones) to get a better idea.
 
 Console Commands
 -----------------
