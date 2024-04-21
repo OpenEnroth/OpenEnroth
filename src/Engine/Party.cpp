@@ -690,7 +690,7 @@ void Party::yell() {
             if (actor.CanAct() &&
                 actor.monsterInfo.hostilityType != HOSTILITY_LONG &&
                 actor.monsterInfo.movementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                if ((actor.pos - pParty->pos.toInt()).length() < 512) {
+                if ((actor.pos - pParty->pos).length() < 512) {
                     Actor::AI_Flee(i, Pid::character(0), 0_ticks, 0);
                 }
             }

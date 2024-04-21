@@ -7046,14 +7046,14 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3i a3 = actor->pos - pParty->pos.toInt();
+        Vec3i a3 = actor->pos.toInt() - pParty->pos.toInt();
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
         Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);
         if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
-            _42FA66_do_explosive_impact(actor->pos + Vec3i(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
+            _42FA66_do_explosive_impact(actor->pos.toInt() + Vec3i(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow_idx) {
         shooting_bow = true;
         pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);

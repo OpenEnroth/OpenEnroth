@@ -68,7 +68,7 @@ void checkDecorationEvents() {
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
             for (int i = 0; i < pActors.size(); i++) {
-                if ((decoration.vPosition.toInt() - pActors[i].pos).length() < decoration.uTriggerRange) {
+                if ((decoration.vPosition - pActors[i].pos).length() < decoration.uTriggerRange) {
                     eventProcessor(decoration.uEventID, Pid(), 1);
                 }
             }
