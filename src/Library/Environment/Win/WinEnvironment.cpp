@@ -7,6 +7,7 @@
 #include <string>
 #include <array>
 #include <memory>
+#include <string>
 
 #include "Utility/Win/Unicode.h"
 

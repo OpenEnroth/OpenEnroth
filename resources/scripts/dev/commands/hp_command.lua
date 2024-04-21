@@ -12,9 +12,7 @@ local function show_chars_hp()
 end
 
 local function full_heal(char_index)
-    if char_index == nil then
-        char_index = mm.party.get_active_character()
-    end
+    char_index = command_utilities.character_or_current(char_index)
 
     local info = mm.party.get_character_info(char_index, { "name", "max_hp", "max_mana" })
     mm.party.clear_condition(char_index)

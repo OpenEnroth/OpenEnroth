@@ -23,9 +23,7 @@ command_utilities.change_char_property = function(key, op, play_award, conversio
             value = conversion(value)
         end
 
-        if char_index == nil then
-            char_index = mm.party.get_active_character()
-        end
+        char_index = command_utilities.character_or_current(char_index)
 
         local get = mm.party.get_character_info
         local set = mm.party.set_character_info

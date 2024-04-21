@@ -245,7 +245,7 @@ void GameUI_ReloadPlayerPortraits(int player_id, int face_id) {  // the transiti
 //----- (00414D24) --------------------------------------------------------
 static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
-        // TODO(pskelton): check tickcount usage here
+        // TODO(pskelton): #time check tickcount usage here
         if (platform->tickCount() % 1000 < 500)
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else

@@ -15,6 +15,12 @@
 
 CharacterExpressionID expressionForCondition(Condition condition);
 
+/**
+ * @return                              List of conditions that can be applied to the character.
+ */
+inline Segment<Condition> allConditions() {
+    return {CONDITION_FIRST, CONDITION_LAST};
+}
 
 //
 // CharacterSkillMastery

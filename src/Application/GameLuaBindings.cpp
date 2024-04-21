@@ -30,7 +30,7 @@ void GameLuaBindings::init(lua_State *L) {
 
     //TODO(Gerark) exposing the info/stats of a character this way might suggest we should expose the Character class directly to lua.
     //The idea is to wait till we'll talk about serious modding/scripting and not taking a direction upfront
-    _characterInfoQueryTable = std::make_unique<ItemQueryTable<Character>>(*_luaState);
+    _characterInfoQueryTable = std::make_unique<LuaItemQueryTable<Character>>(*_luaState);
     _characterInfoQueryTable->add("name", [](auto &character) { return character.name; });
     _characterInfoQueryTable->add("xp", [](auto &character) { return character.experience; });
     _characterInfoQueryTable->add("sp", [](auto &character) { return character.uSkillPoints; });
@@ -102,7 +102,7 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::tab
                 return 0;
             }
         },
-        "get_character_info", [this, &luaState](int characterIndex, const sol::object &queryTable) {
+        "get_character_info", [this, &luaState](int characterIndex, QueryTable queryTable) {
             if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 return _characterInfoQueryTable->createTable(*character, queryTable);
             }
@@ -389,10 +389,9 @@ Character *getCharacterByIndex(int characterIndex) {
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character) {
     sol::table result = luaState.create_table();
 
-    // I would have preferred to iterate over the internal IndexedArray keeping track of all the conditions but it's private.
-    for (int i = (int)Condition::CONDITION_FIRST; i < (int)Condition::CONDITION_LAST; ++i) {
-        if (character.conditions.Has(static_cast<Condition>(i))) {
-            result[i] = true;
+    for (auto &&condition : allConditions()) {
+        if (character.conditions.Has(condition)) {
+            result[condition] = true;
         }
     }
     return result;
