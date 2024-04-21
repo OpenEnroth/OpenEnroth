@@ -389,10 +389,9 @@ Character *getCharacterByIndex(int characterIndex) {
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character) {
     sol::table result = luaState.create_table();
 
-    // I would have preferred to iterate over the internal IndexedArray keeping track of all the conditions but it's private.
-    for (int i = (int)Condition::CONDITION_FIRST; i < (int)Condition::CONDITION_LAST; ++i) {
-        if (character.conditions.Has(static_cast<Condition>(i))) {
-            result[i] = true;
+    for (auto &&condition : allConditions()) {
+        if (character.conditions.Has(condition)) {
+            result[condition] = true;
         }
     }
     return result;
