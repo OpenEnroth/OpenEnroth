@@ -12,7 +12,7 @@ local function showPartyConditions()
             conditionString = conditionString .. Utilities.enumToString(MM.CharacterCondition, key) .. " "
         end
 
-        if Utilities.is_empty(conditionString) then
+        if Utilities.isEmpty(conditionString) then
             conditionString = "None"
         end
 

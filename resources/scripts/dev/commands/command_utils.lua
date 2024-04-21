@@ -1,5 +1,6 @@
 local MM = require "mmbindings"
 
+---@class CommandUtilities
 local CommandUtilities = {}
 
 ---@enum opType

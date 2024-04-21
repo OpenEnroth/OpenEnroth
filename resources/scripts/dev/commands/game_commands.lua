@@ -34,6 +34,7 @@ local reloadShadersCommand = {
 --    end
 --}
 
+--- @class GameCommands
 local GameCommands = {}
 
 --- Register all the commands used in the dev console

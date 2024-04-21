@@ -74,8 +74,8 @@
             "unknown-diag-code": "Warning",
             "unknown-operator": "Warning",
             "unreachable-code": "Warning",
-            "unused-function": "Hint",
-            "unused-label": "Hint",
+            "unused-function": "Warning",
+            "unused-label": "Warning",
             "unused-local": "Warning",
             "unused-vararg": "Hint"
         },

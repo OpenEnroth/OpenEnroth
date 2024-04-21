@@ -1,3 +1,4 @@
+---@class Utilities
 local Utilities = {}
 
 ---Convert a string to a boolean
