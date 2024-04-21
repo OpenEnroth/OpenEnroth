@@ -23,14 +23,15 @@ jobs:
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
-
-      - name: Install Homebrew
+          
+      - name: Install Homebrew and lua-language-server
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $GITHUB_PATH
-          
-      - name: Install lua-language-server
-        run: brew install lua-language-server
+          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.bashrc
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          sudo apt-get update -y
+          sudo apt-get install build-essential -y
+          brew install lua-language-server
 
       - name: Configure
         run: |
