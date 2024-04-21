@@ -1,15 +1,16 @@
-local utils = require "dev.commands.command_utils"
-local mm = require "mmbindings"
+local Utilities = require "dev.commands.command_utils"
+local MM = require "mmbindings"
 
-local subcommands = {
-    get = utils.show_property(mm.party.get_alignment, "alignment", mm.serialize.party_alignment),
-    set = utils.change_property(mm.party.get_alignment, mm.party.set_alignment, utils.OP_TYPE.set, "alignment", mm.deserialize.party_alignment, mm.serialize.party_alignment),
-    default = utils.show_property(mm.party.get_alignment, "alignment", mm.serialize.party_alignment)
+local subCommands = {
+    get = Utilities.showProperty(MM.party.get_alignment, "alignment", MM.serialize.party_alignment),
+    set = Utilities.changeProperty(MM.party.get_alignment, MM.party.set_alignment, Utilities.opType.set, "alignment",
+        MM.deserialize.party_alignment, MM.serialize.party_alignment),
+    default = Utilities.showProperty(MM.party.get_alignment, "alignment", MM.serialize.party_alignment)
 }
 
 return {
     name = "alignment",
     description = "Change the alignment of the party.",
     details = "",
-    callback = subcommands
+    callback = subCommands
 }

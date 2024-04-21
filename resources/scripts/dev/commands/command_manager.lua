@@ -1,91 +1,114 @@
 --- Module that takes care of all the commands being parsed and executed
 
-local utils = require "utils"
+local Utilities = require "utils"
 
-local command_list = {}
+---@alias CommandFunction fun(parameter...):string, boolean
 
-local function split_name_and_params(command_line)
-    local firstSpaceIndex = command_line:find(" ")
+---@class Command
+---@field name string
+---@field description string
+---@field details string
+---@field callback CommandFunction | table<string, CommandFunction>
+---@field customParser? fun(commandLine:string): table<string>
+
+---@type table<string, Command>
+local commandList = {}
+
+---@param commandLine string
+---@return string
+---@return string
+local function splitNameAndParams(commandLine)
+    local firstSpaceIndex = commandLine:find(" ")
     if firstSpaceIndex then
-        return command_line:sub(1, firstSpaceIndex - 1), command_line:sub(firstSpaceIndex + 1)
+        return commandLine:sub(1, firstSpaceIndex - 1), commandLine:sub(firstSpaceIndex + 1)
     end
-    return command_line, ""
+    return commandLine, ""
 end
 
-local function print_command_list(command_name)
+local function printCommandList(commandName)
     local message = ""
-    if command_name == nil then
-        for key, command in pairs(command_list) do
-            message = message..key..": "..command.description.."\n"
+    if commandName == nil then
+        for key, command in pairs(commandList) do
+            message = message .. key .. ": " .. command.description .. "\n"
         end
     else
-        for key, command in pairs(command_list) do
-            if command_name == key then
-                message = message..key..": "..command.description.."\n"..command.details.."\n"
+        for key, command in pairs(commandList) do
+            if commandName == key then
+                message = message .. key .. ": " .. command.description .. "\n" .. command.details .. "\n"
             end
         end
     end
     return message, true
 end
 
-local help_command = {
+local helpCommand = {
     name = "help",
     description = "Show all commands",
     details = "Usage:\n\nhelp [command]",
-    callback = print_command_list
+    callback = printCommandList
 }
 
-local command_manager = {
-    register = function(command)
-        command_list[command.name] = command
+local CommandManager = {
+    register = function (command)
+        commandList[command.name] = command
     end,
 
-    execute = function(command_line)
-        local command_name, params_string = split_name_and_params(command_line)
-        local command = command_list[command_name]
+    execute = function (commandLine)
+        local commandName, paramsString = splitNameAndParams(commandLine)
+        local command = commandList[commandName]
         if command == nil then
-            local help_message = help_command.callback()
-            return command_name.. " is not a valid command. List of valid commands:\n"..help_message, false
+            local helpMessage = helpCommand.callback()
+            return commandName .. " is not a valid command. List of valid commands:\n" .. helpMessage, false
         end
-        
+
         local index = 1
         local callback = command.callback
         local params = {}
-        if not command.custom_parser then
-            params = utils.split_string(params_string, "%s")
+        if not command.customParser then
+            params = Utilities.splitString(paramsString, "%s")
             while type(callback) == "table" do
                 local par = #params > 0 and params[1] or "default"
-                local new_callback = callback[par]
-                if new_callback == nil then
-                    local message = "Invalid parameter at position "..index.." - Here's a list of valid values:\n"
+                local newCallback = callback[par]
+                if newCallback == nil then
+                    local message = "Invalid parameter at position " .. index .. " - Here's a list of valid values:\n"
                     for key, _ in pairs(callback) do
                         if key ~= "default" then
-                            message = message..key.."\n"
+                            message = message .. key .. "\n"
                         end
                     end
                     return message, false
                 else
                     table.remove(params, 1)
-                    callback = new_callback
+                    callback = newCallback
                 end
                 index = index + 1
             end
         else
-            params = command.custom_parser(params_string)
+            params = command.customParser(paramsString)
         end
 
+        ---TODO(Gerark) unpack is deprecated in 5.4 but need to check why the alternative is not working at runtime.
+        --- Probably we're running on an older version. If that's the case we should align the linter version
+        ---@diagnostic disable-next-line: deprecated
         local message, result = callback(unpack(params))
         if message == nil or result == nil then
-            return "The command "..command_name.." does not return a valid message or result. Check the return statements in your script", false
+            return
+                "The command " ..
+                commandName .. " does not return a valid message or result. Check the return statements in your script",
+                false
         elseif type(message) ~= "string" then
-            return "The command "..command_name.." does not return a valid message. The message must be a string. Current message type: "..type(message), false
+            return
+                "The command " ..
+                commandName ..
+                " does not return a valid message. The message must be a string. Current message type: " .. type(message),
+                false
         end
 
         return message, result
     end,
-    list = command_list
+    list = commandList
 }
 
-command_manager.register(help_command)
+CommandManager.register(helpCommand)
 
-return command_manager
+return CommandManager

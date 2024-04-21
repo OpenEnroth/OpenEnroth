@@ -1,5 +1,7 @@
-local game_commands = require "dev.commands.game_commands"
+local GameCommands = require "dev.commands.game_commands"
 
+-- TODO(Gerark) - Fix ui_init entry point in c++
+---@diagnostic disable-next-line: name-style-check, lowercase-global
 function ui_init()
-    game_commands.register_game_commands()
+    GameCommands.register_game_commands()
 end

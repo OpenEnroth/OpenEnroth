@@ -11,18 +11,19 @@ local callbacks = {}
 
 --- The logsink is a global function called from c++ LogSink whenever a log message is created
 --- If you change the variable name be sure to do the same in c++!!!
----@param log_level string
+---@param logLevel string
 ---@param message string
-logsink = function(log_level, message)
-    for key, callback in pairs(callbacks) do
-        callback(log_level, message)
+---@diagnostic disable-next-line: spell-check
+function logsink(logLevel, message)
+    for _, callback in pairs(callbacks) do
+        callback(logLevel, message)
     end
 end
 
 return {
     ---Register a callback function accepting a log message ( look at the logsink function above )
     ---@param callback function
-    register = function(callback)
+    register = function (callback)
         table.insert(callbacks, callback)
     end
 }

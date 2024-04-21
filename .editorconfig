@@ -1,5 +1,7 @@
 
 # see https://github.com/CppCXY/EmmyLuaCodeStyle
+# If you change this remember to apply the same changes
+# to the .luarc.json or it won't be used during the check_style step
 [*.lua]
 # [basic]
 

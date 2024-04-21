@@ -1,33 +1,31 @@
-local utils = require "dev.commands.command_utils"
-local mm = require "mmbindings"
+local Utilities = require "dev.commands.command_utils"
+local MM = require "mmbindings"
 
-local function become_lich(char_index)
-    char_index = utils.character_or_current(char_index)
-    local info = mm.party.get_character_info(char_index, { "name", "class" })
-    if info.class == mm.ClassType.Lich then
-        return info.name.." is already a Lich!!", false
+local function becomeLich(charIndex)
+    charIndex = Utilities.characterOrCurrent(charIndex)
+    local info = MM.party.get_character_info(charIndex, { "name", "class" })
+    if info.class == MM.ClassType.Lich then
+        return info.name .. " is already a Lich!!", false
     end
 
-    mm.party.set_character_info(char_index, {
-        class = mm.ClassType.Lich
+    MM.party.set_character_info(charIndex, {
+        class = MM.ClassType.Lich
     })
 
-    local lich_jar = {
-        id = mm.ItemType.LichJarFull,
-        holder = tonumber(char_index)
+    local lichJar = {
+        id = MM.ItemType.LichJarFull,
+        holder = tonumber(charIndex)
     }
-    mm.party.add_custom_item_to_inventory(char_index, lich_jar)
-    return info.name.." became a Lich.", true
+    MM.party.add_custom_item_to_inventory(charIndex, lichJar)
+    return info.name .. " became a Lich.", true
 end
 
-local subcommands = {
-    lich = become_lich
+local subCommands = {
+    lich = becomeLich
 }
 
 return {
     name = "class",
     description = "Change and get information about character class",
-    callback = subcommands
+    callback = subCommands
 }
-
-} } -- ADDING RANDOM BRACES TO FORCE AN ERROR FOR LuaLS

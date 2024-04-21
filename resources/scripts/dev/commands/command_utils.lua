@@ -1,52 +1,60 @@
-local mm = require "mmbindings"
+local MM = require "mmbindings"
 
-local command_utilities = {}
+local CommandUtilities = {}
 
----@enum op_type
-command_utilities.OP_TYPE = {
-	set = 1,
-	rem = 2,
-	add = 3
+---@enum opType
+CommandUtilities.opType = {
+    set = 1,
+    rem = 2,
+    add = 3
 }
 
 --- Utility factory-function that generate a new function used as command to update one property/stat for a character
 --- Example that generate a command used to add experience points to a character:
----     change_char_property("xp", ACTION_TYPE.add, true)
+---     changeCharProperty("xp", ACTION_TYPE.add, true)
 ---
 ---@param key string            - field referring to the character_info table ( "xp", "age", "sp", etc... )
----@param op op_type            - the operation to execute on the variable
----@param play_award boolean    - play the award effect after the operation has been executed
----@return function
-command_utilities.change_char_property = function(key, op, play_award, conversion)
-    return function(value, char_index)
+---@param op opType            - the operation to execute on the variable
+---@param playAward boolean     - play the award effect after the operation has been executed
+---@param conversion fun(val:any):any   - function used to convert the input value to another type
+---@return fun(val: string, charIndex: integer): string, boolean
+CommandUtilities.changeCharProperty = function (key, op, playAward, conversion)
+    ---@param value any
+    ---@param charIndex? integer
+    ---@return string, boolean
+    return function (value, charIndex)
         if conversion then
             value = conversion(value)
         end
 
-        char_index = command_utilities.character_or_current(char_index)
+        charIndex = CommandUtilities.characterOrCurrent(charIndex)
 
-        local get = mm.party.get_character_info
-        local set = mm.party.set_character_info
+        local get = MM.party.get_character_info
+        local set = MM.party.set_character_info
         value = value ~= nil and value or 0
-        local info = get(char_index, { key, "name" })
+        local info = get(charIndex, { key, "name" })
+        local characterName = info.name
+        ---@type table<string,any>
         local newData = {}
         local message = ""
-        if op == command_utilities.OP_TYPE.set then
+        if op == CommandUtilities.opType.set then
             newData[key] = value
-            set(char_index, newData)
-            message = "Set "..value.." "..key.." for "..info.name
-        elseif op == command_utilities.OP_TYPE.rem then
+            set(charIndex, newData)
+            message = "Set " .. value .. " " .. key .. " for " .. characterName
+        elseif op == CommandUtilities.opType.rem then
             newData[key] = info[key] - value
-            set(char_index, newData)
-            message = info.name.." lost "..value.." "..key..". Current "..key..": "..get(char_index, { key })[key]
-        elseif op == command_utilities.OP_TYPE.add then
+            set(charIndex, newData)
+            message = characterName .. " lost " .. value .. " " .. key ..
+                ". Current " .. key .. ": " .. tostring(get(charIndex, { key })[key])
+        elseif op == CommandUtilities.opType.add then
             newData[key] = info[key] + value
-            set(char_index, newData)
-            message = info.name.." gained "..value.." "..key..". Current "..key..": "..get(char_index, { key })[key]
+            set(charIndex, newData)
+            message = characterName .. " gained " .. value .. " " ..
+                key .. ". Current " .. key .. ": " .. tostring(get(charIndex, { key })[key])
         end
 
-        if play_award then
-            mm.party.play_character_award_sound(char_index)
+        if playAward then
+            MM.party.play_character_award_sound(charIndex)
         end
         return message, true
     end
@@ -54,18 +62,19 @@ end
 
 --- Utility factory-function that generate a new function used as command to show one property/stat for each member of the party
 --- Example that generate a command that shows the skils points of each character:
----     show_chars_property("sp")
+---     showCharsProperty("sp")
 ---
 ---@param key string field referring to the character_info table
+---@param serializer? fun(value:any):string) function that convert the value to string
 ---@return function
-command_utilities.show_chars_property = function(key, serializer)
-    return function()
-        local count = mm.party.get_party_size()
-        local message = "Party "..key.."\n"
+CommandUtilities.showCharsProperty = function (key, serializer)
+    return function ()
+        local count = MM.party.get_party_size()
+        local message = "Party " .. key .. "\n"
         for i = 1, count do
-            local info = mm.party.get_character_info(i, { key, "name" })
+            local info = MM.party.get_character_info(i, { key, "name" })
             local value = serializer and serializer(info[key]) or info[key]
-            message = message..info.name..": "..value.."\n"
+            message = message .. info.name .. ": " .. value .. "\n"
         end
         return message, true
     end
@@ -73,32 +82,36 @@ end
 
 --- Utility factory-function that generate a new function used as command to update a value retrieved by callbacks
 --- Example of a command that remove golds from the party:
----     change_property(mm.party.get_gold, mm.party.set_gold, ACTION_TYPE.rem, "gold")
+---     changeProperty(MM.party.get_gold, MM.party.set_gold, ACTION_TYPE.rem, "gold")
 ---
 ---@param get function      - getter function used to retrieve the current value
 ---@param set function      - setter function used to update the current value
----@param op op_type        - the operation to execute on the variable
----@param prop_name string  - name of the property. Used only for prompting, it's not used to retrieve the value
+---@param op opType        - the operation to execute on the variable
+---@param propName string  - name of the property. Used only for prompting, it's not used to retrieve the value
+---@param conversion? fun(val:any):any
+---@param serializer? fun(val:any):string
 ---@return function
-command_utilities.change_property = function(get, set, op, prop_name, conversion, serializer)
-    return function(value)
+CommandUtilities.changeProperty = function (get, set, op, propName, conversion, serializer)
+    return function (value)
         if conversion then
             value = conversion(value)
         end
 
         local message = ""
-        if op == command_utilities.OP_TYPE.set then
+        if op == CommandUtilities.opType.set then
             set(value)
             local serializedValue = serializer and serializer(value) or value;
-            message = "Set "..serializedValue.." "..prop_name
-        elseif op == command_utilities.OP_TYPE.add then
+            message = "Set " .. serializedValue .. " " .. propName
+        elseif op == CommandUtilities.opType.add then
+            ---@type integer
             local total = get() + value
             set(total)
-            message = "Added "..value.." "..prop_name..". Current: "..get()
-        elseif op == command_utilities.OP_TYPE.rem then
+            message = "Added " .. tostring(value) .. " " .. propName .. ". Current: " .. tostring(get())
+        elseif op == CommandUtilities.opType.rem then
+            ---@type integer
             local total = get() - value
             set(total)
-            message = "Removed "..value.." "..prop_name..". Current: "..get()
+            message = "Removed " .. tostring(value) .. " " .. propName .. ". Current: " .. tostring(get())
         end
         return message, true
     end
@@ -106,25 +119,26 @@ end
 
 --- Utility factory-function that generate a new function used as command to show a value
 --- Example of a function generating a command showing the current alignment:
----     show_property(mm.party.get_alignment, "alignment")
+---     showProperty(MM.party.get_alignment, "alignment")
 ---@param get function      getter function used to retrieve the current value
----@param prop_name string  name of the property. Used only for prompting, it's not used to retrieve the value
+---@param propName string  name of the property. Used only for prompting, it's not used to retrieve the value
 ---@return function
-command_utilities.show_property = function(get, prop_name, serializer)
-    return function()
+---@param serializer? fun(val:any):string
+CommandUtilities.showProperty = function (get, propName, serializer)
+    return function ()
         local value = serializer and serializer(get()) or get()
-        return "Current "..prop_name..": "..value, true
+        return "Current " .. propName .. ": " .. value, true
     end
 end
 
 --- Provide a valid character index. If the input is nil it returns the active character in the party
----@param char_index integer
+---@param charIndex? integer
 ---@return integer
-command_utilities.character_or_current = function(char_index)
-    if char_index == nil then
-        return mm.party.get_active_character()
+CommandUtilities.characterOrCurrent = function (charIndex)
+    if charIndex == nil then
+        return MM.party.get_active_character()
     end
-    return char_index
+    return charIndex
 end
 
-return command_utilities
+return CommandUtilities

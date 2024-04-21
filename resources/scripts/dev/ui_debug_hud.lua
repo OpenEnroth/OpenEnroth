@@ -2,36 +2,39 @@
 -- This is a script tight to the GUIWindow_DebugMenu flag
 -- It takes care of showing the debug tools. Currently the only debug tool in use is the console
 
-local console = require "console"
+local Console = require "console"
 
-local is_window_hovered = false
-local base_color = { 32, 32, 32, 255 }
-local message_bkg_color = { 16, 16, 16, 255 }
+local isWindowHovered = false
+local baseColor = { 32, 32, 32, 255 }
+local messageBkgColor = { 16, 16, 16, 255 }
 
-local function get_color_alpha(col)
-    local a = is_window_hovered and 200 or 64
+local function getColorAlpha(col)
+    local a = isWindowHovered and 200 or 64
     return { col[1], col[2], col[3], a }
 end
 
-local function history_prev()
-    if is_window_hovered then
-        console:navigate_history(-1)
+local function historyPrev()
+    if isWindowHovered then
+        Console:navigateHistory(-1)
     end
 end
 
-local function history_next()
-    if is_window_hovered then
-        console:navigate_history(1)
+local function historyNext()
+    if isWindowHovered then
+        Console:navigateHistory(1)
     end
 end
 
+---@param ctx NuklearContext
+---@return table
+---@diagnostic disable-next-line: name-style-check
 function ui_init(ctx)
-    console.scroll:set(0, 0)
-    if #console.messages == 0 then
-        console:add_message("Type \"help\" on the command line to get a list of all the commands", {255,255,255,128})
+    Console.scroll:set(0, 0)
+    if #Console.messages == 0 then
+        Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
     end
-    hotkeys.set_hotkey(ctx, "UP", false, false, false, history_prev)
-    hotkeys.set_hotkey(ctx, "DOWN", false, false, false, history_next)
+    hotkeys.set_hotkey(ctx, "UP", false, false, false, historyPrev)
+    hotkeys.set_hotkey(ctx, "DOWN", false, false, false, historyNext)
     return {
         mode = NUKLEAR_MODE_SHARED,
         draw = ui_draw,
@@ -39,33 +42,34 @@ function ui_init(ctx)
     }
 end
 
-local function draw_footer(ctx)
-    ui.nk_style_push(ctx, "button", "normal", get_color_alpha(base_color))
-    ui.nk_style_push(ctx, "edit", "normal", get_color_alpha(base_color))
-    ui.nk_style_push(ctx, "edit", "text_normal", console:get_text_color())
-    ui.nk_style_push(ctx, "edit", "text_active", console:get_text_color())
-    ui.nk_style_push(ctx, "edit", "text_hover", console:get_text_color())
+---@param ctx NuklearContext
+local function drawFooter(ctx)
+    ui.nk_style_push(ctx, "button", "normal", getColorAlpha(baseColor))
+    ui.nk_style_push(ctx, "edit", "normal", getColorAlpha(baseColor))
+    ui.nk_style_push(ctx, "edit", "text_normal", Console:getTextColor())
+    ui.nk_style_push(ctx, "edit", "text_active", Console:getTextColor())
+    ui.nk_style_push(ctx, "edit", "text_hover", Console:getTextColor())
 
     ui.nk_layout_row_begin(ctx, "dynamic", 0, 3)
     ui.nk_layout_row_push(ctx, 0.05);
-    if ui.nk_button_label(ctx, console.is_expanded and "<" or ">") then
-        console.is_expanded = not console.is_expanded
+    if ui.nk_button_label(ctx, Console.isExpanded and "<" or ">") then
+        Console.isExpanded = not Console.isExpanded
     end
 
     ui.nk_layout_row_push(ctx, 0.80);
-    local text, state = ui.nk_edit_string(ctx, {"commit_on_enter"}, console:get_text())
-    
-    console:update_text(text, state)
+    local text, state = ui.nk_edit_string(ctx, { "commit_on_enter" }, Console:getText())
+
+    Console:updateText(text, state)
 
     ui.nk_layout_row_push(ctx, 0.15);
     if ui.nk_button_label(ctx, "Send") then
-        if not console.edit_tb.show_placeholder then
-            console:execute()
+        if not Console.editTB.showPlaceholder then
+            Console:send()
         end
     end
 
     ui.nk_layout_row_end(ctx)
-    
+
     ui.nk_style_pop(ctx, "button", "normal")
     ui.nk_style_pop(ctx, "edit", "normal")
     ui.nk_style_pop(ctx, "edit", "text_normal")
@@ -73,27 +77,30 @@ local function draw_footer(ctx)
     ui.nk_style_pop(ctx, "edit", "text_hover")
 end
 
-local function draw_console(ctx)
-    local main_win_w, main_win_h = window.dimensions(ctx)
-    console:update_window_size(is_window_hovered, main_win_w, main_win_h)
-    ui.nk_window_set_bounds(ctx, "Debug Console", console.rect)
-    
-    ui.nk_style_push(ctx, "window", "fixed_background", get_color_alpha(message_bkg_color))
-    if ui.nk_begin(ctx, "Debug Console", console.rect, {"movable", "scalable"}) then
-        is_window_hovered = ui.nk_window_is_hovered(ctx)
+---
+---@param ctx NuklearContext
+local function drawConsole(ctx)
+    local mainWinW, mainWinH = window.dimensions(ctx)
+    Console:updateWindowSize(isWindowHovered, mainWinW, mainWinH)
+    ui.nk_window_set_bounds(ctx, "Debug Console", Console.rect)
 
-        if is_window_hovered then
-            ui.nk_layout_row_dynamic(ctx, console.rect.h - console.footer_height - 28, 1)
+    ui.nk_style_push(ctx, "window", "fixed_background", getColorAlpha(messageBkgColor))
+    if ui.nk_begin(ctx, "Debug Console", Console.rect, { "movable", "scalable" }) then
+        isWindowHovered = ui.nk_window_is_hovered(ctx)
+
+        if isWindowHovered then
+            ui.nk_layout_row_dynamic(ctx, Console.rect.h - Console.footerHeight - 28, 1)
             ui.nk_style_push(ctx, "window", "min_row_height_padding", 1)
-            if ui.nk_group_scrolled_begin(ctx, console.scroll, "Messages", {"scrollbar"}) then
+            if ui.nk_group_scrolled_begin(ctx, Console.scroll, "Messages", { "scrollbar" }) then
                 ui.nk_layout_row_dynamic(ctx, 0, 1)
-                for i=1, #console.messages do
-                    local message = console.messages[i]
-                    if message.source ~= "log" or console.log_enabled then
+                for i = 1, #Console.messages do
+                    local message = Console.messages[i]
+                    if message.source ~= "log" or Console.logEnabled then
                         -- we must split the message every N characters because the wrap features on Nuklear does not work properly
-                        local n = console.separate_every_n_characters
-                        for i = 1, #message.text, n do
-                            local split = string.sub(message.text, i, i + n - 1)
+                        local n = Console.separateEveryNCharacters
+                        for j = 1, #message.text, n do
+                            ---@cast n integer
+                            local split = string.sub(message.text, j, j + n - 1)
                             ui.nk_label_colored(ctx, split, message.col)
                         end
                     end
@@ -101,12 +108,12 @@ local function draw_console(ctx)
                 ui.nk_group_scrolled_end(ctx)
             end
             ui.nk_style_pop(ctx, "window", "min_row_height_padding")
-            
+
             ui.nk_layout_row_dynamic(ctx, 20, 1)
-            console.log_enabled = ui.nk_checkbox_label(ctx, "Show Log", console.log_enabled)
+            Console.logEnabled = ui.nk_checkbox_label(ctx, "Show Log", Console.logEnabled)
         end
-        
-        draw_footer(ctx)
+
+        drawFooter(ctx)
     end
     ui.nk_end(ctx)
     ui.nk_style_pop(ctx, "window", "fixed_background")
@@ -116,15 +123,22 @@ local function draw_console(ctx)
     end
 end
 
+---
+---@param ctx NuklearContext
+---@param stage NuklearStageType
+---@diagnostic disable-next-line: name-style-check
 function ui_draw(ctx, stage)
     if stage == NUKLEAR_STAGE_PRE then
         local show = dev.config_get("debug", "show_console")
         if show == "true" then
-            draw_console(ctx)
+            drawConsole(ctx)
         end
     end
 end
 
+---
+---@param ctx NuklearContext
+---@diagnostic disable-next-line: name-style-check
 function ui_release(ctx)
     hotkeys.unset_hotkeys(ctx)
 end
