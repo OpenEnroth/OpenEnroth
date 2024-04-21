@@ -9,7 +9,7 @@ set(SCRIPTS_SOURCES
     dev/ui_debug_hud.lua
     dev/commands/alignment_command.lua
     dev/commands/class_command.lua
-    dev/commands/clear_console_command.lua
+    dev/commands/cls_command.lua
     dev/commands/command_manager.lua
     dev/commands/command_utils.lua
     dev/commands/condition_command.lua
