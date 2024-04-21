@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;917eb7c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;732bf02</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classGameLuaBindings-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GameLuaBindings Class Reference</div></div>
@@ -88,10 +89,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab4a632bf0bef5518a622527de9f6457f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#ab4a632bf0bef5518a622527de9f6457f">init</a> (lua_State *<a class="el" href="Nuklear_8cpp.html#ab44819023af4734d6f559d7f4e3d18bb">lua</a>)</td></tr>
 <tr class="separator:ab4a632bf0bef5518a622527de9f6457f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a3ad90e0b89709a212d700ead9c250269"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a3ad90e0b89709a212d700ead9c250269">_registerAudioBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a3ad90e0b89709a212d700ead9c250269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03dece368092ac80549f4ac07c5c5b63"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a03dece368092ac80549f4ac07c5c5b63">_registerRenderBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a03dece368092ac80549f4ac07c5c5b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7066f8583ad416813d9b3648420bc5a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a7066f8583ad416813d9b3648420bc5a7">_registerGameBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a7066f8583ad416813d9b3648420bc5a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5de7ede7c764bea9293aff792897983"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#aa5de7ede7c764bea9293aff792897983">_registerPartyBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:aa5de7ede7c764bea9293aff792897983"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a937018a7aa66ed6d714b40f58f744bfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a937018a7aa66ed6d714b40f58f744bfd">_registerItemBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a937018a7aa66ed6d714b40f58f744bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08dafbaf7b632052264255127a1a7782"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a08dafbaf7b632052264255127a1a7782">_registerSerializationBindings</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a08dafbaf7b632052264255127a1a7782"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66d6be8bde4ccba07604a554a6c20161"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a66d6be8bde4ccba07604a554a6c20161">_registerEnums</a> (sol::state_view &amp;luaState, sol::table &amp;table)</td></tr>
+<tr class="separator:a66d6be8bde4ccba07604a554a6c20161"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a1175e534f00db21b0839a81bd863c820"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; sol::state_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#a1175e534f00db21b0839a81bd863c820">_luaState</a></td></tr>
 <tr class="separator:a1175e534f00db21b0839a81bd863c820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd591a3d7d5125ceece8a23c3d42db74"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLuaItemQueryTable.html">LuaItemQueryTable</a>&lt; <a class="el" href="classCharacter.html">Character</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameLuaBindings.html#acd591a3d7d5125ceece8a23c3d42db74">_characterInfoQueryTable</a></td></tr>
+<tr class="separator:acd591a3d7d5125ceece8a23c3d42db74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6f332c8fd8b8759b8098d1c8fdaf77da" name="a6f332c8fd8b8759b8098d1c8fdaf77da"></a>
@@ -145,6 +165,258 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3ad90e0b89709a212d700ead9c250269" name="a3ad90e0b89709a212d700ead9c250269"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ad90e0b89709a212d700ead9c250269">&#9670;&#160;</a></span>_registerAudioBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerAudioBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66d6be8bde4ccba07604a554a6c20161" name="a66d6be8bde4ccba07604a554a6c20161"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66d6be8bde4ccba07604a554a6c20161">&#9670;&#160;</a></span>_registerEnums()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerEnums </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7066f8583ad416813d9b3648420bc5a7" name="a7066f8583ad416813d9b3648420bc5a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7066f8583ad416813d9b3648420bc5a7">&#9670;&#160;</a></span>_registerGameBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerGameBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a937018a7aa66ed6d714b40f58f744bfd" name="a937018a7aa66ed6d714b40f58f744bfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a937018a7aa66ed6d714b40f58f744bfd">&#9670;&#160;</a></span>_registerItemBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerItemBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa5de7ede7c764bea9293aff792897983" name="aa5de7ede7c764bea9293aff792897983"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5de7ede7c764bea9293aff792897983">&#9670;&#160;</a></span>_registerPartyBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerPartyBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a03dece368092ac80549f4ac07c5c5b63" name="a03dece368092ac80549f4ac07c5c5b63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03dece368092ac80549f4ac07c5c5b63">&#9670;&#160;</a></span>_registerRenderBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerRenderBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a08dafbaf7b632052264255127a1a7782" name="a08dafbaf7b632052264255127a1a7782"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08dafbaf7b632052264255127a1a7782">&#9670;&#160;</a></span>_registerSerializationBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameLuaBindings::_registerSerializationBindings </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>luaState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab4a632bf0bef5518a622527de9f6457f" name="ab4a632bf0bef5518a622527de9f6457f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab4a632bf0bef5518a622527de9f6457f">&#9670;&#160;</a></span>init()</h2>
 
@@ -164,6 +436,28 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="acd591a3d7d5125ceece8a23c3d42db74" name="acd591a3d7d5125ceece8a23c3d42db74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd591a3d7d5125ceece8a23c3d42db74">&#9670;&#160;</a></span>_characterInfoQueryTable</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLuaItemQueryTable.html">LuaItemQueryTable</a>&lt;<a class="el" href="classCharacter.html">Character</a>&gt; &gt; GameLuaBindings::_characterInfoQueryTable</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1175e534f00db21b0839a81bd863c820" name="a1175e534f00db21b0839a81bd863c820"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1175e534f00db21b0839a81bd863c820">&#9670;&#160;</a></span>_luaState</h2>
 

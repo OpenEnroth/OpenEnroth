@@ -41,5 +41,7 @@ var searchData=
   ['logstate_38',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
   ['longcivilduration_39',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
   ['lua_5fnk_5fproperty_40',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
-  ['lua_5fnk_5fstyle_41',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
+  ['lua_5fnk_5fstyle_41',['lua_nk_style',['../structlua__nk__style.html',1,'']]],
+  ['luaitemquerytable_42',['LuaItemQueryTable',['../classLuaItemQueryTable.html',1,'']]],
+  ['luaitemquerytable_3c_20character_20_3e_43',['LuaItemQueryTable&lt; Character &gt;',['../classLuaItemQueryTable.html',1,'']]]
 ];

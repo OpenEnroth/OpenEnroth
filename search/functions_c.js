@@ -62,12 +62,12 @@ var searchData=
   ['logcategory_59',['logCategory',['../classSdlPlatformSharedState.html#abecbd76adcba46a0bb61e8396b9268df',1,'SdlPlatformSharedState']]],
   ['logcategory_60',['LogCategory',['../classLogCategory.html#a59f9431e43d5376213779ed82608a066',1,'LogCategory::LogCategory(LogCategory &amp;&amp;)=default'],['../classLogCategory.html#a31395451d3d84a9d7ee340945e3eac67',1,'LogCategory::LogCategory(const LogCategory &amp;)=delete'],['../classLogCategory.html#ace6ad48daee8ffd0d3d18d0c05e06020',1,'LogCategory::LogCategory(std::string_view name, LogSource *source=nullptr)']]],
   ['logenginebuildinfo_61',['LogEngineBuildInfo',['../classEngine.html#a3c0041a61788c61d0a1a74ec908793bb',1,'Engine']]],
-  ['logger_62',['Logger',['../classLogger.html#a338d3ab3882f8c40e3430d1e7ff0b9f3',1,'Logger']]],
-  ['logger_63',['logger',['../classSdlPlatformSharedState.html#a8e96ed7e33ae07f73712541956b8de77',1,'SdlPlatformSharedState']]],
+  ['logger_62',['logger',['../classSdlPlatformSharedState.html#a8e96ed7e33ae07f73712541956b8de77',1,'SdlPlatformSharedState']]],
+  ['logger_63',['Logger',['../classLogger.html#a338d3ab3882f8c40e3430d1e7ff0b9f3',1,'Logger']]],
   ['logsdlerror_64',['logSdlError',['../classSdlPlatformSharedState.html#a2b1d8d645a2204e8826f787394ad62f7',1,'SdlPlatformSharedState']]],
   ['logv_65',['logV',['../classLogger.html#ad69ae0b96811ae6abe4530ccc78c7e0b',1,'Logger']]],
-  ['loop_66',['loop',['../classGUIWindow__MainMenu.html#a986b093bc51e30f309f2b4e77a844f44',1,'GUIWindow_MainMenu::loop()'],['../classGame.html#a9516786804da7367b712c77dc98a7278',1,'Game::loop()']]],
-  ['loop_67',['Loop',['../structArcomageGame.html#af5f4ef42b2a0d72d14621a54895afb58',1,'ArcomageGame']]],
+  ['loop_66',['Loop',['../structArcomageGame.html#af5f4ef42b2a0d72d14621a54895afb58',1,'ArcomageGame']]],
+  ['loop_67',['loop',['../classGUIWindow__MainMenu.html#a986b093bc51e30f309f2b4e77a844f44',1,'GUIWindow_MainMenu::loop()'],['../classGame.html#a9516786804da7367b712c77dc98a7278',1,'Game::loop()']]],
   ['lootactor_68',['LootActor',['../classActor.html#a5c96e635141f504057794facc929c5e1',1,'Actor']]],
   ['ls_69',['ls',['../classVidReader.html#a2341f262409fe224791c2b10c9157c24',1,'VidReader::ls()'],['../classSndReader.html#ac695138114e6d8f62f144a35cd3e9d46',1,'SndReader::ls()'],['../classLodReader.html#a80818bb3647a0dd4960bbab6c953b3d5',1,'LodReader::ls()']]],
   ['lua_5fcheck_5fargs_70',['lua_check_args',['../NuklearUtils_8cpp.html#a15d0d0ab42d5194969d5ae5e6817bf3e',1,'lua_check_args(lua_State *L, bool condition):&#160;NuklearUtils.cpp'],['../NuklearUtils_8h.html#a15d0d0ab42d5194969d5ae5e6817bf3e',1,'lua_check_args(lua_State *L, bool condition):&#160;NuklearUtils.cpp']]],
@@ -205,6 +205,7 @@ var searchData=
   ['lua_5funset_5fhotkeys_202',['lua_unset_hotkeys',['../Nuklear_8cpp.html#ad4c871bbe5e6d787cdced2f12726a489',1,'Nuklear.cpp']]],
   ['lua_5fwindow_5fdimensions_203',['lua_window_dimensions',['../Nuklear_8cpp.html#a80c74f0879990bc46424f465946bd60f',1,'Nuklear.cpp']]],
   ['luainit_204',['LuaInit',['../classNuklear.html#a612bee9338ef29189bc50634a21527e1',1,'Nuklear']]],
-  ['lualoadtemplate_205',['LuaLoadTemplate',['../classNuklear.html#a28928dd3835d12765eb4d2b7d4ac7549',1,'Nuklear']]],
-  ['luarelease_206',['LuaRelease',['../classNuklear.html#a7346ec3270831cbf79093d3867a99bbd',1,'Nuklear']]]
+  ['luaitemquerytable_205',['LuaItemQueryTable',['../classLuaItemQueryTable.html#adb80da50a87e675257079e9e8277be98',1,'LuaItemQueryTable']]],
+  ['lualoadtemplate_206',['LuaLoadTemplate',['../classNuklear.html#a28928dd3835d12765eb4d2b7d4ac7549',1,'Nuklear']]],
+  ['luarelease_207',['LuaRelease',['../classNuklear.html#a7346ec3270831cbf79093d3867a99bbd',1,'Nuklear']]]
 ];

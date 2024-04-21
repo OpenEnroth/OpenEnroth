@@ -45,5 +45,6 @@ var searchData=
   ['logger_2eh_42',['Logger.h',['../Logger_8h.html',1,'']]],
   ['logsink_2ecpp_43',['LogSink.cpp',['../LogSink_8cpp.html',1,'']]],
   ['logsink_2eh_44',['LogSink.h',['../LogSink_8h.html',1,'']]],
-  ['logsource_2eh_45',['LogSource.h',['../LogSource_8h.html',1,'']]]
+  ['logsource_2eh_45',['LogSource.h',['../LogSource_8h.html',1,'']]],
+  ['luaitemquerytable_2eh_46',['LuaItemQueryTable.h',['../LuaItemQueryTable_8h.html',1,'']]]
 ];
