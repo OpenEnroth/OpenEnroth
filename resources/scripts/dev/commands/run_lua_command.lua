@@ -7,8 +7,8 @@ local function runLua(code)
     if code and type(code) == "string" then
         local codeToRun, error = load(code, nil, nil, scopedEnvironment)
         if codeToRun then
-            ---@type any
-            local result = codeToRun()
+            ---@type boolean, any
+            local _, result = pcall(codeToRun)
             return result and result or "", true
         else
             return "Invalid code: " .. error, true
@@ -23,5 +23,5 @@ return {
     description = "Run custom lua code.",
     details = "",
     callback = runLua,
-    custom_parser = function (paramsString) return { paramsString } end
+    customParser = function (paramsString) return { paramsString } end
 }

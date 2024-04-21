@@ -19,7 +19,7 @@ local editTextColor = { 255, 255, 255, 255 }
 
 ---@class Console The console table contains the state of the console. From position to the number of messages
 ---@field messages table<integer, ConsoleMessage> List of all the messages displayed in the console
----@field max_messages_count integer Maximum number of messages the console can show. After that the oldest messages are removed
+---@field maxMessagesCount integer Maximum number of messages the console can show. After that the oldest messages are removed
 ---@field history table List of all the messages sent by the user
 ---@field historyIndex integer current message being shown ( used to go back/forward when the user want to execute send messages )
 ---@field separateEveryNCharacters number --hack for a lacking text wrapping support in nuklear
@@ -86,7 +86,7 @@ Console.addMessage = function (console, text, color, source)
         table.insert(console.messages, { text = s, col = color, source = source })
     end
 
-    local count = #console.messages - console.max_messages_count
+    local count = #console.messages - console.maxMessagesCount
     if count > 0 then
         for _ = 1, count do
             table.remove(console.messages, 1)
@@ -133,12 +133,16 @@ Console.navigateHistory = function (console, step)
     end
 end
 
+---@param console Console
+---@return string
 Console.getText = function (console)
-    return console.edit_tb.text
+    return console.editTB.text
 end
 
+---@param console Console
+---@return table
 Console.getTextColor = function (console)
-    return console.edit_tb.text_color
+    return console.editTB.textColor
 end
 
 --- Update the command line text content
