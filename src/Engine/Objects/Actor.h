@@ -31,7 +31,7 @@ struct stru319 {
 extern stru319 stru_50C198;  // idb
 
 struct AIDirection {
-    Vec3i vDirection{};
+    Vec3f vDirection{};
     unsigned int uDistance = 0;
     unsigned int uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
@@ -211,7 +211,7 @@ class Actor {
     uint16_t radius = 32;
     uint16_t height = 128;
     uint16_t moveSpeed = 200;
-    Vec3i pos;
+    Vec3f pos;
     Vec3i velocity;
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;

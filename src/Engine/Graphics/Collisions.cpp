@@ -16,6 +16,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/Random/Random.h"
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
@@ -531,7 +532,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
     if (override_radius != 0)
         radius = override_radius;
 
-    return CollideWithCylinder(actor->pos.toFloat(), radius, actor->height, Pid(OBJECT_Actor, actor_idx), true);
+    return CollideWithCylinder(actor->pos, radius, actor->height, Pid(OBJECT_Actor, actor_idx), true);
 }
 
 void _46ED8A_collide_against_sprite_objects(Pid pid) {
@@ -585,8 +586,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
     collision_state.radius_lo = actor.radius;
 
     for (int attempt = 0; attempt < 100; attempt++) {
-        collision_state.position_lo = actor.pos.toFloat() + Vec3f(0, 0, actor.radius + 1);
-        collision_state.position_hi = actor.pos.toFloat() + Vec3f(0, 0, actor.height - actor.radius - 1);
+        collision_state.position_lo = actor.pos + Vec3f(0, 0, actor.radius + 1);
+        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actor.radius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.velocity.toFloat();
         collision_state.uSectorID = actor.sectorId;
@@ -607,7 +608,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
         bool isInCrowd = actorCollisions > 1;
 
-        Vec3f newPos = actor.pos.toFloat() + collision_state.adjusted_move_distance * collision_state.direction;
+        Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         int newFaceID = -1;
         int newFloorZ = GetIndoorFloorZ(newPos.toInt(), &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
@@ -629,7 +630,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         // Prevent actors from falling off ledges.
         if (actor.currentActionAnimation == ANIM_Walking && newFloorZ < actor.pos.z - 100 && !isAboveGround && !isFlying) {
-            if (actor.pos.x & 1) { // TODO(captainurist): replace with Random?
+            if (grng->randomBool()) {
                 actor.yawAngle += 100;
             } else {
                 actor.yawAngle -= 100;
@@ -637,7 +638,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             break; // We'll try again in the next frame.
         }
 
-        actor.pos = newPos.toInt();
+        actor.pos = newPos;
         actor.sectorId = collision_state.uSectorID;
         if (fuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
             break; // No collisions happened.
@@ -697,9 +698,9 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                 actor.velocity += (velocityDotNormal * face->facePlane.normal).toInt();
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                    float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos.toFloat());
+                    float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                     if (overshoot > 0)
-                        actor.pos += (overshoot * pIndoor->pFaces[id].facePlane.normal).toInt();
+                        actor.pos += overshoot * pIndoor->pFaces[id].facePlane.normal;
                     actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
                 }
             }
@@ -723,8 +724,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     collision_state.radius_lo = actorRadius;
 
     for (int attempt = 0; attempt < 100; ++attempt) {
-        collision_state.position_lo = actor.pos.toFloat() + Vec3f(0, 0, actorRadius + 1);
-        collision_state.position_hi = actor.pos.toFloat() + Vec3f(0, 0, actor.height - actorRadius - 1);
+        collision_state.position_lo = actor.pos + Vec3f(0, 0, actorRadius + 1);
+        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.velocity.toFloat();
         collision_state.uSectorID = 0;
@@ -745,7 +746,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         //if (collision_state.adjusted_move_distance < collision_state.move_distance)
         //    Slope_High = collision_state.adjusted_move_distance * collision_state.direction.z;
 
-        Vec3f newPos = actor.pos.toFloat() + collision_state.adjusted_move_distance * collision_state.direction;
+        Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         bool isOnWater = false;
         int modelPid = 0;
         int newFloorZ = ODM_GetFloorLevel(newPos.toInt(), actor.height, &isOnWater, &modelPid, 0);
@@ -760,7 +761,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             }
         }
 
-        actor.pos = newPos.toInt();
+        actor.pos = newPos;
         if (fuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
             break; // No collision happened.
 
@@ -821,9 +822,9 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
                     actor.velocity += (velocityDotNormal * face->facePlane.normal).toInt();
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
-                        float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos.toFloat());
+                        float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                         if (overshoot > 0)
-                            actor.pos += (overshoot * face->facePlane.normal).toInt();
+                            actor.pos += overshoot * face->facePlane.normal;
                         actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
                     }
                 }

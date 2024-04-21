@@ -788,7 +788,7 @@ void UpdateActors_BLV() {
             continue;
 
         int uFaceID;
-        int floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
+        int floorZ = GetIndoorFloorZ(actor.pos.toInt(), &actor.sectorId, &uFaceID);
 
         if (actor.sectorId == 0 || floorZ <= -30000)
             continue;
