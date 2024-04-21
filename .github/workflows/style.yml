@@ -24,7 +24,7 @@ jobs:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
           
-      - name: Install Homebrew and lua-language-server
+      - name: Install Homebrew, lua-language-server and check style
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.bashrc
@@ -32,12 +32,5 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install build-essential -y
           brew install lua-language-server
-
-      - name: Configure
-        run: |
           cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON
-
-      - name: Check style
-        working-directory: build
-        run: |
           make check_style
