@@ -24,13 +24,12 @@ jobs:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
 
-      - name: Install asdf
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install LuaLS
+      - name: Install Homebrew
         run: |
-          asdf install lua-language-server latest
-          lua-language-server --version
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: Install lua-language-server
+        run: brew install lua-language-server
 
       - name: Configure
         run: |
