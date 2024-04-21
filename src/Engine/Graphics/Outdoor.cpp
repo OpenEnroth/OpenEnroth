@@ -1304,7 +1304,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
             }
             if (!onlist) continue;
         } else {
-            if (!IsCylinderInFrustum(pActors[i].pos.toFloat(), pActors[i].radius)) continue;
+            if (!IsCylinderInFrustum(pActors[i].pos, pActors[i].radius)) continue;
         }
 
         int z = pActors[i].pos.z;
@@ -2320,7 +2320,7 @@ void UpdateActors_ODM() {
         bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
+        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos.toInt(), pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
         bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));
