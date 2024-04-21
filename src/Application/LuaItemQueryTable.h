@@ -7,7 +7,7 @@
 #include <vector>
 #include <sol/sol.hpp>
 
-typedef std::optional<std::vector<std::string_view>> QueryTable;
+typedef std::vector<std::string_view> QueryTable;
 
 // A helper class used to fill a lua table with all the requested information
 template<typename ItemType>
@@ -27,12 +27,12 @@ class LuaItemQueryTable {
         a string representing the property to extract. */
     sol::object createTable(const ItemType &item, const QueryTable &queryTable) {
         sol::table table = _luaState.create_table();
-        if (!queryTable) {
+        if (queryTable.empty()) {
             for (auto &&[key, query] : _mapping) {
                 table[key] = query(item);
             }
         } else {
-            for (auto &&key : *queryTable) {
+            for (auto &&key : queryTable) {
                 if (auto itr = _mapping.find(key.data()); itr != _mapping.end()) {
                     table[key] = itr->second(item);
                 }
