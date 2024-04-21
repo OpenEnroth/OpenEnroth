@@ -15,7 +15,7 @@ local EDIT_TEXT_COLOR = { 255, 255, 255, 255 }
 -- The console table contains the state of the console. From position to the number of messages
 local console = {
     rect = {
-        x = 8, 
+        x = 8,
         y = 8,
         w = 600,
         h = 480
@@ -149,6 +149,10 @@ console.update_window_size = function(console, is_window_hovered, w, h)
     end
 
     console.separate_every_n_characters = (console_width - 8) / console.character_width
+end
+
+console.clear = function(console)
+    console.messages = {}
 end
 
 local function get_color_by_log_level(level)

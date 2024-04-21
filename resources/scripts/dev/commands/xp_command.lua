@@ -6,8 +6,8 @@ local mm = require "mmbindings"
 ---@return string    - the message sent back to the console
 ---@return boolean   - flag that tells if the command has been successful
 local give_party_xp = function(xp)
-    mm.game.give_party_xp(xp)
-    mm.game.play_all_characters_award_sound()
+    mm.party.give_party_xp(xp)
+    mm.party.play_all_characters_award_sound()
     return "Party gained "..xp.." xp", true
 end
 

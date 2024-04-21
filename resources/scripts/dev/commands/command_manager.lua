@@ -1,6 +1,6 @@
 --- Module that takes care of all the commands being parsed and executed
 
-require "utils"
+local utils = require "utils"
 
 local command_list = {}
 
@@ -52,7 +52,7 @@ local command_manager = {
         local callback = command.callback
         local params = {}
         if not command.custom_parser then
-            params = split_string(params_string, "%s")
+            params = utils.split_string(params_string, "%s")
             while type(callback) == "table" do
                 local par = #params > 0 and params[1] or "default"
                 local new_callback = callback[par]

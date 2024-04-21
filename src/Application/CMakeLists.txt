@@ -25,7 +25,8 @@ set(APPLICATION_HEADERS
         GameStarterOptions.h
         GameTraceHandler.h
         GameWindowHandler.h
-        GameIocContainer.h)
+        GameIocContainer.h
+	LuaItemQueryTable.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)
