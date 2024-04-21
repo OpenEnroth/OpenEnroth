@@ -25,7 +25,7 @@ jobs:
           ref: '${{ inputs.myCommit }}'
 
       - name: Install asdf
-        uses: asdf-vm/actions/install@v3
+        uses: asdf-vm/actions/setup@v3
 
       - name: Install LuaLS
         run: |
