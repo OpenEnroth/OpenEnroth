@@ -9,15 +9,22 @@
 ---@type function[]
 local callbacks = {}
 
---- The logsink is a global function called from c++ LogSink whenever a log message is created
+local isLogging = false
+
+--- The logSink is a global function called from c++ LogSink whenever a log message is created
 --- If you change the variable name be sure to do the same in c++!!!
 ---@param logLevel string
 ---@param message string
----@diagnostic disable-next-line: spell-check
-function logsink(logLevel, message)
+function logSink(logLevel, message)
+    if isLogging then
+        return
+    end
+
+    isLogging = true
     for _, callback in pairs(callbacks) do
         callback(logLevel, message)
     end
+    isLogging = false
 end
 
 return {

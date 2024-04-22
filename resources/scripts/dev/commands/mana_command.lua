@@ -2,10 +2,10 @@ local Utilities = require "dev.commands.command_utils"
 local MM = require "mmbindings"
 
 local function showCharsMana()
-    local count = MM.party.get_party_size()
+    local count = MM.party.getPartySize()
     local message = ""
     for i = 1, count do
-        local info = MM.party.get_character_info(i, { "name", "mana", "max_mana" })
+        local info = MM.party.getCharacterInfo(i, { "name", "mana", "max_mana" })
         message = message .. info.name .. ": " .. info.mana .. "/" .. info.max_mana .. "\n"
     end
     return message, true

@@ -3776,8 +3776,8 @@ bool Nuklear::LuaInit() {
     lua_setglobal(lua, "window");
 
     static const luaL_Reg dev[] = {
-        { "config_set", lua_dev_config_set },
-        { "config_get", lua_dev_config_get },
+        { "setConfig", lua_dev_config_set },
+        { "getConfig", lua_dev_config_get },
         { NULL, NULL }
     };
     luaL_newlib(lua, dev);
@@ -3799,9 +3799,9 @@ bool Nuklear::LuaInit() {
     lua_pop(lua, -1);
 
     static const luaL_Reg hotkeys[] = {
-        { "set_hotkey", lua_set_hotkey },
-        { "unset_hotkey", lua_unset_hotkey },
-        { "unset_hotkeys", lua_unset_hotkeys },
+        { "setHotkey", lua_set_hotkey },
+        { "unsetHotkey", lua_unset_hotkey },
+        { "unsetHotkeys", lua_unset_hotkeys },
         { NULL, NULL }
     };
     luaL_newlib(lua, hotkeys);

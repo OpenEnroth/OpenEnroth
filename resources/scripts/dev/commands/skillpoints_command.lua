@@ -3,7 +3,7 @@ local MM = require "mmbindings"
 
 local function addSpParty(skillPoints)
     local addSpToChar = Utilities.changeCharProperty("sp", Utilities.opType.add, true, tonumber)
-    local count = MM.party.get_party_size()
+    local count = MM.party.getPartySize()
     local message = ""
     local allCallSucceeded = true
     for i = 1, count do

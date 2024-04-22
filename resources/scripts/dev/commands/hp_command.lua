@@ -2,10 +2,10 @@ local Utilities = require "dev.commands.command_utils"
 local MM = require "mmbindings"
 
 local function showCharsHp()
-    local count = MM.party.get_party_size()
+    local count = MM.party.getPartySize()
     local message = ""
     for i = 1, count do
-        local info = MM.party.get_character_info(i, { "name", "hp", "max_hp" })
+        local info = MM.party.getCharacterInfo(i, { "name", "hp", "max_hp" })
         message = message .. info.name .. ": " .. info.hp .. "/" .. info.max_hp .. "\n"
     end
     return message, true
@@ -14,9 +14,9 @@ end
 local function fullHeal(charIndex)
     charIndex = Utilities.characterOrCurrent(charIndex)
 
-    local info = MM.party.get_character_info(charIndex, { "name", "max_hp", "max_mana" })
-    MM.party.clear_condition(charIndex)
-    MM.party.set_character_info(charIndex, {
+    local info = MM.party.getCharacterInfo(charIndex, { "name", "max_hp", "max_mana" })
+    MM.party.clearCondition(charIndex)
+    MM.party.setCharacterInfo(charIndex, {
         hp = info.max_hp,
         mana = info.max_mana
     })

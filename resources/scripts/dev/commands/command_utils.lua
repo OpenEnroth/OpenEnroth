@@ -12,9 +12,9 @@ CommandUtilities.opType = {
 
 --- Utility factory-function that generate a new function used as command to update one property/stat for a character
 --- Example that generate a command used to add experience points to a character:
----     changeCharProperty("xp", ACTION_TYPE.add, true)
+---     changeCharProperty("xp", opType.add, true)
 ---
----@param key string            - field referring to the character_info table ( "xp", "age", "sp", etc... )
+---@param key string            - field referring to the CharacterInfo table ( "xp", "age", "sp", etc... )
 ---@param op opType            - the operation to execute on the variable
 ---@param playAward boolean     - play the award effect after the operation has been executed
 ---@param conversion fun(val:any):any   - function used to convert the input value to another type
@@ -30,8 +30,8 @@ CommandUtilities.changeCharProperty = function (key, op, playAward, conversion)
 
         charIndex = CommandUtilities.characterOrCurrent(charIndex)
 
-        local get = MM.party.get_character_info
-        local set = MM.party.set_character_info
+        local get = MM.party.getCharacterInfo
+        local set = MM.party.setCharacterInfo
         value = value ~= nil and value or 0
         local info = get(charIndex, { key, "name" })
         local characterName = info.name
@@ -55,7 +55,7 @@ CommandUtilities.changeCharProperty = function (key, op, playAward, conversion)
         end
 
         if playAward then
-            MM.party.play_character_award_sound(charIndex)
+            MM.party.playCharacterAwardSound(charIndex)
         end
         return message, true
     end
@@ -70,10 +70,10 @@ end
 ---@return function
 CommandUtilities.showCharsProperty = function (key, serializer)
     return function ()
-        local count = MM.party.get_party_size()
+        local count = MM.party.getPartySize()
         local message = "Party " .. key .. "\n"
         for i = 1, count do
-            local info = MM.party.get_character_info(i, { key, "name" })
+            local info = MM.party.getCharacterInfo(i, { key, "name" })
             local value = serializer and serializer(info[key]) or info[key]
             message = message .. info.name .. ": " .. value .. "\n"
         end
@@ -83,7 +83,7 @@ end
 
 --- Utility factory-function that generate a new function used as command to update a value retrieved by callbacks
 --- Example of a command that remove golds from the party:
----     changeProperty(MM.party.get_gold, MM.party.set_gold, ACTION_TYPE.rem, "gold")
+---     changeProperty(MM.party.getGold, MM.party.setGold, ACTION_TYPE.rem, "gold")
 ---
 ---@param get function      - getter function used to retrieve the current value
 ---@param set function      - setter function used to update the current value
@@ -120,7 +120,7 @@ end
 
 --- Utility factory-function that generate a new function used as command to show a value
 --- Example of a function generating a command showing the current alignment:
----     showProperty(MM.party.get_alignment, "alignment")
+---     showProperty(MM.party.getAlignment, "alignment")
 ---@param get function      getter function used to retrieve the current value
 ---@param propName string  name of the property. Used only for prompting, it's not used to retrieve the value
 ---@return function
@@ -137,7 +137,7 @@ end
 ---@return integer
 CommandUtilities.characterOrCurrent = function (charIndex)
     if charIndex == nil then
-        return MM.party.get_active_character()
+        return MM.party.getActiveCharacter()
     end
     return charIndex
 end

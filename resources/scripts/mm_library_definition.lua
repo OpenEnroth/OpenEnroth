@@ -8,15 +8,15 @@
 --- Table containing functionalities to change debug info ( like config values )
 --- TODO(Gerark) Change this by providing access through a module
 ---@class dev
----@field config_set fun(section: string, configName: string, value: any)
----@field config_get fun(section: string, configName?: string): any
+---@field setConfig fun(section: string, configName: string, value: any)
+---@field getConfig fun(section: string, configName?: string): any
 dev = {}
 
 --- Table containing functionalities to register to input events
 --- TODO(Gerark) Change this by providing access through a module ( maybe with a better name )
 ---@class hotkeys
----@field set_hotkey fun(ctx: NuklearContext, key: string, modControl: boolean, modShift: boolean, modAlt: boolean, callback:fun())
----@field unset_hotkeys fun(ctx: NuklearContext)
+---@field setHotkey fun(ctx: NuklearContext, key: string, modControl: boolean, modShift: boolean, modAlt: boolean, callback:fun())
+---@field unsetHotkeys fun(ctx: NuklearContext)
 hotkeys = {}
 
 --- @class SkillEntry
@@ -35,26 +35,26 @@ hotkeys = {}
 --- @field condition table<integer, boolean>
 
 --- @class PartyBindings
---- @field get_gold fun(): integer
---- @field set_gold fun(amount: integer)
---- @field get_food fun(): integer
---- @field set_food fun(amount: integer)
---- @field get_alignment fun(): integer
---- @field set_alignment fun(alignment: integer)
---- @field give_party_xp fun(amount: integer)
---- @field get_party_size fun(): integer
---- @field get_active_character fun(): integer
---- @field get_character_info fun(charIndex: integer, query: table): CharacterInfo
---- @field set_character_info fun(charIndex: integer, info: table)
---- @field add_item_to_inventory fun(charIndex: integer, itemId: integer):boolean
---- @field add_custom_item_to_inventory fun(charIndex: integer, item: table)
---- @field play_all_characters_award_sound fun()
---- @field play_character_award_sound fun(charIndex: integer)
---- @field clear_condition fun(charIndex: integer, condition: integer?)
+--- @field getGold fun(): integer
+--- @field setGold fun(amount: integer)
+--- @field getFood fun(): integer
+--- @field setFood fun(amount: integer)
+--- @field getAlignment fun(): integer
+--- @field setAlignment fun(alignment: integer)
+--- @field givePartyXp fun(amount: integer)
+--- @field getPartySize fun(): integer
+--- @field getActiveCharacter fun(): integer
+--- @field getCharacterInfo fun(charIndex: integer, query: table): CharacterInfo
+--- @field setCharacterInfo fun(charIndex: integer, info: table)
+--- @field addItemToInventory fun(charIndex: integer, itemId: integer):boolean
+--- @field addCustomItemToInventory fun(charIndex: integer, item: table)
+--- @field playAllCharactersAwardSound fun()
+--- @field playCharacterAwardSound fun(charIndex: integer)
+--- @field clearCondition fun(charIndex: integer, condition: integer?)
 
 --- @class GameBindings
---- @field go_to_screen fun(screenId: integer)
---- @field can_class_learn fun(classType: integer, skillType: integer)
+--- @field goToScreen fun(screenId: integer)
+--- @field canClassLearn fun(classType: integer, skillType: integer)
 
 --- @class AudioBindings
 --- @field playSound fun(soundId: integer, soundPlaybackMode: integer)
@@ -65,14 +65,14 @@ hotkeys = {}
 --- @field level integer
 
 --- @class ItemsBindings
---- @field get_item_info fun(itemId: integer):ItemInfo
---- @field get_random_item fun(filter: fun(item: table)?):integer
+--- @field getItemInfo fun(itemId: integer):ItemInfo
+--- @field getRandomItem fun(filter: fun(item: table)?):integer
 
 --- @class SerializeBindings
---- @field party_alignment fun(alignment: integer): string
+--- @field partyAlignment fun(alignment: integer): string
 
 --- @class DeserializeBindings
---- @field party_alignment fun(alignment: string): integer
+--- @field partyAlignment fun(alignment: string): integer
 
 --- @class RenderBindings
 --- @field reload_shaders fun()

@@ -89,4 +89,5 @@ target_link_libraries(engine_graphics
         PRIVATE
         libluajit
         glad
-        nuklear)
+        nuklear
+        sol2)

@@ -33,8 +33,8 @@ function ui_init(ctx)
     if #Console.messages == 0 then
         Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
     end
-    hotkeys.set_hotkey(ctx, "UP", false, false, false, historyPrev)
-    hotkeys.set_hotkey(ctx, "DOWN", false, false, false, historyNext)
+    hotkeys.setHotkey(ctx, "UP", false, false, false, historyPrev)
+    hotkeys.setHotkey(ctx, "DOWN", false, false, false, historyNext)
     return {
         mode = NUKLEAR_MODE_SHARED,
         draw = ui_draw,
@@ -119,7 +119,7 @@ local function drawConsole(ctx)
     ui.nk_style_pop(ctx, "window", "fixed_background")
 
     if ui.nk_window_is_hidden(ctx, "Debug Console") then
-        dev.config_set("debug", "show_console", false)
+        dev.setConfig("debug", "show_console", false)
     end
 end
 
@@ -129,7 +129,7 @@ end
 ---@diagnostic disable-next-line: name-style-check
 function ui_draw(ctx, stage)
     if stage == NUKLEAR_STAGE_PRE then
-        local show = dev.config_get("debug", "show_console")
+        local show = dev.getConfig("debug", "show_console")
         if show == "true" then
             drawConsole(ctx)
         end
@@ -140,5 +140,5 @@ end
 ---@param ctx NuklearContext
 ---@diagnostic disable-next-line: name-style-check
 function ui_release(ctx)
-    hotkeys.unset_hotkeys(ctx)
+    hotkeys.unsetHotkeys(ctx)
 end

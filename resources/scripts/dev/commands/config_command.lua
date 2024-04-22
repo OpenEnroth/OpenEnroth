@@ -7,10 +7,10 @@ local function getConfig(configName, sectionName)
     local value = nil
     local message = ""
     if sectionName ~= nil then
-        value = dev.config_get(sectionName, configName)
+        value = dev.getConfig(sectionName, configName)
         message = "[" .. sectionName .. "] - " .. configName .. ": "
     else
-        value = dev.config_get(configName)
+        value = dev.getConfig(configName)
         message = configName .. ": "
     end
     return message .. tostring(value), true
@@ -34,12 +34,12 @@ local function setConfig(configName, param2, param3)
     end
 
     if sectionName ~= nil then
-        dev.config_set(sectionName, configName, value)
-        value = dev.config_get(sectionName, configName)
+        dev.setConfig(sectionName, configName, value)
+        value = dev.getConfig(sectionName, configName)
         message = "[" .. sectionName .. "] - " .. configName .. ": "
     else
-        dev.config_set(configName, value)
-        value = dev.config_get(configName)
+        dev.setConfig(configName, value)
+        value = dev.getConfig(configName)
         message = configName .. ": "
     end
     return message .. tostring(value), true
