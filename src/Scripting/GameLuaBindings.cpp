@@ -22,41 +22,41 @@ Character *getCharacterByIndex(int characterIndex);
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character);
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character);
 
-GameLuaBindings::GameLuaBindings() = default;
-GameLuaBindings::~GameLuaBindings() = default;
-
-void GameLuaBindings::init(lua_State *L) {
-    _luaState = std::make_unique<sol::state_view>(L);
-
+GameLuaBindings::GameLuaBindings(const sol::state_view &luaState)
+    : _luaState(luaState)
+    , _characterInfoQueryTable(_luaState) {
     //TODO(Gerark) exposing the info/stats of a character this way might suggest we should expose the Character class directly to lua.
     //The idea is to wait till we'll talk about serious modding/scripting and not taking a direction upfront
-    _characterInfoQueryTable = std::make_unique<LuaItemQueryTable<Character>>(*_luaState);
-    _characterInfoQueryTable->add("name", [](auto &character) { return character.name; });
-    _characterInfoQueryTable->add("xp", [](auto &character) { return character.experience; });
-    _characterInfoQueryTable->add("sp", [](auto &character) { return character.uSkillPoints; });
-    _characterInfoQueryTable->add("mana", [](auto &character) { return character.GetMana(); });
-    _characterInfoQueryTable->add("maxMana", [](auto &character) { return character.GetMaxMana(); });
-    _characterInfoQueryTable->add("hp", [](auto &character) { return character.GetHealth(); });
-    _characterInfoQueryTable->add("maxHp", [](auto &character) { return character.GetMaxHealth(); });
-    _characterInfoQueryTable->add("condition", [this](auto &character) { return createCharacterConditionTable(*_luaState, character); });
-    _characterInfoQueryTable->add("skills", [this](auto &character) { return createCharacterSkillsTable(*_luaState, character); });
-    _characterInfoQueryTable->add("class", [this](auto &character) { return character.classType; });
+    _characterInfoQueryTable.add("name", [](auto &character) { return character.name; });
+    _characterInfoQueryTable.add("xp", [](auto &character) { return character.experience; });
+    _characterInfoQueryTable.add("sp", [](auto &character) { return character.uSkillPoints; });
+    _characterInfoQueryTable.add("mana", [](auto &character) { return character.GetMana(); });
+    _characterInfoQueryTable.add("maxMana", [](auto &character) { return character.GetMaxMana(); });
+    _characterInfoQueryTable.add("hp", [](auto &character) { return character.GetHealth(); });
+    _characterInfoQueryTable.add("maxHp", [](auto &character) { return character.GetMaxHealth(); });
+    _characterInfoQueryTable.add("condition", [this](auto &character) { return createCharacterConditionTable(_luaState, character); });
+    _characterInfoQueryTable.add("skills", [this](auto &character) { return createCharacterSkillsTable(_luaState, character); });
+    _characterInfoQueryTable.add("class", [this](auto &character) { return character.classType; });
+}
 
-    _luaState->set_function("initMMBindings", [this, luaState = _luaState.get()]() {
-        sol::table mainTable = luaState->create_table();
-        _registerGameBindings(*luaState, mainTable);
-        _registerPartyBindings(*luaState, mainTable);
-        _registerItemBindings(*luaState, mainTable);
-        _registerAudioBindings(*luaState, mainTable);
-        _registerSerializationBindings(*luaState, mainTable);
-        _registerRenderBindings(*luaState, mainTable);
-        _registerEnums(*luaState, mainTable);
+GameLuaBindings::~GameLuaBindings() = default;
+
+void GameLuaBindings::init() {
+    _luaState.set_function("initMMBindings", [this]() {
+        sol::table mainTable = _luaState.create_table();
+        _registerGameBindings(mainTable);
+        _registerPartyBindings(mainTable);
+        _registerItemBindings(mainTable);
+        _registerAudioBindings(mainTable);
+        _registerSerializationBindings(mainTable);
+        _registerRenderBindings(mainTable);
+        _registerEnums(mainTable);
         return mainTable;
     });
 }
 
-void GameLuaBindings::_registerGameBindings(sol::state_view &luaState, sol::table &table) {
-    table["game"] = luaState.create_table_with(
+void GameLuaBindings::_registerGameBindings(sol::table &table) {
+    table["game"] = _luaState.create_table_with(
         "goToScreen", [](int screenIndex) {
             SetCurrentMenuID(MenuType(screenIndex));
         },
@@ -66,8 +66,8 @@ void GameLuaBindings::_registerGameBindings(sol::state_view &luaState, sol::tabl
     );
 }
 
-void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::table &table) {
-    table["party"] = luaState.create_table_with(
+void GameLuaBindings::_registerPartyBindings(sol::table &table) {
+    table["party"] = _luaState.create_table_with(
         "getGold", []() {
             return pParty->GetGold();
         },
@@ -102,11 +102,11 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::tab
                 return 0;
             }
         },
-        "getCharacterInfo", [this, &luaState](int characterIndex, QueryTable queryTable) {
+        "getCharacterInfo", [this](int characterIndex, QueryTable queryTable) {
             if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-                return _characterInfoQueryTable->createTable(*character, queryTable);
+                return _characterInfoQueryTable.createTable(*character, queryTable);
             }
-            return sol::make_object(luaState, sol::lua_nil);
+            return sol::make_object(_luaState, sol::lua_nil);
         },
         "setCharacterInfo", [](int characterIndex, const sol::object &info) {
             if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
@@ -184,8 +184,8 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &luaState, sol::tab
     );
 }
 
-void GameLuaBindings::_registerAudioBindings(sol::state_view &luaState, sol::table &table) {
-    table["audio"] = luaState.create_table_with(
+void GameLuaBindings::_registerAudioBindings(sol::table &table) {
+    table["audio"] = _luaState.create_table_with(
         "playSound", [](SoundId soundId, SoundPlaybackMode mode) {
             pAudioPlayer->playSound(soundId, mode);
         },
@@ -195,23 +195,23 @@ void GameLuaBindings::_registerAudioBindings(sol::state_view &luaState, sol::tab
     );
 }
 
-void GameLuaBindings::_registerItemBindings(sol::state_view &luaState, sol::table &table) {
+void GameLuaBindings::_registerItemBindings(sol::table &table) {
     typedef std::function<bool(ItemId)> FilteItemFunction;
 
-    auto createItemTable = [&luaState](const ItemDesc &itemDesc) {
-        return luaState.create_table_with(
+    auto createItemTable = [this](const ItemDesc &itemDesc) {
+        return _luaState.create_table_with(
             "name", itemDesc.name,
             "level", itemDesc.uItemID_Rep_St
         );
     };
 
-    table["items"] = luaState.create_table_with(
-        "getItemInfo", [&luaState, createItemTable](ItemId itemId) {
+    table["items"] = _luaState.create_table_with(
+        "getItemInfo", [this, createItemTable](ItemId itemId) {
             if(itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
                 const ItemDesc &itemDesc = pItemTable->pItems[itemId];
-                return sol::object(luaState, createItemTable(itemDesc));
+                return sol::object(_luaState, createItemTable(itemDesc));
             }
-            return sol::make_object(luaState, sol::lua_nil);
+            return sol::make_object(_luaState, sol::lua_nil);
         },
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization
         "getRandomItem", [](const FilteItemFunction &filter) {
@@ -228,31 +228,31 @@ void GameLuaBindings::_registerItemBindings(sol::state_view &luaState, sol::tabl
     );
 }
 
-void GameLuaBindings::_registerSerializationBindings(sol::state_view &luaState, sol::table &table) {
+void GameLuaBindings::_registerSerializationBindings(sol::table &table) {
     //Exposing serializations and deserializations functions to lua
     //Useful for converting command line strings to the correct types
-    table["deserialize"] = luaState.create_table_with(
+    table["deserialize"] = _luaState.create_table_with(
         "partyAlignment", [](std::string_view alignment) {
             return fromString<PartyAlignment>(alignment);
         }
     );
 
-    table["serialize"] = luaState.create_table_with(
+    table["serialize"] = _luaState.create_table_with(
         "partyAlignment", [](PartyAlignment alignment) {
             return toString(alignment);
         }
     );
 }
 
-void GameLuaBindings::_registerRenderBindings(sol::state_view &luaState, sol::table &table) {
-    table["render"] = luaState.create_table_with(
+void GameLuaBindings::_registerRenderBindings(sol::table &table) {
+    table["render"] = _luaState.create_table_with(
         "reloadShaders", [](std::string_view alignment) {
             render->ReloadShaders();
         }
     );
 }
 
-void GameLuaBindings::_registerEnums(sol::state_view &luaState, sol::table &table) {
+void GameLuaBindings::_registerEnums(sol::table &table) {
     //TODO(captainurist): Use serialization tables to automate this.
     table.new_enum<false>("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,

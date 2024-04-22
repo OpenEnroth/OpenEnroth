@@ -5,26 +5,28 @@
 #include <sol/sol.hpp>
 
 #include "LuaItemQueryTable.h"
+#include "IBindings.h"
 
 struct lua_State;
 
 class Character;
 
-class GameLuaBindings {
+class GameLuaBindings : public IBindings {
  public:
-    GameLuaBindings();
-    ~GameLuaBindings();
-    void init(lua_State *lua);
+    explicit GameLuaBindings(const sol::state_view &luaState);
+    ~GameLuaBindings() override;
+
+    void init() override;
 
  private:
-    void _registerAudioBindings(sol::state_view &luaState, sol::table &table);
-    void _registerRenderBindings(sol::state_view &luaState, sol::table &table);
-    void _registerGameBindings(sol::state_view &luaState, sol::table &table);
-    void _registerPartyBindings(sol::state_view &luaState, sol::table &table);
-    void _registerItemBindings(sol::state_view &luaState, sol::table &table);
-    void _registerSerializationBindings(sol::state_view &luaState, sol::table &table);
-    void _registerEnums(sol::state_view &luaState, sol::table &table);
+    void _registerAudioBindings(sol::table &table);
+    void _registerRenderBindings(sol::table &table);
+    void _registerGameBindings(sol::table &table);
+    void _registerPartyBindings(sol::table &table);
+    void _registerItemBindings(sol::table &table);
+    void _registerSerializationBindings(sol::table &table);
+    void _registerEnums(sol::table &table);
 
-    std::unique_ptr<sol::state_view> _luaState;
-    std::unique_ptr<LuaItemQueryTable<Character>> _characterInfoQueryTable;
+    sol::state_view _luaState;
+    LuaItemQueryTable<Character> _characterInfoQueryTable;
 };

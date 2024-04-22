@@ -45,6 +45,8 @@
 #include "GameTraceHandler.h"
 
 #include "Scripting/GameLuaBindings.h"
+#include "Scripting/LoggerBindings.h"
+#include "Scripting/ScriptingSystem.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -130,7 +132,9 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
-    _gameLuaBindings = std::make_unique<GameLuaBindings>();
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts");
+    _scriptingSystem->addBindings<LoggerBindings>();
+    _scriptingSystem->addBindings<GameLuaBindings>();
 
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
@@ -140,7 +144,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
-        _nuklear->addInitLuaLibs([this](lua_State* luaState) { _gameLuaBindings->init(luaState); });
+        //_nuklear->addInitLuaLibs([this](lua_State* luaState) { _gameLuaBindings->init(luaState); });
         _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
