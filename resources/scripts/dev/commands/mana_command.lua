@@ -6,7 +6,7 @@ local function showCharsMana()
     local message = ""
     for i = 1, count do
         local info = MM.party.getCharacterInfo(i, { "name", "mana", "max_mana" })
-        message = message .. info.name .. ": " .. info.mana .. "/" .. info.max_mana .. "\n"
+        message = message .. info.name .. ": " .. info.mana .. "/" .. info.maxMana .. "\n"
     end
     return message, true
 end

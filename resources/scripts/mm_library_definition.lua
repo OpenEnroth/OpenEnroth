@@ -28,9 +28,9 @@ hotkeys = {}
 --- @field name string?
 --- @field class integer?
 --- @field mana integer?
---- @field max_mana integer?
+--- @field maxMana integer?
 --- @field hp integer?
---- @field max_hp integer?
+--- @field maxHp integer?
 --- @field skills table<integer, SkillEntry>
 --- @field condition table<integer, boolean>
 

@@ -213,7 +213,7 @@ void GameLuaBindings::_registerItemBindings(sol::state_view &luaState, sol::tabl
             }
             return sol::make_object(luaState, sol::lua_nil);
         },
-        // The get_random_item function accept an optional filter function to exclude some items from the randomization
+        // The getRandomItem function accept an optional filter function to exclude some items from the randomization
         "getRandomItem", [](const FilteItemFunction &filter) {
             if(filter) {
                 std::vector<ItemId> itemsToRandomizeOn;

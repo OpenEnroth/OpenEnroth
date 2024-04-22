@@ -68,7 +68,7 @@
             "undefined-doc-name": "Warning",
             "undefined-doc-param": "Warning",
             "undefined-env-child": "Information",
-            "undefined-field": "Error",
+            "undefined-field": "Warning",
             "undefined-global": "Warning",
             "unknown-cast-variable": "Warning",
             "unknown-diag-code": "Warning",

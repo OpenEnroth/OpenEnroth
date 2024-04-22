@@ -43,7 +43,8 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
-#include "GameLuaBindings.h"
+
+#include "Scripting/GameLuaBindings.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.

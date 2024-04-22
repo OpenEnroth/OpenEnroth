@@ -6,7 +6,7 @@ local function showCharsHp()
     local message = ""
     for i = 1, count do
         local info = MM.party.getCharacterInfo(i, { "name", "hp", "max_hp" })
-        message = message .. info.name .. ": " .. info.hp .. "/" .. info.max_hp .. "\n"
+        message = message .. info.name .. ": " .. info.hp .. "/" .. info.maxHp .. "\n"
     end
     return message, true
 end
@@ -17,8 +17,8 @@ local function fullHeal(charIndex)
     local info = MM.party.getCharacterInfo(charIndex, { "name", "max_hp", "max_mana" })
     MM.party.clearCondition(charIndex)
     MM.party.setCharacterInfo(charIndex, {
-        hp = info.max_hp,
-        mana = info.max_mana
+        hp = info.maxHp,
+        mana = info.maxMana
     })
     return info.name .. "'s hp and mana are restored.", true
 end
