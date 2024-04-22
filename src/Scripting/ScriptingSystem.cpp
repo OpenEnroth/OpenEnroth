@@ -2,14 +2,37 @@
 #include "IBindings.h"
 
 #include <Utility/DataPath.h>
+#include <Library/Logger/Logger.h>
 
-ScriptingSystem::ScriptingSystem(std::string_view scriptFolder) {
+#include <string>
+#include <vector>
+
+ScriptingSystem::ScriptingSystem(
+    std::string_view scriptFolder,
+    const std::vector<std::string> &entryPointFiles
+) {
     _initBaseLibraries();
     _initRequireTable(scriptFolder);
-    _bindSetupFunction();
 }
 
 ScriptingSystem::~ScriptingSystem() {
+}
+
+void ScriptingSystem::start() {
+    _bindSetupFunction();
+    _runEntryPoints();
+}
+
+void ScriptingSystem::_runEntryPoints() {
+    for (auto &&entryPointFile : _entryPointFiles) {
+        try {
+            _solState.safe_script_file(makeDataPath("scripts", entryPointFile));
+            sol::function init = _solState["init"];
+            init();
+        } catch (const sol::error &e) {
+            logger->error("[Script] An unexpected error has occurred: ", e.what());
+        }
+    }
 }
 
 void ScriptingSystem::_initBaseLibraries() {
@@ -29,7 +52,7 @@ void ScriptingSystem::_initBaseLibraries() {
 
 void ScriptingSystem::_initRequireTable(std::string_view scriptFolder) {
     _solState["package"]["path"] = makeDataPath(scriptFolder, "?.lua");
-    _solState["package"]["cpath"] = ""; //Reset the path for c loader. We're not interested in c lib right now.
+    _solState["package"]["cpath"] = ""; //Reset the path for any c loaders
 }
 
 void ScriptingSystem::_bindSetupFunction() {

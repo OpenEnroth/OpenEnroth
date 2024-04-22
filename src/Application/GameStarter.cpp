@@ -44,8 +44,11 @@
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
 
+#include "Scripting/ConfigBindings.h"
 #include "Scripting/GameLuaBindings.h"
 #include "Scripting/LoggerBindings.h"
+#include "Scripting/InputBindings.h"
+#include "Scripting/InputScriptEventHandler.h"
 #include "Scripting/ScriptingSystem.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
@@ -121,6 +124,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->installComponent(std::make_unique<EngineTracePlayer>());
     _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->installComponent(std::make_unique<EngineRandomComponent>());
+    _application->installComponent(std::make_unique<InputScriptEventHandler>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
     // Init main window. Should happen before the renderer init, which depends on window dimensions & mode.
@@ -132,9 +136,13 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
-    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts");
+    std::vector<std::string> entryPointFiles = { "init.lua" };
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", entryPointFiles);
     _scriptingSystem->addBindings<LoggerBindings>();
     _scriptingSystem->addBindings<GameLuaBindings>();
+    _scriptingSystem->addBindings<ConfigBindings>();
+    _scriptingSystem->addBindings<InputBindings>(*_application->component<InputScriptEventHandler>());
+    _scriptingSystem->start();
 
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
@@ -144,7 +152,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
         _nuklear->addInitLuaFile("init.lua");
-        //_nuklear->addInitLuaLibs([this](lua_State* luaState) { _gameLuaBindings->init(luaState); });
         _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
