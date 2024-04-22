@@ -25,7 +25,7 @@ def main():
         print_lls("Wrong number of arguments passed to lls-check.py")
         return 1
 
-    check_level = "Warning" # TODO(Gerark) Temporary checking only for errors now but will soon change to warning after fixing all of the scripts in future commits
+    check_level = "Warning"
     lua_language_server_exe_path = sys.argv[1]
     scripts_folder = sys.argv[2]
     log_output = sys.argv[3]
