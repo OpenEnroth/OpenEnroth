@@ -32,9 +32,10 @@ jobs:
       - name: Install Homebrew, lua-language-server 
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          echo 'eval "$($HOME/.linuxbrew/bin/brew shellenv)"' >> $HOME/.bashrc
-          eval "$($HOME/.linuxbrew/bin/brew shellenv)"
+          (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> $home/.bashrc
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install lua-language-server
+          source ~/.bashrc
 
       - name: Configure
         run: |
