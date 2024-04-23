@@ -35,7 +35,7 @@ jobs:
           (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> $home/.bashrc
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install lua-language-server
-          source ~/.bashrc
+          cat $home/.bashrc
 
       - name: Configure
         run: |
