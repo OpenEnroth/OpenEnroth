@@ -29,17 +29,13 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install build-essential -y
 
-      - name: Install Homebrew, lua-language-server 
+      - name: Install Homebrew
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          /home/linuxbrew/.linuxbrew/bin/brew shellenv
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-      - name: Install Homebrew, lua-language-server 
+      - name: Install lua-language-server
         run: |
-          ls /home/linuxbrew
-          ls $HOME
-          brew install lua-language-server
+          /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
 
       - name: Configure
         run: |
