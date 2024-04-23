@@ -32,10 +32,12 @@ jobs:
       - name: Install Homebrew
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
       - name: Install lua-language-server
         run: |
-          /home/linuxbrew/.linuxbrew/bin/brew install lua-language-server
+          /home/linuxbrew/.linuxbrew/bin/brew install -vd lua-language-server        
+          brew install -vd lua-language-server
 
       - name: Configure
         run: |
