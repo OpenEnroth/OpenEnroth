@@ -259,7 +259,7 @@ var searchData=
   ['vec3f_256',['Vec3f',['../Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8',1,'Vec.h']]],
   ['vec3i_257',['Vec3i',['../Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2',1,'Vec.h']]],
   ['vec3s_258',['Vec3s',['../Vec_8h.html#a6292e5605ec40bf04615dbf225d2654c',1,'Vec.h']]],
-  ['velocity_259',['velocity',['../structParty.html#a0f51bb0529dfa70a2be046d61d938832',1,'Party::velocity()'],['../classActor.html#a4145e0a74869f5300d75c5e6c49679f1',1,'Actor::velocity()'],['../structCollisionState.html#a6c7ec4f205247ecc336287536f088dcb',1,'CollisionState::velocity()']]],
+  ['velocity_259',['velocity',['../structParty.html#a0f51bb0529dfa70a2be046d61d938832',1,'Party::velocity()'],['../classActor.html#abb823b9528b91c1bc292f8729803785a',1,'Actor::velocity()'],['../structCollisionState.html#a6c7ec4f205247ecc336287536f088dcb',1,'CollisionState::velocity()']]],
   ['version_260',['version',['../structPCXHeader.html#afb26fe6c46d4a206a1894149b01345de',1,'PCXHeader::version()'],['../structLodInfo.html#afc598d6940f5af9cc0396aae90b2dcf3',1,'LodInfo::version()'],['../structLodHeader.html#aeb62403e4d71de9fcdff7f6b696b8d65',1,'LodHeader::version()'],['../structLodHeader__MM6.html#a8d4cdf30814a393e1a046ef9d15ba51e',1,'LodHeader_MM6::version()'],['../structLodCompressionHeader__MM6.html#adac67302a0401910a5ed7a7eb82356a8',1,'LodCompressionHeader_MM6::version()']]],
   ['versionmajor_261',['versionMajor',['../structPlatformOpenGLOptions.html#acf90b169e548baf91baf73b4a19affde',1,'PlatformOpenGLOptions']]],
   ['versionminor_262',['versionMinor',['../structPlatformOpenGLOptions.html#a8595128fb8b5a7ab8cd2cc6f69b6faba',1,'PlatformOpenGLOptions']]],
