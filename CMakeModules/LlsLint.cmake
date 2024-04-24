@@ -12,7 +12,7 @@ function(init_check_lua_style)
     endif()
 endfunction()
 
-function(source_check_lua_style TARGET TARGET_SOURCES)
+function(source_check_lua_style TARGET)
     if(OE_CHECK_LUA_STYLE)
         set(TARGET_NAME "check_style_lua_${TARGET}")
         
@@ -28,8 +28,7 @@ endfunction()
 
 function(target_check_lua_style TARGET)
     if(OE_CHECK_LUA_STYLE AND OE_LUALANGUAGESERVER_COMMAND)
-        get_target_property(TARGET_SOURCES ${TARGET} SOURCES)
-        source_check_lua_style(${TARGET} "${TARGET_SOURCES}")
+        source_check_lua_style(${TARGET})
 
     endif()
 endfunction()
