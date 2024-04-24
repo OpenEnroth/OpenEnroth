@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;546e7e2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;32a3a06</span>
    </div>
   </td>
  </tr>
@@ -216,6 +216,23 @@ Testing</h1>
 <p >If you need to look closely at the recorded trace, you can play it by running <code>OpenEnroth play --speed 0.5 &lt;path-to-trace.json&gt;</code>. Alternatively, if you already have a unit test that runs the recorded trace, you can run <code>OpenEnroth_GameTest --speed 0.5 --gtest_filter=&lt;test-suite-name&gt;.&lt;test-name&gt; --test-path &lt;path-to-test-data-folder&gt;</code>. Note that <code>--gtest_filter</code> needs that <code>=</code> and won't work if you try passing test name after a space.</p>
 <p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
+Scripting</h1>
+<p >We're using Lua as the scripting language, and all our scripts are currently located under the <code>resources/scripts</code> folder.</p>
+<h3><a class="anchor" id="autotoc_md8"></a>
+Lua Language Server</h3>
+<p >Script files undergo a syntax checking process during the build generation. If you intend to work with scripts, it is recommended to install the <a href="https://github.com/LuaLS/lua-language-server">Lua Language Server</a> to run the style checker locally. Follow these steps to setup <code>LuaLS</code> locally:</p><ul>
+<li>Install <code>LuaLS</code> through one of the <a href="https://luals.github.io/#other-install">following methods</a>. Ensure that the lua-language-server executable is available in the <code>PATH</code> environment variable.</li>
+<li>Generate the project.</li>
+<li>The <code>check_style</code> target is now including scripting in its tests.</li>
+</ul>
+<p >Little note: If <code>LuaLS</code> is not found, everything still build but no checks will be run against the Lua scripts.</p>
+<h3><a class="anchor" id="autotoc_md9"></a>
+Tools</h3>
+<p >To go through a better experience while working with scripts it is strongly recommended to use <a href="https://code.visualstudio.com/">VS Code</a> and <a href="https://luals.github.io/#vscode-install">install the LuaLS extension</a>. Just be sure to open the root repository folder in <code>VS Code</code>. By doing so <code>LuaLS</code> reads the correct configuration file used by the project</p>
+<h3><a class="anchor" id="autotoc_md10"></a>
+Modding ?</h3>
+<p >Scripting is currently used only for debugging purposes. Modding support is not planned for the near future. You can check the <a href="https://github.com/OpenEnroth/OpenEnroth/milestones">milestones</a> to get a better idea.</p>
+<h1><a class="anchor" id="autotoc_md11"></a>
 Console Commands</h1>
 <p >The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:</p>
 <ol type="1">
@@ -227,10 +244,10 @@ Console Commands</h1>
 <li>Click on the <code>Console</code> button to reveal the command-line interface at the bottom left corner of the screen.</li>
 </ol>
 <p >Currently, the console is only available while in-game.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
-<h1><a class="anchor" id="autotoc_md9"></a>
+<h1><a class="anchor" id="autotoc_md13"></a>
 Support</h1>
 <p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a> </p>
 </div></div><!-- contents -->

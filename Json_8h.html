@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;546e7e2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;32a3a06</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ Macros</h2></td></tr>
 <tr class="separator:abfc32b39601c86056e4ce6581e5bd943"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a594fbfd31177c2d1224fdf216124e4d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Json_8h.html#a594fbfd31177c2d1224fdf216124e4d9">MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_I</a>(ARG)&#160;&#160;&#160;<a class="el" href="Json_8h.html#a3f7549f31154d78a422b5ee44baa64dd">MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_II</a> ARG</td></tr>
 <tr class="separator:a594fbfd31177c2d1224fdf216124e4d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f7549f31154d78a422b5ee44baa64dd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Json_8h.html#a3f7549f31154d78a422b5ee44baa64dd">MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_II</a>(MEMBER,  NAME)&#160;&#160;&#160;    nlohmann::to_json(<a class="el" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>[NAME], value.MEMBER);</td></tr>
+<tr class="memitem:a3f7549f31154d78a422b5ee44baa64dd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Json_8h.html#a3f7549f31154d78a422b5ee44baa64dd">MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_II</a>(MEMBER,  NAME)&#160;&#160;&#160;    nlohmann::to_json(json[NAME], value.MEMBER);</td></tr>
 <tr class="separator:a3f7549f31154d78a422b5ee44baa64dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ef01caad44751a17aaed1f34bfcd2fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Json_8h.html#a9ef01caad44751a17aaed1f34bfcd2fd">MM_DEFINE_JSON_STRUCT_MEMBER_DESERIALIZATION_I</a>(ARG)&#160;&#160;&#160;<a class="el" href="Json_8h.html#a8a4d926215320e05544e9e6e216742f6">MM_DEFINE_JSON_STRUCT_MEMBER_DESERIALIZATION_II</a> ARG</td></tr>
 <tr class="separator:a9ef01caad44751a17aaed1f34bfcd2fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,14 +132,14 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> to_json(<a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, <span class="keyword">const</span> TYPE &amp;value) {                                                                       \</div>
-<div class="line">        nlohmann::to_json(<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, <a class="code hl_variable" href="Serialization_8h.html#a3dd1e68442220c005341b2550b33680d">toString</a>(value));                                                                       \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> to_json(<a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;json, <span class="keyword">const</span> TYPE &amp;value) {                                                                       \</div>
+<div class="line">        nlohmann::to_json(json, <a class="code hl_variable" href="Serialization_8h.html#a3dd1e68442220c005341b2550b33680d">toString</a>(value));                                                                       \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> <a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, TYPE &amp;value) {                                                                     \</div>
+<div class="line">    <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> <a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;json, TYPE &amp;value) {                                                                     \</div>
 <div class="line">        <span class="keyword">const</span> std::string *jsonString = <a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>.get&lt;<span class="keyword">const</span> std::string *&gt;();                                                \</div>
 <div class="line">        if (!jsonString)                                                                                                \</div>
-<div class="line">            throwJsonDeserializationError(<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, #TYPE);                                                                 \</div>
+<div class="line">            throwJsonDeserializationError(json, #TYPE);                                                                 \</div>
 <div class="line">        value = fromString&lt;TYPE&gt;(*jsonString);                                                                          \</div>
 <div class="line">    }</div>
 <div class="ttc" id="aJsonFwd_8h_html_af13a1979f9e8f62c101433fac6511cc6"><div class="ttname"><a href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a></div><div class="ttdeci">nlohmann::json Json</div><div class="ttdef"><b>Definition:</b> JsonFwd.h:5</div></div>
@@ -200,7 +200,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>.contains(NAME))                                                                                            \</div>
-<div class="line">        nlohmann::from_json(<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>[NAME], value.MEMBER);</div>
+<div class="line">        nlohmann::from_json(json[NAME], value.MEMBER);</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -243,7 +243,7 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;    nlohmann::to_json(<a class="el" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>[NAME], value.MEMBER);</td>
+          <td></td><td>&#160;&#160;&#160;    nlohmann::to_json(json[NAME], value.MEMBER);</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -275,13 +275,13 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> to_json(<a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, <span class="keyword">const</span> TYPE &amp;value) {                                                                       \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> to_json(<a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;json, <span class="keyword">const</span> TYPE &amp;value) {                                                                       \</div>
 <div class="line">        NLOHMANN_JSON_PASTE(<a class="code hl_define" href="Json_8h.html#a594fbfd31177c2d1224fdf216124e4d9">MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_I</a>, <a class="code hl_define" href="Preprocessor_8h.html#ad6b6f05cba03015810531a3fee373860">MM_PP_REMOVE_PARENS</a>(MEMBER_NAMES))            \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> <a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, TYPE &amp;value) {                                                                     \</div>
+<div class="line">    <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> <a class="code hl_typedef" href="JsonFwd_8h.html#af13a1979f9e8f62c101433fac6511cc6">Json</a> &amp;json, TYPE &amp;value) {                                                                     \</div>
 <div class="line">        if (!<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>.is_object())                                                                                          \</div>
-<div class="line">            throwJsonDeserializationError(<a class="code hl_variable" href="Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9">json</a>, #TYPE);                                                                 \</div>
+<div class="line">            throwJsonDeserializationError(json, #TYPE);                                                                 \</div>
 <div class="line">        NLOHMANN_JSON_PASTE(<a class="code hl_define" href="Json_8h.html#a9ef01caad44751a17aaed1f34bfcd2fd">MM_DEFINE_JSON_STRUCT_MEMBER_DESERIALIZATION_I</a>, <a class="code hl_define" href="Preprocessor_8h.html#ad6b6f05cba03015810531a3fee373860">MM_PP_REMOVE_PARENS</a>(MEMBER_NAMES))          \</div>
 <div class="line">    }</div>
 <div class="ttc" id="aJson_8h_html_a594fbfd31177c2d1224fdf216124e4d9"><div class="ttname"><a href="Json_8h.html#a594fbfd31177c2d1224fdf216124e4d9">MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_I</a></div><div class="ttdeci">#define MM_DEFINE_JSON_STRUCT_MEMBER_SERIALIZATION_I(ARG)</div><div class="ttdef"><b>Definition:</b> Json.h:56</div></div>
