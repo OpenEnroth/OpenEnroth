@@ -1,27 +1,27 @@
-local utils = require "dev.commands.command_utils"
-local mm = require "mmbindings"
+local Utilities = require "dev.commands.command_utils"
+local MM = require "mmbindings"
 
-local function show_chars_mana()
-    local count = mm.party.get_party_size()
+local function showCharsMana()
+    local count = MM.party.get_party_size()
     local message = ""
     for i = 1, count do
-        local info = mm.party.get_character_info(i, { "name", "mana", "max_mana" })
-        message = message..info.name..": "..info.mana.."/"..info.max_mana.."\n"
-    end    
+        local info = MM.party.get_character_info(i, { "name", "mana", "max_mana" })
+        message = message .. info.name .. ": " .. info.mana .. "/" .. info.max_mana .. "\n"
+    end
     return message, true
 end
 
-local subcommands = {
-    get = show_chars_mana,
-    rem = utils.change_char_property("mana", utils.OP_TYPE.rem, true, tonumber),
-    add = utils.change_char_property("mana", utils.OP_TYPE.add, true, tonumber),
-    set = utils.change_char_property("mana", utils.OP_TYPE.set, true, tonumber),
-    default = show_chars_mana
+local subCommands = {
+    get = showCharsMana,
+    rem = Utilities.changeCharProperty("mana", Utilities.opType.rem, true, tonumber),
+    add = Utilities.changeCharProperty("mana", Utilities.opType.add, true, tonumber),
+    set = Utilities.changeCharProperty("mana", Utilities.opType.set, true, tonumber),
+    default = showCharsMana
 }
 
 return {
     name = "mana",
     description = "Show and manipulate characters mana.",
     details = "",
-    callback = subcommands
+    callback = subCommands
 }

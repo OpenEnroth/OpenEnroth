@@ -1,17 +1,17 @@
-local utils = require "dev.commands.command_utils"
-local mm = require "mmbindings"
+local Utilities = require "dev.commands.command_utils"
+local MM = require "mmbindings"
 
-local subcommands = {
-    get = utils.show_property(mm.party.get_food, "food"),
-    set = utils.change_property(mm.party.get_food, mm.party.set_food, utils.OP_TYPE.set, "food", tonumber),
-    add = utils.change_property(mm.party.get_food, mm.party.set_food, utils.OP_TYPE.add, "food", tonumber),
-    rem = utils.change_property(mm.party.get_food, mm.party.set_food, utils.OP_TYPE.rem, "food", tonumber),
-    default = utils.show_property(mm.party.get_food, "food")
+local subCommands = {
+    get = Utilities.showProperty(MM.party.get_food, "food"),
+    set = Utilities.changeProperty(MM.party.get_food, MM.party.set_food, Utilities.opType.set, "food", tonumber),
+    add = Utilities.changeProperty(MM.party.get_food, MM.party.set_food, Utilities.opType.add, "food", tonumber),
+    rem = Utilities.changeProperty(MM.party.get_food, MM.party.set_food, Utilities.opType.rem, "food", tonumber),
+    default = Utilities.showProperty(MM.party.get_food, "food")
 }
 
 return {
     name = "food",
     description = "Change the amount of food.",
     details = "",
-    callback = subcommands
+    callback = subCommands
 }

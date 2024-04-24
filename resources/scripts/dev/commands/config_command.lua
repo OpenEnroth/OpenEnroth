@@ -1,58 +1,58 @@
 ---Get the value of a configEntry
----@param config_name string    - config entry name
----@param section_name? string  - section of the config entry 
+---@param configName string    - config entry name
+---@param sectionName? string  - section of the config entry
 ---@return string               - the message sent back to the console
 ---@return boolean              - flag that tells if the command has been successful
-local function get_config(config_name, section_name)
-    local value
-    local message
-    if section_name ~= nil then
-        value = dev.config_get(section_name, config_name)
-        message = "["..section_name.."] - "..config_name..": "
+local function getConfig(configName, sectionName)
+    local value = nil
+    local message = ""
+    if sectionName ~= nil then
+        value = dev.config_get(sectionName, configName)
+        message = "[" .. sectionName .. "] - " .. configName .. ": "
     else
-        value = dev.config_get(config_name)
-        message = config_name..": "
+        value = dev.config_get(configName)
+        message = configName .. ": "
     end
-    return message..tostring(value), true
+    return message .. tostring(value), true
 end
 
 ---Change the value of the configEntry
----@param config_name string - name of the configEntry
----@param param2 string      - section of the config entry. If param3 is nil param2 represents the value instead 
+---@param configName string - name of the configEntry
+---@param param2 string      - section of the config entry. If param3 is nil param2 represents the value instead
 ---@param param3? string     - new value to apply
 ---@return string            - the message sent back to the console
 ---@return boolean           - flag that tells if the command has been successful
-local function set_config(config_name, param2, param3)
-    local value
-    local message
-    local section_name
+local function setConfig(configName, param2, param3)
+    local value = nil
+    local message = ""
+    local sectionName = nil
     if param3 ~= nil then
-        section_name = param2
+        sectionName = param2
         value = param3
     else
         value = param2
     end
 
-    if section_name ~= nil then
-        dev.config_set(section_name, config_name, value)
-        value = dev.config_get(section_name, config_name)
-        message = "["..section_name.."] - "..config_name..": "
+    if sectionName ~= nil then
+        dev.config_set(sectionName, configName, value)
+        value = dev.config_get(sectionName, configName)
+        message = "[" .. sectionName .. "] - " .. configName .. ": "
     else
-        dev.config_set(config_name, value)
-        value = dev.config_get(config_name)
-        message = config_name..": "
+        dev.config_set(configName, value)
+        value = dev.config_get(configName)
+        message = configName .. ": "
     end
-    return message..tostring(value), true
+    return message .. tostring(value), true
 end
 
-local subcommands = {
-    get = get_config,
-    set = set_config,
+local subCommands = {
+    get = getConfig,
+    set = setConfig,
 }
 
 return {
     name = "config",
-    description = "Change any gameconfig value.",
+    description = "Change any game config value.",
     details = "",
-    callback = subcommands
+    callback = subCommands
 }
