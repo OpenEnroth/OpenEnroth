@@ -3,9 +3,13 @@
 #include <Library/Logger/LogSink.h>
 
 #include <memory>
+#include <sol/sol.hpp>
 
-class NuklearLogSink : public LogSink {
+class ScriptLogSink : public LogSink {
  public:
+    explicit ScriptLogSink(const sol::state_view &solState);
     void write(const LogCategory& category, LogLevel level, std::string_view message) override;
-    static std::unique_ptr<LogSink> createNuklearLogSink();
+
+ private:
+    sol::state_view _solState;
 };

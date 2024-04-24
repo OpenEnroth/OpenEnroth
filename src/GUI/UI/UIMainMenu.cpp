@@ -20,10 +20,6 @@ GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
-    nuklear->Create(WINDOW_MainMenu);
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
-        return;
-
     main_menu_background = assets->getImage_PCXFromIconsLOD("title.pcx");
 
     ui_mainmenu_new = assets->getImage_ColorKey("title_new");
@@ -42,27 +38,14 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-        nuklear->Release(WINDOW_MainMenu);
-        return;
-    }
-
     ui_mainmenu_new->Release();
     ui_mainmenu_load->Release();
     ui_mainmenu_credits->Release();
     ui_mainmenu_exit->Release();
     main_menu_background->Release();
-
-    nuklear->Release(WINDOW_MainMenu);
 }
 
 void GUIWindow_MainMenu::Update() {
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu, 2);
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
-        return;
-    }
-
     render->DrawTextureNew(0, 0, main_menu_background);
 
     Pointi pt = mouse->GetCursorPos();
@@ -96,16 +79,9 @@ void GUIWindow_MainMenu::Update() {
             }
         }
     }
-
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
 }
 
 void GUIWindow_MainMenu::EventLoop() {
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-        engine->_messageQueue->clear();
-        return;
-    }
-
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType pUIMessageType;
         int pParam;
@@ -161,31 +137,19 @@ void GUIWindow_MainMenu::drawMM7CopyrightWindow() {
 }
 
 void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {
-    nuklear->Create(WINDOW_MainMenu_Load);
-    GraphicsImage *tex;
-
-    if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-        tex = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
-    }
+    GraphicsImage *tex = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
     render->ResetUIClipRect();
     render->BeginScene2D();
     {
-        nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
-        if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-            render->DrawTextureNew(0, 0, tex);
-            drawMM7CopyrightWindow();
-        }
-        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu_Load, 1);
+        render->DrawTextureNew(0, 0, tex);
+        drawMM7CopyrightWindow();
         render->Present();
 
         initFunc();
 
-        if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-            tex->Release();
-        }
+        tex->Release();
     }
-    nuklear->Release(WINDOW_MainMenu_Load);
 }
 
 void GUIWindow_MainMenu::loop() {
@@ -212,7 +176,6 @@ void GUIWindow_MainMenu::loop() {
         render->Present();
     }
 
-    nuklear->Release(WINDOW_MainMenu);
     pWindow_MainMenu->Release();
     delete pWindow_MainMenu;
     pWindow_MainMenu = nullptr;

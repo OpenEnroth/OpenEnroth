@@ -6,18 +6,18 @@
 ---@diagnostic disable: name-style-check
 
 --- Table containing functionalities to change debug info ( like config values )
---- TODO(Gerark) Change this by providing access through a module
----@class dev
----@field setConfig fun(section: string, configName: string, value: any)
----@field getConfig fun(section: string, configName?: string): any
-dev = {}
+---@class ConfigBindings
+---@field setConfig fun(section: string, configName: string, value: any): boolean
+---@field getConfig fun(section: string, configName?: string): string
 
---- Table containing functionalities to register to input events
---- TODO(Gerark) Change this by providing access through a module ( maybe with a better name )
----@class hotkeys
----@field setHotkey fun(ctx: NuklearContext, key: string, modControl: boolean, modShift: boolean, modAlt: boolean, callback:fun())
----@field unsetHotkeys fun(ctx: NuklearContext)
-hotkeys = {}
+---@alias PlatformKey integer
+
+---@class PlatformKeyEnum
+---@field KEY_DOWN PlatformKey
+---@field KEY_UP PlatformKey
+
+---@class InputBindings
+---@field PlatformKey PlatformKeyEnum
 
 --- @class SkillEntry
 --- @field id integer
@@ -52,7 +52,7 @@ hotkeys = {}
 --- @field playCharacterAwardSound fun(charIndex: integer)
 --- @field clearCondition fun(charIndex: integer, condition: integer?)
 
---- @class GameBindings
+--- @class MiscBindings
 --- @field goToScreen fun(screenId: integer)
 --- @field canClassLearn fun(classType: integer, skillType: integer)
 
@@ -75,12 +75,12 @@ hotkeys = {}
 --- @field partyAlignment fun(alignment: string): integer
 
 --- @class RenderBindings
---- @field reload_shaders fun()
+--- @field reloadShaders fun()
 
---- @class MMBindings
+--- @class GameBindings
 --- @field party PartyBindings
 --- @field audio AudioBindings
---- @field game GameBindings
+--- @field misc MiscBindings
 --- @field items ItemsBindings
 --- @field serialize SerializeBindings
 --- @field deserialize DeserializeBindings
@@ -92,9 +92,43 @@ hotkeys = {}
 --- @field ClassType table<string, integer>
 --- @field ItemType table<string, integer>
 
---- Initialize the table with all the game c++ bindings
----@return MMBindings
-function initMMBindings()
+--- @class LogBindings
+--- @field info fun(message:string)
+--- @field trace fun(message:string)
+--- @field debug fun(message:string)
+--- @field warning fun(message:string)
+--- @field error fun(message:string)
+--- @field critical fun(message:string)
+
+--- Initialize all the register bindings in c++
+function setupBindings()
+end
+
+---Request a bindings table from c++
+---@param name string name of the binding table
+---@return table
+function requireBindings(name)
+    print(name)
+    return {}
+end
+
+---@return GameBindings
+function requireGame()
+    return {}
+end
+
+---@return LogBindings
+function requireLog()
+    return {}
+end
+
+---@return InputBindings
+function requireInput()
+    return {}
+end
+
+---@return ConfigBindings
+function requireConfig()
     return {}
 end
 

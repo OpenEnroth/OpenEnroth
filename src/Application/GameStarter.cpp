@@ -13,7 +13,6 @@
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/NuklearLogSink.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
@@ -48,6 +47,7 @@
 #include "Scripting/GameLuaBindings.h"
 #include "Scripting/LoggerBindings.h"
 #include "Scripting/InputBindings.h"
+#include "Scripting/NuklearBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
 #include "Scripting/ScriptingSystem.h"
 
@@ -124,7 +124,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->installComponent(std::make_unique<EngineTracePlayer>());
     _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->installComponent(std::make_unique<EngineRandomComponent>());
-    _application->installComponent(std::make_unique<InputScriptEventHandler>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
     // Init main window. Should happen before the renderer init, which depends on window dimensions & mode.
@@ -136,14 +135,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
-    std::vector<std::string> entryPointFiles = { "init.lua" };
-    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", entryPointFiles);
-    _scriptingSystem->addBindings<LoggerBindings>();
-    _scriptingSystem->addBindings<GameLuaBindings>();
-    _scriptingSystem->addBindings<ConfigBindings>();
-    _scriptingSystem->addBindings<InputBindings>(*_application->component<InputScriptEventHandler>());
-    _scriptingSystem->start();
-
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
     if (!_nuklear)
@@ -151,8 +142,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     ::nuklear = _nuklear.get();
     if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
-        _nuklear->addInitLuaFile("init.lua");
-        _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
     // Init io.
@@ -169,6 +158,15 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
+
+    _application->installComponent(std::make_unique<InputScriptEventHandler>());
+    _scriptingSystem = ScriptingSystem::create("scripts", { "init.lua" });
+    _scriptingSystem->addBindings<LoggerBindings>("Log", *_defaultLogSink);
+    _scriptingSystem->addBindings<GameLuaBindings>("Game");
+    _scriptingSystem->addBindings<ConfigBindings>("Config");
+    _scriptingSystem->addBindings<InputBindings>("Input", *_application->component<InputScriptEventHandler>());
+    _scriptingSystem->addBindings<NuklearBindings>("Nuklear", _engine->nuklear.get());
+    _scriptingSystem->executeEntryPoints();
 }
 
 GameStarter::~GameStarter() {

@@ -1,4 +1,4 @@
-local MM = require "mmbindings"
+local game = requireGame()
 
 ---@class CommandUtilities
 local CommandUtilities = {}
@@ -30,8 +30,8 @@ CommandUtilities.changeCharProperty = function (key, op, playAward, conversion)
 
         charIndex = CommandUtilities.characterOrCurrent(charIndex)
 
-        local get = MM.party.getCharacterInfo
-        local set = MM.party.setCharacterInfo
+        local get = game.party.getCharacterInfo
+        local set = game.party.setCharacterInfo
         value = value ~= nil and value or 0
         local info = get(charIndex, { key, "name" })
         local characterName = info.name
@@ -55,7 +55,7 @@ CommandUtilities.changeCharProperty = function (key, op, playAward, conversion)
         end
 
         if playAward then
-            MM.party.playCharacterAwardSound(charIndex)
+            game.party.playCharacterAwardSound(charIndex)
         end
         return message, true
     end
@@ -70,10 +70,10 @@ end
 ---@return function
 CommandUtilities.showCharsProperty = function (key, serializer)
     return function ()
-        local count = MM.party.getPartySize()
+        local count = game.party.getPartySize()
         local message = "Party " .. key .. "\n"
         for i = 1, count do
-            local info = MM.party.getCharacterInfo(i, { key, "name" })
+            local info = game.party.getCharacterInfo(i, { key, "name" })
             local value = serializer and serializer(info[key]) or info[key]
             message = message .. info.name .. ": " .. value .. "\n"
         end
@@ -83,7 +83,7 @@ end
 
 --- Utility factory-function that generate a new function used as command to update a value retrieved by callbacks
 --- Example of a command that remove golds from the party:
----     changeProperty(MM.party.getGold, MM.party.setGold, ACTION_TYPE.rem, "gold")
+---     changeProperty(game.party.getGold, game.party.setGold, ACTION_TYPE.rem, "gold")
 ---
 ---@param get function      - getter function used to retrieve the current value
 ---@param set function      - setter function used to update the current value
@@ -120,7 +120,7 @@ end
 
 --- Utility factory-function that generate a new function used as command to show a value
 --- Example of a function generating a command showing the current alignment:
----     showProperty(MM.party.getAlignment, "alignment")
+---     showProperty(game.party.getAlignment, "alignment")
 ---@param get function      getter function used to retrieve the current value
 ---@param propName string  name of the property. Used only for prompting, it's not used to retrieve the value
 ---@return function
@@ -137,7 +137,7 @@ end
 ---@return integer
 CommandUtilities.characterOrCurrent = function (charIndex)
     if charIndex == nil then
-        return MM.party.getActiveCharacter()
+        return game.party.getActiveCharacter()
     end
     return charIndex
 end

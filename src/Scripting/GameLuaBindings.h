@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include <sol/sol.hpp>
 
 #include "LuaItemQueryTable.h"
 #include "IBindings.h"
@@ -15,18 +14,18 @@ class GameLuaBindings : public IBindings {
  public:
     explicit GameLuaBindings(const sol::state_view &luaState);
     ~GameLuaBindings() override;
-
-    void init() override;
+    sol::table getBindingTable() override;
 
  private:
     void _registerAudioBindings(sol::table &table);
     void _registerRenderBindings(sol::table &table);
-    void _registerGameBindings(sol::table &table);
+    void _registerMiscBindings(sol::table &table);
     void _registerPartyBindings(sol::table &table);
     void _registerItemBindings(sol::table &table);
     void _registerSerializationBindings(sol::table &table);
     void _registerEnums(sol::table &table);
 
     sol::state_view _luaState;
+    std::optional<sol::table> _bindingTable;
     LuaItemQueryTable<Character> _characterInfoQueryTable;
 };

@@ -41,22 +41,24 @@ GameLuaBindings::GameLuaBindings(const sol::state_view &luaState)
 
 GameLuaBindings::~GameLuaBindings() = default;
 
-void GameLuaBindings::init() {
-    _luaState.set_function("initMMBindings", [this]() {
-        sol::table mainTable = _luaState.create_table();
-        _registerGameBindings(mainTable);
-        _registerPartyBindings(mainTable);
-        _registerItemBindings(mainTable);
-        _registerAudioBindings(mainTable);
-        _registerSerializationBindings(mainTable);
-        _registerRenderBindings(mainTable);
-        _registerEnums(mainTable);
-        return mainTable;
-    });
+sol::table GameLuaBindings::getBindingTable() {
+    if (!_bindingTable) {
+        sol::table table = _luaState.create_table();
+        _registerMiscBindings(table);
+        _registerPartyBindings(table);
+        _registerItemBindings(table);
+        _registerAudioBindings(table);
+        _registerSerializationBindings(table);
+        _registerRenderBindings(table);
+        _registerEnums(table);
+        _bindingTable = table;
+    }
+    return *_bindingTable;
 }
 
-void GameLuaBindings::_registerGameBindings(sol::table &table) {
-    table["game"] = _luaState.create_table_with(
+void GameLuaBindings::_registerMiscBindings(sol::table &table) {
+    //TODO(Gerark) We shouldn't have a misc table but it will disappear soon
+    table["misc"] = _luaState.create_table_with(
         "goToScreen", [](int screenIndex) {
             SetCurrentMenuID(MenuType(screenIndex));
         },

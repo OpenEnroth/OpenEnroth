@@ -1,14 +1,14 @@
-local MM = require "mmbindings"
+local game = requireGame()
 
 local addItemToInventory = function (itemId, characterIndex)
     if not characterIndex then
-        characterIndex = MM.party.getActiveCharacter()
+        characterIndex = game.party.getActiveCharacter()
     end
 
-    local item = MM.items.getItemInfo(itemId)
+    local item = game.items.getItemInfo(itemId)
     if item then
-        local result = MM.party.addItemToInventory(characterIndex, itemId)
-        local character = MM.party.getCharacterInfo(characterIndex, { "name" })
+        local result = game.party.addItemToInventory(characterIndex, itemId)
+        local character = game.party.getCharacterInfo(characterIndex, { "name" })
         if result then
             return character.name .. " gained item: " .. item.name, true
         else
@@ -21,13 +21,13 @@ local addItemToInventory = function (itemId, characterIndex)
 end
 
 local addRandomItemToInventory = function (characterIndex, filterFunction)
-    local itemId = MM.items.getRandomItem(filterFunction)
+    local itemId = game.items.getRandomItem(filterFunction)
     return addItemToInventory(itemId, characterIndex)
 end
 
 local filterItemByMinLevel = function (minLevel)
     return function (itemId)
-        return MM.items.getItemInfo(itemId).level >= minLevel
+        return game.items.getItemInfo(itemId).level >= minLevel
     end
 end
 

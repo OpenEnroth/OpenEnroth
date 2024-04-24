@@ -1,14 +1,7 @@
 {
     "diagnostics": {
         "disable": [],
-        "globals": [
-            "initMMBindings",
-            "logsink",
-            "NK_EDIT_COMMITED",
-            "NK_EDIT_INACTIVE",
-            "NK_EDIT_ACTIVE",
-            "nk_scroll"
-        ],
+        "globals": [],
         "groupFileStatus": {
             "ambiguity": "Any",
             "await": "Any",

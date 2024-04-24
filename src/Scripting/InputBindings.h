@@ -2,17 +2,17 @@
 
 #include "IBindings.h"
 
-#include <sol/sol.hpp>
-
 class InputScriptEventHandler;
 
 class InputBindings : public IBindings {
  public:
     explicit InputBindings(const sol::state_view &solState, InputScriptEventHandler &inputScriptEventHandler);
-
-    void init() override;
+    sol::table getBindingTable() override;
 
  private:
+    void _fillTableWithEnums();
+
     sol::state_view _solState;
+    sol::table _bindingTable;
     InputScriptEventHandler &_inputScriptEventHandler;
 };

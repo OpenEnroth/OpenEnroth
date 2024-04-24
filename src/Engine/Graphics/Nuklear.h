@@ -17,50 +17,41 @@ class LogSink;
 
 class Nuklear {
  public:
-     enum NUKLEAR_MODE: int32_t {
-         NUKLEAR_MODE_SHARED = 1,
-         NUKLEAR_MODE_EXCLUSIVE
-     };
+    enum NUKLEAR_MODE : int32_t {
+        NUKLEAR_MODE_SHARED = 1,
+        NUKLEAR_MODE_EXCLUSIVE
+    };
 
-     enum NUKLEAR_ACTION: int32_t {
-         NUKLEAR_ACTION_CREATE = 1,
-         NUKLEAR_ACTION_DRAW,
-         NUKLEAR_ACTION_RELEASE
-     };
+    enum NUKLEAR_ACTION : int32_t {
+        NUKLEAR_ACTION_CREATE = 1,
+        NUKLEAR_ACTION_DRAW,
+        NUKLEAR_ACTION_RELEASE
+    };
 
-     enum NUKLEAR_STAGE: int32_t {
-         NUKLEAR_STAGE_PRE = 1,
-         NUKLEAR_STAGE_POST
-     };
+    enum NUKLEAR_STAGE : int32_t {
+        NUKLEAR_STAGE_PRE = 1,
+        NUKLEAR_STAGE_POST
+    };
 
-     Nuklear();
+    Nuklear();
 
-     static std::unique_ptr<Nuklear> Initialize();
-     bool Create(WindowType winType);
-     bool Draw(NUKLEAR_STAGE stage, WindowType winType, int type);
-     int KeyEvent(PlatformKey key);
-     bool Reload();
-     void Release(WindowType winType);
-     void Destroy();
-     void addInitLuaLibs(std::function<void(lua_State *)> callback);
-     void addInitLuaFile(const char *lua_file);
-     bool isInitialized(WindowType winType) const;
-     enum NUKLEAR_MODE Mode(WindowType winType);
+    static std::unique_ptr<Nuklear> Initialize();
+    bool Create(WindowType winType);
+    bool Draw(NUKLEAR_STAGE stage, WindowType winType, int type);
+    bool Reload();
+    void Release(WindowType winType);
+    void Destroy();
+    bool isInitialized(WindowType winType) const;
+    enum NUKLEAR_MODE Mode(WindowType winType);
 
-     static lua_State* getLuaState();
-
-     struct nk_context *ctx = nullptr;
+    struct nk_context *ctx = nullptr;
+    void setLuaState(lua_State *luaState);
+    void initBindings();
 
  private:
-     void Release(WindowType winType, bool reload);
-     bool LuaInit();
-     void LuaRelease();
-     bool LuaLoadTemplate(WindowType winType);
-
-     std::vector<std::string> _initLuaFiles;
-     std::vector<std::function<void(lua_State *)>> _initLuaLibCallbacks;
-
- protected:
+    void Release(WindowType winType, bool reload);
+    void LuaRelease();
+    bool LuaLoadTemplate(WindowType winType);
 };
 
 extern Nuklear *nuklear;

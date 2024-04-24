@@ -6,7 +6,9 @@ set(SCRIPTING_SOURCES
         InputBindings.cpp
         InputScriptEventHandler.cpp
         LoggerBindings.cpp
-        ScriptingSystem.cpp)
+        NuklearBindings.cpp
+        ScriptingSystem.cpp
+        ScriptLogSink.cpp)
 
 set(SCRIPTING_HEADERS
         ConfigBindings.h
@@ -14,8 +16,10 @@ set(SCRIPTING_HEADERS
         InputBindings.h
         InputScriptEventHandler.h
         LoggerBindings.h
+        NuklearBindings.h
         LuaItemQueryTable.h
-        ScriptingSystem.h)
+        ScriptingSystem.h
+        ScriptLogSink.h)
 
 add_library(scripting STATIC ${SCRIPTING_SOURCES} ${SCRIPTING_HEADERS})
 target_check_style(scripting)

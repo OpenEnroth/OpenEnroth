@@ -10,9 +10,10 @@ class InputScriptEventHandler : public PlatformEventFilter {
  public:
     InputScriptEventHandler();
     bool keyPressEvent(const PlatformKeyEvent *event) override;
-    void registerKeyPress(PlatformKey key, const sol::function &callback);
-    void unregisterKeyPress(PlatformKey key, const sol::function &callbackToRemove);
+
+    typedef std::function<sol::function(std::string_view)> ScriptFunctionProvider;
+    void setScriptFunctionProvider(const ScriptFunctionProvider &scriptFunctionProvider);
 
  private:
-    std::unordered_map<PlatformKey, std::vector<sol::function>> _keyPressCallbacks;
+    ScriptFunctionProvider _scriptFunctionProvider;
 };

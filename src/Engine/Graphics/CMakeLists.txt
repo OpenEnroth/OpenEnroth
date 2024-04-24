@@ -20,7 +20,6 @@ set(ENGINE_GRAPHICS_SOURCES
         LocationFunctions.cpp
         Nuklear.cpp
         NuklearEventHandler.cpp
-        NuklearLogSink.cpp
         NuklearUtils.cpp
         Outdoor.cpp
         Overlays.cpp
@@ -55,7 +54,6 @@ set(ENGINE_GRAPHICS_HEADERS
         LocationTime.h
         Nuklear.h
         NuklearEventHandler.h
-        NuklearLogSink.h
         NuklearUtils.h
         Outdoor.h
         Overlays.h
@@ -86,8 +84,8 @@ target_link_libraries(engine_graphics
         library_image
         glm::glm
         OpenGL::GL
-        PRIVATE
         libluajit
+        sol2
+        PRIVATE
         glad
-        nuklear
-        sol2)
+        nuklear)

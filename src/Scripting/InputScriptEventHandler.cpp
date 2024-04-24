@@ -1,30 +1,27 @@
 #include "InputScriptEventHandler.h"
 
+#include <Library/Logger/Logger.h>
+
 InputScriptEventHandler::InputScriptEventHandler() : PlatformEventFilter({ EVENT_KEY_PRESS }) {
 }
 
 bool InputScriptEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
-    if (auto itr = _keyPressCallbacks.find(event->key); itr != _keyPressCallbacks.end()) {
-        for (auto &&callback : itr->second) {
-            return callback();
+    bool isHandled = false;
+    sol::safe_function function = _scriptFunctionProvider("_globalOnKeyPress");
+    if (function.valid()) {
+        try {
+            function.set_error_handler(_scriptFunctionProvider("_errorHandler"));
+            auto result = function(event->key);
+            if (result.valid()) {
+                return result;
+            }
+        } catch (const sol::error &e) {
+            logger->error("[Script] An unexpected error has occurred: ", e.what());
         }
     }
-
     return false;
 }
 
-void InputScriptEventHandler::registerKeyPress(PlatformKey key, const sol::function &callback) {
-    if (auto itr = _keyPressCallbacks.find(key); itr != _keyPressCallbacks.end()) {
-        itr->second.push_back(callback);
-    } else {
-        _keyPressCallbacks.insert({ key, { callback } });
-    }
-}
-
-void InputScriptEventHandler::unregisterKeyPress(PlatformKey key, const sol::function &callbackToRemove) {
-    if (auto itr = _keyPressCallbacks.find(key); itr != _keyPressCallbacks.end()) {
-        std::erase_if(itr->second, [callbackPointer = callbackToRemove.pointer()](const auto &callback) {
-            return callback.pointer() == callbackPointer;
-        });
-    }
+void InputScriptEventHandler::setScriptFunctionProvider(const ScriptFunctionProvider &scriptFunctionProvider) {
+    _scriptFunctionProvider = scriptFunctionProvider;
 }

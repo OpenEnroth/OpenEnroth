@@ -1,7 +1,9 @@
 #pragma once
 
+#include <sol/sol.hpp>
+
 class IBindings {
  public:
     virtual ~IBindings() = default;
-    virtual void init() = 0;
+    virtual sol::table getBindingTable() = 0;
 };

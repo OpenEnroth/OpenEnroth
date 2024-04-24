@@ -3,6 +3,7 @@
 #include <string_view>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 #include <utility>
 #include <sol/sol.hpp>
@@ -17,21 +18,26 @@ class ScriptingSystem {
     );
     ~ScriptingSystem();
 
-    void start();
+    static std::unique_ptr<ScriptingSystem> create(
+        std::string_view scriptFolder,
+        const std::vector<std::string> &entryPointFiles);
+
+    void executeEntryPoints();
 
     template<typename TBindings, typename ...TArgs>
-    void addBindings(TArgs &&... args) {
+    void addBindings(std::string_view bindingTableName, TArgs &&... args) {
         auto bindings = std::make_unique<TBindings>(_solState, std::forward<TArgs>(args) ...);
-        _bindings.push_back(std::move(bindings));
+        _addBindings(bindingTableName, std::move(bindings));
     }
 
  private:
     void _initBaseLibraries();
-    void _initRequireTable(std::string_view scriptFolder);
-    void _bindSetupFunction();
-    void _runEntryPoints();
+    void _initPackageTable(std::string_view scriptFolder);
+    void _addBindings(std::string_view name, std::unique_ptr<IBindings> bindings);
+    void _bindRequireBindingsApi();
 
     sol::state _solState;
-    std::vector<std::unique_ptr<IBindings>> _bindings;
+    std::unordered_map<std::string, std::unique_ptr<IBindings>> _bindings;
     std::vector<std::string> _entryPointFiles;
+    std::string _scriptFolder;
 };

@@ -3,6 +3,9 @@
 -- It takes care of showing the debug tools. Currently the only debug tool in use is the console
 
 local Console = require "console"
+local Input = require "core.input"
+local inputBindings = requireInput()
+local config = requireConfig()
 
 local isWindowHovered = false
 local baseColor = { 32, 32, 32, 255 }
@@ -14,27 +17,35 @@ local function getColorAlpha(col)
 end
 
 local function historyPrev()
-    if isWindowHovered then
+    if Console.editTB.state[NK_EDIT_ACTIVE] then
         Console:navigateHistory(-1)
+        return true
     end
+    return false
 end
 
 local function historyNext()
-    if isWindowHovered then
+    if Console.editTB.state[NK_EDIT_ACTIVE] then
         Console:navigateHistory(1)
+        return true
     end
+    return false
 end
 
----@param ctx NuklearContext
+local unregisterFromInput = function () end
+
+---@param _ NuklearContext
 ---@return table
 ---@diagnostic disable-next-line: name-style-check
-function ui_init(ctx)
+function ui_init(_)
     Console.scroll:set(0, 0)
     if #Console.messages == 0 then
         Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
     end
-    hotkeys.setHotkey(ctx, "UP", false, false, false, historyPrev)
-    hotkeys.setHotkey(ctx, "DOWN", false, false, false, historyNext)
+    unregisterFromInput = Input.registerKeyPressBulk({
+        { key = inputBindings.PlatformKey.KEY_UP,   callback = historyPrev },
+        { key = inputBindings.PlatformKey.KEY_DOWN, callback = historyNext }
+    })
     return {
         mode = NUKLEAR_MODE_SHARED,
         draw = ui_draw,
@@ -119,7 +130,7 @@ local function drawConsole(ctx)
     ui.nk_style_pop(ctx, "window", "fixed_background")
 
     if ui.nk_window_is_hidden(ctx, "Debug Console") then
-        dev.setConfig("debug", "show_console", false)
+        config.setConfig("debug", "show_console", false)
     end
 end
 
@@ -129,7 +140,7 @@ end
 ---@diagnostic disable-next-line: name-style-check
 function ui_draw(ctx, stage)
     if stage == NUKLEAR_STAGE_PRE then
-        local show = dev.getConfig("debug", "show_console")
+        local show = config.getConfig("debug", "show_console")
         if show == "true" then
             drawConsole(ctx)
         end
@@ -137,8 +148,8 @@ function ui_draw(ctx, stage)
 end
 
 ---
----@param ctx NuklearContext
+---@param _ NuklearContext
 ---@diagnostic disable-next-line: name-style-check
-function ui_release(ctx)
-    hotkeys.unsetHotkeys(ctx)
+function ui_release(_)
+    unregisterFromInput()
 end
