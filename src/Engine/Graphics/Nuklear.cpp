@@ -30,12 +30,11 @@
 
 #include "Utility/DataPath.h"
 
-//lua_State *lua = nullptr;
+/*TODO(Gerark) - We need to keep a "global" lua state pointer here for now
+because I just realized there are 2 instance of Nuklear alive at the same time
+Better to work on this cleanup in another branch*/
+lua_State *lua = nullptr;
 Nuklear *nuklear = nullptr;
-/*TODO(Gerark) - Apparently we need to keep a "global" lua state variable 
-because I just realized there are 2 instance of Nuklear running and I just
-figured out cause I'm trying to use sol2 instead. Better to work on this in another branch*/
-lua_State *lua;
 
 Nuklear::Nuklear() {
 }
@@ -729,9 +728,6 @@ std::unique_ptr<Nuklear> Nuklear::Initialize() {
 bool Nuklear::Create(WindowType winType) {
     if (!nuklear || !nuklear->ctx)
         return false;
-
-//    if (!lua)
-//        LuaInit();
 
     return LuaLoadTemplate(winType);
 }
