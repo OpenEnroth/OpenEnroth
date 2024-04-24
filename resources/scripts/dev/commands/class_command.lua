@@ -29,5 +29,3 @@ return {
     description = "Change and get information about character class",
     callback = subCommands
 }
-
-} } -- ADDING RANDOM BRACES TO FORCE AN ERROR FOR LuaLS
