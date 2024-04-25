@@ -18,9 +18,6 @@ ScriptingSystem::ScriptingSystem(
     _initPackageTable(scriptFolder);
 }
 
-ScriptingSystem::~ScriptingSystem() {
-}
-
 std::unique_ptr<ScriptingSystem> ScriptingSystem::create(
     std::string_view scriptFolder,
     const std::vector<std::string> &entryPointFiles) {

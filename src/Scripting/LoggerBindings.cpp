@@ -8,7 +8,11 @@
 #include "ScriptLogSink.h"
 
 LoggerBindings::LoggerBindings(const sol::state_view &solState, DistLogSink &distLogSink) : _solState(solState) {
-    distLogSink.addLogSink(std::make_unique<ScriptLogSink>(solState));
+    _unregisterLogSink = distLogSink.addLogSink(std::make_unique<ScriptLogSink>(solState));
+}
+
+LoggerBindings::~LoggerBindings() {
+    _unregisterLogSink();
 }
 
 sol::table LoggerBindings::getBindingTable() {

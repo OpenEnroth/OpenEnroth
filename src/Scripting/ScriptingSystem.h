@@ -16,7 +16,6 @@ class ScriptingSystem {
         std::string_view scriptFolder,
         const std::vector<std::string> &entryPointFiles
     );
-    ~ScriptingSystem();
 
     static std::unique_ptr<ScriptingSystem> create(
         std::string_view scriptFolder,

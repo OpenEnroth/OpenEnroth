@@ -9,6 +9,15 @@ void DistLogSink::write(const LogCategory &category, LogLevel level, std::string
     }
 }
 
-void DistLogSink::addLogSink(std::unique_ptr<LogSink> logSink) {
+std::function<void()> DistLogSink::addLogSink(std::unique_ptr<LogSink> logSink) {
+    auto logSinkPtr = logSink.get();
     _logSinks.push_back(std::move(logSink));
+
+    std::function<void()> cleanup = [logSinkPtr, this]() {
+        std::erase_if(_logSinks, [logSinkPtr](auto &&internalLogSink) {
+            return internalLogSink.get() == logSinkPtr;
+        });
+    };
+
+    return cleanup;
 }
