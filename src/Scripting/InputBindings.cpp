@@ -25,6 +25,7 @@ sol::table InputBindings::getBindingTable() {
 
 void InputBindings::_fillTableWithEnums() {
     _bindingTable.new_enum<false>("PlatformKey",
+        /*
         "KEY_CHAR", PlatformKey::KEY_CHAR,
         "KEY_F1", PlatformKey::KEY_F1,
         "KEY_F2", PlatformKey::KEY_F2,
@@ -82,12 +83,12 @@ void InputBindings::_fillTableWithEnums() {
         "KEY_SINGLEQUOTE", PlatformKey::KEY_SINGLEQUOTE,
         "KEY_BACKSLASH", PlatformKey::KEY_BACKSLASH,
         "KEY_TILDE", PlatformKey::KEY_TILDE,
-
+        */
         "KEY_LEFT", PlatformKey::KEY_LEFT,
         "KEY_RIGHT", PlatformKey::KEY_RIGHT,
         "KEY_UP", PlatformKey::KEY_UP,
         "KEY_DOWN", PlatformKey::KEY_DOWN,
-
+        /*
         "KEY_PRINTSCREEN", PlatformKey::KEY_PRINTSCREEN,
 
         "KEY_INSERT", PlatformKey::KEY_INSERT,
@@ -134,5 +135,6 @@ void InputBindings::_fillTableWithEnums() {
         "KEY_GAMEPAD_RIGHTSTICK_DOWN", PlatformKey::KEY_GAMEPAD_RIGHTSTICK_DOWN,
         "KEY_GAMEPAD_L2", PlatformKey::KEY_GAMEPAD_L2,
         "KEY_GAMEPAD_R2", PlatformKey::KEY_GAMEPAD_R2
+        */
     );
 }
