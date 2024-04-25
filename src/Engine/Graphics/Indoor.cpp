@@ -842,10 +842,10 @@ void UpdateActors_BLV() {
         } else {
             // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
-            actor.velocity.x = fixpoint_mul(55000, actor.velocity.x);
-            actor.velocity.y = fixpoint_mul(55000, actor.velocity.y);
+            actor.velocity.x *= 0.83923339843f;
+            actor.velocity.y *= 0.83923339843f;
             if (isFlying)
-                actor.velocity.z = fixpoint_mul(55000, actor.velocity.z);
+                actor.velocity.z *= 0.83923339843f;
         }
 
         if (actor.pos.z <= floorZ) {
@@ -866,7 +866,7 @@ void UpdateActors_BLV() {
         if (actor.velocity.lengthSqr() >= 400) {
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
-            actor.velocity = Vec3i(0, 0, 0);
+            actor.velocity = Vec3f(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
