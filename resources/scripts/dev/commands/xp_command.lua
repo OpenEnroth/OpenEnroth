@@ -1,5 +1,5 @@
 local Utilities = require "dev.commands.command_utils"
-local game = requireGame()
+local game = require "core.game".bindings
 
 ---Function that gives to the party a "xp" amount of Experience points and play the award animation on all characters
 ---@param xp integer - number of experience points to give to the party

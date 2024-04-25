@@ -1,5 +1,5 @@
 local Utilities = require "dev.commands.command_utils"
-local game = requireGame()
+local game = require "core.game".bindings
 
 local subCommands = {
     get = Utilities.showProperty(game.party.getFood, "food"),

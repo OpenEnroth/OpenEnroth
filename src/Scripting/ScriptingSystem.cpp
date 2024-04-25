@@ -16,7 +16,6 @@ ScriptingSystem::ScriptingSystem(
   , _scriptFolder(scriptFolder) {
     _initBaseLibraries();
     _initPackageTable(scriptFolder);
-    _bindRequireBindingsApi();
 }
 
 ScriptingSystem::~ScriptingSystem() {
@@ -31,9 +30,9 @@ std::unique_ptr<ScriptingSystem> ScriptingSystem::create(
 void ScriptingSystem::executeEntryPoints() {
     for (auto &&entryPointFile : _entryPointFiles) {
         try {
-            _solState.safe_script_file(makeDataPath(_scriptFolder, entryPointFile));
+            _solState.script_file(makeDataPath(_scriptFolder, entryPointFile));
         } catch (const sol::error &e) {
-            logger->error("[Script] An unexpected error has occurred: ", e.what());
+            logger->error("[Script] An unexpected error has occurred: {}", e.what());
         }
     }
 }
@@ -59,20 +58,8 @@ void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
 }
 
 void ScriptingSystem::_addBindings(std::string_view bindingTableName, std::unique_ptr<IBindings> bindings) {
-    _solState["require" + std::string(bindingTableName)] = [bindingsPtr = bindings.get()]() {
+    _solState["require" + std::string(bindingTableName) + "Bindings"] = [bindingsPtr = bindings.get()]() {
         return bindingsPtr->getBindingTable();
     };
     _bindings.insert({ bindingTableName.data(), std::move(bindings) });
-}
-
-void ScriptingSystem::_bindRequireBindingsApi() {
-    /* In lua we can request a binding table in two ways:
-        requireBindings("Game") -- by providing the name
-        requireGame() -- by calling the direct function */
-    _solState["requireBindings"] = [this](std::string_view bindingTableName) {
-        if (auto itr = _bindings.find(bindingTableName.data()); itr != _bindings.end()) {
-            return sol::make_object(_solState, itr->second->getBindingTable());
-        }
-        return sol::make_object(_solState, sol::lua_nil);
-    };
 }

@@ -1,4 +1,4 @@
-local InputContext = {}
+local inputListener = {}
 
 ---@type table<PlatformKey, table<integer, fun()>>
 local keyPressedCallbacks = {}
@@ -7,7 +7,7 @@ local keyPressedCallbacks = {}
 ---@param key PlatformKey
 ---@param callback fun()
 ---@return function - call this function to unregister the callback
-InputContext.registerKeyPress = function (key, callback)
+inputListener.registerKeyPress = function (key, callback)
     local callbacks = keyPressedCallbacks[key]
     if callbacks == nil then
         callbacks = {}
@@ -32,11 +32,11 @@ end
 ---Useful in case we want a common unregister function instead of dealing with multiple
 ---@param items table<integer, KeyCallbackItem>
 ---@return fun()
-InputContext.registerKeyPressBulk = function (items)
+inputListener.registerKeyPressBulk = function (items)
     ---@type table<integer, KeyCallbackItem>
     local unregisterBulk = {}
     for _, item in pairs(items) do
-        local unregister = InputContext.registerKeyPress(item.key, item.callback)
+        local unregister = inputListener.registerKeyPress(item.key, item.callback)
         table.insert(unregisterBulk, unregister)
     end
     return function ()
@@ -65,4 +65,8 @@ _globalOnKeyPress = function (keyPressed)
     return false
 end
 
-return InputContext
+local inputBindings = requireInputBindings()
+return {
+    bindings = inputBindings,
+    listener = inputListener
+}

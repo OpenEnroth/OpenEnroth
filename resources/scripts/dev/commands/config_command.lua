@@ -1,4 +1,4 @@
-local config = requireConfig()
+local config = require "core.config".bindings
 
 ---Get the value of a configEntry
 ---@param configName string    - config entry name

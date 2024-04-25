@@ -1,7 +1,7 @@
 --- Module that takes care of the state of the debug console
 
 local CommandManager = require "dev.commands.command_manager"
-local Logger = require "logger"
+local logListener = require "core.logger".listener
 
 local successColor = { 64, 146, 222, 255 }
 local defaultColor = { 160, 160, 160, 255 }
@@ -217,6 +217,6 @@ local function onLog(level, message)
     Console:addMessage("[" .. level .. "] " .. message, getColorByLogLevel(level), "log")
 end
 
-Logger.register(onLog)
+logListener.register(onLog)
 
 return Console

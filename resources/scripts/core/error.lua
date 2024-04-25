@@ -1,4 +1,4 @@
-local logger = requireLog()
+local logger = require "core.logger".bindings
 
 ---Global function called from c++ used to catch errors
 ---@param errorMessage string

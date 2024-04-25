@@ -1,4 +1,4 @@
-local game = requireGame()
+local game = require "core.game".bindings
 local CommandUtilities = require "dev.commands.command_utils"
 local Utilities = require "utils"
 

@@ -1,4 +1,4 @@
-local game = requireGame()
+local game = require "core.game".bindings
 
 local addItemToInventory = function (itemId, characterIndex)
     if not characterIndex then

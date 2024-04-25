@@ -100,37 +100,17 @@
 --- @field error fun(message:string)
 --- @field critical fun(message:string)
 
---- Initialize all the register bindings in c++
-function setupBindings()
-end
-
----Request a bindings table from c++
----@param name string name of the binding table
----@return table
-function requireBindings(name)
-    print(name)
-    return {}
-end
-
 ---@return GameBindings
-function requireGame()
-    return {}
-end
+function requireGameBindings() return {} end
 
 ---@return LogBindings
-function requireLog()
-    return {}
-end
+function requireLogBindings() return {} end
 
 ---@return InputBindings
-function requireInput()
-    return {}
-end
+function requireInputBindings() return {} end
 
 ---@return ConfigBindings
-function requireConfig()
-    return {}
-end
+function requireConfigBindings() return {} end
 
 --- NUKLEAR META DOCS
 

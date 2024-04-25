@@ -1,5 +1,5 @@
 local Utilities = require "dev.commands.command_utils"
-local game = requireGame()
+local game = require "core.game".bindings
 
 local function showCharsHp()
     local count = game.party.getPartySize()

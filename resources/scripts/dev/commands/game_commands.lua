@@ -14,7 +14,7 @@ local ManaCommand = require "dev.commands.mana_command"
 local SkillsCommand = require "dev.commands.skills_command"
 local ClassCommand = require "dev.commands.class_command"
 
-local game = requireGame()
+local game = require "core.game".bindings
 
 local reloadShadersCommand = {
     name = "reload_shaders",

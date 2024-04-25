@@ -1,5 +1,5 @@
 local Utilities = require "dev.commands.command_utils"
-local game = requireGame()
+local game = require "core.game".bindings
 
 local function addSpParty(skillPoints)
     local addSpToChar = Utilities.changeCharProperty("sp", Utilities.opType.add, true, tonumber)

@@ -4,8 +4,7 @@
 
 local Console = require "console"
 local Input = require "core.input"
-local inputBindings = requireInput()
-local config = requireConfig()
+local config = require "core.config".bindings
 
 local isWindowHovered = false
 local baseColor = { 32, 32, 32, 255 }
@@ -42,9 +41,9 @@ function ui_init(_)
     if #Console.messages == 0 then
         Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
     end
-    unregisterFromInput = Input.registerKeyPressBulk({
-        { key = inputBindings.PlatformKey.KEY_UP,   callback = historyPrev },
-        { key = inputBindings.PlatformKey.KEY_DOWN, callback = historyNext }
+    unregisterFromInput = Input.listener.registerKeyPressBulk({
+        { key = Input.bindings.PlatformKey.KEY_UP,   callback = historyPrev },
+        { key = Input.bindings.PlatformKey.KEY_DOWN, callback = historyNext }
     })
     return {
         mode = NUKLEAR_MODE_SHARED,

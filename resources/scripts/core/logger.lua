@@ -1,21 +1,15 @@
---[[
- Example:
- local logger = require "logger"
- logger.register(function(level, message) {
-    print("I'M CALLED WHEN A LOG MESSAGE IS CREATED")
- })
-]]
+local logBindings = requireLogBindings()
 
 ---@type function[]
 local callbacks = {}
 
 local isLogging = false
 
---- The logSink is a global function called from c++ LogSink whenever a log message is created
---- If you change the variable name be sure to do the same in c++!!!
+--- The _globalLogSink is a global function called from c++ LogSink whenever a log message is created
 ---@param logLevel string
 ---@param message string
-function logSink(logLevel, message)
+---@diagnostic disable-next-line: name-style-check
+function _globalLogSink(logLevel, message)
     if isLogging then
         return
     end
@@ -27,10 +21,17 @@ function logSink(logLevel, message)
     isLogging = false
 end
 
-return {
+---@class LogListener
+---@field register fun(callback: function)
+local logListener = {
     ---Register a callback function accepting a log message ( look at the logsink function above )
     ---@param callback function
     register = function (callback)
         table.insert(callbacks, callback)
     end
+}
+
+return {
+    bindings = logBindings,
+    listener = logListener
 }

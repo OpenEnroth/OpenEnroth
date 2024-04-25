@@ -34,7 +34,6 @@ class ScriptingSystem {
     void _initBaseLibraries();
     void _initPackageTable(std::string_view scriptFolder);
     void _addBindings(std::string_view name, std::unique_ptr<IBindings> bindings);
-    void _bindRequireBindingsApi();
 
     sol::state _solState;
     std::unordered_map<std::string, std::unique_ptr<IBindings>> _bindings;
