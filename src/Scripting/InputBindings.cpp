@@ -87,7 +87,7 @@ void InputBindings::_fillTableWithEnums() {
         "KEY_LEFT", PlatformKey::KEY_LEFT,
         "KEY_RIGHT", PlatformKey::KEY_RIGHT,
         "KEY_UP", PlatformKey::KEY_UP,
-        "KEY_DOWN", PlatformKey::KEY_DOWN,
+        "KEY_DOWN", PlatformKey::KEY_DOWN
         /*
         "KEY_PRINTSCREEN", PlatformKey::KEY_PRINTSCREEN,
 
