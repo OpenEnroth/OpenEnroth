@@ -17,7 +17,7 @@ class ScriptingSystem {
         std::string_view entryPointFile
     );
 
-    void executeEntryPoints();
+    void executeEntryPoint();
 
     template<typename TBindings, typename ...TArgs>
     void addBindings(std::string_view bindingTableName, TArgs &&... args) {

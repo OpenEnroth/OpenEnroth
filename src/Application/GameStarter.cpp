@@ -160,13 +160,13 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _game = std::make_unique<Game>(_application.get(), _config);
 
     _application->installComponent(std::make_unique<InputScriptEventHandler>());
-    _scriptingSystem = ScriptingSystem::create("scripts", { "init.lua" });
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua");
     _scriptingSystem->addBindings<LoggerBindings>("Log", *_defaultLogSink);
     _scriptingSystem->addBindings<GameLuaBindings>("Game");
     _scriptingSystem->addBindings<ConfigBindings>("Config");
     _scriptingSystem->addBindings<InputBindings>("Input", *_application->component<InputScriptEventHandler>());
     _scriptingSystem->addBindings<NuklearBindings>("Nuklear", _engine->nuklear.get());
-    _scriptingSystem->executeEntryPoints();
+    _scriptingSystem->executeEntryPoint();
 }
 
 GameStarter::~GameStarter() {

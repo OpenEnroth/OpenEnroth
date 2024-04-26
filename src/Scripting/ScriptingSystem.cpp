@@ -20,7 +20,7 @@ ScriptingSystem::ScriptingSystem(
     _initPackageTable(scriptFolder);
 }
 
-void ScriptingSystem::executeEntryPoints() {
+void ScriptingSystem::executeEntryPoint() {
     try {
         _solState.script_file(makeDataPath(_scriptFolder, _entryPointFile));
     } catch (const sol::error &e) {
