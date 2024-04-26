@@ -180,10 +180,13 @@ void Engine::drawWorld() {
     }
 }
 
+void Engine::drawDebugView() {
+
+}
+
 void Engine::drawHUD() {
     // 2d from now on
     render->BeginScene2D();
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_DebugMenu, 1);
 
     DrawGUI();
     GUI_UpdateWindows();
@@ -192,15 +195,13 @@ void Engine::drawHUD() {
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
-
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
     drawWorld();
     drawHUD();
-
+    drawDebugView();
     render->Present();
 }
 

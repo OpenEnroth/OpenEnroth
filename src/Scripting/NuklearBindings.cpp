@@ -3,8 +3,6 @@
 #include <Engine/Graphics/Nuklear.h>
 
 NuklearBindings::NuklearBindings(const sol::state_view &solState, Nuklear *nuklear) : _nuklear(nuklear) {
-    _nuklear->setLuaState(solState);
-    _nuklear->initBindings();
 }
 
 sol::table NuklearBindings::getBindingTable() {

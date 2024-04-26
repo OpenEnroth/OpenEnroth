@@ -11,8 +11,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <nuklear_config.h> // NOLINT: not a C system header.
-
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
@@ -22,7 +20,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/Renderer/IDebugViewRenderer.h"
 #include "OpenGLShader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -73,29 +71,6 @@ RenderVertexSoft array_507D30[50];
 static GLuint framebuffer = 0;
 static GLuint framebufferTextures[2] = {0, 0};
 static bool OpenGLES = false;
-
-struct nk_vertex {
-    float position[2]{};
-    float uv[2]{};
-    nk_byte col[4]{};
-};
-
-struct nk_device {
-    struct nk_buffer cmds;
-    struct nk_draw_null_texture null;
-    struct nk_font_atlas atlas;
-    uint32_t vbo{}, vao{}, ebo{};
-    int32_t attrib_pos{};
-    int32_t attrib_uv{};
-    int32_t attrib_col{};
-    int32_t uniform_tex{};
-    int32_t uniform_proj{};
-};
-
-struct nk_state {
-    struct nk_vertex vertex;
-    struct nk_device dev;
-};
 
 namespace detail_gl_error {
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
@@ -213,7 +188,6 @@ OpenGLRenderer::OpenGLRenderer(
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis *vis
 ) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {
-    nk = std::make_unique<nk_state>();
     clip_w = 0;
     clip_x = 0;
     clip_y = 0;
@@ -3210,8 +3184,9 @@ void OpenGLRenderer::Present() {
         /* TODO: nuklear is expected to render at native resolution otherwise when scaled will look awful.
          * So as a hack we call it there, but that way it will work for POST stage only.
          * We should evaluate if we will ever need nuklear to not waste time on fixing it properly. */
-        if (nuklear && nuklear->ctx)
-            NuklearRender(NK_ANTI_ALIASING_ON, NUKLEAR_MAX_VERTEX_MEMORY, NUKLEAR_MAX_ELEMENT_MEMORY);
+        if (_debugViewRenderer) {
+            _debugViewRenderer->render(outputPresent, drawcalls);
+        }
 
         glEnable(GL_SCISSOR_TEST);
         glViewport(0, 0, outputRender.w, outputRender.h);
@@ -4994,17 +4969,8 @@ void OpenGLRenderer::ReloadShaders() {
     forceperVAO = forceperVBO = 0;
     forceperstorecnt = 0;
 
-    if (nuklearshader.ID != 0) {
-        name = "Nuklear";
-        if (!nuklearshader.reload(name, OpenGLES)) {
-            logger->warning("{} {}", name, message);
-        } else {
-            nk->dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
-            nk->dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
-            nk->dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
-            nk->dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
-            nk->dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
-        }
+    if (_debugViewRenderer) {
+        _debugViewRenderer->reloadShaders();
     }
 }
 
@@ -5207,273 +5173,4 @@ void OpenGLRenderer::DrawTwodVerts() {
     render->SetUIClipRect(savex, savey, savez, savew);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
-
-
-bool OpenGLRenderer::NuklearInitialize(struct nk_tex_font *tfont) {
-    struct nk_context *nk_ctx = nuklear->ctx;
-    if (!nk_ctx) {
-        logger->warning("Nuklear context is not available");
-        return false;
-    }
-
-    if (!NuklearCreateDevice()) {
-        logger->warning("Nuklear device creation failed");
-        NuklearRelease();
-        return false;
-    }
-
-    nk_font_atlas_init_default(&nk->dev.atlas);
-    struct nk_tex_font *font = NuklearFontLoad(NULL, 13);
-    nk->dev.atlas.default_font = font->font;
-    if (!nk->dev.atlas.default_font) {
-        logger->warning("Nuklear default font loading failed");
-        NuklearRelease();
-        return false;
-    }
-
-    memcpy(tfont, font, sizeof(struct nk_tex_font));
-
-    if (!nk_init_default(nk_ctx, &nk->dev.atlas.default_font->handle)) {
-        logger->warning("Nuklear initialization failed");
-        NuklearRelease();
-        return false;
-    }
-
-    nk_buffer_init_default(&nk->dev.cmds);
-
-    return true;
-}
-
-bool OpenGLRenderer::NuklearCreateDevice() {
-    nuklearshader.build("nuklear", "glnuklear", OpenGLES);
-    if (nuklearshader.ID == 0) {
-        logger->warning("Nuklear shader failed to compile!");
-        return false;
-    }
-
-    nk_buffer_init_default(&nk->dev.cmds);
-    nk->dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
-    nk->dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
-    nk->dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
-    nk->dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
-    nk->dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
-    {
-        GLsizei vs = sizeof(struct nk_vertex);
-        size_t vp = offsetof(struct nk_vertex, position);
-        size_t vt = offsetof(struct nk_vertex, uv);
-        size_t vc = offsetof(struct nk_vertex, col);
-
-        glGenBuffers(1, &nk->dev.vbo);
-        glGenBuffers(1, &nk->dev.ebo);
-        glGenVertexArrays(1, &nk->dev.vao);
-
-        glBindVertexArray(nk->dev.vao);
-        glBindBuffer(GL_ARRAY_BUFFER, nk->dev.vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk->dev.ebo);
-
-        glEnableVertexAttribArray((GLuint)nk->dev.attrib_pos);
-        glEnableVertexAttribArray((GLuint)nk->dev.attrib_uv);
-        glEnableVertexAttribArray((GLuint)nk->dev.attrib_col);
-
-        glVertexAttribPointer((GLuint)nk->dev.attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void*)vp);
-        glVertexAttribPointer((GLuint)nk->dev.attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void*)vt);
-        glVertexAttribPointer((GLuint)nk->dev.attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void*)vc);
-    }
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    return true;
-}
-
-bool OpenGLRenderer::NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) {
-    struct nk_context *nk_ctx = nuklear->ctx;
-    if (!nk_ctx)
-        return false;
-
-    if (!nk_ctx->begin)
-        return false;
-
-
-    int width, height;
-    int display_width, display_height;
-    struct nk_vec2 scale {};
-    GLfloat ortho[4][4] = {
-        { 2.0f,  0.0f,  0.0f,  0.0f },
-        { 0.0f, -2.0f,  0.0f,  0.0f },
-        { 0.0f,  0.0f, -1.0f,  0.0f },
-        { -1.0f, 1.0f,  0.0f,  1.0f },
-    };
-
-    height = outputPresent.h;
-    width = outputPresent.w;
-    display_height = outputPresent.h; // if you want it scaled with rescaler you could replace this one and one below with outputRender,
-    display_width = outputPresent.w;  // also remove call to this function in ::Present and remove condition for call to this function in Nuklear::Draw.
-
-    ortho[0][0] /= (GLfloat)width;
-    ortho[1][1] /= (GLfloat)height;
-
-    scale.x = (float)display_width / (float)width;
-    scale.y = (float)display_height / (float)height;
-
-    /* setup global state */
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_SCISSOR_TEST);
-    glActiveTexture(GL_TEXTURE0);
-
-    /* setup program */
-    glUseProgram(nuklearshader.ID);
-    glUniform1i(nk->dev.uniform_tex, 0);
-    glUniformMatrix4fv(nk->dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
-    {
-        /* convert from command queue into draw list and draw to screen */
-        const struct nk_draw_command *cmd;
-        void *vertices, *elements;
-        const nk_draw_index *offset = NULL;
-        struct nk_buffer vbuf, ebuf;
-
-        /* allocate vertex and element buffer */
-        glBindVertexArray(nk->dev.vao);
-        glBindBuffer(GL_ARRAY_BUFFER, nk->dev.vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk->dev.ebo);
-
-        glBufferData(GL_ARRAY_BUFFER, max_vertex_buffer, NULL, GL_STREAM_DRAW);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, max_element_buffer, NULL, GL_STREAM_DRAW);
-
-        /* load vertices/elements directly into vertex/element buffer */
-        if (OpenGLES) {
-            vertices = glMapBufferRange(GL_ARRAY_BUFFER, 0, max_vertex_buffer , GL_MAP_WRITE_BIT);
-            elements = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, max_element_buffer, GL_MAP_WRITE_BIT);
-        } else {
-            vertices = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-            elements = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-        }
-        {
-            /* fill convert configuration */
-            struct nk_convert_config config;
-            struct nk_draw_vertex_layout_element vertex_layout[] = {
-                {NK_VERTEX_POSITION, NK_FORMAT_FLOAT, NK_OFFSETOF(struct nk_vertex, position)},
-                {NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(struct nk_vertex, uv)},
-                {NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(struct nk_vertex, col)},
-                {NK_VERTEX_LAYOUT_END}
-            };
-            memset(&config, 0, sizeof(config));
-            config.vertex_layout = vertex_layout;
-            config.vertex_size = sizeof(struct nk_vertex);
-            config.vertex_alignment = NK_ALIGNOF(struct nk_vertex);
-            config.null = nk->dev.null;
-            config.circle_segment_count = 22;
-            config.curve_segment_count = 22;
-            config.arc_segment_count = 22;
-            config.global_alpha = 1.0f;
-            config.shape_AA = (nk_anti_aliasing) AA;
-            config.line_AA = (nk_anti_aliasing) AA;
-
-            /* setup buffers to load vertices and elements */
-            nk_buffer_init_fixed(&vbuf, vertices, (nk_size)max_vertex_buffer);
-            nk_buffer_init_fixed(&ebuf, elements, (nk_size)max_element_buffer);
-            nk_convert(nk_ctx, &nk->dev.cmds, &vbuf, &ebuf, &config);
-        }
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-        glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-
-        /* iterate over and execute each draw command */
-        nk_draw_foreach(cmd, nk_ctx, &nk->dev.cmds) {
-            if (!cmd->elem_count) continue;
-            glBindTexture(GL_TEXTURE_2D, (GLuint)cmd->texture.id);
-            glScissor((GLint)(cmd->clip_rect.x * scale.x),
-                (GLint)((height - (GLint)(cmd->clip_rect.y + cmd->clip_rect.h)) * scale.y),
-                (GLint)(cmd->clip_rect.w * scale.x),
-                (GLint)(cmd->clip_rect.h * scale.y));
-            glDrawElements(GL_TRIANGLES, (GLsizei)cmd->elem_count, GL_UNSIGNED_SHORT, offset);
-            ++drawcalls;
-            offset += cmd->elem_count;
-        }
-        nk_clear(nk_ctx);
-        nk_buffer_clear(&nk->dev.cmds);
-    }
-
-    glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    glDisable(GL_BLEND);
-    // glDisable(GL_SCISSOR_TEST);
-
-    return true;
-}
-
-void OpenGLRenderer::NuklearRelease() {
-    nk_font_atlas_clear(&nk->dev.atlas);
-
-    glDeleteProgram(nuklearshader.ID);
-    glDeleteBuffers(1, &nk->dev.vbo);
-    glDeleteBuffers(1, &nk->dev.ebo);
-    glDeleteVertexArrays(1, &nk->dev.vao);
-
-    nk_buffer_free(&nk->dev.cmds);
-
-    memset(&nk->dev, 0, sizeof(nk->dev));
-}
-
-struct nk_tex_font *OpenGLRenderer::NuklearFontLoad(const char *font_path, size_t font_size) {
-    const void *image;
-    int w, h;
-    GLuint texid;
-
-    struct nk_tex_font *tfont = new (struct nk_tex_font);
-    if (!tfont)
-        return NULL;
-
-    struct nk_font_config cfg = nk_font_config(font_size);
-    cfg.merge_mode = nk_false;
-    cfg.coord_type = NK_COORD_UV;
-    cfg.spacing = nk_vec2(0, 0);
-    cfg.oversample_h = 3;
-    cfg.oversample_v = 1;
-    cfg.range = nk_font_cyrillic_glyph_ranges();
-    cfg.size = font_size;
-    cfg.pixel_snap = 0;
-    cfg.fallback_glyph = '?';
-
-    nk_font_atlas_begin(&nk->dev.atlas);
-
-    if (!font_path)
-        tfont->font = nk_font_atlas_add_default(&nk->dev.atlas, font_size, 0);
-    else
-        tfont->font = nk_font_atlas_add_from_file(&nk->dev.atlas, font_path, font_size, &cfg);
-
-    image = nk_font_atlas_bake(&nk->dev.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
-
-    glGenTextures(1, &texid);
-    glBindTexture(GL_TEXTURE_2D, texid);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)w, (GLsizei)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-    tfont->texid = texid;
-    nk_font_atlas_end(&nk->dev.atlas, nk_handle_id(texid), &nk->dev.null);
-
-    return tfont;
-}
-
-void OpenGLRenderer::NuklearFontFree(struct nk_tex_font *tfont) {
-    if (tfont)
-        glDeleteTextures(1, &tfont->texid);
-}
-
-struct nk_image OpenGLRenderer::NuklearImageLoad(GraphicsImage *img) {
-    GLuint texid = img->renderId().value();
-    return nk_image_id(texid);
-}
-
-void OpenGLRenderer::NuklearImageFree(GraphicsImage *img) {
-    img->releaseRenderId();
 }

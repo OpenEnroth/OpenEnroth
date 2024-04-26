@@ -1880,7 +1880,6 @@ void Game::gameLoop() {
     pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
-    nuklear->Create(WINDOW_DebugMenu);
     while (true) {
         engine->_messageQueue->clear();
 
@@ -2068,5 +2067,4 @@ void Game::gameLoop() {
         break;
     }
     current_screen_type = SCREEN_VIDEO;
-    nuklear->Release(WINDOW_DebugMenu);
 }

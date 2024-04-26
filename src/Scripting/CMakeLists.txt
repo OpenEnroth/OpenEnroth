@@ -7,6 +7,8 @@ set(SCRIPTING_SOURCES
         InputScriptEventHandler.cpp
         LoggerBindings.cpp
         NuklearBindings.cpp
+        NuklearLegacyBindings.cpp
+        PlatformBindings.cpp
         ScriptingSystem.cpp
         ScriptLogSink.cpp)
 
@@ -17,7 +19,9 @@ set(SCRIPTING_HEADERS
         InputScriptEventHandler.h
         LoggerBindings.h
         NuklearBindings.h
+        NuklearLegacyBindings.h
         LuaItemQueryTable.h
+        PlatformBindings.h
         ScriptingSystem.h
         ScriptLogSink.h)
 
@@ -30,4 +34,5 @@ target_link_libraries(scripting
         library_logger
 	    PRIVATE
 	    libluajit
-        sol2)
+        sol2
+        nuklear)

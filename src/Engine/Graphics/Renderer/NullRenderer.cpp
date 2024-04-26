@@ -19,32 +19,6 @@ bool NullRenderer::Reinitialize(bool firstInit) {
     return BaseRenderer::Reinitialize(firstInit);
 }
 
-bool NullRenderer::NuklearInitialize(struct nk_tex_font *tfont) {
-    return false;
-}
-
-bool NullRenderer::NuklearCreateDevice() {
-    return true;
-}
-
-bool NullRenderer::NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) {
-    return true;
-}
-
-void NullRenderer::NuklearRelease() {}
-
-struct nk_tex_font *NullRenderer::NuklearFontLoad(const char *font_path, size_t font_size) {
-    return nullptr;
-}
-
-void NullRenderer::NuklearFontFree(struct nk_tex_font *tfont) {}
-
-struct nk_image NullRenderer::NuklearImageLoad(GraphicsImage *img) {
-    return {};
-}
-
-void NullRenderer::NuklearImageFree(GraphicsImage *img) {}
-
 RgbaImage NullRenderer::ReadScreenPixels() {
     return RgbaImage::solid(640, 480, Color());
 }

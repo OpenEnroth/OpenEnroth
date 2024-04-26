@@ -837,3 +837,7 @@ void BaseRenderer::updateRenderDimensions() {
     else
         outputRender = outputPresent;
 }
+
+void BaseRenderer::setDebugViewRenderer(IDebugViewRenderer *debugViewRenderer) {
+    _debugViewRenderer = debugViewRenderer;
+}

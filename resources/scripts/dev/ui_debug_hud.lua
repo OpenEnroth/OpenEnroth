@@ -46,7 +46,6 @@ function ui_init(_)
         { key = Input.bindings.PlatformKey.KEY_DOWN, callback = historyNext }
     })
     return {
-        mode = NUKLEAR_MODE_SHARED,
         draw = ui_draw,
         release = ui_release
     }
@@ -135,14 +134,11 @@ end
 
 ---
 ---@param ctx NuklearContext
----@param stage NuklearStageType
 ---@diagnostic disable-next-line: name-style-check
-function ui_draw(ctx, stage)
-    if stage == NUKLEAR_STAGE_PRE then
-        local show = config.getConfig("debug", "show_console")
-        if show == "true" then
-            drawConsole(ctx)
-        end
+function ui_draw(ctx)
+    local show = config.getConfig("debug", "show_console")
+    if show == "true" then
+        drawConsole(ctx)
     end
 end
 

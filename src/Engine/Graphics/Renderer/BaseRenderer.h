@@ -59,6 +59,8 @@ class BaseRenderer : public Renderer {
 
     virtual void SaveWinnersCertificate(std::string_view filePath) override;
 
+    void setDebugViewRenderer(IDebugViewRenderer *debugViewRenderer) override;
+
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);
@@ -66,6 +68,7 @@ class BaseRenderer : public Renderer {
  protected:
     Sizei outputRender = {0, 0};
     Sizei outputPresent = {0, 0};
+    IDebugViewRenderer *_debugViewRenderer;
 
  private:
     void updateRenderDimensions();

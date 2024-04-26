@@ -13,7 +13,6 @@
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -36,6 +35,7 @@
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
+#include "DebugViewSystem.h"
 #include "GamePathResolver.h"
 #include "GameConfig.h"
 #include "Game.h"
@@ -45,11 +45,14 @@
 
 #include "Scripting/ConfigBindings.h"
 #include "Scripting/GameLuaBindings.h"
-#include "Scripting/LoggerBindings.h"
 #include "Scripting/InputBindings.h"
-#include "Scripting/NuklearBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
+#include "Scripting/LoggerBindings.h"
+#include "Scripting/NuklearBindings.h"
+#include "Scripting/PlatformBindings.h"
 #include "Scripting/ScriptingSystem.h"
+
+#include "RenderStatsDebugView.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -136,13 +139,13 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
     // Init Nuklear - depends on renderer.
-    _nuklear = Nuklear::Initialize();
-    if (!_nuklear)
-        logger->error("Nuklear failed to initialize");
-    ::nuklear = _nuklear.get();
-    if (_nuklear) {
-        _application->installComponent(std::make_unique<NuklearEventHandler>());
-    }
+    //_nuklear = Nuklear::Initialize();
+    //if (!_nuklear)
+    //    logger->error("Nuklear failed to initialize");
+    //::nuklear = _nuklear.get();
+    //if (_nuklear) {
+    //    _application->installComponent(std::make_unique<NuklearEventHandler>());
+    //}
 
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
@@ -164,15 +167,19 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _scriptingSystem->addBindings<LoggerBindings>("Log", *_defaultLogSink);
     _scriptingSystem->addBindings<GameLuaBindings>("Game");
     _scriptingSystem->addBindings<ConfigBindings>("Config");
+    _scriptingSystem->addBindings<PlatformBindings>("Platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("Input", *_application->component<InputScriptEventHandler>());
     _scriptingSystem->addBindings<NuklearBindings>("Nuklear", _engine->nuklear.get());
     _scriptingSystem->executeEntryPoints();
+
+    _debugViewSystem = DebugViewSystem::create(*_renderer, *_config, *_application);
+    _debugViewSystem->addView<RenderStatsDebugView>("RenderStats", *_renderer);
 }
 
 GameStarter::~GameStarter() {
     ::engine = nullptr;
 
-    ::nuklear = nullptr;
+    //::nuklear = nullptr;
 
     ::render = nullptr;
 
