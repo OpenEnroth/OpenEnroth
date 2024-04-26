@@ -13,26 +13,18 @@ static LogCategory scriptingLogCategory("Script");
 
 ScriptingSystem::ScriptingSystem(
     std::string_view scriptFolder,
-    const std::vector<std::string> &entryPointFiles
-) : _entryPointFiles(entryPointFiles)
-  , _scriptFolder(scriptFolder) {
+    std::string_view entryPointFile
+) : _scriptFolder(scriptFolder)
+  , _entryPointFile(entryPointFile) {
     _initBaseLibraries();
     _initPackageTable(scriptFolder);
 }
 
-std::unique_ptr<ScriptingSystem> ScriptingSystem::create(
-    std::string_view scriptFolder,
-    const std::vector<std::string> &entryPointFiles) {
-    return std::make_unique<ScriptingSystem>(scriptFolder, entryPointFiles);
-}
-
 void ScriptingSystem::executeEntryPoints() {
-    for (auto &&entryPointFile : _entryPointFiles) {
-        try {
-            _solState.script_file(makeDataPath(_scriptFolder, entryPointFile));
-        } catch (const sol::error &e) {
-            logger->error(scriptingLogCategory, "An unexpected error has occurred: {}", e.what());
-        }
+    try {
+        _solState.script_file(makeDataPath(_scriptFolder, _entryPointFile));
+    } catch (const sol::error &e) {
+        logger->error(scriptingLogCategory, "An unexpected error has occurred: {}", e.what());
     }
 }
 

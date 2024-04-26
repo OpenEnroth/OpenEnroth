@@ -14,12 +14,8 @@ class ScriptingSystem {
  public:
     ScriptingSystem(
         std::string_view scriptFolder,
-        const std::vector<std::string> &entryPointFiles
+        std::string_view entryPointFile
     );
-
-    static std::unique_ptr<ScriptingSystem> create(
-        std::string_view scriptFolder,
-        const std::vector<std::string> &entryPointFiles);
 
     void executeEntryPoints();
 
@@ -36,6 +32,6 @@ class ScriptingSystem {
 
     sol::state _solState;
     std::unordered_map<std::string, std::unique_ptr<IBindings>> _bindings;
-    std::vector<std::string> _entryPointFiles;
     std::string _scriptFolder;
+    std::string _entryPointFile;
 };
