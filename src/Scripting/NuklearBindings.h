@@ -9,7 +9,7 @@ class Nuklear;
 class NuklearBindings : public IBindings {
  public:
     NuklearBindings(const sol::state_view &solState, Nuklear *nuklear);
-    sol::table getBindingTable() override;
+    virtual sol::table getBindingTable() override;
 
  private:
     Nuklear *_nuklear;

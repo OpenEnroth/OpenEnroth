@@ -14,7 +14,7 @@ class GameLuaBindings : public IBindings {
  public:
     explicit GameLuaBindings(const sol::state_view &luaState);
     ~GameLuaBindings() override;
-    sol::table getBindingTable() override;
+    virtual sol::table getBindingTable() override;
 
  private:
     void _registerAudioBindings(sol::table &table);

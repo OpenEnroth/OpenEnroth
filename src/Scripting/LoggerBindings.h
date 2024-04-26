@@ -12,7 +12,7 @@ class LoggerBindings : public IBindings {
     explicit LoggerBindings(const sol::state_view &solState, DistLogSink& distLogSink);
     ~LoggerBindings();
 
-    sol::table getBindingTable() override;
+    virtual sol::table getBindingTable() override;
 
  private:
     sol::state_view _solState;
