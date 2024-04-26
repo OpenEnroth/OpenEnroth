@@ -10,10 +10,10 @@ class ConfigBindings : public IBindings {
     virtual sol::table getBindingTable() override;
 
  private:
-    [[nodiscard]] bool setConfigValue(std::string_view sectionName, std::string_view configName, std::string_view value) const;
-    [[nodiscard]] bool setConfigValue(std::string_view configName, std::string_view value) const;
-    [[nodiscard]] std::optional<std::string> getConfigValue(std::string_view sectionName, std::string_view configName) const;
-    [[nodiscard]] std::optional<std::string> getConfigValue(std::string_view configName) const;
+    [[nodiscard]] static bool setConfigValue1(std::string_view sectionName, std::string_view configName, std::string_view value);
+    [[nodiscard]] static bool setConfigValue2(std::string_view configName, std::string_view value);
+    [[nodiscard]] static std::optional<std::string> getConfigValue1(std::string_view sectionName, std::string_view configName);
+    [[nodiscard]] static std::optional<std::string> getConfigValue2(std::string_view configName);
 
     sol::state_view _solState;
     std::optional<sol::table> _bindingTable;

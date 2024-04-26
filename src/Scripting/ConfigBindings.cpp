@@ -12,20 +12,14 @@ ConfigBindings::ConfigBindings(const sol::state_view &solState) : _solState(solS
 sol::table ConfigBindings::getBindingTable() {
     if (!_bindingTable) {
         _bindingTable = _solState.create_table_with(
-            "setConfig", sol::overload(
-                [this](std::string_view section, std::string_view config, std::string_view value) { return setConfigValue(section, config, value); },
-                [this](std::string_view config, std::string_view value) { return setConfigValue(config, value); }
-            ),
-            "getConfig", sol::overload(
-                [this](std::string_view section, std::string_view config) { return getConfigValue(section, config); },
-                [this](std::string_view config) { return getConfigValue(config); }
-            )
+            "setConfig", sol::overload(setConfigValue1, setConfigValue2),
+            "getConfig", sol::overload(getConfigValue1, getConfigValue2)
         );
     }
     return *_bindingTable;
 }
 
-bool ConfigBindings::setConfigValue(std::string_view sectionName, std::string_view configName, std::string_view value) const {
+bool ConfigBindings::setConfigValue1(std::string_view sectionName, std::string_view configName, std::string_view value) {
     ConfigSection *section = engine->config->section(sectionName);
     if (!section) {
         logger->warning("Can't find section: {}", sectionName);
@@ -42,7 +36,7 @@ bool ConfigBindings::setConfigValue(std::string_view sectionName, std::string_vi
     return true;
 }
 
-bool ConfigBindings::setConfigValue(std::string_view configName, std::string_view value) const {
+bool ConfigBindings::setConfigValue2(std::string_view configName, std::string_view value) {
     for (auto &&section : engine->config->sections()) {
         AnyConfigEntry *configEntry = section->entry(configName);
         if (configEntry != nullptr) {
@@ -55,7 +49,7 @@ bool ConfigBindings::setConfigValue(std::string_view configName, std::string_vie
     return false;
 }
 
-std::optional<std::string> ConfigBindings::getConfigValue(std::string_view sectionName, std::string_view configName) const {
+std::optional<std::string> ConfigBindings::getConfigValue1(std::string_view sectionName, std::string_view configName) {
     ConfigSection *section = engine->config->section(sectionName);
     if (!section) {
         logger->warning("Can't find section: {}", sectionName);
@@ -71,7 +65,7 @@ std::optional<std::string> ConfigBindings::getConfigValue(std::string_view secti
     return configEntry->string();
 }
 
-std::optional<std::string> ConfigBindings::getConfigValue(std::string_view configName) const {
+std::optional<std::string> ConfigBindings::getConfigValue2(std::string_view configName) {
     for (auto &&section : engine->config->sections()) {
         AnyConfigEntry *configEntry = section->entry(configName);
         if (configEntry != nullptr) {
