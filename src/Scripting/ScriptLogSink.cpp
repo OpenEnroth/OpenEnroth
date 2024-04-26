@@ -12,6 +12,6 @@ ScriptLogSink::ScriptLogSink(const sol::state_view &solState) : _solState(solSta
 void ScriptLogSink::write(const LogCategory& category, LogLevel level, std::string_view message) {
     sol::protected_function logSink = _solState["_globalLogSink"];
     if (logSink) {
-        logSink(toString(level).c_str(), message.data());
+        logSink(toString(level).c_str(), message);
     }
 }
