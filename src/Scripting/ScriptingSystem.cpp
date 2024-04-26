@@ -9,6 +9,8 @@
 #include <memory>
 #include <utility>
 
+static LogCategory scriptingLogCategory("Script");
+
 ScriptingSystem::ScriptingSystem(
     std::string_view scriptFolder,
     const std::vector<std::string> &entryPointFiles
@@ -29,7 +31,7 @@ void ScriptingSystem::executeEntryPoints() {
         try {
             _solState.script_file(makeDataPath(_scriptFolder, entryPointFile));
         } catch (const sol::error &e) {
-            logger->error("[Script] An unexpected error has occurred: {}", e.what());
+            logger->error(scriptingLogCategory, "An unexpected error has occurred: {}", e.what());
         }
     }
 }
