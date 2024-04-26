@@ -33,6 +33,14 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 
+#include "Scripting/ConfigBindings.h"
+#include "Scripting/GameLuaBindings.h"
+#include "Scripting/LoggerBindings.h"
+#include "Scripting/InputBindings.h"
+#include "Scripting/NuklearBindings.h"
+#include "Scripting/InputScriptEventHandler.h"
+#include "Scripting/ScriptingSystem.h"
+
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
@@ -42,14 +50,6 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
-
-#include "Scripting/ConfigBindings.h"
-#include "Scripting/GameLuaBindings.h"
-#include "Scripting/LoggerBindings.h"
-#include "Scripting/InputBindings.h"
-#include "Scripting/NuklearBindings.h"
-#include "Scripting/InputScriptEventHandler.h"
-#include "Scripting/ScriptingSystem.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
