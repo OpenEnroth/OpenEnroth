@@ -28,6 +28,6 @@ target_link_libraries(scripting
         PUBLIC
         engine
         library_logger
-	    PRIVATE
-	    libluajit
+        PRIVATE
+        libluajit
         sol2)
