@@ -28,7 +28,7 @@ class ScriptingSystem {
         _addBindings(bindingTableName, std::move(bindings));
     }
 
-    static LogCategory LogCategory;
+    static LogCategory ScriptingLogCategory;
 
  private:
     void _initBaseLibraries();
