@@ -19,7 +19,7 @@ static LogCategory scriptingLogCategory("Script");
 ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink)
     : _scriptFolder(scriptFolder), _entryPointFile(entryPointFile), _platformApplication(platformApplication) {
     _solState = std::make_shared<sol::state>();
-    _platformApplication.installComponent(std::make_unique<InputScriptEventHandler>(*_solState));
+    _platformApplication.installComponent(std::make_unique<InputScriptEventHandler>(_solState));
 
     distLogSink.addLogSink(std::make_unique<ScriptLogSink>(_solState));
 
