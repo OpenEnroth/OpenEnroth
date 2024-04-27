@@ -24,7 +24,10 @@ sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character
 std::unique_ptr<LuaItemQueryTable<Character>> GameLuaBindings::_characterInfoQueryTable;
 
 GameLuaBindings::GameLuaBindings() = default;
-GameLuaBindings::~GameLuaBindings() = default;
+GameLuaBindings::~GameLuaBindings() {
+    // TODO(Gerark) This static variable must be moved elsewhere
+    _characterInfoQueryTable = nullptr;
+}
 
 sol::table GameLuaBindings::createBindingTable(sol::state_view &solState) const {
     /** TODO(Gerark) exposing the info/stats of a character this way might suggest we should expose the Character class directly to lua.
